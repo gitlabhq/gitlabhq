@@ -80,7 +80,7 @@ export default {
     data-qa-selector="package_title"
   >
     <template #sub-header>
-      <div data-testid="sub-header" class="gl-display-flex gl-gap-3">
+      <div data-testid="sub-header" class="gl-display-flex gl-flex-wrap gl-gap-3">
         <gl-sprintf :message="$options.i18n.packageInfo">
           <template #version>
             {{ packageEntity.version }}

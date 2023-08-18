@@ -84,8 +84,8 @@ module Gitlab
         health_context = Gitlab::Database::HealthStatus::Context.new(
           DatabaseHealthStatusChecker.new(job['jid'], worker_class.name),
           job_base_model.connection,
-          health_check_attrs[:gitlab_schema],
-          health_check_attrs[:tables]
+          health_check_attrs[:tables],
+          health_check_attrs[:gitlab_schema]
         )
 
         Gitlab::Database::HealthStatus.evaluate(health_context).any?(&:stop?)

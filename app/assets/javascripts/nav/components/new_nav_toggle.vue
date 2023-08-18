@@ -68,14 +68,14 @@ export default {
   <gl-disclosure-dropdown-item v-if="newNavigation" @action="toggleNav">
     <div class="gl-new-dropdown-item-content">
       <div
-        class="gl-new-dropdown-item-text-wrapper gl-display-flex! gl-justify-content-space-between gl-align-items-center gl-py-2!"
+        class="gl-new-dropdown-item-text-wrapper gl-display-flex! gl-justify-content-space-between gl-align-items-center gl-py-2! gl-gap-3"
       >
         {{ $options.i18n.toggleMenuItemLabel }}
         <gl-toggle
+          class="gl-flex-grow-0!"
           :value="isEnabled"
           :label="$options.i18n.toggleLabel"
           label-position="hidden"
-          data-testid="new-navigation-toggle"
         />
       </div>
     </div>
@@ -89,11 +89,12 @@ export default {
     </div>
 
     <div
-      class="menu-item gl-cursor-pointer gl-display-flex! gl-justify-content-space-between gl-align-items-center"
+      class="menu-item gl-cursor-pointer gl-display-flex! gl-justify-content-space-between gl-align-items-center gl-gap-3"
       @click.prevent.stop="toggleNav"
     >
       {{ $options.i18n.toggleMenuItemLabel }}
       <gl-toggle
+        class="gl-flex-grow-0!"
         :value="isEnabled"
         :label="$options.i18n.toggleLabel"
         label-position="hidden"

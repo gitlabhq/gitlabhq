@@ -7,8 +7,8 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
   before do
     project.add_developer(user)
@@ -144,8 +144,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
     end
   end
 
-  # Move this from `shared_context` to `describe` when `ci_refactoring_pipeline_schedule_create_service` is removed.
-  shared_context 'POST #create' do # rubocop:disable RSpec/ContextWording
+  describe 'POST #create' do
     describe 'functionality' do
       before do
         project.add_developer(user)
@@ -176,6 +175,20 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
             expect(v.variable_type).to eq("file")
           end
         end
+
+        context 'when the user is not allowed to create a pipeline schedule with variables' do
+          before do
+            project.update!(restrict_user_defined_variables: true)
+          end
+
+          it 'does not create a new schedule' do
+            expect { go }
+              .to not_change { Ci::PipelineSchedule.count }
+              .and not_change { Ci::PipelineScheduleVariable.count }
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
       end
 
       context 'when variables_attributes has two variables and duplicated' do
@@ -188,8 +201,8 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
         it 'returns an error that the keys of variable are duplicated' do
           expect { go }
-            .to change { Ci::PipelineSchedule.count }.by(0)
-            .and change { Ci::PipelineScheduleVariable.count }.by(0)
+            .to not_change { Ci::PipelineSchedule.count }
+            .and not_change { Ci::PipelineScheduleVariable.count }
 
           expect(assigns(:schedule).errors['variables']).not_to be_empty
         end
@@ -227,16 +240,6 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
     end
   end
 
-  it_behaves_like 'POST #create'
-
-  context 'when the FF ci_refactoring_pipeline_schedule_create_service is disabled' do
-    before do
-      stub_feature_flags(ci_refactoring_pipeline_schedule_create_service: false)
-    end
-
-    it_behaves_like 'POST #create'
-  end
-
   describe 'PUT #update' do
     describe 'functionality' do
       let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
@@ -265,6 +268,22 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
             expect(response).to have_gitlab_http_status(:found)
             expect(pipeline_schedule.variables.last.key).to eq('AAA')
             expect(pipeline_schedule.variables.last.value).to eq('AAA123')
+          end
+
+          context 'when the user is not allowed to update pipeline schedule variables' do
+            before do
+              project.update!(restrict_user_defined_variables: true)
+            end
+
+            it 'does not update the schedule' do
+              expect { go }
+                .to not_change { Ci::PipelineScheduleVariable.count }
+
+              expect(response).to have_gitlab_http_status(:ok)
+
+              pipeline_schedule.reload
+              expect(pipeline_schedule.variables).to be_empty
+            end
           end
         end
 

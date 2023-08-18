@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::WorkItems::WidgetInterface do
+RSpec.describe Types::WorkItems::WidgetInterface, feature_category: :team_planning do
   include GraphqlHelpers
 
   it 'exposes the expected fields' do
@@ -23,6 +23,7 @@ RSpec.describe Types::WorkItems::WidgetInterface do
       WorkItems::Widgets::Notifications    | Types::WorkItems::Widgets::NotificationsType
       WorkItems::Widgets::CurrentUserTodos | Types::WorkItems::Widgets::CurrentUserTodosType
       WorkItems::Widgets::AwardEmoji       | Types::WorkItems::Widgets::AwardEmojiType
+      WorkItems::Widgets::LinkedItems      | Types::WorkItems::Widgets::LinkedItemsType
     end
 
     with_them do

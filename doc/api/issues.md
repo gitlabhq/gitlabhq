@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issues API **(FREE)**
+# Issues API **(FREE ALL)**
 
 Interact with [GitLab Issues](../user/project/issues/index.md) using the REST API.
 
@@ -1945,7 +1945,7 @@ Example response:
 WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-## Promote an issue to an epic **(PREMIUM)**
+## Promote an issue to an epic **(PREMIUM ALL)**
 
 Promotes an issue to an epic by adding a comment with the `/promote`
 [quick action](../user/project/quick_actions.md).

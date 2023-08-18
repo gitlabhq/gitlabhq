@@ -34,16 +34,27 @@ If both Geo sites are based on the [1K reference architecture](../../reference_a
    - [Using Linux package PostgreSQL instances](database.md) .
    - [Using external PostgreSQL instances](external_database.md)
 1. [Configure GitLab](../replication/configuration.md) to set the **primary** and **secondary** sites.
-1. Recommended: [Configure unified URLs](../secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites) to use a single, unified URL for all Geo sites.
-1. Optional: [Configure Object storage replication](../replication/object_storage.md)
-1. Optional: [Configure a secondary LDAP server](../../auth/ldap/index.md) for the **secondary** sites. See [notes on LDAP](../index.md#ldap).
-1. Optional: [Configure Container Registry for the secondary site](../replication/container_registry.md).
 1. Follow the [Using a Geo Site](../replication/usage.md) guide.
+
+Depending on your GitLab deployment, [additional configuration](#additional-configuration) for LDAP, object storage, and the Container Registry might be required.
 
 ### Multi-node Geo sites
 
 If one or more of your sites is using the [2K reference architecture](../../reference_architectures/2k_users.md) or larger, see
 [Configure Geo for multiple nodes](../replication/multiple_servers.md).
+
+Depending on your GitLab deployment, [additional configuration](#additional-configuration) for LDAP, object storage, and the Container Registry might be required.
+
+### Additional configuration
+
+Depending on how you use GitLab, the following configuration might be required:
+
+- If the **primary** site uses object storage, [configure object storage replication](../replication/object_storage.md) for the **secondary** sites.
+- If you use LDAP, [configure a secondary LDAP server](../../auth/ldap/index.md) for the **secondary** sites.
+  For more information, see [LDAP with Geo](../replication/single_sign_on.md#ldap).
+- If you use the Container Registry, [configure the Container Registry for replication](../replication/container_registry.md) on the **primary** and **secondary** sites.
+
+You should [configure unified URLs](../secondary_proxy/index.md#set-up-a-unified-url-for-geo-sites) to use a single, unified URL for all Geo sites.
 
 ## Using GitLab Charts
 

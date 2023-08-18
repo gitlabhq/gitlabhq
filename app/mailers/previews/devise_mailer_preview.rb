@@ -28,6 +28,10 @@ class DeviseMailerPreview < ActionMailer::Preview
     DeviseMailer.user_admin_approval(unsaved_user, {})
   end
 
+  def email_changed
+    DeviseMailer.email_changed(unsaved_user, {})
+  end
+
   private
 
   def unsaved_user

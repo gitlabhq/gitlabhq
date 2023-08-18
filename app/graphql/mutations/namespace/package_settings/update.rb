@@ -8,6 +8,8 @@ module Mutations
 
         include Mutations::ResolvesNamespace
 
+        NUGET_DUPLICATES_FF_ERROR = '`nuget_duplicates_option` feature flag is disabled.'
+
         description <<~DESC
           These settings can be adjusted by the group Owner or Maintainer.
           [Issue 370471](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) proposes limiting
@@ -40,6 +42,16 @@ module Mutations
                 Types::UntrustedRegexp,
                 required: false,
                 description: copy_field_description(Types::Namespace::PackageSettingsType, :generic_duplicate_exception_regex)
+
+        argument :nuget_duplicates_allowed,
+                GraphQL::Types::Boolean,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :nuget_duplicates_allowed)
+
+        argument :nuget_duplicate_exception_regex,
+                Types::UntrustedRegexp,
+                required: false,
+                description: copy_field_description(Types::Namespace::PackageSettingsType, :nuget_duplicate_exception_regex)
 
         argument :maven_package_requests_forwarding,
                 GraphQL::Types::Boolean,
@@ -79,6 +91,10 @@ module Mutations
         def resolve(namespace_path:, **args)
           namespace = authorized_find!(namespace_path: namespace_path)
 
+          if nuget_duplicate_settings_present?(args) && Feature.disabled?(:nuget_duplicates_option, namespace)
+            raise_resource_not_available_error! NUGET_DUPLICATES_FF_ERROR
+          end
+
           result = ::Namespaces::PackageSettings::UpdateService
             .new(container: namespace, current_user: current_user, params: args)
             .execute
@@ -93,6 +109,10 @@ module Mutations
 
         def find_object(namespace_path:)
           resolve_namespace(full_path: namespace_path)
+        end
+
+        def nuget_duplicate_settings_present?(args)
+          args.key?(:nuget_duplicates_allowed) || args.key?(:nuget_duplicate_exception_regex)
         end
       end
     end

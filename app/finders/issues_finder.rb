@@ -72,6 +72,7 @@ class IssuesFinder < IssuableFinder
           OR EXISTS (:authorizations)))',
       user_id: current_user.id,
       authorizations: current_user.authorizations_for_projects(min_access_level: CONFIDENTIAL_ACCESS_LEVEL, related_project_column: "issues.project_id"))
+    .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045')
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

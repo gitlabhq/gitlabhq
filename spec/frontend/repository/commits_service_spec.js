@@ -25,8 +25,13 @@ describe('commits service', () => {
     resetRequestedCommits();
   });
 
-  const requestCommits = (offset, project = 'my-project', path = '', ref = 'main') =>
-    loadCommits(project, path, ref, offset);
+  const requestCommits = (
+    offset,
+    project = 'my-project',
+    path = '',
+    ref = 'main',
+    refType = 'heads',
+  ) => loadCommits(project, path, ref, offset, refType);
 
   it('calls axios get', async () => {
     const offset = 10;
@@ -37,7 +42,9 @@ describe('commits service', () => {
 
     await requestCommits(offset, project, path, ref);
 
-    expect(axios.get).toHaveBeenCalledWith(testUrl, { params: { format: 'json', offset } });
+    expect(axios.get).toHaveBeenCalledWith(testUrl, {
+      params: { format: 'json', offset, ref_type: 'heads' },
+    });
   });
 
   it('encodes the path and ref', async () => {

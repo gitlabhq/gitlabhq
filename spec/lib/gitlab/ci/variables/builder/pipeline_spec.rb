@@ -18,6 +18,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :secr
         CI_PIPELINE_IID
         CI_PIPELINE_SOURCE
         CI_PIPELINE_CREATED_AT
+        CI_PIPELINE_NAME
         CI_COMMIT_SHA
         CI_COMMIT_SHORT_SHA
         CI_COMMIT_BEFORE_SHA
@@ -43,6 +44,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :secr
           CI_PIPELINE_IID
           CI_PIPELINE_SOURCE
           CI_PIPELINE_CREATED_AT
+          CI_PIPELINE_NAME
           CI_COMMIT_SHA
           CI_COMMIT_SHORT_SHA
           CI_COMMIT_BEFORE_SHA

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe UnnestedInFilters::Rewriter do
   let(:rewriter) { described_class.new(relation) }
 
-  before(:all) do
+  before_all do
     User.include(UnnestedInFilters::Dsl)
   end
 

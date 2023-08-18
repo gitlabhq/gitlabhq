@@ -43,7 +43,8 @@ module API
                   current_user,
                   project_or_group,
                   package_name: package_name,
-                  package_version: package_version
+                  package_version: package_version,
+                  client_version: headers['X-Nuget-Client-Version']
                 )
               end
 

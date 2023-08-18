@@ -115,6 +115,11 @@ Layout/LineLength:
 Lint/LastKeywordArgument:
   Safe: false
 
+Lint/Debugger:
+  DebuggerMethods:
+    PryShell:
+      binding.pry_shell
+
 Lint/EmptyFile:
   Exclude:
     - 'db/seeds.rb'
@@ -185,6 +190,7 @@ Naming/FileName:
     - 'jh/spec/**/*'
     - 'qa/bin/*'
     - 'qa/spec/**/*'
+    - 'qa/qa/factories/**/*'
     - 'qa/qa/specs/**/*'
     - 'qa/tasks/**/*.rake'
     - '**/*.ru'
@@ -567,6 +573,20 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/mailers/**/*.rb'
     - 'ee/spec/routes/directs/*.rb'
     - 'ee/spec/lib/sidebars/**/*.rb'
+
+RSpec/BeforeAll:
+  Enabled: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+  # Conflict with RSpec/AvoidTestProf
+  Exclude:
+    - 'spec/migrations/**/*.rb'
+    - 'ee/spec/migrations/**/*.rb'
+    - 'spec/lib/gitlab/background_migration/**/*.rb'
+    - 'ee/spec/lib/gitlab/background_migration/**/*.rb'
+    - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
+    - 'spec/lib/gitlab/database/**/*.rb'
 
 RSpec/FactoryBot/StrategyInCallback:
   Enabled: true
@@ -992,6 +1012,9 @@ Search/NamespacedClass:
     - 'app/experiments/**/*_experiment.rb'
     - 'ee/app/experiments/**/*_experiment.rb'
     - 'lib/gitlab/instrumentation/**/*.rb'
+    - 'lib/gitlab/usage/metrics/instrumentations/**/*.rb'
+    - 'ee/lib/gitlab/usage/metrics/instrumentations/**/*.rb'
+    - 'lib/gitlab/sidekiq_middleware/pause_control/strategies/zoekt.rb'
 
 SidekiqLoadBalancing/WorkerDataConsistency:
   Enabled: true
@@ -1022,3 +1045,12 @@ Search/AvoidCheckingFinishedOnDeprecatedMigrations:
     - 'ee/lib/elastic/**/*.rb'
     - 'ee/lib/gitlab/elastic/**/*.rb'
     - 'ee/spec/support/helpers/elasticsearch_helpers.rb'
+
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/407233
+Cop/ExperimentsTestCoverage:
+  Enabled: true
+  Include:
+    - 'app/**/*'
+    - 'lib/**/*'
+    - 'ee/app/**/*'
+    - 'ee/lib/**/*'

@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Groups API **(FREE)**
+# Groups API **(FREE ALL)**
 
 Interact with [groups](../user/group/index.md) by using the REST API.
 
@@ -26,18 +26,19 @@ When accessed without authentication, this endpoint also supports [keyset pagina
 
 Parameters:
 
-| Attribute                | Type              | Required | Description |
-| ------------------------ | ----------------- | -------- | ---------- |
-| `skip_groups`            | array of integers | no       | Skip the group IDs passed |
-| `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
-| `search`                 | string            | no       | Return the list of authorized groups matching the search criteria |
-| `order_by`               | string            | no       | Order groups by `name`, `path`, `id`, or `similarity` (if searching, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332889) in GitLab 14.1). Default is `name` |
-| `sort`                   | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics`             | boolean           | no       | Include group statistics (administrators only).<br>*Note:* The REST API response does not provide the full `RootStorageStatistics` data that is shown in the UI. To match the data in the UI, use GraphQL instead of REST. For more information, see the [Group GraphQL reference](../api/graphql/reference/index.md#group).|
-| `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
-| `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
-| `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
-| `top_level_only`         | boolean           | no       | Limit to top level groups, excluding all subgroups |
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `skip_groups`                         | array of integers | no       | Skip the group IDs passed |
+| `all_available`                       | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators); Attributes `owned` and `min_access_level` have precedence |
+| `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
+| `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity` (if searching, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332889) in GitLab 14.1). Default is `name` |
+| `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
+| `statistics`                          | boolean           | no       | Include group statistics (administrators only).<br>*Note:* The REST API response does not provide the full `RootStorageStatistics` data that is shown in the UI. To match the data in the UI, use GraphQL instead of REST. For more information, see the [Group GraphQL API resources](../api/graphql/reference/index.md#group).|
+| `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+| `owned`                               | boolean           | no       | Limit to groups explicitly owned by the current user |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
+| `top_level_only`                      | boolean           | no       | Limit to top level groups, excluding all subgroups |
+| `repository_storage` **(PREMIUM)**    | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3 |
 
 ```plaintext
 GET /groups
@@ -64,6 +65,7 @@ GET /groups
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
     "request_access_enabled": false,
+    "repository_storage": "default",
     "full_name": "Foobar Group",
     "full_path": "foo-bar",
     "file_template_project_id": 1,
@@ -101,6 +103,7 @@ GET /groups?statistics=true
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
     "request_access_enabled": false,
+    "repository_storage": "default",
     "full_name": "Foobar Group",
     "full_path": "foo-bar",
     "file_template_project_id": 1,
@@ -184,6 +187,7 @@ GET /groups/:id/subgroups
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://gitlab.example.com/groups/foo-bar",
     "request_access_enabled": false,
+    "repository_storage": "default",
     "full_name": "Foobar Group",
     "full_path": "foo-bar",
     "file_template_project_id": 1,
@@ -470,6 +474,7 @@ Example response:
       "open_issues_count":10,
       "ci_default_git_depth":50,
       "ci_forward_deployment_enabled":true,
+      "ci_forward_deployment_rollback_allowed": true,
       "ci_allow_fork_pipelines_to_run_in_parent_project":true,
       "public_jobs":true,
       "build_timeout":3600,
@@ -547,6 +552,7 @@ Example response:
   "avatar_url": null,
   "web_url": "https://gitlab.example.com/groups/twitter",
   "request_access_enabled": false,
+  "repository_storage": "default",
   "full_name": "Twitter",
   "full_path": "twitter",
   "runners_token": "ba324ca7b1c77fc20bb9",
@@ -745,6 +751,7 @@ Example response:
   "avatar_url": null,
   "web_url": "https://gitlab.example.com/groups/twitter",
   "request_access_enabled": false,
+  "repository_storage": "default",
   "full_name": "Twitter",
   "full_path": "twitter",
   "file_template_project_id": 1,
@@ -837,7 +844,7 @@ The `default_branch_protection` attribute determines whether users with the Deve
 | `1`   | Partial protection. Users with the Developer or Maintainer role can:  <br>- Push new commits |
 | `2`   | Full protection. Only users with the Maintainer role can:  <br>- Push new commits |
 | `3`   | Protected against pushes. Users with the Maintainer role can: <br>- Push new commits<br>- Force push changes<br>- Accept merge requests<br>Users with the Developer role can:<br>- Accept merge requests|
-| `4`   | Protected against pushes except initial push. User with the Developer role can: <br>- Push commit to empty repository.<br> Users with the Maintainer role can: <br>- Push new commits<br>- Force push changes<br>- Accept merge requests<br>Users with the Developer role can:<br>- Accept merge requests|
+| `4`   | Full protection after initial push. User with the Developer role can: <br>- Push commit to empty repository.<br> Users with the Maintainer role can: <br>- Push new commits<br>- Accept merge requests|
 
 ## New Subgroup
 
@@ -1021,6 +1028,7 @@ Example response:
   "avatar_url": null,
   "web_url": "http://gitlab.example.com/groups/h5bp",
   "request_access_enabled": false,
+  "repository_storage": "default",
   "full_name": "Foobar Group",
   "full_path": "h5bp",
   "file_template_project_id": 1,
@@ -1161,7 +1169,7 @@ The response is `202 Accepted` if the user has authorization.
 NOTE:
 A GitLab.com group can't be removed if it is linked to a subscription. To remove such a group, first [link the subscription](../subscriptions/gitlab_com/index.md#change-the-linked-namespace) with a different group.
 
-## Restore group marked for deletion **(PREMIUM)**
+## Restore group marked for deletion **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
 
@@ -1196,7 +1204,7 @@ GET /groups?search=foobar
 ]
 ```
 
-## List provisioned users **(PREMIUM)**
+## List provisioned users **(PREMIUM ALL)**
 
 > Introduced in GitLab 14.8.
 
@@ -1270,7 +1278,7 @@ Example response:
 ]
 ```
 
-## Service Accounts **(PREMIUM)**
+## Service Accounts **(PREMIUM ALL)**
 
 ### Create Service Account User
 
@@ -1354,7 +1362,7 @@ Example response:
 }
 ```
 
-## Hooks **(PREMIUM)**
+## Hooks **(PREMIUM ALL)**
 
 Also called Group Hooks and Webhooks.
 These are different from [System Hooks](system_hooks.md) that are system wide and [Project Hooks](projects.md#hooks) that are limited to one project.
@@ -1485,7 +1493,7 @@ DELETE /groups/:id/hooks/:hook_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `hook_id` | integer        | yes      | The ID of the group hook. |
 
-## Group Audit Events **(PREMIUM)**
+## Group Audit Events **(PREMIUM ALL)**
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
 
@@ -1583,7 +1591,7 @@ DELETE /groups/:id/ldap_group_links
 NOTE:
 To delete the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
-## SAML Group Links **(PREMIUM)**
+## SAML Group Links **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
 > - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
@@ -1788,7 +1796,7 @@ DELETE /groups/:id/share/:group_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
 
-## Push Rules **(PREMIUM)**
+## Push Rules **(PREMIUM ALL)**
 
 > Introduced in GitLab 13.4.
 

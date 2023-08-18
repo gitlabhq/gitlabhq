@@ -18,6 +18,8 @@ together.
 We use [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) to build GitLab packages and then we test these packages
 using the [GitLab QA orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) tool to run the end-to-end tests located in the `qa` directory.
 
+Additionally, we use the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit) (GDK) as a test environment that can be deployed quickly for faster test feedback.
+
 ### Testing nightly builds
 
 We run scheduled pipelines each night to test nightly builds created by Omnibus.
@@ -43,10 +45,9 @@ Docker image built from your merge request's changes.**
 Manual action that starts end-to-end tests is also available
 in [`gitlab-org/omnibus-gitlab` merge requests](https://docs.gitlab.com/omnibus/build/team_member_docs.html#i-have-an-mr-in-the-omnibus-gitlab-project-and-want-a-package-or-docker-image-to-test-it).
 
-#### How does it work?
+##### How does it work?
 
-Currently, we are using _multi-project pipeline_-like approach to run end-to-end
-pipelines.
+Currently, we are using _multi-project pipeline_-like approach to run end-to-end pipelines against Omnibus GitLab.
 
 ```mermaid
 graph TB
@@ -98,7 +99,22 @@ work-around was suggested in <https://gitlab.com/gitlab-org/omnibus-gitlab/-/iss
 A feature proposal to segregate access control regarding running pipelines from ability to push/merge was also created at <https://gitlab.com/gitlab-org/gitlab/-/issues/24585>.
 
 For more technical details on CI/CD setup and documentation on adding new test jobs to `e2e:package-and-test` pipeline, see
-[`e2e:package_and_test` setup documentation](package_and_test_pipeline.md).
+[`e2e:package_and_test` setup documentation](test_pipelines.md).
+
+#### Using the `test-on-gdk` job
+
+The `e2e:test-on-gdk` job is run automatically in most merge requests, which triggers a [child-pipeline](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)
+that builds and installs a GDK instance from your merge request's changes, and then executes end-to-end tests against that GDK instance.
+
+##### How does it work?
+
+In the [`gitlab-org/gitlab` pipeline](https://gitlab.com/gitlab-org/gitlab):
+
+1. The [`build-gdk-image` job](https://gitlab.com/gitlab-org/gitlab/-/blob/07504c34b28ac656537cd60810992aa15e9e91b8/.gitlab/ci/build-images.gitlab-ci.yml#L32)
+   uses the code from the merge request to build a Docker image for a GDK instance.
+1. The `e2e:test-on-gdk` trigger job creates a child pipeline that executes the end-to-end tests against GDK instances launched from the image built in the previous job.
+
+For more details, see the [documentation for the `e2e:test-on-gdk` pipeline](test_pipelines.md#e2etest-on-gdk).
 
 #### With merged results pipelines
 

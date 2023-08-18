@@ -1,7 +1,7 @@
 import { GlButton } from '@gitlab/ui';
+import { createWrapper } from '@vue/test-utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
-
 import ReportAbuseButton from '~/users/profile/components/report_abuse_button.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
@@ -41,7 +41,7 @@ describe('ReportAbuseButton', () => {
     });
 
     expect(findReportAbuseButton().attributes('aria-label')).toBe(
-      wrapper.vm.$options.i18n.reportAbuse,
+      ReportAbuseButton.i18n.reportAbuse,
     );
   });
 
@@ -69,11 +69,11 @@ describe('ReportAbuseButton', () => {
 
   describe('when user hovers out of the button', () => {
     it(`should emit ${BV_HIDE_TOOLTIP} to close the tooltip`, () => {
-      jest.spyOn(wrapper.vm.$root, '$emit');
+      const rootWrapper = createWrapper(wrapper.vm.$root);
 
       findReportAbuseButton().vm.$emit('mouseout');
 
-      expect(wrapper.vm.$root.$emit).toHaveBeenCalledWith(BV_HIDE_TOOLTIP);
+      expect(rootWrapper.emitted(BV_HIDE_TOOLTIP)).toHaveLength(1);
     });
   });
 });

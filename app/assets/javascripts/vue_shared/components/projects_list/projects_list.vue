@@ -46,6 +46,7 @@ export default {
       :key="project.id"
       :project="project"
       :show-project-icon="showProjectIcon"
+      @delete="$emit('delete', $event)"
     />
   </ul>
 </template>

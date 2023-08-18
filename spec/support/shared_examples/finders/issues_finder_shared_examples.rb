@@ -22,6 +22,14 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           it 'returns no items' do
             expect(items).to be_empty
           end
+
+          context 'when there are group-level work items' do
+            let!(:group_work_item) { create(:work_item, namespace: create(:group)) }
+
+            it 'returns no items' do
+              expect(items).to be_empty
+            end
+          end
         end
 
         context 'when filtering by group id' do

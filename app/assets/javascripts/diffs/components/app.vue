@@ -1,6 +1,7 @@
 <script>
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import api from '~/api';
@@ -18,16 +19,11 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import notesEventHub from '~/notes/event_hub';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import {
-  TREE_LIST_WIDTH_STORAGE_KEY,
-  INITIAL_TREE_WIDTH,
-  MIN_TREE_WIDTH,
-  TREE_HIDE_STATS_WIDTH,
   MR_TREE_SHOW_KEY,
   ALERT_OVERFLOW_HIDDEN,
   ALERT_MERGE_CONFLICT,
@@ -56,12 +52,13 @@ import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import NoChanges from './no_changes.vue';
-import TreeList from './tree_list.vue';
 import VirtualScrollerScrollSync from './virtual_scroller_scroll_sync';
+import DiffsFileTree from './diffs_file_tree.vue';
 
 export default {
   name: 'DiffsApp',
   components: {
+    DiffsFileTree,
     FindingsDrawer,
     DynamicScroller,
     DynamicScrollerItem,
@@ -72,9 +69,7 @@ export default {
     HiddenFilesWarning,
     CollapsedFilesWarning,
     CommitWidget,
-    TreeList,
     GlLoadingIcon,
-    PanelResizer,
     GlPagination,
     GlSprintf,
     GlAlert,
@@ -124,11 +119,7 @@ export default {
     },
   },
   data() {
-    const treeWidth =
-      parseInt(localStorage.getItem(TREE_LIST_WIDTH_STORAGE_KEY), 10) || INITIAL_TREE_WIDTH;
-
     return {
-      treeWidth,
       diffFilesLength: 0,
       virtualScrollCurrentIndex: -1,
       subscribedToVirtualScrollingEvents: false,
@@ -141,7 +132,6 @@ export default {
     }),
     ...mapState('findingsDrawer', ['activeDrawer']),
     ...mapState('diffs', [
-      'showTreeList',
       'isLoading',
       'diffFiles',
       'diffViewType',
@@ -193,12 +183,6 @@ export default {
     },
     diffsIncomplete() {
       return this.flatBlobsList.length !== this.diffFiles.length;
-    },
-    renderFileTree() {
-      return this.renderDiffFiles && this.showTreeList;
-    },
-    hideFileStats() {
-      return this.treeWidth <= TREE_HIDE_STATS_WIDTH;
     },
     isFullChangeset() {
       return this.startVersion === null && this.latestDiff;
@@ -273,7 +257,6 @@ export default {
       this.subscribeToVirtualScrollingEvents();
     },
     isLoading: 'adjustView',
-    renderFileTree: 'adjustView',
   },
   mounted() {
     if (this.endpointCodequality) {
@@ -376,7 +359,6 @@ export default {
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setHighlightedRow',
-      'cacheTreeListWidth',
       'goToFile',
       'setShowTreeList',
       'navigateToDiffFileIndex',
@@ -590,8 +572,6 @@ export default {
       window.location.reload();
     },
   },
-  minTreeWidth: MIN_TREE_WIDTH,
-  maxTreeWidth: window.innerWidth / 2,
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/reviews/index.md', {
     anchor: 'checkout-merge-requests-locally-through-the-head-ref',
   }),
@@ -624,22 +604,7 @@ export default {
         :data-can-create-note="getNoteableData.current_user.can_create_note"
         class="files d-flex gl-mt-2"
       >
-        <div
-          v-if="renderFileTree"
-          :style="{ width: `${treeWidth}px` }"
-          :class="{ 'is-sidebar-moved': glFeatures.movedMrSidebar }"
-          class="diff-tree-list js-diff-tree-list gl-px-5"
-        >
-          <panel-resizer
-            :size.sync="treeWidth"
-            :start-size="treeWidth"
-            :min-size="$options.minTreeWidth"
-            :max-size="$options.maxTreeWidth"
-            side="right"
-            @resize-end="cacheTreeListWidth"
-          />
-          <tree-list :hide-file-stats="hideFileStats" />
-        </div>
+        <diffs-file-tree :render-diff-files="renderDiffFiles" @toggled="adjustView" />
         <div class="col-12 col-md-auto diff-files-holder">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
           <gl-alert

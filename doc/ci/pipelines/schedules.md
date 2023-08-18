@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Scheduled pipelines **(FREE)**
+# Scheduled pipelines **(FREE ALL)**
 
 Use scheduled pipelines to run GitLab CI/CD [pipelines](index.md) at regular intervals.
 
@@ -66,6 +66,9 @@ the next scheduled time:
    the pipeline you want to run, select **Play** (**{play}**).
 
 You can manually run scheduled pipelines once per minute.
+
+When you run a scheduled pipeline manually, the pipeline runs with the
+permissions of the user who triggered it, not the permissions of the schedule owner.
 
 ## Take ownership
 

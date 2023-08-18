@@ -7,7 +7,7 @@ module Types
       graphql_name 'RecentFailures'
       description 'Recent failure history of a test case.'
 
-      connection_type_class(Types::CountableConnectionType)
+      connection_type_class Types::CountableConnectionType
 
       field :count, GraphQL::Types::Int, null: true,
                                          description: 'Number of times the test case has failed in the past 14 days.'

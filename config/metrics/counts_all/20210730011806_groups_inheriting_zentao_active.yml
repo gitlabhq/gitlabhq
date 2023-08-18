@@ -1,6 +1,5 @@
 ---
 key_path: counts.groups_inheriting_zentao_active
-name: count_all_groups_inheriting_zentao_active
 description: Count of groups that inherit active Zentao integrations
 product_section: dev
 product_stage: manage

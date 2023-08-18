@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Google OAuth 2.0 OmniAuth Provider **(FREE SELF)**
+# Use Google OAuth 2.0 as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 To enable the Google OAuth 2.0 OmniAuth provider you must register your application
 with Google. Google generates a client ID and secret key for you to use.
@@ -63,13 +63,13 @@ To see your new project in the list, refresh the page.
 
 1. Open the configuration file.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -79,9 +79,9 @@ To see your new project in the list, refresh the page.
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `google_oauth2` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
-1. Add the provider configuration:
+1. Add the provider configuration.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -95,7 +95,7 @@ To see your new project in the list, refresh the page.
    ]
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    - { name: 'google_oauth2',
@@ -110,13 +110,13 @@ To see your new project in the list, refresh the page.
 1. Make sure that you configure GitLab to use a fully-qualified domain name, as
    Google doesn't accept raw IP addresses.
 
-   For Omnibus packages:
+   For Linux package installations:
 
    ```ruby
    external_url 'https://gitlab.example.com'
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    gitlab:
@@ -126,7 +126,7 @@ To see your new project in the list, refresh the page.
 1. Save the configuration file.
 1. For the changes to take effect:
    - If you installed using the Linux package, [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
-   - If you self-compiled your installation, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+   - If you self-compiled your installation, [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations).
 
 On the sign in page there should now be a Google icon below the regular sign in
 form. Select the icon to begin the authentication process. Google asks the

@@ -11,7 +11,7 @@ module Integrations
       required: true
 
     field :token,
-      type: 'password',
+      type: :password,
       title: -> { _('Token') },
       help: -> { _('Enter your Packagist token.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },

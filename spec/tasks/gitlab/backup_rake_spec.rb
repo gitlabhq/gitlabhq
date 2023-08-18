@@ -38,7 +38,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     %w[db repositories]
   end
 
-  before(:all) do
+  before(:all) do # rubocop:disable RSpec/BeforeAll
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/gitlab/backup'
     Rake.application.rake_require 'tasks/gitlab/shell'
@@ -578,7 +578,8 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
           anything,
           max_parallelism: 5,
           storage_parallelism: 2,
-          incremental: false
+          incremental: false,
+          server_side: false
         ).and_call_original
 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process

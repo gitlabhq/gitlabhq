@@ -1,21 +1,21 @@
 - blame = local_assigns.fetch(:blame, false)
 .nav-block
   .tree-ref-container
-    .tree-ref-holder
+    .tree-ref-holder.gl-max-w-26
       #js-tree-ref-switcher{ data: { project_id: @project.id, project_root_path: project_path(@project), ref: current_ref, ref_type: @ref_type.to_s } }
 
     %ul.breadcrumb.repo-breadcrumb
       %li.breadcrumb-item
-        = link_to project_tree_path(@project, @ref) do
+        = link_to project_tree_path(@project, @ref, ref_type: @ref_type) do
           = @project.path
       - path_breadcrumbs do |title, path|
         - title = truncate(title, length: 40)
         %li.breadcrumb-item
           - if path == @path
-            = link_to project_blob_path(@project, tree_join(@ref, path)) do
+            = link_to project_blob_path(@project, tree_join(@ref, path), ref_type: @ref_type) do
               %strong= title
           - else
-            = link_to title, project_tree_path(@project, tree_join(@ref, path))
+            = link_to title, project_tree_path(@project, tree_join(@ref, path), ref_type: @ref_type)
 
   .tree-controls.gl-children-ml-sm-3<
     = render 'projects/find_file_link'

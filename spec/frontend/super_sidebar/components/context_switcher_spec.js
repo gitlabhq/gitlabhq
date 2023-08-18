@@ -15,7 +15,7 @@ import { trackContextAccess, formatContextSwitcherItems } from '~/super_sidebar/
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
-import { searchUserProjectsAndGroupsResponseMock } from '../mock_data';
+import { contextSwitcherLinks, searchUserProjectsAndGroupsResponseMock } from '../mock_data';
 
 jest.mock('~/super_sidebar/utils', () => ({
   getStorageKeyFor: jest.requireActual('~/super_sidebar/utils').getStorageKeyFor,
@@ -26,9 +26,6 @@ jest.mock('~/super_sidebar/utils', () => ({
 }));
 const focusInputMock = jest.fn();
 
-const persistentLinks = [
-  { title: 'Explore', link: '/explore', icon: 'compass', link_classes: 'persistent-link-class' },
-];
 const username = 'root';
 const projectsPath = 'projectsPath';
 const groupsPath = 'groupsPath';
@@ -71,8 +68,10 @@ describe('ContextSwitcher component', () => {
 
     wrapper = shallowMountExtended(ContextSwitcher, {
       apolloProvider: mockApollo,
+      provide: {
+        contextSwitcherLinks,
+      },
       propsData: {
-        persistentLinks,
         username,
         projectsPath,
         groupsPath,
@@ -107,14 +106,14 @@ describe('ContextSwitcher component', () => {
       createWrapper();
     });
 
-    it('renders the persistent links', () => {
+    it('renders the context switcher links', () => {
       const navItems = findNavItems();
       const firstNavItem = navItems.at(0);
 
-      expect(navItems.length).toBe(persistentLinks.length);
-      expect(firstNavItem.props('item')).toBe(persistentLinks[0]);
+      expect(navItems.length).toBe(contextSwitcherLinks.length);
+      expect(firstNavItem.props('item')).toBe(contextSwitcherLinks[0]);
       expect(firstNavItem.props('linkClasses')).toEqual({
-        [persistentLinks[0].link_classes]: persistentLinks[0].link_classes,
+        [contextSwitcherLinks[0].link_classes]: contextSwitcherLinks[0].link_classes,
       });
     });
 

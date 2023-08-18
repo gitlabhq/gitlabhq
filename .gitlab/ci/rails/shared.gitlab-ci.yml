@@ -25,6 +25,8 @@ include:
     # gems could not be found under some circumstance. No idea why, hours wasted.
     - run_timed_command "gem install knapsack --no-document"
     - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn"  # Do not use 'bundle exec' here
+    - export RSPEC_SKIPPED_TESTS_REPORT_PATH="rspec/skipped_tests-${CI_JOB_ID}.txt"
+    - export RSPEC_RETRIED_TESTS_REPORT_PATH="rspec/retried_tests-${CI_JOB_ID}.txt"
 
 .no-redis-cluster:
   variables:
@@ -84,7 +86,7 @@ include:
         bundle exec relate-failure-issue --input-files "rspec/rspec-*.json" --system-log-files "log" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}";
       fi
       if [ "$CREATE_RAILS_SLOW_TEST_ISSUES" == "true" ]; then
-        bundle exec slow-test-issues --input-files "rspec/rspec-*.json" --project "gitlab-org-sandbox/rails-test-failures" --token "${RAILS_TEST_FAILURES_PROJECT_TOKEN}";
+        bundle exec slow-test-issues --input-files "rspec/rspec-*.json" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}";
       fi
     - echo -e "\e[0Ksection_end:`date +%s`:report_results_section\r\e[0K"
 
@@ -96,11 +98,11 @@ include:
     expire_in: 31d
     when: always
     paths:
+      - auto_explain/
       - coverage/
       - crystalball/
       - deprecations/
       - knapsack/
-      - query_recorder/
       - rspec/
       - tmp/capybara/
       - log/*.log

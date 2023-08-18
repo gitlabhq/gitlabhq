@@ -4,7 +4,7 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Remote development (Beta) **(FREE)**
+# Remote development (Beta) **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
@@ -16,7 +16,8 @@ On self-managed GitLab, by default this feature is available. To hide the featur
 WARNING:
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 
-You can use remote development to write and compile code hosted on GitLab. With remote development, you can:
+You can use remote development to write and compile code hosted on GitLab.
+With remote development, you can:
 
 - Create a secure development environment in the cloud.
 - Connect to that environment from your local machine through a web browser or client-based solution.
@@ -32,9 +33,10 @@ With remote development, you can use:
 - The Web IDE as a frontend
 - A separate machine as a backend runtime environment
 
-For a complete IDE experience, connect the Web IDE to a development environment configured to run as a remote host. You can create this environment [inside](../../workspace/index.md) or [outside](connect_machine.md) of GitLab.
+For a complete IDE experience, connect the Web IDE to a development environment configured to run as a remote host.
+You can create this environment [inside](../../workspace/configuration.md) or [outside](connect_machine.md) of GitLab.
 
-## Workspace
+## Workspaces **(PREMIUM ALL)**
 
 A [workspace](../../workspace/index.md) is a virtual sandbox environment for your code in GitLab that includes:
 

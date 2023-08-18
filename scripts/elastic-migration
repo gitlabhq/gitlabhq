@@ -1,0 +1,168 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Generate an Elastic migration file, spec and dictionary record with the current timestamp.
+
+require 'yaml'
+require 'fileutils'
+require 'uri'
+require 'readline'
+require 'active_support/core_ext/string'
+
+class ElasticMigrationCreator
+  attr_reader :options
+
+  Options = Struct.new(
+    :name,
+    :description,
+    :group,
+    :introduced_by_url,
+    :milestone,
+    :obsolete,
+    :marked_obsolete_by_url,
+    :marked_obsolete_in_milestone
+  )
+
+  def initialize
+    @options = Options.new
+  end
+
+  def execute
+    options.name = read_name
+    options.description = read_description
+    options.group = read_group
+    options.introduced_by_url = read_introduced_by_url
+    options.milestone = read_milestone
+
+    $stdout.puts "\e[32mcreated\e[0m #{file_path}"
+    $stdout.puts "\e[32mcreated\e[0m #{spec_file_path}"
+    $stdout.puts "\e[32mcreated\e[0m #{dictionary_file_path}"
+
+    write
+    $stdout.puts "\n=> Please consult the documentation for Advanced Search Migrations: #{documentation_reference}"
+  end
+
+  private
+
+  def read_name
+    read_variable('name', 'Name of the migration in CamelCase').camelize
+  end
+
+  def read_description
+    read_variable('description', 'Description of what the migration does')
+  end
+
+  def read_group
+    read_variable('group', 'The group introducing a feature flag, like: `global search`')
+  end
+
+  def read_milestone
+    milestone = File.read('VERSION')
+    milestone.gsub(/^(\d+\.\d+).*$/, '\1').chomp
+  end
+
+  def read_variable(name, description)
+    $stdout.puts "\n>> #{description}:"
+
+    loop do
+      variable = Readline.readline('?> ', false)&.strip
+      return variable unless variable.empty?
+
+      warn "Error: #{name} is required."
+    end
+  end
+
+  def read_introduced_by_url
+    $stdout.puts
+    $stdout.puts ">> URL of the MR introducing the migration (enter to skip):"
+
+    loop do
+      introduced_by_url = Readline.readline('?> ', false)&.strip
+      introduced_by_url = nil if introduced_by_url.empty?
+      return introduced_by_url if introduced_by_url.nil? || introduced_by_url.start_with?('https://')
+
+      warn 'Error: URL needs to start with https://'
+    end
+  end
+
+  def write
+    # create migration file
+    FileUtils.mkdir_p(File.dirname(file_path))
+    File.write(file_path, file_contents)
+
+    # create spec
+    FileUtils.mkdir_p(File.dirname(spec_file_path))
+    File.write(spec_file_path, spec_contents)
+
+    # create dictionary file
+    FileUtils.mkdir_p(File.dirname(dictionary_file_path))
+    File.write(dictionary_file_path, dictionary_contents)
+  end
+
+  def timestamp
+    @timestamp ||= Time.now.strftime('%Y%m%d%H%M%S')
+  end
+
+  def file_name
+    @file_name ||= "#{timestamp}_#{options.name.dup.underscore}"
+  end
+
+  def file_path
+    "ee/elastic/migrate/#{file_name}.rb"
+  end
+
+  def spec_file_path
+    "ee/spec/elastic/migrate/#{file_name}_spec.rb"
+  end
+
+  def dictionary_file_path
+    "ee/elastic/docs/#{file_name}.yml"
+  end
+
+  def file_contents
+    "# frozen_string_literal: true
+
+class #{options.name} < Elastic::Migration
+end
+"
+  end
+
+  def spec_contents
+    "# frozen_string_literal: true
+
+require 'spec_helper'
+require_relative 'migration_shared_examples'
+require File.expand_path('#{file_path}')
+
+RSpec.describe #{options.name}, feature_category: :#{options.group.parameterize.underscore} do
+  let(:version) { #{timestamp} }
+end
+"
+  end
+
+  def dictionary_contents
+    dictionary_config_hash.to_yaml
+  end
+
+  def dictionary_config_hash
+    {
+      'name' => options.name,
+      'version' => timestamp,
+      'description' => options.description,
+      'group' => "group::#{options.group}",
+      'milestone' => options.milestone,
+      'introduced_by_url' => options.introduced_by_url,
+      'obsolete' => false,
+      'marked_obsolete_by_url' => nil,
+      'marked_obsolete_in_milestone' => nil
+    }
+  end
+
+  def documentation_reference
+    'https://docs.gitlab.com/ee/development/search/advanced_search_migration_styleguide.html'
+  end
+end
+
+ElasticMigrationCreator.new.execute if $PROGRAM_NAME == __FILE__
+
+# vim: ft=ruby

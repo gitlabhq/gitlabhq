@@ -19,7 +19,7 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
     end
 
     let(:destination_group) { create(:group) }
-    let(:destination_namespace) { destination_group.full_path }
+    let(:destination_namespace) { destination_group&.full_path }
     let(:tracker) { create(:bulk_import_tracker, entity: entity) }
     let(:context) { BulkImports::Pipeline::Context.new(tracker) }
     let(:data) do
@@ -127,7 +127,7 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
     end
 
     describe 'visibility level' do
-      include_examples 'visibility level settings'
+      include_examples 'visibility level settings', true
     end
   end
 end

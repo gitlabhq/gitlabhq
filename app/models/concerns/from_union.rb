@@ -32,6 +32,9 @@ module FromUnion
     # remove_duplicates - A boolean indicating if duplicate entries should be
     #                     removed. Defaults to true.
     #
+    # remove_order - A boolean indicating if the order from the relations should be
+    #                     removed. Defaults to true.
+    #
     # alias_as - The alias to use for the sub query. Defaults to the name of the
     #            table of the current model.
     # rubocop: disable Gitlab/Union

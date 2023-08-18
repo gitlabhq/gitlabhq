@@ -92,7 +92,7 @@ scope format: false do
   end
 end
 
-resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
+resources :commit, only: [:show], constraints: { id: Gitlab::Git::Commit::SHA_PATTERN } do
   member do
     get :branches
     get :pipelines

@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Auth0 OmniAuth Provider **(FREE SELF)**
+# Use Auth0 as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 To enable the Auth0 OmniAuth provider, you must create an Auth0 account, and an
 application.
@@ -29,13 +29,13 @@ application.
    - `https://<your_gitlab_url>`
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus GitLab:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -85,7 +85,7 @@ application.
    - If you installed using the Linux package,
      [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
    - If you self-compiled your installation,
-     [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+     [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations).
 
 On the sign-in page there should now be an Auth0 icon below the regular sign-in
 form. Select the icon to begin the authentication process. Auth0 asks the

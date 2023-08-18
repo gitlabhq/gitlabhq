@@ -836,8 +836,8 @@ RSpec.describe Integration, feature_category: :integrations do
     end
 
     shared_examples '#api_field_names' do
-      it 'filters out secret fields' do
-        safe_fields = %w[some_safe_field safe_field url trojan_gift api_only_field]
+      it 'filters out secret fields and conditional fields' do
+        safe_fields = %w[some_safe_field safe_field url trojan_gift api_only_field enabled_field]
 
         expect(fake_integration.new).to have_attributes(
           api_field_names: match_array(safe_fields)
@@ -849,6 +849,11 @@ RSpec.describe Integration, feature_category: :integrations do
       it 'filters out API only fields' do
         expect(fake_integration.new.form_fields.pluck(:name)).not_to include('api_only_field')
       end
+
+      it 'filters conditionals fields' do
+        expect(fake_integration.new.form_fields.pluck(:name)).to include('enabled_field')
+        expect(fake_integration.new.form_fields.pluck(:name)).not_to include('disabled_field', 'disabled_field_2')
+      end
     end
 
     context 'when the class overrides #fields' do
@@ -856,21 +861,24 @@ RSpec.describe Integration, feature_category: :integrations do
         Class.new(Integration) do
           def fields
             [
-              { name: 'token', type: 'password' },
-              { name: 'api_token', type: 'password' },
-              { name: 'token_api', type: 'password' },
-              { name: 'safe_token', type: 'password' },
-              { name: 'key', type: 'password' },
-              { name: 'api_key', type: 'password' },
-              { name: 'password', type: 'password' },
-              { name: 'password_field', type: 'password' },
+              { name: 'token', type: :password },
+              { name: 'api_token', type: :password },
+              { name: 'token_api', type: :password },
+              { name: 'safe_token', type: :password },
+              { name: 'key', type: :password },
+              { name: 'api_key', type: :password },
+              { name: 'password', type: :password },
+              { name: 'password_field', type: :password },
               { name: 'webhook' },
               { name: 'some_safe_field' },
               { name: 'safe_field' },
               { name: 'url' },
-              { name: 'trojan_horse', type: 'password' },
-              { name: 'trojan_gift', type: 'text' },
-              { name: 'api_only_field', api_only: true }
+              { name: 'trojan_horse', type: :password },
+              { name: 'trojan_gift', type: :text },
+              { name: 'api_only_field', api_only: true },
+              { name: 'enabled_field', if: true },
+              { name: 'disabled_field', if: false },
+              { name: 'disabled_field_2', if: nil }
             ].shuffle
           end
         end
@@ -884,21 +892,24 @@ RSpec.describe Integration, feature_category: :integrations do
     context 'when the class uses the field DSL' do
       let(:fake_integration) do
         Class.new(described_class) do
-          field :token, type: 'password'
-          field :api_token, type: 'password'
-          field :token_api, type: 'password'
-          field :safe_token, type: 'password'
-          field :key, type: 'password'
-          field :api_key, type: 'password'
-          field :password, type: 'password'
-          field :password_field, type: 'password'
+          field :token, type: :password
+          field :api_token, type: :password
+          field :token_api, type: :password
+          field :safe_token, type: :password
+          field :key, type: :password
+          field :api_key, type: :password
+          field :password, type: :password
+          field :password_field, type: :password
           field :webhook
           field :some_safe_field
           field :safe_field
           field :url
-          field :trojan_horse, type: 'password'
-          field :trojan_gift, type: 'text'
+          field :trojan_horse, type: :password
+          field :trojan_gift, type: :text
           field :api_only_field, api_only: true
+          field :enabled_field, if: -> { true }
+          field :disabled_field, if: -> { false }
+          field :disabled_field_2, if: -> { nil }
         end
       end
 
@@ -1030,9 +1041,9 @@ RSpec.describe Integration, feature_category: :integrations do
     it 'returns all fields with type `password`' do
       allow(subject).to receive(:fields).and_return(
         [
-          { name: 'password', type: 'password' },
-          { name: 'secret', type: 'password' },
-          { name: 'public', type: 'text' }
+          { name: 'password', type: :password },
+          { name: 'secret', type: :password },
+          { name: 'public', type: :text }
         ])
 
       expect(subject.secret_fields).to match_array(%w[password secret])
@@ -1117,14 +1128,14 @@ RSpec.describe Integration, feature_category: :integrations do
         field :foo_p, storage: :properties
         field :foo_dt, storage: :data_fields
 
-        field :bar, type: 'password'
+        field :bar, type: :password
         field :password, is_secret: true
 
         field :webhook
 
         field :with_help, help: -> { 'help' }
-        field :select, type: 'select'
-        field :boolean, type: 'checkbox'
+        field :select, type: :select
+        field :boolean, type: :checkbox
       end
     end
 
@@ -1182,15 +1193,15 @@ RSpec.describe Integration, feature_category: :integrations do
 
     specify 'fields have expected attributes' do
       expect(integration.fields).to include(
-        have_attributes(name: 'foo', type: 'text'),
-        have_attributes(name: 'foo_p', type: 'text'),
-        have_attributes(name: 'foo_dt', type: 'text'),
-        have_attributes(name: 'bar', type: 'password'),
-        have_attributes(name: 'password', type: 'password'),
-        have_attributes(name: 'webhook', type: 'text'),
+        have_attributes(name: 'foo', type: :text),
+        have_attributes(name: 'foo_p', type: :text),
+        have_attributes(name: 'foo_dt', type: :text),
+        have_attributes(name: 'bar', type: :password),
+        have_attributes(name: 'password', type: :password),
+        have_attributes(name: 'webhook', type: :text),
         have_attributes(name: 'with_help', help: 'help'),
-        have_attributes(name: 'select', type: 'select'),
-        have_attributes(name: 'boolean', type: 'checkbox')
+        have_attributes(name: 'select', type: :select),
+        have_attributes(name: 'boolean', type: :checkbox)
       )
     end
   end
@@ -1242,7 +1253,7 @@ RSpec.describe Integration, feature_category: :integrations do
       context 'when using data fields' do
         let(:klass) do
           Class.new(Integration) do
-            field :project_url, storage: :data_fields, type: 'checkbox'
+            field :project_url, storage: :data_fields, type: :checkbox
 
             def data_fields
               issue_tracker_data || self.build_issue_tracker_data

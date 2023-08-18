@@ -948,9 +948,9 @@ describe('DiffsStoreUtils', () => {
   describe('markTreeEntriesLoaded', () => {
     it.each`
       desc                                                               | entries                                            | loaded                   | outcome
-      ${'marks an existing entry as loaded'}                             | ${{ abc: {} }}                                     | ${[{ new_path: 'abc' }]} | ${{ abc: { diffLoaded: true } }}
+      ${'marks an existing entry as loaded'}                             | ${{ abc: {} }}                                     | ${[{ new_path: 'abc' }]} | ${{ abc: { diffLoaded: true, diffLoading: false } }}
       ${'does nothing if the new file is not found in the tree entries'} | ${{ abc: {} }}                                     | ${[{ new_path: 'def' }]} | ${{ abc: {} }}
-      ${'leaves entries unmodified if they are not in the loaded files'} | ${{ abc: {}, def: { diffLoaded: true }, ghi: {} }} | ${[{ new_path: 'ghi' }]} | ${{ abc: {}, def: { diffLoaded: true }, ghi: { diffLoaded: true } }}
+      ${'leaves entries unmodified if they are not in the loaded files'} | ${{ abc: {}, def: { diffLoaded: true }, ghi: {} }} | ${[{ new_path: 'ghi' }]} | ${{ abc: {}, def: { diffLoaded: true }, ghi: { diffLoaded: true, diffLoading: false } }}
     `('$desc', ({ entries, loaded, outcome }) => {
       expect(utils.markTreeEntriesLoaded({ priorEntries: entries, loadedFiles: loaded })).toEqual(
         outcome,

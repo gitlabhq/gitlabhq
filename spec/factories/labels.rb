@@ -37,4 +37,6 @@ FactoryBot.define do
   end
 
   factory :admin_label, traits: [:base_label], class: 'Label'
+
+  factory :abuse_report_label, traits: [:base_label], class: 'Admin::AbuseReportLabel'
 end

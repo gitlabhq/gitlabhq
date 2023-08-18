@@ -5,13 +5,14 @@ module Gitlab
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Kas-Api-Request'
     VERSION_FILE = 'GITLAB_KAS_VERSION'
     JWT_ISSUER = 'gitlab-kas'
+    JWT_AUDIENCE = 'gitlab'
     K8S_PROXY_PATH = 'k8s-proxy'
 
     include JwtAuthenticatable
 
     class << self
       def verify_api_request(request_headers)
-        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER], issuer: JWT_ISSUER)
+        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER], issuer: JWT_ISSUER, audience: JWT_AUDIENCE)
       rescue JWT::DecodeError
         nil
       end
@@ -54,6 +55,13 @@ module Gitlab
         uri.to_s
       end
 
+      def tunnel_ws_url
+        return tunnel_url if ws?
+        return tunnel_url.sub('https', 'wss') if ssl?
+
+        tunnel_url.sub('http', 'ws')
+      end
+
       # Return GitLab KAS internal_url
       #
       # @return [String] internal_url
@@ -66,6 +74,16 @@ module Gitlab
       # @return [Boolean] external_url
       def enabled?
         !!Gitlab.config['gitlab_kas']&.fetch('enabled', false)
+      end
+
+      private
+
+      def ssl?
+        URI(tunnel_url).scheme === 'https'
+      end
+
+      def ws?
+        URI(tunnel_url).scheme.start_with?('ws')
       end
     end
   end

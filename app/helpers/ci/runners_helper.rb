@@ -71,21 +71,35 @@ module Ci
         new_runner_path: new_admin_runner_path,
         registration_token: Gitlab::CurrentSettings.runners_registration_token,
         online_contact_timeout_secs: ::Ci::Runner::ONLINE_CONTACT_TIMEOUT.to_i,
-        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i
+        stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i,
+        tag_suggestions_path: tag_list_admin_runners_path(format: :json)
       }
     end
 
     def group_shared_runners_settings_data(group)
-      {
+      data = {
         group_id: group.id,
         group_name: group.name,
         group_is_empty: (group.projects.empty? && group.children.empty?).to_s,
         shared_runners_setting: group.shared_runners_setting,
-        parent_shared_runners_setting: group.parent&.shared_runners_setting,
+
         runner_enabled_value: Namespace::SR_ENABLED,
         runner_disabled_value: Namespace::SR_DISABLED_AND_UNOVERRIDABLE,
-        runner_allow_override_value: Namespace::SR_DISABLED_AND_OVERRIDABLE
+        runner_allow_override_value: Namespace::SR_DISABLED_AND_OVERRIDABLE,
+
+        parent_shared_runners_setting: group.parent&.shared_runners_setting,
+        parent_name: nil,
+        parent_settings_path: nil
       }
+
+      if group.parent && can?(current_user, :admin_group, group.parent)
+        data.merge!({
+          parent_name: group.parent.name,
+          parent_settings_path: group_settings_ci_cd_path(group.parent, anchor: 'runners-settings')
+        })
+      end
+
+      data
     end
 
     def group_runners_data_attributes(group)
@@ -99,11 +113,22 @@ module Ci
     end
 
     def toggle_shared_runners_settings_data(project)
-      {
+      data = {
         is_enabled: project.shared_runners_enabled?.to_s,
         is_disabled_and_unoverridable: (project.group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE).to_s,
-        update_path: toggle_shared_runners_project_runners_path(project)
+        update_path: toggle_shared_runners_project_runners_path(project),
+        group_name: nil,
+        group_settings_path: nil
       }
+
+      if project.group && can?(current_user, :admin_group, project.group)
+        data.merge!({
+          group_name: project.group.name,
+          group_settings_path: group_settings_ci_cd_path(project.group, anchor: 'runners-settings')
+        })
+      end
+
+      data
     end
   end
 end

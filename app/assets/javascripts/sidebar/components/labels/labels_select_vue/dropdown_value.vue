@@ -1,6 +1,7 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
 import { sortBy } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 
 import { isScopedLabel } from '~/lib/utils/common_utils';

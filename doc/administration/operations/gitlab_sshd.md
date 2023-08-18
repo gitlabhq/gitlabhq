@@ -112,7 +112,7 @@ To enable the PROXY protocol:
 
    ```ruby
    gitlab_sshd['proxy_protocol'] = true
-   # # Proxy protocol policy ("use", "require", "reject", "ignore"), "use" is the default value
+   # Proxy protocol policy ("use", "require", "reject", "ignore"), "use" is the default value
    gitlab_sshd['proxy_policy'] = "use"
    ```
 

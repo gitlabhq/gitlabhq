@@ -7,6 +7,7 @@ class Admin::UsersController < Admin::ApplicationController
   before_action :user, except: [:index, :new, :create]
   before_action :check_impersonation_availability, only: :impersonate
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
+  before_action :set_shared_view_parameters, only: [:show, :projects, :keys]
 
   feature_category :user_management
 
@@ -24,10 +25,7 @@ class Admin::UsersController < Admin::ApplicationController
     @users = @users.without_count if paginate_without_count?
   end
 
-  def show
-    @can_impersonate = can_impersonate_user
-    @impersonation_error_text = @can_impersonate ? nil : impersonation_error_text
-  end
+  def show; end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def projects
@@ -48,7 +46,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def impersonate
-    if can_impersonate_user
+    if helpers.can_impersonate_user(user, impersonation_in_progress?)
       session[:impersonator_id] = current_user.id
 
       warden.set_user(user, scope: :user)
@@ -60,7 +58,7 @@ class Admin::UsersController < Admin::ApplicationController
 
       redirect_to root_path
     else
-      flash[:alert] = impersonation_error_text
+      flash[:alert] = helpers.impersonation_error_text(user, impersonation_in_progress?)
 
       redirect_to admin_user_path(user)
     end
@@ -384,27 +382,16 @@ class Admin::UsersController < Admin::ApplicationController
     Gitlab::AppLogger.info(format(_("User %{current_user_username} has started impersonating %{username}"), current_user_username: current_user.username, username: user.username))
   end
 
-  def can_impersonate_user
-    can?(user, :log_in) && !user.password_expired? && !impersonation_in_progress?
-  end
-
-  def impersonation_error_text
-    if impersonation_in_progress?
-      _("You are already impersonating another user")
-    elsif user.blocked?
-      _("You cannot impersonate a blocked user")
-    elsif user.password_expired?
-      _("You cannot impersonate a user with an expired password")
-    elsif user.internal?
-      _("You cannot impersonate an internal user")
-    else
-      _("You cannot impersonate a user who cannot log in")
-    end
-  end
-
   # method overriden in EE
   def unlock_user
     update_user(&:unlock_access!)
+  end
+
+  private
+
+  def set_shared_view_parameters
+    @can_impersonate = helpers.can_impersonate_user(user, impersonation_in_progress?)
+    @impersonation_error_text = @can_impersonate ? nil : helpers.impersonation_error_text(user, impersonation_in_progress?)
   end
 end
 

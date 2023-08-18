@@ -93,6 +93,12 @@ export default {
       this.form.querySelectorAll('input[type=checkbox]').forEach((el) => {
         el.checked = false;
       });
+      document.querySelectorAll('.js-token-card').forEach((el) => {
+        el.querySelector('.js-add-new-token-form').style.display = '';
+        el.querySelector('.js-toggle-button').style.display = 'block';
+        el.querySelector('.js-token-count').innerText =
+          parseInt(el.querySelector('.js-token-count').innerText, 10) + 1;
+      });
     },
   },
 };
@@ -105,23 +111,35 @@ export default {
     @[$options.EVENT_SUCCESS]="onSuccess"
   >
     <div ref="container" data-testid="access-token-section" data-qa-selector="access_token_section">
-      <template v-if="newToken">
+      <gl-alert
+        v-if="newToken"
+        variant="success"
+        data-testid="success-message"
+        @dismiss="newToken = null"
+      >
         <input-copy-toggle-visibility
           :copy-button-title="copyButtonTitle"
           :label="label"
           :label-for="$options.tokenInputId"
           :value="newToken"
           :form-input-group-props="formInputGroupProps"
+          readonly
+          size="lg"
+          class="gl-mb-0"
         >
           <template #description>
             {{ $options.i18n.description }}
           </template>
         </input-copy-toggle-visibility>
-        <hr />
-      </template>
+      </gl-alert>
 
       <template v-if="errors">
-        <gl-alert :title="alertDangerTitle" variant="danger" @dismiss="errors = null">
+        <gl-alert
+          :title="alertDangerTitle"
+          variant="danger"
+          data-testid="error-message"
+          @dismiss="errors = null"
+        >
           <ul class="gl-m-0">
             <li v-for="error in errors" :key="error">
               {{ error }}

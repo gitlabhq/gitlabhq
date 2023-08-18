@@ -100,6 +100,8 @@ module Gitlab
         unless job_urgency.empty?
           payload['urgency'] = job_urgency
           payload['target_duration_s'] = Gitlab::Metrics::SidekiqSlis.execution_duration_for_urgency(job_urgency)
+          payload['target_scheduling_latency_s'] =
+            Gitlab::Metrics::SidekiqSlis.queueing_duration_for_urgency(job_urgency)
         end
 
         payload

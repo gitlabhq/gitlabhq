@@ -97,6 +97,7 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   sql: 'sql',
   stan: 'stan',
   stata: 'stata',
+  svelte: 'svelte',
   swift: 'swift',
   tap: 'tap',
   tcl: 'tcl',
@@ -151,3 +152,5 @@ export const LEGACY_FALLBACKS = ['python', 'haml'];
 export const CODEOWNERS_FILE_NAME = 'CODEOWNERS';
 
 export const CODEOWNERS_LANGUAGE = 'codeowners';
+
+export const SVELTE_LANGUAGE = 'svelte';

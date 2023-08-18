@@ -4,7 +4,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages redirects **(FREE)**
+# GitLab Pages redirects **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/24) in GitLab Pages 1.25.0 and GitLab 13.4 behind a feature flag, disabled by default.
 > - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/367) in GitLab 13.5.

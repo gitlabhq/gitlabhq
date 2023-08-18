@@ -3,11 +3,7 @@
 module QA
   RSpec.describe 'Plan', :reliable, product_group: :project_management do
     describe 'Issues list' do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-to-test-export-issues-as-csv'
-        end
-      end
+      let(:project) { create(:project, name: 'project-to-test-export-issues-as-csv') }
 
       before do
         Flow::Login.sign_in

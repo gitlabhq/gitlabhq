@@ -10,20 +10,41 @@ RSpec.describe Gitlab::Kas do
   end
 
   describe '.verify_api_request' do
-    let(:payload) { { 'iss' => described_class::JWT_ISSUER } }
+    let(:payload) { { 'iss' => described_class::JWT_ISSUER, 'aud' => described_class::JWT_AUDIENCE } }
 
-    it 'returns nil if fails to validate the JWT' do
-      encoded_token = JWT.encode(payload, 'wrongsecret', 'HS256')
-      headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+    context 'returns nil if fails to validate the JWT' do
+      it 'when secret is wrong' do
+        encoded_token = JWT.encode(payload, 'wrong secret', 'HS256')
+        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
-      expect(described_class.verify_api_request(headers)).to be_nil
+        expect(described_class.verify_api_request(headers)).to be_nil
+      end
+
+      it 'when issuer is wrong' do
+        payload['iss'] = 'wrong issuer'
+        encoded_token = JWT.encode(payload, described_class.secret, 'HS256')
+        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+
+        expect(described_class.verify_api_request(headers)).to be_nil
+      end
+
+      it 'when audience is wrong' do
+        payload['aud'] = 'wrong audience'
+        encoded_token = JWT.encode(payload, described_class.secret, 'HS256')
+        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+
+        expect(described_class.verify_api_request(headers)).to be_nil
+      end
     end
 
     it 'returns the decoded JWT' do
       encoded_token = JWT.encode(payload, described_class.secret, 'HS256')
       headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
 
-      expect(described_class.verify_api_request(headers)).to eq([{ "iss" => described_class::JWT_ISSUER }, { "alg" => "HS256" }])
+      expect(described_class.verify_api_request(headers)).to eq([
+        { 'iss' => described_class::JWT_ISSUER, 'aud' => described_class::JWT_AUDIENCE },
+        { 'alg' => 'HS256' }
+      ])
     end
   end
 
@@ -107,6 +128,52 @@ RSpec.describe Gitlab::Kas do
         let(:external_url) { 'grpc://kas.gitlab.example.com' }
 
         it { is_expected.to eq('http://kas.gitlab.example.com/k8s-proxy') }
+      end
+    end
+  end
+
+  describe '.tunnel_ws_url' do
+    before do
+      stub_config(gitlab_kas: { external_url: external_url })
+    end
+
+    let(:external_url) { 'xyz' }
+
+    subject { described_class.tunnel_ws_url }
+
+    context 'with a gitlab_kas.external_k8s_proxy_url setting' do
+      let(:external_k8s_proxy_url) { 'http://abc' }
+
+      before do
+        stub_config(gitlab_kas: { external_k8s_proxy_url: external_k8s_proxy_url })
+      end
+
+      it { is_expected.to eq('ws://abc') }
+    end
+
+    context 'without a gitlab_kas.external_k8s_proxy_url setting' do
+      context 'external_url uses wss://' do
+        let(:external_url) { 'wss://kas.gitlab.example.com' }
+
+        it { is_expected.to eq('wss://kas.gitlab.example.com/k8s-proxy') }
+      end
+
+      context 'external_url uses ws://' do
+        let(:external_url) { 'ws://kas.gitlab.example.com' }
+
+        it { is_expected.to eq('ws://kas.gitlab.example.com/k8s-proxy') }
+      end
+
+      context 'external_url uses grpcs://' do
+        let(:external_url) { 'grpcs://kas.gitlab.example.com' }
+
+        it { is_expected.to eq('wss://kas.gitlab.example.com/k8s-proxy') }
+      end
+
+      context 'external_url uses grpc://' do
+        let(:external_url) { 'grpc://kas.gitlab.example.com' }
+
+        it { is_expected.to eq('ws://kas.gitlab.example.com/k8s-proxy') }
       end
     end
   end

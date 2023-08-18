@@ -7,15 +7,22 @@ import LineHighlighter from '~/blob/line_highlighter';
 import addBlobLinksTracking from '~/blob/blob_links_tracking';
 import { BLOB_DATA_MOCK, CHUNK_1, CHUNK_2, LANGUAGE_MOCK } from './mock_data';
 
-jest.mock('~/blob/line_highlighter');
+const lineHighlighter = new LineHighlighter();
+jest.mock('~/blob/line_highlighter', () =>
+  jest.fn().mockReturnValue({
+    highlightHash: jest.fn(),
+  }),
+);
 jest.mock('~/blob/blob_links_tracking');
 
 describe('Source Viewer component', () => {
   let wrapper;
   const CHUNKS_MOCK = [CHUNK_1, CHUNK_2];
+  const hash = '#L142';
 
   const createComponent = () => {
     wrapper = shallowMountExtended(SourceViewer, {
+      mocks: { $route: { hash } },
       propsData: { blob: BLOB_DATA_MOCK, chunks: CHUNKS_MOCK },
     });
   };
@@ -46,6 +53,12 @@ describe('Source Viewer component', () => {
     it('renders a Chunk component for each chunk', () => {
       expect(findChunks().at(0).props()).toMatchObject(CHUNK_1);
       expect(findChunks().at(1).props()).toMatchObject(CHUNK_2);
+    });
+  });
+
+  describe('hash highlighting', () => {
+    it('calls highlightHash with expected parameter', () => {
+      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
     });
   });
 });

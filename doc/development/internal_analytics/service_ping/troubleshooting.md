@@ -76,7 +76,7 @@ checking the configuration file of your GitLab instance:
 
   - `/etc/gitlab/gitlab.rb` for Linux package installations and Docker.
   - `charts.yaml` for GitLab Helm and cloud-native Kubernetes deployments.
-  - `gitlab.yml` for GitLab installations from source.
+  - `gitlab.yml` for self-compiled installations.
 
   To check the relevant configuration file for strings that indicate whether
   Service Ping is disabled, you can use `grep`:

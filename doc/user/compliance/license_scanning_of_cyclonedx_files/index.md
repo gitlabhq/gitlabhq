@@ -5,12 +5,15 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# License scanning of CycloneDX files **(ULTIMATE)**
+# License scanning of CycloneDX files **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags are disabled by default and both flags must be enabled for this feature to work.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.10 for GitLab SaaS.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.10 for self-managed GitLab [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`, both of which must be enabled for this feature to work. The flags are disabled by default due to the initial performance load when the license database is first imported. Work to improve performance is being tracked in [issue 397670](https://gitlab.com/gitlab-org/gitlab/-/issues/397670).
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.11 for self-managed GitLab.
+
+FLAG:
+The legacy License Compliance analyzer was deprecated in GitLab 15.9 and removed in GitLab 16.3. To continue using GitLab for License Compliance, remove the License Compliance template from your CI/CD pipeline and add the [Dependency Scanning template](../../application_security/dependency_scanning/index.md#configuration). The Dependency Scanning template is now capable of gathering the required license information so it is no longer necessary to run a separate License Compliance job. The License Compliance CI/CD template should not be removed prior to verifying that the `license_scanning_sbom_scanner` and `package_metadata_synchronization` flags are enabled for the instance and that the instance has been upgraded to a version that supports the new method of license scanning. To begin using the Dependency Scanner quickly at scale, you may set up a [scan execution policy](../../application_security/policies/scan-execution-policies.md) at the group level to enforce the SBOM-based license scan for all projects in the group. Then, you may remove the inclusion of the `Jobs/License-Scanning.gitlab-ci.yml` template from your CI/CD configuration. If you wish to continue using the legacy License Compliance feature, you can do so by setting the `LICENSE_MANAGEMENT_VERSION CI` variable to `4`. This variable can be set at the [project](../../../ci/variables/index.md#for-a-project), [group](../../../ci/variables/index.md#for-a-group) or [instance](../../../ci/variables/index.md#for-an-instance) level. This configuration change will allow you to continue using an existing version of the License Compliance without having to adopt the new approach.  **Bugs and vulnerabilities in this legacy analyzer will no longer be fixed.**
 
 To detect the licenses in use, License Compliance relies on running the
 [Dependency Scanning CI Jobs](../../application_security/dependency_scanning/index.md),
@@ -141,4 +144,23 @@ $ docker run -it --rm -v "$PWD:/my-cyclonedx-sboms" -w /my-cyclonedx-sboms cyclo
 
 Validating JSON BOM...
 BOM validated successfully.
+```
+
+If the JSON BOM fails validation, for example, because there are duplicate components:
+
+```shell
+Validation failed: Found duplicates at the following index pairs: "(A, B), (C, D)"
+#/properties/components/uniqueItems
+```
+
+This issue can be fixed by updating the CI template to use [jq](https://jqlang.github.io/jq/) to remove the duplicate components from the `gl-sbom-*.cdx.json` report by overriding the job definition that produces the duplicate components. For example, the following removes duplicate components from the `gl-sbom-gem-bundler.cdx.json` report file produced by the `gemnasium-dependency_scanning` job:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+gemnasium-dependency_scanning:
+  after_script:
+    - apk update && apk add jq
+    - jq '.components |= unique' gl-sbom-gem-bundler.cdx.json > tmp.json && mv tmp.json gl-sbom-gem-bundler.cdx.json
 ```

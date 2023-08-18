@@ -1,6 +1,7 @@
 package upstream
 
 import (
+	"bytes"
 	"testing"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
@@ -85,4 +86,14 @@ func TestAssetsServedLocallyWithGeoProxy(t *testing.T) {
 	}
 
 	runTestCasesWithGeoProxyEnabled(t, testCases)
+}
+
+func TestLfsBatchSecondaryGitSSHPullWithGeoProxy(t *testing.T) {
+	body := bytes.NewBuffer([]byte(`{"operation":"download","objects": [{"oid":"fakeoid", "size":10}], "transfers":["basic", "ssh","lfs-standalone-file"],"ref":{"name":"refs/heads/fakeref"},"hash_algo":"sha256"}`))
+	contentType := "application/vnd.git-lfs+json; charset=utf-8"
+	testCases := []testCasePost{
+		{testCase{"GitLab Shell call to /group/project.git/info/lfs/objects/batch", "/group/project.git/info/lfs/objects/batch", "Local Rails server received request to path /group/project.git/info/lfs/objects/batch"}, contentType, body},
+	}
+
+	runTestCasesWithGeoProxyEnabledPost(t, testCases)
 }

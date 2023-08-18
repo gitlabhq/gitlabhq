@@ -63,7 +63,7 @@ and delays before CI pipelines start running.
 
 Potential causes include:
 
-- The GitLab instance may need more Sidekiq workers. By default, a single-node Omnibus GitLab
+- The GitLab instance may need more Sidekiq workers. By default, a single-node Linux package installation
   runs one worker, restricting the execution of Sidekiq jobs to a maximum of one CPU core.
   [Read more about running multiple Sidekiq workers](extra_sidekiq_processes.md).
 
@@ -105,7 +105,14 @@ Gather data on the state of the Sidekiq workers with the following Ruby script.
 
    If the performance issue is intermittent:
 
-   - Run this in a cron job every five minutes. Write the files to a location with enough space: allow for 500 KB per file.
+   - Run this in a cron job every five minutes. Write the files to a location with enough space: allow for at least 500 KB per file.
+
+     ```shell
+     cat > /etc/cron.d/sidekiqcheck <<EOF
+     */5 * * * *  root  /opt/gitlab/bin/gitlab-rails runner /var/opt/gitlab/sidekiqcheck.rb > /tmp/sidekiqcheck_$(date '+\%Y\%m\%d-\%H:\%M').out 2>&1
+     EOF
+     ```
+
    - Refer back to the data to see what went wrong.
 
 1. Analyze the output. The following commands assume that you have a directory of output files.
@@ -555,9 +562,9 @@ but if you want to clear the idempotency key immediately, follow the following s
   dj.delete!
   ```
 
-## Omnibus GitLab 14.0 and later: remove the `sidekiq-cluster` service
+## GitLab 14.0 and later: remove the `sidekiq-cluster` service (Linux package installations)
 
-Omnibus GitLab instances that were configured to run `sidekiq-cluster` prior to GitLab 14.0
+Linux package instances that were configured to run `sidekiq-cluster` prior to GitLab 14.0
 might still have this service running along side `sidekiq` in later releases.
 
 The code to manage `sidekiq-cluster` was removed in GitLab 14.0.

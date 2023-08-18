@@ -1,9 +1,11 @@
 import { GlBadge, GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { STATUSES } from '~/import_entities//constants';
-import ImportGroupDropdown from '~/import_entities/components/group_dropdown.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+
+import { STATUSES } from '~/import_entities/constants';
+import ImportTargetDropdown from '~/import_entities/components/import_target_dropdown.vue';
 import ImportStatus from '~/import_entities/components/import_status.vue';
 import ProviderRepoTableRow from '~/import_entities/import_projects/components/provider_repo_table_row.vue';
 
@@ -39,8 +41,9 @@ describe('ProviderRepoTableRow', () => {
 
   const findImportButton = () => findButton('Import');
   const findReimportButton = () => findButton('Re-import');
-  const findGroupDropdown = () => wrapper.findComponent(ImportGroupDropdown);
+  const findImportTargetDropdown = () => wrapper.findComponent(ImportTargetDropdown);
   const findImportStatus = () => wrapper.findComponent(ImportStatus);
+  const findProviderLink = () => wrapper.findByTestId('providerLink');
 
   const findCancelButton = () => {
     const buttons = wrapper
@@ -55,7 +58,7 @@ describe('ProviderRepoTableRow', () => {
 
     const store = initStore();
 
-    wrapper = shallowMount(ProviderRepoTableRow, {
+    wrapper = shallowMountExtended(ProviderRepoTableRow, {
       store,
       propsData: { userNamespace, optionalStages: {}, ...props },
     });
@@ -75,7 +78,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders project information', () => {
-      const providerLink = wrapper.find('[data-testid=providerLink]');
+      const providerLink = findProviderLink();
 
       expect(providerLink.attributes().href).toMatch(repo.importSource.providerLink);
       expect(providerLink.text()).toMatch(repo.importSource.fullName);
@@ -86,7 +89,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders a group namespace select', () => {
-      expect(wrapper.findComponent(ImportGroupDropdown).exists()).toBe(true);
+      expect(findImportTargetDropdown().exists()).toBe(true);
     });
 
     it('renders import button', () => {
@@ -106,7 +109,11 @@ describe('ProviderRepoTableRow', () => {
 
     it('includes optionalStages to import', async () => {
       const OPTIONAL_STAGES = { stage1: true, stage2: false };
-      await wrapper.setProps({ optionalStages: OPTIONAL_STAGES });
+
+      mountComponent({
+        repo,
+        optionalStages: OPTIONAL_STAGES,
+      });
 
       findImportButton().vm.$emit('click');
 
@@ -192,7 +199,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders project information', () => {
-      const providerLink = wrapper.find('[data-testid=providerLink]');
+      const providerLink = findProviderLink();
 
       expect(providerLink.attributes().href).toMatch(repo.importSource.providerLink);
       expect(providerLink.text()).toMatch(repo.importSource.fullName);
@@ -203,7 +210,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('does not render a namespace select', () => {
-      expect(findGroupDropdown().exists()).toBe(false);
+      expect(findImportTargetDropdown().exists()).toBe(false);
     });
 
     it('does not render import button', () => {
@@ -219,7 +226,7 @@ describe('ProviderRepoTableRow', () => {
 
       await nextTick();
 
-      expect(findGroupDropdown().exists()).toBe(true);
+      expect(findImportTargetDropdown().exists()).toBe(true);
     });
 
     it('imports repo when clicking re-import button', async () => {
@@ -282,7 +289,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders project information', () => {
-      const providerLink = wrapper.find('[data-testid=providerLink]');
+      const providerLink = findProviderLink();
 
       expect(providerLink.attributes().href).toMatch(repo.importSource.providerLink);
       expect(providerLink.text()).toMatch(repo.importSource.fullName);

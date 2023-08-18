@@ -70,8 +70,8 @@ module Gitlab
                 # abort if we don't get any data.
                 next unless path && meta
                 next unless path.valid_encoding? && meta.valid_encoding?
-                next unless path =~ match_pattern
-                next if path =~ INVALID_PATH_PATTERN
+                next unless match_pattern.match?(path)
+                next if INVALID_PATH_PATTERN.match?(path)
 
                 entries[path] = Gitlab::Json.parse(meta, symbolize_names: true)
               rescue JSON::ParserError, Encoding::CompatibilityError
@@ -90,7 +90,7 @@ module Gitlab
                 raise ParserError, 'Artifacts metadata file empty!'
               end
 
-              unless version_string =~ VERSION_PATTERN
+              unless VERSION_PATTERN.match?(version_string)
                 raise ParserError, 'Invalid version!'
               end
 

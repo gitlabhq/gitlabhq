@@ -62,7 +62,7 @@ As an MVC, we recommend beginning with a project-level endpoint. A typical itera
 
 - Publish and install in a project
 - Install from a group
-- Publish and install in an Instance (this is for Self-Managed customers)
+- Publish and install in an instance (this is for self-managed customers)
 
 Using instance-level endpoints requires [stricter naming conventions](#naming-conventions).
 

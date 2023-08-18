@@ -17,19 +17,21 @@ module Gitlab
         self.repository_actor = repository
       end
 
-      def list_conflict_files(allow_tree_conflicts: false)
+      def list_conflict_files(allow_tree_conflicts: false, skip_content: false)
         request = Gitaly::ListConflictFilesRequest.new(
           repository: @gitaly_repo,
           our_commit_oid: @our_commit_oid,
           their_commit_oid: @their_commit_oid,
-          allow_tree_conflicts: allow_tree_conflicts
+          allow_tree_conflicts: allow_tree_conflicts,
+          skip_content: skip_content
         )
         response = gitaly_client_call(@repository.storage, :conflicts_service, :list_conflict_files, request, timeout: GitalyClient.long_timeout)
         GitalyClient::ConflictFilesStitcher.new(response, @gitaly_repo)
       end
 
       def conflicts?
-        list_conflict_files.any?
+        skip_content = Feature.enabled?(:skip_conflict_files_in_gitaly, type: :experiment)
+        list_conflict_files(skip_content: skip_content).any?
       rescue GRPC::FailedPrecondition, GRPC::Unknown
         # The server raises FailedPrecondition when it encounters
         # ConflictSideMissing, which means a conflict exists but its `theirs` or

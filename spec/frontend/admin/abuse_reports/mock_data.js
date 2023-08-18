@@ -6,6 +6,7 @@ export const mockAbuseReports = [
     reporter: { name: 'Ms. Admin' },
     reportedUser: { name: 'Mr. Abuser' },
     reportPath: '/admin/abuse_reports/1',
+    count: 1,
   },
   {
     category: 'phishing',
@@ -14,5 +15,6 @@ export const mockAbuseReports = [
     reporter: { name: 'Ms. Reporter' },
     reportedUser: { name: 'Mr. Phisher' },
     reportPath: '/admin/abuse_reports/2',
+    count: 2,
   },
 ];

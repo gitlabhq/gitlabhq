@@ -56,7 +56,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment, feature_category: :continuous_de
 
       subject(:data) { described_class.build(deployment, 'created', Time.current) }
 
-      before(:all) do
+      before_all do
         project.repository.remove
       end
 
@@ -74,7 +74,7 @@ RSpec.describe Gitlab::DataBuilder::Deployment, feature_category: :continuous_de
 
       subject(:data) { described_class.build(deployment, 'created', Time.current) }
 
-      before(:all) do
+      before_all do
         deployment.user = nil
       end
 

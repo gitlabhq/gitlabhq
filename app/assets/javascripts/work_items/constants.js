@@ -159,7 +159,7 @@ export const WORK_ITEMS_TYPE_MAP = {
   },
   [WORK_ITEM_TYPE_ENUM_KEY_RESULT]: {
     icon: `issue-type-keyresult`,
-    name: s__('WorkItem|Key Result'),
+    name: s__('WorkItem|Key result'),
     value: WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   },
 };
@@ -247,3 +247,13 @@ export const EMOJI_ACTION_ADD = 'ADD';
 export const EMOJI_ACTION_REMOVE = 'REMOVE';
 export const EMOJI_THUMBSUP = 'thumbsup';
 export const EMOJI_THUMBSDOWN = 'thumbsdown';
+
+export const WORK_ITEM_TO_ISSUE_MAP = {
+  [WIDGET_TYPE_ASSIGNEES]: 'assignees',
+  [WIDGET_TYPE_LABELS]: 'labels',
+  [WIDGET_TYPE_MILESTONE]: 'milestone',
+  [WIDGET_TYPE_WEIGHT]: 'weight',
+  [WIDGET_TYPE_START_AND_DUE_DATE]: 'dueDate',
+  [WIDGET_TYPE_HEALTH_STATUS]: 'healthStatus',
+  [WIDGET_TYPE_AWARD_EMOJI]: 'awardEmoji',
+};

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Code Intelligence **(FREE)**
+# Code Intelligence **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/1576) in GitLab 13.1.
 

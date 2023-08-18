@@ -5,7 +5,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage epics **(PREMIUM)**
+# Manage epics **(PREMIUM ALL)**
 
 This page collects instructions for all the things you can do with [epics](index.md) or in relation
 to them.
@@ -448,7 +448,7 @@ To reorder issues assigned to an epic:
 1. Go to the **Child issues and epics** section.
 1. Drag issues into the desired order.
 
-### Move issues between epics **(ULTIMATE)**
+### Move issues between epics **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
 > - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
@@ -508,7 +508,7 @@ For an introduction to epic templates, see [GitLab Epics and Epic Template Tip](
 
 For more on epic templates, see [Epic Templates - Repeatable sets of issues](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/getting-started/104/).
 
-## Multi-level child epics **(ULTIMATE)**
+## Multi-level child epics **(ULTIMATE ALL)**
 
 You can add any epic that belongs to a group or subgroup of the parent epic's group.
 New child epics appear at the top of the list of epics in the **Child issues and epics** section.

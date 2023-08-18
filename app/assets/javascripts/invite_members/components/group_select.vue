@@ -1,5 +1,6 @@
 <script>
 import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
+import axios from 'axios';
 import { debounce } from 'lodash';
 import { s__ } from '~/locale';
 import { getGroups, getDescendentGroups } from '~/rest_api';
@@ -42,6 +43,7 @@ export default {
       searchTerm: '',
       pagination: {},
       infiniteScrollLoading: false,
+      activeApiRequestAbortController: null,
     };
   },
   computed: {
@@ -61,15 +63,13 @@ export default {
   methods: {
     retrieveGroups: debounce(async function debouncedRetrieveGroups() {
       this.isFetching = true;
-
       try {
         const response = await this.fetchGroups();
         this.pagination = this.processPagination(response);
         this.groups = this.processGroups(response);
-      } catch {
-        this.onApiError();
-      } finally {
         this.isFetching = false;
+      } catch (e) {
+        this.onApiError(e);
       }
     }, SEARCH_DELAY),
     processGroups({ data }) {
@@ -98,16 +98,32 @@ export default {
       this.retrieveGroups();
     },
     fetchGroups(options = {}) {
+      if (this.activeApiRequestAbortController !== null) {
+        this.activeApiRequestAbortController.abort();
+      }
+
+      this.activeApiRequestAbortController = new AbortController();
+
       const combinedOptions = {
         ...this.$options.defaultFetchOptions,
         ...options,
       };
 
+      const axiosConfig = {
+        signal: this.activeApiRequestAbortController.signal,
+      };
+
       switch (this.groupsFilter) {
         case GROUP_FILTERS.DESCENDANT_GROUPS:
-          return getDescendentGroups(this.parentGroupId, this.searchTerm, combinedOptions);
+          return getDescendentGroups(
+            this.parentGroupId,
+            this.searchTerm,
+            combinedOptions,
+            undefined,
+            axiosConfig,
+          );
         default:
-          return getGroups(this.searchTerm, combinedOptions);
+          return getGroups(this.searchTerm, combinedOptions, undefined, axiosConfig);
       }
     },
     async onBottomReached() {
@@ -117,13 +133,15 @@ export default {
         const response = await this.fetchGroups({ page: this.pagination.page + 1 });
         this.pagination = this.processPagination(response);
         this.groups.push(...this.processGroups(response));
-      } catch {
-        this.onApiError();
-      } finally {
         this.infiniteScrollLoading = false;
+      } catch (e) {
+        this.onApiError(e);
       }
     },
-    onApiError() {
+    onApiError(error) {
+      if (axios.isCancel(error)) return;
+      this.isFetching = false;
+      this.infiniteScrollLoading = false;
       this.$emit('error', this.$options.i18n.errorMessage);
     },
   },

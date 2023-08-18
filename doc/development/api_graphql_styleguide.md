@@ -47,6 +47,11 @@ The GraphQL framework has some specific gotchas to be aware of, and domain exper
 If you are asked to review a merge request that modifies any GraphQL files or adds an endpoint, please have a look at
 [our GraphQL review guide](graphql_guide/reviewing.md).
 
+## Reading GraphQL logs
+
+See the [Reading GraphQL logs](graphql_guide/monitoring.md) guide for tips on how to inspect logs
+of GraphQL requests and monitor the performance of your GraphQL queries.
+
 ## Authentication
 
 Authentication happens through the `GraphqlController`, right now this
@@ -2045,8 +2050,8 @@ full stack:
 - An [argument's `default_value`](https://graphql-ruby.org/fields/arguments.html) applies correctly.
 - Objects resolve successfully, and there are no N+1 issues.
 
-When adding a query, you can use the `a working graphql query` shared example to test if the query
-renders valid results.
+When adding a query, you can use the `a working graphql query that returns data` and
+`a working graphql query that returns no data` shared examples to test if the query renders valid results.
 
 You can construct a query including all available fields using the `GraphqlHelpers#all_graphql_fields_for`
 helper. This makes it more straightforward to add a test rendering all possible fields for a query.
@@ -2404,7 +2409,3 @@ elimination of laziness, where needed.
 
 For dealing with lazy values without forcing them, use
 `Gitlab::Graphql::Lazy.with_value`.
-
-## Monitoring GraphQL
-
-See the [Monitoring GraphQL](graphql_guide/monitoring.md) guide for tips on how to inspect logs of GraphQL requests and monitor the performance of your GraphQL queries.

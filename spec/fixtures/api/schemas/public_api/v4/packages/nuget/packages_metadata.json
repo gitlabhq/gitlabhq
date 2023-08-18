@@ -49,6 +49,7 @@
                     "dependencyGroups",
                     "id",
                     "packageContent",
+                    "description",
                     "summary",
                     "version"
                   ],
@@ -63,6 +64,9 @@
                       "type": "string"
                     },
                     "packageContent": {
+                      "type": "string"
+                    },
+                    "description": {
                       "type": "string"
                     },
                     "summary": {

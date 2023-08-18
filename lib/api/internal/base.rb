@@ -21,18 +21,11 @@ module API
 
       helpers ::API::Helpers::InternalHelpers
 
-      UNKNOWN_CHECK_RESULT_ERROR = 'Unknown check result'
-
       VALID_PAT_SCOPES = Set.new(
         Gitlab::Auth::API_SCOPES + Gitlab::Auth::REPOSITORY_SCOPES + Gitlab::Auth::REGISTRY_SCOPES
       ).freeze
 
       helpers do
-        def response_with_status(code: 200, success: true, message: nil, **extra_options)
-          status code
-          { status: success, message: message }.merge(extra_options).compact
-        end
-
         def lfs_authentication_url(container)
           # This is a separate method so that EE can alter its behaviour more
           # easily.
@@ -58,21 +51,8 @@ module API
 
           actor.update_last_used_at!
 
-          check_result = begin
-            with_admin_mode_bypass!(actor.user&.id) do
-              access_check!(actor, params)
-            end
-          rescue Gitlab::GitAccess::ForbiddenError => e
-            # The return code needs to be 401. If we return 403
-            # the custom message we return won't be shown to the user
-            # and, instead, the default message 'GitLab: API is not accessible'
-            # will be displayed
-            return response_with_status(code: 401, success: false, message: e.message)
-          rescue Gitlab::GitAccess::TimeoutError => e
-            return response_with_status(code: 503, success: false, message: e.message)
-          rescue Gitlab::GitAccess::NotFoundError => e
-            return response_with_status(code: 404, success: false, message: e.message)
-          end
+          check_result = access_check_result
+          return check_result if unsuccessful_response?(check_result)
 
           log_user_activity(actor.user)
 
@@ -103,25 +83,10 @@ module API
           when ::Gitlab::GitAccessResult::CustomAction
             response_with_status(code: 300, payload: check_result.payload, gl_console_messages: check_result.console_messages)
           else
-            response_with_status(code: 500, success: false, message: UNKNOWN_CHECK_RESULT_ERROR)
+            response_with_status(code: 500, success: false, message: ::API::Helpers::InternalHelpers::UNKNOWN_CHECK_RESULT_ERROR)
           end
         end
         # rubocop: enable Metrics/AbcSize
-
-        def send_git_audit_streaming_event(msg)
-          # Defined in EE
-        end
-
-        def access_check!(actor, params)
-          access_checker = access_checker_for(actor, params[:protocol])
-          access_checker.check(params[:action], params[:changes]).tap do |result|
-            break result if @project || !repo_type.project?
-
-            # If we have created a project directly from a git push
-            # we have to assign its value to both @project and @container
-            @project = @container = access_checker.container
-          end
-        end
 
         def validate_actor(actor)
           return 'Could not find the given key' unless actor.key
@@ -135,14 +100,6 @@ module API
 
         def two_factor_push_otp_check
           { success: false, message: 'Feature is not available' }
-        end
-
-        def with_admin_mode_bypass!(actor_id)
-          return yield unless Gitlab::CurrentSettings.admin_mode
-
-          Gitlab::Auth::CurrentUserMode.bypass_session!(actor_id) do
-            yield
-          end
         end
       end
 

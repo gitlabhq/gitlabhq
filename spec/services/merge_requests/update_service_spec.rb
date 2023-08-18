@@ -1300,13 +1300,44 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       let(:issuable) { described_class.new(project: project, current_user: user, params: params).execute(existing_merge_request) }
     end
 
-    context 'labels are updated' do
+    context 'updating labels' do
       let(:label_a) { label }
       let(:label_b) { create(:label, title: 'b', project: project) }
+      let(:label_c) { create(:label, title: 'c', project: project) }
+      let(:label_locked) { create(:label, title: 'locked', project: project, lock_on_merge: true) }
       let(:issuable) { merge_request }
 
+      it_behaves_like 'updating issuable labels'
       it_behaves_like 'keeps issuable labels sorted after update'
       it_behaves_like 'broadcasting issuable labels updates'
+
+      context 'when merge request has been merged' do
+        context 'when remove_label_ids contains a locked label' do
+          let(:params) { { remove_label_ids: [label_locked.id] } }
+
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(enforce_locked_labels_on_merge: false)
+            end
+
+            it 'removes locked labels' do
+              merge_request.update!(state: 'merged', labels: [label_a, label_locked])
+              update_issuable(params)
+
+              expect(merge_request.label_ids).to contain_exactly(label_a.id)
+            end
+          end
+
+          context 'when feature flag is enabled' do
+            it 'does not remove locked labels' do
+              merge_request.update!(state: 'merged', labels: [label_a, label_locked])
+              update_issuable(params)
+
+              expect(merge_request.label_ids).to contain_exactly(label_a.id, label_locked.id)
+            end
+          end
+        end
+      end
 
       def update_issuable(update_params)
         update_merge_request(update_params)

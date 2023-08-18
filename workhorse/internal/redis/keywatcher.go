@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
@@ -251,7 +252,7 @@ const (
 	WatchKeyStatusNoChange
 )
 
-func (kw *KeyWatcher) WatchKey(key, value string, timeout time.Duration) (WatchKeyStatus, error) {
+func (kw *KeyWatcher) WatchKey(_ context.Context, key, value string, timeout time.Duration) (WatchKeyStatus, error) {
 	notify := make(chan string, 1)
 	if err := kw.addSubscription(key, notify); err != nil {
 		return WatchKeyStatusNoChange, err

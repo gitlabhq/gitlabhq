@@ -1,0 +1,22 @@
+- title: "Deprecate `terminationGracePeriodSeconds` in the GitLab Runner Kubernetes executor" # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  removal_milestone: "17.0" # (required) The milestone when this feature is planned to be removed
+  announcement_milestone: "16.3" # (required) The milestone when this feature was first announced as deprecated.
+  breaking_change: false # (required) Change to false if this is not a breaking change.
+  reporter: deastman # (required) GitLab username of the person reporting the change
+  stage: stage # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: "https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28165"  # (required) Link to the deprecation issue in GitLab
+  body: | # (required) Do not modify this line, instead modify the lines below.
+    The GitLab Runner Kubernetes executor setting, `terminationGracePeriodSeconds`, is deprecated and will be removed in GitLab 17.0. To manage the cleanup and termination of GitLab Runner worker pods on Kubernetes, customers should instead configure `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds`. For information about how to use the `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds, see the [GitLab Runner Executor documentation](https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings).
+
+#
+# OPTIONAL END OF SUPPORT FIELDS
+#
+# If an End of Support period applies, the announcement should be shared with GitLab Support
+# in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
+#
+  end_of_support_milestone: 17.0 # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  #
+  # OTHER OPTIONAL FIELDS
+  #
+  tiers: [Free, Premium, Ultimate] # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url: "https://docs.gitlab.com/runner/executors/kubernetes.html" # (optional) This is a link to the current documentation page

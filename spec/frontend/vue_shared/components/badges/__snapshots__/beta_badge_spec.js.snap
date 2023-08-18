@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Beta badge component renders the badge 1`] = `
+<div>
+  <gl-badge-stub
+    class="gl-cursor-pointer"
+    href="#"
+    iconsize="md"
+    size="md"
+    variant="neutral"
+  >
+    Beta
+  </gl-badge-stub>
+   
+  <gl-popover-stub
+    cssclasses=""
+    data-testid="beta-badge"
+    showclosebutton="true"
+    target="[Function]"
+    title="What's Beta?"
+    triggers="hover focus click"
+  >
+    <p>
+      A Beta feature is not production-ready, but is unlikely to change drastically before it's released. We encourage users to try Beta features and provide feedback.
+    </p>
+     
+    <p
+      class="gl-mb-0"
+    >
+      A Beta feature:
+    </p>
+     
+    <ul
+      class="gl-pl-4"
+    >
+      <li>
+        May be unstable.
+      </li>
+       
+      <li>
+        Should not cause data loss.
+      </li>
+       
+      <li>
+        Is supported by a commercially reasonable effort.
+      </li>
+       
+      <li>
+        Is complete or near completion.
+      </li>
+    </ul>
+  </gl-popover-stub>
+</div>
+`;

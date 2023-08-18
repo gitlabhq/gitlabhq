@@ -32,3 +32,5 @@ class Review < ApplicationRecord
     merge_request.user_mentions.where.not(note_id: nil)
   end
 end
+
+Review.prepend_mod

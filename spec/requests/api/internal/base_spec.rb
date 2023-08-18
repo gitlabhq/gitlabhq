@@ -1012,6 +1012,21 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       end
     end
 
+    context 'when result is not ::Gitlab::GitAccessResult::Success or ::Gitlab::GitAccessResult::CustomAction' do
+      it 'responds with 500' do
+        personal_project = create(:project, namespace: user.namespace)
+
+        allow_next_instance_of(Gitlab::GitAccess) do |access|
+          allow(access).to receive(:check).and_return(nil)
+        end
+        push(key, personal_project)
+
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq(::API::Helpers::InternalHelpers::UNKNOWN_CHECK_RESULT_ERROR)
+      end
+    end
+
     context "archived project" do
       before do
         project.add_developer(user)

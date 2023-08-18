@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Telegram **(FREE)**
+# Telegram **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122879) in GitLab 16.1.
 
@@ -47,7 +47,7 @@ After you invite the bot to a Telegram channel, you can configure GitLab to send
      1. Select **Admin Area**.
      1. Select **Settings > Integrations**.
 1. Select **Telegram**.
-1. In **Enable integration**, select the **Active** checkbox.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. In **New token**, [paste the token value from the Telegram bot](#create-a-telegram-bot).
 1. In the **Trigger** section, select the checkboxes for the GitLab events you want to receive in Telegram.
 1. In **Channel identifier**, [paste the Telegram channel identifier](#configure-the-telegram-bot).

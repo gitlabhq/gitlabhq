@@ -1,5 +1,6 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { WEBIDE_MARK_FILE_CLICKED } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';

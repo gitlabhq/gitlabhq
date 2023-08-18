@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlToggle } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { sprintf, __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

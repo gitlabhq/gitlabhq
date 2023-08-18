@@ -5,6 +5,7 @@ import {
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash, doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';

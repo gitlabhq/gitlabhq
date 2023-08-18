@@ -24,6 +24,8 @@ gem 'bootsnap', '~> 1.16.0', require: false
 gem 'openssl', '~> 3.0'
 gem 'ipaddr', '~> 1.2.5'
 
+gem 'gitlab-safe_request_store', path: 'gems/gitlab-safe_request_store'
+
 # GitLab Monorepo Gems
 group :monorepo do
   gem 'gitlab-utils', path: 'gems/gitlab-utils'
@@ -41,7 +43,7 @@ gem 'pg', '~> 1.5.3'
 
 gem 'neighbor', '~> 0.2.3'
 
-gem 'rugged', '~> 1.5'
+gem 'rugged', '~> 1.6'
 gem 'grape-path-helpers', '~> 1.7.1'
 
 gem 'faraday', '~> 1.0'
@@ -118,7 +120,7 @@ gem 'gitlab_omniauth-ldap', '~> 2.2.0', require: 'omniauth-ldap'
 gem 'net-ldap', '~> 0.17.1'
 
 # API
-gem 'grape', '~> 1.7.0'
+gem 'grape', '~> 1.7.1'
 gem 'grape-entity', '~> 0.10.0'
 gem 'rack-cors', '~> 1.1.1', require: 'rack/cors'
 gem 'grape-swagger', '~> 1.6.1', group: [:development, :test]
@@ -130,6 +132,9 @@ gem 'graphiql-rails', '~> 1.8'
 gem 'apollo_upload_server', '~> 2.1.0'
 gem 'graphql-docs', '~> 2.1.0', group: [:development, :test]
 gem 'graphlient', '~> 0.5.0' # Used by BulkImport feature (group::import)
+
+# Generate Fake data
+gem 'ffaker', '~> 2.10'
 
 gem 'hashie', '~> 5.0.0'
 
@@ -157,7 +162,7 @@ gem 'fog-local', '~> 0.8'
 # We may want to update this dependency if this is ever addressed upstream, e.g. via
 # https://github.com/aliyun/aliyun-oss-ruby-sdk/pull/93
 gem 'fog-aliyun', '~> 0.4'
-gem 'gitlab-fog-azure-rm', '~> 1.7.0', require: 'fog/azurerm'
+gem 'gitlab-fog-azure-rm', '~> 1.8.0', require: 'fog/azurerm'
 
 # for Google storage
 gem 'google-cloud-storage', '~> 1.44.0'
@@ -182,9 +187,9 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 7.2'
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '7.13.3'
-gem 'aws-sdk-core', '~> 3.178.0'
+gem 'aws-sdk-core', '~> 3.180.3'
 gem 'aws-sdk-cloudformation', '~> 1'
-gem 'aws-sdk-s3', '~> 1.130.0'
+gem 'aws-sdk-s3', '~> 1.132.1'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
 gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections
 
@@ -203,9 +208,9 @@ gem 'asciidoctor', '~> 2.0.18'
 gem 'asciidoctor-include-ext', '~> 0.4.0', require: false
 gem 'asciidoctor-plantuml', '~> 0.0.16'
 gem 'asciidoctor-kroki', '~> 0.8.0', require: false
-gem 'rouge', '~> 4.1.2'
+gem 'rouge', '~> 4.1.3'
 gem 'truncato', '~> 0.7.12'
-gem 'nokogiri', '~> 1.15', '>= 1.15.2'
+gem 'nokogiri', '~> 1.15', '>= 1.15.4'
 
 # Calendar rendering
 gem 'icalendar'
@@ -215,7 +220,7 @@ gem 'diffy', '~> 3.4'
 gem 'diff_match_patch', '~> 0.1.0'
 
 # Application server
-gem 'rack', '~> 2.2.7'
+gem 'rack', '~> 2.2.8'
 # https://github.com/zombocom/rack-timeout/blob/master/README.md#rails-apps-manually
 gem 'rack-timeout', '~> 0.6.3', require: 'rack/timeout/base'
 
@@ -255,6 +260,7 @@ gem 're2', '~> 1.7.0'
 
 gem 'semver_dialects', '~> 1.2.1'
 gem 'version_sorter', '~> 2.3'
+gem 'csv_builder', path: 'gems/csv_builder'
 
 # Export Ruby Regex to Javascript
 gem 'js_regex', '~> 3.8'
@@ -336,7 +342,7 @@ gem 'base32', '~> 0.3.0'
 gem 'gitlab-license', '~> 2.3'
 
 # Protect against bruteforcing
-gem 'rack-attack', '~> 6.6.1'
+gem 'rack-attack', '~> 6.7.0'
 
 # Sentry integration
 gem 'sentry-raven', '~> 3.1'
@@ -346,13 +352,13 @@ gem 'sentry-sidekiq', '~> 5.8.0'
 
 # PostgreSQL query parsing
 #
-gem 'pg_query', '~> 4.2.1'
+gem 'pg_query', '~> 4.2.3'
 
 gem 'gitlab-schema-validation', path: 'gems/gitlab-schema-validation'
 
 gem 'premailer-rails', '~> 1.10.3'
 
-gem 'gitlab-labkit', '~> 0.33.0'
+gem 'gitlab-labkit', '~> 0.34.0'
 gem 'thrift', '>= 0.16.0'
 
 # I18n
@@ -375,12 +381,12 @@ gem 'snowplow-tracker', '~> 0.8.0'
 
 # Metrics
 gem 'webrick', '~> 1.8.1', require: false
-gem 'prometheus-client-mmap', '~> 0.26', '>= 0.26.1', require: 'prometheus/client'
+gem 'prometheus-client-mmap', '~> 0.27', require: 'prometheus/client'
 
 gem 'warning', '~> 1.3.0'
 
 group :development do
-  gem 'lefthook', '~> 1.4.3', require: false
+  gem 'lefthook', '~> 1.4.7', require: false
   gem 'rubocop'
   gem 'solargraph', '~> 0.47.2', require: false
 
@@ -401,19 +407,16 @@ group :development, :test do
   gem 'parser', '~> 3.2', '>= 3.2.2.3'
   gem 'pry-byebug'
   gem 'pry-rails', '~> 0.3.9'
-  gem 'pry-shell', '~> 0.6.1'
+  gem 'pry-shell', '~> 0.6.4'
 
   gem 'awesome_print', require: false
 
   gem 'database_cleaner', '~> 1.7.0'
   gem 'factory_bot_rails', '~> 6.2.0'
-  gem 'rspec-rails', '~> 6.0.1'
+  gem 'rspec-rails', '~> 6.0.3'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
   gem 'minitest', '~> 5.11.0'
-
-  # Generate Fake data
-  gem 'ffaker', '~> 2.10'
 
   gem 'spring', '~> 4.1.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
@@ -444,13 +447,13 @@ group :development, :test do
 end
 
 group :development, :test, :danger do
-  gem 'gitlab-dangerfiles', '~> 3.11.0', require: false
+  gem 'gitlab-dangerfiles', '~> 3.13.0', require: false
 end
 
 group :development, :test, :coverage do
   gem 'simplecov', '~> 0.21', require: false
   gem 'simplecov-lcov', '~> 0.8.0', require: false
-  gem 'simplecov-cobertura', '~> 1.3.1', require: false
+  gem 'simplecov-cobertura', '~> 2.1.0', require: false
   gem 'undercover', '~> 0.4.4', require: false
 end
 
@@ -474,7 +477,7 @@ group :test do
 
   gem 'capybara', '~> 3.39', '>= 3.39.2'
   gem 'capybara-screenshot', '~> 1.0.26'
-  gem 'selenium-webdriver', '= 4.10.0'
+  gem 'selenium-webdriver', '= 4.11.0'
 
   gem 'graphlyte', '~> 1.0.0'
 
@@ -491,7 +494,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false
 
-  gem 'gitlab_quality-test_tooling', '~> 0.9.1', require: false
+  gem 'gitlab_quality-test_tooling', '~> 0.9.3', require: false
 end
 
 gem 'octokit', '~> 4.15'
@@ -526,7 +529,7 @@ gem 'ssh_data', '~> 1.3'
 gem 'spamcheck', '~> 1.3.0'
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 16.2.0-rc2'
+gem 'gitaly', '~> 16.2.0-rc4'
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.2.0'
@@ -599,7 +602,7 @@ gem 'ed25519', '~> 1.3.0'
 
 # Error Tracking OpenAPI client
 # See https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/rake_tasks.md#update-openapi-client-for-error-tracking-feature
-gem 'error_tracking_open_api', path: 'vendor/gems/error_tracking_open_api'
+gem 'error_tracking_open_api', path: 'gems/error_tracking_open_api'
 
 # Vulnerability advisories
 gem 'cvss-suite', '~> 3.0.1', require: 'cvss_suite'
@@ -608,7 +611,7 @@ gem 'cvss-suite', '~> 3.0.1', require: 'cvss_suite'
 gem 'arr-pm', '~> 0.0.12'
 
 # Remote Development
-gem 'devfile', '~> 0.0.20.pre.alpha1'
+gem 'devfile', '~> 0.0.22.pre.alpha1'
 
 # Apple plist parsing
 gem 'CFPropertyList', '~> 3.0.0'

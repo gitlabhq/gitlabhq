@@ -8,6 +8,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { sortBy } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel } from '~/lib/utils/common_utils';
@@ -306,7 +307,7 @@ export default {
         </span>
         <span class="board-info-items gl-mt-3 gl-display-inline-block">
           <span v-if="shouldRenderEpicCountables" data-testid="epic-countables">
-            <gl-tooltip :target="() => $refs.countBadge" data-testid="epic-countables-tooltip">
+            <gl-tooltip :target="() => $refs.countBadge">
               <p v-if="allowSubEpics" class="gl-font-weight-bold gl-m-0">
                 {{ __('Epics') }} &#8226;
                 <span class="gl-font-weight-normal">

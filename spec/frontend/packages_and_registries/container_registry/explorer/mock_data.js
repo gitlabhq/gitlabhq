@@ -40,7 +40,7 @@ export const pageInfo = {
   hasPreviousPage: true,
   startCursor: 'eyJpZCI6IjI2In0',
   endCursor: 'eyJpZCI6IjgifQ',
-  __typename: 'ContainerRepositoryConnection',
+  __typename: 'PageInfo',
 };
 
 export const graphQLImageListMock = {

@@ -11,18 +11,50 @@ module Groups
       @error = nil
     end
 
+    def log_group_transfer_success(group, new_parent_group)
+      log_transfer(group, new_parent_group, nil)
+    end
+
+    def log_group_transfer_error(group, new_parent_group, error_message)
+      log_transfer(group, new_parent_group, error_message)
+    end
+
     def execute(new_parent_group)
       @new_parent_group = new_parent_group
       ensure_allowed_transfer
       proceed_to_transfer
 
+      log_group_transfer_success(@group, @new_parent_group)
+
     rescue TransferError, ActiveRecord::RecordInvalid, Gitlab::UpdatePathError => e
       @group.errors.clear
       @error = s_("TransferGroup|Transfer failed: %{error_message}") % { error_message: e.message }
+
+      log_group_transfer_error(@group, @new_parent_group, e.message)
+
       false
     end
 
     private
+
+    def log_transfer(group, new_namespace, error_message = nil)
+      action = error_message.nil? ? "was" : "was not"
+
+      log_payload = {
+        message: "Group #{action} transferred to a new namespace",
+        group_path: group.full_path,
+        group_id: group.id,
+        new_parent_group_path: new_parent_group&.full_path,
+        new_parent_group_id: new_parent_group&.id,
+        error_message: error_message
+      }
+
+      if error_message.nil?
+        ::Gitlab::AppLogger.info(log_payload)
+      else
+        ::Gitlab::AppLogger.error(log_payload)
+      end
+    end
 
     def proceed_to_transfer
       old_root_ancestor_id = @group.root_ancestor.id

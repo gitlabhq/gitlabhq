@@ -573,13 +573,9 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           subject
         end
 
-        it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+        it_behaves_like 'internal event tracking' do
+          let(:action) { ::Gitlab::UsageDataCounters::EditorUniqueCounter::EDIT_BY_WEB_IDE }
           let(:namespace) { project.namespace.reload }
-          let(:category) { 'Gitlab::UsageDataCounters::EditorUniqueCounter' }
-          let(:action) { 'ide_edit' }
-          let(:property) { 'g_edit_by_web_ide' }
-          let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit' }
-          let(:context) { [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context] }
         end
 
         context 'counts.web_ide_commits Snowplow event tracking' do

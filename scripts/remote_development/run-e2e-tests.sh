@@ -22,7 +22,7 @@ export TEST_INSTANCE_URL="${TEST_INSTANCE_URL:-http://gdk.test:3000}"
 echo "WEBDRIVER_HEADLESS: ${WEBDRIVER_HEADLESS}"
 echo "QA_SUPER_SIDEBAR_ENABLED: ${QA_SUPER_SIDEBAR_ENABLED}"
 echo "GITLAB_USERNAME: ${GITLAB_USERNAME}"
-echo "DEVFILE_PROJECT: ${AGENT_NAME}"
+echo "DEVFILE_PROJECT: ${DEVFILE_PROJECT}"
 echo "AGENT_NAME: ${AGENT_NAME}"
 echo "TEST_INSTANCE_URL: ${TEST_INSTANCE_URL}"
 
@@ -33,4 +33,4 @@ working_directory="$(git rev-parse --show-toplevel)/qa"
 (cd "$working_directory" && \
   bundle && \
   bundle exec bin/qa Test::Instance::All "$TEST_INSTANCE_URL" -- \
-  --tag quarantine qa/specs/features/ee/browser_ui/3_create/remote_development)
+  --tag quarantine qa/specs/features/ee/browser_ui/3_create/remote_development/without_setup)

@@ -18,13 +18,13 @@ export default {
   methods: {
     preload(path = '/', next) {
       this.loadingPath = path.replace(/^\//, '');
-
       return this.$apollo
         .query({
           query: paginatedTreeQuery,
           variables: {
             projectPath: this.projectPath,
             ref: this.ref,
+            refType: this.refType?.toUpperCase(),
             path: this.loadingPath,
             nextPageCursor: '',
             pageSize: 100,

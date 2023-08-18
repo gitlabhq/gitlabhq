@@ -26,9 +26,14 @@ export const removeSubscription = async (removePath) => {
   });
 };
 
-export const fetchGroups = async (groupsPath, { page, perPage, search }, accessToken = null) => {
+export const fetchGroups = async (
+  groupsPath,
+  { minAccessLevel, page, perPage, search },
+  accessToken = null,
+) => {
   return axiosInstance.get(groupsPath, {
     params: {
+      min_access_level: minAccessLevel,
       page,
       per_page: perPage,
       search,

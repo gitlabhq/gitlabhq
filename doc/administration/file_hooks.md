@@ -25,14 +25,13 @@ Instead of writing and supporting your own file hook, you can also make changes
 directly to the GitLab source code and contribute back upstream. In this way, we can
 ensure functionality is preserved across versions and covered by tests.
 
-## Setup
+## Set up a custom file hook
 
-The file hooks must be placed directly into the `file_hooks` directory, subdirectories
-are ignored. There is an
-[`example` directory inside `file_hooks`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/file_hooks/examples)
-where you can find some basic examples.
+File hooks must be in the `file_hooks` directory. Subdirectories are ignored.
+Find examples in the
+[`example` directory under `file_hooks`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/file_hooks/examples).
 
-Follow the steps below to set up a custom hook:
+To set up a custom hook:
 
 1. On the GitLab server, locate the plugin directory. For self-compiled installations, the path is usually
    `/home/git/gitlab/file_hooks/`. For Linux package installations, the path is usually
@@ -51,8 +50,8 @@ Follow the steps below to set up a custom hook:
 1. The data to the file hook is provided as JSON on `STDIN`. It is exactly the
    same as for [system hooks](system_hooks.md).
 
-That's it! Assuming the file hook code is properly implemented, the hook fires
-as appropriate. The file hooks file list is updated for each event, there is no
+Assuming the file hook code is properly implemented, the hook fires
+as appropriate. The file hooks file list is updated for each event. There is no
 need to restart GitLab to apply a new file hook.
 
 If a file hook executes with non-zero exit code or GitLab fails to execute it, a
@@ -61,7 +60,7 @@ message is logged to:
 - `gitlab-rails/file_hook.log` in a Linux package installation.
 - `log/file_hook.log` in a self-compiled installation.
 
-## Creating file hooks
+## File hook example
 
 This example responds only on the event `project_create`, and
 the GitLab instance informs the administrators that a new project has been created.
@@ -88,7 +87,7 @@ Mail.deliver do
 end
 ```
 
-## Validation
+## Validation example
 
 Writing your own file hook can be tricky and it's easier if you can check it
 without altering the system. A Rake task is provided so that you can use it

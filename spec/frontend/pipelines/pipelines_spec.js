@@ -744,9 +744,8 @@ describe('Pipelines', () => {
 
         createComponent();
 
-        stopMock = jest.spyOn(wrapper.vm.poll, 'stop');
-        restartMock = jest.spyOn(wrapper.vm.poll, 'restart');
-        cancelMock = jest.spyOn(wrapper.vm.service.cancelationSource, 'cancel');
+        stopMock = jest.spyOn(window, 'clearTimeout');
+        restartMock = jest.spyOn(axios, 'get');
       });
 
       describe('when a request is being made', () => {
@@ -765,13 +764,15 @@ describe('Pipelines', () => {
 
           // cancelMock is getting overwritten in pipelines_service.js#L29
           // so we have to spy on it again here
-          cancelMock = jest.spyOn(wrapper.vm.service.cancelationSource, 'cancel');
+          cancelMock = jest.spyOn(axios.CancelToken, 'source');
 
           await waitForPromises();
 
           expect(cancelMock).toHaveBeenCalled();
           expect(stopMock).toHaveBeenCalled();
-          expect(restartMock).toHaveBeenCalled();
+          expect(restartMock).toHaveBeenCalledWith(
+            `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=build`,
+          );
         });
 
         it('stops polling & restarts polling', async () => {
@@ -781,7 +782,9 @@ describe('Pipelines', () => {
 
           expect(cancelMock).not.toHaveBeenCalled();
           expect(stopMock).toHaveBeenCalled();
-          expect(restartMock).toHaveBeenCalled();
+          expect(restartMock).toHaveBeenCalledWith(
+            `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=build`,
+          );
         });
       });
     });

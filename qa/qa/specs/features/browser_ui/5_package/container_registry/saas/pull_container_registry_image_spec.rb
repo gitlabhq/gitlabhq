@@ -2,16 +2,18 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'SaaS Container Registry', only: { subdomain: %i[staging] }, product_group: :container_registry do
-      let(:project) do
-        Resource::Project.init do |project|
-          project.path_with_namespace = 'gitlab-qa/container-registry-sanity'
-        end.reload!
+    describe 'SaaS Container Registry', :smoke,
+      only: { subdomain: :staging }, product_group: :container_registry do
+      before do
+        Flow::Login.sign_in
       end
 
       it 'pulls an image from an existing repository',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412799' do
-        Flow::Login.sign_in
+        project = Resource::Project.init do |project|
+          project.path_with_namespace = 'gitlab-qa/container-registry-sanity'
+        end.reload!
+
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_pipelines)

@@ -23,6 +23,7 @@ module Ci
 
     include IgnorableColumns
     ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
+    ignore_column :auto_canceled_by_id_convert_to_bigint, remove_with: '16.6', remove_after: '2023-10-22'
 
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 
@@ -99,7 +100,7 @@ module Ci
     has_many :downloadable_artifacts, -> do
       not_expired.or(where_exists(Ci::Pipeline.artifacts_locked.where("#{Ci::Pipeline.quoted_table_name}.id = #{Ci::Build.quoted_table_name}.commit_id"))).downloadable.with_job
     end, through: :latest_builds, source: :job_artifacts
-    has_many :latest_successful_builds, -> { latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
+    has_many :latest_successful_jobs, -> { latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
 
     has_many :messages, class_name: 'Ci::PipelineMessage', inverse_of: :pipeline
 
@@ -114,7 +115,7 @@ module Ci
     has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
     has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus',
       inverse_of: :pipeline
-    has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
+    has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Processable', inverse_of: :pipeline
     has_many :scheduled_actions, -> { latest.scheduled_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build', inverse_of: :pipeline
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: :auto_canceled_by_id,
@@ -341,7 +342,9 @@ module Ci
       # This needs to be kept in sync with `Ci::PipelineRef#should_delete?`
       after_transition any => ::Ci::Pipeline.stopped_statuses do |pipeline|
         pipeline.run_after_commit do
-          if Feature.enabled?(:pipeline_cleanup_ref_worker_async, pipeline.project)
+          if Feature.enabled?(:pipeline_delete_gitaly_refs_in_batches, pipeline.project)
+            pipeline.persistent_ref.async_delete
+          elsif Feature.enabled?(:pipeline_cleanup_ref_worker_async, pipeline.project)
             ::Ci::PipelineCleanupRefWorker.perform_async(pipeline.id)
           else
             pipeline.persistent_ref.delete
@@ -409,6 +412,7 @@ module Ci
 
       joins(:pipeline_metadata).where(name_column.eq(name))
     end
+    scope :for_status, -> (status) { where(status: status) }
     scope :created_after, -> (time) { where(arel_table[:created_at].gt(time)) }
     scope :created_before_id, -> (id) { where(arel_table[:id].lt(id)) }
     scope :before_pipeline, -> (pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
@@ -960,11 +964,15 @@ module Ci
       Ci::Bridge.latest.where(pipeline: self_and_project_descendants)
     end
 
+    def jobs_in_self_and_project_descendants
+      Ci::Processable.latest.where(pipeline: self_and_project_descendants)
+    end
+
     def environments_in_self_and_project_descendants(deployment_status: nil)
       # We limit to 100 unique environments for application safety.
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
       expanded_environment_names =
-        builds_in_self_and_project_descendants.joins(:metadata)
+        jobs_in_self_and_project_descendants.joins(:metadata)
                                       .where.not(Ci::BuildMetadata.table_name => { expanded_environment_name: nil })
                                       .distinct("#{Ci::BuildMetadata.quoted_table_name}.expanded_environment_name")
                                       .limit(100)

@@ -23,14 +23,14 @@ describe('FailedJobsList component', () => {
   const showToast = jest.fn();
 
   const defaultProps = {
+    failedJobsCount: 0,
     graphqlResourceEtag: 'api/graphql',
     isPipelineActive: false,
     pipelineIid: 1,
-    pipelinePath: '/pipelines/1',
+    projectPath: 'namespace/project/',
   };
 
   const defaultProvide = {
-    fullPath: 'namespace/project/',
     graphqlPath: 'api/graphql',
   };
 
@@ -65,6 +65,21 @@ describe('FailedJobsList component', () => {
     mockFailedJobsResponse = jest.fn();
   });
 
+  describe('on mount', () => {
+    beforeEach(() => {
+      mockFailedJobsResponse.mockResolvedValue(failedJobsMock);
+      createComponent();
+    });
+
+    it('fires the graphql query', () => {
+      expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
+      expect(mockFailedJobsResponse).toHaveBeenCalledWith({
+        fullPath: defaultProps.projectPath,
+        pipelineIid: defaultProps.pipelineIid,
+      });
+    });
+  });
+
   describe('when loading failed jobs', () => {
     beforeEach(() => {
       mockFailedJobsResponse.mockResolvedValue(failedJobsMock);
@@ -91,7 +106,7 @@ describe('FailedJobsList component', () => {
     });
 
     it('renders table column', () => {
-      expect(findAllHeaders()).toHaveLength(4);
+      expect(findAllHeaders()).toHaveLength(3);
     });
 
     it('shows the list of failed jobs', () => {
@@ -181,6 +196,34 @@ describe('FailedJobsList component', () => {
 
       expect(mockFailedJobsResponse).toHaveBeenCalledTimes(2);
       expect(findFailedJobRows()).toHaveLength(newCount);
+    });
+  });
+
+  describe('When the job count changes from REST', () => {
+    beforeEach(() => {
+      mockFailedJobsResponse.mockResolvedValue(failedJobsMockEmpty);
+
+      createComponent();
+    });
+
+    describe('and the count is the same', () => {
+      it('does not re-fetch the query', async () => {
+        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
+
+        await wrapper.setProps({ failedJobsCount: 0 });
+
+        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('and the count is different', () => {
+      it('re-fetches the query', async () => {
+        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(1);
+
+        await wrapper.setProps({ failedJobsCount: 10 });
+
+        expect(mockFailedJobsResponse).toHaveBeenCalledTimes(2);
+      });
     });
   });
 

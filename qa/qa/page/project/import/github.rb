@@ -19,7 +19,7 @@ module QA
             element :import_status_indicator
           end
 
-          view "app/assets/javascripts/import_entities/components/group_dropdown.vue" do
+          view "app/assets/javascripts/import_entities/components/import_target_dropdown.vue" do
             element :target_namespace_selector_dropdown
           end
 
@@ -47,7 +47,7 @@ module QA
           def import!(gh_project_name, target_group_path, project_name)
             within_element(:project_import_row, source_project: gh_project_name) do
               click_element(:target_namespace_selector_dropdown)
-              click_element(:target_group_dropdown_item, group_name: target_group_path)
+              click_element("listbox-item-#{target_group_path}", wait: 10)
               fill_element(:project_path_field, project_name)
 
               retry_until do

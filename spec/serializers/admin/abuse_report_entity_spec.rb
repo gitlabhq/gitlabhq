@@ -19,6 +19,7 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
         :category,
         :created_at,
         :updated_at,
+        :count,
         :reported_user,
         :reporter,
         :report_path

@@ -16,6 +16,7 @@
           "@type",
           "authors",
           "id",
+          "description",
           "summary",
           "title",
           "totalDownloads",
@@ -30,6 +31,9 @@
             "type": "string"
           },
           "id": {
+            "type": "string"
+          },
+          "description": {
             "type": "string"
           },
           "summary": {

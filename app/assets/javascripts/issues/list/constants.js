@@ -9,6 +9,8 @@ import {
   OPERATOR_IS,
   OPERATOR_NOT,
   OPERATOR_OR,
+  OPERATOR_AFTER,
+  OPERATOR_BEFORE,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -24,6 +26,8 @@ import {
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
   TOKEN_TYPE_SEARCH_WITHIN,
+  TOKEN_TYPE_CREATED,
+  TOKEN_TYPE_CLOSED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
@@ -115,6 +119,7 @@ export const i18n = {
   noSearchResultsTitle: __('Sorry, your filter produced no results'),
   relatedMergeRequests: __('Related merge requests'),
   reorderError: __('An error occurred while reordering issues.'),
+  deleteError: __('An error occurred while deleting an issuable.'),
   rssLabel: __('Subscribe to RSS feed'),
   searchPlaceholder: __('Search or filter results...'),
   upvotes: __('Upvotes'),
@@ -412,6 +417,34 @@ export const filtersMap = {
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'crm_organization_id',
+      },
+    },
+  },
+  [TOKEN_TYPE_CREATED]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'createdBefore',
+      [ALTERNATIVE_FILTER]: 'createdAfter',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_AFTER]: {
+        [ALTERNATIVE_FILTER]: 'created_after',
+      },
+      [OPERATOR_BEFORE]: {
+        [NORMAL_FILTER]: 'created_before',
+      },
+    },
+  },
+  [TOKEN_TYPE_CLOSED]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'closedBefore',
+      [ALTERNATIVE_FILTER]: 'closedAfter',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_AFTER]: {
+        [ALTERNATIVE_FILTER]: 'closed_after',
+      },
+      [OPERATOR_BEFORE]: {
+        [NORMAL_FILTER]: 'closed_before',
       },
     },
   },

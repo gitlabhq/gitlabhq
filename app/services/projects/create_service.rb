@@ -223,10 +223,14 @@ module Projects
     end
 
     def save_project_and_import_data
-      Project.transaction do
+      ApplicationRecord.transaction do
         @project.create_or_update_import_data(data: @import_data[:data], credentials: @import_data[:credentials]) if @import_data
 
-        if @project.save
+        # Avoid project callbacks being triggered multiple times by saving the parent first.
+        # See https://github.com/rails/rails/issues/41701.
+        Namespaces::ProjectNamespace.create_from_project!(@project) if @project.valid?
+
+        if @project.saved?
           Integration.create_from_active_default_integrations(@project, :project_id)
 
           @project.create_labels unless @project.gitlab_project_import?

@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Web terminals (deprecated) **(FREE)**
+# Web terminals (deprecated) **(FREE SELF)**
 
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 > - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/353410) in GitLab 15.0.
@@ -114,5 +114,5 @@ lifetime in your GitLab instance:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
-1. Select [**Settings > Web terminal**](../../administration/settings/index.md#general).
+1. Select **Settings > Web terminal**.
 1. Set a `max session time`.

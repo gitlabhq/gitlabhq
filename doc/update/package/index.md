@@ -42,9 +42,6 @@ check the version your are upgrading to:
 - [GitLab 16](https://docs.gitlab.com/omnibus/update/gitlab_16_changes.html)
 - [GitLab 15](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html)
 - [GitLab 14](https://docs.gitlab.com/omnibus/update/gitlab_14_changes.html)
-- [GitLab 13](https://docs.gitlab.com/omnibus/update/gitlab_13_changes.html)
-- [GitLab 12](https://docs.gitlab.com/omnibus/update/gitlab_12_changes.html)
-- [GitLab 11](https://docs.gitlab.com/omnibus/update/gitlab_11_changes.html)
 
 ## Back up before upgrading
 

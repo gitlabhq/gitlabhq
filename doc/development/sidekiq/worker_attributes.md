@@ -16,11 +16,11 @@ have to redefine them if you want to override their values.
 Jobs can have an `urgency` attribute set, which can be `:high`,
 `:low`, or `:throttled`. These have the below targets:
 
-| **Urgency**  | **Queue Scheduling Target** | **Execution Latency Requirement**  |
-|--------------|-----------------------------|------------------------------------|
-| `:high`      | 10 seconds                  | p50 of 1 second, p99 of 10 seconds |
-| `:low`       | 1 minute                    | Maximum run time of 5 minutes      |
-| `:throttled` | None                        | Maximum run time of 5 minutes      |
+| **Urgency**      | **Queue Scheduling Target**   | **Execution Latency Requirement**    |
+|---------------   | ----------------------------- | ------------------------------------ |
+| `:high`          | 10 seconds                    | 10 seconds                           |
+| `:low` (default) | 1 minute                      | 5 minutes                            |
+| `:throttled`     | None                          | 5 minutes                            |
 
 To set a job's urgency, use the `urgency` class method:
 
@@ -326,3 +326,42 @@ end
 For [idempotent jobs](idempotent_jobs.md) that declare either `:sticky` or `:delayed` data consistency, we are
 [preserving the latest WAL location](idempotent_jobs.md#preserve-the-latest-wal-location-for-idempotent-jobs) while deduplicating,
 ensuring that we read from the replica that is fully caught up.
+
+## Job pause control
+
+With the `pause_control` property, you can conditionally pause job processing. If the strategy is active, the job
+is stored in a separate `ZSET` and re-enqueued when the strategy becomes inactive. `PauseControl::ResumeWorker` is a cron
+worker that checks if any paused jobs must be restarted.
+
+To use `pause_control`, you can:
+
+- Use one of the strategies defined in `lib/gitlab/sidekiq_middleware/pause_control/strategies/`.
+- Define a custom strategy in `lib/gitlab/sidekiq_middleware/pause_control/strategies/` and add the strategy to `lib/gitlab/sidekiq_middleware/pause_control/strategies.rb`.
+
+For example:
+
+```ruby
+module Gitlab
+  module SidekiqMiddleware
+    module PauseControl
+      module Strategies
+        class CustomStrategy < Base
+          def should_pause?
+            ApplicationSetting.current.elasticsearch_pause_indexing?
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+```ruby
+class PausedWorker
+  include ApplicationWorker
+
+  pause_control :custom_strategy
+
+  # ...
+end
+```

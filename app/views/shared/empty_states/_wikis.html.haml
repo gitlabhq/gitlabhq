@@ -6,21 +6,21 @@
   - create_path = wiki_page_path(@wiki, params[:id], view: 'create')
   - create_link = link_button_to s_('WikiEmpty|Create your first page'), create_path, title: s_('WikiEmpty|Create your first page'), data: { qa_selector: 'create_first_page_link' }, variant: :confirm
 
-  = render layout: layout_path, locals: { image_path: 'illustrations/wiki_login_empty.svg' } do
+  = render layout: layout_path, locals: { image_path: 'illustrations/empty-state/empty-wiki-md.svg' } do
     %h4.text-left
       = messages.dig(:writable, :title)
     %p.text-left
       = messages.dig(:writable, :body)
     = create_link
     - if show_enable_confluence_integration?(@wiki.container)
-      = link_to s_('WikiEmpty|Enable the Confluence Wiki integration'),
+      = link_button_to s_('WikiEmpty|Enable the Confluence Wiki integration'),
           edit_project_settings_integration_path(@project, :confluence),
-          class: 'btn gl-button', title: s_('WikiEmpty|Enable the Confluence Wiki integration')
+          title: s_('WikiEmpty|Enable the Confluence Wiki integration')
 
 - elsif @project && can?(current_user, :read_issue, @project)
   - issues_link = link_to s_('WikiEmptyIssueMessage|issue tracker'), project_issues_path(@project)
 
-  = render layout: layout_path, locals: { image_path: 'illustrations/wiki_logout_empty.svg' } do
+  = render layout: layout_path, locals: { image_path: 'illustrations/empty-state/empty-wiki-md.svg' } do
     %h4
       = messages.dig(:issuable, :title)
     %p.text-left
@@ -29,7 +29,7 @@
       = link_button_to s_('WikiEmpty|Suggest wiki improvement'), new_project_issue_path(@project), title: s_('WikiEmptyIssueMessage|Suggest wiki improvement'), variant: :confirm
 
 - else
-  = render layout: layout_path, locals: { image_path: 'illustrations/wiki_logout_empty.svg' } do
+  = render layout: layout_path, locals: { image_path: 'illustrations/empty-state/empty-wiki-md.svg' } do
     %h4
       = messages.dig(:readonly, :title)
     %p

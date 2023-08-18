@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::TablesSortedByForeignKeys do
-  let(:connection) { ApplicationRecord.connection }
+RSpec.describe Gitlab::Database::TablesSortedByForeignKeys, feature_category: :cell do
+  let(:connection) { Ci::ApplicationRecord.connection }
   let(:tables) do
     %w[_test_gitlab_main_items _test_gitlab_main_references _test_gitlab_partition_parent
-       gitlab_partitions_dynamic._test_gitlab_partition_20220101]
+       gitlab_partitions_dynamic._test_gitlab_partition_20220101
+       gitlab_partitions_dynamic._test_gitlab_partition_20220102]
   end
 
   subject do
@@ -35,7 +36,18 @@ RSpec.describe Gitlab::Database::TablesSortedByForeignKeys do
       PARTITION OF _test_gitlab_partition_parent
       FOR VALUES FROM ('20220101') TO ('20220131');
 
+      CREATE TABLE gitlab_partitions_dynamic._test_gitlab_partition_20220102
+      PARTITION OF _test_gitlab_partition_parent
+      FOR VALUES FROM ('20220201') TO ('20220228');
+
       ALTER TABLE _test_gitlab_partition_parent DETACH PARTITION gitlab_partitions_dynamic._test_gitlab_partition_20220101;
+      ALTER TABLE _test_gitlab_partition_parent DETACH PARTITION gitlab_partitions_dynamic._test_gitlab_partition_20220102;
+
+      /* For some reason FK is now created in gitlab_partitions_dynamic */
+      ALTER TABLE gitlab_partitions_dynamic._test_gitlab_partition_20220101
+        DROP CONSTRAINT fk_constrained_1;
+      ALTER TABLE gitlab_partitions_dynamic._test_gitlab_partition_20220101
+        ADD CONSTRAINT fk_constrained_1 FOREIGN KEY(item_id) REFERENCES _test_gitlab_main_items(id);
     SQL
     connection.execute(statement)
   end
@@ -47,6 +59,7 @@ RSpec.describe Gitlab::Database::TablesSortedByForeignKeys do
           ['_test_gitlab_main_references'],
           ['_test_gitlab_partition_parent'],
           ['gitlab_partitions_dynamic._test_gitlab_partition_20220101'],
+          ['gitlab_partitions_dynamic._test_gitlab_partition_20220102'],
           ['_test_gitlab_main_items']
         ])
     end
@@ -62,6 +75,7 @@ RSpec.describe Gitlab::Database::TablesSortedByForeignKeys do
         [
           ['_test_gitlab_partition_parent'],
           ['gitlab_partitions_dynamic._test_gitlab_partition_20220101'],
+          ['gitlab_partitions_dynamic._test_gitlab_partition_20220102'],
           %w[_test_gitlab_main_items _test_gitlab_main_references]
         ])
     end

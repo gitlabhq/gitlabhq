@@ -5,7 +5,10 @@ module Packages
     class CreatePackageFileService < BaseService
       def execute
         ::Packages::Package.transaction do
-          create_package_file(find_or_create_package)
+          package = find_or_create_package
+          find_or_create_model_version(package)
+
+          create_package_file(package)
         end
       end
 
@@ -28,6 +31,16 @@ module Packages
         package.create_build_infos!(params[:build])
 
         package
+      end
+
+      def find_or_create_model_version(package)
+        model_version_params = {
+          model_name: package.name,
+          version: package.version,
+          package: package
+        }
+
+        Ml::FindOrCreateModelVersionService.new(project, model_version_params).execute
       end
 
       def create_package_file(package)

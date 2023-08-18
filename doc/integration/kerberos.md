@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Kerberos integration **(PREMIUM SELF)**
+# Use Kerberos as an OAuth 2.0 authentication provider **(PREMIUM SELF)**
 
 GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
 
@@ -41,10 +41,10 @@ sudo chmod 0600 /etc/http.keytab
 
 ### Configure GitLab
 
-#### Installations from source
+#### Self-compiled installations
 
 NOTE:
-For source installations, make sure the `kerberos` gem group
+For self-compiled installations, make sure the `kerberos` gem group
 [has been installed](../install/installation.md#install-gems).
 
 1. Edit the `kerberos` section of [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example) to enable Kerberos ticket-based
@@ -66,9 +66,9 @@ For source installations, make sure the `kerberos` gem group
      keytab: /etc/http.keytab
    ```
 
-1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
-#### Omnibus package installations
+#### Linux package installations
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -187,7 +187,9 @@ match the domain from the user's LDAP DN. The configuration value must specify
 all domains that users may be expected to have. Any other domains are
 ignored and an LDAP identity is not linked.
 
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -198,9 +200,7 @@ ignored and an LDAP identity is not linked.
 1. Save the file and [reconfigure](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
----
-
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Edit `config/gitlab.yml`:
 
@@ -209,8 +209,10 @@ ignored and an LDAP identity is not linked.
      simple_ldap_linking_allowed_realms: ['example.com','kerberos.example.com']
    ```
 
-1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source)
+1. Save the file and [restart](../administration/restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
+
+::EndTabs
 
 ## HTTP Git access
 
@@ -247,7 +249,21 @@ NOTE:
 username and password is passed interactively or through a credentials manager. It fails to fall back when the username and password is passed as part of the URL instead. For example,
 this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token](../ci/jobs/ci_job_token.md).
 
-**For source installations with HTTPS**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['kerberos_use_dedicated_port'] = true
+   gitlab_rails['kerberos_port'] = 8443
+   gitlab_rails['kerberos_https'] = true
+   ```
+
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+:::TabTitle Self-compiled (source) with HTTPS
 
 1. Edit the NGINX configuration file for GitLab
    (for example, `/etc/nginx/sites-available/gitlab-ssl`) and configure NGINX to
@@ -274,19 +290,9 @@ this can happen in GitLab CI/CD jobs that [authenticate with the CI/CD job token
      https: true
    ```
 
-1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) and NGINX for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) and NGINX for the changes to take effect.
 
-**For Omnibus package installations**
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['kerberos_use_dedicated_port'] = true
-   gitlab_rails['kerberos_port'] = 8443
-   gitlab_rails['kerberos_https'] = true
-   ```
-
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+::EndTabs
 
 After this change, Git remote URLs have to be updated to
 `https://gitlab.example.com:8443/mygroup/myproject.git` to use
@@ -308,7 +314,22 @@ If not, then add the settings [described above](#configuration).
 To disable password-based Kerberos sign-ins, remove the OmniAuth provider
 `kerberos` from your `gitlab.yml`/`gitlab.rb` file.
 
-**For installations from source**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb` and remove the `{ "name" => "kerberos" }` line
+   under `gitlab_rails['omniauth_providers']`:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     { "name" => "kerberos" } # <-- remove this entry
+   ]
+   ```
+
+1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+:::TabTitle Self-compiled (source)
 
 1. Edit [`gitlab.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example) and remove the `- { name: 'kerberos' }` line under OmniAuth
    providers:
@@ -321,20 +342,9 @@ To disable password-based Kerberos sign-ins, remove the OmniAuth provider
        - { name: 'kerberos' }  # <-- remove this line
    ```
 
-1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
-**For Omnibus installations**
-
-1. Edit `/etc/gitlab/gitlab.rb` and remove the `{ "name" => "kerberos" }` line
-   under `gitlab_rails['omniauth_providers']`:
-
-   ```ruby
-   gitlab_rails['omniauth_providers'] = [
-     { "name" => "kerberos" } # <-- remove this entry
-   ]
-   ```
-
-1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+::EndTabs
 
 NOTE:
 Removing the `kerberos` OmniAuth provider can also resolve a rare

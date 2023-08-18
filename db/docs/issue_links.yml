@@ -2,6 +2,7 @@
 table_name: issue_links
 classes:
 - IssueLink
+- WorkItems::RelatedWorkItemLink
 feature_categories:
 - team_planning
 description: Links two issues by relationship type, which can be related or blocking

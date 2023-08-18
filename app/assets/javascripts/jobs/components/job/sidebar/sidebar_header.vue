@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { createAlert } from '~/alert';
 import { TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';

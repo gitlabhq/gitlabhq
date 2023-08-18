@@ -40,7 +40,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it_behaves_like 'work items title'
-    it_behaves_like 'work items status'
+    it_behaves_like 'work items toggle status button'
     it_behaves_like 'work items assignees'
     it_behaves_like 'work items labels'
     it_behaves_like 'work items comments', :issue

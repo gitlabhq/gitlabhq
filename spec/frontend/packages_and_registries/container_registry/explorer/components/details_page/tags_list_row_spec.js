@@ -318,7 +318,6 @@ describe('tags list row', () => {
         expect(findDeleteButton().props('item').extraAttrs).toMatchObject({
           class: 'gl-text-red-500!',
           'data-testid': 'single-delete-button',
-          'data-qa-selector': 'tag_delete_button',
         });
 
         expect(findDeleteButton().text()).toBe(REMOVE_TAG_BUTTON_TITLE);

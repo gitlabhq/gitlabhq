@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage incidents **(FREE)**
+# Manage incidents **(FREE ALL)**
 
 This page collects instructions for all the things you can do with [incidents](incidents.md) or in relation to them.
 
@@ -68,7 +68,7 @@ When you [close an incident](#close-an-incident) linked to an alert, GitLab
 [changes the alert's status](alerts.md#change-an-alerts-status) to **Resolved**.
 You are then credited with the alert's status change.
 
-### Automatically, when an alert is triggered **(ULTIMATE)**
+### Automatically, when an alert is triggered **(ULTIMATE ALL)**
 
 In the project settings, you can turn on [creating an incident automatically](alerts.md#trigger-actions-from-alerts)
 whenever an alert is triggered.
@@ -166,7 +166,7 @@ To change the status of an incident:
 
 **Triggered** is the default status for new incidents.
 
-### As an on-call responder **(PREMIUM)**
+### As an on-call responder **(PREMIUM ALL)**
 
 On-call responders can respond to [incident pages](paging.md#escalating-an-incident)
 by changing the status.
@@ -181,7 +181,7 @@ In GitLab 15.1 and earlier, changing the status of an [incident created from an 
 also changes the alert status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the alert status is independent and does not change when the incident status changes.
 
-## Change escalation policy **(PREMIUM)**
+## Change escalation policy **(PREMIUM ALL)**
 
 Prerequisites:
 
@@ -245,7 +245,7 @@ To configure the setting:
 1. Select the **Automatically close associated incident** checkbox.
 1. Select **Save changes**.
 
-When GitLab receives a recovery alert, it closes the associated incident.
+When GitLab receives a [recovery alert](integrations.md#recovery-alerts), it closes the associated incident.
 This action is recorded as a system note on the incident indicating that it
 was closed automatically by the GitLab Alert bot.
 

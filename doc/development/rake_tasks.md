@@ -46,7 +46,7 @@ bin/rake "gitlab:seed:issues[group-path/project-path]"
 By default, this seeds an average of 2 issues per week for the last 5 weeks per
 project.
 
-#### Seeding issues for Insights charts **(ULTIMATE)**
+#### Seeding issues for Insights charts **(ULTIMATE ALL)**
 
 You can seed issues specifically for working with the
 [Insights charts](../user/group/insights/index.md) with the
@@ -526,7 +526,7 @@ NOTE:
 This Rake task needs `docker` to be installed.
 
 To update generated code for OpenAPI client located in
-`vendor/gems/error_tracking_open_api` run the following commands:
+`gems/error_tracking_open_api` run the following commands:
 
 ```shell
 # Run rake task
@@ -535,7 +535,7 @@ bundle exec rake gems:error_tracking_open_api:generate
 # Review and test the changes
 
 # Commit the changes
-git commit -m 'Update ErrorTrackingOpenAPI from OpenAPI definition' vendor/gems/error_tracking_open_api
+git commit -m 'Update ErrorTrackingOpenAPI from OpenAPI definition' gems/error_tracking_open_api
 ```
 
 ## Update banned SSH keys

@@ -3,11 +3,7 @@
 module QA
   RSpec.describe 'Verify' do
     describe 'Include local config file paths with wildcard', :reliable, product_group: :pipeline_authoring do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-pipeline'
-        end
-      end
+      let(:project) { create(:project, name: 'project-with-pipeline') }
 
       before do
         Flow::Login.sign_in

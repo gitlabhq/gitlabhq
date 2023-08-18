@@ -59,8 +59,7 @@ RSpec.describe ServiceResponse, feature_category: :shared do
     end
 
     it 'creates an error response with payload' do
-      response = described_class.error(message: 'Bad apple',
-                                       payload: { bad: 'apple' })
+      response = described_class.error(message: 'Bad apple', payload: { bad: 'apple' })
 
       expect(response).to be_error
       expect(response.message).to eq('Bad apple')
@@ -68,8 +67,7 @@ RSpec.describe ServiceResponse, feature_category: :shared do
     end
 
     it 'creates an error response with a reason' do
-      response = described_class.error(message: 'Bad apple',
-                                       reason: :permission_denied)
+      response = described_class.error(message: 'Bad apple', reason: :permission_denied)
 
       expect(response).to be_error
       expect(response.message).to eq('Bad apple')

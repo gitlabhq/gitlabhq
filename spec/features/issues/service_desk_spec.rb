@@ -184,6 +184,42 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
         stub_feature_flags(frontend_caching: true)
       end
 
+      context 'when there are no issues' do
+        describe 'service desk empty state' do
+          it 'displays the large empty state, documentation, and the email address' do
+            visit service_desk_project_issues_path(project)
+
+            aggregate_failures do
+              expect(page).to have_css('.empty-state')
+              expect(page).to have_text('Use Service Desk to connect with your users')
+              expect(page).to have_link('Learn more about Service Desk', href: help_page_path('user/project/service_desk/index'))
+              expect(page).not_to have_link('Enable Service Desk')
+              expect(page).to have_content(project.service_desk_address)
+            end
+          end
+
+          context 'when user does not have permission to edit project settings' do
+            before do
+              user_2 = create(:user)
+
+              project.add_guest(user_2)
+              sign_in(user_2)
+              visit service_desk_project_issues_path(project)
+            end
+
+            it 'displays the large info box and the documentation link' do
+              aggregate_failures do
+                expect(page).to have_css('.empty-state')
+                expect(page).to have_text('Use Service Desk to connect with your users')
+                expect(page).to have_link('Learn more about Service Desk', href: help_page_path('user/project/service_desk/index'))
+                expect(page).not_to have_link('Enable Service Desk')
+                expect(page).not_to have_content(project.service_desk_address)
+              end
+            end
+          end
+        end
+      end
+
       context 'when there are issues' do
         let_it_be(:project) { create(:project, :private, service_desk_enabled: true) }
         let_it_be(:other_user) { create(:user) }
@@ -197,7 +233,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
 
           it 'displays the small info box, documentation, a button to configure service desk, and the address' do
             aggregate_failures do
-              expect(page).to have_link('Learn more', href: help_page_path('user/project/service_desk'))
+              expect(page).to have_link('Learn more about Service Desk', href: help_page_path('user/project/service_desk/index'))
               expect(page).not_to have_link('Enable Service Desk')
               expect(page).to have_content(project.service_desk_address)
             end

@@ -4,38 +4,25 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Dependency Scanning **(ULTIMATE)**
+# Dependency Scanning **(ULTIMATE ALL)**
 
-The Dependency Scanning feature can automatically find security vulnerabilities in your
-software dependencies while you're developing and testing your applications. For example,
-dependency scanning lets you know if your application uses an external (open source)
-library that is known to be vulnerable. You can then take action to protect your application.
+Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
+dependencies are scanned, including transitive dependencies, also known as nested dependencies.
 
 Dependency Scanning is often considered part of Software Composition Analysis (SCA). SCA can contain
 aspects of inspecting the items your code uses. These items typically include application and system
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
+Dependency Scanning can run in the development phase of your application's life cycle. Every time a
+pipeline runs, vulnerabilities are identified and compared between the source and target branches.
+Vulnerabilities and their severity are listed in the merge request, enabling you to proactively
+address the risk to your application, before the code change is committed.
+
 GitLab offers both Dependency Scanning and [Container Scanning](../container_scanning/index.md) to
 ensure coverage for all of these dependency types. To cover as much of your risk area as possible,
 we encourage you to use all of our security scanners. For a comparison of these features, see
 [Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
-
-If you're using [GitLab CI/CD](../../../ci/index.md), you can use dependency scanning to analyze
-your dependencies for known vulnerabilities. GitLab scans all dependencies, including transitive
-dependencies (also known as nested dependencies). You can take advantage of dependency scanning by
-either:
-
-- [Including the dependency scanning template](#configuration)
-  in your existing `.gitlab-ci.yml` file.
-- Implicitly using
-  the [auto dependency scanning](../../../topics/autodevops/stages.md#auto-dependency-scanning)
-  provided by [Auto DevOps](../../../topics/autodevops/index.md).
-
-GitLab checks the dependency scanning report, compares the found vulnerabilities
-between the source and target branches, and shows the information on the
-merge request. The results are sorted by the [severity](../vulnerabilities/severities.md) of the
-vulnerability.
 
 ![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
 
@@ -54,12 +41,7 @@ If you're using the shared runners on GitLab.com, this is enabled by default. Th
 provided are for the Linux/amd64 architecture.
 
 WARNING:
-If you use your own runners, make sure your installed version of Docker
-is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
-
-WARNING:
-Dependency Scanning does not support run-time installation of compilers and interpreters.
-If you need it, explain why by filling out [the survey](https://docs.google.com/forms/d/e/1FAIpQLScKo7xEYA65rOjPTGIufAyfjPGnCALSJZoTxBlvskfFMEOZMw/viewform).
+Dependency Scanning does not support runtime installation of compilers and interpreters.
 
 ## Supported languages and package managers
 
@@ -141,9 +123,10 @@ table.supported-languages ul {
       <td rowspan="2">
         8 LTS,
         11 LTS,
-        or 17 LTS
+        17 LTS,
+        or 21 EA<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup>
       </td>
-      <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup></td>
+      <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></td>
       <td>
         <ul>
             <li><code>build.gradle</code></li>
@@ -175,7 +158,7 @@ table.supported-languages ul {
       <td>Y</td>
     </tr>
     <tr>
-      <td><a href="https://pnpm.io/">pnpm</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></td>
+      <td><a href="https://pnpm.io/">pnpm</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></td>
       <td><code>pnpm-lock.yaml</code></td>
       <td>Y</td>
     </tr>
@@ -188,7 +171,7 @@ table.supported-languages ul {
     </tr>
     <tr>
       <td rowspan="4">Python</td>
-      <td rowspan="4">3.9, 3.10<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></td>
+      <td rowspan="4">3.9, 3.10<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
       <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
       <td><code>setup.py</code></td>
       <td>N</td>
@@ -215,7 +198,7 @@ table.supported-languages ul {
       <td>N</td>
     </tr>
     <tr>
-      <td><a href="https://python-poetry.org/">Poetry</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
+      <td><a href="https://python-poetry.org/">Poetry</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-6">6</a></b></sup></td>
       <td><code>poetry.lock</code></td>
       <td>N</td>
     </tr>
@@ -234,7 +217,7 @@ table.supported-languages ul {
     <tr>
       <td>Scala</td>
       <td>All versions</td>
-      <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-6">6</a></b></sup></td>
+      <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-7">7</a></b></sup></td>
       <td><code>build.sbt</code></td>
       <td>N</td>
     </tr>
@@ -251,17 +234,24 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-2"></a>
     <p>
-      Gradle is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
+      Java 21 EA is only available when using <a href="https://maven.apache.org/">Maven</a> and is not supported when
+      <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
     <p>
-      Support for <code>pnpm</code> lockfiles was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336809">introduced in GitLab 15.11</a>. <code>pnpm</code> lockfiles do not store bundled dependencies, so the reported dependencies may differ from <code>npm</code> or <code>yarn</code>.
+      Gradle is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
     </p>
   </li>
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-4"></a>
+    <p>
+      Support for <code>pnpm</code> lockfiles was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336809">introduced in GitLab 15.11</a>. <code>pnpm</code> lockfiles do not store bundled dependencies, so the reported dependencies may differ from <code>npm</code> or <code>yarn</code>.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-5"></a>
     <p>
       For support of <code>Python 3.10</code>, add the following stanza to the GitLab CI/CD configuration file. This specifies that the <code>Python 3.10</code> image is to be used, instead of the default <code>Python 3.9</code>.
       <div class="language-yaml highlighter-rouge">
@@ -272,7 +262,7 @@ table.supported-languages ul {
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-5"></a>
+    <a id="notes-regarding-supported-languages-and-package-managers-6"></a>
     <p>
       Support for <a href="https://python-poetry.org/">Poetry</a> projects with a <code>poetry.lock</code> file was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/7006">added in GitLab 15.0</a>.
       Support for projects without a <code>poetry.lock</code> file is tracked in issue:
@@ -280,7 +270,7 @@ table.supported-languages ul {
     </p>
   </li>
   <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-6"></a>
+    <a id="notes-regarding-supported-languages-and-package-managers-7"></a>
     <p>
       Support for <a href="https://www.scala-sbt.org/">sbt</a> 1.3 and above was added in GitLab 13.9.
     </p>
@@ -314,9 +304,13 @@ are analyzed. There is no limit to the depth of nested or transitive dependencie
 
 Dependency Scanning supports the following official analyzers:
 
+- `gemnasium`
+- `gemnasium-maven`
+- `gemnasium-python`
+
+Each of these supported Gemnasium-based Dependency Scanning analyzers exist in the following project:
+
 - [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)
-- [`gemnasium-maven`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven)
-- [`gemnasium-python`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python)
 
 The analyzers are published as Docker images, which Dependency Scanning uses
 to launch dedicated containers for each analysis. You can also integrate a custom
@@ -339,10 +333,10 @@ The following package managers use lockfiles that GitLab analyzers are capable o
 | Composer        | Not applicable                 | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/php-composer/default/composer.lock)                                                                                                                                                         |
 | Conan           | 0.4                            | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/c-conan/default/conan.lock#L38)                                                                                                                                                             |
 | Go              | Not applicable                 | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/gosum/default/go.sum) <sup><strong><a href="#notes-regarding-parsing-lockfiles-1">1</a></strong></sup>                                                                       |
-| NuGet           | v1, v2                          | [4.9](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2)                                                                                                                      |
-| npm             | v1, v2, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-2">2</a></b></sup>                     | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4), [9.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/npm/fixtures/lockfile-v3/simple/package-lock.json#L4) |
+| NuGet           | v1, v2<sup><b><a href="#notes-regarding-parsing-lockfiles-2">2</a></b></sup> | [4.9](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2)                                                                                                                      |
+| npm             | v1, v2, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-3">3</a></b></sup>                     | [6.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4), [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4), [9.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/npm/fixtures/lockfile-v3/simple/package-lock.json#L4) |
 | pnpm            | v5.3, v5.4, v6                     | [7.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-pnpm/default/pnpm-lock.yaml#L1), [8.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/pnpm/fixtures/v6/simple/pnpm-lock.yaml#L1) |
-| yarn            | v1, v2<sup><b><a href="#notes-regarding-parsing-lockfiles-3">3</a></b></sup>, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-3">3</a></b></sup>                       | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/classic/default/yarn.lock#L2), [2.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/berry/v2/default/yarn.lock), [3.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/berry/v3/default/yarn.lock)                                                                                                                                                           |
+| yarn            | v1, v2<sup><b><a href="#notes-regarding-parsing-lockfiles-4">4</a></b></sup>, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-4">4</a></b></sup>                       | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/classic/default/yarn.lock#L2), [2.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/berry/v2/default/yarn.lock), [3.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/berry/v3/default/yarn.lock)                                                                                                                                                           |
 | Poetry          | v1                             | [1.x](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/python-poetry/default/poetry.lock)                                                                                                                                                      |
 
 <!-- markdownlint-disable MD044 -->
@@ -357,11 +351,17 @@ The following package managers use lockfiles that GitLab analyzers are capable o
   <li>
     <a id="notes-regarding-parsing-lockfiles-2"></a>
     <p>
-      Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
+      Support for NuGet version 2 lock files was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/398680">introduced</a> in GitLab 16.2.
     </p>
   </li>
   <li>
     <a id="notes-regarding-parsing-lockfiles-3"></a>
+    <p>
+      Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-parsing-lockfiles-4"></a>
     <p>
       Support for Yarn <code>v2</code> and <code>v3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/263358">introduced in GitLab 15.11</a>. However, this feature is also available to versions of GitLab 15.0 and later.
     </p>
@@ -585,10 +585,6 @@ configuration, the last mention of the variable takes precedence.
 
 ### Overriding dependency scanning jobs
 
-WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/index.md#only--except)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/index.md#rules) instead.
-
 To override a job definition (for example, to change properties like `variables` or `dependencies`),
 declare a new job with the same name as the one to override. Place this new job after the template
 inclusion and specify any additional keys under it. For example, this disables `DS_REMEDIATE` for
@@ -632,7 +628,7 @@ The following variables allow configuration of global dependency scanning settin
 | `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. |
 | `DS_EXCLUDED_ANALYZERS`      | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Dependency Scanning Analyzers](#dependency-analyzers). |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
-| `DS_IMAGE_SUFFIX`           | Suffix added to the image name. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354796) in GitLab 14.10.) Automatically set to `"-fips"` when FIPS mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357922) in GitLab 15.0.) |
+| `DS_IMAGE_SUFFIX`           | Suffix added to the image name. (Introduced in GitLab 14.10. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`). Automatically set to `"-fips"` when FIPS mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357922) in GitLab 15.0.) |
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
 
@@ -649,7 +645,7 @@ The following variables are used for configuring specific analyzers (used for a 
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
 | `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                       | Timeout for auto-remediation. |
 | `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries. For now, `gemnasium` leverages [`Retire.js`](https://github.com/RetireJS/retire.js) to do this job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350512) in GitLab 14.8. |
-| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `17`                         | Version of Java. Available versions: `8`, `11`, `17`. |
+| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `17`                         | Version of Java. Available versions: `8`, `11`, `17`, `21` |
 | `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
 | `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
 | `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
@@ -677,6 +673,9 @@ file like this:
 variables:
   HTTPS_PROXY: "https://squid-proxy:3128"
 ```
+
+NOTE:
+Gradle projects require [an additional variable](#using-a-proxy-with-gradle-projects) setup to use a proxy.
 
 Alternatively we may use it in specific jobs, like Dependency Scanning:
 
@@ -716,7 +715,7 @@ Read more on [how to use private Maven repositories](../index.md#using-private-m
 
 #### FIPS-enabled images
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354796) in GitLab 14.10.
+> Introduced in GitLab 14.10. GitLab team members can view more information in this confidential issue:  `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`
 
 GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
 versions of the Gemnasium images. You can therefore replace standard images with FIPS-enabled images.
@@ -1117,6 +1116,17 @@ gemnasium-dependency_scanning:
   before_script:
     - mkdir $GEMNASIUM_DB_LOCAL_PATH
     - tar -xzf gemnasium_db.tar.gz -C $GEMNASIUM_DB_LOCAL_PATH
+```
+
+## Using a proxy with Gradle projects
+
+The Gradle wrapper script does not read the `HTTP(S)_PROXY` environment variables. See [this upstream issue](https://github.com/gradle/gradle/issues/11065).
+
+To make the Gradle wrapper script use a proxy, you can specify the options using the `GRADLE_CLI_OPTS` CI/CD variable:
+
+```yaml
+variables:
+  GRADLE_CLI_OPTS: "-Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts=localhost"
 ```
 
 ## Warnings

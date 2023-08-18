@@ -2,11 +2,9 @@ query project_recent_boards($fullPath: ID!) {
   project(fullPath: $fullPath) {
     id
     recentIssueBoards {
-      edges {
-        node {
-          id
-          name
-        }
+      nodes {
+        id
+        name
       }
     }
   }

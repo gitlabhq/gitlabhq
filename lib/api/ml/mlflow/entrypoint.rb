@@ -10,6 +10,7 @@ module API
         # The first part of the url is the namespace, the second part of the URL is what the MLFlow client calls
         MLFLOW_API_PREFIX = ':id/ml/mlflow/api/2.0/mlflow/'
 
+        helpers ::API::Helpers::RelatedResourcesHelpers
         helpers ::API::Ml::Mlflow::ApiHelpers
 
         allow_access_with_scope :api

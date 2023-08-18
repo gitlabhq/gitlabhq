@@ -7,6 +7,7 @@ module Admin
     expose :category
     expose :created_at
     expose :updated_at
+    expose :count
 
     expose :reported_user do |report|
       UserEntity.represent(report.user, only: [:name])
@@ -18,6 +19,12 @@ module Admin
 
     expose :report_path do |report|
       admin_abuse_report_path(report)
+    end
+
+    private
+
+    def count
+      object.has_attribute?(:count) ? object.count : 1
     end
   end
 end

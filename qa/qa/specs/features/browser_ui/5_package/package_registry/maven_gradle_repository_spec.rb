@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage,
+  RSpec.describe 'Package', :object_storage, :external_api_calls,
     quarantine: {
-      only: { job: 'relative_url', condition: -> { QA::Support::FIPS.enabled? } },
+      only: { condition: -> { QA::Support::FIPS.enabled? } },
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417600',
       type: :investigating
     }, product_group: :package_registry do
@@ -17,15 +17,7 @@ module QA
       let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'maven_gradle' }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = "#{package_type}_project"
-          project.initialize_with_readme = true
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, :with_readme, name: "#{package_type}_project") }
       let(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"
@@ -36,8 +28,7 @@ module QA
       end
 
       let(:gitlab_address_with_port) do
-        uri = URI.parse(Runtime::Scenario.gitlab_address)
-        "#{uri.scheme}://#{uri.host}:#{uri.port}"
+        Support::GitlabAddress.address_with_port
       end
 
       let(:project_deploy_token) do

@@ -2,6 +2,7 @@
 import { kebabCase } from 'lodash';
 import { GlCollapse, GlIcon } from '@gitlab/ui';
 import NavItem from './nav_item.vue';
+import FlyoutMenu from './flyout_menu.vue';
 
 export default {
   name: 'MenuSection',
@@ -9,6 +10,7 @@ export default {
     GlCollapse,
     GlIcon,
     NavItem,
+    FlyoutMenu,
   },
   props: {
     item: {
@@ -30,10 +32,18 @@ export default {
       required: false,
       default: 'div',
     },
+    hasFlyout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       isExpanded: Boolean(this.expanded || this.item.is_active),
+      isMouseOverSection: false,
+      isMouseOverFlyout: false,
+      keepFlyoutClosed: false,
     };
   },
   computed: {
@@ -45,6 +55,9 @@ export default {
       };
     },
     collapseIcon() {
+      if (this.hasFlyout) {
+        return this.isExpanded ? 'chevron-down' : 'chevron-right';
+      }
       return this.isExpanded ? 'chevron-up' : 'chevron-down';
     },
     computedLinkClasses() {
@@ -58,10 +71,23 @@ export default {
     itemId() {
       return kebabCase(this.item.title);
     },
+    isMouseOver() {
+      return this.isMouseOverSection || this.isMouseOverFlyout;
+    },
   },
   watch: {
     isExpanded(newIsExpanded) {
       this.$emit('collapse-toggle', newIsExpanded);
+      this.keepFlyoutClosed = !this.newIsExpanded;
+    },
+  },
+  methods: {
+    handlePointerover(e) {
+      this.isMouseOverSection = e.pointerType === 'mouse';
+    },
+    handlePointerleave() {
+      this.isMouseOverSection = false;
+      this.keepFlyoutClosed = false;
     },
   },
 };
@@ -71,15 +97,18 @@ export default {
   <component :is="tag">
     <hr v-if="separated" aria-hidden="true" class="gl-mx-4 gl-my-2" />
     <button
+      :id="`menu-section-button-${itemId}`"
       class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-2 gl-py-2 gl-px-3 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-appearance-none gl-border-0 gl-bg-transparent gl-text-left gl-w-full gl-focus--focus"
       :class="computedLinkClasses"
       data-qa-selector="menu_section_button"
       :data-qa-section-name="item.title"
       v-bind="buttonProps"
       @click="isExpanded = !isExpanded"
+      @pointerover="handlePointerover"
+      @pointerleave="handlePointerleave"
     >
       <span
-        :class="[isActive ? 'gl-bg-blue-500' : 'gl-bg-transparent']"
+        :class="[isActive ? 'active-indicator gl-bg-blue-500' : 'gl-bg-transparent']"
         class="gl-absolute gl-left-2 gl-top-2 gl-bottom-2 gl-transition-slow"
         aria-hidden="true"
         style="width: 3px; border-radius: 3px; margin-right: 1px"
@@ -98,6 +127,17 @@ export default {
         <gl-icon :name="collapseIcon" />
       </span>
     </button>
+
+    <flyout-menu
+      v-if="hasFlyout"
+      v-show="isMouseOver && !isExpanded && !keepFlyoutClosed"
+      :target-id="`menu-section-button-${itemId}`"
+      :items="item.items"
+      @mouseover="isMouseOverFlyout = true"
+      @mouseleave="isMouseOverFlyout = false"
+      @pin-add="(itemId) => $emit('pin-add', itemId)"
+      @pin-remove="(itemId) => $emit('pin-remove', itemId)"
+    />
 
     <gl-collapse
       :id="itemId"

@@ -141,7 +141,7 @@ class GroupDescendantsFinder
 
   # rubocop: disable CodeReuse/Finder
   def direct_child_projects
-    GroupProjectsFinder.new(group: parent_group, current_user: current_user, params: params, options: { only_owned: true })
+    GroupProjectsFinder.new(group: parent_group, current_user: current_user, params: params, options: { exclude_shared: true })
       .execute
   end
   # rubocop: enable CodeReuse/Finder

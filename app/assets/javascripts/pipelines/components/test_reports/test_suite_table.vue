@@ -10,6 +10,7 @@ import {
   GlEmptyState,
   GlSprintf,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';

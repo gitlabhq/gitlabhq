@@ -74,15 +74,19 @@ module Gitlab
           download(
             import_export_upload.remote_import_url,
             @archive_file,
-            size_limit: ::Import::GitlabProjects::RemoteFileValidator::FILE_SIZE_LIMIT
+            size_limit: file_size_limit
           )
         else
           download_or_copy_upload(
             import_export_upload.import_file,
             @archive_file,
-            size_limit: ::Import::GitlabProjects::RemoteFileValidator::FILE_SIZE_LIMIT
+            size_limit: file_size_limit
           )
         end
+      end
+
+      def file_size_limit
+        Gitlab::CurrentSettings.current_application_settings.max_import_remote_file_size.megabytes
       end
 
       def remove_import_file

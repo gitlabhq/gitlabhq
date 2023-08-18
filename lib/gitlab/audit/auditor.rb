@@ -76,13 +76,11 @@ module Gitlab
         @authentication_event = @context.fetch(:authentication_event, false)
         @authentication_provider = @context[:authentication_provider]
 
-        # TODO: Remove this code once we close https://gitlab.com/gitlab-org/gitlab/-/issues/367870
         return if @is_audit_event_yaml_defined
 
-        message = 'Logging audit events without an event type definition will be deprecated soon ' \
-                  '(https://docs.gitlab.com/ee/development/audit_event_guide/#event-type-definitions)'
-
-        Gitlab::AppLogger.warn(message: message, event_type: @name)
+        raise StandardError, "Audit event type YML file is not defined for #{@name}. Please read " \
+                             "https://docs.gitlab.com/ee/development/audit_event_guide/" \
+                             "#how-to-instrument-new-audit-events for adding a new audit event"
       end
 
       def single_audit

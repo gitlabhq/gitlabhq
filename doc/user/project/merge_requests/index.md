@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Merge requests **(FREE)**
+# Merge requests **(FREE ALL)**
 
 To incorporate changes from a source branch to a target branch, you use a *merge request* (MR).
 
@@ -17,10 +17,6 @@ Merge requests include:
 - Information about CI/CD pipelines.
 - A comment section for discussion threads.
 - The list of commits.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a quick overview of merge requests,
-view [this GitLab Flow video](https://www.youtube.com/watch?v=InKNIvky2KE).
 
 ## Create a merge request
 
@@ -168,7 +164,7 @@ a merge request, or:
 
 The merge request is added to the user's assigned merge request list.
 
-### Assign multiple users **(PREMIUM)**
+### Assign multiple users **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -284,7 +280,7 @@ For a software developer working in a team:
 1. You gather feedback from your team.
 1. You work on the implementation optimizing code with [Code Quality reports](../../../ci/testing/code_quality.md).
 1. You verify your changes with [Unit test reports](../../../ci/testing/unit_test_reports.md) in GitLab CI/CD.
-1. You avoid using dependencies whose license is not compatible with your project with [License Compliance reports](../../compliance/license_compliance/index.md).
+1. You avoid using dependencies whose license is not compatible with your project with [License approval policies](../../../user/compliance/license_approval_policies.md).
 1. You request the [approval](approvals/index.md) from your manager.
 1. Your manager:
    1. Pushes a commit with their final review.

@@ -25,17 +25,5 @@ RSpec.describe Clusters::Agents::NotifyGitPushWorker, feature_category: :deploym
         expect { subject }.not_to raise_error
       end
     end
-
-    context 'when the :notify_kas_on_git_push feature flag is disabled' do
-      before do
-        stub_feature_flags(notify_kas_on_git_push: false)
-      end
-
-      it 'does not notify KAS' do
-        expect(Gitlab::Kas::Client).not_to receive(:new)
-
-        subject
-      end
-    end
   end
 end

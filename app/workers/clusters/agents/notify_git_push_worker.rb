@@ -14,7 +14,6 @@ module Clusters
 
       def perform(project_id)
         return unless project = ::Project.find_by_id(project_id)
-        return unless Feature.enabled?(:notify_kas_on_git_push, project)
 
         Gitlab::Kas::Client.new.send_git_push_event(project: project)
       end

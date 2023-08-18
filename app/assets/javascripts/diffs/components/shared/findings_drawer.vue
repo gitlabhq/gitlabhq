@@ -68,7 +68,7 @@ export default {
             :size="12"
             :name="severityIcon(drawer.severity)"
             :class="severityClass(drawer.severity)"
-            class="codequality-severity-icon"
+            class="inline-findings-severity-icon"
           />
 
           {{ drawer.severity }}

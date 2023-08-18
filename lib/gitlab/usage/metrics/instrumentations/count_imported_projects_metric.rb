@@ -44,7 +44,7 @@ module Gitlab
           private
 
           def relation
-            super.imported_from(import_type) # rubocop: disable CodeReuse/ActiveRecord
+            super.imported_from(import_type)
           end
 
           def import_type

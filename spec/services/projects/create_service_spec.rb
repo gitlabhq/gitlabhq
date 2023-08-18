@@ -628,11 +628,13 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
   context 'repository creation' do
     it 'synchronously creates the repository' do
       expect_next_instance_of(Project) do |instance|
-        expect(instance).to receive(:create_repository)
+        expect(instance).to receive(:create_repository).and_return(true)
       end
 
       project = create_project(user, opts)
+
       expect(project).to be_valid
+      expect(project).to be_persisted
       expect(project.owner).to eq(user)
       expect(project.namespace).to eq(user.namespace)
       expect(project.project_namespace).to be_in_sync_with_project(project)

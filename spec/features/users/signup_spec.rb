@@ -36,7 +36,7 @@ RSpec.shared_examples 'Signup name validation' do |field, max_length, label|
       it 'shows an error message if the username contains emojis' do
         simulate_input("##{field}", 'Ehsan 🦋')
 
-        expect(page).to have_content("Invalid input, please avoid emojis")
+        expect(page).to have_content("Invalid input, please avoid emoji")
       end
     end
   end
@@ -176,7 +176,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
       it 'shows an error message if the username contains emojis' do
         simulate_input('#new_user_username', 'ehsan😀')
 
-        expect(page).to have_content("Invalid input, please avoid emojis")
+        expect(page).to have_content("Invalid input, please avoid emoji")
       end
 
       it 'shows a pending message if the username availability is being fetched',

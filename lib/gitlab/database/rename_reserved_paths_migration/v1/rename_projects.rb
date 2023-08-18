@@ -37,6 +37,8 @@ module Gitlab
             reverts_for_type('project') do |path_before_rename, current_path|
               matches_path = MigrationClasses::Route.arel_table[:path].matches(current_path)
               project = MigrationClasses::Project.joins(:route)
+                          .allow_cross_joins_across_databases(url:
+                            'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
                           .find_by(matches_path)
 
               if project
@@ -67,6 +69,7 @@ module Gitlab
                            .matches_any(path_patterns)
 
             @projects_for_paths = MigrationClasses::Project.joins(:route).where(with_paths)
+              .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
           end
         end
       end

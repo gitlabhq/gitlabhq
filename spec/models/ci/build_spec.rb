@@ -38,7 +38,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to have_many(:report_results).with_foreign_key(:build_id) }
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
 
-  it { is_expected.to have_one(:deployment) }
   it { is_expected.to have_one(:runner_manager).through(:runner_manager_build) }
   it { is_expected.to have_one(:runner_session).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:trace_metadata).with_foreign_key(:build_id) }
@@ -66,14 +65,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
-
-  shared_examples 'calling proper BuildFinishedWorker' do
-    it 'calls Ci::BuildFinishedWorker' do
-      expect(Ci::BuildFinishedWorker).to receive(:perform_async)
-
-      subject
-    end
-  end
 
   describe 'associations' do
     it 'has a bidirectional relationship with projects' do
@@ -110,16 +101,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   it_behaves_like 'a retryable job'
 
-  describe '.manual_actions' do
-    let!(:manual_but_created) { create(:ci_build, :manual, status: :created, pipeline: pipeline) }
-    let!(:manual_but_succeeded) { create(:ci_build, :manual, status: :success, pipeline: pipeline) }
-    let!(:manual_action) { create(:ci_build, :manual, pipeline: pipeline) }
-
-    subject { described_class.manual_actions }
-
-    it { is_expected.to include(manual_action) }
-    it { is_expected.to include(manual_but_succeeded) }
-    it { is_expected.not_to include(manual_but_created) }
+  it_behaves_like 'a deployable job' do
+    let(:job) { build }
   end
 
   describe '.ref_protected' do
@@ -653,54 +636,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
           expect(build.failure_reason).to eq 'script_failure'
         end
-      end
-    end
-  end
-
-  describe '#outdated_deployment?' do
-    subject { build.outdated_deployment? }
-
-    let(:build) { create(:ci_build, :created, :with_deployment, pipeline: pipeline, environment: 'production') }
-
-    context 'when build has no environment' do
-      let(:build) { create(:ci_build, :created, pipeline: pipeline, environment: nil) }
-
-      it { expect(subject).to be_falsey }
-    end
-
-    context 'when project has forward deployment disabled' do
-      before do
-        project.ci_cd_settings.update!(forward_deployment_enabled: false)
-      end
-
-      it { expect(subject).to be_falsey }
-    end
-
-    context 'when build is not an outdated deployment' do
-      before do
-        allow(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(false)
-      end
-
-      it { expect(subject).to be_falsey }
-    end
-
-    context 'when build is older than the latest deployment and still pending status' do
-      before do
-        allow(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
-      end
-
-      it { expect(subject).to be_truthy }
-    end
-
-    context 'when build is older than the latest deployment but succeeded once' do
-      let(:build) { create(:ci_build, :success, :with_deployment, pipeline: pipeline, environment: 'production') }
-
-      before do
-        allow(build.deployment).to receive(:older_than_last_successful_deployment?).and_return(true)
-      end
-
-      it 'returns false for allowing rollback' do
-        expect(subject).to be_falsey
       end
     end
   end
@@ -1588,430 +1523,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe 'state transition as a deployable' do
-    subject { build.send(event) }
-
-    let!(:build) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline) }
-    let(:deployment) { build.deployment }
-    let(:environment) { deployment.environment }
-
-    before do
-      allow(Deployments::LinkMergeRequestWorker).to receive(:perform_async)
-      allow(Deployments::HooksWorker).to receive(:perform_async)
-    end
-
-    it 'has deployments record with created status' do
-      expect(deployment).to be_created
-      expect(environment.name).to eq('review/master')
-    end
-
-    shared_examples_for 'avoid deadlock' do
-      it 'executes UPDATE in the right order' do
-        recorded = with_cross_database_modification_prevented do
-          ActiveRecord::QueryRecorder.new { subject }
-        end
-
-        index_for_build = recorded.log.index { |l| l.include?("UPDATE #{described_class.quoted_table_name}") }
-        index_for_deployment = recorded.log.index { |l| l.include?("UPDATE \"deployments\"") }
-
-        expect(index_for_build).to be < index_for_deployment
-      end
-    end
-
-    context 'when transits to running' do
-      let(:event) { :run! }
-
-      it_behaves_like 'avoid deadlock'
-
-      it 'transits deployment status to running' do
-        with_cross_database_modification_prevented do
-          subject
-        end
-
-        expect(deployment).to be_running
-      end
-
-      context 'when deployment is already running state' do
-        before do
-          build.deployment.success!
-        end
-
-        it 'does not change deployment status and tracks an error' do
-          expect(Gitlab::ErrorTracking)
-            .to receive(:track_exception).with(
-              instance_of(Deployment::StatusSyncError), deployment_id: deployment.id, build_id: build.id)
-
-          with_cross_database_modification_prevented do
-            expect { subject }.not_to change { deployment.reload.status }
-          end
-        end
-      end
-    end
-
-    context 'when transits to success' do
-      let(:event) { :success! }
-
-      before do
-        allow(Deployments::UpdateEnvironmentWorker).to receive(:perform_async)
-        allow(Deployments::HooksWorker).to receive(:perform_async)
-      end
-
-      it_behaves_like 'avoid deadlock'
-      it_behaves_like 'calling proper BuildFinishedWorker'
-
-      it 'transits deployment status to success' do
-        with_cross_database_modification_prevented do
-          subject
-        end
-
-        expect(deployment).to be_success
-      end
-    end
-
-    context 'when transits to failed' do
-      let(:event) { :drop! }
-
-      it_behaves_like 'avoid deadlock'
-      it_behaves_like 'calling proper BuildFinishedWorker'
-
-      it 'transits deployment status to failed' do
-        with_cross_database_modification_prevented do
-          subject
-        end
-
-        expect(deployment).to be_failed
-      end
-    end
-
-    context 'when transits to skipped' do
-      let(:event) { :skip! }
-
-      it_behaves_like 'avoid deadlock'
-
-      it 'transits deployment status to skipped' do
-        with_cross_database_modification_prevented do
-          subject
-        end
-
-        expect(deployment).to be_skipped
-      end
-    end
-
-    context 'when transits to canceled' do
-      let(:event) { :cancel! }
-
-      it_behaves_like 'avoid deadlock'
-      it_behaves_like 'calling proper BuildFinishedWorker'
-
-      it 'transits deployment status to canceled' do
-        with_cross_database_modification_prevented do
-          subject
-        end
-
-        expect(deployment).to be_canceled
-      end
-    end
-
-    # Mimic playing a manual job that needs another job.
-    # `needs + when:manual` scenario, see: https://gitlab.com/gitlab-org/gitlab/-/issues/347502
-    context 'when transits from skipped to created to running' do
-      before do
-        build.skip!
-      end
-
-      context 'during skipped to created' do
-        let(:event) { :process! }
-
-        it 'transitions to created' do
-          subject
-
-          expect(deployment).to be_created
-        end
-      end
-
-      context 'during created to running' do
-        let(:event) { :run! }
-
-        before do
-          build.process!
-          build.enqueue!
-        end
-
-        it 'transitions to running and calls webhook' do
-          freeze_time do
-            expect(Deployments::HooksWorker)
-              .to receive(:perform_async).with(hash_including({ 'deployment_id' => deployment.id, 'status' => 'running', 'status_changed_at' => Time.current.to_s }))
-
-            subject
-          end
-
-          expect(deployment).to be_running
-        end
-      end
-    end
-  end
-
-  describe '#on_stop' do
-    subject { build.on_stop }
-
-    context 'when a job has a specification that it can be stopped from the other job' do
-      let(:build) { create(:ci_build, :start_review_app, pipeline: pipeline) }
-
-      it 'returns the other job name' do
-        is_expected.to eq('stop_review_app')
-      end
-    end
-
-    context 'when a job does not have environment information' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-
-      it 'returns nil' do
-        is_expected.to be_nil
-      end
-    end
-  end
-
-  describe '#environment_tier_from_options' do
-    subject { build.environment_tier_from_options }
-
-    let(:build) { described_class.new(options: options) }
-    let(:options) { { environment: { deployment_tier: 'production' } } }
-
-    it { is_expected.to eq('production') }
-
-    context 'when options does not include deployment_tier' do
-      let(:options) { { environment: { name: 'production' } } }
-
-      it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#environment_tier' do
-    subject { build.environment_tier }
-
-    let(:options) { { environment: { deployment_tier: 'production' } } }
-    let!(:environment) { create(:environment, name: 'production', tier: 'development', project: project) }
-    let(:build) { described_class.new(options: options, environment: 'production', project: project) }
-
-    it { is_expected.to eq('production') }
-
-    context 'when options does not include deployment_tier' do
-      let(:options) { { environment: { name: 'production' } } }
-
-      it 'uses tier from environment' do
-        is_expected.to eq('development')
-      end
-
-      context 'when persisted environment is absent' do
-        let(:environment) { nil }
-
-        it { is_expected.to be_nil }
-      end
-    end
-  end
-
-  describe 'environment' do
-    describe '#has_environment_keyword?' do
-      subject { build.has_environment_keyword? }
-
-      context 'when environment is defined' do
-        before do
-          build.update!(environment: 'review')
-        end
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when environment is not defined' do
-        before do
-          build.update!(environment: nil)
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-
-    describe '#expanded_environment_name' do
-      subject { build.expanded_environment_name }
-
-      context 'when environment uses $CI_COMMIT_REF_NAME' do
-        let(:build) do
-          create(
-            :ci_build,
-            ref: 'master',
-            environment: 'review/$CI_COMMIT_REF_NAME',
-            pipeline: pipeline
-          )
-        end
-
-        it { is_expected.to eq('review/master') }
-      end
-
-      context 'when environment uses yaml_variables containing symbol keys' do
-        let(:build) do
-          create(
-            :ci_build,
-            yaml_variables: [{ key: :APP_HOST, value: 'host' }],
-            environment: 'review/$APP_HOST',
-            pipeline: pipeline
-          )
-        end
-
-        it 'returns an expanded environment name with a list of variables' do
-          is_expected.to eq('review/host')
-        end
-
-        context 'when build metadata has already persisted the expanded environment name' do
-          before do
-            build.metadata.expanded_environment_name = 'review/foo'
-          end
-
-          it 'returns a persisted expanded environment name without a list of variables' do
-            expect(build).not_to receive(:simple_variables)
-
-            is_expected.to eq('review/foo')
-          end
-        end
-      end
-
-      context 'when using persisted variables' do
-        let(:build) do
-          create(:ci_build, environment: 'review/x$CI_JOB_ID', pipeline: pipeline)
-        end
-
-        it { is_expected.to eq('review/x') }
-      end
-
-      context 'when environment name uses a nested variable' do
-        let(:yaml_variables) do
-          [
-            { key: 'ENVIRONMENT_NAME', value: '${CI_COMMIT_REF_NAME}' }
-          ]
-        end
-
-        let(:build) do
-          create(
-            :ci_build,
-            ref: 'master',
-            yaml_variables: yaml_variables,
-            environment: 'review/$ENVIRONMENT_NAME',
-            pipeline: pipeline
-          )
-        end
-
-        it { is_expected.to eq('review/master') }
-      end
-    end
-
-    describe '#expanded_kubernetes_namespace' do
-      let(:build) { create(:ci_build, environment: environment, options: options, pipeline: pipeline) }
-
-      subject { build.expanded_kubernetes_namespace }
-
-      context 'environment and namespace are not set' do
-        let(:environment) { nil }
-        let(:options) { nil }
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'environment is specified' do
-        let(:environment) { 'production' }
-
-        context 'namespace is not set' do
-          let(:options) { nil }
-
-          it { is_expected.to be_nil }
-        end
-
-        context 'namespace is provided' do
-          let(:options) do
-            {
-              environment: {
-                name: environment,
-                kubernetes: {
-                  namespace: namespace
-                }
-              }
-            }
-          end
-
-          context 'with a static value' do
-            let(:namespace) { 'production' }
-
-            it { is_expected.to eq namespace }
-          end
-
-          context 'with a dynamic value' do
-            let(:namespace) { 'deploy-$CI_COMMIT_REF_NAME' }
-
-            it { is_expected.to eq 'deploy-master' }
-          end
-        end
-      end
-    end
-
-    describe '#deployment_job?' do
-      subject { build.deployment_job? }
-
-      context 'when environment is defined' do
-        before do
-          build.update!(environment: 'review')
-        end
-
-        context 'no action is defined' do
-          it { is_expected.to be_truthy }
-        end
-
-        context 'and start action is defined' do
-          before do
-            build.update!(options: { environment: { action: 'start' } })
-          end
-
-          it { is_expected.to be_truthy }
-        end
-      end
-
-      context 'when environment is not defined' do
-        before do
-          build.update!(environment: nil)
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-
-    describe '#stops_environment?' do
-      subject { build.stops_environment? }
-
-      context 'when environment is defined' do
-        before do
-          build.update!(environment: 'review')
-        end
-
-        context 'no action is defined' do
-          it { is_expected.to be_falsey }
-        end
-
-        context 'and stop action is defined' do
-          before do
-            build.update!(options: { environment: { action: 'stop' } })
-          end
-
-          it { is_expected.to be_truthy }
-        end
-      end
-
-      context 'when environment is not defined' do
-        before do
-          build.update!(environment: nil)
-        end
-
-        it { is_expected.to be_falsey }
-      end
-    end
-  end
-
   describe 'erasable build' do
     shared_examples 'erasable' do
       it 'removes artifact file' do
@@ -2485,29 +1996,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#other_manual_actions' do
-    let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
-    let!(:other_build) { create(:ci_build, :manual, pipeline: pipeline, name: 'other action') }
-
-    subject { build.other_manual_actions }
-
-    before do
-      project.add_developer(user)
-    end
-
-    it 'returns other actions' do
-      is_expected.to contain_exactly(other_build)
-    end
-
-    context 'when build is retried' do
-      let!(:new_build) { Ci::RetryJobService.new(project, user).execute(build)[:job] }
-
-      it 'does not return any of them' do
-        is_expected.not_to include(build, new_build)
-      end
-    end
-  end
-
   describe '#other_scheduled_actions' do
     let(:build) { create(:ci_build, :scheduled, pipeline: pipeline) }
 
@@ -2546,44 +2034,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'does not return other actions' do
         is_expected.to contain_exactly(other_build)
-      end
-    end
-  end
-
-  describe '#persisted_environment' do
-    let!(:environment) do
-      create(:environment, project: project, name: "foo-#{project.default_branch}")
-    end
-
-    subject { build.persisted_environment }
-
-    context 'when referenced literally' do
-      let(:build) do
-        create(:ci_build, pipeline: pipeline, environment: "foo-#{project.default_branch}")
-      end
-
-      it { is_expected.to eq(environment) }
-    end
-
-    context 'when referenced with a variable' do
-      let(:build) do
-        create(:ci_build, pipeline: pipeline, environment: "foo-$CI_COMMIT_REF_NAME")
-      end
-
-      it { is_expected.to eq(environment) }
-    end
-
-    context 'when there is no environment' do
-      it { is_expected.to be_nil }
-    end
-
-    context 'when build has a stop environment' do
-      let(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline, environment: "foo-#{project.default_branch}") }
-
-      it 'expands environment name' do
-        expect(build).to receive(:expanded_environment_name).and_call_original
-
-        is_expected.to eq(environment)
       end
     end
   end
@@ -2915,6 +2365,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true, masked: false },
           { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true, masked: false },
           { key: 'CI_PIPELINE_CREATED_AT', value: pipeline.created_at.iso8601, public: true, masked: false },
+          { key: 'CI_PIPELINE_NAME', value: pipeline.name, public: true, masked: false },
           { key: 'CI_COMMIT_SHA', value: build.sha, public: true, masked: false },
           { key: 'CI_COMMIT_SHORT_SHA', value: build.short_sha, public: true, masked: false },
           { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true, masked: false },
@@ -3765,41 +3216,79 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'for the google_play integration' do
-      let_it_be(:google_play_integration) { create(:google_play_integration) }
+      before do
+        allow(build.pipeline).to receive(:protected_ref?).and_return(pipeline_protected_ref)
+      end
 
       let(:google_play_variables) do
         [
-          { key: 'SUPPLY_JSON_KEY_DATA', value: google_play_integration.service_account_key, masked: true, public: false }
+          { key: "SUPPLY_JSON_KEY_DATA", value: google_play_integration.service_account_key, masked: true, public: false },
+          { key: "SUPPLY_PACKAGE_NAME", value: google_play_integration.package_name, masked: false, public: false }
         ]
       end
 
+      shared_examples 'does not include the google_play_variables' do
+        specify do
+          expect(subject.find { |v| v[:key] == "SUPPLY_JSON_KEY_DATA" }).to be_nil
+          expect(subject.find { |v| v[:key] == "SUPPLY_PACKAGE_NAME" }).to be_nil
+        end
+      end
+
+      shared_examples 'includes google_play_variables' do
+        specify do
+          expect(subject).to include(*google_play_variables)
+        end
+      end
+
       context 'when the google_play integration exists' do
-        context 'when a build is protected' do
-          before do
-            allow(build.pipeline).to receive(:protected_ref?).and_return(true)
-            build.project.update!(google_play_integration: google_play_integration)
+        let_it_be(:google_play_integration) do
+          create(:google_play_integration, project: project)
+        end
+
+        context 'when google_play_protected_refs is true' do
+          context 'when a build is protected' do
+            let(:pipeline_protected_ref) { true }
+
+            include_examples 'includes google_play_variables'
           end
 
-          it 'includes google_play variables' do
-            is_expected.to include(*google_play_variables)
+          context 'when a build is not protected' do
+            let(:pipeline_protected_ref) { false }
+
+            include_examples 'does not include the google_play_variables'
           end
         end
 
-        context 'when a build is not protected' do
+        context 'when google_play_protected_refs is false' do
           before do
-            allow(build.pipeline).to receive(:protected_ref?).and_return(false)
-            build.project.update!(google_play_integration: google_play_integration)
+            google_play_integration.update!(google_play_protected_refs: false)
           end
 
-          it 'does not include the google_play variable' do
-            expect(subject[:key] == 'SUPPLY_JSON_KEY_DATA').to eq(false)
+          context 'when a build is protected' do
+            let(:pipeline_protected_ref) { true }
+
+            include_examples 'includes google_play_variables'
+          end
+
+          context 'when a build is not protected' do
+            let(:pipeline_protected_ref) { false }
+
+            include_examples 'includes google_play_variables'
           end
         end
       end
 
-      context 'when the googel_play integration does not exist' do
-        it 'does not include google_play variable' do
-          expect(subject[:key] == 'SUPPLY_JSON_KEY_DATA').to eq(false)
+      context 'when the google_play integration does not exist' do
+        context 'when a build is protected' do
+          let(:pipeline_protected_ref) { true }
+
+          include_examples 'does not include the google_play_variables'
+        end
+
+        context 'when a build is not protected' do
+          let(:pipeline_protected_ref) { false }
+
+          include_examples 'does not include the google_play_variables'
         end
       end
     end
@@ -5051,45 +4540,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#deployment_status' do
-    before do
-      allow_any_instance_of(described_class).to receive(:create_deployment)
-    end
-
-    context 'when build is a last deployment' do
-      let(:build) { create(:ci_build, :success, environment: 'production', pipeline: pipeline) }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
-
-      it { expect(build.deployment_status).to eq(:last) }
-    end
-
-    context 'when there is a newer build with deployment' do
-      let(:build) { create(:ci_build, :success, environment: 'production', pipeline: pipeline) }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
-      let!(:last_deployment) { create(:deployment, :success, environment: environment, project: environment.project) }
-
-      it { expect(build.deployment_status).to eq(:out_of_date) }
-    end
-
-    context 'when build with deployment has failed' do
-      let(:build) { create(:ci_build, :failed, environment: 'production', pipeline: pipeline) }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
-
-      it { expect(build.deployment_status).to eq(:failed) }
-    end
-
-    context 'when build with deployment is running' do
-      let(:build) { create(:ci_build, environment: 'production', pipeline: pipeline) }
-      let(:environment) { create(:environment, name: 'production', project: build.project) }
-      let!(:deployment) { create(:deployment, :success, environment: environment, project: environment.project, deployable: build) }
-
-      it { expect(build.deployment_status).to eq(:creating) }
-    end
-  end
-
   describe '#degenerated?' do
     context 'when build is degenerated' do
       subject { create(:ci_build, :degenerated, pipeline: pipeline) }
@@ -6151,6 +5601,28 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'does not change the existing token' do
         expect { ci_build.enqueue }
           .not_to change { ci_build.token }.from(token)
+      end
+    end
+  end
+
+  describe 'routing table switch' do
+    context 'with ff disabled' do
+      before do
+        stub_feature_flags(ci_partitioning_use_ci_builds_routing_table: false)
+      end
+
+      it 'uses the legacy table' do
+        expect(described_class.table_name).to eq('ci_builds')
+      end
+    end
+
+    context 'with ff enabled' do
+      before do
+        stub_feature_flags(ci_partitioning_use_ci_builds_routing_table: true)
+      end
+
+      it 'uses the routing table' do
+        expect(described_class.table_name).to eq('p_ci_builds')
       end
     end
   end

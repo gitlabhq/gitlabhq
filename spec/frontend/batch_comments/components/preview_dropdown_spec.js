@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { mount } from '@vue/test-utils';
 import { TEST_HOST } from 'helpers/test_constants';

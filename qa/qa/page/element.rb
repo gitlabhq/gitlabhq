@@ -12,15 +12,10 @@ module QA
       def initialize(name, *options)
         @name = name
         @attributes = options.extract_options!
-        @attributes[:pattern] ||= selector
 
         options.each do |option|
           @attributes[:pattern] = option if option.is_a?(String) || option.is_a?(Regexp)
         end
-      end
-
-      def selector
-        "qa-#{@name.to_s.tr('_', '-')}"
       end
 
       def required?
@@ -28,8 +23,21 @@ module QA
       end
 
       def selector_css
-        %(#{qa_selector}#{additional_selectors},.#{selector})
+        [
+          %([data-testid="#{name}"]#{additional_selectors}),
+          %([data-qa-selector="#{name}"]#{additional_selectors})
+        ].join(',')
       end
+
+      def matches?(line)
+        if expression
+          !!(line =~ /["']#{name}['"]|#{expression}/)
+        else
+          !!(line =~ /["']#{name}['"]/)
+        end
+      end
+
+      private
 
       def expression
         if @attributes[:pattern].is_a?(String)
@@ -37,24 +45,6 @@ module QA
         else
           @attributes[:pattern]
         end
-      end
-
-      def matches?(line)
-        !!(line =~ /["']#{name}['"]|["']#{convert_to_kebabcase(name)}['"]|#{expression}/)
-      end
-
-      private
-
-      def convert_to_kebabcase(text)
-        text.to_s.tr('_', '-')
-      end
-
-      def qa_selector
-        [
-          %([data-testid="#{name}"]#{additional_selectors}),
-          %([data-testid="#{convert_to_kebabcase(name)}"]#{additional_selectors}),
-          %([data-qa-selector="#{name}"]#{additional_selectors})
-        ].join(',')
       end
 
       def additional_selectors

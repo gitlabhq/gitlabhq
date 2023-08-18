@@ -23,7 +23,9 @@ const popoverStates = {
     ),
   },
 };
+
 export default {
+  name: 'SuggestGitlabCiYml',
   dismissTrackValue: 10,
   clickTrackValue: 'click_button',
   components: {

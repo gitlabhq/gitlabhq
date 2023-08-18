@@ -5,7 +5,7 @@ module Types
     graphql_name 'Release'
     description 'Represents a release'
 
-    connection_type_class(Types::CountableConnectionType)
+    connection_type_class Types::CountableConnectionType
 
     authorize :read_release
 

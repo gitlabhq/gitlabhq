@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Optimize GitLab CI/CD configuration files **(FREE)**
+# Optimize GitLab CI/CD configuration files **(FREE ALL)**
 
 You can reduce complexity and duplicated configuration in your GitLab CI/CD configuration
 files by using:

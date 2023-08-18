@@ -7,7 +7,7 @@ class Tree
 
   def initialize(
     repository, sha, path = '/', recursive: false, skip_flat_paths: true, pagination_params: nil,
-    ref_type: nil)
+    ref_type: nil, rescue_not_found: true)
     path = '/' if path.blank?
 
     @repository = repository
@@ -18,7 +18,9 @@ class Tree
 
     ref = ExtractsRef.qualify_ref(@sha, ref_type)
 
-    @entries, @cursor = Gitlab::Git::Tree.where(git_repo, ref, @path, recursive, skip_flat_paths, pagination_params)
+    @entries, @cursor = Gitlab::Git::Tree.where(git_repo, ref, @path, recursive, skip_flat_paths, rescue_not_found,
+      pagination_params)
+
     @entries.each do |entry|
       entry.ref_type = self.ref_type
     end

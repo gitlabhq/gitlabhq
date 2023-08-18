@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
+RSpec.describe LooseForeignKeys::DeletedRecord, type: :model, feature_category: :database do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:table) { 'public.projects' }
 
   describe 'class methods' do
@@ -14,14 +16,30 @@ RSpec.describe LooseForeignKeys::DeletedRecord, type: :model do
     let(:records) { described_class.load_batch_for_table(table, 10) }
 
     describe '.load_batch_for_table' do
-      it 'loads records and orders them by creation date' do
-        expect(records).to eq([deleted_record_1, deleted_record_2, deleted_record_4])
+      where(:union_feature_flag_value) do
+        [true, false]
       end
 
-      it 'supports configurable batch size' do
-        records = described_class.load_batch_for_table(table, 2)
+      with_them do
+        before do
+          stub_feature_flags('loose_foreign_keys_batch_load_using_union' => union_feature_flag_value)
+        end
 
-        expect(records).to eq([deleted_record_1, deleted_record_2])
+        it 'loads records and orders them by creation date' do
+          expect(records).to eq([deleted_record_1, deleted_record_2, deleted_record_4])
+        end
+
+        it 'supports configurable batch size' do
+          records = described_class.load_batch_for_table(table, 2)
+
+          expect(records).to eq([deleted_record_1, deleted_record_2])
+        end
+
+        it 'returns the partition number in each returned record' do
+          records = described_class.load_batch_for_table(table, 4)
+
+          expect(records).to all(have_attributes(partition: (a_value > 0)))
+        end
       end
     end
 

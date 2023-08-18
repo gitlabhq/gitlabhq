@@ -2,6 +2,7 @@
 import { GlAlert, GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { updateRepositorySize } from '~/api/projects_api';
+import { numberToHumanSize } from '~/lib/utils/number_utils';
 import {
   ERROR_MESSAGE,
   LEARN_MORE_LABEL,
@@ -11,10 +12,13 @@ import {
   TOTAL_USAGE_DEFAULT_TEXT,
   HELP_LINK_ARIA_LABEL,
   RECALCULATE_REPOSITORY_LABEL,
-  projectContainerRegistryPopoverContent,
+  PROJECT_STORAGE_TYPES,
+  NAMESPACE_STORAGE_TYPES,
+  usageQuotasHelpPaths,
+  storageTypeHelpPaths,
 } from '../constants';
 import getProjectStorageStatistics from '../queries/project_storage.query.graphql';
-import { parseGetProjectStorageResults } from '../utils';
+import { getStorageTypesFromProjectStatistics, descendingStorageUsageSort } from '../utils';
 import UsageGraph from './usage_graph.vue';
 import ProjectStorageDetail from './project_storage_detail.vue';
 
@@ -28,10 +32,7 @@ export default {
     UsageGraph,
     ProjectStorageDetail,
   },
-  inject: ['projectPath', 'helpLinks'],
-  provide: {
-    containerRegistryPopoverContent: projectContainerRegistryPopoverContent,
-  },
+  inject: ['projectPath'],
   apollo: {
     project: {
       query: getProjectStorageStatistics,
@@ -39,9 +40,6 @@ export default {
         return {
           fullPath: this.projectPath,
         };
-      },
-      update(data) {
-        return parseGetProjectStorageResults(data, this.helpLinks);
       },
       error() {
         this.error = ERROR_MESSAGE;
@@ -56,11 +54,39 @@ export default {
     };
   },
   computed: {
-    totalUsage() {
-      return this.project?.storage?.totalUsage || TOTAL_USAGE_DEFAULT_TEXT;
+    isStatisticsEmpty() {
+      return this.project?.statistics == null;
     },
-    storageTypes() {
-      return this.project?.storage?.storageTypes || [];
+    totalUsage() {
+      if (!this.isStatisticsEmpty) {
+        return numberToHumanSize(this.project?.statistics?.storageSize, 1);
+      }
+
+      return TOTAL_USAGE_DEFAULT_TEXT;
+    },
+    projectStorageTypes() {
+      if (this.isStatisticsEmpty) {
+        return [];
+      }
+
+      return getStorageTypesFromProjectStatistics(
+        PROJECT_STORAGE_TYPES,
+        this.project?.statistics,
+        this.project?.statisticsDetailsPaths,
+        storageTypeHelpPaths,
+      ).sort(descendingStorageUsageSort('value'));
+    },
+    namespaceStorageTypes() {
+      if (this.isStatisticsEmpty) {
+        return [];
+      }
+
+      return getStorageTypesFromProjectStatistics(
+        NAMESPACE_STORAGE_TYPES,
+        this.project?.statistics,
+        this.project?.statisticsDetailsPaths,
+        storageTypeHelpPaths,
+      );
     },
   },
   methods: {
@@ -83,6 +109,7 @@ export default {
       alertEl?.classList.remove('gl-display-none');
     },
   },
+  usageQuotasHelpPaths,
   LEARN_MORE_LABEL,
   USAGE_QUOTAS_LABEL,
   TOTAL_USAGE_TITLE,
@@ -99,17 +126,15 @@ export default {
     <div class="gl-pt-5 gl-px-3">
       <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
         <div>
-          <p class="gl-m-0 gl-font-lg gl-font-weight-bold">{{ $options.TOTAL_USAGE_TITLE }}</p>
+          <h2 class="gl-m-0 gl-font-lg gl-font-weight-bold">{{ $options.TOTAL_USAGE_TITLE }}</h2>
           <p class="gl-m-0 gl-text-gray-400">
             {{ $options.TOTAL_USAGE_SUBTITLE }}
             <gl-link
-              :href="helpLinks.usageQuotas"
+              :href="$options.usageQuotasHelpPaths.usageQuotas"
               target="_blank"
               :aria-label="helpLinkAriaLabel($options.USAGE_QUOTAS_LABEL)"
-              data-testid="usage-quotas-help-link"
+              >{{ $options.LEARN_MORE_LABEL }}</gl-link
             >
-              {{ $options.LEARN_MORE_LABEL }}
-            </gl-link>
           </p>
         </div>
         <p class="gl-m-0 gl-font-size-h-display gl-font-weight-bold" data-testid="total-usage">
@@ -117,7 +142,7 @@ export default {
         </p>
       </div>
     </div>
-    <div v-if="project.statistics" class="gl-w-full">
+    <div v-if="!isStatisticsEmpty" class="gl-w-full">
       <usage-graph :root-storage-statistics="project.statistics" :limit="0" />
     </div>
     <div class="gl-w-full gl-my-5">
@@ -129,6 +154,19 @@ export default {
         {{ $options.RECALCULATE_REPOSITORY_LABEL }}
       </gl-button>
     </div>
-    <project-storage-detail :storage-types="storageTypes" />
+    <project-storage-detail
+      :storage-types="projectStorageTypes"
+      data-testid="usage-quotas-project-usage-details"
+    />
+    <div>
+      <h2 class="gl-mb-2 gl-mt-5 gl-font-lg gl-font-weight-bold">
+        {{ s__('UsageQuota|Namespace entities') }}
+      </h2>
+
+      <project-storage-detail
+        :storage-types="namespaceStorageTypes"
+        data-testid="usage-quotas-namespace-usage-details"
+      />
+    </div>
   </div>
 </template>

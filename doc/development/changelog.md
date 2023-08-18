@@ -94,7 +94,7 @@ EE: true
   uses system fonts for all text."
 - Any client-facing change to our REST and GraphQL APIs **must** have a changelog entry.
   See the [complete list what comprises a GraphQL breaking change](api_graphql_styleguide.md#breaking-changes).
-- Any change that introduces an [advanced search migration](search/advanced_search_migration_styleguide.md#creating-a-new-advanced-search-migration)
+- Any change that introduces an [advanced search migration](search/advanced_search_migration_styleguide.md#create-a-new-advanced-search-migration)
   **must** have a changelog entry.
 - A fix for a regression introduced and then fixed in the same release (such as
   fixing a bug introduced during a monthly release candidate) **should not**

@@ -735,10 +735,6 @@ For a full list of supported assertions, see the [OmniAuth SAML gem](https://git
 
 ## Configure users based on SAML group membership
 
-NOTE:
-SAML Group Sync is only supported for the [SAML provider named `saml`](#configure-gitlab-to-use-multiple-saml-idps).
-As a result, SAML Group Sync only supports a single SAML provider. For more information, see [issue 366450](https://gitlab.com/gitlab-org/gitlab/-/issues/366450).
-
 You can:
 
 - Require users to be members of a certain group.
@@ -2979,8 +2975,11 @@ over HTTPS. These users can instead:
 
 ## Link SAML identity for an existing user
 
-A user can manually link their SAML identity to an existing GitLab account by following the steps in
-[Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
+An administrator can configure GitLab to automatically link SAML users with existing GitLab users.
+For more information, see [Configure SAML support in GitLab](#configure-saml-support-in-gitlab).
+
+A user can manually link their SAML identity to an existing GitLab account. For more information,
+see [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
 
 ## Configure group SAML SSO on a self-managed instance **(PREMIUM SELF)**
 

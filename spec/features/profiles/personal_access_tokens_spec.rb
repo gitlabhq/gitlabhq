@@ -18,6 +18,8 @@ RSpec.describe 'Profile > Personal Access Tokens', :js, feature_category: :user_
       name = 'My PAT'
 
       visit profile_personal_access_tokens_path
+
+      click_button 'Add new token'
       fill_in "Token name", with: name
 
       # Set date to 1st of next month
@@ -43,6 +45,8 @@ RSpec.describe 'Profile > Personal Access Tokens', :js, feature_category: :user_
       it "displays an error message" do
         number_tokens_before = PersonalAccessToken.count
         visit profile_personal_access_tokens_path
+
+        click_button 'Add new token'
         fill_in "Token name", with: 'My PAT'
 
         click_on "Create personal access token"
@@ -145,6 +149,7 @@ RSpec.describe 'Profile > Personal Access Tokens', :js, feature_category: :user_
 
     visit profile_personal_access_tokens_path({ name: name, scopes: scopes })
 
+    click_button 'Add new token'
     expect(page).to have_field("Token name", with: name)
     expect(find("#personal_access_token_scopes_api")).to be_checked
     expect(find("#personal_access_token_scopes_read_user")).to be_checked

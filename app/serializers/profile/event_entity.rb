@@ -51,7 +51,7 @@ module Profile
       expose(:id) { |event| event.target.id }
       expose(:target_type, as: :type)
       expose(:target_title, as: :title)
-      expose(:issue_type, if: ->(event) { event.work_item? }) do |event|
+      expose(:issue_type, if: ->(event) { event.work_item? || event.issue? }) do |event|
         event.target.issue_type
       end
 

@@ -8,7 +8,7 @@
       = _('Error tracking')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Link Sentry to GitLab to discover and view the errors your application generates.')
       = link_to _('Learn more.'), help_page_path('operations/error_tracking'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content

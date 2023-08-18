@@ -363,17 +363,5 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         subject.execute
       end
     end
-
-    context 'when :notify_kas_on_git_push feature flag is disabled' do
-      before do
-        stub_feature_flags(notify_kas_on_git_push: false)
-      end
-
-      it do
-        expect(Clusters::Agents::NotifyGitPushWorker).not_to receive(:perform_async)
-
-        subject.execute
-      end
-    end
   end
 end

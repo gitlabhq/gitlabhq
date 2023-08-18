@@ -8,7 +8,7 @@ author_gitlab: mehranrasulian
 
 <!-- vale off -->
 
-# Test and deploy Laravel applications with GitLab CI/CD and Envoy **(FREE)**
+# Test and deploy Laravel applications with GitLab CI/CD and Envoy **(FREE ALL)**
 
 ## Introduction
 
@@ -66,7 +66,7 @@ This test will be used later for continuously testing our app with GitLab CI/CD.
 ### Push to GitLab
 
 Since we have our app up and running locally, it's time to push the codebase to our remote repository.
-Let's create [a new project](../../../user/project/index.md#create-a-project) in GitLab named `laravel-sample`.
+Let's create [a new project](../../../user/project/index.md) in GitLab named `laravel-sample`.
 After that, follow the command line instructions displayed on the project's homepage to initiate the repository on our machine and push the first commit.
 
 ```shell
@@ -376,7 +376,7 @@ These are persistent data and will be shared to every new release.
 Now, we would need to deploy our app by running `envoy run deploy`, but it won't be necessary since GitLab can handle that for us with CI's [environments](../../environments/index.md), which will be described [later](#setting-up-gitlab-cicd) in this tutorial.
 
 Now it's time to commit [Envoy.blade.php](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Envoy.blade.php) and push it to the `main` branch.
-To keep things simple, we commit directly to `main`, without using [feature-branches](../../../topics/gitlab_flow.md#github-flow-as-a-simpler-alternative) since collaboration is beyond the scope of this tutorial.
+To keep things simple, we commit directly to `main`, without using feature branches, since collaboration is beyond the scope of this tutorial.
 In a real world project, teams may use [Issue Tracker](../../../user/project/issues/index.md) and [merge requests](../../../user/project/merge_requests/index.md) to move their code across branches:
 
 ```shell

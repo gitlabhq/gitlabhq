@@ -5,7 +5,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Planning hierarchies **(PREMIUM)**
+# Planning hierarchies **(PREMIUM ALL)**
 
 Planning hierarchies are an integral part of breaking down your work in GitLab.
 To understand how you can use epics and issues together in hierarchies, remember the following:
@@ -31,7 +31,7 @@ graph TD
     Group_epic --> Project2_Issue1
 ```
 
-### Hierarchies with multi-level epics **(ULTIMATE)**
+### Hierarchies with multi-level epics **(ULTIMATE ALL)**
 
 With the addition of [multi-level epics](../epics/manage_epics.md#multi-level-child-epics) and up to
 seven levels of nested epics, you can achieve the following hierarchy:

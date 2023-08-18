@@ -12,23 +12,10 @@ RSpec.describe 'ClickHouse::Client', feature_category: :database do
   end
 
   describe 'when click_house spec tag is added', :click_house do
-    around do |example|
-      with_net_connect_allowed do
-        example.run
-      end
-    end
-
     it 'has a ClickHouse database configured' do
       databases = ClickHouse::Client.configuration.databases
 
       expect(databases).not_to be_empty
-    end
-
-    it 'returns data from the DB via `select` method' do
-      result = ClickHouse::Client.select("SELECT 1 AS value", :main)
-
-      # returns JSON if successful. Otherwise error
-      expect(result).to eq([{ 'value' => 1 }])
     end
 
     it 'does not return data via `execute` method' do

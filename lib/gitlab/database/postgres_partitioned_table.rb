@@ -10,7 +10,7 @@ module Gitlab
       has_many :postgres_partitions, foreign_key: 'parent_identifier', primary_key: 'identifier'
 
       scope :by_identifier, ->(identifier) do
-        unless identifier =~ Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER
+        unless Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER.match?(identifier)
           raise ArgumentError, "Table name is not fully qualified with a schema: #{identifier}"
         end
 

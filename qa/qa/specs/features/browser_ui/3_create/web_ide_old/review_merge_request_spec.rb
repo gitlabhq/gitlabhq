@@ -11,13 +11,7 @@ module QA
       let(:new_file) { 'awesome_new_file.txt' }
       let(:original_text) { 'Text' }
       let(:review_text) { 'Reviewed ' }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'review-merge-request-spec-project'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'review-mr-spec-project') }
 
       let(:merge_request) do
         Resource::MergeRequest.fabricate_via_api! do |mr|

@@ -64,7 +64,7 @@ A [user cap](#user-cap) can also be used to enforce approvals for new users.
 You can send confirmation emails during sign up and require that users confirm
 their email address before they are allowed to sign in.
 
-For example, to enforce confirmation of the email address used for new sign ups:
+To enforce confirmation of the email address used for new sign ups:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
@@ -75,33 +75,37 @@ For example, to enforce confirmation of the email address used for new sign ups:
 The following settings are available:
 
 - **Hard** - Send a confirmation email during sign up. New users must confirm their email address before they can log in.
-- **Soft** - Send a confirmation email during sign up. New users can log in immediately, but must confirm their email in three days. Unconfirmed accounts are deleted.
+- **Soft** - Send a confirmation email during sign up. New users can sign in immediately, but must confirm their email in three days. After three days, the user is not able to sign in until they confirm their email.
 - **Off** - New users can sign up without confirming their email address.
 
 ## User cap
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4315) in GitLab 13.7.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292600) in GitLab 13.9.
+The user cap is the maximum number of billable users who can sign up or be added to a subscription
+without administrator approval. After the user cap is reached, users who sign up or are
+added must be [approved](../../administration/moderate_users.md#approve-or-reject-a-user-sign-up)
+by an administrator. Users can use their account only after they have been approved by an administrator.
 
-When the number of billable users reaches the user cap, any user who is added or requests access must be
-[approved](../../administration/moderate_users.md#approve-or-reject-a-user-sign-up) by an administrator before they can start using
-their account.
-
-If an administrator [increases](#set-the-user-cap-number) or [removes](#remove-the-user-cap) the
-user cap, the users in pending approval state are automatically approved in a background job.
+If an administrator increases or removes the user cap, users pending approval are automatically approved.
 
 NOTE:
-The amount of billable users [is updated once a day](../../subscriptions/self_managed/index.md#billable-users).
-This means the user cap might apply only retrospectively after the cap has already been exceeded.
-To ensure the cap is enabled immediately, set it to a low value below the current number of
-billable users, for example: `1`.
+For instances that use LDAP or OmniAuth, when [administrator approval for new sign-ups](#require-administrator-approval-for-new-sign-ups)
+is enabled or disabled, downtime might occur due to changes in the Rails configuration.
+You can set a user cap to enforce approvals for new users. To ensure the user cap applies immediately, set the cap to a value below the current number of billable users (for example, `1`).
 
-On instances that use LDAP or OmniAuth, enabling and disabling
-[administrator approval for new sign ups](#require-administrator-approval-for-new-sign-ups)
-involves changing the Rails configuration, and may require downtime.
-User cap can be used instead. As noted above, set the cap to value that ensures it is enforced immediately.
+### Set a user cap
 
-### Set the user cap number
+Set a user cap to restrict the number of users who can sign up without administrator approval.
+
+The number of [billable users](../../subscriptions/self_managed/index.md#billable-users) is updated once a day.
+The user cap might apply only retrospectively after the cap has already been exceeded.
+To ensure the cap is enabled immediately, set the cap to a value below the current number of
+billable users (for example, `1`).
+
+Prerequisite:
+
+- You must be an administrator.
+
+To set a user cap:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
@@ -110,9 +114,18 @@ User cap can be used instead. As noted above, set the cap to value that ensures 
 1. Enter a number in **User cap**.
 1. Select **Save changes**.
 
-New user sign ups are subject to the user cap restriction.
+### Remove the user cap
 
-## Remove the user cap
+Remove the user cap so that the number of new users who can sign up without
+administrator approval is not restricted.
+
+After you remove the user cap, users pending approval are automatically approved.
+
+Prerequisite:
+
+- You must be an administrator.
+
+To remove the user cap:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
@@ -120,9 +133,6 @@ New user sign ups are subject to the user cap restriction.
 1. Expand **Sign-up restrictions**.
 1. Remove the number from **User cap**.
 1. Select **Save changes**.
-
-New users sign ups are not subject to the user cap restriction. Users in pending approval state are
-automatically approved in a background job.
 
 ## Minimum password length limit
 

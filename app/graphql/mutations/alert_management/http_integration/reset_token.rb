@@ -7,8 +7,8 @@ module Mutations
         graphql_name 'HttpIntegrationResetToken'
 
         argument :id, Types::GlobalIDType[::AlertManagement::HttpIntegration],
-                 required: true,
-                 description: "ID of the integration to mutate."
+          required: true,
+          description: "ID of the integration to mutate."
 
         def resolve(id:)
           integration = authorized_find!(id: id)

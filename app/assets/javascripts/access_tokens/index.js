@@ -20,7 +20,6 @@ export const initAccessTokenTableApp = () => {
   const {
     accessTokenType,
     accessTokenTypePlural,
-    information,
     initialActiveAccessTokens: initialActiveAccessTokensJson,
     noActiveTokensMessage: noTokensMessage,
   } = el.dataset;
@@ -39,7 +38,6 @@ export const initAccessTokenTableApp = () => {
     provide: {
       accessTokenType,
       accessTokenTypePlural,
-      information,
       initialActiveAccessTokens,
       noActiveTokensMessage,
       showRole,

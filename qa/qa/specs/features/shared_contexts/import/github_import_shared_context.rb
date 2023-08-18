@@ -10,10 +10,7 @@ module QA
     let!(:api_client) { Runtime::API::Client.as_admin }
 
     let!(:group) do
-      Resource::Group.fabricate_via_api! do |resource|
-        resource.api_client = api_client
-        resource.path = "destination-group-for-import-#{SecureRandom.hex(4)}"
-      end
+      create(:group, api_client: api_client, path: "destination-group-for-import-#{SecureRandom.hex(4)}")
     end
 
     let!(:user) do

@@ -3,12 +3,7 @@
 module QA
   RSpec.describe 'Verify', :runner, :reliable, product_group: :pipeline_execution do
     describe 'Parent-child pipelines independent relationship' do
-      let!(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'pipeline-independent-relationship'
-        end
-      end
-
+      let!(:project) { create(:project, name: 'pipeline-independent-relationship') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate_via_api! do |runner|
           runner.project = project

@@ -4,13 +4,14 @@ query getPipelineFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
     pipeline(iid: $pipelineIid) {
       id
       active
-      jobs(statuses: [FAILED], retried: false, jobKind: BUILD) {
+      jobs(statuses: [FAILED], retried: false) {
         count
         nodes {
           id
           allowFailure
           detailedStatus {
             id
+            detailsPath
             group
             icon
             action {
@@ -19,6 +20,7 @@ query getPipelineFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
               icon
             }
           }
+          kind
           name
           retried
           retryable
@@ -33,7 +35,6 @@ query getPipelineFailedJobs($fullPath: ID!, $pipelineIid: ID!) {
             readBuild
             updateBuild
           }
-          webPath
         }
       }
     }

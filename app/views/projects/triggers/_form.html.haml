@@ -1,3 +1,4 @@
+- show_cancel_button = local_assigns.fetch(:show_cancel_button, false)
 = gitlab_ui_form_for [@project, @trigger], html: { class: 'gl-show-field-errors' } do |f|
   = form_errors(@trigger)
 
@@ -9,3 +10,6 @@
     = f.label :key, s_("Trigger|Description"), class: "label-bold"
     = f.text_field :description, class: 'form-control gl-form-input', required: true, title: 'Trigger description is required.', placeholder: s_("Trigger|Trigger description")
   = f.submit btn_text, pajamas_button: true
+  - if show_cancel_button
+    = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
+      = _('Cancel')

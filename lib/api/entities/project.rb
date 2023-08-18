@@ -85,7 +85,9 @@ module API
       expose(:infrastructure_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :infrastructure) }
       expose(:monitor_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :monitor) }
 
-      expose :emails_disabled, documentation: { type: 'boolean' }
+      expose(:emails_disabled, documentation: { type: 'boolean' }) { |project, options| project.emails_disabled? }
+      expose :emails_enabled, documentation: { type: 'boolean' }
+
       expose :shared_runners_enabled, documentation: { type: 'boolean' }
       expose :lfs_enabled?, as: :lfs_enabled, documentation: { type: 'boolean' }
       expose :creator_id, documentation: { type: 'integer', example: 1 }
@@ -110,6 +112,7 @@ module API
         # CI/CD Settings
         expose :ci_default_git_depth, documentation: { type: 'integer', example: 20 }
         expose :ci_forward_deployment_enabled, documentation: { type: 'boolean' }
+        expose :ci_forward_deployment_rollback_allowed, documentation: { type: 'boolean' }
         expose(:ci_job_token_scope_enabled, documentation: { type: 'boolean' }) { |p, _| p.ci_outbound_job_token_scope_enabled? }
         expose :ci_separated_caches, documentation: { type: 'boolean' }
         expose :ci_allow_fork_pipelines_to_run_in_parent_project, documentation: { type: 'boolean' }

@@ -100,6 +100,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
           expect(json_response.first['id']).to eq(migration.id)
           expect(json_response.first['job_class_name']).to eq(migration.job_class_name)
           expect(json_response.first['table_name']).to eq(migration.table_name)
+          expect(json_response.first['column_name']).to eq(migration.column_name)
           expect(json_response.first['status']).to eq(migration.status_name.to_s)
           expect(json_response.first['progress']).to be_zero
         end
@@ -151,6 +152,7 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, feature_category: :datab
               expect(json_response.first['id']).to eq(ci_database_migration.id)
               expect(json_response.first['job_class_name']).to eq(ci_database_migration.job_class_name)
               expect(json_response.first['table_name']).to eq(ci_database_migration.table_name)
+              expect(json_response.first['column_name']).to eq(ci_database_migration.column_name)
               expect(json_response.first['status']).to eq(ci_database_migration.status_name.to_s)
               expect(json_response.first['progress']).to be_zero
             end

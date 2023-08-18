@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrating to the new runner registration workflow **(FREE)**
+# Migrating to the new runner registration workflow **(FREE ALL)**
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.

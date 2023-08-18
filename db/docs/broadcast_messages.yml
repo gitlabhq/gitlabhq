@@ -1,7 +1,7 @@
 ---
 table_name: broadcast_messages
 classes:
-- BroadcastMessage
+- System::BroadcastMessage
 feature_categories:
 - onboarding
 description: GitLab can display broadcast messages to users of a GitLab instance

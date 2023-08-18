@@ -19,11 +19,6 @@ class DiscussionEntity < BaseDiscussionEntity
     discussion.diff_note_positions.map(&:line_code)
   end
 
-  expose :resolved?, as: :resolved
-  expose :resolved_by_push?, as: :resolved_by_push
-  expose :resolved_by, using: NoteUserEntity
-  expose :resolved_at
-
   private
 
   def current_user

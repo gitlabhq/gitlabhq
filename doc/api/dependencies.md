@@ -4,7 +4,7 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Dependencies API **(ULTIMATE)**
+# Dependencies API **(ULTIMATE ALL)**
 
 WARNING:
 This API is in an [Experiment](../policy/experiment-beta-support.md#experiment) and considered unstable.

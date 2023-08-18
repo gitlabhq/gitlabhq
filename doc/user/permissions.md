@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Permissions and roles **(FREE)**
+# Permissions and roles **(FREE ALL)**
 
 When you add a user to a project or group, you assign them a role.
 The role determines which actions they can take in GitLab.
@@ -102,7 +102,7 @@ The following table lists project permissions available for each role:
 | [Issues](project/issues/index.md):<br>Create [confidential issues](project/issues/confidential_issues.md)                                                                            | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>View [Design Management](project/issues/design_management.md) pages                                                                            | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>View [related issues](project/issues/related_issues.md)                                                                                        | ✓        | ✓        | ✓         | ✓          | ✓        |
-| [Issues](project/issues/index.md):<br>Set [weight](project/issues/issue_weight.md)                                                                                                   | ✓ (15) | ✓        | ✓         | ✓          | ✓        |
+| [Issues](project/issues/index.md):<br>Set [weight](project/issues/issue_weight.md)                                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Set metadata such as labels, milestones, or assignees when creating an issue                                                             | ✓ (15)  | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Edit metadata such labels, milestones, or assignees for an existing issue                                                                |   (15)  | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Set [parent epic](group/epics/manage_epics.md#add-an-existing-issue-to-an-epic) |          | ✓        | ✓         | ✓          | ✓        |
@@ -116,10 +116,10 @@ The following table lists project permissions available for each role:
 | [Issues](project/issues/index.md):<br>Archive [Design Management](project/issues/design_management.md) files                                                                         |          |          | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Upload [Design Management](project/issues/design_management.md) files                                                                          |          |          | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Delete                                                                                                                                         |          |          |           |            | ✓        |
-| [License Compliance](compliance/license_compliance/index.md):<br>View allowed and denied licenses                                                                                    | ✓ (1)  | ✓        | ✓         | ✓          | ✓        |
-| [License Compliance](compliance/license_compliance/index.md):<br>View License Compliance reports                                                                                     | ✓ (1)  | ✓        | ✓         | ✓          | ✓        |
-| [License Compliance](compliance/license_compliance/index.md):<br>View License list                                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
-| [License Compliance](compliance/license_compliance/index.md):<br>Manage license policy                                                                                               |          |          |           | ✓          | ✓        |
+| [License Scanning](compliance/license_scanning_of_cyclonedx_files/index.md):<br>View allowed and denied licenses                                                                                    | ✓ (1)  | ✓        | ✓         | ✓          | ✓        |
+| [License Scanning](compliance/license_scanning_of_cyclonedx_files/index.md):<br>View License Compliance reports                                                                                     | ✓ (1)  | ✓        | ✓         | ✓          | ✓        |
+| [License Scanning](compliance/license_scanning_of_cyclonedx_files/index.md):<br>View License list                                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
+| [License approval policies](../user/compliance/license_approval_policies.md):<br>Manage license policy                                                                                               |          |          |           | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Assign reviewer                                                                                                                |          | ✓        | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>See list                                                                                                                       |          | ✓        | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Apply code change suggestions                                                                                                  |          |          | ✓         | ✓          | ✓        |
@@ -250,7 +250,7 @@ The following table lists project permissions available for each role:
 20. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests.
 21. Authors of tasks can delete them even if they don't have the Owner role, but they have to have at least the Guest role for the project.
 22. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
-23. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator gives those users permission. The administrator can create a [custom role](#custom-roles) through the API and assign that role to the users.
+23. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](#custom-roles) through the API and assign that role to the users.
 
 <!-- markdownlint-enable MD029 -->
 
@@ -284,6 +284,7 @@ More details about the permissions for some project-level features follow.
 | Run CI/CD pipeline                                                                                                        |            |         |          | ✓         | ✓          | ✓     |
 | Run CI/CD pipeline for a protected branch                                                                                 |            |         |          | ✓ (5)   | ✓ (5)    | ✓     |
 | Stop [environments](../ci/environments/index.md)                                                                          |            |         |          | ✓         | ✓          | ✓     |
+| Run deployment job for a protected environment                                                                            |            |         |  ✓ (5)   | ✓ (6)   | ✓ (6)    | ✓     |
 | View a job with [debug logging](../ci/variables/index.md#enable-debug-logging)                                            |            |         |          | ✓         | ✓          | ✓     |
 | Use pipeline editor                                                                                                       |            |         |          | ✓         | ✓          | ✓     |
 | Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                  |            |         |          | ✓         | ✓          | ✓     |
@@ -307,6 +308,7 @@ More details about the permissions for some project-level features follow.
    - [In GitLab 13.0](https://gitlab.com/gitlab-org/gitlab/-/issues/35069) and later,
      run for a non-protected branch.
 5. If the user is [allowed to merge or push to the protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches).
+6. If the user if [part of a group with at least the Reporter role](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments)
 
 <!-- markdownlint-enable MD029 -->
 
@@ -427,7 +429,7 @@ nested groups if you have membership in one of its parents.
 For more information, see
 [subgroup memberships](group/subgroups/index.md#subgroup-membership).
 
-## Users with Minimal Access **(PREMIUM)**
+## Users with Minimal Access **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
 > - Support for inviting users with Minimal Access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.
@@ -466,12 +468,15 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Release permissions](project/releases/index.md#release-permissions)
 - [Read-only namespaces](../user/read_only_namespaces.md)
 
-## Custom roles **(ULTIMATE)**
+## Custom roles **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
 > - The ability for a custom role to view a vulnerability report [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10160) in GitLab 16.1.
+
+FLAG:
+On self-managed GitLab, by default the ability for a custom role to view a vulnerability report is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `elevated_guests`. On GitLab.com, this feature is available.
 
 Custom roles allow group members who are assigned the Owner role to create roles
 specific to the needs of their organization.
@@ -482,9 +487,16 @@ For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code
 The following custom roles are available:
 
 - The Guest+1 role, which allows users with the Guest role to view code.
-- In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and update (change status) of the vulnerabilities.
+- In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and change the status of the vulnerabilities.
 
 You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
+
+When you enable the view vulnerability custom role for a user with the Guest role, that user has access to elevated permissions, and therefore:
+
+- Is considered a [billable user](../subscriptions/self_managed/index.md#billable-users) on self-managed GitLab.
+- [Uses a seat](../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined) on GitLab.com.
+
+This does not apply to the Guest+1 custom role because the `view_code` ability is excluded from this behavior.
 
 ### Create a custom role
 
@@ -514,7 +526,7 @@ You can see the required minimal access levels and abilities requirements in the
 To associate a custom role with an existing group member, a group member with
 the Owner role:
 
-1. Invites a user to the root group or any subgroup or project in the root
+1. Invites a user as a direct member to the root group or any subgroup or project in the root
    group's hierarchy as a Guest. At this point, this Guest user cannot see any
    code on the projects in the group or subgroup.
 1. Optional. If the Owner does not know the `ID` of the Guest user receiving a custom

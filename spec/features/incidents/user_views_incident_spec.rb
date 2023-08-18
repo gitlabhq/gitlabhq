@@ -75,35 +75,4 @@ RSpec.describe "User views incident", feature_category: :incident_management do
       expect(page).not_to have_button('Incident actions')
     end
   end
-
-  describe 'user status' do
-    context 'when showing status of the author of the incident' do
-      subject { visit(incident_project_issues_path(project, incident)) }
-
-      it_behaves_like 'showing user status' do
-        let(:user_with_status) { user }
-      end
-    end
-
-    context 'when status message has an emoji', :js do
-      let_it_be(:message) { 'My status with an emoji' }
-      let_it_be(:message_emoji) { 'basketball' }
-      let_it_be(:status) { create(:user_status, user: user, emoji: 'smirk', message: "#{message} :#{message_emoji}:") }
-
-      it 'correctly renders the emoji' do
-        wait_for_requests
-
-        tooltip_span = page.first(".user-status-emoji[title^='#{message}']")
-        tooltip_span.hover
-
-        wait_for_requests
-
-        tooltip = page.find('.tooltip .tooltip-inner')
-
-        page.within(tooltip) do
-          expect(page).to have_emoji(message_emoji)
-        end
-      end
-    end
-  end
 end

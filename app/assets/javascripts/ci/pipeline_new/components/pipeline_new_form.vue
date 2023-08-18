@@ -476,7 +476,6 @@ export default {
             <gl-dropdown-item
               v-for="option in configVariablesWithDescription.options[variable.key]"
               :key="option"
-              data-testid="pipeline-form-ci-variable-value-dropdown-items"
               data-qa-selector="ci_variable_value_dropdown_item"
               @click="setVariableAttribute(variable.key, 'value', option)"
             >

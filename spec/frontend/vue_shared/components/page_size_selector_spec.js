@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import PageSizeSelector, { PAGE_SIZES } from '~/vue_shared/components/page_size_selector.vue';
 
@@ -11,30 +11,30 @@ describe('Page size selector component', () => {
     });
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
 
-  it.each(PAGE_SIZES)('shows expected text in the dropdown button for page size %s', (pageSize) => {
-    createWrapper({ pageSize });
+  it.each(PAGE_SIZES)('shows expected text in the listbox button for page size %s', (pageSize) => {
+    createWrapper({ pageSize: pageSize.value });
 
-    expect(findDropdown().props('text')).toBe(`Show ${pageSize} items`);
+    expect(findListbox().props('toggleText')).toBe(`Show ${pageSize.value} items`);
   });
 
-  it('shows the expected dropdown items', () => {
+  it('shows the expected listbox items', () => {
     createWrapper();
 
+    const options = findListbox().props('items');
+
     PAGE_SIZES.forEach((pageSize, index) => {
-      expect(findDropdownItems().at(index).text()).toBe(`Show ${pageSize} items`);
+      expect(options[index].text).toBe(pageSize.text);
     });
   });
 
-  it('will emit the new page size when a dropdown item is clicked', () => {
+  it('will emit the new page size when a listbox item is clicked', () => {
     createWrapper();
 
-    findDropdownItems().wrappers.forEach((itemWrapper, index) => {
-      itemWrapper.vm.$emit('click');
-
-      expect(wrapper.emitted('input')[index][0]).toBe(PAGE_SIZES[index]);
+    PAGE_SIZES.forEach((pageSize, index) => {
+      findListbox().vm.$emit('select', pageSize.value);
+      expect(wrapper.emitted('input')[index][0]).toBe(PAGE_SIZES[index].value);
     });
   });
 });

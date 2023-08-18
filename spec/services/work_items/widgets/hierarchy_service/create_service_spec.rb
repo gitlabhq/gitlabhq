@@ -13,7 +13,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::CreateService, feature_cate
     it { expect { subject }.to raise_error(described_class::WidgetError, message) }
   end
 
-  before(:all) do
+  before_all do
     project.add_developer(user)
   end
 

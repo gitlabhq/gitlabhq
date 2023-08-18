@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Compute quota **(PREMIUM)**
+# Compute quota **(PREMIUM ALL)**
 
 > [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
 
@@ -152,7 +152,7 @@ For example, with a GitLab SaaS Premium license:
 If you use `13,000` compute minutes during the month, the next month your additional compute minutes become
 `2,000`. If you use `9,000` compute minutes during the month, your additional compute minutes remain the same.
 
-If you bought additional compute minutes while on a trial subscription, those compute minutes are available after the trial ends or you upgrade to a paid plan.
+Additional compute minutes bought on a trial subscription are available after the trial ends or upgrading to a paid plan.
 
 You can find pricing for additional compute minutes on the
 [GitLab Pricing page](https://about.gitlab.com/pricing/).
@@ -269,8 +269,10 @@ GitLab SaaS runners have different cost factors, depending on the runner type (L
 | Linux OS amd64               | small                | 1           |
 | Linux OS amd64               | medium               | 2           |
 | Linux OS amd64               | large                | 3           |
+| Linux OS amd64               | xlarge               | 6           |
+| Linux OS amd64               | 2xlarge              | 12          |
 | Linux OS amd64 + GPU-enabled | medium, GPU standard | 7           |
-| macOS M1                     | Medium               | 6           |
+| macOS M1                     | medium               | 6 (Beta)    |
 | Windows Server               | -                    | 1 (Beta)    |
 
 ### Monthly reset of compute usage

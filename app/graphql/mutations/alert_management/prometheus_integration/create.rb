@@ -9,16 +9,16 @@ module Mutations
         include FindsProject
 
         argument :project_path, GraphQL::Types::ID,
-                 required: true,
-                 description: 'Project to create the integration in.'
+          required: true,
+          description: 'Project to create the integration in.'
 
         argument :active, GraphQL::Types::Boolean,
-                 required: true,
-                 description: 'Whether the integration is receiving alerts.'
+          required: true,
+          description: 'Whether the integration is receiving alerts.'
 
         argument :api_url, GraphQL::Types::String,
-                 required: false,
-                 description: 'Endpoint at which Prometheus can be queried.'
+          required: false,
+          description: 'Endpoint at which Prometheus can be queried.'
 
         def resolve(args)
           project = authorized_find!(args[:project_path])

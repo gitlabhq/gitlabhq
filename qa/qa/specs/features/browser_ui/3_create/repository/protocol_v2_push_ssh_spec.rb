@@ -28,9 +28,7 @@ module QA
       end
 
       it 'user pushes to the repository', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347734' do
-        project = Resource::Project.fabricate_via_api! do |project|
-          project.name = 'git-protocol-project'
-        end
+        project = create(:project, name: 'git-protocol-project')
 
         file_name = 'README.md'
         file_content = 'Test Git protocol v2'

@@ -1,4 +1,0 @@
-- name: ci_users_executing_deployment_job
-  aggregation: weekly
-- name: ci_users_executing_verify_environment_job
-  aggregation: weekly

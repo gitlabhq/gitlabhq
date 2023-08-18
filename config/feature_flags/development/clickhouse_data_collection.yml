@@ -1,0 +1,8 @@
+---
+name: clickhouse_data_collection
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127435
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/420257
+milestone: '16.3'
+type: development
+group: group::optimize
+default_enabled: false

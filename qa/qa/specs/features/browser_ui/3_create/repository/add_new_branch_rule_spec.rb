@@ -6,12 +6,7 @@ module QA
       let(:branch_name) { 'new-branch' }
       let(:allowed_to_push_role) { Resource::ProtectedBranch::Roles::NO_ONE }
       let(:allowed_to_merge_role) { Resource::ProtectedBranch::Roles::MAINTAINERS }
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'branch-rule-project'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'branch-rule-project') }
 
       before do
         Flow::Login.sign_in

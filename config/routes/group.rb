@@ -160,6 +160,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     end
 
     resources :achievements, only: [:index, :new, :edit]
+
+    resources :work_items, only: [:index]
   end
 
   scope(

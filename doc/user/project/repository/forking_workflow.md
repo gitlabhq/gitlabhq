@@ -4,10 +4,10 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project forking workflow **(FREE)**
+# Project forking workflow **(FREE ALL)**
 
 Whenever possible, it's recommended to work in a common Git repository and use
-[branching strategies](../../../topics/gitlab_flow.md) to manage your work. However,
+branching strategies to manage your work. However,
 if you do not have write access for the repository you want to contribute to, you
 can create a fork.
 
@@ -134,7 +134,7 @@ an `upstream` remote repository for your fork:
    git push origin main
    ```
 
-### With repository mirroring **(PREMIUM)**
+### With repository mirroring **(PREMIUM ALL)**
 
 A fork can be configured as a mirror of the upstream if all these conditions are met:
 
@@ -202,7 +202,7 @@ to share objects with another repository:
 ### Error: `An error occurred while forking the project. Please try again`
 
 This error can be due to a mismatch in shared runner settings between the forked project
-and the new namespace. See [Forks](../../../ci/runners/configure_runners.md#forks)
+and the new namespace. See [Forks](../../../ci/runners/configure_runners.md#using-shared-runners-in-forked-projects)
 in the Runner documentation for more information.
 
 ### Removing fork relationship fails

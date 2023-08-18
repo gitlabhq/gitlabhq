@@ -7,13 +7,19 @@ fragment TreeEntry on Entry {
   type
 }
 
-query getPaginatedTree($projectPath: ID!, $path: String, $ref: String!, $nextPageCursor: String) {
+query getPaginatedTree(
+  $projectPath: ID!
+  $path: String
+  $ref: String!
+  $nextPageCursor: String
+  $refType: RefType
+) {
   project(fullPath: $projectPath) {
     id
     __typename
     repository {
       __typename
-      paginatedTree(path: $path, ref: $ref, after: $nextPageCursor) {
+      paginatedTree(path: $path, ref: $ref, refType: $refType, after: $nextPageCursor) {
         __typename
         pageInfo {
           __typename

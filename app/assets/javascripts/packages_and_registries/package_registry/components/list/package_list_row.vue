@@ -1,7 +1,7 @@
 <script>
 import {
-  GlDropdown,
-  GlDropdownItem,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
   GlFormCheckbox,
   GlIcon,
   GlSprintf,
@@ -28,8 +28,8 @@ import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 export default {
   name: 'PackageListRow',
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     GlFormCheckbox,
     GlIcon,
     GlSprintf,
@@ -135,7 +135,6 @@ export default {
           :class="errorPackageStyle"
           class="gl-text-body gl-min-w-0"
           data-testid="details-link"
-          data-qa-selector="package_link"
           :to="{ name: 'details', params: { id: packageId } }"
         >
           <gl-truncate :text="packageEntity.name" />
@@ -195,18 +194,22 @@ export default {
     </template>
 
     <template v-if="packageEntity.canDestroy" #right-action>
-      <gl-dropdown
+      <gl-disclosure-dropdown
+        category="tertiary"
         data-testid="delete-dropdown"
         icon="ellipsis_v"
-        :text="$options.i18n.moreActions"
-        :text-sr-only="true"
-        category="tertiary"
+        :toggle-text="$options.i18n.moreActions"
+        text-sr-only
         no-caret
       >
-        <gl-dropdown-item data-testid="action-delete" variant="danger" @click="$emit('delete')">{{
-          $options.i18n.deletePackage
-        }}</gl-dropdown-item>
-      </gl-dropdown>
+        <gl-disclosure-dropdown-item data-testid="action-delete" @action="$emit('delete')">
+          <template #list-item>
+            <span class="gl-text-red-500">
+              {{ $options.i18n.deletePackage }}
+            </span>
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown>
     </template>
   </list-item>
 </template>

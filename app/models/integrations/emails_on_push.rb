@@ -10,7 +10,7 @@ module Integrations
     validate :number_of_recipients_within_limit, if: :validate_recipients?
 
     field :send_from_committer_email,
-      type: 'checkbox',
+      type: :checkbox,
       title: -> { s_("EmailsOnPushService|Send from committer") },
       help: -> do
         @help ||= begin
@@ -21,17 +21,17 @@ module Integrations
       end
 
     field :disable_diffs,
-      type: 'checkbox',
+      type: :checkbox,
       title: -> { s_("EmailsOnPushService|Disable code diffs") },
       help: -> { s_("EmailsOnPushService|Don't include possibly sensitive code diffs in notification body.") }
 
     field :branches_to_be_notified,
-      type: 'select',
+      type: :select,
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
       choices: branch_choices
 
     field :recipients,
-      type: 'textarea',
+      type: :textarea,
       placeholder: -> { s_('EmailsOnPushService|tanuki@example.com gitlab@example.com') },
       help: -> { s_('EmailsOnPushService|Emails separated by whitespace.') }
 

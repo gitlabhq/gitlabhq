@@ -19,7 +19,13 @@ export default {
 
 <template>
   <ul class="gl-p-0 gl-list-style-none">
-    <nav-item v-for="item in items" :key="item.id" :item="item" is-subitem>
+    <nav-item
+      v-for="item in items"
+      :key="item.id"
+      :item="item"
+      is-subitem
+      class="show-on-focus-or-hover--context"
+    >
       <template #icon>
         <project-avatar
           :project-id="item.id"

@@ -1,6 +1,7 @@
 import { GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { pipelines } from 'jest/ide/mock_data';
 import JobsList from '~/ide/components/jobs/list.vue';

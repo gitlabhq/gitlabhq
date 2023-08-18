@@ -277,7 +277,7 @@ export default {
       requestAccessEnabled: true,
       enforceAuthChecksOnUploads: true,
       highlightChangesClass: false,
-      emailsDisabled: false,
+      emailsEnabled: true,
       cveIdRequestEnabled: true,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
@@ -370,7 +370,10 @@ export default {
       return this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS[0];
     },
     packageRegistryApiForEveryoneEnabledShown() {
-      return this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER;
+      return (
+        this.packageRegistryAllowAnyoneToPullOption &&
+        this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER
+      );
     },
     monitorOperationsFeatureAccessLevelOptions() {
       return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);
@@ -1001,14 +1004,19 @@ export default {
       :full-path="confirmationPhrase"
     />
     <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
-      <label class="js-emails-disabled">
-        <input :value="emailsDisabled" type="hidden" name="project[emails_disabled]" />
-        <input v-model="emailsDisabled" type="checkbox" />
-        {{ s__('ProjectSettings|Disable email notifications') }}
+      <label class="js-emails-enabled">
+        <input
+          :value="emailsEnabled"
+          type="hidden"
+          name="project[project_setting_attributes][emails_enabled]"
+        />
+        <gl-form-checkbox v-model="emailsEnabled">
+          {{ s__('ProjectSettings|Enable email notifications') }}
+          <template #help>{{
+            s__('ProjectSettings|Enable sending email notifications for this project')
+          }}</template>
+        </gl-form-checkbox>
       </label>
-      <span class="form-text text-muted">{{
-        s__('ProjectSettings|Override user notification preferences for all project members.')
-      }}</span>
     </project-setting-row>
     <project-setting-row class="mb-3">
       <input
@@ -1020,10 +1028,10 @@ export default {
         v-model="showDefaultAwardEmojis"
         name="project[project_setting_attributes][show_default_award_emojis]"
       >
-        {{ s__('ProjectSettings|Show default award emojis') }}
+        {{ s__('ProjectSettings|Show default emoji reactions') }}
         <template #help>{{
           s__(
-            'ProjectSettings|Always show thumbs-up and thumbs-down award emoji buttons on issues, merge requests, and snippets.',
+            'ProjectSettings|Always show thumbs-up and thumbs-down emoji buttons on issues, merge requests, and snippets.',
           )
         }}</template>
       </gl-form-checkbox>

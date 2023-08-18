@@ -1,0 +1,25 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getCustomEmojis($groupPath: ID!, $after: String = "", $before: String = "") {
+  group(fullPath: $groupPath) {
+    id
+    userPermissions {
+      createCustomEmoji
+    }
+    customEmoji(after: $after, before: $before) {
+      count
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        id
+        name
+        url
+        createdAt
+        userPermissions {
+          deleteCustomEmoji
+        }
+      }
+    }
+  }
+}

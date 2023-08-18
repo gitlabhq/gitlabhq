@@ -9,7 +9,7 @@
       = _('Visibility and access controls')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set visibility of project contents. Configure import sources and Git access protocols.')
   .settings-content
     = render 'visibility_and_access'
@@ -20,12 +20,10 @@
       = _('Account and limit')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan.')
   .settings-content
     = render 'account_and_limit'
-
-= render_if_exists 'admin/application_settings/free_user_cap'
 
 %section.settings.as-diff-limits.no-animate#js-merge-request-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
@@ -33,7 +31,7 @@
       = _('Diff limits')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set size limits for displaying diffs in the browser.')
   .settings-content
     = render 'diff_limits'
@@ -44,7 +42,7 @@
       = _('Sign-up restrictions')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Configure the way a user creates a new account.')
   .settings-content
     = render 'signup'
@@ -55,9 +53,9 @@
       = _('Sign-in restrictions')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set sign-in restrictions for all users.')
-      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/sign_in_restrictions.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/sign_in_restrictions.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'signin'
 
@@ -67,14 +65,15 @@
       = _('Terms of Service and Privacy Policy')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Add a Terms of Service agreement and Privacy Policy for users of this GitLab instance.')
-      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/terms.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/settings/terms.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'terms'
 
 = render 'admin/application_settings/external_authorization_service_form', expanded: expanded_by_default?
 
+= render_if_exists 'admin/application_settings/microsoft_application'
 = render_if_exists 'admin/application_settings/scim'
 
 %section.settings.as-terminal.no-animate#js-terminal-settings{ class: ('expanded' if expanded_by_default?) }
@@ -83,7 +82,7 @@
       = _('Web terminal')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set the maximum session time for a web terminal.')
       = link_to _('How do I use a web terminal?'), help_page_path('ci/environments/index.md', anchor: 'web-terminals-deprecated'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content

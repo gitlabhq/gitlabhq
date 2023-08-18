@@ -5,6 +5,8 @@ module Mutations
     class Update < Base
       graphql_name 'MergeRequestUpdate'
 
+      include ValidateTimeEstimate
+
       description 'Update attributes of a merge request'
 
       argument :title, GraphQL::Types::String,
@@ -45,10 +47,7 @@ module Mutations
       end
 
       def ready?(time_estimate: nil, **args)
-        if !time_estimate.nil? && Gitlab::TimeTrackingFormatter.parse(time_estimate, keep_zero: true).nil?
-          raise Gitlab::Graphql::Errors::ArgumentError,
-                'timeEstimate must be formatted correctly, for example `1h 30m`'
-        end
+        validate_time_estimate(time_estimate)
 
         super
       end

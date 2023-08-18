@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import actions from 'ee_else_ce/boards/stores/actions';
 import getters from 'ee_else_ce/boards/stores/getters';

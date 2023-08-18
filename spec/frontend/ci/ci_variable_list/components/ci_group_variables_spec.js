@@ -30,7 +30,6 @@ describe('Ci Group Variable wrapper', () => {
       provide: {
         ...mockProvide,
         glFeatures: {
-          ciGroupEnvScopeGraphql: false,
           groupScopedCiVariables: false,
           ...featureFlags,
         },
@@ -61,6 +60,10 @@ describe('Ci Group Variable wrapper', () => {
             lookup: expect.any(Function),
             query: getGroupVariables,
           },
+          environments: {
+            lookup: expect.any(Function),
+            query: getGroupEnvironments,
+          },
         },
         refetchAfterMutation: false,
       });
@@ -85,28 +88,6 @@ describe('Ci Group Variable wrapper', () => {
 
       it('Passes down `false` to variable shared component', () => {
         expect(findCiShared().props('areScopedVariablesAvailable')).toBe(false);
-      });
-    });
-  });
-
-  describe('ciGroupEnvScopeGraphql feature flag', () => {
-    describe('When enabled', () => {
-      beforeEach(() => {
-        createComponent({ featureFlags: { ciGroupEnvScopeGraphql: true } });
-      });
-
-      it('Passes down environments query to variable shared component', () => {
-        expect(findCiShared().props('queryData').environments.query).toBe(getGroupEnvironments);
-      });
-    });
-
-    describe('When disabled', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('Does not pass down environments query to variable shared component', () => {
-        expect(findCiShared().props('queryData').environments).toBe(undefined);
       });
     });
   });

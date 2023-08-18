@@ -56,9 +56,27 @@ update-gitaly-binaries-cache:
   artifacts:
     paths: []  # This job's purpose is only to update the cache.
 
+update-ruby-gems-coverage-cache-push:
+  extends:
+    - .ruby-gems-coverage-cache-push
+    - .shared:rules:update-cache
+  variables:
+    BUNDLE_WITHOUT: "" # This is to override the variable defined in .gitlab-ci.yml
+    BUNDLE_ONLY: "coverage"
+  script:
+    - source scripts/utils.sh
+    - bundle_install_script
+
+# Used in:
+#   - rspec:undercoverage
+#   - rspec:feature-flags
+#   - rspec:merge-auto-explain-logs
+#
+# TODO: Consider making rspec:coverage reuse this base job, or split into two base jobs.
 .coverage-base:
   extends:
     - .default-retry
+    # TODO: If applicable for all children jobs, delete/replace this cache with .ruby-gems-coverage-cache, as it is much smaller.
     - .coverage-cache
   before_script:
     - source scripts/utils.sh
@@ -310,7 +328,7 @@ rspec:deprecations:
   script:
     - grep -h -R "keyword" deprecations/ | awk '{$1=$1};1' | sort | uniq -c | sort
     - grep -R "keyword" deprecations/ | wc
-    - run_timed_command "fail_on_warnings bundle exec rubocop --config .rubocop.yml --only Lint/LastKeywordArgument --parallel"
+    - run_timed_command "fail_on_warnings bundle exec rubocop --only Lint/LastKeywordArgument --parallel"
   artifacts:
     expire_in: 31d
     when: always
@@ -327,8 +345,8 @@ rspec:deprecations:
     GIT_STRATEGY: none
   image: alpine:3.17
   script:
-    - mkdir -p coverage deprecations rspec
-    - ls coverage/ deprecations/ rspec/
+    - mkdir -p coverage deprecations rspec auto_explain
+    - ls coverage/ deprecations/ rspec/ auto_explain/
   artifacts:
     expire_in: 7d
     when: always
@@ -336,6 +354,7 @@ rspec:deprecations:
       - coverage/
       - deprecations/
       - rspec/
+      - auto_explain/
 
 rspec:artifact-collector unit:
   extends:
@@ -445,11 +464,12 @@ rspec:artifact-collector ee:
 
 rspec:coverage:
   extends:
-    - .coverage-base
+    - .ruby-gems-coverage-cache
     - .rails:rules:rspec-coverage
   stage: post-test
   needs:
-    - setup-test-env
+    - job: setup-test-env
+      artifacts: false
     # FOSS/EE jobs
     - job: rspec:artifact-collector unit
       optional: true
@@ -476,6 +496,13 @@ rspec:coverage:
     # Memory jobs
     - job: memory-on-boot
       optional: true
+      artifacts: false
+  variables:
+    BUNDLE_WITHOUT: "" # This is to override the variable defined in .gitlab-ci.yml
+    BUNDLE_ONLY: "coverage"
+  before_script:
+    - source scripts/utils.sh
+    - bundle_install_script
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
@@ -533,9 +560,6 @@ rspec:flaky-tests-report:
     - .rails:rules:flaky-tests-report
   stage: post-test
   needs: !reference ["rspec:coverage", "needs"]
-  variables:
-    SKIPPED_TESTS_REPORT_PATH: rspec/skipped_tests_report.txt
-    RETRIED_TESTS_REPORT_PATH: rspec/flaky/retried_tests_report.txt
   before_script:
     - source scripts/utils.sh
     - source scripts/rspec_helpers.sh
@@ -545,6 +569,23 @@ rspec:flaky-tests-report:
     expire_in: 31d
     paths:
       - rspec/
+
+rspec:merge-auto-explain-logs:
+  extends:
+    - .coverage-base
+    - .rails:rules:rspec-merge-auto-explain-logs
+  stage: post-test
+  needs: !reference ["rspec:coverage", "needs"]
+  before_script:
+    - source scripts/utils.sh
+    - source scripts/rspec_helpers.sh
+  script:
+    - merge_auto_explain_logs
+  artifacts:
+    name: auto-explain-logs
+    expire_in: 31d
+    paths:
+      - auto_explain/
 
 # EE/FOSS: default refs (MRs, default branch, schedules) jobs #
 #######################################################

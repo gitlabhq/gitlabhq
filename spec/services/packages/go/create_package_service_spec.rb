@@ -6,7 +6,7 @@ RSpec.describe Packages::Go::CreatePackageService, feature_category: :package_re
   let_it_be(:project) { create :project_empty_repo, path: 'my-go-lib' }
   let_it_be(:mod) { create :go_module, project: project }
 
-  before :all do
+  before_all do
     create :go_module_commit, :module, project: project, tag: 'v1.0.0'
   end
 

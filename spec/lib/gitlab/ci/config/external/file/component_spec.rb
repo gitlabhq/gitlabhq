@@ -41,14 +41,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
       let(:params) { { component: 'some-value' } }
 
       it { is_expected.to be_truthy }
-
-      context 'when feature flag ci_include_components is disabled' do
-        before do
-          stub_feature_flags(ci_include_components: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
 
     context 'when component is not specified' do

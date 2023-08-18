@@ -10,6 +10,10 @@ module Projects
 
     def index; end
 
+    def show
+      @trace_id = params[:id]
+    end
+
     private
 
     def check_tracing_enabled

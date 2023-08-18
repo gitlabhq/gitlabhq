@@ -7,6 +7,8 @@ import {
   MOCK_MR_PATH,
   MOCK_AUTOCOMPLETE_PATH,
   MOCK_SEARCH_CONTEXT,
+  MOCK_GROUP_SEARCH_CONTEXT,
+  MOCK_PROJECT_SEARCH_CONTEXT,
   MOCK_DEFAULT_SEARCH_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
   MOCK_SCOPED_SEARCH_GROUP,
@@ -74,37 +76,47 @@ describe('Global Search Store Getters', () => {
   });
 
   describe.each`
-    group                     | group_metadata                   | project                     | project_metadata                   | expectedPath
-    ${null}                   | ${null}                          | ${null}                     | ${null}                            | ${MOCK_ISSUE_PATH}
-    ${{ name: 'Test Group' }} | ${{ issues_path: 'group/path' }} | ${null}                     | ${null}                            | ${'group/path'}
-    ${{ name: 'Test Group' }} | ${{ issues_path: 'group/path' }} | ${{ name: 'Test Project' }} | ${{ issues_path: 'project/path' }} | ${'project/path'}
-  `('scopedIssuesPath', ({ group, group_metadata, project, project_metadata, expectedPath }) => {
-    describe(`when group is ${group?.name} and project is ${project?.name}`, () => {
-      beforeEach(() => {
-        createState({
-          searchContext: {
-            group,
-            group_metadata,
-            project,
-            project_metadata,
-          },
+    group                     | group_metadata                   | project          | project_metadata                   | user        | expectedPath
+    ${null}                   | ${null}                          | ${null}          | ${null}                            | ${'a_user'} | ${MOCK_ISSUE_PATH}
+    ${null}                   | ${null}                          | ${null}          | ${null}                            | ${null}     | ${false}
+    ${{ name: 'Test Group' }} | ${{ issues_path: 'group/path' }} | ${null}          | ${null}                            | ${null}     | ${'group/path'}
+    ${{ name: 'Test Group' }} | ${{ issues_path: 'group/path' }} | ${{ id: '123' }} | ${{ issues_path: 'project/path' }} | ${null}     | ${'project/path'}
+    ${{ name: 'Test Group' }} | ${{ issues_path: 'group/path' }} | ${{ id: '123' }} | ${{}}                              | ${null}     | ${false}
+  `(
+    'scopedIssuesPath',
+    ({ group, group_metadata, project, project_metadata, user, expectedPath }) => {
+      describe(`when group is ${group?.name} and project is ${project?.name}`, () => {
+        beforeEach(() => {
+          window.gon.current_username = user;
+
+          createState({
+            searchContext: {
+              group,
+              group_metadata,
+              project,
+              project_metadata,
+            },
+          });
+        });
+
+        it(`should return ${expectedPath}`, () => {
+          expect(getters.scopedIssuesPath(state)).toBe(expectedPath);
         });
       });
-
-      it(`should return ${expectedPath}`, () => {
-        expect(getters.scopedIssuesPath(state)).toBe(expectedPath);
-      });
-    });
-  });
+    },
+  );
 
   describe.each`
-    group                     | group_metadata               | project                     | project_metadata               | expectedPath
-    ${null}                   | ${null}                      | ${null}                     | ${null}                        | ${MOCK_MR_PATH}
-    ${{ name: 'Test Group' }} | ${{ mr_path: 'group/path' }} | ${null}                     | ${null}                        | ${'group/path'}
-    ${{ name: 'Test Group' }} | ${{ mr_path: 'group/path' }} | ${{ name: 'Test Project' }} | ${{ mr_path: 'project/path' }} | ${'project/path'}
-  `('scopedMRPath', ({ group, group_metadata, project, project_metadata, expectedPath }) => {
+    group                     | group_metadata               | project                     | project_metadata               | user        | expectedPath
+    ${null}                   | ${null}                      | ${null}                     | ${null}                        | ${'a_user'} | ${MOCK_MR_PATH}
+    ${null}                   | ${null}                      | ${null}                     | ${null}                        | ${null}     | ${false}
+    ${{ name: 'Test Group' }} | ${{ mr_path: 'group/path' }} | ${null}                     | ${null}                        | ${null}     | ${'group/path'}
+    ${{ name: 'Test Group' }} | ${{ mr_path: 'group/path' }} | ${{ name: 'Test Project' }} | ${{ mr_path: 'project/path' }} | ${null}     | ${'project/path'}
+  `('scopedMRPath', ({ group, group_metadata, project, project_metadata, user, expectedPath }) => {
     describe(`when group is ${group?.name} and project is ${project?.name}`, () => {
       beforeEach(() => {
+        window.gon.current_username = user;
+
         createState({
           searchContext: {
             group,
@@ -227,27 +239,88 @@ describe('Global Search Store Getters', () => {
   });
 
   describe('defaultSearchOptions', () => {
-    const mockGetters = {
-      scopedIssuesPath: MOCK_ISSUE_PATH,
-      scopedMRPath: MOCK_MR_PATH,
-    };
+    let mockGetters;
 
     beforeEach(() => {
       createState();
-      window.gon.current_username = MOCK_USERNAME;
+      mockGetters = {
+        scopedIssuesPath: MOCK_ISSUE_PATH,
+        scopedMRPath: MOCK_MR_PATH,
+      };
     });
 
-    it('returns the correct array', () => {
-      expect(getters.defaultSearchOptions(state, mockGetters)).toStrictEqual(
-        MOCK_DEFAULT_SEARCH_OPTIONS,
-      );
+    describe('with a user', () => {
+      beforeEach(() => {
+        window.gon.current_username = MOCK_USERNAME;
+      });
+
+      it('returns the correct array', () => {
+        expect(getters.defaultSearchOptions(state, mockGetters)).toStrictEqual(
+          MOCK_DEFAULT_SEARCH_OPTIONS,
+        );
+      });
+
+      it('returns the correct array if issues path is false', () => {
+        mockGetters.scopedIssuesPath = undefined;
+        expect(getters.defaultSearchOptions(state, mockGetters)).toStrictEqual(
+          MOCK_DEFAULT_SEARCH_OPTIONS.slice(2, MOCK_DEFAULT_SEARCH_OPTIONS.length),
+        );
+      });
     });
 
-    it('returns the correct array if issues path is false', () => {
-      mockGetters.scopedIssuesPath = undefined;
-      expect(getters.defaultSearchOptions(state, mockGetters)).toStrictEqual(
-        MOCK_DEFAULT_SEARCH_OPTIONS.slice(2, MOCK_DEFAULT_SEARCH_OPTIONS.length),
-      );
+    describe('without a user', () => {
+      describe('with no project or group context', () => {
+        beforeEach(() => {
+          mockGetters = {
+            scopedIssuesPath: false,
+            scopedMRPath: false,
+          };
+        });
+
+        it('returns an empty array', () => {
+          expect(getters.defaultSearchOptions(state, mockGetters)).toEqual([]);
+        });
+      });
+
+      describe('with a group context', () => {
+        beforeEach(() => {
+          createState({
+            searchContext: MOCK_GROUP_SEARCH_CONTEXT,
+          });
+
+          mockGetters = {
+            scopedIssuesPath: state.searchContext.group_metadata.issues_path,
+            scopedMRPath: state.searchContext.group_metadata.mr_path,
+          };
+        });
+
+        it('returns recent issues/merge requests options', () => {
+          expect(getters.defaultSearchOptions(state, mockGetters)).toEqual([
+            { href: '/mock-group/issues', text: 'Recent issues' },
+            { href: '/mock-group/merge_requests', text: 'Recent merge requests' },
+          ]);
+        });
+      });
+
+      describe('with a project context', () => {
+        beforeEach(() => {
+          createState({
+            searchContext: MOCK_PROJECT_SEARCH_CONTEXT,
+          });
+
+          mockGetters = {
+            scopedIssuesPath: state.searchContext.project_metadata.issues_path,
+            scopedMRPath: state.searchContext.project_metadata.mr_path,
+          };
+        });
+
+        it('returns recent issues/merge requests options', () => {
+          expect(getters.defaultSearchOptions(state, mockGetters)).toEqual([
+            { href: '/mock-project/issues', text: 'Recent issues' },
+            { href: '/mock-project/merge_requests', text: 'Recent merge requests' },
+          ]);
+        });
+      });
     });
   });
 

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import App from './components/app.vue';
 import store from './store';

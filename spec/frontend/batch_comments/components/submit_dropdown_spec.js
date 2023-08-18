@@ -1,5 +1,6 @@
 import { GlDropdown } from '@gitlab/ui';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SubmitDropdown from '~/batch_comments/components/submit_dropdown.vue';
@@ -79,10 +80,9 @@ describe('Batch comments submit dropdown', () => {
 
     findForm().vm.$emit('submit', { preventDefault: jest.fn() });
 
-    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
-      context: 'MergeRequest_review',
-      editorType: 'editor_type_plain_text_editor',
-      label: 'editor_tracking',
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+      label: 'markdown_editor',
+      property: 'MergeRequest_review',
     });
   });
 

@@ -129,6 +129,8 @@ are very appreciative of the work done by translators and proofreaders!
 - Spanish
   - Pedro Garcia - [GitLab](https://gitlab.com/pedgarrod), [Crowdin](https://crowdin.com/profile/breaking_pitt)
   - David Elizondo - [GitLab](https://gitlab.com/daelmo), [Crowdin](https://crowdin.com/profile/daelmo)
+  - Pablo Reyes - [GitLab](https://gitlab.com/pabloryst9n), [Crowdin](https://crowdin.com/profile/pabloryst9n)
+
 - Swedish
   - Johannes Nilsson - [GitLab](https://gitlab.com/nlssn), [Crowdin](https://crowdin.com/profile/nlssn)
 - Turkish

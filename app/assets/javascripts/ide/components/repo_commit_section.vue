@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { stageKeys } from '../constants';
 import EmptyState from './commit_sidebar/empty_state.vue';

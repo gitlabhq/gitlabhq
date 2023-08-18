@@ -684,6 +684,36 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
+  describe('TREE_ENTRY_DIFF_LOADING', () => {
+    it('sets the entry loading state to true by default', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            diffLoading: false,
+          },
+        },
+      };
+
+      mutations[types.TREE_ENTRY_DIFF_LOADING](state, { path: 'path' });
+
+      expect(state.treeEntries.path.diffLoading).toBe(true);
+    });
+
+    it('sets the entry loading state to the provided value', () => {
+      const state = {
+        treeEntries: {
+          path: {
+            diffLoading: true,
+          },
+        },
+      };
+
+      mutations[types.TREE_ENTRY_DIFF_LOADING](state, { path: 'path', loading: false });
+
+      expect(state.treeEntries.path.diffLoading).toBe(false);
+    });
+  });
+
   describe('SET_SHOW_TREE_LIST', () => {
     it('sets showTreeList', () => {
       const state = createState();

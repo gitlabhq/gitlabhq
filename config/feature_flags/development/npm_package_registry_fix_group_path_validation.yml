@@ -1,0 +1,8 @@
+---
+name: npm_package_registry_fix_group_path_validation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127164
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/420160
+milestone: '16.3'
+type: development
+group: group::package registry
+default_enabled: false

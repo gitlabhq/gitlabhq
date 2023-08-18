@@ -1,8 +1,15 @@
 <script>
-import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
+import {
+  GlModal,
+  GlSprintf,
+  GlLink,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
-import ActionsButton from '~/vue_shared/components/actions_button.vue';
+import Tracking from '~/tracking';
 import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
@@ -22,16 +29,21 @@ export const i18n = {
   toggleText: __('Edit'),
 };
 
+const TRACKING_ACTION_NAME = 'click_consolidated_edit';
+
 export default {
   name: 'CEWebIdeLink',
   components: {
-    ActionsButton,
     GlModal,
     GlSprintf,
     GlLink,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
+    GlDisclosureDropdownItem,
     ConfirmForkModal,
   },
   i18n,
+  mixins: [Tracking.mixin()],
   props: {
     isFork: {
       type: Boolean,
@@ -173,10 +185,9 @@ export default {
         key: KEY_EDIT,
         text: __('Edit single file'),
         secondaryText: __('Edit this file only.'),
-        attrs: {
-          'data-qa-selector': 'edit_button',
-          'data-track-action': 'click_consolidated_edit',
-          'data-track-label': 'edit',
+        tracking: {
+          action: TRACKING_ACTION_NAME,
+          label: 'single_file',
         },
         ...handleOptions,
       };
@@ -216,10 +227,9 @@ export default {
         key: KEY_WEB_IDE,
         text: this.webIdeActionText,
         secondaryText: this.$options.i18n.webIdeText,
-        attrs: {
-          'data-qa-selector': 'web_ide_button',
-          'data-track-action': 'click_consolidated_edit_ide',
-          'data-track-label': 'web_ide',
+        tracking: {
+          action: TRACKING_ACTION_NAME,
+          label: 'web_ide',
         },
         ...handleOptions,
       };
@@ -246,10 +256,11 @@ export default {
         key: KEY_PIPELINE_EDITOR,
         text: __('Edit in pipeline editor'),
         secondaryText,
-        attrs: {
-          'data-qa-selector': 'pipeline_editor_button',
-        },
         href: this.pipelineEditorUrl,
+        tracking: {
+          action: TRACKING_ACTION_NAME,
+          label: 'pipeline_editor',
+        },
       };
     },
     gitpodAction() {
@@ -270,8 +281,9 @@ export default {
         key: KEY_GITPOD,
         text: this.gitpodActionText,
         secondaryText,
-        attrs: {
-          'data-qa-selector': 'gitpod_button',
+        tracking: {
+          action: TRACKING_ACTION_NAME,
+          label: 'gitpod',
         },
         ...handleOptions,
       };
@@ -306,25 +318,50 @@ export default {
     showModal(dataKey) {
       this[dataKey] = true;
     },
+    executeAction(action) {
+      this.track(action.tracking.action, { label: action.tracking.label });
+      action.handle?.();
+    },
   },
-  webIdeButtonId: 'web-ide-link',
 };
 </script>
 
 <template>
   <div class="gl-sm-ml-3">
-    <actions-button
+    <gl-disclosure-dropdown
       v-if="hasActions"
-      :id="$options.webIdeButtonId"
-      :actions="actions"
-      :toggle-text="$options.i18n.toggleText"
       :variant="isBlob ? 'confirm' : 'default'"
       :category="isBlob ? 'primary' : 'secondary'"
-      @hidden="$emit('hidden')"
+      :toggle-text="$options.i18n.toggleText"
+      data-qa-selector="action_dropdown"
+      fluid-width
+      block
       @shown="$emit('shown')"
+      @hidden="$emit('hidden')"
     >
-      <slot></slot>
-    </actions-button>
+      <slot name="before-actions"></slot>
+      <gl-disclosure-dropdown-group class="edit-dropdown-group-width">
+        <gl-disclosure-dropdown-item
+          v-for="action in actions"
+          :key="action.key"
+          :item="action"
+          :data-qa-selector="`${action.key}_menu_item`"
+          @action="executeAction(action)"
+        >
+          <template #list-item>
+            <div class="gl-display-flex gl-flex-direction-column">
+              <span data-testid="action-primary-text" class="gl-font-weight-bold gl-mb-2">{{
+                action.text
+              }}</span>
+              <span data-testid="action-secondary-text" class="gl-text-gray-700">
+                {{ action.secondaryText }}
+              </span>
+            </div>
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
+      <slot name="after-actions"></slot>
+    </gl-disclosure-dropdown>
     <gl-modal
       v-if="computedShowGitpodButton && !gitpodEnabled"
       v-model="showEnableGitpodModal"

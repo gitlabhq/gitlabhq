@@ -7,7 +7,11 @@ RSpec.describe '6_validations' do
   describe 'validate_storages_config' do
     context 'with correct settings' do
       before do
-        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/d'))
+        mock_storages(
+          'storage' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'),
+          'storage.with_VALID-chars01' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/d'),
+          'gitaly.c.gitlab-prd-164c.internal' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/e')
+        )
       end
 
       it 'passes through' do

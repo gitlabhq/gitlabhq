@@ -29,7 +29,6 @@ Rails/NegateInclude:
     - 'lib/gitlab/email/handler/service_desk_handler.rb'
     - 'lib/gitlab/graphql/queries.rb'
     - 'lib/gitlab/import_export/attributes_permitter.rb'
-    - 'lib/gitlab/search_results.rb'
     - 'lib/gitlab/task_helpers.rb'
     - 'qa/qa/tools/delete_test_users.rb'
     - 'spec/lib/container_registry/blob_spec.rb'

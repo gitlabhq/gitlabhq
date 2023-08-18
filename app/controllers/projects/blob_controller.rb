@@ -48,7 +48,6 @@ class Projects::BlobController < Projects::ApplicationController
   urgency :low, [:create, :show, :edit, :update, :diff]
 
   before_action do
-    push_frontend_feature_flag(:highlight_js, @project)
     push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
@@ -275,8 +274,6 @@ class Projects::BlobController < Projects::ApplicationController
     @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path, literal_pathspec: true)
     @code_navigation_path = Gitlab::CodeNavigationPath.new(@project, @blob.commit_id).full_json_path_for(@blob.path)
 
-    allow_lfs_direct_download
-
     render 'show'
   end
 
@@ -319,30 +316,6 @@ class Projects::BlobController < Projects::ApplicationController
   override :visitor_id
   def visitor_id
     current_user&.id
-  end
-
-  def allow_lfs_direct_download
-    return unless directly_downloading_lfs_object? && content_security_policy_enabled?
-    return unless (lfs_object = @project.lfs_objects.find_by_oid(@blob.lfs_oid))
-
-    request.content_security_policy.directives['connect-src'] ||= []
-    request.content_security_policy.directives['connect-src'] << lfs_src(lfs_object)
-  end
-
-  def directly_downloading_lfs_object?
-    Gitlab.config.lfs.enabled &&
-      !Gitlab.config.lfs.object_store.proxy_download &&
-      @blob&.stored_externally?
-  end
-
-  def content_security_policy_enabled?
-    Gitlab.config.gitlab.content_security_policy.enabled
-  end
-
-  def lfs_src(lfs_object)
-    file = lfs_object.file
-    file = file.cdn_enabled_url(request.remote_ip) if file.respond_to?(:cdn_enabled_url)
-    file.url
   end
 
   alias_method :tracking_project_source, :project

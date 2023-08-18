@@ -1,7 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import CiVariableSettings from '~/ci/ci_variable_list/components/ci_variable_settings.vue';
-import ciVariableModal from '~/ci/ci_variable_list/components/ci_variable_modal.vue';
-import ciVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
+import CiVariableModal from '~/ci/ci_variable_list/components/ci_variable_modal.vue';
+import CiVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
+import CiVariableDrawer from '~/ci/ci_variable_list/components/ci_variable_drawer.vue';
+
 import {
   ADD_VARIABLE_ACTION,
   EDIT_VARIABLE_ACTION,
@@ -27,14 +29,21 @@ describe('Ci variable table', () => {
     variables: mockVariablesWithScopes(projectString),
   };
 
-  const findCiVariableTable = () => wrapper.findComponent(ciVariableTable);
-  const findCiVariableModal = () => wrapper.findComponent(ciVariableModal);
+  const findCiVariableDrawer = () => wrapper.findComponent(CiVariableDrawer);
+  const findCiVariableTable = () => wrapper.findComponent(CiVariableTable);
+  const findCiVariableModal = () => wrapper.findComponent(CiVariableModal);
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, featureFlags = {} } = {}) => {
     wrapper = shallowMount(CiVariableSettings, {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      provide: {
+        glFeatures: {
+          ciVariableDrawer: false,
+          ...featureFlags,
+        },
       },
     });
   };
@@ -70,51 +79,51 @@ describe('Ci variable table', () => {
     });
   });
 
-  describe('modal mode', () => {
+  describe.each`
+    bool     | flagStatus    | elementName | findElement
+    ${false} | ${'disabled'} | ${'modal'}  | ${findCiVariableModal}
+    ${true}  | ${'enabled'}  | ${'drawer'} | ${findCiVariableDrawer}
+  `('when ciVariableDrawer feature flag is $flagStatus', ({ bool, elementName, findElement }) => {
     beforeEach(() => {
-      createComponent();
+      createComponent({ featureFlags: { ciVariableDrawer: bool } });
     });
 
-    it('passes down ADD mode when receiving an empty variable', async () => {
+    it(`${elementName} is hidden by default`, () => {
+      expect(findElement().exists()).toBe(false);
+    });
+
+    it(`shows ${elementName} when adding a new variable`, async () => {
       await findCiVariableTable().vm.$emit('set-selected-variable');
 
-      expect(findCiVariableModal().props('mode')).toBe(ADD_VARIABLE_ACTION);
+      expect(findElement().exists()).toBe(true);
     });
 
-    it('passes down EDIT mode when receiving a variable', async () => {
+    it(`shows ${elementName} when updating a variable`, async () => {
       await findCiVariableTable().vm.$emit('set-selected-variable', newVariable);
 
-      expect(findCiVariableModal().props('mode')).toBe(EDIT_VARIABLE_ACTION);
-    });
-  });
-
-  describe('variable modal', () => {
-    beforeEach(() => {
-      createComponent();
+      expect(findElement().exists()).toBe(true);
     });
 
-    it('is hidden by default', () => {
-      expect(findCiVariableModal().exists()).toBe(false);
-    });
-
-    it('shows modal when adding a new variable', async () => {
+    it(`hides ${elementName} when closing the form`, async () => {
       await findCiVariableTable().vm.$emit('set-selected-variable');
 
-      expect(findCiVariableModal().exists()).toBe(true);
+      expect(findElement().isVisible()).toBe(true);
+
+      await findElement().vm.$emit('close-form');
+
+      expect(findElement().exists()).toBe(false);
     });
 
-    it('shows modal when updating a variable', async () => {
+    it(`passes down ADD mode to ${elementName} when receiving an empty variable`, async () => {
+      await findCiVariableTable().vm.$emit('set-selected-variable');
+
+      expect(findElement().props('mode')).toBe(ADD_VARIABLE_ACTION);
+    });
+
+    it(`passes down EDIT mode to ${elementName} when receiving a variable`, async () => {
       await findCiVariableTable().vm.$emit('set-selected-variable', newVariable);
 
-      expect(findCiVariableModal().exists()).toBe(true);
-    });
-
-    it('hides modal when receiving the event from the modal', async () => {
-      await findCiVariableTable().vm.$emit('set-selected-variable');
-
-      await findCiVariableModal().vm.$emit('hideModal');
-
-      expect(findCiVariableModal().exists()).toBe(false);
+      expect(findElement().props('mode')).toBe(EDIT_VARIABLE_ACTION);
     });
   });
 

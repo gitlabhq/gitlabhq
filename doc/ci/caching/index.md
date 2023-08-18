@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Caching in GitLab CI/CD **(FREE)**
+# Caching in GitLab CI/CD **(FREE ALL)**
 
 A cache is one or more files a job downloads and saves. Subsequent jobs that use
 the same cache don't have to download the files again, so they execute more quickly.

@@ -25,7 +25,7 @@ RSpec.describe 'getting project information', feature_category: :system_access d
   context 'when there is a current_user' do
     let_it_be(:current_user) { create(:user) }
 
-    it_behaves_like 'a working graphql query'
+    it_behaves_like 'a working graphql query that returns data'
 
     it { is_expected.to include('name' => current_user.name, 'namespace' => { 'id' => current_user.namespace.to_global_id.to_s }) }
   end
@@ -33,8 +33,6 @@ RSpec.describe 'getting project information', feature_category: :system_access d
   context 'when there is no current_user' do
     let(:current_user) { nil }
 
-    it_behaves_like 'a working graphql query'
-
-    it { is_expected.to be_nil }
+    it_behaves_like 'a working graphql query that returns no data'
   end
 end

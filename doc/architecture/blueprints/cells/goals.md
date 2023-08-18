@@ -8,7 +8,11 @@ description: 'Cells: Goals'
 
 ## Scalability
 
-The main goal of this new shared-infrastructure architecture is to provide additional scalability for our SaaS Platform. GitLab.com is largely monolithic and we have estimated (internal) that the current architecture has scalability limitations, even when database partitioning and decomposition are taken into account.
+The main goal of this new shared-infrastructure architecture is to provide additional scalability for our SaaS Platform.
+GitLab.com is largely monolithic and we have estimated (internally) that the current architecture has scalability limitations,
+particularly for the [PostgreSQL database](https://gitlab-com.gitlab.io/gl-infra/tamland/patroni.html), and
+[Redis](https://gitlab-com.gitlab.io/gl-infra/tamland/redis.html) non-horizontally scalable resources,
+even when database partitioning and decomposition are taken into account.
 
 Cells provide a horizontally scalable solution because additional Cells can be created based on demand. Cells can be provisioned and tuned as needed for optimal scalability.
 

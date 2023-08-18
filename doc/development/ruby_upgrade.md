@@ -209,7 +209,7 @@ prudent to skip this step until you have verified that it runs smoothly in produ
 rollout. In this case, go to the next step first, and then, after the verification period has passed, promote
 the new Ruby to be the new default.
 
-### Update CNG and Omnibus, merge the GitLab MR
+### Update CNG, Omnibus, Self-compiled and merge the GitLab MR
 
 The last step is to use the new Ruby in production. This
 requires updating Omnibus and production Docker images to use the new version.
@@ -220,6 +220,7 @@ To use the new Ruby in production, update the following projects:
 
 - [Cloud-native GitLab Docker Images (CNG)](https://gitlab.com/gitlab-org/build/CNG) ([example](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/739))
 - [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) ([example](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5545))
+- [Self-compiled installations](../install/installation.md): update the [Ruby system version check](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/system_check/app/ruby_version_check.rb)
 
 If you submit a change management request, coordinate the rollout with infrastructure
 engineers. When dealing with larger upgrades, involve [Release Managers](https://about.gitlab.com/community/release-managers/)

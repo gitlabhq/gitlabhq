@@ -19,10 +19,6 @@ To add a storage limit:
 1. Select **Admin Area**.
 1. Select **Settings > Preferences**.
 1. Expand **Terraform limits**.
-1. Adjust the size limit.
+1. Enter a size limit in bytes. Set to `0` to allow files of unlimited size.
 
-## Available settings
-
-| Setting                            | Default | Description                                                                                                                                             |
-|------------------------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Terraform state size limit (bytes) | 0       | Terraform state files that exceed this size are not saved, and associated Terraform operations are rejected. Set to 0 to allow files of unlimited size. |
+When Terraform state files exceed this limit, they are not saved, and associated Terraform operations are rejected.

@@ -317,6 +317,10 @@ class Issue < ApplicationRecord
         pattern: IssuableFinder::FULL_TEXT_SEARCH_TERM_PATTERN
       )
     end
+
+    def related_link_class
+      IssueLink
+    end
   end
 
   def self.participant_includes
@@ -542,18 +546,18 @@ class Issue < ApplicationRecord
   end
 
   def related_issues(current_user, preload: nil)
-    related_issues = ::Issue
-                       .select(['issues.*', 'issue_links.id AS issue_link_id',
-                                'issue_links.link_type as issue_link_type_value',
-                                'issue_links.target_id as issue_link_source_id',
-                                'issue_links.created_at as issue_link_created_at',
-                                'issue_links.updated_at as issue_link_updated_at'])
-                       .joins("INNER JOIN issue_links ON
-	                             (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
-	                             OR
-	                             (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
-                       .preload(preload)
-                       .reorder('issue_link_id')
+    related_issues = self.class
+                         .select(['issues.*', 'issue_links.id AS issue_link_id',
+                                  'issue_links.link_type as issue_link_type_value',
+                                  'issue_links.target_id as issue_link_source_id',
+                                  'issue_links.created_at as issue_link_created_at',
+                                  'issue_links.updated_at as issue_link_updated_at'])
+                         .joins("INNER JOIN issue_links ON
+                                 (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
+                                 OR
+                                 (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
+                         .preload(preload)
+                         .reorder('issue_link_id')
 
     related_issues = yield related_issues if block_given?
 
@@ -642,12 +646,13 @@ class Issue < ApplicationRecord
   end
 
   def issue_link_type
+    link_class = self.class.related_link_class
     return unless respond_to?(:issue_link_type_value) && respond_to?(:issue_link_source_id)
 
-    type = IssueLink.link_types.key(issue_link_type_value) || IssueLink::TYPE_RELATES_TO
+    type = link_class.link_types.key(issue_link_type_value) || link_class::TYPE_RELATES_TO
     return type if issue_link_source_id == id
 
-    IssueLink.inverse_link_type(type)
+    link_class.inverse_link_type(type)
   end
 
   def relocation_target
@@ -770,7 +775,7 @@ class Issue < ApplicationRecord
     return unless persisted?
 
     if confidential? && WorkItems::ParentLink.has_public_children?(id)
-      errors.add(:base, _('A confidential issue cannot have a parent that already has non-confidential children.'))
+      errors.add(:base, _('A confidential issue must have only confidential children. Make any child items confidential and try again.'))
     end
 
     if !confidential? && WorkItems::ParentLink.has_confidential_parent?(id)
@@ -784,7 +789,7 @@ class Issue < ApplicationRecord
     # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/393126
     return unless project
 
-    Issues::SearchData.upsert({ project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
+    Issues::SearchData.upsert({ namespace_id: namespace_id, project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
   end
 
   def ensure_metrics!

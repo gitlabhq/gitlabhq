@@ -1,9 +1,11 @@
 import { GlButtonGroup } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import {
   boardListQueryResponse,
   mockLabelList,
@@ -12,6 +14,7 @@ import {
 import BoardListHeader from '~/boards/components/board_list_header.vue';
 import updateBoardListMutation from '~/boards/graphql/board_list_update.mutation.graphql';
 import { ListType } from '~/boards/constants';
+import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 
 Vue.use(VueApollo);
@@ -25,7 +28,11 @@ describe('Board List Header Component', () => {
   const updateListSpy = jest.fn();
   const toggleListCollapsedSpy = jest.fn();
   const mockClientToggleListCollapsedResolver = jest.fn();
-  const updateListHandler = jest.fn().mockResolvedValue(updateBoardListResponse);
+  const updateListHandlerSuccess = jest.fn().mockResolvedValue(updateBoardListResponse);
+
+  beforeEach(() => {
+    cacheUpdates.setError = jest.fn();
+  });
 
   afterEach(() => {
     fakeApollo = null;
@@ -39,6 +46,7 @@ describe('Board List Header Component', () => {
     withLocalStorage = true,
     currentUserId = 1,
     listQueryHandler = jest.fn().mockResolvedValue(boardListQueryResponse()),
+    updateListHandler = updateListHandlerSuccess,
     injectedProps = {},
   } = {}) => {
     const boardId = 'gid://gitlab/Board/1';
@@ -271,7 +279,7 @@ describe('Board List Header Component', () => {
       findCaret().vm.$emit('click');
       await nextTick();
 
-      expect(updateListHandler).not.toHaveBeenCalled();
+      expect(updateListHandlerSuccess).not.toHaveBeenCalled();
     });
 
     it('calls update list mutation when user is logged in', async () => {
@@ -280,7 +288,50 @@ describe('Board List Header Component', () => {
       findCaret().vm.$emit('click');
       await nextTick();
 
-      expect(updateListHandler).toHaveBeenCalledWith({ listId: mockLabelList.id, collapsed: true });
+      expect(updateListHandlerSuccess).toHaveBeenCalledWith({
+        listId: mockLabelList.id,
+        collapsed: true,
+      });
+    });
+
+    describe('when fetch list query fails', () => {
+      const errorMessage = 'Failed to fetch list';
+      const listQueryHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
+
+      beforeEach(() => {
+        createComponent({
+          listQueryHandler: listQueryHandlerFailure,
+          injectedProps: { isApolloBoard: true },
+        });
+      });
+
+      it('sets error', async () => {
+        await waitForPromises();
+
+        expect(cacheUpdates.setError).toHaveBeenCalled();
+      });
+    });
+
+    describe('when update list mutation fails', () => {
+      const errorMessage = 'Failed to update list';
+      const updateListHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
+
+      beforeEach(() => {
+        createComponent({
+          currentUserId: 1,
+          updateListHandler: updateListHandlerFailure,
+          injectedProps: { isApolloBoard: true },
+        });
+      });
+
+      it('sets error', async () => {
+        await waitForPromises();
+
+        findCaret().vm.$emit('click');
+        await waitForPromises();
+
+        expect(cacheUpdates.setError).toHaveBeenCalled();
+      });
     });
   });
 });

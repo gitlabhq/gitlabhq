@@ -8,6 +8,7 @@ import {
   GlLink,
   GlSprintf,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { isSameOriginUrl, getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';

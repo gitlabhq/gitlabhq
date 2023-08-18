@@ -4,7 +4,7 @@ stage: none
 group: Tutorials
 ---
 
-# Get started administering GitLab **(FREE)**
+# Get started administering GitLab **(FREE SELF)**
 
 Get started with GitLab administration. Configure your organization and its authentication, then secure, monitor,
 and back up GitLab.
@@ -36,7 +36,7 @@ Watch an overview of [groups and projects](https://www.youtube.com/watch?v=cqb2m
 
 Get started:
 
-- Create a [project](../user/project/index.md#create-a-project).
+- Create a [project](../user/project/index.md).
 - Create a [group](../user/group/index.md#create-a-group).
 - [Add members](../user/group/index.md#add-users-to-a-group) to the group.
 - Create a [subgroup](../user/group/subgroups/index.md#create-a-subgroup).

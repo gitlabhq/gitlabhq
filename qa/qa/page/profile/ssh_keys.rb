@@ -24,6 +24,8 @@ module QA
         end
 
         def add_key(public_key, title)
+          click_button('Add new key')
+
           fill_element(:key_public_key_field, public_key)
           fill_element(:key_title_field, title)
           # Expire in 2 days just in case the key is created just before midnight

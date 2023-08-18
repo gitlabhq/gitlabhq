@@ -14,6 +14,7 @@ module Packages
       MISSING_MATCHING_PACKAGE_ERROR_MESSAGE = 'symbol package is invalid, matching package does not exist'
 
       InvalidMetadataError = Class.new(StandardError)
+      ZipError = Class.new(StandardError)
 
       def initialize(package_file)
         @package_file = package_file
@@ -32,6 +33,8 @@ module Packages
         end
       rescue ActiveRecord::RecordInvalid => e
         raise InvalidMetadataError, e.message
+      rescue Zip::Error
+        raise ZipError, 'Could not open the .nupkg file'
       end
 
       private

@@ -6,7 +6,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=<%= auth_token %>">.npmrc
+    - echo "//<%= gitlab_host_without_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=<%= auth_token %>">.npmrc
     - npm publish
   only:
     - "<%= project.default_branch %>"

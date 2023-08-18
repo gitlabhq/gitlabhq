@@ -20,7 +20,7 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
   end
 
   def render_csv(collection)
-    CsvBuilders::SingleBatch.new(
+    CsvBuilder::SingleBatch.new(
       collection,
       {
         date: 'date',

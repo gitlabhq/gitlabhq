@@ -247,6 +247,14 @@ describe('Work item add note', () => {
 
         expect(clearDraft).toHaveBeenCalledWith('gid://gitlab/WorkItem/1-comment');
       });
+
+      it('emits error to parent when the comment form emits error', async () => {
+        await createComponent({ isEditing: true, signedIn: true });
+        const error = 'error';
+        findCommentForm().vm.$emit('error', error);
+
+        expect(wrapper.emitted('error')).toEqual([[error]]);
+      });
     });
   });
 

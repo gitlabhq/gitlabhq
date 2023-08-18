@@ -1,8 +1,0 @@
----
-name: ci_group_env_scope_graphql
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124134
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416385
-milestone: '16.2'
-type: development
-group: group::pipeline security
-default_enabled: false

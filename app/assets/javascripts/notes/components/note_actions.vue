@@ -5,6 +5,7 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import Api from '~/api';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';

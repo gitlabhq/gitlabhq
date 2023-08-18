@@ -1,6 +1,7 @@
 import { GlModal, GlFilteredSearch } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import getDiffWithCommit from 'test_fixtures/merge_request_diffs/with_commit.json';
 import AddReviewItemsModal from '~/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue';

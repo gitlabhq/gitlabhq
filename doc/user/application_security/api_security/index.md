@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# API Security **(ULTIMATE)**
+# API Security **(ULTIMATE ALL)**
 
 API Security refers to the measures taken to secure and protect web Application Programming Interfaces (APIs) from unauthorized access, misuse, and attacks.
 APIs are a crucial component of modern application development as they allow applications to interact with each other and exchange data.

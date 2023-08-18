@@ -373,7 +373,7 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
     end
 
     context 'when stop action' do
-      it 'returns action url for single stop action' do
+      it 'returns job url for a stop action when job is build' do
         action = create(:ci_build, :manual)
 
         allow_any_instance_of(Environment)
@@ -385,6 +385,20 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
         expect(json_response).to eq(
           { 'redirect_url' =>
               project_job_url(project, action) })
+      end
+
+      it 'returns pipeline url for a stop action when job is bridge' do
+        action = create(:ci_bridge, :manual)
+
+        allow_any_instance_of(Environment)
+          .to receive_messages(available?: true, stop_with_actions!: [action])
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq(
+          { 'redirect_url' =>
+             project_pipeline_url(project, action.pipeline_id) })
       end
 
       it 'returns environment url for multiple stop actions' do

@@ -12,7 +12,7 @@ RSpec.shared_context 'GroupPolicy context' do
 
   let(:public_permissions) do
     %i[
-      read_group read_counts
+      read_group read_counts read_issue
       read_label read_issue_board_list read_milestone read_issue_board
     ]
   end
@@ -74,7 +74,6 @@ RSpec.shared_context 'GroupPolicy context' do
       read_statistics
       update_default_branch_protection
       read_group_runners
-      admin_group_runners
       register_group_runners
       read_billing
       edit_billing

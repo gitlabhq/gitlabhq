@@ -1,13 +1,14 @@
 - add_to_breadcrumbs s_("CompareRevisions|Compare revisions"), project_compare_index_path(@project)
 - page_title "#{params[:from]} to #{params[:to]}"
+- has_diff = @commits.present? || @diffs.present? && @diffs.diff_files.present?
+-# Only show commit list in the first page
+- hide_commit_list = params[:page].present? && params[:page] != '1'
 
 .sub-header-block.gl-border-b-0.gl-mb-0.gl-pt-4
   .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
     #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 
-- if @commits.present? || @diffs.present?
-  -# Only show commit list in the first page
-  - hide_commit_list = params[:page].present? && params[:page] != '1'
+- if has_diff
   = render "projects/commits/commit_list" unless hide_commit_list
   = render "projects/diffs/diffs",
     diffs: @diffs,

@@ -535,6 +535,10 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     shared_examples 'merge automatically command' do
       let(:project) { repository_project }
 
+      before do
+        stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
+      end
+
       it 'runs merge command if content contains /merge and returns merge message' do
         _, updates, message = service.execute(content, issuable)
 
@@ -1454,9 +1458,21 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'failed command' do
+    context 'when provided an invalid estimate' do
       let(:content) { '/estimate abc' }
       let(:issuable) { issue }
+
+      it 'populates {} if content contains an unsupported command' do
+        _, updates, _ = service.execute(content, issuable)
+
+        expect(updates[:time_estimate]).to be_nil
+      end
+
+      it "returns empty message" do
+        _, _, message = service.execute(content, issuable)
+
+        expect(message).to be_empty
+      end
     end
 
     it_behaves_like 'spend command' do
@@ -2678,12 +2694,44 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     end
 
     describe 'estimate command' do
-      let(:content) { '/estimate 79d' }
+      context 'positive estimation' do
+        let(:content) { '/estimate 79d' }
 
-      it 'includes the formatted duration' do
-        _, explanations = service.explain(content, merge_request)
+        it 'includes the formatted duration' do
+          _, explanations = service.explain(content, merge_request)
 
-        expect(explanations).to eq(['Sets time estimate to 3mo 3w 4d.'])
+          expect(explanations).to eq(['Sets time estimate to 3mo 3w 4d.'])
+        end
+      end
+
+      context 'zero estimation' do
+        let(:content) { '/estimate 0' }
+
+        it 'includes the formatted duration' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to eq(['Removes time estimate.'])
+        end
+      end
+
+      context 'negative estimation' do
+        let(:content) { '/estimate -79d' }
+
+        it 'does not explain' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to be_empty
+        end
+      end
+
+      context 'invalid estimation' do
+        let(:content) { '/estimate a' }
+
+        it 'does not explain' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations).to be_empty
+        end
       end
     end
 

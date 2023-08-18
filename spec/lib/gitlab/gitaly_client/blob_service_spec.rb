@@ -209,4 +209,23 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
       end
     end
   end
+
+  describe '#list_all_blobs' do
+    subject { client.list_all_blobs(**expected_params) }
+
+    let(:expected_params) { { limit: 0, bytes_limit: 0 } }
+
+    before do
+      ::Gitlab::GitalyClient.clear_stubs!
+    end
+
+    it 'sends a list all blobs message' do
+      expect_next_instance_of(Gitaly::BlobService::Stub) do |service|
+        expect(service).to receive(:list_all_blobs)
+        .with(gitaly_request_with_params(expected_params), kind_of(Hash))
+      end
+
+      subject
+    end
+  end
 end

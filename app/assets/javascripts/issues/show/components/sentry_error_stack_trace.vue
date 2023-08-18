@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import Stacktrace from '~/error_tracking/components/stacktrace.vue';
 

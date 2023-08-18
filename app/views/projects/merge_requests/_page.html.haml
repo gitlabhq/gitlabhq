@@ -106,7 +106,7 @@
 - if @merge_request.can_be_cherry_picked?
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.merge_commit
 
-#js-review-bar{ data: { new_comment_template_path: profile_comment_templates_path } }
+#js-review-bar{ data: review_bar_data(@merge_request, current_user) }
 
 - if current_user && Feature.enabled?(:mr_experience_survey, current_user)
   #js-mr-experience-survey{ data: { account_age: current_user.account_age_in_days } }

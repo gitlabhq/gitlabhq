@@ -648,163 +648,177 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       let!(:project) { create(:project, :repository) }
       let!(:environment) { create(:environment, project: project) }
 
-      context 'when there are no deployments and builds' do
-        it do
-          expect(subject_method(environment)).to eq(described_class.none)
-        end
-      end
-
-      context 'when there are no successful builds' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-        let(:ci_build) { create(:ci_build, :running, project: project, pipeline: pipeline) }
-
-        before do
-          create(:deployment, :success, environment: environment, project: project, deployable: ci_build)
+      shared_examples_for 'find last deployment group for environment' do
+        context 'when there are no deployments and jobs' do
+          it do
+            expect(subject_method(environment)).to eq(described_class.none)
+          end
         end
 
-        it do
-          expect(subject_method(environment)).to eq(described_class.none)
-        end
-      end
+        context 'when there are no successful jobs' do
+          let(:pipeline) { create(:ci_pipeline, project: project) }
+          let(:job) { create(factory_type, :created, project: project, pipeline: pipeline) }
 
-      context 'when there are deployments for multiple pipelines' do
-        let(:pipeline_a) { create(:ci_pipeline, project: project) }
-        let(:pipeline_b) { create(:ci_pipeline, project: project) }
-        let(:ci_build_a) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
-        let(:ci_build_b) { create(:ci_build, :failed, project: project, pipeline: pipeline_b) }
-        let(:ci_build_c) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
-        let(:ci_build_d) { create(:ci_build, :failed, project: project, pipeline: pipeline_a) }
-
-        # Successful deployments for pipeline_a
-        let!(:deployment_a) do
-          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
-        end
-
-        let!(:deployment_b) do
-          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_c)
-        end
-
-        before do
-          # Failed deployment for pipeline_a
-          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_d)
-
-          # Failed deployment for pipeline_b
-          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
-        end
-
-        it 'returns the successful deployment jobs for the last deployment pipeline' do
-          expect(subject_method(environment).pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
-        end
-      end
-
-      context 'when there are many environments' do
-        let(:environment_b) { create(:environment, project: project) }
-
-        let(:pipeline_a) { create(:ci_pipeline, project: project) }
-        let(:pipeline_b) { create(:ci_pipeline, project: project) }
-        let(:pipeline_c) { create(:ci_pipeline, project: project) }
-        let(:pipeline_d) { create(:ci_pipeline, project: project) }
-
-        # Builds for first environment: 'environment' with pipeline_a and pipeline_b
-        let(:ci_build_a) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
-        let(:ci_build_b) { create(:ci_build, :failed, project: project, pipeline: pipeline_b) }
-        let(:ci_build_c) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
-        let(:ci_build_d) { create(:ci_build, :failed, project: project, pipeline: pipeline_a) }
-        let!(:stop_env_a) { create(:ci_build, :manual, project: project, pipeline: pipeline_a, name: 'stop_env_a') }
-
-        # Builds for second environment: 'environment_b' with pipeline_c and pipeline_d
-        let(:ci_build_e) { create(:ci_build, :success, project: project, pipeline: pipeline_c) }
-        let(:ci_build_f) { create(:ci_build, :failed, project: project, pipeline: pipeline_d) }
-        let(:ci_build_g) { create(:ci_build, :success, project: project, pipeline: pipeline_c) }
-        let(:ci_build_h) { create(:ci_build, :failed, project: project, pipeline: pipeline_c) }
-        let!(:stop_env_b) { create(:ci_build, :manual, project: project, pipeline: pipeline_c, name: 'stop_env_b') }
-
-        # Successful deployments for 'environment' from pipeline_a
-        let!(:deployment_a) do
-          create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a)
-        end
-
-        let!(:deployment_b) do
-          create(:deployment, :success,
-            project: project, environment: environment, deployable: ci_build_c, on_stop: 'stop_env_a')
-        end
-
-        # Successful deployments for 'environment_b' from pipeline_c
-        let!(:deployment_c) do
-          create(:deployment, :success, project: project, environment: environment_b, deployable: ci_build_e)
-        end
-
-        let!(:deployment_d) do
-          create(:deployment, :success,
-            project: project, environment: environment_b, deployable: ci_build_g, on_stop: 'stop_env_b')
-        end
-
-        before do
-          # Failed deployment for 'environment' from pipeline_a and pipeline_b
-          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_d)
-          create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b)
-
-          # Failed deployment for 'environment_b' from pipeline_c and pipeline_d
-          create(:deployment, :failed, project: project, environment: environment_b, deployable: ci_build_h)
-          create(:deployment, :failed, project: project, environment: environment_b, deployable: ci_build_f)
-        end
-
-        it 'batch loads for environments' do
-          environments = [environment, environment_b]
-
-          # Loads Batch loader
-          environments.each do |env|
-            subject_method(env)
+          before do
+            create(:deployment, :created, environment: environment, project: project, deployable: job)
           end
 
-          expect(subject_method(environments.first).pluck(:id))
-            .to contain_exactly(deployment_a.id, deployment_b.id)
+          it do
+            expect(subject_method(environment)).to eq(described_class.none)
+          end
+        end
 
-          expect { subject_method(environments.second).pluck(:id) }.not_to exceed_query_limit(0)
+        context 'when there are deployments for multiple pipelines' do
+          let(:pipeline_a) { create(:ci_pipeline, project: project) }
+          let(:pipeline_b) { create(:ci_pipeline, project: project) }
+          let(:job_a) { create(factory_type, :success, project: project, pipeline: pipeline_a) }
+          let(:job_b) { create(factory_type, :failed, project: project, pipeline: pipeline_b) }
+          let(:job_c) { create(factory_type, :success, project: project, pipeline: pipeline_a) }
+          let(:job_d) { create(factory_type, :failed, project: project, pipeline: pipeline_a) }
 
-          expect(subject_method(environments.second).pluck(:id))
-            .to contain_exactly(deployment_c.id, deployment_d.id)
+          # Successful deployments for pipeline_a
+          let!(:deployment_a) do
+            create(:deployment, :success, project: project, environment: environment, deployable: job_a)
+          end
 
-          expect(subject_method(environments.first).map(&:stop_action).compact)
-            .to contain_exactly(stop_env_a)
+          let!(:deployment_b) do
+            create(:deployment, :success, project: project, environment: environment, deployable: job_c)
+          end
 
-          expect { subject_method(environments.second).map(&:stop_action) }
-            .not_to exceed_query_limit(0)
+          before do
+            # Failed deployment for pipeline_a
+            create(:deployment, :failed, project: project, environment: environment, deployable: job_d)
 
-          expect(subject_method(environments.second).map(&:stop_action).compact)
-            .to contain_exactly(stop_env_b)
+            # Failed deployment for pipeline_b
+            create(:deployment, :failed, project: project, environment: environment, deployable: job_b)
+          end
+
+          it 'returns the successful deployment jobs for the last deployment pipeline' do
+            expect(subject_method(environment).pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
+          end
+        end
+
+        context 'when there are many environments' do
+          let(:environment_b) { create(:environment, project: project) }
+
+          let(:pipeline_a) { create(:ci_pipeline, project: project) }
+          let(:pipeline_b) { create(:ci_pipeline, project: project) }
+          let(:pipeline_c) { create(:ci_pipeline, project: project) }
+          let(:pipeline_d) { create(:ci_pipeline, project: project) }
+
+          # Builds for first environment: 'environment' with pipeline_a and pipeline_b
+          let(:job_a) { create(factory_type, :success, project: project, pipeline: pipeline_a) }
+          let(:job_b) { create(factory_type, :failed, project: project, pipeline: pipeline_b) }
+          let(:job_c) { create(factory_type, :success, project: project, pipeline: pipeline_a) }
+          let(:job_d) { create(factory_type, :failed, project: project, pipeline: pipeline_a) }
+          let!(:stop_env_a) do
+            create(factory_type, :manual, project: project, pipeline: pipeline_a, name: 'stop_env_a')
+          end
+
+          # Builds for second environment: 'environment_b' with pipeline_c and pipeline_d
+          let(:job_e) { create(factory_type, :success, project: project, pipeline: pipeline_c) }
+          let(:job_f) { create(factory_type, :failed, project: project, pipeline: pipeline_d) }
+          let(:job_g) { create(factory_type, :success, project: project, pipeline: pipeline_c) }
+          let(:job_h) { create(factory_type, :failed, project: project, pipeline: pipeline_c) }
+          let!(:stop_env_b) do
+            create(factory_type, :manual, project: project, pipeline: pipeline_c, name: 'stop_env_b')
+          end
+
+          # Successful deployments for 'environment' from pipeline_a
+          let!(:deployment_a) do
+            create(:deployment, :success, project: project, environment: environment, deployable: job_a)
+          end
+
+          let!(:deployment_b) do
+            create(:deployment, :success,
+              project: project, environment: environment, deployable: job_c, on_stop: 'stop_env_a')
+          end
+
+          # Successful deployments for 'environment_b' from pipeline_c
+          let!(:deployment_c) do
+            create(:deployment, :success, project: project, environment: environment_b, deployable: job_e)
+          end
+
+          let!(:deployment_d) do
+            create(:deployment, :success,
+              project: project, environment: environment_b, deployable: job_g, on_stop: 'stop_env_b')
+          end
+
+          before do
+            # Failed deployment for 'environment' from pipeline_a and pipeline_b
+            create(:deployment, :failed, project: project, environment: environment, deployable: job_d)
+            create(:deployment, :failed, project: project, environment: environment, deployable: job_b)
+
+            # Failed deployment for 'environment_b' from pipeline_c and pipeline_d
+            create(:deployment, :failed, project: project, environment: environment_b, deployable: job_h)
+            create(:deployment, :failed, project: project, environment: environment_b, deployable: job_f)
+          end
+
+          it 'batch loads for environments' do
+            environments = [environment, environment_b]
+
+            # Loads Batch loader
+            environments.each do |env|
+              subject_method(env)
+            end
+
+            expect(subject_method(environments.first).pluck(:id))
+              .to contain_exactly(deployment_a.id, deployment_b.id)
+
+            expect { subject_method(environments.second).pluck(:id) }.not_to exceed_query_limit(0)
+
+            expect(subject_method(environments.second).pluck(:id))
+              .to contain_exactly(deployment_c.id, deployment_d.id)
+
+            expect(subject_method(environments.first).map(&:stop_action).compact)
+              .to contain_exactly(stop_env_a)
+
+            expect { subject_method(environments.second).map(&:stop_action) }
+              .not_to exceed_query_limit(0)
+
+            expect(subject_method(environments.second).map(&:stop_action).compact)
+              .to contain_exactly(stop_env_b)
+          end
+        end
+
+        context 'When last deployment for environment is a retried job' do
+          let(:pipeline) { create(:ci_pipeline, project: project) }
+          let(:environment_b) { create(:environment, project: project) }
+
+          let(:job_a) do
+            create(factory_type, :success, project: project, pipeline: pipeline, environment: environment.name)
+          end
+
+          let(:job_b) do
+            create(factory_type, :success, project: project, pipeline: pipeline, environment: environment_b.name)
+          end
+
+          let!(:deployment_a) do
+            create(:deployment, :success, project: project, environment: environment, deployable: job_a)
+          end
+
+          let!(:deployment_b) do
+            create(:deployment, :success, project: project, environment: environment_b, deployable: job_b)
+          end
+
+          before do
+            # Retry job_b
+            job_b.update!(retried: true)
+
+            # New successful job after retry.
+            create(factory_type, :success, project: project, pipeline: pipeline, environment: environment_b.name)
+          end
+
+          it { expect(subject_method(environment_b)).not_to be_nil }
         end
       end
 
-      context 'When last deployment for environment is a retried build' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-        let(:environment_b) { create(:environment, project: project) }
+      it_behaves_like 'find last deployment group for environment' do
+        let(:factory_type) { :ci_build }
+      end
 
-        let(:build_a) do
-          create(:ci_build, :success, project: project, pipeline: pipeline, environment: environment.name)
-        end
-
-        let(:build_b) do
-          create(:ci_build, :success, project: project, pipeline: pipeline, environment: environment_b.name)
-        end
-
-        let!(:deployment_a) do
-          create(:deployment, :success, project: project, environment: environment, deployable: build_a)
-        end
-
-        let!(:deployment_b) do
-          create(:deployment, :success, project: project, environment: environment_b, deployable: build_b)
-        end
-
-        before do
-          # Retry build_b
-          build_b.update!(retried: true)
-
-          # New successful build after retry.
-          create(:ci_build, :success, project: project, pipeline: pipeline, environment: environment_b.name)
-        end
-
-        it { expect(subject_method(environment_b)).not_to be_nil }
+      it_behaves_like 'find last deployment group for environment' do
+        let(:factory_type) { :ci_bridge }
       end
     end
   end
@@ -873,30 +887,40 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   end
 
   describe '#stop_action' do
-    let(:build) { create(:ci_build) }
-
     subject { deployment.stop_action }
 
-    context 'when no other actions' do
-      let(:deployment) { FactoryBot.build(:deployment, deployable: build) }
+    shared_examples_for 'stop action for a job' do
+      let(:job) { create(factory_type) } # rubocop:disable Rails/SaveBang
 
-      it { is_expected.to be_nil }
-    end
-
-    context 'with other actions' do
-      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
-
-      context 'when matching action is defined' do
-        let(:deployment) { FactoryBot.build(:deployment, deployable: build, on_stop: 'close_other_app') }
+      context 'when no other actions' do
+        let(:deployment) { FactoryBot.build(:deployment, deployable: job) }
 
         it { is_expected.to be_nil }
       end
 
-      context 'when no matching action is defined' do
-        let(:deployment) { FactoryBot.build(:deployment, deployable: build, on_stop: 'close_app') }
+      context 'with other actions' do
+        let!(:close_action) { create(factory_type, :manual, pipeline: job.pipeline, name: 'close_app') }
 
-        it { is_expected.to eq(close_action) }
+        context 'when matching action is defined' do
+          let(:deployment) { FactoryBot.build(:deployment, deployable: job, on_stop: 'close_other_app') }
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when no matching action is defined' do
+          let(:deployment) { FactoryBot.build(:deployment, deployable: job, on_stop: 'close_app') }
+
+          it { is_expected.to eq(close_action) }
+        end
       end
+    end
+
+    it_behaves_like 'stop action for a job' do
+      let(:factory_type) { :ci_build }
+    end
+
+    it_behaves_like 'stop action for a job' do
+      let(:factory_type) { :ci_bridge }
     end
   end
 
@@ -908,10 +932,18 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       expect(deployment.deployed_by).to eq(deployment_user)
     end
 
-    it 'returns the deployment user if the deployable have no user' do
+    it 'returns the deployment user if the deployable is build and have no user' do
       deployment_user = create(:user)
-      build = create(:ci_build, user: nil)
-      deployment = create(:deployment, deployable: build, user: deployment_user)
+      job = create(:ci_build, user: nil)
+      deployment = create(:deployment, deployable: job, user: deployment_user)
+
+      expect(deployment.deployed_by).to eq(deployment_user)
+    end
+
+    it 'returns the deployment user if the deployable is bridge and have no user' do
+      deployment_user = create(:user)
+      job = create(:ci_bridge, user: nil)
+      deployment = create(:deployment, deployable: job, user: deployment_user)
 
       expect(deployment.deployed_by).to eq(deployment_user)
     end
@@ -919,8 +951,8 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     it 'returns the deployable user if there is one' do
       build_user = create(:user)
       deployment_user = create(:user)
-      build = create(:ci_build, user: build_user)
-      deployment = create(:deployment, deployable: build, user: deployment_user)
+      job = create(:ci_build, user: build_user)
+      deployment = create(:deployment, deployable: job, user: deployment_user)
 
       expect(deployment.deployed_by).to eq(build_user)
     end
@@ -954,14 +986,14 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
   end
 
-  describe '.builds' do
+  describe '.jobs' do
     let!(:deployment1) { create(:deployment) }
     let!(:deployment2) { create(:deployment) }
     let!(:deployment3) { create(:deployment) }
 
-    subject { described_class.builds }
+    subject { described_class.jobs }
 
-    it 'retrieves builds for the deployments' do
+    it 'retrieves jobs for the deployments' do
       is_expected.to match_array(
         [deployment1.deployable, deployment2.deployable, deployment3.deployable])
     end
@@ -974,16 +1006,16 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
   end
 
-  describe '#build' do
+  describe '#job' do
     let!(:deployment) { create(:deployment) }
 
-    subject { deployment.build }
+    subject { deployment.job }
 
-    it 'retrieves build for the deployment' do
+    it 'retrieves job for the deployment' do
       is_expected.to eq(deployment.deployable)
     end
 
-    it 'returns nil when the associated build is not found' do
+    it 'returns nil when the associated job is not found' do
       deployment.update!(deployable_id: nil, deployable_type: nil)
 
       is_expected.to be_nil
@@ -1088,22 +1120,30 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
     end
   end
 
-  describe '#playable_build' do
-    subject { deployment.playable_build }
+  describe '#playable_job' do
+    subject { deployment.playable_job }
 
-    context 'when there is a deployable build' do
-      let(:deployment) { create(:deployment, deployable: build) }
+    context 'when there is a deployable job' do
+      let(:deployment) { create(:deployment, deployable: job) }
 
-      context 'when the deployable build is playable' do
-        let(:build) { create(:ci_build, :playable) }
+      context 'when the deployable job is build and playable' do
+        let(:job) { create(:ci_build, :playable) }
 
-        it 'returns that build' do
-          is_expected.to eq(build)
+        it 'returns that job' do
+          is_expected.to eq(job)
         end
       end
 
-      context 'when the deployable build is not playable' do
-        let(:build) { create(:ci_build) }
+      context 'when the deployable job is bridge and playable' do
+        let(:job) { create(:ci_bridge, :playable) }
+
+        it 'returns that job' do
+          is_expected.to eq(job)
+        end
+      end
+
+      context 'when the deployable job is not playable' do
+        let(:job) { create(:ci_build) }
 
         it 'returns nil' do
           is_expected.to be_nil
@@ -1111,7 +1151,7 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       end
     end
 
-    context 'when there is no deployable build' do
+    context 'when there is no deployable job' do
       let(:deployment) { create(:deployment) }
 
       it 'returns nil' do
@@ -1207,143 +1247,179 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
   end
 
   describe '#sync_status_with' do
-    subject { deployment.sync_status_with(ci_build) }
+    subject { deployment.sync_status_with(job) }
 
     let_it_be(:project) { create(:project, :repository) }
 
-    let(:deployment) { create(:deployment, project: project, status: deployment_status) }
-    let(:ci_build) { create(:ci_build, project: project, status: build_status) }
+    shared_examples_for 'sync status with a job' do
+      let(:deployment) { create(:deployment, project: project, status: deployment_status) }
+      let(:job) { create(factory_type, project: project, status: job_status) }
 
-    shared_examples_for 'synchronizing deployment' do
-      it 'changes deployment status' do
-        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
+      shared_examples_for 'synchronizing deployment' do
+        let(:expected_deployment_status) { job_status.to_s }
 
-        is_expected.to eq(true)
+        it 'changes deployment status' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
-        expect(deployment.status).to eq(build_status.to_s)
-        expect(deployment.errors).to be_empty
-      end
-    end
+          is_expected.to eq(true)
 
-    shared_examples_for 'gracefully handling error' do
-      it 'tracks an exception' do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          instance_of(described_class::StatusSyncError),
-          deployment_id: deployment.id,
-          build_id: ci_build.id)
-
-        is_expected.to eq(false)
-
-        expect(deployment.status).to eq(deployment_status.to_s)
-        expect(deployment.errors.full_messages).to include(error_message)
-      end
-    end
-
-    shared_examples_for 'ignoring build' do
-      it 'does not change deployment status' do
-        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
-
-        is_expected.to eq(false)
-
-        expect(deployment.status).to eq(deployment_status.to_s)
-        expect(deployment.errors).to be_empty
-      end
-    end
-
-    context 'with created deployment' do
-      let(:deployment_status) { :created }
-
-      context 'with created build' do
-        let(:build_status) { :created }
-
-        it_behaves_like 'ignoring build'
-      end
-
-      context 'with running build' do
-        let(:build_status) { :running }
-
-        it_behaves_like 'synchronizing deployment'
-      end
-
-      context 'with finished build' do
-        let(:build_status) { :success }
-
-        it_behaves_like 'synchronizing deployment'
-      end
-
-      context 'with unrelated build' do
-        let(:build_status) { :waiting_for_resource }
-
-        it_behaves_like 'ignoring build'
-      end
-    end
-
-    context 'with running deployment' do
-      let(:deployment_status) { :running }
-
-      context 'with created build' do
-        let(:build_status) { :created }
-
-        it_behaves_like 'gracefully handling error' do
-          let(:error_message) { %{Status cannot transition via \"create\"} }
+          expect(deployment.status).to eq(expected_deployment_status)
+          expect(deployment.errors).to be_empty
         end
       end
 
-      context 'with running build' do
-        let(:build_status) { :running }
+      shared_examples_for 'gracefully handling error' do
+        it 'tracks an exception' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+            instance_of(described_class::StatusSyncError),
+            deployment_id: deployment.id,
+            job_id: job.id)
 
-        it_behaves_like 'ignoring build'
+          is_expected.to eq(false)
+
+          expect(deployment.status).to eq(deployment_status.to_s)
+          expect(deployment.errors.full_messages).to include(error_message)
+        end
       end
 
-      context 'with finished build' do
-        let(:build_status) { :success }
+      shared_examples_for 'ignoring job' do
+        it 'does not change deployment status' do
+          expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
-        it_behaves_like 'synchronizing deployment'
+          is_expected.to eq(false)
+
+          expect(deployment.status).to eq(deployment_status.to_s)
+          expect(deployment.errors).to be_empty
+        end
       end
 
-      context 'with unrelated build' do
-        let(:build_status) { :waiting_for_resource }
+      context 'with created deployment' do
+        let(:deployment_status) { :created }
 
-        it_behaves_like 'ignoring build'
+        context 'with created job' do
+          let(:job_status) { :created }
+
+          it_behaves_like 'ignoring job'
+        end
+
+        context 'with manual job' do
+          let(:job_status) { :manual }
+
+          it_behaves_like 'synchronizing deployment' do
+            let(:expected_deployment_status) { 'blocked' }
+          end
+        end
+
+        context 'with running job' do
+          let(:job_status) { :running }
+
+          it_behaves_like 'synchronizing deployment'
+        end
+
+        context 'with finished job' do
+          let(:job_status) { :success }
+
+          it_behaves_like 'synchronizing deployment'
+        end
+
+        context 'with unrelated job' do
+          let(:job_status) { :waiting_for_resource }
+
+          it_behaves_like 'ignoring job'
+        end
+      end
+
+      context 'with running deployment' do
+        let(:deployment_status) { :running }
+
+        context 'with created job' do
+          let(:job_status) { :created }
+
+          it_behaves_like 'gracefully handling error' do
+            let(:error_message) { %{Status cannot transition via \"create\"} }
+          end
+        end
+
+        context 'with manual job' do
+          let(:job_status) { :manual }
+
+          it_behaves_like 'gracefully handling error' do
+            let(:error_message) { %{Status cannot transition via \"block\"} }
+          end
+        end
+
+        context 'with running job' do
+          let(:job_status) { :running }
+
+          it_behaves_like 'ignoring job'
+        end
+
+        context 'with finished job' do
+          let(:job_status) { :success }
+
+          it_behaves_like 'synchronizing deployment'
+        end
+
+        context 'with unrelated job' do
+          let(:job_status) { :waiting_for_resource }
+
+          it_behaves_like 'ignoring job'
+        end
+      end
+
+      context 'with finished deployment' do
+        let(:deployment_status) { :success }
+
+        context 'with created job' do
+          let(:job_status) { :created }
+
+          it_behaves_like 'gracefully handling error' do
+            let(:error_message) { %{Status cannot transition via \"create\"} }
+          end
+        end
+
+        context 'with manual job' do
+          let(:job_status) { :manual }
+
+          it_behaves_like 'gracefully handling error' do
+            let(:error_message) { %{Status cannot transition via \"block\"} }
+          end
+        end
+
+        context 'with running job' do
+          let(:job_status) { :running }
+
+          it_behaves_like 'gracefully handling error' do
+            let(:error_message) { %{Status cannot transition via \"run\"} }
+          end
+        end
+
+        context 'with finished job' do
+          let(:job_status) { :success }
+
+          it_behaves_like 'ignoring job'
+        end
+
+        context 'with failed job' do
+          let(:job_status) { :failed }
+
+          it_behaves_like 'synchronizing deployment'
+        end
+
+        context 'with unrelated job' do
+          let(:job_status) { :waiting_for_resource }
+
+          it_behaves_like 'ignoring job'
+        end
       end
     end
 
-    context 'with finished deployment' do
-      let(:deployment_status) { :success }
+    it_behaves_like 'sync status with a job' do
+      let(:factory_type) { :ci_build }
+    end
 
-      context 'with created build' do
-        let(:build_status) { :created }
-
-        it_behaves_like 'gracefully handling error' do
-          let(:error_message) { %{Status cannot transition via \"create\"} }
-        end
-      end
-
-      context 'with running build' do
-        let(:build_status) { :running }
-
-        it_behaves_like 'gracefully handling error' do
-          let(:error_message) { %{Status cannot transition via \"run\"} }
-        end
-      end
-
-      context 'with finished build' do
-        let(:build_status) { :success }
-
-        it_behaves_like 'ignoring build'
-      end
-
-      context 'with failed build' do
-        let(:build_status) { :failed }
-
-        it_behaves_like 'synchronizing deployment'
-      end
-
-      context 'with unrelated build' do
-        let(:build_status) { :waiting_for_resource }
-
-        it_behaves_like 'ignoring build'
-      end
+    it_behaves_like 'sync status with a job' do
+      let(:factory_type) { :ci_bridge }
     end
   end
 
@@ -1415,6 +1491,14 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
         it 'returns the tier' do
           expect(subject.tier_in_yaml).to eq('testing')
+        end
+
+        context 'when deployable is a bridge job' do
+          let(:deployable) { create(:ci_bridge, :success, :environment_with_deployment_tier) }
+
+          it 'returns the tier' do
+            expect(subject.tier_in_yaml).to eq('testing')
+          end
         end
 
         context 'when tier is not specified' do

@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import MembersFilteredSearchBar from './members_filtered_search_bar.vue';
 import SortDropdown from './sort_dropdown.vue';

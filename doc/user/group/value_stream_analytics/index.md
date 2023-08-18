@@ -5,7 +5,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value stream analytics **(FREE)**
+# Value stream analytics **(FREE ALL)**
 
 Value stream analytics measures the time it takes to go from an idea to production.
 
@@ -100,7 +100,7 @@ These events play a key role in the duration calculation, which is calculated by
 
 To learn what start and end events can be paired, see [Validating start and end events](../../../development/value_stream_analytics.md#validating-start-and-end-events).
 
-### How value stream analytics aggregates data **(PREMIUM)**
+### How value stream analytics aggregates data **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.5.
 > - Filter by stop date toggle [added](https://gitlab.com/gitlab-org/gitlab/-/issues/352428) in GitLab 14.9
@@ -142,6 +142,9 @@ Each pre-defined stages of value stream analytics is further described in the ta
 | Test      | The median time to run the entire pipeline for that project. It's related to the time GitLab CI/CD takes to run every job for the commits pushed to that merge request. It is basically the start->finish time for all pipelines. |
 | Review    | The median time taken to review a merge request that has a closing issue pattern, between its creation and until it's merged. |
 | Staging   | The median time between merging a merge request that has a closing issue pattern until the very first deployment to a [production environment](#how-value-stream-analytics-identifies-the-production-environment). If there isn't a production environment, this is not tracked. |
+
+NOTE:
+Value stream analytics works on timestamp data and aggregates only the final start and stop events of the stage. For items that move back and forth between stages multiple times, the stage time is calculated solely from the final events' timestamps.
 
 For information about how value stream analytics calculates each stage, see the [Value stream analytics development guide](../../../development/value_stream_analytics.md).
 
@@ -264,7 +267,7 @@ Value stream analytics includes the following lifecycle metrics:
 - **New issues**: Number of new issues created.
 - **Deploys**: Total number of deployments to production.
 
-### DORA metrics **(ULTIMATE)**
+### DORA metrics **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) lead time for changes DORA metric in GitLab 14.5.
 > - DORA API-based deployment metrics for value stream analytics for groups were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in GitLab 14.3.
@@ -343,7 +346,7 @@ NOTE:
 The date range selector filters items by the event time. The event time is when the
 selected stage finished for the given item.
 
-## View tasks by type **(PREMIUM)**
+## View tasks by type **(PREMIUM ALL)**
 
 The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
 
@@ -360,7 +363,7 @@ To view tasks by type:
 1. To add or remove labels, select the **Settings** (**{settings}**) dropdown list
    and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
 
-## Create a value stream **(PREMIUM)**
+## Create a value stream **(PREMIUM ALL)**
 
 ### Create a value stream with GitLab default stages
 
@@ -421,7 +424,7 @@ In the example above, two independent value streams are set up for two teams tha
 
 The first value stream uses standard timestamp-based events for defining the stages. The second value stream uses label events.
 
-## Edit a value stream **(PREMIUM)**
+## Edit a value stream **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
 
@@ -440,7 +443,7 @@ After you create a value stream, you can customize it to suit your purposes. To 
 1. Optional. To undo any modifications, select **Restore value stream defaults**.
 1. Select **Save Value Stream**.
 
-## Delete a value stream **(PREMIUM)**
+## Delete a value stream **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221205) in GitLab 13.4.
 
@@ -453,7 +456,7 @@ To delete a custom value stream:
 
 ![Delete value stream](img/delete_value_stream_v13_12.png "Deleting a custom value stream")
 
-## View number of days for a cycle to complete **(PREMIUM)**
+## View number of days for a cycle to complete **(PREMIUM ALL)**
 
 > - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
 > - Totals [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) with averages in GitLab 13.12.

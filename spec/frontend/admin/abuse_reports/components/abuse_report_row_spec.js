@@ -94,4 +94,19 @@ describe('AbuseReportRow', () => {
   it('renders abuse category', () => {
     expect(findAbuseCategory().exists()).toBe(true);
   });
+
+  describe('aggregated report', () => {
+    const mockAggregatedAbuseReport = mockAbuseReports[1];
+    const { reportedUser, category, count } = mockAggregatedAbuseReport;
+
+    beforeEach(() => {
+      createComponent({ report: mockAggregatedAbuseReport });
+    });
+
+    it('displays title with number of aggregated reports', () => {
+      expect(findAbuseReportTitle().text()).toMatchInterpolatedText(
+        `${reportedUser.name} reported for ${category} by ${count} users`,
+      );
+    });
+  });
 });

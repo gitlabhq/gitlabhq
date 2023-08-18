@@ -15,6 +15,11 @@ module MirrorHelper
     html_escape(_('Git LFS objects will be synced if LFS is %{docs_link_start}enabled for the project%{docs_link_end}. Push mirrors will %{strong_open}not%{strong_close} sync LFS objects over SSH.')) %
       { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe, strong_open: '<strong>'.html_safe, strong_close: '</strong>'.html_safe }
   end
+
+  def mirrored_repositories_count
+    count = @project.mirror == true ? 1 : 0
+    count + @project.remote_mirrors.to_a.count(&:enabled)
+  end
 end
 
 MirrorHelper.prepend_mod_with('MirrorHelper')

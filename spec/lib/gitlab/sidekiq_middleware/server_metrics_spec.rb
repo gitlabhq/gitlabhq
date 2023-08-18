@@ -59,30 +59,14 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           described_class.initialize_process_metrics
         end
 
-        shared_examples "initializes sidekiq SLIs for the workers in the current process" do
+        context 'when emit_sidekiq_histogram FF is disabled' do
           before do
-            allow(Gitlab::SidekiqConfig)
-              .to receive(:current_worker_queue_mappings)
-                    .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
-            allow(completion_seconds_metric).to receive(:get)
+            stub_feature_flags(emit_sidekiq_histogram_metrics: false)
+            allow(Gitlab::SidekiqConfig).to receive(:current_worker_queue_mappings).and_return('MergeWorker' => 'merge')
           end
 
-          it "initializes the SLIs with labels" do
-            expect(Gitlab::Metrics::SidekiqSlis)
-              .to receive(initialize_sli_method).with([
-                {
-                  worker: 'MergeWorker',
-                  urgency: 'high',
-                  feature_category: 'source_code_management',
-                  external_dependencies: 'no'
-                },
-                {
-                  worker: 'Ci::BuildFinishedWorker',
-                  urgency: 'high',
-                  feature_category: 'continuous_integration',
-                  external_dependencies: 'no'
-                }
-              ])
+          it 'does not initialize sidekiq_jobs_completion_seconds' do
+            expect(completion_seconds_metric).not_to receive(:get)
 
             described_class.initialize_process_metrics
           end
@@ -97,35 +81,38 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           end
         end
 
-        context 'initializing execution SLIs' do
-          let(:initialize_sli_method) { :initialize_execution_slis! }
-
-          context 'when sidekiq_execution_application_slis FF is turned on' do
-            it_behaves_like "initializes sidekiq SLIs for the workers in the current process"
+        context 'initializing execution and queueing SLIs' do
+          before do
+            allow(Gitlab::SidekiqConfig)
+              .to receive(:current_worker_queue_mappings)
+                    .and_return('MergeWorker' => 'merge', 'Ci::BuildFinishedWorker' => 'default')
+            allow(completion_seconds_metric).to receive(:get)
           end
 
-          context 'when sidekiq_execution_application_slis FF is turned off' do
-            before do
-              stub_feature_flags(sidekiq_execution_application_slis: false)
-            end
+          it "initializes the execution and queueing SLIs with labels" do
+            expected_labels = [
+              {
+                worker: 'MergeWorker',
+                urgency: 'high',
+                feature_category: 'source_code_management',
+                external_dependencies: 'no',
+                queue: 'merge'
+              },
+              {
+                worker: 'Ci::BuildFinishedWorker',
+                urgency: 'high',
+                feature_category: 'continuous_integration',
+                external_dependencies: 'no',
+                queue: 'default'
+              }
+            ]
 
-            it_behaves_like "not initializing sidekiq SLIs"
-          end
-        end
+            expect(Gitlab::Metrics::SidekiqSlis)
+              .to receive(:initialize_execution_slis!).with(expected_labels)
+            expect(Gitlab::Metrics::SidekiqSlis)
+              .to receive(:initialize_queueing_slis!).with(expected_labels)
 
-        context 'initializing queueing SLIs' do
-          let(:initialize_sli_method) { :initialize_queueing_slis! }
-
-          context 'when sidekiq_queueing_application_slis FF is turned on' do
-            it_behaves_like "initializes sidekiq SLIs for the workers in the current process"
-          end
-
-          context 'when sidekiq_queueing_application_slis FF is turned off' do
-            before do
-              stub_feature_flags(sidekiq_queueing_application_slis: false)
-            end
-
-            it_behaves_like "not initializing sidekiq SLIs"
+            described_class.initialize_process_metrics
           end
         end
 
@@ -192,20 +179,26 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           expect(redis_requests_total).to receive(:increment).with(labels_with_job_status, redis_calls)
           expect(elasticsearch_requests_total).to receive(:increment).with(labels_with_job_status, elasticsearch_calls)
           expect(sidekiq_mem_total_bytes).to receive(:set).with(labels_with_job_status, mem_total_bytes)
-          expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_apdex).with(labels.slice(:worker,
-            :feature_category,
-            :urgency,
-            :external_dependencies), monotonic_time_duration)
-          expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_error).with(labels.slice(:worker,
-            :feature_category,
-            :urgency,
-            :external_dependencies), false)
+          expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_apdex)
+                                                    .with(labels.slice(:worker,
+                                                      :feature_category,
+                                                      :urgency,
+                                                      :external_dependencies,
+                                                      :queue), monotonic_time_duration)
+          expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_error)
+                                                    .with(labels.slice(:worker,
+                                                      :feature_category,
+                                                      :urgency,
+                                                      :external_dependencies,
+                                                      :queue), false)
 
           if queue_duration_for_job
-            expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_queueing_apdex).with(labels.slice(:worker,
-              :feature_category,
-              :urgency,
-              :external_dependencies), queue_duration_for_job)
+            expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_queueing_apdex)
+                                                      .with(labels.slice(:worker,
+                                                        :feature_category,
+                                                        :urgency,
+                                                        :external_dependencies,
+                                                        :queue), queue_duration_for_job)
           end
 
           subject.call(worker, job, :test) { nil }
@@ -260,10 +253,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
           it 'records sidekiq SLI error but does not record sidekiq SLI apdex' do
             expect(failed_total_metric).to receive(:increment)
             expect(Gitlab::Metrics::SidekiqSlis).not_to receive(:record_execution_apdex)
-            expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_error).with(labels.slice(:worker,
-              :feature_category,
-              :urgency,
-              :external_dependencies), true)
+            expect(Gitlab::Metrics::SidekiqSlis).to receive(:record_execution_error)
+                                                      .with(labels.slice(:worker,
+                                                        :feature_category,
+                                                        :urgency,
+                                                        :external_dependencies,
+                                                        :queue), true)
 
             expect { subject.call(worker, job, :test) { raise StandardError, "Failed" } }.to raise_error(StandardError, "Failed")
           end
@@ -284,31 +279,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
           it 'sets sidekiq_jobs_interrupted_total metric' do
             expect(interrupted_total_metric).to receive(:increment)
-
-            subject.call(worker, job, :test) { nil }
-          end
-        end
-
-        context 'when sidekiq_execution_application_slis FF is turned off' do
-          before do
-            stub_feature_flags(sidekiq_execution_application_slis: false)
-          end
-
-          it 'does not call record_execution_apdex nor record_execution_error' do
-            expect(Gitlab::Metrics::SidekiqSlis).not_to receive(:record_execution_apdex)
-            expect(Gitlab::Metrics::SidekiqSlis).not_to receive(:record_execution_error)
-
-            subject.call(worker, job, :test) { nil }
-          end
-        end
-
-        context 'when sidekiq_queueing_application_slis FF is turned off' do
-          before do
-            stub_feature_flags(sidekiq_queueing_application_slis: false)
-          end
-
-          it 'does not call record_queueing_apdex' do
-            expect(Gitlab::Metrics::SidekiqSlis).not_to receive(:record_queueing_apdex)
 
             subject.call(worker, job, :test) { nil }
           end
@@ -482,6 +452,54 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
 
         TestWorker.process_job(job)
       end
+    end
+  end
+
+  context 'when emit_sidekiq_histogram_metrics FF is disabled' do
+    include_context 'server metrics with mocked prometheus'
+    include_context 'server metrics call' do
+      let(:stub_subject) { false }
+    end
+
+    subject(:middleware) { described_class.new }
+
+    let(:job) { {} }
+    let(:queue) { :test }
+    let(:worker_class) do
+      Class.new do
+        def self.name
+          "TestWorker"
+        end
+        include ApplicationWorker
+      end
+    end
+
+    let(:worker) { worker_class.new }
+    let(:labels) do
+      { queue: queue.to_s,
+        worker: worker.class.name,
+        boundary: "",
+        external_dependencies: "no",
+        feature_category: "",
+        urgency: "low" }
+    end
+
+    before do
+      stub_feature_flags(emit_sidekiq_histogram_metrics: false)
+    end
+
+    it 'does not emit histogram metrics' do
+      expect(completion_seconds_metric).not_to receive(:observe)
+      expect(queue_duration_seconds).not_to receive(:observe)
+      expect(failed_total_metric).not_to receive(:increment)
+
+      middleware.call(worker, job, queue) { nil }
+    end
+
+    it 'emits sidekiq_jobs_completion_seconds_sum metric' do
+      expect(completion_seconds_sum_metric).to receive(:increment).with(labels, monotonic_time_duration)
+
+      middleware.call(worker, job, queue) { nil }
     end
   end
 end

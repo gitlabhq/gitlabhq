@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# NuGet API **(FREE)**
+# NuGet API **(FREE ALL)**
 
 This is the API documentation for [NuGet Packages](../../user/packages/nuget_repository/index.md).
 
@@ -80,13 +80,22 @@ This writes the downloaded file to `MyNuGetPkg.1.3.0.17.nupkg` in the current di
 
 ## Upload a package file
 
-> Introduced in GitLab 12.8.
+> - Introduced in GitLab 12.8 for NuGet v3 feed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) in GitLab 16.2 for NuGet v2 feed.
 
 Upload a NuGet package file:
 
-```plaintext
-PUT projects/:id/packages/nuget
-```
+- For NuGet v3 feed:
+
+  ```plaintext
+  PUT projects/:id/packages/nuget
+  ```
+
+- For NuGet V2 feed:
+
+  ```plaintext
+  PUT projects/:id/packages/nuget/v2
+  ```
 
 | Attribute         | Type   | Required | Description |
 | ----------------- | ------ | -------- | ----------- |
@@ -95,12 +104,23 @@ PUT projects/:id/packages/nuget
 | `package_version` | string | yes      | The version of the package. |
 | `package_filename`| string | yes      | The name of the file. |
 
-```shell
-curl --request PUT \
-     --form 'package=@path/to/mynugetpkg.1.3.0.17.nupkg' \
-     --user <username>:<personal_access_token> \
-     "https://gitlab.example.com/api/v4/projects/1/packages/nuget/"
-```
+- For NuGet v3 feed:
+
+  ```shell
+  curl --request PUT \
+      --form 'package=@path/to/mynugetpkg.1.3.0.17.nupkg' \
+      --user <username>:<personal_access_token> \
+      "https://gitlab.example.com/api/v4/projects/1/packages/nuget/"
+  ```
+
+- For NuGet v2 feed:
+
+    ```shell
+  curl --request PUT \
+      --form 'package=@path/to/mynugetpkg.1.3.0.17.nupkg' \
+      --user <username>:<personal_access_token> \
+      "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2"
+  ```
 
 ## Upload a symbol package file
 
@@ -157,6 +177,37 @@ The examples in this document all use the project-level prefix.
 | `id`      | string | yes      | The project ID or full project path. |
 
 ## Service Index
+
+### V2 source feed/protocol
+
+Returns an XML document that represents the service index of the v2 NuGet source feed.
+Authentication is not required:
+
+```plaintext
+GET <route-prefix>/v2
+```
+
+Example Request:
+
+```shell
+curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2"
+```
+
+Example response:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<service xmlns="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom" xml:base="https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2">
+  <workspace>
+    <atom:title type="text">Default</atom:title>
+    <collection href="Packages">
+      <atom:title type="text">Packages</atom:title>
+    </collection>
+  </workspace>
+</service>
+```
+
+### V3 source feed/protocol
 
 > - Introduced in GitLab 12.6.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/214674) to be public in GitLab 16.1.
@@ -273,7 +324,8 @@ Example response:
             "version": "1.3.0.17",
             "tags": "",
             "packageContent": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/helloworld.1.3.0.17.nupkg",
-            "summary": "Summary of the package",
+            "description": "Description of the package",
+            "summary": "Description of the package",
             "published": "2023-05-08T17:23:25Z",
           }
         }
@@ -316,7 +368,8 @@ Example response:
     "version": "1.3.0.17",
     "tags": "",
     "packageContent": "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/helloworld.1.3.0.17.nupkg",
-    "summary": "Summary of the package",
+    "description": "Description of the package",
+    "summary": "Description of the package",
     "published": "2023-05-08T17:23:25Z",
   }
 }
@@ -354,7 +407,8 @@ Example response:
       "authors": "Author1, Author2",
       "id": "MyNuGetPkg",
       "title": "MyNuGetPkg",
-      "summary": "Summary of the package",
+      "description": "Description of the package",
+      "summary": "Description of the package",
       "totalDownloads": 0,
       "verified": true,
       "version": "1.3.0.17",
@@ -369,4 +423,55 @@ Example response:
     }
   ]
 }
+```
+
+## V2 Feed Metadata Endpoint
+
+> Introduced in GitLab 16.3.
+
+Authentication is not required. Returns metadata for a V2 feed available endpoints:
+
+```plaintext
+GET <route-prefix>/v2/$metadata
+```
+
+```shell
+  curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/$metadata"
+```
+
+Example response:
+
+```xml
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" Version="1.0">
+  <edmx:DataServices xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="2.0" m:MaxDataServiceVersion="2.0">
+    <Schema xmlns="http://schemas.microsoft.com/ado/2006/04/edm" Namespace="NuGetGallery.OData">
+      <EntityType Name="V2FeedPackage" m:HasStream="true">
+        <Key>
+          <PropertyRef Name="Id"/>
+          <PropertyRef Name="Version"/>
+        </Key>
+        <Property Name="Id" Type="Edm.String" Nullable="false"/>
+        <Property Name="Version" Type="Edm.String" Nullable="false"/>
+        <Property Name="Authors" Type="Edm.String"/>
+        <Property Name="Dependencies" Type="Edm.String"/>
+        <Property Name="Description" Type="Edm.String"/>
+        <Property Name="DownloadCount" Type="Edm.Int64" Nullable="false"/>
+        <Property Name="IconUrl" Type="Edm.String"/>
+        <Property Name="Published" Type="Edm.DateTime" Nullable="false"/>
+        <Property Name="ProjectUrl" Type="Edm.String"/>
+        <Property Name="Tags" Type="Edm.String"/>
+        <Property Name="Title" Type="Edm.String"/>
+        <Property Name="LicenseUrl" Type="Edm.String"/>
+      </EntityType>
+    </Schema>
+    <Schema xmlns="http://schemas.microsoft.com/ado/2006/04/edm" Namespace="NuGetGallery">
+      <EntityContainer Name="V2FeedContext" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="Packages" EntityType="NuGetGallery.OData.V2FeedPackage"/>
+        <FunctionImport Name="FindPackagesById" ReturnType="Collection(NuGetGallery.OData.V2FeedPackage)" EntitySet="Packages">
+          <Parameter Name="id" Type="Edm.String" FixedLength="false" Unicode="false"/>
+        </FunctionImport>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
 ```

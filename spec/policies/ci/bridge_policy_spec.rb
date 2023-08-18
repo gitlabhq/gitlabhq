@@ -13,6 +13,8 @@ RSpec.describe Ci::BridgePolicy do
     described_class.new(user, bridge)
   end
 
+  it_behaves_like 'a deployable job policy', :ci_bridge
+
   describe '#play_job' do
     before do
       fake_access = double('Gitlab::UserAccess')

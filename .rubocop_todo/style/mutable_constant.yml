@@ -34,7 +34,6 @@ Style/MutableConstant:
     - 'lib/gitlab/git/lfs_pointer_file.rb'
     - 'lib/gitlab/issues/rebalancing/state.rb'
     - 'lib/gitlab/lfs/client.rb'
-    - 'lib/gitlab/search_results.rb'
     - 'lib/gitlab/seeder.rb'
     - 'lib/gitlab/sidekiq_signals.rb'
     - 'lib/gitlab/web_hooks/recursion_detection/uuid.rb'

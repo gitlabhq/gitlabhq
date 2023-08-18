@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'handling nuget service requests' do
+RSpec.shared_examples 'handling nuget service requests' do |v2: false|
   subject { get api(url) }
+
+  it { is_expected.to have_request_urgency(v2 ? :low : :default) }
 
   context 'with valid target' do
     using RSpec::Parameterized::TableSyntax
@@ -20,15 +22,17 @@ RSpec.shared_examples 'handling nuget service requests' do
     end
 
     with_them do
-      let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: :anonymous) }
-
-      subject { get api(url) }
+      let(:snowplow_gitlab_standard_context) do
+        snowplow_context(user_role: :anonymous).tap do |ctx|
+          ctx[:feed] = 'v2' if v2
+        end
+      end
 
       before do
         update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))
       end
 
-      it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
+      it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member], v2
     end
   end
 

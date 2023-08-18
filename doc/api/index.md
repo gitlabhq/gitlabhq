@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Develop with GitLab **(FREE)**
+# Develop with GitLab **(FREE ALL)**
 
 Automate and interact with GitLab, and integrate with external applications.
 

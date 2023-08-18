@@ -2,6 +2,7 @@
 
 require "gitlab/schema/validation"
 require 'rspec-parameterized'
+require 'pg'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

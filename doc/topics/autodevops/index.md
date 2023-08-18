@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Auto DevOps **(FREE)**
+# Auto DevOps **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38366) in GitLab 11.0.
 > - Support for the GitLab agent was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299350) in GitLab 14.5.
@@ -37,7 +37,6 @@ Auto DevOps supports development during each of the [DevOps stages](stages.md).
 | Test | [Auto Code Intelligence](stages.md#auto-code-intelligence) |
 | Test | [Auto Code Quality](stages.md#auto-code-quality) |
 | Test | [Auto Container Scanning](stages.md#auto-container-scanning) |
-| Test | [Auto License Compliance](stages.md#auto-license-compliance) |
 | Deploy | [Auto Review Apps](stages.md#auto-review-apps) |
 | Deploy | [Auto Deploy](stages.md#auto-deploy) |
 | Secure | [Auto Dynamic Application Security Testing (DAST)](stages.md#auto-dast) |

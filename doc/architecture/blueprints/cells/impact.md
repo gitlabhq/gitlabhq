@@ -51,7 +51,7 @@ We synced with Fulfillment ([recording](https://youtu.be/FkQF3uF7vTY)) to discus
 
 A rough representation of this is:
 
-![Cells and Fulfillment](images/pods-and-fulfillment.png)
+![Cells and Fulfillment](diagrams/cells-and-fulfillment.drawio.png)
 
 ### Potential conflicts with Cells
 

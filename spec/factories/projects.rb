@@ -55,6 +55,7 @@ FactoryBot.define do
       import_correlation_id { nil }
       import_last_error { nil }
       forward_deployment_enabled { nil }
+      forward_deployment_rollback_allowed { nil }
       restrict_user_defined_variables { nil }
       ci_outbound_job_token_scope_enabled { nil }
       ci_inbound_job_token_scope_enabled { nil }
@@ -99,6 +100,10 @@ FactoryBot.define do
       project.set_runners_token(evaluator.runners_token) if evaluator.runners_token.present?
     end
 
+    to_create do |project|
+      project.project_namespace.save! if project.valid?
+    end
+
     after(:create) do |project, evaluator|
       # Normally the class Projects::CreateService is used for creating
       # projects, and this class takes care of making sure the owner and current
@@ -109,7 +114,9 @@ FactoryBot.define do
       end
 
       if project.group
-        AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
+        project.run_after_commit_or_now do
+          AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
+        end
       end
 
       # assign the delegated `#ci_cd_settings` attributes after create

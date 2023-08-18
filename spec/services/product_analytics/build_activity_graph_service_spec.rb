@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProductAnalytics::BuildActivityGraphService, feature_category: :product_analytics do
+RSpec.describe ProductAnalytics::BuildActivityGraphService, feature_category: :product_analytics_data_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:time_now) { Time.zone.now }
   let_it_be(:time_ago) { Time.zone.now - 5.days }

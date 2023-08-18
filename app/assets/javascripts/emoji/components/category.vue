@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlIntersectionObserver } from '@gitlab/ui';
 import { humanize } from '~/lib/utils/text_utility';
@@ -55,7 +56,7 @@ export default {
       />
     </template>
     <p v-else>
-      {{ s__('AwardEmoji|No emojis found.') }}
+      {{ s__('AwardEmoji|No emoji found.') }}
     </p>
   </gl-intersection-observer>
 </template>

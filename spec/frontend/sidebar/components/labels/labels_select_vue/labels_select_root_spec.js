@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 
 import { isInViewport } from '~/lib/utils/common_utils';

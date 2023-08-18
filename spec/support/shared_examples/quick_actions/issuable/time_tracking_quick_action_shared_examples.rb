@@ -90,6 +90,15 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     end
   end
 
+  it 'shows the set time estimate form when add button is clicked' do
+    click_button _('Set estimate')
+
+    page.within '[data-testid="set-time-estimate-modal"]' do
+      expect(page).to have_content 'Set time estimate'
+      expect(page).to have_content 'Estimate'
+    end
+  end
+
   it 'shows the time tracking report when link is clicked' do
     submit_time('/estimate 1w')
     submit_time('/spend 1d')

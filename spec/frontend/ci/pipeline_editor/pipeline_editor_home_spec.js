@@ -1,19 +1,19 @@
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
-import { GlButton, GlDrawer, GlModal } from '@gitlab/ui';
+import { GlButton, GlModal } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import CiEditorHeader from '~/ci/pipeline_editor/components/editor/ci_editor_header.vue';
 import CommitSection from '~/ci/pipeline_editor/components/commit/commit_section.vue';
 import PipelineEditorDrawer from '~/ci/pipeline_editor/components/drawer/pipeline_editor_drawer.vue';
 import JobAssistantDrawer from '~/ci/pipeline_editor/components/job_assistant_drawer/job_assistant_drawer.vue';
 import PipelineEditorFileNav from '~/ci/pipeline_editor/components/file_nav/pipeline_editor_file_nav.vue';
 import PipelineEditorFileTree from '~/ci/pipeline_editor/components/file_tree/container.vue';
-import BranchSwitcher from '~/ci/pipeline_editor/components/file_nav/branch_switcher.vue';
 import PipelineEditorHeader from '~/ci/pipeline_editor/components/header/pipeline_editor_header.vue';
 import PipelineEditorTabs from '~/ci/pipeline_editor/components/pipeline_editor_tabs.vue';
 import {
   CREATE_TAB,
+  EDITOR_APP_DRAWER_HELP,
+  EDITOR_APP_DRAWER_JOB_ASSISTANT,
+  EDITOR_APP_DRAWER_NONE,
   FILE_TREE_DISPLAY_KEY,
   VALIDATE_TAB,
   MERGED_TAB,
@@ -29,10 +29,9 @@ jest.mock('~/lib/utils/common_utils');
 describe('Pipeline editor home wrapper', () => {
   let wrapper;
 
-  const createComponent = ({ props = {}, glFeatures = {}, data = {}, stubs = {} } = {}) => {
+  const createComponent = ({ props = {}, glFeatures = {}, stubs = {} } = {}) => {
     wrapper = extendedWrapper(
       shallowMount(PipelineEditorHome, {
-        data: () => data,
         propsData: {
           ciConfigData: mockLintResponse,
           ciFileContent: mockCiYml,
@@ -53,7 +52,6 @@ describe('Pipeline editor home wrapper', () => {
     );
   };
 
-  const findBranchSwitcher = () => wrapper.findComponent(BranchSwitcher);
   const findCommitSection = () => wrapper.findComponent(CommitSection);
   const findFileNav = () => wrapper.findComponent(PipelineEditorFileNav);
   const findModal = () => wrapper.findComponent(GlModal);
@@ -63,8 +61,16 @@ describe('Pipeline editor home wrapper', () => {
   const findPipelineEditorHeader = () => wrapper.findComponent(PipelineEditorHeader);
   const findPipelineEditorTabs = () => wrapper.findComponent(PipelineEditorTabs);
   const findFileTreeBtn = () => wrapper.findByTestId('file-tree-toggle');
-  const findHelpBtn = () => wrapper.findByTestId('drawer-toggle');
-  const findJobAssistantBtn = () => wrapper.findByTestId('job-assistant-drawer-toggle');
+
+  const clickHelpBtn = async () => {
+    await findPipelineEditorDrawer().vm.$emit('switch-drawer', EDITOR_APP_DRAWER_HELP);
+  };
+  const clickJobAssistantBtn = async () => {
+    await findJobAssistantDrawer().vm.$emit('switch-drawer', EDITOR_APP_DRAWER_JOB_ASSISTANT);
+  };
+  const closeDrawer = async (finder) => {
+    await finder().vm.$emit('switch-drawer', EDITOR_APP_DRAWER_NONE);
+  };
 
   afterEach(() => {
     localStorage.clear();
@@ -103,11 +109,9 @@ describe('Pipeline editor home wrapper', () => {
       });
     });
     describe('when `showSwitchBranchModal` value is true', () => {
-      beforeEach(() => {
-        createComponent({
-          data: { showSwitchBranchModal: true },
-          stubs: { PipelineEditorFileNav },
-        });
+      beforeEach(async () => {
+        createComponent();
+        await findFileNav().vm.$emit('select-branch');
       });
 
       it('is visible', () => {
@@ -115,11 +119,11 @@ describe('Pipeline editor home wrapper', () => {
       });
 
       it('pass down `shouldLoadNewBranch` to the branch switcher when primary is selected', async () => {
-        expect(findBranchSwitcher().props('shouldLoadNewBranch')).toBe(false);
+        expect(findFileNav().props('shouldLoadNewBranch')).toBe(false);
 
         await findModal().vm.$emit('primary');
 
-        expect(findBranchSwitcher().props('shouldLoadNewBranch')).toBe(true);
+        expect(findFileNav().props('shouldLoadNewBranch')).toBe(true);
       });
 
       it('closes the modal when secondary action is selected', async () => {
@@ -148,9 +152,7 @@ describe('Pipeline editor home wrapper', () => {
       async ({ tab, shouldShow }) => {
         expect(findCommitSection().exists()).toBe(true);
 
-        findPipelineEditorTabs().vm.$emit('set-current-tab', tab);
-
-        await nextTick();
+        await findPipelineEditorTabs().vm.$emit('set-current-tab', tab);
 
         expect(findCommitSection().isVisible()).toBe(shouldShow);
       },
@@ -159,12 +161,10 @@ describe('Pipeline editor home wrapper', () => {
     it('shows the commit form again when coming back to the create tab', async () => {
       expect(findCommitSection().isVisible()).toBe(true);
 
-      findPipelineEditorTabs().vm.$emit('set-current-tab', MERGED_TAB);
-      await nextTick();
+      await findPipelineEditorTabs().vm.$emit('set-current-tab', MERGED_TAB);
       expect(findCommitSection().isVisible()).toBe(false);
 
-      findPipelineEditorTabs().vm.$emit('set-current-tab', CREATE_TAB);
-      await nextTick();
+      await findPipelineEditorTabs().vm.$emit('set-current-tab', CREATE_TAB);
       expect(findCommitSection().isVisible()).toBe(true);
     });
 
@@ -195,7 +195,9 @@ describe('Pipeline editor home wrapper', () => {
     describe('when "walkthrough-popover-cta-clicked" is emitted from pipeline editor tabs', () => {
       it('passes down `scrollToCommitForm=true` to commit section', async () => {
         expect(findCommitSection().props('scrollToCommitForm')).toBe(false);
+
         await findPipelineEditorTabs().vm.$emit('walkthrough-popover-cta-clicked');
+
         expect(findCommitSection().props('scrollToCommitForm')).toBe(true);
       });
     });
@@ -204,6 +206,7 @@ describe('Pipeline editor home wrapper', () => {
       it('passes down `scrollToCommitForm=false` to commit section', async () => {
         await findPipelineEditorTabs().vm.$emit('walkthrough-popover-cta-clicked');
         expect(findCommitSection().props('scrollToCommitForm')).toBe(true);
+
         await findCommitSection().vm.$emit('scrolled-to-commit-form');
         expect(findCommitSection().props('scrollToCommitForm')).toBe(false);
       });
@@ -211,133 +214,49 @@ describe('Pipeline editor home wrapper', () => {
   });
 
   describe('help drawer', () => {
-    const clickHelpBtn = async () => {
-      findHelpBtn().vm.$emit('click');
-      await nextTick();
-    };
+    beforeEach(() => {
+      createComponent();
+    });
 
     it('hides the drawer by default', () => {
-      createComponent();
-
       expect(findPipelineEditorDrawer().props('isVisible')).toBe(false);
     });
 
     it('toggles the drawer on button click', async () => {
-      createComponent({
-        stubs: {
-          CiEditorHeader,
-          GlButton,
-          GlDrawer,
-          PipelineEditorTabs,
-          PipelineEditorDrawer,
-        },
-      });
-
-      await clickHelpBtn();
-
-      expect(findPipelineEditorDrawer().props('isVisible')).toBe(true);
-
-      await clickHelpBtn();
-
       expect(findPipelineEditorDrawer().props('isVisible')).toBe(false);
-    });
-
-    it("closes the drawer through the drawer's close button", async () => {
-      createComponent({
-        stubs: {
-          CiEditorHeader,
-          GlButton,
-          GlDrawer,
-          PipelineEditorTabs,
-          PipelineEditorDrawer,
-        },
-      });
 
       await clickHelpBtn();
-
       expect(findPipelineEditorDrawer().props('isVisible')).toBe(true);
 
-      findPipelineEditorDrawer().findComponent(GlDrawer).vm.$emit('close');
-      await nextTick();
-
+      await closeDrawer(findPipelineEditorDrawer);
       expect(findPipelineEditorDrawer().props('isVisible')).toBe(false);
     });
   });
 
   describe('job assistant drawer', () => {
-    const clickHelpBtn = async () => {
-      findHelpBtn().vm.$emit('click');
-      await nextTick();
-    };
-    const clickJobAssistantBtn = async () => {
-      findJobAssistantBtn().vm.$emit('click');
-      await nextTick();
-    };
-
-    const stubs = {
-      CiEditorHeader,
-      GlButton,
-      GlDrawer,
-      PipelineEditorTabs,
-      JobAssistantDrawer,
-    };
-
-    it('hides the job assistant drawer by default', () => {
+    beforeEach(() => {
       createComponent({
         glFeatures: {
           ciJobAssistantDrawer: true,
         },
       });
+    });
 
+    it('hides the job assistant drawer by default', () => {
       expect(findJobAssistantDrawer().props('isVisible')).toBe(false);
     });
 
     it('toggles the job assistant drawer on button click', async () => {
-      createComponent({
-        stubs,
-        glFeatures: {
-          ciJobAssistantDrawer: true,
-        },
-      });
-
-      await clickJobAssistantBtn();
-
-      expect(findJobAssistantDrawer().props('isVisible')).toBe(true);
-
-      await clickJobAssistantBtn();
-
       expect(findJobAssistantDrawer().props('isVisible')).toBe(false);
-    });
-
-    it("closes the job assistant drawer through the drawer's close button", async () => {
-      createComponent({
-        stubs,
-        glFeatures: {
-          ciJobAssistantDrawer: true,
-        },
-      });
 
       await clickJobAssistantBtn();
-
       expect(findJobAssistantDrawer().props('isVisible')).toBe(true);
 
-      findJobAssistantDrawer().findComponent(GlDrawer).vm.$emit('close');
-      await nextTick();
-
+      await closeDrawer(findJobAssistantDrawer);
       expect(findJobAssistantDrawer().props('isVisible')).toBe(false);
     });
 
     it('covers helper drawer when opened last', async () => {
-      createComponent({
-        stubs: {
-          ...stubs,
-          PipelineEditorDrawer,
-        },
-        glFeatures: {
-          ciJobAssistantDrawer: true,
-        },
-      });
-
       await clickHelpBtn();
       await clickJobAssistantBtn();
 
@@ -348,16 +267,6 @@ describe('Pipeline editor home wrapper', () => {
     });
 
     it('covered by helper drawer when opened first', async () => {
-      createComponent({
-        stubs: {
-          ...stubs,
-          PipelineEditorDrawer,
-        },
-        glFeatures: {
-          ciJobAssistantDrawer: true,
-        },
-      });
-
       await clickJobAssistantBtn();
       await clickHelpBtn();
 
@@ -370,8 +279,7 @@ describe('Pipeline editor home wrapper', () => {
 
   describe('file tree', () => {
     const toggleFileTree = async () => {
-      findFileTreeBtn().vm.$emit('click');
-      await nextTick();
+      await findFileTreeBtn().vm.$emit('click');
     };
 
     describe('button toggle', () => {
@@ -412,9 +320,7 @@ describe('Pipeline editor home wrapper', () => {
     describe('when file tree display state is saved in local storage', () => {
       beforeEach(() => {
         localStorage.setItem(FILE_TREE_DISPLAY_KEY, 'true');
-        createComponent({
-          stubs: { PipelineEditorFileNav },
-        });
+        createComponent();
       });
 
       it('shows the file tree by default', () => {
@@ -424,9 +330,7 @@ describe('Pipeline editor home wrapper', () => {
 
     describe('when file tree display state is not saved in local storage', () => {
       beforeEach(() => {
-        createComponent({
-          stubs: { PipelineEditorFileNav },
-        });
+        createComponent();
       });
 
       it('hides the file tree by default', () => {

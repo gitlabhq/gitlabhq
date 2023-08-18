@@ -8,6 +8,7 @@ RSpec.describe API::Validations::Validators::GitSha do
   let(:sha) { RepoHelpers.sample_commit.id }
   let(:short_sha) { sha[0, Gitlab::Git::Commit::MIN_SHA_LENGTH] }
   let(:too_short_sha) { sha[0, Gitlab::Git::Commit::MIN_SHA_LENGTH - 1] }
+  let(:too_long_sha) { "a" * (Gitlab::Git::Commit::MAX_SHA_LENGTH + 1) }
 
   subject do
     described_class.new(['test'], {}, false, scope.new)
@@ -29,7 +30,7 @@ RSpec.describe API::Validations::Validators::GitSha do
 
   context 'invalid sha' do
     it 'raises a validation error' do
-      expect_validation_error('test' => "#{sha}2") # Sha length > 40
+      expect_validation_error('test' => too_long_sha) # too long SHA
       expect_validation_error('test' => 'somestring')
       expect_validation_error('test' => too_short_sha) # sha length < MIN_SHA_LENGTH (7)
     end

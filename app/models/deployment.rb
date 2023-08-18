@@ -67,7 +67,7 @@ class Deployment < ApplicationRecord
 
   state_machine :status, initial: :created do
     event :run do
-      transition created: :running
+      transition [:created, :blocked] => :running
     end
 
     event :block do
@@ -77,10 +77,6 @@ class Deployment < ApplicationRecord
     # This transition is possible when we have manual jobs.
     event :create do
       transition skipped: :created
-    end
-
-    event :unblock do
-      transition blocked: :created
     end
 
     event :succeed do
@@ -184,23 +180,23 @@ class Deployment < ApplicationRecord
   #   - deploy job B => production environment
   # In this case, `last_deployment_group` returns both deployments.
   #
-  # NOTE: Preload environment.last_deployment and pipeline.latest_successful_builds prior to avoid N+1.
+  # NOTE: Preload environment.last_deployment and pipeline.latest_successful_jobs prior to avoid N+1.
   def self.last_deployment_group_for_environment(env)
-    return self.none unless env.last_deployment_pipeline&.latest_successful_builds&.present?
+    return self.none unless env.last_deployment_pipeline&.latest_successful_jobs&.present?
 
     BatchLoader.for(env).batch(default_value: self.none) do |environments, loader|
-      latest_successful_build_ids = []
+      latest_successful_job_ids = []
       environments_hash = {}
 
       environments.each do |environment|
         environments_hash[environment.id] = environment
 
         # Refer comment note above, if not preloaded this can lead to N+1.
-        latest_successful_build_ids << environment.last_deployment_pipeline.latest_successful_builds.map(&:id)
+        latest_successful_job_ids << environment.last_deployment_pipeline.latest_successful_jobs.map(&:id)
       end
 
       Deployment
-        .where(deployable_type: 'CommitStatus', deployable_id: latest_successful_build_ids.flatten)
+        .where(deployable_type: 'CommitStatus', deployable_id: latest_successful_job_ids.flatten)
         .preload(last_deployment_group_associations)
         .group_by { |deployment| deployment.environment_id }
         .each do |env_id, deployment_group|
@@ -217,14 +213,14 @@ class Deployment < ApplicationRecord
   # Fetching any unbounded or large intermediate dataset could lead to loading too many IDs into memory.
   # See: https://docs.gitlab.com/ee/development/database/multiple_databases.html#use-disable_joins-for-has_one-or-has_many-through-relations
   # For safety we default limit to fetch not more than 1000 records.
-  def self.builds(limit = 1000)
+  def self.jobs(limit = 1000)
     deployable_ids = where.not(deployable_id: nil).limit(limit).pluck(:deployable_id)
 
-    Ci::Build.where(id: deployable_ids)
+    Ci::Processable.where(id: deployable_ids)
   end
 
-  def build
-    deployable if deployable.is_a?(::Ci::Build)
+  def job
+    deployable if deployable.is_a?(::Ci::Processable)
   end
 
   class << self
@@ -289,8 +285,8 @@ class Deployment < ApplicationRecord
     @scheduled_actions ||= deployable.try(:other_scheduled_actions)
   end
 
-  def playable_build
-    strong_memoize(:playable_build) do
+  def playable_job
+    strong_memoize(:playable_job) do
       deployable.try(:playable?) ? deployable : nil
     end
   end
@@ -355,8 +351,8 @@ class Deployment < ApplicationRecord
   end
 
   def deployed_by
-    # We use deployable's user if available because Ci::PlayBuildService
-    # does not update the deployment's user, just the one for the deployable.
+    # We use deployable's user if available because Ci::PlayBuildService and Ci::PlayBridgeService
+    # do not update the deployment's user, just the one for the deployable.
     # TODO: use deployment's user once https://gitlab.com/gitlab-org/gitlab-foss/issues/66442
     # is completed.
     deployable&.user || user
@@ -402,14 +398,17 @@ class Deployment < ApplicationRecord
     false
   end
 
-  def sync_status_with(build)
-    return false unless ::Deployment.statuses.include?(build.status)
-    return false if build.status == self.status
+  def sync_status_with(job)
+    job_status = job.status
+    job_status = 'blocked' if job_status == 'manual'
 
-    update_status!(build.status)
+    return false unless ::Deployment.statuses.include?(job_status)
+    return false if job_status == self.status
+
+    update_status!(job_status)
   rescue StandardError => e
     Gitlab::ErrorTracking.track_exception(
-      StatusSyncError.new(e.message), deployment_id: self.id, build_id: build.id)
+      StatusSyncError.new(e.message), deployment_id: self.id, job_id: job.id)
 
     false
   end

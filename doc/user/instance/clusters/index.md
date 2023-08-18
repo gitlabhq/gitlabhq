@@ -36,7 +36,7 @@ GitLab tries to match clusters in the following order:
 To be selected, the cluster must be enabled and
 match the [environment selector](../../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
 
-## Cluster environments **(PREMIUM)**
+## Cluster environments **(PREMIUM ALL)**
 
 For a consolidated view of which CI [environments](../../../ci/environments/index.md)
 are deployed to the Kubernetes cluster, see the documentation for

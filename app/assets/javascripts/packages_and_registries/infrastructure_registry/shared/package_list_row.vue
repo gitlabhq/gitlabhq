@@ -84,7 +84,7 @@ export default {
         <gl-link
           :href="packageLink"
           class="gl-text-body gl-min-w-0"
-          data-qa-selector="package_link"
+          data-testid="details-link"
           :disabled="disabledRow"
         >
           <gl-truncate :text="packageEntity.name" />

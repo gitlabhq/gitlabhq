@@ -57,16 +57,21 @@ RSpec.describe "GitLab Flavored Markdown", feature_category: :team_planning do
 
   describe "for issues", :js do
     before do
-      @other_issue = create(:issue,
-                            author: user,
-                            assignees: [user],
-                            project: project)
-      @issue = create(:issue,
-                      author: user,
-                      assignees: [user],
-                      project: project,
-                      title: "fix #{@other_issue.to_reference}",
-                      description: "ask #{fred.to_reference} for details")
+      @other_issue = create(
+        :issue,
+        author: user,
+        assignees: [user],
+        project: project
+      )
+
+      @issue = create(
+        :issue,
+        author: user,
+        assignees: [user],
+        project: project,
+        title: "fix #{@other_issue.to_reference}",
+        description: "ask #{fred.to_reference} for details"
+      )
 
       @note = create(:note_on_issue, noteable: @issue, project: @issue.project, note: "Hello world")
     end
@@ -112,10 +117,12 @@ RSpec.describe "GitLab Flavored Markdown", feature_category: :team_planning do
 
   describe "for milestones" do
     before do
-      @milestone = create(:milestone,
-                          project: project,
-                          title: "fix #{issue.to_reference}",
-                          description: "ask #{fred.to_reference} for details")
+      @milestone = create(
+        :milestone,
+        project: project,
+        title: "fix #{issue.to_reference}",
+        description: "ask #{fred.to_reference} for details"
+      )
     end
 
     it "renders title in milestones#index" do

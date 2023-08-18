@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Troubleshooting DAST browser-based analyzer **(ULTIMATE)**
+# Troubleshooting DAST browser-based analyzer **(ULTIMATE ALL)**
 
 The following troubleshooting scenarios have been collected from customer support cases. If you
 experience a problem not addressed here, or the information here does not fix your problem, create a

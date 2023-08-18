@@ -6,21 +6,24 @@ module Integrations
 
     ATTRIBUTES = %i[
       section type placeholder choices value checkbox_label
-      title help
+      title help if
       non_empty_password_help
       non_empty_password_title
     ].concat(BOOLEAN_ATTRIBUTES).freeze
 
-    TYPES = %w[text textarea password checkbox select].freeze
+    TYPES = %i[text textarea password checkbox select].freeze
 
     attr_reader :name, :integration_class
 
-    def initialize(name:, integration_class:, type: 'text', is_secret: false, api_only: false, **attributes)
+    delegate :key?, to: :attributes
+
+    def initialize(name:, integration_class:, type: :text, is_secret: false, api_only: false, **attributes)
       @name = name.to_s.freeze
       @integration_class = integration_class
 
-      attributes[:type] = is_secret ? 'password' : type
+      attributes[:type] = is_secret ? :password : type
       attributes[:api_only] = api_only
+      attributes[:if] = attributes.fetch(:if, true)
       attributes[:is_secret] = is_secret
       @attributes = attributes.freeze
 
@@ -35,14 +38,14 @@ module Integrations
     def [](key)
       return name if key == :name
 
-      value = @attributes[key]
+      value = attributes[key]
       return integration_class.class_exec(&value) if value.respond_to?(:call)
 
       value
     end
 
     def secret?
-      self[:type] == 'password'
+      self[:type] == :password
     end
 
     ATTRIBUTES.each do |name|
@@ -56,5 +59,9 @@ module Integrations
     TYPES.each do |type|
       define_method("#{type}?") { self[:type] == type }
     end
+
+    private
+
+    attr_reader :attributes
   end
 end

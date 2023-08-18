@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Grant users Kubernetes access (Beta) **(FREE)**
+# Grant users Kubernetes access (Beta) **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [Beta](../../../policy/experiment-beta-support.md#beta).
 > - Feature flag `environment_settings_to_graphql` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124177) in GitLab 16.2.
@@ -14,6 +14,11 @@ As an administrator of Kubernetes clusters in an organization, you can grant Kub
 of a specific project or group.
 
 Granting access also activates the Dashboard for Kubernetes for a project or group.
+
+For self-managed instances, make sure you either:
+
+- Host your GitLab instance and [KAS](../../../administration/clusters/kas.md) on the same domain.
+- Host KAS on a subdomain of GitLab. For example, GitLab on `gitlab.com` and KAS on `kas.gitlab.com`.
 
 ## Configure Kubernetes access
 
@@ -51,7 +56,7 @@ user_access:
     - id: group-3/subgroup
 ```
 
-## Configure access with user impersonation **(PREMIUM)**
+## Configure access with user impersonation **(PREMIUM ALL)**
 
 You can grant access to a Kubernetes cluster and transform
 requests into impersonation requests for authenticated users.

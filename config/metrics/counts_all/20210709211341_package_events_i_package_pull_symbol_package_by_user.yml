@@ -1,6 +1,5 @@
 ---
 key_path: counts.package_events_i_package_pull_symbol_package_by_user
-name: symbol_packages_pulled_by_user
 description: A count of symbol packages that have been pulled with by an authenticated user from the package registry
 product_section: ops
 product_stage: package

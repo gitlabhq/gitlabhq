@@ -20,8 +20,8 @@ that is currently behind the `<feature-flag-name>` feature flag.
 
 - Team: NAME_OF_TEAM
 - Most appropriate slack channel to reach out to: `#g_TEAM_NAME`
-- Best individual to reach out to: NAME
-- PM: NAME
+- Best individual to reach out to: NAME_OF_DRI
+- PM: NAME_OF_PM
 
 ## Stakeholders
 
@@ -82,7 +82,7 @@ Note: Please make sure to run the chatops commands in the slack channel that get
       as this is the first environment deployed to. Note you will need to make sure you are configured to use canary as outlined [here](https://about.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/)
       when accessing the staging environment in order to make sure you are testing appropriately.
 
-For assistance with QA end-to-end test failures, please reach out via the `#quality` Slack channel. Note that QA test failures on staging-ref [don't block deployments](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#how-to-use-staging-ref).  
+For assistance with QA end-to-end test failures, please reach out via the `#quality` Slack channel. Note that QA test failures on staging-ref [don't block deployments](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#how-to-use-staging-ref).
 
 ### Specific rollout on production
 
@@ -193,6 +193,25 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
 <!-- A feature flag can also be used for rolling out a bug fix or a maintenance work.
 In this scenario, labels must be related to it, for example; ~"type::feature", ~"type::bug" or ~"type::maintenance".
 Please use /copy_metadata to copy the labels from the issue you're rolling out. -->
+
+<!--
+Template placeholders
+
+- name: MAIN-ISSUE-LINK
+  description: the URL of the issue introducing the feature flag
+- name: <feature-flag-name>
+  description: the feature flag name
+- name: NAME_OF_TEAM
+  description: the label of the responsible team, e.g. group::foo
+- name: #g_TEAM_NAME
+  description: the Slack channel name of the responsible team, e.g. #g_foo
+- name: NAME_OF_DRI
+  description: the GitLab username of the best individual to reach out to, e.g. @foo
+- name: NAME_OF_PM
+  description: the GitLab username of the relevant PM, e.g. @foo
+- name: <your-username>
+  description: the GitLab username of the person who would enable the feature flag on GitLab.com, e.g. @foo
+-->
 
 /label ~group::
 /label ~"feature flag"

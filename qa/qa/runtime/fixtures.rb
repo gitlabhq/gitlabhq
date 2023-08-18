@@ -38,6 +38,10 @@ module QA
         File.read(Runtime::Path.fixture(fixture_path, file_name))
       end
 
+      def read_ee_fixture(fixture_path, file_name)
+        File.read(File.join(EE::Runtime::Path.fixtures_path, fixture_path, file_name))
+      end
+
       private
 
       def api_client

@@ -94,8 +94,7 @@ RSpec.describe CohortsService, feature_category: :shared do
         }
       ]
 
-      expect(described_class.new.execute).to eq(months_included: 12,
-                                                cohorts: expected_cohorts)
+      expect(described_class.new.execute).to eq(months_included: 12, cohorts: expected_cohorts)
     end
   end
 end

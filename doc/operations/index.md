@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Monitor application performance **(FREE)**
+# Monitor application performance **(FREE ALL)**
 
 GitLab provides a variety of tools to help operate and maintain
 your applications.

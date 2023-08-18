@@ -1,99 +1,172 @@
-import VueApollo from 'vue-apollo';
-import Vue from 'vue';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSorting, GlSortingItem } from '@gitlab/ui';
 import App from '~/organizations/groups_and_projects/components/app.vue';
-import resolvers from '~/organizations/groups_and_projects/graphql/resolvers';
-import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { createAlert } from '~/alert';
+import GroupsPage from '~/organizations/groups_and_projects/components/groups_page.vue';
+import ProjectsPage from '~/organizations/groups_and_projects/components/projects_page.vue';
+import {
+  DISPLAY_QUERY_GROUPS,
+  DISPLAY_QUERY_PROJECTS,
+  SORT_ITEM_CREATED,
+  SORT_DIRECTION_DESC,
+} from '~/organizations/groups_and_projects/constants';
+import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
+import {
+  FILTERED_SEARCH_TERM,
+  TOKEN_EMPTY_SEARCH_TERM,
+} from '~/vue_shared/components/filtered_search_bar/constants';
+import { createRouter } from '~/organizations/groups_and_projects';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import createMockApollo from 'helpers/mock_apollo_helper';
-import waitForPromises from 'helpers/wait_for_promises';
-import { organizationProjects } from './mock_data';
-
-jest.mock('~/alert');
-
-Vue.use(VueApollo);
-jest.useFakeTimers();
 
 describe('GroupsAndProjectsApp', () => {
+  const router = createRouter();
+  const routerMock = {
+    push: jest.fn(),
+  };
   let wrapper;
-  let mockApollo;
 
-  const createComponent = ({ mockResolvers = resolvers } = {}) => {
-    mockApollo = createMockApollo([], mockResolvers);
-
-    wrapper = shallowMountExtended(App, { apolloProvider: mockApollo });
+  const createComponent = ({ routeQuery = { search: 'foo' } } = {}) => {
+    wrapper = shallowMountExtended(App, {
+      router,
+      mocks: { $route: { path: '/', query: routeQuery }, $router: routerMock },
+    });
   };
 
-  afterEach(() => {
-    mockApollo = null;
-  });
+  const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findSort = () => wrapper.findComponent(GlSorting);
 
-  describe('when API call is loading', () => {
-    beforeEach(() => {
-      const mockResolvers = {
-        Query: {
-          organization: jest.fn().mockReturnValueOnce(new Promise(() => {})),
+  describe.each`
+    display                   | expectedComponent | expectedDisplayListboxSelectedProp
+    ${null}                   | ${GroupsPage}     | ${DISPLAY_QUERY_GROUPS}
+    ${'unsupported_value'}    | ${GroupsPage}     | ${DISPLAY_QUERY_GROUPS}
+    ${DISPLAY_QUERY_GROUPS}   | ${GroupsPage}     | ${DISPLAY_QUERY_GROUPS}
+    ${DISPLAY_QUERY_PROJECTS} | ${ProjectsPage}   | ${DISPLAY_QUERY_PROJECTS}
+  `(
+    'when `display` query string is $display',
+    ({ display, expectedComponent, expectedDisplayListboxSelectedProp }) => {
+      beforeEach(() => {
+        createComponent({ routeQuery: { display } });
+      });
+
+      it('renders expected component', () => {
+        expect(wrapper.findComponent(expectedComponent).exists()).toBe(true);
+      });
+
+      it('renders display listbox with correct props', () => {
+        expect(findListbox().props()).toMatchObject({
+          selected: expectedDisplayListboxSelectedProp,
+          items: App.displayListboxItems,
+          headerText: App.i18n.displayListboxHeaderText,
+        });
+      });
+    },
+  );
+
+  it('renders filtered search bar with correct props', () => {
+    createComponent();
+
+    expect(findFilteredSearchBar().props()).toMatchObject({
+      namespace: App.filteredSearch.namespace,
+      tokens: App.filteredSearch.tokens,
+      initialFilterValue: [
+        {
+          type: FILTERED_SEARCH_TERM,
+          value: {
+            data: 'foo',
+            operator: undefined,
+          },
         },
-      };
-
-      createComponent({ mockResolvers });
-    });
-
-    it('renders loading icon', () => {
-      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+      ],
+      syncFilterAndSort: true,
+      recentSearchesStorageKey: App.filteredSearch.recentSearchesStorageKey,
+      searchInputPlaceholder: App.i18n.searchInputPlaceholder,
     });
   });
 
-  describe('when API call is successful', () => {
+  it('renders sort dropdown with sort items and correct props', () => {
+    createComponent();
+
+    const sortItems = wrapper.findAllComponents(GlSortingItem).wrappers.map((sortItemWrapper) => ({
+      active: sortItemWrapper.attributes('active'),
+      text: sortItemWrapper.text(),
+    }));
+
+    expect(findSort().props()).toMatchObject({
+      isAscending: true,
+      text: SORT_ITEM_CREATED.text,
+    });
+    expect(sortItems).toEqual([
+      {
+        active: 'true',
+        text: SORT_ITEM_CREATED.text,
+      },
+    ]);
+  });
+
+  describe('when filtered search bar is submitted', () => {
+    const searchTerm = 'foo bar';
+
     beforeEach(() => {
       createComponent();
+
+      findFilteredSearchBar().vm.$emit('onFilter', [
+        { id: 'token-0', type: FILTERED_SEARCH_TERM, value: { data: searchTerm } },
+      ]);
     });
 
-    it('renders `ProjectsList` component and passes correct props', async () => {
-      jest.runAllTimers();
-      await waitForPromises();
+    it('updates `search` query string', () => {
+      expect(routerMock.push).toHaveBeenCalledWith({ query: { search: searchTerm } });
+    });
+  });
 
-      expect(wrapper.findComponent(ProjectsList).props()).toEqual({
-        projects: organizationProjects.projects.nodes.map(
-          ({ id, nameWithNamespace, accessLevel, ...project }) => ({
-            ...project,
-            id: getIdFromGraphQLId(id),
-            name: nameWithNamespace,
-            permissions: {
-              projectAccess: {
-                accessLevel: accessLevel.integerValue,
-              },
-            },
-          }),
-        ),
-        showProjectIcon: true,
+  describe('when display listbox is changed', () => {
+    beforeEach(() => {
+      createComponent();
+
+      findListbox().vm.$emit('select', DISPLAY_QUERY_PROJECTS);
+    });
+
+    it('updates `display` query string', () => {
+      expect(routerMock.push).toHaveBeenCalledWith({ query: { display: DISPLAY_QUERY_PROJECTS } });
+    });
+  });
+
+  describe('when sort item is changed', () => {
+    beforeEach(() => {
+      createComponent();
+
+      wrapper.findComponent(GlSortingItem).trigger('click', SORT_ITEM_CREATED);
+    });
+
+    it('updates `sort_name` query string', () => {
+      expect(routerMock.push).toHaveBeenCalledWith({
+        query: { sort_name: SORT_ITEM_CREATED.name, search: 'foo' },
       });
     });
   });
 
-  describe('when API call is not successful', () => {
-    const error = new Error();
-
+  describe('when sort direction is changed', () => {
     beforeEach(() => {
-      const mockResolvers = {
-        Query: {
-          organization: jest.fn().mockRejectedValueOnce(error),
-        },
-      };
+      createComponent();
 
-      createComponent({ mockResolvers });
+      findSort().vm.$emit('sortDirectionChange', false);
     });
 
-    it('displays error alert', async () => {
-      await waitForPromises();
-
-      expect(createAlert).toHaveBeenCalledWith({
-        message: App.i18n.errorMessage,
-        error,
-        captureError: true,
+    it('updates `sort_direction` query string', () => {
+      expect(routerMock.push).toHaveBeenCalledWith({
+        query: { sort_direction: SORT_DIRECTION_DESC, search: 'foo' },
       });
+    });
+  });
+
+  describe('when `search` query string is not set', () => {
+    beforeEach(() => {
+      createComponent({ routeQuery: {} });
+    });
+
+    it('passes empty search term token to filtered search', () => {
+      expect(findFilteredSearchBar().props('initialFilterValue')).toEqual([
+        TOKEN_EMPTY_SEARCH_TERM,
+      ]);
     });
   });
 });

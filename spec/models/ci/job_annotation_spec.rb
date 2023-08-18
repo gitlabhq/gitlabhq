@@ -11,7 +11,6 @@ RSpec.describe Ci::JobAnnotation, feature_category: :build_artifacts do
     it { is_expected.to belong_to(:job).class_name('Ci::Build').inverse_of(:job_annotations) }
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to([:job_id, :partition_id]) }
   end
 
   describe '.create' do

@@ -984,9 +984,11 @@ excluded_attributes:
   notes:
     - :noteable_id
     - :review_id
+    - :namespace_id
   commit_notes:
     - :noteable_id
     - :review_id
+    - :namespace_id
   label_links:
     - :label_id
     - :target_id

@@ -12,7 +12,7 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
 
   subject(:service) { described_class.new(user.id, batch.id) }
 
-  before(:all) do
+  before_all do
     Gitlab::Cache::Import::Caching.set_add(cache_key, label.id)
   end
 

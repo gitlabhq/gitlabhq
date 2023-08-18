@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton } from '@gitlab/ui';
 import { memoize, cloneDeep, isNumber, uniqueId } from 'lodash';

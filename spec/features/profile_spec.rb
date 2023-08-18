@@ -38,8 +38,7 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
 
       expect(page).to have_content('Account scheduled for removal')
       expect(
-        Users::GhostUserMigration.where(user: user,
-                                        initiator_user: user)
+        Users::GhostUserMigration.where(user: user, initiator_user: user)
       ).to be_exists
     end
 
@@ -71,7 +70,7 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
 
     previous_token = ''
 
-    within('[data-testid="feed-token-container"]') do
+    within_testid('feed-token-container') do
       previous_token = find_field('Feed token').value
 
       click_link('reset this token')
@@ -79,7 +78,7 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
 
     accept_gl_confirm
 
-    within('[data-testid="feed-token-container"]') do
+    within_testid('feed-token-container') do
       click_button('Click to reveal')
 
       expect(find_field('Feed token').value).not_to eq(previous_token)
@@ -93,7 +92,7 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
 
     previous_token = ''
 
-    within('[data-testid="incoming-email-token-container"]') do
+    within_testid('incoming-email-token-container') do
       previous_token = find_field('Incoming email token').value
 
       click_link('reset this token')
@@ -101,7 +100,7 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
 
     accept_gl_confirm
 
-    within('[data-testid="incoming-email-token-container"]') do
+    within_testid('incoming-email-token-container') do
       click_button('Click to reveal')
 
       expect(find_field('Incoming email token').value).not_to eq(previous_token)

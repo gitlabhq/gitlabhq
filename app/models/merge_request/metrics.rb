@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class MergeRequest::Metrics < ApplicationRecord
-  include IgnorableColumns
   include DatabaseEventTracking
 
   belongs_to :merge_request, inverse_of: :metrics
@@ -16,8 +15,6 @@ class MergeRequest::Metrics < ApplicationRecord
   scope :merged_before, ->(date) { where(arel_table[:merged_at].lteq(date.is_a?(Time) ? date.end_of_day : date)) }
   scope :with_valid_time_to_merge, -> { where(arel_table[:merged_at].gt(arel_table[:created_at])) }
   scope :by_target_project, ->(project) { where(target_project_id: project) }
-
-  ignore_column :id_convert_to_bigint, remove_with: '16.0', remove_after: '2023-05-22'
 
   class << self
     def time_to_merge_expression

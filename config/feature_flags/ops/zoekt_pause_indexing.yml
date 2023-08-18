@@ -1,0 +1,8 @@
+---
+name: zoekt_pause_indexing
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126027
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417597
+milestone: '16.3'
+type: ops
+group: group::global search
+default_enabled: false

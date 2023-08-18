@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlEmptyState, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert, VARIANT_INFO } from '~/alert';
@@ -189,7 +190,11 @@ export default {
           @delete="deletePackages"
         >
           <template #empty-state>
-            <gl-empty-state :title="emptyStateTitle" :svg-path="emptyListIllustration">
+            <gl-empty-state
+              :title="emptyStateTitle"
+              :svg-path="emptyListIllustration"
+              :svg-height="150"
+            >
               <template #description>
                 <gl-sprintf v-if="hasFilters" :message="$options.i18n.widenFilters" />
                 <gl-sprintf v-else :message="$options.i18n.noResultsText">

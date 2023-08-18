@@ -7,7 +7,7 @@ module Types
       class BaseServiceType < BaseObject
         graphql_name 'BaseService'
 
-        implements(Types::Projects::ServiceType)
+        implements Types::Projects::ServiceType
 
         authorize :admin_project
       end

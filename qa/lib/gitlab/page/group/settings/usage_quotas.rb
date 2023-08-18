@@ -35,6 +35,13 @@ module Gitlab
           span :container_registry_size
           div :storage_purchased, 'data-testid': 'storage-purchased'
           div :storage_purchase_successful_alert, text: /You have successfully purchased a storage/
+          span :project_repository_size
+          span :project_lfs_object_size
+          span :project_build_artifact_size
+          span :project_packages_size
+          span :project_wiki_size
+          span :project_snippets_size
+          span :project_containers_registry_size
 
           # Pending members
           div :pending_members

@@ -10,6 +10,8 @@ module Namespaces
                               generic_duplicates_allowed
                               generic_duplicate_exception_regex
                               maven_package_requests_forwarding
+                              nuget_duplicates_allowed
+                              nuget_duplicate_exception_regex
                               npm_package_requests_forwarding
                               pypi_package_requests_forwarding
                               lock_maven_package_requests_forwarding

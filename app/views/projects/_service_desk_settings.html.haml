@@ -5,7 +5,7 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
     - link_start = "<a href='#{help_page_path('user/project/service_desk')}' target='_blank' rel='noopener noreferrer'>".html_safe
-    %p= _('Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+    %p.gl-text-secondary= _('Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
   .settings-content
     - if ::Gitlab::ServiceDesk.supported?
       .js-service-desk-setting-root{ data: { endpoint: project_service_desk_path(@project),
@@ -19,6 +19,7 @@
         outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",
         project_key: "#{@project.service_desk_setting&.project_key}",
         templates: available_service_desk_templates_for(@project),
-        public_project: "#{@project.public?}" } }
+        public_project: "#{@project.public?}",
+        custom_email_endpoint: project_service_desk_custom_email_path(@project) } }
     - elsif show_callout?('promote_service_desk_dismissed')
       = render 'shared/promotions/promote_servicedesk'

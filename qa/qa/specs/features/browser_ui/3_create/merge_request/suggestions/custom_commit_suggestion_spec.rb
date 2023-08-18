@@ -2,15 +2,9 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'with merge request suggestions', product_group: :code_review do
+    describe 'Merge request suggestions', :reliable, product_group: :code_review do
       let(:commit_message) { 'Applying suggested change for testing purposes.' }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'suggestions_project'
-        end
-      end
-
+      let(:project) { create(:project, name: 'mr-suggestions-project') }
       let(:merge_request) do
         Resource::MergeRequest.fabricate_via_api! do |merge_request|
           merge_request.project = project

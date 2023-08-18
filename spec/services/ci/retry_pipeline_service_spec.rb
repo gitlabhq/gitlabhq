@@ -451,22 +451,18 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
 
     before do
       project.add_maintainer(user)
-      create(:merge_request,
-        source_project: forked_project,
-        target_project: project,
-        source_branch: 'fixes',
-        allow_collaboration: true)
-      create_build('rspec 1', :failed, test_stage)
+
+      create_build('rspec 1', :failed, test_stage, project: project, ref: pipeline.ref)
+
+      allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
+      allow_any_instance_of(Project).to receive(:branch_allows_collaboration?).and_return(true)
     end
 
     it 'allows to retry failed pipeline' do
-      allow_any_instance_of(Project).to receive(:branch_allows_collaboration?).and_return(true)
-      allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
-
       service.execute(pipeline)
 
       expect(build('rspec 1')).to be_pending
-      expect(pipeline.reload).to be_running
+      expect(pipeline).to be_running
     end
   end
 

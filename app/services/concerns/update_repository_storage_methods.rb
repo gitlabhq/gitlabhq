@@ -24,7 +24,13 @@ module UpdateRepositoryStorageMethods
 
     return response if response
 
-    mirror_repositories unless same_filesystem?
+    unless same_filesystem?
+      mirror_repositories
+
+      repository_storage_move.transaction do
+        mirror_object_pool(destination_storage_name)
+      end
+    end
 
     repository_storage_move.transaction do
       repository_storage_move.finish_replication!
@@ -51,6 +57,11 @@ module UpdateRepositoryStorageMethods
 
   def mirror_repositories
     raise NotImplementedError
+  end
+
+  def mirror_object_pool(_destination_shard)
+    # no-op, redefined for Projects::UpdateRepositoryStorageService
+    nil
   end
 
   def mirror_repository(type:)

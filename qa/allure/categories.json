@@ -1,0 +1,57 @@
+[
+  {
+    "name": "Fabrication 404 failure",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "^Fabrication of \\S+ .* failed \\\\(404\\\\).*"
+  },
+  {
+    "name": "Fabrication 401 failure",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "^Fabrication of \\S+ .* failed \\\\(401\\\\)*"
+  },
+  {
+    "name": "Fabrication failure",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "^Fabrication of \\S+ .* failed \\\\(\\d+\\\\).*"
+  },
+  {
+    "name": "Element not found",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "^(Unable to find css|\\S+ did not appear on).*"
+  },
+  {
+    "name": "Runner did not start failure",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "^Wait for runner '\\S+' to register in (group|project) '\\S+' failed.*"
+  },
+  {
+    "name": "Click intercepted failure",
+    "matchedStatuses": ["broken"],
+    "messageRegex": ".*element click intercepted.*"
+  },
+  {
+    "name": "Page did not fully load failure",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "^Page did not fully load.*"
+  },
+  {
+    "name": "Waiter failure",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "^Wait failed after \\d+ seconds.*"
+  },
+  {
+    "name": "Timeout failure",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "^Timed out reading data from server.*"
+  },
+  {
+    "name": "Ambiguous match failure",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "Ambiguous match, found \\d+ elements.*"
+  },
+  {
+    "name": "Page validation failure",
+    "matchedStatuses": ["broken"],
+    "messageRegex": "\\S+ did not appear on \\S+ as expected.*"
+  }
+]

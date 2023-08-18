@@ -20,6 +20,10 @@ module QA
         :title,
         :description
 
+      attribute :confidential do
+        false
+      end
+
       def initialize
         @assignee_ids = []
         @labels = []
@@ -57,7 +61,8 @@ module QA
         {
           assignee_ids: assignee_ids,
           labels: labels,
-          title: title
+          title: title,
+          confidential: confidential
         }.tap do |hash|
           hash[:milestone_id] = @milestone.id if @milestone
           hash[:weight] = @weight if @weight

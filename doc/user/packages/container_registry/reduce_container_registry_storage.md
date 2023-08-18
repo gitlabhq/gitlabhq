@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce Container Registry storage **(FREE)**
+# Reduce Container Registry storage **(FREE ALL)**
 
 Container registries can grow in size over time if you don't manage your registry usage. For example,
 if you add a large number of images or tags:

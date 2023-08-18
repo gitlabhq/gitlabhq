@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Cherry-pick changes **(FREE)**
+# Cherry-pick changes **(FREE ALL)**
 
 In Git, *cherry-picking* is taking a single commit from one branch and adding it
 as the latest commit on another branch. The rest of the commits in the source branch

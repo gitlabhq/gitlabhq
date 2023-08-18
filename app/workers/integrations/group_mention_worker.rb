@@ -22,19 +22,19 @@ module Integrations
 
       mentionable = case mentionable_type
                     when 'Issue'
-                      Issue.find(mentionable_id)
+                      Issue.find_by_id(mentionable_id)
                     when 'MergeRequest'
-                      MergeRequest.find(mentionable_id)
+                      MergeRequest.find_by_id(mentionable_id)
+                    else
+                      Sidekiq.logger.error(
+                        message: 'Integrations::GroupMentionWorker: mentionable not supported',
+                        mentionable_type: mentionable_type,
+                        mentionable_id: mentionable_id
+                      )
+                      nil
                     end
 
-      if mentionable.nil?
-        Sidekiq.logger.error(
-          message: 'Integrations::GroupMentionWorker: mentionable not supported',
-          mentionable_type: mentionable_type,
-          mentionable_id: mentionable_id
-        )
-        return
-      end
+      return if mentionable.nil?
 
       Integrations::GroupMentionService.new(mentionable, hook_data: hook_data, is_confidential: is_confidential).execute
     end

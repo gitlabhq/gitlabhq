@@ -13,7 +13,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   before_action only: [:index, :edit, :new] do
-    push_frontend_feature_flag(:kubernetes_namespace_for_environment)
+    push_frontend_feature_flag(:flux_resource_for_environment)
   end
 
   before_action :authorize_read_environment!
@@ -110,10 +110,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     return render_404 unless @environment.available?
 
     stop_actions = @environment.stop_with_actions!(current_user)
+    job = stop_actions.first if stop_actions&.count == 1
 
     action_or_env_url =
-      if stop_actions&.count == 1
-        polymorphic_url([project, stop_actions.first])
+      if job.instance_of?(::Ci::Build)
+        polymorphic_url([project, job])
+      elsif job.instance_of?(::Ci::Bridge)
+        project_pipeline_url(project, job.pipeline_id)
       else
         project_environment_url(project, @environment)
       end

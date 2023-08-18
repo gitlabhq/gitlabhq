@@ -1,10 +1,6 @@
 #!/bin/sh
 
-set -x
-set -e
-
-# Ensure that each gem has a checksum entry
-ruby -I ../../lib ../../bin/bundler-checksum lint
+set -xe
 
 # Check there's no differences after re-initialising
 ruby -I ../../lib ../../bin/bundler-checksum init
@@ -16,3 +12,6 @@ ruby -I ../../lib ../../bin/bundler-checksum verify
 # Test installing with bundler-checksum
 export BUNDLER_CHECKSUM_VERIFICATION_OPT_IN=1
 bundle install
+
+# Ensure that each gem has a valid checksum entry
+ruby -I ../../lib ../../bin/bundler-checksum lint

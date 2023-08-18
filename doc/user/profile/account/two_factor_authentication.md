@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Two-factor authentication **(FREE)**
+# Two-factor authentication **(FREE ALL)**
 
 Two-factor authentication (2FA) provides an additional level of security to your GitLab account. For others to access
 your account, they would need your username and password _and_ access to your second factor of authentication.
@@ -71,9 +71,12 @@ To enable 2FA with a one-time password:
       - Cloud-based (recommended because you can restore access if you lose the hardware device):
         - [Authy](https://authy.com/).
         - [Duo](https://duo.com/).
-      - Other:
+      - Other (proprietary):
         - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en).
         - [Microsoft Authenticator](https://www.microsoft.com/en-us/security/mobile-authenticator-app).
+      - Other (Free Software)
+        - [Aegis Authenticator](https://getaegis.app/).
+        - [FreeOTP](https://freeotp.github.io/).
    1. In the application, add a new entry in one of two ways:
       - Scan the code displayed by GitLab with your device's camera to add the entry automatically.
       - Enter the details provided to add the entry manually.
@@ -114,14 +117,14 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. Add the provider configuration:
+1. Add the provider configuration.
 
    For Linux package installations:
 
@@ -133,7 +136,7 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
    gitlab_rails['forti_authenticator_access_token'] = 's3cr3t'
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    forti_authenticator:
@@ -146,7 +149,7 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 
 1. Save the configuration file.
 1. [Reconfigure](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
-   (Linux package installations) or [restart](../../../administration/restart_gitlab.md#installations-from-source)
+   (Linux package installations) or [restart](../../../administration/restart_gitlab.md#self-compiled-installations)
    (self-compiled installations).
 
 ### Enable one-time password using Duo
@@ -181,14 +184,14 @@ On your GitLab server:
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. Add the provider configuration:
+1. Add the provider configuration.
 
    For Linux package installations:
 
@@ -199,7 +202,7 @@ On your GitLab server:
     gitlab_rails['duo_auth_hostname'] = '<duo_api_hostname>'
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    duo_auth:
@@ -211,7 +214,7 @@ On your GitLab server:
 
 1. Save the configuration file.
 1. For Linux package installations, [reconfigure GitLab](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
-   For installations from source, [restart GitLab](../../../administration/restart_gitlab.md#installations-from-source).
+   For self-compiled installations, [restart GitLab](../../../administration/restart_gitlab.md#self-compiled-installations).
 
 ### Enable one-time password using FortiToken Cloud
 
@@ -240,14 +243,14 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. Add the provider configuration:
+1. Add the provider configuration.
 
    For Linux package installations:
 
@@ -257,7 +260,7 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
    gitlab_rails['forti_token_cloud_client_secret'] = '<your_fortinet_cloud_client_secret>'
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    forti_token_cloud:
@@ -268,7 +271,7 @@ Configure FortiToken Cloud in GitLab. On your GitLab server:
 
 1. Save the configuration file.
 1. [Reconfigure](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) (Linux package installations) or
-   [restart](../../../administration/restart_gitlab.md#installations-from-source) (self-compiled installations).
+   [restart](../../../administration/restart_gitlab.md#self-compiled-installations) (self-compiled installations).
 
 ### Set up a WebAuthn device
 

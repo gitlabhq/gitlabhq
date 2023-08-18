@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Harbor Registry **(FREE)**
+# Harbor Registry **(FREE ALL)**
 
 You can integrate the [Harbor container registry](../../../user/project/integrations/harbor.md) into GitLab and use Harbor as the container registry for your GitLab project to store images.
 
@@ -68,7 +68,7 @@ To remove the Harbor Registry for a project:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
 1. Select **Settings > Integrations**.
 1. Select **Harbor** under **Active integrations**.
-1. Clear the **Active** checkbox under **Enable integration**.
+1. Under **Enable integration**, clear the **Active** checkbox.
 1. Select **Save changes**.
 
 The **Operate > Harbor Registry** entry is removed from the sidebar.

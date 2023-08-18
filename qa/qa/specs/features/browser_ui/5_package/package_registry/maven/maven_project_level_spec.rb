@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage,
-    quarantine: {
-      only: { job: %w[relative_url airgapped] },
-      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417600',
-      type: :investigating
-    } do
+  RSpec.describe 'Package', :object_storage, :external_api_calls do
     describe 'Maven project level endpoint', product_group: :package_registry do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
@@ -17,15 +12,7 @@ module QA
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'maven' }
       let(:personal_access_token) { Runtime::Env.personal_access_token }
-
-      let(:package_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = "#{package_type}_package_project"
-          project.initialize_with_readme = true
-          project.visibility = :private
-        end
-      end
-
+      let(:package_project) { create(:project, :with_readme, :private, name: "#{package_type}_package_project") }
       let(:package) do
         Resource::Package.init do |package|
           package.name = package_name
@@ -43,8 +30,7 @@ module QA
       end
 
       let(:gitlab_address_with_port) do
-        uri = URI.parse(Runtime::Scenario.gitlab_address)
-        "#{uri.scheme}://#{uri.host}:#{uri.port}"
+        Support::GitlabAddress.address_with_port
       end
 
       let(:project_deploy_token) do

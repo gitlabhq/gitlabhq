@@ -3,7 +3,7 @@
 module Gitlab
   class SearchResults
     COUNT_LIMIT = 100
-    COUNT_LIMIT_MESSAGE = "#{COUNT_LIMIT - 1}+"
+    COUNT_LIMIT_MESSAGE = "#{COUNT_LIMIT - 1}+".freeze
     DEFAULT_PAGE = 1
     DEFAULT_PER_PAGE = 20
 
@@ -24,7 +24,14 @@ module Gitlab
     # query
     attr_reader :default_project_filter
 
-    def initialize(current_user, query, limit_projects = nil, order_by: nil, sort: nil, default_project_filter: false, filters: {})
+    def initialize(
+      current_user,
+      query,
+      limit_projects = nil,
+      order_by: nil,
+      sort: nil,
+      default_project_filter: false,
+      filters: {})
       @current_user = current_user
       @query = query
       @limit_projects = limit_projects || Project.all
@@ -111,12 +118,12 @@ module Gitlab
     end
 
     # highlighting is only performed by Elasticsearch backed results
-    def highlight_map(scope)
+    def highlight_map(_scope)
       {}
     end
 
     # aggregations are only performed by Elasticsearch backed results
-    def aggregations(scope)
+    def aggregations(_scope)
       []
     end
 
@@ -152,13 +159,11 @@ module Gitlab
       sort_by = ::Gitlab::Search::SortOptions.sort_and_direction(order_by, sort)
 
       # Reset sort to default if the chosen one is not supported by scope
-      sort_by = nil if SCOPE_ONLY_SORT[sort_by] && !SCOPE_ONLY_SORT[sort_by].include?(scope)
+      sort_by = nil if SCOPE_ONLY_SORT[sort_by] && SCOPE_ONLY_SORT[sort_by].exclude?(scope)
 
       case sort_by
       when :created_at_asc
         results.reorder('created_at ASC')
-      when :created_at_desc
-        results.reorder('created_at DESC')
       when :updated_at_asc
         results.reorder('updated_at ASC')
       when :updated_at_desc
@@ -168,6 +173,7 @@ module Gitlab
       when :popularity_desc
         results.reorder('upvotes_count DESC')
       else
+        # :created_at_desc is default
         results.reorder('created_at DESC')
       end
     end
@@ -175,7 +181,11 @@ module Gitlab
 
     def projects
       scope = limit_projects
-      scope = scope.non_archived if Feature.enabled?(:search_projects_hide_archived) && !filters[:include_archived]
+
+      if Feature.enabled?(:search_projects_hide_archived, current_user) && !filters[:include_archived]
+        scope = scope.non_archived
+      end
+
       scope.search(query)
     end
 
@@ -184,6 +194,7 @@ module Gitlab
 
       unless default_project_filter
         issues = issues.in_projects(project_ids_relation)
+          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
       end
 
       apply_sort(issues, scope: 'issues')
@@ -203,7 +214,13 @@ module Gitlab
       merge_requests = MergeRequestsFinder.new(current_user, issuable_params).execute
 
       unless default_project_filter
-        merge_requests = merge_requests.of_projects(project_ids_relation)
+        project_ids = project_ids_relation
+
+        if Feature.enabled?(:search_merge_requests_hide_archived_projects, current_user) && !filters[:include_archived]
+          project_ids = project_ids.non_archived
+        end
+
+        merge_requests = merge_requests.of_projects(project_ids)
       end
 
       apply_sort(merge_requests, scope: 'merge_requests')
@@ -251,9 +268,7 @@ module Gitlab
 
         params[:state] = filters[:state] if filters.key?(:state)
 
-        if [true, false].include?(filters[:confidential])
-          params[:confidential] = filters[:confidential]
-        end
+        params[:confidential] = filters[:confidential] if [true, false].include?(filters[:confidential])
       end
     end
 

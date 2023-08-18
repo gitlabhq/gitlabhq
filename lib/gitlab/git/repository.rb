@@ -47,6 +47,8 @@ module Gitlab
 
       attr_reader :storage, :gl_repository, :gl_project_path, :container
 
+      delegate :list_all_blobs, to: :gitaly_blob_client
+
       # This remote name has to be stable for all types of repositories that
       # can join an object pool. If it's structure ever changes, a migration
       # has to be performed on the object pools to update the remote names.
@@ -338,13 +340,25 @@ module Gitlab
       # Return repo size in megabytes
       def size
         if Feature.enabled?(:use_repository_info_for_repository_size)
-          bytes = gitaly_repository_client.repository_info.size
-
-          (bytes.to_f / 1024 / 1024).round(2)
+          repository_info_size_megabytes
         else
           kilobytes = gitaly_repository_client.repository_size
-
           (kilobytes.to_f / 1024).round(2)
+        end
+      end
+
+      # Return repository recent objects size in mebibytes
+      #
+      # This differs from the #size method in that it does not include the size of:
+      # - stale objects
+      # - cruft packs of unreachable objects
+      #
+      # see: https://gitlab.com/gitlab-org/gitaly/-/blob/257ee33ca268d48c8f99dcbfeaaf7d8b19e07f06/internal/gitaly/service/repository/repository_info.go#L41-62
+      def recent_objects_size
+        wrapped_gitaly_errors do
+          recent_size_in_bytes = gitaly_repository_client.repository_info.objects.recent_size
+
+          Gitlab::Utils.bytes_to_megabytes(recent_size_in_bytes)
         end
       end
 
@@ -525,15 +539,13 @@ module Gitlab
         empty_diff_stats
       end
 
-      def find_changed_paths(commits, merge_commit_diff_mode: nil)
-        processed_commits = commits.reject { |ref| ref.blank? || Gitlab::Git.blank_ref?(ref) }
+      def find_changed_paths(treeish_objects, merge_commit_diff_mode: nil)
+        processed_objects = treeish_objects.compact
 
-        return [] if processed_commits.empty?
+        return [] if processed_objects.empty?
 
         wrapped_gitaly_errors do
-          gitaly_commit_client.find_changed_paths(
-            processed_commits, merge_commit_diff_mode: merge_commit_diff_mode
-          )
+          gitaly_commit_client.find_changed_paths(processed_objects, merge_commit_diff_mode: merge_commit_diff_mode)
         end
       rescue CommandError, TypeError, NoRepository
         []
@@ -739,6 +751,16 @@ module Gitlab
         delete_refs(branch_name)
       rescue CommandError => e
         raise DeleteBranchError, e
+      end
+
+      def async_delete_refs(*refs)
+        raise "async_delete_refs only supports project repositories" unless container.is_a?(Project)
+
+        records = refs.map do |ref|
+          BatchedGitRefUpdates::Deletion.new(project_id: container.id, ref: ref, created_at: Time.current, updated_at: Time.current)
+        end
+
+        BatchedGitRefUpdates::Deletion.bulk_insert!(records)
       end
 
       def delete_refs(...)
@@ -956,6 +978,18 @@ module Gitlab
         end
       end
 
+      def rebase_to_ref(user, source_sha:, target_ref:, first_parent_ref:, expected_old_oid: "")
+        wrapped_gitaly_errors do
+          gitaly_operation_client.user_rebase_to_ref(
+            user,
+            source_sha: source_sha,
+            target_ref: target_ref,
+            first_parent_ref: first_parent_ref,
+            expected_old_oid: expected_old_oid
+          )
+        end
+      end
+
       def squash(user, start_sha:, end_sha:, author:, message:)
         wrapped_gitaly_errors do
           gitaly_operation_client.user_squash(user, start_sha, end_sha, author, message)
@@ -1164,7 +1198,25 @@ module Gitlab
         end
       end
 
+      def get_patch_id(old_revision, new_revision)
+        wrapped_gitaly_errors do
+          gitaly_commit_client.get_patch_id(old_revision, new_revision)
+        end
+      end
+
+      def object_pool
+        wrapped_gitaly_errors do
+          gitaly_repository_client.object_pool.object_pool
+        end
+      end
+
       private
+
+      def repository_info_size_megabytes
+        bytes = gitaly_repository_client.repository_info.size
+
+        Gitlab::Utils.bytes_to_megabytes(bytes).round(2)
+      end
 
       def empty_diff_stats
         Gitlab::Git::DiffStatsCollection.new([])

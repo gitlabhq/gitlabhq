@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { scrollToElement } from '~/lib/utils/common_utils';

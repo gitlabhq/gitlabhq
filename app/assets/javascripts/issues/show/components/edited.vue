@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { n__, sprintf } from '~/locale';

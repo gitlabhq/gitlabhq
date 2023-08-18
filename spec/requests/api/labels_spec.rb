@@ -484,6 +484,18 @@ RSpec.describe API::Labels, feature_category: :team_planning do
       let(:params) { { name: valid_label_title_1 } }
     end
 
+    context 'when lock_on_merge' do
+      let(:label_locked) { create(:label, title: 'Locked label', project: project, lock_on_merge: true) }
+
+      it 'returns 400 because label could not be deleted' do
+        delete api("/projects/#{project.id}/labels", user), params: { label_id: label_locked.id }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('Label is locked and was not removed')
+        expect(project.labels).to include(label_locked)
+      end
+    end
+
     context 'with group label' do
       let_it_be(:group) { create(:group) }
       let_it_be(:group_label) { create(:group_label, title: valid_group_label_title_1, group: group) }

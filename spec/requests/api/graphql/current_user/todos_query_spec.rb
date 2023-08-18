@@ -40,7 +40,7 @@ RSpec.describe 'Query current user todos', feature_category: :source_code_manage
     post_graphql(query, current_user: current_user)
   end
 
-  it_behaves_like 'a working graphql query'
+  it_behaves_like 'a working graphql query that returns data'
 
   it 'contains the expected ids' do
     is_expected.to contain_exactly(

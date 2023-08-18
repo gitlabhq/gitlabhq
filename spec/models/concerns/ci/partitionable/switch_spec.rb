@@ -38,6 +38,7 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
         id serial NOT NULL PRIMARY KEY,
         job_id int,
         partition_id int NOT NULL DEFAULT 1,
+        type text,
         expanded_environment_name text);
 
       CREATE TABLE _test_p_ci_jobs_metadata (
@@ -88,6 +89,25 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
   it { expect(partitioned_model.arel_table.name).to eq('_test_p_ci_jobs_metadata') }
 
   it { expect(partitioned_model.sequence_name).to eq('_test_ci_jobs_metadata_id_seq') }
+
+  context 'with singe table inheritance' do
+    let(:child_model) do
+      Class.new(model) do
+        def self.name
+          'TestSwitchJobMetadataChild'
+        end
+      end
+    end
+
+    it 'adds a Partitioned model for each descendant' do
+      expect(model::Partitioned).not_to eq(child_model::Partitioned)
+    end
+
+    it 'uses the parent name in STI queries' do
+      recorder = ActiveRecord::QueryRecorder.new { child_model.all.load }
+      expect(recorder.log).to include(/"type" = 'TestSwitchJobMetadataChild'/)
+    end
+  end
 
   context 'when switching the tables' do
     before do
@@ -172,11 +192,11 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
       it 'writes' do
         rollout_and_rollback_flag(
           -> {
-            expect(sql(filter: /INSERT .* jobs_metadata/) { jobs_model.find(job.id).create_metadata! })
+            expect(sql(filter: [/INSERT/, /jobs_metadata/]) { jobs_model.find(job.id).create_metadata! })
               .to all match(/INSERT INTO "_test_ci_jobs_metadata"/)
           },
           -> {
-            expect(sql(filter: /INSERT .* jobs_metadata/) { jobs_model.find(job.id).create_metadata! })
+            expect(sql(filter: [/INSERT/, /jobs_metadata/]) { jobs_model.find(job.id).create_metadata! })
               .to all match(/INSERT INTO "_test_p_ci_jobs_metadata"/)
           }
         )
@@ -190,11 +210,11 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
 
         rollout_and_rollback_flag(
           -> {
-            expect(sql(filter: /DELETE .* jobs_metadata/) { jobs_model.last.destroy! })
+            expect(sql(filter: [/DELETE/, /jobs_metadata/]) { jobs_model.last.destroy! })
               .to all match(/DELETE FROM "_test_ci_jobs_metadata"/)
           },
           -> {
-            expect(sql(filter: /DELETE .* jobs_metadata/) { jobs_model.last.destroy! })
+            expect(sql(filter: [/DELETE/, /jobs_metadata/]) { jobs_model.last.destroy! })
               .to all match(/DELETE FROM "_test_p_ci_jobs_metadata"/)
           }
         )
@@ -252,11 +272,11 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
 
           rollout_and_rollback_flag(
             -> {
-              expect(sql(filter: /INSERT .* jobs_metadata/) { jobs_model.create!(attrs) })
+              expect(sql(filter: [/INSERT/, /jobs_metadata/]) { jobs_model.create!(attrs) })
                 .to all match(/INSERT INTO "_test_ci_jobs_metadata" .* 'test_env_name'/)
             },
             -> {
-              expect(sql(filter: /INSERT .* jobs_metadata/) { jobs_model.create!(attrs) })
+              expect(sql(filter: [/INSERT/, /jobs_metadata/]) { jobs_model.create!(attrs) })
                 .to all match(/INSERT INTO "_test_p_ci_jobs_metadata" .* 'test_env_name'/)
             }
           )
@@ -307,11 +327,9 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
   end
 
   def sql(filter: nil, &block)
-    result = ActiveRecord::QueryRecorder.new(&block)
-    result = result.log
-
-    return result unless filter
-
-    result.select { |statement| statement.match?(filter) }
+    ActiveRecord::QueryRecorder.new(&block)
+      .log
+      .select { |statement| Array.wrap(filter).all? { |regex| statement.match?(regex) } }
+      .tap { |result| expect(result).not_to be_empty }
   end
 end

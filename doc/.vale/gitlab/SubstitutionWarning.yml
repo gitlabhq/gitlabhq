@@ -31,6 +31,8 @@ swap:
   file name: "filename"
   filesystem: "file system"
   info: "information"
+  installation from source: self-compiled installation
+  installations from source: self-compiled installations
   it is recommended: "you should"
   logged in user: "authenticated user"
   logged-in user: "authenticated user"
@@ -52,6 +54,8 @@ swap:
   signed in user: "authenticated user"
   signed-in user: "authenticated user"
   since: "because' or 'after"
+  source (?:install|installation): self-compiled installation
+  source (?:installs|installations): self-compiled installations
   sub-group: "subgroup"
   sub-groups: "subgroups"
   timezone: "time zone"

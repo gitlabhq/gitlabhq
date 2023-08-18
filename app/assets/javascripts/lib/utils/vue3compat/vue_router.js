@@ -67,7 +67,16 @@ const transformers = {
 
 const transformOptions = (options = {}) => {
   const defaultConfig = {
-    routes: [],
+    routes: [
+      {
+        path: '/',
+        component: {
+          render() {
+            return '';
+          },
+        },
+      },
+    ],
     history: createWebHashHistory(),
   };
   return Object.keys(options).reduce((acc, key) => {

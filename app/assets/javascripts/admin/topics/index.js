@@ -1,12 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import showToast from '~/vue_shared/plugins/global_toast';
 import RemoveAvatar from './components/remove_avatar.vue';
 import MergeTopics from './components/merge_topics.vue';
-
-const toasts = document.querySelectorAll('.js-toast-message');
-toasts.forEach((toast) => showToast(toast.dataset.message));
 
 Vue.use(VueApollo);
 

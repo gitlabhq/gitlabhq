@@ -74,10 +74,9 @@ describe('Description field component', () => {
     });
 
     it('tracks event', () => {
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
-        context: 'Issue',
-        editorType: 'editor_type_plain_text_editor',
-        label: 'editor_tracking',
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+        label: 'markdown_editor',
+        property: 'Issue',
       });
     });
   });

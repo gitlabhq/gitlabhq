@@ -1,7 +1,5 @@
 import {
   GlAlert,
-  GlBadge,
-  GlLoadingIcon,
   GlSkeletonLoader,
   GlButton,
   GlEmptyState,
@@ -24,6 +22,8 @@ import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import { i18n } from '~/work_items/constants';
@@ -47,6 +47,10 @@ describe('WorkItemDetail component', () => {
   Vue.use(VueApollo);
 
   const workItemQueryResponse = workItemByIidResponseFactory({ canUpdate: true, canDelete: true });
+  const workItemQueryResponseWithCannotUpdate = workItemByIidResponseFactory({
+    canUpdate: false,
+    canDelete: false,
+  });
   const workItemQueryResponseWithoutParent = workItemByIidResponseFactory({
     parent: null,
     canUpdate: true,
@@ -62,7 +66,6 @@ describe('WorkItemDetail component', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findSkeleton = () => wrapper.findComponent(GlSkeletonLoader);
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findWorkItemActions = () => wrapper.findComponent(WorkItemActions);
   const findWorkItemTitle = () => wrapper.findComponent(WorkItemTitle);
   const findCreatedUpdated = () => wrapper.findComponent(WorkItemCreatedUpdated);
@@ -82,6 +85,8 @@ describe('WorkItemDetail component', () => {
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
   const triggerPageScroll = () => findIntersectionObserver().vm.$emit('disappear');
+  const findWorkItemStateToggleButton = () => wrapper.findComponent(WorkItemStateToggleButton);
+  const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
 
   const createComponent = ({
     isModal = false,
@@ -194,6 +199,25 @@ describe('WorkItemDetail component', () => {
     });
   });
 
+  describe('work item state toggle button', () => {
+    describe.each`
+      description                  | canUpdate
+      ${'when user cannot update'} | ${false}
+      ${'when user can update'}    | ${true}
+    `('$description', ({ canUpdate }) => {
+      it(`${canUpdate ? 'is rendered' : 'is not rendered'}`, async () => {
+        createComponent({
+          handler: canUpdate
+            ? jest.fn().mockResolvedValue(workItemQueryResponse)
+            : jest.fn().mockResolvedValue(workItemQueryResponseWithCannotUpdate),
+        });
+        await waitForPromises();
+
+        expect(findWorkItemStateToggleButton().exists()).toBe(canUpdate);
+      });
+    });
+  });
+
   describe('close button', () => {
     describe('when isModal prop is false', () => {
       it('does not render', async () => {
@@ -289,27 +313,7 @@ describe('WorkItemDetail component', () => {
     `(
       'when work item has $context',
       ({ handlerMock, confidentialityMock, confidentialityFailureMock, inputVariables }) => {
-        it('renders confidential badge when work item is confidential', async () => {
-          createComponent({
-            handler: jest.fn().mockResolvedValue(confidentialWorkItem),
-            confidentialityMock,
-          });
-
-          await waitForPromises();
-
-          const confidentialBadge = wrapper.findComponent(GlBadge);
-          expect(confidentialBadge.exists()).toBe(true);
-          expect(confidentialBadge.props()).toMatchObject({
-            variant: 'warning',
-            icon: 'eye-slash',
-          });
-          expect(confidentialBadge.attributes('title')).toBe(
-            'Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task.',
-          );
-          expect(confidentialBadge.text()).toBe('Confidential');
-        });
-
-        it('renders gl-loading-icon while update mutation is in progress', async () => {
+        it('sends updateInProgress props to child component', async () => {
           createComponent({
             handler: handlerMock,
             confidentialityMock,
@@ -321,10 +325,10 @@ describe('WorkItemDetail component', () => {
 
           await nextTick();
 
-          expect(findLoadingIcon().exists()).toBe(true);
+          expect(findCreatedUpdated().props('updateInProgress')).toBe(true);
         });
 
-        it('emits workItemUpdated and shows confidentiality badge when mutation is successful', async () => {
+        it('emits workItemUpdated when mutation is successful', async () => {
           createComponent({
             handler: handlerMock,
             confidentialityMock,
@@ -339,7 +343,6 @@ describe('WorkItemDetail component', () => {
           expect(confidentialityMock[1]).toHaveBeenCalledWith({
             input: inputVariables,
           });
-          expect(findLoadingIcon().exists()).toBe(false);
         });
 
         it('shows an alert when mutation fails', async () => {
@@ -357,7 +360,6 @@ describe('WorkItemDetail component', () => {
 
           expect(findAlert().exists()).toBe(true);
           expect(findAlert().text()).toBe(errorMessage);
-          expect(findLoadingIcon().exists()).toBe(false);
         });
       },
     );
@@ -397,8 +399,8 @@ describe('WorkItemDetail component', () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
-      expect(findWorkItemType().exists()).toBe(true);
-      expect(findWorkItemType().text()).toBe('Task #1');
+      expect(findWorkItemTypeIcon().props('showText')).toBe(true);
+      expect(findWorkItemType().text()).toBe('#1');
     });
 
     describe('with parent', () => {
@@ -450,8 +452,8 @@ describe('WorkItemDetail component', () => {
       });
 
       it('shows work item type and iid', () => {
-        const { iid, workItemType } = workItemQueryResponse.data.workspace.workItems.nodes[0];
-        expect(findParent().text()).toContain(`${workItemType.name} #${iid}`);
+        const { iid } = workItemQueryResponse.data.workspace.workItems.nodes[0];
+        expect(findParent().text()).toContain(`#${iid}`);
       });
     });
   });

@@ -8,7 +8,7 @@ module Types
 
       include ::Gitlab::Routing
 
-      implements(Types::AlertManagement::IntegrationType)
+      implements Types::AlertManagement::IntegrationType
 
       authorize :admin_project
 

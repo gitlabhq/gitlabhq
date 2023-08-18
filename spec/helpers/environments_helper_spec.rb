@@ -41,8 +41,7 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
         'custom_metrics_available' => 'true',
         'custom_dashboard_base_path' => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT,
         'operations_settings_path' => project_settings_operations_path(project),
-        'can_access_operations_settings' => 'true',
-        'panel_preview_endpoint' => project_metrics_dashboards_builder_path(project, format: :json)
+        'can_access_operations_settings' => 'true'
       )
     end
 

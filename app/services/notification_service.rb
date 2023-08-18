@@ -345,8 +345,12 @@ class NotificationService
   def review_requested_of_merge_request(merge_request, current_user, reviewer)
     recipients = NotificationRecipients::BuildService.build_requested_review_recipients(merge_request, current_user, reviewer)
 
+    deliver_option = review_request_deliver_options(merge_request.project, reviewer)
+
     recipients.each do |recipient|
-      mailer.request_review_merge_request_email(recipient.user.id, merge_request.id, current_user.id, recipient.reason).deliver_later
+      mailer
+        .request_review_merge_request_email(recipient.user.id, merge_request.id, current_user.id, recipient.reason)
+        .deliver_later(deliver_option)
     end
   end
 
@@ -527,6 +531,12 @@ class NotificationService
     return true unless project_member.notifiable?(:mention)
 
     mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
+  end
+
+  def member_about_to_expire(member)
+    return true unless member.notifiable?(:mention)
+
+    mailer.member_about_to_expire_email(member.real_source_type, member.id).deliver_later
   end
 
   # Group invite
@@ -723,9 +733,12 @@ class NotificationService
   # Notify users on new review in system
   def new_review(review)
     recipients = NotificationRecipients::BuildService.build_new_review_recipients(review)
+    deliver_options = new_review_deliver_options(review)
 
     recipients.each do |recipient|
-      mailer.new_review_email(recipient.user.id, review.id).deliver_later
+      mailer
+        .new_review_email(recipient.user.id, review.id)
+        .deliver_later(deliver_options)
     end
   end
 
@@ -945,6 +958,16 @@ class NotificationService
 
   def warn_skipping_notifications(user, object)
     Gitlab::AppLogger.warn(message: "Skipping sending notifications", user: user.id, klass: object.class.to_s, object_id: object.id)
+  end
+
+  def new_review_deliver_options(review)
+    # Overridden in EE
+    {}
+  end
+
+  def review_request_deliver_options(project, user)
+    # Overridden in EE
+    {}
   end
 end
 

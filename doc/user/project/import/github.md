@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import your project from GitHub to GitLab **(FREE)**
+# Import your project from GitHub to GitLab **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10, you no longer need to add any users to the parent group in GitLab to successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** branch protection rule.
@@ -203,7 +203,7 @@ After imports are completed, they can be in one of three states:
 
 Expand **Details** to see a list of [repository entities](#imported-data) that failed to import.
 
-## Mirror a repository and share pipeline status **(PREMIUM)**
+## Mirror a repository and share pipeline status **(PREMIUM ALL)**
 
 Depending on your GitLab tier, [repository mirroring](../repository/mirror/index.md) can be set up to keep
 your imported repository in sync with its GitHub copy.
@@ -425,7 +425,7 @@ LoadModule ssl_module lib/httpd/modules/mod_ssl.so
 </VirtualHost>
 ```
 
-## Automate group and project import **(PREMIUM)**
+## Automate group and project import **(PREMIUM ALL)**
 
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](index.md#automate-group-and-project-import).

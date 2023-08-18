@@ -26,7 +26,7 @@
               = s_("UserProfile|Edit profile")
           = render 'users/view_gpg_keys'
           = render 'users/view_user_in_admin_area'
-          .js-user-profile-actions{ data: { user_id: @user.id } }
+          .js-user-profile-actions{ data: user_profile_actions_data(@user) }
       - else
         = render layout: 'users/cover_controls' do
           - if @user == current_user

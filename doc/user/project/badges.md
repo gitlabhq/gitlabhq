@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Badges **(FREE)**
+# Badges **(FREE ALL)**
 
 Badges are a unified way to present condensed pieces of information about your projects.
 A badge consists of a small image and a URL that the image points to.
@@ -133,6 +133,7 @@ To add a new badge to a project:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
 1. Expand **Badges**.
+1. Select **Add badge**.
 1. Under **Link**, enter the URL that the badges should point to.
 1. Under **Badge image URL**, enter the URL of the image that should be displayed.
 1. Select **Add badge**.

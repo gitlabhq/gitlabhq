@@ -107,6 +107,54 @@ details.
 
 For GitLab.com repository size limits, read [accounts and limit settings](../../user/gitlab_com/index.md#account-and-limit-settings).
 
+## Maximum remote file size for imports
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
+
+You can modify the maximum remote file size for imports from external object storages (for example, AWS) in GitLab.
+
+To modify the maximum import remote file size:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Increase or decrease by changing the value in **Maximum import remote file size (MB)**. Set to `0` to set no file size limit.
+
+## Maximum download file size for imports by direct transfer
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3.
+
+You can modify the maximum download file size for imports by direct transfer in GitLab.
+
+To modify the maximum download file size for imports by direct transfer:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Increase or decrease by changing the value in **Direct transfer maximum download file size (MB)**. Set to `0` to set no download file size limit.
+
+## Maximum decompressed file size for imported archives
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128218) in GitLab 16.3.
+
+When you import a project using [file exports](../../user/project/settings/import_export.md) or [direct transfer](../../user/group/import/index.md#migrate-groups-by-direct-transfer-recommended), you can specify the maximum decompressed file size for imported archives. The default value is 25 GB.
+
+When you import a compressed file, the decompressed size cannot exceed the maximum decompressed file size limit. If the decompressed size exceeds the configured limit, the following error is returned:
+
+```plaintext
+Decompressed archive size validation failed.
+```
+
+To modify the maximum decompressed file size for imports in GitLab:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Set another value for **Maximum decompressed size (MiB)**.
+
 ## Personal access token prefix
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20968) in GitLab 13.7.
@@ -147,7 +195,7 @@ For instance, consider the following workflow:
 
 1. Your team develops apps which require large files to be stored in
    the application repository.
-1. Although you have enabled [Git LFS](../../topics/git/lfs/index.md#git-large-file-storage-lfs)
+1. Although you have enabled [Git LFS](../../topics/git/lfs/index.md)
    to your project, your storage has grown significantly.
 1. Before you exceed available storage, you set up a limit of 10 GB
    per repository.

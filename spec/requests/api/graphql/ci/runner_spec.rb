@@ -109,9 +109,9 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
           runner.maintainer_note.present? ? a_string_including('<strong>Test maintenance note</strong>') : '',
         job_count: runner.builds.count,
         jobs: a_hash_including(
-          "count" => runner.builds.count,
-          "nodes" => an_instance_of(Array),
-          "pageInfo" => anything
+          'count' => runner.builds.count,
+          'nodes' => an_instance_of(Array),
+          'pageInfo' => anything
         ),
         project_count: nil,
         admin_url: "http://localhost/admin/runners/#{runner.id}",
@@ -124,8 +124,21 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
           'assignRunner' => true
         },
         managers: a_hash_including(
-          "count" => runner.runner_managers.count,
-          "nodes" => an_instance_of(Array),
+          'count' => runner.runner_managers.count,
+          'nodes' => runner.runner_managers.map do |runner_manager|
+            a_graphql_entity_for(
+              runner_manager,
+              system_id: runner_manager.system_xid,
+              version: runner_manager.version,
+              revision: runner_manager.revision,
+              ip_address: runner_manager.ip_address,
+              executor_name: runner_manager.executor_type&.dasherize,
+              architecture_name: runner_manager.architecture,
+              platform_name: runner_manager.platform,
+              status: runner_manager.status.to_s.upcase,
+              job_execution_status: runner_manager.builds.running.any? ? 'RUNNING' : 'IDLE'
+            )
+          end,
           "pageInfo" => anything
         )
       )
@@ -215,11 +228,19 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       end
     end
 
-    context 'with build running' do
+    context 'with build running', :freeze_time do
+      let!(:pipeline) { create(:ci_pipeline, project: project1) }
+      let!(:runner_manager) do
+        create(:ci_runner_machine,
+          runner: runner, ip_address: '127.0.0.1', version: '16.3', revision: 'a', architecture: 'arm', platform: 'osx',
+          contacted_at: 1.second.ago, executor_type: 'docker')
+      end
+
+      let!(:runner) { create(:ci_runner) }
+      let!(:build) { create(:ci_build, :running, runner: runner, pipeline: pipeline) }
+
       before do
-        project = create(:project, :repository)
-        pipeline = create(:ci_pipeline, project: project)
-        create(:ci_build, :running, runner: runner, pipeline: pipeline)
+        create(:ci_runner_machine_build, runner_manager: runner_manager, build: build)
       end
 
       it_behaves_like 'runner details fetch'

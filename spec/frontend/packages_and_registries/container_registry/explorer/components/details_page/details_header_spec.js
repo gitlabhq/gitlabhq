@@ -1,6 +1,6 @@
-import { GlDropdownItem, GlIcon, GlDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -21,7 +21,6 @@ import {
   ROOT_IMAGE_TOOLTIP,
 } from '~/packages_and_registries/container_registry/explorer/constants';
 import getContainerRepositoryMetadata from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_metadata.query.graphql';
-import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { containerRepositoryMock, imageTagsCountMock } from '../../mock_data';
 
 describe('Details Header', () => {
@@ -39,16 +38,10 @@ describe('Details Header', () => {
   const findTitle = () => wrapper.findByTestId('title');
   const findTagsCount = () => wrapper.findByTestId('tags-count');
   const findCleanup = () => wrapper.findByTestId('cleanup');
-  const findDeleteButton = () => wrapper.findComponent(GlDropdownItem);
+  const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
-  const findMenu = () => wrapper.findComponent(GlDropdown);
+  const findMenu = () => wrapper.findComponent(GlDisclosureDropdown);
   const findSize = () => wrapper.findByTestId('image-size');
-
-  const waitForMetadataItems = async () => {
-    // Metadata items are printed by a loop in the title-area and it takes two ticks for them to be available
-    await nextTick();
-    await nextTick();
-  };
 
   const mountComponent = ({
     propsData = { image: defaultImage },
@@ -64,11 +57,6 @@ describe('Details Header', () => {
       propsData,
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
-      },
-      stubs: {
-        TitleArea,
-        GlDropdown,
-        GlDropdownItem,
       },
     });
   };
@@ -134,45 +122,44 @@ describe('Details Header', () => {
       },
     );
 
-    describe('delete button', () => {
-      it('exists', () => {
-        mountComponent();
+    it('has the correct props', () => {
+      mountComponent();
 
+      expect(findMenu().props()).toMatchObject({
+        category: 'tertiary',
+        icon: 'ellipsis_v',
+        placement: 'right',
+        textSrOnly: true,
+        noCaret: true,
+        toggleText: 'More actions',
+      });
+    });
+
+    describe('delete item', () => {
+      beforeEach(() => {
+        mountComponent();
+      });
+
+      it('exists', () => {
         expect(findDeleteButton().exists()).toBe(true);
       });
 
       it('has the correct text', () => {
-        mountComponent();
-
         expect(findDeleteButton().text()).toBe('Delete image repository');
       });
 
-      it('has the correct props', () => {
-        mountComponent();
-
-        expect(findDeleteButton().attributes()).toMatchObject(
-          expect.objectContaining({
-            variant: 'danger',
-          }),
-        );
-      });
-
       it('emits the correct event', () => {
-        mountComponent();
+        findDeleteButton().vm.$emit('action');
 
-        findDeleteButton().vm.$emit('click');
-
-        expect(wrapper.emitted('delete')).toEqual([[]]);
+        expect(wrapper.emitted('delete')).toHaveLength(1);
       });
     });
   });
 
   describe('metadata items', () => {
     describe('tags count', () => {
-      it('displays "-- tags" while loading', async () => {
+      it('displays "-- tags" while loading', () => {
         mountComponent();
-
-        await waitForMetadataItems();
 
         expect(findTagsCount().props('text')).toBe('-- tags');
       });
@@ -181,7 +168,6 @@ describe('Details Header', () => {
         mountComponent();
 
         await waitForPromises();
-        await waitForMetadataItems();
 
         expect(findTagsCount().props('text')).toBe('13 tags');
       });
@@ -192,23 +178,20 @@ describe('Details Header', () => {
         });
 
         await waitForPromises();
-        await waitForMetadataItems();
 
         expect(findTagsCount().props('text')).toBe('1 tag');
       });
 
-      it('has the correct icon', async () => {
+      it('has the correct icon', () => {
         mountComponent();
-        await waitForMetadataItems();
 
         expect(findTagsCount().props('icon')).toBe('tag');
       });
     });
 
     describe('size metadata item', () => {
-      it('when size is not returned, it hides the item', async () => {
+      it('when size is not returned, it hides the item', () => {
         mountComponent();
-        await waitForMetadataItems();
 
         expect(findSize().exists()).toBe(false);
       });
@@ -220,7 +203,6 @@ describe('Details Header', () => {
         });
 
         await waitForPromises();
-        await waitForMetadataItems();
 
         expect(findSize().props()).toMatchObject({
           icon: 'disk',
@@ -230,18 +212,11 @@ describe('Details Header', () => {
     });
 
     describe('cleanup metadata item', () => {
-      it('has the correct icon', async () => {
+      it('when cleanup is not scheduled has the right icon and props', () => {
         mountComponent();
-        await waitForMetadataItems();
-
-        expect(findCleanup().props('icon')).toBe('expire');
-      });
-
-      it('when cleanup is not scheduled', async () => {
-        mountComponent();
-        await waitForMetadataItems();
 
         expect(findCleanup().props()).toMatchObject({
+          icon: 'expire',
           text: CLEANUP_DISABLED_TEXT,
           textTooltip: CLEANUP_DISABLED_TOOLTIP,
         });
@@ -255,7 +230,7 @@ describe('Details Header', () => {
         ${UNFINISHED_STATUS}  | ${'Cleanup incomplete'}          | ${CLEANUP_UNFINISHED_TOOLTIP}
       `(
         'when the status is $status the text is $text and the tooltip is $tooltip',
-        async ({ status, text, tooltip }) => {
+        ({ status, text, tooltip }) => {
           mountComponent({
             propsData: {
               image: {
@@ -267,7 +242,6 @@ describe('Details Header', () => {
               },
             },
           });
-          await waitForMetadataItems();
 
           expect(findCleanup().props()).toMatchObject({
             text,
@@ -278,25 +252,22 @@ describe('Details Header', () => {
     });
 
     describe('visibility and created at', () => {
-      it('has created text', async () => {
+      it('has created text', () => {
         mountComponent();
-        await waitForMetadataItems();
 
         expect(findCreatedAndVisibility().props('text')).toBe('Created Nov 3, 2020 13:29');
       });
 
       describe('visibility icon', () => {
-        it('shows an eye when the project is public', async () => {
+        it('shows an eye when the project is public', () => {
           mountComponent();
-          await waitForMetadataItems();
 
           expect(findCreatedAndVisibility().props('icon')).toBe('eye');
         });
-        it('shows an eye slashed when the project is not public', async () => {
+        it('shows an eye slashed when the project is not public', () => {
           mountComponent({
             propsData: { image: { ...defaultImage, project: { visibility: 'private' } } },
           });
-          await waitForMetadataItems();
 
           expect(findCreatedAndVisibility().props('icon')).toBe('eye-slash');
         });

@@ -89,6 +89,12 @@ RSpec.describe SearchService, feature_category: :global_search do
     end
   end
 
+  describe '#search_type' do
+    subject { described_class.new(user, search: valid_search).search_type }
+
+    it { is_expected.to eq('basic') }
+  end
+
   describe '#show_snippets?' do
     context 'when :snippets is \'true\'' do
       it 'returns true' do

@@ -145,6 +145,10 @@
   }
 
   .btn-group {
+    position: relative;
+    display: inline-flex;
+    vertical-align: middle;
+
     button.btn,
     a.btn {
       background-color: $white;

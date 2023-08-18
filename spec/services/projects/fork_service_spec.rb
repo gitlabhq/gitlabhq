@@ -380,7 +380,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
   end
 
   context 'when a project is already forked' do
-    it 'creates a new poolresository after the project is moved to a new shard' do
+    it 'creates a new pool repository after the project is moved to a new shard' do
       project = create(:project, :public, :repository)
       fork_before_move = fork_project(project, nil, using_service: true)
 
@@ -393,6 +393,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
       allow_any_instance_of(Gitlab::Git::Repository).to receive(:replicate)
       allow_any_instance_of(Gitlab::Git::Repository).to receive(:checksum)
         .and_return(::Gitlab::Git::BLANK_SHA)
+      allow_next_instance_of(Gitlab::Git::ObjectPool) do |object_pool|
+        allow(object_pool).to receive(:link)
+      end
 
       storage_move = create(
         :project_repository_storage_move,

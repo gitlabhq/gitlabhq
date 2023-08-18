@@ -16,20 +16,16 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
   end
 
   it 'user can pick a template from the dropdown' do
-    expect(page).to have_css('.gitlab-ci-yml-selector')
+    click_button 'Apply a template'
 
-    find('.js-gitlab-ci-yml-selector').click
-
-    wait_for_requests
-
-    within '.gitlab-ci-yml-selector' do
-      find('.dropdown-input-field').set('Jekyll')
-      find('.dropdown-content li', text: 'Jekyll').click
+    within '.gl-new-dropdown-panel' do
+      find('.gl-listbox-search-input').set('Jekyll')
+      find('.gl-new-dropdown-contents li', text: 'Jekyll').click
     end
 
     wait_for_requests
 
-    expect(page).to have_css('.gitlab-ci-yml-selector .dropdown-toggle-text', text: 'Apply a template')
+    expect(page).to have_css('.gl-new-dropdown-button-text', text: 'Jekyll')
     expect(find('.monaco-editor')).to have_content('This file is a template, and might need editing before it works on your project')
     expect(find('.monaco-editor')).to have_content('jekyll build -d test')
   end
@@ -40,7 +36,7 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
     it 'uses the given template' do
       wait_for_requests
 
-      expect(page).to have_css('.gitlab-ci-yml-selector .dropdown-toggle-text', text: 'Apply a template')
+      expect(page).to have_css('.gl-new-dropdown-button-text', text: 'Jekyll')
       expect(find('.monaco-editor')).to have_content('This file is a template, and might need editing before it works on your project')
       expect(find('.monaco-editor')).to have_content('jekyll build -d test')
     end
@@ -52,7 +48,7 @@ RSpec.describe 'Projects > Files > User wants to add a .gitlab-ci.yml file', :js
     it 'leaves the editor empty' do
       wait_for_requests
 
-      expect(page).to have_css('.gitlab-ci-yml-selector .dropdown-toggle-text', text: 'Apply a template')
+      expect(page).to have_css('.gl-new-dropdown-button-text', text: 'Apply a template')
       expect(find('.monaco-editor')).to have_content('')
     end
   end

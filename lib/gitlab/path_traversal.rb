@@ -14,7 +14,7 @@ module Gitlab
     # Ensure that the relative path will not traverse outside the base directory
     # We url decode the path to avoid passing invalid paths forward in url encoded format.
     # Also see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24223#note_284122580
-    # It also checks for ALT_SEPARATOR aka '\' (forward slash)
+    # It also checks for backslash '\', which is sometimes a File::ALT_SEPARATOR.
     def check_path_traversal!(path)
       return unless path
 

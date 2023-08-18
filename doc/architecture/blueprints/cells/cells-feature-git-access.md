@@ -15,35 +15,30 @@ we can document the reasons for not choosing this approach.
 
 # Cells: Git Access
 
-This document describes impact of Cells architecture on all Git access (over HTTPS and SSH)
-patterns providing explanation of how potentially those features should be changed
-to work well with Cells.
+This document describes impact of Cells architecture on all Git access (over HTTPS and SSH) patterns providing explanation of how potentially those features should be changed to work well with Cells.
 
 ## 1. Definition
 
-Git access is done through out the application. It can be an operation performed by the system
-(read Git repository) or by user (create a new file via Web IDE, `git clone` or `git push` via command line).
+Git access is done throughout the application.
+It can be an operation performed by the system (read Git repository) or by a user (create a new file via Web IDE, `git clone` or `git push` via command line).
+The Cells architecture defines that all Git repositories will be local to the Cell, so no repository could be shared with another Cell.
 
-The Cells architecture defines that all Git repositories will be local to the Cell,
-so no repository could be shared with another Cell.
-
-The Cells architecture will require that any Git operation done can only be handled by a Cell holding
-the data. It means that any operation either via Web interface, API, or GraphQL needs to be routed
-to the correct Cell. It means that any `git clone` or `git push` operation can only be performed
-in a context of a Cell.
+The Cells architecture will require that any Git operation can only be handled by a Cell holding the data.
+It means that any operation either via Web interface, API, or GraphQL needs to be routed to the correct Cell.
+It means that any `git clone` or `git push` operation can only be performed in the context of a Cell.
 
 ## 2. Data flow
 
-The are various operations performed today by the GitLab on a Git repository. This describes
-the data flow how they behave today to better represent the impact.
+The are various operations performed today by GitLab on a Git repository.
+This describes the data flow how they behave today to better represent the impact.
 
-It appears that Git access does require changes only to a few endpoints that are scoped to project.
+It appears that Git access does require changes only to a few endpoints that are scoped to a Project.
 There appear to be different types of repositories:
 
 - Project: assigned to Group
 - Wiki: additional repository assigned to Project
 - Design: similar to Wiki, additional repository assigned to Project
-- Snippet: creates a virtual project to hold repository, likely tied to the User
+- Snippet: creates a virtual Project to hold repository, likely tied to the User
 
 ### 2.1. Git clone over HTTPS
 
@@ -131,9 +126,8 @@ sequenceDiagram
 
 ## 3. Proposal
 
-The Cells stateless router proposal requires that any ambiguous path (that is not routable)
-will be made to be routable. It means that at least the following paths will have to be updated
-do introduce a routable entity (project, group, or organization).
+The Cells stateless router proposal requires that any ambiguous path (that is not routable) will be made routable.
+It means that at least the following paths will have to be updated to introduce a routable entity (Project, Group, or Organization).
 
 Change:
 
@@ -150,9 +144,7 @@ Where:
 ## 4. Evaluation
 
 Supporting Git repositories if a Cell can access only its own repositories does not appear to be complex.
-
-The one major complication is supporting snippets, but this likely falls in the same category as for the approach
-to support user's personal namespaces.
+The one major complication is supporting snippets, but this likely falls in the same category as for the approach to support a user's Personal Namespace.
 
 ## 4.1. Pros
 
@@ -161,4 +153,4 @@ to support user's personal namespaces.
 ## 4.2. Cons
 
 1. The sharing of repositories objects is limited to the given Cell and Gitaly node.
-1. The across-Cells forks are likely impossible to be supported (discover: how this work today across different Gitaly node).
+1. Cross-Cells forks are likely impossible to be supported (discover: How this works today across different Gitaly node).

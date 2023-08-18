@@ -1,4 +1,4 @@
-import { isEmpty, uniqWith, isEqual } from 'lodash';
+import { isEmpty, uniqWith, isEqual, isString } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { queryToObject } from '~/lib/utils/url_utility';
 
@@ -62,17 +62,30 @@ export function prepareTokens(filters = {}) {
   }, []);
 }
 
+/**
+ * This function takes a token array and translates it into a filter object
+ * @param filters
+ * @returns A Filter Object
+ */
 export function processFilters(filters) {
   return filters.reduce((acc, token) => {
-    const { type, value } = token;
-    const { operator } = value;
-    const tokenValue = value.data;
+    let type;
+    let value;
+    let operator;
+    if (typeof token === 'string') {
+      type = FILTERED_SEARCH_TERM;
+      value = token;
+    } else {
+      type = token.type;
+      operator = token.value.operator;
+      value = token.value.data;
+    }
 
     if (!acc[type]) {
       acc[type] = [];
     }
 
-    acc[type].push({ value: tokenValue, operator });
+    acc[type].push({ value, operator });
     return acc;
   }, {});
 }
@@ -89,59 +102,93 @@ function filteredSearchQueryParam(filter) {
  * { myFilterName: { value: 'foo', operator: '=' }, search: [{ value: 'my' }, { value: 'search' }] }
  * gets translated into:
  * { myFilterName: 'foo', 'not[myFilterName]': null, search: 'my search' }
+ * By default it supports '=' and '!=' operators. This can be extended by providing the `customOperators` option
  * @param  {Object} filters
  * @param  {Object} filters.myFilterName a single filter value or an array of filters
  * @param  {Object} options
  * @param  {Object} [options.filteredSearchTermKey] if set, 'filtered-search-term' filters are assigned to this key, 'search' is suggested
+ * @param  {Object} [options.customOperators] Allows to extend the supported operators, e.g.
+ *
+ *    filterToQueryObject({foo: [{ value: '100', operator: '>' }]}, {customOperators: {operator: '>',prefix: 'gt'}})
+ *      returns {gt[foo]: '100'}
+ *    It's also possible to restrict custom operators to a given key by setting `applyOnlyToKey` string attribute.
+ *
  * @return {Object} query object with both filter name and not-name with values
  */
 export function filterToQueryObject(filters = {}, options = {}) {
-  const { filteredSearchTermKey } = options;
+  const { filteredSearchTermKey, customOperators } = options;
 
   return Object.keys(filters).reduce((memo, key) => {
     const filter = filters[key];
 
-    if (typeof filteredSearchTermKey === 'string' && key === FILTERED_SEARCH_TERM) {
+    if (typeof filteredSearchTermKey === 'string' && key === FILTERED_SEARCH_TERM && filter) {
       return { ...memo, [filteredSearchTermKey]: filteredSearchQueryParam(filter) };
     }
 
-    let selected;
-    let unselected;
+    const operators = [
+      { operator: '=' },
+      { operator: '!=', prefix: 'not' },
+      ...(customOperators ?? []),
+    ];
 
-    if (Array.isArray(filter)) {
-      selected = filter.filter((item) => item.operator === '=').map((item) => item.value);
-      unselected = filter.filter((item) => item.operator === '!=').map((item) => item.value);
-    } else {
-      selected = filter?.operator === '=' ? filter.value : null;
-      unselected = filter?.operator === '!=' ? filter.value : null;
+    const result = {};
+
+    for (const op of operators) {
+      const { operator, prefix, applyOnlyToKey } = op;
+
+      if (!applyOnlyToKey || applyOnlyToKey === key) {
+        let value;
+        if (Array.isArray(filter)) {
+          value = filter.filter((item) => item.operator === operator).map((item) => item.value);
+        } else {
+          value = filter?.operator === operator ? filter.value : null;
+        }
+        if (isEmpty(value)) {
+          value = null;
+        }
+        if (prefix) {
+          result[`${prefix}[${key}]`] = value;
+        } else {
+          result[key] = value;
+        }
+      }
     }
 
-    if (isEmpty(selected)) {
-      selected = null;
-    }
-    if (isEmpty(unselected)) {
-      unselected = null;
-    }
-
-    return { ...memo, [key]: selected, [`not[${key}]`]: unselected };
+    return { ...memo, ...result };
   }, {});
 }
 
 /**
- * Extracts filter name from url name, e.g. `not[my_filter]` => `my_filter`
- * and returns the operator with it depending on the filter name
+ * Extracts filter name from url name and operator, e.g.
+ *  e.g. input: not[my_filter]` output: {filterName: `my_filter`, operator: '!='}`
+ *
+ * By default it supports filter with the format `my_filter=foo` and `not[my_filter]=bar`. This can be extended with the `customOperators` option.
  * @param  {String} filterName from url
+ * @param {Object.customOperators} It allows to extend the supported parameter, e.g.
+ *  input: 'gt[filter]', { customOperators: [{ operator: '>', prefix: 'gt' }]})
+ *  output: '{filterName: 'filter', operator: '>'}
  * @return {Object}
  * @return {Object.filterName} extracted filter name
  * @return {Object.operator} `=` or `!=`
  */
-function extractNameAndOperator(filterName) {
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  if (filterName.startsWith('not[') && filterName.endsWith(']')) {
-    return { filterName: filterName.slice(4, -1), operator: '!=' };
-  }
+function extractNameAndOperator(filterName, customOperators) {
+  const ops = [
+    {
+      prefix: 'not',
+      operator: '!=',
+    },
+    ...(customOperators ?? []),
+  ];
 
-  return { filterName, operator: '=' };
+  const operator = ops.find(
+    ({ prefix }) => filterName.startsWith(`${prefix}[`) && filterName.endsWith(']'),
+  );
+
+  if (!operator) {
+    return { filterName, operator: '=' };
+  }
+  const { prefix } = operator;
+  return { filterName: filterName.slice(prefix.length + 1, -1), operator: operator.operator };
 }
 
 /**
@@ -151,11 +198,7 @@ function extractNameAndOperator(filterName) {
  */
 function filteredSearchTermValue(value) {
   const values = Array.isArray(value) ? value : [value];
-  return values
-    .filter((term) => term)
-    .join(' ')
-    .split(' ')
-    .map((term) => ({ value: term }));
+  return [{ value: values.filter((term) => term).join(' ') }];
 }
 
 /**
@@ -163,15 +206,21 @@ function filteredSearchTermValue(value) {
  * '?myFilterName=foo'
  * gets translated into:
  * { myFilterName: { value: 'foo', operator: '=' } }
- * @param  {String} query URL query string, e.g. from `window.location.search`
- * @param  {Object} options
+ * By default it only support '=' and '!=' operators. This can be extended with the customOperator option.
+ * @param  {String|Object} query URL query string or object, e.g. from `window.location.search` or `this.$route.query`
  * @param  {Object} options
  * @param  {String} [options.filteredSearchTermKey] if set, a FILTERED_SEARCH_TERM filter is created to this parameter. `'search'` is suggested
  * @param  {String[]} [options.filterNamesAllowList] if set, only this list of filters names is mapped
+ * @param  {Object} [options.customOperator] It allows to extend the supported parameter, e.g.
+ *  input: 'gt[myFilter]=100', { customOperators: [{ operator: '>', prefix: 'gt' }]})
+ *  output: '{ myFilter: {value: '100', operator: '>'}}
  * @return {Object} filter object with filter names and their values
  */
-export function urlQueryToFilter(query = '', { filteredSearchTermKey, filterNamesAllowList } = {}) {
-  const filters = queryToObject(query, { gatherArrays: true });
+export function urlQueryToFilter(
+  query = '',
+  { filteredSearchTermKey, filterNamesAllowList, customOperators } = {},
+) {
+  const filters = isString(query) ? queryToObject(query, { gatherArrays: true }) : query;
   return Object.keys(filters).reduce((memo, key) => {
     const value = filters[key];
     if (!value) {
@@ -184,7 +233,7 @@ export function urlQueryToFilter(query = '', { filteredSearchTermKey, filterName
       };
     }
 
-    const { filterName, operator } = extractNameAndOperator(key);
+    const { filterName, operator } = extractNameAndOperator(key, customOperators);
     if (filterNamesAllowList && !filterNamesAllowList.includes(filterName)) {
       return memo;
     }

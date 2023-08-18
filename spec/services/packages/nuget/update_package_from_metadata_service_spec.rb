@@ -304,5 +304,15 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
         it_behaves_like 'raising an', described_class::InvalidMetadataError, with_message: params[:error_message]
       end
     end
+
+    context 'with an invalid zip file' do
+      before do
+        allow_next_instance_of(::Packages::Nuget::MetadataExtractionService) do |instance|
+          allow(instance).to receive(:execute).and_raise(Zip::Error)
+        end
+      end
+
+      it_behaves_like 'raising an', described_class::ZipError, with_message: 'Could not open the .nupkg file'
+    end
   end
 end

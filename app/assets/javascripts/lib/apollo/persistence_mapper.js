@@ -50,7 +50,7 @@ export const persistenceMapper = async (data) => {
     // we need this to prevent overcaching when we fetch the same entity (e.g. project) more than once
     // with different set of fields
 
-    if (Object.values(rootQuery).some((value) => value.__ref === key)) {
+    if (Object.values(rootQuery).some((value) => value?.__ref === key)) {
       const mappedEntity = {};
       Object.entries(parsedEntity).forEach(([parsedKey, parsedValue]) => {
         if (!parsedValue || typeof parsedValue !== 'object' || parsedValue['__persist']) {

@@ -22,6 +22,32 @@ module Gitlab
         consume_blob_response(response)
       end
 
+      def list_all_blobs(limit: nil, bytes_limit: 0, dynamic_timeout: nil, ignore_alternate_object_directories: false)
+        repository = @gitaly_repo
+
+        if ignore_alternate_object_directories
+          repository = @gitaly_repo.dup.tap do |g_repo|
+            g_repo.git_alternate_object_directories = Google::Protobuf::RepeatedField.new(:string)
+          end
+        end
+
+        request = Gitaly::ListAllBlobsRequest.new(
+          repository: repository,
+          limit: limit,
+          bytes_limit: bytes_limit
+        )
+
+        timeout =
+          if dynamic_timeout
+            [dynamic_timeout, GitalyClient.medium_timeout].min
+          else
+            GitalyClient.medium_timeout
+          end
+
+        response = Gitlab::GitalyClient.call(repository.storage_name, :blob_service, :list_all_blobs, request, timeout: timeout)
+        GitalyClient::BlobsStitcher.new(GitalyClient::ListBlobsAdapter.new(response))
+      end
+
       def list_blobs(revisions, limit: 0, bytes_limit: 0, with_paths: false, dynamic_timeout: nil)
         request = Gitaly::ListBlobsRequest.new(
           repository: @gitaly_repo,

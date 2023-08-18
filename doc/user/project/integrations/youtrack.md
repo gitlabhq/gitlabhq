@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# YouTrack **(FREE)**
+# YouTrack **(FREE ALL)**
 
 JetBrains [YouTrack](https://www.jetbrains.com/youtrack/) is a web-based issue tracking and project
 management platform.
@@ -17,7 +17,7 @@ To enable the YouTrack integration in a project:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **YouTrack**.
-1. Select the checkbox under **Enable integration**.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Fill in the required fields:
    - **Project URL**: The URL to the project in YouTrack.
    - **Issue URL**: The URL to view an issue in the YouTrack project.

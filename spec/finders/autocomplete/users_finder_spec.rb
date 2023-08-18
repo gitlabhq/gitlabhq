@@ -88,13 +88,20 @@ RSpec.describe Autocomplete::UsersFinder do
       let(:parent) { create(:group, :public, parent: grandparent) }
       let(:child) { create(:group, :public, parent: parent) }
       let(:group) { parent }
+      let(:child_project) { create(:project, group: group) }
 
       let!(:grandparent_user) { create(:group_member, :developer, group: grandparent).user }
       let!(:parent_user) { create(:group_member, :developer, group: parent).user }
       let!(:child_user) { create(:group_member, :developer, group: child).user }
+      let!(:child_project_user) { create(:project_member, :developer, project: child_project).user }
 
-      it 'includes users from parent groups as well' do
-        expect(subject).to match_array([grandparent_user, parent_user])
+      it 'includes users from parent groups, descendant groups, and descendant projects' do
+        expect(subject).to contain_exactly(
+          grandparent_user,
+          parent_user,
+          child_user,
+          child_project_user
+        )
       end
     end
 
@@ -112,12 +119,6 @@ RSpec.describe Autocomplete::UsersFinder do
           expect(subject).to be_empty
         end
       end
-    end
-
-    context 'when filtered by skip_users' do
-      let(:params) { { skip_users: [omniauth_user.id, current_user.id, blocked_user] } }
-
-      it { is_expected.to match_array([user1, external_user]) }
     end
 
     context 'when todos exist' do

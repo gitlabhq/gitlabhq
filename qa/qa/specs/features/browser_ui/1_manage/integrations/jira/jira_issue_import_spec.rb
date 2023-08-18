@@ -8,11 +8,7 @@ module QA
       let(:jira_issue_description) { "This issue is for testing importing Jira issues to GitLab." }
       let(:jira_issue_label_1) { "jira-import::#{jira_project_key}-1" }
       let(:jira_issue_label_2) { "QA" }
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = "jira_issue_import"
-        end
-      end
+      let(:project) { create(:project, name: "jira_issue_import") }
 
       it 'imports issues from Jira', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347966' do
         set_up_jira_integration

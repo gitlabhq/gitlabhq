@@ -3,6 +3,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -170,10 +171,9 @@ describe('issue_comment_form component', () => {
 
         findCloseReopenButton().trigger('click');
 
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
-          context: 'Issue_comment',
-          editorType: 'editor_type_plain_text_editor',
-          label: 'editor_tracking',
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+          label: 'markdown_editor',
+          property: 'Issue_comment',
         });
       });
 

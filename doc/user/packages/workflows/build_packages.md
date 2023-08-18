@@ -51,6 +51,10 @@ Learn how to install and build packages different package formats.
 
 ### Install Conan
 
+Prerequisite:
+
+- You must install Conan version 1.x. Support for Conan version 2 is proposed in [epic 8258](https://gitlab.com/groups/gitlab-org/-/epics/8258).
+
 Download the Conan package manager to your local development environment by
 following the instructions at [conan.io](https://conan.io/downloads.html).
 

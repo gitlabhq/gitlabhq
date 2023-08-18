@@ -5,52 +5,60 @@ exports[`Keep latest artifact toggle when application keep latest artifact setti
   <!---->
    
   <div
-    class="gl-toggle-wrapper gl-display-flex gl-mb-0 gl-flex-direction-column"
+    class="gl-toggle-wrapper gl-display-flex gl-mb-0 flex-grow-1 gl-flex-direction-column"
     data-testid="toggle-wrapper"
   >
     <span
-      class="gl-toggle-label gl-flex-shrink-0 gl-mb-3"
-      data-testid="toggle-label"
-      id="toggle-label-4"
-    >
-      Keep artifacts from most recent successful jobs
-    </span>
-     
-    <!---->
-     
-    <!---->
-     
-    <button
-      aria-checked="true"
-      aria-describedby="toggle-help-2"
-      aria-labelledby="toggle-label-4"
-      class="gl-flex-shrink-0 gl-toggle is-checked"
-      role="switch"
-      type="button"
+      class="gl-toggle-label-container gl-mb-3"
     >
       <span
-        class="toggle-icon"
+        class="gl-toggle-label"
+        data-testid="toggle-label"
+        id="toggle-label-4"
       >
-        <gl-icon-stub
-          name="mobile-issue-close"
-          size="16"
-        />
+        Keep artifacts from most recent successful jobs
       </span>
-    </button>
+       
+      <!---->
+    </span>
      
     <span
-      class="gl-help-label"
-      data-testid="toggle-help"
-      id="toggle-help-2"
+      class="gl-toggle-switch-container"
     >
-      
+      <!---->
+       
+      <button
+        aria-checked="true"
+        aria-describedby="toggle-help-2"
+        aria-labelledby="toggle-label-4"
+        class="gl-flex-shrink-0 gl-toggle is-checked"
+        role="switch"
+        type="button"
+      >
+        <span
+          class="toggle-icon"
+        >
+          <gl-icon-stub
+            name="mobile-issue-close"
+            size="16"
+          />
+        </span>
+      </button>
+       
+      <span
+        class="gl-help-label"
+        data-testid="toggle-help"
+        id="toggle-help-2"
+      >
+        
       The latest artifacts created by jobs in the most recent successful pipeline will be stored.
       
-      <gl-link-stub
-        href="/help/ci/pipelines/job_artifacts"
-      >
-        Learn more.
-      </gl-link-stub>
+        <gl-link-stub
+          href="/help/ci/pipelines/job_artifacts"
+        >
+          Learn more.
+        </gl-link-stub>
+      </span>
     </span>
   </div>
 </div>

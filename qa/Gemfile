@@ -2,8 +2,8 @@
 
 source 'https://rubygems.org'
 
-gem 'gitlab-qa', '~> 12', '>= 12.1.0', require: 'gitlab/qa'
-gem 'gitlab_quality-test_tooling', '~> 0.8.3', require: false
+gem 'gitlab-qa', '~> 12', '>= 12.2.1', require: 'gitlab/qa'
+gem 'gitlab_quality-test_tooling', '~> 0.9.3', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'activesupport', '~> 7.0.5.1' # This should stay in sync with the root's Gemfile
 gem 'allure-rspec', '~> 2.20.0'
@@ -24,7 +24,7 @@ gem 'rotp', '~> 6.2.2'
 gem 'parallel', '~> 1.23'
 gem 'rainbow', '~> 3.1.1'
 gem 'rspec-parameterized', '~> 1.0.0'
-gem 'octokit', '~> 6.1.1'
+gem 'octokit', '~> 7.0.0'
 gem "faraday-retry", "~> 2.2"
 gem 'zeitwerk', '~> 2.6', '>= 2.6.8'
 gem 'influxdb-client', '~> 2.9'
@@ -36,13 +36,15 @@ gem "warning", "~> 1.3"
 
 gem 'confiner', '~> 0.4'
 
-gem 'chemlab', '~> 0.10'
+gem 'chemlab', '~> 0.11', '>= 0.11.1'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1', '>= 0.1.1'
 
 # dependencies for jenkins client
-gem 'nokogiri', '~> 1.15', '>= 1.15.3'
+gem 'nokogiri', '~> 1.15', '>= 1.15.4'
 
 gem 'deprecation_toolkit', '~> 2.0.3', require: false
+
+gem 'factory_bot', '~> 6.2.1'
 
 group :development do
   gem 'pry-byebug', '~> 3.10.1', platform: :mri

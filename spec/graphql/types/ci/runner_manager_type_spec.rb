@@ -9,7 +9,7 @@ RSpec.describe GitlabSchema.types['CiRunnerManager'], feature_category: :runner_
 
   it 'contains attributes related to a runner manager' do
     expected_fields = %w[
-      architecture_name contacted_at created_at executor_name id ip_address platform_name revision
+      architecture_name contacted_at created_at executor_name id ip_address job_execution_status platform_name revision
       runner status system_id version
     ]
 

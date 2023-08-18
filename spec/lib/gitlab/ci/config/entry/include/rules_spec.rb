@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper' # Change this to fast spec helper when FF `ci_refactor_external_rules` is removed
 require_dependency 'active_model'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules do
+RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pipeline_composition do
   let(:factory) do
     Gitlab::Config::Entry::Factory.new(described_class)
       .value(config)
@@ -77,23 +77,68 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules do
   describe '#value' do
     subject(:value) { entry.value }
 
-    context 'with an "if"' do
-      let(:config) do
-        [{ if: '$THIS == "that"' }]
-      end
-
-      it { is_expected.to eq(config) }
+    let(:config) do
+      [
+        { if: '$THIS == "that"' },
+        { if: '$SKIP', when: 'never' }
+      ]
     end
 
-    context 'with a list of two rules' do
-      let(:config) do
-        [
-          { if: '$THIS == "that"' },
-          { if: '$SKIP' }
-        ]
+    it { is_expected.to eq([]) }
+
+    context 'when composed' do
+      before do
+        entry.compose!
       end
 
-      it { is_expected.to eq(config) }
+      it 'returns the composed entries value' do
+        expect(entry).to be_valid
+        is_expected.to eq(
+          [
+            { if: '$THIS == "that"' },
+            { if: '$SKIP', when: 'never' }
+          ]
+        )
+      end
+
+      context 'when invalid' do
+        let(:config) do
+          [
+            { if: '$THIS == "that"' },
+            { if: '$SKIP', invalid: 'invalid' }
+          ]
+        end
+
+        it 'returns the invalid config' do
+          expect(entry).not_to be_valid
+          is_expected.to eq(config)
+        end
+      end
+    end
+
+    context 'when FF `ci_refactor_external_rules` is disabled' do
+      before do
+        stub_feature_flags(ci_refactor_external_rules: false)
+      end
+
+      context 'with an "if"' do
+        let(:config) do
+          [{ if: '$THIS == "that"' }]
+        end
+
+        it { is_expected.to eq(config) }
+      end
+
+      context 'with a list of two rules' do
+        let(:config) do
+          [
+            { if: '$THIS == "that"' },
+            { if: '$SKIP' }
+          ]
+        end
+
+        it { is_expected.to eq(config) }
+      end
     end
   end
 end

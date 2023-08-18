@@ -1,9 +1,11 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlForm, GlFormGroup, GlFormInput, GlAlert } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import createSavedReplyMutation from '../queries/create_saved_reply.mutation.graphql';
 import updateSavedReplyMutation from '../queries/update_saved_reply.mutation.graphql';
 
@@ -16,6 +18,7 @@ export default {
     GlAlert,
     MarkdownField,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     id: {
       type: String,
@@ -60,6 +63,13 @@ export default {
     },
   },
   methods: {
+    onCancel() {
+      if (this.id) {
+        this.$router.push({ path: '/' });
+      } else {
+        this.$emit('cancel');
+      }
+    },
     onSubmit() {
       this.showValidation = true;
 
@@ -83,6 +93,7 @@ export default {
               this.$emit('saved');
               this.updateCommentTemplate = { name: '', content: '' };
               this.showValidation = false;
+              this.track_event('i_code_review_saved_replies_create');
             }
           },
         })
@@ -135,6 +146,7 @@ export default {
         v-model="updateCommentTemplate.name"
         :placeholder="__('Enter a name for your comment template')"
         data-testid="comment-template-name-input"
+        class="gl-form-input-xl"
       />
     </gl-form-group>
     <gl-form-group
@@ -142,6 +154,7 @@ export default {
       :state="isContentValid"
       :invalid-feedback="__('Please enter the comment template content.')"
       data-testid="comment-template-content-form-group"
+      class="gl-lg-max-w-80p"
     >
       <markdown-field
         :enable-preview="false"
@@ -177,6 +190,6 @@ export default {
     >
       {{ __('Save') }}
     </gl-button>
-    <gl-button v-if="id" :to="{ path: '/' }">{{ __('Cancel') }}</gl-button>
+    <gl-button @click="onCancel">{{ __('Cancel') }}</gl-button>
   </gl-form>
 </template>

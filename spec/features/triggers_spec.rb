@@ -26,16 +26,18 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
   describe 'triggers page' do
     describe 'create trigger workflow' do
       it 'prevents adding new trigger with no description' do
+        click_button 'Add new token'
         fill_in 'trigger_description', with: ''
-        click_button 'Add trigger'
+        click_button 'Create pipeline trigger token'
 
         # See if input has error due to empty value
         expect(page.find('form.gl-show-field-errors .gl-field-error')).to be_visible
       end
 
       it 'adds new trigger with description' do
+        click_button 'Add new token'
         fill_in 'trigger_description', with: 'trigger desc'
-        click_button 'Add trigger'
+        click_button 'Create pipeline trigger token'
 
         aggregate_failures 'display creation notice and trigger is created' do
           expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger was created successfully.'
@@ -100,6 +102,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
 
     describe 'show triggers workflow' do
       it 'contains trigger description placeholder' do
+        click_button 'Add new token'
         expect(page.find('#trigger_description')['placeholder']).to eq 'Trigger description'
       end
 

@@ -94,6 +94,7 @@ export default {
     return {
       schedules: {
         list: [],
+        currentUser: {},
       },
       scope,
       hasError: false,
@@ -134,6 +135,14 @@ export default {
           attrs: { 'data-testid': 'pipeline-schedules-inactive-tab' },
         },
       ];
+    },
+    onAllTab() {
+      // scope is undefined on first load, scope is only defined
+      // after tab switching
+      return this.scope === ALL_SCOPE || !this.scope;
+    },
+    showEmptyState() {
+      return !this.isLoading && this.schedulesCount === 0 && this.onAllTab;
     },
   },
   watch: {
@@ -258,8 +267,10 @@ export default {
       </gl-sprintf>
     </gl-alert>
 
+    <pipeline-schedule-empty-state v-if="showEmptyState" />
+
     <gl-tabs
-      v-if="isLoading || schedulesCount > 0"
+      v-else
       sync-active-tab-with-query-params
       query-param-name="scope"
       nav-class="gl-flex-grow-1 gl-align-items-center gl-mt-2"
@@ -284,6 +295,7 @@ export default {
         </template>
 
         <gl-loading-icon v-if="isLoading" size="lg" />
+
         <pipeline-schedules-table
           v-else
           :schedules="schedules.list"
@@ -305,8 +317,6 @@ export default {
         </gl-button>
       </template>
     </gl-tabs>
-
-    <pipeline-schedule-empty-state v-else-if="!isLoading && schedulesCount === 0" />
 
     <take-ownership-modal
       :visible="showTakeOwnershipModal"

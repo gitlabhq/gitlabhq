@@ -1,6 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import $ from 'jquery';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';

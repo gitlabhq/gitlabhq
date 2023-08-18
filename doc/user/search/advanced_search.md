@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Advanced search **(PREMIUM)**
+# Advanced search **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -87,13 +87,17 @@ In user search, a [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/re
 ## Known issues
 
 - You can only search files smaller than 1 MB.
+  For more information, see [issue 195764](https://gitlab.com/gitlab-org/gitlab/-/issues/195764).
   For self-managed GitLab instances, an administrator can
   [change this limit](../../integration/advanced_search/elasticsearch.md#advanced-search-configuration).
 - You can only use advanced search on the default branch of a project.
+  For more information, see [issue 229966](https://gitlab.com/gitlab-org/gitlab/-/issues/229966).
 - The search query must not contain any of the following characters:
 
   ```plaintext
   . , : ; / ` ' = ? $ & ^ | < > ( ) { } [ ] @
   ```
 
+  For more information, see [issue 325234](https://gitlab.com/gitlab-org/gitlab/-/issues/325234).
 - Search results show only the first match in a file.
+  For more information, see [issue 668](https://gitlab.com/gitlab-org/gitlab/-/issues/668).

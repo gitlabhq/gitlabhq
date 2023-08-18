@@ -109,6 +109,7 @@ A job with the `created` state isn't seen by the runner yet. To make it possible
 1. The job required a manual start and it has been triggered.
 1. All jobs from the previous stage have completed successfully. In this case we transition all jobs from the next stage to `pending`.
 1. The job specifies DAG dependencies using `needs:` and all the dependent jobs are completed.
+1. The job has not been [dropped](#dropping-stuck-builds) because of its not-runnable state by [`Ci::PipelineCreation::DropNotRunnableBuildsService`](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.0.4-ee/ee/app/services/ci/pipeline_creation/drop_not_runnable_builds_service.rb).
 
 When the runner is connected, it requests the next `pending` job to run by polling the server continuously.
 
@@ -118,11 +119,6 @@ API endpoints used by the runner to interact with GitLab are defined in [`lib/ap
 After the server receives the request it selects a `pending` job based on the [`Ci::RegisterJobService` algorithm](#ciregisterjobservice), then assigns and sends the job to the runner.
 
 Once all jobs are completed for the current stage, the server "unlocks" all the jobs from the next stage by changing their state to `pending`. These can now be picked by the scheduling algorithm when the runner requests new jobs, and continues like this until all stages are completed.
-
-If a job is not picked up by a runner in 24 hours it is automatically removed from
-the processing queue after that time. If a pending job is stuck, when there is no
-runner available that can process it, it is removed from the queue after 1 hour.
-In both cases the job's status is changed to `failed` with an appropriate failure reason.
 
 ### Communication between runner and GitLab server
 
@@ -162,6 +158,47 @@ Finally if the runner can only pick jobs that are tagged, all untagged jobs are 
 At this point we loop through remaining `pending` jobs and we try to assign the first job that the runner "can pick" based on additional policies. For example, runners marked as `protected` can only pick jobs that run against protected branches (such as production deployments).
 
 As we increase the number of runners in the pool we also increase the chances of conflicts which would arise if assigning the same job to different runners. To prevent that we gracefully rescue conflict errors and assign the next job in the list.
+
+### Dropping stuck builds
+
+There are two ways of marking builds as "stuck" and drop them.
+
+1. When a build is created, [`Ci::PipelineCreation::DropNotRunnableBuildsService`](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.0.4-ee/ee/app/services/ci/pipeline_creation/drop_not_runnable_builds_service.rb) checks for upfront known conditions that would make jobs not executable:
+    - If there is not enough [CI/CD Minutes](#compute-quota) to run the build, then the build is immediately dropped with `ci_quota_exceeded`.
+    - [In the future](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121761), if the project is not on the plan that available runners for the build require via `allowed_plans`, then the build is immediately dropped with `no_matching_runner`.
+1. If there is no available Runner to pick up a build, it is dropped after 1 hour by [`Ci::StuckBuilds::DropPendingService`](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.0.4-ee/app/services/ci/stuck_builds/drop_pending_service.rb).
+    - If a job is not picked up by a runner in 24 hours it is automatically removed from
+    the processing queue after that time.
+    - If a pending job is **stuck**, when there is no
+    runner available that can process it, it is removed from the queue after 1 hour.
+    - In both cases the job's status is changed to `failed` with an appropriate failure reason.
+
+#### The reason behind this difference
+
+CI Minutes quota mechanism is handled early when the job is created because it is a constant decision for most of the time.
+Once a project exceeds the limit, every next job matching it will be applicable for it until next month starts.
+Of course, the project owner can buy additional minutes, but that is a manual action that the project need to take.
+
+The same mechanism will be used for `allowed_plans` [soon](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121761).
+If the project is not on the required plan and a job is targeting such runner,
+it will be failing constantly until the project owner changes the configuration or upgrades the namespace to the required plan.
+
+These two mechanisms are also very SaaS specific and at the same time are quite compute expensive when we consider SaaS' scale.
+Doing the check before the job is even transitioned to pending and failing early makes a lot of sense here.
+
+Why we don't handle other cases for pending and drop jobs early?
+In some cases, a job is in pending only because the runner is slow on taking up jobs.
+This is not something that you can know at GitLab level.
+Depending on the runner's configuration and capacity and the size of the queue in GitLab, a job may be taken immediately, or may need to wait.
+
+There may be also other reasons:
+
+- you are handling runner maintenance and it's not available for a while at all,
+- you are updating configuration and by mistake, you've messed up the tagging and/or protected flag (or in the case of our SaaS instance runners; you've assigned a wrong cost factor or `allowed_plans` configuration).
+
+All of that are problems that may be temporary and mostly are not expected to happen and are expected to be detected and fixed early.
+We definitely don't want to drop jobs immediately when one of these conditions is happening.
+Dropping a job only because a runner is at capacity or because there is a temporary unavailability/configuration mistake would be very harmful to users.
 
 ## The definition of "Job" in GitLab CI/CD
 

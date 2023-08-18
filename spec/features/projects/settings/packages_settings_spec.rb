@@ -35,7 +35,7 @@ RSpec.describe 'Projects > Settings > Packages', :js, feature_category: :groups_
     let(:packages_enabled) { false }
 
     it 'does not show up in UI' do
-      expect(page).not_to have_selector('[data-testid="toggle-label"]', text: 'Packages')
+      expect(page).not_to have_selector('[data-testid="toggle-label"]', text: 'Package registry')
     end
   end
 end

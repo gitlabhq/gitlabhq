@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlLoadingIcon, GlSprintf, GlAlert } from '@gitlab/ui';
 import { escape } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { IdState } from 'vendor/vue-virtual-scroller';
@@ -226,6 +227,12 @@ export default {
     }
 
     this.manageViewedEffects();
+
+    if (this.viewDiffsFileByFile) {
+      requestIdleCallback(() => {
+        this.prefetchFileNeighbors();
+      });
+    }
   },
   beforeDestroy() {
     eventHub.$off(EVT_EXPAND_ALL_FILES, this.expandAllListener);
@@ -234,6 +241,7 @@ export default {
     ...mapActions('diffs', [
       'loadCollapsedDiff',
       'assignDiscussionsToDiff',
+      'prefetchFileNeighbors',
       'setFileCollapsedByUser',
       'saveDiffDiscussion',
       'toggleFileCommentForm',

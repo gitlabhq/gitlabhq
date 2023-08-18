@@ -65,18 +65,14 @@ FactoryBot.define do
       end
     end
 
-    trait :allow_descendants_override_disabled_shared_runners do
-      allow_descendants_override_disabled_shared_runners { true }
-    end
-
-    trait :disabled_and_unoverridable do
+    trait :shared_runners_disabled_and_unoverridable do
       shared_runners_disabled
       allow_descendants_override_disabled_shared_runners { false }
     end
 
-    trait :disabled_and_overridable do
+    trait :shared_runners_disabled_and_overridable do
       shared_runners_disabled
-      allow_descendants_override_disabled_shared_runners
+      allow_descendants_override_disabled_shared_runners { true }
     end
 
     trait :shared_runners_enabled do

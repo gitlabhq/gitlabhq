@@ -40,7 +40,7 @@ module Tooling
         %r{\Adata/removals/} => :none,
 
         %r{\A((ee|jh)/)?app/finders/(.+/)?integrations/} => [:import_integrate_be, :database, :backend],
-        [%r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/}, %r{(:integrations|:\w+_tracker_data)\b}] => [:import_integrate_be, :database, :migration],
+        [%r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/}, %r{(:integrations|:\w+_tracker_data)\b}] => [:import_integrate_be, :database],
         [%r{\A((ee|jh)/)?(app|lib)/.+\.rb}, %r{\b(Integrations::|\.execute_(integrations|hooks))\b}] => [:import_integrate_be, :backend],
         %r{\A(
           ((ee|jh)/)?app/((?!.*clusters)(?!.*alert_management)(?!.*views)(?!.*assets).+/)?integration.+ |
@@ -98,35 +98,13 @@ module Tooling
           \.gitlab/ci/frontend\.gitlab-ci\.yml
         )\z}x => %i[frontend tooling],
 
-        %r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/} => [:database, :migration],
+        %r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/} => [:database],
         %r{\A((ee|jh)/)?db/(?!fixtures)[^/]+} => [:database],
         %r{\A((ee|jh)/)?lib/gitlab/(database|background_migration|sql)(/|\.rb)} => [:database, :backend],
         %r{\A(app/services/authorized_project_update/find_records_due_for_refresh_service)(/|\.rb)} => [:database, :backend],
         %r{\A(app/models/project_authorization|app/services/users/refresh_authorized_projects_service)(/|\.rb)} => [:database, :backend],
         %r{\A((ee|jh)/)?app/finders/} => [:database, :backend],
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
-
-        %r{\A(\.ruby-version\z|\.nvmrc\z|\.tool-versions\z)} => :tooling,
-        %r{\A(\.gitlab-ci\.yml\z|\.gitlab/ci)} => :tooling,
-        %r{\A\.codeclimate\.yml\z} => :tooling,
-        %r{\Alefthook.yml\z} => :tooling,
-        %r{\A\.editorconfig\z} => :tooling,
-        %r{Dangerfile\z} => :tooling,
-        %r{\A((ee|jh)/)?(danger/|tooling/danger/)} => :tooling,
-        %r{\Agems/gem\.gitlab-ci\.yml\z} => :tooling,
-        %r{\Agems/config/} => :tooling,
-
-        %r{\A((ee|jh)/)?scripts/(lib/)?glfm/.*\.rb} => [:backend],
-        %r{\A((ee|jh)/)?scripts/(lib/)?glfm/.*\.js} => [:frontend],
-        %r{\A((ee|jh)/)?scripts/remote_development/.*} => [:remote_development_be],
-        %r{\A((ee|jh)/)?scripts/.*\.rb} => [:backend, :tooling],
-        %r{\A((ee|jh)/)?scripts/.*\.js} => [:frontend, :tooling],
-        %r{\A((ee|jh)/)?scripts/} => :tooling,
-
-        %r{\Atooling/} => :tooling,
-        %r{(CODEOWNERS)} => :tooling,
-        %r{(tests.yml)} => :tooling,
-        %r{\A\.gitpod\.yml} => :tooling,
 
         %r{\Alib/gitlab/ci/templates} => :ci_template,
 

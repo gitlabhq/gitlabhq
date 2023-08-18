@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy to Amazon Elastic Container Service **(FREE)**
+# Deploy to Amazon Elastic Container Service **(FREE ALL)**
 
 This step-by-step guide helps you deploy a project hosted on GitLab.com to
 the Amazon [Elastic Container Service (ECS)](https://aws.amazon.com/ecs/).
@@ -217,14 +217,14 @@ These variables are injected into the pipeline jobs and can access the ECS API.
 1. Go to **Settings > CI/CD > Variables**.
 1. Select **Add Variable** and set the following key-value pairs.
 
-   |Key|Value|Note|
-   |---|---|---|
-   |`AWS_ACCESS_KEY_ID`|`<Access key ID of the deployer>`| For authenticating `aws` CLI. |
-   |`AWS_SECRET_ACCESS_KEY`|`<Secret access key of the deployer>`| For authenticating `aws` CLI. |
-   |`AWS_DEFAULT_REGION`|`us-east-2`| For authenticating `aws` CLI. |
-   |`CI_AWS_ECS_CLUSTER`|`ecs-demo`| The ECS cluster is accessed by `production_ecs` job. |
-   |`CI_AWS_ECS_SERVICE`|`ecs_demo`| The ECS service of the cluster is updated by `production_ecs` job. Ensure that this variable is scoped to the appropriate environment (`production`, `staging`, `review/*`). |
-   |`CI_AWS_ECS_TASK_DEFINITION`|`ecs_demo`| The ECS task definition is updated by `production_ecs` job. |
+   | Key                          | Value                                 | Note |
+   |------------------------------|---------------------------------------|------|
+   | `AWS_ACCESS_KEY_ID`          | `<Access key ID of the deployer>`     | For authenticating `aws` CLI. |
+   | `AWS_SECRET_ACCESS_KEY`      | `<Secret access key of the deployer>` | For authenticating `aws` CLI. |
+   | `AWS_DEFAULT_REGION`         | `us-east-2`                           | For authenticating `aws` CLI. |
+   | `CI_AWS_ECS_CLUSTER`         | `ecs-demo`                            | The ECS cluster is accessed by `production_ecs` job. |
+   | `CI_AWS_ECS_SERVICE`         | `ecs_demo`                            | The ECS service of the cluster is updated by `production_ecs` job. Ensure that this variable is scoped to the appropriate environment (`production`, `staging`, `review/*`). |
+   | `CI_AWS_ECS_TASK_DEFINITION` | `ecs_demo`                            | The ECS task definition is updated by `production_ecs` job. |
 
 ### Make a change to the demo application
 

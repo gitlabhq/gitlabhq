@@ -6,6 +6,7 @@ class ApplicationRecord < ActiveRecord::Base
   include LegacyBulkInsert
   include CrossDatabaseModification
   include SensitiveSerializableHash
+  include ResetOnUnionError
 
   self.abstract_class = true
 
@@ -95,7 +96,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.underscore
-    Gitlab::SafeRequestStore.fetch("model:#{self}:underscore") { to_s.underscore }
+    @underscore ||= to_s.underscore
   end
 
   def self.where_exists(query)

@@ -5,7 +5,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages DNS records **(FREE)**
+# GitLab Pages DNS records **(FREE ALL)**
 
 A Domain Name System (DNS) web service routes visitors to websites
 by translating domain names (such as `www.example.com`) into the

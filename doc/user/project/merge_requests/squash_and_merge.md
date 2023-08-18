@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Squash and merge **(FREE)**
+# Squash and merge **(FREE ALL)**
 
 As you work on a feature branch, you often create small, self-contained commits. These small commits
 help describe the process of building a feature, but can clutter your Git history after the feature

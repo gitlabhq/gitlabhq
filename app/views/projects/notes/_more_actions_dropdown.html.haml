@@ -2,8 +2,7 @@
 
 - if note_editable || !is_current_user
   %div{ class: "dropdown more-actions note-actions-item gl-ml-0!" }
-    = button_tag title: 'More actions', class: 'note-action-button more-actions-toggle has-tooltip btn gl-button btn-default-tertiary btn-icon', data: { toggle: 'dropdown', container: 'body', qa_selector: 'more_actions_dropdown' } do
-      = sprite_icon('ellipsis_v', css_class: 'gl-button-icon gl-icon')
+    = render Pajamas::ButtonComponent.new(icon: 'ellipsis_v', category: :tertiary, button_options: { class: 'note-action-button more-actions-toggle has-tooltip', data: { title: 'More actions', toggle: 'dropdown', container: 'body', qa_selector: 'more_actions_dropdown' }})
     %ul.dropdown-menu.more-actions-dropdown.dropdown-open-left
       %li
         = clipboard_button(text: noteable_note_url(note), title: _('Copy reference'), button_text: _('Copy link'), class: 'btn-clipboard', hide_tooltip: true, hide_button_icon: true)

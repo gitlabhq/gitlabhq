@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::Ci::Config::Entry::Needs do
+RSpec.describe ::Gitlab::Ci::Config::Entry::Needs, feature_category: :pipeline_composition do
   subject(:needs) { described_class.new(config) }
 
   before do
@@ -63,6 +63,141 @@ RSpec.describe ::Gitlab::Ci::Config::Entry::Needs do
         it 'returns error about incorrect type' do
           expect(needs.errors).to contain_exactly(
             'need config contains unknown keys: some')
+        end
+      end
+    end
+
+    context 'when needs value is a hash' do
+      context 'with a job value' do
+        let(:config) do
+          { job: 'job_name' }
+        end
+
+        describe '#valid?' do
+          it { is_expected.to be_valid }
+        end
+      end
+
+      context 'with a parallel value that is a numeric value' do
+        let(:config) do
+          { job: 'job_name', parallel: 2 }
+        end
+
+        describe '#valid?' do
+          it { is_expected.not_to be_valid }
+        end
+
+        describe '#errors' do
+          it 'returns errors about number values being invalid for needs:parallel' do
+            expect(needs.errors).to match_array(["needs config cannot use \"parallel: <number>\"."])
+          end
+        end
+      end
+    end
+
+    context 'when needs:parallel value is incorrect' do
+      context 'with a keyword that is not "matrix"' do
+        let(:config) do
+          [
+            { job: 'job_name', parallel: { not_matrix: [{ one: 'aaa', two: 'bbb' }] } }
+          ]
+        end
+
+        describe '#valid?' do
+          it { is_expected.not_to be_valid }
+        end
+
+        describe '#errors' do
+          it 'returns errors about incorrect matrix keyword' do
+            expect(needs.errors).to match_array([
+              'need:parallel config contains unknown keys: not_matrix',
+              'need:parallel config missing required keys: matrix'
+            ])
+          end
+        end
+      end
+
+      context 'with a number value' do
+        let(:config) { [{ job: 'job_name', parallel: 2 }] }
+
+        describe '#valid?' do
+          it { is_expected.not_to be_valid }
+        end
+
+        describe '#errors' do
+          it 'returns errors about number values being invalid for needs:parallel' do
+            expect(needs.errors).to match_array(["needs config cannot use \"parallel: <number>\"."])
+          end
+        end
+      end
+    end
+
+    context 'when needs:parallel:matrix value is empty' do
+      let(:config) { [{ job: 'job_name', parallel: { matrix: {} } }] }
+
+      describe '#valid?' do
+        it { is_expected.not_to be_valid }
+      end
+
+      describe '#errors' do
+        it 'returns error about incorrect type' do
+          expect(needs.errors).to contain_exactly(
+            'need:parallel:matrix config should be an array of hashes')
+        end
+      end
+    end
+
+    context 'when needs:parallel:matrix value is incorrect' do
+      let(:config) { [{ job: 'job_name', parallel: { matrix: 'aaa' } }] }
+
+      describe '#valid?' do
+        it { is_expected.not_to be_valid }
+      end
+
+      describe '#errors' do
+        it 'returns error about incorrect type' do
+          expect(needs.errors).to contain_exactly(
+            'need:parallel:matrix config should be an array of hashes')
+        end
+      end
+    end
+
+    context 'when needs:parallel:matrix value is correct' do
+      context 'with a simple config' do
+        let(:config) do
+          [
+            { job: 'job_name', parallel: { matrix: [{ A: 'a1', B: 'b1' }] } }
+          ]
+        end
+
+        describe '#valid?' do
+          it { is_expected.to be_valid }
+        end
+      end
+
+      context 'with a complex config' do
+        let(:config) do
+          [
+            {
+              job: 'job_name1',
+              artifacts: true,
+              parallel: { matrix: [{ A: %w[a1 a2], B: %w[b1 b2 b3], C: %w[c1 c2] }] }
+            },
+            {
+              job: 'job_name2',
+              parallel: {
+                matrix: [
+                  { A: %w[a1 a2], D: %w[d1 d2] },
+                  { E: %w[e1 e2], F: ['f1'] },
+                  { C: %w[c1 c2 c3], G: %w[g1 g2], H: ['h1'] }
+                ]
+              }
+            }
+          ]
+        end
+
+        describe '#valid?' do
+          it { is_expected.to be_valid }
         end
       end
     end

@@ -45,6 +45,7 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
       variables: bridge_variables,
       forward_yaml_variables?: true,
       forward_pipeline_variables?: true,
+      expand_file_refs?: false,
       yaml_variables: yaml_variables,
       pipeline_variables: pipeline_variables,
       pipeline_schedule_variables: pipeline_schedule_variables
@@ -80,6 +81,62 @@ RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :
       allow(bridge).to receive(:pipeline_schedule_variables).and_return([])
 
       expect(generator.calculate).to be_empty
+    end
+
+    context 'with file variable interpolation' do
+      let(:bridge_variables) do
+        Gitlab::Ci::Variables::Collection.fabricate(
+          [
+            { key: 'REF1', value: 'ref 1' },
+            { key: 'FILE_REF3', value: 'ref 3', file: true }
+          ]
+        )
+      end
+
+      let(:yaml_variables) do
+        [{ key: 'INTERPOLATION_VAR', value: 'interpolate $REF1 $REF2 $FILE_REF3 $FILE_REF4' }]
+      end
+
+      let(:pipeline_variables) do
+        [{ key: 'PIPELINE_INTERPOLATION_VAR', value: 'interpolate $REF1 $REF2 $FILE_REF3 $FILE_REF4' }]
+      end
+
+      let(:pipeline_schedule_variables) do
+        [{ key: 'PIPELINE_SCHEDULE_INTERPOLATION_VAR', value: 'interpolate $REF1 $REF2 $FILE_REF3 $FILE_REF4' }]
+      end
+
+      context 'when expand_file_refs is true' do
+        before do
+          allow(bridge).to receive(:expand_file_refs?).and_return(true)
+        end
+
+        it 'expands file variables' do
+          expected = [
+            { key: 'INTERPOLATION_VAR', value: 'interpolate ref 1  ref 3 ' },
+            { key: 'PIPELINE_INTERPOLATION_VAR', value: 'interpolate ref 1  ref 3 ' },
+            { key: 'PIPELINE_SCHEDULE_INTERPOLATION_VAR', value: 'interpolate ref 1  ref 3 ' }
+          ]
+
+          expect(generator.calculate).to contain_exactly(*expected)
+        end
+      end
+
+      context 'when expand_file_refs is false' do
+        before do
+          allow(bridge).to receive(:expand_file_refs?).and_return(false)
+        end
+
+        it 'does not expand file variables and adds file variables' do
+          expected = [
+            { key: 'INTERPOLATION_VAR', value: 'interpolate ref 1  $FILE_REF3 ' },
+            { key: 'PIPELINE_INTERPOLATION_VAR', value: 'interpolate ref 1  $FILE_REF3 ' },
+            { key: 'PIPELINE_SCHEDULE_INTERPOLATION_VAR', value: 'interpolate ref 1  $FILE_REF3 ' },
+            { key: 'FILE_REF3', value: 'ref 3', variable_type: :file }
+          ]
+
+          expect(generator.calculate).to contain_exactly(*expected)
+        end
+      end
     end
   end
 end

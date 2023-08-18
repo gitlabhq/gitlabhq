@@ -178,6 +178,10 @@ module NotesHelper
 
   def notes_data(issuable)
     data = {
+      noteableType: @noteable.class.underscore,
+      noteableId: @noteable.id,
+      projectId: @project&.id,
+      groupId: @group&.id,
       discussionsPath: discussions_path(issuable),
       registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
       newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),

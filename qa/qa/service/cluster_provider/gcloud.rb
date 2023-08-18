@@ -27,25 +27,96 @@ module QA
         def setup
           login_if_not_already_logged_in
           create_cluster
+          install_helm
         end
 
         def teardown
           delete_cluster
         end
 
-        def install_kubernetes_agent(agent_token:, kas_address:)
-          install_helm
+        def connect
+          login_if_not_already_logged_in
 
+          shell <<~CMD.tr("\n", ' ')
+            gcloud container clusters get-credentials
+              --region #{Runtime::Env.workspaces_cluster_region}
+              #{Runtime::Env.workspaces_cluster_name}
+          CMD
+        end
+
+        def install_kubernetes_agent(agent_token:, kas_address:, agent_name: "gitlab-agent")
           shell <<~CMD.tr("\n", ' ')
             helm repo add gitlab https://charts.gitlab.io &&
             helm repo update &&
-            helm upgrade --install test gitlab/gitlab-agent
-              --namespace gitlab-agent
+            helm upgrade --install gitlab-agent gitlab/gitlab-agent
+              --namespace "#{agent_name}"
               --create-namespace
               --set image.tag=#{Runtime::Env.gitlab_agentk_version}
               --set config.token=#{agent_token}
               --set config.kasAddress=#{kas_address}
               --set config.kasHeaders="{Cookie: gitlab_canary=#{target_canary?}}"
+          CMD
+        end
+
+        def uninstall_kubernetes_agent(agent_name: "gitlab-agent")
+          shell <<~CMD.tr("\n", ' ')
+            helm uninstall gitlab-agent \
+              --namespace "#{agent_name}"
+          CMD
+        end
+
+        def install_ngnix_ingress
+          shell <<~CMD.tr("\n", ' ')
+            helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx &&
+            helm repo update &&
+            helm install \
+              ingress-nginx ingress-nginx/ingress-nginx \
+              --namespace ingress-nginx \
+              --create-namespace \
+              --version 4.3.0
+          CMD
+        end
+
+        def install_gitlab_workspaces_proxy
+          shell <<~CMD.tr("\n", ' ')
+            helm repo add gitlab-workspaces-proxy \
+              https://gitlab.com/api/v4/projects/gitlab-org%2fremote-development%2fgitlab-workspaces-proxy/packages/helm/devel &&
+            helm repo update &&
+            helm upgrade --install gitlab-workspaces-proxy \
+              gitlab-workspaces-proxy/gitlab-workspaces-proxy \
+              --version 0.1.6 \
+              --namespace=gitlab-workspaces \
+              --create-namespace \
+              --set="auth.client_id=#{Runtime::Env.workspaces_oauth_app_id}" \
+              --set="auth.client_secret=#{Runtime::Env.workspaces_oauth_app_secret}" \
+              --set="auth.host=#{Runtime::Env.gitlab_url}" \
+              --set="auth.redirect_uri=https://#{Runtime::Env.workspaces_proxy_domain}/auth/callback" \
+              --set="auth.signing_key=#{Runtime::Env.workspaces_oauth_signing_key}" \
+              --set="ingress.host.workspaceDomain=#{Runtime::Env.workspaces_proxy_domain}" \
+              --set="ingress.host.wildcardDomain=*.#{Runtime::Env.workspaces_proxy_domain}" \
+              --set="ingress.tls.workspaceDomainCert=#{Runtime::Env.workspaces_domain_cert}" \
+              --set="ingress.tls.workspaceDomainKey=#{Runtime::Env.workspaces_domain_key}" \
+              --set="ingress.tls.wildcardDomainCert=#{Runtime::Env.workspaces_wildcard_cert}" \
+              --set="ingress.tls.wildcardDomainKey=#{Runtime::Env.workspaces_wildcard_key}" \
+              --set="ingress.className=nginx"
+          CMD
+        end
+
+        def update_dns(load_balancer_ip)
+          shell <<~CMD.tr("\n", ' ')
+            gcloud dns record-sets update #{Runtime::Env.workspaces_proxy_domain} \
+            --rrdatas=#{load_balancer_ip} \
+            --ttl=300 \
+            --type=A \
+            --zone=gitlabqa-dev
+          CMD
+
+          shell <<~CMD.tr("\n", ' ')
+            gcloud dns record-sets update "*.#{Runtime::Env.workspaces_proxy_domain}" \
+            --rrdatas=#{load_balancer_ip} \
+            --ttl=300 \
+            --type=A \
+            --zone=gitlabqa-dev
           CMD
         end
 
@@ -99,7 +170,7 @@ module QA
             create #{cluster_name}
             #{auth_options}
             --region #{@region}
-            --disk-size 10GB
+            --disk-size 15GB
             --num-nodes #{Runtime::Env.gcloud_num_nodes}
             && gcloud container clusters
             get-credentials

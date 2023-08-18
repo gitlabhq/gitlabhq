@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import RepoTabs from '~/ide/components/repo_tabs.vue';
 import { createStore } from '~/ide/stores';

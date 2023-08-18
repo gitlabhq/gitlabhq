@@ -18,10 +18,7 @@ module Repositories
 
     def download
       lfs_object = LfsObject.find_by_oid(oid)
-      unless lfs_object && lfs_object.file.exists?
-        render_lfs_not_found
-        return
-      end
+      return render_lfs_not_found unless lfs_object&.file&.exists?
 
       send_upload(lfs_object.file, send_params: { content_type: "application/octet-stream" })
     end

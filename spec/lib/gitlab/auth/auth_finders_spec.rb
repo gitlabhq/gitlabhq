@@ -516,17 +516,23 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           set_bearer_token(token_3.token)
         end
 
-        it 'revokes the latest rotated token' do
-          expect(token_1).not_to be_revoked
+        context 'with url related to access tokens' do
+          before do
+            set_header('SCRIPT_NAME', "/personal_access_tokens/#{token_3.id}/rotate")
+          end
 
-          expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::RevokedError)
+          it 'revokes the latest rotated token' do
+            expect(token_1).not_to be_revoked
 
-          expect(token_1.reload).to be_revoked
+            expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::RevokedError)
+
+            expect(token_1.reload).to be_revoked
+          end
         end
 
-        context 'when the feature flag is disabled' do
+        context 'with url not related to access tokens' do
           before do
-            stub_feature_flags(pat_reuse_detection: false)
+            set_header('SCRIPT_NAME', '/epics/1')
           end
 
           it 'does not revoke the latest rotated token' do

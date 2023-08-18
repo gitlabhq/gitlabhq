@@ -192,7 +192,9 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       Gitaly::FindChangedPathsRequest.new(repository: repository_message, requests: requests, merge_commit_diff_mode: merge_commit_diff_mode)
     end
 
-    subject { described_class.new(repository).find_changed_paths(commits, merge_commit_diff_mode: merge_commit_diff_mode).as_json }
+    let(:treeish_objects) { repository.commits_by(oids: commits) }
+
+    subject { described_class.new(repository).find_changed_paths(treeish_objects, merge_commit_diff_mode: merge_commit_diff_mode).as_json }
 
     before do
       allow(Gitaly::FindChangedPathsRequest).to receive(:new).and_call_original
@@ -332,6 +334,40 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
         include_examples 'includes paths different in any parent'
 
         include_examples 'uses requests format'
+      end
+    end
+
+    context 'when all requested objects are invalid' do
+      it 'does not send RPC request' do
+        expect_any_instance_of(Gitaly::DiffService::Stub).not_to receive(:find_changed_paths)
+
+        returned_value = described_class.new(repository).find_changed_paths(%w[wrong values])
+
+        expect(returned_value).to eq([])
+      end
+    end
+
+    context 'when commit has an empty SHA' do
+      let(:empty_commit) { build(:commit, project: project, sha: '0000000000000000000000000000000000000000') }
+
+      it 'does not send RPC request' do
+        expect_any_instance_of(Gitaly::DiffService::Stub).not_to receive(:find_changed_paths)
+
+        returned_value = described_class.new(repository).find_changed_paths([empty_commit])
+
+        expect(returned_value).to eq([])
+      end
+    end
+
+    context 'when commit sha is not set' do
+      let(:empty_commit) { build(:commit, project: project, sha: nil) }
+
+      it 'does not send RPC request' do
+        expect_any_instance_of(Gitaly::DiffService::Stub).not_to receive(:find_changed_paths)
+
+        returned_value = described_class.new(repository).find_changed_paths([empty_commit])
+
+        expect(returned_value).to eq([])
       end
     end
   end
@@ -1070,6 +1106,24 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       end
 
       expect(signatures[large_signed_text][:signed_text].size).to eq(4971878)
+    end
+  end
+
+  describe '#get_patch_id' do
+    it 'returns patch_id of given revisions' do
+      expect(client.get_patch_id('HEAD~', 'HEAD')).to eq('45435e5d7b339dd76d939508c7687701d0c17fff')
+    end
+
+    context 'when one of the param is invalid' do
+      it 'raises an GRPC::InvalidArgument error' do
+        expect { client.get_patch_id('HEAD', nil) }.to raise_error(GRPC::InvalidArgument)
+      end
+    end
+
+    context 'when two revisions are the same' do
+      it 'raises an GRPC::FailedPrecondition error' do
+        expect { client.get_patch_id('HEAD', 'HEAD') }.to raise_error(GRPC::FailedPrecondition)
+      end
     end
   end
 end

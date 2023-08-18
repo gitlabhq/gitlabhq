@@ -52,6 +52,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:saved_replies, current_user)
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:service_desk_ticket)
+    push_frontend_feature_flag(:issues_list_drawer, project)
   end
 
   before_action only: [:index, :show] do
@@ -61,6 +62,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action only: [:index, :service_desk] do
     push_frontend_feature_flag(:or_issuable_queries, project)
     push_frontend_feature_flag(:frontend_caching, project&.group)
+    push_frontend_feature_flag(:new_graphql_users_autocomplete, project)
   end
 
   before_action only: :show do
@@ -71,6 +73,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:move_close_into_dropdown, project)
+    push_frontend_feature_flag(:action_cable_notes, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

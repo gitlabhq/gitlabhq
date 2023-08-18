@@ -7,19 +7,35 @@ describe('Image Viewer', () => {
   const DEFAULT_BLOB_DATA = {
     rawPath: 'some/image.png',
     name: 'image.png',
+    externalStorageUrl: '',
   };
 
-  const createComponent = () => {
-    wrapper = shallowMount(ImageViewer, { propsData: { blob: DEFAULT_BLOB_DATA } });
+  const createComponent = (blobData = DEFAULT_BLOB_DATA) => {
+    wrapper = shallowMount(ImageViewer, { propsData: { blob: blobData } });
   };
 
   const findImage = () => wrapper.find('[data-testid="image"]');
 
-  it('renders a Source Editor component', () => {
-    createComponent();
+  describe('When blob has externalStorageUrl', () => {
+    const externalStorageUrl = 'http://img.server.com/lfs-object/21/45/foo_bar';
 
-    expect(findImage().exists()).toBe(true);
-    expect(findImage().attributes('src')).toBe(DEFAULT_BLOB_DATA.rawPath);
-    expect(findImage().attributes('alt')).toBe(DEFAULT_BLOB_DATA.name);
+    it('renders a Source Editor component with externalStorageUrl', () => {
+      const blobData = { ...DEFAULT_BLOB_DATA, externalStorageUrl };
+      createComponent(blobData);
+
+      expect(findImage().exists()).toBe(true);
+      expect(findImage().attributes('src')).toBe(externalStorageUrl);
+      expect(findImage().attributes('alt')).toBe(DEFAULT_BLOB_DATA.name);
+    });
+  });
+
+  describe('When blob does not have an externalStorageUrl', () => {
+    it('renders a Source Editor component with rawPath', () => {
+      createComponent(DEFAULT_BLOB_DATA);
+
+      expect(findImage().exists()).toBe(true);
+      expect(findImage().attributes('src')).toBe(DEFAULT_BLOB_DATA.rawPath);
+      expect(findImage().attributes('alt')).toBe(DEFAULT_BLOB_DATA.name);
+    });
   });
 });

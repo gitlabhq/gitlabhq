@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Cherry-pick a Git commit **(FREE)**
+# Cherry-pick a Git commit **(FREE ALL)**
 
 In Git, you can *cherry-pick* a commit (a set of changes) from an existing branch,
 and apply those changes to another branch. Cherry-picks can help you:

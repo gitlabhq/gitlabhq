@@ -32,7 +32,7 @@ module Integrations
       help: -> { s_('DatadogIntegration|(Advanced) The full URL for your Datadog site.') }
 
     field :api_key,
-      type: 'password',
+      type: :password,
       title: -> { _('API key') },
       non_empty_password_title: -> { s_('ProjectService|Enter new API key') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current API key') },
@@ -48,7 +48,7 @@ module Integrations
 
     field :archive_trace_events,
       storage: :attribute,
-      type: 'checkbox',
+      type: :checkbox,
       title: -> { _('Logs') },
       checkbox_label: -> { _('Enable logs collection') },
       help: -> { s_('When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces.') }
@@ -73,7 +73,7 @@ module Integrations
       end
 
     field :datadog_tags,
-      type: 'textarea',
+      type: :textarea,
       title: -> { s_('DatadogIntegration|Tags') },
       placeholder: "tag:value\nanother_tag:value",
       help: -> do

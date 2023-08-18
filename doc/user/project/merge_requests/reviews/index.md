@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Merge request reviews **(FREE)**
+# Merge request reviews **(FREE ALL)**
 
 [Merge requests](../index.md) are the primary method of making changes to files in a
 GitLab project. [Create and submit a merge request](../creating_merge_requests.md)
@@ -159,7 +159,7 @@ If you have a review in progress, you can also add a comment from the **Overview
 
 ![New thread](img/mr_review_new_comment_v15_3.png)
 
-### Approval Rule information for Reviewers **(PREMIUM)**
+### Approval Rule information for Reviewers **(PREMIUM ALL)**
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
 displays the name of the matching [approval rule](../approvals/rules.md)
@@ -225,7 +225,7 @@ To update multiple project merge requests at the same time:
 1. Select the appropriate fields and their values from the sidebar.
 1. Select **Update all**.
 
-## Bulk edit merge requests at the group level **(PREMIUM)**
+## Bulk edit merge requests at the group level **(PREMIUM ALL)**
 
 Users with at least the Developer role can manage merge requests.
 

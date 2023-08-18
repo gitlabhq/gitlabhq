@@ -1,0 +1,10 @@
+- title: "Twitter OmniAuth login option is deprecated from self-managed GitLab"
+  removal_milestone: "17.0"
+  announcement_milestone: "16.3"
+  breaking_change: true
+  reporter: jessieay
+  stage: Manage
+  issue_url: https://gitlab.com/gitlab-com/Product/-/issues/11417
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Twitter OAuth 1.0a OmniAuth is deprecated and will be removed for self-managed GitLab instances in GitLab 17.0 due to low use and lack of gem support. Use [another supported OmniAuth provider](https://docs.gitlab.com/ee/integration/omniauth.html#supported-providers) instead.
+  documentation_url: https://docs.gitlab.com/ee/integration/twitter.html

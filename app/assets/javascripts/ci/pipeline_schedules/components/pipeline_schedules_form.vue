@@ -112,6 +112,7 @@ export default {
       cronTimezone: '',
       variables: [],
       schedule: {},
+      showVarValues: false,
     };
   },
   i18n: {
@@ -140,6 +141,8 @@ export default {
     scheduleFetchError: s__(
       'PipelineSchedules|An error occurred while trying to fetch the pipeline schedule.',
     ),
+    revealText: __('Reveal values'),
+    hideText: __('Hide values'),
   },
   typeOptions: {
     [VARIABLE_TYPE]: __('Variable'),
@@ -167,11 +170,24 @@ export default {
     getEnabledRefTypes() {
       return [REF_TYPE_BRANCHES, REF_TYPE_TAGS];
     },
+    filledVariables() {
+      return this.variables.filter((variable) => variable.key !== '' && !variable.empty);
+    },
     preparedVariablesUpdate() {
-      return this.variables.filter((variable) => variable.key !== '');
+      return this.filledVariables.map((variable) => {
+        return {
+          id: variable.id,
+          key: variable.key,
+          value: variable.value,
+          variableType: variable.variableType,
+          destroy: variable.destroy,
+        };
+      });
     },
     preparedVariablesCreate() {
-      return this.preparedVariablesUpdate.map((variable) => {
+      const vars = this.variables.filter((variable) => variable.key !== '');
+
+      return vars.map((variable) => {
         return {
           key: variable.key,
           value: variable.value,
@@ -186,6 +202,15 @@ export default {
       return this.editing
         ? this.$options.i18n.editScheduleBtnText
         : this.$options.i18n.createScheduleBtnText;
+    },
+    varSecurityBtnText() {
+      return this.showVarValues ? this.$options.i18n.hideText : this.$options.i18n.revealText;
+    },
+    hasExistingScheduleVariables() {
+      return this.schedule?.variables?.nodes.length > 0;
+    },
+    showVarSecurityBtn() {
+      return this.editing && this.hasExistingScheduleVariables;
     },
   },
   created() {
@@ -204,6 +229,7 @@ export default {
         key: '',
         value: '',
         destroy: false,
+        empty: true,
       });
     },
     setVariableAttribute(key, attribute, value) {
@@ -289,6 +315,14 @@ export default {
     setTimezone(timezone) {
       this.cronTimezone = timezone.identifier || '';
     },
+    displayHiddenChars(variable) {
+      return (
+        this.editing && this.hasExistingScheduleVariables && !this.showVarValues && !variable.empty
+      );
+    },
+    resetVariable(index) {
+      this.variables[index].empty = false;
+    },
   },
 };
 </script>
@@ -342,7 +376,7 @@ export default {
         />
       </gl-form-group>
       <!--Variable List-->
-      <gl-form-group :label="$options.i18n.variables">
+      <gl-form-group class="gl-mb-2" :label="$options.i18n.variables">
         <div
           v-for="(variable, index) in variables"
           :key="`var-${index}`"
@@ -372,10 +406,21 @@ export default {
               :class="$options.formElementClasses"
               data-testid="pipeline-form-ci-variable-key"
               data-qa-selector="ci_variable_key_field"
-              @change="addEmptyVariable()"
+              @change="addEmptyVariable(variable)"
             />
 
             <gl-form-textarea
+              v-if="displayHiddenChars(variable)"
+              value="*****************"
+              disabled
+              class="gl-mb-3 gl-h-7!"
+              :style="$options.textAreaStyle"
+              :no-resize="false"
+              data-testid="pipeline-form-ci-variable-hidden-value"
+            />
+
+            <gl-form-textarea
+              v-else
               v-model="variable.value"
               :placeholder="s__('CiVariables|Input variable value')"
               class="gl-mb-3 gl-h-7!"
@@ -383,6 +428,7 @@ export default {
               :no-resize="false"
               data-testid="pipeline-form-ci-variable-value"
               data-qa-selector="ci_variable_value_field"
+              @change="resetVariable(index)"
             />
 
             <template v-if="variables.length > 1">
@@ -406,6 +452,18 @@ export default {
           </div>
         </div>
       </gl-form-group>
+
+      <gl-button
+        v-if="showVarSecurityBtn"
+        class="gl-mb-5"
+        category="secondary"
+        variant="confirm"
+        data-testid="variable-security-btn"
+        @click="showVarValues = !showVarValues"
+      >
+        {{ varSecurityBtnText }}
+      </gl-button>
+
       <!--Activated-->
       <gl-form-checkbox id="schedule-active" v-model="activated" class="gl-mb-3">
         {{ $options.i18n.activated }}

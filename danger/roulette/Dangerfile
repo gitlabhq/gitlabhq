@@ -97,12 +97,8 @@ categories = roulette.prepare_categories(changes.keys - [:unknown])
 # Skip specialty reviews for stable branch MRs since they have already been merged to the default branch
 categories.subtract([:database, :ux, :analytics_instrumentation]) if stable_branch.valid_stable_branch?
 
-if changes.any?
-  random_roulette_spins = roulette.spin(nil, categories, timezone_experiment: false)
-
-  if categories.include?(:ux) # rubocop:disable Style/IfUnlessModifier
-    roulette.assign_pedroms_for_ux_wider_community_contribution(random_roulette_spins)
-  end
+if changes.any? || roulette.required_approvals.any?
+  random_roulette_spins = roulette.spin(nil, categories)
 
   rows = random_roulette_spins.map do |spin|
     markdown_row_for_spin(spin.category, spin)

@@ -43,6 +43,7 @@ module Integrations
       :external_wiki_url,
       :google_iap_service_account_json,
       :google_iap_audience_client_id,
+      :google_play_protected_refs,
       :group_confidential_mention_events,
       :group_mention_events,
       :incident_events,
@@ -102,10 +103,14 @@ module Integrations
       param_values = return_value[:integration]
 
       if param_values.is_a?(ActionController::Parameters)
-        if %w[update test].include?(action_name) && integration.chat? &&
-            param_values['webhook'] == BaseChatNotification::SECRET_MASK
+        if %w[update test].include?(action_name) && integration.chat?
+          param_values.delete('webhook') if param_values['webhook'] == BaseChatNotification::SECRET_MASK
 
-          param_values.delete('webhook')
+          if integration.try(:mask_configurable_channels?)
+            integration.event_channel_names.each do |channel|
+              param_values.delete(channel) if param_values[channel] == BaseChatNotification::SECRET_MASK
+            end
+          end
         end
 
         integration.secret_fields.each do |param|

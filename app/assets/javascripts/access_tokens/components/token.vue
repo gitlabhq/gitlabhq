@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import InputCopyToggleVisibility from '~/vue_shared/components/form/input_copy_toggle_visibility.vue';
 
@@ -20,6 +21,11 @@ export default {
       type: String,
       required: true,
     },
+    size: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     formInputGroupProps() {
@@ -39,6 +45,8 @@ export default {
       :form-input-group-props="formInputGroupProps"
       :value="token"
       :copy-button-title="copyButtonTitle"
+      readonly
+      :size="size"
     >
       <template #description>
         <slot name="input-description"></slot>

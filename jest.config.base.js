@@ -203,6 +203,7 @@ module.exports = (path, options = {}) => {
     '@gitlab/favicon-overlay',
     '@gitlab/cluster-client',
     'bootstrap-vue',
+    'gridstack',
     'three',
     'monaco-editor',
     'monaco-yaml',

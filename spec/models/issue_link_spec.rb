@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe IssueLink do
+RSpec.describe IssueLink, feature_category: :portfolio_management do
+  let_it_be(:project) { create(:project) }
+
   it_behaves_like 'issuable link' do
     let_it_be_with_reload(:issuable_link) { create(:issue_link) }
     let_it_be(:issuable) { create(:issue) }
@@ -14,46 +16,15 @@ RSpec.describe IssueLink do
     it { expect(described_class.issuable_type).to eq(:issue) }
   end
 
-  describe 'Scopes' do
-    let_it_be(:issue1) { create(:issue) }
-    let_it_be(:issue2) { create(:issue) }
+  describe '.issuable_name' do
+    it { expect(described_class.issuable_name).to eq('issue') }
+  end
 
-    describe '.for_source_issue' do
-      it 'includes linked issues for source issue' do
-        source_issue = create(:issue)
-        issue_link_1 = create(:issue_link, source: source_issue, target: issue1)
-        issue_link_2 = create(:issue_link, source: source_issue, target: issue2)
-
-        result = described_class.for_source_issue(source_issue)
-
-        expect(result).to contain_exactly(issue_link_1, issue_link_2)
-      end
-    end
-
-    describe '.for_target_issue' do
-      it 'includes linked issues for target issue' do
-        target_issue = create(:issue)
-        issue_link_1 = create(:issue_link, source: issue1, target: target_issue)
-        issue_link_2 = create(:issue_link, source: issue2, target: target_issue)
-
-        result = described_class.for_target_issue(target_issue)
-
-        expect(result).to contain_exactly(issue_link_1, issue_link_2)
-      end
-    end
-
-    describe '.for_issues' do
-      let_it_be(:issue) { create(:issue) }
-      let_it_be(:source_link) { create(:issue_link, source: issue, target: issue1) }
-      let_it_be(:target_link) { create(:issue_link, source: issue2, target: issue) }
-
-      it 'includes links when issue is source' do
-        expect(described_class.for_issues(issue, issue1)).to contain_exactly(source_link)
-      end
-
-      it 'includes links when issue is target' do
-        expect(described_class.for_issues(issue, issue2)).to contain_exactly(target_link)
-      end
-    end
+  it_behaves_like 'includes LinkableItem concern' do
+    let_it_be(:item) { create(:issue, project: project) }
+    let_it_be(:item1) { create(:issue, project: project) }
+    let_it_be(:item2) { create(:issue, project: project) }
+    let_it_be(:link_factory) { :issue_link }
+    let_it_be(:item_type) { 'issue' }
   end
 end

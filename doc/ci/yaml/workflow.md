@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD `workflow` keyword **(FREE)**
+# GitLab CI/CD `workflow` keyword **(FREE ALL)**
 
 Use the [`workflow`](index.md#workflow) keyword to control when pipelines are created.
 
@@ -15,12 +15,12 @@ for tags, but the workflow prevents tag pipelines, the job never runs.
 
 Some example `if` clauses for `workflow: rules`:
 
-| Example rules                                        | Details                                                   |
-|------------------------------------------------------|-----------------------------------------------------------|
-| `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'` | Control when merge request pipelines run.                 |
+| Example rules                                        | Details |
+|------------------------------------------------------|---------|
+| `if: '$CI_PIPELINE_SOURCE == "merge_request_event"'` | Control when merge request pipelines run. |
 | `if: '$CI_PIPELINE_SOURCE == "push"'`                | Control when both branch pipelines and tag pipelines run. |
-| `if: $CI_COMMIT_TAG`                                 | Control when tag pipelines run.                           |
-| `if: $CI_COMMIT_BRANCH`                              | Control when branch pipelines run.                        |
+| `if: $CI_COMMIT_TAG`                                 | Control when tag pipelines run. |
+| `if: $CI_COMMIT_BRANCH`                              | Control when branch pipelines run. |
 
 See the [common `if` clauses for `rules`](../jobs/job_control.md#common-if-clauses-for-rules) for more examples.
 
@@ -117,8 +117,8 @@ does not block triggered pipelines.
 
 ### Git Flow with merge request pipelines
 
-You can use `workflow: rules` as part of [Git Flow or similar strategies](../../topics/gitlab_flow.md)
-with merge request pipelines. With these rules, you can use [merge request pipeline features](../pipelines/merge_request_pipelines.md)
+You can use `workflow: rules` with merge request pipelines. With these rules,
+you can use [merge request pipeline features](../pipelines/merge_request_pipelines.md)
 with feature branches, while keeping long-lived branches to support multiple versions
 of your software.
 

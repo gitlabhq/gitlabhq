@@ -18,7 +18,9 @@ As a rough guideline, if you are using a [1k reference architecture](../referenc
 
 ## Scaling backups
 
-As the volume of GitLab data grows, the [backup command](#backup-command) takes longer to execute. At some point, the execution time becomes impractical. For example, it can take 24 hours or more.
+As the volume of GitLab data grows, the [backup command](#backup-command) takes longer to execute. [Backup options](#backup-options) such as [back up Git repositories concurrently](#back-up-git-repositories-concurrently) and [incremental repository backups](#incremental-repository-backups) can help to reduce execution time. At some point, the backup command becomes impractical by itself. For example, it can take 24 hours or more.
+
+In some cases, architecture changes may be warranted to allow backups to scale. If you are using a GitLab reference architecture, see [Back up and restore large reference architectures](backup_large_reference_architectures.md).
 
 For more information, see [alternative backup strategies](#alternative-backup-strategies).
 
@@ -27,6 +29,7 @@ For more information, see [alternative backup strategies](#alternative-backup-st
 - [PostgreSQL databases](#postgresql-databases)
 - [Git repositories](#git-repositories)
 - [Blobs](#blobs)
+- [Container Registry](#container-registry)
 - [Configuration files](#storing-configuration-files)
 - [Other data](#other-data)
 
@@ -79,6 +82,25 @@ GitLab stores blobs (or files) such as issue attachments or LFS objects into eit
   - Cloud based like Amazon S3 and Google Cloud Storage.
   - Hosted by you (like MinIO).
   - A Storage Appliance that exposes an Object Storage-compatible API.
+
+#### Object storage
+
+The [backup command](#backup-command) doesn't back up blobs that aren't stored on the file system. If you're using [object storage](../object_storage.md), be sure to enable backups with your object storage provider. For example, see:
+
+- [Amazon S3 backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/s3-backups.html)
+- [Google Cloud Storage Transfer Service](https://cloud.google.com/storage-transfer-service) and [Google Cloud Storage Object Versioning](https://cloud.google.com/storage/docs/object-versioning)
+
+### Container Registry
+
+[GitLab Container Registry](../packages/container_registry.md) storage can be configured in either:
+
+- The file system in a specific location.
+- An [Object Storage](../object_storage.md) solution. Object Storage solutions can be:
+  - Cloud based like Amazon S3 and Google Cloud Storage.
+  - Hosted by you (like MinIO).
+  - A Storage Appliance that exposes an Object Storage-compatible API.
+
+The backup command backs up registry data when they are stored in the default location on the file system.
 
 #### Object storage
 
@@ -684,7 +706,7 @@ if you see a `411 Length Required` error message after attempting to upload,
 you may need to downgrade the `aws_signature_version` value from the default
 value to `2`, [due to this issue](https://github.com/fog/fog-aws/issues/428).
 
-For installations from source:
+For self-compiled installations:
 
 1. Edit `home/git/gitlab/config/gitlab.yml`:
 
@@ -724,7 +746,7 @@ For installations from source:
          #   server_side_encryption_kms_key_id: 'arn:aws:kms:YOUR-KEY-ID-HERE'
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect
 
 If you're uploading your backups to S3, you should create a new
@@ -813,7 +835,7 @@ For the Linux package (Omnibus):
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect
 
-For installations from source:
+For self-compiled installations:
 
 1. Edit `home/git/gitlab/config/gitlab.yml`:
 
@@ -827,7 +849,7 @@ For installations from source:
          remote_directory: 'my.google.bucket'
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect
 
 ##### Using Azure Blob storage
@@ -867,7 +889,7 @@ For installations from source:
          remote_directory: '<AZURE BLOB CONTAINER>'
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect
 
 ::EndTabs
@@ -928,8 +950,8 @@ Because file system performance may affect overall GitLab performance,
 
 Don't set the following configuration keys to the same path:
 
-- `gitlab_rails['backup_path']` (`backup.path` for source installations).
-- `gitlab_rails['backup_upload_connection'].local_root` (`backup.upload.connection.local_root` for source installations).
+- `gitlab_rails['backup_path']` (`backup.path` for self-compiled installations).
+- `gitlab_rails['backup_upload_connection'].local_root` (`backup.upload.connection.local_root` for self-compiled installations).
 
 The `backup_path` configuration key sets the local location of the backup file. The `upload` configuration key is
 intended for use when the backup file is uploaded to a separate server, perhaps for archival purposes.
@@ -976,7 +998,7 @@ remaining after the failed upload attempt.
        remote_directory: 'gitlab_backups'
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs
@@ -1011,7 +1033,7 @@ setting.
      archive_permissions: 0644 # Makes the backup archives world-readable
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs
@@ -1102,7 +1124,7 @@ storage (for example, [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/user-
      keep_time: 604800
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source)
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs
@@ -1381,13 +1403,13 @@ after which users must reactivate 2FA.
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For installations from source, GitLab 14.1 and earlier:
+   For self-compiled installations, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
-   For installations from source, GitLab 14.2 and later:
+   For self-compiled installations, GitLab 14.2 and later:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -1434,13 +1456,13 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For installations from source, GitLab 14.1 and earlier:
+   For self-compiled installations, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
-   For installations from source, GitLab 14.2 and later:
+   For self-compiled installations, GitLab 14.2 and later:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -1483,13 +1505,13 @@ You may need to reconfigure or restart GitLab for the changes to take effect.
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For installations from source, GitLab 14.1 and earlier:
+   For self-compiled installations, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
-   For installations from source, GitLab 14.2 and later:
+   For self-compiled installations, GitLab 14.2 and later:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -1538,13 +1560,13 @@ You should verify that the secrets are the root cause before deleting any data.
    sudo gitlab-rails dbconsole --database main
    ```
 
-   For installations from source, GitLab 14.1 and earlier:
+   For self-compiled installations, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
-   For installations from source, GitLab 14.2 and later:
+   For self-compiled installations, GitLab 14.2 and later:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
@@ -1673,13 +1695,13 @@ Truncate the filenames in the `uploads` table:
    sudo gitlab-rails dbconsole
    ```
 
-   For installations from source, GitLab 14.2 and later:
+   For self-compiled installations, GitLab 14.2 and later:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production --database main
    ```
 
-   For installations from source, GitLab 14.1 and earlier:
+   For self-compiled installations, GitLab 14.1 and earlier:
 
    ```shell
    sudo -u git -H bundle exec rails dbconsole -e production

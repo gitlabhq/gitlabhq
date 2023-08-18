@@ -24,7 +24,7 @@ RSpec.describe 'Group Badges', feature_category: :groups_and_projects do
     page.within '.badge-settings' do
       wait_for_requests
 
-      rows = all('.card-body > div')
+      rows = all('.gl-card-body tbody tr')
       expect(rows.length).to eq 2
       expect(rows[0]).to have_content badge_1.link_url
       expect(rows[1]).to have_content badge_2.link_url
@@ -33,6 +33,7 @@ RSpec.describe 'Group Badges', feature_category: :groups_and_projects do
 
   context 'adding a badge', :js do
     it 'user can preview a badge' do
+      click_button 'Add badge'
       page.within '.badge-settings form' do
         fill_in 'badge-link-url', with: badge_link_url
         fill_in 'badge-image-url', with: badge_image_url
@@ -44,6 +45,7 @@ RSpec.describe 'Group Badges', feature_category: :groups_and_projects do
     end
 
     it do
+      click_button 'Add badge'
       page.within '.badge-settings' do
         fill_in 'badge-link-url', with: badge_link_url
         fill_in 'badge-image-url', with: badge_image_url
@@ -51,7 +53,7 @@ RSpec.describe 'Group Badges', feature_category: :groups_and_projects do
         click_button 'Add badge'
         wait_for_requests
 
-        within '.card-body' do
+        within '.gl-card-body' do
           expect(find('a')[:href]).to eq badge_link_url
           expect(find('a img')[:src]).to eq badge_image_url
         end
@@ -63,32 +65,35 @@ RSpec.describe 'Group Badges', feature_category: :groups_and_projects do
     it 'form is shown when clicking edit button in list' do
       page.within '.badge-settings' do
         wait_for_requests
-        rows = all('.card-body > div')
+        rows = all('.gl-card-body tbody tr')
         expect(rows.length).to eq 2
         rows[1].find('[aria-label="Edit"]').click
+      end
 
-        within 'form' do
-          expect(find('#badge-link-url').value).to eq badge_2.link_url
-          expect(find('#badge-image-url').value).to eq badge_2.image_url
-        end
+      page.within '.gl-modal' do
+        expect(find('#badge-link-url').value).to eq badge_2.link_url
+        expect(find('#badge-image-url').value).to eq badge_2.image_url
       end
     end
 
     it 'updates a badge when submitting the edit form' do
       page.within '.badge-settings' do
         wait_for_requests
-        rows = all('.card-body > div')
+        rows = all('.gl-card-body tbody tr')
         expect(rows.length).to eq 2
         rows[1].find('[aria-label="Edit"]').click
-        within 'form' do
-          fill_in 'badge-link-url', with: badge_link_url
-          fill_in 'badge-image-url', with: badge_image_url
+      end
 
-          click_button 'Save changes'
-          wait_for_requests
-        end
+      page.within '.gl-modal' do
+        fill_in 'badge-link-url', with: badge_link_url
+        fill_in 'badge-image-url', with: badge_image_url
 
-        rows = all('.card-body > div')
+        click_button 'Save changes'
+        wait_for_requests
+      end
+
+      page.within '.badge-settings' do
+        rows = all('.gl-card-body tbody tr')
         expect(rows.length).to eq 2
         expect(rows[1]).to have_content badge_link_url
       end
@@ -102,7 +107,7 @@ RSpec.describe 'Group Badges', feature_category: :groups_and_projects do
 
     it 'shows a modal when deleting a badge' do
       wait_for_requests
-      rows = all('.card-body > div')
+      rows = all('.gl-card-body tbody tr')
       expect(rows.length).to eq 2
 
       click_delete_button(rows[1])
@@ -112,14 +117,14 @@ RSpec.describe 'Group Badges', feature_category: :groups_and_projects do
 
     it 'deletes a badge when confirming the modal' do
       wait_for_requests
-      rows = all('.card-body > div')
+      rows = all('.gl-card-body tbody tr')
       expect(rows.length).to eq 2
       click_delete_button(rows[1])
 
       find('.modal .btn-danger').click
       wait_for_requests
 
-      rows = all('.card-body > div')
+      rows = all('.gl-card-body tbody tr')
       expect(rows.length).to eq 1
       expect(rows[0]).to have_content badge_1.link_url
     end

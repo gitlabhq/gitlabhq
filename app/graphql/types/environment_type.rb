@@ -36,6 +36,9 @@ module Types
     field :kubernetes_namespace, GraphQL::Types::String, null: true,
                                                  description: 'Kubernetes namespace of the environment.'
 
+    field :flux_resource_path, GraphQL::Types::String, null: true,
+                                                 description: 'Flux resource path of the environment.'
+
     field :created_at, Types::TimeType,
       description: 'When the environment was created.'
 

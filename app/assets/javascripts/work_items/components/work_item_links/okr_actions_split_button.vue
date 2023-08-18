@@ -1,7 +1,7 @@
 <script>
-import { GlDropdown, GlDropdownSectionHeader, GlDropdownItem, GlDropdownDivider } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 const objectiveActionItems = [
   {
@@ -29,10 +29,30 @@ export default {
   keyResultActionItems,
   objectiveActionItems,
   components: {
-    GlDropdown,
-    GlDropdownSectionHeader,
-    GlDropdownItem,
-    GlDropdownDivider,
+    GlDisclosureDropdown,
+  },
+  computed: {
+    objectiveDropdownItems() {
+      return {
+        name: __('Objective'),
+        items: this.$options.objectiveActionItems.map((item) => ({
+          text: item.title,
+          action: () => this.change(item),
+        })),
+      };
+    },
+    keyResultDropdownItems() {
+      return {
+        name: __('Key result'),
+        items: this.$options.keyResultActionItems.map((item) => ({
+          text: item.title,
+          action: () => this.change(item),
+        })),
+      };
+    },
+    dropdownItems() {
+      return [this.objectiveDropdownItems, this.keyResultDropdownItems];
+    },
   },
   methods: {
     change({ eventName }) {
@@ -43,24 +63,10 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown :text="__('Add')" size="small" right>
-    <gl-dropdown-section-header>{{ __('Objective') }}</gl-dropdown-section-header>
-    <gl-dropdown-item
-      v-for="item in $options.objectiveActionItems"
-      :key="item.eventName"
-      @click="change(item)"
-    >
-      {{ item.title }}
-    </gl-dropdown-item>
-
-    <gl-dropdown-divider />
-    <gl-dropdown-section-header>{{ __('Key result') }}</gl-dropdown-section-header>
-    <gl-dropdown-item
-      v-for="item in $options.keyResultActionItems"
-      :key="item.eventName"
-      @click="change(item)"
-    >
-      {{ item.title }}
-    </gl-dropdown-item>
-  </gl-dropdown>
+  <gl-disclosure-dropdown
+    :toggle-text="__('Add')"
+    size="small"
+    placement="right"
+    :items="dropdownItems"
+  />
 </template>

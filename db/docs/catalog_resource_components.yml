@@ -1,0 +1,7 @@
+table_name: catalog_resource_components
+feature_categories:
+- pipeline_composition
+description: CI component available in the CI Catalog
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127775
+milestone: '16.3'
+gitlab_schema: gitlab_main

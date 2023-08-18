@@ -96,7 +96,7 @@ export default {
         },
         {
           value: KEY_CUSTOM,
-          text: s__('PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more.%{linkEnd})'),
+          text: s__('PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more%{linkEnd}.)'),
           link: this.cronSyntaxUrl,
         },
       ];
@@ -168,9 +168,7 @@ export default {
       >
         <gl-sprintf v-if="option.link" :message="option.text">
           <template #link="{ content }">
-            <gl-link :href="option.link" target="_blank" class="gl-font-sm">
-              {{ content }}
-            </gl-link>
+            <gl-link :href="option.link" target="_blank" class="gl-font-sm">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
 

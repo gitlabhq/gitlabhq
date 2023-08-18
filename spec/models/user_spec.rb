@@ -124,6 +124,9 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to delegate_method(:organization).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:organization=).to(:user_detail).with_arguments(:args).allow_nil }
+
+    it { is_expected.to delegate_method(:email_reset_offered_at).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:email_reset_offered_at=).to(:user_detail).with_arguments(:args).allow_nil }
   end
 
   describe 'associations' do
@@ -4076,32 +4079,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user.following?(followee)).to be_falsey
     end
-
-    context 'when disable_follow_users feature flag is off' do
-      before do
-        stub_feature_flags(disable_follow_users: false)
-      end
-
-      it 'follows user even if user disabled following' do
-        user = create(:user)
-        user.enabled_following = false
-
-        followee = create(:user)
-
-        expect(user.follow(followee)).to be_truthy
-        expect(user.following?(followee)).to be_truthy
-      end
-
-      it 'follows user even if followee user disabled following' do
-        user = create(:user)
-
-        followee = create(:user)
-        followee.enabled_following = false
-
-        expect(user.follow(followee)).to be_truthy
-        expect(user.following?(followee)).to be_truthy
-      end
-    end
   end
 
   describe '#unfollow' do
@@ -4148,15 +4125,11 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be(:user) { create(:user) }
     let_it_be(:followee) { create(:user) }
 
-    where(:user_enabled_following, :followee_enabled_following, :feature_flag_status, :result) do
-      true  | true  | false | true
-      true  | false | false | true
-      true  | true  | true  | true
-      true  | false | true  | false
-      false | true  | false | true
-      false | true  | true  | false
-      false | false | false | true
-      false | false | true  | false
+    where(:user_enabled_following, :followee_enabled_following, :result) do
+      true  | true  | true
+      true  | false | false
+      false | true  | false
+      false | false | false
     end
 
     with_them do
@@ -4164,7 +4137,6 @@ RSpec.describe User, feature_category: :user_profile do
         user.enabled_following = user_enabled_following
         followee.enabled_following = followee_enabled_following
         followee.save!
-        stub_feature_flags(disable_follow_users: feature_flag_status)
       end
 
       it { expect(user.following_users_allowed?(followee)).to eq result }
@@ -7024,31 +6996,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns false when ignore_dismissal_earlier_than is later than dismissed_at' do
         expect(user.dismissed_callout?(feature_name: feature_name, ignore_dismissal_earlier_than: 3.months.ago)).to eq false
-      end
-    end
-  end
-
-  describe '#dismissed_callout_before?' do
-    let_it_be(:user, refind: true) { create(:user) }
-    let_it_be(:feature_name) { Users::Callout.feature_names.each_key.first }
-
-    context 'when no callout dismissal record exists' do
-      it 'returns false' do
-        expect(user.dismissed_callout_before?(feature_name, 1.day.ago)).to eq false
-      end
-    end
-
-    context 'when dismissed callout exists' do
-      before_all do
-        create(:callout, user: user, feature_name: feature_name, dismissed_at: 4.months.ago)
-      end
-
-      it 'returns false when dismissed_before is earlier than dismissed_at' do
-        expect(user.dismissed_callout_before?(feature_name, 6.months.ago)).to eq false
-      end
-
-      it 'returns true when dismissed_before is later than dismissed_at' do
-        expect(user.dismissed_callout_before?(feature_name, 3.months.ago)).to eq true
       end
     end
   end

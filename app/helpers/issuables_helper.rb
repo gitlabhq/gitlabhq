@@ -251,9 +251,16 @@ module IssuablesHelper
   def issue_only_initial_data(issuable)
     return {} unless issuable.is_a?(Issue)
 
-    {
+    data = {
+      authorId: issuable.author.id,
+      authorName: issuable.author.name,
+      authorUsername: issuable.author.username,
+      authorWebUrl: url_for(user_path(issuable.author)),
+      createdAt: issuable.created_at.to_time.iso8601,
       hasClosingMergeRequest: issuable.merge_requests_count(current_user) != 0,
+      isFirstContribution: issuable.first_contribution?,
       issueType: issuable.issue_type,
+      serviceDeskReplyTo: issuable.present(current_user: current_user).service_desk_reply_to,
       zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
       sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
       iid: issuable.iid.to_s,
@@ -261,6 +268,16 @@ module IssuablesHelper
       canCreateIncident: create_issue_type_allowed?(issuable.project, :incident),
       **incident_only_initial_data(issuable)
     }
+
+    data.tap do |d|
+      if issuable.duplicated? && can?(current_user, :read_issue, issuable.duplicated_to)
+        d[:duplicatedToIssueUrl] = url_for([issuable.duplicated_to.project, issuable.duplicated_to, { only_path: false }])
+      end
+
+      if issuable.moved? && can?(current_user, :read_issue, issuable.moved_to)
+        d[:movedToIssueUrl] = url_for([issuable.moved_to.project, issuable.moved_to, { only_path: false }])
+      end
+    end
   end
 
   def incident_only_initial_data(issue)
@@ -363,16 +380,6 @@ module IssuablesHelper
       [_("Open"), "issues"]
     else
       [_("Closed"), "issue-closed"]
-    end
-  end
-
-  def hidden_issuable_icon(issuable)
-    title = format(
-      _('This %{issuable} is hidden because its author has been banned'),
-      issuable: issuable.is_a?(Issue) ? _('issue') : _('merge request')
-    )
-    content_tag(:span, class: 'has-tooltip', title: title) do
-      sprite_icon('spam', css_class: 'gl-vertical-align-text-bottom')
     end
   end
 

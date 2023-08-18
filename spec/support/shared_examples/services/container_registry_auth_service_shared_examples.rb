@@ -58,6 +58,12 @@ RSpec.shared_examples 'with auth_type' do
   let(:current_params) { super().merge(auth_type: :foo) }
 
   it { expect(payload['auth_type']).to eq('foo') }
+
+  it "contains the auth_type as part of the encoded user information in the payload" do
+    user_info = decode_user_info_from_payload(payload)
+
+    expect(user_info["token_type"]).to eq("foo")
+  end
 end
 
 RSpec.shared_examples 'a browsable' do
@@ -971,7 +977,16 @@ RSpec.shared_examples 'a container registry auth service' do
           let(:authentication_abilities) { [:read_container_image] }
 
           it_behaves_like 'an authenticated'
+
           it { expect(payload['auth_type']).to eq('deploy_token') }
+
+          it "has encoded user information in the payload" do
+            user_info = decode_user_info_from_payload(payload)
+
+            expect(user_info["token_type"]).to eq('deploy_token')
+            expect(user_info["username"]).to eq(deploy_token.username)
+            expect(user_info["deploy_token_id"]).to eq(deploy_token.id)
+          end
         end
       end
 
@@ -1198,6 +1213,15 @@ RSpec.shared_examples 'a container registry auth service' do
         it_behaves_like 'a pushable'
         it_behaves_like 'container repository factory'
       end
+
+      it "has encoded user information in the payload" do
+        user_info = decode_user_info_from_payload(payload)
+
+        expect(user_info["username"]).to eq(current_user.username)
+        expect(user_info["user_id"]).to eq(current_user.id)
+      end
+
+      it_behaves_like 'with auth_type'
     end
   end
 
@@ -1292,5 +1316,9 @@ RSpec.shared_examples 'a container registry auth service' do
         expect(payload).to include('access' => access)
       end
     end
+  end
+
+  def decode_user_info_from_payload(payload)
+    JWT.decode(payload["user"], nil, false)[0]["user_info"]
   end
 end

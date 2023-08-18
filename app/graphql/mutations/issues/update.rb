@@ -6,6 +6,7 @@ module Mutations
       graphql_name 'UpdateIssue'
 
       include CommonMutationArguments
+      include ValidateTimeEstimate
 
       argument :title, GraphQL::Types::String,
                required: false,
@@ -54,9 +55,7 @@ module Mutations
           raise Gitlab::Graphql::Errors::ArgumentError, 'labelIds is mutually exclusive with any of addLabelIds or removeLabelIds'
         end
 
-        if !time_estimate.nil? && Gitlab::TimeTrackingFormatter.parse(time_estimate, keep_zero: true).nil?
-          raise Gitlab::Graphql::Errors::ArgumentError, 'timeEstimate must be formatted correctly, for example `1h 30m`'
-        end
+        validate_time_estimate(time_estimate)
 
         super
       end

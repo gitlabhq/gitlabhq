@@ -8,6 +8,7 @@ import {
   GlLink,
   GlButton,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { s__ } from '~/locale';
 
@@ -74,7 +75,6 @@ export default {
             v-gl-tooltip:tooltipcontainer
             name="cluster[enabled]"
             class="gl-mb-0 js-project-feature-toggle"
-            data-qa-selector="integration_status_toggle"
             aria-describedby="toggleCluster"
             :disabled="!editable"
             :label="$options.i18n.toggleLabel"
@@ -111,7 +111,6 @@ export default {
         id="cluster_base_domain"
         v-model="baseDomainField"
         name="cluster[base_domain]"
-        data-qa-selector="base_domain_field"
         class="col-md-6"
         type="text"
       />
@@ -144,7 +143,6 @@ export default {
         type="submit"
         :disabled="!canSubmit"
         :aria-disabled="!canSubmit"
-        data-qa-selector="save_changes_button"
         >{{ s__('ClusterIntegration|Save changes') }}</gl-button
       >
     </div>

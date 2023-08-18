@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Notification emails **(FREE)**
+# Notification emails **(FREE ALL)**
 
 > - Enhanced email styling [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78604) in GitLab 14.9 [with a feature flag](../../administration/feature_flags.md) named `enhanced_notify_css`. Disabled by default.
 > - Enhanced email styling [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 14.9.
@@ -199,6 +199,8 @@ Users are notified of the following events:
 | Two-factor authentication disabled       | User            | Security email, always sent.                                                                                                            |
 | User added to group                      | User            | Sent when user is added to group.                                                                                                       |
 | User added to project                    | User            | Sent when user is added to project.                                                                                                     |
+| Group access expired                     | Group members   | Sent when user's access to a group expires in seven days. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3._                                                                                 |
+| Project access expired                   | Project members | Sent when user's access to a project expires in seven days. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3._                                                                                                   |
 
 ## Notifications on issues, merge requests, and epics
 
@@ -331,6 +333,13 @@ The participants are:
 - Authors of comments on the design.
 - Anyone that is [mentioned](../discussions/index.md#mentions) in a comment on the design.
 
+## Notifications on group or project access expiration
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3.
+
+GitLab sends an email notification if a user's access to a group or project expires in seven days.
+This reminds group or project members to extend their access duration if they want to.
+
 ## Opt out of all GitLab emails
 
 If you no longer wish to receive any email notifications:
@@ -389,7 +398,7 @@ For example, an email with the reason `assigned` has this sentence in the footer
 
 > You are receiving this email because you have been assigned an item on \<configured GitLab hostname>.
 
-#### On-call alerts notifications **(PREMIUM)**
+#### On-call alerts notifications **(PREMIUM ALL)**
 
 An [on-call alert](../../operations/incident_management/oncall_schedules.md)
 notification email can have one of [the alert's](../../operations/incident_management/alerts.md) statuses:
@@ -399,7 +408,7 @@ notification email can have one of [the alert's](../../operations/incident_manag
 - `alert_resolved`
 - `alert_ignored`
 
-#### Incident escalation notifications **(PREMIUM)**
+#### Incident escalation notifications **(PREMIUM ALL)**
 
 An [incident escalation](../../operations/incident_management/escalation_policies.md)
 notification email can have one of [the incident's](../../operations/incident_management/incidents.md) status:
@@ -427,3 +436,9 @@ current_user = User.first
 recipients = NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: "push_to"); recipients.count
 recipients.each { |notify| puts notify.user.username }
 ```
+
+### Notifications about failed pipeline that doesn't exist
+
+If you receive notifications (through email or Slack) regarding a failed pipeline that no longer
+exists, double-check to see if you have any duplicate GitLab instances that could have triggered the
+message.

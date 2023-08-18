@@ -511,6 +511,9 @@ Settings.cron_jobs['import_export_project_cleanup_worker']['job_class'] = 'Impor
 Settings.cron_jobs['ci_archive_traces_cron_worker'] ||= {}
 Settings.cron_jobs['ci_archive_traces_cron_worker']['cron'] ||= '17 * * * *'
 Settings.cron_jobs['ci_archive_traces_cron_worker']['job_class'] = 'Ci::ArchiveTracesCronWorker'
+Settings.cron_jobs['members_expiring_worker'] ||= {}
+Settings.cron_jobs['members_expiring_worker']['cron'] ||= '0 1 * * *'
+Settings.cron_jobs['members_expiring_worker']['job_class'] = 'Members::ExpiringWorker'
 Settings.cron_jobs['remove_expired_members_worker'] ||= {}
 Settings.cron_jobs['remove_expired_members_worker']['cron'] ||= '10 0 * * *'
 Settings.cron_jobs['remove_expired_members_worker']['job_class'] = 'RemoveExpiredMembersWorker'
@@ -661,6 +664,9 @@ Settings.cron_jobs['inactive_projects_deletion_cron_worker']['job_class'] = 'Pro
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker'] ||= {}
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['loose_foreign_keys_cleanup_worker']['job_class'] = 'LooseForeignKeys::CleanupWorker'
+Settings.cron_jobs['batched_git_ref_updates_cleanup_scheduler_worker'] ||= {}
+Settings.cron_jobs['batched_git_ref_updates_cleanup_scheduler_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['batched_git_ref_updates_cleanup_scheduler_worker']['job_class'] = 'BatchedGitRefUpdates::CleanupSchedulerWorker'
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker'] ||= {}
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['cron'] ||= '@daily'
 Settings.cron_jobs['ci_runner_versions_reconciliation_worker']['job_class'] = 'Ci::Runners::ReconcileExistingRunnerVersionsCronWorker'
@@ -682,6 +688,9 @@ Settings.cron_jobs['global_metrics_update_worker']['job_class'] ||= 'Metrics::Gl
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker'] ||= {}
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['cron'] ||= '*/6 * * * *'
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['job_class'] = 'ObjectStorage::DeleteStaleDirectUploadsWorker'
+Settings.cron_jobs['service_desk_custom_email_verification_cleanup'] ||= {}
+Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['cron'] ||= '*/2 * * * *'
+Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['job_class'] = 'ServiceDesk::CustomEmailVerificationCleanupWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -783,6 +792,9 @@ Gitlab.ee do
   Settings.cron_jobs['search_index_curation_worker'] ||= {}
   Settings.cron_jobs['search_index_curation_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_index_curation_worker']['job_class'] ||= 'Search::IndexCurationWorker'
+  Settings.cron_jobs['pause_control_resume_worker'] ||= {}
+  Settings.cron_jobs['pause_control_resume_worker']['cron'] ||= '*/5 * * * *'
+  Settings.cron_jobs['pause_control_resume_worker']['job_class'] ||= 'PauseControl::ResumeWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= {}
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
@@ -869,6 +881,9 @@ Gitlab.ee do
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker'] ||= {}
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['cron'] ||= "0 */6 * * *"
     Settings.cron_jobs['gitlab_subscriptions_schedule_refresh_seats_worker']['job_class'] = 'GitlabSubscriptions::ScheduleRefreshSeatsWorker'
+    Settings.cron_jobs['click_house_events_sync_worker'] ||= {}
+    Settings.cron_jobs['click_house_events_sync_worker']['cron'] ||= "*/3 * * * *"
+    Settings.cron_jobs['click_house_events_sync_worker']['job_class'] = 'ClickHouse::EventsSyncWorker'
   end
 end
 
@@ -921,6 +936,15 @@ Settings.gitlab_kas['internal_url'] ||= 'grpc://localhost:8153'
 Gitlab.ee do
   Settings['suggested_reviewers'] ||= {}
   Settings.suggested_reviewers['secret_file'] ||= Rails.root.join('.gitlab_suggested_reviewers_secret')
+end
+
+#
+# Zoekt credentials
+#
+Gitlab.ee do
+  Settings['zoekt'] ||= {}
+  Settings.zoekt['username_file'] ||= Rails.root.join('.gitlab_zoekt_username')
+  Settings.zoekt['password_file'] ||= Rails.root.join('.gitlab_zoekt_password')
 end
 
 #

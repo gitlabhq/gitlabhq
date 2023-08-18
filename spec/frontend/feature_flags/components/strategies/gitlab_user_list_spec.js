@@ -1,6 +1,7 @@
 import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Api from '~/api';
 import GitlabUserList from '~/feature_flags/components/strategies/gitlab_user_list.vue';

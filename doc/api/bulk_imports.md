@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group and project migration by direct transfer API **(FREE)**
+# Group and project migration by direct transfer API **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64335) in GitLab 14.1.
 > - Project migration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
@@ -43,9 +43,10 @@ POST /bulk_imports
 | `entities`                        | Array  | yes      | List of entities to import. |
 | `entities[source_type]`           | String | yes      | Source entity type. Valid values are `group_entity` (GitLab 14.2 and later) and `project_entity` (GitLab 15.11 and later). |
 | `entities[source_full_path]`      | String | yes      | Source full path of the entity to import. |
-| `entities[destination_name]`      | String | yes      | Deprecated: Use :destination_slug instead. Destination slug for the entity. |
 | `entities[destination_slug]`      | String | yes      | Destination slug for the entity. |
+| `entities[destination_name]`      | String | no       | Deprecated: Use `destination_slug` instead. Destination slug for the entity. |
 | `entities[destination_namespace]` | String | yes      | Destination namespace for the entity. |
+| `entities[migrate_projects]`      | Boolean | no      | Also import all nested projects of the group (if `source_type` is `group_entity`). Defaults to `true`. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports" \

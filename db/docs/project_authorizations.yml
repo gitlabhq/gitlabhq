@@ -8,4 +8,4 @@ feature_categories:
 description: Stores maximal access to the project per user
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6839
 milestone: '8.14'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell

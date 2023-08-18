@@ -124,41 +124,6 @@ RSpec.describe Emails::Projects do
       end
     end
 
-    context 'with gitlab alerting rule' do
-      let_it_be(:prometheus_alert) { create(:prometheus_alert, project: project) }
-      let_it_be(:environment) { prometheus_alert.environment }
-
-      let(:alert) { create(:alert_management_alert, :prometheus, :from_payload, payload: payload, project: project) }
-      let(:title) { "#{prometheus_alert.title} #{prometheus_alert.computed_operator} #{prometheus_alert.threshold}" }
-
-      before do
-        payload['labels'] = {
-          'gitlab_alert_id' => prometheus_alert.prometheus_metric_id,
-          'alertname' => prometheus_alert.title
-        }
-      end
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like 'a user cannot unsubscribe through footer link'
-      it_behaves_like 'shows the incident issues url'
-
-      it 'has expected subject' do
-        is_expected.to have_subject("#{project.name} | Alert: #{environment.name}: #{title} for 5 minutes")
-      end
-
-      it 'has expected content' do
-        is_expected.to have_body_text('An alert has been triggered')
-        is_expected.to have_body_text(project.full_path)
-        is_expected.to have_body_text(alert.details_url)
-        is_expected.to have_body_text('Environment:')
-        is_expected.to have_body_text(environment.name)
-        is_expected.to have_body_text('Metric:')
-        is_expected.to have_body_text(prometheus_alert.full_query)
-        is_expected.not_to have_body_text('Description:')
-      end
-    end
-
     context 'resolved' do
       let_it_be(:alert) { create(:alert_management_alert, :resolved, project: project) }
 

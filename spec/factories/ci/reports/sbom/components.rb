@@ -9,12 +9,14 @@ FactoryBot.define do
 
     transient do
       purl_type { 'npm' }
+      namespace { nil }
     end
 
     purl do
       ::Sbom::PackageUrl.new(
         type: purl_type,
         name: name,
+        namespace: namespace,
         version: version
       ).to_s
     end

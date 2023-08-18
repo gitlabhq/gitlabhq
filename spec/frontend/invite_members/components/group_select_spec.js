@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
+import axios from 'axios';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getGroups } from '~/api/groups_api';
 import GroupSelect from '~/invite_members/components/group_select.vue';
@@ -49,16 +50,23 @@ describe('GroupSelect', () => {
       await waitForPromises();
       getGroups.mockClear();
       getGroups.mockReturnValueOnce(new Promise(() => {}));
-      findListbox().vm.$emit('search', group1.name);
+      findListbox().vm.$emit('search', group1.full_name);
       await nextTick();
     });
 
     it('calls the API', () => {
-      expect(getGroups).toHaveBeenCalledWith(group1.name, {
-        exclude_internal: true,
-        active: true,
-        order_by: 'similarity',
-      });
+      expect(getGroups).toHaveBeenCalledWith(
+        group1.full_name,
+        {
+          exclude_internal: true,
+          active: true,
+          order_by: 'similarity',
+        },
+        undefined,
+        {
+          signal: expect.any(AbortSignal),
+        },
+      );
     });
 
     it('displays loading icon while waiting for API call to resolve', () => {
@@ -182,7 +190,33 @@ describe('GroupSelect', () => {
 
           expect(wrapper.emitted('error')).toEqual([[GroupSelect.i18n.errorMessage]]);
         });
+
+        it('does not emit `error` event if error is from request cancellation', async () => {
+          createComponent();
+          await waitForPromises();
+
+          getGroups.mockRejectedValueOnce(new axios.Cancel());
+
+          findListbox().vm.$emit('bottom-reached');
+          await waitForPromises();
+
+          expect(wrapper.emitted('error')).toEqual(undefined);
+        });
       });
+    });
+  });
+
+  describe('when multiple API calls are in-flight', () => {
+    it('aborts the first API call and resolves second API call', async () => {
+      const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+
+      createComponent();
+      await waitForPromises();
+
+      findListbox().vm.$emit('search', group1.full_name);
+
+      expect(abortSpy).toHaveBeenCalledTimes(1);
+      expect(wrapper.emitted('error')).toEqual(undefined);
     });
   });
 });

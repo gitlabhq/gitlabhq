@@ -12,7 +12,9 @@ import { get } from 'lodash';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
 import { createAlert } from '~/alert';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import { fetchPolicies } from '~/lib/graphql';
 import Tracking from '~/tracking';
+import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import DeleteImage from '../components/delete_image.vue';
@@ -32,6 +34,7 @@ import {
   SETTINGS_TEXT,
 } from '../constants/index';
 import getContainerRepositoriesDetails from '../graphql/queries/get_container_repositories_details.query.graphql';
+import { getPageParams, getNextPageParams, getPreviousPageParams } from '../utils';
 
 export default {
   name: 'RegistryListPage',
@@ -61,6 +64,7 @@ export default {
     GlSkeletonLoader,
     RegistryHeader,
     DeleteImage,
+    PersistedPagination,
     PersistedSearch,
   },
   directives: {
@@ -87,6 +91,7 @@ export default {
         return !this.fetchBaseQuery;
       },
       query: getContainerRepositoriesQuery,
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       variables() {
         return this.queryVariables;
       },
@@ -109,6 +114,7 @@ export default {
         return !this.fetchAdditionalDetails;
       },
       query: getContainerRepositoriesDetails,
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       variables() {
         return this.queryVariables;
       },
@@ -133,6 +139,7 @@ export default {
       mutationLoading: false,
       fetchBaseQuery: false,
       fetchAdditionalDetails: false,
+      pageParams: {},
     };
   },
   computed: {
@@ -158,6 +165,7 @@ export default {
         fullPath: this.config.isGroupPage ? this.config.groupPath : this.config.projectPath,
         isGroupPage: this.config.isGroupPage,
         first: GRAPHQL_PAGE_SIZE,
+        ...this.pageParams,
       };
     },
     tracking() {
@@ -193,54 +201,18 @@ export default {
       this.deleteAlertType = null;
       this.itemToDelete = {};
     },
-    updateQuery(_, { fetchMoreResult }) {
-      return fetchMoreResult;
+    fetchNextPage() {
+      this.pageParams = getNextPageParams(this.pageInfo?.endCursor);
     },
-    async fetchNextPage() {
-      if (this.pageInfo?.hasNextPage) {
-        const variables = {
-          after: this.pageInfo?.endCursor,
-          first: GRAPHQL_PAGE_SIZE,
-        };
-
-        this.$apollo.queries.baseImages.fetchMore({
-          variables,
-          updateQuery: this.updateQuery,
-        });
-
-        await this.$nextTick();
-
-        this.$apollo.queries.additionalDetails.fetchMore({
-          variables,
-          updateQuery: this.updateQuery,
-        });
-      }
-    },
-    async fetchPreviousPage() {
-      if (this.pageInfo?.hasPreviousPage) {
-        const variables = {
-          first: null,
-          before: this.pageInfo?.startCursor,
-          last: GRAPHQL_PAGE_SIZE,
-        };
-        this.$apollo.queries.baseImages.fetchMore({
-          variables,
-          updateQuery: this.updateQuery,
-        });
-
-        await this.$nextTick();
-
-        this.$apollo.queries.additionalDetails.fetchMore({
-          variables,
-          updateQuery: this.updateQuery,
-        });
-      }
+    fetchPreviousPage() {
+      this.pageParams = getPreviousPageParams(this.pageInfo?.startCursor);
     },
     startDelete() {
       this.track('confirm_delete');
       this.mutationLoading = true;
     },
-    handleSearchUpdate({ sort, filters }) {
+    handleSearchUpdate({ sort, filters, pageInfo }) {
+      this.pageParams = getPageParams(pageInfo);
       this.sorting = sort;
 
       const search = filters.find((i) => i.type === FILTERED_SEARCH_TERM);
@@ -346,11 +318,8 @@ export default {
             v-if="images.length"
             :images="images"
             :metadata-loading="$apollo.queries.additionalDetails.loading"
-            :page-info="pageInfo"
             :expiration-policy="config.expirationPolicy"
             @delete="deleteImage"
-            @prev-page="fetchPreviousPage"
-            @next-page="fetchNextPage"
           />
 
           <gl-empty-state
@@ -369,6 +338,15 @@ export default {
           <group-empty-state v-else />
         </template>
       </template>
+
+      <div v-if="!mutationLoading" class="gl-display-flex gl-justify-content-center">
+        <persisted-pagination
+          class="gl-mt-3"
+          :pagination="pageInfo"
+          @prev="fetchPreviousPage"
+          @next="fetchNextPage"
+        />
+      </div>
 
       <delete-image
         :id="itemToDelete.id"

@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Project remote mirrors API **(FREE)**
+# Project remote mirrors API **(FREE ALL)**
 
 [Push mirrors](../user/project/repository/mirror/push.md)
 defined on a project's repository settings are called "remote mirrors". You

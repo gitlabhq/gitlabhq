@@ -76,12 +76,13 @@ eslint-report.html
 /.gitlab_pages_secret
 /.gitlab_kas_secret
 /.gitlab_suggested_reviewers_secret
+/.gitlab_zoekt_username
+/.gitlab_zoekt_password
 /webpack-report/
 /crystalball/
 /test_results/
 /deprecations/
 /knapsack/
-/query_recorder/
 /rspec_flaky/
 /rspec/
 /locale/**/LC_MESSAGES

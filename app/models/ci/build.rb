@@ -3,8 +3,8 @@
 module Ci
   class Build < Ci::Processable
     prepend Ci::BulkInsertableTags
-    include Ci::Metadatable
     include Ci::Contextable
+    include Ci::Deployable
     include TokenAuthenticatable
     include AfterCommitQueue
     include Presentable
@@ -34,7 +34,6 @@ module Ci
 
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
-    has_one :deployment, as: :deployable, class_name: 'Deployment', inverse_of: :deployable
     has_one :pending_state, class_name: 'Ci::BuildPendingState', foreign_key: :build_id, inverse_of: :build
     has_one :queuing_entry, class_name: 'Ci::PendingBuild', foreign_key: :build_id, inverse_of: :build
     has_one :runtime_metadata, class_name: 'Ci::RunningBuild', foreign_key: :build_id, inverse_of: :build
@@ -158,16 +157,9 @@ module Ci
         .includes(:metadata, :job_artifacts_metadata)
     end
 
-    scope :with_project_and_metadata, -> do
-      if Feature.enabled?(:non_public_artifacts, type: :development)
-        joins(:metadata).includes(:metadata).preload(:project)
-      end
-    end
-
     scope :with_artifacts_not_expired, -> { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.current) }
     scope :with_pipeline_locked_artifacts, -> { joins(:pipeline).where('pipeline.locked': Ci::Pipeline.lockeds[:artifacts_locked]) }
     scope :last_month, -> { where('created_at > ?', Date.today - 1.month) }
-    scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
     scope :scheduled_actions, -> { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
     scope :ref_protected, -> { where(protected: true) }
     scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where("#{quoted_table_name}.id = #{Ci::BuildTraceChunk.quoted_table_name}.build_id").select(1)) }
@@ -327,7 +319,6 @@ module Ci
 
       after_transition any => [:success] do |build|
         build.run_after_commit do
-          BuildSuccessWorker.perform_async(id)
           PagesWorker.perform_async(:deploy, id) if build.pages_generator?
         end
       end
@@ -343,18 +334,6 @@ module Ci
           rescue Gitlab::Access::AccessDeniedError => e
             Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{e}"
           end
-        end
-      end
-
-      # Synchronize Deployment Status
-      # Please note that the data integirty is not assured because we can't use
-      # a database transaction due to DB decomposition.
-      after_transition do |build, transition|
-        next if transition.loopback?
-        next unless build.project
-
-        build.run_after_commit do
-          build.deployment&.sync_status_with(build)
         end
       end
     end
@@ -400,10 +379,6 @@ module Ci
         .fabricate!
     end
 
-    def other_manual_actions
-      pipeline.manual_actions.reject { |action| action.name == name }
-    end
-
     def other_scheduled_actions
       pipeline.scheduled_actions.reject { |action| action.name == name }
     end
@@ -426,15 +401,6 @@ module Ci
 
     def playable?
       action? && !archived? && (manual? || scheduled? || retryable?)
-    end
-
-    def outdated_deployment?
-      strong_memoize(:outdated_deployment) do
-        deployment_job? &&
-          incomplete? &&
-          project.ci_forward_deployment_enabled? &&
-          deployment&.older_than_last_successful_deployment?
-      end
     end
 
     def schedulable?
@@ -478,92 +444,8 @@ module Ci
       Gitlab::Ci::Build::Prerequisite::Factory.new(self).unmet
     end
 
-    def persisted_environment
-      return unless has_environment_keyword?
-
-      strong_memoize(:persisted_environment) do
-        # This code path has caused N+1s in the past, since environments are only indirectly
-        # associated to builds and pipelines; see https://gitlab.com/gitlab-org/gitlab/-/issues/326445
-        # We therefore batch-load them to prevent dormant N+1s until we found a proper solution.
-        BatchLoader.for(expanded_environment_name).batch(key: project_id) do |names, loader, args|
-          Environment.where(name: names, project: args[:key]).find_each do |environment|
-            loader.call(environment.name, environment)
-          end
-        end
-      end
-    end
-
-    def persisted_environment=(environment)
-      strong_memoize(:persisted_environment) { environment }
-    end
-
-    # If build.persisted_environment is a BatchLoader, we need to remove
-    # the method proxy in order to clone into new item here
-    # https://github.com/exAspArk/batch-loader/issues/31
-    def actual_persisted_environment
-      persisted_environment.respond_to?(:__sync) ? persisted_environment.__sync : persisted_environment
-    end
-
-    def expanded_environment_name
-      return unless has_environment_keyword?
-
-      strong_memoize(:expanded_environment_name) do
-        # We're using a persisted expanded environment name in order to avoid
-        # variable expansion per request.
-        if metadata&.expanded_environment_name.present?
-          metadata.expanded_environment_name
-        else
-          ExpandVariables.expand(environment, -> { simple_variables.sort_and_expand_all })
-        end
-      end
-    end
-
-    def expanded_kubernetes_namespace
-      return unless has_environment_keyword?
-
-      namespace = options.dig(:environment, :kubernetes, :namespace)
-
-      if namespace.present?
-        strong_memoize(:expanded_kubernetes_namespace) do
-          ExpandVariables.expand(namespace, -> { simple_variables })
-        end
-      end
-    end
-
-    def has_environment_keyword?
-      environment.present?
-    end
-
-    def deployment_job?
-      has_environment_keyword? && environment_action == 'start'
-    end
-
-    def stops_environment?
-      has_environment_keyword? && environment_action == 'stop'
-    end
-
-    def environment_action
-      options.fetch(:environment, {}).fetch(:action, 'start') if options
-    end
-
-    def environment_tier_from_options
-      options.dig(:environment, :deployment_tier) if options
-    end
-
-    def environment_tier
-      environment_tier_from_options || persisted_environment.try(:tier)
-    end
-
     def triggered_by?(current_user)
       user == current_user
-    end
-
-    def on_stop
-      options&.dig(:environment, :on_stop)
-    end
-
-    def stop_action_successful?
-      success?
     end
 
     ##
@@ -649,9 +531,8 @@ module Ci
 
     def google_play_variables
       return [] unless google_play_integration.try(:activated?)
-      return [] unless pipeline.protected_ref?
 
-      Gitlab::Ci::Variables::Collection.new(google_play_integration.ci_variables)
+      Gitlab::Ci::Variables::Collection.new(google_play_integration.ci_variables(protected_ref: pipeline.protected_ref?))
     end
 
     def features
@@ -1033,19 +914,6 @@ module Ci
       job_artifacts.all_reports
     end
 
-    # Virtual deployment status depending on the environment status.
-    def deployment_status
-      return unless deployment_job?
-
-      if success?
-        return successful_deployment_status
-      elsif failed?
-        return :failed
-      end
-
-      :creating
-    end
-
     # Consider this object to have a structural integrity problems
     def doom!
       transaction do
@@ -1206,29 +1074,9 @@ module Ci
       strong_memoize(:build_data) { Gitlab::DataBuilder::Build.build(self) }
     end
 
-    def successful_deployment_status
-      if deployment&.last?
-        :last
-      else
-        :out_of_date
-      end
-    end
-
     def job_artifacts_for_types(report_types)
       # Use select to leverage cached associations and avoid N+1 queries
       job_artifacts.select { |artifact| artifact.file_type.in?(report_types) }
-    end
-
-    def environment_url
-      options&.dig(:environment, :url) || persisted_environment&.external_url
-    end
-
-    def environment_status
-      strong_memoize(:environment_status) do
-        if has_environment_keyword? && merge_request
-          EnvironmentStatus.new(project, persisted_environment, merge_request, pipeline.sha)
-        end
-      end
     end
 
     def has_expiring_artifacts?

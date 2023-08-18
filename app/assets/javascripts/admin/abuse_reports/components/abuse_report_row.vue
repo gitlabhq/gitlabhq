@@ -14,6 +14,13 @@ export default {
     ListItem,
     AbuseCategory,
   },
+  i18n: {
+    updatedAt: __('Updated %{timeAgo}'),
+    createdAt: __('Created %{timeAgo}'),
+    deletedUser: s__('AbuseReports|Deleted user'),
+    row: s__('AbuseReports|%{reportedUser} reported for %{category} by %{reporter}'),
+    rowWithCount: s__('AbuseReports|%{reportedUser} reported for %{category} by %{count} users'),
+  },
   props: {
     report: {
       type: Object,
@@ -25,18 +32,24 @@ export default {
       const { sort } = queryToObject(window.location.search);
       const { createdAt, updatedAt } = this.report;
       const { template, timeAgo } = Object.values(SORT_UPDATED_AT.sortDirection).includes(sort)
-        ? { template: __('Updated %{timeAgo}'), timeAgo: updatedAt }
-        : { template: __('Created %{timeAgo}'), timeAgo: createdAt };
+        ? { template: this.$options.i18n.updatedAt, timeAgo: updatedAt }
+        : { template: this.$options.i18n.createdAt, timeAgo: createdAt };
 
       return sprintf(template, { timeAgo: getTimeago().format(timeAgo) });
     },
     title() {
-      const { reportedUser, category, reporter } = this.report;
-      const template = s__('AbuseReports|%{reportedUser} reported for %{category} by %{reporter}');
-      return sprintf(template, {
-        reportedUser: reportedUser?.name || s__('AbuseReports|Deleted user'),
-        reporter: reporter?.name || s__('AbuseReports|Deleted user'),
+      const { reportedUser, category, reporter, count } = this.report;
+
+      const reportedUserName = reportedUser?.name || this.$options.i18n.deletedUser;
+      const reporterName = reporter?.name || this.$options.i18n.deletedUser;
+
+      const i18nRowCount = count > 1 ? this.$options.i18n.rowWithCount : this.$options.i18n.row;
+
+      return sprintf(i18nRowCount, {
+        reportedUser: reportedUserName,
+        reporter: reporterName,
         category,
+        count,
       });
     },
   },
@@ -55,11 +68,7 @@ export default {
       </gl-link>
     </template>
     <template #left-secondary>
-      <abuse-category
-        :category="report.category"
-        class="gl-mt-2 gl-mb-3"
-        data-testid="abuse-report-category"
-      />
+      <abuse-category :category="report.category" class="gl-mt-2 gl-mb-3" />
     </template>
 
     <template #right-secondary>

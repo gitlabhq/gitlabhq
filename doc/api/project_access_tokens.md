@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project access tokens API **(FREE)**
+# Project access tokens API **(FREE ALL)**
 
 You can read more about [project access tokens](../user/project/settings/project_access_tokens.md).
 
@@ -160,6 +160,11 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
   - User does not have access to the token with the specified ID.
   - Token with the specified ID does not exist.
 - `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
+
+### Automatic reuse detection
+
+Refer to [automatic reuse detection for personal access tokens](personal_access_tokens.md#automatic-reuse-detection)
+for more information.
 
 ## Revoke a project access token
 

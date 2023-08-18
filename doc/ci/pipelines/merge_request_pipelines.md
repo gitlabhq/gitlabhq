@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 
-# Merge request pipelines **(FREE)**
+# Merge request pipelines **(FREE ALL)**
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merge requests` to `merge request pipelines` in GitLab 14.8.
 
@@ -67,7 +67,7 @@ To use merge request pipelines:
 
 ## Use `rules` to add jobs
 
-You can use the [`rules`](../yaml/index.md#rules) keyword to configure jobs to run in
+Use the [`rules`](../yaml/index.md#rules) keyword to configure jobs to run in
 merge request pipelines. For example:
 
 ```yaml
@@ -95,10 +95,21 @@ job2:
     - echo "This job also runs in merge request pipelines"
 ```
 
+A common `workflow` configuration is to have pipelines run for merge requests, tags, and the default branch. For example:
+
+```yaml
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+```
+
 ## Use `only` to add jobs
 
-You can use the [`only`](../yaml/index.md#onlyrefs--exceptrefs) keyword with `merge_requests`
-to configure jobs to run in merge request pipelines.
+[`rules`](#use-rules-to-add-jobs) is the preferred method, but you can also use
+the [`only`](../yaml/index.md#onlyrefs--exceptrefs) keyword with `merge_requests`
+to configure jobs to run in merge request pipelines. For example:
 
 ```yaml
 job1:
@@ -125,7 +136,7 @@ Pipelines for forks display with the **fork** badge in the parent project:
 
 ![Pipeline ran in fork](img/pipeline_fork_v13_7.png)
 
-### Run pipelines in the parent project **(PREMIUM)**
+### Run pipelines in the parent project **(PREMIUM ALL)**
 
 Project members in the parent project can trigger a merge request pipeline
 for a merge request submitted from a fork project. This pipeline:

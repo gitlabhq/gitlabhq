@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Notes API **(FREE)**
+# Notes API **(FREE ALL)**
 
 Notes are comments on:
 
@@ -466,7 +466,7 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/7/notes/1602"
 ```
 
-## Epics **(PREMIUM)**
+## Epics **(PREMIUM ALL)**
 
 ### List all epic notes
 

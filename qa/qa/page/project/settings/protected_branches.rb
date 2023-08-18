@@ -5,6 +5,10 @@ module QA
     module Project
       module Settings
         class ProtectedBranches < Page::Base
+          view 'app/views/protected_branches/shared/_index.html.haml' do
+            element 'add-protected-branch-button'
+          end
+
           view 'app/views/protected_branches/shared/_dropdown.html.haml' do
             element :protected_branch_dropdown
             element :protected_branch_dropdown_content
@@ -22,6 +26,7 @@ module QA
           end
 
           def select_branch(branch_name)
+            click_element 'add-protected-branch-button'
             click_element :protected_branch_dropdown
 
             within_element(:protected_branch_dropdown_content) do

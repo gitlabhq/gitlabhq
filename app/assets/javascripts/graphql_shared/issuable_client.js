@@ -203,6 +203,16 @@ export const config = {
                 };
               },
             },
+            Query: {
+              fields: {
+                boardList: {
+                  keyArgs: ['id'],
+                },
+                epicBoardList: {
+                  keyArgs: ['id'],
+                },
+              },
+            },
           }
         : {}),
     },

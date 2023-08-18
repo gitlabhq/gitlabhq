@@ -9,7 +9,7 @@ RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablish
   let(:test_gitlab_main_table) { '_test_gitlab_main_table' }
   let(:test_gitlab_ci_table) { '_test_gitlab_ci_table' }
 
-  before :all do
+  before_all do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
     Rake.application.rake_require 'tasks/gitlab/db/validate_config'

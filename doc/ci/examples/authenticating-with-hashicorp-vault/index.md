@@ -5,13 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Authenticating and reading secrets with HashiCorp Vault (Deprecated) **(PREMIUM)**
+# Authenticating and reading secrets with HashiCorp Vault **(PREMIUM ALL)**
 
 WARNING:
-Authenticating with HashiCorp Vault by using `CI_JOB_JWT` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and the token is scheduled to be removed in GitLab 16.5. This change is a breaking change.
-Use [ID tokens to authenticate with HashiCorp Vault](../../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
-instead.
+Authenticating with `CI_JOB_JWT` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
+and the token is scheduled to be removed in GitLab 16.5. Use
+[ID tokens to authenticate with HashiCorp Vault](../../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
+instead, as demonstrated on this page.
 
 This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
 
@@ -33,30 +33,30 @@ ID tokens are JSON Web Tokens (JWTs) used for OIDC authentication with third-par
 
 The following fields are included in the JWT:
 
-| Field                   | When                         | Description                                                                                                                                                                                          |
-|-------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `jti`                   | Always                       | Unique identifier for this token                                                                                                                                                                     |
-| `iss`                   | Always                       | Issuer, the domain of your GitLab instance                                                                                                                                                           |
-| `iat`                   | Always                       | Issued at                                                                                                                                                                                            |
-| `nbf`                   | Always                       | Not valid before                                                                                                                                                                                     |
-| `exp`                   | Always                       | Expires at                                                                                                                                                                                           |
-| `sub`                   | Always                       | Subject (job ID)                                                                                                                                                                                     |
-| `namespace_id`          | Always                       | Use this to scope to group or user level namespace by ID                                                                                                                                             |
-| `namespace_path`        | Always                       | Use this to scope to group or user level namespace by path                                                                                                                                           |
-| `project_id`            | Always                       | Use this to scope to project by ID                                                                                                                                                                   |
-| `project_path`          | Always                       | Use this to scope to project by path                                                                                                                                                                 |
-| `user_id`               | Always                       | ID of the user executing the job                                                                                                                                                                     |
-| `user_login`            | Always                       | Username of the user executing the job                                                                                                                                                               |
-| `user_email`            | Always                       | Email of the user executing the job                                                                                                                                                                  |
-| `pipeline_id`           | Always                       | ID of this pipeline                                                                                                                                                                                  |
-| `pipeline_source`       | Always                       | [Pipeline source](../../jobs/job_control.md#common-if-clauses-for-rules)                                                                                                                             |
-| `job_id`                | Always                       | ID of this job                                                                                                                                                                                       |
-| `ref`                   | Always                       | Git ref for this job                                                                                                                                                                                 |
-| `ref_type`              | Always                       | Git ref type, either `branch` or `tag`                                                                                                                                                               |
+| Field                   | When                         | Description |
+|-------------------------|------------------------------|-------------|
+| `jti`                   | Always                       | Unique identifier for this token |
+| `iss`                   | Always                       | Issuer, the domain of your GitLab instance |
+| `iat`                   | Always                       | Issued at   |
+| `nbf`                   | Always                       | Not valid before |
+| `exp`                   | Always                       | Expires at  |
+| `sub`                   | Always                       | Subject (job ID) |
+| `namespace_id`          | Always                       | Use this to scope to group or user level namespace by ID |
+| `namespace_path`        | Always                       | Use this to scope to group or user level namespace by path |
+| `project_id`            | Always                       | Use this to scope to project by ID |
+| `project_path`          | Always                       | Use this to scope to project by path |
+| `user_id`               | Always                       | ID of the user executing the job |
+| `user_login`            | Always                       | Username of the user executing the job |
+| `user_email`            | Always                       | Email of the user executing the job |
+| `pipeline_id`           | Always                       | ID of this pipeline |
+| `pipeline_source`       | Always                       | [Pipeline source](../../jobs/job_control.md#common-if-clauses-for-rules) |
+| `job_id`                | Always                       | ID of this job |
+| `ref`                   | Always                       | Git ref for this job |
+| `ref_type`              | Always                       | Git ref type, either `branch` or `tag` |
 | `ref_path`              | Always                       | Fully qualified ref for the job. For example, `refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075) in GitLab 16.0. |
-| `ref_protected`         | Always                       | `true` if this Git ref is protected, `false` otherwise                                                                                                                                               |
-| `environment`           | Job specifies an environment | Environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9)                                                                                   |
-| `environment_protected` | Job specifies an environment | `true` if specified environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9)                                                  |
+| `ref_protected`         | Always                       | `true` if this Git ref is protected, `false` otherwise |
+| `environment`           | Job specifies an environment | Environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9) |
+| `environment_protected` | Job specifies an environment | `true` if specified environment is protected, `false` otherwise ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294440) in GitLab 13.9) |
 | `deployment_tier`       | Job specifies an environment | [Deployment tier](../../environments/index.md#deployment-tier-of-environments) of environment this job specifies ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363590) in GitLab 15.2) |
 
 Example JWT payload:
@@ -249,7 +249,7 @@ Now, configure the JWT Authentication method:
 ```shell
 $ vault write auth/jwt/config \
     jwks_url="https://gitlab.example.com/-/jwks" \
-    bound_issuer="gitlab.example.com"
+    bound_issuer="https://gitlab.example.com"
 ```
 
 [`bound_issuer`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_issuer) specifies that only a JWT with the issuer (that is, the `iss` claim) set to `gitlab.example.com` can use this method to authenticate, and that the JWKS endpoint (`https://gitlab.example.com/-/jwks`) should be used to validate the token.

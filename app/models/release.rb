@@ -20,6 +20,8 @@ class Release < ApplicationRecord
   has_many :milestones, through: :milestone_releases
   has_many :evidences, inverse_of: :release, class_name: 'Releases::Evidence'
 
+  has_one :catalog_resource_version, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :release
+
   accepts_nested_attributes_for :links, allow_destroy: true
 
   before_create :set_released_at

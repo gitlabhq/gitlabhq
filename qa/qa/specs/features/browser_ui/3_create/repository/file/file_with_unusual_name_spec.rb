@@ -4,12 +4,7 @@ module QA
   RSpec.describe 'Create' do
     describe 'File with unusual name', product_group: :source_code do
       let(:file_name) { '-un:usually;named#file?.md' }
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |resource|
-          resource.name = 'unusually-named-file-project'
-          resource.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'unusually-named-file-project') }
 
       before do
         Flow::Login.sign_in

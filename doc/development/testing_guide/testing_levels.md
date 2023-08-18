@@ -197,16 +197,8 @@ graph RL
 
 #### What to mock in component tests
 
-- **DOM**:
-  Operating on the real DOM is significantly slower than on the virtual DOM.
-- **Properties and state of the component under test**:
-  Similar to testing classes, modifying the properties directly (rather than relying on methods of the component) avoids side effects.
-- **Vuex store**:
-  To avoid side effects and keep component tests simple, Vuex stores are replaced with mocks.
-- **All server requests**:
-  Similar to unit tests, when running component tests, the backend may not be reachable, so all outgoing requests need to be mocked.
-- **Asynchronous background operations**:
-  Similar to unit tests, background operations cannot be stopped or waited on. This means they continue running in the following tests and cause side effects.
+- **Side effects**:
+  Anything that can change external state (for example, a network request) should be mocked.
 - **Child components**:
   Every component is tested individually, so child components are mocked.
   See also [`shallowMount()`](https://v1.test-utils.vuejs.org/api/#shallowmount)
@@ -215,8 +207,10 @@ graph RL
 
 - **Methods or computed properties of the component under test**:
   By mocking part of the component under test, the mocks are tested and not the real component.
-- **Functions and classes independent from Vue**:
-  All plain JavaScript code is already covered by unit tests and needs not to be mocked in component tests.
+- **Vuex**:
+  Keep Vuex unmocked to avoid fragile and false-positive tests.
+  Set the Vuex to a proper state using mutations.
+  Mock the side-effects, not the Vuex actions.
 
 ## Integration tests
 

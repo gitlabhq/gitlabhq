@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { pipelines } from 'test_fixtures/pipelines/pipelines.json';
-import PipelineStage from '~/pipelines/components/pipeline_mini_graph/pipeline_stage.vue';
+import LegacyPipelineStage from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_stage.vue';
 import PipelineStages from '~/pipelines/components/pipeline_mini_graph/pipeline_stages.vue';
 
 const mockStages = pipelines[0].details.stages;
@@ -8,8 +8,8 @@ const mockStages = pipelines[0].details.stages;
 describe('Pipeline Stages', () => {
   let wrapper;
 
-  const findPipelineStages = () => wrapper.findAllComponents(PipelineStage);
-  const findPipelineStagesAt = (i) => findPipelineStages().at(i);
+  const findLegacyPipelineStages = () => wrapper.findAllComponents(LegacyPipelineStage);
+  const findPipelineStagesAt = (i) => findLegacyPipelineStages().at(i);
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(PipelineStages, {
@@ -23,14 +23,14 @@ describe('Pipeline Stages', () => {
   it('renders stages', () => {
     createComponent();
 
-    expect(findPipelineStages()).toHaveLength(mockStages.length);
+    expect(findLegacyPipelineStages()).toHaveLength(mockStages.length);
   });
 
   it('does not fail when stages are empty', () => {
     createComponent({ stages: [] });
 
     expect(wrapper.exists()).toBe(true);
-    expect(findPipelineStages()).toHaveLength(0);
+    expect(findLegacyPipelineStages()).toHaveLength(0);
   });
 
   it('update dropdown is false by default', () => {

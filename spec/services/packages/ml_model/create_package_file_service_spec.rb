@@ -41,19 +41,22 @@ RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :m
           .to change { project.packages.ml_model.count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
           .and change { Packages::PackageFileBuildInfo.count }.by(0)
+          .and change { Ml::ModelVersion.count }.by(1)
 
         new_model = project.packages.ml_model.last
         package_file = new_model.package_files.last
+        new_model_version = Ml::ModelVersion.last
 
-        aggregate_failures do
-          expect(new_model.name).to eq('new_model')
-          expect(new_model.version).to eq('1.0.0')
-          expect(new_model.status).to eq('default')
-          expect(package_file.package).to eq(new_model)
-          expect(package_file.file_name).to eq(file_name)
-          expect(package_file.size).to eq(file.size)
-          expect(package_file.file_sha256).to eq(sha256)
-        end
+        expect(new_model.name).to eq('new_model')
+        expect(new_model.version).to eq('1.0.0')
+        expect(new_model.status).to eq('default')
+        expect(package_file.package).to eq(new_model)
+        expect(package_file.file_name).to eq(file_name)
+        expect(package_file.size).to eq(file.size)
+        expect(package_file.file_sha256).to eq(sha256)
+        expect(new_model_version.name).to eq('new_model')
+        expect(new_model_version.version).to eq('1.0.0')
+        expect(new_model_version.package).to eq(new_model)
       end
     end
 

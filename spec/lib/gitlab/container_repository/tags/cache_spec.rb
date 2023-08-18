@@ -81,9 +81,7 @@ RSpec.describe ::Gitlab::ContainerRepository::Tags::Cache, :clean_gitlab_redis_c
         ::Gitlab::Redis::Cache.with do |redis|
           expect(redis).to receive(:pipelined).and_call_original
 
-          times = Gitlab::Redis::ClusterUtil.cluster?(redis) ? 2 : 1
-
-          expect_next_instances_of(Redis::PipelinedConnection, times) do |pipeline|
+          expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
             expect(pipeline)
               .to receive(:set)
                     .with(cache_key(tag), rfc3339(tag.created_at), ex: ttl.to_i)

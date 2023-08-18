@@ -1,0 +1,10 @@
+---
+table_name: target_branch_rules
+classes:
+- Projects::TargetBranchRule
+feature_categories:
+- code_review_workflow
+description: Represents a target branch rule
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126877
+milestone: "16.3"
+gitlab_schema: gitlab_main

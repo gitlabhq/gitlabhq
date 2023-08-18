@@ -289,7 +289,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
     let(:url) { "/projects/#{project.id}/packages/composer" }
     let(:params) { {} }
 
-    before(:all) do
+    before_all do
       project.repository.add_tag(user, 'v1.2.99', 'master')
     end
 

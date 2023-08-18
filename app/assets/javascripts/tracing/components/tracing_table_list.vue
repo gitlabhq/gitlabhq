@@ -1,37 +1,37 @@
 <script>
 import { GlTable, GlLink } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 
 export const tableDataClass = 'gl-display-flex gl-md-display-table-cell gl-align-items-center';
 export default {
   name: 'TracingTableList',
   i18n: {
-    title: __('Traces'),
-    emptyText: __('No traces to display.'),
-    emptyLinkText: __('Check again'),
+    title: s__('Tracing|Traces'),
+    emptyText: s__('Tracing|No traces to display.'),
+    emptyLinkText: s__('Tracing|Check again'),
   },
   fields: [
     {
-      key: 'date',
-      label: __('Date'),
+      key: 'timestamp',
+      label: s__('Tracing|Date'),
       tdClass: tableDataClass,
       sortable: true,
     },
     {
-      key: 'service',
-      label: __('Service'),
+      key: 'service_name',
+      label: s__('Tracing|Service'),
       tdClass: tableDataClass,
       sortable: true,
     },
     {
       key: 'operation',
-      label: __('Operation'),
+      label: s__('Tracing|Operation'),
       tdClass: tableDataClass,
       sortable: true,
     },
     {
       key: 'duration',
-      label: __('Duration'),
+      label: s__('Tracing|Duration'),
       thClass: 'gl-w-15p',
       tdClass: tableDataClass,
       sortable: true,
@@ -47,6 +47,13 @@ export default {
       type: Array,
     },
   },
+  methods: {
+    onSelect(items) {
+      if (items[0]) {
+        this.$emit('trace-selected', items[0]);
+      }
+    },
+  },
 };
 </script>
 
@@ -55,19 +62,24 @@ export default {
     <h4 class="gl-display-block gl-md-display-none! gl-my-5">{{ $options.i18n.title }}</h4>
 
     <gl-table
-      class="gl-mt-5"
       :items="traces"
       :fields="$options.fields"
       show-empty
+      sort-by="timestamp"
+      :sort-desc="true"
       fixed
       stacked="md"
       tbody-tr-class="table-row"
+      selectable
+      select-mode="single"
+      selected-variant=""
+      @row-selected="onSelect"
     >
-      <template #cell(date)="data">
+      <template #cell(timestamp)="data">
         {{ data.item.timestamp }}
       </template>
 
-      <template #cell(service)="data">
+      <template #cell(service_name)="data">
         {{ data.item.service_name }}
       </template>
 

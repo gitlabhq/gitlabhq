@@ -2,10 +2,10 @@
 
 exports[`Comment templates list item component renders list item 1`] = `
 <li
-  class="gl-pt-4 gl-pb-5 gl-border-b"
+  class="gl-px-5! gl-py-4!"
 >
   <div
-    class="gl-display-flex gl-align-items-center"
+    class="gl-display-flex"
   >
     <h6
       class="gl-mr-3 gl-my-0"
@@ -26,7 +26,6 @@ exports[`Comment templates list item component renders list item 1`] = `
           class="btn btn-default btn-md gl-button btn-default-tertiary gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
           data-testid="base-dropdown-toggle"
           id="actions-toggle-3"
-          listeners="[object Object]"
           type="button"
         >
           <!---->
@@ -130,9 +129,11 @@ exports[`Comment templates list item component renders list item 1`] = `
   </div>
    
   <div
-    class="gl-mt-3 gl-font-monospace gl-white-space-pre-wrap"
+    class="gl-font-monospace gl-white-space-pre-line gl-font-sm gl-mt-n5"
   >
+    
     /assign_reviewer
+  
   </div>
    
   <!---->

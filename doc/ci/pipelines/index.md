@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# CI/CD pipelines **(FREE)**
+# CI/CD pipelines **(FREE ALL)**
 
 NOTE:
 Watch the
@@ -84,11 +84,11 @@ project repository.
 
 This table lists the refspecs injected for each pipeline type:
 
-| Pipeline type                                                      | Refspecs                                                                                       |
-|---------------                                                     |----------------------------------------                                                        |
-| pipeline for branches                                              | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
-| pipeline for tags                                                  | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>`            |
-| [merge request pipeline](../pipelines/merge_request_pipelines.md)  | `+refs/pipelines/<id>:refs/pipelines/<id>`                                       |
+| Pipeline type                                                     | Refspecs |
+|-------------------------------------------------------------------|----------|
+| pipeline for branches                                             | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
+| pipeline for tags                                                 | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>` |
+| [merge request pipeline](../pipelines/merge_request_pipelines.md) | `+refs/pipelines/<id>:refs/pipelines/<id>` |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a
@@ -334,7 +334,7 @@ runners do not use regular runners, they must be tagged accordingly.
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
 
-## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
+## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
 
@@ -352,6 +352,7 @@ To trigger the pipeline when the upstream project is rebuilt:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Pipeline subscriptions**.
+1. Select **Add project**.
 1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
    For example, if the project is `https://gitlab.com/gitlab-org/gitlab`, use `gitlab-org/gitlab`.
 1. Select **Subscribe**.

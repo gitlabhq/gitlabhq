@@ -11,7 +11,7 @@ this is not possible due to a variety of reasons. In that case, GitLab can also
 be installed under a relative URL, for example `https://example.com/gitlab`.
 
 This document describes how to run GitLab under a relative URL for installations
-from source. If you are using an Omnibus package,
+from source. If you are using an official Linux package,
 [the steps are different](https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab). Use this guide along with the
 [installation guide](installation.md) if you are installing GitLab for the
 first time.
@@ -32,7 +32,7 @@ relative URL is:
 - `/home/git/gitlab-shell/config.yml`
 - `/etc/default/gitlab`
 
-After all the changes, you must recompile the assets and [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+After all the changes, you must recompile the assets and [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations).
 
 ## Relative URL requirements
 
@@ -115,7 +115,7 @@ Make sure to follow all steps below:
    If you are using a custom init script, make sure to edit the above
    GitLab Workhorse setting as needed.
 
-1. [Restart GitLab](../administration/restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../administration/restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Disable relative URL in GitLab
 

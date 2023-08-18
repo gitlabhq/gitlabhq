@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 // This file is in progress and behind a feature flag, please see the following issue for more:
 // https://gitlab.com/gitlab-org/gitlab/-/issues/323200
@@ -31,11 +32,15 @@ export default {
       type: String,
       required: true,
     },
+    refType: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   limitedContainerElements: document.querySelectorAll(`.${LIMITED_CONTAINER_WIDTH_CLASS}`),
 };
 </script>
-
 <template>
-  <blob-content-viewer :path="path" :project-path="projectPath" />
+  <blob-content-viewer :path="path" :project-path="projectPath" :ref-type="refType" />
 </template>

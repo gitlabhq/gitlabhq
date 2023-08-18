@@ -6,5 +6,5 @@
 = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
   = expanded ? _('Collapse') : _('Expand')
 
-%p
+%p.gl-text-secondary
   = render "ci/variables/content", entity: @entity, variable_limit: @variable_limit

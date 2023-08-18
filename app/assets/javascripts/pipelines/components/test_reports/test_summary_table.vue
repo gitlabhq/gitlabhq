@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { s__ } from '~/locale';
 

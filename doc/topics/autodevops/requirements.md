@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Requirements for Auto DevOps **(FREE)**
+# Requirements for Auto DevOps **(FREE ALL)**
 
 Before enabling [Auto DevOps](index.md), we recommend you to prepare it for
 deployment. If you don't, you can use it to build and test your apps, and

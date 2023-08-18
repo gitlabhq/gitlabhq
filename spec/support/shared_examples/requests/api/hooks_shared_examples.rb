@@ -121,7 +121,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
       context 'the hook is disabled' do
         before do
-          hook.disable!
+          hook.update!(recent_failures: hook.class::EXCEEDED_FAILURE_THRESHOLD)
         end
 
         it "has the correct alert status", :aggregate_failures do

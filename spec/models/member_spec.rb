@@ -351,6 +351,19 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       it { is_expected.to include(expiring_tomorrow, not_expiring) }
     end
 
+    describe '.expiring_and_not_notified' do
+      let_it_be(:expiring_in_5_days) { create(:group_member, expires_at: 5.days.from_now) }
+      let_it_be(:expiring_in_5_days_with_notified) { create(:group_member, expires_at: 5.days.from_now, expiry_notified_at: Date.today) }
+      let_it_be(:expiring_in_7_days) { create(:group_member, expires_at: 7.days.from_now) }
+      let_it_be(:expiring_in_10_days) { create(:group_member, expires_at: 10.days.from_now) }
+      let_it_be(:not_expiring) { create(:group_member) }
+
+      subject { described_class.expiring_and_not_notified(7.days.from_now.to_date) }
+
+      it { is_expected.not_to include(expiring_in_5_days_with_notified, expiring_in_10_days, not_expiring) }
+      it { is_expected.to include(expiring_in_5_days, expiring_in_7_days) }
+    end
+
     describe '.created_today' do
       let_it_be(:now) { Time.current }
       let_it_be(:created_today) { create(:group_member, created_at: now.beginning_of_day) }

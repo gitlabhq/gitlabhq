@@ -8,12 +8,7 @@ module QA
       type: :flaky
     } do
     describe 'Add a directory in Web IDE' do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'add-directory-project'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'add-directory-project') }
 
       before do
         Flow::Login.sign_in

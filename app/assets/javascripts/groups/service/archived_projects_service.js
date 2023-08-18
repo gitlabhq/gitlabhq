@@ -17,6 +17,7 @@ export default class ArchivedProjectsService {
 
     const { data: projects, headers } = await Api.groupProjects(this.groupId, query, {
       archived: true,
+      include_subgroups: true,
       page,
       order_by: supportedOrderBy[orderBy],
       sort,
@@ -46,7 +47,7 @@ export default class ArchivedProjectsService {
           number_users_with_delimiter: 0,
           star_count: project.star_count,
           updated_at: project.updated_at,
-          marked_for_deletion: project.marked_for_deletion_at !== null,
+          marked_for_deletion: Boolean(project.marked_for_deletion_at),
           last_activity_at: project.last_activity_at,
         };
       }),

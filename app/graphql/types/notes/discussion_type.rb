@@ -9,7 +9,7 @@ module Types
 
       authorize :read_note
 
-      implements(Types::ResolvableInterface)
+      implements Types::ResolvableInterface
 
       field :created_at, Types::TimeType, null: false,
                                           description: "Timestamp of the discussion's creation."

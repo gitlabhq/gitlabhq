@@ -4,7 +4,7 @@ group: Product Analytics
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Analytics dashboards (Experiment) **(ULTIMATE)**
+# Analytics dashboards (Experiment) **(ULTIMATE ALL)**
 
 > Introduced in GitLab 15.9 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
 
@@ -24,16 +24,23 @@ filters and visualizations to query and retrieve results.
 The following data sources are configured for analytics dashboards:
 
 - [Product analytics](../product_analytics/index.md)
+- [Value Stream Management](../analytics/value_streams_dashboard.md)
 
 ## Built-in dashboards
 
-To help you get started with analytics, GitLab provides two built-in dashboards with predefined visualizations:
+To help you get started with analytics, GitLab provides built-in dashboards with predefined visualizations.
 
-- **Audience**, which displays metrics related to traffic, such as number of users and sessions.
-- **Behavior**, which displays metrics related to user activity, such as number of page views and events.
+### Product analytics
+
+- **Audience** displays metrics related to traffic, such as the number of users and sessions.
+- **Behavior** displays metrics related to user activity, such as the number of page views and events.
 
 These dashboards are labeled **By GitLab**, and you cannot edit them.
 Instead, you can create a custom dashboard with a similar style.
+
+### Value Stream Management
+
+- **Value Streams Dashboard** displays metrics related to [DevOps performance, security exposure, and workstream optimization](../analytics/value_streams_dashboard.md#devsecops-metrics-comparison-panel).
 
 ## Custom dashboards
 
@@ -69,10 +76,14 @@ You can use the dashboard designer to:
 
 ## View project dashboards
 
+Prerequisite:
+
+- You must have at least the Developer role for the project.
+
 To view a list of dashboards (both built-in and custom) for a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Analyze > Dashboards**.
+1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
 ## Change the location of dashboards
@@ -170,7 +181,7 @@ create a `line_chart.yaml` file with the following required fields:
 To create a custom dashboard:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Analyze > Dashboards**.
+1. Select **Analyze > Analytics dashboards**.
 1. Select **New dashboard**.
 1. In the **New dashboard** input, enter the name of the dashboard.
 1. From the **Add visualizations** list on the right, select the visualizations to add to the dashboard.
@@ -184,7 +195,7 @@ You can edit your custom dashboard's title and add or resize visualizations in t
 To edit an existing custom dashboard:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Analyze > Dashboards**.
+1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select a custom dashboard (one without the `By GitLab` label) you want to edit.
 1. Select **Edit**.
 1. Optional. Change the title of the dashboard.

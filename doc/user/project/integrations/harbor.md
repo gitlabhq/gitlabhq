@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Harbor **(FREE)**
+# Harbor **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80999) in GitLab 14.9.
 
@@ -28,7 +28,7 @@ GitLab supports integrating Harbor projects at the group or project level. Compl
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Harbor**.
-1. Turn on the **Active** toggle under **Enable Integration**.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide the Harbor configuration information:
    - **Harbor URL**: The base URL of Harbor instance which is being linked to this GitLab project. For example, `https://harbor.example.net`.
    - **Harbor project name**: The project name in the Harbor instance. For example, `testproject`.

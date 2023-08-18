@@ -1,6 +1,6 @@
 ---
-stage: none
-group: none
+stage: AI-powered
+group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -52,6 +52,9 @@ All AI features are experimental.
 
 ## Test AI features locally
 
+NOTE:
+Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
+
 1. Enable the required general feature flags:
 
    ```ruby
@@ -74,6 +77,9 @@ All AI features are experimental.
 
 ### Set up the embedding database
 
+NOTE:
+Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
+
 For features that use the embedding database, additional setup is needed.
 
 1. Enable [pgvector](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
@@ -87,6 +93,9 @@ For features that use the embedding database, additional setup is needed.
 1. Run database migrations to create the embedding database
 
 ### Set up GitLab Duo Chat
+
+NOTE:
+Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
 
 1. [Enable Anthropic API features](#configure-anthropic-access).
 1. [Enable OpenAI support](#configure-openai-access).
@@ -123,6 +132,14 @@ index 5fa7ae8a2bc1..5fe996ba0345 100644
      def valid?
 ```
 
+### Working with GitLab Duo Chat
+
+Prompts are the most vital part of GitLab Duo Chat system. Prompts are the instructions sent to the Large Language Model to perform certain tasks.
+
+The state of the prompts is the result of weeks of iteration. If you want to change any prompt in the current tool, you must put it behind a feature flag.
+
+If you have any new or updated prompts, ask members of AI Framework team to review, because they have significant experience with them.
+
 ### Setup for GitLab documentation chat (legacy chat)
 
 To populate the embedding database for GitLab chat:
@@ -130,12 +147,63 @@ To populate the embedding database for GitLab chat:
 1. Open a rails console
 1. Run [this script](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/10588#note_1373586079) to populate the embedding database
 
+### Contributing to GitLab Duo Chat
+
+The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb) that includes a system prompt explaining how the large language model should interpret the question and provide an
+answer. The system prompt defines available tools that can be used to gather
+information to answer the user's question.
+
+The zero-shot agent receives the user's question and decides which tools to use to gather information to answer it.
+It then makes a request to the large language model, which decides if it can answer directly or if it needs to use one
+of the defined tools.
+
+The tools each have their own prompt that provides instructions to the large language model on how to use that tool to
+gather information. The tools are designed to be self-sufficient and avoid multiple requests back and forth to
+the large language model.
+
+After the tools have gathered the required information, it is returned to the zero-shot agent, which asks the large language
+model if enough information has been gathered to provide the final answer to the user's question.
+
+#### Adding a new tool
+
+To add a new tool:
+
+1. Create files for the tool in the `ee/lib/gitlab/llm/chain/tools/` folder. Use existing tools like `issue_identifier` or
+`resource_reader` as a template.
+
+1. Write a class for the tool that includes:
+
+   - Name and description of what the tool does
+   - Example questions that would use this tool
+   - Instructions for the large language model on how to use the tool to gather information - so the main prompts that
+   this tool is using.
+
+1. Test and iterate on the prompt using RSpec tests that make real requests to the large language model.
+   - Prompts require trial and error, the non-deterministic nature of working with LLM can be surprising.
+   - Anthropic provides good [guide](https://docs.anthropic.com/claude/docs/introduction-to-prompt-design) on working on prompts.
+
+1. Implement code in the tool to parse the response from the large language model and return it to the zero-shot agent.
+
+1. Add the new tool name to the `tools` array in `ee/lib/gitlab/llm/completions/chat.rb` so the zero-shot agent knows about it.
+
+1. Add tests by adding questions to the test-suite for which the new tool should respond to. Iterate on the prompts as needed.
+
+The key things to keep in mind are properly instructing the large language model through prompts and tool descriptions,
+keeping tools self-sufficient, and returning responses to the zero-shot agent. With some trial and error on prompts,
+adding new tools can expand the capabilities of the chat feature.
+
+There are available short [videos](https://www.youtube.com/playlist?list=PL05JrBw4t0KoOK-bm_bwfHaOv-1cveh8i) covering this topic.
+
 ### Debugging
 
 To gather more insights about the full request, use the `Gitlab::Llm::Logger` file to debug logs.
+The default logging level on production is `INFO` and **must not** be used to log any data that could contain personal identifying information.
+
 To follow the debugging messages related to the AI requests on the abstraction layer, you can use:
 
 ```shell
+export LLM_DEBUG=1
+gdk start
 tail -f log/llm.log
 ```
 
@@ -143,7 +211,7 @@ tail -f log/llm.log
 
 In order to obtain a GCP service key for local development, please follow the steps below:
 
-- Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group environment by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request). At this time, access to any endpoints outside of `text-bison` or `chat-bison` must be made through the group environment.
+- Create a sandbox GCP environment by visiting [this page](https://about.gitlab.com/handbook/infrastructure-standards/#individual-environment) and following the instructions, or by requesting access to our existing group environment by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request).
 - In the GCP console, go to `IAM & Admin` > `Service Accounts` and click on the "Create new service account" button
 - Name the service account something specific to what you're using it for. Select Create and Continue. Under `Grant this service account access to project`, select the role `Vertex AI User`. Select `Continue` then `Done`
 - Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account.
@@ -174,18 +242,47 @@ Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 
 ### Testing GitLab Duo Chat with predefined questions
 
-Because success of answers to user questions in GitLab Duo Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use following commands to validate answers to some predefined questions:
-
-1. Rake task which iterates through questions defined in CSV file and checks tools used for evaluating each question.
+Because success of answers to user questions in GitLab Duo Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use the following rspecs to validate answers to some predefined questions:
 
 ```ruby
-rake gitlab:llm:zero_shot:test:questions[<issue_url>]
+export OPENAI_API_KEY='<key>'
+export ANTHROPIC_API_KEY='<key>'
+REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb
 ```
 
-1. RSpec which iterates through resource-specific questions on predefined resources:
+When you need to update the test questions that require documentation embeddings,
+make sure a new fixture is generated and committed together with the change.
+
+#### Populating embeddings and using embeddings fixture
+
+To seed your development database with the embeddings for GitLab Documentation,
+you may use the pre-generated embeddings and a Rake test.
+
+```shell
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:seed_pre_generated
+```
+
+The DBCleaner gem we use clear the database tables before each test runs.
+Instead of fully populating the table `tanuki_bot_mvc` where we store embeddings for the documentations,
+we can add a few selected embeddings to the table from a pre-generated fixture.
+
+For instance, to test that the question "How can I reset my password" is correctly
+retrieving the relevant embeddings and answered, we can extract the top N closet embeddings
+to the question into a fixture and only restore a small number of embeddings quickly.
+To faciliate an extraction process, a Rake task been written.
+You can add or remove the questions needed to be tested in the Rake task and run the task to generate a new fixture.
+
+```shell
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:extract_embeddings
+```
+
+In the specs where you need to use the embeddings,
+use the RSpec config hook `:ai_embedding_fixtures` on a context.
 
 ```ruby
-ANTHROPIC_API_KEY='<key>' REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb
+context 'when asking about how to use GitLab', :ai_embedding_fixtures do
+  # ...examples
+end
 ```
 
 ## Experimental REST API
@@ -408,6 +505,52 @@ module EE
   end
 end
 ```
+
+### Pairing requests with responses
+
+Because multiple users' requests can be processed in parallel, when receiving responses,
+it can be difficult to pair a response with its original request. The `requestId`
+field can be used for this purpose, because both the request and response are assured
+to have the same `requestId` UUID.
+
+### Caching
+
+AI requests and responses can be cached. Cached conversation is being used to
+display user interaction with AI features. In the current implementation, this cache
+is not used to skip consecutive calls to the AI service when a user repeats
+their requests.
+
+```graphql
+query {
+  aiMessages {
+    nodes {
+      id
+      requestId
+      content
+      role
+      errors
+      timestamp
+    }
+  }
+}
+```
+
+This cache is especially useful for chat functionality. For other services,
+caching is disabled. (It can be enabled for a service by using `cache_response: true`
+option.)
+
+Caching has following limitations:
+
+- Messages are stored in Redis stream.
+- There is a single stream of messages per user. This means that all services
+  currently share the same cache. If needed, this could be extended to multiple
+  streams per user (after checking with the infrastructure team that Redis can handle
+  the estimated amount of messages).
+- Only the last 50 messages (requests + responses) are kept.
+- Expiration time of the stream is 3 days since adding last message.
+- User can access only their own messages. There is no authorization on the caching
+  level, and any authorization (if accessed by not current user) is expected on
+  the service layer.
 
 ### Check if feature is allowed for this resource based on namespace settings
 

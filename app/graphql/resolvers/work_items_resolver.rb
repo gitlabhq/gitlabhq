@@ -2,8 +2,8 @@
 
 module Resolvers
   class WorkItemsResolver < BaseResolver
+    prepend ::WorkItems::LookAheadPreloads
     include SearchArguments
-    include LooksAhead
     include ::WorkItems::SharedFilterArguments
 
     argument :iid,
@@ -28,48 +28,6 @@ module Resolvers
 
     private
 
-    def preloads
-      {
-        work_item_type: :work_item_type,
-        web_url: { namespace: :route, project: [:project_namespace, { namespace: :route }] },
-        widgets: { work_item_type: :enabled_widget_definitions }
-      }
-    end
-
-    def nested_preloads
-      {
-        widgets: widget_preloads,
-        user_permissions: { update_work_item: :assignees },
-        project: { jira_import_status: { project: :jira_imports } },
-        author: {
-          location: { author: :user_detail },
-          gitpod_enabled: { author: :user_preference }
-        }
-      }
-    end
-
-    def widget_preloads
-      {
-        last_edited_by: :last_edited_by,
-        assignees: :assignees,
-        parent: :work_item_parent,
-        children: { work_item_children_by_relative_position: [:author, { project: :project_feature }] },
-        labels: :labels,
-        milestone: { milestone: [:project, :group] },
-        subscribed: [:assignees, :award_emoji, { notes: [:author, :award_emoji] }],
-        award_emoji: { award_emoji: :awardable }
-      }
-    end
-
-    def unconditional_includes
-      [
-        {
-          project: [:project_feature, :group]
-        },
-        :author
-      ]
-    end
-
     def prepare_finder_params(args)
       params = super(args)
       params[:iids] ||= [params.delete(:iid)].compact if params[:iid]
@@ -88,4 +46,4 @@ module Resolvers
   end
 end
 
-Resolvers::WorkItemsResolver.prepend_mod_with('Resolvers::WorkItemsResolver')
+Resolvers::WorkItemsResolver.prepend_mod

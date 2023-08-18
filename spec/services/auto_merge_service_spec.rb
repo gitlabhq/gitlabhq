@@ -19,9 +19,10 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
       if Gitlab.ee?
         is_expected.to contain_exactly(
           AutoMergeService::STRATEGY_MERGE_TRAIN,
-           AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_PIPELINE_SUCCEEDS,
-           AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
-           AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+          AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_PIPELINE_SUCCEEDS,
+          AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
+          AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
+        )
       else
         is_expected.to eq([AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS])
       end
@@ -38,9 +39,13 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
     let(:pipeline_status) { :running }
 
     before do
-      create(:ci_pipeline, pipeline_status, ref: merge_request.source_branch,
-                                            sha: merge_request.diff_head_sha,
-                                            project: merge_request.source_project)
+      create(
+        :ci_pipeline,
+        pipeline_status,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha,
+        project: merge_request.source_project
+      )
 
       merge_request.update_head_pipeline
     end
@@ -68,11 +73,17 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
     let(:pipeline_status) { :running }
 
     before do
-      create(:ci_pipeline, pipeline_status, ref: merge_request.source_branch,
-                                            sha: merge_request.diff_head_sha,
-                                            project: merge_request.source_project)
+      create(
+        :ci_pipeline,
+        pipeline_status,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha,
+        project: merge_request.source_project
+      )
 
       merge_request.update_head_pipeline
+
+      stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
     end
 
     it 'returns preferred strategy', if: Gitlab.ee? do
@@ -121,9 +132,13 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
     let(:strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS }
 
     before do
-      create(:ci_pipeline, pipeline_status, ref: merge_request.source_branch,
-                                            sha: merge_request.diff_head_sha,
-                                            project: merge_request.source_project)
+      create(
+        :ci_pipeline,
+        pipeline_status,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha,
+        project: merge_request.source_project
+      )
 
       merge_request.update_head_pipeline
     end
@@ -146,6 +161,10 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
 
     context 'when strategy is not specified' do
       let(:strategy) {}
+
+      before do
+        stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
+      end
 
       it 'chooses the most preferred strategy', if: Gitlab.ee? do
         is_expected.to eq(:merge_when_checks_pass)

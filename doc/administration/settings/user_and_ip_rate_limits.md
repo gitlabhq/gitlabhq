@@ -143,7 +143,7 @@ GitLab. For example:
 1. Set the environment variable  `GITLAB_THROTTLE_BYPASS_HEADER`.
    - For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
      set `'GITLAB_THROTTLE_BYPASS_HEADER' => 'Gitlab-Bypass-Rate-Limiting'` in `gitlab_rails['env']`.
-   - For source installations, set `export GITLAB_THROTTLE_BYPASS_HEADER=Gitlab-Bypass-Rate-Limiting`
+   - For self-compiled installations, set `export GITLAB_THROTTLE_BYPASS_HEADER=Gitlab-Bypass-Rate-Limiting`
      in `/etc/default/gitlab`.
 
 It is important that your load balancer erases or overwrites the bypass
@@ -175,7 +175,7 @@ the allowlist configuration would be `1,53,217`.
 
 - For [Linux package installations](https://docs.gitlab.com/omnibus/settings/environment-variables.html),
   set `'GITLAB_THROTTLE_USER_ALLOWLIST' => '1,53,217'` in `gitlab_rails['env']`.
-- For source installations, set `export GITLAB_THROTTLE_USER_ALLOWLIST=1,53,217`
+- For self-compiled installations, set `export GITLAB_THROTTLE_USER_ALLOWLIST=1,53,217`
   in `/etc/default/gitlab`.
 
 Requests that bypassed the rate limiter because of the user allowlist

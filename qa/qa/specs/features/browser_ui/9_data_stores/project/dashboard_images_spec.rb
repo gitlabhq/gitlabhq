@@ -16,7 +16,7 @@ module QA
         user.remove_via_api!
       end
 
-      it 'loads all images' do
+      it do
         Flow::Login.sign_in(as: user)
 
         Page::Dashboard::Welcome.perform do |welcome|
@@ -32,14 +32,14 @@ module QA
 
     describe 'Check for broken images', :requires_admin, :reliable do
       context(
-        'when logged in as a new user',
+        'when a new user logs in',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347885'
       ) do
         it_behaves_like 'loads all images', false
       end
 
       context(
-        'when logged in as a new admin',
+        'when a new admin logs in',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347884'
       ) do
         it_behaves_like 'loads all images', true

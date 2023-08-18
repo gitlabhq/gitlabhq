@@ -50,6 +50,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_activity_filters, current_user)
     push_frontend_feature_flag(:review_apps_redeploy_mr_widget, project)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
+    push_frontend_feature_flag(:action_cable_notes, project)
   end
 
   before_action only: [:edit] do
@@ -165,7 +166,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       pipelines: PipelineSerializer
         .new(project: @project, current_user: @current_user)
         .with_pagination(request, response)
-        .represent(@pipelines),
+        .represent(@pipelines, preload: true),
       count: {
         all: @pipelines.count
       }

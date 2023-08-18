@@ -94,7 +94,7 @@ describe('WorkItemLinksForm', () => {
         preventDefault: jest.fn(),
       });
       await waitForPromises();
-      expect(wrapper.vm.childWorkItemType).toEqual('gid://gitlab/WorkItems::Type/3');
+
       expect(createMutationResolver).toHaveBeenCalledWith({
         input: {
           title: 'Create task test',
@@ -106,6 +106,7 @@ describe('WorkItemLinksForm', () => {
           confidential: false,
         },
       });
+      expect(wrapper.emitted('addChild')).toEqual([[]]);
     });
 
     it('creates child task in confidential parent', async () => {

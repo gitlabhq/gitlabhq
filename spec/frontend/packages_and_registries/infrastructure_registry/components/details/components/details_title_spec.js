@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import component from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form.vue';

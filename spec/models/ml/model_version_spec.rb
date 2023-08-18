@@ -6,6 +6,13 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:base_project) { create(:project) }
+  let_it_be(:model1) { create(:ml_models, project: base_project) }
+  let_it_be(:model2) { create(:ml_models, project: base_project) }
+
+  let_it_be(:model_version1) { create(:ml_model_versions, model: model1) }
+  let_it_be(:model_version2) { create(:ml_model_versions, model: model_version1.model) }
+  let_it_be(:model_version3) { create(:ml_model_versions, model: model2) }
+  let_it_be(:model_version4) { create(:ml_model_versions, model: model_version3.model) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -14,17 +21,16 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
   end
 
   describe 'validation' do
-    let_it_be(:valid_version) { 'valid_version' }
-    let_it_be(:model) { create(:ml_models, project: base_project) }
+    let_it_be(:valid_version) { '1.0.0' }
     let_it_be(:valid_package) do
-      build_stubbed(:ml_model_package, project: base_project, version: valid_version, name: model.name)
+      build_stubbed(:ml_model_package, project: base_project, version: valid_version, name: model1.name)
     end
 
     let(:package) { valid_package }
     let(:version) { valid_version }
 
     subject(:errors) do
-      mv = described_class.new(version: version, model: model, package: package, project: model.project)
+      mv = described_class.new(version: version, model: model1, package: package, project: model1.project)
       mv.validate
       mv.errors
     end
@@ -45,7 +51,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
 
       context 'when version is not unique in project+name' do
         let_it_be(:existing_model_version) do
-          create(:ml_model_versions, model: model)
+          create(:ml_model_versions, model: model1)
         end
 
         let(:version) { existing_model_version.version }
@@ -57,7 +63,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
     describe 'model' do
       context 'when project is different' do
         before do
-          allow(model).to receive(:project_id).and_return(non_existing_record_id)
+          allow(model1).to receive(:project_id).and_return(non_existing_record_id)
         end
 
         it { expect(errors[:model]).to include('model project must be the same') }
@@ -80,11 +86,57 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
 
       context 'when package is not ml_model' do
         let(:package) do
-          build_stubbed(:generic_package, project: base_project, name: model.name, version: valid_version)
+          build_stubbed(:generic_package, project: base_project, name: model1.name, version: valid_version)
         end
 
         it { expect(errors[:package]).to include('package must be ml_model') }
       end
+    end
+  end
+
+  describe '#find_or_create!' do
+    let_it_be(:existing_model_version) { create(:ml_model_versions, model: model1, version: '1.0.0') }
+
+    let(:version) { existing_model_version.version }
+    let(:package) { nil }
+
+    subject(:find_or_create) { described_class.find_or_create!(model1, version, package) }
+
+    context 'if model version exists' do
+      it 'returns the model version', :aggregate_failures do
+        expect { find_or_create }.not_to change { Ml::ModelVersion.count }
+        is_expected.to eq(existing_model_version)
+      end
+    end
+
+    context 'if model version does not exist' do
+      let(:version) { '2.0.0' }
+      let(:package) { create(:ml_model_package, project: model1.project, name: model1.name, version: version) }
+
+      it 'creates another model version', :aggregate_failures do
+        expect { find_or_create }.to change { Ml::ModelVersion.count }.by(1)
+        model_version = find_or_create
+
+        expect(model_version.version).to eq(version)
+        expect(model_version.model).to eq(model1)
+        expect(model_version.package).to eq(package)
+      end
+    end
+  end
+
+  describe '.order_by_model_id_id_desc' do
+    subject { described_class.order_by_model_id_id_desc }
+
+    it 'orders by (model_id, id desc)' do
+      is_expected.to match_array([model_version2, model_version1, model_version4, model_version3])
+    end
+  end
+
+  describe '.latest_by_model' do
+    subject { described_class.latest_by_model }
+
+    it 'returns only the latest model version per model id' do
+      is_expected.to match_array([model_version4, model_version2])
     end
   end
 end

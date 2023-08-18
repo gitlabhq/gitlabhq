@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reserved project and group names **(FREE)**
+# Reserved project and group names **(FREE ALL)**
 
 Not all project & group names are allowed because they would conflict with
 existing routes used by GitLab.

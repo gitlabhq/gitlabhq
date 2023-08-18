@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Auto DevOps to deploy an application to Google Kubernetes Engine **(FREE)**
+# Use Auto DevOps to deploy an application to Google Kubernetes Engine **(FREE ALL)**
 
 In this tutorial, we'll help you to get started with [Auto DevOps](../index.md)
 through an example of how to deploy an application to Google Kubernetes Engine (GKE).
@@ -182,9 +182,6 @@ The jobs are separated into stages:
   - Jobs suffixed with `-sast` run static analysis on the current code to check for potential
     security issues, and are allowed to fail ([Auto SAST](../stages.md#auto-sast))
   - The `secret-detection` job checks for leaked secrets and is allowed to fail ([Auto Secret Detection](../stages.md#auto-secret-detection))
-  - The `license_scanning` job searches the application's dependencies to determine each of their
-    licenses and is allowed to fail
-    ([Auto License Compliance](../stages.md#auto-license-compliance))
 
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
   For more information, see [Dynamic Application Security Testing (DAST)](../../../user/application_security/dast/index.md).
@@ -235,8 +232,7 @@ in **Settings > CI/CD > Variables**.
 
 ### Work with branches
 
-Following the [GitLab flow](../../gitlab_flow.md#working-with-feature-branches),
-you should next create a feature branch to add content to your application:
+Next, create a feature branch to add content to your application:
 
 1. In your project's repository, go to the following file: `app/views/welcome/index.html.erb`.
    This file should only contain a paragraph: `<p>You're on Rails!</p>`.

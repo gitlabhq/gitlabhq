@@ -10,6 +10,7 @@ import {
 } from '@gitlab/ui';
 import { produce } from 'immer';
 import { throttle } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 
 import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
@@ -24,12 +25,16 @@ import groupBoardsQuery from '../graphql/group_boards.query.graphql';
 import projectBoardsQuery from '../graphql/project_boards.query.graphql';
 import groupRecentBoardsQuery from '../graphql/group_recent_boards.query.graphql';
 import projectRecentBoardsQuery from '../graphql/project_recent_boards.query.graphql';
+import { setError } from '../graphql/cache_updates';
 import { fullBoardId } from '../boards_util';
 
 const MIN_BOARDS_TO_VIEW_RECENT = 10;
 
 export default {
   name: 'BoardsSelector',
+  i18n: {
+    fetchBoardsError: s__('Boards|An error occurred while fetching boards. Please try again.'),
+  },
   components: {
     BoardForm,
     GlLoadingIcon,
@@ -90,8 +95,11 @@ export default {
     parentType() {
       return this.boardType;
     },
-    boardQuery() {
+    issueBoardsQuery() {
       return this.isGroupBoard ? groupBoardsQuery : projectBoardsQuery;
+    },
+    boardsQuery() {
+      return this.issueBoardsQuery;
     },
     loading() {
       return this.loadingRecentBoards || this.loadingBoards;
@@ -143,7 +151,7 @@ export default {
     eventHub.$off('showBoardModal', this.showPage);
   },
   methods: {
-    ...mapActions(['setError', 'fetchBoard', 'unsetActiveId']),
+    ...mapActions(['fetchBoard', 'unsetActiveId']),
     fullBoardId(boardId) {
       return fullBoardId(boardId);
     },
@@ -157,7 +165,7 @@ export default {
       if (!data?.[this.parentType]) {
         return [];
       }
-      return data[this.parentType][boardType].edges.map(({ node }) => ({
+      return data[this.parentType][boardType].nodes.map((node) => ({
         id: getIdFromGraphQLId(node.id),
         name: node.name,
       }));
@@ -174,10 +182,16 @@ export default {
         variables() {
           return { fullPath: this.fullPath };
         },
-        query: this.boardQuery,
+        query: this.boardsQuery,
         update: (data) => this.boardUpdate(data, 'boards'),
         watchLoading: (isLoading) => {
           this.loadingBoards = isLoading;
+        },
+        error(error) {
+          setError({
+            error,
+            message: this.$options.i18n.fetchBoardsError,
+          });
         },
       });
 
@@ -193,25 +207,33 @@ export default {
         watchLoading: (isLoading) => {
           this.loadingRecentBoards = isLoading;
         },
+        error(error) {
+          setError({
+            error,
+            message: s__(
+              'Boards|An error occurred while fetching recent boards. Please try again.',
+            ),
+          });
+        },
       });
     },
     addBoard(board) {
       const { defaultClient: store } = this.$apollo.provider.clients;
 
       const sourceData = store.readQuery({
-        query: this.boardQuery,
+        query: this.boardsQuery,
         variables: { fullPath: this.fullPath },
       });
 
       const newData = produce(sourceData, (draftState) => {
-        draftState[this.parentType].boards.edges = [
-          ...draftState[this.parentType].boards.edges,
-          { node: board },
+        draftState[this.parentType].boards.nodes = [
+          ...draftState[this.parentType].boards.nodes,
+          { ...board },
         ];
       });
 
       store.writeQuery({
-        query: this.boardQuery,
+        query: this.boardsQuery,
         variables: { fullPath: this.fullPath },
         data: newData,
       });
@@ -266,9 +288,6 @@ export default {
         updateHistory({ url: `${this.boardBaseUrl}/${boardId}` });
       }
     },
-  },
-  i18n: {
-    errorFetchingBoard: s__('Board|An error occurred while fetching the board, please try again.'),
   },
 };
 </script>

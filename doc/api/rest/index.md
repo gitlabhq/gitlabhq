@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# REST API **(FREE)**
+# REST API **(FREE ALL)**
 
 The REST APIs have been around for a longer time compared to GraphQL APIs, which
 may make them more familiar to some developers. It is often a good choice for
@@ -200,7 +200,9 @@ header.
 
 By default, impersonation is enabled. To disable impersonation:
 
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit the `/etc/gitlab/gitlab.rb` file:
 
@@ -211,10 +213,7 @@ By default, impersonation is enabled. To disable impersonation:
 1. Save the file, and then [reconfigure](../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    GitLab for the changes to take effect.
 
-To re-enable impersonation, remove this configuration, and then reconfigure
-GitLab.
-
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 1. Edit the `config/gitlab.yml` file:
 
@@ -223,10 +222,13 @@ GitLab.
      impersonation_enabled: false
    ```
 
-1. Save the file, and then [restart](../../administration/restart_gitlab.md#installations-from-source)
+1. Save the file, and then [restart](../../administration/restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
-To re-enable impersonation, remove this configuration, and then restart GitLab.
+::EndTabs
+
+To re-enable impersonation, remove this configuration and reconfigure GitLab (Linux package installations) or restart
+GitLab (self-compiled installations).
 
 ### Sudo
 
@@ -314,6 +316,7 @@ The following table shows the possible return codes for API requests.
 | `201 Created`             | The `POST` request was successful, and the resource is returned as JSON.                                                                                 |
 | `202 Accepted`            | The `GET`, `PUT` or `DELETE` request was successful, and the resource is scheduled for processing.                                                       |
 | `204 No Content`          | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body.                              |
+| `301 Moved Permanently`   | The resource has been definitively moved to the URL given by the `Location` headers.                                                                     |
 | `304 Not Modified`        | The resource hasn't been modified since the last request.                                                                                                |
 | `400 Bad Request`         | A required attribute of the API request is missing. For example, the title of an issue is not given.                                                     |
 | `401 Unauthorized`        | The user isn't authenticated. A valid [user token](#authentication) is necessary.                                                                        |
@@ -326,6 +329,33 @@ The following table shows the possible return codes for API requests.
 | `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits).                                                    |
 | `500 Server Error`        | While handling the request, something went wrong on the server.                                                                                          |
 | `503 Service Unavailable` | The server cannot handle the request because the server is temporarily overloaded.                                                                               |
+
+## Redirects
+
+> Introduced in GitLab 16.4 [with a flag](../../user/feature_flags.md) named `api_redirect_moved_projects`. Disabled by default.
+
+FLAG:
+On GitLab.com, this feature is not available.
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../user/feature_flags.md) named `api_redirect_moved_projects`.
+
+REST API can respond with a redirect and users should be able to handle such responses.
+The users should follow the redirect and repeat the request to the URI specified in the `Location` header.
+
+Example of a project moved to a different path:
+
+```shell
+curl --verbose "https://gitlab.example.com/api/v4/projects/gitlab-org%2Fold-path-project"
+```
+
+The response is:
+
+```plaintext
+...
+< Location: http://gitlab.example.com/api/v4/projects/81
+...
+This resource has been moved permanently to https://gitlab.example.com/api/v4/projects/81
+```
 
 ## Pagination
 
@@ -745,10 +775,56 @@ The correct encoding for the query parameter would be:
 2017-10-17T23:11:13.000%2B05:30
 ```
 
-## Clients
+## Third-party clients
 
-Many unofficial GitLab API Clients are available for most of the popular programming
-languages. For a complete list, see the [GitLab website](https://about.gitlab.com/partners/technology-partners/#api-clients).
+You can integrate third-party API client libraries with GitLab. The following libraries are maintained by community members and not officially supported by GitLab.
+Report bugs and feature proposals to the respective projects.
+
+For questions about these integrations, use the [GitLab community forum](https://forum.gitlab.com/).
+
+### `C#`
+
+- [`GitLabApiClient`](https://github.com/nmklotas/GitLabApiClient)
+
+### Go
+
+- [`go-gitlab`](https://github.com/xanzy/go-gitlab)
+
+### Haskell
+
+- [`gitlab-haskell`](http://hackage.haskell.org/package/gitlab-haskell)
+
+### Java
+
+- [`gitlab4j-api`](https://github.com/gmessner/gitlab4j-api)
+- [`java-gitlab-api`](https://github.com/timols/java-gitlab-api)
+
+### Node.js
+
+- [`gitlab-yaac`](https://www.npmjs.com/package/gitlab-yaac)
+- [`backbone-gitlab`](https://github.com/oreillymedia/backbone-gitlab)
+
+### Perl
+
+- [`GitLab::API::v4`](https://metacpan.org/pod/GitLab::API::v4)
+
+### PHP
+
+- [`php-gitlab-api`](https://github.com/GitLabPHP/Client)
+
+### Python
+
+- [`python-gitlab`](https://github.com/python-gitlab/python-gitlab)
+  - Blog post: [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/2023/02/01/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/)
+- [`libsaas_gitlab`](https://gitlab.com/bor-sh-infrastructure/libsaas_gitlab)
+
+### Ruby
+
+- [Ruby wrapper and CLI for the GitLab REST API](https://github.com/NARKOZ/gitlab)
+
+### Swift
+
+- [`RxGitLabKit`](https://github.com/Qase/RxGitLabKit)
 
 ## Rate limits
 

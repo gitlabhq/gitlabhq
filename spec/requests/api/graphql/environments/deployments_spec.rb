@@ -314,14 +314,17 @@ RSpec.describe 'Environments Deployments query', feature_category: :continuous_d
       end
 
       def create_deployments
-        create_list(:deployment, 3, environment: environment, project: project).each do |deployment|
-          deployment.user = create(:user).tap { |u| project.add_developer(u) }
-          deployment.deployable =
-            create(:ci_build, project: project, environment: environment.name, deployment: deployment,
-                              user: deployment.user)
+        deployments = create_list(:deployment, 2, environment: environment, project: project)
+        set_deployment_attributes(deployments.first, :ci_build)
+        set_deployment_attributes(deployments.second, :ci_bridge)
+        deployments.each(&:save!)
+      end
 
-          deployment.save!
-        end
+      def set_deployment_attributes(deployment, factory_type)
+        deployment.user = create(:user).tap { |u| project.add_developer(u) }
+        deployment.deployable =
+          create(factory_type, project: project, environment: environment.name, deployment: deployment,
+                               user: deployment.user)
       end
     end
 
@@ -432,7 +435,7 @@ RSpec.describe 'Environments Deployments query', feature_category: :continuous_d
         deployments.each do |deployment|
           deployment_in_record = project.deployments.find_by_iid(deployment['iid'])
 
-          expect(deployment_in_record.build.to_global_id.to_s).to eq(deployment['job']['id'])
+          expect(deployment_in_record.job.to_global_id.to_s).to eq(deployment['job']['id'])
         end
       end
     end

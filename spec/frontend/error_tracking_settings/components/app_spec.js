@@ -1,6 +1,7 @@
 import { GlFormRadioGroup, GlFormRadio, GlFormInputGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { TEST_HOST } from 'helpers/test_constants';

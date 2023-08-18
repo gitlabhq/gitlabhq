@@ -1,4 +1,4 @@
-import { findKey, has } from 'lodash';
+import { findKey } from 'lodash';
 import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
 import { formatSearchResultCount, addCountOverLimit } from '~/search/store/utils';
@@ -47,9 +47,6 @@ export const appliedSelectedLabels = (state) => {
   );
 };
 
-export const filteredUnappliedSelectedLabels = (state) =>
-  filteredLabels(state)?.filter((label) => state?.query?.labels?.includes(label.key));
-
 export const filteredUnselectedLabels = (state) => {
   if (!state?.urlQuery?.labels) {
     return filteredLabels(state);
@@ -61,10 +58,6 @@ export const filteredUnselectedLabels = (state) => {
 export const currentScope = (state) => findKey(state.navigation, { active: true });
 
 export const queryLanguageFilters = (state) => state.query[languageFilterData.filterParam] || [];
-
-export const currentUrlQueryHasLanguageFilters = (state) =>
-  has(state.urlQuery, languageFilterData.filterParam) &&
-  state.urlQuery[languageFilterData.filterParam]?.length > 0;
 
 export const navigationItems = (state) =>
   Object.values(state.navigation).map((item) => ({

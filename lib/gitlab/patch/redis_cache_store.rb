@@ -44,11 +44,7 @@ module Gitlab
 
         values = failsafe(:patched_read_multi_mget, returning: {}) do
           redis.with do |c|
-            if c.is_a?(Gitlab::Redis::MultiStore)
-              c.with_readonly_pipeline { pipeline_mget(c, keys) }
-            else
-              pipeline_mget(c, keys)
-            end
+            pipeline_mget(c, keys)
           end
         end
 

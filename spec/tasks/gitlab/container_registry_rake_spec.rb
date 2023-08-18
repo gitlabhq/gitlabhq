@@ -5,7 +5,7 @@ require 'rake_helper'
 RSpec.describe 'gitlab:container_registry namespace rake tasks', :silence_stdout do
   let_it_be(:api_url) { 'http://registry.gitlab' }
 
-  before :all do
+  before_all do
     Rake.application.rake_require 'tasks/gitlab/container_registry'
   end
 

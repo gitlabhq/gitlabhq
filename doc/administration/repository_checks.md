@@ -93,6 +93,10 @@ If periodic repository checks cause false alarms, you can clear all repository c
 1. Expand the **Repository maintenance** section.
 1. Select **Clear all repository checks**.
 
+## Troubleshooting
+
+When working with repository checks, you might encounter the following issues.
+
 ### Error: `failed to parse commit <commit SHA> from object database for commit-graph`
 
 You can see a `failed to parse commit <commit SHA> from object database for commit-graph` error in repository check logs. This error occurs if your `commit-graph` cache is out

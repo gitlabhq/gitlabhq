@@ -281,30 +281,34 @@ queue, or the index is somehow in a state where migrations just cannot
 proceed. It is always best to try to troubleshoot the root cause of the problem
 by [viewing the logs](#view-logs).
 
-If there are no other options, then you always have the option of recreating the
-entire index from scratch. If you have a small GitLab installation, this can
-sometimes be a quick way to resolve a problem, but if you have a large GitLab
-installation, then this might take a very long time to complete. Until the
-index is fully recreated, your index does not serve correct search results,
-so you may want to disable **Search with Elasticsearch** while it is running.
+As a last resort, you can recreate the index from scratch. For small GitLab installations,
+recreating the index can be a quick way to resolve some issues. For large GitLab
+installations, however, this method might take a very long time. Your index
+does not show correct search results until the indexing is complete. You might
+want to clear the **Search with Elasticsearch enabled** checkbox
+while the indexing is running.
 
 If you are sure you've read the above caveats and want to proceed, then you
-should run the following Rake task to recreate the entire index from scratch:
+should run the following Rake task to recreate the entire index from scratch.
 
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 ```shell
 # WARNING: DO NOT RUN THIS UNTIL YOU READ THE DESCRIPTION ABOVE
 sudo gitlab-rake gitlab:elastic:index
 ```
 
-**For installations from source**
+:::TabTitle Self-compiled (source)
 
 ```shell
 # WARNING: DO NOT RUN THIS UNTIL YOU READ THE DESCRIPTION ABOVE
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:elastic:index
 ```
+
+::EndTabs
 
 ### Troubleshooting performance
 
@@ -403,7 +407,7 @@ There is also an easy way to check it automatically with `sudo gitlab-rake gitla
 
 This exception is seen when your Elasticsearch cluster is configured to reject requests above a certain size (10MiB in this case). This corresponds to the `http.max_content_length` setting in `elasticsearch.yml`. Increase it to a larger size and restart your Elasticsearch cluster.
 
-AWS has [fixed limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/limits.html#network-limits) for this setting ("Maximum size of HTTP request payloads"), based on the size of the underlying instance.
+AWS has [network limits](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/limits.html#network-limits) on the maximum size of HTTP request payloads based on the size of the underlying instance. Set the maximum bulk request size to a value lower than 10 MiB.
 
 ## `Faraday::TimeoutError (execution expired)` error when using a proxy
 

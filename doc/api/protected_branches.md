@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Protected branches API **(FREE)**
+# Protected branches API **(FREE ALL)**
 
 ## Valid access levels
 
@@ -310,7 +310,7 @@ Example response:
 }
 ```
 
-### Example with user / group level access **(PREMIUM)**
+### Example with user / group level access **(PREMIUM ALL)**
 
 Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
 form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Each user must have access to the project and each group must [have this project shared](../user/project/members/share_project_with_groups.md). These access levels allow [more granular control over protected branch access](../user/project/protected_branches.md).
@@ -357,7 +357,7 @@ Example response:
 }
 ```
 
-### Example with allow to push and allow to merge access **(PREMIUM)**
+### Example with allow to push and allow to merge access **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 

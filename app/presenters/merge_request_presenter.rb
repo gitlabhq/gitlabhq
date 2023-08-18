@@ -266,10 +266,15 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def issues_sentence(project, issues)
     # Sorting based on the `#123` or `group/project#123` reference will sort
-    # local issues first.
-    issues.map do |issue|
+    # local issues numerically first.
+    issue_refs = issues.map do |issue|
       issue.to_reference(project)
-    end.sort.to_sentence
+    end
+
+    issue_refs.sort_by do |issue_ref|
+      path_section = issue_ref.split('#')
+      [path_section.first, path_section.last.to_i]
+    end.to_sentence
   end
 
   def user_can_fork_project?

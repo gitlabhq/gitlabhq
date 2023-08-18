@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormInput, GlLink } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions } from 'vuex';
 import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.vue';
 import { joinPaths } from '~/lib/utils/url_utility';

@@ -18,17 +18,16 @@ RSpec.describe Tooling::Danger::Specs::ProjectFactorySuggestion, feature_categor
       %<suggested_line>s
       ```
 
-      Project creations are very slow. Using `let_it_be`, `build` or `build_stubbed` can improve test performance.
+      Project creations are very slow. To improve test performance, consider using `let_it_be`, `build`, or `build_stubbed` instead.
 
-      Warning: `let_it_be` may not be suitable if your test modifies data as this could result in state leaks!
+      ⚠️ **Warning**: If your test modifies data, `let_it_be` may be unsuitable, and cause state leaks! Use `let_it_be_with_reload` or `let_it_be_with_refind` instead.
 
-      In those cases, please use `let_it_be_with_reload` or `let_it_be_with_refind` instead.
-
-      If your are unsure which is the right method to use,
-      please refer to [testing best practices](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#optimize-factory-usage)
+      Unsure which method to use? See the [testing best practices](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#optimize-factory-usage)
       for background information and alternative options for optimizing factory usage.
 
-      Feel free to ignore this comment if you know `let` or `let!` are the better options and/or worry about causing state leaks.
+      If you're concerned about causing state leaks, or if you know `let` or `let!` are the better options, ignore this comment.
+
+      ([Improve this message?](https://gitlab.com/gitlab-org/gitlab/-/blob/master/tooling/danger/specs/project_factory_suggestion.rb))
     MARKDOWN
   end
 

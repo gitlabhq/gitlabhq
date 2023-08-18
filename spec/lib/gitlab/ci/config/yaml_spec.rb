@@ -36,17 +36,5 @@ RSpec.describe Gitlab::Ci::Config::Yaml, feature_category: :pipeline_composition
           .to raise_error ::Gitlab::Config::Loader::FormatError, /mapping values are not allowed in this context/
       end
     end
-
-    context 'when given a user' do
-      let(:user) { instance_double(User) }
-
-      subject(:config) { described_class.load!(yaml, current_user: user) }
-
-      it 'passes it to Loader' do
-        expect(::Gitlab::Ci::Config::Yaml::Loader).to receive(:new).with(yaml, current_user: user).and_call_original
-
-        config
-      end
-    end
   end
 end

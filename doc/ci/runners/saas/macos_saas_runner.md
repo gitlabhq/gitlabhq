@@ -117,6 +117,51 @@ variables:
   HOMEBREW_NO_AUTO_UPDATE: 1
 ```
 
+## Optimizing Cocoapods
+
+If you use Cocoapods in a project, you should consider the following optimizations to improve CI performance.
+
+**Cocoapods CDN**
+
+You can use content delivery network (CDN) access to download packages from the CDN instead of having to clone an entire
+project repository. CDN access is available in Cocoapods 1.8 or later and is supported by all GitLab SaaS runners on macOS.
+
+To enable CDN access, ensure your Podfile starts with:
+
+```ruby
+source 'https://cdn.cocoapods.org/'
+```
+
+**Use GitLab caching**
+
+Use caching in Cocoapods packages in GitLab to only run `pod install`
+when pods change, which can improve build performance.
+
+To [configure caching](../../../ci/caching/index.md) for your project:
+
+1. Add the `cache` configuration to your `.gitlab-ci.yml` file:
+
+    ```yaml
+    cache:
+      key:
+        files:
+         - Podfile.lock
+    paths:
+      - Pods
+    ```
+
+1. Add the [`cocoapods-check`](https://guides.cocoapods.org/plugins/optimising-ci-times.html) plugin to your project.
+1. Update the job script to check for installed dependencies before it calls `pod install`:
+
+    ```shell
+    bundle exec pod check || bundle exec pod install
+    ```
+
+**Include pods in source control**
+
+You can also [include the pods directory in source control](https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control). This eliminates the need to install pods as part of the CI job,
+but it does increase the overall size of your project's repository.
+
 ## Known issues and usage constraints
 
 - If the VM image does not include the specific software version you need for your job, the required software must be fetched and installed. This causes an increase in job execution time.

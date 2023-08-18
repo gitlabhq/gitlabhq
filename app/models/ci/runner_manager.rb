@@ -14,7 +14,8 @@ module Ci
 
     belongs_to :runner
 
-    has_many :runner_manager_builds, inverse_of: :runner_manager, class_name: 'Ci::RunnerManagerBuild'
+    has_many :runner_manager_builds, inverse_of: :runner_manager, foreign_key: :runner_machine_id,
+      class_name: 'Ci::RunnerManagerBuild'
     has_many :builds, through: :runner_manager_builds, class_name: 'Ci::Build'
     belongs_to :runner_version, inverse_of: :runner_managers, primary_key: :version, foreign_key: :version,
       class_name: 'Ci::RunnerVersion'
@@ -46,6 +47,23 @@ module Ci
 
     scope :for_runner, ->(runner_id) do
       where(runner_id: runner_id)
+    end
+
+    scope :with_running_builds, -> do
+      where('EXISTS(?)',
+        Ci::Build.select(1)
+          .joins(:runner_manager_build)
+          .running
+          .where("#{::Ci::Build.quoted_table_name}.runner_id = #{quoted_table_name}.runner_id")
+          .where("#{::Ci::RunnerManagerBuild.quoted_table_name}.runner_machine_id = #{quoted_table_name}.id")
+          .limit(1)
+      )
+    end
+
+    scope :order_id_desc, -> { order(id: :desc) }
+
+    scope :with_upgrade_status, ->(upgrade_status) do
+      joins(:runner_version).where(runner_version: { status: upgrade_status })
     end
 
     def self.online_contact_time_deadline

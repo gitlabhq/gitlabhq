@@ -35,6 +35,19 @@ export const mockPipelineScheduleAsGuestNodes = guestNodes;
 export const mockTakeOwnershipNodes = takeOwnershipNodes;
 export const mockSinglePipelineScheduleNode = mockGetSinglePipelineScheduleGraphQLResponse;
 
+export const mockSinglePipelineScheduleNodeNoVars = {
+  data: {
+    currentUser: mockGetPipelineSchedulesGraphQLResponse.data.currentUser,
+    project: {
+      id: mockGetPipelineSchedulesGraphQLResponse.data.project.id,
+      pipelineSchedules: {
+        count: 1,
+        nodes: [mockGetPipelineSchedulesGraphQLResponse.data.project.pipelineSchedules.nodes[1]],
+      },
+    },
+  },
+};
+
 export const emptyPipelineSchedulesResponse = {
   data: {
     currentUser: {

@@ -28,6 +28,11 @@ export default {
       required: false,
       default: false,
     },
+    hasFlyout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -40,7 +45,12 @@ export default {
       return this.items.some((item) => item.is_active);
     },
     sectionItem() {
-      return { title: this.$options.i18n.pinned, icon: 'thumbtack', is_active: this.isActive };
+      return {
+        title: this.$options.i18n.pinned,
+        icon: 'thumbtack',
+        is_active: this.isActive,
+        items: this.draggableItems,
+      };
     },
     itemIds() {
       return this.draggableItems.map((item) => item.id);
@@ -75,14 +85,16 @@ export default {
     :item="sectionItem"
     :expanded="expanded"
     :separated="separated"
+    :has-flyout="hasFlyout"
     @collapse-toggle="expanded = !expanded"
+    @pin-remove="(itemId) => $emit('pin-remove', itemId)"
   >
     <draggable
       v-if="items.length > 0"
       v-model="draggableItems"
       class="gl-p-0 gl-m-0"
       data-testid="pinned-nav-items"
-      handle=".draggable-icon"
+      handle=".js-draggable-icon"
       tag="ul"
       @end="handleDrag"
     >

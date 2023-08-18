@@ -26,6 +26,11 @@ export default {
       required: false,
       default: 'question-o',
     },
+    triggerClass: {
+      type: [String, Array, Object],
+      required: false,
+      default: '',
+    },
   },
   methods: {
     targetFn() {
@@ -36,7 +41,13 @@ export default {
 </script>
 <template>
   <span>
-    <gl-button ref="popoverTrigger" variant="link" :icon="icon" :aria-label="__('Help')" />
+    <gl-button
+      ref="popoverTrigger"
+      :class="triggerClass"
+      variant="link"
+      :icon="icon"
+      :aria-label="__('Help')"
+    />
     <gl-popover :target="targetFn" v-bind="options">
       <template v-if="options.title" #title>
         <span v-safe-html="options.title"></span>

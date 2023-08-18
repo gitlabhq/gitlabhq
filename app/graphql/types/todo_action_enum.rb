@@ -12,5 +12,6 @@ module Types
     value 'merge_train_removed', value: 8, description: 'Merge request authored by the user was removed from the merge train.'
     value 'review_requested', value: 9, description: 'Review was requested from the user.'
     value 'member_access_requested', value: 10, description: 'Group or project access requested from the user.'
+    value 'review_submitted', value: 11, description: 'Merge request authored by the user received a review.'
   end
 end

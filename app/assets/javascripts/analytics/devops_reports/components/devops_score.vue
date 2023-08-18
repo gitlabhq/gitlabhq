@@ -40,7 +40,7 @@ export default {
       return this.devopsScoreMetrics.averageScore === undefined;
     },
   },
-  devopsReportDocsPath: helpPagePath('user/admin_area/analytics/dev_ops_reports'),
+  devopsReportDocsPath: helpPagePath('administration/analytics/dev_ops_reports'),
   tableHeaderFields: [
     {
       key: 'title',

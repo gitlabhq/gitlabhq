@@ -1,5 +1,6 @@
 <script>
 import { GlModal, GlAlert } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl, updateHistory, getParameterByName } from '~/lib/utils/url_utility';

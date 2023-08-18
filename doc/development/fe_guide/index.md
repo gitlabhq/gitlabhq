@@ -26,6 +26,13 @@ modern ECMAScript standards supported through [Babel](https://babeljs.io/) and E
 
 When making API calls, we use [GraphQL](graphql.md) as [the first choice](../../api/graphql/index.md#vision). There are still instances where GitLab REST API is used such as when creating new simple HAML pages or in legacy part of the codebase, but we should always default to GraphQL when possible.
 
+We use [Apollo](https://www.apollographql.com/) as our global state manager and [GraphQL client](graphql.md).
+[VueX](vuex.md) is still in use across the codebase, but it is no longer the recommended global state manager.
+You should **not** [use VueX and Apollo together](graphql.md#using-with-vuex),
+and should [avoid adding new VueX stores](migrating_from_vuex.md) whenever possible.
+
+For copy strings and translations, we have frontend utilities available. Please see the JavaScript section of [Preparing a page for translation](../i18n/externalization.md#javascript-files) for more information.
+
 Working with our frontend assets requires Node (v12.22.1 or greater) and Yarn
 (v1.10.0 or greater). You can find information on how to install these on our
 [installation guide](../../install/installation.md#5-node).
@@ -56,7 +63,7 @@ GitLab is now a large, enterprise-grade software and it often requires complex c
 
 - Building tools that solve commonly-faced problems and making them easily discoverable.
 - Writing better documentation on how we solve our problems.
-- Writing loosly coupled components that can be easily added or removed from our codebase.
+- Writing loosely coupled components that can be easily added or removed from our codebase.
 - Remove older technologies or pattern that we deem are no longer acceptable.
 
 By focusing on these aspects, we aim to allow engineers to contain complexity in well defined boundaries and quickly share them with their peers.
@@ -67,9 +74,9 @@ Now that our values have been defined, we can base our goals on these values and
 
 - Lowest possible FID, LCP and cross-page navigation times
 - Minimal page reloads when interacting with the UI
-- Have as little Vue applications per page as possible
-- Leverage Ruby ViewComponents for simple pages and avoid Vue overhead when possible
-- Migrate existing VueX stores to Apollo, but more urgently **stop using both together**
+- [Have as little Vue applications per page as possible](vue.md#avoid-multiple-vue-applications-on-the-page)
+- Leverage [Ruby ViewComponents](view_component.md) for simple pages and avoid Vue overhead when possible
+- [Migrate away from VueX](migrating_from_vuex.md), but more urgently **stop using Apollo and VueX together**
 - Remove jQuery from our codebase
 - Add a visual testing framework
 - Reduce CSS bundle size to a minimum
@@ -77,9 +84,11 @@ Now that our values have been defined, we can base our goals on these values and
 - Improve our pipelines speed
 - Build a better set of shared components with documentation
 
+We have detailed description on how we see GitLab frontend in the future in [Frontend Goals](frontend_goals.md) section
+
 ### Frontend onboarding course
 
-The [Frontend onboarding course](onboarding_course/index.md) provides a 6-week structured curriculum to learn how to contribute to the GitLab frontend.  
+The [Frontend onboarding course](onboarding_course/index.md) provides a 6-week structured curriculum to learn how to contribute to the GitLab frontend.
 
 ### Browser Support
 

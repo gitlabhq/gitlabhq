@@ -4,7 +4,7 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Scan result policies **(ULTIMATE)**
+# Scan result policies **(ULTIMATE ALL)**
 
 > Group-level scan result policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7622) in GitLab 15.6.
 
@@ -26,6 +26,23 @@ The following video gives you an overview of GitLab scan result policies:
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/w5I9gcUgr9U" frameborder="0" allowfullscreen> </iframe>
 </figure>
+
+## Merge request with multiple pipelines
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379108) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `multi_pipeline_scan_result_policies`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/409482) in GitLab 16.3.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `multi_pipeline_scan_result_policies`. On GitLab.com, this feature is available.
+
+A project can have multiple pipeline types configured. A single commit can initiate multiple
+pipelines, each of which may contain a security scan.
+
+- In GitLab 16.3 and later, the results of all completed pipelines for the latest commit in
+the MR's source and target branch are evaluated and used to enforce the scan result policy.
+Parent-child pipelines and on-demand DAST pipelines are not considered.
+- In GitLab 16.2 and earlier, only the results of the latest completed pipeline were evaluated
+when enforcing scan result policies.
 
 ## Scan result policy editor
 
@@ -77,6 +94,13 @@ the following sections and tables provide an alternative.
 
 ## `scan_finding` rule type
 
+> - The scan result policy field `vulnerability_attributes` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123052) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/418784) in GitLab 16.3.
+> - The scan result policy field `vulnerability_age` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123956) in GitLab 16.2.
+
+FLAG:
+On self-managed GitLab, by default the `vulnerability_attributes` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`.
+On GitLab.com, this feature is available.
 This rule enforces the defined actions based on security scan findings.
 
 | Field | Type | Required | Possible values | Description |
@@ -88,6 +112,8 @@ This rule enforces the defined actions based on security scan findings.
 | `vulnerabilities_allowed` | `integer` | true | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
 | `severity_levels` | `array` of `string` | true | `info`, `unknown`, `low`, `medium`, `high`, `critical` | The severity levels for this rule to consider. |
 | `vulnerability_states` | `array` of `string` | true | `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed`, `new_needs_triage`, `new_dismissed` | All vulnerabilities fall into two categories:<br><br>**Newly Detected Vulnerabilities** - the `newly_detected` policy option covers vulnerabilities identified in the merge request branch itself but that do not currently exist on the default branch. This policy option requires a pipeline to complete before the rule is evaluated so that it knows whether vulnerabilities are newly detected or not. Merge requests are blocked until the pipeline and necessary security scans are complete. The `newly_detected` option considers both of the following statuses:<br><br> • Detected<br> • Dismissed<br><br> The `new_needs_triage` option considers the status<br><br> • Detected<br><br> The `new_dismissed` option considers the status<br><br> • Dismissed<br><br>**Pre-Existing Vulnerabilities** - these policy options are evaluated immediately and do not require a pipeline complete as they consider only vulnerabilities previously detected in the default branch.<br><br> • `Detected` - the policy looks for vulnerabilities in the detected state.<br> • `Confirmed` - the policy looks for vulnerabilities in the confirmed state.<br> • `Dismissed` - the policy looks for vulnerabilities in the dismissed state.<br> • `Resolved` - the policy looks for vulnerabilities in the resolved state. |
+| `vulnerability_attributes` | `object` | false | `{false_positive: boolean, fix_available: boolean}` | All vulnerability findings are considered by default. But filters can be applied for attributes to consider only vulnerability findings: <br><br> • With a fix available (`fix_available: true`)<br><br> • With no fix available (`fix_available: false`)<br> • That are false positive (`false_positive: true`)<br> • That are not false positive (`false_positive: false`)<br> • Or a combination of both. For example (`fix_available: true, false_positive: false`) |
+| `vulnerability_age` | `object` | false | N/A | Filter pre-existing vulnerability findings by age. A vulnerability's age is calculated as the time since it was detected in the project. The criteria are `operator`, `value`, and  `interval`.<br>- The `operator` criterion specifies if the age comparison used is older than (`greater_than`) or younger than (`less_than`).<br>- The `value` criterion specifies the numeric value representing the vulnerability's age.<br>- The `interval` criterion specifies the unit of measure of the vulnerability's age: `day`, `week`, `month`, or `year`.<br><br>Example: `operator: greater_than`, `value: 30`, `interval: day`. |
 
 ## `license_finding` rule type
 
@@ -150,6 +176,9 @@ scan_result_policy:
     - critical
     vulnerability_states:
     - newly_detected
+    vulnerability_attributes:
+      false_positive: true
+      fix_available: true
   actions:
   - type: require_approval
     approvals_required: 1
@@ -169,12 +198,14 @@ scan_result_policy:
     - low
     - unknown
     vulnerability_states:
-    - newly_detected
+    - detected
+    vulnerability_age:
+      operator: greater_than
+      value: 30
+      interval: day
   actions:
   - type: require_approval
     approvals_required: 1
-    user_approvers:
-    - sam.white
     role_approvers:
     - owner
 ```
@@ -183,8 +214,8 @@ In this example:
 
 - Every MR that contains new `critical` vulnerabilities identified by container scanning requires
   one approval from `alberto.dare`.
-- Every MR that contains more than one new `low` or `unknown` vulnerability identified by container
-  scanning requires one approval from `sam.white`.
+- Every MR that contains more than one preexisting `low` or `unknown` vulnerability older than 30 days identified by
+  container scanning requires one approval from a project member with the Owner role.
 
 ## Example for Scan Result Policy editor
 

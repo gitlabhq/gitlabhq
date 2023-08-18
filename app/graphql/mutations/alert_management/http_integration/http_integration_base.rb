@@ -5,9 +5,9 @@ module Mutations
     module HttpIntegration
       class HttpIntegrationBase < BaseMutation
         field :integration,
-              Types::AlertManagement::HttpIntegrationType,
-              null: true,
-              description: "HTTP integration."
+          Types::AlertManagement::HttpIntegrationType,
+          null: true,
+          description: "HTTP integration."
 
         authorize :admin_operations
 

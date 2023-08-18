@@ -451,6 +451,56 @@ module QA
         %w[GCLOUD_ACCOUNT_KEY GCLOUD_ACCOUNT_EMAIL].none? { |var| ENV[var].to_s.empty? }
       end
 
+      # ENV variables for workspaces to run against existing cluster or creating new cluster
+      def workspaces_cluster_available?
+        enabled?(ENV['WORKSPACES_CLUSTER_AVAILABLE'], default: false)
+      end
+
+      def workspaces_cluster_name
+        ENV.fetch("WORKSPACES_CLUSTER_NAME")
+      end
+
+      def workspaces_cluster_region
+        ENV.fetch("WORKSPACES_CLUSTER_REGION")
+      end
+
+      # ENV variables for workspaces OAuth App and the domain
+      def workspaces_oauth_app_id
+        ENV.fetch("WORKSPACES_OAUTH_APP_ID")
+      end
+
+      def workspaces_oauth_app_secret
+        ENV.fetch("WORKSPACES_OAUTH_APP_SECRET")
+      end
+
+      def workspaces_oauth_redirect_uri
+        ENV.fetch("WORKSPACES_OAUTH_REDIRECT_URI")
+      end
+
+      def workspaces_oauth_signing_key
+        ENV.fetch("WORKSPACES_OAUTH_SIGNING_KEY")
+      end
+
+      def workspaces_proxy_domain
+        ENV.fetch("WORKSPACES_PROXY_DOMAIN")
+      end
+
+      def workspaces_domain_cert
+        ENV.fetch("WORKSPACES_DOMAIN_CERT")
+      end
+
+      def workspaces_domain_key
+        ENV.fetch("WORKSPACES_DOMAIN_KEY")
+      end
+
+      def workspaces_wildcard_cert
+        ENV.fetch("WORKSPACES_WILDCARD_CERT")
+      end
+
+      def workspaces_wildcard_key
+        ENV.fetch("WORKSPACES_WILDCARD_KEY")
+      end
+
       # Specifies the token that can be used for the GitHub API
       def github_access_token
         ENV['QA_GITHUB_ACCESS_TOKEN'].to_s.strip
@@ -568,6 +618,10 @@ module QA
 
       def skip_smoke_reliable?
         enabled?(ENV['QA_SKIP_SMOKE_RELIABLE'], default: false)
+      end
+
+      def fips?
+        enabled?(ENV['FIPS'], default: false)
       end
 
       def container_registry_host

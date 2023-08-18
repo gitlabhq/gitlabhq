@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelineStatus, { i18n } from '~/ci/pipeline_editor/components/header/pipeline_status.vue';
 import getPipelineQuery from '~/ci/pipeline_editor/graphql/queries/pipeline.query.graphql';
-import GraphqlPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/graphql_pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from '~/ci/pipeline_editor/components/header/pipeline_editor_mini_graph.vue';
 import { mockCommitSha, mockProjectPipeline, mockProjectFullPath } from '../../mock_data';
 
@@ -38,8 +38,9 @@ describe('Pipeline Status', () => {
 
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findGraphqlPipelineMiniGraph = () => wrapper.findComponent(GraphqlPipelineMiniGraph);
   const findPipelineEditorMiniGraph = () => wrapper.findComponent(PipelineEditorMiniGraph);
+  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
+
   const findPipelineId = () => wrapper.find('[data-testid="pipeline-id"]');
   const findPipelineCommit = () => wrapper.find('[data-testid="pipeline-commit"]');
   const findPipelineErrorMsg = () => wrapper.find('[data-testid="pipeline-error-msg"]');
@@ -142,18 +143,18 @@ describe('Pipeline Status', () => {
     });
 
     it.each`
-      state    | provide                                 | showPipelineMiniGraph | showGraphqlPipelineMiniGraph
-      ${true}  | ${{ ciGraphqlPipelineMiniGraph: true }} | ${false}              | ${true}
-      ${false} | ${{}}                                   | ${true}               | ${false}
+      state    | showLegacyPipelineMiniGraph | showPipelineMiniGraph
+      ${true}  | ${false}                    | ${true}
+      ${false} | ${true}                     | ${false}
     `(
       'renders the correct component when the feature flag is set to $state',
-      async ({ provide, showPipelineMiniGraph, showGraphqlPipelineMiniGraph }) => {
-        createComponentWithApollo(provide);
+      async ({ state, showLegacyPipelineMiniGraph, showPipelineMiniGraph }) => {
+        createComponentWithApollo({ ciGraphqlPipelineMiniGraph: state });
 
         await waitForPromises();
 
-        expect(findPipelineEditorMiniGraph().exists()).toBe(showPipelineMiniGraph);
-        expect(findGraphqlPipelineMiniGraph().exists()).toBe(showGraphqlPipelineMiniGraph);
+        expect(findPipelineEditorMiniGraph().exists()).toBe(showLegacyPipelineMiniGraph);
+        expect(findPipelineMiniGraph().exists()).toBe(showPipelineMiniGraph);
       },
     );
   });

@@ -245,6 +245,12 @@ sudo gitlab-ctl start consul
 After this, the node should start back up, and the rest of the server agents rejoin.
 Shortly after that, the client agents should rejoin as well.
 
+If they do not join, you might also need to erase the Consul data on the client:
+
+```shell
+sudo rm -rf /var/opt/gitlab/consul/data
+```
+
 #### Recover a failed node
 
 If you have taken advantage of Consul to store other data and want to restore

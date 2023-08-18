@@ -50,7 +50,7 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
   let(:parent_record_1) { loose_fk_parent_table.create! }
   let(:other_parent_record) { loose_fk_parent_table.create! }
 
-  before(:all) do
+  before_all do
     create_table_structure
   end
 

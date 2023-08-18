@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Use Docker to build Docker images **(FREE)**
+# Use Docker to build Docker images **(FREE ALL)**
 
 You can use GitLab CI/CD with Docker to create Docker images.
 For example, you can create a Docker image of your application,
@@ -37,7 +37,7 @@ the Docker commands, but needs permission to do so.
 
    ```shell
    sudo gitlab-runner register -n \
-     --url https://gitlab.com/ \
+     --url "https://gitlab.com/" \
      --registration-token REGISTRATION_TOKEN \
      --executor shell \
      --description "My Runner"
@@ -91,7 +91,7 @@ You should use Docker-in-Docker with TLS enabled,
 which is supported by [GitLab.com shared runners](../runners/index.md).
 
 You should always pin a specific version of the image, like `docker:20.10.16`.
-If you use a tag like `docker:stable`, you have no control over which version is used.
+If you use a tag like `docker:latest`, you have no control over which version is used.
 This can cause incompatibility problems when new versions are released.
 
 #### Use the Docker executor with Docker-in-Docker
@@ -117,7 +117,7 @@ To use Docker-in-Docker with TLS enabled:
 
    ```shell
    sudo gitlab-runner register -n \
-     --url https://gitlab.com/ \
+     --url "https://gitlab.com/" \
      --registration-token REGISTRATION_TOKEN \
      --executor docker \
      --description "My Docker Runner" \
@@ -381,7 +381,7 @@ To mount `/var/run/docker.sock` while registering your runner, include the follo
 
 ```shell
 sudo gitlab-runner register -n \
-  --url https://gitlab.com/ \
+  --url "https://gitlab.com/" \
   --registration-token REGISTRATION_TOKEN \
   --executor docker \
   --description "My Docker Runner" \

@@ -30,12 +30,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       scope '-' do
         get 'archive/*id', format: true, constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
 
-        namespace :metrics, module: :metrics do
-          namespace :dashboards do
-            post :builder, to: 'builder#panel_preview'
-          end
-        end
-
         namespace :security do
           resource :configuration, only: [:show], controller: :configuration do
             resource :sast, only: [:show], controller: :sast_configuration
@@ -343,14 +337,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        namespace :performance_monitoring do
-          resources :dashboards, only: [:create] do
-            collection do
-              put '/:file_name', to: 'dashboards#update', constraints: { file_name: /.+\.yml/ }
-            end
-          end
-        end
-
         resources :alert_management, only: [:index] do
           member do
             get 'details(/*page)', to: 'alert_management#details', as: 'details'
@@ -399,7 +385,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
 
-        resources :tracing, only: [:index], controller: :tracing
+        resources :tracing, only: [:index, :show], controller: :tracing
 
         namespace :design_management do
           namespace :designs, path: 'designs/:design_id(/:sha)', constraints: -> (params) { params[:sha].nil? || Gitlab::Git.commit_id?(params[:sha]) } do
@@ -488,6 +474,15 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         namespace :service_desk do
           resource :custom_email, only: [:show, :create, :update, :destroy], controller: 'custom_email'
         end
+
+        scope path: ':noteable_type/:noteable_id' do
+          resources :discussions, only: [:show], constraints: { id: /\h{40}/ } do
+            member do
+              post :resolve
+              delete :resolve, action: :unresolve
+            end
+          end
+        end
       end
       # End of the /-/ scope.
 
@@ -497,8 +492,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       #
       # Service Desk
       #
-      get '/service_desk' => 'service_desk#show', as: :service_desk # rubocop:todo Cop/PutProjectRoutesUnderScope
-      put '/service_desk' => 'service_desk#update', as: :service_desk_refresh # rubocop:todo Cop/PutProjectRoutesUnderScope
+      get '/service_desk' => 'service_desk#show' # rubocop:todo Cop/PutProjectRoutesUnderScope
+      put '/service_desk' => 'service_desk#update' # rubocop:todo Cop/PutProjectRoutesUnderScope
 
       #
       # Templates
@@ -689,7 +684,7 @@ scope path: '(/-/jira)', constraints: ::Constraints::JiraEncodedUrlConstrainer.n
       )
     }
 
-    get 'commit/:id', constraints: { id: /\h{7,40}/ }, to: redirect { |params, req|
+    get 'commit/:id', constraints: { id: Gitlab::Git::Commit::SHA_PATTERN }, to: redirect { |params, req|
       project_full_path = ::Gitlab::Jira::Dvcs.restore_full_path(
         namespace: params[:namespace_id],
         project: params[:project_id]

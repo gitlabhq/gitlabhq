@@ -1,7 +1,6 @@
 ---
 data_category: optional
 key_path: analytics_unique_visits.users_viewing_analytics_group_devops_adoption
-name: unique_users_viewing_analytics_group_devops_adoption
 description: Unique users viewing analytics group devops adoption
 product_section: dev
 product_stage: manage

@@ -63,7 +63,8 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
           let(:total_count) { group.clusters.page.total_count }
 
           before do
-            create_list(:cluster, 30, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
+            allow(Clusters::Cluster).to receive(:default_per_page).and_return(1)
+            create_list(:cluster, 2, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
           end
 
           it 'redirects to the page' do

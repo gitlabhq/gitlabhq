@@ -4,16 +4,8 @@ module QA
   RSpec.describe 'Configure',
     only: { pipeline: %i[staging staging-canary canary production] }, product_group: :configure do
     describe 'Auto DevOps with a Kubernetes Agent' do
-      let!(:app_project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'autodevops-app-project'
-          project.template_name = 'express'
-          project.auto_devops_enabled = true
-        end
-      end
-
+      let!(:app_project) { create(:project, :auto_devops, name: 'autodevops-app-project', template_name: 'express') }
       let!(:cluster) { Service::KubernetesCluster.new(provider_class: Service::ClusterProvider::Gcloud).create! }
-
       let!(:kubernetes_agent) do
         Resource::Clusters::Agent.fabricate_via_api! do |agent|
           agent.name = 'agent1'
@@ -28,7 +20,7 @@ module QA
       end
 
       before do
-        cluster.install_kubernetes_agent(agent_token.token)
+        cluster.install_kubernetes_agent(agent_token.token, kubernetes_agent.name)
         upload_agent_config(app_project, kubernetes_agent.name)
 
         set_kube_ingress_base_domain(app_project)

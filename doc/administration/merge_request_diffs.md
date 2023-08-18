@@ -62,7 +62,7 @@ For self-compiled installations:
      storage_path: /mnt/storage/external-diffs
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
    GitLab then migrates your existing merge request diffs to external storage.
 
 ## Using object storage
@@ -97,7 +97,7 @@ For self-compiled installations:
    ```
 
 1. Set [object storage settings](#object-storage-settings).
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
    GitLab then migrates your existing merge request diffs to external storage.
 
 [Read more about using object storage with GitLab](object_storage.md).
@@ -108,7 +108,7 @@ In GitLab 13.2 and later, you should use the
 [consolidated object storage settings](object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 This section describes the earlier configuration format.
 
-For source installations, these settings are nested under `external_diffs:` and
+For self-compiled installations, these settings are nested under `external_diffs:` and
 then `object_store:`. On Linux package installations, they are prefixed by
 `external_diffs_object_store_`.
 
@@ -171,7 +171,7 @@ For self-compiled installations:
          region: eu-central-1
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Alternative in-database storage
 
@@ -203,7 +203,7 @@ For self-compiled installations:
      when: outdated
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 With this feature enabled, diffs are initially stored in the database, rather
 than externally. They are moved to external storage after any of these

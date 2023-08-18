@@ -87,6 +87,7 @@ module Types
           Types::Ci::GroupEnvironmentScopeType.connection_type,
           description: 'Environment scopes of the group.',
           null: true,
+          authorize: :admin_group,
           resolver: Resolvers::GroupEnvironmentScopesResolver
 
     field :milestones,
@@ -260,6 +261,17 @@ module Types
           null: true,
           resolver: Resolvers::DataTransfer::GroupDataTransferResolver,
           description: 'Data transfer data point for a specific period. This is mocked data under a development feature flag.'
+
+    field :work_items,
+          null: true,
+          description: 'Work items that belong to the namespace.',
+          alpha: { milestone: '16.3' },
+          resolver: ::Resolvers::Namespaces::WorkItemsResolver
+
+    field :autocomplete_users,
+          null: true,
+          resolver: Resolvers::AutocompleteUsersResolver,
+          description: 'Search users for autocompletion'
 
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|

@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::SlackEventWorker, :clean_gitlab_redis_shared_state, feature_category: :integrations do
+RSpec.describe Integrations::SlackEventWorker, :clean_gitlab_redis_shared_state,
+  :clean_gitlab_redis_cluster_shared_state, feature_category: :integrations do
   describe '.event?' do
     subject { described_class.event?(event) }
 

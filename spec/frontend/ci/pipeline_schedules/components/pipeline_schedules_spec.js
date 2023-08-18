@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { trimText } from 'helpers/text_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineSchedules from '~/ci/pipeline_schedules/components/pipeline_schedules.vue';
@@ -353,6 +354,20 @@ describe('Pipeline schedules app', () => {
 
       expect(findLink().exists()).toBe(true);
       expect(findLink().text()).toContain('scheduled pipelines documentation.');
+    });
+
+    describe('inactive tab', () => {
+      beforeEach(() => {
+        setWindowLocation('https://gitlab.com/flightjs/Flight/-/pipeline_schedules?scope=INACTIVE');
+      });
+
+      it('should not show empty state', async () => {
+        createComponent([[getPipelineSchedulesQuery, successEmptyHandler]]);
+
+        await waitForPromises();
+
+        expect(findEmptyState().exists()).toBe(false);
+      });
     });
   });
 });

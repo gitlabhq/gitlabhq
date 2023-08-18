@@ -9,9 +9,12 @@ RSpec.describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService, featur
   let(:cluster_project) { cluster.cluster_project }
   let(:project) { cluster_project.project }
   let(:cluster) do
-    create(:cluster,
-           :project, :provided_by_gcp,
-           platform_kubernetes: create(:cluster_platform_kubernetes, :configured))
+    create(
+      :cluster,
+      :project,
+      :provided_by_gcp,
+      platform_kubernetes: create(:cluster_platform_kubernetes, :configured)
+    )
   end
 
   let(:kubeclient) do

@@ -151,20 +151,6 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
             project.mark_pages_as_deployed
           end
 
-          context 'when the feature flag is disabled' do
-            before do
-              stub_feature_flags(pages_unique_domain: false)
-            end
-
-            context 'when there are no pages deployed for the related project' do
-              it 'responds with 204 No Content' do
-                get api('/internal/pages'), headers: auth_header, params: { host: 'unique-domain.example.com' }
-
-                expect(response).to have_gitlab_http_status(:no_content)
-              end
-            end
-          end
-
           context 'when the unique domain is disabled' do
             before do
               project.project_setting.update!(pages_unique_domain_enabled: false)

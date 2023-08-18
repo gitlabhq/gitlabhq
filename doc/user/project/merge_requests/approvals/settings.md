@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request approval settings **(PREMIUM)**
+# Merge request approval settings **(PREMIUM ALL)**
 
 You can configure the settings for [merge request approvals](index.md) to
 ensure the approval rules meet your use case. You can also configure
@@ -63,7 +63,8 @@ this setting, unless you configure one of these options:
 
 ## Prevent approvals by users who add commits
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
+> - [Feature flag `keep_merge_commits_for_approvals`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127744) added in GitLab 16.3 to also include merge commits in this check.
 
 By default, users who commit to a merge request can still approve it. At both
 the project level or [instance level](../../../admin_area/merge_requests_approvals.md),
@@ -172,5 +173,5 @@ that inherited them.
 ## Related topics
 
 - [Instance-level merge request approval settings](../../../admin_area/merge_requests_approvals.md)
-- [Compliance report](../../../compliance/compliance_report/index.md)
+- [Compliance center](../../../compliance/compliance_center/index.md)
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)

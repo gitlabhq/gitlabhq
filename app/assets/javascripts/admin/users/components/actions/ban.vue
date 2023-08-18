@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -19,7 +20,7 @@ const messageHtml = `
   <p>${sprintf(
     s__('AdminUsers|Learn more about %{link_start}banned users.%{link_end}'),
     {
-      link_start: `<a href="${helpPagePath('user/admin_area/moderate_users', {
+      link_start: `<a href="${helpPagePath('administration/moderate_users', {
         anchor: 'ban-a-user',
       })}" target="_blank">`,
       link_end: '</a>',

@@ -2,6 +2,7 @@ import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'spec/test_constants';
@@ -11,7 +12,7 @@ import CompareVersions from '~/diffs/components/compare_versions.vue';
 import DiffFile from '~/diffs/components/diff_file.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import findingsDrawer from '~/diffs/components/shared/findings_drawer.vue';
-import TreeList from '~/diffs/components/tree_list.vue';
+import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
@@ -249,34 +250,6 @@ describe('diffs/components/app', () => {
       // Component uses $nextTick so we wait until that has finished
       await nextTick();
       expect(store.state.diffs.currentDiffFileId).toBe('ABC');
-    });
-  });
-
-  describe('resizable', () => {
-    afterEach(() => {
-      localStorage.removeItem('mr_tree_list_width');
-    });
-
-    it('sets initial width when no localStorage has been set', () => {
-      createComponent();
-
-      expect(wrapper.vm.treeWidth).toEqual(320);
-    });
-
-    it('sets initial width to localStorage size', () => {
-      localStorage.setItem('mr_tree_list_width', '200');
-
-      createComponent();
-
-      expect(wrapper.vm.treeWidth).toEqual(200);
-    });
-
-    it('sets width of tree list', () => {
-      createComponent({}, ({ state }) => {
-        state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
-      });
-
-      expect(wrapper.find('.js-diff-tree-list').element.style.width).toEqual('320px');
     });
   });
 
@@ -596,18 +569,21 @@ describe('diffs/components/app', () => {
       );
     });
 
-    it("doesn't render tree list when no changes exist", () => {
+    it('should always render diffs file tree', () => {
       createComponent();
-
-      expect(wrapper.findComponent(TreeList).exists()).toBe(false);
+      expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(true);
     });
 
-    it('should render tree list', () => {
+    it('should pass renderDiffFiles to file tree as true when files are present', () => {
       createComponent({}, ({ state }) => {
         state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
       });
+      expect(wrapper.findComponent(DiffsFileTree).props('renderDiffFiles')).toBe(true);
+    });
 
-      expect(wrapper.findComponent(TreeList).exists()).toBe(true);
+    it('should pass renderDiffFiles to file tree as false without files', () => {
+      createComponent();
+      expect(wrapper.findComponent(DiffsFileTree).props('renderDiffFiles')).toBe(false);
     });
   });
 

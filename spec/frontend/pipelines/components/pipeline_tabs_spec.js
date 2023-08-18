@@ -1,10 +1,14 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlTab } from '@gitlab/ui';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import PipelineTabs from '~/pipelines/components/pipeline_tabs.vue';
+import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 
 describe('The Pipeline Tabs', () => {
   let wrapper;
+  let trackingSpy;
+
+  const $router = { push: jest.fn() };
 
   const findDagTab = () => wrapper.findByTestId('dag-tab');
   const findFailedJobsTab = () => wrapper.findByTestId('failed-jobs-tab');
@@ -24,18 +28,19 @@ describe('The Pipeline Tabs', () => {
   };
 
   const createComponent = (provide = {}) => {
-    wrapper = extendedWrapper(
-      shallowMount(PipelineTabs, {
-        provide: {
-          ...defaultProvide,
-          ...provide,
-        },
-        stubs: {
-          GlTab,
-          RouterView: true,
-        },
-      }),
-    );
+    wrapper = shallowMountExtended(PipelineTabs, {
+      provide: {
+        ...defaultProvide,
+        ...provide,
+      },
+      stubs: {
+        GlTab,
+        RouterView: true,
+      },
+      mocks: {
+        $router,
+      },
+    });
   };
 
   describe('Tabs', () => {
@@ -74,6 +79,36 @@ describe('The Pipeline Tabs', () => {
 
       expect(badgeComponent().exists()).toBe(true);
       expect(badgeComponent().text()).toBe(badgeText);
+    });
+  });
+
+  describe('Tab tracking', () => {
+    beforeEach(() => {
+      createComponent();
+
+      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('tracks failed jobs tab click', () => {
+      findFailedJobsTab().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_tab', {
+        label: TRACKING_CATEGORIES.failed,
+      });
+    });
+
+    it('tracks tests tab click', () => {
+      findTestsTab().vm.$emit('click');
+
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_tab', {
+        label: TRACKING_CATEGORIES.tests,
+      });
     });
   });
 });

@@ -21,26 +21,38 @@ For details on the mapping between GitLab OIDC claims and Fulcio certificate ext
 
 - You must be using GitLab.com.
 - Your project's CI/CD configuration must be located in the project.
+
+## Sign or verify container images and build artifacts by using Cosign
+
+You can use Cosign to sign and verify container images and build artifacts.
+
+**Requirements:**
+
 - You must use a version of Cosign that is `>= 2.0.1`.
-
-## Container images
-
-### Sign a container image with Cosign
-
-GitLab [ID tokens](../secrets/id_token_authentication.md) can be used by Cosign for
-[keyless signing](https://docs.sigstore.dev/cosign/overview/#example-working-with-containers). The token must have `sigstore` set as the
-[`aud`](../secrets/id_token_authentication.md#token-payload) claim. The token can be used by Cosign automatically when
-it is set in the `SIGSTORE_ID_TOKEN` environment variable.
 
 **Best practices**:
 
-- Build and sign a container image in the same job to prevent the image from being tampered with before it is
-  signed.
+- Build and sign an image/artifact in the same job to prevent it from being tampered with before it is signed.
+- When signing container images, sign the digest (which is immutable) instead of the tag.
 
-See [Cosign documentation](https://docs.sigstore.dev/cosign/signing_with_containers/) to learn more about signing.
+GitLab [ID tokens](../secrets/id_token_authentication.md#id-tokens) can be used by Cosign for
+[keyless signing](https://docs.sigstore.dev/cosign/overview/). The token must have
+`sigstore` set as the [`aud`](../secrets/id_token_authentication.md#token-payload) claim. The token can be used by Cosign automatically when it is set in the
+`SIGSTORE_ID_TOKEN` environment variable.
+
+To learn more about how to install Cosign, see [Cosign Installation documentation](https://docs.sigstore.dev/cosign/installation/).
+
+### Signing
+
+#### Container images
+
+The example below demonstrates how to sign a container image in GitLab CI. The signature is automatically stored in the
+same container repository as the image.
+
+To learn more about signing containers, see [Cosign Signing Containers documentation](https://docs.sigstore.dev/cosign/signing_with_containers/).
 
 ```yaml
-build_and_sign:
+build_and_sign_image:
   stage: build
   image: docker:latest
   services:
@@ -60,10 +72,52 @@ build_and_sign:
     - cosign sign $IMAGE_DIGEST
 ```
 
-### Verify a container image with Cosign
+#### Build artifacts
+
+The example below demonstrates how to sign a build artifact in GitLab CI. You should save the `cosign.bundle` file
+produced by `cosign sign-blob`, which is used for signature verification.
+
+To learn more about signing artifacts, see [Cosign Signing Blobs documentation](https://docs.sigstore.dev/cosign/signing_with_blobs/#keyless-signing-of-blobs-and-files).
 
 ```yaml
-verify:
+build_and_sign_artifact:
+  stage: build
+  image: alpine:latest
+  variables:
+    COSIGN_YES: "true"
+  id_tokens:
+    SIGSTORE_ID_TOKEN:
+      aud: sigstore
+  before_script:
+    - apk add --update cosign
+  script:
+    - echo "This is a build artifact" > artifact.txt
+    - cosign sign-blob artifact.txt --bundle cosign.bundle
+  artifacts:
+    paths:
+      - artifact.txt
+      - cosign.bundle
+```
+
+### Verification
+
+**Command-line arguments**
+
+| Name                        | Value |
+|-----------------------------|-------|
+| `--certificate-identity`    | The SAN of the signing certificate issued by Fulcio. Can be constructed with the following information from the project where the image/artifact was signed: GitLab instance URL + project path + `//` + CI config path + `@` + ref path. |
+| `--certificate-oidc-issuer` | The GitLab instance URL where the image/artifact was signed. For example, `https://gitlab.com`. |
+| `--bundle`                  | The `bundle` file produced by `cosign sign-blob`. Only used for verifying build artifacts. |
+
+To learn more about verifying signed images/artifacts, see [Cosign Verifying documentation](https://docs.sigstore.dev/cosign/verify/#keyless-verification-using-openid-connect).
+
+#### Container images
+
+The example below demonstrates how to verify a signed container image in GitLab CI. The command-line arguments are
+described [above](#verification).
+
+```yaml
+verify_image:
   image: alpine:3.18
   stage: verify
   before_script:
@@ -71,6 +125,22 @@ verify:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
     - cosign verify "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" --certificate-identity "https://gitlab.com/my-group/my-project//path/to/.gitlab-ci.yml@refs/heads/main" --certificate-oidc-issuer "https://gitlab.com"
+```
+
+#### Build artifacts
+
+The example below demonstrates how to verify a signed build artifact in GitLab CI. Verifying an artifact requires both
+the artifact itself and the `cosign.bundle` file produced by `cosign sign-blob`. The command-line arguments are
+described [above](#verification).
+
+```yaml
+verify_artifact:
+  stage: verify
+  image: alpine:latest
+  before_script:
+    - apk add --update cosign
+  script:
+    - cosign verify-blob artifact.txt --bundle cosign.bundle --certificate-identity "https://gitlab.com/my-group/my-project//path/to/.gitlab-ci.yml@refs/heads/main" --certificate-oidc-issuer "https://gitlab.com"
 ```
 
 ## Use Sigstore and npm to generate keyless provenance
@@ -252,59 +322,4 @@ predicate:
     - uri: git+https://gitlab.com/strongjz/npm-provenance-example
       digest:
         sha1: 6e02e901e936bfac3d4691984dff8c505410cbc3
-```
-
-## Build artifacts
-
-You can use Cosign to both sign build artifacts and verify artifacts that were signed with Cosign.
-
-### Sign a build artifact with Cosign
-
-GitLab [ID tokens](../secrets/id_token_authentication.md) can be used by Cosign for keyless signing of build artifacts.
-The token must have `sigstore` set as the [`aud`](../secrets/id_token_authentication.md#token-payload) claim. The token can be used by Cosign automatically when
-it is set in the `SIGSTORE_ID_TOKEN` environment variable.
-
-**Best practices**:
-
-- Build and sign an artifact in the same job to prevent the artifact from being tampered with before it is
-  signed.
-
-To learn more about signing artifacts, see [Cosign documentation](https://docs.sigstore.dev/cosign/signing_with_blobs/#keyless-signing-of-blobs-and-files).
-
-```yaml
-sign_artifact:
-  stage: build
-  image: alpine:latest
-  variables:
-    COSIGN_YES: "true"
-  id_tokens:
-    SIGSTORE_ID_TOKEN:
-      aud: sigstore
-  before_script:
-    - apk add --update cosign
-  script:
-    - echo "This is a build artifact" > artifact.txt
-    - cosign sign-blob artifact.txt --bundle cosign.bundle
-  artifacts:
-    paths:
-      - artifact.txt
-      - cosign.bundle
-```
-
-### Verify a build artifact with Cosign
-
-Verifying an artifact requires both the artifact itself and the `cosign.bundle` file produced by `cosign sign-blob`.
-The `--certificate-identity` option should reference the project and branch where the artifact was signed. The
-`--certificate-oidc-issuer` option should reference the GitLab instance where the artifact was signed.
-
-To learn more about verifying signed artifacts, see [Cosign documentation](https://docs.sigstore.dev/cosign/verify/).
-
-```yaml
-verify_artifact:
-  stage: verify
-  image: alpine:latest
-  before_script:
-    - apk add --update cosign
-  script:
-    - cosign verify-blob artifact.txt --bundle cosign.bundle --certificate-identity "https://gitlab.com/my-group/my-project//path/to/.gitlab-ci.yml@refs/heads/main" --certificate-oidc-issuer "https://gitlab.com"
 ```

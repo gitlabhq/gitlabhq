@@ -4,7 +4,6 @@
     when:
       - api_failure
       - data_integrity_failure
-      - job_execution_timeout
       - runner_system_failure
       - scheduler_failure
       - stuck_or_timeout_failure
@@ -37,7 +36,17 @@
 
 .ruby-gems-cache-push: &ruby-gems-cache-push
   <<: *ruby-gems-cache
-  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+  policy: push # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
+
+.ruby-coverage-gems-cache: &ruby-coverage-gems-cache
+  key: "ruby-coverage-gems-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}"
+  paths:
+    - vendor/ruby/
+  policy: pull
+
+.ruby-coverage-gems-cache-push: &ruby-coverage-gems-cache-push
+  <<: *ruby-coverage-gems-cache
+  policy: push # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
 .gitaly-binaries-cache: &gitaly-binaries-cache
   key:
@@ -162,6 +171,15 @@
     - *ruby-gems-cache  # We don't push this cache as it's already rebuilt by `update-setup-test-env-cache`
     - *rubocop-cache-push
 
+.ruby-gems-coverage-cache:
+  cache:
+    - *ruby-coverage-gems-cache
+
+.ruby-gems-coverage-cache-push:
+  cache:
+    - *ruby-coverage-gems-cache-push
+
+# This cache should eventually be replaced by .ruby-gems-coverage-cache.
 .coverage-cache:
   cache:
     - *ruby-gems-cache
@@ -213,6 +231,12 @@
     - *node-modules-cache  # We don't push this cache as it's already rebuilt by `update-assets-compile-*-cache`
     - *storybook-node-modules-cache-push
 
+.redis-services:
+  services:
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
+      alias: rediscluster # configure connections in config/redis.yml
+    - name: redis:${REDIS_VERSION}-alpine
+
 .pg-base-variables:
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
@@ -222,46 +246,35 @@
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}-pgvector-0.4.1
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "max_locks_per_transaction=256"]
       alias: postgres
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
-      alias: rediscluster # configure connections in config/redis.yml
+    - !reference [.redis-services, services]
 
-.db-services-with-redis-6:
+.db-services-with-auto-explain:
   services:
-    - !reference [.db-services, services]
-    - name: redis:6.2-alpine
-
-.db-services-with-redis-7:
-  services:
-    - !reference [.db-services, services]
-    - name: redis:7.0-alpine
-
-.use-pg12:
-  extends:
-    - .pg-base-variables
-    - .db-services-with-redis-6
-  variables:
-    PG_VERSION: "12"
-
-.use-pg13:
-  extends:
-    - .pg-base-variables
-    - .db-services-with-redis-6
-  variables:
-    PG_VERSION: "13"
-
-.use-pg14:
-  extends:
-    - .pg-base-variables
-    - .db-services-with-redis-6
-  variables:
-    PG_VERSION: "14"
-
-.use-pg15:
-  extends:
-    - .pg-base-variables
-    - .db-services-with-redis-7
-  variables:
-    PG_VERSION: "15"
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-${PG_VERSION}-pgvector-0.4.1
+      command:
+        - postgres
+        - -c
+        - fsync=off
+        - -c
+        - synchronous_commit=off
+        - -c
+        - full_page_writes=off
+        - -c
+        - max_locks_per_transaction=256
+        - -c
+        - log_filename=pglog
+        - -c
+        - log_destination=csvlog
+        - -c
+        - logging_collector=true
+        - -c
+        - auto_explain.log_min_duration=0
+        - -c
+        - auto_explain.log_format=json
+        - -c
+        - auto_explain.log_timing=off
+      alias: postgres
+    - !reference [.redis-services, services]
 
 .zoekt-variables:
   variables:
@@ -270,131 +283,190 @@
 
 .zoekt-services:
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.1
+    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:zoekt-ci-image-1.2
       alias: zoekt-ci-image
 
-.es7-base:
+.use-pg12:
   extends:
     - .pg-base-variables
-    - .zoekt-variables
   services:
-    - !reference [.db-services-with-redis-6, services]
-    - !reference [.zoekt-services, services]
-    - name: elasticsearch:7.17.6
-      command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
-
-.use-pg12-es7-ee:
-  extends: .es7-base
+    - !reference [.db-services, services]
   variables:
     PG_VERSION: "12"
+    REDIS_VERSION: "6.2"
 
-.use-pg13-es7-ee:
-  extends: .es7-base
-  variables:
-    PG_VERSION: "13"
-
-.use-pg14-es7-ee:
-  extends: .es7-base
-  variables:
-    PG_VERSION: "14"
-
-.use-pg15-es7-ee:
-  extends: .es7-base
-  variables:
-    PG_VERSION: "15"
-
-.es8-base:
+.use-pg13:
   extends:
     - .pg-base-variables
+  services:
+    - !reference [.db-services, services]
+  variables:
+    PG_VERSION: "13"
+    REDIS_VERSION: "6.2"
+
+.use-pg14:
+  extends:
+    - .pg-base-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+  variables:
+    PG_VERSION: "14"
+    REDIS_VERSION: "6.2"
+
+.use-pg15:
+  extends:
+    - .pg-base-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+  variables:
+    PG_VERSION: "15"
+    REDIS_VERSION: "7.0"
+
+.es7-services:
+  services:
+    - !reference [.zoekt-services, services]
+    - name: elasticsearch:7.17.6
+      command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
+
+.use-pg12-es7-ee:
+  extends:
+    - .use-pg12
     - .zoekt-variables
   services:
-    - !reference [.db-services-with-redis-6, services]
+    - !reference [.db-services, services]
+    - !reference [.es7-services, services]
+
+.use-pg13-es7-ee:
+  extends:
+    - .use-pg13
+    - .zoekt-variables
+  services:
+    - !reference [.db-services, services]
+    - !reference [.es7-services, services]
+
+.use-pg14-es7-ee:
+  extends:
+    - .use-pg14
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es7-services, services]
+
+.use-pg15-es7-ee:
+  extends:
+    - .use-pg15
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es7-services, services]
+
+.es8-services:
+  services:
     - !reference [.zoekt-services, services]
     - name: elasticsearch:8.6.2
+
+.es8-variables:
   variables:
     ES_SETTING_DISCOVERY_TYPE: "single-node"
     ES_SETTING_XPACK_SECURITY_ENABLED: "false"
+    ES_SETTING_CLUSTER_ROUTING_ALLOCATION_DISK_THRESHOLD__ENABLED: "false"
 
 .use-pg13-es8-ee:
-  extends: .es8-base
-  variables:
-    PG_VERSION: "13"
+  extends:
+    - .use-pg13
+    - .zoekt-variables
+    - .es8-variables
+  services:
+    - !reference [.db-services, services]
+    - !reference [.es8-services, services]
 
 .use-pg14-es8-ee:
-  extends: .es8-base
-  variables:
-    PG_VERSION: "14"
+  extends:
+    - .use-pg14
+    - .zoekt-variables
+    - .es8-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es8-services, services]
 
 .use-pg15-es8-ee:
-  extends: .es8-base
-  variables:
-    PG_VERSION: "15"
-
-.os1-base:
   extends:
-    - .pg-base-variables
+    - .use-pg15
     - .zoekt-variables
+    - .es8-variables
   services:
-    - !reference [.db-services-with-redis-6, services]
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es8-services, services]
+
+.os1-services:
+  services:
     - !reference [.zoekt-services, services]
     - name: opensearchproject/opensearch:1.3.5
       alias: elasticsearch
-      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
+      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
 .use-pg13-opensearch1-ee:
-  extends: .os1-base
-  variables:
-    PG_VERSION: "13"
-
-.use-pg14-opensearch1-ee:
-  extends: .os1-base
-  variables:
-    PG_VERSION: "14"
-
-.use-pg15-opensearch1-ee:
-  extends: .os1-base
-  variables:
-    PG_VERSION: "15"
-
-.os2-base:
   extends:
-    - .pg-base-variables
+    - .use-pg13
     - .zoekt-variables
   services:
-    - !reference [.db-services-with-redis-6, services]
+    - !reference [.db-services, services]
+    - !reference [.os1-services, services]
+
+.use-pg14-opensearch1-ee:
+  extends:
+    - .use-pg14
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os1-services, services]
+
+.use-pg15-opensearch1-ee:
+  extends:
+    - .use-pg15
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os1-services, services]
+
+.os2-services:
+  services:
     - !reference [.zoekt-services, services]
     - name: opensearchproject/opensearch:2.2.1
       alias: elasticsearch
-      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
+      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
 .use-pg13-opensearch2-ee:
-  extends: .os2-base
-  variables:
-    PG_VERSION: "13"
+  extends:
+    - .use-pg13
+    - .zoekt-variables
+  services:
+    - !reference [.db-services, services]
+    - !reference [.os2-services, services]
 
 .use-pg14-opensearch2-ee:
-  extends: .os2-base
-  variables:
-    PG_VERSION: "14"
+  extends:
+    - .use-pg14
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os2-services, services]
 
 .use-pg15-opensearch2-ee:
-  extends: .os2-base
-  variables:
-    PG_VERSION: "15"
+  extends:
+    - .use-pg15
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os2-services, services]
 
 .use-pg14-clickhouse23:
+  extends: .use-pg14
   services:
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:postgres-14-pgvector-0.4.1
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-      alias: postgres
-    - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-6.2.12
-      alias: rediscluster # configure connections in config/redis.yml
-    - name: redis:6.2-alpine
+    - !reference [.db-services-with-auto-explain, services]
     - name: clickhouse/clickhouse-server:23-alpine
       alias: clickhouse
   variables:
-    POSTGRES_HOST_AUTH_METHOD: trust
-    PG_VERSION: "14"
     CLICKHOUSE_USER: clickhouse
     CLICKHOUSE_PASSWORD: clickhouse
     CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
@@ -444,5 +516,16 @@
 
 .use-kube-context:
   before_script:
-    - export KUBE_CONTEXT="gitlab-org/gitlab:review-apps"
+    - export KUBE_CONTEXT="${CI_PROJECT_NAMESPACE}/gitlab:review-apps"
     - kubectl config use-context ${KUBE_CONTEXT}
+
+.fast-no-clone-job:
+  variables:
+    GIT_STRATEGY: none # We will download the required files for the job from the API
+  before_script:
+    # Logic taken from scripts/utils.sh in download_files function
+    - |
+      url="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/files/scripts%2Futils.sh/raw?ref=${CI_COMMIT_SHA}"
+      curl -f --header "Private-Token: ${PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE}" "${url}" --create-dirs --output scripts/utils.sh
+    - source scripts/utils.sh
+    - run_timed_command "download_files ${FILES_TO_DOWNLOAD}"

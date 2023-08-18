@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItemPolicy do
+RSpec.describe WorkItemPolicy, feature_category: :team_planning do
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:public_project) { create(:project, :public, group: group) }
@@ -199,6 +199,26 @@ RSpec.describe WorkItemPolicy do
 
         it { is_expected.to be_allowed(:set_work_item_metadata) }
       end
+    end
+  end
+
+  describe 'admin_work_item_link' do
+    context 'when user is not a member of the project' do
+      let(:current_user) { non_member_user }
+
+      it { is_expected.to be_disallowed(:admin_work_item_link) }
+    end
+
+    context 'when user is guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_allowed(:admin_work_item_link) }
+    end
+
+    context 'when user is reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_allowed(:admin_work_item_link) }
     end
   end
 end

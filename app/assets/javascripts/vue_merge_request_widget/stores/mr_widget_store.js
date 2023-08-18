@@ -6,6 +6,7 @@ import { machine } from '~/lib/utils/finite_state_machine';
 import {
   MTWPS_MERGE_STRATEGY,
   MT_MERGE_STRATEGY,
+  MWCP_MERGE_STRATEGY,
   MWPS_MERGE_STRATEGY,
   STATE_MACHINE,
   stateToTransitionMap,
@@ -352,6 +353,8 @@ export default class MergeRequestStore {
       return MTWPS_MERGE_STRATEGY;
     } else if (availableAutoMergeStrategies.includes(MT_MERGE_STRATEGY)) {
       return MT_MERGE_STRATEGY;
+    } else if (availableAutoMergeStrategies.includes(MWCP_MERGE_STRATEGY)) {
+      return MWCP_MERGE_STRATEGY;
     } else if (availableAutoMergeStrategies.includes(MWPS_MERGE_STRATEGY)) {
       return MWPS_MERGE_STRATEGY;
     }
@@ -373,6 +376,14 @@ export default class MergeRequestStore {
   // eslint-disable-next-line class-methods-use-this
   get hasMergeChecksFailed() {
     return false;
+  }
+
+  get isApprovalNeeded() {
+    return this.hasApprovalsAvailable ? !this.isApproved : false;
+  }
+
+  get preventMerge() {
+    return this.isApprovalNeeded;
   }
 
   // Because the state machine doesn't yet handle every state and transition,

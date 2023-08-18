@@ -1,0 +1,8 @@
+---
+name: pipeline_delete_gitaly_refs_in_batches
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125333
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416969
+milestone: '16.3'
+type: development
+group: group::gitaly
+default_enabled: false

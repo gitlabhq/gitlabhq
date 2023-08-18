@@ -83,6 +83,8 @@ export const DEFAULT_BLOB_INFO = {
   },
 };
 
+export const JSON_LANGUAGE = 'json';
+export const OPENAPI_FILE_TYPE = 'openapi';
 export const TEXT_FILE_TYPE = 'text';
 
 export const LFS_STORAGE = 'lfs';
@@ -114,3 +116,5 @@ export const POLLING_INTERVAL_BACKOFF = 2;
 export const CONFLICTS_MODAL_ID = 'fork-sync-conflicts-modal';
 
 export const FORK_UPDATED_EVENT = 'fork:updated';
+
+export const CODEOWNERS_FILE_NAME = 'CODEOWNERS';

@@ -8,7 +8,6 @@ module Gitlab
 
         h2 :users_in_license
         h2 :billable_users
-        h3 :number_of_users
       end
     end
   end

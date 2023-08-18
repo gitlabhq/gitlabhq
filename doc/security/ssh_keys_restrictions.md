@@ -49,7 +49,7 @@ By default, the GitLab.com and self-managed settings for the
 - ECDSA_SK SSH keys are allowed (GitLab 14.8 and later).
 - ED25519_SK SSH keys are allowed (GitLab 14.8 and later).
 
-## Block banned or compromised keys **(FREE)**
+## Block banned or compromised keys **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24614) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `ssh_banned_key`. Enabled by default.
 > - Generally available in GitLab 15.2. [Feature flag `ssh_banned_key`](https://gitlab.com/gitlab-org/gitlab/-/issues/363410) removed.

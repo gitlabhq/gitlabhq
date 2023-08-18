@@ -11,7 +11,7 @@
       = _('Naming, visibility')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = _('Collapse')
-    %p
+    %p.gl-text-secondary
       = _('Update your group name, description, avatar, and visibility.')
       = link_to _('Learn more about groups.'), help_page_path('user/group/index')
   .settings-content
@@ -23,7 +23,7 @@
       = _('Permissions and group features')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings.')
   .settings-content
     = render 'groups/settings/permissions'
@@ -38,7 +38,7 @@
       = s_('GroupSettings|Badges')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = s_('GroupSettings|Customize this group\'s badges.')
       = link_to s_('GroupSettings|What are badges?'), help_page_path('user/project/badges')
   .settings-content
@@ -47,6 +47,7 @@
 = render_if_exists 'groups/compliance_frameworks', expanded: expanded
 = render_if_exists 'groups/custom_project_templates_setting'
 = render_if_exists 'groups/templates_setting', expanded: expanded
+= render_if_exists 'shared/groups/max_pages_size_setting'
 
 %section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded), data: { qa_selector: 'advanced_settings_content' } }
   .settings-header
@@ -54,10 +55,7 @@
       = _('Advanced')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Perform advanced options such as changing path, transferring, exporting, or removing the group.')
   .settings-content
     = render 'groups/settings/advanced'
-
-= render_if_exists 'shared/groups/max_pages_size_setting'
-

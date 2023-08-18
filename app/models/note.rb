@@ -149,7 +149,7 @@ class Note < ApplicationRecord
   scope :with_api_entity_associations, -> { preload(:note_diff_file, :author) }
   scope :inc_relations_for_view, ->(noteable = nil) do
     relations = [{ project: :group }, { author: :status }, :updated_by, :resolved_by,
-      :award_emoji, { system_note_metadata: :description_version }, :suggestions]
+      :award_emoji, :note_metadata, { system_note_metadata: :description_version }, :suggestions]
 
     if noteable.nil? || DiffNote.noteable_types.include?(noteable.class.name)
       relations += [:note_diff_file, :diff_note_positions]
@@ -197,9 +197,7 @@ class Note < ApplicationRecord
   # Syncs `confidential` with `internal` as we rename the column.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/367923
   before_create :set_internal_flag
-  after_destroy :expire_etag_cache
   after_save :keep_around_commit, if: :for_project_noteable?, unless: -> { importing? || skip_keep_around_commits }
-  after_save :expire_etag_cache, unless: :importing?
   after_save :touch_noteable, unless: :importing?
   after_commit :notify_after_create, on: :create
   after_commit :notify_after_destroy, on: :destroy
@@ -207,6 +205,7 @@ class Note < ApplicationRecord
   after_commit :trigger_note_subscription_create, on: :create
   after_commit :trigger_note_subscription_update, on: :update
   after_commit :trigger_note_subscription_destroy, on: :destroy
+  after_commit :expire_etag_cache, unless: :importing?
 
   def trigger_note_subscription_create
     return unless trigger_note_subscription?
@@ -498,7 +497,7 @@ class Note < ApplicationRecord
   end
 
   def can_be_discussion_note?
-    self.noteable.supports_discussions? && !part_of_discussion?
+    self.noteable.supports_discussions? && !part_of_discussion? && !system?
   end
 
   def can_create_todo?
@@ -853,7 +852,9 @@ class Note < ApplicationRecord
         user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count
     else
       refs = all_references(user)
-      refs.all.any? && refs.all_visible?
+      refs.all
+
+      refs.all_visible?
     end
   end
 

@@ -183,6 +183,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
           expect(request.to_h).to eq(
             payload.merge({
               allow_conflicts: false,
+              expected_old_oid: "",
               repository: repository.gitaly_repository.to_h,
               message: message.dup.force_encoding(Encoding::ASCII_8BIT),
               user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,
@@ -727,6 +728,39 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       let(:expected_error) { GRPC::Internal }
 
       it_behaves_like '#rebase with an error'
+    end
+  end
+
+  describe '#user_rebase_to_ref' do
+    let(:first_parent_ref) { 'refs/heads/my-branch' }
+    let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
+    let(:target_ref) { 'refs/merge-requests/x/merge' }
+    let(:response) { Gitaly::UserRebaseToRefResponse.new(commit_id: 'new-commit-id') }
+
+    let(:payload) do
+      { source_sha: source_sha, target_ref: target_ref, first_parent_ref: first_parent_ref }
+    end
+
+    it 'sends a user_rebase_to_ref message' do
+      freeze_time do
+        expect_any_instance_of(Gitaly::OperationService::Stub).to receive(:user_rebase_to_ref) do |_, request, options|
+          expect(options).to be_kind_of(Hash)
+          expect(request.to_h).to(
+            eq(
+              payload.merge(
+                {
+                  expected_old_oid: "",
+                  repository: repository.gitaly_repository.to_h,
+                  user: Gitlab::Git::User.from_gitlab(user).to_gitaly.to_h,
+                  timestamp: { nanos: 0, seconds: Time.current.to_i }
+                }
+              )
+            )
+          )
+        end.and_return(response)
+
+        client.user_rebase_to_ref(user, **payload)
+      end
     end
   end
 

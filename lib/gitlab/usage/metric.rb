@@ -25,10 +25,6 @@ module Gitlab
         with_availability(proc { instrumentation_object.instrumentation })
       end
 
-      def with_suggested_name
-        with_availability(proc { instrumentation_object.suggested_name })
-      end
-
       private
 
       def with_availability(value_proc)

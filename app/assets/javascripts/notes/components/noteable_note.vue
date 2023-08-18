@@ -2,6 +2,7 @@
 import { GlSprintf, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import $ from 'jquery';
 import { escape, isEmpty } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';

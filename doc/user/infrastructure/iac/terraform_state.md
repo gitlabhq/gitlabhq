@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab-managed Terraform state **(FREE)**
+# GitLab-managed Terraform state **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
 > - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default.

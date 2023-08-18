@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';

@@ -176,6 +176,42 @@ RSpec.describe Labels::CreateService, feature_category: :team_planning do
         end
       end
     end
+
+    describe 'lock_on_merge' do
+      let_it_be(:params) { { title: 'Locked label', lock_on_merge: true } }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: false)
+        end
+
+        it 'does not allow setting lock_on_merge' do
+          label = described_class.new(params).execute(project: project)
+          label2 = described_class.new(params).execute(group: group)
+          label3 = described_class.new(params).execute(template: true)
+
+          expect(label.lock_on_merge).to be_falsey
+          expect(label2.lock_on_merge).to be_falsey
+          expect(label3).not_to be_persisted
+        end
+      end
+
+      context 'when feature flag is enabled' do
+        it 'allows setting lock_on_merge' do
+          label = described_class.new(params).execute(project: project)
+          label2 = described_class.new(params).execute(group: group)
+
+          expect(label.lock_on_merge).to be_truthy
+          expect(label2.lock_on_merge).to be_truthy
+        end
+
+        it 'does not alow setting lock_on_merge for templates' do
+          label = described_class.new(params).execute(template: true)
+
+          expect(label).not_to be_persisted
+        end
+      end
+    end
   end
 
   def params_with(color)

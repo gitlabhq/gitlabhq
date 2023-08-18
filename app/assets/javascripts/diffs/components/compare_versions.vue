@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective, GlIcon, GlLink, GlButtonGroup, GlButton, GlSprintf } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { __ } from '~/locale';
 import { setUrlParams } from '~/lib/utils/url_utility';
@@ -46,7 +47,9 @@ export default {
       'removedLines',
     ]),
     toggleFileBrowserTitle() {
-      return this.showTreeList ? __('Hide file browser') : __('Show file browser');
+      return this.showTreeList
+        ? __('Hide file browser (or press F)')
+        : __('Show file browser (or press F)');
     },
     hasChanges() {
       return this.diffFiles.length > 0;

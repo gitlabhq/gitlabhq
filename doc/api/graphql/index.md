@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GraphQL API **(FREE)**
+# GraphQL API **(FREE ALL)**
 
 > Enabled and [made generally available](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444) in GitLab 12.1. [Feature flag `graphql`](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30444) removed.
 

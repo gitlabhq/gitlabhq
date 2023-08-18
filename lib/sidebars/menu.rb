@@ -123,6 +123,10 @@ module Sidebars
       insert_element_after(@items, after_item, new_item)
     end
 
+    def remove_item(item)
+      remove_element(@items, item.item_id)
+    end
+
     def replace_placeholder(item)
       idx = @items.index { |e| e.item_id == item.item_id && e.is_a?(::Sidebars::NilMenuItem) }
       if idx.nil?

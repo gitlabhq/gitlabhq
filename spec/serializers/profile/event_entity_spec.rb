@@ -140,6 +140,17 @@ RSpec.describe Profile::EventEntity, feature_category: :user_profile do
         expect(subject[:target][:issue_type]).to eq('incident')
       end
     end
+
+    context 'when target is an issue' do
+      let(:issue) { build_stubbed(:issue, author: target_user, project: project) }
+      let(:event) do
+        build(:event, :created, author: target_user, project: project, target: issue)
+      end
+
+      it 'exposes `issue_type`' do
+        expect(subject[:target][:issue_type]).to eq('issue')
+      end
+    end
   end
 
   context 'with resource parent' do

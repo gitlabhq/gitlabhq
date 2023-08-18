@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
@@ -45,10 +46,8 @@ export default {
     v-gl-modal="modalId"
     v-gl-tooltip.hover.top="$options.i18n.metadataLabel"
     category="secondary"
-    variant="info"
     icon="doc-text"
     :aria-label="$options.i18n.metadataLabel"
-    data-testid="metadata-button"
     @click="selectSecureFile()"
   />
 </template>

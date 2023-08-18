@@ -84,6 +84,7 @@ module QA
         Page::Project::Menu.perform(&:go_to_access_token_settings)
 
         Page::Project::Settings::AccessTokens.perform do |token_page|
+          token_page.click_add_new_token_button
           token_page.fill_token_name(name)
           token_page.check_api
           token_page.fill_expiry_date(expires_at)

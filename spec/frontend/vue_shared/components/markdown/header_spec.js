@@ -46,84 +46,39 @@ describe('Markdown field header component', () => {
     createWrapper();
   });
 
-  describe('markdown header buttons', () => {
+  describe.each`
+    i     | buttonTitle                       | nonMacTitle                                | buttonType
+    ${0}  | ${'Insert suggestion'}            | ${'Insert suggestion'}                     | ${'codeSuggestion'}
+    ${1}  | ${'Add bold text (⌘B)'}           | ${'Add bold text (Ctrl+B)'}                | ${'bold'}
+    ${2}  | ${'Add italic text (⌘I)'}         | ${'Add italic text (Ctrl+I)'}              | ${'italic'}
+    ${3}  | ${'Add strikethrough text (⌘⇧X)'} | ${'Add strikethrough text (Ctrl+Shift+X)'} | ${'strike'}
+    ${4}  | ${'Insert a quote'}               | ${'Insert a quote'}                        | ${'blockquote'}
+    ${5}  | ${'Insert code'}                  | ${'Insert code'}                           | ${'code'}
+    ${6}  | ${'Add a link (⌘K)'}              | ${'Add a link (Ctrl+K)'}                   | ${'link'}
+    ${7}  | ${'Add a bullet list'}            | ${'Add a bullet list'}                     | ${'bulletList'}
+    ${8}  | ${'Add a numbered list'}          | ${'Add a numbered list'}                   | ${'orderedList'}
+    ${9}  | ${'Add a checklist'}              | ${'Add a checklist'}                       | ${'taskList'}
+    ${10} | ${'Indent line (⌘])'}             | ${'Indent line (Ctrl+])'}                  | ${'indent'}
+    ${11} | ${'Outdent line (⌘[)'}            | ${'Outdent line (Ctrl+[)'}                 | ${'outdent'}
+    ${12} | ${'Add a collapsible section'}    | ${'Add a collapsible section'}             | ${'details'}
+    ${13} | ${'Add a table'}                  | ${'Add a table'}                           | ${'table'}
+    ${14} | ${'Attach a file or image'}       | ${'Attach a file or image'}                | ${'upload'}
+    ${15} | ${'Go full screen'}               | ${'Go full screen'}                        | ${'fullScreen'}
+  `('markdown header buttons', ({ i, buttonTitle, nonMacTitle, buttonType }) => {
     it('renders the buttons with the correct title', () => {
-      const buttons = [
-        'Insert suggestion',
-        'Add bold text (⌘B)',
-        'Add italic text (⌘I)',
-        'Add strikethrough text (⌘⇧X)',
-        'Insert a quote',
-        'Insert code',
-        'Add a link (⌘K)',
-        'Add a bullet list',
-        'Add a numbered list',
-        'Add a checklist',
-        'Indent line (⌘])',
-        'Outdent line (⌘[)',
-        'Add a collapsible section',
-        'Add a table',
-        'Go full screen',
-      ];
-      const elements = findToolbarButtons();
-
-      elements.wrappers.forEach((buttonEl, index) => {
-        expect(buttonEl.props('buttonTitle')).toBe(buttons[index]);
-      });
+      expect(findToolbarButtons().wrappers[i].props('buttonTitle')).toBe(buttonTitle);
     });
 
     it('renders correct title on non MacOS systems', () => {
-      window.gl = {
-        client: {
-          isMac: false,
-        },
-      };
+      window.gl = { client: { isMac: false } };
 
       createWrapper();
 
-      const buttons = [
-        'Insert suggestion',
-        'Add bold text (Ctrl+B)',
-        'Add italic text (Ctrl+I)',
-        'Add strikethrough text (Ctrl+Shift+X)',
-        'Insert a quote',
-        'Insert code',
-        'Add a link (Ctrl+K)',
-        'Add a bullet list',
-        'Add a numbered list',
-        'Add a checklist',
-        'Indent line (Ctrl+])',
-        'Outdent line (Ctrl+[)',
-        'Add a collapsible section',
-        'Add a table',
-        'Go full screen',
-      ];
-      const elements = findToolbarButtons();
-
-      elements.wrappers.forEach((buttonEl, index) => {
-        expect(buttonEl.props('buttonTitle')).toBe(buttons[index]);
-      });
+      expect(findToolbarButtons().wrappers[i].props('buttonTitle')).toBe(nonMacTitle);
     });
 
-    it('renders "Attach a file or image" button using gl-button', () => {
-      const button = wrapper.findByTestId('button-attach-file');
-
-      expect(button.element.tagName).toBe('GL-BUTTON-STUB');
-      expect(button.attributes('title')).toBe('Attach a file or image');
-    });
-
-    describe('when the user is on a non-Mac', () => {
-      beforeEach(() => {
-        delete window.gl.client.isMac;
-
-        createWrapper();
-      });
-
-      it('renders keyboard shortcuts with Ctrl+ instead of ⌘', () => {
-        const boldButton = findToolbarButtonByProp('icon', 'bold');
-
-        expect(boldButton.props('buttonTitle')).toBe('Add bold text (Ctrl+B)');
-      });
+    it('passes button type to `trackingProperty` prop', () => {
+      expect(findToolbarButtons().wrappers[i].props('trackingProperty')).toBe(buttonType);
     });
   });
 

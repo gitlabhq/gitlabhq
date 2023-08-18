@@ -1,6 +1,8 @@
 import { omitBy, isNil } from 'lodash';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import {
+  ISSUES_CATEGORY,
+  MERGE_REQUEST_CATEGORY,
   MSG_ISSUES_ASSIGNED_TO_ME,
   MSG_ISSUES_IVE_CREATED,
   MSG_MR_ASSIGNED_TO_ME,
@@ -46,7 +48,7 @@ export const scopedIssuesPath = (state) => {
   return (
     state.searchContext?.project_metadata?.issues_path ||
     state.searchContext?.group_metadata?.issues_path ||
-    state.issuesPath
+    (gon.current_username ? state.issuesPath : false)
   );
 };
 
@@ -54,12 +56,32 @@ export const scopedMRPath = (state) => {
   return (
     state.searchContext?.project_metadata?.mr_path ||
     state.searchContext?.group_metadata?.mr_path ||
-    state.mrPath
+    (gon.current_username ? state.mrPath : false)
   );
 };
 
 export const defaultSearchOptions = (state, getters) => {
   const userName = gon.current_username;
+
+  if (!userName) {
+    const options = [];
+
+    if (getters.scopedIssuesPath) {
+      options.push({
+        text: ISSUES_CATEGORY,
+        href: getters.scopedIssuesPath,
+      });
+    }
+
+    if (getters.scopedMRPath) {
+      options.push({
+        text: MERGE_REQUEST_CATEGORY,
+        href: getters.scopedMRPath,
+      });
+    }
+
+    return options;
+  }
 
   const issues = [
     {

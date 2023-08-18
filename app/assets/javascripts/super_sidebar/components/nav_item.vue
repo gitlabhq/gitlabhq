@@ -56,6 +56,11 @@ export default {
       required: false,
       default: false,
     },
+    isFlyout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     pillData() {
@@ -104,6 +109,8 @@ export default {
       return {
         'gl-px-2 gl-mx-2 gl-line-height-normal': this.isSubitem,
         'gl-px-3': !this.isSubitem,
+        'gl-pl-5! gl-rounded-small': this.isFlyout,
+        'gl-rounded-base': !this.isFlyout,
         [this.item.link_classes]: this.item.link_classes,
         ...this.linkClasses,
       };
@@ -121,25 +128,25 @@ export default {
       :is="navItemLinkComponent"
       #default="{ isActive }"
       v-bind="linkProps"
-      class="nav-item-link gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus"
+      class="nav-item-link gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus show-on-focus-or-hover--context"
       :class="computedLinkClasses"
       data-qa-selector="nav_item_link"
       data-testid="nav-item-link"
     >
       <div
-        :class="[isActive ? 'gl-bg-blue-500' : 'gl-bg-transparent']"
-        class="gl-absolute gl-left-2 gl-top-2 gl-bottom-2 gl-transition-slow"
+        :class="[isActive ? 'gl-opacity-10' : 'gl-opacity-0']"
+        class="active-indicator gl-bg-blue-500 gl-absolute gl-left-2 gl-top-2 gl-bottom-2 gl-transition-slow"
         aria-hidden="true"
         style="width: 3px; border-radius: 3px; margin-right: 1px"
         data-testid="active-indicator"
       ></div>
-      <div class="gl-flex-shrink-0 gl-w-6 gl-display-flex">
+      <div v-if="!isFlyout" class="gl-flex-shrink-0 gl-w-6 gl-display-flex">
         <slot name="icon">
           <gl-icon v-if="item.icon" :name="item.icon" class="gl-m-auto item-icon" />
           <gl-icon
             v-else-if="isInPinnedSection"
             name="grip"
-            class="gl-m-auto gl-text-gray-400 draggable-icon"
+            class="gl-m-auto gl-text-gray-400 js-draggable-icon gl-cursor-grab show-on-focus-or-hover--target"
           />
         </slot>
       </div>
@@ -161,20 +168,22 @@ export default {
         </gl-badge>
         <gl-button
           v-if="isPinnable && !isPinned"
-          v-gl-tooltip.right.viewport="$options.i18n.pinItem"
+          v-gl-tooltip.noninteractive.ds500.right.viewport="$options.i18n.pinItem"
           size="small"
           category="tertiary"
           icon="thumbtack"
+          class="show-on-focus-or-hover--target"
           :aria-label="$options.i18n.pinItem"
           @click.prevent="$emit('pin-add', item.id)"
         />
         <gl-button
           v-else-if="isPinnable && isPinned"
-          v-gl-tooltip.right.viewport="$options.i18n.unpinItem"
+          v-gl-tooltip.noninteractive.ds500.right.viewport="$options.i18n.unpinItem"
           size="small"
           category="tertiary"
           :aria-label="$options.i18n.unpinItem"
           icon="thumbtack-solid"
+          class="show-on-focus-or-hover--target"
           @click.prevent="$emit('pin-remove', item.id)"
         />
       </span>

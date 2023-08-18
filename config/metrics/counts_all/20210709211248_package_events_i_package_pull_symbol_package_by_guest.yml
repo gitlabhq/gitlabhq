@@ -1,6 +1,5 @@
 ---
 key_path: counts.package_events_i_package_pull_symbol_package_by_guest
-name: symbol_packages_pulled_by_guest
 description: A count of symbol packages that have been pulled with by a guest from the package registry
 product_section: ops
 product_stage: package

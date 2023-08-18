@@ -1,5 +1,6 @@
 <script>
 import { pickBy, isEmpty, mapValues } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { getIdFromGraphQLId, isGid, convertToGraphQLId } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -342,7 +343,8 @@ export default {
       );
     },
     formattedFilterParams() {
-      const filtersCopy = { ...this.filterParams };
+      const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
+      const filtersCopy = convertObjectPropsToCamelCase(rawFilterParams, {});
       if (this.filterParams?.iterationId) {
         filtersCopy.iterationId = convertToGraphQLId(
           TYPENAME_ITERATION,

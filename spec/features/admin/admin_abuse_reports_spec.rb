@@ -2,26 +2,28 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
+RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
 
-  context 'as an admin' do
-    describe 'displayed reports' do
+  let_it_be(:open_report) { create(:abuse_report, created_at: 5.days.ago, updated_at: 2.days.ago, category: 'spam', user: user) }
+  let_it_be(:open_report2) { create(:abuse_report, created_at: 4.days.ago, updated_at: 3.days.ago, category: 'phishing') }
+  let_it_be(:closed_report) { create(:abuse_report, :closed, user: user, category: 'spam') }
+
+  describe 'as an admin' do
+    before do
+      sign_in(admin)
+      gitlab_enable_admin_mode_sign_in(admin)
+    end
+
+    context 'when abuse_reports_list feature flag is enabled' do
       include FilteredSearchHelpers
 
-      let_it_be(:open_report) { create(:abuse_report, created_at: 5.days.ago, updated_at: 2.days.ago) }
-      let_it_be(:open_report2) { create(:abuse_report, created_at: 4.days.ago, updated_at: 3.days.ago, category: 'phishing') }
-      let_it_be(:closed_report) { create(:abuse_report, :closed) }
-
-      let(:abuse_report_row_selector) { '[data-testid="abuse-report-row"]' }
-
       before do
-        sign_in(admin)
-        gitlab_enable_admin_mode_sign_in(admin)
-
         visit admin_abuse_reports_path
       end
+
+      let(:abuse_report_row_selector) { '[data-testid="abuse-report-row"]' }
 
       it 'only includes open reports by default' do
         expect_displayed_reports_count(2)
@@ -68,7 +70,8 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
       end
 
       it 'can be sorted by created_at and updated_at in desc and asc order', :aggregate_failures do
-        # created_at desc (default)
+        sort_by 'Created date'
+        # created_at desc
         expect(report_rows[0].text).to include(report_text(open_report2))
         expect(report_rows[1].text).to include(report_text(open_report))
 
@@ -78,17 +81,78 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
         expect(report_rows[0].text).to include(report_text(open_report))
         expect(report_rows[1].text).to include(report_text(open_report2))
 
-        # updated_at ascending
+        # updated_at asc
         sort_by 'Updated date'
 
         expect(report_rows[0].text).to include(report_text(open_report2))
         expect(report_rows[1].text).to include(report_text(open_report))
 
-        # updated_at descending
+        # updated_at desc
         toggle_sort_direction
 
         expect(report_rows[0].text).to include(report_text(open_report))
         expect(report_rows[1].text).to include(report_text(open_report2))
+      end
+
+      context 'when multiple reports for the same user are created' do
+        let_it_be(:open_report3) { create(:abuse_report, category: 'spam', user: user) }
+        let_it_be(:closed_report2) { create(:abuse_report, :closed, user: user, category: 'spam') }
+
+        it 'aggregates open reports by user & category', :aggregate_failures do
+          expect_displayed_reports_count(2)
+
+          expect_aggregated_report_shown(open_report, 2)
+          expect_report_shown(open_report2)
+        end
+
+        it 'can sort aggregated reports by number_of_reports in desc order only', :aggregate_failures do
+          sort_by 'Number of Reports'
+
+          expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
+          expect(report_rows[1].text).to include(report_text(open_report2))
+
+          toggle_sort_direction
+
+          expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
+          expect(report_rows[1].text).to include(report_text(open_report2))
+        end
+
+        it 'can sort aggregated reports by created_at and updated_at in desc and asc order', :aggregate_failures do
+          # number_of_reports desc (default)
+          expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
+          expect(report_rows[1].text).to include(report_text(open_report2))
+
+          # created_at desc
+          sort_by 'Created date'
+
+          expect(report_rows[0].text).to include(report_text(open_report2))
+          expect(report_rows[1].text).to include(aggregated_report_text(open_report, 2))
+
+          # created_at asc
+          toggle_sort_direction
+
+          expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
+          expect(report_rows[1].text).to include(report_text(open_report2))
+
+          sort_by 'Updated date'
+
+          # updated_at asc
+          expect(report_rows[0].text).to include(report_text(open_report2))
+          expect(report_rows[1].text).to include(aggregated_report_text(open_report, 2))
+
+          # updated_at desc
+          toggle_sort_direction
+
+          expect(report_rows[0].text).to include(aggregated_report_text(open_report, 2))
+          expect(report_rows[1].text).to include(report_text(open_report2))
+        end
+
+        it 'does not aggregate closed reports', :aggregate_failures do
+          filter %w[Status Closed]
+
+          expect_displayed_reports_count(2)
+          expect_report_shown(closed_report, closed_report2)
+        end
       end
 
       def report_rows
@@ -96,7 +160,11 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
       end
 
       def report_text(report)
-        "#{report.user.name} reported for #{report.category}"
+        "#{report.user.name} reported for #{report.category} by #{report.reporter.name}"
+      end
+
+      def aggregated_report_text(report, count)
+        "#{report.user.name} reported for #{report.category} by #{count} users"
       end
 
       def expect_report_shown(*reports)
@@ -108,6 +176,12 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
       def expect_report_not_shown(*reports)
         reports.each do |r|
           expect(page).not_to have_content(report_text(r))
+        end
+      end
+
+      def expect_aggregated_report_shown(*reports, count)
+        reports.each do |r|
+          expect(page).to have_content(aggregated_report_text(r, count))
         end
       end
 
@@ -138,71 +212,30 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
       before do
         stub_feature_flags(abuse_reports_list: false)
 
-        sign_in(admin)
-        gitlab_enable_admin_mode_sign_in(admin)
+        visit admin_abuse_reports_path
       end
 
-      describe 'if a user has been reported for abuse' do
-        let_it_be(:abuse_report) { create(:abuse_report, user: user) }
+      it 'displays all abuse reports', :aggregate_failures do
+        expect_report_shown(open_report)
+        expect_report_actions_shown(open_report)
 
-        describe 'in the abuse report view' do
-          before do
-            visit admin_abuse_reports_path
-          end
+        expect_report_shown(open_report2)
+        expect_report_actions_shown(open_report2)
 
-          it 'presents information about abuse report' do
-            expect(page).to have_content('Abuse Reports')
-
-            expect(page).to have_content(user.name)
-            expect(page).to have_content(abuse_report.reporter.name)
-            expect(page).to have_content(abuse_report.message)
-            expect(page).to have_link(user.name, href: user_path(user))
-          end
-
-          it 'present actions items' do
-            expect(page).to have_link('Remove user & report')
-            expect(page).to have_link('Block user')
-            expect(page).to have_link('Remove user')
-          end
-        end
-
-        describe 'in the profile page of the user' do
-          it 'shows a link to view user in the admin area' do
-            visit user_path(user)
-
-            expect(page).to have_link 'View user in admin area', href: admin_user_path(user)
-          end
-        end
+        expect_report_shown(closed_report)
+        expect_report_actions_shown(closed_report)
       end
 
-      describe 'if an admin has been reported for abuse' do
+      context 'when an admin has been reported for abuse' do
         let_it_be(:admin_abuse_report) { create(:abuse_report, user: admin) }
 
-        describe 'in the abuse report view' do
-          before do
-            visit admin_abuse_reports_path
-          end
-
-          it 'presents information about abuse report' do
-            page.within(:table_row, { "User" => admin.name }) do
-              expect(page).to have_content(admin.name)
-              expect(page).to have_content(admin_abuse_report.reporter.name)
-              expect(page).to have_content(admin_abuse_report.message)
-              expect(page).to have_link(admin.name, href: user_path(admin))
-            end
-          end
-
-          it 'does not present actions items' do
-            page.within(:table_row, { "User" => admin.name }) do
-              expect(page).not_to have_link('Remove user & report')
-              expect(page).not_to have_link('Block user')
-              expect(page).not_to have_link('Remove user')
-            end
-          end
+        it 'displays the abuse report without actions' do
+          expect_report_shown(admin_abuse_report)
+          expect_report_actions_not_shown(admin_abuse_report)
         end
       end
 
-      describe 'if a many users have been reported for abuse' do
+      context 'when multiple users have been reported for abuse' do
         let(:report_count) { AbuseReport.default_per_page + 3 }
 
         before do
@@ -211,8 +244,8 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
           end
         end
 
-        describe 'in the abuse report view' do
-          it 'presents information about abuse report' do
+        context 'in the abuse report view', :aggregate_failures do
+          it 'adds pagination' do
             visit admin_abuse_reports_path
 
             expect(page).to have_selector('.pagination')
@@ -221,12 +254,8 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
         end
       end
 
-      describe 'filtering by user' do
-        let!(:user2) { create(:user) }
-        let!(:abuse_report) { create(:abuse_report, user: user) }
-        let!(:abuse_report_2) { create(:abuse_report, user: user2) }
-
-        it 'shows only single user report' do
+      context 'when filtering reports' do
+        it 'can be filtered by reported-user', :aggregate_failures do
           visit admin_abuse_reports_path
 
           page.within '.filter-form' do
@@ -234,14 +263,39 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :shared do
             wait_for_requests
 
             page.within '.dropdown-menu-user' do
-              click_link user2.name
+              click_link user.name
             end
 
             wait_for_requests
           end
 
-          expect(page).to have_content(user2.name)
-          expect(page).not_to have_content(user.name)
+          expect_report_shown(open_report)
+          expect_report_shown(closed_report)
+        end
+      end
+
+      def expect_report_shown(report)
+        page.within(:table_row, { "User" => report.user.name, "Reported by" => report.reporter.name }) do
+          expect(page).to have_content(report.user.name)
+          expect(page).to have_content(report.reporter.name)
+          expect(page).to have_content(report.message)
+          expect(page).to have_link(report.user.name, href: user_path(report.user))
+        end
+      end
+
+      def expect_report_actions_shown(report)
+        page.within(:table_row, { "User" => report.user.name, "Reported by" => report.reporter.name }) do
+          expect(page).to have_link('Remove user & report')
+          expect(page).to have_link('Block user')
+          expect(page).to have_link('Remove user')
+        end
+      end
+
+      def expect_report_actions_not_shown(report)
+        page.within(:table_row, { "User" => report.user.name, "Reported by" => report.reporter.name }) do
+          expect(page).not_to have_link('Remove user & report')
+          expect(page).not_to have_link('Block user')
+          expect(page).not_to have_link('Remove user')
         end
       end
     end

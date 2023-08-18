@@ -91,12 +91,6 @@ describe('Manifests List', () => {
   });
 
   describe('pagination', () => {
-    it('is hidden when there is no next or prev pages', () => {
-      createComponent({ ...defaultProps, pagination: {} });
-
-      expect(findPagination().exists()).toBe(false);
-    });
-
     it('has the correct props', () => {
       createComponent();
 

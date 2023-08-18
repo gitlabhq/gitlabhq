@@ -28,11 +28,25 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
   let(:expected_detached_mr_tag) { 'merge request' }
 
   before do
+    # rubocop:disable RSpec/AvoidConditionalStatements
+    stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
+    # rubocop:enable RSpec/AvoidConditionalStatements
+
     stub_application_setting(auto_devops_enabled: false)
     stub_ci_pipeline_yaml_file(YAML.dump(config))
     project.add_maintainer(user)
     sign_in(user)
   end
+
+  # rubocop:disable RSpec/AvoidConditionalStatements
+  def mr_widget_title
+    if Gitlab.ee?
+      'to be merged automatically when all merge checks pass'
+    else
+      'to be merged automatically when the pipeline succeeds'
+    end
+  end
+  # rubocop:enable RSpec/AvoidConditionalStatements
 
   context 'when a user created a merge request in the parent project' do
     let!(:merge_request) do
@@ -163,7 +177,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         context 'when detached merge request pipeline is pending' do
           it 'waits the head pipeline' do
-            expect(page).to have_content('to be merged automatically when the pipeline succeeds')
+            expect(page).to have_content mr_widget_title
             expect(page).to have_button('Cancel auto-merge')
           end
         end
@@ -177,7 +191,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
           end
 
           it 'waits the head pipeline' do
-            expect(page).to have_content('to be merged automatically when the pipeline succeeds')
+            expect(page).to have_content mr_widget_title
             expect(page).to have_button('Cancel auto-merge')
           end
         end
@@ -388,7 +402,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       context 'when detached merge request pipeline is pending' do
         it 'waits the head pipeline' do
-          expect(page).to have_content('to be merged automatically when the pipeline succeeds')
+          expect(page).to have_content mr_widget_title
           expect(page).to have_button('Cancel auto-merge')
         end
       end
@@ -397,7 +411,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         before do
           detached_merge_request_pipeline.reload.succeed!
 
-          wait_for_requests
+          refresh
         end
 
         it 'merges the merge request' do
@@ -414,7 +428,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         end
 
         it 'waits the head pipeline' do
-          expect(page).to have_content('to be merged automatically when the pipeline succeeds')
+          expect(page).to have_content mr_widget_title
           expect(page).to have_button('Cancel auto-merge')
         end
       end

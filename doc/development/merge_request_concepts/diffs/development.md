@@ -64,6 +64,7 @@ contents, individual commits, and the files containing changes.
  external_diff_store: 1,
  stored_externally: nil,
  files_count: 9,
+ patch_id_sha: "d504412d5b6e6739647e752aff8e468dde093f2f",
  sorted: true,
  diff_type: "regular",
  verification_checksum: nil>

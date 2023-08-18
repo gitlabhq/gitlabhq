@@ -42,11 +42,15 @@ module Gitlab
           end
 
           class JobHash < ::Gitlab::Config::Entry::Node
-            include ::Gitlab::Config::Entry::Validatable
             include ::Gitlab::Config::Entry::Attributable
+            include ::Gitlab::Config::Entry::Configurable
 
-            ALLOWED_KEYS = %i[job artifacts optional].freeze
-            attributes :job, :artifacts, :optional
+            ALLOWED_KEYS = %i[job artifacts optional parallel].freeze
+            attributes :job, :artifacts, :optional, :parallel
+
+            entry :parallel, Entry::Product::Parallel,
+              description: 'Parallel needs configuration for this job',
+              inherit: true
 
             validations do
               validates :config, presence: true
@@ -61,9 +65,15 @@ module Gitlab
             end
 
             def value
-              { name: job,
+              result = {
+                name: job,
                 artifacts: artifacts || artifacts.nil?,
-                optional: !!optional }
+                optional: !!optional
+              }
+
+              result[:parallel] = parallel_value if has_parallel?
+
+              result
             end
           end
 

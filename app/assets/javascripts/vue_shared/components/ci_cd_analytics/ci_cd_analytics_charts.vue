@@ -18,6 +18,11 @@ export default {
       required: true,
       type: Object,
     },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -35,12 +40,22 @@ export default {
       return sprintf(s__('CiCdAnalytics|Date range: %{range}'), { range: this.chart.range });
     },
   },
+  methods: {
+    onInput(selectedChart) {
+      this.selectedChart = selectedChart;
+      this.$emit('select-chart', selectedChart);
+    },
+  },
 };
 </script>
 <template>
   <div>
     <div class="gl-display-flex gl-flex-wrap gl-gap-5">
-      <segmented-control-button-group v-model="selectedChart" :options="chartRanges" />
+      <segmented-control-button-group
+        :options="chartRanges"
+        :value="selectedChart"
+        @input="onInput"
+      />
       <slot name="extend-button-group"></slot>
     </div>
     <ci-cd-analytics-area-chart
@@ -48,7 +63,9 @@ export default {
       v-bind="$attrs"
       :chart-data="chart.data"
       :area-chart-options="chartOptions"
+      :loading="loading"
     >
+      <slot name="alerts"></slot>
       <p>{{ dateRange }}</p>
       <slot name="metrics" :selected-chart="selectedChart"></slot>
       <template #tooltip-title>

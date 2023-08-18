@@ -3,7 +3,7 @@
 module Mutations
   module AwardEmojis
     class Base < BaseMutation
-      NOT_EMOJI_AWARDABLE = 'You cannot award emoji to this resource.'
+      NOT_EMOJI_AWARDABLE = 'You cannot add emoji reactions to this resource.'
 
       authorize :award_emoji
 
@@ -20,7 +20,7 @@ module Mutations
       field :award_emoji,
             Types::AwardEmojis::AwardEmojiType,
             null: true,
-            description: 'Award emoji after mutation.'
+            description: 'Emoji reactions after mutation.'
 
       private
 

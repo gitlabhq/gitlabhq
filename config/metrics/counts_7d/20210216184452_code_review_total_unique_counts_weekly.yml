@@ -108,6 +108,8 @@ options:
     - i_code_review_user_gitlab_cli_api_request
     - i_code_review_user_jetbrains_api_request
     - i_editor_extensions_user_jetbrains_bundled_api_request
+    - i_editor_extensions_user_visual_studio_api_request
+    - i_editor_extensions_user_neovim_plugin_api_request
     - i_code_review_user_labels_changed
     - i_code_review_user_load_conflict_ui
     - i_code_review_user_marked_as_draft
@@ -141,11 +143,11 @@ options:
     - i_code_review_merge_request_widget_security_reports_full_report_clicked
     - i_code_review_merge_request_widget_security_reports_view
 distribution:
-- ce
-- ee
+  - ce
+  - ee
 tier:
-- free
-- premium
-- ultimate
+  - free
+  - premium
+  - ultimate
 performance_indicator_type: []
-milestone: "<13.9"
+milestone: '<13.9'

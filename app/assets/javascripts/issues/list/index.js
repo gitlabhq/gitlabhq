@@ -71,6 +71,7 @@ export async function mountIssuesListApp() {
     hasAnyProjects,
     hasBlockedIssuesFeature,
     hasIssuableHealthStatusFeature,
+    hasIssueDateFilterFeature,
     hasIssueWeightsFeature,
     hasIterationsFeature,
     hasScopedLabelsFeature,
@@ -95,6 +96,8 @@ export async function mountIssuesListApp() {
     showNewIssueLink,
     signInPath,
     groupId = '',
+    reportAbusePath,
+    registerPath,
   } = el.dataset;
 
   return new Vue({
@@ -117,11 +120,15 @@ export async function mountIssuesListApp() {
       canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
       emptyStateSvgPath,
       fullPath,
+      projectPath: fullPath,
       groupPath,
+      reportAbusePath,
+      registerPath,
       hasAnyIssues: parseBoolean(hasAnyIssues),
       hasAnyProjects: parseBoolean(hasAnyProjects),
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
+      hasIssueDateFilterFeature: parseBoolean(hasIssueDateFilterFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),

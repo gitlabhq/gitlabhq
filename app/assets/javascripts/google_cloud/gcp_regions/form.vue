@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlFormGroup, GlFormSelect } from '@gitlab/ui';
 import { __, s__ } from '~/locale';

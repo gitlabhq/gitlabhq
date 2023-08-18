@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Changes in merge requests **(FREE)**
+# Changes in merge requests **(FREE ALL)**
 
 A [merge request](index.md) proposes a set of changes to files in a branch in your repository. These
 changes are shown as a _diff_ (difference) between the current state and the proposed
@@ -16,6 +16,10 @@ to the files in the target branch, and shows only the parts of a file that have 
 
 ![Example screenshot of a source code diff](img/mr-diff-example_v15.png)
 
+For technical details on how GitLab calculates the diff between the two revisions,
+read [Working with diffs](../../../development/merge_request_concepts/diffs/index.md)
+in our development documentation.
+
 ## Show all changes in a merge request
 
 To view the diff of changes included in a merge request:
@@ -23,9 +27,9 @@ To view the diff of changes included in a merge request:
 1. Go to your merge request.
 1. Below the merge request title, select **Changes**.
 1. If the merge request changes many files, you can jump directly to a specific file:
-   1. Select **Show file browser** (**{file-tree}**) to display the file tree.
+   1. Select **Show file browser** (**{file-tree}**) or press <kbd>F</kbd> to display the file tree.
    1. Select the file you want to view.
-   1. To hide the file browser, select **Show file browser** again.
+   1. To hide the file browser, select **Show file browser** or press <kbd>F</kbd> again.
 
 Files with many changes are collapsed to improve performance. GitLab displays the message:
 **Some changes are not shown**. To view the changes for that file, select **Expand file**.

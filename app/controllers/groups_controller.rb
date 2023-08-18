@@ -37,6 +37,7 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:frontend_caching, group)
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_grid_view)
+    push_frontend_feature_flag(:new_graphql_users_autocomplete, group)
   end
 
   before_action only: :merge_requests do
@@ -218,8 +219,8 @@ class GroupsController < Groups::ApplicationController
     return super unless html_request?
 
     @has_issues = IssuesFinder.new(current_user, group_id: group.id, include_subgroups: true).execute
-      .non_archived
-      .exists?
+                              .non_archived
+                              .exists?
 
     @has_projects = group_projects.exists?
 
@@ -293,6 +294,7 @@ class GroupsController < Groups::ApplicationController
       :project_creation_level,
       :subgroup_creation_level,
       :default_branch_protection,
+      { default_branch_protection_defaults: [:allow_force_push, { allowed_to_merge: [:access_level], allowed_to_push: [:access_level] }] },
       :default_branch_name,
       :allow_mfa_for_subgroups,
       :resource_access_token_creation_allowed,
@@ -309,13 +311,13 @@ class GroupsController < Groups::ApplicationController
 
     options = { include_subgroups: true }
     projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
-                 .execute
-                 .includes(:namespace)
+                                  .execute
+                                  .includes(:namespace)
 
     @events = EventCollection
-      .new(projects, offset: params[:offset].to_i, filter: event_filter, groups: groups)
-      .to_a
-      .map(&:present)
+                .new(projects, offset: params[:offset].to_i, filter: event_filter, groups: groups)
+                .to_a
+                .map(&:present)
 
     Events::RenderService
       .new(current_user)

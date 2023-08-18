@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# OAuth 2.0 identity provider API **(FREE)**
+# OAuth 2.0 identity provider API **(FREE ALL)**
 
 GitLab provides an API to allow third-party services to access GitLab resources on a user's behalf
 with the [OAuth 2.0](https://oauth.net/2/) protocol.
@@ -361,6 +361,10 @@ The username must be `oauth2`, not your username:
 ```plaintext
 https://oauth2:<your_access_token>@gitlab.example.com/project_path/project_name.git
 ```
+
+Alternatively, you can use a [Git credential helper](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)
+to authenticate to GitLab with OAuth. This handles OAuth token refresh
+automatically.
 
 ## Retrieve the token information
 

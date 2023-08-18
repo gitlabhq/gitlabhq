@@ -703,6 +703,21 @@
                 }
               ]
             },
+            "azure_key_vault": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name"
+              ],
+              "additionalProperties": false
+            },
             "file": {
               "type": "boolean",
               "default": true,
@@ -713,8 +728,17 @@
               "description": "Specifies the JWT variable that should be used to authenticate with Hashicorp Vault."
             }
           },
-          "required": [
-            "vault"
+          "anyOf": [
+            {
+              "required": [
+                "vault"
+              ]
+            },
+            {
+              "required": [
+                "azure_key_vault"
+              ]
+            }
           ],
           "additionalProperties": false
         }
@@ -1071,6 +1095,73 @@
               }
             }
           }
+        }
+      ]
+    },
+    "parallel": {
+      "description": "Splits up a single job into multiple that run in parallel. Provides `CI_NODE_INDEX` and `CI_NODE_TOTAL` environment variables to the jobs.",
+      "oneOf": [
+        {
+          "type": "integer",
+          "description": "Creates N instances of the job that run in parallel.",
+          "default": 0,
+          "minimum": 2,
+          "maximum": 200
+        },
+        {
+          "type": "object",
+          "properties": {
+            "matrix": {
+              "type": "array",
+              "description": "Defines different variables for jobs that are running in parallel.",
+              "items": {
+                "type": "object",
+                "description": "Defines the variables for a specific job.",
+                "additionalProperties": {
+                  "type": [
+                    "string",
+                    "number",
+                    "array"
+                  ]
+                }
+              },
+              "maxItems": 200
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "matrix"
+          ]
+        }
+      ]
+    },
+    "parallel_matrix": {
+      "description": "Use the `needs:parallel:matrix` keyword to specify parallelized jobs needed to be completed for the job to run. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#needsparallelmatrix)",
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "matrix": {
+              "type": "array",
+              "description": "Defines different variables for jobs that are running in parallel.",
+              "items": {
+                "type": "object",
+                "description": "Defines the variables for a specific job.",
+                "additionalProperties": {
+                  "type": [
+                    "string",
+                    "number",
+                    "array"
+                  ]
+                }
+              },
+              "maxItems": 200
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "matrix"
+          ]
         }
       ]
     },
@@ -1494,6 +1585,9 @@
                   },
                   "optional": {
                     "type": "boolean"
+                  },
+                  "parallel": {
+                    "$ref": "#/definitions/parallel_matrix"
                   }
                 },
                 "required": [
@@ -1512,6 +1606,9 @@
                   },
                   "artifacts": {
                     "type": "boolean"
+                  },
+                  "parallel": {
+                    "$ref": "#/definitions/parallel_matrix"
                   }
                 },
                 "required": [
@@ -1534,6 +1631,9 @@
                   },
                   "artifacts": {
                     "type": "boolean"
+                  },
+                  "parallel": {
+                    "$ref": "#/definitions/parallel_matrix"
                   }
                 },
                 "required": [
@@ -1747,41 +1847,7 @@
           "$ref": "#/definitions/retry"
         },
         "parallel": {
-          "description": "Parallel will split up a single job into several, and provide `CI_NODE_INDEX` and `CI_NODE_TOTAL` environment variables for the running jobs.",
-          "oneOf": [
-            {
-              "type": "integer",
-              "description": "Creates N instances of the same job that run in parallel.",
-              "default": 0,
-              "minimum": 2,
-              "maximum": 200
-            },
-            {
-              "type": "object",
-              "properties": {
-                "matrix": {
-                  "type": "array",
-                  "description": "Defines different variables for jobs that are running in parallel.",
-                  "items": {
-                    "type": "object",
-                    "description": "Defines environment variables for specific job.",
-                    "additionalProperties": {
-                      "type": [
-                        "string",
-                        "number",
-                        "array"
-                      ]
-                    }
-                  },
-                  "maxItems": 200
-                }
-              },
-              "additionalProperties": false,
-              "required": [
-                "matrix"
-              ]
-            }
-          ]
+          "$ref": "#/definitions/parallel"
         },
         "interruptible": {
           "$ref": "#/definitions/interruptible"

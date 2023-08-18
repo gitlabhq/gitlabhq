@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { createNamespacedHelpers } from 'vuex';
 import { s__ } from '~/locale';
 

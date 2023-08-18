@@ -32,7 +32,7 @@ Membership automatically cascades down to all subgroups and projects.
 
 ## Create a project
 
-Now [create one or more projects](../../user/project/index.md#create-a-project) in your group.
+Now [create one or more projects](../../user/project/index.md) in your group.
 There are several different ways to create a project. A project contains
 your code and pipelines, but also the issues that are used for planning your upcoming code changes.
 
@@ -47,9 +47,7 @@ When creating an iteration cadence, you can decide whether to automatically mana
 disable the automated scheduling to
 [manually manage the iterations](../../user/group/iterations/index.md#manual-iteration-management).
 
-Similar to membership, iterations cascade down your group, subgroup, and project hierarchy. If your
-team works across many groups, subgroups, and projects, create the iteration cadence in the top-most
-group shared by all projects that contain the team's issues as illustrated by the diagram below.
+Similar to membership, iterations cascade down your group, subgroup, and project hierarchy. If your team has multiple groups and projects, create the iteration cadence in the top-most shared group:
 
 ```mermaid
 graph TD

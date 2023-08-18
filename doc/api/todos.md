@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab To-Do List API **(FREE)**
+# GitLab To-Do List API **(FREE ALL)**
 
 Interact with [to-do items](../user/todos.md) using the REST API.
 

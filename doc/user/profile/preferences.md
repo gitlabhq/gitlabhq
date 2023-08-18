@@ -5,96 +5,64 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Profile preferences **(FREE)**
+# Profile preferences **(FREE ALL)**
 
-A user's profile preferences page allows the user to customize various aspects
-of GitLab to their liking.
+You can update your preferences to change the look and feel of GitLab.
 
-To navigate to your profile's preferences:
+## Change the color theme
+
+You can change the color theme of the GitLab UI. These colors are displayed on the left sidebar.
+Using individual color themes might help you differentiate between your different
+GitLab instances. 
+
+To change the color theme:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
+1. In the **Color theme** section, select a theme.
 
-## Navigation theme
+### Dark mode
 
-The GitLab navigation theme setting allows you to personalize your GitLab experience.
-You can choose from several color themes that add unique colors to the left sidebar.
-Using individual color themes might help you differentiate between your different
-GitLab instances.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252).
 
-The default theme is Indigo. You can choose between 10 themes:
+Dark mode makes elements on the GitLab UI stand out on a dark background. 
 
-- Indigo
-- Light Indigo
-- Blue
-- Light Blue
-- Green
-- Light Green
-- Red
-- Light Red
-- Dark
-- Light
-- [Dark Mode](#dark-mode)
+- To turn on Dark mode, Select **Preferences > Color theme > Dark Mode**.
 
-## Dark mode
+Dark mode works only with the **Dark** Syntax highlighting theme. You can report and view issues, send feedback, and track progress in [epic 2092](https://gitlab.com/groups/gitlab-org/-/epics/2902).
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](../../policy/experiment-beta-support.md#experiment) release.
+## Change the syntax highlighting theme
 
-GitLab has started work on dark mode! The dark mode Experiment release is available in the
-spirit of iteration and the lower expectations of
-[Experiment features](../../policy/experiment-beta-support.md#experiment).
+> Changing the default syntax highlighting theme for authenticated and unauthenticated users [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25129) in GitLab 15.1.
 
-Progress on dark mode is tracked in the [Dark theme epic](https://gitlab.com/groups/gitlab-org/-/epics/2902).
-See the epic for:
+Syntax highlighting is a feature in code editors and IDEs. The highlighter assigns a color to each type of code, such as strings and comments.
 
-- A list of known issues.
-- Our planned direction and next steps.
+To change the syntax highlighting theme:
 
-If you find an issue that isn't listed, leave a comment on the epic or create a
-new issue.
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. In the **Syntax highlighting theme** section, select a theme.
+1. Select **Save changes**.
 
-Dark mode is available as a navigation theme, for MVC and compatibility reasons.
-[An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/219512)
-to make it configurable in its own section along with support for
-different navigation themes.
+To view the updated syntax highlighting theme, refresh your project's page. 
 
-Dark theme only works with the **Dark** syntax highlighting theme.
+To customize the syntax highlighting theme, you can also [use the Application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls). Use `default_syntax_highlighting_theme` to change the syntax highlighting colors on a more granular level.
 
-## Syntax highlighting theme
+If these steps do not work, your programming language might not be supported by the syntax highlighters. 
+For more information, view [Rouge Ruby Library](https://github.com/rouge-ruby/rouge) for guidance on code files and Snippets. View [Moncaco Editor](https://microsoft.github.io/monaco-editor/) and [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) for guidance on the Web IDE.  
 
-> Changing the default syntax highlighting theme for new users and users who are not signed in [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25129) in GitLab 15.10.
+## Change the diff colors
 
-GitLab uses the [Rouge Ruby library](https://github.com/rouge-ruby/rouge)
-for syntax highlighting outside of any Editor context. The WebIDE (like Snippets)
-uses [Monaco Editor](https://microsoft.github.io/monaco-editor/) and it's provided
-[Monarch](https://microsoft.github.io/monaco-editor/monarch.html) library for
-syntax highlighting. For a list of supported languages, see the documentation of
-the respective libraries.
+Diffs use two different background colors to show changes between versions of code. By default, the original file in red and the changes made in green.
 
-Changing this setting allows you to customize the color theme when viewing any
-syntax highlighted code on GitLab.
+To change the diff colors:
 
-![Profile preferences syntax highlighting themes](img/profile-preferences-syntax-themes_v15_11.png)
-
-Introduced in GitLab 13.6, the themes [Solarized](https://gitlab.com/gitlab-org/gitlab/-/issues/221034) and [Monokai](https://gitlab.com/gitlab-org/gitlab/-/issues/221034) also apply to the [Web IDE](../project/web_ide/index.md) and [Snippets](../snippets.md).
-
-You can use an API call to change the default syntax highlighting theme for new users and users
-who are not signed in. For more information, see the `default_syntax_highlighting_theme`
-in the [list of settings that can be accessed through API calls](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
-
-## Diff colors
-
-A diff compares the old/removed content with the new/added content (for example, when
-[reviewing a merge request](../project/merge_requests/reviews/index.md#review-a-merge-request) or in a
-[Markdown inline diff](../markdown.md#inline-diff)).
-Typically, the colors red and green are used for removed and added lines in diffs.
-The exact colors depend on the selected [syntax highlighting theme](#syntax-highlighting-theme).
-The colors may lead to difficulties in case of red-green color blindness.
-
-For this reason, you can customize the following colors:
-
-- Color for removed lines
-- Color for added lines
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Diff colors** section. 
+1. Complete the fields.
+1. Select **Save changes**.
+1. Optional. Type a color code in the fields.
 
 ## Behavior
 
@@ -157,7 +125,8 @@ You can choose one of the following options as the first day of the week:
 - Sunday
 - Monday
 
-If you select **System Default**, the [instance default](../../administration/settings/index.md#default-first-day-of-the-week) setting is used.
+If you select **System Default**, the first day of the week is set to the
+[instance default](../../administration/settings/index.md#change-the-default-first-day-of-the-week).
 
 ## Time preferences
 

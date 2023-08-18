@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { mount } from '@vue/test-utils';
 import FileRowExtra from '~/ide/components/file_row_extra.vue';

@@ -1,7 +1,10 @@
-import { GlAvatarLabeled, GlBadge, GlIcon, GlPopover } from '@gitlab/ui';
+import { GlAvatarLabeled, GlBadge, GlIcon, GlPopover, GlDisclosureDropdown } from '@gitlab/ui';
+import uniqueId from 'lodash/uniqueId';
 import projects from 'test_fixtures/api/users/projects/get.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { __ } from '~/locale';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
+import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/projects_list/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import {
@@ -13,8 +16,9 @@ import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
 import { FEATURABLE_DISABLED, FEATURABLE_ENABLED } from '~/featurable/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 
-jest.mock('lodash/uniqueId', () => (prefix) => `${prefix}1`);
+jest.mock('lodash/uniqueId');
 
 describe('ProjectsListItem', () => {
   let wrapper;
@@ -39,6 +43,10 @@ describe('ProjectsListItem', () => {
   const findPopover = () => findProjectTopics().findComponent(GlPopover);
   const findProjectDescription = () => wrapper.findByTestId('project-description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
+
+  beforeEach(() => {
+    uniqueId.mockImplementation(jest.requireActual('lodash/uniqueId'));
+  });
 
   it('renders project avatar', () => {
     createComponent();
@@ -207,6 +215,10 @@ describe('ProjectsListItem', () => {
   });
 
   describe('if project has topics', () => {
+    beforeEach(() => {
+      uniqueId.mockImplementation((prefix) => `${prefix}1`);
+    });
+
     it('renders first three topics', () => {
       createComponent();
 
@@ -304,6 +316,74 @@ describe('ProjectsListItem', () => {
       createComponent();
 
       expect(wrapper.findByTestId('project-icon').exists()).toBe(false);
+    });
+  });
+
+  describe('when project has actions', () => {
+    const editPath = '/foo/bar/edit';
+
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          project: {
+            ...project,
+            actions: [ACTION_EDIT, ACTION_DELETE],
+            isForked: true,
+            editPath,
+          },
+        },
+      });
+    });
+
+    it('displays actions dropdown', () => {
+      expect(wrapper.findComponent(GlDisclosureDropdown).props()).toMatchObject({
+        items: [
+          {
+            id: ACTION_EDIT,
+            text: __('Edit'),
+            href: editPath,
+          },
+          {
+            id: ACTION_DELETE,
+            text: __('Delete'),
+            extraAttrs: {
+              class: 'gl-text-red-500!',
+            },
+            action: expect.any(Function),
+          },
+        ],
+      });
+    });
+
+    describe('when delete action is fired', () => {
+      beforeEach(() => {
+        wrapper
+          .findComponent(GlDisclosureDropdown)
+          .props('items')
+          .find((item) => item.id === ACTION_DELETE)
+          .action();
+      });
+
+      it('displays confirmation modal with correct props', () => {
+        expect(wrapper.findComponent(DeleteModal).props()).toMatchObject({
+          visible: true,
+          confirmPhrase: project.name,
+          isFork: true,
+          issuesCount: '0',
+          forksCount: '0',
+          starsCount: '0',
+        });
+      });
+
+      describe('when deletion is confirmed', () => {
+        beforeEach(() => {
+          wrapper.findComponent(DeleteModal).vm.$emit('primary');
+        });
+
+        it('emits `delete` event', () => {
+          expect(wrapper.emitted('delete')).toMatchObject([[project]]);
+        });
+      });
     });
   });
 });

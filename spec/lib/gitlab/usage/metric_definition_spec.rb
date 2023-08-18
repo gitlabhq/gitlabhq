@@ -18,7 +18,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       data_source: 'database',
       distribution: %w(ee ce),
       tier: %w(free starter premium ultimate bronze silver gold),
-      name: 'uuid',
       data_category: 'standard',
       removed_by_url: 'http://gdk.test'
     }
@@ -129,7 +128,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :distribution       | nil
       :distribution       | 'test'
       :tier               | %w(test ee)
-      :name               | 'count_<adjective_describing>_boards'
       :repair_issue_url   | nil
       :removed_by_url     | 1
 

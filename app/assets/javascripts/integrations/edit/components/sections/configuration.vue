@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 
 import DynamicField from '../dynamic_field.vue';

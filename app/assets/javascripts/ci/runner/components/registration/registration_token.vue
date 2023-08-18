@@ -45,6 +45,7 @@ export default {
     :label-for="inputId"
     :copy-button-title="$options.I18N_COPY_BUTTON_TITLE"
     :form-input-group-props="formInputGroupProps"
+    readonly
     @copy="onCopy"
   >
     <template v-for="slot in Object.keys($scopedSlots)" #[slot]>

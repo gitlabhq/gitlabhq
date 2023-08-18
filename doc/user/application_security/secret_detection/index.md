@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secret Detection **(FREE)**
+# Secret Detection **(FREE ALL)**
 
 > - In GitLab 13.1, Secret Detection was split from the [SAST configuration](../sast/index.md#configuration)
 >   into its own CI/CD template. If you're using GitLab 13.0 or earlier and SAST is enabled, then
@@ -137,7 +137,7 @@ shared runners on GitLab.com, this is enabled by default.
   - Windows Runners are not supported.
   - CPU architectures other than amd64 are not supported.
 - If you use your own runners, make sure the Docker version installed is **not** `19.03.0`. See
-  [troubleshooting information](../sast#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error)
+  [troubleshooting information](../sast/troubleshooting.md#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error)
   for details.
 - GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage.
 
@@ -335,7 +335,7 @@ pipeline.
 
 To enable full history Secret Detection, set the variable `SECRET_DETECTION_HISTORIC_SCAN` to `true` in your `.gitlab-ci.yml` file.
 
-## Custom rulesets **(ULTIMATE)**
+## Custom rulesets **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for passthrough chains.
@@ -350,6 +350,7 @@ The following customization options can be used separately, or in combination:
 - [Disable predefined rules](#disable-predefined-analyzer-rules).
 - [Override predefined rules](#override-predefined-analyzer-rules).
 - [Synthesize a custom configuration](#synthesize-a-custom-configuration).
+- [Specify a remote configuration file](#specify-a-remote-configuration-file).
 
 ### Disable predefined analyzer rules
 
@@ -496,7 +497,7 @@ path = "/gitleaks.toml"
   ]
 ```
 
-## Specify a remote configuration file
+### Specify a remote configuration file
 
 Projects can be configured with a [CI/CD variable](../../../ci/variables/index.md) in order
 to specify a ruleset configuration outside of the current repository.

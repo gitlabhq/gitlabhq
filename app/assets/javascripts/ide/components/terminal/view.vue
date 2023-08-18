@@ -1,4 +1,6 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import EmptyState from './empty_state.vue';
 

@@ -12,6 +12,7 @@ module Integrations
       }
       validates :service_account_key_file_name, presence: true
       validates :package_name, presence: true, format: { with: PACKAGE_NAME_REGEX }
+      validates :google_play_protected_refs, inclusion: [true, false]
     end
 
     field :package_name,
@@ -24,6 +25,12 @@ module Integrations
       required: true
 
     field :service_account_key, api_only: true
+
+    field :google_play_protected_refs,
+      type: :checkbox,
+      section: SECTION_TYPE_CONFIGURATION,
+      title: -> { s_('GooglePlayStore|Protected branches and tags only') },
+      checkbox_label: -> { s_('GooglePlayStore|Only set variables on protected branches and tags') }
 
     def title
       s_('GooglePlay|Google Play')
@@ -76,13 +83,19 @@ module Integrations
       { success: false, message: error }
     end
 
-    def ci_variables
+    def ci_variables(protected_ref:)
       return [] unless activated?
+      return [] if google_play_protected_refs && !protected_ref
 
       [
         { key: 'SUPPLY_JSON_KEY_DATA', value: service_account_key, masked: true, public: false },
         { key: 'SUPPLY_PACKAGE_NAME', value: package_name, masked: false, public: false }
       ]
+    end
+
+    def initialize_properties
+      super
+      self.google_play_protected_refs = true if google_play_protected_refs.nil?
     end
 
     private

@@ -8,6 +8,7 @@ import {
   GlModalDirective,
   GlToggle,
 } from '@gitlab/ui';
+import { produce } from 'immer';
 
 import * as Sentry from '@sentry/browser';
 
@@ -15,6 +16,7 @@ import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 
 import {
   sprintfWorkItem,
@@ -127,6 +129,10 @@ export default {
       required: false,
       default: false,
     },
+    workItemIid: {
+      type: String,
+      required: true,
+    },
   },
   apollo: {
     workItemTypes: {
@@ -168,16 +174,6 @@ export default {
       return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_VALUE_OBJECTIVE).id;
     },
   },
-  watch: {
-    subscribedToNotifications() {
-      /**
-       * To toggle the value if mutation fails, assign the
-       * subscribedToNotifications boolean value directly
-       * to data prop.
-       */
-      this.initialSubscribed = this.subscribedToNotifications;
-    },
-  },
   methods: {
     copyToClipboard(text, message) {
       if (this.isModal) {
@@ -203,10 +199,9 @@ export default {
     },
     toggleNotifications(subscribed) {
       const inputVariables = {
-        id: this.workItemId,
-        notificationsWidget: {
-          subscribed,
-        },
+        projectPath: this.fullPath,
+        iid: this.workItemIid,
+        subscribedState: subscribed,
       };
       this.$apollo
         .mutate({
@@ -215,27 +210,34 @@ export default {
             input: inputVariables,
           },
           optimisticResponse: {
-            workItemUpdate: {
-              errors: [],
-              workItem: {
+            updateWorkItemNotificationsSubscription: {
+              issue: {
                 id: this.workItemId,
-                widgets: [
-                  {
-                    type: WIDGET_TYPE_NOTIFICATIONS,
-                    subscribed,
-                    __typename: 'WorkItemWidgetNotifications',
-                  },
-                ],
-                __typename: 'WorkItem',
+                subscribed,
               },
-              __typename: 'WorkItemUpdatePayload',
+              errors: [],
             },
+          },
+          update: (
+            cache,
+            {
+              data: {
+                updateWorkItemNotificationsSubscription: { issue = {} },
+              },
+            },
+          ) => {
+            // As the mutation and the query both are different,
+            // overwrite the subscribed value in the cache
+            this.updateWorkItemNotificationsWidgetCache({
+              cache,
+              issue,
+            });
           },
         })
         .then(
           ({
             data: {
-              workItemUpdate: { errors },
+              updateWorkItemNotificationsSubscription: { errors },
             },
           }) => {
             if (errors?.length) {
@@ -250,6 +252,25 @@ export default {
           this.$emit('error', error.message);
           Sentry.captureException(error);
         });
+    },
+    updateWorkItemNotificationsWidgetCache({ cache, issue }) {
+      const query = {
+        query: workItemByIidQuery,
+        variables: { fullPath: this.fullPath, iid: this.workItemIid },
+      };
+      // Read the work item object
+      const sourceData = cache.readQuery(query);
+
+      const newData = produce(sourceData, (draftState) => {
+        const { widgets } = draftState.workspace.workItems.nodes[0];
+
+        const widgetNotifications = widgets.find(({ type }) => type === WIDGET_TYPE_NOTIFICATIONS);
+        // overwrite the subscribed value
+        widgetNotifications.subscribed = issue.subscribed;
+      });
+
+      // write to the cache
+      cache.writeQuery({ ...query, data: newData });
     },
     throwConvertError() {
       this.$emit('error', this.i18n.convertError);
@@ -275,6 +296,7 @@ export default {
         }
         this.$toast.show(s__('WorkItem|Promoted to objective.'));
         this.track('promote_kr_to_objective');
+        this.$emit('promotedToObjective');
       } catch (error) {
         this.throwConvertError();
         Sentry.captureException(error);

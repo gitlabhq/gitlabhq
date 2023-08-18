@@ -93,9 +93,9 @@ By default tests on CI use `info` log level. `debug` level is still available in
 
 ### Run the end-to-end tests in a local development environment
 
-1. Follow the instructions to [install GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/index.md), your local GitLab development environment.
+First, follow the instructions to [install GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/index.md) as your local GitLab development environment.
 
-1. Navigate to the QA folder and run the following commands.
+Then, navigate to the QA folder and run the following commands:
 
 ```bash
 cd gitlab-development-kit/gitlab/qa
@@ -104,13 +104,13 @@ export WEBDRIVER_HEADLESS=false
 export GITLAB_INITIAL_ROOT_PASSWORD={your current root user's password}
 ```
 
-1. Most tests that do not require special setup could simply be run with the following command. However, tests that are tagged with `:orchestrated` tag require special setup. These tests can only be run with [bin/qa](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/README.md#running-tests-with-a-custom-binqa-test-runner) script.
+Finally, most tests that do not require special setup (or have the `:orchestrated` tag) can be run with the following command:
 
 ```bash
 bundle exec rspec <path/to/spec.rb>
 ```
 
-1. For test that are tagged with `:orchestrated`, [re-configure IP address in GDK](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/run_qa_against_gdk.md#run-qa-tests-against-your-gdk-setup) to run QA tests.  Once you have reconfigured GDK, ensure GitLab is running successfully on the IP address configured, then run the following command:
+However, tests that are tagged with the `:orchestrated` tag require special setup. To run these tests, first [re-configure the IP address in GDK](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/run_qa_against_gdk.md#run-qa-tests-against-your-gdk-setup), and then run the following command:
 
 ```bash
 bundle exec bin/qa Test::Instance::All {GDK IP ADDRESS}
@@ -118,6 +118,21 @@ bundle exec bin/qa Test::Instance::All {GDK IP ADDRESS}
 
 - Note: If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
 - Note: If this is your first time running GDK, you can use the password pre-set for `root`. [See supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables). If you have changed your `root` password, use that when exporting `GITLAB_INITIAL_ROOT_PASSWORD`.
+
+#### Generic command for a typical GDK installation
+
+The following is an example command you can use if you have configured GDK to run on a specific IP address and port, with a username, password, and personal access token that aren't the defaults, and you would like the test framework to show debug logs:
+
+```bash
+GITLAB_QA_ACCESS_TOKEN={GDK API PAT} \
+GITLAB_USERNAME={GDK USERNAME} \
+GITLAB_PASSWORD={GDK PASSWORD} \
+QA_LOG_LEVEL=DEBUG \
+QA_GITLAB_URL="http://{GDK IP ADDRESS}:{GDK PORT}" \
+bundle exec rspec <path/to/spec.rb>
+```
+
+For an explanation of the variables see the [additional examples below](#overriding-gitlab-address) and the [list of supported environment variables](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-environment-variables).
 
 #### Run the end-to-end tests on GitLab in Docker
 

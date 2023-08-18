@@ -47,7 +47,7 @@ class Repository
   #
   # For example, for entry `:commit_count` there's a method called `commit_count` which
   # stores its data in the `commit_count` cache key.
-  CACHED_METHODS = %i(size commit_count readme_path contribution_guide
+  CACHED_METHODS = %i(size recent_objects_size commit_count readme_path contribution_guide
                       changelog license_blob license_gitaly gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
@@ -363,7 +363,7 @@ class Repository
   end
 
   def expire_statistics_caches
-    expire_method_caches(%i(size commit_count))
+    expire_method_caches(%i(size recent_objects_size commit_count))
   end
 
   def expire_all_method_caches
@@ -579,6 +579,12 @@ class Repository
   end
   cache_method :size, fallback: 0.0
 
+  # The recent objects size of this repository in mebibytes.
+  def recent_objects_size
+    exists? ? raw_repository.recent_objects_size : 0.0
+  end
+  cache_method :recent_objects_size, fallback: 0.0
+
   def commit_count
     root_ref ? raw_repository.commit_count(root_ref) : 0
   end
@@ -691,7 +697,7 @@ class Repository
     @head_tree ||= Tree.new(self, root_ref, nil, skip_flat_paths: skip_flat_paths)
   end
 
-  def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil, ref_type: nil)
+  def tree(sha = :head, path = nil, recursive: false, skip_flat_paths: true, pagination_params: nil, ref_type: nil, rescue_not_found: true)
     if sha == :head
       return if empty? || root_ref.nil?
 
@@ -703,7 +709,7 @@ class Repository
       end
     end
 
-    Tree.new(self, sha, path, recursive: recursive, skip_flat_paths: skip_flat_paths, pagination_params: pagination_params, ref_type: ref_type)
+    Tree.new(self, sha, path, recursive: recursive, skip_flat_paths: skip_flat_paths, pagination_params: pagination_params, ref_type: ref_type, rescue_not_found: rescue_not_found)
   end
 
   def blob_at_branch(branch_name, path)
@@ -1240,6 +1246,20 @@ class Repository
     return if prohibited_branches.blank?
 
     prohibited_branches.each { |name| raw_repository.delete_branch(name) }
+  end
+
+  def get_patch_id(old_revision, new_revision)
+    raw_repository.get_patch_id(old_revision, new_revision)
+  end
+
+  def object_pool
+    gitaly_object_pool = raw.object_pool
+
+    return unless gitaly_object_pool
+
+    source_project = project&.pool_repository&.source_project
+
+    Gitlab::Git::ObjectPool.init_from_gitaly(gitaly_object_pool, source_project&.repository)
   end
 
   private

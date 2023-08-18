@@ -38,7 +38,16 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
         predefinedoptions="[object Object]"
         readonly=""
         value="pagerduty.webhook.com"
-      />
+      >
+        <clipboard-button-stub
+          category="secondary"
+          size="medium"
+          text="pagerduty.webhook.com"
+          title="Copy"
+          tooltipplacement="top"
+          variant="default"
+        />
+      </gl-form-input-group-stub>
        
       <gl-button-stub
         buttontextclasses=""

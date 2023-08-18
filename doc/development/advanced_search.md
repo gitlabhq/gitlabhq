@@ -52,9 +52,9 @@ during indexing and searching operations. Some of the benefits and tradeoffs to 
 - Routing is not used if too many shards would be hit for global and group scoped searches.
 - Shard size imbalance might occur.
 
-## Existing Analyzers/Tokenizers/Filters
+## Existing analyzers and tokenizers
 
-These are all defined in [`ee/lib/elastic/latest/config.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb)
+The following analyzers and tokenizers are defined in [`ee/lib/elastic/latest/config.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
 
 ### Analyzers
 
@@ -72,7 +72,7 @@ Please see the `sha_tokenizer` explanation later below for an example.
 
 #### `code_analyzer`
 
-Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer and the filters: [`code`](#code), `lowercase`, and `asciifolding`
+Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer and the [`word_delimiter_graph`](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-word-delimiter-graph-tokenfilter.html), `lowercase`, and `asciifolding` filters.
 
 The `whitespace` tokenizer was selected to have more control over how tokens are split. For example the string `Foo::bar(4)` needs to generate tokens like `Foo` and `bar(4)` to be properly searched.
 
@@ -80,10 +80,6 @@ Please see the `code` filter for an explanation on how tokens are split.
 
 NOTE:
 The [Elasticsearch `code_analyzer` doesn't account for all code cases](../integration/advanced_search/elasticsearch_troubleshooting.md#elasticsearch-code_analyzer-doesnt-account-for-all-code-cases).
-
-#### `code_search_analyzer`
-
-Not directly used for indexing, but rather used to transform a search input. Uses the `whitespace` tokenizer and the `lowercase` and `asciifolding` filters.
 
 ### Tokenizers
 
@@ -115,27 +111,10 @@ Example:
 - `'path/application.js'`
 - `'application.js'`
 
-### Filters
-
-#### `code`
-
-Uses a [Pattern Capture token filter](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-pattern-capture-tokenfilter.html) to split tokens into more easily searched versions of themselves.
-
-Patterns:
-
-- `"(\\p{Ll}+|\\p{Lu}\\p{Ll}+|\\p{Lu}+)"`: captures CamelCase and lowerCamelCase strings as separate tokens
-- `"(\\d+)"`: extracts digits
-- `"(?=([\\p{Lu}]+[\\p{L}]+))"`: captures CamelCase strings recursively. For example: `ThisIsATest` => `[ThisIsATest, IsATest, ATest, Test]`
-- `'"((?:\\"|[^"]|\\")*)"'`: captures terms inside quotes, removing the quotes
-- `"'((?:\\'|[^']|\\')*)'"`: same as above, for single-quotes
-- `'\.([^.]+)(?=\.|\s|\Z)'`: separate terms with periods in-between
-- `'([\p{L}_.-]+)'`: some common chars in file names to keep the whole filename intact (for example `my_file-ñame.txt`)
-- `'([\p{L}\d_]+)'`: letters, numbers and underscores are the most common tokens in programming. Always capture them greedily regardless of context.
-
 ## Gotchas
 
-- Searches can have their own analyzers. Remember to check when editing analyzers
-- `Character` filters (as opposed to token filters) always replace the original character, so they're not a good choice as they can hinder exact searches
+- Searches can have their own analyzers. Remember to check when editing analyzers.
+- `Character` filters (as opposed to token filters) always replace the original character. These filters can hinder exact searches.
 
 ## Zero downtime reindexing with multiple indices
 

@@ -38,7 +38,7 @@ For self-compiled installations:
    # default_can_create_group: false  # default: true
    ```
 
-1. [Restart GitLab](restart_gitlab.md#installations-from-source).
+1. [Restart GitLab](restart_gitlab.md#self-compiled-installations).
 
 ### Prevent existing users from creating top-level groups
 
@@ -70,4 +70,4 @@ For self-compiled installations:
    # username_changing_enabled: false # default: true - User can change their username/namespace
    ```
 
-1. [Restart GitLab](restart_gitlab.md#installations-from-source).
+1. [Restart GitLab](restart_gitlab.md#self-compiled-installations).

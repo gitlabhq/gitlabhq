@@ -6,7 +6,7 @@ module Types
       graphql_name 'CiRunner'
 
       edge_type_class(RunnerWebUrlEdge)
-      connection_type_class(RunnerCountableConnectionType)
+      connection_type_class RunnerCountableConnectionType
 
       authorize :read_runner
       present_using ::Ci::RunnerPresenter
@@ -59,7 +59,9 @@ module Types
             deprecated: { reason: "Use field in `manager` object instead", milestone: '16.2' },
             description: 'IP address of the runner.'
       field :job_count, GraphQL::Types::Int, null: true,
-            description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist).",
+            description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to " \
+                         "indicate that more items exist).\n`jobCount` is an optimized version of `jobs { count }`, " \
+                         "and can be requested for multiple runners on the same request.",
             resolver: ::Resolvers::Ci::RunnerJobCountResolver
       field :job_execution_status,
             Types::Ci::RunnerJobExecutionStatusEnum,
@@ -76,7 +78,6 @@ module Types
                                                        description: 'Runner\'s maintenance notes.'
       field :managers, ::Types::Ci::RunnerManagerType.connection_type, null: true,
             description: 'Machines associated with the runner configuration.',
-            method: :runner_managers,
             alpha: { milestone: '15.10' }
       field :maximum_timeout, GraphQL::Types::Int, null: true,
                                                    description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
@@ -169,6 +170,18 @@ module Types
 
           ids.each do |id|
             loader.call(id, counts[id]&.count)
+          end
+        end
+      end
+
+      def managers
+        BatchLoader::GraphQL.for(runner.id).batch(key: :runner_managers) do |runner_ids, loader|
+          runner_managers_by_runner_id =
+            ::Ci::RunnerManager.for_runner(runner_ids).order_id_desc.group_by(&:runner_id)
+
+          runner_ids.each do |runner_id|
+            runner_managers = Array.wrap(runner_managers_by_runner_id[runner_id])
+            loader.call(runner_id, runner_managers)
           end
         end
       end

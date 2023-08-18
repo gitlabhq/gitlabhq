@@ -222,11 +222,11 @@ module Gitlab
 
         return unless valid_scoped_token?(token, all_available_scopes)
 
-        if project && token.user.project_bot?
+        if project && (token.user.project_bot? || token.user.service_account?)
           return unless can_read_project?(token.user, project)
         end
 
-        if token.user.can_log_in_with_non_expired_password? || token.user.project_bot?
+        if token.user.can_log_in_with_non_expired_password? || (token.user.project_bot? || token.user.service_account?)
           ::PersonalAccessTokens::LastUsedService.new(token).execute
 
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
@@ -238,7 +238,7 @@ module Gitlab
       end
 
       def bot_user_can_read_project?(user, project)
-        (user.project_bot? || user.security_policy_bot?) && can_read_project?(user, project)
+        (user.project_bot? || user.service_account? || user.security_policy_bot?) && can_read_project?(user, project)
       end
 
       def valid_oauth_token?(token)

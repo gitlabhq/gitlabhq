@@ -15,47 +15,38 @@ we can document the reasons for not choosing this approach.
 
 # Cells: Backups
 
-Each cells will take its own backups, and consequently have its own isolated
-backup / restore procedure.
+Each Cell will take its own backups, and consequently have its own isolated backup/restore procedure.
 
 ## 1. Definition
 
-GitLab Backup takes a backup of the PostgreSQL database used by the application,
-and also Git repository data.
+GitLab backup takes a backup of the PostgreSQL database used by the application, and also Git repository data.
 
 ## 2. Data flow
 
-Each cell has a number of application databases to back up (for example, `main`, and `ci`).
-
-Additionally, there may be cluster-wide metadata tables (for example, `users` table)
-which is directly accessible via PostgreSQL.
+Each Cell has a number of application databases to back up (for example, `main`, and `ci`).
+Additionally, there may be cluster-wide metadata tables (for example, `users` table) which is directly accessible via PostgreSQL.
 
 ## 3. Proposal
 
 ### 3.1. Cluster-wide metadata
 
-It is currently unknown how cluster-wide metadata tables will be accessible. We
-may choose to have cluster-wide metadata tables backed up separately, or have
-each cell back up its copy of cluster-wide metdata tables.
+It is currently unknown how cluster-wide metadata tables will be accessible.
+We may choose to have cluster-wide metadata tables backed up separately, or have each Cell back up its copy of cluster-wide metadata tables.
 
 ### 3.2 Consistency
 
 #### 3.2.1 Take backups independently
 
-As each cell will communicate with each other via API, and there will be no joins
-to the users table, it should be acceptable for each cell to take a backup
-independently of each other.
+As each Cell will communicate with each other via API, and there will be no joins to the `users` table, it should be acceptable for each Cell to take a backup independently of each other.
 
 #### 3.2.2 Enforce snapshots
 
-We can require that each cell take a snapshot for the PostgreSQL databases at
-around the same time to allow for a consistent-enough backup.
+We can require that each Cell take a snapshot for the PostgreSQL databases at around the same time to allow for a consistent enough backup.
 
 ## 4. Evaluation
 
-As the number of cells increases, it will likely not be feasible to take a
-snapshot at the same time for all cells. Hence taking backups independently is
-the better option.
+As the number of Cells increases, it will likely not be feasible to take a snapshot at the same time for all Cells.
+Hence taking backups independently is the better option.
 
 ## 4.1. Pros
 

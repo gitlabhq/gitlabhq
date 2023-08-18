@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Atlassian Crowd OmniAuth provider (deprecated) **(FREE SELF)**
+# Use Atlassian Crowd as an OAuth 2.0 authentication provider (deprecated) **(FREE SELF)**
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369117) in GitLab 15.3 and is planned for
@@ -78,7 +78,7 @@ this provider also allows Crowd authentication for Git-over-https requests.
 1. Change `YOUR_APP_PASSWORD` to the application password you've set.
 1. Save the configuration file.
 1. [Reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation) (Linux package installations) or
-   [restart](../restart_gitlab.md#installations-from-source) (self-compiled installations) for the changes to take effect.
+   [restart](../restart_gitlab.md#self-compiled-installations) (self-compiled installations) for the changes to take effect.
 
 On the sign in page there should now be a Crowd tab in the sign in form.
 

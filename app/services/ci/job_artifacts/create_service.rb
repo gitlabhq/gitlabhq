@@ -138,6 +138,7 @@ module Ci
       def parse_artifact(artifact)
         case artifact.file_type
         when 'dotenv' then parse_dotenv_artifact(artifact)
+        when 'annotations' then parse_annotations_artifact(artifact)
         else success
         end
       end
@@ -187,6 +188,10 @@ module Ci
 
       def parse_dotenv_artifact(artifact)
         Ci::ParseDotenvArtifactService.new(project, current_user).execute(artifact)
+      end
+
+      def parse_annotations_artifact(artifact)
+        Ci::ParseAnnotationsArtifactService.new(project, current_user).execute(artifact)
       end
     end
   end

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 /* eslint-disable @gitlab/vue-require-i18n-strings */
 import { GlIcon } from '@gitlab/ui';

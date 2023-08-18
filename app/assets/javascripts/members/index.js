@@ -1,5 +1,6 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { parseDataAttributes } from '~/members/utils';
 import { MEMBER_TYPES } from 'ee_else_ce/members/constants';

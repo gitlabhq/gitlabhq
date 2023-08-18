@@ -2,6 +2,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import $ from 'jquery';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Dropdown from '~/ide/components/file_templates/dropdown.vue';
 

@@ -35,6 +35,22 @@ class CustomerRelations::Contact < ApplicationRecord
   scope :order_by_organization_asc, -> { includes(:organization).order("customer_relations_organizations.name ASC NULLS LAST") }
   scope :order_by_organization_desc, -> { includes(:organization).order("customer_relations_organizations.name DESC NULLS LAST") }
 
+  SAFE_ATTRIBUTES = %w[
+    created_at
+    description
+    first_name
+    group_id
+    id
+    last_name
+    organization_id
+    state
+    updated_at
+  ].freeze
+
+  def hook_attrs
+    attributes.slice(*SAFE_ATTRIBUTES)
+  end
+
   def self.reference_prefix
     '[contact:'
   end

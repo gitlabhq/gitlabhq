@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
+  include Spec::Support::Helpers::ModalHelpers
+
   let_it_be(:user) { create(:user) }
   let(:path) { explore_projects_path }
 
@@ -126,6 +128,8 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
       page.within('[data-testid="message-row"]', match: :first) do
         find("[data-testid='delete-message-#{message.id}']").click
       end
+
+      accept_gl_confirm(button_text: 'Delete message')
 
       visit path
 

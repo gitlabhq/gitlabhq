@@ -9,6 +9,10 @@ module ProtectedBranchHelpers
     end
   end
 
+  def show_add_form
+    click_button 'Add protected branch'
+  end
+
   def set_protected_branch_name(branch_name)
     find('.js-protected-branch-select').click
     find('.dropdown-input-field').set(branch_name)

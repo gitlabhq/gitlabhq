@@ -6,10 +6,7 @@ module QA
       it 'pushes to a project using a canary specific Gitaly repository storage', :smoke, :requires_admin, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/351116' do
         Flow::Login.sign_in_as_admin
 
-        project = Resource::Project.fabricate_via_api! do |storage_project|
-          storage_project.name = 'canary-specific-repository-storage'
-          storage_project.repository_storage = 'nfs-file-cny01' # TODO: move to ENV var
-        end
+        project = create(:project, name: 'canary-specific-repository-storage', repository_storage: 'nfs-file-cny01') # TODO: move to ENV var
 
         Resource::Repository::Push.fabricate! do |push|
           push.repository_http_uri = project.repository_http_location.uri

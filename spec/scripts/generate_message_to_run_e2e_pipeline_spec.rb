@@ -222,15 +222,20 @@ RSpec.describe GenerateMessageToRunE2ePipeline, feature_category: :tooling do
     let(:expected_content) do
       <<~MARKDOWN
       <!-- Run e2e warning begin -->
-      :warning: @#{author_username} Some end-to-end (E2E) tests have been selected based on the stage label on this MR.
-      If not run already, please run the `e2e:package-and-test-ee` job in the `qa` stage
-      and review the results **before merging this MR**. (E2E tests are not run automatically on some MRs due to [runner resource constraints](https://gitlab.com/gitlab-org/gitlab-qa/-/issues/261).)
+      @#{author_username} Some end-to-end (E2E) tests should run based on the stage label.
 
-      If you would like to run all e2e tests, please apply the ~"pipeline:run-all-e2e" label and restart the pipeline.
+      Please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and ensure tests in the `follow-up-e2e:package-and-test-ee` pipeline
+      pass **before this MR is merged**.
+      (E2E tests are computationally intensive and don't run automatically for every push/rebase, so we ask you to run this job manually at least once.)
 
-      Once done, please apply the ✅ emoji on this comment.
+      To run all E2E tests, apply the ~"pipeline:run-all-e2e" label and run a new pipeline.
 
-      For any questions or help in reviewing the E2E test results, please reach out on the internal #quality Slack channel.
+      E2E test jobs are allowed to fail due to [flakiness](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-metrics-dashboards/#package-and-test).
+      See current failures at the latest [pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
+
+      Once done, apply the ✅ emoji on this comment.
+
+      For any questions or help, reach out on the internal #quality Slack channel.
       <!-- Run e2e warning end -->
       MARKDOWN
     end

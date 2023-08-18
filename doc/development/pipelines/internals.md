@@ -294,3 +294,126 @@ qa:selectors-as-if-foss:
   extends:
     - .qa:rules:as-if-foss
 ```
+
+### Extend the `.fast-no-clone-job` job
+
+Downloading the branch for the canonical project takes between 20 and 30 seconds.
+
+Some jobs only need a limited number of files, which we can download via the GitLab API.
+
+You can skip a job `git clone`/`git fetch` by adding the following pattern to a job.
+
+#### Scenario 1: no `before_script` is defined in the job
+
+This applies to the parent sections the job extends from as well.
+
+You can just extend the `.fast-no-clone-job`:
+
+**Before:**
+
+```yaml
+  # Note: No `extends:` is present in the job
+  a-job:
+    script:
+      - source scripts/rspec_helpers.sh scripts/slack
+      - echo "No need for a git clone!"
+```
+
+**After:**
+
+```yaml
+  # Note: No `extends:` is present in the job
+  a-job:
+    extends:
+      - .fast-no-clone-job
+    variables:
+      FILES_TO_DOWNLOAD: >
+        scripts/rspec_helpers.sh
+        scripts/slack
+    script:
+      - source scripts/rspec_helpers.sh scripts/slack
+      - echo "No need for a git clone!"
+```
+
+#### Scenario 2: a `before_script` block is already defined in the job (or in jobs it extends)
+
+For this scenario, you have to:
+
+1. Extend the `.fast-no-clone-job` as in the first scenario (this will merge the `FILES_TO_DOWNLOAD` variable with the other variables)
+1. Make sure the `before_script` section from `.fast-no-clone-job` is referenced in the `before_script` we use for this job.
+
+**Before:**
+
+```yaml
+  .base-job:
+    before_script:
+      echo "Hello from .base-job"
+
+  a-job:
+    extends:
+      - .base-job
+    script:
+      - source scripts/rspec_helpers.sh scripts/slack
+      - echo "No need for a git clone!"
+```
+
+**After:**
+
+```yaml
+  .base-job:
+    before_script:
+      echo "Hello from .base-job"
+
+  a-job:
+    extends:
+      - .base-job
+      - .fast-no-clone-job
+    variables:
+      FILES_TO_DOWNLOAD: >
+        scripts/rspec_helpers.sh
+        scripts/slack
+    before_script:
+      - !reference [".fast-no-clone-job", before_script]
+      - !reference [".base-job", before_script]
+    script:
+      - source scripts/rspec_helpers.sh scripts/slack
+      - echo "No need for a git clone!"
+```
+
+#### Caveats
+
+- This pattern does not work if a script relies on `git` to access the repository, because we don't have the repository without cloning or fetching.
+- The job using this pattern needs to have `curl` available.
+- If you need to run `bundle install` in the job (even using `BUNDLE_ONLY`), you need to:
+  - Download the gems that are stored in the `gitlab-org/gitlab` project.
+    - You can use the `download_local_gems` shell command for that purpose.
+  - Include the `Gemfile`, `Gemfile.lock` and `Gemfile.checksum` (if applicable)
+
+#### Where is this pattern used?
+
+- For now, we use this pattern for the following jobs, and those do not block private repositories:
+  - `review-build-cng-env` for:
+    - `GITALY_SERVER_VERSION`
+    - `GITLAB_ELASTICSEARCH_INDEXER_VERSION`
+    - `GITLAB_KAS_VERSION`
+    - `GITLAB_METRICS_EXPORTER_VERSION`
+    - `GITLAB_PAGES_VERSION`
+    - `GITLAB_SHELL_VERSION`
+    - `scripts/trigger-build.rb`
+    - `VERSION`
+  - `review-deploy` for:
+    - `GITALY_SERVER_VERSION`
+    - `GITLAB_SHELL_VERSION`
+    - `scripts/review_apps/review-apps.sh`
+    - `scripts/review_apps/seed-dast-test-data.sh`
+    - `VERSION`
+  - `rspec:coverage` for:
+    - `config/bundler_setup.rb`
+    - `Gemfile`
+    - `Gemfile.checksum`
+    - `Gemfile.lock`
+    - `scripts/merge-simplecov`
+    - `spec/simplecov_env_core.rb`
+    - `spec/simplecov_env.rb`
+
+Additionally, `scripts/utils.sh` is always downloaded from the API when this pattern is used (this file contains the code for `.fast-no-clone-job`).

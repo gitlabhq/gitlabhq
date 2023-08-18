@@ -363,6 +363,18 @@ module Gitlab
         )
       end
 
+      def object_pool
+        request = Gitaly::GetObjectPoolRequest.new(repository: @gitaly_repo)
+
+        gitaly_client_call(
+          @storage,
+          :object_pool_service,
+          :get_object_pool,
+          request,
+          timeout: GitalyClient.medium_timeout
+        )
+      end
+
       private
 
       def search_results_from_response(gitaly_response, options = {})

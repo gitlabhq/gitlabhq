@@ -131,9 +131,9 @@ describe('New Project', () => {
       });
     });
 
-    describe("Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces", () => {
+    describe("Name can contain only letters, digits, emoji, '_', '.', '+', dashes, or spaces", () => {
       const errormsg =
-        'Name can contain only lowercase or uppercase letters, digits, emojis, spaces, dots, underscores, dashes, or pluses.';
+        'Name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses.';
       it("'foo(#^.^#)foo' should error", () => {
         const text = 'foo(#^.^#)foo';
         expect(checkRules(text)).toBe(errormsg);

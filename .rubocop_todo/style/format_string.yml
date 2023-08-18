@@ -291,7 +291,6 @@ Style/FormatString:
     - 'lib/gitlab/quick_actions/issue_and_merge_request_actions.rb'
     - 'lib/gitlab/quick_actions/merge_request_actions.rb'
     - 'lib/gitlab/quick_actions/relate_actions.rb'
-    - 'lib/gitlab/usage/metrics/name_suggestion.rb'
     - 'lib/gitlab/version_info.rb'
     - 'lib/peek/views/detailed_view.rb'
     - 'lib/tasks/test.rake'

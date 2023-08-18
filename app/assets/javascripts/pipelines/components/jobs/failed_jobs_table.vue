@@ -3,10 +3,11 @@ import { GlButton, GlLink, GlTableLite } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import Tracking from '~/tracking';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import RetryFailedJobMutation from '../../graphql/mutations/retry_failed_job.mutation.graphql';
-import { DEFAULT_FIELDS } from '../../constants';
+import { DEFAULT_FIELDS, TRACKING_CATEGORIES } from '../../constants';
 
 export default {
   fields: DEFAULT_FIELDS,
@@ -20,6 +21,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  mixins: [Tracking.mixin()],
   props: {
     failedJobs: {
       type: Array,
@@ -28,6 +30,8 @@ export default {
   },
   methods: {
     async retryJob(id) {
+      this.track('click_retry', { label: TRACKING_CATEGORIES.failed });
+
       try {
         const {
           data: {

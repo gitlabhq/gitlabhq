@@ -51,11 +51,11 @@ export default {
       class="gl-border-0 gl-outline-0! gl-p-0 gl-bg-transparent"
       :aria-label="statusConfig.label"
     >
-      <gl-badge :variant="statusConfig.variant" size="md" data-testid="signature-status">
+      <gl-badge :variant="statusConfig.variant" size="md">
         {{ statusConfig.label }}
       </gl-badge>
     </button>
-    <gl-popover target="signature" triggers="focus" data-testid="signature-info">
+    <gl-popover target="signature" triggers="focus">
       <template #title>
         {{ statusConfig.title }}
       </template>

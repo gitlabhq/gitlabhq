@@ -59,7 +59,8 @@ module ResolvesMergeRequests
       timelogs: [:timelogs],
       pipelines: [:merge_request_diffs], # used by `recent_diff_head_shas` to load pipelines
       committers: [merge_request_diff: [:merge_request_diff_commits]],
-      suggested_reviewers: [:predictions]
+      suggested_reviewers: [:predictions],
+      diff_stats: [latest_merge_request_diff: [:merge_request_diff_commits]]
     }
   end
 end

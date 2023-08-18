@@ -150,6 +150,76 @@ RSpec.describe UsersHelper do
     end
   end
 
+  describe '#can_impersonate_user' do
+    let(:user) { create(:user) }
+    let(:impersonation_in_progress) { false }
+
+    subject { helper.can_impersonate_user(user, impersonation_in_progress) }
+
+    context 'when password is expired' do
+      let(:user) { create(:user, password_expires_at: 1.minute.ago) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when impersonation is in progress' do
+      let(:impersonation_in_progress) { true }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user is blocked' do
+      let(:user) { create(:user, :blocked) }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user is internal' do
+      let(:user) { create(:user, :bot) }
+
+      it { is_expected.to be false }
+    end
+
+    it { is_expected.to be true }
+  end
+
+  describe '#impersonation_error_text' do
+    let(:user) { create(:user) }
+    let(:impersonation_in_progress) { false }
+
+    subject { helper.impersonation_error_text(user, impersonation_in_progress) }
+
+    context 'when password is expired' do
+      let(:user) { create(:user, password_expires_at: 1.minute.ago) }
+
+      it { is_expected.to eq(_("You cannot impersonate a user with an expired password")) }
+    end
+
+    context 'when impersonation is in progress' do
+      let(:impersonation_in_progress) { true }
+
+      it { is_expected.to eq(_("You are already impersonating another user")) }
+    end
+
+    context 'when user is blocked' do
+      let(:user) { create(:user, :blocked) }
+
+      it { is_expected.to eq(_("You cannot impersonate a blocked user")) }
+    end
+
+    context 'when user is internal' do
+      let(:user) { create(:user, :bot) }
+
+      it { is_expected.to eq(_("You cannot impersonate an internal user")) }
+    end
+
+    context 'when user is inactive' do
+      let(:user) { create(:user, :deactivated) }
+
+      it { is_expected.to eq(_("You cannot impersonate a user who cannot log in")) }
+    end
+  end
+
   describe '#user_badges_in_admin_section' do
     before do
       allow(helper).to receive(:current_user).and_return(user)
@@ -534,7 +604,7 @@ RSpec.describe UsersHelper do
   describe '#load_max_project_member_accesses' do
     let_it_be(:projects) { create_list(:project, 3) }
 
-    before(:all) do
+    before_all do
       projects.first.add_developer(user)
     end
 
@@ -610,6 +680,60 @@ RSpec.describe UsersHelper do
 
     context 'when a user is active' do
       it { is_expected.to eq('Active') }
+    end
+  end
+
+  describe '#user_profile_actions_data' do
+    let(:user_1) { create(:user) }
+    let(:user_2) { create(:user) }
+    let(:user_path) { '/users/root' }
+
+    subject { helper.user_profile_actions_data(user_1) }
+
+    before do
+      allow(helper).to receive(:user_path).and_return(user_path)
+      allow(helper).to receive(:user_url).and_return(user_path)
+    end
+
+    shared_examples 'user cannot report' do
+      it 'returns data without reporting related data' do
+        is_expected.to match({
+          user_id: user_1.id,
+          rss_subscription_path: user_path
+        })
+      end
+    end
+
+    context 'user is current user' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user_1)
+      end
+
+      it_behaves_like 'user cannot report'
+    end
+
+    context 'user is not current user' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user_2)
+      end
+
+      it 'returns data for reporting related data' do
+        is_expected.to match({
+          user_id: user_1.id,
+          rss_subscription_path: user_path,
+          report_abuse_path: add_category_abuse_reports_path,
+          reported_user_id: user_1.id,
+          reported_from_url: user_path
+        })
+      end
+    end
+
+    context 'when logged out' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it_behaves_like 'user cannot report'
     end
   end
 end

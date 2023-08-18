@@ -5,7 +5,6 @@ module Gitlab
     class DecompressedArchiveSizeValidator
       include Gitlab::Utils::StrongMemoize
 
-      DEFAULT_MAX_BYTES = 10.gigabytes.freeze
       TIMEOUT_LIMIT = 210.seconds
 
       ServiceError = Class.new(StandardError)
@@ -22,7 +21,7 @@ module Gitlab
       end
 
       def self.max_bytes
-        DEFAULT_MAX_BYTES
+        Gitlab::CurrentSettings.current_application_settings.max_decompressed_archive_size.megabytes
       end
 
       private
@@ -52,7 +51,7 @@ module Gitlab
           if status.success?
             result = stdout.readline
 
-            if result.to_i > @max_bytes
+            if @max_bytes > 0 && result.to_i > @max_bytes
               valid_archive = false
 
               log_error('Decompressed archive size limit reached')

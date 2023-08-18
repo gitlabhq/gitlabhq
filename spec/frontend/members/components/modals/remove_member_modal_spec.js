@@ -1,6 +1,7 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import RemoveMemberModal from '~/members/components/modals/remove_member_modal.vue';
 import {

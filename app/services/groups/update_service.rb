@@ -21,7 +21,7 @@ module Groups
 
       return false unless valid_share_with_group_lock_change?
 
-      return false unless valid_path_change_with_npm_packages?
+      return false unless valid_path_change?
 
       return false unless update_shared_runners
 
@@ -46,6 +46,29 @@ module Groups
 
     private
 
+    def valid_path_change?
+      unless Feature.enabled?(:npm_package_registry_fix_group_path_validation)
+        return valid_path_change_with_npm_packages?
+      end
+
+      return true unless group.packages_feature_enabled?
+      return true if params[:path].blank?
+      return true if group.has_parent?
+      return true if !group.has_parent? && group.path == params[:path]
+
+      # we have a path change on a root group:
+      # check that we don't have any npm package with a scope set to the group path
+      npm_packages = ::Packages::GroupPackagesFinder.new(current_user, group, package_type: :npm, preload_pipelines: false)
+                       .execute
+                       .with_npm_scope(group.path)
+
+      return true unless npm_packages.exists?
+
+      group.errors.add(:path, s_('GroupSettings|cannot change when group contains projects with NPM packages'))
+      false
+    end
+
+    # TODO: delete this function along with npm_package_registry_fix_group_path_validation
     def valid_path_change_with_npm_packages?
       return true unless group.packages_feature_enabled?
       return true if params[:path].blank?
@@ -107,7 +130,11 @@ module Groups
     # overridden in EE
     def remove_unallowed_params
       params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, group)
-      params.delete(:default_branch_protection) unless can?(current_user, :update_default_branch_protection, group)
+
+      unless can?(current_user, :update_default_branch_protection, group)
+        params.delete(:default_branch_protection)
+        params.delete(:default_branch_protection_defaults)
+      end
     end
 
     def handle_changes

@@ -21,6 +21,10 @@ module Gitlab
               if config.is_a?(Hash) && config.empty?
                 errors.add(:config, 'can not be an empty Hash')
               end
+
+              if number_parallel_build?
+                errors.add(:config, 'cannot use "parallel: <number>".')
+              end
             end
 
             validate on: :composed do
@@ -44,6 +48,14 @@ module Gitlab
             values = @entries.select(&:type)
             values.group_by(&:type).transform_values do |values|
               values.map(&:value)
+            end
+          end
+
+          def number_parallel_build?
+            if config.is_a?(Array)
+              config.any? { |need_values| need_values.is_a?(Hash) && need_values[:parallel].is_a?(Numeric) }
+            elsif config.is_a?(Hash)
+              config[:parallel].is_a?(Numeric)
             end
           end
 

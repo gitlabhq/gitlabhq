@@ -13,19 +13,11 @@ module Mutations
                   required: true,
                   description: 'Global ID of the annotation to delete.'
 
+          # rubocop:disable Lint/UnusedMethodArgument
           def resolve(id:)
-            raise_resource_not_available_error! if Feature.enabled?(:remove_monitor_metrics)
-
-            annotation = authorized_find!(id: id)
-
-            result = ::Metrics::Dashboard::Annotations::DeleteService.new(context[:current_user], annotation).execute
-
-            errors = Array.wrap(result[:message])
-
-            {
-              errors: errors
-            }
+            raise_resource_not_available_error!
           end
+          # rubocop:enable Lint/UnusedMethodArgument
         end
       end
     end

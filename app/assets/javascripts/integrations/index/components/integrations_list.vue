@@ -1,4 +1,5 @@
 <script>
+import { GlCard } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import IntegrationsTable from './integrations_table.vue';
 
@@ -6,6 +7,7 @@ export default {
   name: 'IntegrationsList',
   components: {
     IntegrationsTable,
+    GlCard,
   },
   props: {
     integrations: {
@@ -40,20 +42,37 @@ export default {
 
 <template>
   <div>
-    <h4>{{ $options.i18n.activeIntegrationsHeading }}</h4>
-    <integrations-table
-      class="gl-mb-7!"
-      :integrations="integrationsGrouped.active"
-      :empty-text="$options.i18n.activeTableEmptyText"
-      show-updated-at
-      data-testid="active-integrations-table"
-    />
-
-    <h4>{{ $options.i18n.inactiveIntegrationsHeading }}</h4>
-    <integrations-table
-      :integrations="integrationsGrouped.inactive"
-      :empty-text="$options.i18n.inactiveTableEmptyText"
-      data-testid="inactive-integrations-table"
-    />
+    <gl-card
+      class="gl-new-card gl-overflow-hidden"
+      header-class="gl-new-card-header gl-border-b-0"
+      body-class="gl-new-card-body gl-px-0"
+    >
+      <template #header>
+        <h3 class="gl-new-card-title">{{ $options.i18n.activeIntegrationsHeading }}</h3>
+      </template>
+      <integrations-table
+        class="gl-mb-n2"
+        :integrations="integrationsGrouped.active"
+        :empty-text="$options.i18n.activeTableEmptyText"
+        show-updated-at
+        data-testid="active-integrations-table"
+      />
+    </gl-card>
+    <gl-card
+      class="gl-new-card gl-overflow-hidden"
+      header-class="gl-new-card-header gl-border-b-0"
+      body-class="gl-new-card-body gl-px-0"
+    >
+      <template #header>
+        <h3 class="gl-new-card-title">{{ $options.i18n.inactiveIntegrationsHeading }}</h3>
+      </template>
+      <integrations-table
+        class="gl-mb-n2"
+        inactive
+        :integrations="integrationsGrouped.inactive"
+        :empty-text="$options.i18n.inactiveTableEmptyText"
+        data-testid="inactive-integrations-table"
+      />
+    </gl-card>
   </div>
 </template>

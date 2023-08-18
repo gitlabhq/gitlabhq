@@ -5,8 +5,9 @@ export default {
       import(
         '~/vue_merge_request_widget/extensions/security_reports/mr_widget_security_reports.vue'
       ),
-
     MrTerraformWidget: () => import('~/vue_merge_request_widget/extensions/terraform/index.vue'),
+    MrCodeQualityWidget: () =>
+      import('~/vue_merge_request_widget/extensions/code_quality/index.vue'),
   },
 
   props: {
@@ -21,8 +22,14 @@ export default {
       return this.mr.terraformReportsPath && 'MrTerraformWidget';
     },
 
+    codeQualityWidget() {
+      return this.mr.codequalityReportsPath ? 'MrCodeQualityWidget' : undefined;
+    },
+
     widgets() {
-      return [this.terraformPlansWidget, 'MrSecurityWidget'].filter((w) => w);
+      return [this.codeQualityWidget, this.terraformPlansWidget, 'MrSecurityWidget'].filter(
+        (w) => w,
+      );
     },
   },
 };

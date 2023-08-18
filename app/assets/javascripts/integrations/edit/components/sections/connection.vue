@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { INTEGRATION_FORM_TYPE_JIRA, jiraIntegrationAuthFields } from '~/integrations/constants';
 

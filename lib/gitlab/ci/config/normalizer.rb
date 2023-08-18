@@ -44,6 +44,10 @@ module Gitlab
             job_need_name = job_need[:name].to_sym
 
             if all_jobs = parallelized_jobs[job_need_name]
+              if job_need.key?(:parallel)
+                all_jobs = parallelize_job_config(job_need_name, job_need.delete(:parallel))
+              end
+
               all_jobs.map { |job| job_need.merge(name: job.name) }
             else
               job_need

@@ -14,24 +14,33 @@ export const TOTAL_USAGE_DEFAULT_TEXT = __('Not applicable.');
 export const HELP_LINK_ARIA_LABEL = s__('UsageQuota|%{linkTitle} help link');
 export const RECALCULATE_REPOSITORY_LABEL = s__('UsageQuota|Recalculate repository usage');
 
-export const projectContainerRegistryPopoverContent = s__(
-  'UsageQuotas|The project-level storage statistics for the Container Registry are directional only and do not include savings for instance-wide deduplication.',
-);
-
 export const containerRegistryId = 'containerRegistrySize';
 export const containerRegistryPopoverId = 'container-registry-popover';
+
+export const containerRegistryPopover = {
+  content: s__(
+    'UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total.',
+  ),
+  docsLink: helpPagePath(
+    'user/packages/container_registry/reduce_container_registry_storage.html',
+    { anchor: 'check-container-registry-storage-use' },
+  ),
+};
 
 export const PROJECT_TABLE_LABEL_STORAGE_TYPE = s__('UsageQuota|Storage type');
 export const PROJECT_TABLE_LABEL_USAGE = s__('UsageQuota|Usage');
 
+export const usageQuotasHelpPaths = {
+  usageQuotas: helpPagePath('user/usage_quotas'),
+  usageQuotasProjectStorageLimit: helpPagePath('user/usage_quotas', {
+    anchor: 'project-storage-limit',
+  }),
+  usageQuotasNamespaceStorageLimit: helpPagePath('user/usage_quotas', {
+    anchor: 'namespace-storage-limit',
+  }),
+};
+
 export const PROJECT_STORAGE_TYPES = [
-  {
-    id: 'containerRegistry',
-    name: __('Container Registry'),
-    description: s__(
-      'UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images.',
-    ),
-  },
   {
     id: 'buildArtifacts',
     name: __('Job artifacts'),
@@ -64,11 +73,20 @@ export const PROJECT_STORAGE_TYPES = [
   },
 ];
 
-export const projectHelpPaths = {
-  usageQuotas: helpPagePath('user/usage_quotas'),
-  usageQuotasNamespaceStorageLimit: helpPagePath('user/usage_quotas', {
-    anchor: 'namespace-storage-limit',
-  }),
+export const NAMESPACE_STORAGE_TYPES = [
+  {
+    id: 'containerRegistry',
+    name: __('Container Registry'),
+    description: s__(
+      `UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images.`,
+    ),
+    warning: {
+      popoverContent: containerRegistryPopover.content,
+    },
+  },
+];
+
+export const storageTypeHelpPaths = {
   lfsObjects: helpPagePath('/user/project/repository/reducing_the_repo_size_using_git', {
     anchor: 'repository-cleanup',
   }),

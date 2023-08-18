@@ -2,6 +2,7 @@
 
 module Organizations
   class ApplicationController < ::ApplicationController
+    skip_before_action :authenticate_user!
     before_action :organization
 
     layout 'organization'
@@ -16,8 +17,10 @@ module Organizations
     strong_memoize_attr :organization
 
     def authorize_action!(action)
-      access_denied! if Feature.disabled?(:ui_for_organizations)
-      access_denied! unless can?(current_user, action, organization)
+      return if Feature.enabled?(:ui_for_organizations, current_user) &&
+        can?(current_user, action, organization)
+
+      access_denied!
     end
   end
 end

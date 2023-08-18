@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab keyboard shortcuts **(FREE)**
+# GitLab keyboard shortcuts **(FREE ALL)**
 
 GitLab has several keyboard shortcuts you can use to access its different
 features.
@@ -92,17 +92,18 @@ relatively quickly to work, and they take you to another page in the project.
 
 These shortcuts are available when viewing issues:
 
-| Keyboard shortcut            | Description |
-|------------------------------|-------------|
-| <kbd>e</kbd>                 | Edit description. |
-| <kbd>a</kbd>                 | Change assignee. |
-| <kbd>m</kbd>                 | Change milestone. |
-| <kbd>l</kbd>                 | Change label. |
-| <kbd>r</kbd>                 | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
-| <kbd>.</kbd>                 | Open the [Web IDE](project/web_ide/index.md). |
-| <kbd>→</kbd>                 | Go to the next design. |
-| <kbd>←</kbd>                 | Go to the previous design. |
-| <kbd>Escape</kbd>            | Close the design. |
+| Keyboard shortcut             | Description |
+|-------------------------------|-------------|
+| <kbd>e</kbd>                  | Edit description. |
+| <kbd>a</kbd>                  | Change assignee. |
+| <kbd>m</kbd>                  | Change milestone. |
+| <kbd>l</kbd>                  | Change label. |
+| <kbd>c</kbd> + <kbd>r</kbd>   | Copy issue reference. |
+| <kbd>r</kbd>                  | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
+| <kbd>.</kbd>                  | Open the [Web IDE](project/web_ide/index.md). |
+| <kbd>→</kbd>                  | Go to the next design. |
+| <kbd>←</kbd>                  | Go to the previous design. |
+| <kbd>Escape</kbd>             | Close the design. |
 
 ### Merge requests
 
@@ -116,6 +117,7 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 | <kbd>n</kbd>                      |                     | Move to next unresolved discussion. |
 | <kbd>p</kbd>                      |                     | Move to previous unresolved discussion. |
 | <kbd>b</kbd>                      |                     |  Copy source branch name. |
+| <kbd>c</kbd> + <kbd>r</kbd>       |                     | Copy merge request reference. |
 | <kbd>r</kbd>                      |                     |  Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
 | <kbd>c</kbd>                      |                     |  Move to next commit. |
 | <kbd>x</kbd>                      |                     |  Move to previous commit. |
@@ -230,6 +232,14 @@ page (go to **Code > Repository graph**):
 | <kbd>Shift</kbd> + <kbd>↑</kbd> or <kbd>Shift</kbd> + <kbd>k</kbd> | Scroll to top. |
 | <kbd>Shift</kbd> + <kbd>↓</kbd> or <kbd>Shift</kbd> + <kbd>j</kbd> | Scroll to bottom. |
 
+### Incidents
+
+These shortcuts are available when viewing incidents:
+
+| Keyboard shortcut             | Description |
+|-------------------------------|-------------|
+| <kbd>c</kbd> + <kbd>r</kbd>   | Copy incident reference. |
+
 ### Wiki pages
 
 This shortcut is available when viewing a [wiki page](project/wiki/index.md):
@@ -301,15 +311,16 @@ These shortcuts are available when using a [filtered search input](search/index.
 | <kbd>Command</kbd>   | <kbd>Delete</kbd>                      | Clear entire search filter. |
 | <kbd>Option</kbd>    | <kbd>Control</kbd> + <kbd>Delete</kbd> | Clear one token at a time. |
 
-## Epics **(PREMIUM)**
+## Epics **(PREMIUM ALL)**
 
 These shortcuts are available when viewing [epics](group/epics/index.md):
 
-| Keyboard shortcut | Description       |
-|-------------------|-------------------|
-| <kbd>r</kbd>      | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
-| <kbd>e</kbd>      | Edit description. |
-| <kbd>l</kbd>      | Change label.     |
+| Keyboard shortcut            | Description       |
+|------------------------------|-------------------|
+| <kbd>r</kbd>                 | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
+| <kbd>e</kbd>                 | Edit description. |
+| <kbd>l</kbd>                 | Change label.     |
+| <kbd>c</kbd> + <kbd>r</kbd>  | Copy epic reference. |
 
 ## Disable keyboard shortcuts
 

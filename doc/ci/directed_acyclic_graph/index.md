@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Directed Acyclic Graph **(FREE)**
+# Directed Acyclic Graph **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47063) in GitLab 12.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/206902) in GitLab 12.10.
@@ -36,8 +36,8 @@ Consider a monorepo as follows:
 
 It has a pipeline that looks like the following:
 
-| build | test | deploy |
-| ----- | ---- | ------ |
+| build     | test     | deploy |
+|-----------|----------|--------|
 | `build_a` | `test_a` | `deploy_a` |
 | `build_b` | `test_b` | `deploy_b` |
 | `build_c` | `test_c` | `deploy_c` |

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Commit data', product_group: :source_code do
+    describe 'Commit data', :reliable, product_group: :source_code do
       before(:context) do
         # Get the user's details to confirm they're included in the email patch
         @user = Resource::User.fabricate_via_api! do |user|

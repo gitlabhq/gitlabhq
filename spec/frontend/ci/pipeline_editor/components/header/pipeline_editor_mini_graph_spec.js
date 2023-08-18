@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelineEditorMiniGraph from '~/ci/pipeline_editor/components/header/pipeline_editor_mini_graph.vue';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import getLinkedPipelinesQuery from '~/pipelines/graphql/queries/get_linked_pipelines.query.graphql';
 import { PIPELINE_FAILURE } from '~/ci/pipeline_editor/constants';
 import { mockLinkedPipelines, mockProjectFullPath, mockProjectPipeline } from '../../mock_data';
@@ -41,7 +41,7 @@ describe('Pipeline Status', () => {
     });
   };
 
-  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
+  const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
 
   beforeEach(() => {
     mockLinkedPipelinesQuery = jest.fn();
@@ -53,7 +53,7 @@ describe('Pipeline Status', () => {
     });
 
     it('renders pipeline mini graph', () => {
-      expect(findPipelineMiniGraph().exists()).toBe(true);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(true);
     });
   });
 
@@ -63,7 +63,7 @@ describe('Pipeline Status', () => {
     });
 
     it('does not render pipeline mini graph', () => {
-      expect(findPipelineMiniGraph().exists()).toBe(false);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(false);
     });
   });
 
@@ -85,7 +85,7 @@ describe('Pipeline Status', () => {
       });
 
       it('renders only the latest downstream pipelines', () => {
-        expect(findPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
+        expect(findLegacyPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
       });
     });
 

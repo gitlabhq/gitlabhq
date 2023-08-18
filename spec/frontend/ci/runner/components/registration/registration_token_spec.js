@@ -38,10 +38,15 @@ describe('RegistrationToken', () => {
     );
   });
 
+  it('Renders readonly input', () => {
+    createComponent();
+
+    expect(findInputCopyToggleVisibility().props('readonly')).toBe(true);
+  });
+
   // Component integration test to ensure secure masking
-  it('Displays masked value by default', () => {
+  it('Displays masked value as password input by default', () => {
     const mockToken = '0123456789';
-    const maskToken = '**********';
 
     createComponent({
       props: {
@@ -50,7 +55,7 @@ describe('RegistrationToken', () => {
       mountFn: mountExtended,
     });
 
-    expect(wrapper.find('input').element.value).toBe(maskToken);
+    expect(wrapper.find('input').element.type).toBe('password');
   });
 
   describe('When the copy to clipboard button is clicked', () => {

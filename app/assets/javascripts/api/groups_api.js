@@ -9,7 +9,7 @@ const GROUP_ALL_MEMBERS_PATH = '/api/:version/groups/:id/members/all';
 const DESCENDANT_GROUPS_PATH = '/api/:version/groups/:id/descendant_groups';
 const GROUP_TRANSFER_LOCATIONS_PATH = 'api/:version/groups/:id/transfer_locations';
 
-const axiosGet = (url, query, options, callback) => {
+const axiosGet = (url, query, options, callback, axiosOptions = {}) => {
   return axios
     .get(url, {
       params: {
@@ -17,6 +17,7 @@ const axiosGet = (url, query, options, callback) => {
         per_page: DEFAULT_PER_PAGE,
         ...options,
       },
+      ...axiosOptions,
     })
     .then(({ data, headers }) => {
       callback(data);
@@ -25,14 +26,20 @@ const axiosGet = (url, query, options, callback) => {
     });
 };
 
-export function getGroups(query, options, callback = () => {}) {
+export function getGroups(query, options, callback = () => {}, axiosOptions = {}) {
   const url = buildApiUrl(GROUPS_PATH);
-  return axiosGet(url, query, options, callback);
+  return axiosGet(url, query, options, callback, axiosOptions);
 }
 
-export function getDescendentGroups(parentGroupId, query, options, callback = () => {}) {
+export function getDescendentGroups(
+  parentGroupId,
+  query,
+  options,
+  callback = () => {},
+  axiosOptions = {},
+) {
   const url = buildApiUrl(DESCENDANT_GROUPS_PATH.replace(':id', parentGroupId));
-  return axiosGet(url, query, options, callback);
+  return axiosGet(url, query, options, callback, axiosOptions);
 }
 
 export function updateGroup(groupId, data = {}) {

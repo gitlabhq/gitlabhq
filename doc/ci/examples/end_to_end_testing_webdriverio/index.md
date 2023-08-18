@@ -9,7 +9,7 @@ description: 'Confidence checking your entire app every time a new feature is ad
 
 <!-- vale off -->
 
-# End-to-end testing with GitLab CI/CD and WebdriverIO **(FREE)**
+# End-to-end testing with GitLab CI/CD and WebdriverIO **(FREE ALL)**
 
 [Review Apps](../../review_apps/index.md) are great: for every merge request
 (or branch, for that matter), the new code can be copied and deployed to a fresh production-like live
@@ -154,7 +154,7 @@ to interact with your application, so we need to install and run them.
 Furthermore, WebdriverIO uses Selenium as a common interface to control different browsers,
 so we need to install and run Selenium as well. Luckily, the Selenium project provides the Docker images for Firefox
 [standalone-firefox](https://hub.docker.com/r/selenium/standalone-firefox/) and
-and for Chrome [standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome/). 
+and for Chrome [standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome/).
 (Since Safari and Internet Explorer/Edge are not open source and
 not available for Linux, we are unfortunately unable to use those in GitLab CI/CD).
 

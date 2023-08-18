@@ -1,6 +1,5 @@
 ---
 key_path: counts.projects_gitlab_slack_application_active
-name: count_project_gitlab_slack_application_active
 description: Count projects with active slack application
 product_section: dev
 product_stage: manage

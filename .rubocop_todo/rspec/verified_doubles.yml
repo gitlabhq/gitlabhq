@@ -353,8 +353,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/constraints/jira_encoded_url_constrainer_spec.rb'
     - 'spec/lib/constraints/project_url_constrainer_spec.rb'
     - 'spec/lib/constraints/user_url_constrainer_spec.rb'
-    - 'spec/lib/csv_builder_spec.rb'
-    - 'spec/lib/csv_builders/stream_spec.rb'
     - 'spec/lib/extracts_path_spec.rb'
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitaly/server_spec.rb'

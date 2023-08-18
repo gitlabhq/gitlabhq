@@ -51,4 +51,14 @@ RSpec.describe Gitlab::Ci::Config::Yaml::Result, feature_category: :pipeline_com
     expect(result).not_to be_valid
     expect(result.error).to be_a ArgumentError
   end
+
+  describe '#interpolated?' do
+    it 'defaults to false' do
+      expect(described_class.new).not_to be_interpolated
+    end
+
+    it 'returns the value passed to the initializer' do
+      expect(described_class.new(interpolated: true)).to be_interpolated
+    end
+  end
 end

@@ -20,7 +20,7 @@ module QA
           end
 
           view 'app/views/shared/deploy_keys/_index.html.haml' do
-            element :deploy_keys_settings_content
+            element 'deploy-keys-settings-content'
           end
 
           view 'app/views/projects/protected_tags/shared/_index.html.haml' do
@@ -38,7 +38,7 @@ module QA
           end
 
           def expand_deploy_keys(&block)
-            expand_content(:deploy_keys_settings_content) do
+            expand_content('deploy-keys-settings-content') do
               Settings::DeployKeys.perform(&block)
             end
           end

@@ -13,6 +13,7 @@ module QA
           view 'app/views/projects/mirrors/_mirror_repos.html.haml' do
             element :mirror_repository_url_field
             element :mirror_repository_button
+            element 'add-new-mirror'
           end
 
           view 'app/views/projects/mirrors/_mirror_repos_list.html.haml' do
@@ -37,6 +38,7 @@ module QA
           end
 
           def repository_url=(value)
+            click_element 'add-new-mirror'
             fill_element :mirror_repository_url_field, value
           end
 

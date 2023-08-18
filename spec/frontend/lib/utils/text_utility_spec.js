@@ -238,36 +238,6 @@ describe('text_utility', () => {
     });
   });
 
-  describe('truncatePathMiddleToLength', () => {
-    it('does not truncate text', () => {
-      expect(textUtils.truncatePathMiddleToLength('app/test', 50)).toEqual('app/test');
-    });
-
-    it('truncates middle of the path', () => {
-      expect(textUtils.truncatePathMiddleToLength('app/test/diff', 13)).toEqual('app/…/diff');
-    });
-
-    it('truncates multiple times in the middle of the path', () => {
-      expect(textUtils.truncatePathMiddleToLength('app/test/merge_request/diff', 13)).toEqual(
-        'app/…/…/diff',
-      );
-    });
-
-    describe('given a path too long for the maxWidth', () => {
-      it.each`
-        path          | maxWidth | result
-        ${'aa/bb/cc'} | ${1}     | ${'…'}
-        ${'aa/bb/cc'} | ${2}     | ${'…'}
-        ${'aa/bb/cc'} | ${3}     | ${'…/…'}
-        ${'aa/bb/cc'} | ${4}     | ${'…/…'}
-        ${'aa/bb/cc'} | ${5}     | ${'…/…/…'}
-      `('truncates ($path, $maxWidth) to $result', ({ path, maxWidth, result }) => {
-        expect(result.length).toBeLessThanOrEqual(maxWidth);
-        expect(textUtils.truncatePathMiddleToLength(path, maxWidth)).toEqual(result);
-      });
-    });
-  });
-
   describe('slugifyWithUnderscore', () => {
     it('should replaces whitespaces with underscore and convert to lower case', () => {
       expect(textUtils.slugifyWithUnderscore('My Input String')).toEqual('my_input_string');

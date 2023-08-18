@@ -5,6 +5,32 @@ require 'spec_helper'
 RSpec.describe OmniauthCallbacksController, type: :controller, feature_category: :system_access do
   include LoginHelpers
 
+  shared_examples 'store provider2FA value in session' do
+    before do
+      stub_omniauth_setting(allow_bypass_two_factor: true)
+      saml_config.args[:upstream_two_factor_authn_contexts] << "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
+      sign_in user
+    end
+
+    it "sets the session varible for provider 2FA" do
+      post :saml, params: { SAMLResponse: mock_saml_response }
+
+      expect(session[:provider_2FA]).to eq(true)
+    end
+
+    context 'when by_pass_two_factor_for_current_session feature flag is false' do
+      before do
+        stub_feature_flags(by_pass_two_factor_for_current_session: false)
+      end
+
+      it "does not set the session variable for provider 2FA" do
+        post :saml, params: { SAMLResponse: mock_saml_response }
+
+        expect(session[:provider_2FA]).to be_nil
+      end
+    end
+  end
+
   describe 'omniauth' do
     let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
     let(:additional_info) { {} }
@@ -593,6 +619,12 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
         post :saml, params: { SAMLResponse: mock_saml_response }
       end
+
+      context 'with IDP bypass two factor request' do
+        let(:user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'saml') }
+
+        it_behaves_like 'store provider2FA value in session'
+      end
     end
 
     context 'with a blocked user trying to log in when there are hooks set up' do
@@ -623,8 +655,13 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       it 'authenticate with SAML module' do
         expect(@controller).to receive(:omniauth_flow).with(Gitlab::Auth::Saml).and_call_original
         post :saml_okta, params: { SAMLResponse: mock_saml_response }
+
         expect(request.env['warden']).to be_authenticated
       end
+    end
+
+    context 'with IDP bypass two factor request' do
+      it_behaves_like 'store provider2FA value in session'
     end
   end
 

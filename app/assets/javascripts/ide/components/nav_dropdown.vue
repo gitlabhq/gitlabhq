@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import NavDropdownButton from './nav_dropdown_button.vue';
 import NavForm from './nav_form.vue';

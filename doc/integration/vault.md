@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Vault Authentication with GitLab OpenID Connect **(FREE)**
+# Use Vault as a GitLab OpenID Connect authentication provider **(FREE ALL)**
 
 [Vault](https://www.vaultproject.io/) is a secrets management application offered by HashiCorp.
 It allows you to store and manage sensitive information such as secret environment
@@ -84,7 +84,7 @@ and scopes given to GitLab when you created the application.
 Run the following command in the terminal:
 
 ```shell
-vault write auth/oidc/role/demo -<<EOF
+vault write auth/oidc/role/demo - <<EOF
 {
    "user_claim": "sub",
    "allowed_redirect_uris": "<your_vault_instance_redirect_uris>",

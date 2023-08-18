@@ -1,7 +1,9 @@
 <script>
 import * as Sentry from '@sentry/browser';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { PANELS_WITH_PINS } from '../constants';
 import NavItem from './nav_item.vue';
 import PinnedSection from './pinned_section.vue';
@@ -14,6 +16,7 @@ export default {
     NavItem,
     PinnedSection,
   },
+  mixins: [glFeatureFlagsMixin()],
 
   provide() {
     return {
@@ -25,6 +28,10 @@ export default {
   props: {
     items: {
       type: Array,
+      required: true,
+    },
+    isLoggedIn: {
+      type: Boolean,
       required: true,
     },
     pinnedItemIds: {
@@ -39,7 +46,8 @@ export default {
     },
     updatePinsUrl: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
 
@@ -49,6 +57,8 @@ export default {
 
   data() {
     return {
+      showFlyoutMenus: false,
+
       // This is used as a provide and injected into the nav items.
       // Note: It has to be an object to be reactive.
       changedPinnedItemIds: { ids: this.pinnedItemIds },
@@ -92,11 +102,20 @@ export default {
         .filter(Boolean);
     },
     supportsPins() {
-      return PANELS_WITH_PINS.includes(this.panelType);
+      return this.isLoggedIn && PANELS_WITH_PINS.includes(this.panelType);
     },
     hasStaticItems() {
       return this.staticItems.length > 0;
     },
+  },
+  mounted() {
+    if (this.glFeatures.superSidebarFlyoutMenus) {
+      this.decideFlyoutState();
+      window.addEventListener('resize', this.decideFlyoutState);
+    }
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.decideFlyoutState);
   },
   methods: {
     createPin(itemId) {
@@ -137,6 +156,9 @@ export default {
     isSection(navItem) {
       return navItem.items?.length;
     },
+    decideFlyoutState() {
+      this.showFlyoutMenus = GlBreakpointInstance.windowWidth() >= breakpoints.md;
+    },
   },
 };
 </script>
@@ -150,6 +172,7 @@ export default {
       v-if="supportsPins"
       separated
       :items="pinnedItems"
+      :has-flyout="showFlyoutMenus"
       @pin-remove="destroyPin"
       @pin-reorder="movePin"
     />
@@ -166,6 +189,7 @@ export default {
           :key="item.id"
           :item="item"
           :separated="item.separated"
+          :has-flyout="showFlyoutMenus"
           @pin-add="createPin"
           @pin-remove="destroyPin"
         />

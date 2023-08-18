@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -52,16 +53,19 @@ export default {
 </script>
 
 <template>
-  <div class="title-container">
+  <div
+    class="gl-display-flex gl-align-items-flex-start gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3 gl-pt-3"
+  >
     <h1
       v-safe-html="titleHtml"
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
-      class="title gl-font-size-h-display"
+      class="title gl-font-size-h-display gl-m-0!"
       data-testid="issue-title"
       dir="auto"
     ></h1>
+    <slot name="actions"></slot>
   </div>
 </template>

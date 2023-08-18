@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlTabs, GlTab, GlLink, GlBadge } from '@gitlab/ui';
 import DocLine from './doc_line.vue';

@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Multiple assignees for issues **(PREMIUM)**
+# Multiple assignees for issues **(PREMIUM ALL)**
 
 > Moved from Starter to Premium in GitLab 13.9.
 

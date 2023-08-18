@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Plantuml, feature_category: :shared do
     let(:plantuml_url) { "http://plantuml.foo.bar" }
 
     before do
-      allow(Gitlab::CurrentSettings).to receive(:plantuml_url).and_return(plantuml_url)
+      stub_application_setting(plantuml_url: plantuml_url)
     end
 
     context "when PlantUML is enabled" do

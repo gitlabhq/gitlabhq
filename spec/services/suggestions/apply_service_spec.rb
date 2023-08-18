@@ -22,10 +22,12 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_suggestions do
 
     position = build_position(**position_args)
 
-    diff_note = create(:diff_note_on_merge_request,
-                       noteable: merge_request,
-                       position: position,
-                       project: project)
+    diff_note = create(
+      :diff_note_on_merge_request,
+      noteable: merge_request,
+      position: position,
+      project: project
+    )
 
     suggestion_args = { note: diff_note }.merge(content_args)
 
@@ -46,8 +48,7 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_suggestions do
 
       suggestions.each do |suggestion|
         path = suggestion.diff_file.file_path
-        blob = project.repository.blob_at_branch(merge_request.source_branch,
-                                                 path)
+        blob = project.repository.blob_at_branch(merge_request.source_branch, path)
 
         expect(blob.data).to eq(expected_content_by_path[path.to_sym])
       end
@@ -398,9 +399,11 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_suggestions do
           expect(result[:status]).to eq(:success)
 
           refresh = MergeRequests::RefreshService.new(project: project, current_user: user)
-          refresh.execute(merge_request.diff_head_sha,
-                          suggestion.commit_id,
-                          merge_request.source_branch_ref)
+          refresh.execute(
+            merge_request.diff_head_sha,
+            suggestion.commit_id,
+            merge_request.source_branch_ref
+          )
 
           result
         end
@@ -576,18 +579,22 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_suggestions do
       end
 
       let(:merge_request) do
-        create(:merge_request,
-               source_branch: 'conflict-resolvable-fork',
-               source_project: forked_project,
-               target_branch: 'conflict-start',
-               target_project: project)
+        create(
+          :merge_request,
+          source_branch: 'conflict-resolvable-fork',
+          source_project: forked_project,
+          target_branch: 'conflict-start',
+          target_project: project
+        )
       end
 
       let!(:diff_note) do
-        create(:diff_note_on_merge_request,
-               noteable: merge_request,
-               position: position,
-               project: project)
+        create(
+          :diff_note_on_merge_request,
+          noteable: merge_request,
+          position: position,
+          project: project
+        )
       end
 
       before do
@@ -596,9 +603,8 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_suggestions do
 
       it 'updates file in the source project' do
         expect(Files::MultiService).to receive(:new)
-                                         .with(merge_request.source_project,
-                                               user,
-                                               anything).and_call_original
+          .with(merge_request.source_project, user, anything)
+          .and_call_original
 
         apply_service.new(user, suggestion).execute
       end
@@ -623,8 +629,10 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_suggestions do
       it 'returns error' do
         result = apply_service.new(user, suggestion).execute
 
-        expect(result).to eq(message: "You are not allowed to push into this branch",
-                             status: :error)
+        expect(result).to eq(
+          message: "You are not allowed to push into this branch",
+          status: :error
+        )
       end
     end
   end
@@ -660,8 +668,7 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_suggestions do
       end
 
       it 'returns error message' do
-        expect(result).to eq(message: 'A file was not found.',
-                             status: :error)
+        expect(result).to eq(message: 'A file was not found.', status: :error)
       end
 
       it_behaves_like 'service not tracking apply suggestion event'
@@ -700,8 +707,10 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_suggestions do
       let(:result) { apply_service.new(user, suggestion, other_branch_suggestion).execute }
 
       it 'renders error message' do
-        expect(result).to eq(message: 'Suggestions must all be on the same branch.',
-                             status: :error)
+        expect(result).to eq(
+          message: 'Suggestions must all be on the same branch.',
+          status: :error
+        )
       end
 
       it_behaves_like 'service not tracking apply suggestion event'
@@ -736,8 +745,10 @@ RSpec.describe Suggestions::ApplyService, feature_category: :code_suggestions do
       let(:result) { apply_service.new(user, suggestion, overlapping_suggestion).execute }
 
       it 'returns error message' do
-        expect(result).to eq(message: 'Suggestions are not applicable as their lines cannot overlap.',
-                             status: :error)
+        expect(result).to eq(
+          message: 'Suggestions are not applicable as their lines cannot overlap.',
+          status: :error
+        )
       end
 
       it_behaves_like 'service not tracking apply suggestion event'

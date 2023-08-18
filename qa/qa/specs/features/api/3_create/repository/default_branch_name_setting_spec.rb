@@ -12,10 +12,7 @@ module QA
       end
 
       it 'sets the default branch name for a new project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347837' do
-        project = Resource::Project.fabricate_via_api! do |project|
-          project.name = "default-branch-name"
-          project.initialize_with_readme = true
-        end
+        project = create(:project, :with_readme, name: 'default-branch-name')
 
         # It takes a moment to create the project. We wait until we
         # know it exists before we try to clone it
@@ -32,7 +29,7 @@ module QA
 
       it 'allows a project to be created via the CLI with a different default branch name', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347838' do
         project_name = "default-branch-name-via-cli-#{SecureRandom.hex(8)}"
-        group = Resource::Group.fabricate_via_api!
+        group = create(:group)
 
         Git::Repository.perform do |repository|
           repository.init_repository

@@ -16,7 +16,7 @@ module Gitlab
           TREE_SORT_ORDER = { tree: 0, blob: 1, commit: 2 }.freeze
 
           override :tree_entries
-          def tree_entries(repository, sha, path, recursive, skip_flat_paths, pagination_params = nil)
+          def tree_entries(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, pagination_params = nil)
             if use_rugged?(repository, :rugged_tree_entries)
               entries = execute_rugged_call(
                 :tree_entries_with_flat_path_from_rugged, repository, sha, path, recursive, skip_flat_paths)

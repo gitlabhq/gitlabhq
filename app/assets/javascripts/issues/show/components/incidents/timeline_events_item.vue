@@ -76,7 +76,7 @@ export default {
     >
       <gl-icon :name="getEventIcon(action)" class="note-icon" />
     </div>
-    <div class="timeline-event-note timeline-event-border" data-testid="event-text-container">
+    <div class="timeline-event-note timeline-event-border">
       <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-3 gl-mb-2">
         <h3
           class="timeline-event-note-date gl-font-weight-bold gl-font-sm gl-my-0"

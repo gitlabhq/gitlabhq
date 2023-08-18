@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlFormGroup, GlFormInput, GlFormTextarea } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { uniqueId } from 'lodash';
 import { __, s__ } from '~/locale';

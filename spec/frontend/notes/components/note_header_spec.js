@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NoteHeader from '~/notes/components/note_header.vue';
@@ -22,6 +23,7 @@ describe('NoteHeader component', () => {
   const findAuthorName = () => wrapper.findByTestId('author-name');
   const findSpinner = () => wrapper.findComponent({ ref: 'spinner' });
   const authorUsernameLink = () => wrapper.findComponent({ ref: 'authorUsernameLink' });
+  const findAuthorNameLink = () => wrapper.findComponent({ ref: 'authorNameLink' });
 
   const statusHtml =
     '"<span class="user-status-emoji has-tooltip" title="foo bar" data-html="true" data-placement="top"><gl-emoji title="basketball and hoop" data-name="basketball" data-unicode-version="6.0">🏀</gl-emoji></span>"';
@@ -205,7 +207,7 @@ describe('NoteHeader component', () => {
     it('proxies `mouseenter` event to author name link', () => {
       createComponent({ author });
 
-      const dispatchEvent = jest.spyOn(wrapper.vm.$refs.authorNameLink, 'dispatchEvent');
+      const dispatchEvent = jest.spyOn(findAuthorNameLink().element, 'dispatchEvent');
 
       wrapper.findComponent({ ref: 'authorUsernameLink' }).trigger('mouseenter');
 
@@ -215,7 +217,7 @@ describe('NoteHeader component', () => {
     it('proxies `mouseleave` event to author name link', () => {
       createComponent({ author });
 
-      const dispatchEvent = jest.spyOn(wrapper.vm.$refs.authorNameLink, 'dispatchEvent');
+      const dispatchEvent = jest.spyOn(findAuthorNameLink().element, 'dispatchEvent');
 
       wrapper.findComponent({ ref: 'authorUsernameLink' }).trigger('mouseleave');
 

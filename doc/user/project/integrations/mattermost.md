@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Mattermost notifications **(FREE)**
+# Mattermost notifications **(FREE ALL)**
 
 Use the Mattermost notifications integration to send notifications for GitLab events
 (for example, `issue created`) to Mattermost. You must configure both [Mattermost](#configure-mattermost-to-receive-gitlab-notifications)

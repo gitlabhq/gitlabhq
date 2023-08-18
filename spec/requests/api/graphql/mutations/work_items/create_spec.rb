@@ -140,7 +140,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
             }
           end
 
-          before(:all) do
+          before_all do
             create(:parent_link, work_item_parent: parent, work_item: adjacent, relative_position: 0)
           end
 
@@ -264,6 +264,14 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:mutation) { graphql_mutation(:workItemCreate, input.merge('namespacePath' => project.full_path), fields) }
 
         it_behaves_like 'creates work item'
+
+        context 'when the namespace_level_work_items feature flag is disabled' do
+          before do
+            stub_feature_flags(namespace_level_work_items: false)
+          end
+
+          it_behaves_like 'creates work item'
+        end
       end
     end
 
@@ -272,6 +280,16 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       let(:mutation) { graphql_mutation(:workItemCreate, input.merge(namespacePath: group.full_path), fields) }
 
       it_behaves_like 'creates work item'
+
+      context 'when the namespace_level_work_items feature flag is disabled' do
+        before do
+          stub_feature_flags(namespace_level_work_items: false)
+        end
+
+        it_behaves_like 'a mutation that returns top-level errors', errors: [
+          Mutations::WorkItems::Create::DISABLED_FF_ERROR
+        ]
+      end
     end
 
     context 'when both projectPath and namespacePath are passed' do

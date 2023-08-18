@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# PlantUML **(FREE)**
+# PlantUML **(FREE SELF)**
 
 With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
 This integration is enabled on GitLab.com for all SaaS users and does not require any additional configuration.
@@ -290,6 +290,14 @@ NOTE:
 The default URL is different when using this approach. The Docker-based image
 makes the service available at the root URL, with no relative path. Adjust
 the configuration below accordingly.
+
+#### `404` error when opening the PlantUML page in the browser
+
+You might get a `404` error when visiting `https://gitlab.example.com/-/plantuml/`, when the PlantUML
+server is set up [in Debian or Ubuntu](#debianubuntu).
+
+This can happen even when the integration is working.
+It does not necessarily indicate a problem with your PlantUML server or configuration.
 
 ### Configure PlantUML security
 

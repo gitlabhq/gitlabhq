@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issue boards **(FREE)**
+# Issue boards **(FREE ALL)**
 
 The issue board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -253,12 +253,12 @@ Users on GitLab Free can use a single group issue board.
 GitLab issue boards are available on the GitLab Free tier, but some
 advanced functionality is present in [higher tiers only](https://about.gitlab.com/pricing/).
 
-### Configurable issue boards **(PREMIUM)**
+### Configurable issue boards **(PREMIUM ALL)**
 
 > - Setting current iteration as scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196804) in GitLab 13.8.
 > - Moved to GitLab Premium in 13.9.
 
-An issue board can be associated with a [milestone](milestones/index.md#milestones),
+An issue board can be associated with a [milestone](milestones/index.md),
 [labels](labels.md), assignee, weight, and current [iteration](../group/iterations/index.md),
 which automatically filter the board issues accordingly.
 This allows you to create unique boards according to your team's need.
@@ -277,7 +277,7 @@ selecting **View scope**.
 Watch a [video presentation](https://youtu.be/m5UTNCSqaDk) of
 the configurable issue board feature.
 
-### Sum of issue weights **(PREMIUM)**
+### Sum of issue weights **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -287,7 +287,7 @@ especially in combination with [assignee lists](#assignee-lists).
 
 ![issue board summed weights](img/issue_board_summed_weights_v13_6.png)
 
-### Assignee lists **(PREMIUM)**
+### Assignee lists **(PREMIUM ALL)**
 
 As in a regular list showing all issues with a chosen label, you can add
 an assignee list that shows all issues assigned to a user.
@@ -310,7 +310,7 @@ To remove an assignee list, just as with a label list, select the trash icon.
 
 ![Assignee lists](img/issue_board_assignee_lists_v14_1.png)
 
-### Milestone lists **(PREMIUM)**
+### Milestone lists **(PREMIUM ALL)**
 
 You're also able to create lists of a milestone. These are lists that filter issues by the assigned
 milestone, giving you more freedom and visibility on the issue board.
@@ -332,7 +332,7 @@ As in other list types, select the trash icon to remove a list.
 
 ![Milestone lists](img/issue_board_milestone_lists_v14_1.png)
 
-### Iteration lists **(PREMIUM)**
+### Iteration lists **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11 [with a flag](../../administration/feature_flags.md) named `iteration_board_lists`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75404) in GitLab 14.6. Feature flag `iteration_board_lists` removed.
@@ -355,7 +355,7 @@ to and from a iteration list to manipulate the iteration of the dragged issues.
 
 ![Iteration lists](img/issue_board_iteration_lists_v13_10.png)
 
-### Group issues in swimlanes **(PREMIUM)**
+### Group issues in swimlanes **(PREMIUM ALL)**
 
 > - Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in GitLab 13.6.
 > - Editing issue titles in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232745) in GitLab 13.8.
@@ -401,7 +401,7 @@ You can also [drag issues](#move-issues-and-lists) to change their position and 
 
 ![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop.png)
 
-## Work in progress limits **(PREMIUM)**
+## Work in progress limits **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -428,7 +428,7 @@ To set a WIP limit for a list, in an issue board:
 1. Enter the maximum number of issues.
 1. Press <kbd>Enter</kbd> to save.
 
-## Blocked issues **(PREMIUM)**
+## Blocked issues **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210452) in GitLab 13.10: View blocking issues when hovering over the "blocked" icon.
 

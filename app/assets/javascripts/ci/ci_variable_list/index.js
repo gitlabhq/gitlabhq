@@ -10,10 +10,6 @@ import { generateCacheConfig, resolvers } from './graphql/settings';
 
 const mountCiVariableListApp = (containerEl) => {
   const {
-    awsLogoSvgPath,
-    awsTipCommandsLink,
-    awsTipDeployLink,
-    awsTipLearnLink,
     containsVariableReferenceLink,
     endpoint,
     environmentScopeLink,
@@ -57,10 +53,6 @@ const mountCiVariableListApp = (containerEl) => {
     el: containerEl,
     apolloProvider,
     provide: {
-      awsLogoSvgPath,
-      awsTipCommandsLink,
-      awsTipDeployLink,
-      awsTipLearnLink,
       containsVariableReferenceLink,
       endpoint,
       environmentScopeLink,

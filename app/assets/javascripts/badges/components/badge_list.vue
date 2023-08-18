@@ -1,15 +1,43 @@
 <script>
-import { GlLoadingIcon, GlBadge } from '@gitlab/ui';
-import { mapState } from 'vuex';
-import { GROUP_BADGE } from '../constants';
-import BadgeListRow from './badge_list_row.vue';
+import {
+  GlBadge,
+  GlLoadingIcon,
+  GlTable,
+  GlPagination,
+  GlButton,
+  GlModalDirective,
+} from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
+import { mapActions, mapState } from 'vuex';
+import { __, s__ } from '~/locale';
+import { GROUP_BADGE, PROJECT_BADGE, INITIAL_PAGE, PAGE_SIZE } from '../constants';
+import Badge from './badge.vue';
 
 export default {
+  PAGE_SIZE,
+  INITIAL_PAGE,
   name: 'BadgeList',
   components: {
-    BadgeListRow,
-    GlLoadingIcon,
+    Badge,
     GlBadge,
+    GlLoadingIcon,
+    GlTable,
+    GlPagination,
+    GlButton,
+  },
+  directives: {
+    GlModal: GlModalDirective,
+  },
+  i18n: {
+    emptyGroupMessage: s__('Badges|This group has no badges, start by creating a new one above.'),
+    emptyProjectMessage: s__(
+      'Badges|This project has no badges, start by creating a new one above.',
+    ),
+  },
+  data() {
+    return {
+      currentPage: INITIAL_PAGE,
+    };
   },
   computed: {
     ...mapState(['badges', 'isLoading', 'kind']),
@@ -19,28 +47,123 @@ export default {
     isGroupBadge() {
       return this.kind === GROUP_BADGE;
     },
+    showPagination() {
+      return this.badges.length > PAGE_SIZE;
+    },
+    emptyMessage() {
+      return this.isGroupBadge
+        ? this.$options.i18n.emptyGroupMessage
+        : this.$options.i18n.emptyProjectMessage;
+    },
+    fields() {
+      return [
+        {
+          key: 'name',
+          label: __('Name'),
+          tdClass: 'gl-vertical-align-middle!',
+        },
+        {
+          key: 'badge',
+          label: __('Badge'),
+          tdClass: 'gl-vertical-align-middle!',
+        },
+        {
+          key: 'url',
+          label: __('URL'),
+          tdClass: 'gl-vertical-align-middle!',
+        },
+        {
+          key: 'actions',
+          label: __('Actions'),
+          thClass: 'gl-text-right',
+          tdClass: 'gl-text-right',
+        },
+      ];
+    },
+  },
+  methods: {
+    ...mapActions(['editBadge', 'updateBadgeInModal']),
+    badgeKindText(item) {
+      if (item.kind === PROJECT_BADGE) {
+        return s__('Badges|Project Badge');
+      }
+
+      return s__('Badges|Group Badge');
+    },
+    canEditBadge(item) {
+      return item.kind === this.kind;
+    },
   },
 };
 </script>
 
 <template>
-  <div class="card">
-    <div class="card-header">
-      {{ s__('Badges|Your badges') }}
-      <gl-badge v-show="!isLoading" size="sm">{{ badges.length }}</gl-badge>
-    </div>
-    <gl-loading-icon v-show="isLoading" size="lg" class="card-body" />
-    <div v-if="hasNoBadges" class="card-body">
-      <span v-if="isGroupBadge">{{ s__('Badges|This group has no badges') }}</span>
-      <span v-else>{{ s__('Badges|This project has no badges') }}</span>
-    </div>
-    <div v-else class="card-body" data-qa-selector="badge_list_content">
-      <badge-list-row
-        v-for="badge in badges"
-        :key="badge.id"
-        :badge="badge"
-        data-qa-selector="badge_list_row"
-        :data-qa-badge-name="badge.name"
+  <div>
+    <gl-loading-icon v-show="isLoading" size="md" />
+    <div data-qa-selector="badge_list_content">
+      <gl-table
+        :empty-text="emptyMessage"
+        :fields="fields"
+        :items="badges"
+        :per-page="$options.PAGE_SIZE"
+        :current-page="currentPage"
+        stacked="md"
+        show-empty
+        data-qa-selector="badge_list"
+      >
+        <template #cell(name)="{ item }">
+          <label class="label-bold str-truncated mb-0">{{ item.name }}</label>
+          <gl-badge size="sm">{{ badgeKindText(item) }}</gl-badge>
+        </template>
+
+        <template #cell(badge)="{ item }">
+          <badge :image-url="item.renderedImageUrl" :link-url="item.renderedLinkUrl" />
+        </template>
+
+        <template #cell(url)="{ item }">
+          {{ item.linkUrl }}
+        </template>
+
+        <template #cell(actions)="{ item }">
+          <div v-if="canEditBadge(item)" class="table-action-buttons" data-testid="badge-actions">
+            <gl-button
+              v-gl-modal.edit-badge-modal
+              :disabled="item.isDeleting"
+              class="gl-mr-3"
+              variant="default"
+              icon="pencil"
+              size="medium"
+              :aria-label="__('Edit')"
+              data-testid="edit-badge-button"
+              @click="editBadge(item)"
+            />
+            <gl-button
+              v-gl-modal.delete-badge-modal
+              :disabled="item.isDeleting"
+              category="secondary"
+              variant="danger"
+              icon="remove"
+              size="medium"
+              :aria-label="__('Delete')"
+              data-testid="delete-badge"
+              @click="updateBadgeInModal(item)"
+            />
+            <gl-loading-icon v-show="item.isDeleting" size="sm" :inline="true" />
+          </div>
+        </template>
+      </gl-table>
+
+      <gl-pagination
+        v-if="showPagination"
+        v-model="currentPage"
+        :per-page="$options.PAGE_SIZE"
+        :total-items="badges.length"
+        :prev-text="__('Prev')"
+        :next-text="__('Next')"
+        :label-next-page="__('Go to next page')"
+        :label-prev-page="__('Go to previous page')"
+        align="center"
+        class="gl-mt-5"
       />
     </div>
   </div>

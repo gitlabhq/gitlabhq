@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectMember do
+RSpec.describe ProjectMember, feature_category: :groups_and_projects do
   describe 'associations' do
     it { is_expected.to belong_to(:project).with_foreign_key(:source_id) }
   end

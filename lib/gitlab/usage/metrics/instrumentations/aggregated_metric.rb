@@ -40,10 +40,6 @@ module Gitlab
             end
           end
 
-          def suggested_name
-            Gitlab::Usage::Metrics::NameSuggestion.for(:alt)
-          end
-
           private
 
           attr_accessor :source, :aggregate

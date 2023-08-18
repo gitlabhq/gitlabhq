@@ -8,32 +8,49 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Mirroring repositories')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically.')
       = link_to _('How do I mirror repositories?'), help_page_path('user/project/repository/mirror/index.md'), target: '_blank', rel: 'noopener noreferrer'
 
+
   .settings-content
-    - if mirror_settings_enabled
-      = gitlab_ui_form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'new-password', data: mirrors_form_data_attributes } do |f|
-        .panel.panel-default
-          .panel-body
-            %div= form_errors(@project)
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+      - c.with_header do
+        .gl-new-card-title-wrapper
+          %h5.gl-new-card-title
+            = _('Mirrored repositories')
+          .gl-new-card-count
+            = sprite_icon('earth', css_class: 'gl-mr-2')
+            %span.js-mirrored-repo-count
+              = mirrored_repositories_count
+        .gl-new-card-actions
+          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content", data: { testid: 'add-new-mirror' } }) do
+            = _('Add new')
+      - c.with_body do
+        - if mirror_settings_enabled
+          .gl-new-card-add-form.gl-m-3.gl-mb-4.gl-display-none.js-toggle-content
+            %h4.gl-mt-0
+              = s_('Profiles|Add new mirror repository')
+            = gitlab_ui_form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'new-password', data: mirrors_form_data_attributes } do |f|
+              %div= form_errors(@project)
+              .form-group.has-feedback
+                = label_tag :url, _('Git repository URL'), class: 'label-light'
+                = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { qa_selector: 'mirror_repository_url_field' }
 
-            .form-group.has-feedback
-              = label_tag :url, _('Git repository URL'), class: 'label-light'
-              = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { qa_selector: 'mirror_repository_url_field' }
+              = render 'projects/mirrors/instructions'
 
-            = render 'projects/mirrors/instructions'
+              = render 'projects/mirrors/mirror_repos_form', f: f
 
-            = render 'projects/mirrors/mirror_repos_form', f: f
+              = render 'projects/mirrors/branch_filter'
 
-            = render 'projects/mirrors/branch_filter'
+              = f.submit _('Mirror repository'), class: 'js-mirror-submit', name: :update_remote_mirror, pajamas_button: true, data: { qa_selector: 'mirror_repository_button' }
 
-          .panel-footer
-            = f.submit _('Mirror repository'), class: 'js-mirror-submit', name: :update_remote_mirror, pajamas_button: true, data: { qa_selector: 'mirror_repository_button' }
-    - else
-      = render Pajamas::AlertComponent.new(dismissible: false) do |c|
-        - c.with_body do
-          = _('Mirror settings are only available to GitLab administrators.')
+              = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
+                = _('Cancel')
 
-    = render 'projects/mirrors/mirror_repos_list'
+        - else
+          = render Pajamas::AlertComponent.new(dismissible: false) do |c|
+            - c.with_body do
+              = _('Mirror settings are only available to GitLab administrators.')
+
+        = render 'projects/mirrors/mirror_repos_list'

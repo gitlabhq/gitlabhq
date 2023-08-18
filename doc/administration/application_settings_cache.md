@@ -45,7 +45,7 @@ To change the expiry value:
      application_settings_cache_seconds: 60
    ```
 
-1. Save the file, and then [restart](restart_gitlab.md#installations-from-source)
+1. Save the file, and then [restart](restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
 ::EndTabs

@@ -2,6 +2,7 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { TEST_HOST as FAKE_ENDPOINT } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';

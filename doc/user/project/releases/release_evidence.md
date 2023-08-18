@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Release evidence **(FREE)**
+# Release evidence **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.6.
 
@@ -91,7 +91,7 @@ When a release is created, release evidence is automatically collected. To initi
 
 Evidence collection snapshots are visible on the Releases page, along with the timestamp the evidence was collected.
 
-## Include report artifacts as release evidence **(ULTIMATE)**
+## Include report artifacts as release evidence **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in GitLab 13.2.
 

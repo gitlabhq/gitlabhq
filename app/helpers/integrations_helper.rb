@@ -162,7 +162,7 @@ module IntegrationsHelper
   end
 
   def integrations_help_page_path
-    help_page_path('user/admin_area/settings/project_integration_management')
+    help_page_path('administration/settings/project_integration_management')
   end
 
   def project_jira_issues_integration?
@@ -179,7 +179,8 @@ module IntegrationsHelper
       'incident' => _('Incident'),
       'test_case' => _('Test case'),
       'requirement' => _('Requirement'),
-      'task' => _('Task')
+      'task' => _('Task'),
+      'ticket' => _('Service Desk Ticket')
     }
 
     issue_type_i18n_map[issue_type] || issue_type

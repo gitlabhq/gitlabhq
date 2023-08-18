@@ -36,6 +36,7 @@ module Members
       member.attributes = params
       return unless member.changed?
 
+      member.expiry_notified_at = nil if member.expires_at_changed?
       member.tap(&:save!)
     end
 

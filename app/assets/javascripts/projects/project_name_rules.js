@@ -8,7 +8,7 @@ export const START_RULE = {
 export const CONTAINS_RULE = {
   reg: /^[a-zA-Z0-9\p{Pd}\u{002B}\u{00A9}-\u{1f9ff}_. ]+$/u,
   msg: __(
-    'Name can contain only lowercase or uppercase letters, digits, emojis, spaces, dots, underscores, dashes, or pluses.',
+    'Name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses.',
   ),
 };
 

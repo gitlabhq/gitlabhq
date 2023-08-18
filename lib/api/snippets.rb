@@ -8,22 +8,19 @@ module API
     feature_category :source_code_management
     urgency :low
 
+    helpers do
+      def find_snippets(user: current_user, params: {})
+        SnippetsFinder.new(user, params).execute
+      end
+
+      def snippets_for_current_user
+        find_snippets(params: { author: current_user })
+      end
+    end
+
     resource :snippets do
       helpers Helpers::SnippetsHelpers
       helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
-      helpers do
-        def snippets_for_current_user
-          SnippetsFinder.new(current_user, author: current_user).execute
-        end
-
-        def public_snippets
-          Snippet.only_personal_snippets.are_public.fresh
-        end
-
-        def snippets
-          SnippetsFinder.new(current_user).execute
-        end
-      end
 
       desc 'Get a snippets list for an authenticated user' do
         detail 'This feature was introduced in GitLab 8.15.'
@@ -44,7 +41,8 @@ module API
         authenticate!
 
         filter_params = declared_params(include_missing: false).merge(author: current_user)
-        present paginate(SnippetsFinder.new(current_user, filter_params).execute), with: Entities::Snippet, current_user: current_user
+
+        present paginate(find_snippets(params: filter_params)), with: Entities::Snippet, current_user: current_user
       end
 
       desc 'List all public personal snippets current_user has access to' do
@@ -66,7 +64,32 @@ module API
         authenticate!
 
         filter_params = declared_params(include_missing: false).merge(only_personal: true)
-        present paginate(SnippetsFinder.new(nil, filter_params).execute), with: Entities::PersonalSnippet, current_user: current_user
+
+        present paginate(find_snippets(user: nil, params: filter_params)), with: Entities::PersonalSnippet, current_user: current_user
+      end
+
+      desc 'List all snippets current_user has access to' do
+        detail 'This feature was introduced in GitLab 16.3.'
+        success Entities::Snippet
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[snippets]
+        is_array true
+      end
+      params do
+        optional :created_after, type: DateTime, desc: 'Return snippets created after the specified time'
+        optional :created_before, type: DateTime, desc: 'Return snippets created before the specified time'
+
+        use :pagination
+        use :optional_list_params_ee
+      end
+      get 'all' do
+        authenticate!
+
+        filter_params = declared_params(include_missing: false).merge(all_available: true)
+
+        present paginate(find_snippets(params: filter_params)), with: Entities::Snippet, current_user: current_user
       end
 
       desc 'Get a single snippet' do
@@ -81,7 +104,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
       get ':id' do
-        snippet = snippets.find_by_id(params[:id])
+        snippet = find_snippets.find_by_id(params[:id])
 
         break not_found!('Snippet') unless snippet
 
@@ -105,6 +128,7 @@ module API
                               values: Gitlab::VisibilityLevel.string_values,
                               default: 'internal',
                               desc: 'The visibility of the snippet'
+
         use :create_file_params
       end
       post do
@@ -135,7 +159,6 @@ module API
         ]
         tags %w[snippets]
       end
-
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
         optional :content, type: String, allow_blank: false, desc: 'The content of a snippet'
@@ -214,7 +237,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
       get ":id/raw" do
-        snippet = snippets.find_by_id(params.delete(:id))
+        snippet = find_snippets.find_by_id(params.delete(:id))
         not_found!('Snippet') unless snippet
 
         present content_for(snippet)
@@ -230,7 +253,7 @@ module API
         use :raw_file_params
       end
       get ":id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
-        snippet = snippets.find_by_id(params.delete(:id))
+        snippet = find_snippets.find_by_id(params.delete(:id))
         not_found!('Snippet') unless snippet&.repo_exists?
 
         present file_content_for(snippet)
@@ -258,3 +281,5 @@ module API
     end
   end
 end
+
+API::Snippets.prepend_mod_with('API::Snippets')

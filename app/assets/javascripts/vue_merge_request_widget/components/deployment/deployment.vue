@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { MANUAL_DEPLOY, WILL_DEPLOY, CREATED } from './constants';
 import DeploymentActions from './deployment_actions.vue';
@@ -36,7 +37,7 @@ export default {
 </script>
 
 <template>
-  <div class="deploy-heading">
+  <div class="deploy-heading gl-px-5">
     <div class="ci-widget media">
       <div class="media-body">
         <div class="deploy-body">

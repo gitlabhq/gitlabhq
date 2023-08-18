@@ -9,7 +9,7 @@ RSpec.describe 'gitlab:snippets namespace rake task', :silence_stdout do
   let(:non_migrated) { create_list(:personal_snippet, 3, author: user) }
   let(:non_migrated_ids) { non_migrated.pluck(:id) }
 
-  before :all do
+  before_all do
     Rake.application.rake_require 'tasks/gitlab/snippets'
   end
 

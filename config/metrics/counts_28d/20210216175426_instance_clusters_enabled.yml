@@ -17,6 +17,5 @@ tier:
 - free
 - premium
 - ultimate
-name: 'count_distinct_user_id_from_enabaled_clusters_attached_to_instance'
 performance_indicator_type: []
 milestone: "<13.9"

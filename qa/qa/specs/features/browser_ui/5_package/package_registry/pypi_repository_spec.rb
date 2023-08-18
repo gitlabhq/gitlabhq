@@ -2,22 +2,11 @@
 
 module QA
   RSpec.describe 'Package', :object_storage, product_group: :package_registry do
-    describe 'PyPI Repository',
-      quarantine: {
-        only: { job: %w[relative_url airgapped] },
-        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417592',
-        type: :investigating
-      } do
+    describe 'PyPI Repository', :external_api_calls do
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'pypi-package-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'pypi-package-project') }
       let(:package) do
         Resource::Package.init do |package|
           package.name = "mypypipackage-#{SecureRandom.hex(8)}"
@@ -40,15 +29,8 @@ module QA
         use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: Runtime::Env.personal_access_token, project: project)
       end
 
-      let(:gitlab_address_with_port) { "#{uri.scheme}://#{uri.host}:#{uri.port}" }
-      let(:gitlab_host_with_port) do
-        # Don't specify port if it is a standard one
-        if uri.port == 80 || uri.port == 443
-          uri.host
-        else
-          "#{uri.host}:#{uri.port}"
-        end
-      end
+      let(:gitlab_address_with_port) { Support::GitlabAddress.address_with_port }
+      let(:gitlab_host_with_port) { Support::GitlabAddress.host_with_port(with_default_port: false) }
 
       before do
         Flow::Login.sign_in

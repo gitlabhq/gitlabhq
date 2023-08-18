@@ -182,44 +182,29 @@ RSpec.describe Projects::PagesController, feature_category: :pages do
         create(:project_setting, project: project, pages_unique_domain_enabled: false)
       end
 
-      context 'with pages_unique_domain feature flag disabled' do
-        it 'does not update pages unique domain' do
-          stub_feature_flags(pages_unique_domain: false)
+      it 'updates pages_https_only and pages_unique_domain and redirects back to pages settings' do
+        expect { patch :update, params: request_params }
+          .to change { project.project_setting.reload.pages_unique_domain_enabled }
+          .from(false).to(true)
+
+        expect(project.project_setting.pages_unique_domain).not_to be_nil
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(project_pages_path(project))
+      end
+
+      context 'when it fails to update' do
+        it 'adds an error message' do
+          expect_next_instance_of(Projects::UpdateService) do |service|
+            expect(service)
+              .to receive(:execute)
+              .and_return(status: :error, message: 'some error happened')
+          end
 
           expect { patch :update, params: request_params }
             .not_to change { project.project_setting.reload.pages_unique_domain_enabled }
-        end
-      end
 
-      context 'with pages_unique_domain feature flag enabled' do
-        before do
-          stub_feature_flags(pages_unique_domain: true)
-        end
-
-        it 'updates pages_https_only and pages_unique_domain and redirects back to pages settings' do
-          expect { patch :update, params: request_params }
-            .to change { project.project_setting.reload.pages_unique_domain_enabled }
-            .from(false).to(true)
-
-          expect(project.project_setting.pages_unique_domain).not_to be_nil
-          expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(project_pages_path(project))
-        end
-
-        context 'when it fails to update' do
-          it 'adds an error message' do
-            expect_next_instance_of(Projects::UpdateService) do |service|
-              expect(service)
-                .to receive(:execute)
-                .and_return(status: :error, message: 'some error happened')
-            end
-
-            expect { patch :update, params: request_params }
-              .not_to change { project.project_setting.reload.pages_unique_domain_enabled }
-
-            expect(response).to redirect_to(project_pages_path(project))
-            expect(flash[:alert]).to eq('some error happened')
-          end
+          expect(flash[:alert]).to eq('some error happened')
         end
       end
     end

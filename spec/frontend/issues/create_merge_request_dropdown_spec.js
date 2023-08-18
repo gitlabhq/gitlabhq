@@ -51,31 +51,6 @@ describe('CreateMergeRequestDropdown', () => {
     });
   });
 
-  describe('updateCreatePaths', () => {
-    it('escapes branch names correctly', () => {
-      dropdown.createBranchPath = `${TEST_HOST}/branches?branch_name=some-branch&issue=42`;
-      dropdown.createMrPath = `${TEST_HOST}/create_merge_request?merge_request%5Bsource_branch%5D=test&merge_request%5Btarget_branch%5D=master&merge_request%5Bissue_iid%5D=42`;
-
-      dropdown.updateCreatePaths('branch', 'contains#hash');
-
-      expect(dropdown.createBranchPath).toBe(
-        `${TEST_HOST}/branches?branch_name=contains%23hash&issue=42`,
-      );
-
-      expect(dropdown.createMrPath).toBe(
-        `${TEST_HOST}/create_merge_request?merge_request%5Bsource_branch%5D=contains%23hash&merge_request%5Btarget_branch%5D=master&merge_request%5Bissue_iid%5D=42`,
-      );
-
-      expect(dropdown.wrapperEl.dataset.createBranchPath).toBe(
-        `${TEST_HOST}/branches?branch_name=contains%23hash&issue=42`,
-      );
-
-      expect(dropdown.wrapperEl.dataset.createMrPath).toBe(
-        `${TEST_HOST}/create_merge_request?merge_request%5Bsource_branch%5D=contains%23hash&merge_request%5Btarget_branch%5D=master&merge_request%5Bissue_iid%5D=42`,
-      );
-    });
-  });
-
   describe('enable', () => {
     beforeEach(() => {
       dropdown.createMergeRequestButton.classList.add('disabled');

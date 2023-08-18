@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Description templates **(FREE)**
+# Description templates **(FREE ALL)**
 
 You can define templates to use as descriptions
 for your [issues](issues/index.md) and [merge requests](merge_requests/index.md).
@@ -16,7 +16,7 @@ You might want to use these templates:
 
 - For different stages of your workflow, for example, feature proposal, feature improvement, or a bug report.
 - For every issue or merge request for a specific project, so the layout is consistent.
-- For a [Service Desk email template](service_desk.md#use-a-custom-template-for-service-desk-tickets).
+- For a [Service Desk email template](service_desk/index.md#use-a-custom-template-for-service-desk-tickets).
 
 For description templates to work, they must be:
 
@@ -113,7 +113,7 @@ You can also use the instance template repository for file templates.
 You might also be interested [project templates](../admin_area/custom_project_templates.md)
 that you can use when creating a new project in the instance.
 
-### Set group-level description templates **(PREMIUM)**
+### Set group-level description templates **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.

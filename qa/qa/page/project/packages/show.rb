@@ -6,19 +6,19 @@ module QA
       module Packages
         class Show < QA::Page::Base
           view 'app/assets/javascripts/packages_and_registries/package_registry/pages/details.vue' do
-            element :delete_button
-            element :delete_modal_button
-            element :package_information_content
+            element 'delete-package'
+            element 'delete-modal-button'
+            element 'package-information-content'
           end
 
           def has_package_info?(name, version)
-            has_element?(:package_information_content, text: /#{name}.*#{version}/)
+            has_element?('package-information-content', text: /#{name}.*#{version}/)
           end
 
           def click_delete
-            click_element(:delete_button)
-            wait_for_animated_element(:delete_modal_button)
-            click_element(:delete_modal_button)
+            click_element('delete-package')
+            wait_for_animated_element('delete-modal-button')
+            click_element('delete-modal-button')
           end
         end
       end

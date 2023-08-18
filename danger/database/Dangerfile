@@ -31,8 +31,10 @@ by removing the ~database label and re-running the [`danger-review` job](#{ENV['
 MSG
 
 DB_MIGRATION_TESTING_REQUIRED_MESSAGE = <<~MSG
-1. Kick off the `db:gitlabcom-database-testing` manual job. This job can also be used before
-   requesting review to test your migrations against production data.
+The [database migration pipeline](https://docs.gitlab.com/ee/development/database/database_migration_pipeline.html)
+must be triggered by the job `db:gitlabcom-database-testing` must be run before requesting
+~database review. This job takes ~30m and will post the results to a comment on the merge
+request. Please run and review any results before passing to a reviewer.
 MSG
 
 DB_OLD_MIGRATIONS_MESSAGE = <<~MSG
@@ -45,6 +47,8 @@ DB_OLD_MIGRATIONS_MESSAGE = <<~MSG
 MSG
 
 DATABASE_APPROVED_LABEL = 'database::approved'
+DATABASE_TESTING_RUN_LABEL = 'database-testing-automation'
+COMMUNITY_CONTRIBUTION_LABEL = 'Community contribution'
 
 non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/structure\.sql}).empty?
 geo_db_schema_updated = !git.modified_files.grep(%r{\Aee/db/geo/structure\.sql}).empty?
@@ -67,14 +71,19 @@ end
 return unless helper.ci?
 return if helper.mr_labels.include?(DATABASE_APPROVED_LABEL)
 
-db_paths_to_review = helper.changes_by_category[:database]
+migration_testing_has_run = helper.mr_labels.include?(DATABASE_TESTING_RUN_LABEL)
+community_contribution = helper.mr_labels.include?(COMMUNITY_CONTRIBUTION_LABEL)
+if non_geo_migration_created && !migration_testing_has_run && !community_contribution
+  fail DB_MIGRATION_TESTING_REQUIRED_MESSAGE # rubocop:disable Style/SignalException
+end
 
-if helper.mr_labels.include?('database') || db_paths_to_review.any?
+if helper.mr_labels.include?('database') || database.changes.any?
   message 'This merge request adds or changes files that require a ' \
     'review from the [Database team](https://gitlab.com/groups/gl-database/-/group_members).'
 
   markdown(DB_MESSAGE)
-  markdown(DB_MIGRATION_TESTING_REQUIRED_MESSAGE) if non_geo_migration_created
+
+  db_paths_to_review = database.changed_database_paths
 
   if db_paths_to_review.any?
     markdown(DB_FILES_MESSAGE + helper.markdown_list(db_paths_to_review.to_set))

@@ -28,7 +28,7 @@ module Operations
       validates :name,
         inclusion: {
         in: STRATEGIES.keys,
-        message: 'strategy name is invalid'
+        message: ->(_object, _data) { s_('Validation|strategy name is invalid') }
       }
 
       validate :parameters_validations, if: -> { errors[:name].blank? }
@@ -46,7 +46,7 @@ module Operations
 
       def same_project_validation
         unless user_list.project_id == feature_flag.project_id
-          errors.add(:user_list, 'must belong to the same project')
+          errors.add(:user_list, s_('Validation|must belong to the same project'))
         end
       end
 
@@ -57,13 +57,13 @@ module Operations
       end
 
       def validate_parameters_type
-        parameters.is_a?(Hash) || parameters_error('parameters are invalid')
+        parameters.is_a?(Hash) || parameters_error(s_('Validation|parameters are invalid'))
       end
 
       def validate_parameters_keys
         actual_keys = parameters.keys.sort
         expected_keys = STRATEGIES[name].sort
-        expected_keys == actual_keys || parameters_error('parameters are invalid')
+        expected_keys == actual_keys || parameters_error(s_('Validation|parameters are invalid'))
       end
 
       def validate_parameters_values
@@ -89,11 +89,11 @@ module Operations
         group_id = parameters['groupId']
 
         unless within_range?(percentage, 0, 100)
-          parameters_error('percentage must be a string between 0 and 100 inclusive')
+          parameters_error(s_('Validation|percentage must be a string between 0 and 100 inclusive'))
         end
 
         unless group_id.is_a?(String) && group_id.match(/\A[a-z]{1,32}\z/)
-          parameters_error('groupId parameter is invalid')
+          parameters_error(s_('Validation|groupId parameter is invalid'))
         end
       end
 
@@ -108,11 +108,11 @@ module Operations
         end
 
         unless group_id.is_a?(String) && group_id.match(/\A[a-z]{1,32}\z/)
-          parameters_error('groupId parameter is invalid')
+          parameters_error(s_('Validation|groupId parameter is invalid'))
         end
 
         unless within_range?(rollout, 0, 100)
-          parameters_error('rollout must be a string between 0 and 100 inclusive')
+          parameters_error(s_('Validation|rollout must be a string between 0 and 100 inclusive'))
         end
       end
 

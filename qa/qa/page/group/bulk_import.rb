@@ -8,7 +8,7 @@ module QA
           element :import_table
           element :import_item
           element :import_status_indicator
-          element :filter_groups
+          element 'filter-groups'
         end
 
         view "app/assets/javascripts/import_entities/import_groups/components/import_target_cell.vue" do
@@ -20,7 +20,7 @@ module QA
         end
 
         view "app/assets/javascripts/import_entities/import_groups/components/import_actions_cell.vue" do
-          element :import_group_button
+          element 'import-group-button'
         end
 
         def filter_group(source_group_name)
@@ -44,7 +44,7 @@ module QA
             click_element(:target_group_dropdown_item, group_name: target_group_name)
 
             retry_until(message: "Triggering import") do
-              click_element(:import_group_button)
+              click_element('import-group-button')
               # Make sure import started before waiting for completion
               has_no_element?(:import_status_indicator, text: "Not started", wait: 1)
             end

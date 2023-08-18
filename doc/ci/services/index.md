@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index
 ---
 
-# Services **(FREE)**
+# Services **(FREE ALL)**
 
 When you configure CI/CD, you specify an image, which is used to create the container
 where your jobs run. To specify this image, you use the `image` keyword.
@@ -48,7 +48,7 @@ socket or `localhost`. Read more in [accessing the services](#accessing-the-serv
 ## How the health check of services works
 
 Services are designed to provide additional features which are **network accessible**.
-They may be a database like MySQL, or Redis, and even `docker:stable-dind` which
+They may be a database like MySQL, or Redis, and even `docker:dind` which
 allows you to use Docker-in-Docker. It can be practically anything that's
 required for the CI/CD job to proceed, and is accessed by network.
 

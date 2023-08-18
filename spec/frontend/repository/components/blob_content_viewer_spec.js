@@ -1,5 +1,6 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Vue, { nextTick } from 'vue';
 import axios from 'axios';
@@ -64,7 +65,7 @@ const mockRouter = {
   push: mockRouterPush,
 };
 
-const legacyViewerUrl = 'some_file.js?format=json&viewer=simple';
+const legacyViewerUrl = '/some_file.js?format=json&viewer=simple';
 
 const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute = {}) => {
   Vue.use(VueApollo);
@@ -78,7 +79,6 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
     createMergeRequestIn = userPermissionsMock.createMergeRequestIn,
     isBinary,
     inject = {},
-    highlightJs = true,
   } = mockData;
 
   const blobInfo = {
@@ -151,7 +151,6 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
         originalBranch: 'default-ref',
         ...inject,
         glFeatures: {
-          highlightJs,
           highlightJsWorker: false,
         },
       },
@@ -223,16 +222,6 @@ describe('Blob content viewer component', () => {
 
     describe('legacy viewers', () => {
       const fileType = 'text';
-      const highlightJs = false;
-
-      it('loads a legacy viewer when a the fileType is text and the highlightJs feature is turned off', async () => {
-        await createComponent({
-          blob: { ...simpleViewerMock, fileType, highlightJs },
-        });
-
-        expect(mockAxios.history.get).toHaveLength(1);
-        expect(mockAxios.history.get[0].url).toBe(legacyViewerUrl);
-      });
 
       it('loads a legacy viewer when the source viewer emits an error', async () => {
         loadViewer.mockReturnValueOnce(SourceViewer);
@@ -255,25 +244,25 @@ describe('Blob content viewer component', () => {
         'loads the legacy viewer when a file type is identified as legacy',
         async (type) => {
           await createComponent({ blob: { ...simpleViewerMock, fileType: type, webPath: type } });
-          expect(mockAxios.history.get[0].url).toBe(`${type}?format=json&viewer=simple`);
+          expect(mockAxios.history.get[0].url).toBe(`/${type}?format=json&viewer=simple`);
         },
       );
 
       it('loads the LineHighlighter', async () => {
         mockAxios.onGet(legacyViewerUrl).replyOnce(HTTP_STATUS_OK, 'test');
-        await createComponent({ blob: { ...simpleViewerMock, fileType, highlightJs } });
+        await createComponent({ blob: { ...simpleViewerMock, fileType } });
         expect(LineHighlighter).toHaveBeenCalled();
       });
 
       it('does not load the LineHighlighter for RichViewers', async () => {
         mockAxios.onGet(legacyViewerUrl).replyOnce(HTTP_STATUS_OK, 'test');
-        await createComponent({ blob: { ...richViewerMock, fileType, highlightJs } });
+        await createComponent({ blob: { ...richViewerMock, fileType } });
         expect(LineHighlighter).not.toHaveBeenCalled();
       });
 
       it('scrolls to the hash', async () => {
         mockAxios.onGet(legacyViewerUrl).replyOnce(HTTP_STATUS_OK, 'test');
-        await createComponent({ blob: { ...simpleViewerMock, fileType, highlightJs } });
+        await createComponent({ blob: { ...simpleViewerMock, fileType } });
         expect(handleLocationHash).toHaveBeenCalled();
       });
     });
@@ -348,7 +337,7 @@ describe('Blob content viewer component', () => {
       await createComponent({ blob: { ...richViewerMock, fileType: 'unknown' } });
 
       expect(mockAxios.history.get).toHaveLength(1);
-      expect(mockAxios.history.get[0].url).toEqual('some_file.js?format=json&viewer=rich');
+      expect(mockAxios.history.get[0].url).toEqual('/some_file.js?format=json&viewer=rich');
     });
   });
 
@@ -371,7 +360,7 @@ describe('Blob content viewer component', () => {
     });
 
     it('does not load a CodeIntelligence component when no viewers are loaded', async () => {
-      const url = 'some_file.js?format=json&viewer=rich';
+      const url = '/some_file.js?format=json&viewer=rich';
       mockAxios.onGet(url).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
       await createComponent({ blob: { ...richViewerMock, fileType: 'unknown' } });
 
@@ -516,20 +505,13 @@ describe('Blob content viewer component', () => {
   });
 
   describe('blob info query', () => {
-    it.each`
-      highlightJs | shouldFetchRawText
-      ${true}     | ${true}
-      ${false}    | ${false}
-    `(
-      'calls blob info query with shouldFetchRawText: $shouldFetchRawText when highlightJs (feature flag): $highlightJs',
-      async ({ highlightJs, shouldFetchRawText }) => {
-        await createComponent({ highlightJs });
+    it('calls blob info query with shouldFetchRawText: true', async () => {
+      await createComponent();
 
-        expect(blobInfoMockResolver).toHaveBeenCalledWith(
-          expect.objectContaining({ shouldFetchRawText }),
-        );
-      },
-    );
+      expect(blobInfoMockResolver).toHaveBeenCalledWith(
+        expect.objectContaining({ shouldFetchRawText: true }),
+      );
+    });
 
     it('is called with originalBranch value if the prop has a value', async () => {
       await createComponent({ inject: { originalBranch: 'some-branch' } });

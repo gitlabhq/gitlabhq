@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# PyPI API **(FREE)**
+# PyPI API **(FREE ALL)**
 
 This is the API documentation for [PyPI Packages](../../user/packages/pypi_repository/index.md).
 
@@ -28,7 +28,7 @@ is recommended when [FIPS mode](../../development/fips_compliance.md) is enabled
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.
 
-Download a PyPI package file. The [simple API](#group-level-simple-api-entry-point) 
+Download a PyPI package file. The [simple API](#group-level-simple-api-entry-point)
 usually supplies this URL.
 
 ```plaintext

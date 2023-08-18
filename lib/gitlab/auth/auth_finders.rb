@@ -403,9 +403,13 @@ module Gitlab
       end
 
       def revoke_token_family(token)
-        return unless Feature.enabled?(:pat_reuse_detection)
+        return unless access_token_rotation_request?
 
         PersonalAccessTokens::RevokeTokenFamilyService.new(token).execute
+      end
+
+      def access_token_rotation_request?
+        current_request.path.match(%r{access_tokens/\d+/rotate$})
       end
     end
   end

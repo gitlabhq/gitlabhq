@@ -65,10 +65,6 @@
   min-width: 0;
 }
 
-.gl-min-h-100vh {
-  min-height: 100vh;
-}
-
 // .gl-font-size-inherit will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1466
 .gl-font-size-inherit,
 .font-size-inherit { font-size: inherit; }
@@ -134,4 +130,21 @@
 
 .gl-fill-red-500 {
   fill: $red-500;
+}
+
+// Will be moved to @gitlab/ui in https://gitlab.com/gitlab-org/gitlab-ui/-/merge_requests/3569
+.gl-mb-n5 {
+  margin-bottom: -$gl-spacing-scale-5;
+}
+
+.gl-mb-n7 {
+  margin-bottom: -$gl-spacing-scale-7;
+}
+
+.gl-mb-n8 {
+  margin-bottom: -$gl-spacing-scale-8;
+}
+
+.gl-hover-border-gray-100:hover {
+  border-color: $gray-100;
 }

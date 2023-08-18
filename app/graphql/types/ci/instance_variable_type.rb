@@ -7,7 +7,7 @@ module Types
       graphql_name 'CiInstanceVariable'
       description 'CI/CD variables for a GitLab instance.'
 
-      implements(VariableInterface)
+      implements VariableInterface
 
       field :id, GraphQL::Types::ID,
             null: false,

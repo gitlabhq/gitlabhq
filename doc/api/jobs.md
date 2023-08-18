@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jobs API **(FREE)**
+# Jobs API **(FREE ALL)**
 
 ## List project jobs
 
@@ -497,7 +497,7 @@ Example of response
 }
 ```
 
-## Get GitLab agent by `CI_JOB_TOKEN` **(PREMIUM)**
+## Get GitLab agent by `CI_JOB_TOKEN` **(PREMIUM ALL)**
 
 Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed
 [agents](../user/clusters/agent/index.md).
@@ -842,7 +842,7 @@ Example of response
 
 NOTE:
 You can't delete archived jobs with the API, but you can
-[delete job artifacts and logs from jobs completed before a specific date](../administration/job_artifacts.md#delete-job-artifacts-and-logs-from-jobs-completed-before-a-specific-date)
+[delete job artifacts and logs from jobs completed before a specific date](../administration/job_artifacts_troubleshooting.md#delete-job-artifacts-and-logs-from-jobs-completed-before-a-specific-date)
 
 ## Run a job
 

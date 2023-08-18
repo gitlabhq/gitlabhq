@@ -1,5 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ROLLOUT_STRATEGY_ALL_USERS } from '../constants';

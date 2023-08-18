@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira issue integration **(FREE)**
+# Jira issue integration **(FREE ALL)**
 
 The Jira issue integration connects one or more GitLab projects to a Jira instance. You can host the Jira instance yourself or in [Jira Cloud](https://www.atlassian.com/migration/assess/why-cloud). The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
 
@@ -29,7 +29,7 @@ To configure your project settings in GitLab:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Jira**.
-1. In **Enable integration**, select the **Active** checkbox.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide connection details:
    - **Web URL**: Base URL for the Jira instance web interface you're linking to
      this GitLab project (for example, `https://jira.example.com`).

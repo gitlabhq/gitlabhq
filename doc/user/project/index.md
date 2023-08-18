@@ -4,7 +4,7 @@ group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Create a project **(FREE)**
+# Create a project **(FREE ALL)**
 
 You can create a project in many ways in GitLab.
 
@@ -62,7 +62,7 @@ A user who creates a project [from a template](#create-a-project-from-a-built-in
 Imported objects are labeled as `By <username> on <timestamp> (imported from GitLab)`.
 For this reason, the creation date of imported objects can be older than the creation date of the user's account. This can lead to objects appearing to have been created by a user before they even had an account.
 
-## Create a project from a custom template **(PREMIUM)**
+## Create a project from a custom template **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.
 
@@ -87,7 +87,7 @@ Custom project templates are available at:
      change the **Visibility Level**.
 1. Select **Create project**.
 
-## Create a project from the HIPAA Audit Protocol template **(ULTIMATE)**
+## Create a project from the HIPAA Audit Protocol template **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
 
@@ -126,7 +126,7 @@ You cannot use `git push` to create projects with project paths that:
 
 Previously used project paths have a redirect. The redirect causes push attempts to redirect requests
 to the renamed project location, instead of creating a new project. To create a new project for a previously
-used or renamed project, use the [UI](#create-a-project) or the [Projects API](../../api/projects.md#create-project).
+used or renamed project, use the UI or the [Projects API](../../api/projects.md#create-project).
 
 Prerequisites:
 

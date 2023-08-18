@@ -1,5 +1,6 @@
 import { GlTab } from '@gitlab/ui';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { stubComponent } from 'helpers/stub_component';
 import RepoTab from '~/ide/components/repo_tab.vue';

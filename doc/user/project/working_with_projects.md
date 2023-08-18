@@ -4,7 +4,7 @@ group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Manage projects **(FREE)**
+# Manage projects **(FREE ALL)**
 
 Most work in GitLab is done in a [project](../../user/project/index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
@@ -151,7 +151,7 @@ To delete a project:
 1. Select **Delete project**.
 1. Confirm this action by completing the field.
 
-## View projects pending deletion **(PREMIUM)**
+## View projects pending deletion **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
 > - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
@@ -178,7 +178,15 @@ To view the activity of a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Manage > Activity**.
-1. Select a tab to view the type of project activity.
+1. Optional. To filter activity by contribution type, select a tab:
+
+   - **All**: All contributions by project members.
+   - **Push events**: Push events in the project.
+   - **Merge events**: Accepted merge requests in the project.
+   - **Issue events**: Issues opened and closed in the project.
+   - **Comments**: Comments posted by project members.
+   - **Designs**: Designs added, updated, and removed in the project.
+   - **Team**: Members who joined and left the project.
 
 ## Search in projects
 

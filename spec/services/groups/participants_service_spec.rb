@@ -66,15 +66,7 @@ RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projec
 
       subject(:usernames) { service_result.pluck(:username) }
 
-      context 'when current_user is not a member' do
-        let(:service) { described_class.new(group, create(:user)) }
-
-        it { is_expected.not_to include(private_group_member.username) }
-      end
-
-      context 'when current_user is a member' do
-        it { is_expected.to include(private_group_member.username) }
-      end
+      it { is_expected.to include(private_group_member.username) }
     end
   end
 

@@ -16,7 +16,7 @@ module API
         projects = GroupProjectsFinder.new(
           group: group,
           current_user: options[:current_user],
-          options: { only_owned: true, limit: projects_limit }
+          options: { exclude_shared: true, limit: projects_limit }
         ).execute
 
         Entities::Project.prepare_relation(projects, options)

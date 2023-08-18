@@ -1,6 +1,7 @@
 export const SCOPE_ISSUES = 'issues';
 export const SCOPE_MERGE_REQUESTS = 'merge_requests';
 export const SCOPE_BLOB = 'blobs';
+export const SCOPE_PROJECTS = 'projects';
 export const LABEL_DEFAULT_CLASSES = [
   'gl-display-flex',
   'gl-flex-direction-row',
@@ -18,4 +19,3 @@ export const ONLY_SHOW_MD = ['gl-display-none', 'gl-md-display-block'];
 export const TRACKING_ACTION_CLICK = 'search:filters:click';
 export const TRACKING_LABEL_APPLY = 'Apply Filters';
 export const TRACKING_LABEL_RESET = 'Reset Filters';
-export const TRACKING_CATEGORY = 'Issue filters';

@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# OpenID Connect OmniAuth provider **(FREE SELF)**
+# Use OpenID Connect as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 GitLab can use [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html)
 as an OmniAuth provider.
@@ -22,7 +22,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -187,7 +187,7 @@ The OpenID Connect provides you with a client's details and secret for you to us
 1. For changes to take effect, if you:
 
    - Used the Linux package to install GitLab, [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-   - Self-compiled your GitLab installation, [restart GitLab](../restart_gitlab.md#installations-from-source).
+   - Self-compiled your GitLab installation, [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 On the sign in page, you have an OpenID Connect option below the regular sign in form.
 Select this option to begin the authentication process. The OpenID Connect provider
@@ -581,7 +581,7 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-Example installations from source configuration (file path: `config/gitlab.yml`):
+Example configuration for self-compiled installations (file path: `config/gitlab.yml`):
 
 ```yaml
   - { name: 'openid_connect', # do not change this parameter
@@ -750,7 +750,7 @@ def sync_missing_provider(self, user: User, extern_uid: str)
 
 For more information, see the [GitLab API user method documentation](https://python-gitlab.readthedocs.io/en/stable/gl_objects/users.html#examples).
 
-## Configure users based on OIDC group membership **(PREMIUM)**
+## Configure users based on OIDC group membership **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209898) in GitLab 15.10.
 
@@ -774,7 +774,9 @@ response to require users to be members of a certain group, configure GitLab to 
 
 If you do not set `required_groups` or leave the setting empty, any user authenticated by the IdP through OIDC can use GitLab.
 
-For Linux package installations:
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -808,7 +810,7 @@ For Linux package installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For self-compiled installations:
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -839,8 +841,10 @@ For self-compiled installations:
        }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
+
+::EndTabs
 
 ### External groups
 
@@ -853,7 +857,9 @@ based on group membership, configure GitLab to identify:
   [external user](../external_users.md), using the
  `external_groups` setting.
 
-For Linux package installations:
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -887,7 +893,7 @@ For Linux package installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For self-compiled installations:
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -918,8 +924,10 @@ For self-compiled installations:
        }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
+
+::EndTabs
 
 ### Auditor groups **(PREMIUM SELF)**
 
@@ -930,7 +938,9 @@ response to assign users as auditors based on group membership, configure GitLab
 - Which group memberships grant the user auditor access, using the `auditor_groups`
   setting.
 
-For Linux package installations:
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -964,7 +974,7 @@ For Linux package installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For self-compiled installations:
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -995,8 +1005,10 @@ For self-compiled installations:
        }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
+
+::EndTabs
 
 ### Administrator groups
 
@@ -1007,7 +1019,9 @@ response to assign users as administrator based on group membership, configure G
 - Which group memberships grant the user administrator access, using the
  `admin_groups` setting.
 
-For Linux package installations:
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1041,7 +1055,7 @@ For Linux package installations:
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
-For self-compiled installations:
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -1072,8 +1086,10 @@ For self-compiled installations:
        }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
+
+::EndTabs
 
 ## Troubleshooting
 

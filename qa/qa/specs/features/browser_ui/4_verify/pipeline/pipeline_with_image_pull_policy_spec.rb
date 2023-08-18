@@ -5,13 +5,7 @@ module QA
     describe 'Pipeline with image:pull_policy' do
       let(:runner_name) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:job_name) { "test-job-#{pull_policies.join('-')}" }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'pipeline-with-image-pull-policy'
-        end
-      end
-
+      let(:project) { create(:project, name: 'pipeline-with-image-pull-policy') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.project = project

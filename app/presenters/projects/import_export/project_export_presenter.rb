@@ -52,3 +52,5 @@ module Projects
     end
   end
 end
+
+Projects::ImportExport::ProjectExportPresenter.prepend_mod_with('Projects::ImportExport::ProjectExportPresenter')

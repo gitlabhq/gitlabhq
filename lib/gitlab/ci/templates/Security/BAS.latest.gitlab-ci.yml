@@ -18,11 +18,8 @@
 #
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/breach_and_attack_simulation/index.html#extend-dynamic-application-security-testing-dast
 
-# Include the DAST.latest template if $DAST_VERSION is null because this means a DAST template has not been included already.
 include:
   - template: Security/DAST.latest.gitlab-ci.yml
-    rules:
-      - if: $DAST_VERSION == null
 
 variables:
   BAS_CALLBACK_IMAGE_TAG: "latest"

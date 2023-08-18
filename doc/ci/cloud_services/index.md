@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Connect to cloud services **(FREE)**
+# Connect to cloud services **(FREE ALL)**
 
 > - `CI_JOB_JWT` variable for reading secrets from Vault [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207125) in GitLab 12.10.
 > - `CI_JOB_JWT_V2` variable to support additional OIDC providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346737) in GitLab 14.7.
@@ -95,9 +95,9 @@ The condition is validated against the JWT to create a trust specifically agains
 - Subject or `sub`: A concatenation of metadata describing the GitLab CI/CD workflow including the group, project, branch, and tag. The `sub` field is in the following format:
   - `project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}`
 
-| Filter type                          | Example                                                      |
-| ------------------------------------ | ------------------------------------------------------------ |
-| Filter to main branch                | `project_path:mygroup/myproject:ref_type:branch:ref:main`   |
+| Filter type                          | Example |
+|--------------------------------------|---------|
+| Filter to main branch                | `project_path:mygroup/myproject:ref_type:branch:ref:main` |
 | Filter to any branch                 | Wildcard supported. `project_path:mygroup/myproject:ref_type:branch:ref:*` |
 | Filter to specific project           | `project_path:mygroup/myproject:ref_type:branch:ref:main` |
 | Filter to all projects under a group | Wildcard supported. `project_path:mygroup/*:ref_type:branch:ref:main` |

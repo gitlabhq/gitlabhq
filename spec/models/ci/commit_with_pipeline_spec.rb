@@ -44,7 +44,7 @@ RSpec.describe Ci::CommitWithPipeline, feature_category: :continuous_integration
       ]
     end
 
-    before(:all) do
+    before_all do
       commits_with_pipelines.each do |commit|
         create(:ci_empty_pipeline, project: commit.project, sha: commit.sha)
       end

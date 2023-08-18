@@ -82,8 +82,7 @@ module Gitlab
       end
 
       def unique_domain_enabled?
-        Feature.enabled?(:pages_unique_domain, project) &&
-          project.project_setting.pages_unique_domain_enabled?
+        project.project_setting.pages_unique_domain_enabled?
       end
 
       def config

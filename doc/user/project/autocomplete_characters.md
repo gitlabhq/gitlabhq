@@ -6,7 +6,7 @@ type: reference
 description: "Autocomplete characters in Markdown fields."
 ---
 
-# Autocomplete characters **(FREE)**
+# Autocomplete characters **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36705) in GitLab 13.9: you can search using the full name in user autocomplete.
 

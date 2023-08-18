@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# File Locking **(FREE)**
+# File Locking **(FREE ALL)**
 
 Preventing wasted work caused by unresolvable merge conflicts requires
 a different way of working. This means explicitly requesting write permissions,
@@ -190,7 +190,7 @@ Suggested workflow for shared projects:
 1. Get your changes reviewed, approved, and merged.
 1. Unlock the file.
 
-## Default branch file and directory locks **(PREMIUM)**
+## Default branch file and directory locks **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/440) in GitLab 8.9.
 

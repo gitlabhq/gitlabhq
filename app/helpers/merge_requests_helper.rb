@@ -303,11 +303,15 @@ module MergeRequestsHelper
   def hidden_merge_request_icon(merge_request)
     return unless merge_request.hidden?
 
-    hidden_issuable_icon(merge_request)
+    hidden_resource_icon(merge_request)
   end
 
   def tab_count_display(merge_request, count)
     merge_request.preparing? ? "-" : count
+  end
+
+  def review_bar_data(_merge_request, _user)
+    { new_comment_template_path: profile_comment_templates_path }
   end
 end
 

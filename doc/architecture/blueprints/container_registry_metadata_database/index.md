@@ -174,7 +174,7 @@ The diagram below illustrates the architecture of the database cluster:
 
 [Rate](https://gitlab.com/gitlab-org/container-registry/-/issues/94) and [size](https://gitlab.com/gitlab-org/container-registry/-/issues/61#note_446609886) requirements for the GitLab.com database were extrapolated based on the `dev.gitlab.org` registry and are available in the linked issues.
 
-#### Self-Managed Instances
+#### Self-managed instances
 
 By default, for self-managed instances, the registry will have a separate logical database in the same PostgreSQL instance/cluster as the GitLab database. However, it will be possible to configure the registry to use a separate instance/cluster if needed.
 

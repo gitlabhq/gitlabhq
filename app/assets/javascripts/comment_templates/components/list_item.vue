@@ -74,8 +74,8 @@ export default {
 </script>
 
 <template>
-  <li class="gl-pt-4 gl-pb-5 gl-border-b">
-    <div class="gl-display-flex gl-align-items-center">
+  <li class="gl-px-5! gl-py-4!">
+    <div class="gl-display-flex">
       <h6 class="gl-mr-3 gl-my-0" data-testid="comment-template-name">{{ template.name }}</h6>
       <div class="gl-ml-auto">
         <gl-disclosure-dropdown
@@ -94,7 +94,9 @@ export default {
         </gl-tooltip>
       </div>
     </div>
-    <div class="gl-mt-3 gl-font-monospace gl-white-space-pre-wrap">{{ template.content }}</div>
+    <div class="gl-font-monospace gl-white-space-pre-line gl-font-sm gl-mt-n5">
+      {{ template.content }}
+    </div>
     <gl-modal
       ref="delete-modal"
       :title="__('Delete comment template')"

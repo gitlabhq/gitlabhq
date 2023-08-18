@@ -8,6 +8,7 @@ import {
   GlSprintf,
   GlDisclosureDropdown,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import { __, sprintf, n__ } from '~/locale';

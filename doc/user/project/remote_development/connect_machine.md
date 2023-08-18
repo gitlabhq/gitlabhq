@@ -4,14 +4,24 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Connect a remote machine to the Web IDE **(FREE)**
+# Tutorial: Connect a remote machine to the Web IDE (Beta) **(FREE ALL)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741) in GitLab 15.11.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available. The feature is not ready for production use.
+
+WARNING:
+This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 
 This tutorial shows you how to:
 
 - Create a development environment outside of GitLab.
 - Connect a remote machine to the [Web IDE](../web_ide/index.md).
 
-To connect a remote machine to the Web IDE, you must:
+To connect a remote machine to the Web IDE, you'll:
 
 1. [Generate Let's Encrypt certificates](#generate-lets-encrypt-certificates).
 1. [Connect a development environment to the Web IDE](#connect-a-development-environment-to-the-web-ide).
@@ -102,7 +112,7 @@ Alternatively, you can pass the parameters from a URL and connect directly to th
 
 1. Go to that URL and enter the token you've fetched.
 
-You've done it! Your development environment now runs as a remote host that's connected to the Web IDE.
+You've done it! Your development environment now runs as a remote host that's connected to the [Web IDE](../web_ide/index.md).
 
 ## Related topics
 

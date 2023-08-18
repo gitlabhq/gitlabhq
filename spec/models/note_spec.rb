@@ -795,6 +795,24 @@ RSpec.describe Note, feature_category: :team_planning do
         expect(note.system_note_visible_for?(nil)).to be_truthy
       end
     end
+
+    context 'when referenced resource is not present' do
+      let(:note) do
+        create :note, noteable: ext_issue, project: ext_proj, note: "mentioned in merge request !1", system: true
+      end
+
+      it "returns true for other users" do
+        expect(note.system_note_visible_for?(private_user)).to be_truthy
+      end
+
+      it "returns true if user visible reference count set" do
+        note.user_visible_reference_count = 0
+        note.total_reference_count = 0
+
+        expect(note).not_to receive(:reference_mentionables)
+        expect(note.system_note_visible_for?(ext_issue.author)).to be_truthy
+      end
+    end
   end
 
   describe '#system_note_with_references?' do
@@ -1586,6 +1604,24 @@ RSpec.describe Note, feature_category: :team_planning do
       expect_any_instance_of(Gitlab::EtagCaching::Store)
         .to receive(:touch)
         .with("/#{noteable.project.namespace.to_param}/#{noteable.project.to_param}/noteable/#{noteable.class.name.underscore}/#{noteable.id}/notes")
+    end
+
+    it 'broadcasts an Action Cable event for the noteable' do
+      expect(Noteable::NotesChannel).to receive(:broadcast_to).with(note.noteable, event: 'updated')
+
+      note.save!
+    end
+
+    context 'when action_cable_notes is disabled' do
+      before do
+        stub_feature_flags(action_cable_notes: false)
+      end
+
+      it 'does not broadcast an Action Cable event' do
+        expect(Noteable::NotesChannel).not_to receive(:broadcast_to)
+
+        note.save!
+      end
     end
 
     it "expires cache for note's issue when note is saved" do

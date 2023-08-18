@@ -9,8 +9,10 @@ RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFile, 
   subject { described_class.new(params: params) }
 
   before do
+    stub_application_setting(max_import_remote_file_size: 10)
+
     stub_headers_for(remote_url, {
-      'content-length' => 10.gigabytes,
+      'content-length' => 10.megabytes,
       'content-type' => 'application/gzip'
     })
   end
@@ -54,11 +56,11 @@ RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFile, 
 
     context 'when request is not from an S3 server' do
       it 'validates the remote content-length' do
-        stub_headers_for(remote_url, { 'content-length' => 11.gigabytes })
+        stub_application_setting(max_import_remote_file_size: 1)
 
         expect(subject).not_to be_valid
         expect(subject.errors.full_messages)
-          .to include('Content length is too big (should be at most 10 GiB)')
+          .to include('Content length is too big (should be at most 1 MiB)')
       end
 
       it 'validates the remote content-type' do

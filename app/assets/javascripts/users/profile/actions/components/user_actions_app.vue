@@ -1,23 +1,37 @@
 <script>
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
+import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 export default {
   components: {
     GlDisclosureDropdown,
+    AbuseCategorySelector,
   },
   props: {
     userId: {
       type: String,
       required: true,
     },
+    rssSubscriptionPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    reportedUserId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    reportedFromUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
-      // Only implement the copy function in MR for now
-      // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122971
-      // The rest will be implemented in the upcoming MR.
-      dropdownItems: [
+      defaultDropdownItems: [
         {
           action: this.onUserIdCopy,
           text: sprintf(this.$options.i18n.userId, { id: this.userId }),
@@ -26,20 +40,56 @@ export default {
           },
         },
       ],
+      open: false,
     };
+  },
+  computed: {
+    dropdownItems() {
+      const dropdownItems = this.defaultDropdownItems.slice();
+      if (this.rssSubscriptionPath) {
+        dropdownItems.push({
+          href: this.rssSubscriptionPath,
+          text: this.$options.i18n.rssSubscribe,
+          extraAttrs: {
+            'data-testid': 'user-profile-rss-subscription-link',
+          },
+        });
+      }
+      if (this.reportedUserId) {
+        dropdownItems.push({
+          action: () => this.toggleDrawer(true),
+          text: this.$options.i18n.reportToAdmin,
+        });
+      }
+      return dropdownItems;
+    },
   },
   methods: {
     onUserIdCopy() {
       this.$toast.show(this.$options.i18n.userIdCopied);
     },
+    toggleDrawer(open) {
+      this.open = open;
+    },
   },
   i18n: {
     userId: s__('UserProfile|Copy user ID: %{id}'),
     userIdCopied: s__('UserProfile|User ID copied to clipboard'),
+    rssSubscribe: s__('UserProfile|Subscribe'),
+    reportToAdmin: s__('ReportAbuse|Report abuse to administrator'),
   },
 };
 </script>
 
 <template>
-  <gl-disclosure-dropdown icon="ellipsis_v" category="tertiary" no-caret :items="dropdownItems" />
+  <span>
+    <gl-disclosure-dropdown icon="ellipsis_v" category="tertiary" no-caret :items="dropdownItems" />
+    <abuse-category-selector
+      v-if="reportedUserId"
+      :reported-user-id="reportedUserId"
+      :reported-from-url="reportedFromUrl"
+      :show-drawer="open"
+      @close-drawer="toggleDrawer(false)"
+    />
+  </span>
 </template>

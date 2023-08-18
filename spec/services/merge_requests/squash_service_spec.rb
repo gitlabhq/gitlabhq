@@ -3,16 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequests::SquashService, feature_category: :source_code_management do
-  let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request }) }
-  let(:user) { project.first_owner }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { project.first_owner }
+
+  let(:service) { described_class.new(merge_request: merge_request, current_user: user, commit_message: commit_message) }
+  let(:commit_message) { nil }
   let(:repository) { project.repository.raw }
   let(:log_error) { "Failed to squash merge request #{merge_request.to_reference(full: true)}:" }
+
   let(:squash_dir_path) do
     File.join(Gitlab.config.shared.path, 'tmp/squash', repository.gl_repository, merge_request.id.to_s)
   end
 
-  let(:merge_request_with_one_commit) do
+  let_it_be(:merge_request_with_one_commit) do
     create(
       :merge_request,
       source_branch: 'feature', source_project: project,
@@ -20,7 +23,7 @@ RSpec.describe MergeRequests::SquashService, feature_category: :source_code_mana
     )
   end
 
-  let(:merge_request_with_only_new_files) do
+  let_it_be(:merge_request_with_only_new_files) do
     create(
       :merge_request,
       source_branch: 'video', source_project: project,
@@ -28,7 +31,7 @@ RSpec.describe MergeRequests::SquashService, feature_category: :source_code_mana
     )
   end
 
-  let(:merge_request_with_large_files) do
+  let_it_be(:merge_request_with_large_files) do
     create(
       :merge_request,
       source_branch: 'squash-large-files', source_project: project,
@@ -66,7 +69,7 @@ RSpec.describe MergeRequests::SquashService, feature_category: :source_code_mana
       end
 
       context 'when squash message matches commit message' do
-        let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request, squash_commit_message: merge_request.first_commit.safe_message }) }
+        let(:commit_message) { merge_request.first_commit.safe_message }
 
         it 'returns that commit SHA' do
           result = service.execute
@@ -82,7 +85,7 @@ RSpec.describe MergeRequests::SquashService, feature_category: :source_code_mana
       end
 
       context 'when squash message matches commit message but without trailing new line' do
-        let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request, squash_commit_message: merge_request.first_commit.safe_message.strip }) }
+        let(:commit_message) { merge_request.first_commit.safe_message.strip }
 
         it 'returns that commit SHA' do
           result = service.execute
@@ -98,7 +101,7 @@ RSpec.describe MergeRequests::SquashService, feature_category: :source_code_mana
       end
     end
 
-    context 'the squashed commit' do
+    describe 'the squashed commit' do
       let(:squash_sha) { service.execute[:squash_sha] }
       let(:squash_commit) { project.repository.commit(squash_sha) }
 
@@ -125,7 +128,7 @@ RSpec.describe MergeRequests::SquashService, feature_category: :source_code_mana
       end
 
       context 'if a message was provided' do
-        let(:service) { described_class.new(project: project, current_user: user, params: { merge_request: merge_request, squash_commit_message: message }) }
+        let(:commit_message) { message }
         let(:message) { 'My custom message' }
         let(:squash_sha) { service.execute[:squash_sha] }
 
@@ -191,7 +194,7 @@ RSpec.describe MergeRequests::SquashService, feature_category: :source_code_mana
       include_examples 'the squash succeeds'
     end
 
-    context 'git errors' do
+    describe 'git errors' do
       let(:merge_request) { merge_request_with_only_new_files }
       let(:error) { 'A test error' }
 

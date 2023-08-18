@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab CI YAML API **(FREE)**
+# GitLab CI YAML API **(FREE ALL)**
 
 In GitLab, there is an API endpoint available to work with GitLab CI/CD YAML. For more
 information on CI/CD pipeline configuration in GitLab, see the

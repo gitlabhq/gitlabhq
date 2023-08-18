@@ -167,36 +167,6 @@ export const truncateWidth = (string, options = {}) => {
  */
 export const truncateSha = (sha) => sha.substring(0, 8);
 
-const ELLIPSIS_CHAR = '…';
-export const truncatePathMiddleToLength = (text, maxWidth) => {
-  let returnText = text;
-  let ellipsisCount = 0;
-
-  while (returnText.length >= maxWidth) {
-    const textSplit = returnText.split('/').filter((s) => s !== ELLIPSIS_CHAR);
-
-    if (textSplit.length === 0) {
-      // There are n - 1 path separators for n segments, so 2n - 1 <= maxWidth
-      const maxSegments = Math.floor((maxWidth + 1) / 2);
-      return new Array(maxSegments).fill(ELLIPSIS_CHAR).join('/');
-    }
-
-    const middleIndex = Math.floor(textSplit.length / 2);
-
-    returnText = textSplit
-      .slice(0, middleIndex)
-      .concat(
-        new Array(ellipsisCount + 1).fill().map(() => ELLIPSIS_CHAR),
-        textSplit.slice(middleIndex + 1),
-      )
-      .join('/');
-
-    ellipsisCount += 1;
-  }
-
-  return returnText;
-};
-
 /**
  * Capitalizes first character
  *

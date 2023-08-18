@@ -4,7 +4,7 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Revert changes **(FREE)**
+# Revert changes **(FREE ALL)**
 
 You can revert individual commits or an entire merge request in GitLab.
 When you revert a commit in Git, you create a new commit that reverses all actions

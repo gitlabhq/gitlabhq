@@ -464,14 +464,23 @@ module ProjectsHelper
     project.forking_enabled? && can?(user, :read_code, project)
   end
 
-  def fork_button_disabled_tooltip(project)
+  def fork_button_data_attributes(project)
     return unless current_user
 
-    if !current_user.can?(:fork_project, project)
-      s_("ProjectOverview|You don't have permission to fork this project")
-    elsif !current_user.can?(:create_fork)
-      s_('ProjectOverview|You have reached your project limit')
+    if current_user.already_forked?(project) && current_user.forkable_namespaces.size < 2
+      user_fork_url = namespace_project_path(current_user, current_user.fork_of(project))
     end
+
+    {
+      forks_count: project.forks_count,
+      project_full_path: project.full_path,
+      project_forks_url: project_forks_path(project),
+      user_fork_url: user_fork_url,
+      new_fork_url: new_project_fork_path(project),
+      can_read_code: can?(current_user, :read_code, project).to_s,
+      can_fork_project: can?(current_user, :fork_project, project).to_s,
+      can_create_fork: can?(current_user, :create_fork).to_s
+    }
   end
 
   def import_from_bitbucket_message
@@ -549,6 +558,20 @@ module ProjectsHelper
 
   def branch_rules_path
     project_settings_repository_path(@project, anchor: 'js-branch-rules')
+  end
+
+  def visibility_level_content(project, css_class: nil, icon_css_class: nil)
+    if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
+      return hidden_resource_icon(project, css_class: css_class)
+    end
+
+    title = visibility_icon_description(project)
+    container_class = ['has-tooltip', css_class].compact.join(' ')
+    data = { container: 'body', placement: 'top' }
+
+    content_tag(:span, class: container_class, data: data, title: title) do
+      visibility_level_icon(project.visibility_level, options: { class: icon_css_class })
+    end
   end
 
   private
@@ -706,6 +729,7 @@ module ProjectsHelper
     {
       packagesEnabled: !!project.packages_enabled,
       packageRegistryAccessLevel: feature.package_registry_access_level,
+      packageRegistryAllowAnyoneToPullOption: ::Gitlab::CurrentSettings.package_registry_allow_anyone_to_pull_option,
       visibilityLevel: project.visibility_level,
       requestAccessEnabled: !!project.request_access_enabled,
       issuesAccessLevel: feature.issues_access_level,
@@ -719,7 +743,7 @@ module ProjectsHelper
       analyticsAccessLevel: feature.analytics_access_level,
       containerRegistryEnabled: !!project.container_registry_enabled,
       lfsEnabled: !!project.lfs_enabled,
-      emailsDisabled: project.emails_disabled?,
+      emailsEnabled: project.emails_enabled?,
       monitorAccessLevel: feature.monitor_access_level,
       showDefaultAwardEmojis: project.show_default_award_emojis?,
       warnAboutPotentiallyUnwantedCharacters: project.warn_about_potentially_unwanted_characters?,

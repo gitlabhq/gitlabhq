@@ -518,8 +518,25 @@ Proper research and testing should be done to ensure compliance with [WCAG](http
 
 ## Automated accessibility testing with axe
 
-You can use [axe-core](https://github.com/dequelabs/axe-core) [gems](https://github.com/dequelabs/axe-core-gems)
+We use [axe-core](https://github.com/dequelabs/axe-core) [gems](https://github.com/dequelabs/axe-core-gems)
 to run automated accessibility tests in feature tests.
+
+[We aim to conform to level AA of the World Wide Web Consortium (W3C) Web Content Accessibility Guidelines 2.1](https://design.gitlab.com/accessibility/a11y).
+
+### When to add accessibility tests
+
+When adding a new view to the application, make sure to include the accessibility check in your feature test.
+We aim to have full coverage for all the views.
+
+One of the advantages of testing in feature tests is that we can check different states, not only
+single components in isolation.
+
+Make sure to add assertions, when the view you are working on:
+
+- Has an empty state,
+- Has significant changes in page structure, for example an alert is shown, or a new section is rendered.
+
+### How to add accessibility tests
 
 Axe provides the custom matcher `be_axe_clean`, which can be used like the following:
 
@@ -530,9 +547,11 @@ it 'passes axe automated accessibility testing', :js do
 
   wait_for_requests # ensures page is fully loaded
 
-  expect(page).to be_axe_clean
+  expect(page).to be_axe_clean.according_to :wcag21aa
 end
 ```
+
+Make sure to specify the accessibility standard as `:wcag21aa`.
 
 If needed, you can scope testing to a specific area of the page by using `within`.
 
@@ -543,19 +562,21 @@ for example:
 expect(page).to be_axe_clean.within '[data-testid="element"]'
 
 # run only WCAG 2.0 Level AA rules
-expect(page).to be_axe_clean.according_to :wcag2aa
+expect(page).to be_axe_clean.according_to :wcag21aa
 
 # specifies which rule to skip
 expect(page).to be_axe_clean.skipping :'link-in-text-block'
 
 # clauses can be chained
 expect(page).to be_axe_clean.within('[data-testid="element"]')
-                            .according_to(:wcag2aa)
+                            .according_to(:wcag21aa)
 ```
 
 Axe does not test hidden regions, such as inactive menus or modal windows. To test
 hidden regions for accessibility, write tests that activate or render the regions visible
 and run the matcher again.
+
+You can run accessibility tests locally in the same way as you [run any feature tests](../testing_guide/frontend_testing.md#how-to-run-a-feature-test).
 
 ### Known accessibility violations
 

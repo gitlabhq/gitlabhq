@@ -9,7 +9,7 @@ module Types
 
       expose_permissions Types::PermissionTypes::Note
 
-      implements(Types::ResolvableInterface)
+      implements Types::ResolvableInterface
 
       field :max_access_level_of_author, GraphQL::Types::String,
         null: true,
@@ -43,7 +43,7 @@ module Types
 
       field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
         null: true,
-        description: 'List of award emojis associated with the note.'
+        description: 'List of emoji reactions associated with the note.'
 
       field :confidential, GraphQL::Types::Boolean,
         null: true,

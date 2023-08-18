@@ -33,36 +33,44 @@ A confirmation is displayed.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52347) in GitLab 13.9.
 
-Use the following Rake task to reset a user's password:
+Use the following Rake task to reset a user's password.
 
-- **For Omnibus installations**
+::Tabs
 
-  ```shell
-  sudo gitlab-rake "gitlab:password:reset"
-  ```
+:::TabTitle Linux package (Omnibus)
 
-- **For installations from source**
+```shell
+sudo gitlab-rake "gitlab:password:reset"
+```
 
-  ```shell
-  bundle exec rake "gitlab:password:reset"
-  ```
+:::TabTitle Self-compiled (source)
+
+```shell
+bundle exec rake "gitlab:password:reset"
+```
+
+::EndTabs
 
 GitLab requests a username, a password, and confirmation of the password. When complete, the user's password is updated.
 
 The Rake task can take a username as an argument. For example, to reset the password for the user with username
 `sidneyjones`:
 
-- **For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
   ```shell
   sudo gitlab-rake "gitlab:password:reset[sidneyjones]"
   ```
 
-- **For installations from source**
+:::TabTitle Self-compiled (source)
 
   ```shell
   bundle exec rake "gitlab:password:reset[sidneyjones]"
   ```
+
+::EndTabs
 
 ## Use a Rails console
 

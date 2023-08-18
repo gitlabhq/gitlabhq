@@ -19,6 +19,7 @@ export const initAbuseReportsApp = () => {
 
   return new Vue({
     el,
+    name: 'AbuseReportsAppRoot',
     provide: { categories },
     render: (createElement) =>
       createElement(AbuseReportsApp, {

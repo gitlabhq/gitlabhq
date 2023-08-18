@@ -67,8 +67,10 @@ module Users
     def update_authorizations(remove = [], add = [])
       log_refresh_details(remove, add)
 
-      ProjectAuthorization.delete_all_in_batches_for_user(user: user, project_ids: remove) if remove.any?
-      ProjectAuthorization.insert_all_in_batches(add) if add.any?
+      ProjectAuthorizations::Changes.new do |changes|
+        changes.add(add)
+        changes.remove_projects_for_user(user, remove)
+      end.apply!
 
       # Since we batch insert authorization rows, Rails' associations may get
       # out of sync. As such we force a reload of the User object.

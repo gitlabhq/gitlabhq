@@ -6,16 +6,11 @@ module QA
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
       let!(:parent_group) do
-        QA::Resource::Group.fabricate_via_api! do |group|
-          group.path = "parent-group-to-test-user-access-#{SecureRandom.hex(8)}"
-        end
+        create(:group, path: "parent-group-to-test-user-access-#{SecureRandom.hex(8)}")
       end
 
       let!(:sub_group) do
-        QA::Resource::Group.fabricate_via_api! do |group|
-          group.path = "sub-group-to-test-user-access-#{SecureRandom.hex(8)}"
-          group.sandbox = parent_group
-        end
+        create(:group, path: "sub-group-to-test-user-access-#{SecureRandom.hex(8)}", sandbox: parent_group)
       end
 
       context 'when added to parent group' do

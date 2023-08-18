@@ -163,63 +163,77 @@ RSpec.shared_examples 'work item supports type change via quick actions' do
     noteable.update!(work_item_type: task_type)
   end
 
-  it 'updates type' do
-    expect do
-      post_graphql_mutation(mutation, current_user: current_user)
-      noteable.reload
-    end.to change { noteable.work_item_type.base_type }.from('task').to('issue')
-
-    expect(response).to have_gitlab_http_status(:success)
-  end
-
-  context 'when update service returns errors' do
-    let_it_be(:issue) { create(:work_item, :issue, project: project) }
-
-    before do
-      create(:parent_link, work_item: noteable, work_item_parent: issue)
-    end
-
-    it 'mutation response include the errors' do
-      expect do
-        post_graphql_mutation(mutation, current_user: current_user)
-        noteable.reload
-      end.not_to change { noteable.work_item_type.base_type }
-
-      expect(response).to have_gitlab_http_status(:success)
-      expect(mutation_response['errors'])
-        .to include('Validation Work item type cannot be changed to issue when linked to a parent issue.')
-    end
-  end
-
-  context 'when quick command for unsupported widget is present' do
-    let(:body) { "\n/type Issue\n/assign @#{assignee.username}" }
-
-    before do
-      WorkItems::Type.default_by_type(:issue).widget_definitions
-        .find_by_widget_type(:assignees).update!(disabled: true)
-    end
-
-    it 'updates only type' do
+  shared_examples 'a quick command that changes type' do
+    it 'updates type' do
       expect do
         post_graphql_mutation(mutation, current_user: current_user)
         noteable.reload
       end.to change { noteable.work_item_type.base_type }.from('task').to('issue')
-          .and change { noteable.assignees }.to([])
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(mutation_response['errors'])
-        .to include("Commands only Type changed successfully. Assigned @#{assignee.username}.")
+    end
+
+    context 'when update service returns errors' do
+      let_it_be(:issue) { create(:work_item, :issue, project: project) }
+
+      before do
+        create(:parent_link, work_item: noteable, work_item_parent: issue)
+      end
+
+      it 'mutation response include the errors' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          noteable.reload
+        end.not_to change { noteable.work_item_type.base_type }
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['errors'])
+          .to include('Validation Work item type cannot be changed to issue when linked to a parent issue.')
+      end
+    end
+
+    context 'when quick command for unsupported widget is present' do
+      let(:body) { "\n/type Issue\n/assign @#{assignee.username}" }
+
+      before do
+        WorkItems::Type.default_by_type(:issue).widget_definitions
+                       .find_by_widget_type(:assignees).update!(disabled: true)
+      end
+
+      it 'updates only type' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          noteable.reload
+        end.to change { noteable.work_item_type.base_type }.from('task').to('issue')
+                                                           .and change { noteable.assignees }.to([])
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['errors'])
+          .to include("Commands only Type changed successfully. Assigned @#{assignee.username}.")
+      end
+    end
+
+    context 'when the type name is upper case' do
+      let(:body) { "Updating type.\n/type Issue" }
+
+      it 'changes type to issue' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+          noteable.reload
+        end.to change { noteable.work_item_type.base_type }.from('task').to('issue')
+      end
     end
   end
 
-  context 'when the type name is upper case' do
-    let(:body) { "Updating type.\n/type Issue" }
+  context 'with /type quick command' do
+    let(:body) { "Updating type.\n/type issue" }
 
-    it 'changes type to issue' do
-      expect do
-        post_graphql_mutation(mutation, current_user: current_user)
-        noteable.reload
-      end.to change { noteable.work_item_type.base_type }.from('task').to('issue')
-    end
+    it_behaves_like 'a quick command that changes type'
+  end
+
+  context 'with /promote_to quick command' do
+    let(:body) { "Updating type.\n/promote_to issue" }
+
+    it_behaves_like 'a quick command that changes type'
   end
 end

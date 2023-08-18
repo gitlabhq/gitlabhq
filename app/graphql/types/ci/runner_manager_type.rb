@@ -5,7 +5,7 @@ module Types
     class RunnerManagerType < BaseObject
       graphql_name 'CiRunnerManager'
 
-      connection_type_class(::Types::CountableConnectionType)
+      connection_type_class ::Types::CountableConnectionType
 
       authorize :read_runner_manager
 
@@ -26,6 +26,11 @@ module Types
         description: 'ID of the runner manager.'
       field :ip_address, GraphQL::Types::String, null: true,
         description: 'IP address of the runner manager.'
+      field :job_execution_status,
+        Types::Ci::RunnerJobExecutionStatusEnum,
+        null: true,
+        description: 'Job execution status of the runner manager.',
+        alpha: { milestone: '16.3' }
       field :platform_name, GraphQL::Types::String, null: true,
         description: 'Platform provided by the runner manager.',
         method: :platform
@@ -43,6 +48,16 @@ module Types
 
       def executor_name
         ::Ci::Runner::EXECUTOR_TYPE_TO_NAMES[runner_manager.executor_type&.to_sym]
+      end
+
+      def job_execution_status
+        BatchLoader::GraphQL.for(runner_manager.id).batch(key: :running_builds_exist) do |runner_manager_ids, loader|
+          statuses = ::Ci::RunnerManager.id_in(runner_manager_ids).with_running_builds.index_by(&:id)
+
+          runner_manager_ids.each do |runner_manager_id|
+            loader.call(runner_manager_id, statuses[runner_manager_id] ? :running : :idle)
+          end
+        end
       end
     end
   end

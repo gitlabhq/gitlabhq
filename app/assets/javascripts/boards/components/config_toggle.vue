@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { formType } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
@@ -29,7 +30,7 @@ export default {
       return this.canAdminList ? s__('Boards|Edit board') : s__('Boards|View scope');
     },
     tooltipTitle() {
-      return this.hasScope ? __("This board's scope is reduced") : '';
+      return this.hasScope || this.boardHasScope ? __("This board's scope is reduced") : '';
     },
   },
   methods: {

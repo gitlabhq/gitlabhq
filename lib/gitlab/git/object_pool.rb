@@ -12,6 +12,17 @@ module Gitlab
 
       attr_reader :storage, :relative_path, :source_repository, :gl_project_path
 
+      def self.init_from_gitaly(gitaly_object_pool, source_repository)
+        repository = gitaly_object_pool.repository
+
+        new(
+          repository.storage_name,
+          repository.relative_path,
+          source_repository,
+          repository.gl_project_path
+        )
+      end
+
       def initialize(storage, relative_path, source_repository, gl_project_path)
         @storage = storage
         @relative_path = relative_path

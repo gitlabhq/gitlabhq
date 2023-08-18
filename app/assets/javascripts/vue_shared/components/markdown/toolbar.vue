@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLoadingIcon, GlSprintf, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { updateText } from '~/lib/utils/text_markdown';
@@ -150,7 +151,7 @@ export default {
         target="_blank"
         category="tertiary"
         size="small"
-        title="Markdown is supported"
+        :title="__('Markdown is supported')"
         class="gl-px-3!"
       />
     </div>

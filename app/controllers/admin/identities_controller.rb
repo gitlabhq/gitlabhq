@@ -23,6 +23,8 @@ class Admin::IdentitiesController < Admin::ApplicationController
 
   def index
     @identities = @user.identities
+    @can_impersonate = helpers.can_impersonate_user(user, impersonation_in_progress?)
+    @impersonation_error_text = @can_impersonate ? nil : helpers.impersonation_error_text(user, impersonation_in_progress?)
   end
 
   def edit

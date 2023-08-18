@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Comments and threads **(FREE)**
+# Comments and threads **(FREE ALL)**
 
 > - Paginated merge request discussions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340172) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `paginated_mr_discussions`. Disabled by default.
 > - Paginated merge request discussions [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
@@ -221,7 +221,7 @@ To change the activity sort order:
 1. On the right side of the page, from the **Sort or filter** dropdown list, select the sort order
    **Newest first** or **Oldest first** (default).
 
-## View description change history **(PREMIUM)**
+## View description change history **(PREMIUM ALL)**
 
 You can see changes to the description listed in the history.
 

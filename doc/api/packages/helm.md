@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Helm API **(FREE)**
+# Helm API **(FREE ALL)**
 
 This is the API documentation for [Helm](../../user/packages/helm_repository/index.md).
 

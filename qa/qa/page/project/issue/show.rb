@@ -19,9 +19,9 @@ module QA
           end
 
           view 'app/assets/javascripts/issues/show/components/header_actions.vue' do
-            element :toggle_issue_state_button
-            element :desktop_dropdown
-            element :delete_issue_button
+            element 'toggle-issue-state-button'
+            element 'desktop-dropdown'
+            element 'delete-issue-button'
           end
 
           view 'app/assets/javascripts/related_issues/components/add_issuable_form.vue' do
@@ -33,7 +33,7 @@ module QA
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_block.vue' do
-            element :related_issues_plus_button
+            element 'related-issues-plus-button'
           end
 
           view 'app/assets/javascripts/related_issues/components/related_issues_list.vue' do
@@ -42,7 +42,7 @@ module QA
           end
 
           def relate_issue(issue)
-            click_element(:related_issues_plus_button)
+            click_element('related-issues-plus-button')
             fill_element(:add_issue_field, issue.web_url)
             send_keys_to_element(:add_issue_field, :enter)
           end
@@ -63,29 +63,30 @@ module QA
           end
 
           def click_close_issue_button
-            # Click by JS is needed to bypass the Moved MR actions popover
-            # Change back to regular click_element when moved_mr_sidebar FF is removed
-            # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-            click_by_javascript(find_element(:toggle_issue_state_button, text: 'Close issue'))
+            open_actions_dropdown
+            click_element('toggle-issue-state-button', text: 'Close issue')
           end
 
           def has_reopen_issue_button?
-            has_element?(:toggle_issue_state_button, text: 'Reopen issue')
+            open_actions_dropdown
+            has_element?('toggle-issue-state-button', text: 'Reopen issue')
           end
 
           def has_delete_issue_button?
-            # Click by JS is needed to bypass the Moved MR actions popover
-            # Change back to regular click_element when moved_mr_sidebar FF is removed
-            # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-            click_by_javascript(find('[data-testid="desktop-dropdown"] > button'))
-            has_element?(:delete_issue_button)
+            open_actions_dropdown
+            has_element?('delete-issue-button')
+          end
+
+          def has_no_delete_issue_button?
+            open_actions_dropdown
+            has_no_element?('delete-issue-button')
           end
 
           def delete_issue
             has_delete_issue_button?
 
             click_element(
-              :delete_issue_button,
+              'delete-issue-button',
               Page::Modal::DeleteIssue,
               wait: Support::Repeater::DEFAULT_MAX_WAIT_TIME
             )
@@ -93,6 +94,11 @@ module QA
             Page::Modal::DeleteIssue.perform(&:confirm_delete_issue)
 
             wait_for_requests
+          end
+
+          def open_actions_dropdown
+            # We use find here because these are gitlab-ui elements
+            find('[data-testid="desktop-dropdown"] > button').click
           end
         end
       end

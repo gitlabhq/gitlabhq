@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { FREQUENT_ITEMS_DROPDOWNS } from '../constants';
 import * as actions from './actions';

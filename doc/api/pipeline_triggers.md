@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pipeline trigger tokens API **(FREE)**
+# Pipeline trigger tokens API **(FREE ALL)**
 
 You can read more about [triggering pipelines through the API](../ci/triggers/index.md).
 
@@ -43,7 +43,7 @@ user. Trigger tokens created by other users are shortened to four characters.
 
 ## Get trigger token details
 
-Get details of a project's pipeline trigger.
+Get details of a project's pipeline trigger token.
 
 ```plaintext
 GET /projects/:id/triggers/:trigger_id
@@ -72,7 +72,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Create a trigger token
 
-Create a pipeline trigger for a project.
+Create a pipeline trigger token for a project.
 
 ```plaintext
 POST /projects/:id/triggers
@@ -100,9 +100,9 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## Update a project trigger token
+## Update a pipeline trigger token
 
-Update a pipeline trigger token for a project.
+Update a project's pipeline trigger token.
 
 ```plaintext
 PUT /projects/:id/triggers/:trigger_id
@@ -131,7 +131,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## Remove a project trigger token
+## Remove a pipeline trigger token
 
 Remove a project's pipeline trigger token.
 
@@ -150,7 +150,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Trigger a pipeline with a token
 
-Trigger a pipeline by using a pipeline [trigger token](../ci/triggers/index.md#create-a-trigger-token)
+Trigger a pipeline by using a [pipeline trigger token](../ci/triggers/index.md#create-a-pipeline-trigger-token)
 or a [CI/CD job token](../ci/jobs/ci_job_token.md) for authentication.
 
 With a CI/CD job token, the [triggered pipeline is a multi-project pipeline](../ci/pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api).

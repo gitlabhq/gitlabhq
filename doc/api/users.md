@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Users API **(FREE)**
+# Users API **(FREE ALL)**
 
 This documentation has information on API calls, parameters and responses for the Users API.
 
@@ -97,7 +97,7 @@ GET /users?external=true
 ```
 
 GitLab supports bot users such as the [alert bot](../operations/incident_management/integrations.md)
-or the [support bot](../user/project/service_desk.md#support-bot-user).
+or the [support bot](../user/project/service_desk/index.md#support-bot-user).
 You can exclude the following types of [internal users](../development/internal_users.md#internal-users)
 from the users' list with the `exclude_internal=true` parameter
 ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241144) in GitLab 13.4):
@@ -131,6 +131,7 @@ GET /users?without_project_bots=true
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
 > - The `scim_identities` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324247) in GitLab 16.1.
+> - The `auditors` field in the response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418023) in GitLab 16.2.
 
 ```plaintext
 GET /users
@@ -145,6 +146,7 @@ You can use all [parameters available for everyone](#for-non-administrator-users
 | `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 | `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
 | `admins`           | boolean | no       | Return only administrators. Default is `false`                                 |
+| `auditors`  **(PREMIUM)** | boolean | no       | Return only auditor users. Default is `false`. If not included, it returns all users.  |
 | `saml_provider_id` **(PREMIUM)** | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. |
 | `skip_ldap` **(PREMIUM)** | boolean | no     | Skip LDAP users. |
 
@@ -534,7 +536,7 @@ Parameters:
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create top-level groups - true or false                                                                                                                  |
-| `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#syntax-highlighting-theme)) |
+| `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-syntax-highlighting-theme)) |
 | `email`                              | Yes      | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
@@ -554,7 +556,7 @@ Parameters:
 | `shared_runners_minutes_limit` **(PREMIUM)**  | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                                                                                                      |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
-| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#navigation-theme) for more information)                    |
+| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information)                    |
 | `twitter`                            | No       | Twitter account                                                                                                                                         |
 | `discord`                            | No       | Discord account                                                                                                                                         |
 | `username`                           | Yes      | Username                                                                                                                                                |
@@ -583,7 +585,7 @@ Parameters:
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create groups - true or false                                                                                                                  |
-| `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#syntax-highlighting-theme) for more information) |
+| `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-syntax-highlighting-theme) for more information) |
 | `commit_email`                       | No       | User's commit email. Set to `_private` to use the private commit email. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375148) in GitLab 15.5. |
 | `email`                              | No       | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
@@ -605,7 +607,7 @@ Parameters:
 | `shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`.                                                                                                      |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
-| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#navigation-theme) for more information)                    |
+| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information)                    |
 | `twitter`                            | No       | Twitter account                                                                                                                                         |
 | `discord`                            | No       | Discord account                                                                                                                                         |
 | `username`                           | No       | Username                                                                                                                                                |
@@ -880,10 +882,10 @@ Example response:
 ```json
 {
   "id": 1,
-    "user_id": 1
-      "view_diffs_file_by_file": true,
-      "show_whitespace_in_diffs": false,
-      "pass_user_identities_to_ci_jwt": false
+  "user_id": 1,
+  "view_diffs_file_by_file": true,
+  "show_whitespace_in_diffs": false,
+  "pass_user_identities_to_ci_jwt": false
 }
 ```
 
@@ -902,10 +904,10 @@ PUT /user/preferences
 ```json
 {
   "id": 1,
-    "user_id": 1
-      "view_diffs_file_by_file": true,
-      "show_whitespace_in_diffs": false,
-      "pass_user_identities_to_ci_jwt": false
+  "user_id": 1,
+  "view_diffs_file_by_file": true,
+  "show_whitespace_in_diffs": false,
+  "pass_user_identities_to_ci_jwt": false
 }
 ```
 
@@ -1035,7 +1037,7 @@ Example response:
 
 > Ability to create a service account user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
 
-Creates a service account user with an auto-generated email address and username.
+Creates a service account user with an auto-generated email address and username. Available only for administrators.
 
 ```plaintext
 POST /service_accounts
@@ -2261,7 +2263,7 @@ Returns:
 - `403 Forbidden` if not authenticated as an administrator.
 - `404 User Not Found` if user cannot be found.
 
-## Create a runner **(FREE)**
+## Create a runner **(FREE ALL)**
 
 Creates a runner linked to the current user.
 

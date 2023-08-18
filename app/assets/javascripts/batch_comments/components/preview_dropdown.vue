@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlDisclosureDropdown, GlButton } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 import PreviewItem from './preview_item.vue';

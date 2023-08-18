@@ -23,6 +23,10 @@ query getDashboardIssues(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
+  $createdAfter: Time
+  $createdBefore: Time
+  $closedAfter: Time
+  $closedBefore: Time
 ) {
   issues(
     search: $search
@@ -44,6 +48,10 @@ query getDashboardIssues(
     before: $beforeCursor
     first: $firstPageSize
     last: $lastPageSize
+    createdAfter: $createdAfter
+    createdBefore: $createdBefore
+    closedAfter: $closedAfter
+    closedBefore: $closedBefore
   ) @persist {
     nodes {
       __persist

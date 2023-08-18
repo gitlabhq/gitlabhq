@@ -37,11 +37,9 @@ class ProjectsController < Projects::ApplicationController
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
   before_action do
-    push_frontend_feature_flag(:highlight_js, @project)
     push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
-    push_frontend_feature_flag(:ci_namespace_catalog_experimental, @project)
     push_frontend_feature_flag(:service_desk_custom_email, @project)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_licensed_feature(:security_orchestration_policies) if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
@@ -471,6 +469,7 @@ class ProjectsController < Projects::ApplicationController
       mr_default_target_self
       warn_about_potentially_unwanted_characters
       enforce_auth_checks_on_uploads
+      emails_enabled
     ]
   end
 
@@ -483,7 +482,6 @@ class ProjectsController < Projects::ApplicationController
       :resolve_outdated_diff_discussions,
       :container_registry_enabled,
       :description,
-      :emails_disabled,
       :external_authorization_classification_label,
       :import_url,
       :issues_tracker,

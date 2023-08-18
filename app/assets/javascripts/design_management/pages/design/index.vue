@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert } from '@gitlab/ui';
 import { isNull } from 'lodash';

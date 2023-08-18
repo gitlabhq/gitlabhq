@@ -5,7 +5,6 @@ import {
   GlSkeletonLoader,
   GlLoadingIcon,
   GlIcon,
-  GlBadge,
   GlButton,
   GlTooltipDirective,
   GlEmptyState,
@@ -19,8 +18,9 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
-  sprintfWorkItem,
   i18n,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_NOTIFICATIONS,
@@ -49,6 +49,7 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemNotes from './work_item_notes.vue';
 import WorkItemDetailModal from './work_item_detail_modal.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
+import WorkItemStateToggleButton from './work_item_state_toggle_button.vue';
 
 export default {
   i18n,
@@ -57,8 +58,8 @@ export default {
   },
   isLoggedIn: isLoggedIn(),
   components: {
+    WorkItemStateToggleButton,
     GlAlert,
-    GlBadge,
     GlButton,
     GlLoadingIcon,
     GlSkeletonLoader,
@@ -77,6 +78,7 @@ export default {
     WorkItemDetailModal,
     AbuseCategorySelector,
     GlIntersectionObserver,
+    ConfidentialityBadge,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'reportAbusePath'],
@@ -134,6 +136,7 @@ export default {
         if (!res.data) {
           return;
         }
+        this.$emit('work-item-updated', this.workItem);
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
         }
@@ -169,7 +172,7 @@ export default {
       return this.workItem.workItemType?.id;
     },
     workItemBreadcrumbReference() {
-      return this.workItemType ? `${this.workItemType} #${this.workItem.iid}` : '';
+      return this.workItemType ? `#${this.workItem.iid}` : '';
     },
     canUpdate() {
       return this.workItem?.userPermissions?.updateWorkItem;
@@ -182,9 +185,6 @@ export default {
     },
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canSetWorkItemMetadata;
-    },
-    confidentialTooltip() {
-      return sprintfWorkItem(this.$options.i18n.confidentialTooltip, this.workItemType);
     },
     fullPath() {
       return this.workItem?.project.fullPath;
@@ -374,8 +374,8 @@ export default {
       }
     },
   },
-
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORKSPACE_PROJECT,
 };
 </script>
 
@@ -397,13 +397,13 @@ export default {
         <div class="gl-display-flex gl-align-items-center" data-testid="work-item-body">
           <ul
             v-if="parentWorkItem"
-            class="list-unstyled gl-display-flex gl-mr-auto gl-max-w-26 gl-md-max-w-50p gl-min-w-0 gl-mb-0 gl-z-index-0"
+            class="list-unstyled gl-display-flex gl-min-w-0 gl-mr-auto gl-mb-0 gl-z-index-0"
             data-testid="work-item-parent"
           >
-            <li class="gl-ml-n4 gl-display-flex gl-align-items-center gl-overflow-hidden">
+            <li class="gl-ml-n4 gl-display-flex gl-align-items-center gl-min-w-0">
               <gl-button
                 v-gl-tooltip.hover
-                class="gl-text-truncate gl-max-w-full"
+                class="gl-text-truncate"
                 :icon="parentWorkItemIconName"
                 category="tertiary"
                 :href="parentUrl"
@@ -418,7 +418,8 @@ export default {
             >
               <work-item-type-icon
                 :work-item-icon-name="workItemIconName"
-                :work-item-type="workItemType && workItemType.toUpperCase()"
+                :work-item-type="workItemType"
+                show-text
               />
               {{ workItemBreadcrumbReference }}
             </li>
@@ -430,20 +431,19 @@ export default {
           >
             <work-item-type-icon
               :work-item-icon-name="workItemIconName"
-              :work-item-type="workItemType && workItemType.toUpperCase()"
+              :work-item-type="workItemType"
+              show-text
             />
             {{ workItemBreadcrumbReference }}
           </div>
-          <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
-          <gl-badge
-            v-if="workItem.confidential"
-            v-gl-tooltip.bottom
-            :title="confidentialTooltip"
-            variant="warning"
-            icon="eye-slash"
-            class="gl-mr-3 gl-cursor-help"
-            >{{ __('Confidential') }}</gl-badge
-          >
+          <work-item-state-toggle-button
+            v-if="canUpdate"
+            :work-item-id="workItem.id"
+            :work-item-state="workItem.state"
+            :work-item-parent-id="workItemParentId"
+            :work-item-type="workItemType"
+            @error="updateError = $event"
+          />
           <work-item-todos
             v-if="showWorkItemCurrentUserTodos"
             :work-item-id="workItem.id"
@@ -464,9 +464,11 @@ export default {
             :work-item-reference="workItem.reference"
             :work-item-create-note-email="workItem.createNoteEmail"
             :is-modal="isModal"
+            :work-item-iid="workItemIid"
             @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
             @toggleWorkItemConfidentiality="toggleConfidentiality"
             @error="updateError = $event"
+            @promotedToObjective="$emit('promotedToObjective', workItemIid)"
           />
           <gl-button
             v-if="isModal"
@@ -488,7 +490,10 @@ export default {
             :can-update="canUpdate"
             @error="updateError = $event"
           />
-          <work-item-created-updated :work-item-iid="workItemIid" />
+          <work-item-created-updated
+            :work-item-iid="workItemIid"
+            :update-in-progress="updateInProgress"
+          />
         </div>
         <gl-intersection-observer
           v-if="showIntersectionObserver"
@@ -508,15 +513,12 @@ export default {
                   {{ workItem.title }}
                 </span>
                 <gl-loading-icon v-if="updateInProgress" class="gl-mr-3" />
-                <gl-badge
+                <confidentiality-badge
                   v-if="workItem.confidential"
-                  v-gl-tooltip.bottom
-                  :title="confidentialTooltip"
-                  variant="warning"
-                  icon="eye-slash"
-                  class="gl-mr-3 gl-cursor-help"
-                  >{{ __('Confidential') }}</gl-badge
-                >
+                  data-testid="confidential"
+                  :workspace-type="$options.WORKSPACE_PROJECT"
+                  :issuable-type="workItemType"
+                />
                 <work-item-todos
                   v-if="showWorkItemCurrentUserTodos"
                   :work-item-id="workItem.id"
@@ -537,11 +539,13 @@ export default {
                   :work-item-reference="workItem.reference"
                   :work-item-create-note-email="workItem.createNoteEmail"
                   :is-modal="isModal"
+                  :work-item-iid="workItemIid"
                   @deleteWorkItem="
                     $emit('deleteWorkItem', { workItemType, workItemId: workItem.id })
                   "
                   @toggleWorkItemConfidentiality="toggleConfidentiality"
                   @error="updateError = $event"
+                  @promotedToObjective="$emit('promotedToObjective', workItemIid)"
                 />
               </div>
             </div>
@@ -573,6 +577,7 @@ export default {
               :award-emoji="workItemAwardEmoji.awardEmoji"
               :work-item-iid="workItemIid"
               @error="updateError = $event"
+              @emoji-updated="$emit('work-item-emoji-updated', $event)"
             />
             <work-item-tree
               v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"
@@ -584,6 +589,7 @@ export default {
               :can-update="canUpdate"
               :confidential="workItem.confidential"
               @show-modal="openInModal"
+              @addChild="$emit('addChild')"
             />
             <work-item-notes
               v-if="workItemNotes"

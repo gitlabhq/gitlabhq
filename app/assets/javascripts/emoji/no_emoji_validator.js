@@ -20,7 +20,7 @@ export default class NoEmojiValidator extends InputValidator {
 
     const { value } = this.inputDomElement;
 
-    this.errorMessage = __('Invalid input, please avoid emojis');
+    this.errorMessage = __('Invalid input, please avoid emoji');
 
     this.validatePattern(value);
     this.setValidationStateAndMessage();

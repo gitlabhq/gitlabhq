@@ -6,7 +6,7 @@ remove_date: '2023-08-22'
 redirect_to: '../index.md'
 ---
 
-# Cluster cost management (removed) **(ULTIMATE)**
+# Cluster cost management (removed) **(ULTIMATE ALL)**
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.

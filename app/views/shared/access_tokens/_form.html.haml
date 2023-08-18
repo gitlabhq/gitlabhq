@@ -7,7 +7,7 @@
 - access_levels = local_assigns.fetch(:access_levels, false)
 - default_access_level = local_assigns.fetch(:default_access_level, false)
 
-%h5.gl-font-lg.gl-mt-0
+%h4.gl-mt-0
   = title
 
 = gitlab_ui_form_for token, as: prefix, url: path, method: :post, html: { id: 'js-new-access-token-form', class: 'js-requires-input' }, remote: ajax do |f|
@@ -15,9 +15,13 @@
 
   .form-group
     = f.label :name, s_('AccessTokens|Token name'), class: 'label-bold'
-    - resource_type = resource.is_a?(Group) ? "group" : "project"
-    = f.text_field :name, class: 'form-control gl-form-input gl-max-w-80', required: true, data: { qa_selector: 'access_token_name_field' }, :'aria-describedby' => 'access_token_help_text'
-    %span.form-text.text-muted#access_token_help_text= s_("AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members.") % { resource_type: resource_type }
+    = f.text_field :name, class: 'form-control gl-form-input gl-form-input-xl', required: true, data: { qa_selector: 'access_token_name_field' }, :'aria-describedby' => 'access_token_help_text'
+    %span.form-text.text-muted#access_token_help_text
+      - if resource
+        - resource_type = resource.is_a?(Group) ? "group" : "project"
+        = s_("AccessTokens|For example, the application using the token or the purpose of the token. Do not give sensitive information for the name of the token, as it will be visible to all %{resource_type} members.") % { resource_type: resource_type }
+      - else
+        = s_("AccessTokens|For example, the application using the token or the purpose of the token.")
 
   .js-access-tokens-expires-at{ data: expires_at_field_data }
     = f.text_field :expires_at, class: 'gl-datepicker-input form-control gl-form-input', placeholder: 'YYYY-MM-DD', autocomplete: 'off', data: { js_name: 'expiresAt' }
@@ -39,3 +43,5 @@
 
   .gl-mt-3
     = f.submit s_('AccessTokens|Create %{type}') % { type: type }, data: { qa_selector: 'create_token_button' }, pajamas_button: true
+    = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
+      = _('Cancel')

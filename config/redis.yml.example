@@ -3,7 +3,10 @@ development:
   chat:
     cluster:
       - redis://localhost:7001
-  cluster_cache:
+  cache:
+    cluster:
+      - redis://localhost:7001
+  cluster_shared_state:
     cluster:
       - redis://localhost:7001
   feature_flag:
@@ -17,7 +20,10 @@ test:
   chat:
     cluster:
       - redis://localhost:7001
-  cluster_cache:
+  cache:
+    cluster:
+      - redis://localhost:7001
+  cluster_shared_state:
     cluster:
       - redis://localhost:7001
   feature_flag:

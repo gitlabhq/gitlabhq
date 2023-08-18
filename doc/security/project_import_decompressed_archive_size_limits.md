@@ -1,31 +1,11 @@
 ---
-stage: Manage
-group: Authentication and Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference, howto
+redirect_to: '../administration/settings/account_and_limit_settings.md#maximum-decompressed-file-size-for-imported-archives'
+remove_date: '2023-11-02'
 ---
 
-# Project import decompressed archive size limits **(FREE SELF)**
+This document was moved to [another location](../administration/settings/account_and_limit_settings.md#maximum-decompressed-file-size-for-imported-archives).
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31564) in GitLab 13.2.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63025) in GitLab 14.0.
-
-When using [Project Import](../user/project/settings/import_export.md), the size of the decompressed project archive is limited to 10 Gb.
-
-If decompressed size exceeds this limit, `Decompressed archive size validation failed` error is returned.
-
-## Enable/disable size validation
-
-If you have a project with decompressed size exceeding this limit,
-it is possible to disable the validation by turning off the
-`validate_import_decompressed_archive_size` feature flag.
-
-Start a [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
-
-```ruby
-# Disable
-Feature.disable(:validate_import_decompressed_archive_size)
-
-# Enable
-Feature.enable(:validate_import_decompressed_archive_size)
-```
+<!-- This redirect file can be deleted after <2023-11-02>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

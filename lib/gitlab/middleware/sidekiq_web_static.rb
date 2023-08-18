@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def call(env)
-        env.delete('HTTP_X_SENDFILE_TYPE') if env['PATH_INFO'] =~ SIDEKIQ_REGEX
+        env.delete('HTTP_X_SENDFILE_TYPE') if SIDEKIQ_REGEX.match?(env['PATH_INFO'])
 
         @app.call(env)
       end

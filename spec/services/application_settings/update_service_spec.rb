@@ -147,11 +147,13 @@ RSpec.describe ApplicationSettings::UpdateService do
   describe 'performance bar settings', feature_category: :application_performance do
     using RSpec::Parameterized::TableSyntax
 
-    where(:params_performance_bar_enabled,
-          :params_performance_bar_allowed_group_path,
-          :previous_performance_bar_allowed_group_id,
-          :expected_performance_bar_allowed_group_id,
-          :expected_valid) do
+    where(
+      :params_performance_bar_enabled,
+      :params_performance_bar_allowed_group_path,
+      :previous_performance_bar_allowed_group_id,
+      :expected_performance_bar_allowed_group_id,
+      :expected_valid
+    ) do
       true | '' | nil | nil | true
       true | '' | 42_000_000 | nil | true
       true | nil | nil | nil | true

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
@@ -71,6 +72,7 @@ if (viewBlobEl) {
     resourceId,
     userId,
     explainCodeAvailable,
+    refType,
     ...dataset
   } = viewBlobEl.dataset;
 
@@ -94,6 +96,7 @@ if (viewBlobEl) {
         props: {
           path: blobPath,
           projectPath,
+          refType,
         },
       });
     },

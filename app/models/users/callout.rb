@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class Callout < ApplicationRecord
+  class Callout < MainClusterwide::ApplicationRecord
     include Users::Calloutable
 
     self.table_name = 'user_callouts'

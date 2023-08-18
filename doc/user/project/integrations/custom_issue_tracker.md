@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Custom issue tracker **(FREE)**
+# Custom issue tracker **(FREE ALL)**
 
 You can integrate an [external issue tracker](../../../integration/external-issue-tracker.md)
 with GitLab. If your preferred issue tracker is not listed in the
@@ -23,7 +23,7 @@ To enable a custom issue tracker in a project:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Custom issue tracker**.
-1. Select the checkbox under **Enable integration**.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Fill in the required fields:
 
    - **Project URL**: The URL to view all the issues in the custom issue tracker.

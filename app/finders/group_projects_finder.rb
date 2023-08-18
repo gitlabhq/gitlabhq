@@ -9,8 +9,10 @@
 #   project_ids_relation: int[] - project ids to use
 #   group
 #   options:
-#     only_owned: boolean
+#     exclude_shared: boolean
+#       When true, only projects within the group are included in the result.
 #     only_shared: boolean
+#       When true, only projects arising from group-project shares are included in the result.
 #     limit: integer
 #     include_subgroups: boolean
 #     include_ancestor_groups: boolean
@@ -63,10 +65,10 @@ class GroupProjectsFinder < ProjectsFinder
     projects =
       if only_shared?
         [shared_projects]
-      elsif only_owned?
-        [owned_projects]
+      elsif exclude_shared?
+        [projects_within_group]
       else
-        [owned_projects, shared_projects]
+        [projects_within_group, shared_projects]
       end
 
     projects.map! do |project_relation|
@@ -104,8 +106,8 @@ class GroupProjectsFinder < ProjectsFinder
     end
   end
 
-  def only_owned?
-    options.fetch(:only_owned, false)
+  def exclude_shared?
+    options.fetch(:exclude_shared, false)
   end
 
   def owned_projects?
@@ -126,7 +128,7 @@ class GroupProjectsFinder < ProjectsFinder
     options.fetch(:include_ancestor_groups, false)
   end
 
-  def owned_projects
+  def projects_within_group
     return group.projects unless include_subgroups? || include_ancestor_groups?
 
     union_relations = []

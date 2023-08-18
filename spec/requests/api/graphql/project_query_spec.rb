@@ -8,6 +8,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
   let_it_be(:group) { create(:group) }
   let_it_be(:project, reload: true) { create(:project, :repository, group: group) }
   let_it_be(:current_user) { create(:user) }
+  let_it_be(:other_user) { create(:user) }
 
   let(:project_fields) { all_graphql_fields_for('project'.to_s.classify, max_depth: 1) }
 
@@ -23,7 +24,60 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
     it 'includes the project', :use_clean_rails_memory_store_caching, :request_store do
       post_graphql(query, current_user: current_user)
 
-      expect(graphql_data['project']).not_to be_nil
+      expect(graphql_data['project']).to include('id' => global_id_of(project).to_s)
+    end
+
+    context 'when querying for pipeline triggers' do
+      let(:project_fields) { query_nodes(:pipeline_triggers) }
+      let(:pipeline_trigger) { project.triggers.first }
+
+      before do
+        create(:ci_trigger, project: project, owner: current_user)
+      end
+
+      it 'fetches the pipeline trigger tokens' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data_at(:project, :pipeline_triggers, :nodes).first).to match({
+          'id' => pipeline_trigger.to_global_id.to_s,
+          'canAccessProject' => true,
+          'description' => pipeline_trigger.description,
+          'hasTokenExposed' => true,
+          'lastUsed' => nil,
+          'token' => pipeline_trigger.token
+        })
+      end
+
+      it 'does not produce N+1 queries' do
+        baseline = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: current_user) }
+
+        build_list(:ci_trigger, 2, owner: current_user, project: project)
+
+        expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(baseline)
+      end
+
+      context 'when other project member is not authorized to see the full token' do
+        before do
+          project.add_maintainer(other_user)
+          post_graphql(query, current_user: other_user)
+        end
+
+        it 'shows truncated token' do
+          expect(graphql_data_at(:project, :pipeline_triggers,
+            :nodes).first['token']).to eql pipeline_trigger.token[0, 4]
+        end
+      end
+
+      context 'when user is not a member of a public project' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          post_graphql(query, current_user: other_user)
+        end
+
+        it 'cannot read the token' do
+          expect(graphql_data_at(:project, :pipeline_triggers, :nodes)).to eql([])
+        end
+      end
     end
   end
 
@@ -35,10 +89,10 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
     it 'includes the project' do
       post_graphql(query, current_user: current_user)
 
-      expect(graphql_data['project']).not_to be_nil
+      expect(graphql_data['project']).to include('id' => global_id_of(project).to_s)
     end
 
-    it_behaves_like 'a working graphql query' do
+    it_behaves_like 'a working graphql query that returns data' do
       before do
         post_graphql(query, current_user: current_user)
       end
@@ -239,13 +293,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
   end
 
   context 'when the user does not have access to the project' do
-    it 'returns an empty field' do
-      post_graphql(query, current_user: current_user)
-
-      expect(graphql_data['project']).to be_nil
-    end
-
-    it_behaves_like 'a working graphql query' do
+    it_behaves_like 'a working graphql query that returns no data' do
       before do
         post_graphql(query, current_user: current_user)
       end

@@ -219,6 +219,7 @@ module EachBatch
           new_count, last_value =
             unscoped
             .from(inner_query)
+            .unscope(where: :type)
             .order(count: :desc)
             .limit(1)
             .pick(:count, column)

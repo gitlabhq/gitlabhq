@@ -1,66 +1,84 @@
 - page_title _('Emails')
+- profile_message = _('Used for avatar detection. You can change it in your %{openingTag}profile settings%{closingTag}.') % { openingTag: "<a href='#{profile_path}' class='gl-text-blue-500!'>".html_safe, closingTag: '</a>'.html_safe}
+- notification_message = _('Used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set.') % { openingTag: "<a href='#{profile_notifications_path}' class='gl-text-blue-500!'>".html_safe, closingTag: '</a>'.html_safe}
+- public_email_message = _('Your public email will be displayed on your public profile.')
+- commit_email_message = _('Used for web based operations, such as edits and merges.')
 - @force_desktop_expanded_sidebar = true
 
+
 .settings-section.js-search-settings-section
   .settings-sticky-header
     .settings-sticky-header-inner
       %h4.gl-my-0
-        = _('Add email address')
+        = s_('Profiles|Email addresses')
   %p.gl-text-secondary
-    = _('Control emails linked to your account')
-  %div
-    = gitlab_ui_form_for 'email', url: profile_emails_path do |f|
-      .form-group
-        = f.label :email, _('Email'), class: 'label-bold'
-        = f.text_field :email, class: 'form-control gl-form-input', data: { qa_selector: 'email_address_field' }
-      .gl-mt-3
-        = f.submit _('Add email address'), data: { qa_selector: 'add_email_address_button' }, pajamas_button: true
+    = s_('Profiles|Control emails linked to your account')
 
-.settings-section.js-search-settings-section
-  .settings-sticky-header
-    .settings-sticky-header-inner
-      %h4.gl-my-0
-        = _('Linked emails (%{email_count})') % { email_count: @emails.load.size }
-    .account-well.gl-mb-3
-      %ul
-        %li
-          - profile_message = _('Your primary email is used for avatar detection. You can change it in your %{openingTag}profile settings%{closingTag}.') % { openingTag: "<a href='#{profile_path}'>".html_safe, closingTag: '</a>'.html_safe}
-          = profile_message.html_safe
-        %li
-          = _('Your commit email is used for web based operations, such as edits and merges.')
-        %li
-          - notification_message = _('Your default notification email is used for account notifications if a %{openingTag}group-specific email address%{closingTag} is not set.') % { openingTag: "<a href='#{profile_notifications_path}'>".html_safe, closingTag: '</a>'.html_safe}
-          = notification_message.html_safe
-        %li
-          = _('Your public email will be displayed on your public profile.')
-        %li
-          = _('All email addresses will be used to identify your commits.')
-    %ul.content-list
-      %li
-        = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
-        %ul
-          %li= s_('Profiles|Primary email')
-          - if @primary_email == current_user.commit_email_or_default
-            %li= s_('Profiles|Commit email')
-          - if @primary_email == current_user.public_email
-            %li= s_('Profiles|Public email')
-          - if @primary_email == current_user.notification_email_or_default
-            %li= s_('Profiles|Default notification email')
-      - @emails.reject(&:user_primary_email?).each do |email|
-        %li{ data: { qa_selector: 'email_row_content' } }
-          .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-gap-3
-            %div
-              = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
+  .settings-section.js-search-settings-section
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+      - c.with_header do
+        .gl-new-card-title-wrapper
+          %h3.gl-new-card-title
+            = s_('Profiles|Linked emails')
+          .gl-new-card-count
+            = sprite_icon('mail', css_class: 'gl-mr-2')
+            = @emails.load.size
+        .gl-new-card-actions
+          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content", data: { testid: 'toggle_email_address_field' } }) do
+            = s_('Profiles|Add new email')
+      - c.with_body do
+        .gl-new-card-add-form.gl-m-3.gl-mb-4.gl-display-none.js-toggle-content
+          %h4.gl-mt-0
+            = s_('Profiles|Add new email')
+          = gitlab_ui_form_for 'email', url: profile_emails_path do |f|
+            .form-group
+              = f.label :email, s_('Profiles|Email address'), class: 'label-bold'
+              = f.text_field :email, class: 'form-control gl-form-input gl-form-input-xl', data: { qa_selector: 'email_address_field' }
+            .gl-mt-3
+              = f.submit s_('Profiles|Add email address'), data: { qa_selector: 'add_email_address_button' }, pajamas_button: true
+              = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
+                = _('Cancel')
+        - if @emails.any?
+          %ul.content-list
+            %li{ class: 'gl-px-5!' }
+              = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
               %ul
-                - if email.email == current_user.commit_email_or_default
-                  %li= s_('Profiles|Commit email')
-                - if email.email == current_user.public_email
-                  %li= s_('Profiles|Public email')
-                - if email.email == current_user.notification_email_or_default
-                  %li= s_('Profiles|Notification email')
-            .gl-display-flex.gl-justify-content-end.gl-align-items-flex-end.gl-flex-grow-1.gl-flex-wrap-reverse.gl-gap-3
-              - unless email.confirmed?
-                - confirm_title = "#{email.confirmation_sent_at ? _('Resend confirmation email') : _('Send confirmation email')}"
-                = link_button_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, size: :small
+                %li.gl-mt-2
+                  = s_('Profiles|Primary email')
+                  .gl-text-secondary.gl-font-sm= profile_message.html_safe
+                - if @primary_email == current_user.commit_email_or_default
+                  %li.gl-mt-2
+                    = s_('Profiles|Commit email')
+                    .gl-text-secondary.gl-font-sm= commit_email_message
+                - if @primary_email == current_user.public_email
+                  %li.gl-mt-2
+                    = s_('Profiles|Public email')
+                    .gl-text-secondary.gl-font-sm= public_email_message
+                - if @primary_email == current_user.notification_email_or_default
+                  %li.gl-mt-2
+                    = s_('Profiles|Default notification email')
+                    .gl-text-secondary.gl-font-sm= notification_message.html_safe
+            - @emails.reject(&:user_primary_email?).each do |email|
+              %li{ class: 'gl-px-5!', data: { qa_selector: 'email_row_content' } }
+                .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-gap-3
+                  %div
+                    = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
+                    %ul
+                      - if email.email == current_user.commit_email_or_default
+                        %li.gl-mt-2
+                          = s_('Profiles|Commit email')
+                          .gl-text-secondary.gl-font-sm= commit_email_message
+                      - if email.email == current_user.public_email
+                        %li.gl-mt-2
+                          = s_('Profiles|Public email')
+                          .gl-text-secondary.gl-font-sm= public_email_message
+                      - if email.email == current_user.notification_email_or_default
+                        %li.gl-mt-2
+                          = s_('Profiles|Default notification email')
+                          .gl-text-secondary.gl-font-sm= notification_message.html_safe
+                  .gl-display-flex.gl-sm-justify-content-end.gl-align-items-flex-end.gl-flex-grow-1.gl-flex-wrap-reverse.gl-gap-3
+                    - unless email.confirmed?
+                      - confirm_title = "#{email.confirmation_sent_at ? s_('Profiles|Resend confirmation email') : s_('Profiles|Send confirmation email')}"
+                      = link_button_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, size: :small
 
-              = link_button_to nil, profile_email_path(email), data: { confirm: _('Are you sure?'), qa_selector: 'delete_email_link'}, method: :delete, variant: :danger, size: :small, icon: 'remove', 'aria-label': _('Remove')
+                    = link_button_to nil, profile_email_path(email), data: { confirm: _('Are you sure?'), confirm_btn_variant: 'danger', qa_selector: 'delete_email_link'}, method: :delete, size: :small, icon: 'remove', 'aria-label': _('Remove')

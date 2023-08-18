@@ -1,0 +1,8 @@
+---
+name: super_sidebar_flyout_menus
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124863
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417237
+milestone: '16.2'
+type: development
+group: group::foundations
+default_enabled: false

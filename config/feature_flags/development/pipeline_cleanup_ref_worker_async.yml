@@ -1,8 +1,8 @@
 ---
 name: pipeline_cleanup_ref_worker_async
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123976
-rollout_issue_url: https://gitlab.com/gitlab-org/gitaly/-/issues/5369
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/421696
 milestone: '16.1'
 type: development
-group: group::tenant scale
+group: group::gitaly
 default_enabled: false

@@ -51,6 +51,7 @@ describe('Repository table component', () => {
       propsData: {
         path,
       },
+      provide: { refType: 'heads' },
     });
   };
 
@@ -170,8 +171,8 @@ describe('Repository table component', () => {
       expect(isRequested).toHaveBeenCalledWith(rowNumber);
 
       expect(loadCommits.mock.calls).toEqual([
-        ['', path, '', rowNumber],
-        ['', path, '', rowNumber - 25],
+        ['', path, '', rowNumber, 'heads'],
+        ['', path, '', rowNumber - 25, 'heads'],
       ]);
     });
 
@@ -179,7 +180,7 @@ describe('Repository table component', () => {
       createComponent({ path });
       findFileTable().vm.$emit('row-appear', 0);
 
-      expect(loadCommits.mock.calls).toEqual([['', path, '', 0]]);
+      expect(loadCommits.mock.calls).toEqual([['', path, '', 0, 'heads']]);
     });
   });
 

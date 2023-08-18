@@ -7,7 +7,7 @@ module QA
         project.remove_via_api!
       end
 
-      let(:project) { Resource::Project.fabricate_via_api! }
+      let(:project) { create(:project) }
 
       shared_examples 'project license detection' do
         it 'displays the name of the license on the repository' do

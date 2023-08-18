@@ -1,5 +1,6 @@
 <script>
 import { GlDropdown, GlFormGroup, GlPopover } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { __, s__ } from '~/locale';
 
@@ -95,7 +96,6 @@ export default {
       :state="!showTagNameValidationError"
       :invalid-feedback="tagFeedback"
       optional
-      data-testid="tag-name-field"
     >
       <gl-dropdown
         :id="id"

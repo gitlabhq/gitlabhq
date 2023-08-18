@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Audit events **(PREMIUM)**
+# Audit events **(PREMIUM ALL)**
 
 Use audit events to track important events, including who performed the related action and when.
 You can use audit events to track, for example:
@@ -77,6 +77,7 @@ To view instance audit events:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1449) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/285441) in GitLab 13.7.
+> - Entity type `Gitlab::Audit::InstanceScope` for instance audit events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418185) in GitLab 16.2.
 
 You can export the current view (including filters) of your instance audit events as a CSV file. To export the instance
 audit events to CSV:
@@ -100,22 +101,22 @@ Data is encoded with:
 
 The first row contains the headers, which are listed in the following table along with a description of the values:
 
-| Column               | Description                                        |
-|:---------------------|:---------------------------------------------------|
-| **ID**               | Audit event `id`.                                  |
-| **Author ID**        | ID of the author.                                  |
-| **Author Name**      | Full name of the author.                           |
-| **Entity ID**        | ID of the scope.                                   |
-| **Entity Type**      | Type of the scope (`Project`, `Group`, or `User`). |
-| **Entity Path**      | Path of the scope.                                 |
-| **Target ID**        | ID of the target.                                  |
-| **Target Type**      | Type of the target.                                |
-| **Target Details**   | Details of the target.                             |
-| **Action**           | Description of the action.                         |
-| **IP Address**       | IP address of the author who performed the action. |
-| **Created At (UTC)** | Formatted as `YYYY-MM-DD HH:MM:SS`.                |
+| Column               | Description                                                        |
+|:---------------------|:-------------------------------------------------------------------|
+| **ID**               | Audit event `id`.                                                  |
+| **Author ID**        | ID of the author.                                                  |
+| **Author Name**      | Full name of the author.                                           |
+| **Entity ID**        | ID of the scope.                                                   |
+| **Entity Type**      | Type of the scope (`Project`, `Group`, `User`, or `Gitlab::Audit::InstanceScope`). |
+| **Entity Path**      | Path of the scope.                                                 |
+| **Target ID**        | ID of the target.                                                  |
+| **Target Type**      | Type of the target.                                                |
+| **Target Details**   | Details of the target.                                             |
+| **Action**           | Description of the action.                                         |
+| **IP Address**       | IP address of the author who performed the action.                 |
+| **Created At (UTC)** | Formatted as `YYYY-MM-DD HH:MM:SS`.                                |
 
-## View sign-in events **(FREE)**
+## View sign-in events **(FREE ALL)**
 
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
 
@@ -252,10 +253,10 @@ The following actions on projects generate project audit events:
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6.
 - Project was scheduled for deletion due to inactivity.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0.
-- Project deploy token was successfully created, revoked or deleted.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9.
-- Failed attempt to create a project deploy token.
-  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353451) in GitLab 14.9.
+- Project deploy token was successfully created, revoked, or deleted. Introduced in GitLab 14.9.
+  GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/353451`.
+- Failed attempt to create a project deploy token. Introduced in GitLab 14.9.
+  GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/353451`.
 - When [strategies for feature flags](../operations/feature_flags.md#feature-flag-strategies) are changed.
   [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68408) in GitLab 14.3.
 
@@ -405,7 +406,7 @@ The following user actions on a GitLab instance generate instance audit events:
 
 Instance events can also be accessed using the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 
-#### Application settings **(PREMIUM)**
+#### Application settings **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282428) in GitLab 16.2.
 

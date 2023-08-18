@@ -18,7 +18,6 @@ export default {
   computed: {
     storageTypes() {
       const {
-        containerRegistrySize,
         buildArtifactsSize,
         lfsObjectsSize,
         packagesSize,
@@ -50,12 +49,6 @@ export default {
           style: this.usageStyle(this.barRatio(packagesSize)),
           class: 'gl-bg-data-viz-aqua-500',
           size: packagesSize,
-        },
-        {
-          id: 'containerRegistry',
-          style: this.usageStyle(this.barRatio(containerRegistrySize)),
-          class: 'gl-bg-data-viz-aqua-800',
-          size: containerRegistrySize,
         },
         {
           id: 'buildArtifacts',

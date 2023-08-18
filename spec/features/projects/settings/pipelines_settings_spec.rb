@@ -65,6 +65,46 @@ RSpec.describe "Projects > Settings > Pipelines settings", feature_category: :gr
       expect(checkbox).not_to be_checked
     end
 
+    it 'disables forward deployment rollback allowed when forward deployment enabled is unchecked', :js do
+      visit project_settings_ci_cd_path(project)
+
+      forward_deployment_checkbox = find_field('project_ci_cd_settings_attributes_forward_deployment_enabled')
+      forward_deployment_rollback_checkbox =
+        find_field('project_ci_cd_settings_attributes_forward_deployment_rollback_allowed')
+      expect(forward_deployment_checkbox).to be_checked
+      expect(forward_deployment_rollback_checkbox).not_to be_disabled
+
+      forward_deployment_checkbox.click
+
+      expect(forward_deployment_rollback_checkbox).to be_disabled
+
+      forward_deployment_checkbox.click
+
+      expect(forward_deployment_rollback_checkbox).not_to be_disabled
+    end
+
+    it 'updates forward_deployment_rollback_allowed' do
+      visit project_settings_ci_cd_path(project)
+
+      checkbox = find_field('project_ci_cd_settings_attributes_forward_deployment_rollback_allowed')
+      expect(checkbox).to be_checked
+
+      checkbox.set(false)
+
+      page.within '#js-general-pipeline-settings' do
+        click_on 'Save changes'
+      end
+
+      expect(page.status_code).to eq(200)
+
+      page.within '#js-general-pipeline-settings' do
+        expect(page).to have_button('Save changes', disabled: false)
+      end
+
+      checkbox = find_field('project_ci_cd_settings_attributes_forward_deployment_rollback_allowed')
+      expect(checkbox).not_to be_checked
+    end
+
     describe 'Auto DevOps' do
       context 'when auto devops is turned on instance-wide' do
         before do

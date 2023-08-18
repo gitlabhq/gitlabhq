@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlAlert, GlTabs, GlTab } from '@gitlab/ui';
+import { GlAlert, GlButton, GlCard, GlTabs, GlTab, GlIcon } from '@gitlab/ui';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
@@ -43,8 +43,10 @@ export default {
     AlertSettingsForm,
     GlAlert,
     GlButton,
+    GlCard,
     GlTabs,
     GlTab,
+    GlIcon,
   },
   inject: {
     projectPath: {
@@ -364,39 +366,58 @@ export default {
         {{ $options.i18n.integrationCreated.successMsg }}
       </gl-alert>
 
-      <integrations-list
-        :integrations="integrations"
-        :loading="loading"
-        @edit-integration="editIntegration"
-        @delete-integration="deleteIntegration"
-      />
-      <gl-button
-        v-if="canAddIntegration && !formVisible"
-        category="secondary"
-        variant="confirm"
-        data-testid="add-integration-btn"
-        data-qa-selector="add_integration_button"
-        class="gl-mt-3"
-        @click="setFormVisibility(true)"
+      <gl-card
+        class="gl-new-card gl-mt-2"
+        header-class="gl-new-card-header"
+        body-class="gl-new-card-body gl-px-0 gl-overflow-hidden"
       >
-        {{ $options.i18n.addNewIntegration }}
-      </gl-button>
-      <alert-settings-form
-        v-if="formVisible"
-        :loading="isUpdating"
-        :can-add-integration="canAddIntegration"
-        :alert-fields="alertFields"
-        :tab-index="tabIndex"
-        @create-new-integration="createNewIntegration"
-        @update-integration="updateIntegration"
-        @reset-token="resetToken"
-        @clear-current-integration="clearCurrentIntegration"
-        @test-alert-payload="testAlertPayload"
-        @save-and-test-alert-payload="saveAndTestAlertPayload"
-      />
+        <template #header>
+          <div class="gl-new-card-title-wrapper">
+            <h5 class="gl-new-card-title">
+              {{ $options.i18n.card.title }}
+              <span class="gl-new-card-count">
+                <gl-icon name="warning" class="gl-mr-2" />
+                {{ integrations.length }}
+              </span>
+            </h5>
+          </div>
+          <div class="gl-new-card-actions">
+            <gl-button
+              v-if="canAddIntegration && !formVisible"
+              size="small"
+              data-testid="add-integration-btn"
+              data-qa-selector="add_integration_button"
+              @click="setFormVisibility(true)"
+            >
+              {{ $options.i18n.addNewIntegration }}
+            </gl-button>
+          </div>
+        </template>
+
+        <alert-settings-form
+          v-if="formVisible"
+          :loading="isUpdating"
+          :can-add-integration="canAddIntegration"
+          :alert-fields="alertFields"
+          :tab-index="tabIndex"
+          @create-new-integration="createNewIntegration"
+          @update-integration="updateIntegration"
+          @reset-token="resetToken"
+          @clear-current-integration="clearCurrentIntegration"
+          @test-alert-payload="testAlertPayload"
+          @save-and-test-alert-payload="saveAndTestAlertPayload"
+        />
+
+        <integrations-list
+          :integrations="integrations"
+          :loading="loading"
+          @edit-integration="editIntegration"
+          @delete-integration="deleteIntegration"
+        />
+      </gl-card>
     </gl-tab>
     <gl-tab :title="$options.i18n.settingsTabs.integrationSettings">
-      <alerts-form class="gl-pt-3" data-testid="alert-integration-settings-tab" />
+      <alerts-form class="gl-pt-3" />
     </gl-tab>
   </gl-tabs>
 </template>

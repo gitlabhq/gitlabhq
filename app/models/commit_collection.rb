@@ -24,8 +24,12 @@ class CommitCollection
     commits.each(&block)
   end
 
-  def committers
-    emails = without_merge_commits.filter_map(&:committer_email).uniq
+  def committers(with_merge_commits: false)
+    emails = if with_merge_commits
+               commits.filter_map(&:committer_email).uniq
+             else
+               without_merge_commits.filter_map(&:committer_email).uniq
+             end
 
     User.by_any_email(emails)
   end

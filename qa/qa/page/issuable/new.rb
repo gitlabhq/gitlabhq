@@ -23,7 +23,7 @@ module QA
         end
 
         view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents.vue' do
-          element :labels_select_dropdown_contents
+          element 'labels-select-dropdown-contents'
         end
 
         view 'app/views/shared/issuable/form/_metadata_issuable_assignee.html.haml' do

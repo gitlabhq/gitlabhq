@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { GlLoadingIcon, GlPagination, GlAlert, GlSearchBoxByType } from '@gitlab/ui';
 import { fetchGroups } from '~/jira_connect/subscriptions/api';
@@ -6,6 +7,7 @@ import {
   DEFAULT_GROUPS_PER_PAGE,
   MINIMUM_SEARCH_TERM_LENGTH,
 } from '~/jira_connect/subscriptions/constants';
+import { ACCESS_LEVEL_MAINTAINER_INTEGER } from '~/access_level/constants';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { s__ } from '~/locale';
 import GroupsListItem from './groups_list_item.vue';
@@ -36,10 +38,13 @@ export default {
     };
   },
   computed: {
+    ...mapState(['accessToken', 'currentUser']),
     showPagination() {
       return this.totalItems > this.$options.DEFAULT_GROUPS_PER_PAGE && this.groups.length > 0;
     },
-    ...mapState(['accessToken']),
+    isAdmin() {
+      return Boolean(this.currentUser.is_admin);
+    },
   },
   mounted() {
     return this.loadGroups().finally(() => {
@@ -52,6 +57,7 @@ export default {
       return fetchGroups(
         this.groupsPath,
         {
+          minAccessLevel: this.isAdmin ? undefined : ACCESS_LEVEL_MAINTAINER_INTEGER,
           page: this.page,
           perPage: this.$options.DEFAULT_GROUPS_PER_PAGE,
           search: this.searchValue,
@@ -110,7 +116,10 @@ export default {
       @input="onGroupSearch"
     />
 
-    <p class="gl-mb-3">
+    <p v-if="isAdmin" class="gl-mb-3">
+      {{ s__('JiraConnect|Not seeing your groups? Only groups you have access to appear here.') }}
+    </p>
+    <p v-else class="gl-mb-3">
       {{
         s__(
           'JiraConnect|Not seeing your groups? Only groups you have at least the Maintainer role for appear here.',

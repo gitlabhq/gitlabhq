@@ -1,21 +1,18 @@
-import { GlKeysetPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Component from '~/packages_and_registries/container_registry/explorer/components/list_page/image_list.vue';
 import ImageListRow from '~/packages_and_registries/container_registry/explorer/components/list_page/image_list_row.vue';
 
-import { imagesListResponse, pageInfo as defaultPageInfo } from '../../mock_data';
+import { imagesListResponse } from '../../mock_data';
 
 describe('Image List', () => {
   let wrapper;
 
   const findRow = () => wrapper.findAllComponents(ImageListRow);
-  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
   const mountComponent = (props) => {
     wrapper = shallowMount(Component, {
       propsData: {
         images: imagesListResponse,
-        pageInfo: defaultPageInfo,
         ...props,
       },
     });
@@ -38,46 +35,6 @@ describe('Image List', () => {
     it('passes down the metadataLoading prop', () => {
       mountComponent({ metadataLoading: true });
       expect(findRow().at(0).props('metadataLoading')).toBe(true);
-    });
-  });
-
-  describe('pagination', () => {
-    it('exists', () => {
-      mountComponent();
-
-      expect(findPagination().exists()).toBe(true);
-    });
-
-    it.each`
-      hasNextPage | hasPreviousPage | isVisible
-      ${true}     | ${true}         | ${true}
-      ${true}     | ${false}        | ${true}
-      ${false}    | ${true}         | ${true}
-    `(
-      'when hasNextPage is $hasNextPage and hasPreviousPage is $hasPreviousPage: is $isVisible that the component is visible',
-      ({ hasNextPage, hasPreviousPage, isVisible }) => {
-        mountComponent({ pageInfo: { ...defaultPageInfo, hasNextPage, hasPreviousPage } });
-
-        expect(findPagination().exists()).toBe(isVisible);
-        expect(findPagination().props('hasPreviousPage')).toBe(hasPreviousPage);
-        expect(findPagination().props('hasNextPage')).toBe(hasNextPage);
-      },
-    );
-
-    it('emits "prev-page" when the user clicks the back page button', () => {
-      mountComponent();
-
-      findPagination().vm.$emit('prev');
-
-      expect(wrapper.emitted('prev-page')).toEqual([[]]);
-    });
-
-    it('emits "next-page" when the user clicks the forward page button', () => {
-      mountComponent();
-
-      findPagination().vm.$emit('next');
-
-      expect(wrapper.emitted('next-page')).toEqual([[]]);
     });
   });
 });

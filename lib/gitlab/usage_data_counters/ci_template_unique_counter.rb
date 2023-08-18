@@ -3,7 +3,6 @@
 module Gitlab::UsageDataCounters
   class CiTemplateUniqueCounter
     PREFIX = 'ci_templates'
-    KNOWN_EVENTS_FILE_PATH = File.expand_path('known_events/ci_templates.yml', __dir__)
 
     class << self
       def track_unique_project_event(project:, template:, config_source:, user:)

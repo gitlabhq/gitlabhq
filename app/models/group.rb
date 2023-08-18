@@ -184,6 +184,7 @@ class Group < Namespace
     ids_by_full_path = Route
       .for_routable_type(Namespace.name)
       .where('LOWER(routes.path) IN (?)', paths.map(&:downcase))
+      .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
       .select(:namespace_id)
 
     Group.from_union([by_id(ids), by_id(ids_by_full_path), where('LOWER(path) IN (?)', paths.map(&:downcase))])
@@ -397,7 +398,7 @@ class Group < Namespace
   end
 
   def visibility_level_allowed_by_projects?(level = self.visibility_level)
-    !projects.where('visibility_level > ?', level).exists?
+    !projects.without_deleted.where('visibility_level > ?', level).exists?
   end
 
   def visibility_level_allowed_by_sub_groups?(level = self.visibility_level)
@@ -635,17 +636,24 @@ class Group < Namespace
   end
 
   # Returns all members that are part of the group, it's subgroups, and ancestor groups
-  def direct_and_indirect_members
+  def hierarchy_members
     GroupMember
       .active_without_invites_and_requests
       .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
   end
 
-  def direct_and_indirect_members_with_inactive
+  def hierarchy_members_with_inactive
     GroupMember
       .non_request
       .non_invite
       .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
+  end
+
+  def descendant_project_members_with_inactive
+    ProjectMember
+      .with_source_id(all_projects)
+      .non_request
+      .non_invite
   end
 
   def users_with_parents
@@ -658,45 +666,6 @@ class Group < Namespace
     User
       .where(id: members_with_descendants.select(:user_id))
       .reorder(nil)
-  end
-
-  # Returns all users that are members of the group because:
-  # 1. They belong to the group
-  # 2. They belong to a project that belongs to the group
-  # 3. They belong to a sub-group or project in such sub-group
-  # 4. They belong to an ancestor group
-  # 5. They belong to a group that is shared with this group, if share_with_groups is true
-  def direct_and_indirect_users(share_with_groups: false)
-    members = if share_with_groups
-                # We only need :user_id column, but
-                # `members_from_self_and_ancestor_group_shares` needs more
-                # columns to make the CTE query work.
-                GroupMember.from_union([
-                  direct_and_indirect_members.select(:user_id, :source_type, :type),
-                  members_from_self_and_ancestor_group_shares.reselect(:user_id, :source_type, :type)
-                ])
-              else
-                direct_and_indirect_members
-              end
-
-    User.from_union([
-      User.where(id: members.select(:user_id)).reorder(nil),
-      project_users_with_descendants
-    ])
-  end
-
-  # Returns all users (also inactive) that are members of the group because:
-  # 1. They belong to the group
-  # 2. They belong to a project that belongs to the group
-  # 3. They belong to a sub-group or project in such sub-group
-  # 4. They belong to an ancestor group
-  def direct_and_indirect_users_with_inactive
-    User.from_union([
-                      User
-                        .where(id: direct_and_indirect_members_with_inactive.select(:user_id))
-                        .reorder(nil),
-                      project_users_with_descendants
-                    ]).allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417455") # failed in spec/tasks/gitlab/user_management_rake_spec.rb
   end
 
   def users_count
@@ -925,6 +894,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc_2)
   end
 
+  def linked_work_items_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:linked_work_items)
+  end
+
   def usage_quotas_enabled?
     ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
   end
@@ -951,7 +924,7 @@ class Group < Namespace
   end
 
   def update_two_factor_requirement_for_members
-    direct_and_indirect_members.find_each(&:update_two_factor_requirement)
+    hierarchy_members.find_each(&:update_two_factor_requirement)
   end
 
   def readme_project

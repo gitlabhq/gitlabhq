@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project milestones API **(FREE)**
+# Project milestones API **(FREE ALL)**
 
 Use project [milestones](../user/project/milestones/index.md) with the REST API.
 There's a separate [group milestones API](group_milestones.md) page.
@@ -92,8 +92,8 @@ Parameters:
 | `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `title`       | string         | yes      | The title of a milestone                                                                                        |
 | `description` | string         | no       | The description of the milestone                                                                                |
-| `due_date`    | string         | no       | The due date of the milestone (`YYYYMMDD`)                                                                        |
-| `start_date`  | string         | no       | The start date of the milestone (`YYYYMMDD`)                                                                                |
+| `due_date`    | string         | no       | The due date of the milestone (`YYYY-MM-DD`)                                                                    |
+| `start_date`  | string         | no       | The start date of the milestone (`YYYY-MM-DD`)                                                                  |
 
 ## Edit milestone
 
@@ -111,8 +111,8 @@ Parameters:
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 | `title`        | string         | no       | The title of a milestone                                                                                        |
 | `description`  | string         | no       | The description of the milestone                                                                                |
-| `due_date`     | string         | no       | The due date of the milestone (`YYYYMMDD`)                                                                                   |
-| `start_date`   | string         | no       | The start date of the milestone (`YYYYMMDD`)                                                                                 |
+| `due_date`     | string         | no       | The due date of the milestone (`YYYY-MM-DD`)                                                                    |
+| `start_date`   | string         | no       | The start date of the milestone (`YYYY-MM-DD`)                                                                  |
 | `state_event`  | string         | no       | The state event of the milestone (close or activate)                                                            |
 
 ## Delete project milestone
@@ -179,7 +179,7 @@ Parameters:
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
-## Get all burndown chart events for a single milestone **(PREMIUM)**
+## Get all burndown chart events for a single milestone **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4737) in GitLab 12.1
 > - Moved to GitLab Premium in 13.9.

@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
           model: ApplicationRecord,
           sql: "SELECT 1 FROM projects",
           expectations: {
-            gitlab_schemas: "gitlab_main",
+            gitlab_schemas: "gitlab_main_cell",
             db_config_name: "main"
           }
         },
@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
           model: ApplicationRecord,
           sql: "SELECT 1 FROM projects LEFT JOIN ci_builds ON ci_builds.project_id=projects.id",
           expectations: {
-            gitlab_schemas: "gitlab_ci,gitlab_main",
+            gitlab_schemas: "gitlab_ci,gitlab_main_cell",
             db_config_name: "main"
           }
         },
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics, query_ana
           model: ApplicationRecord,
           sql: "SELECT 1 FROM ci_builds LEFT JOIN projects ON ci_builds.project_id=projects.id",
           expectations: {
-            gitlab_schemas: "gitlab_ci,gitlab_main",
+            gitlab_schemas: "gitlab_ci,gitlab_main_cell",
             db_config_name: "main"
           }
         },

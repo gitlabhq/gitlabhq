@@ -60,6 +60,7 @@ To add a broadcast message:
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
 1. Select **Messages**.
+1. Select **Add new message**.
 1. Add the text for the message to the **Message** field. You can style a message's content using Markdown, emoji, and the `a` and `br` HTML tags.
    The `br` tag inserts a line break. The `a` HTML tag accepts `class` and `style` attributes with the following CSS properties:
     - `color`

@@ -92,6 +92,11 @@ module Gitlab
             def load_and_validate_expanded_hash!
               return errors.push("`#{masked_location}`: #{content_result.error}") unless content_result.valid?
 
+              if content_result.interpolated? && context.user.present?
+                ::Gitlab::UsageDataCounters::HLLRedisCounter
+                  .track_event('ci_interpolation_users', values: context.user.id)
+              end
+
               context.logger.instrument(:config_file_expand_content_includes) do
                 expanded_content_hash # calling the method expands then memoizes the result
               end
@@ -109,7 +114,7 @@ module Gitlab
 
             def content_result
               context.logger.instrument(:config_file_fetch_content_hash) do
-                ::Gitlab::Ci::Config::Yaml::Loader.new(content, inputs: content_inputs, current_user: context.user).load
+                ::Gitlab::Ci::Config::Yaml::Loader.new(content, inputs: content_inputs).load
               end
             end
             strong_memoize_attr :content_result

@@ -3,7 +3,7 @@
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-18.16:rubygems-${RUBYGEMS_VERSION}-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-18.17:rubygems-${RUBYGEMS_VERSION}-git-2.33-lfs-2.9-yarn-1.22-graphicsmagick-1.3.36
   variables:
     SETUP_DB: "false"
     WEBPACK_VENDOR_DLL: "true"
@@ -31,6 +31,10 @@
     - assets_compile_script
     - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
 
+.update-cache-base:
+  after_script:
+    - yarn patch-package --reverse  # To avoid caching patched modules
+
 compile-production-assets:
   extends:
     - .compile-assets-base
@@ -47,8 +51,6 @@ compile-production-assets:
       - public/assets/
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
-  after_script:
-    - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
 
 compile-production-assets as-if-foss:
   extends:
@@ -77,6 +79,7 @@ compile-test-assets as-if-foss:
 update-assets-compile-production-cache:
   extends:
     - compile-production-assets
+    - .update-cache-base
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
@@ -85,18 +88,17 @@ update-assets-compile-production-cache:
 update-assets-compile-test-cache:
   extends:
     - compile-test-assets
+    - .update-cache-base
     - .assets-compile-cache-push
     - .shared:rules:update-cache
   stage: prepare
-  script:
-    - !reference [compile-test-assets, script]
-    - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
   artifacts: {}  # This job's purpose is only to update the cache.
 
 update-storybook-yarn-cache:
   extends:
     - .default-retry
     - .default-utils-before_script
+    - .update-cache-base
     - .storybook-yarn-cache-push
     - .shared:rules:update-cache
   stage: prepare
@@ -121,6 +123,7 @@ retrieve-frontend-fixtures:
         run_timed_command "download_and_extract_fixtures"
       fi
   artifacts:
+    expire_in: 30 days
     paths:
       - tmp/tests/frontend/
 
@@ -216,6 +219,7 @@ graphql-schema-dump:
   script:
     - bundle exec rake gitlab:graphql:schema:dump
   artifacts:
+    expire_in: 30 days
     name: graphql-schema
     paths:
       - tmp/tests/graphql/gitlab_schema.graphql

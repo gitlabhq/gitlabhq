@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Infrastructure as Code (IaC) Scanning **(FREE)**
+# Infrastructure as Code (IaC) Scanning **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.5.
 
@@ -28,7 +28,7 @@ GitLab IaC Scanning analyzers don't support running on Windows or on any CPU arc
 
 WARNING:
 If you use your own runners, make sure the Docker version installed
-is **not** `19.03.0`. See [troubleshooting information](../sast/index.md#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
+is **not** `19.03.0`. See [troubleshooting information](../sast/troubleshooting.md#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
 ## Supported languages and frameworks
 
@@ -128,7 +128,7 @@ To enable IaC Scanning in a project, you can create a merge request:
 
 Pipelines now include an IaC Scanning job.
 
-## Customize rulesets **(ULTIMATE)**
+## Customize rulesets **(ULTIMATE ALL)**
 
 > [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
 

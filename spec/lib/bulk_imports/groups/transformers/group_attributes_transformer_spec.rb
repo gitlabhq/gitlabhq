@@ -6,7 +6,7 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
   describe '#transform' do
     let(:bulk_import) { build_stubbed(:bulk_import) }
     let(:destination_group) { create(:group) }
-    let(:destination_namespace) { destination_group.full_path }
+    let(:destination_namespace) { destination_group&.full_path }
 
     let(:entity) do
       build_stubbed(
@@ -178,52 +178,7 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
     end
 
     describe 'visibility level' do
-      subject(:transformed_data) { described_class.new.transform(context, data) }
-
       include_examples 'visibility level settings'
-
-      context 'when destination is blank' do
-        let(:destination_namespace) { '' }
-
-        context 'when visibility level is public' do
-          let(:data) { { 'visibility' => 'public' } }
-
-          it 'sets visibility level to public' do
-            expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PUBLIC)
-          end
-        end
-
-        context 'when when visibility level is internal' do
-          let(:data) { { 'visibility' => 'internal' } }
-
-          it 'sets visibility level to internal' do
-            expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::INTERNAL)
-          end
-        end
-
-        context 'when private' do
-          let(:data) { { 'visibility' => 'private' } }
-
-          it 'sets visibility level to private' do
-            expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PRIVATE)
-          end
-        end
-
-        context 'when visibility level is restricted' do
-          let(:data) { { 'visibility' => 'internal' } }
-
-          it 'sets visibility level to private' do
-            stub_application_setting(
-              restricted_visibility_levels: [
-                Gitlab::VisibilityLevel::INTERNAL,
-                Gitlab::VisibilityLevel::PUBLIC
-              ]
-            )
-
-            expect(transformed_data[:visibility_level]).to eq(Gitlab::VisibilityLevel::PRIVATE)
-          end
-        end
-      end
     end
   end
 end

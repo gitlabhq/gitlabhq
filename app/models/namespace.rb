@@ -137,6 +137,7 @@ class Namespace < ApplicationRecord
     :pypi_package_requests_forwarding,
     :npm_package_requests_forwarding,
     to: :package_settings
+  delegate :default_branch_protection_defaults, to: :namespace_settings, allow_nil: true
 
   before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
   before_create :sync_share_with_group_lock_with_parent
@@ -234,6 +235,7 @@ class Namespace < ApplicationRecord
       if include_parents
         without_project_namespaces
           .where(id: Route.for_routable_type(Namespace.name)
+          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
             .fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]],
               use_minimum_char_limit: use_minimum_char_limit)
             .select(:source_id))
@@ -543,8 +545,8 @@ class Namespace < ApplicationRecord
   def changing_allow_descendants_override_disabled_shared_runners_is_allowed
     return unless new_record? || changes.has_key?(:allow_descendants_override_disabled_shared_runners)
 
-    if shared_runners_enabled && !new_record?
-      errors.add(:allow_descendants_override_disabled_shared_runners, _('cannot be changed if shared runners are enabled'))
+    if shared_runners_enabled && allow_descendants_override_disabled_shared_runners
+      errors.add(:allow_descendants_override_disabled_shared_runners, _('can not be true if shared runners are enabled'))
     end
 
     if allow_descendants_override_disabled_shared_runners && has_parent? && parent.shared_runners_setting == SR_DISABLED_AND_UNOVERRIDABLE

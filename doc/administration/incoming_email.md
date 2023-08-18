@@ -16,7 +16,7 @@ GitLab has several features based on receiving incoming email messages:
 - [New merge request by email](../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email):
   allow GitLab users to create a new merge request by sending an email to a
   user-specific email address.
-- [Service Desk](../user/project/service_desk.md): provide email support to
+- [Service Desk](../user/project/service_desk/index.md): provide email support to
   your customers through GitLab.
 
 ## Requirements
@@ -80,7 +80,7 @@ Email is processed correctly when a configured email address is present in one o
 
 The `References` header is also accepted, however it is used specifically to relate email responses to existing discussion threads. It is not used for creating issues by email.
 
-In GitLab 14.6 and later, [Service Desk](../user/project/service_desk.md)
+In GitLab 14.6 and later, [Service Desk](../user/project/service_desk/index.md)
 also checks accepted headers.
 
 Usually, the "To" field contains the email address of the primary receiver.
@@ -179,7 +179,7 @@ list.
 
 Reply by email should now be working.
 
-### Installations from source
+### Self-compiled installations
 
 1. Go to the GitLab installation directory:
 
@@ -312,7 +312,7 @@ gitlab_rails['incoming_email_delete_after_delivery'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-Example for source installs:
+Example for self-compiled installations:
 
 ```yaml
 incoming_email:
@@ -404,7 +404,7 @@ gitlab_rails['incoming_email_delete_after_delivery'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-Example for source installs:
+Example for self-compiled installations:
 
 ```yaml
 incoming_email:
@@ -490,7 +490,7 @@ gitlab_rails['incoming_email_ssl'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-Example for source installs:
+Example for self-compiled installations:
 
 ```yaml
 incoming_email:
@@ -529,7 +529,7 @@ incoming_email:
 
 NOTE:
 Supports [Reply by Email](reply_by_email.md) only.
-Cannot support [Service Desk](../user/project/service_desk.md).
+Cannot support [Service Desk](../user/project/service_desk/index.md).
 
 Assumes the dedicated email address `incoming@exchange.example.com`.
 
@@ -558,7 +558,7 @@ gitlab_rails['incoming_email_ssl'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-Example for source installs:
+Example for self-compiled installations:
 
 ```yaml
 incoming_email:
@@ -646,7 +646,7 @@ gitlab_rails['incoming_email_ssl'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-This example for source installs assumes the mailbox `incoming@office365.example.com`:
+This example for self-compiled installations assumes the mailbox `incoming@office365.example.com`:
 
 ```yaml
 incoming_email:
@@ -707,7 +707,7 @@ gitlab_rails['incoming_email_ssl'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-This example for source installs assumes the catch-all mailbox `incoming@office365.example.com`:
+This example for self-compiled installations assumes the catch-all mailbox `incoming@office365.example.com`:
 
 ```yaml
 incoming_email:
@@ -741,7 +741,7 @@ incoming_email:
 
 NOTE:
 Supports [Reply by Email](reply_by_email.md) only.
-Cannot support [Service Desk](../user/project/service_desk.md).
+Cannot support [Service Desk](../user/project/service_desk/index.md).
 
 This example for Linux package installations assumes the dedicated email address `incoming@office365.example.com`:
 
@@ -767,7 +767,7 @@ gitlab_rails['incoming_email_ssl'] = true
 gitlab_rails['incoming_email_expunge_deleted'] = true
 ```
 
-This example for source installs assumes the dedicated email address `incoming@office365.example.com`:
+This example for self-compiled installations assumes the dedicated email address `incoming@office365.example.com`:
 
 ```yaml
 incoming_email:
@@ -865,7 +865,7 @@ gitlab_rails['incoming_email_inbox_options'] = {
 }
 ```
 
-The Microsoft Graph API is not yet supported in source installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
+The Microsoft Graph API is not yet supported in self-compiled installations. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/326169) for more details.
 
 ### Use encrypted credentials
 

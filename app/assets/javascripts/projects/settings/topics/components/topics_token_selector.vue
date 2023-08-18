@@ -60,7 +60,7 @@ export default {
       return this.selectedTokens.length ? '' : this.$options.i18n.placeholder;
     },
     topicsHelpUrl() {
-      return helpPagePath('user/admin_area/index.html', {
+      return helpPagePath('administration/index', {
         anchor: 'administering-topics',
       });
     },

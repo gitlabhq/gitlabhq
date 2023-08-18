@@ -65,13 +65,25 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
   describe '.project_name_regex_message' do
     subject { described_class.project_name_regex_message }
 
-    it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces. It must start with a letter, digit, emoji, or '_'.") }
+    it { is_expected.to eq("can contain only letters, digits, emoji, '_', '.', '+', dashes, or spaces. It must start with a letter, digit, emoji, or '_'.") }
   end
 
   describe '.group_name_regex_message' do
     subject { described_class.group_name_regex_message }
 
-    it { is_expected.to eq("can contain only letters, digits, emojis, '_', '.', dash, space, parenthesis. It must start with letter, digit, emoji or '_'.") }
+    it { is_expected.to eq("can contain only letters, digits, emoji, '_', '.', dash, space, parenthesis. It must start with letter, digit, emoji or '_'.") }
+  end
+
+  describe '.slack_link_regex' do
+    subject { described_class.slack_link_regex }
+
+    it { is_expected.not_to match('http://custom-url.com|click here') }
+    it { is_expected.not_to match('custom-url.com|any-Charact3r$') }
+    it { is_expected.not_to match("&lt;custom-url.com|any-Charact3r$&gt;") }
+
+    it { is_expected.to match('<http://custom-url.com|click here>') }
+    it { is_expected.to match('<custom-url.com|any-Charact3r$>') }
+    it { is_expected.to match('<any-Charact3r$|any-Charact3r$>') }
   end
 
   describe '.bulk_import_destination_namespace_path_regex_message' do
@@ -820,6 +832,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('1.2.3') }
     it { is_expected.to match('1.2.3-beta') }
     it { is_expected.to match('1.2.3-alpha.3') }
+    it { is_expected.to match('1.2.3-alpha.3+abcd') }
     it { is_expected.not_to match('1') }
     it { is_expected.not_to match('1.2') }
     it { is_expected.not_to match('1./2.3') }

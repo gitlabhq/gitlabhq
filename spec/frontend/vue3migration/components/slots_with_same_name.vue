@@ -1,14 +1,14 @@
 <script>
-import Simple from './simple.vue';
+import SimpleComponent from './simple_component.vue';
 
 export default {
   name: 'SlotsWithSameName',
-  components: { Simple },
+  components: { SimpleComponent },
 };
 </script>
 <template>
-  <simple>
+  <simple-component>
     <template v-if="true" #default>{{ $options.name }}</template>
     <template v-else #default>{{ $options.name }}</template>
-  </simple>
+  </simple-component>
 </template>

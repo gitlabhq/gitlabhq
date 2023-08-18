@@ -1,43 +1,49 @@
 - icon_classes = 'settings-list-icon gl-display-none gl-sm-display-block'
 
-%li.key-list-item
-  .gl-display-flex.gl-align-items-flex-start
-    .key-list-item-info.gl-w-full.float-none
-      = link_to path_to_key(key, is_admin), class: "title text-3" do
-        = key.title
+%tr.key-list-item
+  %td{ data: { label: _('Title'), testid: 'title' } }
+    = link_to path_to_key(key, is_admin) do
+      = key.title
 
-      .gl-display-flex.gl-align-items-center.gl-mt-2
-        - if key.valid? && !key.expired?
-          = sprite_icon('key', css_class: icon_classes)
-        - else
-          %span.gl-display-inline-block.has-tooltip{ title: ssh_key_expiration_tooltip(key) }
-            = sprite_icon('warning-solid', css_class: icon_classes)
+  %td{ data: { label: s_('Profiles|Key'), testid: 'key' } }
+    .gl-align-items-center{ class: 'gl-display-flex! gl-pl-0!' }
+      - if key.valid? && !key.expired?
+        = sprite_icon('key', css_class: icon_classes)
+      - else
+        %span.gl-display-inline-block.has-tooltip{ title: ssh_key_expiration_tooltip(key) }
+          = sprite_icon('warning-solid', css_class: icon_classes)
+      %span.gl-text-truncate.gl-sm-ml-3
+        = key.fingerprint
 
-        %span.gl-text-truncate.gl-sm-ml-3
-          = key.fingerprint
+  %td{ data: { label: s_('Profiles|Usage type'), testid: 'usage-type' } }
+    = ssh_key_usage_types.invert[key.usage_type]
 
-      .gl-mt-3= html_escape(s_('Profiles|Created%{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at, html_class: 'gl-ml-2').html_safe}
+  %td{ data: { label: s_('Profiles|Created'), testid: 'created' } }
+    = html_escape(s_('%{time_ago}')) % { time_ago: time_ago_with_tooltip(key.created_at).html_safe}
 
-      .key-list-item-dates
-        %span.last-used-at.gl-mr-3
-          = s_('Profiles|Last used:')
-          -# TODO: Remove this conditional when https://gitlab.com/gitlab-org/gitlab/-/issues/324764 is resolved.
-          - if Feature.enabled?(:disable_ssh_key_used_tracking)
-            = _('Unavailable')
-            = link_to sprite_icon('question-o'), help_page_path('user/ssh.md', anchor: 'view-your-accounts-ssh-keys')
-          - else
-            = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
-        %span.expires.gl-mr-3
-          = key.expired? ? s_('Profiles|Expired:') : s_('Profiles|Expires:')
-          = key.expires_at ? key.expires_at.to_date : _('Never')
-        %span.last-used-at.gl-mr-3
-          = s_('Profiles|Usage type:')
-          = ssh_key_usage_types.invert[key.usage_type]
-      .gl-display-flex.gl-float-right
-        - if key.can_delete?
-          - if key.signing? && !is_admin
-            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-confirm-modal-button', data: ssh_key_revoke_modal_data(key, revoke_profile_key_path(key)) }) do
-              = _('Revoke')
-          .gl-pl-3
-            = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-confirm-modal-button', data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin)) }) do
-              = _('Remove')
+  %td{ data: { label: s_('Profiles|Last used'), testid: 'last-used' } }
+    -# TODO: Remove this conditional when https://gitlab.com/gitlab-org/gitlab/-/issues/324764 is resolved.
+    - if Feature.enabled?(:disable_ssh_key_used_tracking)
+      = _('Unavailable')
+      = link_to sprite_icon('question-o'), help_page_path('user/ssh.md', anchor: 'view-your-accounts-ssh-keys')
+    - else
+      = key.last_used_at ? time_ago_with_tooltip(key.last_used_at) : _('Never')
+
+  %td{ data: { label: s_('Profiles|Expires'), testid: 'expires' } }
+    - if key.expired?
+      %span.gl-text-red-500
+        = s_('Profiles|Expired')
+        = key.expires_at.to_date
+    - elsif key.expires_at
+      = key.expires_at.to_date
+    - else
+      = _('Never')
+
+  %td{ data: { label: _('Actions'), testid: 'actions' } }
+    %div{ class: 'gl-display-flex! gl-pl-0!' }
+      - if key.can_delete?
+        - if key.signing? && !is_admin
+          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-confirm-modal-button', 'aria-label' => _('Revoke'), data: ssh_key_revoke_modal_data(key, revoke_profile_key_path(key)) }) do
+            = _('Revoke')
+        .gl-pl-3
+          = render Pajamas::ButtonComponent.new(size: :small, icon: 'remove', button_options: { title: _('Remove'), 'aria-label' => _('Remove'), class: 'js-confirm-modal-button', data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin)) })

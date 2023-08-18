@@ -10,19 +10,19 @@ module Integrations
     validate :number_of_recipients_within_limit, if: :validate_recipients?
 
     field :recipients,
-      type: 'textarea',
+      type: :textarea,
       help: -> { _('Comma-separated list of email addresses.') },
       required: true
 
     field :notify_only_broken_pipelines,
-      type: 'checkbox'
+      type: :checkbox
 
     field :notify_only_default_branch,
-      type: 'checkbox',
+      type: :checkbox,
       api_only: true
 
     field :branches_to_be_notified,
-      type: 'select',
+      type: :select,
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
       choices: branch_choices
 

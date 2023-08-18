@@ -17,7 +17,7 @@ RSpec.describe StubFeatureFlags do
   # We inject dummy feature flag defintion
   # to ensure that we strong validate it's usage
   # as well
-  before(:all) do
+  before_all do
     Feature::Definition.definitions[dummy_feature_flag] = dummy_definition
   end
 
@@ -154,6 +154,7 @@ RSpec.describe StubFeatureFlags do
       it { expect(let_it_be_var).to eq true }
     end
 
+    # rubocop: disable RSpec/BeforeAll
     context 'before_all variable' do
       before_all do
         @suite_var = Feature.enabled?(dummy_feature_flag)
@@ -169,6 +170,7 @@ RSpec.describe StubFeatureFlags do
 
       it { expect(@suite_var).to eq true }
     end
+    # rubocop: enable RSpec/BeforeAll
 
     context 'with stub_feature_flags meta' do
       let(:var) { Feature.enabled?(dummy_feature_flag) }

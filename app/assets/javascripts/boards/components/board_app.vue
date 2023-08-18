@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { refreshCurrentPage, queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
@@ -6,10 +7,11 @@ import BoardContent from '~/boards/components/board_content.vue';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
 import eventHub from '~/boards/eventhub';
-import { listsQuery } from 'ee_else_ce/boards/constants';
-import { formatBoardLists } from 'ee_else_ce/boards/boards_util';
+import { listsQuery, FilterFields } from 'ee_else_ce/boards/constants';
+import { formatBoardLists, filterVariables, FiltersInfo } from 'ee_else_ce/boards/boards_util';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import errorQuery from '../graphql/client/error.query.graphql';
+import { setError } from '../graphql/cache_updates';
 
 export default {
   i18n: {
@@ -34,12 +36,12 @@ export default {
   ],
   data() {
     return {
+      boardListsApollo: {},
       activeListId: '',
       boardId: this.initialBoardId,
       filterParams: { ...this.initialFilterParams },
       addColumnFormVisible: false,
       isShowingEpicsSwimlanes: Boolean(queryToObject(window.location.search).group_by),
-      apolloError: null,
       error: null,
     };
   },
@@ -74,8 +76,11 @@ export default {
         const { lists } = data[this.boardType].board;
         return formatBoardLists(lists);
       },
-      error() {
-        this.apolloError = this.$options.i18n.fetchError;
+      error(error) {
+        setError({
+          error,
+          message: this.$options.i18n.fetchError,
+        });
       },
     },
     error: {
@@ -87,7 +92,6 @@ export default {
   computed: {
     ...mapGetters(['isSidebarOpen']),
     listQueryVariables() {
-      if (this.filterParams.groupBy) delete this.filterParams.groupBy;
       return {
         ...(this.isIssueBoard && {
           isGroup: this.isGroupBoard,
@@ -95,7 +99,7 @@ export default {
         }),
         fullPath: this.fullPath,
         boardId: this.boardId,
-        filters: this.filterParams,
+        filters: this.formattedFilterParams,
       };
     },
     isSwimlanesOn() {
@@ -109,6 +113,15 @@ export default {
     },
     activeList() {
       return this.activeListId ? this.boardListsApollo[this.activeListId] : undefined;
+    },
+    formattedFilterParams() {
+      if (this.filterParams.groupBy) delete this.filterParams.groupBy;
+      return filterVariables({
+        filters: this.filterParams,
+        issuableType: this.issuableType,
+        filterInfo: FiltersInfo,
+        filterFields: FilterFields,
+      });
     },
   },
   created() {
@@ -132,7 +145,6 @@ export default {
     },
     setFilters(filters) {
       const filterParams = { ...filters };
-      if (filterParams.groupBy) delete filterParams.groupBy;
       this.filterParams = filterParams;
     },
   },
@@ -151,13 +163,12 @@ export default {
       @toggleSwimlanes="isShowingEpicsSwimlanes = $event"
     />
     <board-content
-      v-if="!isApolloBoard || boardListsApollo"
       :board-id="boardId"
       :add-column-form-visible="addColumnFormVisible"
       :is-swimlanes-on="isSwimlanesOn"
-      :filter-params="filterParams"
+      :filter-params="formattedFilterParams"
       :board-lists-apollo="boardListsApollo"
-      :apollo-error="apolloError || error"
+      :apollo-error="error"
       :list-query-variables="listQueryVariables"
       @setActiveList="setActiveId"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"

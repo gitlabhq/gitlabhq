@@ -1,0 +1,8 @@
+---
+name: new_graphql_users_autocomplete
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129348
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417757
+milestone: '16.3'
+type: development
+group: group::project management
+default_enabled: false

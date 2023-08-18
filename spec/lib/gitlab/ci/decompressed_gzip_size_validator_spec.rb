@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::DecompressedGzipSizeValidator, feature_category: :importers do
   let_it_be(:filepath) { File.join(Dir.tmpdir, 'decompressed_gzip_size_validator_spec.gz') }
 
-  before(:all) do
+  before_all do
     create_compressed_file
   end
 

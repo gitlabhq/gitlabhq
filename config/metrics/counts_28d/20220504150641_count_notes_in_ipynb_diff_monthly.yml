@@ -1,6 +1,5 @@
 ---
 key_path: redis_hll_counters.code_review.i_code_review_count_notes_in_ipynb_diff_monthly
-name: "count_notes_in_ipynb_diff_monthly"
 description: Monthly notes on ipynb diffs
 product_section: dev
 product_stage: create

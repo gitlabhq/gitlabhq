@@ -315,6 +315,30 @@ union = Gitlab::SQL::Union.new([projects, more_projects, ...])
 Project.from("(#{union.to_sql}) projects")
 ```
 
+The `FromUnion` model concern provides a more convenient method to produce the same result as above:
+
+```ruby
+class Project
+  include FromUnion
+  ...
+end
+
+Project.from_union(projects, more_projects, ...)
+```
+
+`UNION` is common through the codebase, but it's also possible to use the other SQL set operators of `EXCEPT` and `INTERSECT`:
+
+```ruby
+class Project
+  include FromIntersect
+  include FromExcept
+  ...
+end
+
+intersected = Project.from_intersect(all_projects, project_set_1, project_set_2)
+excepted = Project.from_except(all_projects, project_set_1, project_set_2)
+```
+
 ### Uneven columns in the `UNION` sub-queries
 
 When the `UNION` query has uneven columns in the `SELECT` clauses, the database returns an error.
@@ -354,7 +378,10 @@ values (the new column is missing), because the values are cached within the `Ac
 cache. These values are usually populated when the application boots up.
 
 At this point, the only fix would be a full application restart so that the schema cache gets
-updated.
+updated. Since [GitLab 16.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121957),
+the schema cache will be automatically reset so that subsequent queries
+will succeed. This reset can be disabled by disabling the `ops` feature
+flag `reset_column_information_on_statement_invalid`.
 
 The problem can be avoided if we always use `SELECT users.*` or we always explicitly define the
 columns.
@@ -460,6 +487,96 @@ Both methods use subtransactions internally if executed within the context of
 an existing transaction. This can significantly impact overall performance,
 especially if more than 64 live subtransactions are being used inside a single transaction.
 
+### Can I use `.safe_find_or_create_by`?
+
+If your code is generally isolated (for example it's executed in a worker only) and not wrapped with another transaction, then you can use `.safe_find_or_create_by`. However, there is no tooling to catch cases when someone else calls your code within a transaction. Using `.safe_find_or_create_by` will definitely carry some risks that cannot be eliminated completely at the moment.
+
+Additionally, we have a RuboCop rule `Performance/ActiveRecordSubtransactionMethods` that prevents the usage of `.safe_find_or_create_by`. This rule can be disabled on a case by case basis via `# rubocop:disable Performance/ActiveRecordSubtransactionMethods`.
+
+## Alternative 1: `UPSERT`
+
+The [`.upsert`](https://api.rubyonrails.org/v7.0.5/classes/ActiveRecord/Persistence/ClassMethods.html#method-i-upsert) method can be an alternative solution when the table is backed by a unique index.
+
+Simple usage of the `.upsert` method:
+
+```ruby
+BuildTrace.upsert(
+  {
+    build_id: build_id,
+    title: title
+  },
+  unique_by: :build_id
+)
+```
+
+A few things to be careful about:
+
+- The sequence for the primary key will be incremented, even if the record was only updated.
+- The created record is not returned. The `returning` option only returns data when an `INSERT` happens (new record).
+- `ActiveRecord` validations are not executed.
+
+An example of the `.upsert` method with validations and record loading:
+
+```ruby
+params = {
+  build_id: build_id,
+  title: title
+}
+
+build_trace = BuildTrace.new(params)
+
+unless build_trace.valid?
+  raise 'notify the user here'
+end
+
+BuildTrace.upsert(params, unique_by: :build_id)
+
+build_trace = BuildTrace.find_by!(build_id: build_id)
+
+# do something with build_trace here
+```
+
+The code snippet above will not work well if there is a model-level uniqueness validation on the `build_id` column because we invoke the validation before calling `.upsert`.
+
+To work around this, we have two options:
+
+- Remove the unqueness validation from the `ActiveRecord` model.
+- Use the [`on` keyword](https://guides.rubyonrails.org/active_record_validations.html#on) and implement context-specific validation.
+
+### Alternative 2: Check existence and rescue
+
+When the chance of concurrently creating the same record is very low, we can use a simpler approach:
+
+```ruby
+def my_create_method
+  params = {
+    build_id: build_id,
+    title: title
+  }
+
+  build_trace = BuildTrace
+    .where(build_id: params[:build_id])
+    .first
+
+  build_trace = BuildTrace.new(params) if build_trace.blank?
+
+  build_trace.update!(params)
+
+rescue ActiveRecord::RecordInvalid => invalid
+  retry if invalid.record&.errors&.of_kind?(:build_id, :taken)
+end
+```
+
+The method does the following:
+
+1. Look up the model by the unique column.
+1. If no record found, build a new one.
+1. Persist the record.
+
+There is a short race condition between the lookup query and the persist query where another process could insert the record and cause an `ActiveRecord::RecordInvalid` exception.
+
+The code rescues this particular exception and retries the operation. For the second run, the record would be successfully located. For example check [this block of code](https://gitlab.com/gitlab-org/gitlab/-/blob/0b51d7fbb97d4becf5fd40bc3b92f732bece85bd/ee/app/services/compliance_management/standards/gitlab/prevent_approval_by_author_service.rb#L20-30) in `PreventApprovalByAuthorService`.
+
 ## Monitor SQL queries in production
 
 GitLab team members can monitor slow or canceled queries on GitLab.com
@@ -468,3 +585,129 @@ searchable using Kibana.
 
 See [the runbook](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/patroni/pg_collect_query_data.md#searching-postgresql-logs-with-kibanaelasticsearch)
 for more details.
+
+## When to use common table expressions
+
+You can use common table expressions (CTEs) to create a temporary result set within a more complex query.
+You can also use a recursive CTE to reference the CTE's result set within
+the query itself. The following example queries a chain of
+`personal access tokens` referencing each other in the
+`previous_personal_access_token_id` column.
+
+```sql
+WITH RECURSIVE "personal_access_tokens_cte" AS (
+(
+    SELECT
+      "personal_access_tokens".*
+    FROM
+      "personal_access_tokens"
+    WHERE
+      "personal_access_tokens"."previous_personal_access_token_id" = 15)
+  UNION (
+    SELECT
+      "personal_access_tokens".*
+    FROM
+      "personal_access_tokens",
+      "personal_access_tokens_cte"
+    WHERE
+      "personal_access_tokens"."previous_personal_access_token_id" = "personal_access_tokens_cte"."id"))
+SELECT
+  "personal_access_tokens".*
+FROM
+  "personal_access_tokens_cte" AS "personal_access_tokens"
+
+ id | previous_personal_access_token_id
+----+-----------------------------------
+ 16 |                                15
+ 17 |                                16
+ 18 |                                17
+ 19 |                                18
+ 20 |                                19
+ 21 |                                20
+(6 rows)
+```
+
+As CTEs are temporary result sets, you can use them within another `SELECT`
+statement. Using CTEs with `UPDATE`, or `DELETE` could lead to unexpected
+behavior:
+
+Consider the following method:
+
+```ruby
+def personal_access_token_chain(token)
+  cte = Gitlab::SQL::RecursiveCTE.new(:personal_access_tokens_cte)
+  personal_access_token_table = Arel::Table.new(:personal_access_tokens)
+
+  cte << PersonalAccessToken
+           .where(personal_access_token_table[:previous_personal_access_token_id].eq(token.id))
+  cte << PersonalAccessToken
+           .from([personal_access_token_table, cte.table])
+           .where(personal_access_token_table[:previous_personal_access_token_id].eq(cte.table[:id]))
+  PersonalAccessToken.with.recursive(cte.to_arel).from(cte.alias_to(personal_access_token_table))
+end
+```
+
+It works as expected when it is used to query data:
+
+```sql
+> personal_access_token_chain(token)
+
+WITH RECURSIVE "personal_access_tokens_cte" AS (
+(
+    SELECT
+      "personal_access_tokens".*
+    FROM
+      "personal_access_tokens"
+    WHERE
+      "personal_access_tokens"."previous_personal_access_token_id" = 11)
+  UNION (
+    SELECT
+      "personal_access_tokens".*
+    FROM
+      "personal_access_tokens",
+      "personal_access_tokens_cte"
+    WHERE
+      "personal_access_tokens"."previous_personal_access_token_id" = "personal_access_tokens_cte"."id"))
+SELECT
+    "personal_access_tokens".*
+FROM
+    "personal_access_tokens_cte" AS "personal_access_tokens"
+```
+
+However, the CTE is dropped when used with `#update_all`. As a result, the method
+updates the entire table:
+
+```sql
+> personal_access_token_chain(token).update_all(revoked: true)
+
+UPDATE
+    "personal_access_tokens"
+SET
+    "revoked" = TRUE
+```
+
+To work around this behavior:
+
+1. Query the `ids` of the records:
+
+   ```ruby
+   > token_ids = personal_access_token_chain(token).pluck_primary_key
+   => [16, 17, 18, 19, 20, 21]
+   ```
+
+1. Use this array to scope `PersonalAccessTokens`:
+
+   ```ruby
+   PersonalAccessToken.where(id: token_ids).update_all(revoked: true)
+   ```
+
+Alternatively, combine these two steps:
+
+```ruby
+PersonalAccessToken
+  .where(id: personal_access_token_chain(token).pluck_primary_key)
+  .update_all(revoked: true)
+```
+
+NOTE:
+Avoid updating large volumes of unbounded data. If there are no [application limits](application_limits.md) on the data, or you are unsure about the data volume, you should [update the data in batches](database/iterating_tables_in_batches.md).

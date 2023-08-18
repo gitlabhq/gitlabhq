@@ -1,4 +1,5 @@
 import { mapValues, isString } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 
 export const REQUIRE_STRING_ERROR_MESSAGE =

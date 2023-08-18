@@ -64,7 +64,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 #### Step 1. Configure the **primary** site
 
-1. SSH into your GitLab **primary** site and login as root:
+1. SSH into your GitLab **primary** site and log in as root:
 
    ```shell
    sudo -i
@@ -75,7 +75,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ```ruby
    ##
    ## The unique identifier for the Geo site. See
-   ## https://docs.gitlab.com/ee/administration/geo_nodes.html#common-settings
+   ## https://docs.gitlab.com/ee/administration/geo_sites.html#common-settings
    ##
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
@@ -320,7 +320,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
 #### Step 2. Configure the **secondary** server
 
-1. SSH into your GitLab **secondary** site and login as root:
+1. SSH into your GitLab **secondary** site and log in as root:
 
    ```shell
    sudo -i
@@ -462,7 +462,7 @@ WARNING:
 Make sure to run this on the **secondary** site as it removes all PostgreSQL's
 data before running `pg_basebackup`.
 
-1. SSH into your GitLab **secondary** site and login as root:
+1. SSH into your GitLab **secondary** site and log in as root:
 
    ```shell
    sudo -i
@@ -680,7 +680,7 @@ and ensure password authentication is used.
 On each node running a Patroni instance on the primary site **starting on the Patroni
 Leader instance**:
 
-1. SSH into your Patroni instance and login as root:
+1. SSH into your Patroni instance and log in as root:
 
    ```shell
    sudo -i
@@ -791,7 +791,7 @@ see [the relevant documentation](../../postgresql/replication_and_failover.md).
 
 On each node running a PgBouncer instance on the **secondary** site:
 
-1. SSH into your PgBouncer node and login as root:
+1. SSH into your PgBouncer node and log in as root:
 
    ```shell
    sudo -i
@@ -850,7 +850,7 @@ and then you can switch over to another replica if you need to.
 
 For each node running a Patroni instance on the secondary site:
 
-1. SSH into your Patroni node and login as root:
+1. SSH into your Patroni node and log in as root:
 
    ```shell
    sudo -i
@@ -955,7 +955,7 @@ and other database best practices.
 
 On each node running the PgBouncer service for the PostgreSQL tracking database:
 
-1. SSH into your PgBouncer node and login as root:
+1. SSH into your PgBouncer node and log in as root:
 
    ```shell
    sudo -i
@@ -1017,7 +1017,7 @@ On each node running the PgBouncer service for the PostgreSQL tracking database:
 
 On each node running a Patroni instance on the secondary site for the PostgreSQL tracking database:
 
-1. SSH into your Patroni node and login as root:
+1. SSH into your Patroni node and log in as root:
 
    ```shell
    sudo -i
@@ -1083,7 +1083,7 @@ On each node running a Patroni instance on the secondary site for the PostgreSQL
 
 For each node running the `gitlab-rails`, `sidekiq`, and `geo-logcursor` services:
 
-1. SSH into your node and login as root:
+1. SSH into your node and log in as root:
 
    ```shell
    sudo -i

@@ -2583,7 +2583,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         link = create(:project_group_link, project: project, group: group)
 
         get api(path, admin, admin_mode: true)
-
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq(project.id)
         expect(json_response['description']).to eq(project.description)
@@ -2634,6 +2633,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['feature_flags_access_level']).to be_present
         expect(json_response['infrastructure_access_level']).to be_present
         expect(json_response['monitor_access_level']).to be_present
+        expect(json_response).to have_key('emails_disabled')
+        expect(json_response).to have_key('emails_enabled')
       end
 
       it 'exposes all necessary attributes' do
@@ -2707,7 +2708,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['feature_flags_access_level']).to be_present
         expect(json_response['infrastructure_access_level']).to be_present
         expect(json_response['monitor_access_level']).to be_present
-        expect(json_response).to have_key('emails_disabled')
         expect(json_response['resolve_outdated_diff_discussions']).to eq(project.resolve_outdated_diff_discussions)
         expect(json_response['remove_source_branch_after_merge']).to be_truthy
         expect(json_response['container_registry_enabled']).to be_present
@@ -2738,6 +2738,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['ci_default_git_depth']).to eq(project.ci_default_git_depth)
         expect(json_response['ci_forward_deployment_enabled']).to eq(project.ci_forward_deployment_enabled)
+        expect(json_response['ci_forward_deployment_rollback_allowed']).to eq(project.ci_forward_deployment_rollback_allowed)
         expect(json_response['ci_allow_fork_pipelines_to_run_in_parent_project']).to eq(project.ci_allow_fork_pipelines_to_run_in_parent_project)
         expect(json_response['ci_separated_caches']).to eq(project.ci_separated_caches)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
@@ -2767,6 +2768,45 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         get api(path, user)
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(project.name)
+      end
+
+      context 'when a project is moved' do
+        let(:redirect_route) { 'new/project/location' }
+        let(:perform_request) { get api("/projects/#{CGI.escape(redirect_route)}", user), params: { license: true } }
+
+        before do
+          project.route.create_redirect(redirect_route)
+        end
+
+        it 'redirects to the new project location' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:moved_permanently)
+
+          url = response.headers['Location']
+          expect(url).to start_with("#{request.base_url}/api/v4/projects/#{project.id}")
+          expect(CGI.parse(URI(url).query)).to include({ 'license' => ['true'] })
+        end
+
+        context 'when a user do not have access' do
+          let(:user) { create(:user) }
+
+          it 'returns a 404 error' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when api_redirect_moved_projects is disabled' do
+          it 'returns a 404 error' do
+            stub_feature_flags(api_redirect_moved_projects: false)
+
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
       end
 
       it 'returns a 404 error if not found' do
@@ -3081,6 +3121,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response).not_to include(
           'ci_default_git_depth',
           'ci_forward_deployment_enabled',
+          'ci_forward_deployment_rollback_allowed',
           'ci_job_token_scope_enabled',
           'ci_separated_caches',
           'ci_allow_fork_pipelines_to_run_in_parent_project',
@@ -3654,7 +3695,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end.to change { project.members.count }.by(2)
 
       expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['message']).to eq('Successfully imported')
+      expect(json_response['status']).to eq('success')
     end
 
     it 'returns 404 if the source project does not exist' do
@@ -3711,6 +3752,22 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
       expect(json_response['message']).to eq('Import failed')
+    end
+
+    context 'when importing of members did not work for some or all members' do
+      it 'fails to import some members' do
+        project_bot = create(:user, :project_bot)
+        project2.add_developer(project_bot)
+
+        expect do
+          post api(path, user)
+        end.to change { project.members.count }.by(2)
+
+        expect(response).to have_gitlab_http_status(:created)
+        error_message = { project_bot.username => 'User project bots cannot be added to other groups / projects' }
+        expect(json_response['message']).to eq(error_message)
+        expect(json_response['total_members_count']).to eq(3)
+      end
     end
   end
 
@@ -3929,6 +3986,16 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['emails_disabled']).to eq(true)
+      end
+
+      it 'updates emails_enabled?' do
+        project_param = { emails_enabled: false }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['emails_enabled']).to eq(false)
       end
 
       it 'updates build_git_strategy' do
@@ -4150,6 +4217,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
                           merge_method: 'ff',
                           ci_default_git_depth: 20,
                           ci_forward_deployment_enabled: false,
+                          ci_forward_deployment_rollback_allowed: false,
                           ci_allow_fork_pipelines_to_run_in_parent_project: false,
                           ci_separated_caches: false,
                           description: 'new description' }
@@ -4423,6 +4491,29 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api(path, user3)
 
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when a project is moved' do
+      let_it_be(:redirect_route) { 'new/project/location' }
+      let_it_be(:path) { "/projects/#{CGI.escape(redirect_route)}/archive" }
+
+      before do
+        project.route.create_redirect(redirect_route)
+      end
+
+      it 'returns 405 error' do
+        post api(path, user)
+
+        expect(response).to have_gitlab_http_status(:method_not_allowed)
+      end
+
+      context 'when user do not have access to the project' do
+        it 'returns 404 error' do
+          post api(path, create(:user))
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
   end

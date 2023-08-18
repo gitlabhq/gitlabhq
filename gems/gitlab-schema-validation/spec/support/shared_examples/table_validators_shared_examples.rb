@@ -7,9 +7,13 @@ RSpec.shared_examples "table validators" do |validator, expected_result|
 
   let(:structure_file_path) { 'spec/fixtures/structure.sql' }
   let(:inconsistency_type) { validator.to_s }
+  let(:connection_class) { class_double(Class, name: 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter') }
   # rubocop:disable RSpec/VerifiedDoubleReference
-  let(:connection) { instance_double('connection', exec_query: database_tables, current_schema: 'public') }
+  let(:connection) do
+    instance_double('connection', class: connection_class, exec_query: database_tables, current_schema: 'public')
+  end
   # rubocop:enable RSpec/VerifiedDoubleReference
+
   let(:schema) { 'public' }
   let(:database) { Gitlab::Schema::Validation::Sources::Database.new(connection) }
   let(:structure_file) { Gitlab::Schema::Validation::Sources::StructureSql.new(structure_file_path, schema) }

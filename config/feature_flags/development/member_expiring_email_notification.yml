@@ -1,0 +1,8 @@
+---
+name: member_expiring_email_notification
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124577
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416581
+milestone: '16.3'
+type: development
+group: group::authentication and authorization
+default_enabled: false

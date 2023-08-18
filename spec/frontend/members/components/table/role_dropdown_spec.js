@@ -3,6 +3,7 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import * as Sentry from '@sentry/browser';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import RoleDropdown from '~/members/components/table/role_dropdown.vue';

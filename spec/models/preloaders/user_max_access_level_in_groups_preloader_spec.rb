@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Preloaders::UserMaxAccessLevelInGroupsPreloader do
+RSpec.describe Preloaders::UserMaxAccessLevelInGroupsPreloader, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
   let_it_be(:group1) { create(:group, :private).tap { |g| g.add_developer(user) } }
   let_it_be(:group2) { create(:group, :private).tap { |g| g.add_developer(user) } }

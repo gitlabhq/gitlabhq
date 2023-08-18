@@ -30,10 +30,6 @@ module Gitlab
             end
           end
 
-          def suggested_name
-            Gitlab::Usage::Metrics::NameSuggestion.for(:redis)
-          end
-
           private
 
           def time_constraints

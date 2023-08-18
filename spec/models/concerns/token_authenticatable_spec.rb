@@ -89,7 +89,7 @@ RSpec.describe ApplicationSetting, 'TokenAuthenticatable' do
   end
 
   describe 'multiple token fields' do
-    before(:all) do
+    before_all do
       described_class.send(:add_authentication_token_field, :yet_another_token)
     end
 

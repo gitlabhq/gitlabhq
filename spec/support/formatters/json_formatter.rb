@@ -79,7 +79,8 @@ module Support
           feature_category: example.metadata[:feature_category],
           ci_job_url: ENV['CI_JOB_URL'],
           retry_attempts: example.metadata[:retry_attempts],
-          level: example.metadata[:level]
+          level: example.metadata[:level],
+          allowed_to_be_slow: example.metadata[:allowed_to_be_slow]
         }
       end
 

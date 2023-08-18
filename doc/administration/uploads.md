@@ -52,7 +52,7 @@ _The uploads are stored by default in
      base_dir: uploads
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Using object storage **(FREE SELF)**
 
@@ -134,5 +134,5 @@ _The uploads are stored by default in
          region: eu-central-1
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 1. Migrate any existing local uploads to the object storage with the [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).

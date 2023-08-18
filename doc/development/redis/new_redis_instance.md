@@ -30,8 +30,8 @@ Before we can switch any features to using the new instance, we have to support
 configuring it and referring to it in the codebase. We must support the
 main installation types:
 
-- Source installs (including development environments) - [example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62767)
-- Omnibus - [example MR](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5316)
+- Self-compiled installations (including development environments) - [example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62767)
+- Linux package installations - [example MR](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5316)
 - Helm charts - [example MR](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2031)
 
 ### Fallback instance

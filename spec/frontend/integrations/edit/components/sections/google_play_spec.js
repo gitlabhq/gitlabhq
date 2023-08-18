@@ -34,7 +34,7 @@ describe('IntegrationSectionGooglePlay', () => {
 
       expect(field.exists()).toBe(true);
       expect(field.props()).toMatchObject({
-        label: 'Service account key (.json)',
+        label: 'Service account key (.JSON)',
         helpText: '',
       });
     });

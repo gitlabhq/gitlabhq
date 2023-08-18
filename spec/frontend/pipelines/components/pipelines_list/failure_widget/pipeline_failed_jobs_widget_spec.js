@@ -1,4 +1,4 @@
-import { GlButton, GlIcon, GlPopover } from '@gitlab/ui';
+import { GlButton, GlCard, GlIcon, GlPopover } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PipelineFailedJobsWidget from '~/pipelines/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
 import FailedJobsList from '~/pipelines/components/pipelines_list/failure_widget/failed_jobs_list.vue';
@@ -13,6 +13,7 @@ describe('PipelineFailedJobsWidget component', () => {
     isPipelineActive: false,
     pipelineIid: 1,
     pipelinePath: '/pipelines/1',
+    projectPath: 'namespace/project/',
   };
 
   const defaultProvide = {
@@ -29,9 +30,11 @@ describe('PipelineFailedJobsWidget component', () => {
         ...defaultProvide,
         ...provide,
       },
+      stubs: { GlCard },
     });
   };
 
+  const findFailedJobsCard = () => wrapper.findByTestId('failed-jobs-card');
   const findFailedJobsButton = () => wrapper.findComponent(GlButton);
   const findFailedJobsList = () => wrapper.findAllComponents(FailedJobsList);
   const findInfoIcon = () => wrapper.findComponent(GlIcon);
@@ -44,7 +47,7 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('renders the show failed jobs button with a count of 0', () => {
       expect(findFailedJobsButton().exists()).toBe(true);
-      expect(findFailedJobsButton().text()).toBe('Show failed jobs (0)');
+      expect(findFailedJobsButton().text()).toBe('Failed jobs (0)');
     });
   });
 
@@ -55,9 +58,7 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('renders the show failed jobs button with correct count', () => {
       expect(findFailedJobsButton().exists()).toBe(true);
-      expect(findFailedJobsButton().text()).toBe(
-        `Show failed jobs (${defaultProps.failedJobsCount})`,
-      );
+      expect(findFailedJobsButton().text()).toBe(`Failed jobs (${defaultProps.failedJobsCount})`);
     });
 
     it('renders the info icon', () => {
@@ -81,6 +82,24 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('renders the failed jobs widget', () => {
       expect(findFailedJobsList().exists()).toBe(true);
+    });
+
+    it('removes the CSS border classes', () => {
+      expect(findFailedJobsCard().attributes('class')).not.toContain(
+        'gl-border-white gl-hover-border-gray-100',
+      );
+    });
+  });
+
+  describe('when the job details are not expanded', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('has the CSS border classes', () => {
+      expect(findFailedJobsCard().attributes('class')).toContain(
+        'gl-border-white gl-hover-border-gray-100',
+      );
     });
   });
 

@@ -282,6 +282,19 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       end
     end
 
+    context 'when the from_ref and to_ref are the same' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { 'master' }
+      let(:to_ref) { "master" }
+
+      it 'shows a message that refs are identical' do
+        show_request
+
+        expect(response).to be_successful
+        expect(response.body).to include('are the same')
+      end
+    end
+
     context 'when the source ref is invalid' do
       let(:from_project_id) { nil }
       let(:from_ref) { "master%' AND 2554=4423 AND '%'='" }

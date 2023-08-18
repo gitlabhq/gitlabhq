@@ -1,10 +1,10 @@
-query pathLastCommit($projectPath: ID!, $path: String, $ref: String!) {
+query pathLastCommit($projectPath: ID!, $path: String, $ref: String!, $refType: RefType) {
   project(fullPath: $projectPath) {
     __typename
     id
     repository {
       __typename
-      paginatedTree(path: $path, ref: $ref) {
+      paginatedTree(path: $path, ref: $ref, refType: $refType) {
         __typename
         nodes {
           __typename

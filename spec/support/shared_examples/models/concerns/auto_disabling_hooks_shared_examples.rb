@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
+  let(:logger) { instance_double('Gitlab::WebHooks::Logger') }
+
+  before do
+    allow(hook).to receive(:logger).and_return(logger)
+    allow(logger).to receive(:info)
+  end
+
   shared_examples 'is tolerant of invalid records' do
     specify do
       hook.url = nil
@@ -83,6 +90,20 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         expect(find_hooks.disabled).to be_empty
       end
     end
+
+    context 'when silent mode is enabled' do
+      before do
+        stub_application_setting(silent_mode_enabled: true)
+      end
+
+      it 'causes no hooks to be considered executable' do
+        expect(find_hooks.executable).to be_empty
+      end
+
+      it 'causes all hooks to be considered disabled' do
+        expect(find_hooks.disabled.count).to eq(16)
+      end
+    end
   end
 
   describe '#executable?', :freeze_time do
@@ -157,6 +178,23 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
       expect { hook.enable! }.to change { hook.executable? }.from(false).to(true)
     end
 
+    it 'logs relevant information' do
+      hook.recent_failures = 1000
+      hook.disabled_until = 1.hour.from_now
+
+      expect(logger)
+        .to receive(:info)
+        .with(a_hash_including(
+          hook_id: hook.id,
+          action: 'enable',
+          recent_failures: 0,
+          disabled_until: nil,
+          backoff_count: 0
+        ))
+
+      hook.enable!
+    end
+
     it 'does not update hooks unless necessary' do
       hook
 
@@ -174,16 +212,56 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
     end
   end
 
-  describe '#backoff!' do
+  describe '#backoff!', :freeze_time do
     context 'when we have not backed off before' do
       it 'does not disable the hook' do
         expect { hook.backoff! }.not_to change { hook.executable? }.from(true)
+      end
+
+      it 'increments recent_failures' do
+        expect { hook.backoff! }.to change { hook.recent_failures }.from(0).to(1)
+      end
+
+      it 'logs relevant information' do
+        expect(logger)
+          .to receive(:info)
+          .with(a_hash_including(
+            hook_id: hook.id, action: 'backoff', recent_failures: 1
+          ))
+
+        hook.backoff!
       end
     end
 
     context 'when we have exhausted the grace period' do
       before do
         hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD)
+      end
+
+      it 'disables the hook' do
+        expect { hook.backoff! }.to change { hook.executable? }.from(true).to(false)
+      end
+
+      it 'increments backoff_count' do
+        expect { hook.backoff! }.to change { hook.backoff_count }.from(0).to(1)
+      end
+
+      it 'sets disabled_until' do
+        expect { hook.backoff! }.to change { hook.disabled_until }.from(nil).to(1.minute.from_now)
+      end
+
+      it 'logs relevant information' do
+        expect(logger)
+          .to receive(:info)
+          .with(a_hash_including(
+            hook_id: hook.id,
+            action: 'backoff',
+            recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1,
+            disabled_until: 1.minute.from_now,
+            backoff_count: 1
+          ))
+
+        hook.backoff!
       end
 
       context 'when the hook is permanently disabled' do
@@ -204,15 +282,15 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         def run_expectation
           expect { hook.backoff! }.to change { hook.backoff_count }.by(1)
         end
+      end
 
-        context 'when the flag is disabled' do
-          before do
-            stub_feature_flags(auto_disabling_web_hooks: false)
-          end
+      context 'when the flag is disabled' do
+        before do
+          stub_feature_flags(auto_disabling_web_hooks: false)
+        end
 
-          it 'does not increment backoff count' do
-            expect { hook.failed! }.not_to change { hook.backoff_count }
-          end
+        it 'does not increment backoff count' do
+          expect { hook.failed! }.not_to change { hook.backoff_count }
         end
       end
     end
@@ -232,36 +310,6 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         it 'does not increment recent failure count' do
           expect { hook.failed! }.not_to change { hook.recent_failures }
         end
-      end
-    end
-  end
-
-  describe '#disable!' do
-    it 'disables a hook' do
-      expect { hook.disable! }.to change { hook.executable? }.from(true).to(false)
-    end
-
-    context 'when the flag is disabled' do
-      before do
-        stub_feature_flags(auto_disabling_web_hooks: false)
-      end
-
-      it 'does not disable the hook' do
-        expect { hook.disable! }.not_to change { hook.executable? }
-      end
-    end
-
-    it 'does nothing if the hook is already disabled' do
-      allow(hook).to receive(:permanently_disabled?).and_return(true)
-
-      sql_count = ActiveRecord::QueryRecorder.new { hook.disable! }.count
-
-      expect(sql_count).to eq(0)
-    end
-
-    include_examples 'is tolerant of invalid records' do
-      def run_expectation
-        expect { hook.disable! }.to change { hook.executable? }.from(true).to(false)
       end
     end
   end
@@ -310,7 +358,7 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
 
     context 'when hook has been disabled' do
       before do
-        hook.disable!
+        hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
       end
 
       it 'is true' do
@@ -336,7 +384,7 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
 
     context 'when hook has been disabled' do
       before do
-        hook.disable!
+        hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
       end
 
       it { is_expected.to eq :disabled }
@@ -352,7 +400,7 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
 
     context 'when hook has been backed off' do
       before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::FAILURE_THRESHOLD + 1)
+        hook.update!(recent_failures: WebHooks::AutoDisabling::EXCEEDED_FAILURE_THRESHOLD)
         hook.disabled_until = 1.hour.from_now
       end
 

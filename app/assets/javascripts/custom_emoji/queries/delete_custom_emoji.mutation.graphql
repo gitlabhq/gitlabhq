@@ -1,0 +1,7 @@
+mutation deleteCustomEmoji($id: CustomEmojiID!) {
+  destroyCustomEmoji(input: { id: $id }) {
+    customEmoji {
+      id
+    }
+  }
+}

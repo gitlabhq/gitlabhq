@@ -187,6 +187,7 @@ Layout/LineEndStringConcatenationIndentation:
     - 'lib/gitlab/path_regex.rb'
     - 'lib/gitlab/reference_counter.rb'
     - 'lib/gitlab/regex.rb'
+    - 'lib/gitlab/regex/bulk_imports.rb'
     - 'lib/gitlab/seeders/ci/runner/runner_fleet_seeder.rb'
     - 'lib/gitlab/slash_commands/presenters/run.rb'
     - 'lib/gitlab/tracking/standard_context.rb'

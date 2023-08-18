@@ -35,6 +35,10 @@ class SearchController < ApplicationController
     update_scope_for_code_search
   end
 
+  before_action only: :show do
+    push_frontend_feature_flag(:search_projects_hide_archived, current_user)
+  end
+
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
 
   layout 'search'
@@ -107,7 +111,7 @@ class SearchController < ApplicationController
   end
 
   def autocomplete
-    term = params[:term]
+    term = params.require(:term)
 
     @project = search_service.project
     @ref = params[:project_ref] if params[:project_ref].present?
@@ -248,7 +252,7 @@ class SearchController < ApplicationController
   end
 
   def search_type
-    'basic'
+    search_service.search_type
   end
 end
 

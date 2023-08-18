@@ -37,11 +37,6 @@ export default {
   i18n: {
     listTitle: s__('DependencyProxy|Image list'),
   },
-  computed: {
-    showPagination() {
-      return this.pagination.hasNextPage || this.pagination.hasPreviousPage;
-    },
-  },
 };
 </script>
 
@@ -68,7 +63,6 @@ export default {
       </div>
       <div class="gl-display-flex gl-justify-content-center">
         <gl-keyset-pagination
-          v-if="showPagination"
           v-bind="pagination"
           class="gl-mt-3"
           @prev="$emit('prev-page')"

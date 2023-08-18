@@ -95,6 +95,10 @@ module API
             params
           ]
         end
+
+        def rescue_not_found?
+          Feature.disabled?(:handle_structured_gitaly_errors)
+        end
       end
 
       desc 'Get a project repository tree' do
@@ -123,13 +127,16 @@ module API
         end
       end
       get ':id/repository/tree', urgency: :low do
-        tree_finder = ::Repositories::TreeFinder.new(user_project, declared_params(include_missing: false))
+        tree_finder = ::Repositories::TreeFinder.new(user_project, declared_params(include_missing: false).merge(rescue_not_found: rescue_not_found?))
 
         not_found!("Tree") unless tree_finder.commit_exists?
 
         tree = Gitlab::Pagination::GitalyKeysetPager.new(self, user_project).paginate(tree_finder)
 
         present tree, with: Entities::TreeObject
+
+      rescue Gitlab::Git::Index::IndexError => e
+        not_found!(e.message)
       end
 
       desc 'Get raw blob contents from the repository'

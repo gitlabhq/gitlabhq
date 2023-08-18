@@ -41,7 +41,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
         total_lfs_objects_size = project_stat1.lfs_objects_size + project_stat2.lfs_objects_size
         total_build_artifacts_size = project_stat1.build_artifacts_size + project_stat2.build_artifacts_size
         total_packages_size = project_stat1.packages_size + project_stat2.packages_size
-        total_storage_size = project_stat1.storage_size + project_stat2.storage_size
+        total_storage_size = project_stat1.reload.storage_size + project_stat2.reload.storage_size
         total_snippets_size = project_stat1.snippets_size + project_stat2.snippets_size
         total_pipeline_artifacts_size = project_stat1.pipeline_artifacts_size + project_stat2.pipeline_artifacts_size
         total_uploads_size = project_stat1.uploads_size + project_stat2.uploads_size
@@ -64,7 +64,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
         root_storage_statistics.reload
 
-        total_storage_size = project_stat1.storage_size + project_stat2.storage_size + 999
+        total_storage_size = project_stat1.reload.storage_size + project_stat2.reload.storage_size + 999
 
         expect(root_storage_statistics.container_registry_size).to eq(999)
         expect(root_storage_statistics.storage_size).to eq(total_storage_size)
@@ -162,7 +162,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
         total_dependency_proxy_size = root_namespace_stat.dependency_proxy_size +
           group1_namespace_stat.dependency_proxy_size + group2_namespace_stat.dependency_proxy_size +
           subgroup1_namespace_stat.dependency_proxy_size
-        total_storage_size = project_stat1.storage_size + project_stat2.storage_size +
+        total_storage_size = project_stat1.reload.storage_size + project_stat2.reload.storage_size +
           root_namespace_stat.storage_size + group1_namespace_stat.storage_size +
           group2_namespace_stat.storage_size + subgroup1_namespace_stat.storage_size
 
@@ -183,7 +183,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
         root_storage_statistics.recalculate!
 
-        total_storage_size = project_stat1.storage_size + project_stat2.storage_size
+        total_storage_size = project_stat1.reload.storage_size + project_stat2.reload.storage_size
 
         expect(root_storage_statistics.storage_size).to eq(total_storage_size)
       end
@@ -204,7 +204,8 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
         root_storage_statistics.recalculate!
 
-        expect(root_storage_statistics.storage_size).to eq(project_stat1.storage_size + project_stat2.storage_size)
+        expect(root_storage_statistics.storage_size)
+          .to eq(project_stat1.reload.storage_size + project_stat2.reload.storage_size)
         expect(root_storage_statistics.dependency_proxy_size).to eq(0)
       end
 
@@ -249,7 +250,8 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
         root_storage_statistics.recalculate!
 
-        expect(root_storage_statistics.reload.private_forks_storage_size).to eq(project_fork.statistics.storage_size)
+        expect(root_storage_statistics.reload.private_forks_storage_size)
+          .to eq(project_fork.statistics.reload.storage_size)
       end
 
       it 'aggregates total public forks size' do
@@ -258,7 +260,8 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
         root_storage_statistics.recalculate!
 
-        expect(root_storage_statistics.reload.public_forks_storage_size).to eq(project_fork.statistics.storage_size)
+        expect(root_storage_statistics.reload.public_forks_storage_size)
+          .to eq(project_fork.statistics.reload.storage_size)
       end
 
       it 'aggregates total internal forks size' do
@@ -267,7 +270,8 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
         root_storage_statistics.recalculate!
 
-        expect(root_storage_statistics.reload.internal_forks_storage_size).to eq(project_fork.statistics.storage_size)
+        expect(root_storage_statistics.reload.internal_forks_storage_size)
+          .to eq(project_fork.statistics.reload.storage_size)
       end
 
       it 'aggregates multiple forks' do
@@ -277,7 +281,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
         root_storage_statistics.recalculate!
 
-        total_size = fork_a.statistics.storage_size + fork_b.statistics.storage_size
+        total_size = fork_a.statistics.reload.storage_size + fork_b.statistics.reload.storage_size
         expect(root_storage_statistics.reload.private_forks_storage_size).to eq(total_size)
       end
 
@@ -289,7 +293,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
         root_storage_statistics.recalculate!
 
-        expect(root_storage_statistics.reload.private_forks_storage_size).to eq(fork_a.statistics.storage_size)
+        expect(root_storage_statistics.reload.private_forks_storage_size).to eq(fork_a.statistics.reload.storage_size)
       end
 
       it 'aggregates forks in subgroups' do
@@ -299,7 +303,8 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
         root_storage_statistics.recalculate!
 
-        expect(root_storage_statistics.reload.private_forks_storage_size).to eq(project_fork.statistics.storage_size)
+        expect(root_storage_statistics.reload.private_forks_storage_size)
+          .to eq(project_fork.statistics.reload.storage_size)
       end
 
       it 'aggregates forks along with total storage size' do
@@ -309,9 +314,9 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
         root_storage_statistics.recalculate!
 
         root_storage_statistics.reload
-        expect(root_storage_statistics.private_forks_storage_size).to eq(project_fork.statistics.storage_size)
+        expect(root_storage_statistics.private_forks_storage_size).to eq(project_fork.statistics.reload.storage_size)
 
-        total = project.statistics.storage_size + project_fork.statistics.storage_size
+        total = project.statistics.storage_size + project_fork.statistics.reload.storage_size
         expect(root_storage_statistics.storage_size).to eq(total)
       end
 

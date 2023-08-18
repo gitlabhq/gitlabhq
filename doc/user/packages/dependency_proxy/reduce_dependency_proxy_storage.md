@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce Dependency Proxy Storage **(FREE)**
+# Reduce Dependency Proxy Storage **(FREE ALL)**
 
 There's no automatic removal process for blobs. Unless you delete them manually, they're stored
 indefinitely. Since this impacts your

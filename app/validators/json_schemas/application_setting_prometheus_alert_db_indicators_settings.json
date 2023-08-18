@@ -1,0 +1,54 @@
+{
+  "description": "Prometheus Alert Based Db indicators Settings",
+  "type": "object",
+  "properties": {
+    "prometheus_api_url": {
+      "type": "string"
+    },
+    "apdex_sli_query": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "string"
+        },
+        "ci": {
+          "type": "string"
+        }
+      }
+    },
+    "apdex_slo": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "number"
+        },
+        "ci": {
+          "type": "number"
+        }
+      }
+    },
+    "wal_rate_sli_query": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "string"
+        },
+        "ci": {
+          "type": "string"
+        }
+      }
+    },
+    "wal_rate_slo": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "integer"
+        },
+        "ci": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

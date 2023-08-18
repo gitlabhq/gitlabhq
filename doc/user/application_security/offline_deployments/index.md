@@ -5,7 +5,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Offline environments **(ULTIMATE SELF)**
+# Offline environments **(FREE SELF)**
 
 NOTE:
 To set up an offline environment, you must receive an [opt-out exemption of cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#offline-cloud-licensing) prior to purchase. For more details, contact your GitLab sales representative.
@@ -93,7 +93,7 @@ above. You can find more information at each of the pages below:
 - [Secret Detection offline directions](../secret_detection/index.md#running-secret-detection-in-an-offline-environment)
 - [DAST offline directions](../dast/run_dast_offline.md#run-dast-in-an-offline-environment)
 - [API Fuzzing offline directions](../api_fuzzing/index.md#running-api-fuzzing-in-an-offline-environment)
-- [License Compliance offline directions](../../compliance/license_compliance/index.md#running-license-compliance-in-an-offline-environment)
+- [License Scanning offline directions](../../compliance/license_scanning_of_cyclonedx_files/index.md#running-in-an-offline-environment)
 - [Dependency Scanning offline directions](../dependency_scanning/index.md#running-dependency-scanning-in-an-offline-environment)
 
 ## Loading Docker images onto your offline host

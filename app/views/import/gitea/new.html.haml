@@ -1,24 +1,25 @@
-- page_title _("Gitea Import")
+- page_title _("Gitea import")
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
 %h1.page-title.gl-font-size-h-display
   = custom_icon('gitea_logo')
-  = _('Import Projects from Gitea')
+  = _('Import projects from Gitea')
 
 %p
-  - link_to_personal_token = link_to(_('Personal Access Token'), 'https://docs.gitea.io/en-us/api-usage/#authentication-via-the-api')
-  = _('To get started, please enter your Gitea Host URL and a %{link_to_personal_token}.').html_safe % { link_to_personal_token: link_to_personal_token }
+  - link_to_personal_token = link_to(_('personal access token'), 'https://docs.gitea.io/en-us/api-usage/#authentication-via-the-api')
+  = _('To get started, please enter your Gitea host URL and a %{link_to_personal_token}.').html_safe % { link_to_personal_token: link_to_personal_token }
 
 = form_tag personal_access_token_import_gitea_path do
   = hidden_field_tag(:namespace_id, params[:namespace_id])
   .form-group.row
-    = label_tag :gitea_host_url, _('Gitea Host URL'), class: 'col-form-label col-sm-2'
+    = label_tag :gitea_host_url, _('Gitea host URL'), class: 'col-form-label col-sm-2'
     .col-sm-4
       = text_field_tag :gitea_host_url, nil, placeholder: 'https://gitea.com', class: 'form-control gl-form-input'
   .form-group.row
-    = label_tag :personal_access_token, _('Personal Access Token'), class: 'col-form-label col-sm-2'
+    = label_tag :personal_access_token, _('Personal access token'), class: 'col-form-label col-sm-2'
     .col-sm-4
       = text_field_tag :personal_access_token, nil, class: 'form-control gl-form-input'
   .form-actions
-    = submit_tag _('List Your Gitea Repositories'), class: 'gl-button btn btn-confirm'
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm) do
+      = _('List your Gitea repositories')

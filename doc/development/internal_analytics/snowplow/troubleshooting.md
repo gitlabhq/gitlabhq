@@ -21,8 +21,8 @@ You will be alarmed via a [Sisense alert](https://app.periscopedata.com/app/gitl
 ### Locating the problem
 
 First you need to identify at which stage in Snowplow the data pipeline the drop is occurring.
-Start at [Snowplow dashboard](https://console.aws.amazon.com/systems-manager/resource-groups/cloudwatch?dashboard=SnowPlow&region=us-east-1#) on CloudWatch,
-if you do not have access to CloudWatch you need to create an [access request issue](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/9730) first.
+Start at [Snowplow dashboard](https://console.aws.amazon.com/systems-manager/resource-groups/cloudwatch?dashboard=SnowPlow&region=us-east-1#) on CloudWatch.
+If you do not have access to CloudWatch, GitLab team members can create an access request issue, similar to this one: `https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/9730`.
 While on CloudWatch dashboard set time range to last 4 weeks, to get better picture of system characteristics over time. Than visit following charts:
 
 1. `ELB New Flow Count` and `Collector Auto Scaling Group Network In/Out` - they show in order: number of connections to collectors via load balancers and data volume (in bytes) processed by collectors. If there is drop visible there, it means less events were fired from the GitLab application. Proceed to [application layer guide](#troubleshooting-gitlab-application-layer) for more details
@@ -42,7 +42,7 @@ or even a result of a public holiday in some regions of the world with a larger 
 1. Check (via [Grafana explore tab](https://dashboards.gitlab.net/explore) ) following Prometheus counters `gitlab_snowplow_events_total`, `gitlab_snowplow_failed_events_total` and `gitlab_snowplow_successful_events_total` to see how many events were fired correctly from GitLab.com. Example query to use `sum(rate(gitlab_snowplow_successful_events_total{env="gprd"}[5m])) / sum(rate(gitlab_snowplow_events_total{env="gprd"}[5m]))` would chart rate at which number of good events rose in comparison to events sent in total. If number drops from 1 it means that problem might be in communication between GitLab and AWS collectors fleet.
 1. Check [logs in Kibana](https://log.gprd.gitlab.net/app/discover#) and filter with `{ "query": { "match_phrase": { "json.message": "failed to be reported to collector at" } } }` if there are some failed events logged
 
-We conducted an investigation into an unexpected drop in snowplow events volume. 
+We conducted an investigation into an unexpected drop in snowplow events volume.
 
 GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/335206`
 

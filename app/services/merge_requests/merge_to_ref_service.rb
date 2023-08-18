@@ -13,13 +13,12 @@ module MergeRequests
   class MergeToRefService < MergeRequests::MergeBaseService
     extend ::Gitlab::Utils::Override
 
-    def execute(merge_request, cache_merge_to_ref_calls = false)
+    def execute(merge_request)
       @merge_request = merge_request
 
       error_check!
 
-      commit_id = commit(cache_merge_to_ref_calls)
-
+      commit_id = extracted_merge_to_ref
       raise_error('Conflicts detected during merge') unless commit_id
 
       commit = project.commit(commit_id)
@@ -56,16 +55,6 @@ module MergeRequests
       params[:first_parent_ref] || merge_request.target_branch_ref
     end
 
-    def commit(cache_merge_to_ref_calls = false)
-      if cache_merge_to_ref_calls
-        Rails.cache.fetch(cache_key, expires_in: 1.day) do
-          extracted_merge_to_ref
-        end
-      else
-        extracted_merge_to_ref
-      end
-    end
-
     def extracted_merge_to_ref
       repository.merge_to_ref(current_user,
         source_sha: source,
@@ -75,10 +64,6 @@ module MergeRequests
         first_parent_ref: first_parent_ref)
     rescue Gitlab::Git::PreReceiveError, Gitlab::Git::CommandError => error
       raise MergeError, error.message
-    end
-
-    def cache_key
-      [:merge_to_ref_service, project.full_path, merge_request.target_branch_sha, merge_request.source_branch_sha]
     end
   end
 end

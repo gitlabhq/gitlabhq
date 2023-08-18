@@ -5,7 +5,7 @@ group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Storage usage quota **(FREE)**
+# Storage usage quota **(FREE ALL)**
 
 Storage usage statistics are available for projects and namespaces. You can use that information to
 manage storage usage within the applicable quotas.
@@ -112,6 +112,10 @@ Depending on your role, you can also use the following methods to manage or redu
 - [Reduce repository size](project/repository/reducing_the_repo_size_using_git.md).
 - [Reduce container registry storage](packages/container_registry/reduce_container_registry_storage.md).
 - [Reduce wiki repository size](../administration/wikis/index.md#reduce-wiki-repository-size).
+- [Manage artifact expiration period](../ci/yaml/index.md#artifactsexpire_in).
+- [Reduce build artifact storage](../ci/jobs/job_artifacts.md#delete-job-log-and-artifacts).
+
+To automate storage usage analysis and management, see the [storage management automation](storage_management_automation.md) documentation.
 
 ## Manage your transfer usage
 
@@ -161,7 +165,7 @@ example, no additional storage has yet been purchased.
 To remove the read-only state from the Red and Green projects, 50 GB additional storage is purchased.
 
 Assuming the Green and Red projects' repositories and LFS grow past the 10 GB quota, the purchased storage
-available decreases. All projects remain read-only because 40 GB purchased storage is available:
+available decreases. All projects no longer have the read-only status because 40 GB purchased storage is available:
 50 GB (purchased storage) - 10 GB (total excess storage used).
 
 | Repository | Storage used | Excess storage | Quota   | Status            |
@@ -204,6 +208,20 @@ To prevent exceeding the namespace storage quota, you can:
 - [Purchase additional storage](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer) units at $60/year for 10 GB of storage.
 - [Start a trial](https://about.gitlab.com/free-trial/) or [upgrade to GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) which include higher limits and features that enable growing teams to ship faster without sacrificing on quality.
 - [Talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
+
+### View project fork storage usage
+
+A cost factor is applied to the storage consumed by project forks so that forks consume less namespace storage than their actual size.
+
+To view the amount of namespace storage the fork has used:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Settings > Usage Quotas**.
+1. Select the **Storage** tab. The **Total** column displays the amount of namespace storage used by the fork as a portion of the actual size of the fork on disk.
+
+The cost factor applies to the project repository, LFS objects, job artifacts, packages, snippets, and the wiki.
+
+The cost factor does not apply to private forks in namespaces on the Free plan.
 
 ### Namespace storage limit application schedule
 

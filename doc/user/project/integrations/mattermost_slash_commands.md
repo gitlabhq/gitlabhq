@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Mattermost slash commands **(FREE)**
+# Mattermost slash commands **(FREE ALL)**
 
 You can use [slash commands](gitlab_slack_application.md#slash-commands) to run common GitLab operations,
 like creating an issue, from a [Mattermost](https://mattermost.com/) chat environment.
@@ -34,7 +34,7 @@ you can automatically configure Mattermost slash commands:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Mattermost slash commands**.
-1. In **Enable integration**, ensure the **Active** checkbox is selected.
+1. Under **Enable integration**, ensure the **Active** checkbox is selected.
 1. Select **Add to Mattermost**, and select **Save changes**.
 
 ## Configure manually
@@ -42,7 +42,7 @@ you can automatically configure Mattermost slash commands:
 To manually configure slash commands in Mattermost, you must:
 
 1. [Enable custom slash commands in Mattermost](#enable-custom-slash-commands-in-mattermost).
-   (This step is required only for installations from source.)
+   This step is required only for self-compiled installations.
 1. [Get configuration values from GitLab](#get-configuration-values-from-gitlab).
 1. [Create a slash command in Mattermost](#create-a-slash-command-in-mattermost).
 1. [Provide the Mattermost token to GitLab](#provide-the-mattermost-token-to-gitlab).

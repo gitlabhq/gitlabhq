@@ -1,7 +1,6 @@
-- can_edit_max_page_size=can?(current_user, :update_max_pages_size)
-- can_enforce_https_only=Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+- can_edit_max_page_size = can?(current_user, :update_max_pages_size)
+- can_enforce_https_only = Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
 
-- return unless can_edit_max_page_size || can_enforce_https_only
 = gitlab_ui_form_for @project, url: project_pages_path(@project), html: { class: 'inline', title: pages_https_only_title } do |f|
   - if can_edit_max_page_size
     = render_if_exists 'shared/pages/max_pages_size_input', form: f
@@ -17,14 +16,13 @@
       %p.gl-pl-6
         = s_("GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}").html_safe % { docs_link_start: docs_link_start, link_end: link_end }
 
-  - if Feature.enabled?(:pages_unique_domain, @project)
-    .form-group
-      = f.fields_for :project_setting do |settings|
-        = settings.gitlab_ui_checkbox_component :pages_unique_domain_enabled,
-          s_('GitLabPages|Use unique domain'),
-          label_options: { class: 'label-bold' }
-        %p.gl-pl-6
-          = s_("GitLabPages|When enabled, a unique domain is generated to access pages.").html_safe
+  .form-group
+    = f.fields_for :project_setting do |settings|
+      = settings.gitlab_ui_checkbox_component :pages_unique_domain_enabled,
+        s_('GitLabPages|Use unique domain'),
+        label_options: { class: 'label-bold' }
+      %p.gl-pl-6
+        = s_("GitLabPages|When enabled, a unique domain is generated to access pages.").html_safe
 
   .gl-mt-3
     = f.submit s_('GitLabPages|Save changes'), pajamas_button: true

@@ -1,5 +1,6 @@
 <script>
 import { GlModal, GlButton } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { sprintf, __ } from '~/locale';
 import ChangedFileIcon from '~/vue_shared/components/changed_file_icon.vue';

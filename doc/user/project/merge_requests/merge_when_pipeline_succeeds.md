@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Auto-merge **(FREE)**
+# Auto-merge **(FREE ALL)**
 
 > **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
 
@@ -41,6 +41,7 @@ To do this from the GitLab user interface:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Code > Merge requests**.
+1. Select the merge request to edit.
 1. Scroll to the merge request reports section.
 1. Optional. Select your desired merge options, such as **Delete source branch**,
    **Squash commits**, or **Edit commit message**.
@@ -64,6 +65,7 @@ To do this:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Code > Merge requests**.
+1. Select the merge request to edit.
 1. Scroll to the merge request reports section.
 1. Select **Cancel auto-merge**.
 

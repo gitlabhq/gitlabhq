@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { TYPE_ISSUE } from '~/issues/constants';
 import CollapsedAssigneeList from './collapsed_assignee_list.vue';
@@ -48,7 +49,7 @@ export default {
   <div>
     <collapsed-assignee-list :users="sortedAssigness" :issuable-type="issuableType" />
 
-    <div data-testid="expanded-assignee" class="value hide-collapsed">
+    <div class="value hide-collapsed">
       <span v-if="hasNoUsers" class="no-value" data-testid="no-value">
         {{ __('None') }}
         <template v-if="editable">

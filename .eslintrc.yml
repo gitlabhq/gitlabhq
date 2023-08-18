@@ -119,19 +119,25 @@ rules:
       message: 'Use directive at ~/vue_shared/directives/safe_html.js instead.'
     - selector: Literal[value=/docs.gitlab.+\u002Fee/]
       message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
-    - selector: Literal[value=/(?=.*docs.gitlab.*)(?=^(?!.*\u002Fee\b).*$)/]
+    - selector: TemplateElement[value.cooked=/docs.gitlab.+\u002Fee/]
+      message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
+    - selector: Literal[value=/(?=.*docs.gitlab.*)(?!.*\u002Fee\b.*)/]
       message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`'
-    - selector: Literal[value=/(?=.*about.gitlab.*)(?=^(?!.*\u002Fblog\b).*$)/]
+    - selector: TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\u002Fee\b.*)/]
+      message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`'
+    - selector: Literal[value=/(?=.*about.gitlab.*)(?!.*\u002Fblog\b.*)/]
       message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`'
-    - selector: TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\u002Fjh/]
+    - selector: TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\u002Fblog\b.*)/]
+      message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`'
+    - selector: TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\u002Fjh|\u002Fee/]
       message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
   no-restricted-imports:
     - error
     - paths:
         - name: mousetrap
           message: 'Import { Mousetrap } from ~/lib/mousetrap instead.'
-  # See https://gitlab.com/gitlab-org/gitlab/-/issues/360551
-  vue/multi-word-component-names: off
+        - name: vuex
+          message: 'See our documentation on "Migrating from VueX" for tips on how to avoid adding new VueX stores.'
   unicorn/prefer-dom-node-dataset:
     - error
   no-unsanitized/method:
@@ -165,6 +171,20 @@ overrides:
           message: Avoid asserting disabled attribute exact value, because Vue.js 2 and Vue.js 3 renders it differently. Use toBeDefined / toBeUndefined instead
         - selector: MemberExpression[object.object.name='Vue'][object.property.name='config'][property.name='errorHandler']
           message: 'Use setErrorHandler/resetVueErrorHandler from helpers/set_vue_error_handler.js instead.'
+        - selector: Literal[value=/docs.gitlab.+\u002Fee/]
+          message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
+        - selector: TemplateElement[value.cooked=/docs.gitlab.+\u002Fee/]
+          message: 'No hard coded url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
+        - selector: Literal[value=/(?=.*docs.gitlab.*)(?!.*\u002Fee\b.*)/]
+          message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`'
+        - selector: TemplateElement[value.cooked=/(?=.*docs.gitlab.*)(?!.*\u002Fee\b.*)/]
+          message: 'No hard coded url, use `DOCS_URL` in `jh_else_ce/lib/utils/url_utility`'
+        - selector: Literal[value=/(?=.*about.gitlab.*)(?!.*\u002Fblog\b.*)/]
+          message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`'
+        - selector: TemplateElement[value.cooked=/(?=.*about.gitlab.*)(?!.*\u002Fblog\b.*)/]
+          message: 'No hard coded url, use `PROMO_URL` in `jh_else_ce/lib/utils/url_utility`'
+        - selector: TemplateLiteral[expressions.0.name=DOCS_URL] > TemplateElement[value.cooked=/\u002Fjh|\u002Fee/]
+          message: '`/ee` or `/jh` path found in docs url, use `DOCS_URL_IN_EE_DIR` in `jh_else_ce/lib/utils/url_utility`'
       no-unsanitized/method: off
       no-unsanitized/property: off
   - files:

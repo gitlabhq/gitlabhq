@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Control the job concurrency in GitLab CI/CD
 ---
 
-# Resource group **(FREE)**
+# Resource group **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
 
@@ -314,4 +314,4 @@ To get job information from the GraphQL API:
     }
     ```
 
-    If the status is not `running` or `pending`, open a new issue.
+    If the status is not `running` or `pending`, [open a new issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new) and [contact support](https://about.gitlab.com/support/#contact-support) so they can apply the correct labels to the issue.

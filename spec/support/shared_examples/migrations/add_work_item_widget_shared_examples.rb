@@ -3,12 +3,13 @@
 RSpec.shared_examples 'migration that adds widget to work items definitions' do |widget_name:|
   let(:migration) { described_class.new }
   let(:work_item_definitions) { table(:work_item_widget_definitions) }
+  let(:work_item_type_count) { 7 }
 
   describe '#up' do
     it "creates widget definition in all types" do
       work_item_definitions.where(name: widget_name).delete_all
 
-      expect { migrate! }.to change { work_item_definitions.count }.by(7)
+      expect { migrate! }.to change { work_item_definitions.count }.by(work_item_type_count)
       expect(work_item_definitions.all.pluck(:name)).to include(widget_name)
     end
 
@@ -26,7 +27,7 @@ RSpec.shared_examples 'migration that adds widget to work items definitions' do 
     it "removes definitions for widget" do
       migrate!
 
-      expect { migration.down }.to change { work_item_definitions.count }.by(-7)
+      expect { migration.down }.to change { work_item_definitions.count }.by(-work_item_type_count)
       expect(work_item_definitions.all.pluck(:name)).not_to include(widget_name)
     end
   end

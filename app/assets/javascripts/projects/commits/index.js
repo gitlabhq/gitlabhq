@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
 import RefSelector from '~/ref/components/ref_selector.vue';

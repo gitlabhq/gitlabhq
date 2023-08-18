@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Tracking::StandardContext do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:namespace) { create(:namespace) }
-  let_it_be(:user) { create(:user) }
-
   let(:snowplow_context) { subject.to_context }
 
   describe '#to_context' do
@@ -62,21 +58,27 @@ RSpec.describe Gitlab::Tracking::StandardContext do
       expect(snowplow_context.to_json.dig(:data, :context_generated_at)).to eq(Time.current)
     end
 
-    context 'plan' do
-      context 'when namespace is not available' do
-        it 'is nil' do
-          expect(snowplow_context.to_json.dig(:data, :plan)).to be_nil
-        end
+    it 'contains standard properties' do
+      standard_properties = [:user_id, :project_id, :namespace_id, :plan]
+      expect(snowplow_context.to_json[:data].keys).to include(*standard_properties)
+    end
+
+    context 'with standard properties' do
+      let(:user_id) { 1 }
+      let(:project_id) { 2 }
+      let(:namespace_id) { 3 }
+      let(:plan_name) { "plan name" }
+
+      subject do
+        described_class.new(user_id: user_id, project_id: project_id, namespace_id: namespace_id, plan_name: plan_name)
       end
 
-      context 'when namespace is available' do
-        let(:namespace) { create(:namespace) }
-
-        subject { described_class.new(namespace_id: namespace.id, plan_name: namespace.actual_plan_name) }
-
-        it 'contains plan name' do
-          expect(snowplow_context.to_json.dig(:data, :plan)).to eq(Plan::DEFAULT)
-        end
+      it 'holds the correct values', :aggregate_failures do
+        json_data = snowplow_context.to_json.fetch(:data)
+        expect(json_data[:user_id]).to eq(user_id)
+        expect(json_data[:project_id]).to eq(project_id)
+        expect(json_data[:namespace_id]).to eq(namespace_id)
+        expect(json_data[:plan]).to eq(plan_name)
       end
     end
 
@@ -95,24 +97,12 @@ RSpec.describe Gitlab::Tracking::StandardContext do
     end
 
     context 'with incorrect argument type' do
-      subject { described_class.new(project_id: create(:group)) }
+      subject { described_class.new(project_id: "a string") }
 
       it 'does call `track_and_raise_for_dev_exception`' do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
         snowplow_context
       end
-    end
-
-    it 'contains user id' do
-      expect(snowplow_context.to_json[:data].keys).to include(:user_id)
-    end
-
-    it 'contains namespace and project ids' do
-      expect(snowplow_context.to_json[:data].keys).to include(:project_id, :namespace_id)
-    end
-
-    it 'accepts just project id as integer' do
-      expect { described_class.new(project: 1).to_context }.not_to raise_error
     end
   end
 end

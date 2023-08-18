@@ -5,7 +5,7 @@ module Projects
     include ::Gitlab::Utils::StrongMemoize
 
     STAT_TO_CACHED_METHOD = {
-      repository_size: :size,
+      repository_size: [:size, :recent_objects_size],
       commit_count: :commit_count
     }.freeze
 
@@ -37,7 +37,7 @@ module Projects
 
     def method_caches_to_expire
       strong_memoize(:method_caches_to_expire) do
-        statistics.map { |stat| STAT_TO_CACHED_METHOD[stat] }.compact
+        statistics.flat_map { |stat| STAT_TO_CACHED_METHOD[stat] }.compact
       end
     end
 

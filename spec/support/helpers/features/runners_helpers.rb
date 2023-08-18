@@ -23,11 +23,11 @@ module Features
     def input_filtered_search_keys(search_term)
       focus_filtered_search
 
-      page.within(search_bar_selector) do
-        page.find('input').send_keys(search_term)
-        click_on 'Search'
-      end
+      page.find(search_bar_selector).find('input').send_keys(search_term)
+      # blur input
+      find('body').click
 
+      page.click_on 'Search'
       wait_for_requests
     end
 
@@ -49,9 +49,8 @@ module Features
 
         # For OPERATORS_IS, clicking the filter
         # immediately preselects "=" operator
-
-        page.find('input').send_keys(value)
-        page.find('input').send_keys(:enter)
+        send_keys(value)
+        send_keys(:enter)
 
         click_on 'Search'
       end

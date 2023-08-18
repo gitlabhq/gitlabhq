@@ -12,11 +12,7 @@ module QA
       let(:api_client) { Runtime::API::Client.new(:gitlab) }
 
       let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-registry-api'
-          project.template_name = 'express'
-          project.api_client = api_client
-        end
+        create(:project, name: 'project-with-registry-api', template_name: 'express', api_client: api_client)
       end
 
       let!(:runner) do

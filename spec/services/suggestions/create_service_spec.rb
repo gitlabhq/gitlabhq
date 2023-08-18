@@ -5,8 +5,11 @@ require 'spec_helper'
 RSpec.describe Suggestions::CreateService, feature_category: :code_suggestions do
   let(:project_with_repo) { create(:project, :repository) }
   let(:merge_request) do
-    create(:merge_request, source_project: project_with_repo,
-                           target_project: project_with_repo)
+    create(
+      :merge_request,
+      source_project: project_with_repo,
+      target_project: project_with_repo
+    )
   end
 
   def build_position(args = {})
@@ -66,8 +69,7 @@ RSpec.describe Suggestions::CreateService, feature_category: :code_suggestions d
     context 'should not try to parse suggestions' do
       context 'when not a diff note for merge requests' do
         let(:note) do
-          create(:diff_note_on_commit, project: project_with_repo,
-                                       note: markdown)
+          create(:diff_note_on_commit, project: project_with_repo, note: markdown)
         end
 
         it 'does not try to parse suggestions' do
@@ -81,10 +83,13 @@ RSpec.describe Suggestions::CreateService, feature_category: :code_suggestions d
 
       context 'when diff note is not for text' do
         let(:note) do
-          create(:diff_note_on_merge_request, project: project_with_repo,
-                                              noteable: merge_request,
-                                              position: position,
-                                              note: markdown)
+          create(
+            :diff_note_on_merge_request,
+            project: project_with_repo,
+            noteable: merge_request,
+            position: position,
+            note: markdown
+          )
         end
 
         before do
@@ -103,10 +108,13 @@ RSpec.describe Suggestions::CreateService, feature_category: :code_suggestions d
 
     context 'when diff file is not found' do
       let(:note) do
-        create(:diff_note_on_merge_request, project: project_with_repo,
-                                            noteable: merge_request,
-                                            position: position,
-                                            note: markdown)
+        create(
+          :diff_note_on_merge_request,
+          project: project_with_repo,
+          noteable: merge_request,
+          position: position,
+          note: markdown
+        )
       end
 
       before do
@@ -124,16 +132,21 @@ RSpec.describe Suggestions::CreateService, feature_category: :code_suggestions d
 
     context 'should create suggestions' do
       let(:note) do
-        create(:diff_note_on_merge_request, project: project_with_repo,
-                                            noteable: merge_request,
-                                            position: position,
-                                            note: markdown)
+        create(
+          :diff_note_on_merge_request,
+          project: project_with_repo,
+          noteable: merge_request,
+          position: position,
+          note: markdown
+        )
       end
 
       let(:expected_suggestions) do
-        Gitlab::Diff::SuggestionsParser.parse(markdown,
-                                              project: note.project,
-                                              position: note.position)
+        Gitlab::Diff::SuggestionsParser.parse(
+          markdown,
+          project: note.project,
+          position: note.position
+        )
       end
 
       it 'persists suggestion records' do

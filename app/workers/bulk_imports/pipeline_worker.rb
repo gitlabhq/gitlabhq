@@ -42,7 +42,6 @@ module BulkImports
     def run
       return skip_tracker if entity.failed?
 
-      raise(Pipeline::ExpiredError, 'Pipeline timeout') if job_timeout?
       raise(Pipeline::FailedError, "Export from source instance failed: #{export_status.error}") if export_failed?
       raise(Pipeline::ExpiredError, 'Empty export status on source instance') if empty_export_timeout?
 
@@ -179,12 +178,6 @@ module BulkImports
 
     def lease_key
       "gitlab:bulk_imports:pipeline_worker:#{pipeline_tracker.id}"
-    end
-
-    def job_timeout?
-      return false unless file_extraction_pipeline?
-
-      time_since_tracker_created > Pipeline::NDJSON_EXPORT_TIMEOUT
     end
 
     def enqueue_batches

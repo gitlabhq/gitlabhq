@@ -1,6 +1,5 @@
 ---
 key_path: redis_hll_counters.analytics.p_analytics_ci_cd_change_failure_rate_monthly
-name: p_analytics_ci_cd_change_failure_rate_monthly
 description: Count of unique visits to the project level CI/CD Analytics Change failure rate tab
 product_section: dev
 product_stage: manage

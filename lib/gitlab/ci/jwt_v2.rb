@@ -44,26 +44,14 @@ module Gitlab
       end
 
       def custom_claims
-        additional_claims = {
+        mapper = ClaimMapper.new(project_config, pipeline)
+
+        super.merge({
           runner_id: runner&.id,
           runner_environment: runner_environment,
-          sha: pipeline.sha
-        }
-
-        if project_config&.source == :repository_source
-          additional_claims[:ci_config_ref_uri] = ci_config_ref_uri
-          additional_claims[:ci_config_sha] = pipeline.sha
-        end
-
-        super.merge(additional_claims)
-      end
-
-      def ci_config_ref_uri
-        "#{project_config&.url}@#{pipeline.source_ref_path}"
-      rescue StandardError => e
-        # We don't want endpoints relying on this code to fail if there's an error here.
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, pipeline_id: pipeline.id)
-        nil
+          sha: pipeline.sha,
+          project_visibility: Gitlab::VisibilityLevel.string_level(project.visibility_level)
+        }).merge(mapper.to_h)
       end
 
       def project_config

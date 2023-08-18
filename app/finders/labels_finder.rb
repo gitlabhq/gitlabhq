@@ -24,6 +24,7 @@ class LabelsFinder < UnionFinder
     items = with_title(items)
     items = by_subscription(items)
     items = by_search(items)
+    items = by_locked_labels(items)
 
     items = items.with_preloaded_container if @preload_parent_association
     sort(items)
@@ -92,6 +93,12 @@ class LabelsFinder < UnionFinder
 
   def by_subscription(labels)
     labels.optionally_subscribed_by(subscriber_id)
+  end
+
+  def by_locked_labels(items)
+    return items unless params[:locked_labels]
+
+    items.with_lock_on_merge
   end
 
   def subscriber_id

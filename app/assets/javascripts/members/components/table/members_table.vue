@@ -1,5 +1,6 @@
 <script>
 import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
 import {

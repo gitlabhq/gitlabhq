@@ -10,7 +10,10 @@ module ClickHouse
         @url = url
         @username = username
         @password = password
-        @variables = variables.merge(database: database).freeze
+        @variables = {
+          database: database,
+          enable_http_compression: 1 # enable HTTP compression by default
+        }.merge(variables).freeze
       end
 
       def uri
@@ -24,7 +27,9 @@ module ClickHouse
       def headers
         @headers ||= {
           'X-ClickHouse-User' => @username,
-          'X-ClickHouse-Key' => @password
+          'X-ClickHouse-Key' => @password,
+          'X-ClickHouse-Format' => 'JSON', # always return JSON data
+          'Content-Encoding' => 'gzip' # tell the server that we send compressed data
         }.freeze
       end
     end

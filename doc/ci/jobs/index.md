@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jobs **(FREE)**
+# Jobs **(FREE ALL)**
 
 Pipeline configuration begins with jobs. Jobs are the most fundamental element of a `.gitlab-ci.yml` file.
 

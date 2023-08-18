@@ -9,7 +9,7 @@ status: active
 milestone: '14.9'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81336
 time_frame: 7d
-instrumentation_class: WorkItemsActivityAggregatedMetric
+instrumentation_class: AggregatedMetric
 data_source: redis_hll
 options:
   aggregate:

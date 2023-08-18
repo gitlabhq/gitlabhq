@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 <!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
 
-# ZenTao (deprecated) **(PREMIUM)**
+# ZenTao (deprecated) **(PREMIUM ALL)**
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) in GitLab 15.7
@@ -43,7 +43,7 @@ Complete these steps in GitLab:
 
 1. Go to your project and select **Settings > Integrations**.
 1. Select **ZenTao**.
-1. Turn on the **Active** toggle under **Enable Integration**.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide the ZenTao configuration information:
    - **ZenTao Web URL**: The base URL of the ZenTao instance web interface you're linking to this GitLab project (for example, `example.zentao.net`).
    - **ZenTao API URL** (optional): The base URL to the ZenTao instance API. Defaults to the Web URL value if not set.

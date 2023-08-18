@@ -1,5 +1,6 @@
 import { GlModal, GlSearchBoxByType, GlToken, GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { s__, sprintf } from '~/locale';
@@ -64,12 +65,13 @@ describe('GlobalSearchModal', () => {
     scopedSearchOptions: () => MOCK_SCOPED_SEARCH_OPTIONS,
   };
 
-  const createComponent = (
+  const createComponent = ({
     initialState = deafaultMockState,
     mockGetters = defaultMockGetters,
     stubs,
     glFeatures = { commandPalette: false },
-  ) => {
+    ...mountOptions
+  } = {}) => {
     const store = new Vuex.Store({
       state: {
         ...deafaultMockState,
@@ -88,6 +90,7 @@ describe('GlobalSearchModal', () => {
       store,
       stubs,
       provide: { glFeatures },
+      ...mountOptions,
     });
   };
 
@@ -148,7 +151,7 @@ describe('GlobalSearchModal', () => {
       describe(`when search is ${search}`, () => {
         beforeEach(() => {
           window.gon.current_username = MOCK_USERNAME;
-          createComponent({ search }, {});
+          createComponent({ initialState: { search }, mockGetters: {} });
           findGlobalSearchInput().vm.$emit('click');
         });
 
@@ -180,15 +183,15 @@ describe('GlobalSearchModal', () => {
         describe(`search is "${search}" and loading is ${loading}`, () => {
           beforeEach(() => {
             window.gon.current_username = username;
-            createComponent(
-              {
+            createComponent({
+              initialState: {
                 search,
                 loading,
               },
-              {
+              mockGetters: {
                 searchOptions: () => searchOptions,
               },
-            );
+            });
           });
 
           it(`sets description to ${expectedDesc}`, () => {
@@ -208,7 +211,7 @@ describe('GlobalSearchModal', () => {
       `('token', ({ search, hasToken }) => {
         beforeEach(() => {
           window.gon.current_username = MOCK_USERNAME;
-          createComponent({ search });
+          createComponent({ initialState: { search } });
           findGlobalSearchInput().vm.$emit('click');
         });
 
@@ -220,12 +223,12 @@ describe('GlobalSearchModal', () => {
       describe.each(MOCK_SCOPED_SEARCH_OPTIONS)('token content', (searchOption) => {
         beforeEach(() => {
           window.gon.current_username = MOCK_USERNAME;
-          createComponent(
-            { search: MOCK_SEARCH },
-            {
+          createComponent({
+            initialState: { search: MOCK_SEARCH },
+            mockGetters: {
               searchOptions: () => [searchOption],
             },
-          );
+          });
           findGlobalSearchInput().vm.$emit('click');
         });
 
@@ -247,12 +250,12 @@ describe('GlobalSearchModal', () => {
       `('token', ({ searchOptions, iconName }) => {
         beforeEach(() => {
           window.gon.current_username = MOCK_USERNAME;
-          createComponent(
-            { search: MOCK_SEARCH },
-            {
+          createComponent({
+            initialState: { search: MOCK_SEARCH },
+            mockGetters: {
               searchOptions: () => searchOptions,
             },
-          );
+          });
           findGlobalSearchInput().vm.$emit('click');
         });
 
@@ -287,8 +290,11 @@ describe('GlobalSearchModal', () => {
         'when FF `command_palette` is enabled and search handle is %s',
         (handle) => {
           beforeEach(() => {
-            createComponent({ search: handle }, undefined, undefined, {
-              commandPalette: true,
+            createComponent({
+              initialState: { search: handle },
+              glFeatures: {
+                commandPalette: true,
+              },
             });
           });
 
@@ -358,12 +364,18 @@ describe('GlobalSearchModal', () => {
 
       describe('Submitting a search', () => {
         const submitSearch = () =>
-          findGlobalSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+          findGlobalSearchInput().vm.$emit(
+            'keydown',
+            new KeyboardEvent('keydown', { key: ENTER_KEY }),
+          );
 
         describe('in command mode', () => {
           beforeEach(() => {
-            createComponent({ search: '>' }, undefined, undefined, {
-              commandPalette: true,
+            createComponent({
+              initialState: { search: '>' },
+              glFeatures: {
+                commandPalette: true,
+              },
             });
             submitSearch();
           });
@@ -375,7 +387,7 @@ describe('GlobalSearchModal', () => {
 
         describe('in search mode', () => {
           it('will NOT submit a search with less than min characters', () => {
-            createComponent({ search: 'x' });
+            createComponent({ initialState: { search: 'x' } });
             submitSearch();
             expect(visitUrl).not.toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
           });
@@ -391,7 +403,7 @@ describe('GlobalSearchModal', () => {
 
     describe('Modal events', () => {
       beforeEach(() => {
-        createComponent({ search: 'searchQuery' });
+        createComponent({ initialState: { search: 'searchQuery' } });
       });
 
       it('should emit `shown` event when modal shown`', () => {
@@ -403,6 +415,103 @@ describe('GlobalSearchModal', () => {
         findGlobalSearchModal().vm.$emit('hide');
         expect(wrapper.emitted('hidden')).toHaveLength(1);
         expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), '');
+      });
+    });
+  });
+
+  describe('Navigating results', () => {
+    const findSearchInput = () => wrapper.findByRole('searchbox');
+    const triggerKeydownEvent = (target, code) => {
+      const event = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, code });
+      target.dispatchEvent(event);
+      return event;
+    };
+
+    beforeEach(() => {
+      createComponent({
+        stubs: {
+          GlSearchBoxByType: {
+            inheritAttrs: false,
+            template: '<div><input v-bind="$attrs" v-on="$listeners"></div>',
+          },
+          GlobalSearchDefaultItems: {
+            template: `
+              <ul>
+                <li
+                  v-for="n in 5"
+                  class="gl-new-dropdown-item"
+                  tabindex="0"
+                  :data-testid="'test-result-' + n"
+                >Result {{ n }}</li>
+              </ul>`,
+          },
+        },
+        attachTo: document.body,
+      });
+    });
+
+    describe('when the search input has focus', () => {
+      beforeEach(() => {
+        findSearchInput().element.focus();
+      });
+
+      it('Home key keeps focus in input', () => {
+        const event = triggerKeydownEvent(findSearchInput().element, 'Home');
+        expect(document.activeElement).toBe(findSearchInput().element);
+        expect(event.defaultPrevented).toBe(false);
+      });
+
+      it('End key keeps focus on input', () => {
+        const event = triggerKeydownEvent(findSearchInput().element, 'End');
+        findSearchInput().trigger('keydown', { code: 'End' });
+        expect(document.activeElement).toBe(findSearchInput().element);
+        expect(event.defaultPrevented).toBe(false);
+      });
+
+      it('ArrowUp keeps focus on input', () => {
+        const event = triggerKeydownEvent(findSearchInput().element, 'ArrowUp');
+        expect(document.activeElement).toBe(findSearchInput().element);
+        expect(event.defaultPrevented).toBe(false);
+      });
+
+      it('ArrowDown focuses the first item', () => {
+        const event = triggerKeydownEvent(findSearchInput().element, 'ArrowDown');
+        expect(document.activeElement).toBe(wrapper.findByTestId('test-result-1').element);
+        expect(event.defaultPrevented).toBe(true);
+      });
+    });
+
+    describe('when search result item has focus', () => {
+      beforeEach(() => {
+        wrapper.findByTestId('test-result-2').element.focus();
+      });
+
+      it('Home key focuses first item', () => {
+        const event = triggerKeydownEvent(document.activeElement, 'Home');
+        expect(document.activeElement).toBe(wrapper.findByTestId('test-result-1').element);
+        expect(event.defaultPrevented).toBe(true);
+      });
+
+      it('End key focuses last item', () => {
+        const event = triggerKeydownEvent(document.activeElement, 'End');
+        expect(document.activeElement).toBe(wrapper.findByTestId('test-result-5').element);
+        expect(event.defaultPrevented).toBe(true);
+      });
+
+      it('ArrowUp focuses previous item if any, else input', () => {
+        let event = triggerKeydownEvent(document.activeElement, 'ArrowUp');
+        expect(document.activeElement).toBe(wrapper.findByTestId('test-result-1').element);
+        expect(event.defaultPrevented).toBe(true);
+
+        event = triggerKeydownEvent(document.activeElement, 'ArrowUp');
+        expect(document.activeElement).toBe(findSearchInput().element);
+        expect(event.defaultPrevented).toBe(true);
+      });
+
+      it('ArrowDown focuses next item', () => {
+        const event = triggerKeydownEvent(document.activeElement, 'ArrowDown');
+        expect(document.activeElement).toBe(wrapper.findByTestId('test-result-3').element);
+        expect(event.defaultPrevented).toBe(true);
       });
     });
   });

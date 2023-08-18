@@ -508,7 +508,7 @@ def disable_two_factor!
       otp_grace_period_started_at: nil,
       otp_backup_codes:            nil
     )
-    self.u2f_registrations.destroy_all # rubocop: disable DestroyAll
+    self.webauthn_registrations.destroy_all # rubocop: disable DestroyAll
   end
 end
 

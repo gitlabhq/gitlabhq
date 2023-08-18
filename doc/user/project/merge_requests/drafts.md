@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, concepts
 ---
 
-# Draft merge requests **(FREE)**
+# Draft merge requests **(FREE ALL)**
 
 If a merge request isn't ready to merge, potentially because of continued development
 or open threads, you can prevent it from being accepted before you

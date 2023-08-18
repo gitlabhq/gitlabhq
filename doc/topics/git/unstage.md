@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Unstage a file in Git **(FREE)**
+# Unstage a file in Git **(FREE ALL)**
 
 When you _stage_ a file in Git, you instruct Git to track changes to the file in
 preparation for a commit. To instruct Git to disregard changes to a file, and not

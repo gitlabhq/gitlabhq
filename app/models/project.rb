@@ -43,6 +43,9 @@ class Project < ApplicationRecord
   include Subquery
   include IssueParent
   include UpdatedAtFilterable
+  include IgnorableColumns
+
+  ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -125,7 +128,6 @@ class Project < ApplicationRecord
   before_validation :remove_leading_spaces_on_name
   after_validation :check_pending_delete
   before_save :ensure_runners_token
-  before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
 
   after_create -> { create_or_load_association(:project_feature) }
   after_create -> { create_or_load_association(:ci_cd_settings) }
@@ -165,11 +167,14 @@ class Project < ApplicationRecord
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)
-  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id'
+  belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
   has_one :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :project
+  has_many :ci_components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :project
+  has_many :catalog_resource_versions, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :project
+
   has_one :last_event, -> { order 'events.created_at DESC' }, class_name: 'Event'
   has_many :boards
 
@@ -312,7 +317,8 @@ class Project < ApplicationRecord
   has_many :designs, inverse_of: :project, class_name: 'DesignManagement::Design'
 
   has_many :project_authorizations
-  has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
+  has_many :authorized_users, -> { allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045') },
+    through: :project_authorizations, source: :user, class_name: 'User'
 
   has_many :project_members, -> { where(requested_at: nil) },
     as: :source, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
@@ -506,6 +512,7 @@ class Project < ApplicationRecord
     with_options prefix: :ci do
       delegate :default_git_depth, :default_git_depth=
       delegate :forward_deployment_enabled, :forward_deployment_enabled=
+      delegate :forward_deployment_rollback_allowed, :forward_deployment_rollback_allowed=
       delegate :inbound_job_token_scope_enabled, :inbound_job_token_scope_enabled=
       delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=
       delegate :separated_caches, :separated_caches=
@@ -518,6 +525,7 @@ class Project < ApplicationRecord
     delegate :has_shimo?
     delegate :show_diff_preview_in_email, :show_diff_preview_in_email=, :show_diff_preview_in_email?
     delegate :runner_registration_enabled, :runner_registration_enabled=, :runner_registration_enabled?
+    delegate :emails_enabled, :emails_enabled=, :emails_enabled?
     delegate :squash_always?, :squash_never?, :squash_enabled_by_default?, :squash_readonly?
     delegate :mr_default_target_self, :mr_default_target_self=
     delegate :previous_default_branch, :previous_default_branch=
@@ -585,6 +593,7 @@ class Project < ApplicationRecord
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
   scope :not_hidden, -> { where(hidden: false) }
+  scope :not_in_groups, ->(groups) { where.not(group: groups) }
   scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
 
   scope :with_storage_feature, ->(feature) do
@@ -703,6 +712,7 @@ class Project < ApplicationRecord
     # includes(:route) which we use in ProjectsFinder.
     joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'")
       .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
+      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
   end
 
   scope :with_feature_enabled, ->(feature) {
@@ -932,6 +942,7 @@ class Project < ApplicationRecord
       if include_namespace
         joins(:route).fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name], :description],
           use_minimum_char_limit: use_minimum_char_limit)
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
       else
         fuzzy_search(query, [:path, :name, :description], use_minimum_char_limit: use_minimum_char_limit)
       end
@@ -1209,14 +1220,8 @@ class Project < ApplicationRecord
   end
 
   def emails_disabled?
-    strong_memoize(:emails_disabled) do
-      # disabling in the namespace overrides the project setting
-      super || namespace.emails_disabled?
-    end
-  end
-
-  def emails_enabled?
-    !emails_disabled?
+    # disabling in the namespace overrides the project setting
+    !emails_enabled?
   end
 
   override :lfs_enabled?
@@ -1760,7 +1765,8 @@ class Project < ApplicationRecord
   # rubocop: disable CodeReuse/ServiceClass
   def create_labels
     Label.templates.each do |label|
-      params = label.attributes.except('id', 'template', 'created_at', 'updated_at', 'type')
+      # slice on column_names to ensure an added DB column will not break a mixed deployment
+      params = label.attributes.slice(*Label.column_names).except('id', 'template', 'created_at', 'updated_at', 'type')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end
@@ -1951,6 +1957,8 @@ class Project < ApplicationRecord
   def track_project_repository
     repository = project_repository || build_project_repository
     repository.update!(shard_name: repository_storage, disk_path: disk_path)
+
+    cleanup if replicate_object_pool_on_move_ff_enabled?
   end
 
   def create_repository(force: false, default_branch: nil)
@@ -2466,7 +2474,7 @@ class Project < ApplicationRecord
       break unless pages_enabled?
 
       variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
-      variables.append(key: 'CI_PAGES_URL', value: Gitlab::Pages::UrlBuilder.new(self).pages_url)
+      variables.append(key: 'CI_PAGES_URL', value: Gitlab::Pages::UrlBuilder.new(self).pages_url(with_unique_domain: true))
     end
   end
 
@@ -2825,8 +2833,26 @@ class Project < ApplicationRecord
     update_column(:pool_repository_id, nil)
   end
 
+  # After repository is moved from shard to shard, disconnect it from the previous object pool and connect to the new pool
+  def swap_pool_repository!
+    return unless replicate_object_pool_on_move_ff_enabled?
+    return unless repository_exists?
+
+    old_pool_repository = pool_repository
+    return if old_pool_repository.blank?
+    return if pool_repository_shard_matches_repository?(old_pool_repository)
+
+    new_pool_repository = PoolRepository.by_source_project_and_shard_name(old_pool_repository.source_project, repository_storage).take!
+    update!(pool_repository: new_pool_repository)
+
+    old_pool_repository.unlink_repository(repository, disconnect: !pending_delete?)
+  end
+
   def link_pool_repository
-    pool_repository&.link_repository(repository)
+    return unless pool_repository
+    return if (pool_repository.shard_name != repository.shard) && replicate_object_pool_on_move_ff_enabled?
+
+    pool_repository.link_repository(repository)
   end
 
   def has_pool_repository?
@@ -3048,6 +3074,12 @@ class Project < ApplicationRecord
     ci_cd_settings.forward_deployment_enabled?
   end
 
+  def ci_forward_deployment_rollback_allowed?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.forward_deployment_rollback_allowed?
+  end
+
   def ci_allow_fork_pipelines_to_run_in_parent_project?
     return false unless ci_cd_settings
 
@@ -3151,6 +3183,8 @@ class Project < ApplicationRecord
   end
 
   def created_and_owned_by_banned_user?
+    return false unless creator
+
     creator.banned? && team.max_member_access(creator.id) == Gitlab::Access::OWNER
   end
 
@@ -3168,6 +3202,10 @@ class Project < ApplicationRecord
 
   def work_items_mvc_2_feature_flag_enabled?
     group&.work_items_mvc_2_feature_flag_enabled? || Feature.enabled?(:work_items_mvc_2)
+  end
+
+  def linked_work_items_feature_flag_enabled?
+    group&.linked_work_items_feature_flag_enabled? || Feature.enabled?(:linked_work_items, self)
   end
 
   def enqueue_record_project_target_platforms
@@ -3437,7 +3475,7 @@ class Project < ApplicationRecord
     # create project_namespace when project is created
     build_project_namespace if project_namespace_creation_enabled?
 
-    sync_attributes(project_namespace) if sync_project_namespace?
+    project_namespace.sync_attributes_from_project(self) if sync_project_namespace?
   end
 
   def project_namespace_creation_enabled?
@@ -3446,27 +3484,6 @@ class Project < ApplicationRecord
 
   def sync_project_namespace?
     (changes.keys & %w(name path namespace_id namespace visibility_level shared_runners_enabled)).any? && project_namespace.present?
-  end
-
-  def sync_attributes(project_namespace)
-    attributes_to_sync = changes.slice(*%w(name path namespace_id namespace visibility_level shared_runners_enabled))
-                           .transform_values { |val| val[1] }
-
-    # if visibility_level is not set explicitly for project, it defaults to 0,
-    # but for namespace visibility_level defaults to 20,
-    # so it gets out of sync right away if we do not set it explicitly when creating the project namespace
-    attributes_to_sync['visibility_level'] ||= visibility_level if new_record?
-
-    # when a project is associated with a group while the group is created we need to ensure we associate the new
-    # group with the project namespace as well.
-    # E.g.
-    # project = create(:project) <- project is saved
-    # create(:group, projects: [project]) <- associate project with a group that is not yet created.
-    if attributes_to_sync.has_key?('namespace_id') && attributes_to_sync['namespace_id'].blank? && namespace.present?
-      attributes_to_sync['parent'] = namespace
-    end
-
-    project_namespace.assign_attributes(attributes_to_sync)
   end
 
   def reload_project_namespace_details
@@ -3511,19 +3528,18 @@ class Project < ApplicationRecord
     end
   end
 
-  def update_new_emails_created_column
-    return if project_setting.nil?
-    return if project_setting.emails_enabled == !emails_disabled
-
-    if project_setting.persisted?
-      project_setting.update!(emails_enabled: !emails_disabled)
-    elsif project_setting
-      project_setting.emails_enabled = !emails_disabled
-    end
-  end
-
   def runners_token_prefix
     RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
+  end
+
+  def replicate_object_pool_on_move_ff_enabled?
+    Feature.enabled?(:replicate_object_pool_on_move, self)
+  end
+
+  def pool_repository_shard_matches_repository?(pool)
+    pool_repository_shard = pool.shard.name
+
+    pool_repository_shard == repository_storage
   end
 end
 

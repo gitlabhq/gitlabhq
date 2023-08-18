@@ -23,7 +23,6 @@ module Integrations
     ].freeze
 
     SECRET_MASK = '************'
-    CHANNEL_LIMIT_PER_EVENT = 10
 
     attribute :category, default: 'chat'
 
@@ -79,27 +78,27 @@ module Integrations
     def default_fields
       [
         {
-          type: 'checkbox',
+          type: :checkbox,
           section: SECTION_TYPE_CONFIGURATION,
           name: 'notify_only_broken_pipelines',
           help: 'Do not send notifications for successful pipelines.'
         }.freeze,
         {
-          type: 'select',
+          type: :select,
           section: SECTION_TYPE_CONFIGURATION,
           name: 'branches_to_be_notified',
           title: s_('Integrations|Branches for which notifications are to be sent'),
           choices: self.class.branch_choices
         }.freeze,
         {
-          type: 'text',
+          type: :text,
           section: SECTION_TYPE_CONFIGURATION,
           name: 'labels_to_be_notified',
           placeholder: '~backend,~frontend',
           help: 'Send notifications for issue, merge request, and comment events with the listed labels only. Leave blank to receive notifications for all events.'
         }.freeze,
         {
-          type: 'select',
+          type: :select,
           section: SECTION_TYPE_CONFIGURATION,
           name: 'labels_to_be_notified_behavior',
           choices: [
@@ -111,8 +110,8 @@ module Integrations
         next unless requires_webhook?
 
         fields.unshift(
-          { type: 'text', name: 'webhook', help: webhook_help, required: true }.freeze,
-          { type: 'text', name: 'username', placeholder: 'GitLab-integration' }.freeze
+          { type: :text, name: 'webhook', help: webhook_help, required: true }.freeze,
+          { type: :text, name: 'username', placeholder: 'GitLab-integration' }.freeze
         )
       end.freeze
     end
@@ -186,6 +185,14 @@ module Integrations
       true
     end
 
+    def channel_limit_per_event
+      10
+    end
+
+    def mask_configurable_channels?
+      false
+    end
+
     private
 
     def should_execute?(object_kind)
@@ -257,7 +264,7 @@ module Integrations
 
     def build_event_channels
       event_channel_names.map do |channel_field|
-        { type: 'text', name: channel_field, placeholder: default_channel_placeholder }
+        { type: :text, name: channel_field, placeholder: default_channel_placeholder }
       end
     end
 
@@ -314,13 +321,13 @@ module Integrations
     def validate_channel_limit
       supported_events.each do |event|
         count = channels_for_event(event).count
-        next unless count > CHANNEL_LIMIT_PER_EVENT
+        next unless count > channel_limit_per_event
 
         errors.add(
           event_channel_name(event).to_sym,
           format(
             s_('SlackIntegration|cannot have more than %{limit} channels'),
-            limit: CHANNEL_LIMIT_PER_EVENT
+            limit: channel_limit_per_event
           )
         )
       end

@@ -10,6 +10,7 @@ import {
   GlAlert,
   GlOutsideDirective as Outside,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { uniq } from 'lodash';
 import { rgbFromHex } from '@gitlab/ui/dist/utils/utils';
@@ -19,8 +20,6 @@ import { sprintf } from '~/locale';
 import DropdownKeyboardNavigation from '~/vue_shared/components/dropdown_keyboard_navigation.vue';
 
 import { I18N } from '~/vue_shared/global_search/constants';
-
-import { HR_DEFAULT_CLASSES, ONLY_SHOW_MD } from '../../constants';
 import LabelDropdownItems from './label_dropdown_items.vue';
 
 import {
@@ -62,7 +61,6 @@ export default {
       'filteredUnselectedLabels',
       'filteredAppliedSelectedLabels',
       'appliedSelectedLabels',
-      'filteredUnappliedSelectedLabels',
     ]),
     searchInputDescribeBy() {
       if (this.isLoggedIn) {
@@ -106,9 +104,6 @@ export default {
     },
     hasUnselectedLabels() {
       return this.filteredUnselectedLabels.length > 0;
-    },
-    dividerClasses() {
-      return [...HR_DEFAULT_CLASSES, ...ONLY_SHOW_MD];
     },
     labelSearchBox() {
       return this.$refs.searchLabelInputBox?.$el.querySelector('[role=searchbox]');
@@ -253,15 +248,10 @@ export default {
             <gl-form-checkbox-group v-model="selectedFilters">
               <label-dropdown-items
                 v-if="hasSelectedLabels"
-                data-testid="selected-lavel-items"
                 :labels="filteredAppliedSelectedLabels"
               />
               <gl-dropdown-divider v-if="hasSelectedLabels && hasUnselectedLabels" />
-              <label-dropdown-items
-                v-if="hasUnselectedLabels"
-                data-testid="unselected-lavel-items"
-                :labels="filteredUnselectedLabels"
-              />
+              <label-dropdown-items v-if="hasUnselectedLabels" :labels="filteredUnselectedLabels" />
             </gl-form-checkbox-group>
           </gl-dropdown-form>
         </div>
@@ -277,6 +267,5 @@ export default {
         <gl-loading-icon v-if="aggregations.fetching" size="lg" class="my-4" />
       </div>
     </div>
-    <hr v-if="!useSidebarNavigation" :class="dividerClasses" />
   </div>
 </template>

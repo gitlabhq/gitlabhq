@@ -25,7 +25,11 @@ RSpec.describe Ci::Partitionable do
   end
 
   context 'with through options' do
+    let(:disable_partitionable_switch) { nil }
+
     before do
+      stub_env('DISABLE_PARTITIONABLE_SWITCH', disable_partitionable_switch)
+
       allow(ActiveSupport::DescendantsTracker).to receive(:store_inherited)
       stub_const("#{described_class}::Testing::PARTITIONABLE_MODELS", [ci_model.name])
 
@@ -39,6 +43,12 @@ RSpec.describe Ci::Partitionable do
     it { expect(ci_model.routing_table_name_flag).to eq(:some_flag) }
 
     it { expect(ci_model.ancestors).to include(described_class::Switch) }
+
+    context 'when DISABLE_PARTITIONABLE_SWITCH is set' do
+      let(:disable_partitionable_switch) { true }
+
+      it { expect(ci_model.ancestors).not_to include(described_class::Switch) }
+    end
   end
 
   context 'with partitioned options' do

@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User passwords **(FREE)**
+# User passwords **(FREE ALL)**
 
 If you use a password to sign in to GitLab, a strong password is very important. A weak or guessable password makes it
 easier for unauthorized people to log into your account.

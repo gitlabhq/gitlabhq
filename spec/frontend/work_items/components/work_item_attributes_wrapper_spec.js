@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
-import WorkItemState from '~/work_items/components/work_item_state.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 
@@ -13,7 +12,6 @@ describe('WorkItemAttributesWrapper component', () => {
 
   const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
 
-  const findWorkItemState = () => wrapper.findComponent(WorkItemState);
   const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssignees);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
@@ -39,14 +37,6 @@ describe('WorkItemAttributesWrapper component', () => {
       },
     });
   };
-
-  describe('work item state', () => {
-    it('renders the work item state', () => {
-      createComponent();
-
-      expect(findWorkItemState().exists()).toBe(true);
-    });
-  });
 
   describe('assignees widget', () => {
     it('renders assignees component when widget is returned from the API', () => {

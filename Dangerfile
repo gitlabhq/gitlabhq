@@ -13,6 +13,7 @@ Gitlab::Dangerfiles.for_project(self, project_name) do |gitlab_dangerfiles|
   gitlab_dangerfiles.import_plugins
   gitlab_dangerfiles.config.ci_only_rules = ProjectHelper::CI_ONLY_RULES
   gitlab_dangerfiles.config.files_to_category = ProjectHelper::CATEGORIES
+  gitlab_dangerfiles.config.excluded_required_codeowners_sections_for_roulette.push('Database')
 
   gitlab_dangerfiles.import_dangerfiles(except: %w[simple_roulette])
 end

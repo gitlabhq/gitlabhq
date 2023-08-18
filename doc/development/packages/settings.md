@@ -17,6 +17,7 @@ Setting | Table | Description
 `npm_package_requests_forwarding` | `application_settings` | Enables or disables npm package forwarding at the instance level.
 `pypi_package_requests_forwarding` | `application_settings` | Enables or disables PyPI package forwarding at the instance level.
 `packages_cleanup_package_file_worker_capacity` | `application_settings` | Number of concurrent workers allowed for package file cleanup.
+`package_registry_allow_anyone_to_pull_option`  | `application_settings` | Enables or disables the `Allow anyone to pull from Package Registry` toggle.
 `throttle_unauthenticated_packages_api_requests_per_period` | `application_settings` | Request limit for unauthenticated package API requests in the period defined by `throttle_unauthenticated_packages_api_period_in_seconds`.
 `throttle_unauthenticated_packages_api_period_in_seconds`  | `application_settings` | Period in seconds to measure unauthenticated package API requests.
 `throttle_authenticated_packages_api_requests_per_period` | `application_settings` | Request limit for authenticated package API requests in the period defined by `throttle_authenticated_packages_api_period_in_seconds`.
@@ -66,6 +67,8 @@ Setting | Table | Description
 `maven_duplicate_exception_regex` | `namespace_package_settings` | Regex defining Maven packages that are allowed to be duplicate when duplicates are not allowed. This matches the name and version of the package.
 `generic_duplicates_allowed` | `namespace_package_settings` | Allow or prevent duplicate generic packages.
 `generic_duplicate_exception_regex` | `namespace_package_settings` | Regex defining generic packages that are allowed to be duplicate when duplicates are not allowed.
+`nuget_duplicates_allowed` | `namespace_package_settings` | Allow or prevent duplicate NuGet packages.
+`nuget_duplicate_exception_regex` | `namespace_package_settings` | Regex defining NuGet packages that are allowed to be duplicate when duplicates are not allowed.
 Dependency Proxy Cleanup Policies - `ttl` | `dependency_proxy_image_ttl_group_policies` | Number of days to retain an unused Dependency Proxy file before it is removed.
 Dependency Proxy - `enabled` | `dependency_proxy_image_ttl_group_policies` | Enable or disable the Dependency Proxy cleanup policy.
 

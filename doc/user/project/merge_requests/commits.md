@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Merge request commits **(FREE)**
+# Merge request commits **(FREE ALL)**
 
 Each merge request has a history of the commits made to the source branch
 after the merge request was created.

@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import DiffLine from '~/diffs/components/diff_line.vue';
-import DiffCodeQuality from '~/diffs/components/diff_code_quality.vue';
+import InlineFindings from '~/diffs/components/inline_findings.vue';
 
 const EXAMPLE_LINE_NUMBER = 3;
 const EXAMPLE_DESCRIPTION = 'example description';
@@ -10,13 +10,6 @@ const left = {
   line: {
     left: {
       codequality: [
-        {
-          line: EXAMPLE_LINE_NUMBER,
-          description: EXAMPLE_DESCRIPTION,
-          severity: EXAMPLE_SEVERITY,
-        },
-      ],
-      sast: [
         {
           line: EXAMPLE_LINE_NUMBER,
           description: EXAMPLE_DESCRIPTION,
@@ -37,13 +30,6 @@ const right = {
           severity: EXAMPLE_SEVERITY,
         },
       ],
-      sast: [
-        {
-          line: EXAMPLE_LINE_NUMBER,
-          description: EXAMPLE_DESCRIPTION,
-          severity: EXAMPLE_SEVERITY,
-        },
-      ],
     },
   },
 };
@@ -55,26 +41,19 @@ describe('DiffLine', () => {
     return shallowMount(DiffLine, { propsData });
   };
 
-  it('should emit event when hideCodeQualityFindings is called', () => {
+  it('should emit event when hideInlineFindings is called', () => {
     const wrapper = createWrapper(right);
 
-    wrapper.findComponent(DiffCodeQuality).vm.$emit('hideCodeQualityFindings');
+    wrapper.findComponent(InlineFindings).vm.$emit('hideInlineFindings');
     expect(wrapper.emitted()).toEqual({
-      hideCodeQualityFindings: [[EXAMPLE_LINE_NUMBER]],
+      hideInlineFindings: [[EXAMPLE_LINE_NUMBER]],
     });
   });
 
   mockData.forEach((element) => {
-    it('should set correct props for DiffCodeQuality', () => {
+    it('should set correct props for InlineFindings', () => {
       const wrapper = createWrapper(element);
-      expect(wrapper.findComponent(DiffCodeQuality).props('codeQuality')).toEqual([
-        {
-          line: EXAMPLE_LINE_NUMBER,
-          description: EXAMPLE_DESCRIPTION,
-          severity: EXAMPLE_SEVERITY,
-        },
-      ]);
-      expect(wrapper.findComponent(DiffCodeQuality).props('sast')).toEqual([
+      expect(wrapper.findComponent(InlineFindings).props('codeQuality')).toEqual([
         {
           line: EXAMPLE_LINE_NUMBER,
           description: EXAMPLE_DESCRIPTION,

@@ -116,20 +116,28 @@ RSpec.describe DeploymentEntity do
 
   describe 'playable_build' do
     before do
-      deployment.update!(deployable: build)
+      deployment.update!(deployable: job)
     end
 
     context 'when the deployment has a playable deployable' do
-      context 'when this build is ready to be played' do
-        let(:build) { create(:ci_build, :playable, :scheduled, pipeline: pipeline) }
+      context 'when this job is build and ready to be played' do
+        let(:job) { create(:ci_build, :playable, :scheduled, pipeline: pipeline) }
 
         it 'exposes only the play_path' do
           expect(subject[:playable_build].keys).to contain_exactly(:play_path)
         end
       end
 
-      context 'when this build has failed' do
-        let(:build) { create(:ci_build, :playable, :failed, pipeline: pipeline) }
+      context 'when this job is bridge and ready to be played' do
+        let(:job) { create(:ci_bridge, :playable, :manual, pipeline: pipeline, downstream: project) }
+
+        it 'exposes only the play_path' do
+          expect(subject[:playable_build].keys).to contain_exactly(:play_path)
+        end
+      end
+
+      context 'when this job has failed' do
+        let(:job) { create(:ci_build, :playable, :failed, pipeline: pipeline) }
 
         it 'exposes the play_path and the retry_path' do
           expect(subject[:playable_build].keys).to contain_exactly(:play_path, :retry_path)
@@ -138,7 +146,7 @@ RSpec.describe DeploymentEntity do
     end
 
     context 'when the deployment does not have a playable deployable' do
-      let(:build) { create(:ci_build, pipeline: pipeline) }
+      let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'is not exposed' do
         expect(subject[:playable_build]).to be_nil

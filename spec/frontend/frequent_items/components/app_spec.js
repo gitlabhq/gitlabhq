@@ -1,6 +1,7 @@
 import { GlButton, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';

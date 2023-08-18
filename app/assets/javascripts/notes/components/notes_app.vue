@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions } from 'vuex';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -231,7 +232,7 @@ export default {
       :ai-loading="aiLoading"
       @set-ai-loading="setAiLoading"
     />
-    <ai-summary v-if="aiLoading !== null" @set-ai-loading="setAiLoading" />
+    <ai-summary v-if="aiLoading !== null" :ai-loading="aiLoading" @set-ai-loading="setAiLoading" />
     <ordered-layout :slot-keys="slotKeys">
       <template #form>
         <comment-form

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader do
+RSpec.describe Preloaders::UserMaxAccessLevelInProjectsPreloader, feature_category: :system_access do
   let_it_be(:user) { create(:user) }
   let_it_be(:project_1) { create(:project) }
   let_it_be(:project_2) { create(:project) }

@@ -16,17 +16,18 @@ module Gitlab
       DEFAULT_DISTINCT_BATCH_SIZE = 10_000
       DEFAULT_BATCH_SIZE = 100_000
 
-      def initialize(relation, column: nil, operation: :count, operation_args: nil)
+      def initialize(relation, column: nil, operation: :count, operation_args: nil, max_allowed_loops: nil)
         @relation = relation
         @column = column || relation.primary_key
         @operation = operation
         @operation_args = operation_args
+        @max_allowed_loops = max_allowed_loops || MAX_ALLOWED_LOOPS
       end
 
       def unwanted_configuration?(finish, batch_size, start)
         (@operation == :count && batch_size <= MIN_REQUIRED_BATCH_SIZE) ||
           (@operation == :sum && batch_size < DEFAULT_SUM_BATCH_SIZE) ||
-          (finish - start) / batch_size >= MAX_ALLOWED_LOOPS ||
+          (finish - start) / batch_size >= @max_allowed_loops ||
           start >= finish
       end
 
@@ -139,6 +140,7 @@ module Gitlab
             relation: @relation.table_name,
             operation: @operation,
             operation_args: @operation_args,
+            max_allowed_loops: @max_allowed_loops,
             start: batch_start,
             mode: mode,
             query: query,

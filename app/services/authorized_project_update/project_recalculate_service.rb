@@ -64,13 +64,10 @@ module AuthorizedProjectUpdate
     end
 
     def refresh_authorizations
-      if user_ids_to_remove.any?
-        ProjectAuthorization.delete_all_in_batches_for_project(
-          project: project,
-          user_ids: user_ids_to_remove)
-      end
-
-      ProjectAuthorization.insert_all_in_batches(authorizations_to_create) if authorizations_to_create.any?
+      ProjectAuthorizations::Changes.new do |changes|
+        changes.add(authorizations_to_create)
+        changes.remove_users_in_project(project, user_ids_to_remove)
+      end.apply!
     end
 
     def apply_scopes(project_authorizations)

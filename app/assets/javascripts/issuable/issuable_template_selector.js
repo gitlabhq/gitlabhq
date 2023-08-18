@@ -1,9 +1,9 @@
 import $ from 'jquery';
-import TemplateSelector from '~/blob/template_selector';
+import LegacyTemplateSelector from '~/blob/legacy_template_selector';
 import { __ } from '~/locale';
 import Api from '../api';
 
-export default class IssuableTemplateSelector extends TemplateSelector {
+export default class IssuableTemplateSelector extends LegacyTemplateSelector {
   constructor(...args) {
     super(...args);
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SessionsHelper do
+RSpec.describe SessionsHelper, feature_category: :system_access do
   describe '#recently_confirmed_com?' do
     subject { helper.recently_confirmed_com? }
 
@@ -51,28 +51,66 @@ RSpec.describe SessionsHelper do
     end
   end
 
-  describe '#send_rate_limited?' do
+  describe '#unconfirmed_verification_email?', :freeze_time do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build_stubbed(:user) }
+    let(:token_valid_for) { ::Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES }
+
+    subject { helper.unconfirmed_verification_email?(user) }
+
+    where(:reset_first_offer?, :unconfirmed_email_present?, :token_valid?, :result) do
+      true  | true  | true  | true
+      false | true  | true  | false
+      true  | false | true  | false
+      true  | true  | false | false
+    end
+
+    with_them do
+      before do
+        user.email_reset_offered_at = 1.minute.ago unless reset_first_offer?
+        user.unconfirmed_email = 'unconfirmed@email' if unconfirmed_email_present?
+        user.confirmation_sent_at = (token_valid? ? token_valid_for - 1 : token_valid_for + 1).minutes.ago
+      end
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
+  describe '#verification_email' do
+    let(:unconfirmed_email) { 'unconfirmed@email' }
+    let(:user) { build_stubbed(:user, unconfirmed_email: unconfirmed_email) }
+
+    subject { helper.verification_email(user) }
+
+    context 'when there is an unconfirmed verification email' do
+      before do
+        allow(helper).to receive(:unconfirmed_verification_email?).and_return(true)
+      end
+
+      it { is_expected.to eq(unconfirmed_email) }
+    end
+
+    context 'when there is no unconfirmed verification email' do
+      before do
+        allow(helper).to receive(:unconfirmed_verification_email?).and_return(false)
+      end
+
+      it { is_expected.to eq(user.email) }
+    end
+  end
+
+  describe '#verification_data' do
     let(:user) { build_stubbed(:user) }
 
-    subject { helper.send_rate_limited?(user) }
-
-    before do
-      allow(::Gitlab::ApplicationRateLimiter)
-        .to receive(:peek)
-        .with(:email_verification_code_send, scope: user)
-        .and_return(rate_limited)
-    end
-
-    context 'when rate limited' do
-      let(:rate_limited) { true }
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when not rate limited' do
-      let(:rate_limited) { false }
-
-      it { is_expected.to eq(false) }
+    it 'returns the expected data' do
+      expect(helper.verification_data(user)).to eq({
+        obfuscated_email: obfuscated_email(user.email),
+        verify_path: helper.session_path(:user),
+        resend_path: users_resend_verification_code_path,
+        offer_email_reset: user.email_reset_offered_at.nil?.to_s,
+        update_email_path: users_update_email_path
+      })
     end
   end
 

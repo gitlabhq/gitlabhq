@@ -3,7 +3,7 @@ import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
-import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_ASSIGNEES } from '~/work_items/constants';
+import { i18n, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import Tracking from '~/tracking';
 import { updateDraft, clearDraft } from '~/lib/utils/autosave';
 import { renderMarkdown } from '~/notes/utils';
@@ -17,6 +17,7 @@ import NoteActions from '~/work_items/components/notes/work_item_note_actions.vu
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemNoteMutation from '../../graphql/notes/update_work_item_note.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import { isAssigneesWidget } from '../../utils';
 import WorkItemCommentForm from './work_item_comment_form.vue';
 import WorkItemNoteAwardsList from './work_item_note_awards_list.vue';
 
@@ -227,8 +228,6 @@ export default {
       } else {
         newAssignees = [...this.assignees, this.author];
       }
-
-      const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
 
       const assigneesWidgetIndex = this.workItem.widgets.findIndex(isAssigneesWidget);
 

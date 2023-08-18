@@ -1,5 +1,5 @@
 <script>
-import { GlDropdownForm, GlDropdownItem, GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
+import { GlDropdownItem, GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -9,7 +9,6 @@ import LabelItem from './label_item.vue';
 
 export default {
   components: {
-    GlDropdownForm,
     GlDropdownItem,
     GlLoadingIcon,
     GlIntersectionObserver,
@@ -142,7 +141,7 @@ export default {
 
 <template>
   <gl-intersection-observer @appear="onDropdownAppear">
-    <gl-dropdown-form class="labels-select-contents-list js-labels-list">
+    <div class="js-labels-list">
       <div ref="labelsListContainer" data-testid="dropdown-content">
         <gl-loading-icon
           v-if="labelsFetchInProgress"
@@ -171,6 +170,6 @@ export default {
           </gl-dropdown-item>
         </template>
       </div>
-    </gl-dropdown-form>
+    </div>
   </gl-intersection-observer>
 </template>

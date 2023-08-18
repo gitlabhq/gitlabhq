@@ -13,6 +13,8 @@ export const ICONS = {
   TAG: 'tag',
   MR: 'git-merge',
   BRANCH: 'branch',
+  RETRY: 'retry',
+  SUCCESS: 'success',
 };
 
 export const TestStatus = {
@@ -109,6 +111,8 @@ export const TRACKING_CATEGORIES = {
   table: 'pipelines_table_component',
   tabs: 'pipelines_filter_tabs',
   search: 'pipelines_filtered_search',
+  failed: 'pipeline_failed_jobs_tab',
+  tests: 'pipeline_tests_tab',
 };
 
 // Pipeline Mini Graph

@@ -67,6 +67,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :groups_and_projects
     it 'list page has a list of images' do
       visit_container_registry
 
+      expect(page).to have_content '1 Image repository'
       expect(page).to have_content 'my/image'
     end
 
@@ -189,8 +190,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :groups_and_projects
     it 'pagination is preserved after navigating back from details' do
       visit_next_page
       click_link 'my/image'
-      breadcrumb = find '.breadcrumbs'
-      breadcrumb.click_link 'Container Registry'
+      page.go_back
       expect(page).to have_content 'my/image'
     end
   end

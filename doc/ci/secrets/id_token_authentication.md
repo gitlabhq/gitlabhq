@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# OpenID Connect (OIDC) Authentication Using ID Tokens **(FREE)**
+# OpenID Connect (OIDC) Authentication Using ID Tokens **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
 
@@ -76,6 +76,7 @@ The token also includes custom claims provided by GitLab:
 | `sha`                   | Always                       | The commit SHA for the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
 | `ci_config_ref_uri`     | Always                       | The ref path to the top-level pipeline definition, for example, `gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.2. This claim is `null` unless the pipeline definition is located in the same project. |
 | `ci_config_sha`         | Always                       | Git commit SHA for the `ci_config_ref_uri`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.2. This claim is `null` unless the pipeline definition is located in the same project. |
+| `project_visibility`    | Always                       | The [visibility](../../user/public_access.md) of the project where the pipeline is running. Can be `internal`, `private`, or `public`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418810) in GitLab 16.3. |
 
 ```json
 {
@@ -103,6 +104,7 @@ The token also includes custom claims provided by GitLab:
   "runner_id": 1,
   "runner_environment": "self-hosted",
   "sha": "714a629c0b401fdce83e847fc9589983fc6f46bc",
+  "project_visibility": "public",
   "ci_config_ref_uri": "gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main",
   "ci_config_sha": "714a629c0b401fdce83e847fc9589983fc6f46bc",
   "jti": "235b3a54-b797-45c7-ae9a-f72d7bc6ef5b",
@@ -136,7 +138,7 @@ manual_authentication:
     - my-authentication-script.sh $VAULT_TOKEN $PASSWORD
 ```
 
-## Automatic ID Token authentication with HashiCorp Vault **(PREMIUM)**
+## Automatic ID Token authentication with HashiCorp Vault **(PREMIUM ALL)**
 
 You can use ID tokens to automatically fetch secrets from HashiCorp Vault with the
 [`secrets`](../yaml/index.md#secrets) keyword.

@@ -57,7 +57,7 @@ export const DAST_HELP_PATH = helpPagePath('user/application_security/dast/index
 export const DAST_CONFIG_HELP_PATH = helpPagePath('user/application_security/dast/index', {
   anchor: 'enable-automatic-dast-run',
 });
-export const DAST_BADGE_TEXT = __('Available on-demand');
+export const DAST_BADGE_TEXT = __('Available on demand');
 export const DAST_BADGE_TOOLTIP = __(
   'On-demand scans run outside of the DevOps cycle and find vulnerabilities in your projects',
 );

@@ -18,6 +18,7 @@ require 'rainbow/refinement'
 require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/module/delegation'
+require 'active_support/parameter_filter'
 
 module QA
   root = "#{__dir__}/qa"
@@ -29,6 +30,7 @@ module QA
 
   loader.push_dir(root, namespace: QA)
 
+  loader.ignore("#{root}/factories")
   loader.ignore("#{root}/specs/features")
   loader.ignore("#{root}/specs/spec_helper.rb")
 

@@ -1,18 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' },
+  RSpec.describe 'Package', :object_storage, :external_api_calls,
     feature_flag: { name: 'rubygem_packages', scope: :project } do
     describe 'RubyGems Repository', product_group: :package_registry do
       include Runtime::Fixtures
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'rubygems-package-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'rubygems-package-project') }
       let(:package) do
         Resource::Package.init do |package|
           package.name = "mygem-#{SecureRandom.hex(8)}"
@@ -30,8 +24,7 @@ module QA
       end
 
       let(:gitlab_address_with_port) do
-        uri = URI.parse(Runtime::Scenario.gitlab_address)
-        "#{uri.scheme}://#{uri.host}:#{uri.port}"
+        Support::GitlabAddress.address_with_port
       end
 
       before do

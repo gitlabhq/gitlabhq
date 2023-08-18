@@ -114,29 +114,31 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
     end
   end
 
-  describe 'instance-level code suggestions settings', feature_category: :code_suggestions do
+  # for the licensed tests, refer to ee/spec/views/admin/application_settings/general.html.haml_spec.rb
+  describe 'instance-level code suggestions settings', :without_license, feature_category: :code_suggestions do
     before do
       allow(::Gitlab).to receive(:org_or_com?).and_return(gitlab_org_or_com?)
 
       render
     end
 
-    context 'when on .com or .org' do
-      let(:gitlab_org_or_com?) { true }
-
+    shared_examples 'does not render the form' do
       it 'does not render the form' do
         expect(rendered).not_to have_field('application_setting_instance_level_code_suggestions_enabled')
         expect(rendered).not_to have_field('application_setting_ai_access_token')
       end
     end
 
+    context 'when on .com or .org' do
+      let(:gitlab_org_or_com?) { true }
+
+      it_behaves_like 'does not render the form'
+    end
+
     context 'when not on .com and not on .org' do
       let(:gitlab_org_or_com?) { false }
 
-      it 'renders the form' do
-        expect(rendered).to have_field('application_setting_instance_level_code_suggestions_enabled')
-        expect(rendered).to have_field('application_setting_ai_access_token')
-      end
+      it_behaves_like 'does not render the form'
     end
   end
 end

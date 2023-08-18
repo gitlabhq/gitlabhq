@@ -1,5 +1,6 @@
 import { __, s__ } from '~/locale';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 // These statuses are based on how the backend defines pod phases here
 // lib/gitlab/kubernetes/pod.rb
@@ -104,6 +105,56 @@ export const HEALTH_BADGES = {
   },
 };
 
+export const SYNC_STATUS_BADGES = {
+  reconciled: {
+    variant: 'success',
+    icon: 'status_success',
+    text: s__('Environment|Reconciled'),
+    popoverText: s__('Deployment|Flux sync reconciled successfully'),
+  },
+  reconciling: {
+    variant: 'info',
+    icon: 'status_running',
+    text: s__('Environment|Reconciling'),
+    popoverText: s__('Deployment|Flux sync reconciling'),
+  },
+  stalled: {
+    variant: 'warning',
+    icon: 'status_pending',
+    text: s__('Environment|Stalled'),
+    popoverTitle: s__('Deployment|Flux sync stalled'),
+  },
+  failed: {
+    variant: 'danger',
+    icon: 'status_failed',
+    text: s__('Deployment|Failed'),
+    popoverTitle: s__('Deployment|Flux sync failed'),
+  },
+  unknown: {
+    variant: 'neutral',
+    icon: 'status_notfound',
+    text: s__('Deployment|Unknown'),
+    popoverTitle: s__('Deployment|Flux sync status is unknown'),
+    popoverText: s__(
+      'Deployment|Unable to detect state. %{linkStart}How are states detected?%{linkEnd}',
+    ),
+    popoverLink: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419666#results',
+  },
+  unavailable: {
+    variant: 'muted',
+    icon: 'status_notfound',
+    text: s__('Deployment|Unavailable'),
+    popoverTitle: s__('Deployment|Flux sync status is unavailable'),
+    popoverText: s__(
+      'Deployment|Sync status is unknown. %{linkStart}How do I configure Flux for my deployment?%{linkEnd}',
+    ),
+    popoverLink: helpPagePath('user/clusters/agent/gitops/flux_tutorial'),
+  },
+};
+
+export const STATUS_TRUE = 'True';
+export const STATUS_FALSE = 'False';
+
 export const PHASE_RUNNING = 'Running';
 export const PHASE_PENDING = 'Pending';
 export const PHASE_SUCCEEDED = 'Succeeded';
@@ -124,3 +175,16 @@ export const CLUSTER_AGENT_ERROR_MESSAGES = {
   [ERROR_NOT_FOUND]: s__('Environment|Cluster agent not found.'),
   [ERROR_OTHER]: s__('Environment|There was an error connecting to the cluster agent.'),
 };
+
+export const CLUSTER_FLUX_RECOURSES_ERROR_MESSAGES = {
+  [ERROR_UNAUTHORIZED]: s__(
+    'Environment|Unauthorized to access %{resourceType} from this environment.',
+  ),
+  [ERROR_OTHER]: s__('Environment|There was an error fetching %{resourceType}.'),
+};
+
+export const HELM_RELEASES_RESOURCE_TYPE = 'helmreleases';
+export const KUSTOMIZATIONS_RESOURCE_TYPE = 'kustomizations';
+
+export const KUSTOMIZATION = 'Kustomization';
+export const HELM_RELEASE = 'HelmRelease';

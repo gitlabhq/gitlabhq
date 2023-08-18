@@ -371,7 +371,6 @@ Layout/SpaceInLambdaLiteral:
     - 'spec/helpers/namespaces_helper_spec.rb'
     - 'spec/lib/backup/gitaly_backup_spec.rb'
     - 'spec/lib/container_registry/client_spec.rb'
-    - 'spec/lib/csv_builder_spec.rb'
     - 'spec/lib/gitlab/analytics/date_filler_spec.rb'
     - 'spec/lib/gitlab/background_migration/batched_migration_job_spec.rb'
     - 'spec/lib/gitlab/batch_worker_context_spec.rb'

@@ -15,6 +15,7 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
     end
 
     it 'auto-populates the title', :js do
+      click_button('Add new key')
       fill_in('Key', with: attributes_for(:key).fetch(:key))
 
       expect(page).to have_field("Title", with: "dummy@gitlab.com")
@@ -23,11 +24,12 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
     it 'saves the new key' do
       attrs = attributes_for(:key)
 
+      click_button('Add new key')
       fill_in('Key', with: attrs[:key])
       fill_in('Title', with: attrs[:title])
       click_button('Add key')
 
-      expect(page).to have_content("Title: #{attrs[:title]}")
+      expect(page).to have_content(format(s_('Profiles|SSH Key: %{title}'), title: attrs[:title]))
       expect(page).to have_content(attrs[:key])
       expect(find('[data-testid="breadcrumb-current-link"]')).to have_link(attrs[:title])
     end
@@ -35,6 +37,7 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
     it 'shows a confirmable warning if the key begins with an algorithm name that is unsupported' do
       attrs = attributes_for(:key)
 
+      click_button('Add new key')
       fill_in('Key', with: 'unsupported-ssh-rsa key')
       fill_in('Title', with: attrs[:title])
       click_button('Add key')
@@ -60,6 +63,7 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
       it 'shows a validation error' do
         attrs = attributes_for(:key)
 
+        click_button('Add new key')
         fill_in('Key', with: attrs[:key])
         fill_in('Title', with: attrs[:title])
         click_button('Add key')
@@ -79,13 +83,16 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
   def destroy_key(path, action, confirmation_button)
     visit path
 
-    page.click_button(action)
+    page.find("button[aria-label=\"#{action}\"]").click
 
     page.within('.modal') do
       page.click_button(confirmation_button)
     end
 
-    expect(page).to have_content('Your SSH keys (0)')
+    expect(page).to have_content('Your SSH keys')
+    page.within('.gl-new-card-count') do
+      expect(page).to have_content('0')
+    end
   end
 
   describe 'User removes a key', :js do
@@ -111,11 +118,13 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :user_profile do
       let!(:commit) { project.commit('ssh-signed-commit') }
 
       let!(:signature) do
-        create(:ssh_signature,
-               project: project,
-               key: key,
-               key_fingerprint_sha256: key.fingerprint_sha256,
-               commit_sha: commit.sha)
+        create(
+          :ssh_signature,
+          project: project,
+          key: key,
+          key_fingerprint_sha256: key.fingerprint_sha256,
+          commit_sha: commit.sha
+        )
       end
 
       before do

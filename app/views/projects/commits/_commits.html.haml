@@ -7,7 +7,7 @@
 - context_commits = @context_commits&.map { |commit| commit.present(current_user: current_user) }
 - hidden = @hidden_commit_count
 
-- commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, daily_commits|
+- commits.chunk { |commit| local_committed_date(commit, current_user) }.each do |day, daily_commits|
   %li.js-commit-header.gl-py-2.gl-border-b{ data: { day: day } }
     %span.day.font-weight-bold= l(day, format: '%b %d, %Y')
 
@@ -44,7 +44,8 @@
 
 - if commits.size == 0 && context_commits.nil?
   .commits-empty.gl-mt-6
-    = custom_icon('illustration_no_commits')
+    .svg-content.svg-150
+      = image_tag('illustrations/empty-state/empty-search-md.svg')
     %h4
       = _('Your search didn\'t match any commits.')
     %p

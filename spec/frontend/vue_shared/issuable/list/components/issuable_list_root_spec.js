@@ -530,4 +530,28 @@ describe('IssuableListRoot', () => {
       expect(findIssuableGrid().exists()).toBe(true);
     });
   });
+
+  it('passes `isActive` prop as false if there is no active issuable', () => {
+    wrapper = createComponent({});
+
+    expect(findIssuableItem().props('isActive')).toBe(false);
+  });
+
+  it('passes `isActive` prop as true if active issuable matches issuable item', () => {
+    wrapper = createComponent({
+      props: {
+        activeIssuable: mockIssuableListProps.issuables[0],
+      },
+    });
+
+    expect(findIssuableItem().props('isActive')).toBe(true);
+  });
+
+  it('emits `select-issuable` event on emitting `select-issuable` from issuable item', () => {
+    const mockIssuable = mockIssuableListProps.issuables[0];
+    wrapper = createComponent({});
+    findIssuableItem().vm.$emit('select-issuable', mockIssuable);
+
+    expect(wrapper.emitted('select-issuable')).toEqual([[mockIssuable]]);
+  });
 });

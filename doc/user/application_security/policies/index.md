@@ -4,7 +4,7 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Policies **(ULTIMATE)**
+# Policies **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5329) in GitLab 13.10 with a flag named `security_orchestration_policies_configuration`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.3.
@@ -150,5 +150,6 @@ The workaround is to amend your group or instance push rules to allow branches f
 - When enforcing scan execution policies, the target project's pipeline is triggered by the user who last updated the security policy project's `policy.yml` file. The user must have permission to trigger the pipeline in the project for the policy to be enforced, and the pipeline to run. Work to address this is being tracked in [issue 394958](https://gitlab.com/gitlab-org/gitlab/-/issues/394958).
 - You should not link a security policy project to a development project and to the group or sub-group the development project belongs to at the same time. Linking this way will result in approval rules from the Scan Result Policy not being applied to merge requests in the development project.
 - When creating a Scan Result Policy, neither the array `severity_levels` nor the array `vulnerability_states` in the [scan_finding rule](../policies/scan-result-policies.md#scan_finding-rule-type) can be left empty; for a working rule, at least one entry must exist.
+- When configuring pipeline and scan result policies, it's important to remember that security scans performed in manual jobs aren't verified to determine whether MR approval is required. When you run a manual job with security scans, it won't ensure approval even if vulnerabilities are introduced.
 
 If you are still experiencing issues, you can [view recent reported bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=popularity&state=opened&label_name%5B%5D=group%3A%3Asecurity%20policies&label_name%5B%5D=type%3A%3Abug&first_page_size=20) and raise new unreported issues.

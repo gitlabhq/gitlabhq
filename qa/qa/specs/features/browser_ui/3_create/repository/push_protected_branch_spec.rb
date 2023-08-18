@@ -5,12 +5,7 @@ module QA
     describe 'Protected branch support' do
       let(:branch_name) { 'protected-branch' }
       let(:commit_message) { 'Protected push commit message' }
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |resource|
-          resource.name = 'protected-branch-project'
-          resource.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'protected-branch-project') }
 
       before do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

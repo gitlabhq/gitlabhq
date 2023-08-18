@@ -26,7 +26,16 @@ RSpec.describe Gitlab::BackgroundMigration::Redis::BackfillProjectPipelineStatus
 
   describe '#scan_match_pattern' do
     it "finds all the required keys only" do
-      expect(redis.scan('0').second).to match_array(keys + invalid_keys)
+      cursor = '0'
+      scanned = []
+      loop do
+        # multiple scans are performed if it is a Redis cluster
+        cursor, result = redis.scan(cursor)
+        scanned.concat(result)
+        break if cursor == '0'
+      end
+
+      expect(scanned).to match_array(keys + invalid_keys)
       expect(subject.redis.scan_each(match: subject.scan_match_pattern).to_a).to contain_exactly(*keys)
     end
   end

@@ -72,7 +72,7 @@
     position: relative;
 
     // link to the build
-    .mini-pipeline-graph-dropdown-item {
+    .pipeline-job-item {
       align-items: center;
       clear: both;
       display: flex;
@@ -86,11 +86,11 @@
       }
     }
 
-    // ensure .mini-pipeline-graph-dropdown-item has hover style when action-icon is hovered
-    &:hover > .mini-pipeline-graph-dropdown-item,
-    &:hover > .ci-job-component > .mini-pipeline-graph-dropdown-item,
-    .mini-pipeline-graph-dropdown-item:hover,
-    .mini-pipeline-graph-dropdown-item:focus {
+    // ensure .pipeline-job-item has hover style when action-icon is hovered
+    &:hover > .pipeline-job-item,
+    &:hover > .ci-job-component > .pipeline-job-item,
+    .pipeline-job-item:hover,
+    .pipeline-job-item:focus {
       outline: none;
       text-decoration: none;
       background-color: var(--gray-100, $gray-50);

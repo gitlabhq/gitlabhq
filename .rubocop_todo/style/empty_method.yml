@@ -120,7 +120,6 @@ Style/EmptyMethod:
     - 'lib/gitlab/git_access.rb'
     - 'lib/gitlab/import_export/json/ndjson_writer.rb'
     - 'lib/gitlab/mailgun/webhook_processors/base.rb'
-    - 'lib/gitlab/null_request_store.rb'
     - 'lib/gitlab/usage_data_non_sql_metrics.rb'
     - 'lib/mattermost/session.rb'
     - 'qa/qa/resource/clusters/agent.rb'

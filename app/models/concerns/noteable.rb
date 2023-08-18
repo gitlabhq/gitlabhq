@@ -17,7 +17,7 @@ module Noteable
 
     # `Noteable` class names that support resolvable notes.
     def resolvable_types
-      %w(MergeRequest DesignManagement::Design)
+      %w(Issue MergeRequest DesignManagement::Design)
     end
 
     # `Noteable` class names that support creating/forwarding individual notes.
@@ -49,6 +49,8 @@ module Noteable
   end
 
   def supports_resolvable_notes?
+    return false if is_a?(Issue) && Feature.disabled?(:resolvable_issue_threads, project)
+
     self.class.resolvable_types.include?(base_class_name)
   end
 
@@ -171,9 +173,9 @@ module Noteable
     return unless etag_caching_enabled?
 
     # TODO: We need to figure out a way to make ETag caching work for group-level work items
-    return if is_a?(Issue) && project.nil?
+    Gitlab::EtagCaching::Store.new.touch(note_etag_key) unless is_a?(Issue) && project.nil?
 
-    Gitlab::EtagCaching::Store.new.touch(note_etag_key)
+    Noteable::NotesChannel.broadcast_to(self, event: 'updated') if Feature.enabled?(:action_cable_notes, project || try(:group))
   end
 
   def note_etag_key

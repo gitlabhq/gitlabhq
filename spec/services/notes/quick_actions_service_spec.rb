@@ -132,13 +132,59 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
     end
 
     describe '/estimate' do
-      let(:note_text) { '/estimate 1h' }
+      before do
+        # reset to 10 minutes before each test
+        note.noteable.update!(time_estimate: 600)
+      end
 
-      it 'adds time estimate to noteable' do
-        content = execute(note)
+      shared_examples 'does not update time_estimate and displays the correct error message' do
+        it 'shows validation error message' do
+          content = execute(note)
 
-        expect(content).to be_empty
-        expect(note.noteable.time_estimate).to eq(3600)
+          expect(content).to be_empty
+          expect(note.noteable.errors[:time_estimate]).to include('must have a valid format and be greater than or equal to zero.')
+          expect(note.noteable.reload.time_estimate).to eq(600)
+        end
+      end
+
+      context 'when the time estimate is valid' do
+        let(:note_text) { '/estimate 1h' }
+
+        it 'adds time estimate to noteable' do
+          content = execute(note)
+
+          expect(content).to be_empty
+          expect(note.noteable.reload.time_estimate).to eq(3600)
+        end
+      end
+
+      context 'when the time estimate is 0' do
+        let(:note_text) { '/estimate 0' }
+
+        it 'adds time estimate to noteable' do
+          content = execute(note)
+
+          expect(content).to be_empty
+          expect(note.noteable.reload.time_estimate).to eq(0)
+        end
+      end
+
+      context 'when the time estimate is invalid' do
+        let(:note_text) { '/estimate a' }
+
+        include_examples "does not update time_estimate and displays the correct error message"
+      end
+
+      context 'when the time estimate is partially invalid' do
+        let(:note_text) { '/estimate 1d 3id' }
+
+        include_examples "does not update time_estimate and displays the correct error message"
+      end
+
+      context 'when the time estimate is negative' do
+        let(:note_text) { '/estimate -1h' }
+
+        include_examples "does not update time_estimate and displays the correct error message"
       end
     end
 

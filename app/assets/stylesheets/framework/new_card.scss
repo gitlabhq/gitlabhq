@@ -92,3 +92,64 @@
     @include gl-rounded-base;
   }
 }
+
+.gl-new-card-body {
+  // Table adjustments
+  @mixin new-card-table-adjustments {
+    tbody > tr {
+      &:first-of-type > td[data-label],
+      &:first-of-type > td:first-of-type:last-of-type {
+        @include gl-border-t-0;
+      }
+
+      &:last-of-type td:not(:last-of-type) {
+        @include gl-border-b-1;
+      }
+
+      > td[data-label] {
+        @include gl-border-left-0;
+        @include gl-border-l-none;
+        @include gl-border-right-0;
+        @include gl-border-r-none;
+      }
+
+      > th {
+        @include gl-border-t-1;
+        @include gl-border-b-0;
+      }
+
+      &::after {
+        @include gl-bg-white;
+      }
+
+      &:last-child::after {
+        @include gl-display-none;
+      }
+    }
+  }
+
+  table.b-table-stacked-sm,
+  table.b-table-stacked-md {
+    @include gl-mb-0;
+
+    tr:first-of-type th {
+      @include gl-border-t-0;
+    }
+
+    tr:last-of-type td {
+      @include gl-border-b-0;
+    }
+  }
+
+  table.gl-table.b-table.b-table-stacked-sm {
+    @include gl-media-breakpoint-down(sm) {
+      @include new-card-table-adjustments;
+    }
+  }
+
+  table.gl-table.b-table.b-table-stacked-md {
+    @include gl-media-breakpoint-down(md) {
+      @include new-card-table-adjustments;
+    }
+  }
+}

@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import imageDiff from '~/diffs/mixins/image_diff';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';

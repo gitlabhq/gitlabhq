@@ -15,6 +15,18 @@ module API
     LOG_FORMATTER = Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new
     LOGGER = Logger.new(LOG_FILENAME)
 
+    class MovedPermanentlyError < StandardError
+      MSG_PREFIX = 'This resource has been moved permanently to'
+
+      attr_reader :location_url
+
+      def initialize(location_url)
+        @location_url = location_url
+
+        super("#{MSG_PREFIX} #{location_url}")
+      end
+    end
+
     insert_before Grape::Middleware::Error,
                   GrapeLogging::Middleware::RequestLogger,
                   logger: LOGGER,
@@ -95,6 +107,14 @@ module API
     end
 
     after do
+      Gitlab::UsageDataCounters::VisualStudioExtensionActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
+    end
+
+    after do
+      Gitlab::UsageDataCounters::NeovimPluginActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
+    end
+
+    after do
       Gitlab::UsageDataCounters::GitLabCliActivityUniqueCounter.track_api_request_when_trackable(user_agent: request&.user_agent, user: @current_user)
     end
 
@@ -132,6 +152,10 @@ module API
 
     rescue_from Grape::Exceptions::Base do |e|
       error! e.message, e.status, e.headers
+    end
+
+    rescue_from MovedPermanentlyError do |e|
+      rack_response(e.message, 301, { 'Location' => e.location_url })
     end
 
     rescue_from Gitlab::Auth::TooManyIps do |e|
@@ -180,6 +204,7 @@ module API
         # Keep in alphabetical order
         mount ::API::AccessRequests
         mount ::API::Admin::BatchedBackgroundMigrations
+        mount ::API::Admin::BroadcastMessages
         mount ::API::Admin::Ci::Variables
         mount ::API::Admin::Dictionary
         mount ::API::Admin::InstanceClusters
@@ -191,7 +216,6 @@ module API
         mount ::API::Avatar
         mount ::API::Badges
         mount ::API::Branches
-        mount ::API::BroadcastMessages
         mount ::API::BulkImports
         mount ::API::Ci::JobArtifacts
         mount ::API::Groups

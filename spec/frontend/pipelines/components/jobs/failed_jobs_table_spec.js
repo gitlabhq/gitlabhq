@@ -2,12 +2,14 @@ import { GlButton, GlLink, GlTableLite } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import FailedJobsTable from '~/pipelines/components/jobs/failed_jobs_table.vue';
 import RetryFailedJobMutation from '~/pipelines/graphql/mutations/retry_failed_job.mutation.graphql';
+import { TRACKING_CATEGORIES } from '~/pipelines/constants';
 import {
   successRetryMutationResponse,
   failedRetryMutationResponse,
@@ -71,7 +73,9 @@ describe('Failed Jobs Table', () => {
     expect(findFirstFailureMessage().text()).toBe('Job failed');
   });
 
-  it('calls the retry failed job mutation correctly', () => {
+  it('calls the retry failed job mutation and tracks the click', () => {
+    const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+
     createComponent(successRetryMutationHandler);
 
     findRetryButton().trigger('click');
@@ -79,6 +83,12 @@ describe('Failed Jobs Table', () => {
     expect(successRetryMutationHandler).toHaveBeenCalledWith({
       id: mockFailedJobsData[0].id,
     });
+    expect(trackingSpy).toHaveBeenCalledTimes(1);
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_retry', {
+      label: TRACKING_CATEGORIES.failed,
+    });
+
+    unmockTracking();
   });
 
   it('redirects to the new job after the mutation', async () => {

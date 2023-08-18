@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SET_REVIEW_BAR_RENDERED } from '~/batch_comments/stores/modules/batch_comments/mutation_types';

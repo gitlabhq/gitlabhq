@@ -34,6 +34,7 @@ RSpec.describe GitlabSchema.types['AlertManagementAlert'], feature_category: :in
       runbook
       todos
       details_url
+      metrics_dashboard_url
       prometheus_alert
       environment
       web_url

@@ -55,7 +55,7 @@ module IssuesHelper
   def hidden_issue_icon(issue)
     return unless issue_hidden?(issue)
 
-    hidden_issuable_icon(issue)
+    hidden_resource_icon(issue)
   end
 
   def award_user_list(awards, current_user, limit: 10)
@@ -195,7 +195,8 @@ module IssuesHelper
       is_signed_in: current_user.present?.to_s,
       jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
       rss_path: url_for(safe_params.merge(rss_url_options)),
-      sign_in_path: new_user_session_path
+      sign_in_path: new_user_session_path,
+      has_issue_date_filter_feature: Feature.enabled?(:issue_date_filter, namespace).to_s
     }
   end
 
@@ -220,7 +221,9 @@ module IssuesHelper
       quick_actions_help_path: help_page_path('user/project/quick_actions'),
       releases_path: project_releases_path(project, format: :json),
       reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
-      show_new_issue_link: show_new_issue_link?(project).to_s
+      show_new_issue_link: show_new_issue_link?(project).to_s,
+      report_abuse_path: add_category_abuse_reports_path,
+      register_path: new_user_registration_path(redirect_to_referer: 'yes')
     )
   end
 

@@ -22,7 +22,7 @@ module Integrations
       help: -> { s_('ProjectService|Must have permission to trigger a manual build in TeamCity.') }
 
     field :password,
-      type: 'password',
+      type: :password,
       non_empty_password_title: -> { s_('ProjectService|Enter new password') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password') }
 

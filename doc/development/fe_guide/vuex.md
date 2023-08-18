@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Vuex
 
-[Vuex](https://vuex.vuejs.org) should no longer be considered a preferred path to store management and is currently in its legacy phase. This means it is acceptable to add upon existing `Vuex` stores, but we strongly recommend reducing store sizes over time and eventually migrating fully to [Apollo](https://www.apollographql.com/) whenever it's possible. Before adding any new `Vuex` store to an application, first ensure that the `Vue` application you plan to add it into **does not use** `Apollo`. `Vuex` and `Apollo` should not be combined unless absolutely necessary. Please consider reading through [our GraphQL documentation](../fe_guide/graphql.md) for more guidelines on how you can build `Apollo` based applications.
+[Vuex](https://vuex.vuejs.org) should no longer be considered a preferred path to store management and is currently in its legacy phase. This means it is acceptable to add upon existing `Vuex` stores, but we strongly recommend reducing store sizes over time and eventually [migrating away from VueX entirely](migrating_from_vuex.md). Before adding any new `Vuex` store to an application, first ensure that the `Vue` application you plan to add it into **does not use** `Apollo`. `Vuex` and `Apollo` should not be combined unless absolutely necessary. Please consider reading through [our GraphQL documentation](../fe_guide/graphql.md) for more guidelines on how you can build `Apollo` based applications.
 
 The information included in this page is explained in more detail in the
 official [Vuex documentation](https://vuex.vuejs.org).
@@ -40,6 +40,7 @@ applications stored in this [repository](https://gitlab.com/gitlab-org/gitlab/-/
 This is the entry point for our store. You can use the following as a guide:
 
 ```javascript
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import * as actions from './actions';
 import * as getters from './getters';
@@ -287,6 +288,7 @@ function when mounting your Vue component:
 // in the Vue app's initialization script (for example, mount_show.js)
 
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { createStore } from './stores';
 import AwesomeVueApp from './components/awesome_vue_app.vue'
@@ -372,6 +374,7 @@ when [providing data to a Vue app](vue.md#providing-data-from-haml-to-javascript
 
 ```javascript
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 
 export default {
@@ -433,6 +436,7 @@ components, we need to include the store and provide the correct state:
 ```javascript
 //component_spec.js
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { mount } from '@vue/test-utils';
 import { createStore } from './store';

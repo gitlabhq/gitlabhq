@@ -297,6 +297,8 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'with a commit with invalid UTF-8 path' do
+      let(:project) { create(:project, :empty_repo) }
+
       it 'does not raise an error' do
         response = create_file_in_repo(project, 'master', 'master', "hello\x80world", 'some contents')
 
@@ -319,6 +321,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'with filename with pathspec characters' do
+      let(:project) { create(:project, :empty_repo) }
       let(:filename) { ':wq' }
       let(:newrev) { project.repository.commit('master').sha }
 
@@ -358,6 +361,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'with filename with pathspec characters' do
+      let(:project) { create(:project, :empty_repo) }
       let(:filename) { ':wq' }
       let(:newrev) { project.repository.commit('master').sha }
 
@@ -1105,7 +1109,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe "#delete_file" do
-    let_it_be(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository) }
 
     it 'removes file successfully' do
       expect do
@@ -2400,6 +2404,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       expect(repository).to receive(:expire_method_caches).with(
         [
           :size,
+          :recent_objects_size,
           :commit_count,
           :readme_path,
           :contribution_guide,
@@ -2874,7 +2879,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   describe '#expire_statistics_caches' do
     it 'expires the caches' do
       expect(repository).to receive(:expire_method_caches)
-        .with(%i(size commit_count))
+        .with(%i(size recent_objects_size commit_count))
 
       repository.expire_statistics_caches
     end
@@ -3002,6 +3007,22 @@ RSpec.describe Repository, feature_category: :source_code_management do
     context 'with an existing repository' do
       it 'returns the repository size as a Float' do
         expect(repository.size).to be_an_instance_of(Float)
+      end
+    end
+  end
+
+  describe '#recent_objects_size' do
+    context 'with a non-existing repository' do
+      it 'returns 0' do
+        expect(repository).to receive(:exists?).and_return(false)
+
+        expect(repository.recent_objects_size).to eq(0.0)
+      end
+    end
+
+    context 'with an existing repository' do
+      it 'returns the repository recent_objects_size as a Float' do
+        expect(repository.recent_objects_size).to be_an_instance_of(Float)
       end
     end
   end
@@ -3785,6 +3806,115 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       include_examples 'does not delete branch'
+    end
+  end
+
+  describe '#get_patch_id' do
+    let(:project) { create(:project, :repository) }
+
+    it 'returns patch_id of given revisions' do
+      expect(repository.get_patch_id('HEAD~', 'HEAD')).to eq('45435e5d7b339dd76d939508c7687701d0c17fff')
+    end
+
+    context 'when one of the param is invalid' do
+      it 'raises an ArgumentError error' do
+        expect { repository.get_patch_id('HEAD', nil) }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when two revisions are the same' do
+      it 'raises an Gitlab::Git::CommandError error' do
+        expect { repository.get_patch_id('HEAD', 'HEAD') }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
+  end
+
+  describe '#object_pool' do
+    let_it_be(:primary_project) { create(:project, :empty_repo) }
+    let_it_be(:forked_project) { create(:project, :empty_repo) }
+
+    let(:repository) { primary_project.repository }
+
+    subject { repository.object_pool }
+
+    context 'without object pool' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when pool repository exists' do
+      let!(:pool) { create(:pool_repository, :ready, source_project: primary_project) }
+
+      context 'when the current repository is a primary repository' do
+        it { is_expected.to be_nil }
+
+        context 'when repository is linked to the pool repository' do
+          before do
+            pool.link_repository(repository)
+          end
+
+          after do
+            pool.unlink_repository(repository)
+          end
+
+          it 'returns a object pool for the repository' do
+            is_expected.to be_kind_of(Gitlab::Git::ObjectPool)
+
+            expect(subject).to have_attributes(
+              relative_path: "#{pool.disk_path}.git",
+              source_repository: repository,
+              storage: repository.shard
+            )
+          end
+        end
+      end
+
+      context 'when the current repository is not a primary repository' do
+        let(:repository) { forked_project.repository }
+
+        it { is_expected.to be_nil }
+
+        context 'when repository is linked to the pool repository' do
+          before do
+            pool.link_repository(repository)
+            forked_project.update!(pool_repository: pool)
+          end
+
+          after do
+            pool.unlink_repository(repository)
+            forked_project.update!(pool_repository: nil)
+          end
+
+          it 'returns a object pool with correct links to primary repository' do
+            is_expected.to be_kind_of(Gitlab::Git::ObjectPool)
+
+            expect(subject).to have_attributes(
+              relative_path: "#{pool.disk_path}.git",
+              source_repository: primary_project.repository,
+              storage: primary_project.repository.shard
+            )
+          end
+        end
+
+        context 'when repository is linked to the pool repository in Gitaly only' do
+          before do
+            pool.link_repository(repository)
+          end
+
+          after do
+            pool.unlink_repository(repository)
+          end
+
+          it 'returns an object pool without a link to the primary repository' do
+            is_expected.to be_kind_of(Gitlab::Git::ObjectPool)
+
+            expect(subject).to have_attributes(
+              relative_path: "#{pool.disk_path}.git",
+              source_repository: nil,
+              storage: primary_project.repository.shard
+            )
+          end
+        end
+      end
     end
   end
 end

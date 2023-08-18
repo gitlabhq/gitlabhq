@@ -5,7 +5,7 @@
       = _('Amazon EKS')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Amazon EKS integration allows you to provision EKS clusters from GitLab.')
 
   .settings-content

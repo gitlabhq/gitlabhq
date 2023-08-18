@@ -8,6 +8,7 @@ import {
   GlResizeObserverDirective,
   GlModal,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { debounce, clamp } from 'lodash';
 import { truncate } from '~/lib/utils/text_utility';
@@ -200,17 +201,21 @@ export default {
       const isSearchInput = target.matches(SEARCH_INPUT_SELECTOR);
 
       if (code === HOME_KEY) {
+        if (isSearchInput) return;
+
         this.focusItem(0, elements);
       } else if (code === END_KEY) {
+        if (isSearchInput) return;
+
         this.focusItem(elements.length - 1, elements);
       } else if (code === ARROW_UP_KEY) {
         if (isSearchInput) return;
 
         if (elements.indexOf(target) === 0) {
           this.focusSearchInput();
-          return;
+        } else {
+          this.focusNextItem(event, elements, -1);
         }
-        this.focusNextItem(event, elements, -1);
       } else if (code === ARROW_DOWN_KEY) {
         this.focusNextItem(event, elements, 1);
       } else if (code === ESC_KEY) {
@@ -290,10 +295,9 @@ export default {
     <form
       role="search"
       :aria-label="searchPlaceholder"
-      class="gl-relative gl-rounded-base gl-w-full"
-      data-testid="global-search-form"
+      class="gl-relative gl-rounded-base gl-w-full gl-pb-0"
     >
-      <div class="gl-p-1 gl-relative">
+      <div class="gl-relative gl-bg-white gl-border-b gl-mb-n1 gl-p-3">
         <gl-search-box-by-type
           id="search"
           ref="searchInput"
@@ -346,8 +350,7 @@ export default {
       </span>
       <div
         ref="resultsList"
-        data-testid="global-search-results"
-        class="global-search-results gl-overflow-y-auto gl-w-full gl-pb-2"
+        class="global-search-results gl-overflow-y-auto gl-w-full gl-pb-3"
         @keydown="onKeydown"
       >
         <command-palette-items
@@ -357,12 +360,11 @@ export default {
           @updated="highlightFirstCommand"
         />
 
+        <global-search-default-items v-else-if="showDefaultItems" />
+
         <template v-else>
-          <global-search-default-items v-if="showDefaultItems" />
-          <template v-else>
-            <global-search-scoped-items v-if="showScopedSearchItems" />
-            <global-search-autocomplete-items />
-          </template>
+          <global-search-scoped-items v-if="showScopedSearchItems" />
+          <global-search-autocomplete-items />
         </template>
       </div>
       <template v-if="searchContext">

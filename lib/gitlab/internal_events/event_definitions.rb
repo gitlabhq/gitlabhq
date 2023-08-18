@@ -8,10 +8,6 @@ module Gitlab
       class << self
         VALID_UNIQUE_VALUES = %w[user.id project.id namespace.id].freeze
 
-        def clear_events
-          @events = nil
-        end
-
         def load_configurations
           @events = load_metric_definitions
           nil

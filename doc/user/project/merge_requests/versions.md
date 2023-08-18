@@ -4,7 +4,7 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge requests versions **(FREE)**
+# Merge requests versions **(FREE ALL)**
 
 Every time you push to a branch that is tied to a merge request, a new version
 of merge request diff is created. When you visit a merge request that contains

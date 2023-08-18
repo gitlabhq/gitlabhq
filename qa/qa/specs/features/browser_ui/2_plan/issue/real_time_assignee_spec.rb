@@ -5,11 +5,7 @@ module QA
     describe 'Assignees' do
       let(:user1) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1) }
       let(:user2) { Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_2, Runtime::Env.gitlab_qa_password_2) }
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-to-test-assignees'
-        end
-      end
+      let(:project) { create(:project, name: 'project-to-test-assignees') }
 
       before do
         Flow::Login.sign_in

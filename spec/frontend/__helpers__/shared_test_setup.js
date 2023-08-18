@@ -35,7 +35,7 @@ Vue.config.productionTip = false;
 
 Vue.use(Translate);
 
-const JQUERY_MATCHERS_TO_EXCLUDE = ['toHaveLength', 'toExist'];
+const JQUERY_MATCHERS_TO_EXCLUDE = ['toBeEmpty', 'toHaveLength', 'toExist'];
 
 // custom-jquery-matchers was written for an old Jest version, we need to make it compatible
 Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {

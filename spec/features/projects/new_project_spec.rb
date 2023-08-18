@@ -46,7 +46,8 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
     end
 
     it 'shows a message if multiple levels are restricted' do
-      Gitlab::CurrentSettings.update!(
+      stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::PUBLIC)
+      stub_application_setting(
         restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL]
       )
 
@@ -56,15 +57,21 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       expect(page).to have_content 'Other visibility settings have been disabled by the administrator.'
     end
 
-    it 'shows a message if all levels are restricted' do
-      Gitlab::CurrentSettings.update!(
-        restricted_visibility_levels: Gitlab::VisibilityLevel.values
-      )
+    context 'with prevent_visibility_restriction feature flag off' do
+      before do
+        stub_feature_flags(prevent_visibility_restriction: false)
+      end
 
-      visit new_project_path
-      click_link 'Create blank project'
+      it 'shows a message if all levels are restricted' do
+        Gitlab::CurrentSettings.update!(
+          restricted_visibility_levels: Gitlab::VisibilityLevel.values
+        )
 
-      expect(page).to have_content 'Visibility settings have been disabled by the administrator.'
+        visit new_project_path
+        click_link 'Create blank project'
+
+        expect(page).to have_content 'Visibility settings have been disabled by the administrator.'
+      end
     end
   end
 

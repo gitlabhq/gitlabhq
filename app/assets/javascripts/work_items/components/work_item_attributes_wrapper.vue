@@ -11,7 +11,6 @@ import {
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
 } from '../constants';
-import WorkItemState from './work_item_state.vue';
 import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
@@ -23,7 +22,6 @@ export default {
     WorkItemMilestone,
     WorkItemAssignees,
     WorkItemDueDate,
-    WorkItemState,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
@@ -97,12 +95,6 @@ export default {
 
 <template>
   <div class="work-item-attributes-wrapper">
-    <work-item-state
-      :work-item="workItem"
-      :work-item-parent-id="workItemParentId"
-      :can-update="canUpdate"
-      @error="$emit('error', $event)"
-    />
     <work-item-assignees
       v-if="workItemAssignees"
       :can-update="canUpdate"

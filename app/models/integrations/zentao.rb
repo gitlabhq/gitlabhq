@@ -19,7 +19,7 @@ module Integrations
       exposes_secrets: true
 
     field :api_token,
-      type: 'password',
+      type: :password,
       title: -> { s_('ZentaoIntegration|ZenTao API token') },
       non_empty_password_title: -> { s_('ZentaoIntegration|Enter new ZenTao API token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },

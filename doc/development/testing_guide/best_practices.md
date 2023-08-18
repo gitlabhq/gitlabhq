@@ -488,7 +488,9 @@ We collect information about tests duration in [`rspec_profiling_stats`](https:/
 
 With [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/375983) we defined thresholds for tests duration that can act a guide.
 
-For tests that are not meeting the thresholds it is recommended to create issues and improve the tests duration.
+For tests that are not meeting the thresholds, we create [issues](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=rspec%3Aslow%20test&first_page_size=100) automatically in order to improve them.
+
+For tests that are slow for a legitimate reason and to skip issue creation, add `allowed_to_be_slow: true`.
 
 | Date | Feature tests | Controllers and Requests tests | Unit | Other | Method |
 | :-: | :-: | :-: | :-: | :-: | :-: |
@@ -619,11 +621,11 @@ You can use the `be_axe_clean` matcher to run [axe automated accessibility testi
 
 ##### Externalized contents
 
-Test expectations against externalized contents should call the same
+For RSpec tests, expectations against externalized contents should call the same
 externalizing method to match the translation. For example, you should use the `_`
-method in Ruby and `__` method in JavaScript.
+method in Ruby.
 
-See [Internationalization for GitLab - Test files](../i18n/externalization.md#test-files) for details.
+See [Internationalization for GitLab - Test files (RSpec)](../i18n/externalization.md#test-files-rspec) for details.
 
 ##### Actions
 
@@ -908,6 +910,9 @@ so we need to set some guidelines for their use going forward:
 
 ### Common test setup
 
+NOTE:
+`before_all` does not work with the `:delete` strategy. For more information, see [issue 420379](https://gitlab.com/gitlab-org/gitlab/-/issues/420379).
+
 In some cases, there is no need to recreate the same object for tests
 again for each example. For example, a project and a guest of that project
 are needed to test issues on the same project, so one project and user are enough for the entire file.
@@ -1026,6 +1031,58 @@ after :all do
   unfreeze_time
 end
 ```
+
+#### Timestamp truncation
+
+Active Record timestamps are [set by the Rails’ `ActiveRecord::Timestamp`](https://github.com/rails/rails/blob/1eb5cc13a2ed8922b47df4ae47faf5f23faf3d35/activerecord/lib/active_record/timestamp.rb#L105)
+module [using `Time.now`](https://github.com/rails/rails/blob/1eb5cc13a2ed8922b47df4ae47faf5f23faf3d35/activerecord/lib/active_record/timestamp.rb#L78).
+Time precision is [OS-dependent](https://ruby-doc.org/core-2.6.3/Time.html#method-c-new),
+and as the docs state, may include fractional seconds.
+
+When Rails models are saved to the database,
+any timestamps they have are stored using a type in PostgreSQL called `timestamp without time zone`,
+which has microsecond resolution—i.e., six digits after the decimal.
+So if `1577987974.6472975` is sent to PostgreSQL,
+it truncates the last digit of the fractional part and instead saves `1577987974.647297`.
+
+The results of this can be a simple test like:
+
+```ruby
+let_it_be(:contact) { create(:contact) }
+
+data = Gitlab::HookData::IssueBuilder.new(issue).build
+
+expect(data).to include('customer_relations_contacts' => [contact.hook_attrs])
+```
+
+Failing with an error along the lines of:
+
+```shell
+expected {
+"assignee_id" => nil, "...1 +0000 } to include {"customer_relations_contacts" => [{:created_at => "2023-08-04T13:30:20Z", :first_name => "Sidney Jones3" }]}
+       
+Diff:
+       @@ -1,35 +1,69 @@
+       -"customer_relations_contacts" => [{:created_at=>"2023-08-04T13:30:20Z", :first_name=>"Sidney Jones3" }],
+       +"customer_relations_contacts" => [{"created_at"=>2023-08-04 13:30:20.245964000 +0000, "first_name"=>"Sidney Jones3" }],
+```
+
+The fix is to ensure we `.reload` the object from the database to get the timestamp with correct precision:
+
+```ruby
+let_it_be(:contact) { create(:contact) }
+
+data = Gitlab::HookData::IssueBuilder.new(issue).build
+
+expect(data).to include('customer_relations_contacts' => [contact.reload.hook_attrs])
+```
+
+This explanation was taken from [a blog post](https://www.toptal.com/ruby-on-rails/timestamp-truncation-rails-activerecord-tale)
+by Maciek Rząsa.
+
+You can see a [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126530#note_1500580985)
+where this problem arose and the [backend pairing session](https://www.youtube.com/watch?v=nMCjEeuYFDA)
+where it was discussed.
 
 ### Feature flags in tests
 

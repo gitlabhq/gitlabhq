@@ -1,17 +1,17 @@
 <script>
-import { GlButton, GlCollapse, GlIcon, GlLink, GlTooltip } from '@gitlab/ui';
+import { GlButton, GlIcon, GlLink, GlTooltip } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { BRIDGE_KIND } from '~/pipelines/components/graph/constants';
 import RetryMrFailedJobMutation from '../../../graphql/mutations/retry_mr_failed_job.mutation.graphql';
 
 export default {
   components: {
     CiIcon,
     GlButton,
-    GlCollapse,
     GlIcon,
     GlLink,
     GlTooltip,
@@ -33,17 +33,14 @@ export default {
     };
   },
   computed: {
-    activeClass() {
-      return this.isHovered ? 'gl-bg-gray-50' : '';
-    },
     canReadBuild() {
       return this.job.userPermissions.readBuild;
     },
     canRetryJob() {
-      return this.job.retryable && this.job.userPermissions.updateBuild;
+      return this.job.retryable && this.job.userPermissions.updateBuild && !this.isBridgeJob;
     },
-    isVisibleId() {
-      return `log-${this.isJobLogVisible ? 'is-visible' : 'is-hidden'}`;
+    isBridgeJob() {
+      return this.job.kind === BRIDGE_KIND;
     },
     jobChevronName() {
       return this.isJobLogVisible ? 'chevron-down' : 'chevron-right';
@@ -57,6 +54,11 @@ export default {
     },
     parsedJobId() {
       return getIdFromGraphQLId(this.job.id);
+    },
+    tooltipErrorText() {
+      return this.isBridgeJob
+        ? this.$options.i18n.cannotRetryTrigger
+        : this.$options.i18n.cannotRetry;
     },
     tooltipText() {
       return sprintf(this.$options.i18n.jobActionTooltipText, { jobName: this.job.name });
@@ -102,8 +104,9 @@ export default {
     },
   },
   i18n: {
-    cannotReadBuild: s__("Job|You do not have permission to read this job's log"),
-    cannotRetry: s__('Job|You do not have permission to retry this job'),
+    cannotReadBuild: s__("Job|You do not have permission to read this job's log."),
+    cannotRetry: s__('Job|You do not have permission to run this job again.'),
+    cannotRetryTrigger: s__('Job|You cannot rerun trigger jobs from this list.'),
     jobActionTooltipText: s__('Pipelines|Retry %{jobName} Job'),
     noTraceText: s__('Job|No job log'),
     retry: __('Retry'),
@@ -114,8 +117,7 @@ export default {
 <template>
   <div class="container-fluid gl-grid-tpl-rows-auto">
     <div
-      class="row gl-py-4 gl-cursor-pointer gl-display-flex gl-align-items-center"
-      :class="activeClass"
+      class="row gl-my-3 gl-cursor-pointer gl-display-flex gl-align-items-center"
       :aria-pressed="isJobLogVisible"
       role="button"
       tabindex="0"
@@ -127,22 +129,23 @@ export default {
       @mouseout="resetActiveRow"
     >
       <div class="col-6 gl-text-gray-900 gl-font-weight-bold gl-text-left">
-        <gl-icon :name="jobChevronName" class="gl-fill-blue-500" />
+        <gl-icon :name="jobChevronName" />
         <ci-icon :status="job.detailedStatus" />
         {{ job.name }}
       </div>
       <div class="col-2 gl-text-left">{{ job.stage.name }}</div>
       <div class="col-2 gl-text-left">
-        <gl-link :href="job.webPath">#{{ parsedJobId }}</gl-link>
+        <gl-link :href="job.detailedStatus.detailsPath">#{{ parsedJobId }}</gl-link>
       </div>
       <gl-tooltip v-if="!canRetryJob" :target="() => $refs.retryBtn" placement="top">
-        {{ $options.i18n.cannotRetry }}
+        {{ tooltipErrorText }}
       </gl-tooltip>
-      <div class="col-2 gl-text-left">
+      <div class="col-2 gl-text-right">
         <span ref="retryBtn">
           <gl-button
             :disabled="!canRetryJob"
             icon="retry"
+            category="tertiary"
             :loading="isLoadingAction"
             :title="$options.i18n.retry"
             :aria-label="$options.i18n.retry"
@@ -151,14 +154,12 @@ export default {
         </span>
       </div>
     </div>
-    <div class="row">
-      <gl-collapse :visible="isJobLogVisible" class="gl-w-full">
-        <pre
-          v-safe-html="jobTrace"
-          class="gl-bg-gray-900 gl-text-white"
-          :data-testid="isVisibleId"
-        ></pre>
-      </gl-collapse>
+    <div v-if="isJobLogVisible" class="row">
+      <pre
+        v-safe-html="jobTrace"
+        class="gl-bg-gray-900 gl-text-white gl-w-full"
+        data-testid="job-log"
+      ></pre>
     </div>
   </div>
 </template>

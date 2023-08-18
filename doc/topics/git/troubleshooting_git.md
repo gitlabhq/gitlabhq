@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: howto
 ---
 
-# Troubleshooting Git **(FREE)**
+# Troubleshooting Git **(FREE ALL)**
 
 Sometimes things don't work the way they should or as you might expect when
 you're using Git. Here are some tips on troubleshooting and resolving issues

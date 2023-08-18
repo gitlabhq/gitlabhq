@@ -2,14 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Discussion, ResolvableDiscussion do
+RSpec.describe Discussion, ResolvableDiscussion, feature_category: :code_review_workflow do
   subject { described_class.new([first_note, second_note, third_note]) }
 
-  let(:first_note) { create(:discussion_note_on_merge_request) }
-  let(:noteable) { first_note.noteable }
-  let(:project) { first_note.project }
-  let(:second_note) { create(:discussion_note_on_merge_request, noteable: noteable, project: project, in_reply_to: first_note) }
-  let(:third_note) { create(:discussion_note_on_merge_request, noteable: noteable, project: project) }
+  let_it_be(:first_note, reload: true) { create(:discussion_note_on_merge_request) }
+  let_it_be(:noteable) { first_note.noteable }
+  let_it_be(:project) { first_note.project }
+  let_it_be(:second_note, reload: true) { create(:discussion_note_on_merge_request, noteable: noteable, project: project, in_reply_to: first_note) }
+  let_it_be(:third_note, reload: true) { create(:discussion_note_on_merge_request, noteable: noteable, project: project) }
+
+  let_it_be(:current_user) { create(:user) }
 
   describe "#resolvable?" do
     context "when potentially resolvable" do
@@ -154,8 +156,6 @@ RSpec.describe Discussion, ResolvableDiscussion do
   end
 
   describe "#can_resolve?" do
-    let(:current_user) { create(:user) }
-
     context "when not resolvable" do
       before do
         allow(subject).to receive(:resolvable?).and_return(false)
@@ -201,8 +201,8 @@ RSpec.describe Discussion, ResolvableDiscussion do
         end
 
         context "when the signed in user can push to the project" do
-          before do
-            subject.project.add_maintainer(current_user)
+          before_all do
+            project.add_maintainer(current_user)
           end
 
           it "returns true" do
@@ -211,7 +211,7 @@ RSpec.describe Discussion, ResolvableDiscussion do
 
           context "when the noteable has no author" do
             before do
-              subject.noteable.author = nil
+              noteable.author = nil
             end
 
             it "returns true" do
@@ -240,8 +240,6 @@ RSpec.describe Discussion, ResolvableDiscussion do
   end
 
   describe "#resolve!" do
-    let(:current_user) { create(:user) }
-
     context "when not resolvable" do
       before do
         allow(subject).to receive(:resolvable?).and_return(false)
@@ -271,8 +269,8 @@ RSpec.describe Discussion, ResolvableDiscussion do
     end
 
     context "when resolvable" do
-      let(:user) { create(:user) }
-      let(:second_note) { create(:diff_note_on_commit) } # unresolvable
+      let_it_be(:user) { create(:user) }
+      let_it_be(:second_note) { create(:diff_note_on_commit) } # unresolvable
 
       before do
         allow(subject).to receive(:resolvable?).and_return(true)
@@ -447,6 +445,12 @@ RSpec.describe Discussion, ResolvableDiscussion do
 
           expect(subject.resolved?).to be true
         end
+
+        it "expires the etag cache of the noteable" do
+          expect(subject.noteable).to receive(:expire_note_etag_cache)
+
+          subject.resolve!(current_user)
+        end
       end
     end
   end
@@ -463,7 +467,7 @@ RSpec.describe Discussion, ResolvableDiscussion do
     end
 
     context "when resolvable" do
-      let(:user) { create(:user) }
+      let_it_be(:user) { create(:user) }
 
       before do
         allow(subject).to receive(:resolvable?).and_return(true)
@@ -527,6 +531,12 @@ RSpec.describe Discussion, ResolvableDiscussion do
 
           expect(subject.resolved?).to be false
         end
+
+        it "expires the etag cache of the noteable" do
+          expect(subject.noteable).to receive(:expire_note_etag_cache)
+
+          subject.unresolve!
+        end
       end
 
       context "when some resolvable notes are resolved" do
@@ -565,7 +575,6 @@ RSpec.describe Discussion, ResolvableDiscussion do
   end
 
   describe "#last_resolved_note" do
-    let(:current_user) { create(:user) }
     let(:time) { Time.current.utc }
 
     before do

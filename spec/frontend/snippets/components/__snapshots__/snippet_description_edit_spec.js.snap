@@ -89,10 +89,12 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
       </div>
        
       <div
-        class="js-vue-md-preview md-preview-holder gl-px-5 md"
+        class="js-vue-md-preview md-preview-holder gl-px-5"
         style="display: none;"
       >
-        <div />
+        <div
+          class="md"
+        />
       </div>
        
       <!---->

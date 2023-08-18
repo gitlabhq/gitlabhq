@@ -13,13 +13,17 @@ RSpec.describe Gitlab::Git::Blame do
 
   let(:result) do
     [].tap do |data|
-      blame.each do |commit, line, previous_path|
-        data << { commit: commit, line: line, previous_path: previous_path }
+      blame.each do |commit, line, previous_path, span|
+        data << { commit: commit, line: line, previous_path: previous_path, span: span }
       end
     end
   end
 
   describe 'blaming a file' do
+    it 'has the right commit span' do
+      expect(result.first[:span]).to eq(95)
+    end
+
     it 'has the right number of lines' do
       expect(result.size).to eq(95)
       expect(result.first[:commit]).to be_kind_of(Gitlab::Git::Commit)

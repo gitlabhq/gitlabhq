@@ -6,7 +6,7 @@ module Gitlab
       UPLOADS_REGEX = %r{\A/uploads(/|\z)}.freeze
 
       def call(env)
-        return @app.call(env) if env['PATH_INFO'] =~ UPLOADS_REGEX
+        return @app.call(env) if UPLOADS_REGEX.match?(env['PATH_INFO'])
 
         super
       end

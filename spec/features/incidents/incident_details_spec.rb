@@ -86,7 +86,7 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
       private
 
       def dropdown_options
-        widget.all('[data-testid="status-dropdown-item"]', count: 3)
+        widget.all('[data-testid="escalation-status-dropdown"] .gl-new-dropdown-item', count: 3)
       end
 
       def select_resolved(options)

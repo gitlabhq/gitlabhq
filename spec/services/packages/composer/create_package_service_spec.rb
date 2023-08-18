@@ -50,7 +50,7 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
       context 'with a tag' do
         let(:tag) { project.repository.find_tag('v1.2.3') }
 
-        before(:all) do
+        before_all do
           project.repository.add_tag(user, 'v1.2.3', 'master')
         end
 

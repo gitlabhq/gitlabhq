@@ -47,7 +47,7 @@ module Ci
           loop do
             # leverage the index_ci_pipelines_on_project_id_and_status_and_created_at index
             records = project.all_pipelines
-              .created_after(1.week.ago)
+              .created_after(pipelines_created_after)
               .order(:status, :created_at)
               .page(page) # use offset pagination because there is no other way to loop over the data
               .per(PAGE_SIZE)
@@ -63,10 +63,11 @@ module Ci
 
       def parent_auto_cancelable_pipelines(ids = nil)
         scope = project.all_pipelines
-          .created_after(1.week.ago)
+          .created_after(pipelines_created_after)
           .for_ref(pipeline.ref)
           .where_not_sha(project.commit(pipeline.ref).try(:id))
           .where("created_at < ?", pipeline.created_at)
+          .for_status(CommitStatus::AVAILABLE_STATUSES) # Force usage of project_id_and_status_and_created_at_index
           .ci_sources
 
         scope = scope.id_in(ids) if ids.present?
@@ -101,6 +102,14 @@ module Ci
               cascade_to_children: false
             ).force_execute
           end
+      end
+
+      def pipelines_created_after
+        if Feature.enabled?(:lower_interval_for_canceling_redundant_pipelines, project)
+          3.days.ago
+        else
+          1.week.ago
+        end
       end
 
       # Finding the pipelines to cancel is an expensive task that is not well

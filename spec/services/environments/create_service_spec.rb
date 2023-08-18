@@ -14,7 +14,7 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
   describe '#execute' do
     subject { service.execute }
 
-    let(:params) { { name: 'production', external_url: 'https://gitlab.com', tier: :production, kubernetes_namespace: 'default' } }
+    let(:params) { { name: 'production', external_url: 'https://gitlab.com', tier: :production, kubernetes_namespace: 'default', flux_resource_path: 'path/to/flux/resource' } }
 
     it 'creates an environment' do
       expect { subject }.to change { ::Environment.count }.by(1)
@@ -28,6 +28,7 @@ RSpec.describe Environments::CreateService, feature_category: :environment_manag
       expect(response.payload[:environment].external_url).to eq('https://gitlab.com')
       expect(response.payload[:environment].tier).to eq('production')
       expect(response.payload[:environment].kubernetes_namespace).to eq('default')
+      expect(response.payload[:environment].flux_resource_path).to eq('path/to/flux/resource')
     end
 
     context 'with a cluster agent' do

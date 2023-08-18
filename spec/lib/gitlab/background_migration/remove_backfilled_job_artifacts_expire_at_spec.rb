@@ -7,6 +7,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveBackfilledJobArtifactsExpireAt
 
   describe '#perform' do
     let(:job_artifact) { table(:ci_job_artifacts, database: :ci) }
+    let(:jobs) { table(:ci_builds, database: :ci) { |model| model.primary_key = :id } }
 
     let(:test_worker) do
       described_class.new(
@@ -85,7 +86,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveBackfilledJobArtifactsExpireAt
     private
 
     def create_job_artifact(id:, file_type:, expire_at:)
-      job = table(:ci_builds, database: :ci).create!(id: id, partition_id: 100)
+      job = jobs.create!(partition_id: 100)
       job_artifact.create!(
         id: id, job_id: job.id, expire_at: expire_at, project_id: project.id,
         file_type: file_type, partition_id: 100

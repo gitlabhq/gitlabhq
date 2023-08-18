@@ -165,7 +165,7 @@ module QA
           raise ArgumentError, "Please use :minimum, :maximum, :count, or :between so that all is more reliable"
         end
 
-        wait_for_requests
+        wait_for_requests(skip_finished_loading_check: !!kwargs.delete(:skip_finished_loading_check))
 
         all(element_selector_css(name), **kwargs)
       end
@@ -243,7 +243,20 @@ module QA
         wait = kwargs.delete(:wait) || Capybara.default_max_wait_time
         text = kwargs.delete(:text)
 
-        find(element_selector_css(name, kwargs), text: text, wait: wait).click
+        begin
+          find(element_selector_css(name, kwargs), text: text, wait: wait).click
+        rescue Net::ReadTimeout => error
+          # In some situations due to perhaps a slow environment we can encounter errors
+          # where clicks are registered, but the calls to selenium-webdriver result in
+          # timeout errors. In these cases rescue from the error and attempt to continue in
+          # the test to avoid a flaky test failure. This should be safe as assertions in the
+          # tests will catch any case where the click wasn't actually registered.
+          QA::Runtime::Logger.warn "click_element -- #{error} -- #{error.backtrace.inspect}"
+          # There may be a 5xx error -- lets refresh the page like the warning page suggests
+          # and it if resolves itself we can avoid a flaky failure
+          refresh
+        end
+
         page.validate_elements_present! if page
       end
 
@@ -381,7 +394,7 @@ module QA
       end
 
       def within_element(name, **kwargs, &block)
-        wait_for_requests(skip_finished_loading_check: kwargs.delete(:skip_finished_loading_check))
+        wait_for_requests(skip_finished_loading_check: !!kwargs.delete(:skip_finished_loading_check))
         text = kwargs.delete(:text)
 
         page.within(element_selector_css(name, kwargs), text: text, &block)

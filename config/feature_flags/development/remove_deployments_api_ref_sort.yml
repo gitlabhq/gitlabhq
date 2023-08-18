@@ -1,8 +1,0 @@
----
-name: remove_deployments_api_ref_sort
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124229
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/416305
-milestone: '16.2'
-type: development
-group: group::environments
-default_enabled: true

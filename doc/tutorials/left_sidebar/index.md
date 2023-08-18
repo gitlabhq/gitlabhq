@@ -4,7 +4,7 @@ group: Tutorials
 info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Use the left sidebar to navigate GitLab **(FREE)**
+# Tutorial: Use the left sidebar to navigate GitLab **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9044) in GitLab 16.0.
 

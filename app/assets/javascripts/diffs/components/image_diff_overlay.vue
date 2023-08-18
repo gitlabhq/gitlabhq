@@ -1,5 +1,6 @@
 <script>
 import { isArray } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
 import imageDiffMixin from 'ee_else_ce/diffs/mixins/image_diff';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';

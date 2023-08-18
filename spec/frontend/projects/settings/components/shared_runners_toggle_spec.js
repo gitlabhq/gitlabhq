@@ -1,4 +1,4 @@
-import { GlToggle } from '@gitlab/ui';
+import { GlLink, GlSprintf, GlToggle } from '@gitlab/ui';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -8,6 +8,8 @@ import { HTTP_STATUS_OK, HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_statu
 import SharedRunnersToggleComponent from '~/projects/settings/components/shared_runners_toggle.vue';
 
 const TEST_UPDATE_PATH = '/test/update_shared_runners';
+const mockParentName = 'My group';
+const mockGroupSettingsPath = '/groups/my-group/-/settings/ci_cd';
 
 jest.mock('~/alert');
 
@@ -24,6 +26,9 @@ describe('projects/settings/components/shared_runners', () => {
         updatePath: TEST_UPDATE_PATH,
         isCreditCardValidationRequired: false,
         ...props,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   };
@@ -55,8 +60,30 @@ describe('projects/settings/components/shared_runners', () => {
       expect(isToggleDisabled()).toBe(true);
     });
 
-    it('alert should exist explaining why the toggle is disabled', () => {
-      expect(findUnoverridableAlert().exists()).toBe(true);
+    it('renders text explaining why the toggle is disabled', () => {
+      expect(findSharedRunnersToggle().text()).toEqual(
+        'Shared runners are disabled in the group settings.',
+      );
+    });
+
+    describe('when user can configure group', () => {
+      beforeEach(() => {
+        createComponent({
+          isDisabledAndUnoverridable: true,
+          groupName: mockParentName,
+          groupSettingsPath: mockGroupSettingsPath,
+        });
+      });
+
+      it('renders link to enable', () => {
+        expect(findSharedRunnersToggle().text()).toContain(
+          `Go to ${mockParentName} to enable them.`,
+        );
+
+        const link = findSharedRunnersToggle().findComponent(GlLink);
+        expect(link.text()).toBe(mockParentName);
+        expect(link.attributes('href')).toBe(mockGroupSettingsPath);
+      });
     });
   });
 

@@ -7,7 +7,7 @@ module Types
       graphql_name 'CiManualVariable'
       description 'CI/CD variables given to a manual job.'
 
-      implements(VariableInterface)
+      implements VariableInterface
 
       field :environment_scope, GraphQL::Types::String,
             null: true,

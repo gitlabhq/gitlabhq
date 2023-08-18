@@ -24,7 +24,7 @@ module Integrations
       help: -> { s_('BambooService|The user with API access to the Bamboo server.') }
 
     field :password,
-      type: 'password',
+      type: :password,
       non_empty_password_title: -> { s_('ProjectService|Enter new password') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password') }
 

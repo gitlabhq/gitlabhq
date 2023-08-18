@@ -49,6 +49,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
     it 'list page has a list of images' do
       visit_container_registry
 
+      expect(page).to have_content '1 Image repository'
       expect(page).to have_content 'my/image'
     end
 

@@ -118,4 +118,14 @@ describe('WorkItemTree', () => {
       expect(findWorkItemLinkChildrenWrapper().props('canUpdate')).toBe(false);
     });
   });
+
+  it('emits `addChild` event when form emits `addChild` event', async () => {
+    createComponent();
+
+    findToggleFormSplitButton().vm.$emit('showCreateObjectiveForm');
+    await nextTick();
+    findForm().vm.$emit('addChild');
+
+    expect(wrapper.emitted('addChild')).toEqual([[]]);
+  });
 });

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CopyClickhouseConnectionStringToEncryptedVar, feature_category: :product_analytics do
+RSpec.describe CopyClickhouseConnectionStringToEncryptedVar, feature_category: :product_analytics_data_management do
   let!(:migration) { described_class.new }
   let(:setting) { table(:application_settings).create!(clickhouse_connection_string: 'https://example.com/test') }
 

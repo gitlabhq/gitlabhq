@@ -74,8 +74,6 @@ describe('~/environments/components/environments_folder.vue', () => {
       beforeEach(() => {
         collapse = wrapper.findComponent(GlCollapse);
         icons = wrapper.findAllComponents(GlIcon);
-        jest.spyOn(wrapper.vm.$apollo.queries.folder, 'startPolling');
-        jest.spyOn(wrapper.vm.$apollo.queries.folder, 'stopPolling');
       });
 
       it('is collapsed by default', () => {
@@ -88,8 +86,12 @@ describe('~/environments/components/environments_folder.vue', () => {
         expect(link.exists()).toBe(false);
       });
 
-      it('opens on click', async () => {
+      it('opens on click and starts polling', async () => {
+        expect(environmentFolderMock).toHaveBeenCalledTimes(1);
+
         await button.trigger('click');
+        jest.advanceTimersByTime(2000);
+        await waitForPromises();
 
         const link = findLink();
 
@@ -100,7 +102,7 @@ describe('~/environments/components/environments_folder.vue', () => {
         expect(folderName.classes('gl-font-weight-bold')).toBe(true);
         expect(link.attributes('href')).toBe(nestedEnvironment.latest.folderPath);
 
-        expect(wrapper.vm.$apollo.queries.folder.startPolling).toHaveBeenCalledWith(2000);
+        expect(environmentFolderMock).toHaveBeenCalledTimes(2);
       });
 
       it('displays all environments when opened', async () => {
@@ -117,12 +119,15 @@ describe('~/environments/components/environments_folder.vue', () => {
 
       it('stops polling on click', async () => {
         await button.trigger('click');
-        expect(wrapper.vm.$apollo.queries.folder.startPolling).toHaveBeenCalledWith(2000);
+        jest.advanceTimersByTime(2000);
+        await waitForPromises();
+
+        expect(environmentFolderMock).toHaveBeenCalledTimes(2);
 
         const collapseButton = wrapper.findByRole('button', { name: __('Collapse') });
         await collapseButton.trigger('click');
 
-        expect(wrapper.vm.$apollo.queries.folder.stopPolling).toHaveBeenCalled();
+        expect(environmentFolderMock).toHaveBeenCalledTimes(2);
       });
     });
   });

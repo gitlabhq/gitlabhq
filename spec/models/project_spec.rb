@@ -19,7 +19,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe 'associations' do
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
-    it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id') }
+    it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id').inverse_of(:project) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
@@ -46,6 +46,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:design_management_repository).class_name('DesignManagement::Repository').inverse_of(:project) }
     it { is_expected.to have_one(:slack_integration) }
     it { is_expected.to have_one(:catalog_resource) }
+    it { is_expected.to have_many(:ci_components).class_name('Ci::Catalog::Resources::Component') }
+    it { is_expected.to have_many(:catalog_resource_versions).class_name('Ci::Catalog::Resources::Version') }
     it { is_expected.to have_one(:microsoft_teams_integration) }
     it { is_expected.to have_one(:mattermost_integration) }
     it { is_expected.to have_one(:hangouts_chat_integration) }
@@ -633,8 +635,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     it 'validates the visibility' do
-      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_as_fork).and_call_original
-      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_group).and_call_original
+      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_as_fork).twice.and_call_original
+      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_group).twice.and_call_original
 
       create(:project)
     end
@@ -1121,6 +1123,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'group_runners_enabled' => '',
           'default_git_depth' => 'ci_',
           'forward_deployment_enabled' => 'ci_',
+          'forward_deployment_rollback_allowed' => 'ci_',
           'keep_latest_artifact' => '',
           'restrict_user_defined_variables' => '',
           'runner_token_expiration_interval' => '',
@@ -1144,6 +1147,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#ci_forward_deployment_enabled?' do
       it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
         let(:delegated_method) { :forward_deployment_enabled? }
+      end
+    end
+
+    describe '#ci_forward_deployment_rollback_allowed?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+        let(:delegated_method) { :forward_deployment_rollback_allowed? }
       end
     end
 
@@ -3037,6 +3046,34 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
             shard_name: 'foo'
           )
         end
+
+        it 'refreshes a memoized repository value' do
+          previous_repository = project.repository
+
+          allow(project).to receive(:disk_path).and_return('fancy/new/path')
+          allow(project).to receive(:repository_storage).and_return('foo')
+
+          project.track_project_repository
+
+          expect(project.repository).not_to eq(previous_repository)
+        end
+
+        context 'when "replicate_object_pool_on_move" FF is disabled' do
+          before do
+            stub_feature_flags(replicate_object_pool_on_move: false)
+          end
+
+          it 'does not update  a memoized repository value' do
+            previous_repository = project.repository
+
+            allow(project).to receive(:disk_path).and_return('fancy/new/path')
+            allow(project).to receive(:repository_storage).and_return('foo')
+
+            project.track_project_repository
+
+            expect(project.repository).to eq(previous_repository)
+          end
+        end
       end
     end
 
@@ -3982,51 +4019,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#emails_disabled?' do
-    let_it_be(:namespace) { create(:namespace) }
+    let(:project) { build(:project, emails_enabled: true) }
 
-    let(:project) { build(:project, namespace: namespace, emails_disabled: false) }
-
-    context 'emails disabled in group' do
-      it 'returns true' do
-        allow(project.namespace).to receive(:emails_disabled?) { true }
-
-        expect(project.emails_disabled?).to be_truthy
-      end
-    end
-
-    context 'emails enabled in group' do
-      before do
-        allow(project.namespace).to receive(:emails_disabled?) { false }
-      end
-
-      it 'returns false' do
-        expect(project.emails_disabled?).to be_falsey
-      end
-
-      it 'returns true' do
-        project.update_attribute(:emails_disabled, true)
-
-        expect(project.emails_disabled?).to be_truthy
-      end
-    end
-  end
-
-  describe '#emails_enabled?' do
-    context 'without a persisted project_setting object' do
-      let(:project) { build(:project, emails_disabled: false) }
-
-      it "is the opposite of emails_disabled" do
-        expect(project.emails_enabled?).to be_truthy
-      end
-    end
-
-    context 'with a persisted project_setting object' do
-      let(:project_settings) { create(:project_setting, emails_enabled: true) }
-      let(:project) { build(:project, emails_disabled: false, project_setting: project_settings) }
-
-      it "is the opposite of emails_disabled" do
-        expect(project.emails_enabled?).to be_truthy
-      end
+    it "is the opposite of emails_disabled" do
+      expect(project.emails_disabled?).to be_falsey
     end
   end
 
@@ -6984,6 +6980,73 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#swap_pool_repository!' do
+    subject(:swap_pool_repository!) { project.swap_pool_repository! }
+
+    let_it_be_with_reload(:project) { create(:project, :empty_repo) }
+    let_it_be(:shard_to) { create(:shard, name: 'test_second_storage') }
+
+    let!(:pool1) { create(:pool_repository, source_project: project) }
+    let!(:pool2) { create(:pool_repository, shard: shard_to, source_project: project) }
+    let(:project_pool) { pool1 }
+    let(:repository_storage) { shard_to.name }
+
+    before do
+      stub_storage_settings(
+        'test_second_storage' => {
+          'gitaly_address' => Gitlab.config.repositories.storages.default.gitaly_address,
+          'path' => TestEnv::SECOND_STORAGE_PATH
+        }
+      )
+
+      project.update!(pool_repository: project_pool, repository_storage: repository_storage)
+    end
+
+    shared_examples 'no pool repository swap' do
+      it 'does not change pool repository for the project' do
+        expect { swap_pool_repository! }.not_to change { project.reload.pool_repository }
+      end
+    end
+
+    it 'moves project to the new pool repository' do
+      expect { swap_pool_repository! }.to change { project.reload.pool_repository }.from(pool1).to(pool2)
+    end
+
+    context 'when feature flag replicate_object_pool_on_move is disabled' do
+      before do
+        stub_feature_flags(replicate_object_pool_on_move: false)
+      end
+
+      it_behaves_like 'no pool repository swap'
+    end
+
+    context 'when repository does not exist' do
+      let(:project) { build(:project) }
+
+      it_behaves_like 'no pool repository swap'
+    end
+
+    context 'when project does not have a pool repository' do
+      let(:project_pool) { nil }
+
+      it_behaves_like 'no pool repository swap'
+    end
+
+    context 'when project pool is on the same shard as repository' do
+      let(:project_pool) { pool2 }
+
+      it_behaves_like 'no pool repository swap'
+    end
+
+    context 'when pool repository for shard is missing' do
+      let(:pool2) { nil }
+
+      it 'raises record not found error' do
+        expect { swap_pool_repository! }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
   describe '#leave_pool_repository' do
     let(:pool) { create(:pool_repository) }
     let(:project) { create(:project, :repository, pool_repository: pool) }
@@ -7007,6 +7070,53 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         subject
 
         expect(pool.member_projects.reload).not_to include(project)
+      end
+    end
+  end
+
+  describe '#link_pool_repository' do
+    let(:pool) { create(:pool_repository) }
+    let(:project) { build(:project, :empty_repo, pool_repository: pool) }
+
+    subject { project.link_pool_repository }
+
+    it 'links pool repository to project repository' do
+      expect(pool).to receive(:link_repository).with(project.repository)
+
+      subject
+    end
+
+    context 'when pool repository is missing' do
+      let(:pool) { nil }
+
+      it 'does not link anything' do
+        allow_next_instance_of(PoolRepository) do |pool_repository|
+          expect(pool_repository).not_to receive(:link_repository)
+        end
+
+        subject
+      end
+    end
+
+    context 'when pool repository is on the different shard as project repository' do
+      let(:pool) { create(:pool_repository, shard: create(:shard, name: 'new')) }
+
+      it 'does not link anything' do
+        expect(pool).not_to receive(:link_repository)
+
+        subject
+      end
+
+      context 'when feature flag replicate_object_pool_on_move is disabled' do
+        before do
+          stub_feature_flags(replicate_object_pool_on_move: false)
+        end
+
+        it 'links pool repository to project repository' do
+          expect(pool).to receive(:link_repository).with(project.repository)
+
+          subject
+        end
       end
     end
   end
@@ -7084,10 +7194,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     where(:shared_runners_setting, :project_shared_runners_enabled, :valid_record) do
       :shared_runners_enabled     | true  | true
       :shared_runners_enabled     | false | true
-      :disabled_and_overridable   | true  | true
-      :disabled_and_overridable   | false | true
-      :disabled_and_unoverridable | true  | false
-      :disabled_and_unoverridable | false | true
+      :shared_runners_disabled_and_overridable   | true  | true
+      :shared_runners_disabled_and_overridable   | false | true
+      :shared_runners_disabled_and_unoverridable | true  | false
+      :shared_runners_disabled_and_unoverridable | false | true
     end
 
     with_them do
@@ -7330,6 +7440,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project_with_pages_metadata_not_migrated.pages_metadatum.destroy!
 
       expect(described_class.pages_metadata_not_migrated).to contain_exactly(project_with_pages_metadata_not_migrated)
+    end
+  end
+
+  describe '#pages_variables' do
+    let(:group) { build(:group, path: 'group') }
+    let(:project) { build(:project, path: 'project', namespace: group) }
+
+    it 'returns the pages variables' do
+      expect(project.pages_variables.to_hash).to eq({
+        'CI_PAGES_DOMAIN' => 'example.com',
+        'CI_PAGES_URL' => 'http://group.example.com/project'
+      })
+    end
+
+    it 'returns the pages variables' do
+      build(
+        :project_setting,
+        project: project,
+        pages_unique_domain_enabled: true,
+        pages_unique_domain: 'unique-domain'
+      )
+
+      expect(project.pages_variables.to_hash).to eq({
+        'CI_PAGES_DOMAIN' => 'example.com',
+        'CI_PAGES_URL' => 'http://unique-domain.example.com'
+      })
     end
   end
 
@@ -8989,6 +9125,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when creator is not banned' do
       let_it_be(:project) { create(:project) }
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when there is no creator' do
+      let_it_be(:project) { build_stubbed(:project, creator: nil) }
 
       it { is_expected.to eq false }
     end

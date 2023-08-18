@@ -120,7 +120,7 @@ module Users
 
     def after_update(user_exists)
       notify_success(user_exists)
-      remove_followers_and_followee! if ::Feature.enabled?(:disable_follow_users, user)
+      remove_followers_and_followee!
 
       success
     end

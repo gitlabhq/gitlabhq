@@ -5,7 +5,7 @@ module Ml
     validates :project, :model, presence: true
 
     validates :version,
-      format: Gitlab::Regex.ml_model_version_regex,
+      format: Gitlab::Regex.semver_regex,
       uniqueness: { scope: [:project, :model_id] },
       presence: true,
       length: { maximum: 255 }
@@ -17,6 +17,15 @@ module Ml
     belongs_to :package, class_name: 'Packages::Package', optional: true
 
     delegate :name, to: :model
+
+    scope :order_by_model_id_id_desc, -> { order('model_id, id DESC') }
+    scope :latest_by_model, -> { order_by_model_id_id_desc.select('DISTINCT ON (model_id) *') }
+
+    class << self
+      def find_or_create!(model, version, package)
+        create_with(package: package).find_or_create_by!(project: model.project, model: model, version: version)
+      end
+    end
 
     private
 

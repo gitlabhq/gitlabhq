@@ -2,8 +2,9 @@ import { GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import IssuableForm from '~/vue_shared/issuable/create/components/issuable_form.vue';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import LabelsSelect from '~/sidebar/components/labels/labels_select_vue/labels_select_root.vue';
+import { __ } from '~/locale';
 
 const createComponent = ({
   descriptionPreviewPath = '/gitlab-org/gitlab-shell/preview_markdown',
@@ -24,7 +25,7 @@ const createComponent = ({
       `,
     },
     stubs: {
-      MarkdownField,
+      MarkdownEditor,
     },
   });
 };
@@ -71,18 +72,20 @@ describe('IssuableForm', () => {
 
       expect(descriptionFieldEl.exists()).toBe(true);
       expect(descriptionFieldEl.find('label').text()).toBe('Description');
-      expect(descriptionFieldEl.findComponent(MarkdownField).exists()).toBe(true);
-      expect(descriptionFieldEl.findComponent(MarkdownField).props()).toMatchObject({
-        markdownPreviewPath: wrapper.vm.descriptionPreviewPath,
+      expect(descriptionFieldEl.findComponent(MarkdownEditor).exists()).toBe(true);
+      expect(descriptionFieldEl.findComponent(MarkdownEditor).props()).toMatchObject({
+        renderMarkdownPath: wrapper.vm.descriptionPreviewPath,
         markdownDocsPath: wrapper.vm.descriptionHelpPath,
-        addSpacingClasses: false,
-        showSuggestPopover: true,
-        textareaValue: '',
+        value: '',
+        formFieldProps: {
+          ariaLabel: __('Description'),
+          class: 'rspec-issuable-form-description',
+          placeholder: __('Write a comment or drag your files here…'),
+          dataQaSelector: 'issuable_form_description_field',
+          id: 'issuable-description',
+          name: 'issuable-description',
+        },
       });
-      expect(descriptionFieldEl.find('textarea').exists()).toBe(true);
-      expect(descriptionFieldEl.find('textarea').attributes('placeholder')).toBe(
-        'Write a comment or drag your files here…',
-      );
     });
 
     it('renders labels select field', () => {

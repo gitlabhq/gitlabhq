@@ -1,5 +1,6 @@
 import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
 import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
+import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 
 export const commonOptions = {
   ciConfigPath: '/ci/config',
@@ -295,7 +296,7 @@ export const mockEmptyCommitShaResults = {
   },
 };
 
-export const mockProjectBranches = {
+export const generateMockProjectBranches = (prefix = '') => ({
   data: {
     project: {
       id: '1',
@@ -311,14 +312,14 @@ export const mockProjectBranches = {
           'mock-feature',
           'test-merge-request',
           'staging',
-        ],
+        ].map((branch) => `${prefix}${branch}`),
       },
     },
   },
-};
+});
 
-export const mockTotalBranchResults =
-  mockProjectBranches.data.project.repository.branchNames.length;
+export const mockTotalBranchResults = generateMockProjectBranches().data.project.repository
+  .branchNames.length;
 
 export const mockSearchBranches = {
   data: {
@@ -601,7 +602,7 @@ export const mockErrors = [
 ];
 
 export const mockWarnings = [
-  '"jobs:multi_project_job may allow multiple pipelines to run for a single action due to `rules:when` clause with no `workflow:rules` - read more: https://docs.gitlab.com/ee/ci/troubleshooting.html#pipeline-warnings"',
+  `"jobs:multi_project_job may allow multiple pipelines to run for a single action due to \`rules:when\` clause with no \`workflow:rules\` - read more: ${DOCS_URL_IN_EE_DIR}/ci/troubleshooting.html#pipeline-warnings"`,
 ];
 
 export const mockCommitCreateResponse = {

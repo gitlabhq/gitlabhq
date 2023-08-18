@@ -1,5 +1,7 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 
 import {

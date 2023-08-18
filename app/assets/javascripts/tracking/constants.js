@@ -20,6 +20,7 @@ export const DEFAULT_SNOWPLOW_OPTIONS = {
 export const ACTION_ATTR_SELECTOR = '[data-track-action]';
 export const LOAD_ACTION_ATTR_SELECTOR = '[data-track-action="render"]';
 export const INTERNAL_EVENTS_SELECTOR = '[data-event-tracking]';
+export const LOAD_INTERNAL_EVENTS_SELECTOR = '[data-event-tracking-load="true"]';
 
 export const URLS_CACHE_STORAGE_KEY = 'gl-snowplow-pseudonymized-urls';
 

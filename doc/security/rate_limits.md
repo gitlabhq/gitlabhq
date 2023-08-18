@@ -133,6 +133,14 @@ There is a rate limit for the GraphQL `aiAction` mutation, which is enforced to 
 
 The **rate limit** is 160 calls per 8 hours per authenticated user.
 
+### Delete a member using the API
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118296) in GitLab 16.0.
+
+There is a rate limit for [removing project or group members using the API endpoints](../api/members.md#remove-a-member-from-a-group-or-project) `/groups/:id/members` or `/project/:id/members`.
+
+The **rate limit** is 60 deletions per minute.
+
 ## Troubleshooting
 
 ### Rack Attack is denylisting the load balancer

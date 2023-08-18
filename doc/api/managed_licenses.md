@@ -6,7 +6,7 @@ remove_date: '2023-08-22'
 redirect_to: 'index.md'
 ---
 
-# Managed Licenses API (removed) **(ULTIMATE)**
+# Managed Licenses API (removed) **(ULTIMATE ALL)**
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390417) in GitLab 15.9
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/397067) in 16.0.

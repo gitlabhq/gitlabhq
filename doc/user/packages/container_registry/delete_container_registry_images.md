@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Delete container images from the Container Registry **(FREE)**
+# Delete container images from the Container Registry **(FREE ALL)**
 
 You can delete container images from your Container Registry.
 

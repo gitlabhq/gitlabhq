@@ -188,6 +188,10 @@ Instead of:
 
 - As none of the endpoints return an ID...
 
+## as well as
+
+Instead of **as well as**, use **and**.
+
 ## associate
 
 Do not use **associate** when describing adding issues to epics, or users to issues, merge requests,
@@ -254,6 +258,10 @@ Instead of:
 Use **cannot** instead of **can not**.
 
 See also [contractions](index.md#contractions).
+
+## Chat, GitLab Duo Chat
+
+Use **Chat** with a capital `c` for **Chat** or **GitLab Duo Chat**.
 
 ## checkbox
 
@@ -616,6 +624,14 @@ Use title case for **Geo**.
 ## GitLab
 
 Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
+
+## GitLab Dedicated
+
+Do not use **Dedicated** by itself. Always use **GitLab Dedicated**.
+
+## GitLab Duo
+
+Do not use **Duo** by itself. Always use **GitLab Duo**.
 
 ## GitLab Flavored Markdown
 
@@ -1154,7 +1170,10 @@ Use lowercase for **personal access token**.
 
 ## please
 
-Do not use **please**. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
+Do not use **please** in the product documentation.
+
+In UI text, use **please** when we've inconvenienced the user. For more information,
+see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
 
 ## Premium
 
@@ -1279,6 +1298,12 @@ Use lowercase for **runner managers**. These are a type of runner that can creat
 
 Use lowercase for **runner workers**. This is the process created by the runner on the host computing platform to run jobs. See also [GitLab Runner](#gitlab-runner).
 
+## runner authentication token
+
+Use **runner authentication token** instead of variations like **runner token**, **authentication token**, or **token**.
+Runners are assigned runner authentication tokens when they are created, and use them to authenticate with GitLab when
+they execute jobs.
+
 ## (s)
 
 Do not use **(s)** to make a word optionally plural. It can slow down comprehension. For example:
@@ -1398,6 +1423,17 @@ Instead of **and/or**, use **or** or re-write the sentence. This rule also appli
 ## slave
 
 Do not use **slave**. Another option is **secondary**. ([Vale](../testing.md#vale) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+
+## storages
+
+In the context of:
+
+- Gitaly, storage is physical and must be called a **storage**.
+- Gitaly Cluster, storage can be either:
+  - Virtual and must be called a **virtual storage**.
+  - Physical and must be called a **physical storage**.
+
+Gitaly storages have physical paths and virtual storages have virtual paths.
 
 ## subgroup
 

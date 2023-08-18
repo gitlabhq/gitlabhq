@@ -1,5 +1,6 @@
 import { identity } from 'lodash';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { DEFAULT_BRANCH } from '~/ide/constants';
 import PerformancePlugin from '~/performance/vue_performance_plugin';

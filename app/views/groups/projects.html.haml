@@ -2,16 +2,20 @@
 - page_title _("Projects")
 - @force_desktop_expanded_sidebar = true
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-mt-3 js-search-settings-section' }, header_options: { class: 'gl-display-flex' }, body_options: { class: 'gl-py-0' }) do |c|
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-search-settings-section' }, header_options: { class: 'gl-new-card-header gl-display-flex' }, body_options: { class: 'gl-new-card-body' }) do |c|
   - c.with_header do
-    .gl-flex-grow-1
-      = html_escape(_("%{strong_open}%{group_name}%{strong_close} projects:")) % { strong_open: '<strong>'.html_safe, group_name: @group.name, strong_close: '</strong>'.html_safe }
-    - if can? current_user, :admin_group, @group
-      .controls
-        = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), size: :small, variant: :confirm) do
+    .gl-new-card-title-wrapper
+      %h3.gl-new-card-title
+        = _('Projects')
+      .gl-new-card-count
+        = sprite_icon('project', css_class: 'gl-mr-2')
+        = @projects.size
+    .gl-new-card-actions
+      - if can? current_user, :admin_group, @group
+        = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), size: :small) do
           = _("New project")
   - c.with_body do
-    %ul.content-list
+    %ul.content-list{ class: 'gl-px-3!' }
       - @projects.each_with_index do |project, idx|
         %li.project-row.gl-align-items-center{ class: 'gl-display-flex!', data: { qa_selector: 'project_row_container', qa_index: idx } }
           .avatar-container.rect-avatar.s40.gl-flex-shrink-0
@@ -26,22 +30,22 @@
                       \/
                   %span.project-name{ data: { qa_selector: 'project_name_content', qa_project_name: project.name } }
                     = project.name
-                  %span{ class: visibility_level_color(project.visibility_level) }
-                    = visibility_level_icon(project.visibility_level)
+              = visibility_level_content(project, css_class: 'visibility-icon gl-text-secondary gl-ml-2', icon_css_class: 'icon')
 
             - if project.description.present?
               .description
                 = markdown_field(project, :description)
 
-          .stats.gl-text-gray-500.gl-flex-shrink-0.gl-display-none.gl-sm-display-flex
+          .stats.gl-text-gray-500.gl-flex-shrink-0.gl-display-none.gl-sm-display-flex.gl-gap-3
             = gl_badge_tag storage_counter(project.statistics&.storage_size)
             = render 'project_badges', project: project
-
           .controls.gl-flex-shrink-0.gl-ml-5
             = render Pajamas::ButtonComponent.new(href: project_project_members_path(project),
-              button_options: { data: { qa_selector: 'project_members_button' } }) do
-              = _('Members')
+              variant: :link,
+              button_options: { class: 'gl-mr-2', data: { qa_selector: 'project_members_button' } }) do
+              = _('View members')
             = render Pajamas::ButtonComponent.new(href: edit_project_path(project),
+              size: :small,
               button_options: { data: { qa_selector: 'project_edit_button' } }) do
               = _('Edit')
             = render 'delete_project_button', project: project, data: { qa_selector: 'project_delete_button' }

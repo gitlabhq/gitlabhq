@@ -3,6 +3,7 @@
 module WebHooks
   module AutoDisabling
     extend ActiveSupport::Concern
+    include ::Gitlab::Loggable
 
     ENABLED_HOOK_TYPES = %w[ProjectHook].freeze
     MAX_FAILURES = 100
@@ -36,7 +37,9 @@ module WebHooks
       # - and either:
       #   - disabled_until is nil (i.e. this was set by WebHook#fail!)
       #   - or disabled_until is in the future (i.e. this was set by WebHook#backoff!)
+      # - OR silent mode is enabled.
       scope :disabled, -> do
+        return all if Gitlab::SilentMode.enabled?
         return none unless auto_disabling_enabled?
 
         where(
@@ -52,7 +55,9 @@ module WebHooks
       # - OR we have exceeded the grace period and neither of the following is true:
       #   - disabled_until is nil (i.e. this was set by WebHook#fail!)
       #   - disabled_until is in the future (i.e. this was set by WebHook#backoff!)
+      # - AND silent mode is not enabled.
       scope :executable, -> do
+        return none if Gitlab::SilentMode.enabled?
         return all unless auto_disabling_enabled?
 
         where(
@@ -82,17 +87,14 @@ module WebHooks
       recent_failures > FAILURE_THRESHOLD && disabled_until.blank?
     end
 
-    def disable!
-      return if !auto_disabling_enabled? || permanently_disabled?
-
-      update_attribute(:recent_failures, EXCEEDED_FAILURE_THRESHOLD)
-    end
-
     def enable!
       return unless auto_disabling_enabled?
       return if recent_failures == 0 && disabled_until.nil? && backoff_count == 0
 
-      assign_attributes(recent_failures: 0, disabled_until: nil, backoff_count: 0)
+      attrs = { recent_failures: 0, disabled_until: nil, backoff_count: 0 }
+
+      assign_attributes(attrs)
+      logger.info(hook_id: id, action: 'enable', **attrs)
       save(validate: false)
     end
 
@@ -110,14 +112,21 @@ module WebHooks
       end
 
       assign_attributes(attrs)
-      save(validate: false) if changed?
+
+      return unless changed?
+
+      logger.info(hook_id: id, action: 'backoff', **attrs)
+      save(validate: false)
     end
 
     def failed!
       return unless auto_disabling_enabled?
       return unless recent_failures < MAX_FAILURES
 
-      assign_attributes(disabled_until: nil, backoff_count: 0, recent_failures: next_failure_count)
+      attrs = { disabled_until: nil, backoff_count: 0, recent_failures: next_failure_count }
+
+      assign_attributes(**attrs)
+      logger.info(hook_id: id, action: 'disable', **attrs)
       save(validate: false)
     end
 
@@ -142,6 +151,10 @@ module WebHooks
     end
 
     private
+
+    def logger
+      @logger ||= Gitlab::WebHooks::Logger.build
+    end
 
     def next_failure_count
       recent_failures.succ.clamp(1, MAX_FAILURES)

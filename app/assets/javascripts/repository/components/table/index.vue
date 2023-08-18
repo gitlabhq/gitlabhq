@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';

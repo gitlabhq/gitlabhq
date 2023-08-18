@@ -60,7 +60,6 @@ listed here that also do not work properly in FIPS mode:
 - [Code Quality](../ci/testing/code_quality.md) does not support operating in FIPS-compliant mode.
 - [Dependency scanning](../user/application_security/dependency_scanning/index.md) support for Gradle.
 - [Dynamic Application Security Testing (DAST)](../user/application_security/dast/proxy-based.md) supports a reduced set of analyzers. The proxy-based analyzer is not available in FIPS mode today, however browser-based DAST, DAST API, and DAST API Fuzzing images are available.
-- [License compliance](../user/compliance/license_compliance/index.md).
 - [Solutions for vulnerabilities](../user/application_security/vulnerabilities/index.md#resolve-a-vulnerability)
   for yarn projects.
 - [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
@@ -118,48 +117,8 @@ for more details. The following instructions build on the Quick Start and are al
 
 ##### Terraform: Use a FIPS AMI
 
-1. Follow the guide to set up Terraform and Ansible.
-1. After [step 2b](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/docs/environment_quick_start_guide.md#2b-setup-config),
-   create a `data.tf` in your environment (for example, `gitlab-environment-toolkit/terraform/environments/gitlab-10k/inventory/data.tf`):
-
-   ```tf
-   data "aws_ami" "ubuntu_20_04_fips" {
-     count = 1
-
-     most_recent = true
-
-     filter {
-       name   = "name"
-       values = ["ubuntu-pro-fips-server/images/hvm-ssd/ubuntu-focal-20.04-amd64-pro-fips-server-*"]
-     }
-
-     filter {
-       name   = "virtualization-type"
-       values = ["hvm"]
-     }
-
-     owners = ["aws-marketplace"]
-   }
-   ```
-
-1. Add the custom `ami_id` to use this AMI in `environment.tf`. For
-   example, in `gitlab-environment-toolkit/terraform/environments/gitlab-10k/inventory/environment.tf`:
-
-   ```tf
-   module "gitlab_ref_arch_aws" {
-     source = "../../modules/gitlab_ref_arch_aws"
-
-     prefix = var.prefix
-     ami_id = data.aws_ami.ubuntu_20_04_fips[0].id
-     ...
-   ```
-
-NOTE:
-GET does not allow the AMI to change on EC2 instances after it has
-been deployed via `terraform apply`. Since an AMI change would tear down
-an instance, this would result in data loss: not only would disks be
-destroyed, but also GitLab secrets would be lost. There is a [Terraform lifecycle rule](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/blob/2aaeaff8ac8067f23cd7b6bb5bf131061649089d/terraform/modules/gitlab_aws_instance/main.tf#L40)
-to ignore AMI changes.
+GitLab team members can view more information in this internal handbook page on how to use FIPS AMI:
+`https://internal.gitlab.com/handbook/engineering/fedramp-compliance/get-configure/#terraform---use-fips-ami`
 
 ##### Ansible: Specify the FIPS Omnibus builds
 
@@ -167,17 +126,10 @@ The standard Omnibus GitLab releases build their own OpenSSL library, which is
 not FIPS-validated. However, we have nightly builds that create Omnibus packages
 that link against the operating system's OpenSSL library. To use this package,
 update the `gitlab_edition` and `gitlab_repo_script_url` fields in the Ansible
-`vars.yml`. For example, you might modify
-`gitlab-environment-toolkit/ansible/environments/gitlab-10k/inventory/vars.yml`
-in this way:
+`vars.yml`.
 
-```yaml
-all:
-  vars:
-    ...
-    gitlab_repo_script_url: "https://packages.gitlab.com/install/repositories/gitlab/gitlab-fips/script.deb.sh"
-    gitlab_edition: "gitlab-fips"
-```
+GitLab team members can view more information in this internal handbook page on Ansible (AWS):
+`https://internal.gitlab.com/handbook/engineering/fedramp-compliance/get-configure/#ansible-aws`
 
 #### Cloud Native Hybrid
 
@@ -231,39 +183,16 @@ be different.
 Building a RHEL-based system with FIPS enabled should be possible, but
 there is [an outstanding issue preventing the Packer build from completing](https://github.com/aws-samples/amazon-eks-custom-amis/issues/51).
 
+Because this builds a custom AMI based on a specific version of an image, you must periodically rebuild the custom AMI to keep current with the latest security patches and upgrades.
+
 ##### Terraform: Use a custom EKS AMI
 
-Now you can set the custom EKS AMI.
-
-1. In `environment.tf`, add `eks_ami_id = var.eks_ami_id` so you can pass this variable to the
-   AWS reference architecture module. For example, in
-   `gitlab-environment-toolkit/terraform/environments/gitlab-10k/inventory/environment.tf`:
-
-   ```tf
-   module "gitlab_ref_arch_aws" {
-     source = "../../modules/gitlab_ref_arch_aws"
-
-     prefix = var.prefix
-     ami_id = data.aws_ami.ubuntu_20_04_fips[0].id
-     eks_ami_id = var.eks_ami_id
-     ....
-   ```
-
-1. In `variables.tf`, define a `eks_ami_id` with the AMI ID in the
-   previous step:
-
-   ```tf
-   variable "eks_ami_id" {
-     default = "ami-0a25e760cd00b027e"
-   }
-   ```
+GitLab team members can view more information in this internal handbook page on how to use a custom EKS AMI:
+`https://internal.gitlab.com/handbook/engineering/fedramp-compliance/get-configure/#terraform---use-a-custom-eks-ami`
 
 ##### Ansible: Use UBI images
 
-CNG uses a Helm Chart to manage which container images to deploy. By default, GET
-deploys the latest released versions that use Debian-based containers.
-
-To switch to UBI-based containers, edit the Ansible `vars.yml` to use custom
+CNG uses a Helm Chart to manage which container images to deploy. To use UBI-based containers, edit the Ansible `vars.yml` to use custom
 Charts variables:
 
 ```yaml

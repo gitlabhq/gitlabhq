@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Using Git submodules with GitLab CI/CD **(FREE)**
+# Using Git submodules with GitLab CI/CD **(FREE ALL)**
 
 Use [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) to keep
 a Git repository as a subdirectory of another Git repository. You can clone another
@@ -116,7 +116,7 @@ To make submodules work correctly in CI/CD jobs:
 If you use the [`CI_JOB_TOKEN`](jobs/ci_job_token.md) to clone a submodule in a
 pipeline job, the user executing the job must be assigned to a role that has
 [permission](../user/permissions.md#gitlab-cicd-permissions) to trigger a pipeline
-in the upstream submodule project.
+in the upstream submodule project. Additionally, [CI/CD job token access](jobs/ci_job_token.md#configure-cicd-job-token-access) must be properly configured in the upstream submodule project.
 
 ## Troubleshooting
 

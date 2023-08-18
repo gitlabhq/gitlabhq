@@ -48,8 +48,9 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
       end
 
       it 'tracks RedisHLL event' do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
-                                                                .with('unique_active_user', values: user.id)
+        expect(Gitlab::UsageDataCounters::HLLRedisCounter)
+          .to receive(:track_event)
+          .with('unique_active_user', values: user.id)
 
         subject.execute
       end
@@ -63,8 +64,11 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
         let(:namespace) { build(:group) }
         let(:project) { build(:project) }
         let(:context) do
-          payload = Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                             event: 'unique_active_user').to_context
+          payload = Gitlab::Tracking::ServicePingContext.new(
+            data_source: :redis_hll,
+            event: 'unique_active_user'
+          ).to_context
+
           [Gitlab::Json.dump(payload)]
         end
       end

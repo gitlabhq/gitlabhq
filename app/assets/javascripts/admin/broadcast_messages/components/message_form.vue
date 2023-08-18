@@ -69,8 +69,13 @@ export default {
     dismissableDescription: s__('BroadcastMessages|Allow users to dismiss the broadcast message'),
     target: s__('BroadcastMessages|Target broadcast message'),
     targetRoles: s__('BroadcastMessages|Target roles'),
+    targetRolesRequired: s__('BroadcastMessages|Select at least one role.'),
+    targetRolesValidationMsg: s__('BroadcastMessages|One or more roles is required.'),
     targetPath: s__('BroadcastMessages|Target Path'),
-    targetPathDescription: s__('BroadcastMessages|Paths can contain wildcards, like */welcome'),
+    targetPathDescription: s__('BroadcastMessages|Paths can contain wildcards, like */welcome.'),
+    targetPathWithRolesReminder: s__(
+      'BroadcastMessages|Leave blank to target all group and project pages.',
+    ),
     startsAt: s__('BroadcastMessages|Starts at'),
     endsAt: s__('BroadcastMessages|Ends at'),
     add: s__('BroadcastMessages|Add broadcast message'),
@@ -110,6 +115,7 @@ export default {
       endsAt: new Date(this.broadcastMessage.endsAt.getTime()),
       renderedMessage: '',
       showInCli: this.broadcastMessage.showInCli,
+      isValidated: false,
     };
   },
   computed: {
@@ -137,6 +143,18 @@ export default {
       return (
         this.targetSelected === TARGET_ROLES || this.targetSelected === TARGET_ALL_MATCHING_PATH
       );
+    },
+    targetPathDescription() {
+      const defaultDescription = this.$options.i18n.targetPathDescription;
+
+      if (this.showTargetRoles) {
+        return `${defaultDescription} ${this.$options.i18n.targetPathWithRolesReminder}`;
+      }
+
+      return defaultDescription;
+    },
+    targetRolesValid() {
+      return !this.showTargetRoles || this.targetAccessLevels.length > 0;
     },
     formPayload() {
       return JSON.stringify({
@@ -172,8 +190,17 @@ export default {
     this.targetSelected = this.initialTarget();
   },
   methods: {
+    closeForm() {
+      this.$emit('close-add-form');
+    },
     async onSubmit() {
       this.loading = true;
+      this.isValidated = true;
+
+      if (!this.targetRolesValid) {
+        this.loading = false;
+        return;
+      }
 
       const success = await this.submitForm();
       if (success) {
@@ -182,7 +209,6 @@ export default {
         this.loading = false;
       }
     },
-
     async submitForm() {
       const requestMethod = this.isAddForm ? 'post' : 'patch';
 
@@ -197,7 +223,6 @@ export default {
       }
       return true;
     },
-
     async renderPreview() {
       try {
         const res = await axios.post(this.previewPath, this.formPayload, FORM_HEADERS);
@@ -206,7 +231,6 @@ export default {
         this.renderedMessage = '';
       }
     },
-
     initialTarget() {
       if (this.targetAccessLevels.length > 0) {
         return TARGET_ROLES;
@@ -238,6 +262,7 @@ export default {
         id="message-textarea"
         v-model="message"
         size="sm"
+        autofocus
         :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
         :placeholder="$options.i18n.messagePlaceholder"
         data-testid="message-input"
@@ -293,6 +318,9 @@ export default {
     <gl-form-group
       v-show="showTargetRoles"
       :label="$options.i18n.targetRoles"
+      :label-description="$options.i18n.targetRolesRequired"
+      :invalid-feedback="$options.i18n.targetRolesValidationMsg"
+      :state="!isValidated || targetRolesValid"
       data-testid="target-roles-checkboxes"
     >
       <gl-form-checkbox-group v-model="targetAccessLevels" :options="targetAccessLevelOptions" />
@@ -306,7 +334,7 @@ export default {
     >
       <gl-form-input id="target-path-input" v-model="targetPath" />
       <gl-form-text>
-        {{ $options.i18n.targetPathDescription }}
+        {{ targetPathDescription }}
       </gl-form-text>
     </gl-form-group>
 
@@ -325,11 +353,14 @@ export default {
         :loading="loading"
         :disabled="messageBlank"
         data-testid="submit-button"
-        class="gl-mr-2"
+        class="js-no-auto-disable gl-mr-2"
       >
         {{ isAddForm ? $options.i18n.add : $options.i18n.update }}
       </gl-button>
-      <gl-button v-if="!isAddForm" :href="messagesPath" data-testid="cancel-button">
+      <gl-button v-if="isAddForm" @click="closeForm">
+        {{ $options.i18n.cancel }}
+      </gl-button>
+      <gl-button v-else :href="messagesPath" data-testid="cancel-button">
         {{ $options.i18n.cancel }}
       </gl-button>
     </div>

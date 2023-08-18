@@ -1,12 +1,12 @@
 <script>
-import { GlButton, GlCollapse, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlCard, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import FailedJobsList from './failed_jobs_list.vue';
 
 export default {
   components: {
     GlButton,
-    GlCollapse,
+    GlCard,
     GlIcon,
     GlLink,
     GlPopover,
@@ -31,6 +31,10 @@ export default {
       required: true,
       type: String,
     },
+    projectPath: {
+      required: true,
+      type: String,
+    },
   },
   data() {
     return {
@@ -44,7 +48,7 @@ export default {
       return this.isExpanded ? '' : 'gl-display-none';
     },
     failedJobsCountText() {
-      return sprintf(this.$options.i18n.showFailedJobs, { count: this.currentFailedJobsCount });
+      return sprintf(this.$options.i18n.failedJobsLabel, { count: this.currentFailedJobsCount });
     },
     iconName() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
@@ -71,37 +75,47 @@ export default {
       'Pipelines|You will see a maximum of 100 jobs in this list. To view all failed jobs, %{linkStart}go to the details page%{linkEnd} of this pipeline.',
     ),
     additionalInfoTitle: __('Limitation on this view'),
-    showFailedJobs: __('Show failed jobs (%{count})'),
+    failedJobsLabel: __('Failed jobs (%{count})'),
   },
 };
 </script>
 <template>
-  <div class="gl-border-none!">
-    <gl-button variant="link" @click="toggleWidget">
-      <gl-icon :name="iconName" />
-      {{ failedJobsCountText }}
-      <gl-icon :id="popoverId" name="information-o" />
-      <gl-popover :target="popoverId" placement="top">
-        <template #title> {{ $options.i18n.additionalInfoTitle }} </template>
-        <slot>
-          <gl-sprintf :message="$options.i18n.additionalInfoPopover">
-            <template #link="{ content }">
-              <gl-link class="gl-font-sm" :href="pipelinePath"> {{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </slot>
-      </gl-popover>
-    </gl-button>
-    <gl-collapse
-      v-model="isExpanded"
-      class="gl-bg-gray-10 gl-border-1 gl-border-t gl-border-color-gray-100 gl-mt-4 gl-pt-3"
-    >
-      <failed-jobs-list
-        v-if="isExpanded"
-        :is-pipeline-active="isPipelineActive"
-        :pipeline-iid="pipelineIid"
-        @failed-jobs-count="setFailedJobsCount"
-      />
-    </gl-collapse>
-  </div>
+  <gl-card
+    class="gl-new-card"
+    :class="{ 'gl-border-white gl-hover-border-gray-100': !isExpanded }"
+    header-class="gl-new-card-header gl-px-3 gl-py-3"
+    body-class="gl-new-card-body"
+    data-testid="failed-jobs-card"
+    :aria-expanded="isExpanded.toString()"
+  >
+    <template #header>
+      <gl-button
+        variant="link"
+        class="gl-text-gray-700! gl-font-weight-semibold"
+        @click="toggleWidget"
+      >
+        <gl-icon :name="iconName" />
+        {{ failedJobsCountText }}
+        <gl-icon :id="popoverId" name="information-o" class="gl-ml-2" />
+        <gl-popover :target="popoverId" placement="top">
+          <template #title> {{ $options.i18n.additionalInfoTitle }} </template>
+          <slot>
+            <gl-sprintf :message="$options.i18n.additionalInfoPopover">
+              <template #link="{ content }">
+                <gl-link class="gl-font-sm" :href="pipelinePath">{{ content }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </slot>
+        </gl-popover>
+      </gl-button>
+    </template>
+    <failed-jobs-list
+      v-if="isExpanded"
+      :failed-jobs-count="failedJobsCount"
+      :is-pipeline-active="isPipelineActive"
+      :pipeline-iid="pipelineIid"
+      :project-path="projectPath"
+      @failed-jobs-count="setFailedJobsCount"
+    />
+  </gl-card>
 </template>

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlEmptyState, GlIcon, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';

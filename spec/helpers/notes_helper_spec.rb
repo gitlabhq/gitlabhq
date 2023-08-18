@@ -331,7 +331,9 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
   end
 
   describe '#notes_data' do
-    let(:issue) { create(:issue, project: project) }
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    let(:notes_data) { helper.notes_data(issue) }
 
     before do
       @project = project
@@ -343,7 +345,14 @@ RSpec.describe NotesHelper, feature_category: :team_planning do
     it 'includes the current notes filter for the user' do
       guest.set_notes_filter(UserPreference::NOTES_FILTERS[:only_comments], issue)
 
-      expect(helper.notes_data(issue)[:notesFilter]).to eq(UserPreference::NOTES_FILTERS[:only_comments])
+      expect(notes_data[:notesFilter]).to eq(UserPreference::NOTES_FILTERS[:only_comments])
+    end
+
+    it 'includes info about the noteable', :aggregate_failures do
+      expect(notes_data[:noteableType]).to eq('issue')
+      expect(notes_data[:noteableId]).to eq(issue.id)
+      expect(notes_data[:projectId]).to eq(project.id)
+      expect(notes_data[:groupId]).to be_nil
     end
   end
 end

@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
 import { throttle } from 'lodash';
 import { __ } from '~/locale';

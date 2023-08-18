@@ -44,6 +44,9 @@ class ProjectPolicy < BasePolicy
   desc "Project is public"
   condition(:public_project, scope: :subject, score: 0) { project.public? }
 
+  desc "project is private"
+  condition(:private_project, scope: :subject, score: 0) { project.private? }
+
   desc "Project is visible to internal users"
   condition(:internal_access) do
     project.internal? && !user.external?
@@ -54,6 +57,9 @@ class ProjectPolicy < BasePolicy
 
   desc "User is a requester of the group"
   condition(:group_requester, scope: :subject) { project_group_requester? }
+
+  desc "User is external"
+  condition(:external_user) { user.external? }
 
   desc "Project is archived"
   condition(:archived, scope: :subject, score: 0) { project.archived? }
@@ -912,6 +918,8 @@ class ProjectPolicy < BasePolicy
   rule { ~admin & created_and_owned_by_banned_user }.policy do
     prevent :read_project
   end
+
+  rule { ~private_project & guest & external_user }.enable :read_container_image
 
   private
 

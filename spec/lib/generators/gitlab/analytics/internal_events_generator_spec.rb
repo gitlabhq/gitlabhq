@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
   let(:section) { "analytics" }
   let(:mr) { "https://gitlab.com/some-group/some-project/-/merge_requests/123" }
   let(:event) { "view_analytics_dashboard" }
-  let(:unique) { "user_id" }
+  let(:unique) { "user.id" }
   let(:time_frames) { %w[7d] }
   let(:include_default_identifiers) { 'yes' }
   let(:options) do
@@ -31,7 +31,8 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
     }.stringify_keys
   end
 
-  let(:key_path_7d) { "count_distinct_#{unique}_from_#{event}_7d" }
+  let(:key_path_without_time_frame) { "count_distinct_#{unique.sub('.', '_')}_from_#{event}" }
+  let(:key_path_7d) { "#{key_path_without_time_frame}_7d" }
   let(:metric_definition_path_7d) { Dir.glob(File.join(temp_dir, "metrics/counts_7d/#{key_path_7d}.yml")).first }
   let(:metric_definition_7d) do
     {
@@ -50,15 +51,17 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
       "data_category" => "optional",
       "instrumentation_class" => "RedisHLLMetric",
       "distribution" => %w[ce ee],
-      "tier" => %w[free premium ultimate]
+      "tier" => %w[free premium ultimate],
+      "options" => {
+        "events" => [event]
+      },
+      "events" => [{ "name" => event, "unique" => unique }]
     }
   end
 
   before do
     stub_const("#{described_class}::TOP_LEVEL_DIR_EE", ee_temp_dir)
     stub_const("#{described_class}::TOP_LEVEL_DIR", temp_dir)
-    stub_const("#{described_class}::KNOWN_EVENTS_PATH", tmpfile.path)
-    stub_const("#{described_class}::KNOWN_EVENTS_PATH_EE", tmpfile.path)
     # Stub version so that `milestone` key remains constant between releases to prevent flakiness.
     stub_const('Gitlab::VERSION', '13.9.0')
 
@@ -83,7 +86,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
     let(:identifiers) { %w[project user namespace] }
     let(:event_definition) do
       {
-        "category" => "GitlabInternalEvents",
+        "category" => "InternalEventTracking",
         "action" => event,
         "description" => description,
         "product_section" => section,
@@ -132,7 +135,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
     end
 
     context 'with duplicated event' do
-      context 'in known_events files' do
+      context 'in known_events' do
         before do
           allow(::Gitlab::UsageDataCounters::HLLRedisCounter)
             .to receive(:known_event?).with(event).and_return(true)
@@ -249,7 +252,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
     context 'for multiple time frames' do
       let(:time_frames) { %w[7d 28d] }
-      let(:key_path_28d) { "count_distinct_#{unique}_from_#{event}_28d" }
+      let(:key_path_28d) { "#{key_path_without_time_frame}_28d" }
       let(:metric_definition_path_28d) { Dir.glob(File.join(temp_dir, "metrics/counts_28d/#{key_path_28d}.yml")).first }
       let(:metric_definition_28d) do
         metric_definition_7d.merge(
@@ -268,7 +271,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
     context 'with default time frames' do
       let(:time_frames) { nil }
-      let(:key_path_28d) { "count_distinct_#{unique}_from_#{event}_28d" }
+      let(:key_path_28d) { "#{key_path_without_time_frame}_28d" }
       let(:metric_definition_path_28d) { Dir.glob(File.join(temp_dir, "metrics/counts_28d/#{key_path_28d}.yml")).first }
       let(:metric_definition_28d) do
         metric_definition_7d.merge(
@@ -282,34 +285,6 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
         expect(YAML.safe_load(File.read(metric_definition_path_7d))).to eq(metric_definition_7d)
         expect(YAML.safe_load(File.read(metric_definition_path_28d))).to eq(metric_definition_28d)
-      end
-    end
-  end
-
-  describe 'Creating known event entry' do
-    let(:time_frames) { %w[7d 28d] }
-    let(:expected_known_events) { [{ "name" => event }] }
-
-    it 'creates a metric definition file using the template' do
-      described_class.new([], options).invoke_all
-
-      expect(YAML.safe_load(File.read(tmpfile.path))).to match_array(expected_known_events)
-    end
-
-    context 'for ultimate only feature' do
-      let(:ee_tmpfile) { Tempfile.new('test-metadata') }
-
-      after do
-        FileUtils.rm_rf(ee_tmpfile)
-      end
-
-      it 'creates a metric definition file using the template' do
-        stub_const("#{described_class}::KNOWN_EVENTS_PATH_EE", ee_tmpfile.path)
-
-        described_class.new([], options.merge(tiers: %w[ultimate])).invoke_all
-
-        expect(YAML.safe_load(File.read(tmpfile.path))).to be nil
-        expect(YAML.safe_load(File.read(ee_tmpfile.path))).to match_array(expected_known_events)
       end
     end
   end

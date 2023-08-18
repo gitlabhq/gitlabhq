@@ -9,7 +9,7 @@
 .gl-py-5.gl-md-pl-5.gl-md-pr-5
   %h4.gl-mb-5
     = create_cluster_label
-  .gl-display-flex
+  .gl-display-flex.gl-gap-5
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',
       locals: { label: eks_label, logo_path: 'illustrations/logos/amazon_eks.svg', help_path: eks_help_path }
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',

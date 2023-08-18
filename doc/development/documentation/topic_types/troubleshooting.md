@@ -11,9 +11,25 @@ Troubleshooting topics should be the final topics on a page.
 If a page has more than five troubleshooting topics, put the content on a separate page that has troubleshooting information exclusively. Name the page `Troubleshooting <feature>`
 and in the left nav, use the word `Troubleshooting` only.
 
-Troubleshooting can be one of three types.
+## What type of troubleshooting information to include
 
-## An introductory topic
+Troubleshooting information includes:
+
+- Problem-solving information that might be considered risky.
+- Information about rare cases. All troubleshooting information
+  is included, no matter how unlikely a user is to encounter a situation.
+
+This kind of content can be helpful to others, and the benefits outweigh the risks.
+If you think you have an exception to this rule, contact the Technical Writing team.
+
+GitLab Support maintains their own
+[troubleshooting content](../../../administration/troubleshooting/index.md).
+
+## Troubleshooting topic types
+
+Troubleshooting can be one of three types: introductory, task, or reference.
+
+### An introductory topic
 
 This topic introduces the troubleshooting section of a page.
 For example:
@@ -24,12 +40,12 @@ For example:
 When working with <x feature>, you might encounter the following issues.
 ```
 
-## Troubleshooting task
+### Troubleshooting task
 
 The title should be similar to a [standard task](task.md).
 For example, "Run debug tools" or "Verify syntax."
 
-## Troubleshooting reference
+### Troubleshooting reference
 
 This topic includes the error message. For example:
 

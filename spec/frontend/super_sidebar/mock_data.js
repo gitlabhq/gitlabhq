@@ -71,7 +71,13 @@ export const mergeRequestMenuGroup = [
   },
 ];
 
+export const contextSwitcherLinks = [
+  { title: 'Explore', link: '/explore', icon: 'compass', link_classes: 'persistent-link-class' },
+  { title: 'Admin area', link: '/admin', icon: 'admin' },
+];
+
 export const sidebarData = {
+  is_logged_in: true,
   current_menu_items: [],
   current_context_header: {
     title: 'Your Work',
@@ -103,7 +109,7 @@ export const sidebarData = {
   gitlab_version_check: { severity: 'success' },
   gitlab_com_and_canary: false,
   canary_toggle_com_url: 'https://next.gitlab.com',
-  context_switcher_links: [],
+  context_switcher_links: contextSwitcherLinks,
   search: {
     search_path: '/search',
   },
@@ -118,6 +124,26 @@ export const sidebarData = {
       css_class: 'shortcut-link-class',
     },
   ],
+};
+
+export const loggedOutSidebarData = {
+  is_logged_in: false,
+  current_menu_items: [],
+  current_context_header: {
+    title: 'Your Work',
+    icon: 'work',
+  },
+  support_path: '/support',
+  display_whats_new: true,
+  whats_new_most_recent_release_items_count: 5,
+  whats_new_version_digest: 1,
+  show_version_check: false,
+  gitlab_version: { major: 16, minor: 0 },
+  gitlab_version_check: { severity: 'success' },
+  search: {
+    search_path: '/search',
+  },
+  panel_type: 'your_work',
 };
 
 export const userMenuMockStatus = {

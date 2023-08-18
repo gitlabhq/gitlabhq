@@ -1,5 +1,7 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlLoadingIcon, GlIcon, GlTabs, GlTab, GlBadge, GlAlert } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import IDEServices from '~/ide/services';

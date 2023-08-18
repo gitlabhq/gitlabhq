@@ -5,12 +5,7 @@ module QA
     describe 'Pipeline with raw variables in YAML', product_group: :pipeline_security do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:pipeline_job_name) { 'rspec' }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-raw-variable-pipeline'
-        end
-      end
+      let(:project) { create(:project, name: 'project-with-raw-variable-pipeline') }
 
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|

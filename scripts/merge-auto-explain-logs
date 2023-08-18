@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "set"
+require "json"
+
+fingerprints = Set.new
+
+ARGF.each_line do |line|
+  fingerprint = JSON.parse(line)['fingerprint']
+  $stdout.puts(line) && $stdout.flush if fingerprints.add?(fingerprint)
+end
+
+warn("auto_explain log contains #{fingerprints.size} entries")

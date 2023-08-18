@@ -5,38 +5,60 @@ require 'spec_helper'
 RSpec.describe Organizations::OrganizationsController, feature_category: :cell do
   let_it_be(:organization) { create(:organization) }
 
-  RSpec.shared_examples 'basic organization controller action' do
+  shared_examples 'successful response' do
+    it 'renders 200 OK' do
+      gitlab_request
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
+
+  shared_examples 'action disabled by `ui_for_organizations` feature flag' do
     before do
-      sign_in(user)
+      stub_feature_flags(ui_for_organizations: false)
     end
 
-    context 'when the user does not have authorization' do
-      let_it_be(:user) { create(:user) }
+    it 'renders 404' do
+      gitlab_request
 
-      it 'renders 404' do
-        gitlab_request
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
 
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+  shared_examples 'basic organization controller action' do
+    context 'when the user is not logged in' do
+      it_behaves_like 'successful response'
+      it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
     end
 
-    context 'when the user has authorization', :enable_admin_mode do
-      let_it_be(:user) { create(:admin) }
-
-      it 'renders 200 OK' do
-        gitlab_request
-
-        expect(response).to have_gitlab_http_status(:ok)
+    context 'when the user is logged in' do
+      before do
+        sign_in(user)
       end
 
-      context 'when the feature flag `ui_for_organizations` is disabled' do
-        it 'renders 404' do
-          stub_feature_flags(ui_for_organizations: false)
+      context 'with no association to an organization' do
+        let_it_be(:user) { create(:user) }
 
-          gitlab_request
+        it_behaves_like 'successful response'
+        it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
+      end
 
-          expect(response).to have_gitlab_http_status(:not_found)
+      context 'as as admin', :enable_admin_mode do
+        let_it_be(:user) { create(:admin) }
+
+        it_behaves_like 'successful response'
+        it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
+      end
+
+      context 'as an organization user' do
+        let_it_be(:user) { create :user }
+
+        before do
+          create :organization_user, organization: organization, user: user
         end
+
+        it_behaves_like 'successful response'
+        it_behaves_like 'action disabled by `ui_for_organizations` feature flag'
       end
     end
   end

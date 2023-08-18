@@ -10,10 +10,10 @@ module Types
 
       alias_method :design, :object
 
-      implements(Types::Notes::NoteableInterface)
-      implements(Types::DesignManagement::DesignFields)
-      implements(Types::CurrentUserTodos)
-      implements(Types::TodoableInterface)
+      implements Types::Notes::NoteableInterface
+      implements Types::DesignManagement::DesignFields
+      implements Types::CurrentUserTodos
+      implements Types::TodoableInterface
 
       field :description,
             GraphQL::Types::String,

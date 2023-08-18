@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage issues **(FREE)**
+# Manage issues **(FREE ALL)**
 
 After you create an issue, you can start working with it.
 
@@ -71,8 +71,9 @@ When bulk editing issues in a project, you can edit the following attributes:
 - [Health status](#health-status)
 - [Notification](../../profile/notifications.md) subscription
 - [Iteration](../../group/iterations/index.md)
+- [Confidentiality](confidential_issues.md)
 
-### Bulk edit issues from a group **(PREMIUM)**
+### Bulk edit issues from a group **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in GitLab 12.1.
 > - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
@@ -388,7 +389,7 @@ Alternatively:
 1. Select **Edit title and description** (**{pencil}**).
 1. Select **Delete issue**.
 
-## Promote an issue to an epic **(PREMIUM)**
+## Promote an issue to an epic **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3777) in GitLab 11.6.
 > - Moved from GitLab Ultimate to GitLab Premium in 12.8.
@@ -414,7 +415,7 @@ Read more about [promoting an issues to epics](../../group/epics/manage_epics.md
 
 You can use the `/promote_to_incident` [quick action](../quick_actions.md) to promote the issue to an [incident](../../../operations/incident_management/incidents.md).
 
-## Add an issue to an iteration **(PREMIUM)**
+## Add an issue to an iteration **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216158) in GitLab 13.2.
 > - Moved to GitLab Premium in 13.9.
@@ -565,7 +566,7 @@ As you type in the title text box of the **New issue** page, GitLab searches tit
 across all issues in the current project. Only issues you have access to are returned.
 Up to five similar issues, sorted by most recently updated, are displayed below the title text box.
 
-## Health status **(ULTIMATE)**
+## Health status **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab 12.10.
 > - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab 13.4 and later.
@@ -606,7 +607,7 @@ until the issue is reopened.
 You can also set and clear health statuses using the `/health_status` and `/clear_health_status`
 [quick actions](../quick_actions.md#issues-merge-requests-and-epics).
 
-## Publish an issue **(ULTIMATE)**
+## Publish an issue **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906) in GitLab 13.1.
 

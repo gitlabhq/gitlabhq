@@ -2,17 +2,12 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Merge request push options', product_group: :code_review do
+    describe 'Merge request push options', :reliable, product_group: :code_review do
       # If run locally on GDK, push options need to be enabled on the host with the following command:
       #
       # git config --global receive.advertisepushoptions true
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'merge-request-push-options'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'merge-request-push-options') }
 
       it 'sets title and description', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347844' do
         description = "This is a test of MR push options"

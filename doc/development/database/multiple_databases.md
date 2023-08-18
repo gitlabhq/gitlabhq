@@ -163,6 +163,92 @@ allows you to avoid the join, while still avoiding the N+1 query.
 You can see a real example of this solution being used in
 <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67655>.
 
+##### Remove a redundant join
+
+Sometimes there are cases where a query is doing excess (or redundant) joins.
+
+A common example occurs where a query is joining from `A` to `C`, via some
+table with both foreign keys, `B`.
+When you only care about counting how
+many rows there are in `C` and if there are foreign keys and `NOT NULL` constraints
+on the foreign keys in `B`, then it might be enough to count those rows.
+For example, in
+[MR 71811](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71811), it was
+previously doing `project.runners.count`, which would produce a query like:
+
+```sql
+select count(*) from projects
+inner join ci_runner_projects on ci_runner_projects.project_id = projects.id
+where ci_runner_projects.runner_id IN (1, 2, 3)
+```
+
+This was changed to avoid the cross-join by changing the code to
+`project.runner_projects.count`. It produces the same response with the
+following query:
+
+```sql
+select count(*) from ci_runner_projects
+where ci_runner_projects.runner_id IN (1, 2, 3)
+```
+
+Another common redundant join is joining all the way to another table,
+then filtering by primary key when you could have instead filtered on a foreign
+key. See an example in
+[MR 71614](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71614). The previous
+code was `joins(scan: :build).where(ci_builds: { id: build_ids })`, which
+generated a query like:
+
+```sql
+select ...
+inner join security_scans
+inner join ci_builds on security_scans.build_id = ci_builds.id
+where ci_builds.id IN (1, 2, 3)
+```
+
+However, as `security_scans` already has a foreign key `build_id`, the code
+can be changed to `joins(:scan).where(security_scans: { build_id: build_ids })`,
+which produces the same response with the following query:
+
+```sql
+select ...
+inner join security_scans
+where security_scans.build_id IN (1, 2, 3)
+```
+
+Both of these examples of removing redundant joins remove the cross-joins,
+but they have the added benefit of producing simpler and faster
+queries.
+
+##### Limited pluck followed by a find
+
+Using `pluck` or `pick` to get an array of `id`s is not advisable unless the returned
+array is guaranteed to be bounded in size. Usually this is a good pattern where
+you know the result will be at most 1, or in cases where you have a list of in
+memory ids (or usernames) that need to be mapped to another list of equal size.
+It would not be suitable when mapping a list of ids in a one-to-many
+relationship as the result will be unbounded. We can then use the
+returned `id`s to obtain the related record:
+
+```ruby
+allowed_user_id = board_user_finder
+  .where(user_id: params['assignee_id'])
+  .pick(:user_id)
+
+User.find_by(id: allowed_user_id)
+```
+
+You can see an example where this was used in
+<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126856>
+
+Sometimes it might seem easy to convert a join into a `pluck` but often this
+results in loading an unbounded amount of ids into memory and then
+re-serializing those in a following query back to Postgres. These cases do not
+scale and we recommend attempting one of the other options. It might seem like a
+good idea to just apply some `limit` to the plucked data to have bounded memory
+but this introduces unpredictable results for users and often is most
+problematic for our largest customers (including ourselves), and as such we
+advise against it.
+
 ##### De-normalize some foreign key to the table
 
 De-normalization refers to adding redundant precomputed (duplicated) data to
@@ -262,62 +348,6 @@ logic to delete these rows if or whenever necessary in your domain.
 
 Finally, this de-normalization and new query also improves performance because
 it does less joins and needs less filtering.
-
-##### Remove a redundant join
-
-Sometimes there are cases where a query is doing excess (or redundant) joins.
-
-A common example occurs where a query is joining from `A` to `C`, via some
-table with both foreign keys, `B`.
-When you only care about counting how
-many rows there are in `C` and if there are foreign keys and `NOT NULL` constraints
-on the foreign keys in `B`, then it might be enough to count those rows.
-For example, in
-[MR 71811](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71811), it was
-previously doing `project.runners.count`, which would produce a query like:
-
-```sql
-select count(*) from projects
-inner join ci_runner_projects on ci_runner_projects.project_id = projects.id
-where ci_runner_projects.runner_id IN (1, 2, 3)
-```
-
-This was changed to avoid the cross-join by changing the code to
-`project.runner_projects.count`. It produces the same response with the
-following query:
-
-```sql
-select count(*) from ci_runner_projects
-where ci_runner_projects.runner_id IN (1, 2, 3)
-```
-
-Another common redundant join is joining all the way to another table,
-then filtering by primary key when you could have instead filtered on a foreign
-key. See an example in
-[MR 71614](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71614). The previous
-code was `joins(scan: :build).where(ci_builds: { id: build_ids })`, which
-generated a query like:
-
-```sql
-select ...
-inner join security_scans
-inner join ci_builds on security_scans.build_id = ci_builds.id
-where ci_builds.id IN (1, 2, 3)
-```
-
-However, as `security_scans` already has a foreign key `build_id`, the code
-can be changed to `joins(:scan).where(security_scans: { build_id: build_ids })`,
-which produces the same response with the following query:
-
-```sql
-select ...
-inner join security_scans
-where security_scans.build_id IN (1, 2, 3)
-```
-
-Both of these examples of removing redundant joins remove the cross-joins,
-but they have the added benefit of producing simpler and faster
-queries.
 
 ##### Use `disable_joins` for `has_one` or `has_many` `through:` relations
 
@@ -628,3 +658,56 @@ If this task was run against a GitLab setup that uses only a single database
 for both `gitlab_main` and `gitlab_ci` tables, then no tables will be locked.
 
 To undo the operation, run the opposite Rake task: `gitlab:db:unlock_writes`.
+
+## Truncating tables
+
+When the databases `main` and `ci` are fully split, we can free up disk
+space by truncating tables. This results in a smaller data set: For example,
+the data in `users` table on CI database is no longer read and also no
+longer updated. So this data can be removed by truncating the tables.
+
+For this purpose, GitLab provides two Rake tasks, one for each database:
+
+- `gitlab:db:truncate_legacy_tables:main` will truncate the CI tables in Main database.
+- `gitlab:db:truncate_legacy_tables:ci` will truncate the Main tables in CI database.
+
+NOTE:
+These tasks can only be run when the tables in the database are
+[locked for writes](#locking-writes-on-the-tables-that-dont-belong-to-the-database-schemas).
+
+WARNING:
+The examples in this section use `DRY_RUN=true`. This ensures no data is actually
+truncated. GitLab highly recommends to have a backup available before you run any of
+these tasks without `DRY_RUN=true`.
+
+These tasks have the option to see what they do without actually changing the
+data:
+
+```shell
+$ sudo DRY_RUN=true gitlab-rake gitlab:db:truncate_legacy_tables:main
+I, [2023-07-14T17:08:06.665151 #92505]  INFO -- : DRY RUN:
+I, [2023-07-14T17:08:06.761586 #92505]  INFO -- : Truncating legacy tables for the database main
+I, [2023-07-14T17:08:06.761709 #92505]  INFO -- : SELECT set_config('lock_writes.ci_build_needs', 'false', false)
+I, [2023-07-14T17:08:06.765272 #92505]  INFO -- : SELECT set_config('lock_writes.ci_build_pending_states', 'false', false)
+I, [2023-07-14T17:08:06.768220 #92505]  INFO -- : SELECT set_config('lock_writes.ci_build_report_results', 'false', false)
+[...]
+I, [2023-07-14T17:08:06.957294 #92505]  INFO -- : TRUNCATE TABLE ci_build_needs, ci_build_pending_states, ci_build_report_results, ci_build_trace_chunks, ci_build_trace_metadata, ci_builds, ci_builds_metadata, ci_builds_runner_session, ci_cost_settings, ci_daily_build_group_report_results, ci_deleted_objects, ci_editor_ai_conversation_messages, ci_freeze_periods, ci_group_variables, ci_instance_variables, ci_job_artifact_states, ci_job_artifacts, ci_job_token_project_scope_links, ci_job_variables, ci_minutes_additional_packs, ci_namespace_mirrors, ci_namespace_monthly_usages, ci_partitions, ci_pending_builds, ci_pipeline_artifacts, ci_pipeline_chat_data, ci_pipeline_messages, ci_pipeline_metadata, ci_pipeline_schedule_variables, ci_pipeline_schedules, ci_pipeline_variables, ci_pipelines, ci_pipelines_config, ci_platform_metrics, ci_project_mirrors, ci_project_monthly_usages, ci_refs, ci_resource_groups, ci_resources, ci_runner_machines, ci_runner_namespaces, ci_runner_projects, ci_runner_versions, ci_runners, ci_running_builds, ci_secure_file_states, ci_secure_files, ci_sources_pipelines, ci_sources_projects, ci_stages, ci_subscriptions_projects, ci_trigger_requests, ci_triggers, ci_unit_test_failures, ci_unit_tests, ci_variables, external_pull_requests, p_ci_builds, p_ci_builds_metadata, p_ci_job_annotations, p_ci_runner_machine_builds, taggings, tags RESTRICT
+```
+
+The tasks will first find out the tables that need to be truncated. Truncation will
+happen in stages because we need to limit the amount of data removed in one database
+transaction. The tables are processed in a specific order depending on the definition
+of the foreign keys. The number of tables processed in one stage can be changed by
+adding a number when invoking the task. The default value is 5:
+
+```shell
+sudo DRY_RUN=true gitlab-rake gitlab:db:truncate_legacy_tables:main\[10\]
+```
+
+It is also possible to limit the number of tables to be truncated by setting the `UNTIL_TABLE`
+variable. For example in this case, the process will stop when `ci_unit_test_failures` has been
+truncated:
+
+```shell
+sudo DRY_RUN=true UNTIL_TABLE=ci_unit_test_failures gitlab-rake gitlab:db:truncate_legacy_tables:main
+```

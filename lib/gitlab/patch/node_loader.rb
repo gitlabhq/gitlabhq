@@ -9,6 +9,18 @@ end
 module Gitlab
   module Patch
     module NodeLoader
+      extend ActiveSupport::Concern
+
+      class_methods do
+        # Shuffle the node list to spread out initial connection creation amongst all nodes
+        #
+        # The input is a Redis::Cluster::Node instance which is an Enumerable.
+        #  `super` receives an Array of Redis::Client instead of a Redis::Cluster::Node
+        def load_flags(nodes)
+          super(nodes.to_a.shuffle)
+        end
+      end
+
       def self.prepended(base)
         base.class_eval do
           # monkey-patches https://github.com/redis/redis-rb/blob/v4.8.0/lib/redis/cluster/node_loader.rb#L23

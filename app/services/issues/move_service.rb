@@ -123,10 +123,10 @@ module Issues
     end
 
     def rewrite_related_issues
-      source_issue_links = IssueLink.for_source_issue(original_entity)
+      source_issue_links = IssueLink.for_source(original_entity)
       source_issue_links.update_all(source_id: new_entity.id)
 
-      target_issue_links = IssueLink.for_target_issue(original_entity)
+      target_issue_links = IssueLink.for_target(original_entity)
       target_issue_links.update_all(target_id: new_entity.id)
     end
 

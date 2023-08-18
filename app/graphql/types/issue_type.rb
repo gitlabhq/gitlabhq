@@ -4,11 +4,11 @@ module Types
   class IssueType < BaseObject
     graphql_name 'Issue'
 
-    connection_type_class(Types::IssueConnectionType)
+    connection_type_class Types::IssueConnectionType
 
-    implements(Types::Notes::NoteableInterface)
-    implements(Types::CurrentUserTodos)
-    implements(Types::TodoableInterface)
+    implements Types::Notes::NoteableInterface
+    implements Types::CurrentUserTodos
+    implements Types::TodoableInterface
 
     authorize :read_issue
 
@@ -92,7 +92,13 @@ module Types
 
     field :emails_disabled, GraphQL::Types::Boolean, null: false,
                                                      method: :project_emails_disabled?,
-                                                     description: 'Indicates if a project has email notifications disabled: `true` if email notifications are disabled.'
+                                                     description: 'Indicates if a project has email notifications disabled: `true` if email notifications are disabled.',
+                                                     deprecated: { reason: 'Use `emails_enabled`', milestone: '16.3' }
+
+    field :emails_enabled, GraphQL::Types::Boolean, null: false,
+                                                    method: :project_emails_enabled?,
+                                                    description: 'Indicates if a project has email notifications disabled: `false` if email notifications are disabled.'
+
     field :human_time_estimate, GraphQL::Types::String, null: true,
                                                         description: 'Human-readable time estimate of the issue.'
     field :human_total_time_spent, GraphQL::Types::String, null: true,

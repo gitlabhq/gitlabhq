@@ -33,24 +33,23 @@ System:         Ubuntu 20.04
 Proxy:          no
 Current User:   git
 Using RVM:      no
-Ruby Version:   2.6.6p146
-Gem Version:    2.7.10
-Bundler Version:1.17.3
-Rake Version:   12.3.3
-Redis Version:  5.0.9
-Git Version:    2.27.0
-Sidekiq Version:5.2.9
+Ruby Version:   2.7.6p219
+Gem Version:    3.1.6
+Bundler Version:2.3.15
+Rake Version:   13.0.6
+Redis Version:  6.2.7
+Sidekiq Version:6.4.2
 Go Version:     unknown
 
 GitLab information
-Version:        13.2.2-ee
-Revision:       618883a1f9d
+Version:        15.5.5-ee
+Revision:       5f5109f142d
 Directory:      /opt/gitlab/embedded/service/gitlab-rails
 DB Adapter:     PostgreSQL
-DB Version:     11.7
-URL:            http://gitlab.example.com
-HTTP Clone URL: http://gitlab.example.com/some-group/some-project.git
-SSH Clone URL:  git@gitlab.example.com:some-group/some-project.git
+DB Version:     13.8
+URL:            https://app.gitaly.gcp.gitlabsandbox.net
+HTTP Clone URL: https://app.gitaly.gcp.gitlabsandbox.net/some-group/some-project.git
+SSH Clone URL:  git@app.gitaly.gcp.gitlabsandbox.net:some-group/some-project.git
 Elasticsearch:  no
 Geo:            no
 Using LDAP:     no
@@ -58,10 +57,20 @@ Using Omniauth: yes
 Omniauth Providers:
 
 GitLab Shell
-Version:    13.3.0
+Version:        14.12.0
 Repository storage paths:
-- default:  /var/opt/gitlab/git-data/repositories
-GitLab Shell path:      /opt/gitlab/embedded/service/gitlab-shell
+- default:      /var/opt/gitlab/git-data/repositories
+- gitaly:       /var/opt/gitlab/git-data/repositories
+GitLab Shell path:              /opt/gitlab/embedded/service/gitlab-shell
+
+
+Gitaly
+- default Address:      unix:/var/opt/gitlab/gitaly/gitaly.socket
+- default Version:      15.5.5
+- default Git Version:  2.37.1.gl1
+- gitaly Address:       tcp://10.128.20.6:2305
+- gitaly Version:       15.5.5
+- gitaly Git Version:   2.37.1.gl1
 ```
 
 ## Show GitLab license information **(PREMIUM SELF)**
@@ -234,7 +243,7 @@ clear Redis' cache. To do this, run:
 Sometimes during version upgrades you might end up with some wrong CSS or
 missing some icons. In that case, try to precompile the assets again.
 
-This Rake task only applies to source installations. [Read more](../../update/package/index.md#missing-asset-files)
+This Rake task only applies to self-compiled installations. [Read more](../../update/package/index.md#missing-asset-files)
 about troubleshooting this problem when running the Linux package.
 The guidance for Linux package might be applicable for Kubernetes and Docker
 deployments of GitLab, though in general, container-based installations
@@ -398,6 +407,26 @@ task cleans up the temporary indexes.
 
 - The time it takes for database index rebuilding to complete depends on the size
 of the target database. It can take between several hours and several days.
+
+## Dump the database schema
+
+In rare circumstances, the database schema can differ from what the application code expects
+even if all database migrations are complete. If this does occur, it can lead to odd errors
+in GitLab.
+
+To dump the database schema:
+
+```shell
+SCHEMA=/tmp/structure.sql gitlab-rake db:schema:dump
+```
+
+The Rake task creates a `/tmp/structure.sql` file that contains the database schema dump.
+
+To determine if there are any differences:
+
+1. Go to the [`db/structure.sql`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql) file in the [`gitlab`](https://gitlab.com/gitlab-org/gitlab) project.
+   Select the branch that matches your GitLab version. For example, the file for GitLab 16.2: <https://gitlab.com/gitlab-org/gitlab/-/blob/16-2-stable-ee/db/structure.sql>.
+1. Compare `/tmp/structure.sql` with the `db/structure.sql` file for your version.
 
 ## Import common metrics
 

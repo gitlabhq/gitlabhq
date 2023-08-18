@@ -6,7 +6,7 @@ import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import { SUCCESS } from '~/vue_merge_request_widget/constants';
 import mockData from '../mock_data';
 
@@ -28,6 +28,7 @@ describe('MRWidgetPipeline', () => {
   const findCIErrorMessage = () => wrapper.findByTestId('ci-error-message');
   const findPipelineID = () => wrapper.findByTestId('pipeline-id');
   const findPipelineInfoContainer = () => wrapper.findByTestId('pipeline-info-container');
+  const findPipelineDetailsContainer = () => wrapper.findByTestId('pipeline-details-container');
   const findCommitLink = () => wrapper.findByTestId('commit-link');
   const findPipelineFinishedAt = () => wrapper.findByTestId('finished-at');
   const findPipelineCoverage = () => wrapper.findByTestId('pipeline-coverage');
@@ -36,7 +37,7 @@ describe('MRWidgetPipeline', () => {
     wrapper.findByTestId('pipeline-coverage-tooltip').text();
   const findPipelineCoverageDeltaTooltipText = () =>
     wrapper.findByTestId('pipeline-coverage-delta-tooltip').text();
-  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
+  const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
   const findMonitoringPipelineMessage = () => wrapper.findByTestId('monitoring-pipeline-message');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
@@ -100,8 +101,8 @@ describe('MRWidgetPipeline', () => {
     it('should render pipeline graph', () => {
       const stagesCount = mockData.pipeline.details.stages.length;
 
-      expect(findPipelineMiniGraph().exists()).toBe(true);
-      expect(findPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(true);
+      expect(findLegacyPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
     });
 
     it('should render the latest downstream pipelines only', () => {
@@ -109,7 +110,7 @@ describe('MRWidgetPipeline', () => {
       // because we retried the trigger job, so the mini pipeline graph will only
       // render the newly created downstream pipeline instead
       expect(mockData.pipeline.triggered).toHaveLength(2);
-      expect(findPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
+      expect(findLegacyPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
     });
 
     describe('should render pipeline coverage information', () => {
@@ -181,8 +182,8 @@ describe('MRWidgetPipeline', () => {
     it('should render pipeline graph', () => {
       const stagesCount = mockData.pipeline.details.stages.length;
 
-      expect(findPipelineMiniGraph().exists()).toBe(true);
-      expect(findPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(true);
+      expect(findLegacyPipelineMiniGraph().props('stages')).toHaveLength(stagesCount);
     });
 
     it('should render coverage information', () => {
@@ -214,7 +215,7 @@ describe('MRWidgetPipeline', () => {
     });
 
     it('should not render a pipeline graph', () => {
-      expect(findPipelineMiniGraph().exists()).toBe(false);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(false);
     });
   });
 
@@ -238,40 +239,74 @@ describe('MRWidgetPipeline', () => {
     };
 
     describe('for a branch pipeline', () => {
-      it('renders a pipeline widget that reads "Pipeline <ID> <status> for <SHA> on <branch>"', () => {
+      it('renders a pipeline widget that reads "Pipeline <ID> <status>"', () => {
         pipeline.ref.branch = true;
 
         factory();
 
-        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id} on ${mockData.source_branch_link}`;
+        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label}`;
         const actual = trimText(findPipelineInfoContainer().text());
+
+        expect(actual).toBe(expected);
+      });
+
+      it('renders a pipeline widget that reads "Pipeline <status> for <SHA> on <branch>"', () => {
+        pipeline.ref.branch = true;
+
+        factory();
+
+        const expected = `Pipeline ${pipeline.details.status.label} for ${pipeline.commit.short_id} on ${mockData.source_branch_link}`;
+        const actual = trimText(findPipelineDetailsContainer().text());
 
         expect(actual).toBe(expected);
       });
     });
 
     describe('for a tag pipeline', () => {
-      it('renders a pipeline widget that reads "Pipeline <ID> <status> for <SHA> on <branch>"', () => {
+      it('renders a pipeline widget that reads "Pipeline <ID> <status>"', () => {
         pipeline.ref.tag = true;
 
         factory();
 
-        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
+        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label}`;
         const actual = trimText(findPipelineInfoContainer().text());
+
+        expect(actual).toBe(expected);
+      });
+
+      it('renders a pipeline widget that reads "Pipeline <status> for <SHA> on <branch>"', () => {
+        pipeline.ref.tag = true;
+
+        factory();
+
+        const expected = `Pipeline ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
+        const actual = trimText(findPipelineDetailsContainer().text());
 
         expect(actual).toBe(expected);
       });
     });
 
     describe('for a detached merge request pipeline', () => {
-      it('renders a pipeline widget that reads "Merge request pipeline <ID> <status> for <SHA>"', () => {
+      it('renders a pipeline widget that reads "Merge request pipeline <ID> <status>"', () => {
         pipeline.details.event_type_name = 'Merge request pipeline';
         pipeline.merge_request_event_type = 'detached';
 
         factory();
 
-        const expected = `Merge request pipeline #${pipeline.id} ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
+        const expected = `Merge request pipeline #${pipeline.id} ${pipeline.details.status.label}`;
         const actual = trimText(findPipelineInfoContainer().text());
+
+        expect(actual).toBe(expected);
+      });
+
+      it('renders a pipeline widget that reads "Merge request pipeline <status> for <SHA>"', () => {
+        pipeline.details.event_type_name = 'Merge request pipeline';
+        pipeline.merge_request_event_type = 'detached';
+
+        factory();
+
+        const expected = `Merge request pipeline ${pipeline.details.status.label} for ${pipeline.commit.short_id}`;
+        const actual = trimText(findPipelineDetailsContainer().text());
 
         expect(actual).toBe(expected);
       });

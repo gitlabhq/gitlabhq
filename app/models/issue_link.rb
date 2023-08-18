@@ -1,17 +1,10 @@
 # frozen_string_literal: true
 
 class IssueLink < ApplicationRecord
-  include FromUnion
-  include IssuableLink
+  include LinkableItem
 
   belongs_to :source, class_name: 'Issue'
   belongs_to :target, class_name: 'Issue'
-
-  scope :for_source_issue, ->(issue) { where(source_id: issue.id) }
-  scope :for_target_issue, ->(issue) { where(target_id: issue.id) }
-  scope :for_issues, ->(source, target) do
-    where(source: source, target: target).or(where(source: target, target: source))
-  end
 
   class << self
     def issuable_type

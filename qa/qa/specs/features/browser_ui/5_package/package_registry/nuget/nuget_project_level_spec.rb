@@ -1,20 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
-    describe 'NuGet project level endpoint' do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+    describe 'NuGet project level endpoint', :external_api_calls do
       include Support::Helpers::MaskToken
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'nuget-package-project'
-          project.template_name = 'dotnetcore'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'nuget-package-project', template_name: 'dotnetcore') }
       let(:personal_access_token) { Resource::PersonalAccessToken.fabricate! }
-
       let(:project_deploy_token) do
         Resource::ProjectDeployToken.fabricate_via_api! do |deploy_token|
           deploy_token.name = 'package-deploy-token'

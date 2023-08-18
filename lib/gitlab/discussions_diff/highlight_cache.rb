@@ -42,10 +42,8 @@ module Gitlab
             with_redis do |redis|
               Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
                 if Gitlab::Redis::ClusterUtil.cluster?(redis)
-                  redis.with_readonly_pipeline do
-                    Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
-                      keys.each { |key| pipeline.get(key) }
-                    end
+                  Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
+                    keys.each { |key| pipeline.get(key) }
                   end
                 else
                   redis.mget(keys)

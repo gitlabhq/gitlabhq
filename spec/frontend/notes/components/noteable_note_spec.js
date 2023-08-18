@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { clone } from 'lodash';

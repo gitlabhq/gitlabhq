@@ -1,4 +1,6 @@
-const viewers = {
+import { TEXT_FILE_TYPE, JSON_LANGUAGE } from '../../constants';
+
+export const viewers = {
   csv: () => import('./csv_viewer.vue'),
   download: () => import('./download_viewer.vue'),
   image: () => import('./image_viewer.vue'),
@@ -18,7 +20,7 @@ const viewers = {
 export const loadViewer = (type, isUsingLfs, hljsWorkerEnabled, language) => {
   let viewer = viewers[type];
 
-  if (hljsWorkerEnabled && language === 'json') {
+  if (hljsWorkerEnabled && language === JSON_LANGUAGE && type === TEXT_FILE_TYPE) {
     // The New Source Viewer currently only supports JSON files.
     // More language support will be added in: https://gitlab.com/gitlab-org/gitlab/-/issues/415753
     viewer = () => import('~/vue_shared/components/source_viewer/source_viewer_new.vue');

@@ -11,7 +11,7 @@
       = _("General pipelines")
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _("Customize your pipeline configuration.")
   .settings-content
     = render 'form'
@@ -22,7 +22,7 @@
       = s_('CICD|Auto DevOps')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       - auto_devops_url = help_page_path('topics/autodevops/index')
       - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke')
       - auto_devops_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auto_devops_url }
@@ -40,7 +40,7 @@
       = _("Runners")
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expand_runners ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
       = link_to s_('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -56,7 +56,7 @@
         = _("Artifacts")
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded ? _('Collapse') : _('Expand')
-      %p
+      %p.gl-text-secondary
         = _("A job artifact is an archive of files and directories saved by a job when it finishes.")
     .settings-content
       #js-artifacts-settings-app{ data: { full_path: @project.full_path, help_page_path: help_page_path('ci/jobs/job_artifacts', anchor: 'keep-artifacts-from-most-recent-successful-jobs') } }
@@ -70,10 +70,10 @@
 %section.settings.no-animate#js-pipeline-triggers{ class: ('expanded' if expanded) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _("Pipeline triggers")
+      = _("Pipeline trigger tokens")
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _("Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions.")
       = link_to _('Learn more.'), help_page_path('ci/triggers/index'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -88,7 +88,7 @@
         = _("Deploy freezes")
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded ? _('Collapse') : _('Expand')
-      %p
+      %p.gl-text-secondary
         - freeze_period_docs = help_page_path('user/project/releases/index', anchor: 'prevent-unintentional-releases-by-setting-a-deploy-freeze')
         - freeze_period_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: freeze_period_docs }
         = html_escape(s_('DeployFreeze|Add a freeze period to prevent unintended releases during a period of time for a given environment. You must update the deployment jobs in %{filename} according to the deploy freezes added here. %{freeze_period_link_start}Learn more.%{freeze_period_link_end}')) % { freeze_period_link_start: freeze_period_link_start, freeze_period_link_end: '</a>'.html_safe, filename: tag.code('.gitlab-ci.yml') }
@@ -106,7 +106,7 @@
       = _("Token Access")
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _("Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects.")
   .settings-content
     = render 'ci/token_access/index'
@@ -118,7 +118,7 @@
         = _("Secure Files")
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded ? _('Collapse') : _('Expand')
-      %p
+      %p.gl-text-secondary
         = _("Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates.")
         = link_to _('Learn more'), help_page_path('ci/secure_files/index'), target: '_blank', rel: 'noopener noreferrer'
     .settings-content

@@ -7,12 +7,7 @@ module QA
     describe 'push after setting the file size limit via admin/application_settings' do
       include Support::API
 
-      let!(:project) do
-        Resource::Project.fabricate_via_api! do |p|
-          p.name = 'project-test-push-limit'
-          p.initialize_with_readme = true
-        end
-      end
+      let!(:project) { create(:project, :with_readme, name: 'project-test-push-limit') }
 
       after(:context) do
         set_file_size_limit(nil)

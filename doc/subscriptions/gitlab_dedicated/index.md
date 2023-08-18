@@ -123,7 +123,8 @@ The following GitLab application features are not available:
 - Reply-by email
 - Service Desk
 - GitLab-managed runners (hosted runners)
-- Any feature [not listed above](#available-features) which must be configured outside of the GitLab user interface.
+- GitLab AI capabilities (Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information)
+- Features other than [available features](#available-features) that must be configured outside of the GitLab user interface including those behind feature flags
 
 The following features will not be supported:
 

@@ -1,6 +1,7 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import stubChildren from 'helpers/stub_children';

@@ -3,7 +3,7 @@
 - diff_data = {}
 - expanded = discussion.expanded? || local_assigns.fetch(:expanded, nil)
 - unless expanded
-  - diff_data = { lines_path: project_merge_request_discussion_path(discussion.project, discussion.noteable, discussion) }
+  - diff_data = { lines_path: project_discussion_path(discussion.project, discussion.noteable_collection_name, discussion.noteable, discussion) }
 
 .diff-file.file-holder.js-lazy-load-discussion{ class: diff_file_class, data: diff_data }
   .js-file-title.file-title.file-title-flex-parent
@@ -29,7 +29,8 @@
             %td.line_content.js-success-lazy-load
               .js-code-placeholder
             %td.js-error-lazy-load-diff.hidden.diff-loading-error-block
-              - button = button_tag(_("Try again"), class: "btn-link gl-button btn-link-retry gl-p-0 js-toggle-lazy-diff-retry-button")
+              - button = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'btn-link-retry gl-p-0 js-toggle-lazy-diff-retry-button' }) do
+                = _("Try again")
               = _("Unable to load the diff. %{button_try_again}").html_safe % { button_try_again: button}
           = render "discussions/diff_discussion", discussions: [discussion], expanded: true
   - else

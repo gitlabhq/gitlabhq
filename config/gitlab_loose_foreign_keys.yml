@@ -22,16 +22,6 @@ ci_build_report_results:
   - table: projects
     column: project_id
     on_delete: async_delete
-ci_builds:
-  - table: users
-    column: user_id
-    on_delete: async_nullify
-  - table: projects
-    column: project_id
-    on_delete: async_delete
-  - table: ci_runners
-    column: runner_id
-    on_delete: async_nullify
 ci_daily_build_group_report_results:
   - table: namespaces
     column: group_id
@@ -207,12 +197,18 @@ dast_scanner_profiles_builds:
   - table: ci_builds
     column: ci_build_id
     on_delete: async_delete
+  - table: p_ci_builds
+    column: ci_build_id
+    on_delete: async_delete
 dast_scanner_profiles_tags:
   - table: tags
     column: tag_id
     on_delete: async_delete
 dast_site_profiles_builds:
   - table: ci_builds
+    column: ci_build_id
+    on_delete: async_delete
+  - table: p_ci_builds
     column: ci_build_id
     on_delete: async_delete
 dast_site_profiles_pipelines:
@@ -247,9 +243,22 @@ ml_candidates:
   - table: ci_builds
     column: ci_build_id
     on_delete: async_nullify
+  - table: p_ci_builds
+    column: ci_build_id
+    on_delete: async_nullify
 namespaces:
   - table: organizations
     column: organization_id
+    on_delete: async_nullify
+p_ci_builds:
+  - table: users
+    column: user_id
+    on_delete: async_nullify
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+  - table: ci_runners
+    column: runner_id
     on_delete: async_nullify
 p_ci_builds_metadata:
   - table: projects
@@ -271,8 +280,14 @@ pages_deployments:
   - table: ci_builds
     column: ci_build_id
     on_delete: async_nullify
+  - table: p_ci_builds
+    column: ci_build_id
+    on_delete: async_nullify
 requirements_management_test_reports:
   - table: ci_builds
+    column: build_id
+    on_delete: async_nullify
+  - table: p_ci_builds
     column: build_id
     on_delete: async_nullify
 sbom_occurrences:
@@ -283,9 +298,22 @@ security_scans:
   - table: ci_builds
     column: build_id
     on_delete: async_delete
+  - table: p_ci_builds
+    column: build_id
+    on_delete: async_delete
 terraform_state_versions:
   - table: ci_builds
     column: ci_build_id
+    on_delete: async_nullify
+  - table: p_ci_builds
+    column: ci_build_id
+    on_delete: async_nullify
+user_details:
+  - table: namespaces
+    column: provisioned_by_group_id
+    on_delete: async_nullify
+  - table: namespaces
+    column: enterprise_group_id
     on_delete: async_nullify
 vulnerability_feedback:
   - table: ci_pipelines

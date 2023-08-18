@@ -4,13 +4,13 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira development panel **(FREE)**
+# Jira development panel **(FREE ALL)**
 
 You can use the Jira development panel to view GitLab activity for a Jira issue directly in Jira.
 To set up the Jira development panel:
 
-- **For Jira Cloud**, use the [GitLab for Jira Cloud app](connect-app.md) developed by GitLab.
-- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/index.md) developed by Atlassian.
+- **For Jira Cloud**, use the [GitLab for Jira Cloud app](connect-app.md) developed and maintained by GitLab.
+- **For Jira Data Center or Jira Server**, use the [Jira DVCS connector](dvcs/index.md) developed and maintained by Atlassian.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Jira development panel integration](https://www.youtube.com/watch?v=VjVTOmMl85M).
@@ -25,7 +25,7 @@ This table shows the features available with the Jira DVCS connector and the Git
 | Sync merge requests | **{check-circle}** Yes | **{check-circle}** Yes |
 | Sync branches       | **{check-circle}** Yes | **{check-circle}** Yes |
 | Sync commits        | **{check-circle}** Yes | **{check-circle}** Yes |
-| Sync existing data  | **{check-circle}** Yes | **{check-circle}** Yes |
+| Sync existing data  | **{check-circle}** Yes | **{check-circle}** Yes (partial) <sup>1</sup>|
 | Sync builds         | **{dotted-circle}** No | **{check-circle}** Yes |
 | Sync deployments    | **{dotted-circle}** No | **{check-circle}** Yes |
 | Sync feature flags  | **{dotted-circle}** No | **{check-circle}** Yes |
@@ -33,6 +33,8 @@ This table shows the features available with the Jira DVCS connector and the Git
 | Create branches     | **{dotted-circle}** No | **{check-circle}** Yes (GitLab SaaS only) |
 | Create merge request from branch | **{check-circle}** Yes | **{check-circle}** Yes |
 | Create branch from Jira issue | **{dotted-circle}** No | **{check-circle}** Yes ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66032) in GitLab 14.2) |
+
+1. See [GitLab data synced to Jira](connect-app.md#gitlab-data-synced-to-jira).
 
 ## Connected projects in GitLab
 
@@ -49,10 +51,15 @@ depends on where you mention the Jira issue ID in GitLab.
 
 | GitLab: where you mention the Jira issue ID    | Jira development panel: what information is displayed |
 |------------------------------------------------|-------------------------------------------------------|
-| Merge request title or description             | Link to the merge request<br>Link to the deployment<br>Link to the pipeline by title only and by description ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390888) in GitLab 15.10)<br>Link to the branch ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354373) in GitLab 15.11) |
+| Merge request title or description             | Link to the merge request<br>Link to the deployment<br>Link to the pipeline through merge request title<br>Link to the pipeline through merge request description <sup>1</sup><br>Link to the branch <sup>2</sup> |
 | Branch name                                    | Link to the branch<br>Link to the deployment                                    |
-| Commit message                                 | Link to the commit<br>Link to the deployment from up to 5,000 commits after the last successful deployment to the environment ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300031) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `jira_deployment_issue_keys`. Enabled by default) |
+| Commit message                                 | Link to the commit<br>Link to the deployment from up to 5,000 commits after the last successful deployment to the environment <sup>3</sup> <sup>4</sup> |
 | [Jira Smart Commit](#jira-smart-commits)       | Custom comment, logged time, or workflow transition   |
+
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390888) in GitLab 15.10.
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354373) in GitLab 15.11.
+1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300031) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `jira_deployment_issue_keys`. Enabled by default.
+1. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415025) in GitLab 16.3. Feature flag `jira_deployment_issue_keys` removed.
 
 ## Jira Smart Commits
 

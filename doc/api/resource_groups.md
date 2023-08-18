@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Resource group API **(FREE)**
+# Resource group API **(FREE ALL)**
 
 You can read more about [controlling the job concurrency with resource groups](../ci/resource_groups/index.md).
 

@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Achievements (Experiment) **(FREE)**
+# Achievements (Experiment) **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113156) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `achievements`. Disabled by default.
 
@@ -115,7 +115,7 @@ To supply the avatar file, call the mutation using `curl`:
 curl "https://gitlab.com/api/graphql" \
   -H "Authorization: Bearer <your-pat-token>" \
   -H "Content-Type: multipart/form-data" \
-  -F operations='{ "query": "mutation ($file: Upload!) { achievementsCreate(input: { namespaceId: \"gid://gitlab/Namespace/<namespace-id>\", name: \"<name>\", description: \"<description>\", avatar: $file }) { achievement { id name description avatarUrl } } }", "variables": { "file": null } }' \ 
+  -F operations='{ "query": "mutation ($file: Upload!) { achievementsCreate(input: { namespaceId: \"gid://gitlab/Namespace/<namespace-id>\", name: \"<name>\", description: \"<description>\", avatar: $file }) { achievement { id name description avatarUrl } } }", "variables": { "file": null } }' \
   -F map='{ "0": ["variables.file"] }' \
   -F 0='@/path/to/your/file.jpg'
 ```
@@ -252,7 +252,7 @@ mutation {
 ## Delete an achievement
 
 If you consider you no longer need an achievement, you can delete it.
-This will delete all related awarded and revoked instances of the achievement.
+This deletes all related awarded and revoked instances of the achievement.
 
 Prerequisites:
 

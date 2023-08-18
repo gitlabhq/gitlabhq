@@ -1,0 +1,12 @@
+audit-event-types-verify:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .ruby-cache
+    - .default-before_script
+    - .audit-event-types:rules:audit-event-types-verify
+  stage: lint
+  needs: []
+  script:
+    - bundle exec rake gitlab:audit_event_types:check_docs

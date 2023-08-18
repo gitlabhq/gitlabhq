@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLoadingIcon, GlFormInput, GlFormGroup } from '@gitlab/ui';
 
@@ -261,7 +262,6 @@ export default {
             type="submit"
             variant="confirm"
             data-qa-selector="submit_button"
-            data-testid="snippet-submit-btn"
             :disabled="isUpdating"
             >{{ saveButtonLabel }}</gl-button
           >

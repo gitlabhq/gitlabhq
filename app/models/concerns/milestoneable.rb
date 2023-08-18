@@ -52,7 +52,9 @@ module Milestoneable
   def milestone_available?
     return true if milestone_id.blank?
 
-    project_id == milestone&.project_id || project.ancestors_upto.compact.include?(milestone&.group)
+    (project_id.present? && project_id == milestone&.project_id) ||
+      try(:namespace)&.self_and_ancestors&.include?(milestone&.group) ||
+      project&.ancestors_upto&.compact&.include?(milestone&.group)
   end
 
   ##

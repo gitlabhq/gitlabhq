@@ -1,5 +1,6 @@
 <script>
 import { GlTabs } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
 import RepoTab from './repo_tab.vue';
 

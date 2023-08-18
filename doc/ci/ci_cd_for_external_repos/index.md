@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, howto
 ---
 
-# GitLab CI/CD for external repositories **(PREMIUM)**
+# GitLab CI/CD for external repositories **(PREMIUM ALL)**
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4642) in GitLab 10.6.
 
@@ -103,3 +103,8 @@ references an open Pull Request, both contribute to the status of the Pull Reque
 via GitHub integration. If you want to exclusively run pipelines on external pull
 requests and not on branches you can add `except: [branches]` to the job specs.
 [Read more](https://gitlab.com/gitlab-org/gitlab/-/issues/24089#workaround).
+
+## Troubleshooting
+
+- [Pull mirroring is not triggering pipelines](../../user/project/repository/mirror/troubleshooting.md#pull-mirroring-is-not-triggering-pipelines).
+- [Fix hard failures when mirroring](../../user/project/repository/mirror/pull.md#fix-hard-failures-when-mirroring).

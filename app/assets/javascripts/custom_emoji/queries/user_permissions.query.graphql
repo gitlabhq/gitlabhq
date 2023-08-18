@@ -1,0 +1,8 @@
+query customEmojiPermissions($groupPath: ID!) {
+  group(fullPath: $groupPath) {
+    id
+    userPermissions {
+      createCustomEmoji
+    }
+  }
+}

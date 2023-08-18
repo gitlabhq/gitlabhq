@@ -13,6 +13,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 ## Developer checklist
 
 - [ ] **On "Related issues" section, write down the [GitLab Security] issue it belongs to (i.e. `Related to <issue_id>`).**
+- [ ] Familiarize yourself with the latest process to create Security merge requests: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#process
 - [ ] Merge request targets `master`, or a versioned stable branch (`X-Y-stable-ee`).
 - [ ] Title of this merge request is the same as for all backports.
 - [ ] A [CHANGELOG entry] has been included, with `Changelog` trailer set to `security`.
@@ -24,7 +25,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
     - Trigger the [`e2e:package-and-test` job]. The docker image generated will be used by the AppSec engineer to validate the security vulnerability has been remediated.
 - [ ] For a backport MR targeting a versioned stable branch (`X-Y-stable-ee`).
   - [ ] Milestone is set to the version this backport applies to. A closed milestone can be assigned via [quick actions].
-  - [ ] Ensure it's approved by a maintainer.
+  - [ ] Ensure it's approved by the same maintainer that reviewed and approved the merge request targeting the default branch.
 - [ ] Ensure this merge request and the related security issue have a `~severity::x` label
 
 **Note:** Reviewer/maintainer should not be a [Release Manager].

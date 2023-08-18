@@ -1,5 +1,6 @@
 <script>
 import { GlFormGroup, GlFormInput, GlLoadingIcon, GlModal } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';

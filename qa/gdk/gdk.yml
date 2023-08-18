@@ -18,6 +18,7 @@ gitlab:
   rails:
     bootsnap: false
     hostname: gdk.test
+    application_settings_cache_seconds: 0
 gitlab_k8s_agent:
   enabled: false
 gitlab_pages:

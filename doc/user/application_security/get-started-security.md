@@ -4,7 +4,7 @@ group: Technical writing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Get started with GitLab application security **(ULTIMATE)**
+# Get started with GitLab application security **(ULTIMATE ALL)**
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Adopting GitLab application security](https://www.youtube.com/watch?v=5QlxkiKR04k).

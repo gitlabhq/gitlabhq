@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Protected environments **(PREMIUM)**
+# Protected environments **(PREMIUM ALL)**
 
 [Environments](../environments/index.md) can be used for both testing and
 production reasons.
@@ -33,6 +33,7 @@ To protect an environment:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
+1. Select **Protect an environment**.
 1. From the **Environment** list, select the environment you want to protect.
 1. In the **Allowed to deploy** list, select the role, users, or groups you
    want to give deploy access to. Keep in mind that:
@@ -50,7 +51,7 @@ To protect an environment:
      - **Developers**: Allows access to all of the project's users with the Maintainer and Developer role.
    - You can select groups that are already associated with the project only.
    - Users must have at least the Developer role to appear in
-     the **Allowed to deploy** list.
+     the **Approvers** list.
 
 1. In the **Approval rules** section:
 

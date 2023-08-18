@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlModalDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
 import { integrationLevels } from '~/integrations/constants';
 import ConfirmationModal from './confirmation_modal.vue';
@@ -69,75 +70,69 @@ export default {
 };
 </script>
 <template>
-  <section>
-    <div :class="{ 'gl-flex-basis-two-thirds': !hasSections }">
-      <div
-        class="footer-block row-content-block gl-lg-display-flex gl-justify-content-space-between"
+  <section class="gl-lg-display-flex gl-justify-content-space-between">
+    <div>
+      <template v-if="isInstanceOrGroupLevel">
+        <gl-button
+          v-gl-modal.confirmSaveIntegration
+          category="primary"
+          variant="confirm"
+          :loading="isSaving"
+          :disabled="disableButtons"
+          data-testid="save-button"
+          data-qa-selector="save_changes_button"
+        >
+          {{ __('Save changes') }}
+        </gl-button>
+        <confirmation-modal @submit="onSaveClick" />
+      </template>
+      <gl-button
+        v-else
+        category="primary"
+        variant="confirm"
+        type="submit"
+        :loading="isSaving"
+        :disabled="disableButtons"
+        data-testid="save-button"
+        data-qa-selector="save_changes_button"
+        @click.prevent="onSaveClick"
       >
-        <div>
-          <template v-if="isInstanceOrGroupLevel">
-            <gl-button
-              v-gl-modal.confirmSaveIntegration
-              category="primary"
-              variant="confirm"
-              :loading="isSaving"
-              :disabled="disableButtons"
-              data-testid="save-button"
-              data-qa-selector="save_changes_button"
-            >
-              {{ __('Save changes') }}
-            </gl-button>
-            <confirmation-modal @submit="onSaveClick" />
-          </template>
-          <gl-button
-            v-else
-            category="primary"
-            variant="confirm"
-            type="submit"
-            :loading="isSaving"
-            :disabled="disableButtons"
-            data-testid="save-button"
-            data-qa-selector="save_changes_button"
-            @click.prevent="onSaveClick"
-          >
-            {{ __('Save changes') }}
-          </gl-button>
+        {{ __('Save changes') }}
+      </gl-button>
 
-          <gl-button
-            v-if="showTestButton"
-            category="secondary"
-            variant="confirm"
-            :loading="isTesting"
-            :disabled="disableButtons"
-            data-testid="test-button"
-            @click.prevent="onTestClick"
-          >
-            {{ __('Test settings') }}
-          </gl-button>
+      <gl-button
+        v-if="showTestButton"
+        category="secondary"
+        variant="confirm"
+        :loading="isTesting"
+        :disabled="disableButtons"
+        data-testid="test-button"
+        @click.prevent="onTestClick"
+      >
+        {{ __('Test settings') }}
+      </gl-button>
 
-          <gl-button
-            :href="propsSource.cancelPath"
-            data-testid="cancel-button"
-            :disabled="disableButtons"
-            >{{ __('Cancel') }}</gl-button
-          >
-        </div>
-
-        <template v-if="showResetButton">
-          <gl-button
-            v-gl-modal.confirmResetIntegration
-            category="tertiary"
-            variant="danger"
-            :loading="isResetting"
-            :disabled="disableButtons"
-            data-testid="reset-button"
-          >
-            {{ __('Reset') }}
-          </gl-button>
-
-          <reset-confirmation-modal @reset="onResetClick" />
-        </template>
-      </div>
+      <gl-button
+        :href="propsSource.cancelPath"
+        data-testid="cancel-button"
+        :disabled="disableButtons"
+        >{{ __('Cancel') }}</gl-button
+      >
     </div>
+
+    <template v-if="showResetButton">
+      <gl-button
+        v-gl-modal.confirmResetIntegration
+        category="tertiary"
+        variant="danger"
+        :loading="isResetting"
+        :disabled="disableButtons"
+        data-testid="reset-button"
+      >
+        {{ __('Reset') }}
+      </gl-button>
+
+      <reset-confirmation-modal @reset="onResetClick" />
+    </template>
   </section>
 </template>

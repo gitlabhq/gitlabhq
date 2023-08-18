@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Mobile DevOps (Experimental)
+# Mobile DevOps (Experiment)
 
 Use GitLab Mobile DevOps to quickly build, sign, and release native and cross-platform mobile apps
 for Android and iOS using GitLab CI/CD. Mobile DevOps is an experimental feature developed by
@@ -41,10 +41,9 @@ test:
 
 ### iOS build environments
 
-[GitLab SaaS runners on macOS](../ci/runners/saas/macos_saas_runner.md) are currently available in beta.
+[GitLab SaaS runners on macOS](../ci/runners/saas/macos_saas_runner.md) are in Beta.
 
-After you are granted access to the beta macOS runners, [choose an image](../ci/runners/saas/macos_saas_runner.md#supported-macos-images)
-and add it to your `.gitlab-ci.yml` file.
+[Choose an image](../ci/runners/saas/macos_saas_runner.md#supported-macos-images) to run a job on a macOS GitLab SaaS runner and add it to your `.gitlab-ci.yml` file.
 
 For example:
 
@@ -89,7 +88,7 @@ For an overview, see [How to build and release an Android app to Google Play wit
 Run the following command to generate a keystore file if you don't already have one:
 
 ```shell
-keytool -genkey -v -keystore release-keystore.jks -storepass password -alias release -keypass password -keyalg RSA -keysize 2048 -validity 10000 
+keytool -genkey -v -keystore release-keystore.jks -storepass password -alias release -keypass password -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 Next, put the keystore configuration in a file called `release-keystore.properties`,
@@ -122,7 +121,7 @@ The next step is to configure Gradle to use the newly created keystore. In the a
    }
    ```
 
-1. Anywhere within the `android` block, add:
+1. Anywhere in the `android` block, add:
 
    ```gradle
    signingConfigs {
@@ -243,7 +242,7 @@ For example:
 
   ```ruby
   default_platform(:ios)
-  
+
   platform :ios do
     desc "Build and sign the application for development"
     lane :build do
@@ -299,7 +298,7 @@ to build and release Android apps. To enable the integration:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Google Play**.
-1. In **Enable integration**, select the **Active** checkbox.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. In **Package name**, enter the package name of the app. For example, `com.gitlab.app_name`.
 1. In **Service account key (.JSON)** drag or upload your key file.
 1. Select **Save changes**.
@@ -356,7 +355,7 @@ to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS. To enable t
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Apple App Store**.
-1. Turn on the **Active** toggle under **Enable Integration**.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide the Apple App Store Connect configuration information:
    - **Issuer ID**: You can find the Apple App Store Connect Issuer ID in the **Keys** section under **Users and Access** in the Apple App Store Connect portal.
    - **Key ID**: The key ID of the new private key that was just generated.

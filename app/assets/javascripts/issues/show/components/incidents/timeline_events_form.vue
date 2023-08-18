@@ -270,7 +270,6 @@ export default {
           v-if="showSaveAndAdd"
           variant="confirm"
           category="secondary"
-          data-testid="save-and-add-button"
           :disabled="!isTimelineTextValid"
           :loading="isEventProcessed"
           @click="handleSave(true)"

@@ -1,7 +1,9 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { debounce, uniq } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { getDatesInRange } from '~/lib/utils/datetime_utility';

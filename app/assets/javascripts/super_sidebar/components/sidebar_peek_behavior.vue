@@ -11,6 +11,12 @@ export const STATE_WILL_CLOSE = 'will-close';
 export default {
   name: 'SidebarPeek',
   mixins: [Tracking.mixin()],
+  props: {
+    isMouseOverSidebar: {
+      type: Boolean,
+      required: true,
+    },
+  },
   created() {
     // Nothing needs to observe these properties, so they are not reactive.
     this.state = null;
@@ -57,6 +63,11 @@ export default {
           this.close();
         }
       } else if (this.state === STATE_OPEN) {
+        // Do not close the sidebar if it or one of its child elements still
+        // has mouseover. This allows to move the mouse from the sidebar to
+        // one of its flyout menus.
+        if (this.isMouseOverSidebar) return;
+
         if (clientX >= this.xAwayFromSidebar) {
           this.close();
         } else if (clientX >= this.xSidebarEdge) {

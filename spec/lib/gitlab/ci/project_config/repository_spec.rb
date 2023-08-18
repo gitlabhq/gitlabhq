@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Ci::ProjectConfig::Repository, feature_category: :continu
 
     context 'when Gitaly raises error' do
       before do
-        allow(project.repository).to receive(:gitlab_ci_yml_for).and_raise(GRPC::Internal)
+        allow(project.repository).to receive(:blob_at).and_raise(GRPC::Internal)
       end
 
       it { is_expected.to be_nil }

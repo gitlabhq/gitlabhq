@@ -40,8 +40,7 @@ RSpec.describe Users::RejectService, feature_category: :user_management do
 
           expect(subject[:status]).to eq(:success)
           expect(
-            Users::GhostUserMigration.where(user: user,
-                                            initiator_user: current_user)
+            Users::GhostUserMigration.where(user: user, initiator_user: current_user)
           ).to be_exists
         end
 
@@ -58,7 +57,13 @@ RSpec.describe Users::RejectService, feature_category: :user_management do
 
           subject
 
-          expect(Gitlab::AppLogger).to have_received(:info).with(message: "User instance access request rejected", user: user.username.to_s, email: user.email.to_s, rejected_by: current_user.username.to_s, ip_address: current_user.current_sign_in_ip.to_s)
+          expect(Gitlab::AppLogger).to have_received(:info).with(
+            message: "User instance access request rejected",
+            user: user.username.to_s,
+            email: user.email.to_s,
+            rejected_by: current_user.username.to_s,
+            ip_address: current_user.current_sign_in_ip.to_s
+          )
         end
       end
     end

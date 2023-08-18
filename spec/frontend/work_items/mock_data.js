@@ -44,6 +44,7 @@ export const mockMilestone = {
   expired: false,
   startDate: '2022-10-17',
   dueDate: '2022-10-24',
+  webPath: '123',
 };
 
 export const mockAwardEmojiThumbsUp = {
@@ -451,6 +452,7 @@ export const objectiveType = {
 };
 
 export const workItemResponseFactory = ({
+  iid = '1',
   canUpdate = false,
   canDelete = false,
   canCreateNote = false,
@@ -482,14 +484,15 @@ export const workItemResponseFactory = ({
   createdAt = '2022-08-03T12:41:54Z',
   updatedAt = '2022-08-08T12:32:54Z',
   awardEmoji = mockAwardsWidget,
+  state = 'OPEN',
 } = {}) => ({
   data: {
     workItem: {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
-      iid: '1',
+      iid,
       title: 'Updated title',
-      state: 'OPEN',
+      state,
       description: 'description',
       confidential,
       createdAt,
@@ -581,6 +584,7 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetProgress',
               type: 'PROGRESS',
               progress: 0,
+              updatedAt: new Date(),
             }
           : { type: 'MOCK TYPE' },
         milestoneWidgetPresent
@@ -1142,6 +1146,7 @@ export const workItemObjectiveMetadataWidgets = {
     type: 'PROGRESS',
     __typename: 'WorkItemWidgetProgress',
     progress: 10,
+    updatedAt: new Date(),
   },
 };
 
@@ -1210,6 +1215,7 @@ export const workItemObjectiveNoMetadata = {
       __typename: 'WorkItemWidgetProgress',
       type: 'PROGRESS',
       progress: null,
+      updatedAt: null,
     },
     {
       __typename: 'WorkItemWidgetMilestone',
@@ -3297,4 +3303,64 @@ export const getTodosMutationResponse = (state) => {
       },
     },
   };
+};
+
+export const groupWorkItemsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/3',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/58',
+            iid: '23',
+            author: {
+              id: 'gid://gitlab/User/9',
+              avatarUrl: 'author/avatar/url',
+              name: 'Arthur',
+              username: 'arthur',
+              webUrl: 'author/web/url',
+            },
+            closedAt: '',
+            confidential: true,
+            createdAt: '2020-01-23T12:34:56Z',
+            reference: 'javascriptjs/js#23',
+            state: 'OPEN',
+            title: 'a group level work item',
+            updatedAt: '',
+            webUrl: 'web/url',
+            widgets: [
+              {
+                __typename: 'WorkItemWidgetAssignees',
+                assignees: {
+                  nodes: mockAssignees,
+                },
+                type: 'ASSIGNEES',
+              },
+              {
+                __typename: 'WorkItemWidgetLabels',
+                allowsScopedLabels: false,
+                labels: {
+                  nodes: [
+                    {
+                      __typename: 'Label',
+                      id: 'gid://gitlab/Label/7',
+                      color: '#f00',
+                      description: '',
+                      title: 'Label 7',
+                    },
+                  ],
+                },
+                type: 'LABELS',
+              },
+            ],
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Issue',
+            },
+          },
+        ],
+      },
+    },
+  },
 };

@@ -32,6 +32,6 @@ RSpec.describe 'Edit group label', feature_category: :team_planning do
       click_link 'Delete label'
     end
 
-    expect(page).to have_content("#{label.title} deleted permanently")
+    expect(page).to have_content("#{label.title} was removed").and have_no_content("#{label.title}</span>")
   end
 end

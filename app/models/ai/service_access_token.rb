@@ -5,6 +5,7 @@ module Ai
     self.table_name = 'service_access_tokens'
 
     scope :expired, -> { where('expires_at < :now', now: Time.current) }
+    scope :active, -> { where('expires_at > :now', now: Time.current) }
     scope :for_category, ->(category) { where(category: category) }
 
     attr_encrypted :token,

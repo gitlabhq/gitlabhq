@@ -4,7 +4,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Objectives and key results (OKR) **(ULTIMATE)**
+# Objectives and key results (OKR) **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103355) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `okrs_mvc`. Disabled by default.
 
@@ -353,6 +353,80 @@ Prerequisites:
 
 By default, child OKRs are ordered by creation date.
 To reorder them, drag them around.
+
+## Confidential OKRs
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
+
+Confidential OKRs are OKRs visible only to members of a project with
+[sufficient permissions](#who-can-see-confidential-okrs).
+You can use confidential OKRs to keep security vulnerabilities private or prevent surprises from
+leaking out.
+
+### Make an OKR confidential
+
+By default, OKRs are public.
+You can make an OKR confidential when you create or edit it.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+- A **confidential objective** can have only confidential
+  [child objectives or key results](#child-objectives-and-key-results):
+  - To make an objective confidential: If it has any child objectives or key results, you must first
+    make all of them confidential or remove them.
+  - To make an objective non-confidential: If it has any child objectives or key results, you must
+    first make all of them non-confidential or remove them.
+  - To add child objectives or key results to a confidential objective, you must first make them
+    confidential.
+
+#### In a new OKR
+
+When you create a new objective, a checkbox right below the text area is available to mark the
+OKR as confidential.
+
+Check that box and select **Create objective** or **Create key result** to create the OKR.
+
+#### In an existing OKR
+
+To change the confidentiality of an existing OKR:
+
+1. [Open the objective](#view-an-objective) or [key result](#view-a-key-result).
+1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Turn on confidentiality**.
+
+### Who can see confidential OKRs
+
+When an OKR is made confidential, only users with at least the Reporter role for the project have
+access to the OKR.
+Users with Guest or [Minimal](permissions.md#users-with-minimal-access) roles can't access
+the OKR even if they were actively participating before the change.
+
+However, a user with the **Guest role** can create confidential OKRs, but can only view the ones
+that they created themselves.
+
+Users with the Guest role or non-members can read the confidential OKR if they are assigned to the OKR.
+When a Guest user or non-member is unassigned from a confidential OKR, they can no longer view it.
+
+Confidential OKRs are hidden in search results for users without the necessary permissions.
+
+### Confidential OKR indicators
+
+Confidential OKRs are visually different from regular OKRs in a few ways.
+Wherever OKRs are listed, you can see the confidential (**{eye-slash}**) icon
+next to the OKRs that are marked as confidential.
+
+If you don't have [enough permissions](#who-can-see-confidential-okrs),
+you cannot see confidential OKRs at all.
+
+Likewise, while inside the OKR, you can see the confidential (**{eye-slash}**) icon right next to
+the breadcrumbs.
+
+Every change from regular to confidential and vice versa, is indicated by a
+system note in the OKR's comments, for example:
+
+> - **{eye-slash}** Jo Garcia made the issue confidential 5 minutes ago
+> - **{eye}** Jo Garcia made the issue visible to everyone just now
 
 ## Two-column layout
 

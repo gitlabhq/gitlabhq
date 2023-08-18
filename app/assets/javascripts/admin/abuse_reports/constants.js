@@ -7,10 +7,9 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { s__, __ } from '~/locale';
 
-const STATUS_OPTIONS = [
-  { value: 'closed', title: __('Closed') },
-  { value: 'open', title: __('Open') },
-];
+export const STATUS_OPEN = { value: 'open', title: __('Open') };
+
+const STATUS_OPTIONS = [{ value: 'closed', title: __('Closed') }, STATUS_OPEN];
 
 export const FILTERED_SEARCH_TOKEN_USER = {
   type: 'user',
@@ -39,30 +38,39 @@ export const FILTERED_SEARCH_TOKEN_STATUS = {
   operators: OPERATORS_IS,
 };
 
-export const DEFAULT_SORT = 'created_at_desc';
-export const SORT_UPDATED_AT = Object.freeze({
+export const DEFAULT_SORT_STATUS_OPEN = 'number_of_reports_desc';
+export const DEFAULT_SORT_STATUS_CLOSED = 'created_at_desc';
+
+export const SORT_UPDATED_AT = {
   id: 20,
   title: __('Updated date'),
   sortDirection: {
     descending: 'updated_at_desc',
     ascending: 'updated_at_asc',
   },
-});
-const SORT_CREATED_AT = Object.freeze({
+};
+
+const SORT_CREATED_AT = {
   id: 10,
   title: __('Created date'),
   sortDirection: {
-    descending: DEFAULT_SORT,
+    descending: DEFAULT_SORT_STATUS_CLOSED,
     ascending: 'created_at_asc',
   },
-});
+};
 
-export const SORT_OPTIONS = [SORT_CREATED_AT, SORT_UPDATED_AT];
+const SORT_NUMBER_OF_REPORTS = {
+  id: 30,
+  title: __('Number of Reports'),
+  sortDirection: {
+    descending: DEFAULT_SORT_STATUS_OPEN,
+  },
+};
 
-export const isValidSortKey = (key) =>
-  SORT_OPTIONS.some(
-    (sort) => sort.sortDirection.ascending === key || sort.sortDirection.descending === key,
-  );
+export const SORT_OPTIONS_STATUS_CLOSED = [SORT_CREATED_AT, SORT_UPDATED_AT];
+
+// when filtered for status=open reports, add an additional sorting option -> number of reports
+export const SORT_OPTIONS_STATUS_OPEN = [SORT_NUMBER_OF_REPORTS, ...SORT_OPTIONS_STATUS_CLOSED];
 
 export const FILTERED_SEARCH_TOKEN_CATEGORY = {
   type: 'category',
@@ -74,9 +82,9 @@ export const FILTERED_SEARCH_TOKEN_CATEGORY = {
 };
 
 export const FILTERED_SEARCH_TOKENS = [
+  FILTERED_SEARCH_TOKEN_STATUS,
   FILTERED_SEARCH_TOKEN_USER,
   FILTERED_SEARCH_TOKEN_REPORTER,
-  FILTERED_SEARCH_TOKEN_STATUS,
 ];
 
 export const ABUSE_CATEGORIES = {

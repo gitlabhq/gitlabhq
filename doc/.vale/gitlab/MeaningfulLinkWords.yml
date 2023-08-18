@@ -5,11 +5,12 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: "Improve SEO and accessibility by rewriting '%s' in the link text."
+message: "Improve SEO and accessibility by rewriting the link text for '%s'."
 level: warning
-scope: link
 ignorecase: true
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#text-for-links
+scope: raw
+nonword: true
 tokens:
-  - here
-  - this page
+  - \[here\]\(.*\)
+  - \[this page\]\(.*\)

@@ -1,12 +1,9 @@
 import { GlAvatar, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
-import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import component from '~/vue_shared/components/registry/title_area.vue';
 
 describe('title area', () => {
   let wrapper;
-
-  const DYNAMIC_SLOT = 'metadata-dynamic-slot';
 
   const findSubHeaderSlot = () => wrapper.findByTestId('sub-header');
   const findRightActionsSlot = () => wrapper.findByTestId('right-actions');
@@ -14,8 +11,6 @@ describe('title area', () => {
   const findTitle = () => wrapper.findByTestId('title');
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findInfoMessages = () => wrapper.findAllByTestId('info-message');
-  const findDynamicSlot = () => wrapper.findByTestId(DYNAMIC_SLOT);
-  const findSlotOrderElements = () => wrapper.findAll('[slot-test]');
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   const mountComponent = ({ propsData = { title: 'foo' }, slots } = {}) => {
@@ -93,19 +88,17 @@ describe('title area', () => {
   `('$slotNames metadata slots', ({ slotNames }) => {
     const slots = generateSlotMocks(slotNames);
 
-    it('exist when the slot is present', async () => {
+    it('exist when the slot is present', () => {
       mountComponent({ slots });
 
-      await nextTick();
       slotNames.forEach((name) => {
         expect(findMetadataSlot(name).exists()).toBe(true);
       });
     });
 
-    it('is/are hidden when metadata-loading is true', async () => {
+    it('is/are hidden when metadata-loading is true', () => {
       mountComponent({ slots, propsData: { title: 'foo', metadataLoading: true } });
 
-      await nextTick();
       slotNames.forEach((name) => {
         expect(findMetadataSlot(name).exists()).toBe(false);
       });
@@ -115,64 +108,16 @@ describe('title area', () => {
   describe('metadata skeleton loader', () => {
     const slots = generateSlotMocks(['metadata-foo']);
 
-    it('is hidden when metadata loading is false', async () => {
+    it('is hidden when metadata loading is false', () => {
       mountComponent({ slots });
-
-      await nextTick();
 
       expect(findSkeletonLoader().exists()).toBe(false);
     });
 
-    it('is shown when metadata loading is true', async () => {
+    it('is shown when metadata loading is true', () => {
       mountComponent({ propsData: { metadataLoading: true }, slots });
 
-      await nextTick();
-
       expect(findSkeletonLoader().exists()).toBe(true);
-    });
-  });
-
-  describe('dynamic slots', () => {
-    const createDynamicSlot = () => {
-      return wrapper.vm.$createElement('div', {
-        attrs: {
-          'data-testid': DYNAMIC_SLOT,
-          'slot-test': true,
-        },
-      });
-    };
-
-    it('shows dynamic slots', async () => {
-      mountComponent();
-      // we manually add a new slot to simulate dynamic slots being evaluated after the initial mount
-      wrapper.vm.$slots[DYNAMIC_SLOT] = createDynamicSlot();
-
-      // updating the slots like we do on line 141 does not cause the updated lifecycle-hook to be triggered
-      wrapper.vm.$forceUpdate();
-      await nextTick();
-
-      expect(findDynamicSlot().exists()).toBe(true);
-    });
-
-    it('preserve the order of the slots', async () => {
-      mountComponent({
-        slots: {
-          'metadata-foo': '<div slot-test data-testid="metadata-foo"></div>',
-        },
-      });
-
-      // rewrite slot putting dynamic slot as first
-      wrapper.vm.$slots = {
-        'metadata-dynamic-slot': createDynamicSlot(),
-        'metadata-foo': wrapper.vm.$slots['metadata-foo'],
-      };
-
-      // updating the slots like we do on line 159 does not cause the updated lifecycle-hook to be triggered
-      wrapper.vm.$forceUpdate();
-      await nextTick();
-
-      expect(findSlotOrderElements().at(0).attributes('data-testid')).toBe(DYNAMIC_SLOT);
-      expect(findSlotOrderElements().at(1).attributes('data-testid')).toBe('metadata-foo');
     });
   });
 

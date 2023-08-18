@@ -4,7 +4,9 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Push rules **(PREMIUM)**
+# Push rules **(PREMIUM ALL)**
+
+> Maximum regular expression length for push rules [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/411901) from 255 to 511 characters in GitLab 16.3.
 
 Push rules are [pre-receive Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) you
 can enable in a user-friendly interface. Push rules give you more control over what
@@ -19,7 +21,7 @@ can and can't be pushed to your repository. While GitLab offers
 
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions
 in push rules. You can test them at the [regex101 regex tester](https://regex101.com/).
-Each regular expression is limited to 255 characters.
+Each regular expression is limited to 511 characters.
 
 For custom push rules use [server hooks](../../../administration/server_hooks.md).
 

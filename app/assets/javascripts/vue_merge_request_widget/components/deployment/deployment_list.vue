@@ -49,11 +49,7 @@ export default {
 };
 </script>
 <template>
-  <mr-collapsible-extension
-    v-if="showCollapsedDeployments"
-    :title="__('View all environments.')"
-    data-testid="mr-collapsed-deployments"
-  >
+  <mr-collapsible-extension v-if="showCollapsedDeployments" :title="__('View all environments.')">
     <template #header>
       <div class="gl-mr-3 gl-line-height-normal">
         <gl-sprintf :message="multipleDeploymentsTitle">

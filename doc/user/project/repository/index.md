@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository **(FREE)**
+# Repository **(FREE ALL)**
 
 A [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
 is where you store your code and make changes to it. Your changes are tracked with version control.
@@ -15,7 +15,7 @@ Each [project](../index.md) contains a repository.
 
 To create a repository, you can:
 
-- [Create a project](../../../user/project/index.md#create-a-project) or
+- [Create a project](../../../user/project/index.md) or
 - [Fork an existing project](forking_workflow.md).
 
 ## Add files to a repository
@@ -237,11 +237,7 @@ Administrators can set a [repository size limit](../../admin_area/settings/accou
 
 ## Repository contributor statistics
 
-All code contributors are displayed under your project's **Analyze > Contributor statistics**.
-
-The graph shows the contributor with the most commits to the fewest.
-
-![contributors to code](img/contributors_graph.png)
+You can view a list and charts of commits made by project members in [Contributor statistics](../../analytics/contributor_statistics.md).
 
 ## Repository history graph
 

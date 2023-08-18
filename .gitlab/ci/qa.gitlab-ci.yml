@@ -105,6 +105,12 @@ trigger-omnibus:
     branch: $TRIGGER_BRANCH
     strategy: depend
 
+# Same as trigger-omnibus but is manual and runs follow-up-e2e:package-and-test-ee automatically right after
+trigger-omnibus-and-follow-up-e2e:
+  extends:
+    - trigger-omnibus
+    - .qa:rules:manual-omnibus-and-follow-up-e2e
+
 trigger-omnibus as-if-foss:
   extends:
     - trigger-omnibus
@@ -129,6 +135,42 @@ e2e:package-and-test-ee:
     QA_RUN_TYPE: e2e-package-and-test
     PIPELINE_NAME: E2E Omnibus GitLab EE
 
+# Same as e2e:package-and-test-ee but runs automatically after trigger-omnibus-and-follow-up-e2e
+follow-up-e2e:package-and-test-ee:
+  extends:
+    - .e2e-trigger-base
+    - .qa:rules:follow-up-e2e
+  needs:
+    - build-qa-image
+    - trigger-omnibus-and-follow-up-e2e
+    - e2e-test-pipeline-generate
+  variables:
+    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
+    QA_RUN_TYPE: e2e-package-and-test
+    PIPELINE_NAME: E2E Omnibus GitLab EE
+
+e2e:post-run-e2e-message:
+  extends:
+    - .predictive-job
+    - .qa:rules:post-run-e2e-message
+  stage: qa
+  variables:
+    ENV_FILE: $CI_PROJECT_DIR/qa_tests_vars.env
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - scripts/generate-message-to-run-e2e-pipeline.rb
+  needs:
+    - e2e-test-pipeline-generate
+    - trigger-omnibus-env
+    - build-assets-image
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - "${CI_PROJECT_DIR}/qa_tests_vars.env"
+
 e2e:package-and-test-ce:
   extends:
     - e2e:package-and-test-ee
@@ -143,21 +185,6 @@ e2e:package-and-test-ce:
     GITLAB_QA_IMAGE: ${CI_REGISTRY_IMAGE}/gitlab-ce-qa:${CI_COMMIT_SHA}
     QA_RUN_TYPE: e2e-package-and-test-ce
     PIPELINE_NAME: E2E Omnibus GitLab CE
-
-e2e:package-and-test-old-nav:
-  extends:
-    - .e2e-trigger-base
-    - .qa:rules:package-and-test-old-nav
-  needs:
-    - build-qa-image
-    - trigger-omnibus
-    - e2e-test-pipeline-generate
-  variables:
-    RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
-    QA_RUN_TYPE: e2e-package-and-test-old-nav
-    PIPELINE_NAME: E2E Omnibus Old Navigation
-    QA_SUPER_SIDEBAR_ENABLED: "false"
-    EXTRA_GITLAB_QA_OPTS: ""
 
 e2e:package-and-test-nightly:
   extends:
@@ -187,4 +214,3 @@ e2e:test-on-gdk:
     DYNAMIC_PIPELINE_YML: test-on-gdk-pipeline.yml
     SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
     GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
-  allow_failure: true

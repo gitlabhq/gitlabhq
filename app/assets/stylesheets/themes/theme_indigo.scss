@@ -9,5 +9,14 @@ body {
       $indigo-900,
       $white
     );
+
+    .page-with-super-sidebar {
+      @include gitlab-theme-super-sidebar(
+        $theme-indigo-50,
+        $theme-indigo-200,
+        $theme-indigo-900,
+        $theme-indigo-900,
+      );
+    }
   }
 }

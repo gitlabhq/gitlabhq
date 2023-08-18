@@ -12,7 +12,7 @@
       = _("Reset health check access token")
 %p.light
   #{ _('Health information can be retrieved from the following endpoints. More information is available') }
-  = link_to s_('More information is available|here'), help_page_path('user/admin_area/monitoring/health_check')
+  = link_to s_('More information is available|here'), help_page_path('administration/monitoring/health_check')
   %ul
     %li
       %code= readiness_url(token: Gitlab::CurrentSettings.health_check_access_token)

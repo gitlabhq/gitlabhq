@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserSyncedAttributesMetadata < ApplicationRecord
+class UserSyncedAttributesMetadata < MainClusterwide::ApplicationRecord
   belongs_to :user
 
   validates :user, presence: true

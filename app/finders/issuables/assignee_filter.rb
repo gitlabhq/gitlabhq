@@ -5,8 +5,6 @@ module Issuables
     def filter(issuables)
       filtered = by_assignee(issuables)
       filtered = by_assignee_union(filtered)
-      # Cross Joins Fails tests in bin/rspec spec/requests/api/graphql/boards/board_list_issues_query_spec.rb
-      filtered = filtered.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/417462")
       by_negated_assignee(filtered)
     end
 
@@ -74,7 +72,7 @@ module Issuables
       elsif specific_params[:assignee_id].present?
         Array(specific_params[:assignee_id])
       elsif specific_params[:assignee_username].present?
-        User.by_username(specific_params[:assignee_username]).select(:id)
+        User.by_username(specific_params[:assignee_username]).pluck_primary_key
       end
     end
   end

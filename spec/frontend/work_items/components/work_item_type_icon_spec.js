@@ -27,6 +27,13 @@ describe('Work Item type component', () => {
     ${'INCIDENT'}          | ${''}                 | ${'issue-type-incident'}     | ${'Incident'}     | ${false}
     ${'TEST_CASE'}         | ${''}                 | ${'issue-type-test-case'}    | ${'Test case'}    | ${true}
     ${'random-issue-type'} | ${''}                 | ${'issue-type-issue'}        | ${''}             | ${true}
+    ${'Task'}              | ${''}                 | ${'issue-type-task'}         | ${'Task'}         | ${false}
+    ${'Issue'}             | ${''}                 | ${'issue-type-issue'}        | ${'Issue'}        | ${true}
+    ${'Requirements'}      | ${''}                 | ${'issue-type-requirements'} | ${'Requirements'} | ${true}
+    ${'Incident'}          | ${''}                 | ${'issue-type-incident'}     | ${'Incident'}     | ${false}
+    ${'Test_case'}         | ${''}                 | ${'issue-type-test-case'}    | ${'Test case'}    | ${true}
+    ${'Objective'}         | ${''}                 | ${'issue-type-objective'}    | ${'Objective'}    | ${true}
+    ${'Key Result'}        | ${''}                 | ${'issue-type-keyresult'}    | ${'Key result'}   | ${true}
   `(
     'with workItemType set to "$workItemType" and workItemIconName set to "$workItemIconName"',
     ({ workItemType, workItemIconName, iconName, text, showTooltipOnHover }) => {

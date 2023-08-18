@@ -7,7 +7,7 @@ module Types
 
       authorize :read_cluster_agent
 
-      connection_type_class(Types::CountableConnectionType)
+      connection_type_class Types::CountableConnectionType
 
       field :recorded_at,
             Types::TimeType,

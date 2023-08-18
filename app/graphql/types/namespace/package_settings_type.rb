@@ -20,6 +20,14 @@ module Types
     field :maven_duplicates_allowed, GraphQL::Types::Boolean,
       null: false,
       description: 'Indicates whether duplicate Maven packages are allowed for this namespace.'
+    field :nuget_duplicate_exception_regex, Types::UntrustedRegexp,
+      null: true,
+      description: 'When nuget_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. ' \
+                   'Error is raised if `nuget_duplicates_option` feature flag is disabled.'
+    field :nuget_duplicates_allowed, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates whether duplicate NuGet packages are allowed for this namespace. ' \
+                   'Error is raised if `nuget_duplicates_option` feature flag is disabled.'
 
     field :maven_package_requests_forwarding, GraphQL::Types::Boolean,
       null: true,

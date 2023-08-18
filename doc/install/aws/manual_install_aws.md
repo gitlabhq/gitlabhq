@@ -783,7 +783,7 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 To restore GitLab, first review the [restore documentation](../../administration/backup_restore/index.md#restore-gitlab),
 and primarily the restore prerequisites. Then, follow the steps under the
-[Linux package installations section](../../administration/backup_restore/restore_gitlab.md#restore-for-omnibus-gitlab-installations).
+[Linux package installations section](../../administration/backup_restore/restore_gitlab.md#restore-for-linux-package-installations).
 
 ## Updating GitLab
 

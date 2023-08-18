@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use SSH keys to communicate with GitLab **(FREE)**
+# Use SSH keys to communicate with GitLab **(FREE ALL)**
 
 Git is a distributed version control system, which means you can work locally,
 then share or *push* your changes to a server. In this case, the server you push to is GitLab.
@@ -20,7 +20,7 @@ SSH uses two keys, a public key and a private key.
 - The public key can be distributed.
 - The private key should be protected.
 
-It is not possible to reveal confidential data by uploading your public key. When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.  
+It is not possible to reveal confidential data by uploading your public key. When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.
 
 You can use your private key to [sign commits](project/repository/ssh_signed_commits/index.md),
 which makes your use of GitLab and your data even more secure.
@@ -325,6 +325,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
+1. Select **Add new key**.
 1. In the **Key** box, paste the contents of your public key.
    If you manually copied the key, make sure you copy the entire key,
    which starts with `ssh-rsa`, `ssh-dss`, `ecdsa-sha2-nistp256`, `ecdsa-sha2-nistp384`, `ecdsa-sha2-nistp521`,

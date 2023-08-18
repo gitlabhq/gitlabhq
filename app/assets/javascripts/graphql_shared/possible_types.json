@@ -99,6 +99,7 @@
     "DependencyProxyBlobRegistry",
     "DependencyProxyManifestRegistry",
     "DesignManagementRepositoryRegistry",
+    "GroupWikiRepositoryRegistry",
     "JobArtifactRegistry",
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
@@ -138,6 +139,7 @@
     "WorkItem"
   ],
   "User": [
+    "AutocompletedUser",
     "MergeRequestAssignee",
     "MergeRequestAuthor",
     "MergeRequestParticipant",
@@ -179,6 +181,7 @@
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",
     "WorkItemWidgetLabels",
+    "WorkItemWidgetLinkedItems",
     "WorkItemWidgetMilestone",
     "WorkItemWidgetNotes",
     "WorkItemWidgetNotifications",

@@ -12,17 +12,22 @@ RSpec.describe Suggestions::OutdateService, feature_category: :code_suggestions 
     let(:diff_file) { suggestion.diff_file }
     let(:position) { build_position(file_path, comment_line) }
     let(:note) do
-      create(:diff_note_on_merge_request, noteable: merge_request,
-                                          position: position,
-                                          project: project)
+      create(
+        :diff_note_on_merge_request,
+        noteable: merge_request,
+        position: position,
+        project: project
+      )
     end
 
     def build_position(path, line)
-      Gitlab::Diff::Position.new(old_path: path,
-                                 new_path: path,
-                                 old_line: nil,
-                                 new_line: line,
-                                 diff_refs: merge_request.diff_refs)
+      Gitlab::Diff::Position.new(
+        old_path: path,
+        new_path: path,
+        old_line: nil,
+        new_line: line,
+        diff_refs: merge_request.diff_refs
+      )
     end
 
     def commit_changes(file_path, new_content)

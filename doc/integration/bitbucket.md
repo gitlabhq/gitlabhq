@@ -11,12 +11,12 @@ account credentials to sign in to GitLab. You can also import your projects from
 Bitbucket.org.
 
 - To use Bitbucket.org as an OmniAuth provider, follow the
-  [Bitbucket OmniAuth provider](#bitbucket-omniauth-provider) section.
+  [Bitbucket OmniAuth provider](#use-bitbucket-as-an-oauth-20-authentication-provider) section.
 - To import projects from Bitbucket, follow both the
-  [Bitbucket OmniAuth provider](#bitbucket-omniauth-provider) and
+  [Bitbucket OmniAuth provider](#use-bitbucket-as-an-oauth-20-authentication-provider) and
   [Bitbucket project import](#bitbucket-project-import) sections.
 
-## Bitbucket OmniAuth provider
+## Use Bitbucket as an OAuth 2.0 authentication provider
 
 To enable the Bitbucket OmniAuth provider you must register your application
 with Bitbucket.org. Bitbucket generates an application ID and secret key for
@@ -79,7 +79,7 @@ you to use.
 
 1. Add the Bitbucket provider configuration:
 
-   For Omnibus packages:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -93,7 +93,7 @@ you to use.
    ]
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    omniauth:
@@ -111,7 +111,7 @@ you to use.
 
 1. Save the configuration file.
 1. For the changes to take effect, [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
-   if you installed using the Linux package, or [restart](../administration/restart_gitlab.md#installations-from-source)
+   if you installed using the Linux package, or [restart](../administration/restart_gitlab.md#self-compiled-installations)
    if you self-compiled your installation.
 
 On the sign-in page there should now be a Bitbucket icon below the regular

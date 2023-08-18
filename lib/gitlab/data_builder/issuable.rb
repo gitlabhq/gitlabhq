@@ -16,12 +16,12 @@ module Gitlab
           object_kind: object_kind,
           event_type: event_type,
           user: user.hook_attrs,
-          project: issuable.project.hook_attrs,
+          project: issuable.project&.hook_attrs,
           object_attributes: issuable_builder.new(issuable).build,
           labels: issuable.labels_hook_attrs,
           changes: final_changes(changes.slice(*safe_keys)),
           # DEPRECATED
-          repository: issuable.project.hook_attrs.slice(:name, :url, :description, :homepage)
+          repository: issuable.project&.hook_attrs&.slice(:name, :url, :description, :homepage)
         }
 
         hook_data[:assignees] = issuable.assignees.map(&:hook_attrs) if issuable.assignees.any?

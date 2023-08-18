@@ -1,5 +1,7 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlModal, GlTooltipDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import ListItem from './list_item.vue';

@@ -105,6 +105,7 @@ module QA
         Page::Profile::Menu.perform(&:click_access_tokens)
 
         Page::Profile::PersonalAccessTokens.perform do |token_page|
+          token_page.click_add_new_token_button
           token_page.fill_token_name(name || 'api-test-token')
           token_page.check_api
           token_page.fill_expiry_date(expires_at)

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import ReleaseEditNewApp from './components/app_edit_new.vue';
 import createStore from './stores';

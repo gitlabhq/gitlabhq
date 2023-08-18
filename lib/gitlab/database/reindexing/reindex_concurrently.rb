@@ -20,7 +20,7 @@ module Gitlab
 
         def perform
           raise ReindexError, 'indexes serving an exclusion constraint are currently not supported' if index.exclusion?
-          raise ReindexError, 'index is a left-over temporary index from a previous reindexing run' if index.name =~ /#{TEMPORARY_INDEX_PATTERN}/o
+          raise ReindexError, 'index is a left-over temporary index from a previous reindexing run' if /#{TEMPORARY_INDEX_PATTERN}/o.match?(index.name)
 
           # Expression indexes require additional statistics in `pg_statistic`:
           # select * from pg_statistic where starelid = (select oid from pg_class where relname = 'some_index');

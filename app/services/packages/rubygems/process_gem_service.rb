@@ -9,6 +9,8 @@ module Packages
       include ExclusiveLeaseGuard
 
       ExtractionError = Class.new(StandardError)
+      InvalidMetadataError = Class.new(StandardError)
+
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
 
       def initialize(package_file)
@@ -20,6 +22,9 @@ module Packages
         return success if process_gem
 
         error('Gem was not processed')
+      rescue ActiveRecord::StatementInvalid
+        # TODO: We can remove this rescue block when we fix https://gitlab.com/gitlab-org/gitlab/-/issues/415899
+        raise InvalidMetadataError, 'Invalid metadata'
       end
 
       private

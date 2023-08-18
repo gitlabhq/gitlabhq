@@ -9,7 +9,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
   let_it_be(:user) { create(:user, :public_email) }
   let_it_be(:namespace) { create_default(:namespace).freeze }
-  let_it_be(:project) { create_default(:project, :repository).freeze }
+  let_it_be_with_refind(:project) { create_default(:project, :repository).freeze }
 
   it 'paginates 15 pipelines per page' do
     expect(described_class.default_per_page).to eq(15)
@@ -110,14 +110,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
-    describe '#latest_successful_builds' do
-      it 'has a one to many relationship with its latest successful builds' do
+    describe '#latest_successful_jobs' do
+      it 'has a one to many relationship with its latest successful jobs' do
         _old_build = create(:ci_build, :retried, pipeline: pipeline)
         _expired_build = create(:ci_build, :expired, pipeline: pipeline)
-        _failed_builds = create_list(:ci_build, 2, :failed, pipeline: pipeline)
-        successful_builds = create_list(:ci_build, 2, :success, pipeline: pipeline)
+        _failed_jobs = [create(:ci_build, :failed, pipeline: pipeline),
+                        create(:ci_bridge, :failed, pipeline: pipeline)]
+        successful_jobs = [create(:ci_build, :success, pipeline: pipeline),
+                           create(:ci_bridge, :success, pipeline: pipeline)]
 
-        expect(pipeline.latest_successful_builds).to contain_exactly(successful_builds.first, successful_builds.second)
+        expect(pipeline.latest_successful_jobs).to contain_exactly(successful_jobs.first, successful_jobs.second)
       end
     end
 
@@ -270,6 +272,29 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     context 'when name does not exist' do
       let(:name) { 'absent-name' }
+
+      it 'returns empty' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '.for_status' do
+    subject { described_class.for_status(status) }
+
+    let_it_be(:pipeline1) { create(:ci_pipeline, name: 'Build pipeline', status: :created) }
+    let_it_be(:pipeline2) { create(:ci_pipeline, name: 'Chatops pipeline', status: :failed) }
+
+    context 'when status exists' do
+      let(:status) { :created }
+
+      it 'performs exact compare' do
+        is_expected.to contain_exactly(pipeline1)
+      end
+    end
+
+    context 'when status does not exist' do
+      let(:status) { :pending }
 
       it 'returns empty' do
         is_expected.to be_empty
@@ -1328,32 +1353,46 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     %w[succeed! drop! cancel! skip! block! delay!].each do |action|
       context "when the pipeline received #{action} event" do
-        it 'deletes a persistent ref asynchronously', :sidekiq_inline do
-          expect(pipeline.persistent_ref).not_to receive(:delete_refs)
-
-          expect(Ci::PipelineCleanupRefWorker).to receive(:perform_async)
-            .with(pipeline.id).and_call_original
-
-          expect_next_instance_of(Ci::PersistentRef) do |persistent_ref|
-            expect(persistent_ref).to receive(:delete_refs)
-              .with("refs/#{Repository::REF_PIPELINES}/#{pipeline.id}").once
-          end
+        it 'deletes a persistent ref asynchronously' do
+          expect(pipeline.persistent_ref).to receive(:async_delete)
+          expect(pipeline.persistent_ref).not_to receive(:delete)
 
           pipeline.public_send(action)
         end
 
-        context 'when pipeline_cleanup_ref_worker_async is disabled' do
+        context 'when pipeline_delete_gitaly_refs_in_batches is disabled' do
           before do
-            stub_feature_flags(pipeline_cleanup_ref_worker_async: false)
+            stub_feature_flags(pipeline_delete_gitaly_refs_in_batches: false)
           end
 
-          it 'deletes a persistent ref synchronously' do
-            expect(Ci::PipelineCleanupRefWorker).not_to receive(:perform_async).with(pipeline.id)
+          it 'deletes a persistent ref asynchronously via ::Ci::PipelineCleanupRefWorker', :sidekiq_inline do
+            expect(pipeline.persistent_ref).not_to receive(:delete_refs)
 
-            expect(pipeline.persistent_ref).to receive(:delete_refs).once
-              .with("refs/#{Repository::REF_PIPELINES}/#{pipeline.id}")
+            expect(Ci::PipelineCleanupRefWorker).to receive(:perform_async)
+              .with(pipeline.id).and_call_original
+
+            expect_next_instance_of(Ci::PersistentRef) do |persistent_ref|
+              expect(persistent_ref).to receive(:delete_refs)
+                .with("refs/#{Repository::REF_PIPELINES}/#{pipeline.id}").once
+            end
 
             pipeline.public_send(action)
+          end
+
+          context 'when pipeline_cleanup_ref_worker_async is disabled' do
+            before do
+              stub_feature_flags(pipeline_delete_gitaly_refs_in_batches: false)
+              stub_feature_flags(pipeline_cleanup_ref_worker_async: false)
+            end
+
+            it 'deletes a persistent ref synchronously' do
+              expect(Ci::PipelineCleanupRefWorker).not_to receive(:perform_async).with(pipeline.id)
+
+              expect(pipeline.persistent_ref).to receive(:delete_refs).once
+                .with("refs/#{Repository::REF_PIPELINES}/#{pipeline.id}")
+
+              pipeline.public_send(action)
+            end
           end
         end
       end
@@ -2241,7 +2280,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#modified_paths' do
-    let(:pipeline) { create(:ci_empty_pipeline, :created) }
+    let(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
 
     context 'when old and new revisions are set' do
       before do
@@ -3447,99 +3486,109 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#environments_in_self_and_project_descendants' do
     subject { pipeline.environments_in_self_and_project_descendants }
 
-    context 'when pipeline is not child nor parent' do
-      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
-      let_it_be(:build, refind: true) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+    shared_examples_for 'fetches environments in self and project descendant pipelines' do |factory_type|
+      context 'when pipeline is not child nor parent' do
+        let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+        let_it_be(:job, refind: true) { create(factory_type, :with_deployment, :deploy_to_production, pipeline: pipeline) }
 
-      it 'returns just the pipeline environment' do
-        expect(subject).to contain_exactly(build.deployment.environment)
+        it 'returns just the pipeline environment' do
+          expect(subject).to contain_exactly(job.deployment.environment)
+        end
+
+        context 'when deployment SHA is not matched' do
+          before do
+            job.deployment.update!(sha: 'old-sha')
+          end
+
+          it 'does not return environments' do
+            expect(subject).to be_empty
+          end
+        end
       end
 
-      context 'when deployment SHA is not matched' do
-        before do
-          build.deployment.update!(sha: 'old-sha')
+      context 'when an associated environment does not have deployments' do
+        let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+        let_it_be(:job) { create(factory_type, :stop_review_app, pipeline: pipeline) }
+        let_it_be(:environment) { create(:environment, project: pipeline.project) }
+
+        before_all do
+          job.metadata.update!(expanded_environment_name: environment.name)
         end
 
         it 'does not return environments' do
           expect(subject).to be_empty
         end
       end
-    end
 
-    context 'when an associated environment does not have deployments' do
-      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
-      let_it_be(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline) }
-      let_it_be(:environment) { create(:environment, project: pipeline.project) }
+      context 'when pipeline is in extended family' do
+        let_it_be(:parent) { create(:ci_pipeline) }
+        let_it_be(:parent_job) { create(factory_type, :with_deployment, environment: 'staging', pipeline: parent) }
 
-      before_all do
-        build.metadata.update!(expanded_environment_name: environment.name)
+        let_it_be(:pipeline) { create(:ci_pipeline, child_of: parent) }
+        let_it_be(:job) { create(factory_type, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+
+        let_it_be(:child) { create(:ci_pipeline, child_of: pipeline) }
+        let_it_be(:child_job) { create(factory_type, :with_deployment, environment: 'canary', pipeline: child) }
+
+        let_it_be(:grandchild) { create(:ci_pipeline, child_of: child) }
+        let_it_be(:grandchild_job) { create(factory_type, :with_deployment, environment: 'test', pipeline: grandchild) }
+
+        let_it_be(:sibling) { create(:ci_pipeline, child_of: parent) }
+        let_it_be(:sibling_job) { create(factory_type, :with_deployment, environment: 'review', pipeline: sibling) }
+
+        it 'returns its own environment and from all descendants' do
+          expected_environments = [
+            job.deployment.environment,
+            child_job.deployment.environment,
+            grandchild_job.deployment.environment
+          ]
+          expect(subject).to match_array(expected_environments)
+        end
+
+        it 'does not return parent environment' do
+          expect(subject).not_to include(parent_job.deployment.environment)
+        end
+
+        it 'does not return sibling environment' do
+          expect(subject).not_to include(sibling_job.deployment.environment)
+        end
       end
 
-      it 'does not return environments' do
-        expect(subject).to be_empty
-      end
-    end
+      context 'when each pipeline has multiple environments' do
+        let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+        let_it_be(:job1) { create(factory_type, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+        let_it_be(:job2) { create(factory_type, :with_deployment, environment: 'staging', pipeline: pipeline) }
 
-    context 'when pipeline is in extended family' do
-      let_it_be(:parent) { create(:ci_pipeline) }
-      let_it_be(:parent_build) { create(:ci_build, :with_deployment, environment: 'staging', pipeline: parent) }
+        let_it_be(:child) { create(:ci_pipeline, child_of: pipeline) }
+        let_it_be(:child_job1) { create(factory_type, :with_deployment, environment: 'canary', pipeline: child) }
+        let_it_be(:child_job2) { create(factory_type, :with_deployment, environment: 'test', pipeline: child) }
 
-      let_it_be(:pipeline) { create(:ci_pipeline, child_of: parent) }
-      let_it_be(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
-
-      let_it_be(:child) { create(:ci_pipeline, child_of: pipeline) }
-      let_it_be(:child_build) { create(:ci_build, :with_deployment, environment: 'canary', pipeline: child) }
-
-      let_it_be(:grandchild) { create(:ci_pipeline, child_of: child) }
-      let_it_be(:grandchild_build) { create(:ci_build, :with_deployment, environment: 'test', pipeline: grandchild) }
-
-      let_it_be(:sibling) { create(:ci_pipeline, child_of: parent) }
-      let_it_be(:sibling_build) { create(:ci_build, :with_deployment, environment: 'review', pipeline: sibling) }
-
-      it 'returns its own environment and from all descendants' do
-        expected_environments = [
-          build.deployment.environment,
-          child_build.deployment.environment,
-          grandchild_build.deployment.environment
-        ]
-        expect(subject).to match_array(expected_environments)
+        it 'returns all related environments' do
+          expected_environments = [
+            job1.deployment.environment,
+            job2.deployment.environment,
+            child_job1.deployment.environment,
+            child_job2.deployment.environment
+          ]
+          expect(subject).to match_array(expected_environments)
+        end
       end
 
-      it 'does not return parent environment' do
-        expect(subject).not_to include(parent_build.deployment.environment)
-      end
+      context 'when pipeline has no environment' do
+        let_it_be(:pipeline) { create(:ci_pipeline, :created) }
 
-      it 'does not return sibling environment' do
-        expect(subject).not_to include(sibling_build.deployment.environment)
-      end
-    end
-
-    context 'when each pipeline has multiple environments' do
-      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
-      let_it_be(:build1) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
-      let_it_be(:build2) { create(:ci_build, :with_deployment, environment: 'staging', pipeline: pipeline) }
-
-      let_it_be(:child) { create(:ci_pipeline, child_of: pipeline) }
-      let_it_be(:child_build1) { create(:ci_build, :with_deployment, environment: 'canary', pipeline: child) }
-      let_it_be(:child_build2) { create(:ci_build, :with_deployment, environment: 'test', pipeline: child) }
-
-      it 'returns all related environments' do
-        expected_environments = [
-          build1.deployment.environment,
-          build2.deployment.environment,
-          child_build1.deployment.environment,
-          child_build2.deployment.environment
-        ]
-        expect(subject).to match_array(expected_environments)
+        it 'returns empty' do
+          expect(subject).to be_empty
+        end
       end
     end
 
-    context 'when pipeline has no environment' do
-      let_it_be(:pipeline) { create(:ci_pipeline, :created) }
+    context 'when job is build' do
+      it_behaves_like 'fetches environments in self and project descendant pipelines', :ci_build
+    end
 
-      it 'returns empty' do
-        expect(subject).to be_empty
-      end
+    context 'when job is bridge' do
+      it_behaves_like 'fetches environments in self and project descendant pipelines', :ci_bridge
     end
   end
 
@@ -3921,6 +3970,53 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'returns the job in the parent pipeline' do
         expect(pipeline.build_with_artifacts_in_self_and_project_descendants('test')).to eq(build)
       end
+    end
+  end
+
+  describe '#jobs_in_self_and_project_descendants' do
+    subject(:jobs) { pipeline.jobs_in_self_and_project_descendants }
+
+    let(:pipeline) { create(:ci_pipeline) }
+
+    shared_examples_for 'fetches jobs in self and project descendant pipelines' do |factory_type|
+      let!(:job) { create(factory_type, pipeline: pipeline) }
+
+      context 'when pipeline is standalone' do
+        it 'returns the list of jobs' do
+          expect(jobs).to contain_exactly(job)
+        end
+      end
+
+      context 'when pipeline is parent of another pipeline' do
+        let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let(:child_source_bridge) { child_pipeline.source_pipeline.source_job }
+        let!(:child_job) { create(factory_type, pipeline: child_pipeline) }
+
+        it 'returns the list of jobs' do
+          expect(jobs).to contain_exactly(job, child_job, child_source_bridge)
+        end
+      end
+
+      context 'when pipeline is parent of another parent pipeline' do
+        let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let(:child_source_bridge) { child_pipeline.source_pipeline.source_job }
+        let!(:child_job) { create(factory_type, pipeline: child_pipeline) }
+        let(:child_of_child_pipeline) { create(:ci_pipeline, child_of: child_pipeline) }
+        let(:child_of_child_source_bridge) { child_of_child_pipeline.source_pipeline.source_job }
+        let!(:child_of_child_job) { create(factory_type, pipeline: child_of_child_pipeline) }
+
+        it 'returns the list of jobs' do
+          expect(jobs).to contain_exactly(job, child_job, child_of_child_job, child_source_bridge, child_of_child_source_bridge)
+        end
+      end
+    end
+
+    context 'when job is build' do
+      it_behaves_like 'fetches jobs in self and project descendant pipelines', :ci_build
+    end
+
+    context 'when job is bridge' do
+      it_behaves_like 'fetches jobs in self and project descendant pipelines', :ci_bridge
     end
   end
 

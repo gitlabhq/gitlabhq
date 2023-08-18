@@ -9,7 +9,7 @@
   .form-group.gl-form-group.project-name.col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
-    = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { qa_selector: 'project_name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
+    = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { testid: 'project-name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
     %small#js-project-name-description.form-text.text-gl-muted
       = s_("ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.")
     #js-project-name-error.gl-field-error.gl-mt-2.gl-display-none
@@ -35,7 +35,7 @@
   .form-group.project-path.col-sm-6
     = f.label :path, class: 'label-bold' do
       %span= _("Project slug")
-    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control gl-form-input", required: true, aria: { required: true }, data: { qa_selector: 'project_path', username: current_user.username }
+    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control gl-form-input", required: true, aria: { required: true }, data: { testid: 'project-path', username: current_user.username }
 .js-group-namespace-error.form-text.gl-text-red-500.gl-display-none
   = s_('ProjectsNew|Pick a group or namespace where you want to create this project.')
 - if current_user.can_create_group?
@@ -59,7 +59,7 @@
       class: "form-control gl-form-input",
       rows: 3,
       maxlength: 250,
-      data: { qa_selector: 'project_description',
+      data: { testid: 'project-description',
               track_label: track_label,
               track_action: "activate_form_input",
               track_property: "project_description" }
@@ -71,7 +71,7 @@
   = f.label :visibility_level, class: 'label-bold' do
     = s_('ProjectsNew|Visibility Level')
     = link_to sprite_icon('question-o'), help_page_path('user/public_access'), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
-  = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false, data: { qa_selector: 'visibility_radios'}
+  = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false, data: { testid: 'visibility-radios'}
 
 - if !hide_init_with_readme
   = f.label :project_configuration, class: 'label-bold' do
@@ -80,7 +80,7 @@
   .form-group
     = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_readme]',
       checked: true,
-      checkbox_options: { data: { qa_selector: 'initialize_with_readme_checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_readme' } }) do |c|
+      checkbox_options: { data: { testid: 'initialize-with-readme-checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_readme' } }) do |c|
       - c.with_label do
         = s_('ProjectsNew|Initialize repository with a README')
       - c.with_help_text do
@@ -88,7 +88,7 @@
 
   .form-group
     = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_sast]',
-      checkbox_options: { data: { qa_selector: 'initialize_with_sast_checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' } }) do |c|
+      checkbox_options: { data: { testid: 'initialize-with-sast-checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' } }) do |c|
       - c.with_label do
         = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
       - c.with_help_text do
@@ -97,5 +97,5 @@
 
 -# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/675
 = render_if_exists 'shared/other_project_options', f: f, visibility_level: visibility_level, track_label: track_label
-= f.submit _('Create project'), class: "js-create-project-button", data: { qa_selector: 'project_create_button', track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }, pajamas_button: true
+= f.submit _('Create project'), class: "js-create-project-button", data: { testid: 'project-create-button', track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }, pajamas_button: true
 = link_button_to _('Cancel'), @parent_group || dashboard_groups_path, data: { track_label: "#{track_label}", track_action: "click_button", track_property: "cancel", track_value: "" }

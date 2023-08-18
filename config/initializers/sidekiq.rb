@@ -29,7 +29,10 @@ end
 
 # Custom Queues configuration
 queues_config_hash = Gitlab::Redis::Queues.params
-queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
+
+unless Gitlab::Utils.to_boolean(ENV['SIDEKIQ_ENQUEUE_NON_NAMESPACED'])
+  queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
+end
 
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 
@@ -86,6 +89,12 @@ Sidekiq.configure_server do |config|
   end
 
   if enable_reliable_fetch?
+    if Gitlab::Utils.to_boolean(ENV['SIDEKIQ_POLL_NON_NAMESPACED'])
+      # set non-namespaced store for fetcher to poll both namespaced and non-namespaced queues
+      config[:alternative_store] = ::Gitlab::Redis::Queues
+      config[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
+    end
+
     config[:semi_reliable_fetch] = enable_semi_reliable_fetch_mode?
     Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
   end

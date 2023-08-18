@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# noinspection RubyConstantNamingConvention
 module Gitlab
   module UsageDataCounters
     module IpynbDiffActivityCounter

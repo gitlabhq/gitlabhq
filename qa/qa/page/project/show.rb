@@ -26,7 +26,7 @@ module QA
         end
 
         view 'app/views/layouts/header/_new_dropdown.html.haml' do
-          element :new_menu_toggle
+          element 'new-menu-toggle'
         end
 
         view 'app/views/projects/_last_push.html.haml' do
@@ -49,8 +49,8 @@ module QA
           element :forked_from_link
         end
 
-        view 'app/views/projects/buttons/_fork.html.haml' do
-          element :fork_button
+        view 'app/assets/javascripts/forks/components/forks_button.vue' do
+          element 'fork-button'
         end
 
         view 'app/views/projects/empty.html.haml' do
@@ -93,7 +93,7 @@ module QA
         # Change back to regular click_element when vscode_web_ide FF is removed
         # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/371084
         def fork_project
-          fork_button = find_element(:fork_button)
+          fork_button = find_element('fork-button')
           click_by_javascript(fork_button)
         end
 

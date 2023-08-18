@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "How to create merge requests in GitLab."
 ---
 
-# Creating merge requests **(FREE)**
+# Creating merge requests **(FREE ALL)**
 
 GitLab provides many different ways to create a merge request.
 

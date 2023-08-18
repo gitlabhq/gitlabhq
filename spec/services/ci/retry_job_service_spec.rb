@@ -208,6 +208,45 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
     end
   end
 
+  shared_examples_for 'creates associations for a deployable job' do |factory_type|
+    context 'when a job with a deployment is retried' do
+      let!(:job) do
+        create(factory_type, :with_deployment, :deploy_to_production, pipeline: pipeline, ci_stage: stage)
+      end
+
+      it 'creates a new deployment' do
+        expect { new_job }.to change { Deployment.count }.by(1)
+      end
+
+      it 'does not create a new environment' do
+        expect { new_job }.not_to change { Environment.count }
+      end
+    end
+
+    context 'when a job with a dynamic environment is retried' do
+      let_it_be(:other_developer) { create(:user).tap { |u| project.add_developer(u) } }
+
+      let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
+
+      let!(:job) do
+        create(factory_type, :with_deployment,
+          environment: environment_name,
+          options: { environment: { name: environment_name } },
+          pipeline: pipeline,
+          ci_stage: stage,
+          user: other_developer)
+      end
+
+      it 'creates a new deployment' do
+        expect { new_job }.to change { Deployment.count }.by(1)
+      end
+
+      it 'does not create a new environment' do
+        expect { new_job }.not_to change { Environment.count }
+      end
+    end
+  end
+
   describe '#clone!' do
     let(:new_job) { service.clone!(job) }
 
@@ -219,6 +258,7 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
       include_context 'retryable bridge'
 
       it_behaves_like 'clones the job'
+      it_behaves_like 'creates associations for a deployable job', :ci_bridge
 
       context 'when given variables' do
         let(:new_job) { service.clone!(job, variables: job_variables_attributes) }
@@ -235,43 +275,7 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
       let(:job) { job_to_clone }
 
       it_behaves_like 'clones the job'
-
-      context 'when a build with a deployment is retried' do
-        let!(:job) do
-          create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline, ci_stage: stage)
-        end
-
-        it 'creates a new deployment' do
-          expect { new_job }.to change { Deployment.count }.by(1)
-        end
-
-        it 'does not create a new environment' do
-          expect { new_job }.not_to change { Environment.count }
-        end
-      end
-
-      context 'when a build with a dynamic environment is retried' do
-        let_it_be(:other_developer) { create(:user).tap { |u| project.add_developer(u) } }
-
-        let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
-
-        let!(:job) do
-          create(:ci_build, :with_deployment,
-            environment: environment_name,
-            options: { environment: { name: environment_name } },
-            pipeline: pipeline,
-            ci_stage: stage,
-            user: other_developer)
-        end
-
-        it 'creates a new deployment' do
-          expect { new_job }.to change { Deployment.count }.by(1)
-        end
-
-        it 'does not create a new environment' do
-          expect { new_job }.not_to change { Environment.count }
-        end
-      end
+      it_behaves_like 'creates associations for a deployable job', :ci_build
 
       context 'when given variables' do
         let(:new_job) { service.clone!(job, variables: job_variables_attributes) }

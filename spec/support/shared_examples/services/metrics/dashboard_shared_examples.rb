@@ -124,27 +124,6 @@ RSpec.shared_examples 'valid dashboard cloning process' do |dashboard_template, 
   end
 end
 
-RSpec.shared_examples 'valid dashboard update process' do
-  let(:dashboard_attrs) do
-    {
-      commit_message: commit_message,
-      branch_name: branch,
-      start_branch: project.default_branch,
-      encoding: 'text',
-      file_path: ".gitlab/dashboards/#{file_name}",
-      file_content: ::PerformanceMonitoring::PrometheusDashboard.from_json(file_content_hash).to_yaml
-    }
-  end
-
-  it 'delegates commit creation to Files::UpdateService', :aggregate_failures do
-    service_instance = instance_double(::Files::UpdateService)
-    expect(::Files::UpdateService).to receive(:new).with(project, user, dashboard_attrs).and_return(service_instance)
-    expect(service_instance).to receive(:execute).and_return(status: :success)
-
-    service_call
-  end
-end
-
 RSpec.shared_examples 'misconfigured dashboard service response with stepable' do |status_code, message = nil|
   it 'returns an appropriate message and status code', :aggregate_failures do
     result = service_call

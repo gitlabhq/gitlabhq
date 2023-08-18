@@ -1,0 +1,8 @@
+---
+name: namespace_level_work_items
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127124
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419186
+milestone: '16.3'
+type: development
+group: group::project management
+default_enabled: false

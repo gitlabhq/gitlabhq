@@ -32,7 +32,7 @@ Prerequisites:
 
 1. Install the [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md).
    This way, you can use slash commands in Slack to create and update GitLab incidents.
-1. Enable [Slack notifications](../../user/project/integrations/slack.md). Be sure to enable
+1. Enable [Slack notifications](../../user/project/integrations/gitlab_slack_application.md#slack-notifications). Be sure to enable
    notifications for `Incident` events, and to define a Slack channel to receive the relevant notifications.
 1. Authorize GitLab to take actions on behalf of your Slack user.
    Each user must do this before they can use any of the incident slash commands.

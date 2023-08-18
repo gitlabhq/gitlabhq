@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Partial clone **(FREE)**
+# Partial clone **(FREE ALL)**
 
 As Git repositories grow in size, they can become cumbersome to work with
 because of:

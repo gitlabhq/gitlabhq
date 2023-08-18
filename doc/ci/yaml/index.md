@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# `.gitlab-ci.yml` keyword reference **(FREE)**
+# `.gitlab-ci.yml` keyword reference **(FREE ALL)**
 
 This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
 
@@ -179,7 +179,7 @@ The time limit to resolve all files is 30 seconds.
 
 #### `include:local`
 
-Use `include:local` to include a file that is in the same repository as the configuration file containing the `include` keyword.
+Use `include:local` to include a file that is in the same repository and branch as the configuration file containing the `include` keyword.
 Use `include:local` instead of symbolic links.
 
 **Keyword type**: Global keyword.
@@ -291,8 +291,8 @@ include:
 
 **Additional details**:
 
-- All [nested includes](includes.md#use-nested-includes) execute without context as a public user,
-  so you can only include public projects or templates.
+- All [nested includes](includes.md#use-nested-includes) are executed without context as a public user,
+  so you can only include public projects or templates. No variables are available in the `include` section of nested includes.
 - Be careful when including a remote CI/CD configuration file. No pipelines or notifications
   trigger when external CI/CD configuration files change. From a security perspective,
   this is similar to pulling a third-party dependency.
@@ -330,8 +330,8 @@ include:
 
 **Additional details**:
 
-- All [nested includes](includes.md#use-nested-includes) are executed only with the permission of the user,
-  so it's possible to use `project`, `remote`, or `template` includes.
+- All [nested includes](includes.md#use-nested-includes) are executed without context as a public user,
+  so you can only include public projects or templates. No variables are available in the `include` section of nested includes.
 
 ### `stages`
 
@@ -1554,7 +1554,7 @@ In this example:
   is not recorded or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
   for more details.
 
-### `dast_configuration` **(ULTIMATE)**
+### `dast_configuration` **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5981) in GitLab 14.1.
 
@@ -2389,6 +2389,8 @@ This example creates four paths of execution:
   it depends on all jobs created in parallel, not just one job. It also downloads
   artifacts from all the parallel jobs by default. If the artifacts have the same
   name, they overwrite each other and only the last one downloaded is saved.
+  - To have `needs` refer to a subset of parallelized jobs (and not all of the parallelized jobs),
+    use the [`needs:parallel:matrix`](#needsparallelmatrix) keyword.
 - In [GitLab 14.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632) you
   can refer to jobs in the same stage as the job you are configuring. This feature is
   enabled on GitLab.com and ready for production use. On self-managed [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/30632)
@@ -2454,7 +2456,7 @@ In this example:
 - In GitLab 12.6 and later, you can't combine the [`dependencies`](#dependencies) keyword
   with `needs`.
 
-#### `needs:project` **(PREMIUM)**
+#### `needs:project` **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.7.
 
@@ -2678,6 +2680,61 @@ upstream_status:
 
 - If you add the `job` keyword to `needs:pipeline`, the job no longer mirrors the
   pipeline status. The behavior changes to [`needs:pipeline:job`](#needspipelinejob).
+
+#### `needs:parallel:matrix`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
+
+Jobs can use [`parallel:matrix`](#parallelmatrix) to run a job multiple times in parallel in a single pipeline,
+but with different variable values for each instance of the job.
+
+Use `needs:parallel:matrix` to execute jobs out-of-order depending on parallelized jobs.
+
+**Keyword type**: Job keyword. You can use it only as part of a job. Must be used with `needs:job`.
+
+**Possible inputs**: An array of hashes of variables:
+
+- The variables and values must be selected from the variables and values defined in the `parallel:matrix` job.
+
+**Example of `needs:parallel:matrix`**:
+
+```yaml
+linux:build:
+  stage: build
+  script: echo "Building linux..."
+  parallel:
+    matrix:
+      - PROVIDER: aws
+        STACK:
+          - monitoring
+          - app1
+          - app2
+
+linux:rspec:
+  stage: test
+  needs:
+    - job: linux:build
+      parallel:
+        matrix:
+          - PROVIDER: aws
+          - STACK: app1
+  script: echo "Running rspec on linux..."
+```
+
+The above example generates the following jobs:
+
+```plaintext
+linux:build: [aws, monitoring]
+linux:build: [aws, app1]
+linux:build: [aws, app2]
+linux:rspec
+```
+
+The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishes.
+
+**Related topics**:
+
+- [Specify a parallelized job using needs with multiple parallelized jobs](../jobs/job_control.md#specify-a-parallelized-job-using-needs-with-multiple-parallelized-jobs).
 
 ### `only` / `except`
 
@@ -3858,7 +3915,7 @@ job2:
 - [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
   to simplify job log output.
 
-### `secrets` **(PREMIUM)**
+### `secrets` **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33014) in GitLab 13.4.
 
@@ -3867,8 +3924,6 @@ Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 - Retrieve from an external secrets provider.
 - Make available in the job as [CI/CD variables](../variables/index.md)
   ([`file` type](../variables/index.md#use-file-type-cicd-variables) by default).
-
-This keyword must be used with `secrets:vault`.
 
 #### `secrets:vault`
 
@@ -3919,6 +3974,34 @@ job:
     DATABASE_PASSWORD:  # Store the path to the secret in this CI/CD variable
       vault: production/db/password@ops  # Translates to secret: `ops/data/production/db`, field: `password`
 ```
+
+#### `secrets:azure_key_vault`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab 16.3 and GitLab Runner 16.3.
+
+Use `secrets:azure_key_vault` to specify secrets provided by a [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/).
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `name`: Name of the secret.
+- `version`: Version of the secret.
+
+**Example of `secrets:azure_key_vault`**:
+
+```yaml
+job:
+  secrets:
+    DATABASE_PASSWORD:
+      azure_key_vault:
+        name: 'test'
+        version: 'test'
+```
+
+**Related topics**:
+
+- [Use Azure Key Vault secrets in GitLab CI/CD](../secrets/azure_key_vault.md).
 
 #### `secrets:file`
 

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Pipeline architecture **(FREE)**
+# Pipeline architecture **(FREE ALL)**
 
 Pipelines are the fundamental building blocks for CI/CD in GitLab. This page documents
 some of the important concepts related to them.

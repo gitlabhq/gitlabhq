@@ -570,12 +570,12 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     using RSpec::Parameterized::TableSyntax
 
     where(:project_shared_runners_enabled, :shared_runners_setting, :expected_shared_runners_enabled) do
-      true  | :disabled_and_unoverridable | false
-      false | :disabled_and_unoverridable | false
-      true  | :disabled_and_overridable   | true
-      false | :disabled_and_overridable   | false
-      true  | :shared_runners_enabled     | true
-      false | :shared_runners_enabled     | false
+      true  | :shared_runners_disabled_and_unoverridable | false
+      false | :shared_runners_disabled_and_unoverridable | false
+      true  | :shared_runners_disabled_and_overridable   | true
+      false | :shared_runners_disabled_and_overridable   | false
+      true  | :shared_runners_enabled                    | true
+      false | :shared_runners_enabled                    | false
     end
 
     with_them do

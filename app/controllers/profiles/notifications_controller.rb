@@ -45,7 +45,7 @@ class Profiles::NotificationsController < Profiles::ApplicationController
     projects = project_notifications.map(&:source)
     ActiveRecord::Associations::Preloader.new(
       records: projects,
-      associations: { namespace: [:route, :owner], group: [], creator: [] }
+      associations: { namespace: [:route, :owner], group: [], creator: [], project_setting: [] }
     ).call
     Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
 

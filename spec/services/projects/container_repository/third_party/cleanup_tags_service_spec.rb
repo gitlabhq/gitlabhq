@@ -325,11 +325,7 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::CleanupTagsService, :c
         Gitlab::Redis::Cache.with do |redis|
           expect(redis).to receive(:pipelined).and_call_original
 
-          times = Gitlab::Redis::ClusterUtil.cluster?(redis) ? 2 : 1
-
-          # Set 2 instances as redis is a MultiStore.
-          # Redis Cluster uses only 1 pipeline as the keys have hash-tags
-          expect_next_instances_of(Redis::PipelinedConnection, times) do |pipeline|
+          expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
             selected_tags.each do |tag_name, created_at, ex|
               expect(pipeline).to receive(:set).with(cache_key(tag_name), rfc3339(created_at), ex: ex).and_call_original
             end
@@ -376,11 +372,7 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::CleanupTagsService, :c
       expect(redis).to receive(:mget).and_call_original
       expect(redis).to receive(:pipelined).and_call_original
 
-      times = Gitlab::Redis::ClusterUtil.cluster?(redis) ? 2 : 1
-
-      # Set 2 instances as redis is a MultiStore
-      # Redis Cluster uses only 1 pipeline as the keys have hash-tags
-      expect_next_instances_of(Redis::PipelinedConnection, times) do |pipeline|
+      expect_next_instance_of(Redis::PipelinedConnection) do |pipeline|
         expect(pipeline).to receive(:set).and_call_original
       end
     end

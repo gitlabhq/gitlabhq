@@ -54,8 +54,7 @@ module Types
 
     field :job,
       Types::Ci::JobType,
-      description: 'Pipeline job of the deployment.',
-      method: :build
+      description: 'Pipeline job of the deployment.'
 
     field :triggerer,
       Types::UserType,

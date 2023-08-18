@@ -10,6 +10,7 @@ class Packages::Package < ApplicationRecord
 
   DISPLAYABLE_STATUSES = [:default, :error].freeze
   INSTALLABLE_STATUSES = [:default, :hidden].freeze
+  STATUS_MESSAGE_MAX_LENGTH = 255
 
   enum package_type: {
     maven: 1,
@@ -123,6 +124,22 @@ class Packages::Package < ApplicationRecord
     where('LOWER(version) = ?', version.downcase)
   end
 
+  scope :with_case_insensitive_name, ->(name) do
+    where(arel_table[:name].lower.eq(name.downcase))
+  end
+
+  scope :with_nuget_version_or_normalized_version, ->(version, with_normalized: true) do
+    relation = with_case_insensitive_version(version)
+
+    return relation unless with_normalized
+
+    relation
+      .left_joins(:nuget_metadatum)
+      .or(
+        merge(Packages::Nuget::Metadatum.normalized_version_in(version))
+      )
+  end
+
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :with_version, ->(version) { where(version: version) }
   scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
@@ -161,6 +178,14 @@ class Packages::Package < ApplicationRecord
   scope :preload_pypi_metadatum, -> { preload(:pypi_metadatum) }
   scope :preload_conan_metadatum, -> { preload(:conan_metadatum) }
 
+  scope :with_npm_scope, ->(scope) do
+    if Feature.enabled?(:npm_package_registry_fix_group_path_validation)
+      npm.where("position('/' in packages_packages.name) > 0 AND split_part(packages_packages.name, '/', 1) = :package_scope", package_scope: "@#{sanitize_sql_like(scope)}")
+    else
+      npm.where("name ILIKE :package_name", package_name: "@#{sanitize_sql_like(scope)}/%")
+    end
+  end
+
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 
   scope :has_version, -> { where.not(version: nil) }
@@ -169,14 +194,12 @@ class Packages::Package < ApplicationRecord
   scope :preload_pipelines, -> { preload(pipelines: :user) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
   scope :select_distinct_name, -> { select(:name).distinct }
-  scope :select_only_first_by_name, -> { select('DISTINCT ON (name) *') }
 
   # Sorting
   scope :order_created, -> { reorder(created_at: :asc) }
   scope :order_created_desc, -> { reorder(created_at: :desc) }
   scope :order_name, -> { reorder(name: :asc) }
   scope :order_name_desc, -> { reorder(name: :desc) }
-  scope :order_name_desc_version_desc, -> { reorder(name: :desc, version: :desc) }
   scope :order_version, -> { reorder(version: :asc) }
   scope :order_version_desc, -> { reorder(version: :desc) }
   scope :order_type, -> { reorder(package_type: :asc) }
@@ -184,7 +207,6 @@ class Packages::Package < ApplicationRecord
   scope :order_project_name, -> { joins(:project).reorder('projects.name ASC') }
   scope :order_project_name_desc, -> { joins(:project).reorder('projects.name DESC') }
   scope :order_by_package_file, -> { joins(:package_files).order('packages_package_files.created_at ASC') }
-  scope :with_npm_scope, ->(scope) { npm.where("name ILIKE :package_name", package_name: "@#{sanitize_sql_like(scope)}/%") }
 
   scope :order_project_path, -> do
     keyset_order = keyset_pagination_order(join_class: Project, column_name: :path, direction: :asc)
@@ -359,6 +381,12 @@ class Packages::Package < ApplicationRecord
     return name unless pypi?
 
     name.gsub(/#{Gitlab::Regex::Packages::PYPI_NORMALIZED_NAME_REGEX_STRING}/o, '-').downcase
+  end
+
+  def normalized_nuget_version
+    return unless nuget?
+
+    nuget_metadatum&.normalized_version
   end
 
   def publish_creation_event

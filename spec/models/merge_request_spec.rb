@@ -1869,16 +1869,25 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#committers' do
-    it 'returns all the committers of every commit in the merge request' do
-      users = subject.commits.without_merge_commits.map(&:committer_email).uniq.map do |email|
-        create(:user, email: email)
-      end
+    let(:commits) { double }
+    let(:committers) { double }
 
-      expect(subject.committers).to match_array(users)
+    context 'when not given with_merge_commits' do
+      it 'calls committers on the commits object with the expected param' do
+        expect(subject).to receive(:commits).and_return(commits)
+        expect(commits).to receive(:committers).with(with_merge_commits: false).and_return(committers)
+
+        expect(subject.committers).to eq(committers)
+      end
     end
 
-    it 'returns an empty array if no committer is associated with a user' do
-      expect(subject.committers).to be_empty
+    context 'when given with_merge_commits true' do
+      it 'calls committers on the commits object with the expected param' do
+        expect(subject).to receive(:commits).and_return(commits)
+        expect(commits).to receive(:committers).with(with_merge_commits: true).and_return(committers)
+
+        expect(subject.committers(with_merge_commits: true)).to eq(committers)
+      end
     end
   end
 
@@ -3257,6 +3266,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
     end
+
+    context 'with check_mergeability_retry_lease option' do
+      it 'call check_mergeability with sync_retry_lease' do
+        allow(subject).to receive(:mergeable_state?) { true }
+        expect(subject).to receive(:check_mergeability).with(sync_retry_lease: true)
+
+        subject.mergeable?(check_mergeability_retry_lease: true)
+      end
+    end
   end
 
   describe '#skipped_mergeable_checks' do
@@ -3289,6 +3307,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(mergeability_service).to receive(:execute)
 
         subject.check_mergeability
+      end
+
+      context 'when sync_retry_lease is true' do
+        it 'executes MergeabilityCheckService' do
+          expect(mergeability_service).to receive(:execute).with(retry_lease: true)
+
+          subject.check_mergeability(sync_retry_lease: true)
+        end
       end
 
       context 'when async is true' do
@@ -5124,23 +5150,38 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     let(:merge_request) { build(:merge_request, source_project: create(:project, :repository)) }
 
-    it 'does schedule MergeRequests::CleanupRefWorker' do
-      expect(MergeRequests::CleanupRefWorker).to receive(:perform_async).with(merge_request.id, 'train')
+    it 'deletes refs asynchronously' do
+      expect(merge_request.target_project.repository)
+        .to receive(:async_delete_refs)
+        .with(merge_request.train_ref_path)
 
       subject
     end
 
-    context 'when merge_request_cleanup_ref_worker_async is disabled' do
+    context 'when merge_request_delete_gitaly_refs_in_batches is disabled' do
       before do
-        stub_feature_flags(merge_request_cleanup_ref_worker_async: false)
+        stub_feature_flags(merge_request_delete_gitaly_refs_in_batches: false)
       end
 
-      it 'deletes all refs from the target project' do
-        expect(merge_request.target_project.repository)
-          .to receive(:delete_refs)
-          .with(merge_request.train_ref_path)
+      it 'does schedule MergeRequests::CleanupRefWorker' do
+        expect(MergeRequests::CleanupRefWorker).to receive(:perform_async).with(merge_request.id, 'train')
 
         subject
+      end
+
+      context 'when merge_request_cleanup_ref_worker_async is disabled' do
+        before do
+          stub_feature_flags(merge_request_delete_gitaly_refs_in_batches: false)
+          stub_feature_flags(merge_request_cleanup_ref_worker_async: false)
+        end
+
+        it 'deletes all refs from the target project' do
+          expect(merge_request.target_project.repository)
+            .to receive(:delete_refs)
+            .with(merge_request.train_ref_path)
+
+          subject
+        end
       end
     end
   end

@@ -32,7 +32,6 @@ exports[`packages_list_row renders 1`] = `
             <router-link-stub
               ariacurrentvalue="page"
               class="gl-text-body gl-min-w-0"
-              data-qa-selector="package_link"
               data-testid="details-link"
               event="click"
               tag="a"
@@ -105,35 +104,33 @@ exports[`packages_list_row renders 1`] = `
     <div
       class="gl-w-9 gl-display-flex gl-justify-content-end gl-pr-1"
     >
-      <gl-dropdown-stub
+      <gl-disclosure-dropdown-stub
+        autoclose="true"
         category="tertiary"
-        clearalltext="Clear all"
-        clearalltextclass="gl-px-5"
         data-testid="delete-dropdown"
-        headertext=""
-        hideheaderborder="true"
-        highlighteditemstitle="Selected"
-        highlighteditemstitleclass="gl-px-5"
         icon="ellipsis_v"
-        no-caret=""
+        items=""
+        nocaret="true"
+        placement="left"
+        positioningstrategy="absolute"
         size="medium"
-        text="More actions"
         textsronly="true"
+        toggleid="dropdown-toggle-btn-3"
+        toggletext="More actions"
         variant="default"
       >
-        <gl-dropdown-item-stub
-          avatarurl=""
+        <gl-disclosure-dropdown-item-stub
           data-testid="action-delete"
-          iconcolor=""
-          iconname=""
-          iconrightarialabel=""
-          iconrightname=""
-          secondarytext=""
-          variant="danger"
         >
-          Delete package
-        </gl-dropdown-item-stub>
-      </gl-dropdown-stub>
+          <span
+            class="gl-text-red-500"
+          >
+            
+            Delete package
+          
+          </span>
+        </gl-disclosure-dropdown-item-stub>
+      </gl-disclosure-dropdown-stub>
     </div>
   </div>
    

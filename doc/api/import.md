@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import API **(FREE)**
+# Import API **(FREE ALL)**
 
 Use the Import API to import repositories from GitHub or Bitbucket Server.
 
@@ -34,7 +34,7 @@ POST /import/github
 | `target_namespace`         | string  | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. In GitLab 15.8 and later, must not be blank                                                     |
 | `github_hostname`          | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com.                                                                                                                       |
 | `optional_stages`          | object  | no  | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5 |
-| `additional_access_tokens` | string  | no  | Additional list of comma-separated personal access tokens. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337232) in GitLab 16.2                                        |
+| `additional_access_tokens` | string  | no  | Comma-separated list of [additional](#use-multiple-github-personal-access-tokens) GitHub personal access tokens. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337232) in GitLab 16.2 |
 
 ```shell
 curl --request POST \
@@ -78,6 +78,17 @@ Example response:
     "full_name": "Administrator / my-repo"
 }
 ```
+
+### Use multiple GitHub personal access tokens
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337232) in GitLab 16.2.
+
+The GitHub import API can accept more than one GitHub personal access token using the `additional_access_tokens`
+property so the API can make more calls to GitHub before hitting the rate limit. The additional GitHub personal access
+tokens:
+
+- Cannot be from the same account because they would all share one rate limit.
+- Must have the same permissions and sufficient privileges to the repositories to import.
 
 ### Import a public project through the API using a group access token
 
@@ -210,7 +221,7 @@ curl --request POST \
 }'
 ```
 
-## Automate group and project import **(PREMIUM)**
+## Automate group and project import **(PREMIUM ALL)**
 
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](../user/project/import/index.md#automate-group-and-project-import).

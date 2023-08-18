@@ -420,6 +420,18 @@ minimum acceptable timestamp would be 20230424000000.
 
 While the above should be considered a hard rule, it is a best practice to try to keep migration timestamps to within three weeks of the date it is anticipated that the migration will be merged upstream, regardless of how much time has elapsed since the last hard stop.
 
+To update a migration timestamp:
+
+1. Migrate down the migration for the `ci` and `main` DBs:
+
+   ```ruby
+   rake db:migrate:down:main VERSION=<timestamp>
+   rake db:migrate:down:ci VERSION=<timestamp>
+   ```
+
+1. Delete the migration file.
+1. Recreate the migration following the [migration style guide](#choose-an-appropriate-migration-type).
+
 ## Migration helpers and versioning
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339115) in GitLab 14.3.
@@ -1363,7 +1375,7 @@ end
 When doing so be sure to explicitly set the model's table name, so it's not
 derived from the class name or namespace.
 
-Be aware of the limitations [when using models in migrations](#using-models-in-migrations-discouraged).
+Be aware of the limitations [when using models in migrations](#using-application-code-in-migrations-discouraged).
 
 ### Modifying existing data
 
@@ -1423,13 +1435,25 @@ _namespaces_ that have a `project_id`.
 The `path` column for these rows are renamed to their previous value followed
 by an integer. For example: `users` would turn into `users0`
 
-## Using models in migrations (discouraged)
+## Using application code in migrations (discouraged)
 
-The use of models in migrations is generally discouraged. As such models are
-[contraindicated for batched background migrations](database/batched_background_migrations.md#isolation),
-the model needs to be declared in the migration.
+The use of application code (including models) in migrations is generally
+discouraged. This is because the migrations stick around for a long time and
+the application code it depends on may change and break the migration in
+future. In the past some background migrations needed to use
+application code in order to avoid copying hundreds of lines of code spread
+across multiple files into the migration. In these rare cases it's critical to
+ensure the migration has good tests so that anyone refactoring the code in
+future will learn if they break the migration. Using application code is also
+[discouraged for batched background migrations](database/batched_background_migrations.md#isolation)
+, the model needs to be declared in the migration.
 
-If using a model in the migrations, you should first
+Usually you can avoid using application code (specifically models) in a
+migration by defining a class that inherits from `MigrationRecord` (see
+examples below).
+
+If using are using a model (including defined in the migration), you should
+first
 [clear the column cache](https://api.rubyonrails.org/classes/ActiveRecord/ModelSchema/ClassMethods.html#method-i-reset_column_information)
 using `reset_column_information`.
 

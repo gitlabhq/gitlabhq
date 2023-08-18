@@ -6,6 +6,7 @@ import {
   GlTooltipDirective,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { debounce } from 'lodash';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -225,7 +226,7 @@ export default {
       v-model="searchText"
       role="searchbox"
       class="gl-z-index-1"
-      data-testid="global_search_input"
+      data-testid="global-search-input"
       autocomplete="off"
       :placeholder="$options.i18n.SEARCH_GITLAB"
       :aria-activedescendant="currentFocusedId"

@@ -6,11 +6,7 @@ module QA
 
     describe 'Jira integration', :jira, :orchestrated, :requires_admin, product_group: :import_and_integrate do
       let(:jira_project_key) { 'JITP' }
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = "project_with_jira_integration"
-        end
-      end
+      let(:project) { create(:project, name: 'project_with_jira_integration') }
 
       before do
         page.visit Vendor::Jira::JiraAPI.perform(&:base_url)

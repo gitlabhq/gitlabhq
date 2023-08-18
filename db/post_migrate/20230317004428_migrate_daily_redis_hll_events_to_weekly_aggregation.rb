@@ -3,12 +3,6 @@
 class MigrateDailyRedisHllEventsToWeeklyAggregation < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
-  # Due to the feature flag `use_metric_definitions_for_events_list`, this makes a `SELECT` call
-  # so this migration is now considered a DML (data manipulation) migration.
-  # For the time being, we need to specify only `main` database because it is now technically retriving DB data.
-  # Should be removed with <issue link>
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
-
   DAILY_EVENTS =
     %w[g_edit_by_web_ide
       g_edit_by_sfe

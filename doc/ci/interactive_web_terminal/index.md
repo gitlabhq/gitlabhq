@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Interactive web terminals **(FREE)**
+# Interactive web terminals **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/50144) in GitLab 11.3.
 
@@ -61,7 +61,7 @@ improving this behavior.
 Sometimes, when a job is running, things don't go as you would expect, and it
 would be helpful if one can have a shell to aid debugging. When a job is
 running, on the right panel you can see a button `debug` that opens the terminal
-for the current job.
+for the current job. Only the person who started a job can debug it.
 
 ![Example of job running with terminal available](img/interactive_web_terminal_running_job.png)
 

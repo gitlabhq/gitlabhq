@@ -82,6 +82,7 @@ module QA
 
         Page::Admin::Overview::Users::Show.perform do |show|
           show.go_to_impersonation_tokens do |impersonation_tokens|
+            impersonation_tokens.click_add_new_token_button
             impersonation_tokens.fill_token_name(name)
             impersonation_tokens.check_api
             impersonation_tokens.fill_expiry_date(expires_at)

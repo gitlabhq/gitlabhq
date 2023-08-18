@@ -45,12 +45,6 @@ RSpec.describe Gitlab::Usage::Metric do
     end
   end
 
-  describe '#with_suggested_name' do
-    it 'returns key_path metric with the corresponding generated query' do
-      expect(described_class.new(issue_count_metric_definiton).with_suggested_name).to eq({ counts: { issues: 'count_issues' } })
-    end
-  end
-
   context 'unavailable metric' do
     let(:instrumentation_class) { "UnavailableMetric" }
     let(:issue_count_metric_definiton) do
@@ -69,7 +63,7 @@ RSpec.describe Gitlab::Usage::Metric do
       stub_const("Gitlab::Usage::Metrics::Instrumentations::#{instrumentation_class}", unavailable_metric_class)
     end
 
-    [:with_value, :with_instrumentation, :with_suggested_name].each do |method_name|
+    [:with_value, :with_instrumentation].each do |method_name|
       describe "##{method_name}" do
         it 'returns an empty hash' do
           expect(described_class.new(issue_count_metric_definiton).public_send(method_name)).to eq({})

@@ -40,23 +40,7 @@ module API
             end
 
             post ':id/metrics_dashboard/annotations' do
-              not_found! if Feature.enabled?(:remove_monitor_metrics)
-
-              annotations_source_object = annotations_source[:class].find(params[:id])
-
-              forbidden! unless can?(current_user, :admin_metrics_dashboard_annotation, annotations_source_object)
-
-              create_service_params = declared(params).merge(
-                annotations_source[:create_service_param_key] => annotations_source_object
-              )
-
-              result = ::Metrics::Dashboard::Annotations::CreateService.new(current_user, create_service_params).execute
-
-              if result[:status] == :success
-                present result[:annotation], with: Entities::Metrics::Dashboard::Annotation
-              else
-                error!(result, 400)
-              end
+              not_found!
             end
           end
         end

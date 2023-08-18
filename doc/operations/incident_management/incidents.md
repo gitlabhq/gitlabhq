@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Incidents **(FREE)**
+# Incidents **(FREE ALL)**
 
 An incident is a service disruption or outage that needs to be restored urgently.
 Incidents are critical in incident management workflows.
@@ -97,7 +97,7 @@ Comments are displayed in threads, but can be displayed chronologically
 When you make changes to an incident, GitLab creates [system notes](../../user/project/system_notes.md) and
 displays them below the summary.
 
-### Metrics **(PREMIUM)**
+### Metrics **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235994) in GitLab 13.8.
 
@@ -130,7 +130,7 @@ during an incident, and the steps that were taken for it to be resolved.
 
 Read more about [timeline events](incident_timeline_events.md) and how to enable this feature.
 
-### Recent updates view **(PREMIUM)**
+### Recent updates view **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227836) in GitLab 13.5.
 
@@ -138,7 +138,7 @@ To see the latest updates on an incident, select
 **Turn recent updates view on** (**{history}**) on the comment bar. Comments display
 un-threaded and chronologically, newest to oldest.
 
-### Service Level Agreement countdown timer **(PREMIUM)**
+### Service Level Agreement countdown timer **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241663) in GitLab 13.5.
 

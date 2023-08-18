@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
@@ -27,11 +28,6 @@ export default {
     ...mapGetters(['packagePipeline']),
     totalSize() {
       return numberToHumanSize(this.packageFiles.reduce((acc, p) => acc + p.size, 0));
-    },
-  },
-  methods: {
-    dynamicSlotName(index) {
-      return `metadata-tag${index}`;
     },
   },
 };

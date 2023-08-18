@@ -154,7 +154,7 @@ describe('ReportActions', () => {
           beforeEach(async () => {
             jest.spyOn(axios, 'put');
 
-            axiosMock.onPut(report.updatePath).replyOnce(responseStatus, responseData);
+            axiosMock.onPut(report.moderateUserPath).replyOnce(responseStatus, responseData);
 
             selectAction(params.user_action);
             setCloseReport(params.close);
@@ -169,7 +169,7 @@ describe('ReportActions', () => {
           });
 
           it('does a put call with the right data', () => {
-            expect(axios.put).toHaveBeenCalledWith(report.updatePath, params);
+            expect(axios.put).toHaveBeenCalledWith(report.moderateUserPath, params);
           });
 
           it('closes the drawer', () => {
@@ -189,6 +189,33 @@ describe('ReportActions', () => {
           });
         },
       );
+    });
+  });
+
+  describe('when moderateUserPath is not present', () => {
+    it('sends the request to updatePath', async () => {
+      jest.spyOn(axios, 'put');
+      axiosMock.onPut(report.updatePath).replyOnce(HTTP_STATUS_OK, {});
+
+      const reportWithoutModerateUserPath = { ...report };
+      delete reportWithoutModerateUserPath.moderateUserPath;
+
+      createComponent({ report: reportWithoutModerateUserPath });
+
+      clickActionsButton();
+
+      await nextTick();
+
+      selectAction(params.user_action);
+      selectReason(params.reason);
+
+      await nextTick();
+
+      submitForm();
+
+      await waitForPromises();
+
+      expect(axios.put).toHaveBeenCalledWith(report.updatePath, expect.any(Object));
     });
   });
 });

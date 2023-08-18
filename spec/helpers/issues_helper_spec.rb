@@ -486,23 +486,26 @@ RSpec.describe IssuesHelper do
   end
 
   describe '#hidden_issue_icon' do
-    let_it_be(:banned_user) { build(:user, :banned) }
-    let_it_be(:hidden_issue) { build(:issue, author: banned_user) }
     let_it_be(:mock_svg) { '<svg></svg>'.html_safe }
 
     before do
-      allow(helper).to receive(:sprite_icon).and_return(mock_svg)
+      allow(helper).to receive(:hidden_resource_icon).with(resource).and_return(mock_svg)
     end
 
     context 'when issue is hidden' do
+      let_it_be(:banned_user) { build(:user, :banned) }
+      let_it_be(:resource) { build(:issue, author: banned_user) }
+
       it 'returns icon with tooltip' do
-        expect(helper.hidden_issue_icon(hidden_issue)).to eq("<span class=\"has-tooltip\" title=\"This issue is hidden because its author has been banned\">#{mock_svg}</span>")
+        expect(helper.hidden_issue_icon(resource)).to eq(mock_svg)
       end
     end
 
     context 'when issue is not hidden' do
+      let_it_be(:resource) { issue }
+
       it 'returns `nil`' do
-        expect(helper.hidden_issue_icon(issue)).to be_nil
+        expect(helper.hidden_issue_icon(resource)).to be_nil
       end
     end
   end

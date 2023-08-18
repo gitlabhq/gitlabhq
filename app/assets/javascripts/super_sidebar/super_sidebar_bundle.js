@@ -40,6 +40,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       lastName,
       companyName,
       glmContent,
+      createHandRaiseLeadPath,
     } = convertObjectPropsToCamelCase(sidebarData.trial_status_popover_data_attrs);
 
     return {
@@ -53,6 +54,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       plansHref,
       daysRemaining,
       targetId,
+      createHandRaiseLeadPath,
       trialEndDate: new Date(trialEndDate),
       user: { namespaceId, userName, firstName, lastName, companyName, glmContent },
     };
@@ -79,11 +81,15 @@ export const initSuperSidebar = () => {
   const sidebarData = JSON.parse(sidebar);
   const searchData = convertObjectPropsToCamelCase(sidebarData.search);
 
+  const projectsPath = sidebarData.projects_path;
+  const groupsPath = sidebarData.groups_path;
+
   const commandPaletteData = JSON.parse(commandPalette);
   const projectFilesPath = commandPaletteData.project_files_url;
   const projectBlobPath = commandPaletteData.project_blob_url;
   const commandPaletteCommands = sidebarData.create_new_menu_groups || [];
   const commandPaletteLinks = convertObjectPropsToCamelCase(sidebarData.current_menu_items || []);
+  const contextSwitcherLinks = sidebarData.context_switcher_links;
 
   const { searchPath, issuesPath, mrPath, autocompletePath, searchContext } = searchData;
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
@@ -99,10 +105,13 @@ export const initSuperSidebar = () => {
       ...getTrialStatusWidgetData(sidebarData),
       commandPaletteCommands,
       commandPaletteLinks,
+      contextSwitcherLinks,
       autocompletePath,
       searchContext,
       projectFilesPath,
       projectBlobPath,
+      projectsPath,
+      groupsPath,
     },
     store: createStore({
       searchPath,

@@ -10,8 +10,11 @@ RSpec.shared_examples 'foreign key validators' do |validator, expected_result|
   let(:inconsistency_type) { validator.to_s }
   let(:database_name) { 'main' }
   let(:schema) { 'public' }
+  let(:connection_class) { class_double(Class, name: 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter') }
   # rubocop:disable RSpec/VerifiedDoubleReference
-  let(:connection) { instance_double('connection', exec_query: database_query, current_schema: 'public') }
+  let(:connection) do
+    instance_double('connection', class: connection_class, exec_query: database_query, current_schema: 'public')
+  end
   # rubocop:enable RSpec/VerifiedDoubleReference
 
   let(:database) { Gitlab::Schema::Validation::Sources::Database.new(connection) }

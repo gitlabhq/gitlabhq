@@ -1,12 +1,15 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
 import IssuesFilters from '~/search/sidebar/components/issues_filters.vue';
+import MergeRequestsFilters from '~/search/sidebar/components/merge_requests_filters.vue';
+import BlobsFilters from '~/search/sidebar/components/blobs_filters.vue';
+import ProjectsFilters from '~/search/sidebar/components/projects_filters.vue';
 import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
-import LanguageFilter from '~/search/sidebar/components/language_filter/index.vue';
 
 Vue.use(Vuex);
 
@@ -17,7 +20,7 @@ describe('GlobalSearchSidebar', () => {
     currentScope: jest.fn(() => 'issues'),
   };
 
-  const createComponent = (initialState = {}, featureFlags = {}) => {
+  const createComponent = (initialState = {}, ff = false) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -30,17 +33,19 @@ describe('GlobalSearchSidebar', () => {
       store,
       provide: {
         glFeatures: {
-          ...featureFlags,
+          searchProjectsHideArchived: ff,
         },
       },
     });
   };
 
   const findSidebarSection = () => wrapper.find('section');
-  const findFilters = () => wrapper.findComponent(IssuesFilters);
+  const findIssuesFilters = () => wrapper.findComponent(IssuesFilters);
+  const findMergeRequestsFilters = () => wrapper.findComponent(MergeRequestsFilters);
+  const findBlobsFilters = () => wrapper.findComponent(BlobsFilters);
+  const findProjectsFilters = () => wrapper.findComponent(ProjectsFilters);
   const findScopeLegacyNavigation = () => wrapper.findComponent(ScopeLegacyNavigation);
   const findScopeSidebarNavigation = () => wrapper.findComponent(ScopeSidebarNavigation);
-  const findLanguageAggregation = () => wrapper.findComponent(LanguageFilter);
 
   describe('renders properly', () => {
     describe('always', () => {
@@ -53,23 +58,33 @@ describe('GlobalSearchSidebar', () => {
     });
 
     describe.each`
-      scope               | showFilters | showsLanguage
-      ${'issues'}         | ${true}     | ${false}
-      ${'merge_requests'} | ${true}     | ${false}
-      ${'projects'}       | ${false}    | ${false}
-      ${'blobs'}          | ${false}    | ${true}
-    `('sidebar scope: $scope', ({ scope, showFilters, showsLanguage }) => {
+      scope               | filter
+      ${'issues'}         | ${findIssuesFilters}
+      ${'merge_requests'} | ${findMergeRequestsFilters}
+      ${'blobs'}          | ${findBlobsFilters}
+    `('with sidebar $scope scope:', ({ scope, filter }) => {
       beforeEach(() => {
         getterSpies.currentScope = jest.fn(() => scope);
         createComponent({ urlQuery: { scope } });
       });
 
-      it(`${!showFilters ? "doesn't" : ''} shows filters`, () => {
-        expect(findFilters().exists()).toBe(showFilters);
+      it(`shows filter ${filter.name.replace('find', '')}`, () => {
+        expect(filter().exists()).toBe(true);
+      });
+    });
+
+    describe.each`
+      featureFlag
+      ${false}
+      ${true}
+    `('with sidebar $scope scope:', ({ featureFlag }) => {
+      beforeEach(() => {
+        getterSpies.currentScope = jest.fn(() => 'projects');
+        createComponent({ urlQuery: { scope: 'projects' } }, featureFlag);
       });
 
-      it(`${!showsLanguage ? "doesn't" : ''} shows language filters`, () => {
-        expect(findLanguageAggregation().exists()).toBe(showsLanguage);
+      it(`shows filter ProjectsFilters}`, () => {
+        expect(findProjectsFilters().exists()).toBe(featureFlag);
       });
     });
 

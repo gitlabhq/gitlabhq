@@ -1,3 +1,5 @@
+- show_cancel_button = local_assigns.fetch(:cancel, false)
+
 = gitlab_ui_form_for @application, url: url, html: { role: 'form', class: 'doorkeeper-app-form gl-max-w-80' } do |f|
   = form_errors(@application)
 
@@ -22,3 +24,6 @@
 
   .gl-mt-3
     = f.submit _('Save application'), pajamas_button: true
+    - if show_cancel_button
+      = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'js-webhook-edit-close gl-ml-2 js-toggle-button' }) do
+        = _('Cancel')

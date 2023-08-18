@@ -6,8 +6,7 @@ import {
   GlFormCheckbox,
   GlFormInput,
   GlFormInputGroup,
-  GlDropdown,
-  GlDropdownItem,
+  GlCollapsibleListbox,
   GlFormGroup,
 } from '@gitlab/ui';
 import $ from 'jquery';
@@ -25,8 +24,7 @@ export default {
     GlFormCheckbox,
     GlFormInput,
     GlFormInputGroup,
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     GlFormGroup,
     EmojiPicker: () => import('~/emoji/components/picker.vue'),
   },
@@ -79,6 +77,9 @@ export default {
     noEmoji() {
       return this.emojiTag === '';
     },
+    clearStatusAfterValue() {
+      return this.clearStatusAfter?.name;
+    },
     clearStatusAfterDropdownText() {
       if (this.clearStatusAfter === null && this.currentClearStatusAfter.length) {
         return this.formatClearStatusAfterDate(new Date(this.currentClearStatusAfter));
@@ -94,11 +95,18 @@ export default {
 
       return NEVER_TIME_RANGE.label;
     },
+    clearStatusAfterDropdownItems() {
+      return TIME_RANGES_WITH_NEVER.map((item) => ({ text: item.label, value: item.name }));
+    },
   },
   mounted() {
     this.setupEmojiListAndAutocomplete();
   },
   methods: {
+    onClearStatusAfterValueChange(value) {
+      const selectedValue = TIME_RANGES_WITH_NEVER.find((i) => i.name === value);
+      this.$emit('clear-status-after-click', selectedValue);
+    },
     async setupEmojiListAndAutocomplete() {
       const emojiAutocomplete = new GfmAutoComplete();
       emojiAutocomplete.setup($(this.$refs.statusMessageField.$el), { emojis: true });
@@ -221,20 +229,13 @@ export default {
     </gl-form-checkbox>
 
     <gl-form-group :label="$options.i18n.clearStatusAfterDropdownLabel" class="gl-mb-0">
-      <gl-dropdown
-        block
-        :text="clearStatusAfterDropdownText"
+      <gl-collapsible-listbox
+        :selected="clearStatusAfterValue"
+        :toggle-text="clearStatusAfterDropdownText"
+        :items="clearStatusAfterDropdownItems"
         data-testid="clear-status-at-dropdown"
-        toggle-class="gl-mb-0 gl-form-input-md"
-      >
-        <gl-dropdown-item
-          v-for="after in $options.TIME_RANGES_WITH_NEVER"
-          :key="after.name"
-          :data-testid="after.name"
-          @click="$emit('clear-status-after-click', after)"
-          >{{ after.label }}</gl-dropdown-item
-        >
-      </gl-dropdown>
+        @select="onClearStatusAfterValueChange"
+      />
     </gl-form-group>
   </div>
 </template>

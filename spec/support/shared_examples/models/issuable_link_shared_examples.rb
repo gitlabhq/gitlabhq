@@ -7,8 +7,8 @@
 # issuable_link_factory
 RSpec.shared_examples 'issuable link' do
   describe 'Associations' do
-    it { is_expected.to belong_to(:source).class_name(issuable.class.name) }
-    it { is_expected.to belong_to(:target).class_name(issuable.class.name) }
+    it { is_expected.to belong_to(:source).class_name(issuable_class) }
+    it { is_expected.to belong_to(:target).class_name(issuable_class) }
   end
 
   describe 'Validation' do
@@ -27,7 +27,8 @@ RSpec.shared_examples 'issuable link' do
       issuable_link = create_issuable_link(subject.target, subject.source)
 
       expect(issuable_link).to be_invalid
-      expect(issuable_link.errors[:source]).to include("is already related to this #{issuable.class.name.downcase}")
+      expect(issuable_link.errors[:source])
+        .to include("is already related to this #{issuable.issuable_type.humanize(capitalize: false)}")
     end
 
     context 'when it relates to itself' do

@@ -11,12 +11,19 @@ spec:
 ---
 .gems:rules:$[[inputs.gem_name]]:
   rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
     - if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
       changes:
         - "$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/**/*"
         - ".gitlab/ci/gitlab-gems.gitlab-ci.yml"
+        - ".gitlab/ci/vendored-gems.gitlab-ci.yml"
         - ".gitlab/ci/templates/gem.gitlab-ci.yml"
         - "gems/gem.gitlab-ci.yml"
+        # Ensure new cop in the monolith don't break internal gems Rubocop checks: https://gitlab.com/gitlab-org/gitlab/-/issues/419915
+        - ".rubocop.yml"
+        - "rubocop/**/*"
+        - ".rubocop_todo/**/*"
+
 
 gems $[[inputs.gem_name]]:
   extends: ".gems:rules:$[[inputs.gem_name]]"

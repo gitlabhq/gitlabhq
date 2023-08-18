@@ -6,7 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import TagToken, { TAG_SUGGESTIONS_PATH } from '~/ci/runner/components/search_tokens/tag_token.vue';
+import TagToken from '~/ci/runner/components/search_tokens/tag_token.vue';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { getRecentlyUsedSuggestions } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 
@@ -45,6 +45,8 @@ const mockTagTokenConfig = {
   operators: OPERATORS_IS,
 };
 
+const mockTagSuggestionsPath = '/path/runners/tag_list';
+
 describe('TagToken', () => {
   let mock;
   let wrapper;
@@ -59,7 +61,8 @@ describe('TagToken', () => {
       },
       provide: {
         portalName: 'fake target',
-        alignSuggestions: function fakeAlignSuggestions() {},
+        tagSuggestionsPath: mockTagSuggestionsPath,
+        alignSuggestions: function fakeAligxnSuggestions() {},
         filteredSearchSuggestionListInstance: {
           register: jest.fn(),
           unregister: jest.fn(),
@@ -80,9 +83,9 @@ describe('TagToken', () => {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    mock.onGet(TAG_SUGGESTIONS_PATH, { params: { search: '' } }).reply(HTTP_STATUS_OK, mockTags);
+    mock.onGet(mockTagSuggestionsPath, { params: { search: '' } }).reply(HTTP_STATUS_OK, mockTags);
     mock
-      .onGet(TAG_SUGGESTIONS_PATH, { params: { search: mockSearchTerm } })
+      .onGet(mockTagSuggestionsPath, { params: { search: mockSearchTerm } })
       .reply(HTTP_STATUS_OK, mockTagsFiltered);
 
     getRecentlyUsedSuggestions.mockReturnValue([]);
@@ -163,7 +166,7 @@ describe('TagToken', () => {
   describe('when suggestions cannot be loaded', () => {
     beforeEach(async () => {
       mock
-        .onGet(TAG_SUGGESTIONS_PATH, { params: { search: '' } })
+        .onGet(mockTagSuggestionsPath, { params: { search: '' } })
         .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
       createComponent();

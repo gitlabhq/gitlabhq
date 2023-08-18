@@ -173,6 +173,8 @@ Package Registry allows you to install but not publish packages.
 ### Background jobs
 
 Background jobs (cron jobs, Sidekiq) continue running as is, because background jobs are not automatically disabled.
+As background jobs perform operations that can change the internal state of your instance, you may want to disable
+some or all of them while maintenance mode is enabled.
 
 [During a planned Geo failover](../geo/disaster_recovery/planned_failover.md#prevent-updates-to-the-primary-site),
 you should disable all cron jobs except for those related to Geo.
@@ -182,6 +184,7 @@ To monitor queues and disable jobs:
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Background Jobs**.
+1. In the Sidekiq dashboard, select **Cron** and disable jobs individually or all at once by selecting **Disable All**.
 
 ### Incident management
 

@@ -266,6 +266,9 @@ export default {
   [types.TOGGLE_FOLDER_OPEN](state, path) {
     state.treeEntries[path].opened = !state.treeEntries[path].opened;
   },
+  [types.TREE_ENTRY_DIFF_LOADING](state, { path, loading = true }) {
+    state.treeEntries[path].diffLoading = loading;
+  },
   [types.SET_SHOW_TREE_LIST](state, showTreeList) {
     state.showTreeList = showTreeList;
   },

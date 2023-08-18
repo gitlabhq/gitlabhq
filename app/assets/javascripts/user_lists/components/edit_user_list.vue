@@ -1,5 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { s__, sprintf } from '~/locale';
 import statuses from '../constants/edit';

@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency,
-  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/418757' do
+RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency do
   include_context 'includes Spam constants'
 
   let(:issue) { create(:issue, project: project, author: author) }
@@ -41,20 +40,6 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency,
     subject do
       described_service = described_class.new(spammable: issue, user: user, action: :create)
       described_service.execute
-    end
-
-    context 'when spam_params is nil' do
-      let(:spam_params) { nil }
-      let(:expected_service_params_not_present_message) do
-        /Skipped spam check because spam_params was not present/
-      end
-
-      it "returns success with a messaage" do
-        response = subject
-
-        expect(response.message).to match(expected_service_params_not_present_message)
-        expect(issue).not_to be_spam
-      end
     end
 
     context 'when user is nil' do

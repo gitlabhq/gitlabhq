@@ -139,7 +139,7 @@ NOTE:
 Any changes to this setting applies to new artifacts only. The expiration time is not
 be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
-artifacts, as described in the [troubleshooting documentation](../../administration/job_artifacts.md#delete-job-artifacts-from-jobs-completed-before-a-specific-date).
+artifacts, as described in the [troubleshooting documentation](../../administration/job_artifacts_troubleshooting.md#delete-job-artifacts-from-jobs-completed-before-a-specific-date).
 
 ## Keep the latest artifacts for all jobs in the latest successful pipelines
 
@@ -172,9 +172,12 @@ All application settings have a [customizable cache expiry interval](../../admin
 
 ## Archive jobs
 
-Archiving jobs is useful for reducing the CI/CD footprint on the system by removing some
-of the capabilities of the jobs (metadata stored in the database needed to run the job),
-but persisting the traces and artifacts for auditing purposes.
+You can archive old jobs to prevent them from being re-run individually. Archived jobs
+display a lock icon (**{lock}**) and **This job is archived** at the top of the job log.
+
+Future work is planned to reduce the CI/CD footprint on the system for archived jobs
+by removing metadata stored in the database needed to run the job. See the [CI/CD data time decay](../../architecture/blueprints/ci_data_decay/index.md)
+blueprint for more details.
 
 To set the duration for which the jobs are considered as old and expired:
 

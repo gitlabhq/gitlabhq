@@ -45,6 +45,7 @@ module ApplicationSettingImplementation
         allow_possible_spam: false,
         asset_proxy_enabled: false,
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
+        ci_max_total_yaml_size_bytes: 157286400, # max_yaml_size_bytes * ci_max_includes = 1.megabyte * 150
         commit_email_hostname: default_commit_email_hostname,
         container_expiration_policies_enable_historic_entries: false,
         container_registry_features: [],
@@ -61,6 +62,7 @@ module ApplicationSettingImplementation
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_projects_limit: Settings.gitlab['default_projects_limit'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+        default_syntax_highlighting_theme: 1,
         deny_all_requests_except_allowed: false,
         diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
         diff_max_files: Commit::DEFAULT_MAX_DIFF_FILES_SETTING,
@@ -119,6 +121,8 @@ module ApplicationSettingImplementation
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         max_export_size: 0,
         max_import_size: 0,
+        max_import_remote_file_size: 10240,
+        max_decompressed_archive_size: 25600,
         max_terraform_state_size_bytes: 0,
         max_yaml_size_bytes: 1.megabyte,
         max_yaml_depth: 100,
@@ -254,6 +258,7 @@ module ApplicationSettingImplementation
         users_get_by_id_limit_allowlist: [],
         can_create_group: true,
         bulk_import_enabled: false,
+        bulk_import_max_download_file_size: 5120,
         allow_runner_registration_token: true,
         user_defaults_to_private_profile: false,
         projects_api_rate_limit_unauthenticated: 400,

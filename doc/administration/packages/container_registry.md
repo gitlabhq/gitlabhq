@@ -75,7 +75,7 @@ Where:
 | `issuer`  | This should be the same value as configured in Registry's `issuer`. Read the [token auth configuration documentation](https://docs.docker.com/registry/configuration/#token). |
 
 A Registry init file is not shipped with GitLab if you install it from source.
-Hence, [restarting GitLab](../restart_gitlab.md#installations-from-source) does not restart the Registry should
+Hence, [restarting GitLab](../restart_gitlab.md#self-compiled-installations) does not restart the Registry should
 you modify its settings. Read the upstream documentation on how to achieve that.
 
 At the **absolute** minimum, make sure your [Registry configuration](https://docs.docker.com/registry/configuration/#auth)
@@ -187,7 +187,7 @@ registry_nginx['listen_port'] = 5678
      port: 5050
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
 
 ::EndTabs
@@ -256,7 +256,7 @@ registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
      host: registry.gitlab.example.com
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
 
 ::EndTabs
@@ -296,7 +296,7 @@ Registry application itself.
      enabled: false
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -334,7 +334,7 @@ the Container Registry by themselves, follow the steps below.
      container_registry: false
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -427,7 +427,7 @@ The default location where images are stored in self-compiled installations is
      path: shared/registry
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -443,7 +443,9 @@ GitLab does not back up Docker images that are not stored on the
 file system. Enable backups with your object storage provider if
 desired.
 
-#### Linux package installations
+#### Configure `s3` and `gcs` storage drivers for Linux package installations
+
+The following configuration steps are for the `s3` and `gcs` storage drivers. Other [storage drivers](#configure-storage-for-the-container-registry) are supported.
 
 To configure the `s3` storage driver for a Linux package installation:
 
@@ -512,6 +514,25 @@ To configure the `s3` storage driver for a Linux package installation:
       }
     }
    ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+To configure the `gcs` storage driver for a Linux package installation:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+      registry['storage'] = {
+      'gcs' => {
+        'bucket' => 'BUCKET_NAME',
+        'keyfile' => 'PATH/TO/KEYFILE',
+        # If you have the bucket shared with other apps beyond the registry, uncomment the following:
+        # 'rootdirectory' => '/gcs/object/name/prefix'
+      }
+    }
+   ```
+
+   GitLab supports all [available parameters](https://docs.docker.com/registry/storage-drivers/gcs/).
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -705,7 +726,7 @@ However, this behavior is undesirable for registries used by internal hosts that
        enabled: true
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -756,7 +777,7 @@ on how you installed GitLab. Follow the instructions here that match your instal
        encrypt: true
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ::EndTabs
@@ -911,7 +932,7 @@ You can use GitLab as an auth endpoint with an external container registry.
 
    [Read more](#enable-the-container-registry) about what these parameters mean.
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Configure Container Registry notifications
 
@@ -1486,7 +1507,7 @@ Start with a value between `25000000` (25 MB) and `50000000` (50 MB).
        chunksize: 25000000
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -1572,7 +1593,7 @@ and a simple solution would be to enable relative URLs in the Registry.
        relativeurls: true
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -1618,7 +1639,7 @@ this error appears:
 
 - `Error response from daemon: manifest invalid: Schema 1 manifest not supported`
 
-For Self-Managed GitLab instances, you can regain access to these images by temporarily downgrading
+For self-managed GitLab instances, you can regain access to these images by temporarily downgrading
 the GitLab Container Registry to a version lower than `v3.0.0-gitlab`. Follow these steps to regain
 access to these images:
 
@@ -1671,7 +1692,7 @@ For Linux package installations:
 
 :::TabTitle Self-compiled (source)
 
-For source installations, locate your `registry` binary and temporarily replace it with the one
+Locate your `registry` binary and temporarily replace it with the one
 obtained from `v3.0.0-gitlab`, as explained for Linux package installations.
 Make sure to start by backing up the original registry binary, and restore it after performing the
 [images upgrade](#images-upgrade) steps.

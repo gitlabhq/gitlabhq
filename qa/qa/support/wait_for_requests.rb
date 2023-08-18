@@ -7,9 +7,10 @@ module QA
 
       DEFAULT_MAX_WAIT_TIME = 60
 
-      def wait_for_requests(skip_finished_loading_check: false, skip_resp_code_check: false)
+      def wait_for_requests(skip_finished_loading_check: false, skip_resp_code_check: false, finish_loading_wait: 1)
         Waiter.wait_until(log: false) do
-          finished_all_ajax_requests? && (!skip_finished_loading_check ? finished_loading?(wait: 1) : true)
+          finished_all_ajax_requests? &&
+            (!skip_finished_loading_check ? finished_loading?(wait: finish_loading_wait) : true)
         end
       rescue Repeater::WaitExceededError
         raise $!, 'Page did not fully load. This could be due to an unending async request or loading icon.'

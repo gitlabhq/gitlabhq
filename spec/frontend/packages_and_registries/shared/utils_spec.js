@@ -3,6 +3,7 @@ import {
   keyValueToFilterToken,
   searchArrayToFilterTokens,
   extractFilterAndSorting,
+  extractPageInfo,
   beautifyPath,
   getCommitLink,
 } from '~/packages_and_registries/shared/utils';
@@ -59,6 +60,21 @@ describe('Packages And Registries shared utils', () => {
         expect(extractFilterAndSorting(queryObject)).toStrictEqual(result);
       },
     );
+  });
+
+  describe('extractPageInfo', () => {
+    it.each`
+      after    | before   | result
+      ${null}  | ${null}  | ${{ after: null, before: null }}
+      ${'123'} | ${null}  | ${{ after: '123', before: null }}
+      ${null}  | ${'123'} | ${{ after: null, before: '123' }}
+    `('returns pagination objects', ({ after, before, result }) => {
+      const queryObject = {
+        after,
+        before,
+      };
+      expect(extractPageInfo(queryObject)).toStrictEqual(result);
+    });
   });
 
   describe('beautifyPath', () => {

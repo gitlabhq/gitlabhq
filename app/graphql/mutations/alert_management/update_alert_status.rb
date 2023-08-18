@@ -6,8 +6,8 @@ module Mutations
       graphql_name 'UpdateAlertStatus'
 
       argument :status, Types::AlertManagement::StatusEnum,
-               required: true,
-               description: 'Status to set the alert.'
+        required: true,
+        description: 'Status to set the alert.'
 
       def resolve(project_path:, iid:, status:)
         alert = authorized_find!(project_path: project_path, iid: iid)

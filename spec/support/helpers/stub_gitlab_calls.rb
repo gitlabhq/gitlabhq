@@ -23,6 +23,10 @@ module StubGitlabCalls
   end
 
   def stub_ci_pipeline_yaml_file(ci_yaml_content)
+    allow_any_instance_of(Gitlab::Ci::ProjectConfig::Repository)
+      .to receive(:file_in_repository?)
+      .and_return(ci_yaml_content.present?)
+
     allow_any_instance_of(Repository)
       .to receive(:gitlab_ci_yml_for)
       .and_return(ci_yaml_content)

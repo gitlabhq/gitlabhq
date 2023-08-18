@@ -17,7 +17,6 @@ import {
   MOCK_LABEL_SEARCH_RESULT,
   MOCK_FILTERED_APPLIED_SELECTED_LABELS,
   MOCK_FILTERED_UNSELECTED_LABELS,
-  MOCK_FILTERED_UNAPPLIED_SELECTED_LABELS,
 } from '../mock_data';
 
 describe('Global Search Store Getters', () => {
@@ -70,18 +69,6 @@ describe('Global Search Store Getters', () => {
     });
   });
 
-  describe('currentUrlQueryHasLanguageFilters', () => {
-    it.each`
-      description             | lang                        | result
-      ${'has valid language'} | ${{ language: ['a', 'b'] }} | ${true}
-      ${'has empty lang'}     | ${{ language: [] }}         | ${false}
-      ${'has no lang'}        | ${{}}                       | ${false}
-    `('$description', ({ lang, result }) => {
-      state.urlQuery = lang;
-      expect(getters.currentUrlQueryHasLanguageFilters(state)).toBe(result);
-    });
-  });
-
   describe('navigationItems', () => {
     it('returns the re-mapped navigation data', () => {
       state.navigation = MOCK_NAVIGATION;
@@ -130,25 +117,6 @@ describe('Global Search Store Getters', () => {
       expect(getters.appliedSelectedLabels(state)).toStrictEqual(
         MOCK_FILTERED_APPLIED_SELECTED_LABELS,
       );
-    });
-  });
-
-  describe('filteredUnappliedSelectedLabels', () => {
-    beforeEach(() => {
-      state.query.labels = ['6', '73'];
-    });
-
-    it('returns all labels that are selected (part of URL) no search', () => {
-      expect(getters.filteredUnappliedSelectedLabels(state)).toStrictEqual(
-        MOCK_FILTERED_UNAPPLIED_SELECTED_LABELS,
-      );
-    });
-
-    it('returns labels that are selected (part of URL) and result of search', () => {
-      state.searchLabelString = 'ACC';
-      expect(getters.filteredUnappliedSelectedLabels(state)).toStrictEqual([
-        MOCK_FILTERED_UNAPPLIED_SELECTED_LABELS[1],
-      ]);
     });
   });
 

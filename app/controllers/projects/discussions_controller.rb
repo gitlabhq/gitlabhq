@@ -4,8 +4,8 @@ class Projects::DiscussionsController < Projects::ApplicationController
   include NotesHelper
   include RendersNotes
 
-  before_action :check_merge_requests_available!
-  before_action :merge_request
+  before_action :check_noteable_supports_resolvable_notes!
+  before_action :noteable
   before_action :discussion, only: [:resolve, :unresolve]
   before_action :authorize_resolve_discussion!, only: [:resolve, :unresolve]
 
@@ -56,13 +56,26 @@ class Projects::DiscussionsController < Projects::ApplicationController
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def merge_request
-    @merge_request ||= MergeRequestsFinder.new(current_user, project_id: @project.id).find_by!(iid: params[:merge_request_id])
+  def noteable
+    @noteable ||= noteable_finder_class.new(current_user, project_id: @project.id).find_by!(iid: params[:noteable_id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def noteable_finder_class
+    case params[:noteable_type]
+    when 'issues'
+      IssuesFinder
+    when 'merge_requests'
+      MergeRequestsFinder
+    end
+  end
+
+  def check_noteable_supports_resolvable_notes!
+    render_404 unless noteable_finder_class && noteable&.supports_resolvable_notes?
+  end
+
   def discussion
-    @discussion ||= @merge_request.find_discussion(params[:id]) || render_404
+    @discussion ||= @noteable.find_discussion(params[:id]) || render_404
   end
 
   def authorize_resolve_discussion!

@@ -5,7 +5,7 @@
       = _('Kroki')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki.')
       = link_to _('Learn more.'), help_page_path('administration/integration/kroki.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content

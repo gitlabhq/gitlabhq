@@ -1,6 +1,7 @@
 import { GlButtonGroup, GlButton, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { MOCK_QUERY, MOCK_SORT_OPTIONS } from 'jest/search/mock_data';
 import GlobalSearchSort from '~/search/sort/components/app.vue';

@@ -1,0 +1,11 @@
+---
+table_name: group_ssh_certificates
+classes:
+- Groups::SshCertificate
+feature_categories:
+- source_code_management
+description: Stores CA files used to verify which certificates are authorized to access
+  a namespace
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127856
+milestone: '16.3'
+gitlab_schema: gitlab_main

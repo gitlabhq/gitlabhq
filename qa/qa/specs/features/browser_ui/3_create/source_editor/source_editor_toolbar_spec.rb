@@ -3,13 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Source editor toolbar preview', product_group: :source_code do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'empty-project-with-md'
-          project.initialize_with_readme = true
-        end
-      end
-
+      let(:project) { create(:project, :with_readme, name: 'empty-project-with-md') }
       let(:edited_readme_content) { 'Here is the edited content.' }
 
       before do

@@ -9,12 +9,7 @@ module QA
 
     describe 'Upload a file in Web IDE' do
       let(:file_path) { Runtime::Path.fixture('web_ide', file_name) }
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'upload-file-project'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'upload-file-project') }
 
       before do
         Flow::Login.sign_in

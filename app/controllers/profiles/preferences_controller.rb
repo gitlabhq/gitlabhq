@@ -37,7 +37,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
   end
 
   def preferences_param_names
-    preferences_param_names = [
+    [
       :color_scheme_id,
       :diffs_deletion_color,
       :diffs_addition_color,
@@ -57,10 +57,9 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :project_shortcut_buttons,
       :markdown_surround_selection,
       :markdown_automatic_lists,
-      :use_new_navigation
+      :use_new_navigation,
+      :enabled_following
     ]
-    preferences_param_names << :enabled_following if ::Feature.enabled?(:disable_follow_users, user)
-    preferences_param_names
   end
 end
 

@@ -40,25 +40,6 @@ RSpec.describe MergeRequests::MergeabilityCheckBatchWorker, feature_category: :c
         subject.perform([merge_request_1.id, merge_request_2.id, merge_request_3.id, 1234], user.id)
       end
 
-      context 'when restrict_merge_status_recheck FF is off' do
-        before do
-          stub_feature_flags(restrict_merge_status_recheck: false)
-        end
-
-        it 'executes MergeabilityCheckService on merge requests that needs to be checked' do
-          expect_next_instance_of(MergeRequests::MergeabilityCheckService, merge_request_1) do |service|
-            expect(service).to receive(:execute).and_return(ServiceResponse.success)
-          end
-          expect_next_instance_of(MergeRequests::MergeabilityCheckService, merge_request_2) do |service|
-            expect(service).to receive(:execute).and_return(ServiceResponse.success)
-          end
-          expect(MergeRequests::MergeabilityCheckService).not_to receive(:new).with(merge_request_3.id)
-          expect(MergeRequests::MergeabilityCheckService).not_to receive(:new).with(1234)
-
-          subject.perform([merge_request_1.id, merge_request_2.id, merge_request_3.id, 1234], user.id)
-        end
-      end
-
       it 'structurally logs a failed mergeability check' do
         expect_next_instance_of(MergeRequests::MergeabilityCheckService, merge_request_1) do |service|
           expect(service).to receive(:execute).and_return(ServiceResponse.error(message: "solar flares"))

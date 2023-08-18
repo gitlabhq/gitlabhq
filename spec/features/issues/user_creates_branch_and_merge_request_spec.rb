@@ -112,6 +112,18 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
           expect(page).to have_selector('.ref-selector', text: branch_name)
           expect(page).to have_current_path project_tree_path(project, branch_name), ignore_query: true
         end
+
+        context 'when source branch is non-default' do
+          let(:source_branch) { 'feature' }
+
+          it 'creates a branch' do
+            select_dropdown_option('create-branch', branch_name, source_branch)
+            wait_for_requests
+
+            expect(page).to have_selector('.ref-selector', text: branch_name)
+            expect(page).to have_current_path project_tree_path(project, branch_name), ignore_query: true
+          end
+        end
       end
 
       context 'when branch name is invalid' do
@@ -231,12 +243,13 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
   private
 
-  def select_dropdown_option(option, branch_name = nil)
+  def select_dropdown_option(option, branch_name = nil, source_branch = nil)
     find('.create-mr-dropdown-wrap .dropdown-toggle').click
     find("li[data-value='#{option}']").click
 
-    if branch_name
-      find('.js-branch-name').set(branch_name)
+    if branch_name || source_branch
+      find('.js-branch-name').set(branch_name) if branch_name
+      find('.js-ref').set(source_branch) if source_branch
 
       # Javascript debounces AJAX calls.
       # So we have to wait until AJAX requests are started.

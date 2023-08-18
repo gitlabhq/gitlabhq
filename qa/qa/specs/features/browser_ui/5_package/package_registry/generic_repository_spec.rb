@@ -1,17 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
-    describe 'Generic Repository' do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+    describe 'Generic Repository', :external_api_calls do
       include Runtime::Fixtures
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'generic-package-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'generic-package-project') }
       let(:package) do
         Resource::Package.init do |package|
           package.name = "my_package-#{SecureRandom.hex(8)}"

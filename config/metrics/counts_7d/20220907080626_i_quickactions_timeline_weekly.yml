@@ -1,6 +1,5 @@
 ---
 key_path: redis_hll_counters.quickactions.i_quickactions_timeline_weekly
-name: quickactions_timeline_weekly
 description: Count of WAU using the `/timeline` quick action
 product_section: ops
 product_stage: monitor

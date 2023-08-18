@@ -11,7 +11,7 @@
       = _('Metrics - Prometheus')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Monitor GitLab with Prometheus.')
   .settings-content
     = render 'prometheus'
@@ -22,7 +22,7 @@
       = _('Metrics - Grafana')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Link to your Grafana instance.')
       = link_to _('Learn more.'), help_page_path('administration/monitoring/performance/grafana_configuration.md'), target: '_blank', rel: 'noopener noreferrer'
 
@@ -35,7 +35,7 @@
       = _('Profiling - Performance bar')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Enable access to the performance bar for non-administrators in a given group.')
       = link_to _('Learn more.'), help_page_path('administration/monitoring/performance/performance_bar.md', anchor: 'enable-the-performance-bar-for-non-administrators'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
@@ -47,7 +47,7 @@
       = _('Usage statistics')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Enable or disable version check and Service Ping.')
   .settings-content
     = render 'usage'
@@ -59,7 +59,7 @@
         = _('Sentry')
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded_by_default? ? _('Collapse') : _('Expand')
-      %p
+      %p.gl-text-secondary
         = _('Configure Sentry integration for error tracking')
     .settings-content
       = render 'sentry'

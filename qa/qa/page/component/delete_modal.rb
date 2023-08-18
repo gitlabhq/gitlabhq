@@ -9,7 +9,7 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/assets/javascripts/projects/components/shared/delete_button.vue' do
+          base.view 'app/assets/javascripts/projects/components/shared/delete_modal.vue' do
             element :confirm_name_field
             element :confirm_delete_button
           end

@@ -40,7 +40,7 @@ If you are using GitLab.com:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/389269) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415447) in GitLab 16.2. Feature flag `create_runner_workflow_for_admin` removed.
 
-Prerequisites:
+Prerequisite:
 
 - You must be an administrator.
 
@@ -69,7 +69,7 @@ The ability to pass a runner registration token, and support for certain configu
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. Authentication tokens
 should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
-Prerequisites:
+Prerequisite:
 
 - You must be an administrator.
 
@@ -81,6 +81,44 @@ To create a shared runner:
 1. Select **Register an instance runner**.
 1. Copy the registration token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/).
+
+### Pause or resume a shared runner
+
+Prerequisite:
+
+- You must be an administrator.
+
+You can pause a runner so that it does not accept jobs from groups and projects in the GitLab instance.
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **CI/CD > Runners**.
+1. In the search box, enter the runner description or filter the runner list.
+1. In the runner list, to the right of the runner:
+   - To pause the runner, select **Pause** (**{pause}**).
+   - To resume the runner, select **Resume** (**{play}**).
+
+### Delete shared runners
+
+Prerequisite:
+
+- You must be an administrator.
+
+When you delete a shared runner, it is permanently deleted from the GitLab instance and can
+no longer be used by groups and projects. If you want to temporarily stop the runner from accepting
+jobs, you can [pause](#pause-or-resume-a-shared-runner) the runner instead.
+
+To delete a single or multiple shared runners:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **CI/CD > Runners**.
+1. In the search box, enter the runner description or filter the list of runners.
+1. Delete the shared runner:
+   - To delete a single runner, next to the runner, select **Delete runner** (**{remove}**).
+   - To delete multiple shared runners, select the checkbox for each runner and select **Delete selected**.
+   - To delete all runners, select the checkbox at the top of the runner list and select **Delete selected**.
+1. Select **Permanently delete runner**.
 
 ### Enable shared runners for a project
 
@@ -182,7 +220,7 @@ When only one job runs at a time, the fair usage algorithm assigns jobs in this 
 Use _group runners_ when you want all projects in a group
 to have access to a set of runners.
 
-Group runners process jobs by using a first in, first out ([FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics))) queue.
+Group runners process jobs by using a first in, first out queue.
 
 ### Create a group runner with an authentication token
 
@@ -237,8 +275,6 @@ how to [register a runner](https://docs.gitlab.com/runner/register/).
 
 ### View and manage group runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/37366/) in GitLab 13.2.
-
 You can view and manage all runners for a group, its subgroups, and projects.
 You can do this for your self-managed GitLab instance or for GitLab.com.
 You must have the Owner role for the group.
@@ -247,25 +283,6 @@ You must have the Owner role for the group.
 1. Select **Build > Runners**.
 
 From this page, you can edit, pause, and remove runners from the group, its subgroups, and projects.
-
-#### Delete multiple group runners
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361721/) in GitLab 15.6
-
-Prerequisites:
-
-- You must have either:
-  - Owner role for the group.
-  - Access to delete any runners in the group.
-
-To delete multiple runners in a single action in the group list:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
-1. Select **Build > Runners**.
-1. To delete multiple runners, you can either:
-   - Select the checkbox next to the runner.
-   - Select the checkbox at the top of the runner list to select all runners in the list.
-1. To delete the runners, select **Delete selected**.
 
 #### Filter group runners to show only inherited
 
@@ -284,20 +301,46 @@ those in other groups:
 1. Select **Build > Runners**.
 1. Above the list, turn off the **Show only inherited** toggle.
 
-### Pause or remove a group runner
+### Pause or resume a group runner
 
-You can pause or remove a group runner for your self-managed GitLab instance or for GitLab.com.
-You must have the Owner role for the group.
+Prerequisite:
+
+- You must be an administrator or have the Owner role for the group.
+
+You can pause a runner so that it does not accept jobs from subgroups and projects in the GitLab
+instance. If you pause a group runner that is used by multiple projects, the runner pauses for all projects.
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
 1. Select **Build > Runners**.
-1. Select **Pause** or **Remove runner**.
-   - If you pause a group runner that is used by multiple projects, the runner pauses for all projects.
-   - From the group view, you cannot remove a runner that is assigned to more than one project.
-     You must remove it from each project first.
-1. On the confirmation dialog, select **OK**.
+1. In the search box, enter the runner description or filter the runner list.
+1. In the runner list, to the right of the runner:
+   - To pause the runner, select **Pause** (**{pause}**).
+   - To resume the runner, select **Resume** (**{play}**).
 
-### Clean up stale group runners **(ULTIMATE)**
+### Delete a group runner
+
+> Multiple runner deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361721/) in GitLab 15.6.
+
+Prerequisite:
+
+- You must be an administrator or have the Owner role for the group.
+
+When you delete a group runner, it is permanently deleted from the GitLab instance and can
+no longer be used by subgroups and projects. If you want to temporarily stop the runner from accepting
+jobs, you can [pause](#pause-or-resume-a-group-runner) the runner instead.
+
+To delete a single or multiple group runners:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Build > Runners**.
+1. In the search box, enter the runner description or filter the list of runners.
+1. Delete the group runner:
+   - To delete a single runner, next to the runner, select **Delete runner** (**{remove}**).
+   - To delete multiple shared runners, select the checkbox for each runner and select **Delete selected**.
+   - To delete all runners, select the checkbox at the top of the runner list and select **Delete selected**.
+1. Select **Permanently delete runner**.
+
+### Clean up stale group runners **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
 
@@ -407,6 +450,43 @@ To create a project runner:
 
 The runner is now enabled for the project.
 
+### Pause or resume a project runner
+
+Prerequisite:
+
+- You must be an administrator, or have the Maintainer role for the project.
+
+You can pause a project runner so that it does not accept jobs from projects it's assigned to
+in the GitLab instance.
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to
+   find the project where you want to enable the runner.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. In the **Assigned project runners** section, find the runner.
+1. To the right of the runner:
+   - To pause the runner, select **Pause** (**{pause}**), then select **Pause**.
+   - To resume the runner, select **Resume** (**{play}**).
+
+### Delete a project runner
+
+Prerequisites:
+
+- You must be an administrator, or have the Maintainer role for the project.
+- You cannot delete a project runner that is assigned to more than one project. Before you can delete the runner, you must [disable](#enable-a-project-runner-for-a-different-project) it in all projects where it is enabled.
+
+When you delete a project runner, it is permanently deleted from the GitLab instance and can
+no longer be used by projects. If you want to temporarily stop the runner from accepting
+jobs, you can [pause](#pause-or-resume-a-project-runner) the runner instead.
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to
+   find the project where you want to enable the runner.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. In the **Assigned project runners** section, find the runner.
+1. To the right of the runner, select **Remove runner**.
+1. To delete the runner, select **Remove**.
+
 ### Enable a project runner for a different project
 
 After a project runner is created, you can enable it for other projects.
@@ -460,26 +540,25 @@ A runner can have one of the following statuses.
 | `stale`   | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
 | `never_contacted` | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
 
-## View statistics for runner performance **(ULTIMATE)**
+## View statistics for runner performance **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
 
 As an administrator, you can view runner statistics to learn about the performance of your runner fleet.
+
+- The **Median job queued time** value is calculated by sampling the queue duration of the
+most recent 100 jobs that were run by Instance runners. Jobs from only the latest 5000
+runners are considered.
+- The median is a value that falls into the 50th percentile: half of the jobs
+queued for longer than the median value, and half of the jobs queued for less than the
+median value.
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
 1. On the left sidebar, select **CI/CD > Runners**.
 1. Select **View metrics**.
 
-The **Median job queued time** value is calculated by sampling the queue duration of the
-most recent 100 jobs that were run by Instance runners. Jobs from only the latest 5000
-runners are considered.
-
-The median is a value that falls into the 50th percentile: half of the jobs
-queued for longer than the median value, and half of the jobs queued for less than the
-median value.
-
-## Determine which runners need to be upgraded **(ULTIMATE)**
+## Determine which runners need to be upgraded **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
 

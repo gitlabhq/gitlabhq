@@ -8,6 +8,7 @@ import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import FailedJobDetails from '~/pipelines/components/pipelines_list/failure_widget/failed_job_details.vue';
 import RetryMrFailedJobMutation from '~/pipelines/graphql/mutations/retry_mr_failed_job.mutation.graphql';
+import { BRIDGE_KIND } from '~/pipelines/components/graph/constants';
 import { job } from './mock';
 
 Vue.use(VueApollo);
@@ -45,8 +46,7 @@ describe('FailedJobDetails component', () => {
 
   const findArrowIcon = () => wrapper.findComponent(GlIcon);
   const findJobId = () => wrapper.findComponent(GlLink);
-  const findHiddenJobLog = () => wrapper.findByTestId('log-is-hidden');
-  const findVisibleJobLog = () => wrapper.findByTestId('log-is-visible');
+  const findJobLog = () => wrapper.findByTestId('job-log');
   const findJobName = () => wrapper.findByText(defaultProps.job.name);
   const findRetryButton = () => wrapper.findByLabelText('Retry');
   const findRow = () => wrapper.findByTestId('widget-row');
@@ -78,8 +78,7 @@ describe('FailedJobDetails component', () => {
     });
 
     it('does not renders the job lob', () => {
-      expect(findHiddenJobLog().exists()).toBe(true);
-      expect(findVisibleJobLog().exists()).toBe(false);
+      expect(findJobLog().exists()).toBe(false);
     });
   });
 
@@ -87,6 +86,16 @@ describe('FailedJobDetails component', () => {
     describe('when the job is not retryable', () => {
       beforeEach(() => {
         createComponent({ props: { job: { ...job, retryable: false } } });
+      });
+
+      it('disables the retry button', () => {
+        expect(findRetryButton().props().disabled).toBe(true);
+      });
+    });
+
+    describe('when the job is a bridge', () => {
+      beforeEach(() => {
+        createComponent({ props: { job: { ...job, kind: BRIDGE_KIND } } });
       });
 
       it('disables the retry button', () => {
@@ -178,13 +187,11 @@ describe('FailedJobDetails component', () => {
       });
 
       it('does not renders the received html of the job log', () => {
-        expect(findVisibleJobLog().html()).not.toContain(defaultProps.job.trace.htmlSummary);
+        expect(findJobLog().html()).not.toContain(defaultProps.job.trace.htmlSummary);
       });
 
       it('shows a permission error message', () => {
-        expect(findVisibleJobLog().text()).toBe(
-          "You do not have permission to read this job's log",
-        );
+        expect(findJobLog().text()).toBe("You do not have permission to read this job's log.");
       });
     });
 
@@ -200,8 +207,7 @@ describe('FailedJobDetails component', () => {
 
         describe('while collapsed', () => {
           it('expands the job log', () => {
-            expect(findHiddenJobLog().exists()).toBe(false);
-            expect(findVisibleJobLog().exists()).toBe(true);
+            expect(findJobLog().exists()).toBe(true);
           });
 
           it('renders the down arrow', () => {
@@ -209,19 +215,17 @@ describe('FailedJobDetails component', () => {
           });
 
           it('renders the received html of the job log', () => {
-            expect(findVisibleJobLog().html()).toContain(defaultProps.job.trace.htmlSummary);
+            expect(findJobLog().html()).toContain(defaultProps.job.trace.htmlSummary);
           });
         });
 
         describe('while expanded', () => {
           it('collapes the job log', async () => {
-            expect(findHiddenJobLog().exists()).toBe(false);
-            expect(findVisibleJobLog().exists()).toBe(true);
+            expect(findJobLog().exists()).toBe(true);
 
             await findRow().trigger('click');
 
-            expect(findHiddenJobLog().exists()).toBe(true);
-            expect(findVisibleJobLog().exists()).toBe(false);
+            expect(findJobLog().exists()).toBe(false);
           });
 
           it('renders the right arrow', async () => {
@@ -236,14 +240,12 @@ describe('FailedJobDetails component', () => {
 
       describe('when clicking on a link element within the row', () => {
         it('does not expands/collapse the job log', async () => {
-          expect(findHiddenJobLog().exists()).toBe(true);
-          expect(findVisibleJobLog().exists()).toBe(false);
+          expect(findJobLog().exists()).toBe(false);
           expect(findArrowIcon().props().name).toBe('chevron-right');
 
           await findJobId().vm.$emit('click');
 
-          expect(findHiddenJobLog().exists()).toBe(true);
-          expect(findVisibleJobLog().exists()).toBe(false);
+          expect(findJobLog().exists()).toBe(false);
           expect(findArrowIcon().props().name).toBe('chevron-right');
         });
       });

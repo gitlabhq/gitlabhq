@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Environments and deployments **(FREE)**
+# Environments and deployments **(FREE ALL)**
 
 Environments describe where code is deployed.
 
@@ -343,7 +343,7 @@ the job's `script`.
 
 If there is a problem with a deployment, you can retry it or roll it back.
 
-To retry or rollback a deployment:
+To retry or roll back a deployment:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Operate > Environments**.
@@ -355,7 +355,7 @@ To retry or rollback a deployment:
 NOTE:
 If you have [prevented outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) in your project,
 the rollback buttons might be hidden or disabled.
-In this case, see [how to rollback to an outdated deployment](deployment_safety.md#how-to-rollback-to-an-outdated-deployment).
+In this case, see [job retries for rollback deployments](deployment_safety.md#job-retries-for-rollback-deployments).
 
 ### Environment URL
 
@@ -729,7 +729,7 @@ or human error can cause major issues with an environment. Things like:
 You can use [incident management](../../operations/incident_management/index.md)
 to get alerts when there are critical issues that need immediate attention.
 
-#### View the latest alerts for environments **(ULTIMATE)**
+#### View the latest alerts for environments **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
 
@@ -745,7 +745,7 @@ longer visible on the environments page.
 If the alert requires a [rollback](#retry-or-roll-back-a-deployment), you can select the
 deployment tab from the environment page and select which deployment to roll back to.
 
-#### Auto Rollback **(ULTIMATE)**
+#### Auto Rollback **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in GitLab 13.7.
 

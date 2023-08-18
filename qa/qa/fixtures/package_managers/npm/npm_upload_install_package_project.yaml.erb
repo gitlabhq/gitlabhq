@@ -7,7 +7,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=<%= auth_token %>">.npmrc
+    - echo "//<%= gitlab_host_without_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=<%= auth_token %>">.npmrc
     - npm publish
   only:
     - "<%= project.default_branch %>"
@@ -16,8 +16,8 @@ deploy:
 install:
   stage: install
   script:
-    - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=<%= auth_token %>">.npmrc
-    - "npm config set @<%= registry_scope %>:registry <%= gitlab_address_with_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/npm/"
+    - echo "//<%= gitlab_host_without_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=<%= auth_token %>">.npmrc
+    - "npm config set @<%= registry_scope %>:registry <%= gitlab_address_without_port %>/api/v4/projects/${CI_PROJECT_ID}/packages/npm/"
     - "npm install <%= package.name %>"
   cache:
     key: ${CI_COMMIT_REF_NAME}

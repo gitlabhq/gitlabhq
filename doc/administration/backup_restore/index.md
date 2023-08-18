@@ -60,7 +60,7 @@ To prepare the new server:
    1. Install GitLab.
    1. Configure by copying `/etc/gitlab` files from the old server to the new server, and update as necessary.
       Read the
-      [Omnibus configuration backup and restore instructions](https://docs.gitlab.com/omnibus/settings/backups.html) for more detail.
+      [Linux package installation backup and restore instructions](https://docs.gitlab.com/omnibus/settings/backups.html) for more detail.
    1. If applicable, disable [incoming email](../incoming_email.md).
    1. Block new CI/CD jobs from starting upon initial startup after the backup and restore.
       Edit `/etc/gitlab/gitlab.rb` and set the following:

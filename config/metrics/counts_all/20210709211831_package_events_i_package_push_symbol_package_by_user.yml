@@ -1,6 +1,5 @@
 ---
 key_path: counts.package_events_i_package_push_symbol_package_by_user
-name: symbol_packages_pushed_by_user
 description: A count of symbol packages that have been pushed by an authenticated user to the package registry
 product_section: ops
 product_stage: package

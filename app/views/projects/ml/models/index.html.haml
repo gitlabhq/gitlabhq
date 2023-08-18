@@ -1,5 +1,4 @@
 - breadcrumb_title s_('ModelRegistry|Model registry')
 - page_title s_('ModelRegistry|Model registry')
-- presenter = ::Ml::ModelsIndexPresenter.new(@models)
 
-#js-index-ml-models{ data: { view_model: presenter.present } }
+= render(Projects::Ml::ModelsIndexComponent.new(models: @models))

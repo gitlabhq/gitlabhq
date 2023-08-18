@@ -48,7 +48,7 @@ export default {
           this.emojis = Array.isArray(response) ? response : response.data;
         })
         .catch(() => {
-          createAlert({ message: __('There was a problem fetching emojis.') });
+          createAlert({ message: __('There was a problem fetching emoji.') });
         })
         .finally(() => {
           this.loading = false;

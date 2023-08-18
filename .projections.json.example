@@ -59,37 +59,42 @@
     "type": "source"
   },
   "app/presenters/*.rb": {
-    "alternate": "spec/app/presenters/{}_spec.rb",
+    "alternate": "spec/presenters/{}_spec.rb",
     "related": "ee/app/presenters/ee/{}.rb",
     "type": "source"
   },
   "app/serializers/*.rb": {
-    "alternate": "spec/app/serializers/{}_spec.rb",
+    "alternate": "spec/serializers/{}_spec.rb",
     "related": "ee/app/serializers/ee/{}.rb",
     "type": "source"
   },
   "app/services/*.rb": {
-    "alternate": "spec/app/services/{}_spec.rb",
+    "alternate": "spec/services/{}_spec.rb",
     "related": "ee/app/services/ee/{}.rb",
     "type": "source"
   },
   "app/uploaders/*.rb": {
-    "alternate": "spec/app/uploaders/{}_spec.rb",
+    "alternate": "spec/uploaders/{}_spec.rb",
     "related": "ee/app/uploaders/ee/{}.rb",
     "type": "source"
   },
   "app/validators/*.rb": {
-    "alternate": "spec/app/validators/{}_spec.rb",
+    "alternate": "spec/validators/{}_spec.rb",
     "related": "ee/app/validators/ee/{}.rb",
     "type": "source"
   },
-  "app/views/*.rb": {
-    "alternate": "spec/app/views/{}_spec.rb",
-    "related": "ee/app/views/ee/{}.rb",
+  "app/views/*.erb": {
+    "alternate": "spec/views/{}.erb_spec.rb",
+    "related": "ee/app/views/ee/{}.erb",
+    "type": "source"
+  },
+  "app/views/*.haml": {
+    "alternate": "spec/views/{}.haml_spec.rb",
+    "related": "ee/app/views/ee/{}.haml",
     "type": "source"
   },
   "app/workers/*.rb": {
-    "alternate": "spec/app/workers/{}_spec.rb",
+    "alternate": "spec/workers/{}_spec.rb",
     "related": "ee/app/workers/ee/{}.rb",
     "type": "source"
   },
@@ -111,6 +116,16 @@
   },
   "spec/requests/api/*_spec.rb": {
     "alternate": "lib/api/{}.rb",
+    "type": "test"
+  },
+  "spec/views/*.erb_spec.rb": {
+    "alternate": "app/views/{}.erb",
+    "related": "ee/app/views/ee/{}.erb",
+    "type": "test"
+  },
+  "spec/views/*.haml_spec.rb": {
+    "alternate": "app/views/{}.haml",
+    "related": "ee/app/views/ee/{}.haml",
     "type": "test"
   },
   "rubocop/cop/*.rb": {
@@ -170,32 +185,37 @@
     "type": "source"
   },
   "ee/app/serializers/ee/*.rb": {
-    "alternate": "spec/app/serializers/{}_spec.rb",
+    "alternate": "spec/serializers/{}_spec.rb",
     "related": "app/serializers/{}.rb",
     "type": "source"
   },
   "ee/app/services/ee/*.rb": {
-    "alternate": "spec/app/services/{}_spec.rb",
+    "alternate": "spec/services/{}_spec.rb",
     "related": "app/services/{}.rb",
     "type": "source"
   },
   "ee/app/uploaders/ee/*.rb": {
-    "alternate": "spec/app/uploaders/{}_spec.rb",
+    "alternate": "spec/uploaders/{}_spec.rb",
     "related": "app/uploaders/{}.rb",
     "type": "source"
   },
   "ee/app/validators/ee/*.rb": {
-    "alternate": "spec/app/validators/{}_spec.rb",
+    "alternate": "spec/validators/{}_spec.rb",
     "related": "app/validators/{}.rb",
     "type": "source"
   },
-  "ee/app/views/ee/*.rb": {
-    "alternate": "spec/app/views/{}_spec.rb",
-    "related": "app/views/{}.rb",
+  "ee/app/views/ee/*.erb": {
+    "alternate": "ee/spec/views/ee/{}.erb_spec.rb",
+    "related": "app/views/{}.erb",
+    "type": "source"
+  },
+  "ee/app/views/ee/*.haml": {
+    "alternate": "ee/spec/views/ee/{}.haml_spec.rb",
+    "related": "app/views/{}.haml",
     "type": "source"
   },
   "ee/app/workers/ee/*.rb": {
-    "alternate": "spec/app/workers/{}_spec.rb",
+    "alternate": "spec/workers/{}_spec.rb",
     "related": "app/workers/{}.rb",
     "type": "source"
   },
@@ -245,6 +265,16 @@
   },
   "ee/spec/frontend/*_spec.js": {
     "alternate": ["ee/app/assets/javascripts/{}.vue", "ee/app/assets/javascripts/{}.js"],
+    "type": "test"
+  },
+  "ee/spec/views/ee/*.erb_spec.rb": {
+    "alternate": "ee/app/views/ee/{}.erb",
+    "related": "spec/views/{}.erb_spec.rb",
+    "type": "test"
+  },
+  "ee/spec/views/ee/*.haml_spec.rb": {
+    "alternate": "ee/app/views/ee/{}.haml",
+    "related": "spec/views/{}.haml_spec.rb",
     "type": "test"
   },
   "*.rb": { "dispatch": "bundle exec rubocop {file}" },

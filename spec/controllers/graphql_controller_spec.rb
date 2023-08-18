@@ -234,6 +234,26 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         post :execute
       end
 
+      it 'calls the track visual studio extension api when trackable method' do
+        agent = 'code-completions-language-server-experiment (gl-visual-studio-extension:1.0.0.0; arch:X64;)'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::VisualStudioExtensionActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        post :execute
+      end
+
+      it 'calls the track neovim plugin api when trackable method' do
+        agent = 'code-completions-language-server-experiment (Neovim:0.9.0; gitlab.vim (v0.1.0); arch:amd64; os:darwin)'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::NeovimPluginActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        post :execute
+      end
+
       context 'if using the GitLab CLI' do
         it 'call trackable for the old UserAgent' do
           agent = 'GLab - GitLab CLI'
@@ -374,6 +394,26 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         request.env['HTTP_USER_AGENT'] = agent
 
         expect(Gitlab::UsageDataCounters::JetBrainsBundledPluginActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        subject
+      end
+
+      it 'calls the track visual studio extension api when trackable method' do
+        agent = 'code-completions-language-server-experiment (gl-visual-studio-extension:1.0.0.0; arch:X64;)'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::VisualStudioExtensionActivityUniqueCounter)
+          .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
+
+        subject
+      end
+
+      it 'calls the track neovim plugin api when trackable method' do
+        agent = 'code-completions-language-server-experiment (Neovim:0.9.0; gitlab.vim (v0.1.0); arch:amd64; os:darwin)'
+        request.env['HTTP_USER_AGENT'] = agent
+
+        expect(Gitlab::UsageDataCounters::NeovimPluginActivityUniqueCounter)
           .to receive(:track_api_request_when_trackable).with(user_agent: agent, user: user)
 
         subject

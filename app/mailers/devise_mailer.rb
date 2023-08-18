@@ -8,6 +8,7 @@ class DeviseMailer < Devise::Mailer
 
   helper EmailsHelper
   helper ApplicationHelper
+  helper RegistrationsHelper
 
   def password_change_by_admin(record, opts = {})
     devise_mail(record, :password_change_by_admin, opts)
@@ -20,6 +21,14 @@ class DeviseMailer < Devise::Mailer
   def reset_password_instructions(record, token, opts = {})
     headers['X-Mailgun-Suppressions-Bypass'] = 'true'
     super
+  end
+
+  def email_changed(record, opts = {})
+    if Gitlab.com?
+      devise_mail(record, :email_changed_gitlab_com, opts)
+    else
+      devise_mail(record, :email_changed, opts)
+    end
   end
 
   protected

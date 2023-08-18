@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_category: :importers do
   let_it_be(:filepath) { File.join(Dir.tmpdir, 'decompressed_archive_size_validator_spec.gz') }
 
-  before(:all) do
+  before_all do
     create_compressed_file
   end
 
@@ -44,6 +44,25 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
             message: 'Decompressed archive size limit reached'
           )
         expect(subject.valid?).to eq(false)
+      end
+    end
+
+    context 'when max_decompressed_archive_size is set to 0' do
+      subject { described_class.new(archive_path: filepath) }
+
+      before do
+        stub_application_setting(max_decompressed_archive_size: 0)
+      end
+
+      it 'is valid and does not log error message' do
+        expect(Gitlab::Import::Logger)
+          .not_to receive(:info)
+          .with(
+            import_upload_archive_path: filepath,
+            import_upload_archive_size: File.size(filepath),
+            message: 'Decompressed archive size limit reached'
+          )
+        expect(subject.valid?).to eq(true)
       end
     end
 

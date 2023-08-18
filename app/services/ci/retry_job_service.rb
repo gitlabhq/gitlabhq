@@ -39,7 +39,7 @@ module Ci
 
         ::Ci::CopyCrossDatabaseAssociationsService.new.execute(job, new_job)
 
-        ::Deployments::CreateForBuildService.new.execute(new_job)
+        ::Deployments::CreateForJobService.new.execute(new_job)
 
         ::MergeRequests::AddTodoWhenBuildFailsService
           .new(project: project)

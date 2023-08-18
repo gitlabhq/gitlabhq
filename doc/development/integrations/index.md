@@ -123,6 +123,23 @@ module Integrations
 end
 ```
 
+### Security enhancement features
+
+#### Masking channel values
+
+Integrations that [inherit from `Integrations::BaseChatNotification`](#define-the-integration) can hide the
+values of their channel input fields. Integrations should hide these values whenever the
+fields contain sensitive information such as auth tokens.
+
+By default, `#mask_configurable_channels?` returns `false`. To mask the channel values, override the `#mask_configurable_channels?` method in the integration to return `true`:
+
+```ruby
+override :mask_configurable_channels?
+def mask_configurable_channels?
+  true
+end
+```
+
 ## Define configuration test
 
 Optionally, you can define a configuration test of an integration's settings. The test is executed from the integration form's **Test** button, and results are returned to the user.
@@ -156,7 +173,7 @@ module Integrations
 end
 ```
 
-### Customize the frontend form
+## Customize the frontend form
 
 The frontend form is generated dynamically based on metadata defined in the model.
 
@@ -181,27 +198,28 @@ This method should return an array of hashes for each field, where the keys can 
 | `placeholder:` | string  | false    |                              | A placeholder for the form field.
 | `help:`        | string  | false    |                              | A help text that displays below the form field.
 | `api_only:`    | boolean | false    | `false`                      | Specify if the field should only be available through the API, and excluded from the frontend form.
+| `if:`          | boolean or lambda | false | `true`                | Specify if the field should be available. The value can be a boolean or a lambda.
 
-#### Additional keys for `type: 'checkbox'`
+### Additional keys for `type: 'checkbox'`
 
 | Key               | Type   | Required | Default           | Description
 |:------------------|:-------|:---------|:------------------|:--
 | `checkbox_label:` | string | false    | Value of `title:` | A custom label that displays next to the checkbox.
 
-#### Additional keys for `type: 'select'`
+### Additional keys for `type: 'select'`
 
 | Key        | Type  | Required | Default | Description
 |:-----------|:------|:---------|:--------|:--
 | `choices:` | array | true     |         | A nested array of `[label, value]` tuples.
 
-#### Additional keys for `type: 'password'`
+### Additional keys for `type: 'password'`
 
 | Key                         | Type   | Required | Default           | Description
 |:----------------------------|:-------|:---------|:------------------|:--
 | `non_empty_password_title:` | string | false    | Value of `title:` | An alternative label that displays when a value is already stored.
 | `non_empty_password_help:`  | string | false    | Value of `help:`  | An alternative help text that displays when a value is already stored.
 
-#### Frontend form examples
+### Frontend form examples
 
 This example defines a required `url` field, and optional `username` and `password` fields:
 
@@ -236,7 +254,7 @@ module Integrations
 end
 ```
 
-### Expose the integration in the REST API
+## Expose the integration in the REST API
 
 To expose the integration in the [REST API](../../api/integrations.md):
 

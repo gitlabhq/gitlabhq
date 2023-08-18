@@ -2,6 +2,24 @@
 
 module Integrations
   class Pumble < BaseChatNotification
+    undef :notify_only_broken_pipelines
+
+    field :webhook,
+      section: SECTION_TYPE_CONNECTION,
+      help: 'https://api.pumble.com/workspaces/x/...',
+      required: true
+
+    field :notify_only_broken_pipelines,
+      type: :checkbox,
+      section: SECTION_TYPE_CONFIGURATION,
+      help: 'If selected, successful pipelines do not trigger a notification event.'
+
+    field :branches_to_be_notified,
+      type: :select,
+      section: SECTION_TYPE_CONFIGURATION,
+      title: -> { s_('Integrations|Branches for which notifications are to be sent') },
+      choices: -> { branch_choices }
+
     def title
       'Pumble'
     end
@@ -34,17 +52,8 @@ module Integrations
          pipeline wiki_page]
     end
 
-    def default_fields
-      [
-        { type: 'text', name: 'webhook', help: 'https://api.pumble.com/workspaces/x/...', required: true },
-        { type: 'checkbox', name: 'notify_only_broken_pipelines' },
-        {
-          type: 'select',
-          name: 'branches_to_be_notified',
-          title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: self.class.branch_choices
-        }
-      ]
+    def fields
+      self.class.fields + build_event_channels
     end
 
     private

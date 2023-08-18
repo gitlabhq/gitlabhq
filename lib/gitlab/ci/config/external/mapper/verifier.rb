@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'objspace'
+
 module Gitlab
   module Ci
     class Config
@@ -37,6 +39,13 @@ module Gitlab
 
                 file.validate_content! if file.valid?
                 file.load_and_validate_expanded_hash! if file.valid?
+
+                next unless Feature.enabled?(:introduce_ci_max_total_yaml_size_bytes, context.project) && file.valid?
+
+                # We are checking the file.content.to_s because that is returning the actual content of the file,
+                # whereas file.content would return the BatchLoader.
+                context.total_file_size_in_bytes += ObjectSpace.memsize_of(file.content.to_s)
+                verify_max_total_pipeline_size!
               end
             end
             # rubocop: enable Metrics/CyclomaticComplexity
@@ -49,6 +58,12 @@ module Gitlab
 
             def verify_execution_time!
               context.check_execution_time!
+            end
+
+            def verify_max_total_pipeline_size!
+              return if context.total_file_size_in_bytes <= context.max_total_yaml_size_bytes
+
+              raise Mapper::TooMuchDataInPipelineTreeError, "Total size of combined CI/CD configuration is too big"
             end
           end
         end

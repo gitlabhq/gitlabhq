@@ -219,6 +219,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:batched_git_ref_updates_cleanup_scheduler
+  :worker_name: BatchedGitRefUpdates::CleanupSchedulerWorker
+  :feature_category: :gitaly
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:bulk_imports_stuck_import
   :worker_name: BulkImports::StuckImportWorker
   :feature_category: :importers
@@ -552,6 +561,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:members_expiring
+  :worker_name: Members::ExpiringWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
   :feature_category: :metrics
@@ -654,6 +672,15 @@
 - :name: cronjob:partition_creation
   :worker_name: PartitionCreationWorker
   :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:pause_control_resume
+  :worker_name: PauseControl::ResumeWorker
+  :feature_category: :global_search
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -794,6 +821,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: cronjob:service_desk_custom_email_verification_cleanup
+  :worker_name: ServiceDesk::CustomEmailVerificationCleanupWorker
+  :feature_category: :service_desk
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:ssh_keys_expired_notification
   :worker_name: SshKeys::ExpiredNotificationWorker
@@ -2298,6 +2334,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: batched_git_ref_updates_project_cleanup
+  :worker_name: BatchedGitRefUpdates::ProjectCleanupWorker
+  :feature_category: :gitaly
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: bitbucket_server_import_advance_stage
   :worker_name: Gitlab::BitbucketServerImport::AdvanceStageWorker
   :feature_category: :importers
@@ -2438,7 +2483,7 @@
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :memory
   :weight: 1
   :idempotent: false
   :tags: []
@@ -2518,6 +2563,15 @@
   :worker_name: Ci::Runners::ProcessRunnerVersionUpdateWorker
   :feature_category: :runner_fleet
   :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: click_house_events_sync
+  :worker_name: ClickHouse::EventsSyncWorker
+  :feature_category: :value_stream_management
+  :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -2680,6 +2734,15 @@
   :worker_name: Environments::CanaryIngress::UpdateWorker
   :feature_category: :continuous_delivery
   :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: environments_stop_job_success
+  :worker_name: Environments::StopJobSuccessWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -2954,6 +3017,15 @@
   :resource_boundary:
   :weight: 2
   :idempotent:
+  :tags: []
+- :name: members_expiring_email_notification
+  :worker_name: Members::ExpiringEmailNotificationWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: merge
   :worker_name: MergeWorker

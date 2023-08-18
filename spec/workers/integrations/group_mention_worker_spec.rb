@@ -37,12 +37,10 @@ RSpec.describe Integrations::GroupMentionWorker, :clean_gitlab_redis_shared_stat
 
     context 'when mentionable_type is not supported' do
       let(:args) do
-        {
+        super().merge(
           mentionable_type: 'Unsupported',
-          mentionable_id: 23,
-          hook_data: {},
-          is_confidential: false
-        }
+          mentionable_id: 23
+        )
       end
 
       it 'does not execute the service' do
@@ -57,6 +55,16 @@ RSpec.describe Integrations::GroupMentionWorker, :clean_gitlab_redis_shared_stat
           mentionable_type: 'Unsupported',
           mentionable_id: 23
         })
+
+        worker.perform(args)
+      end
+    end
+
+    context 'when mentionable cannot be found' do
+      let(:args) { super().merge(mentionable_id: non_existing_record_id) }
+
+      it 'does not execute the service' do
+        expect(service_class).not_to receive(:new)
 
         worker.perform(args)
       end

@@ -9,13 +9,8 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
-
-import {
-  i18n,
-  I18N_WORK_ITEM_ERROR_FETCHING_LABELS,
-  TRACKING_CATEGORY_SHOW,
-  WIDGET_TYPE_LABELS,
-} from '../constants';
+import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS, TRACKING_CATEGORY_SHOW } from '../constants';
+import { isLabelsWidget } from '../utils';
 
 function isTokenSelectorElement(el) {
   return (
@@ -121,13 +116,13 @@ export default {
       return this.labelsWidget?.allowsScopedLabels;
     },
     containerClass() {
-      return !this.isEditing ? 'gl-shadow-none!' : '';
+      return !this.isEditing ? 'gl-shadow-none! hide-unfocused-input-decoration' : '';
     },
     isLoading() {
       return this.$apollo.queries.searchLabels.loading;
     },
     labelsWidget() {
-      return this.workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_LABELS);
+      return this.workItem?.widgets?.find(isLabelsWidget);
     },
     labels() {
       return this.labelsWidget?.labels?.nodes || [];
@@ -272,7 +267,7 @@ export default {
       :loading="isLoading"
       :view-only="!canUpdate"
       :allow-clear-all="isEditing"
-      class="gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2! work-item-field-value"
+      class="hide-unfocused-input-decoration work-item-field-value gl-flex-grow-1 gl-border gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2!"
       menu-class="token-selector-menu-class"
       data-testid="work-item-labels-input"
       :class="{ 'gl-hover-border-gray-200': canUpdate }"

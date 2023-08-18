@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Code Owners **(PREMIUM)**
+# Code Owners **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -339,8 +339,16 @@ The `Documentation` Code Owners section under the **Approval Rules** area displa
 
 ### Allowed to Push
 
-The Code Owner approval and protected branch features do not apply to users who
-are **Allowed to push**.
+Users who are **Allowed to push** can choose to create a merge request
+for their changes, or push the changes directly to a branch. If the user
+skips the merge request process, the protected-branch features
+and Code Owner approvals built into merge requests are also skipped.
+
+This permission is often granted to accounts associated with
+automation ([internal users](../../../development/internal_users.md))
+and release tooling.
+
+All changes from users _without_ the **Allowed to push** permission must be routed through a merge request.
 
 ## Technical Resources
 

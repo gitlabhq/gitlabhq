@@ -10,6 +10,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
@@ -146,7 +147,7 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
-          iid: this.iid,
+          iid: String(this.iid),
         };
       },
       update(data) {
@@ -289,7 +290,7 @@ export default {
           mutation: promoteToEpicMutation,
           variables: {
             input: {
-              iid: this.iid,
+              iid: String(this.iid),
               projectPath: this.projectPath,
             },
           },
@@ -374,6 +375,7 @@ export default {
       <template v-if="isMrSidebarMoved">
         <gl-dropdown-item
           :data-clipboard-text="issuableReference"
+          button-class="js-copy-reference"
           data-testid="copy-reference"
           @click="copyReference"
           >{{ $options.i18n.copyReferenceText }}</gl-dropdown-item
@@ -418,7 +420,7 @@ export default {
       v-gl-tooltip.bottom
       :title="$options.i18n.editTitleAndDescription"
       :aria-label="$options.i18n.editTitleAndDescription"
-      class="js-issuable-edit gl-display-none gl-sm-display-block"
+      class="js-issuable-edit gl-display-none! gl-sm-display-block!"
       data-testid="edit-button"
       @click="edit"
     >
@@ -464,6 +466,7 @@ export default {
       </template>
       <gl-dropdown-item
         v-if="showToggleIssueStateButton && glFeatures.moveCloseIntoDropdown"
+        data-testid="toggle-issue-state-button"
         @click="toggleIssueState"
       >
         {{ buttonText }}
@@ -485,6 +488,7 @@ export default {
       <template v-if="isMrSidebarMoved">
         <gl-dropdown-item
           :data-clipboard-text="issuableReference"
+          button-class="js-copy-reference"
           data-testid="copy-reference"
           @click="copyReference"
           >{{ $options.i18n.copyReferenceText }}</gl-dropdown-item
@@ -517,7 +521,7 @@ export default {
         <gl-dropdown-item
           v-gl-modal="$options.deleteModalId"
           variant="danger"
-          data-testid="delete_issue_button"
+          data-testid="delete-issue-button"
           @click="track('click_dropdown')"
         >
           {{ deleteButtonText }}

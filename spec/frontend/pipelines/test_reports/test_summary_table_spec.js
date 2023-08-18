@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import SummaryTable from '~/pipelines/components/test_reports/test_summary_table.vue';

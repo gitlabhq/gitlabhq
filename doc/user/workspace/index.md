@@ -4,82 +4,76 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Workspaces (Beta) **(PREMIUM)**
+# Workspaces (Beta) **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. On GitLab.com, this feature is available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `remote_development_feature_flag`.
+On GitLab.com, this feature is available.
+The feature is not ready for production use.
 
 WARNING:
-This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice. To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
+This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+To leave feedback, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/410031).
 
-A workspace is a virtual sandbox environment for your code in GitLab. You can use workspaces to create and manage isolated development environments for your GitLab projects. These environments ensure that different projects don't interfere with each other.
+A workspace is a virtual sandbox environment for your code in GitLab.
+You can use workspaces to create and manage isolated development environments for your GitLab projects.
+These environments ensure that different projects don't interfere with each other.
 
-Each workspace includes its own set of dependencies, libraries, and tools, which you can customize to meet the specific needs of each project. Workspaces use the AMD64 architecture.
+Each workspace includes its own set of dependencies, libraries, and tools,
+which you can customize to meet the specific needs of each project.
+Workspaces use the AMD64 architecture.
 
-For a demo of this feature, see [GitLab Workspaces Demo](https://go.gitlab.com/qtu66q).
+## Workspaces and projects
 
-## Set up a workspace
+Workspaces are scoped to a project.
+When you [create a workspace](configuration.md#set-up-a-workspace), you must:
 
-### Prerequisites
+- Assign the workspace to a specific project.
+- Select a project with a [`.devfile.yaml`](#devfile) file.
 
-- Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports. See the [supported Kubernetes versions](../clusters/agent/index.md#supported-kubernetes-versions-for-gitlab-features).
-- Ensure autoscaling for the Kubernetes cluster is enabled.
-- In the Kubernetes cluster, verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/) is defined so that volumes can be dynamically provisioned for each workspace.
-- In the Kubernetes cluster, install an Ingress controller of your choice (for example, `ingress-nginx`), and make that controller accessible over a domain. For example, point `*.workspaces.example.dev` and `workspaces.example.dev` to the load balancer exposed by the Ingress controller.
-- In the Kubernetes cluster, [install `gitlab-workspaces-proxy`](https://gitlab.com/gitlab-org/remote-development/gitlab-workspaces-proxy#installation-instructions).
-- In the Kubernetes cluster, [install the GitLab agent for Kubernetes](../clusters/agent/install/index.md).
-- Configure remote development settings for the GitLab agent with this snippet, and update `dns_zone` as needed:
+The workspace can then interact with the GitLab API based on the permissions granted to the current user.
 
-  ```yaml
-  remote_development:
-    enabled: true
-    dns_zone: "workspaces.example.dev"
-  ```
+### Open and manage workspaces from a project
 
-  You can use any agent defined under the root group of your project, provided that remote development is properly configured for that agent.
-- You must have at least the Developer role in the root group.
-- In each public project you want to use this feature for, create a [devfile](#devfile):
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project
-  1. In the root directory of your project, create a file named `.devfile.yaml`. You can use one of the [example configurations](#example-configurations).
-- Ensure the container images used in the devfile support [arbitrary user IDs](#arbitrary-user-ids).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125331) in GitLab 16.2.
 
-### Create a workspace
+To open a workspace from a file or the repository file list:
 
-To create a workspace:
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. In the upper right, select **Edit**.
+1. From the dropdown list, under **Your workspaces**, select the workspace.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Your work**.
-1. Select **Workspaces**.
-1. Select **New workspace**.
-1. From the **Select project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites). You can only create workspaces for public projects.
-1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
-1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates. This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
-1. Select **Create workspace**.
+From the dropdown list, you can also:
 
-The workspace might take a few minutes to start. To access the workspace, under **Preview**, select the workspace link.
-You also have access to the terminal and can install any necessary dependencies.
+- Restart, stop, or terminate an existing workspace.
+- Create a new workspace.
 
-## Deleting data associated with a workspace
+### Deleting data associated with a workspace
 
 When you delete a project, agent, user, or token associated with a workspace:
 
 - The workspace is deleted from the user interface.
-- In the Kubernetes cluster, the running workspace resources become orphaned.
+- In the Kubernetes cluster, the running workspace resources become orphaned and are not automatically deleted.
 
 To clean up orphaned resources, an administrator must manually delete the workspace in Kubernetes.
 
-For more information about our plans to change the current behavior, see [issue 414384](https://gitlab.com/gitlab-org/gitlab/-/issues/414384).
+[Issue 414384](https://gitlab.com/gitlab-org/gitlab/-/issues/414384) proposes to change this behavior.
 
 ## Devfile
 
-A devfile is a file that defines a development environment by specifying the necessary tools, languages, runtimes, and other components for a GitLab project.
+A devfile is a file that defines a development environment by specifying the necessary
+tools, languages, runtimes, and other components for a GitLab project.
 
-Workspaces have built-in support for devfiles. You can specify a devfile for your project in the GitLab configuration file. The devfile is used to automatically configure the development environment with the defined specifications.
+Workspaces have built-in support for devfiles.
+You can specify a devfile for your project in the GitLab configuration file.
+The devfile is used to automatically configure the development environment with the defined specifications.
 
-This way, you can create consistent and reproducible development environments regardless of the machine or platform you use.
+This way, you can create consistent and reproducible development environments
+regardless of the machine or platform you use.
 
 ### Relevant schema properties
 
@@ -123,66 +117,63 @@ components:
 For more information, see the [devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema).
 For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/remote-development/examples).
 
-This container image is for demonstration purposes only. To use your own container image, see [Arbitrary user IDs](#arbitrary-user-ids).
+This container image is for demonstration purposes only.
+To use your own container image, see [Arbitrary user IDs](#arbitrary-user-ids).
 
 ## Web IDE
 
-Workspaces are bundled with the Web IDE by default. The Web IDE is the only code editor available for workspaces.
+Workspaces are bundled with the Web IDE by default.
+The Web IDE is the only code editor available for workspaces.
 
-The Web IDE is powered by the [GitLab VS Code fork](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork). For more information, see [Web IDE](../project/web_ide/index.md).
+The Web IDE is powered by the [GitLab VS Code fork](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork).
+For more information, see [Web IDE](../project/web_ide/index.md).
 
 ## Private repositories
 
-You cannot create a workspace for a private repository because GitLab does not inject any credentials into the workspace. You can only create a workspace for public repositories that have a devfile.
+You cannot [create a workspace](configuration.md#set-up-a-workspace) for a private repository
+because GitLab does not inject any credentials into the workspace.
+You can only create a workspace for public repositories that have a devfile.
 
 From a workspace, you can clone any repository manually.
 
 ## Pod interaction in a cluster
 
-Workspaces run as pods in a Kubernetes cluster. GitLab does not impose any restrictions on the manner in which pods interact with each other.
+Workspaces run as pods in a Kubernetes cluster.
+GitLab does not impose any restrictions on the manner in which pods interact with each other.
 
 Because of this requirement, you might want to isolate this feature from other containers in your cluster.
 
 ## Network access and workspace authorization
 
-It's the client's responsibility to restrict network access to the Kubernetes control plane as GitLab does not have control over the API.
+It's the client's responsibility to restrict network access to the Kubernetes control plane
+because GitLab does not have control over the API.
 
-Only the workspace creator can access the workspace and any endpoints exposed in that workspace. The workspace creator is only authorized to access the workspace after user authentication with OAuth.
+Only the workspace creator can access the workspace and any endpoints exposed in that workspace.
+The workspace creator is only authorized to access the workspace after user authentication with OAuth.
 
 ## Compute resources and volume storage
 
-When you stop a workspace, the compute resources for that workspace are scaled down to zero. However, the volume provisioned for the workspace still exists.
+When you stop a workspace, the compute resources for that workspace are scaled down to zero.
+However, the volume provisioned for the workspace still exists.
 
 To delete the provisioned volume, you must terminate the workspace.
 
-## Disable remote development in the GitLab agent for Kubernetes
-
-You can stop the `remote_development` module of the GitLab agent for Kubernetes from communicating with GitLab. To disable remote development in the GitLab agent configuration, set this property:
-
-```yaml
-remote_development:
-  enabled: false
-```
-
-If you already have running workspaces, an administrator must manually delete these workspaces in Kubernetes.
-
 ## Arbitrary user IDs
 
-You can provide your own container image, which can run as any Linux user ID. It's not possible for GitLab to predict the Linux user ID for a container image.
-GitLab uses the Linux root group ID permission to create, update, or delete files in a container. The container runtime used by the Kubernetes cluster must ensure all containers have a default Linux group ID of `0`.
+You can provide your own container image, which can run as any Linux user ID.
 
-If you have a container image that does not support arbitrary user IDs, you cannot create, update, or delete files in a workspace. To create a container image that supports arbitrary user IDs, see the [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
+It's not possible for GitLab to predict the Linux user ID for a container image.
+GitLab uses the Linux root group ID permission to create, update, or delete files in a container.
+The container runtime used by the Kubernetes cluster must ensure all containers have a default Linux group ID of `0`.
 
-## Troubleshooting
+If you have a container image that does not support arbitrary user IDs,
+you cannot create, update, or delete files in a workspace.
+To create a container image that supports arbitrary user IDs,
+see [Create a custom workspace image that supports arbitrary user IDs](../workspace/create_image.md).
 
-When working with workspaces, you might encounter the following issues.
+For more information, see the
+[OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
 
-### `Failed to renew lease` when creating a workspace
+## Related topics
 
-You might not be able to create a workspace due to a known issue in the GitLab agent for Kubernetes. The following error message might appear in the agent's log:
-
-```plaintext
-{"level":"info","time":"2023-01-01T00:00:00.000Z","msg":"failed to renew lease gitlab-agent-remote-dev-dev/agent-123XX-lock: timed out waiting for the condition\n","agent_id":XXXX}
-```
-
-This issue occurs when an agent instance cannot renew its leadership lease, which results in the shutdown of leader-only modules including the `remote_development` module. To resolve this issue, restart the agent instance.
+- [GitLab workspaces demo](https://go.gitlab.com/qtu66q)

@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Run GraphQL API queries and mutations **(FREE)**
+# Run GraphQL API queries and mutations **(FREE ALL)**
 
 This guide demonstrates basic usage of the GitLab GraphQL API.
 

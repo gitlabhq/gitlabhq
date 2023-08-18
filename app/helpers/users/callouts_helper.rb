@@ -89,6 +89,8 @@ module Users
     end
 
     def gitlab_com_user_created_after_new_nav_rollout?
+      return true unless current_user
+
       Gitlab.com? && current_user.created_at >= Date.new(2023, 6, 2)
     end
 

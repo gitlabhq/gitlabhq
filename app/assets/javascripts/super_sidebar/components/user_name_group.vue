@@ -76,6 +76,7 @@ export default {
             <gl-emoji :data-name="user.status.emoji" class="gl-mr-1" />
             <span v-safe-html="user.status.message_html" class="gl-text-truncate"></span>
             <gl-tooltip
+              v-if="user.status.message_html"
               :target="() => $refs.statusTooltipTarget"
               boundary="viewport"
               placement="bottom"

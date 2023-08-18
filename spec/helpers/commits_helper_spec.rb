@@ -91,22 +91,22 @@ RSpec.describe CommitsHelper do
     let(:node) { Nokogiri::HTML.parse(helper.diff_mode_swap_button(keyword, 'abc')).at_css('a') }
 
     context 'for rendered' do
-      it 'renders the correct select-rendered button' do
+      it 'renders the correct select-rendered button', :aggregate_failures do
         expect(node[:title]).to eq('Display rendered diff')
         expect(node['data-file-hash']).to eq('abc')
         expect(node['data-diff-toggle-entity']).to eq('renderedButton')
-        expect(node.xpath("//a/svg")[0]["data-testid"]).to eq('doc-text-icon')
+        expect(node.xpath("//a/span/svg")[0]["data-testid"]).to eq('doc-text-icon')
       end
     end
 
     context 'for raw' do
       let(:keyword) { 'raw' }
 
-      it 'renders the correct select-raw button' do
+      it 'renders the correct select-raw button', :aggregate_failures do
         expect(node[:title]).to eq('Display raw diff')
         expect(node['data-file-hash']).to eq('abc')
         expect(node['data-diff-toggle-entity']).to eq('rawButton')
-        expect(node.xpath("//a/svg")[0]["data-testid"]).to eq('doc-code-icon')
+        expect(node.xpath("//a/span/svg")[0]["data-testid"]).to eq('doc-code-icon')
       end
     end
   end
@@ -356,5 +356,47 @@ RSpec.describe CommitsHelper do
     subject { helper.commit_path_template(project) }
 
     it { is_expected.to eq(expected_path) }
+  end
+
+  describe '#local_committed_date' do
+    let(:commit) { build(:commit, committed_date: time) }
+    let(:user) { build(:user) }
+    let(:time) { Time.find_zone('UTC').parse('2023-01-01') }
+
+    subject { helper.local_committed_date(commit, user).to_s }
+
+    it { is_expected.to eq('2023-01-01') }
+
+    context 'when user has a custom timezone' do
+      let(:user) { build(:user, timezone: 'America/Mexico_City') }
+
+      it 'selects timezone of the user' do
+        is_expected.to eq('2022-12-31')
+      end
+    end
+
+    context "when user doesn't have a preferred timezone" do
+      let(:user) { build(:user, timezone: nil) }
+
+      it 'uses system timezone' do
+        is_expected.to eq('2023-01-01')
+      end
+    end
+
+    context 'when user timezone is not supported' do
+      let(:user) { build(:user, timezone: 'unknown') }
+
+      it 'uses system timezone' do
+        is_expected.to eq('2023-01-01')
+      end
+    end
+
+    context 'when user is missing' do
+      let(:user) { nil }
+
+      it 'uses system timezone' do
+        is_expected.to eq('2023-01-01')
+      end
+    end
   end
 end

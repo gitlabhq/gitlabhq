@@ -16,6 +16,7 @@ module Gitlab
               variables.append(key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s)
               variables.append(key: 'CI_PIPELINE_SOURCE', value: pipeline.source.to_s)
               variables.append(key: 'CI_PIPELINE_CREATED_AT', value: pipeline.created_at&.iso8601)
+              variables.append(key: 'CI_PIPELINE_NAME', value: pipeline.name)
 
               variables.concat(predefined_commit_variables) if pipeline.sha.present?
               variables.concat(predefined_commit_tag_variables) if pipeline.tag?

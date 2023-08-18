@@ -1,4 +1,5 @@
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import TreeList from '~/diffs/components/tree_list.vue';
 import createStore from '~/diffs/store/modules';

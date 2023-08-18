@@ -40,6 +40,8 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
 
     it 'allows to create a protected branch with name containing HTML tags' do
       visit project_protected_branches_path(project)
+
+      show_add_form
       set_defaults
       set_protected_branch_name('foo<b>bar<\b>')
       click_on "Protect"
@@ -89,6 +91,8 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
     describe "explicit protected branches" do
       it "allows creating explicit protected branches" do
         visit project_protected_branches_path(project)
+
+        show_add_form
         set_defaults
         set_protected_branch_name('some->branch')
         click_on "Protect"
@@ -100,6 +104,8 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
 
       it "shows success alert once protected branch is created" do
         visit project_protected_branches_path(project)
+
+        show_add_form
         set_defaults
         set_protected_branch_name('some->branch')
         click_on "Protect"
@@ -112,6 +118,8 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
         project.repository.add_branch(admin, 'some-branch', commit.id)
 
         visit project_protected_branches_path(project)
+
+        show_add_form
         set_defaults
         set_protected_branch_name('some-branch')
         click_on "Protect"
@@ -124,6 +132,8 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
 
       it "displays an error message if the named branch does not exist" do
         visit project_protected_branches_path(project)
+
+        show_add_form
         set_defaults
         set_protected_branch_name('some-branch')
         click_on "Protect"
@@ -135,6 +145,8 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
     describe "wildcard protected branches" do
       it "allows creating protected branches with a wildcard" do
         visit project_protected_branches_path(project)
+
+        show_add_form
         set_defaults
         set_protected_branch_name('*-stable')
         click_on "Protect"
@@ -149,6 +161,8 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
         project.repository.add_branch(admin, 'staging-stable', 'master')
 
         visit project_protected_branches_path(project)
+
+        show_add_form
         set_defaults
         set_protected_branch_name('*-stable')
         click_on "Protect"
@@ -164,6 +178,8 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
         project.repository.add_branch(admin, 'development', 'master')
 
         visit project_protected_branches_path(project)
+
+        show_add_form
         set_protected_branch_name('*-stable')
         set_defaults
         click_on "Protect"

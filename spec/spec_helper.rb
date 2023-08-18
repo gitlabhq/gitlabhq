@@ -181,6 +181,7 @@ RSpec.configure do |config|
   config.include SearchHelpers, type: :feature
   config.include WaitHelpers, type: :feature
   config.include WaitForRequests, type: :feature
+  config.include Features::DomHelpers, type: :feature
   config.include EmailHelpers, :mailer, type: :mailer
   config.include Warden::Test::Helpers, type: :request
   config.include Gitlab::Routing, type: :routing
@@ -295,7 +296,13 @@ RSpec.configure do |config|
 
       # Only a few percent of users will be "enrolled" into the new nav with this flag.
       # Having it enabled globally would make it impossible to test the current nav.
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/420121
       stub_feature_flags(super_sidebar_nav_enrolled: false)
+
+      # The anonymous super-sidebar is under heavy development and enabling the flag
+      # globally leads to a lot of errors. This issue is for fixing all test to work with the
+      # new nav: https://gitlab.com/gitlab-org/gitlab/-/issues/420119
+      stub_feature_flags(super_sidebar_logged_out: false)
 
       # It's disabled in specs because we don't support certain features which
       # cause spec failures.
@@ -338,6 +345,9 @@ RSpec.configure do |config|
 
       # Keep-around refs should only be turned off for specific projects/repositories.
       stub_feature_flags(disable_keep_around_refs: false)
+
+      # Postgres is the primary data source, and ClickHouse only when enabled in certain cases.
+      stub_feature_flags(clickhouse_data_collection: false)
 
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
@@ -393,7 +403,7 @@ RSpec.configure do |config|
   end
 
   config.around(:example, :request_store) do |example|
-    Gitlab::WithRequestStore.with_request_store { example.run }
+    ::Gitlab::SafeRequestStore.ensure_request_store { example.run }
   end
 
   config.around(:example, :enable_rugged) do |example|

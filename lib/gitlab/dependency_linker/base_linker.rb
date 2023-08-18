@@ -31,7 +31,7 @@ module Gitlab
       end
 
       def external_url(name, external_ref)
-        return if external_ref =~ GIT_INVALID_URL_REGEX
+        return if GIT_INVALID_URL_REGEX.match?(external_ref)
 
         case external_ref
         when /\A#{URL_REGEX}\z/o

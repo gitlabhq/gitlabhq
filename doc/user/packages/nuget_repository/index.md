@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# NuGet packages in the Package Registry **(FREE)**
+# NuGet packages in the Package Registry **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in GitLab 12.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
@@ -70,6 +70,7 @@ You can now add a new source to NuGet with:
 - [Visual Studio](#add-a-source-with-visual-studio)
 - [.NET CLI](#add-a-source-with-the-net-cli)
 - [Configuration file](#add-a-source-with-a-configuration-file)
+- [Chocolatey CLI](#add-a-source-with-chocolatey-cli)
 
 ### Add a source with the NuGet CLI
 
@@ -281,6 +282,22 @@ To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Re
    export GITLAB_PACKAGE_REGISTRY_PASSWORD=<gitlab_personal_access_token or deploy_token>
    ```
 
+### Add a source with Chocolatey CLI
+
+You can add a source feed with the Chocolatey CLI. If you use Chocolatey CLI v1.x, you can add only a NuGet v2 source feed.
+
+#### Configure a project-level endpoint
+
+You need a project-level endpoint to publish NuGet packages to the Package Registry.
+
+To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) Package Registry as a source for Chocolatey:
+
+- Add the Package Registry as a source with `choco`:
+
+  ```shell
+  choco source add -n=gitlab -s "'https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/v2'" -u=<gitlab_username or deploy_token_username> -p=<gitlab_personal_access_token or deploy_token>
+  ```
+
 ## Publish a NuGet package
 
 Prerequisite:
@@ -384,6 +401,31 @@ updated:
    ```
 
 1. Commit the changes and push it to your GitLab repository to trigger a new CI/CD build.
+
+### Publish a NuGet package with Chocolatey CLI
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) in GitLab 16.2.
+
+Prerequisite:
+
+- The project-level Package Registry is a source for Chocolatey.
+
+To publish a package with the Chocolatey CLI:
+
+```shell
+choco push <package_file> --source <source_url> --api-key <gitlab_personal_access_token, deploy_token or job token>
+```
+
+In this command:
+
+- `<package_file>` is your package filename and ends with `.nupkg`.
+- `<source_url>` is the URL of the NuGet v2 feed Package Registry.
+
+For example:
+
+```shell
+choco push MyPackage.1.0.0.nupkg --source "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/v2" --api-key <gitlab_personal_access_token, deploy_token or job token>
+```
 
 ### Publishing a package with the same name or version
 

@@ -34,7 +34,7 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
       expect(subscription_button).to have_css("button.is-checked")
 
       # Toggle subscription.
-      find('[data-testid="subscription-toggle"]').click
+      subscription_button.find('button').click
       wait_for_requests
 
       # Check we're unsubscribed.
@@ -42,7 +42,7 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
     end
 
     context 'when project emails are disabled' do
-      let(:project) { create(:project_empty_repo, :public, emails_disabled: true) }
+      let_it_be(:project) { create(:project_empty_repo, :public, emails_enabled: false) }
 
       it 'is disabled' do
         expect(page).to have_content('Disabled by project owner')
@@ -66,7 +66,7 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
       expect(subscription_button).to have_css("button:not(.is-checked)")
 
       # Toggle subscription.
-      find('[data-testid="subscription-toggle"]').click
+      subscription_button.find('button').click
       wait_for_requests
 
       # Check we're subscribed.

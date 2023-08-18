@@ -447,7 +447,6 @@ export default {
               :issue-iid="item.iid"
               :project-path="projectPath"
               :sla-due-at="item.slaDueAt"
-              data-testid="incident-sla"
               class="gl-display-block gl-max-w-full gl-text-truncate"
             />
           </template>

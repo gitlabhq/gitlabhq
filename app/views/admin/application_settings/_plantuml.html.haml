@@ -5,7 +5,7 @@
       = _('PlantUML')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = _('Render diagrams in your documents using PlantUML.')
       = link_to _('Learn more.'), help_page_path('administration/integration/plantuml.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, api
 ---
 
-# Discussions API **(FREE)**
+# Discussions API **(FREE ALL)**
 
 Discussions are a set of related notes on:
 
@@ -458,7 +458,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
   "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/636"
 ```
 
-## Epics **(ULTIMATE)**
+## Epics **(ULTIMATE ALL)**
 
 ### List group epic discussion items
 

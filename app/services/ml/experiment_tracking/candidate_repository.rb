@@ -5,7 +5,7 @@ module Ml
     class CandidateRepository
       attr_accessor :project, :user, :experiment, :candidate
 
-      def initialize(project, user)
+      def initialize(project, user = nil)
         @project = project
         @user = user
       end
@@ -103,10 +103,16 @@ module Ml
       end
 
       def candidate_name(name, tags)
-        return name if name.present?
-        return unless tags.present?
+        name.presence || candidate_name_from_tags(tags) || random_candidate_name
+      end
 
-        tags.detect { |t| t[:key] == 'mlflow.runName' }&.dig(:value)
+      def candidate_name_from_tags(tags)
+        tags&.detect { |t| t[:key] == 'mlflow.runName' }&.dig(:value)
+      end
+
+      def random_candidate_name
+        parts = Array.new(3).map { FFaker::Animal.common_name.downcase.delete(' ') } << rand(10000)
+        parts.join('-').truncate(255)
       end
     end
   end

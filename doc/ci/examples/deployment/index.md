@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: tutorial
 ---
 
-# Using Dpl as a deployment tool **(FREE)**
+# Using Dpl as a deployment tool **(FREE ALL)**
 
 [Dpl](https://github.com/travis-ci/dpl) (pronounced like the letters D-P-L) is a deploy tool made for
 continuous deployment that's developed and used by Travis CI, but can also be

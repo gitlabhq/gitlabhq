@@ -10,8 +10,8 @@ module QA
           super
 
           base.view 'app/assets/javascripts/lib/utils/confirm_via_gl_modal/confirm_modal.vue' do
-            element :confirm_ok_button
-            element :confirmation_modal
+            element 'confirm-ok-button'
+            element 'confirmation-modal'
           end
 
           base.view 'app/assets/javascripts/vue_shared/components/confirm_danger/confirm_danger_modal.vue' do
@@ -36,7 +36,7 @@ module QA
         end
 
         def click_confirmation_ok_button
-          click_element(:confirm_ok_button)
+          click_element('confirm-ok-button')
         end
 
         # Click the confirmation button if the confirmation modal is present
@@ -48,9 +48,9 @@ module QA
           # to skip the loading check otherwise it will time out.
           #
           # [1]: https://gitlab.com/gitlab-org/gitlab/-/blob/4a99af809b86047ce3c8985e6582748bbd23fc84/qa/qa/page/component/members/members_table.rb#L54
-          return unless has_element?(:confirmation_modal, skip_finished_loading_check: true)
+          return unless has_element?('confirmation-modal', skip_finished_loading_check: true)
 
-          click_element(:confirm_ok_button, skip_finished_loading_check: true)
+          click_element('confirm-ok-button', skip_finished_loading_check: true)
         end
       end
     end

@@ -17,6 +17,10 @@ class NotifyPreview < ActionMailer::Preview
     end
   end
 
+  def new_user_email
+    Notify.new_user_email(user.id).message
+  end
+
   def note_merge_request_email_for_discussion
     note_email(:note_merge_request_email) do
       note = <<-MD.strip_heredoc
@@ -71,6 +75,11 @@ class NotifyPreview < ActionMailer::Preview
 
   def access_token_revoked_email
     Notify.access_token_revoked_email(user, 'token_name').message
+  end
+
+  def ssh_key_expired_email
+    fingerprints = []
+    Notify.ssh_key_expired_email(user, fingerprints).message
   end
 
   def new_mention_in_merge_request_email
@@ -164,6 +173,13 @@ class NotifyPreview < ActionMailer::Preview
 
   def member_invited_email
     Notify.member_invited_email('project', member.id, '1234').message
+  end
+
+  def member_about_to_expire_email
+    cleanup do
+      member = project.add_member(user, Gitlab::Access::GUEST, expires_at: 7.days.from_now.to_date)
+      Notify.member_about_to_expire_email('project', member.id).message
+    end
   end
 
   def pages_domain_enabled_email
@@ -282,6 +298,13 @@ class NotifyPreview < ActionMailer::Preview
 
   def request_review_merge_request_email
     Notify.request_review_merge_request_email(user.id, merge_request.id, user.id).message
+  end
+
+  def new_review_email
+    review = Review.last
+    mr_author = review.merge_request.author
+
+    Notify.new_review_email(mr_author.id, review.id).message
   end
 
   def project_was_moved_email

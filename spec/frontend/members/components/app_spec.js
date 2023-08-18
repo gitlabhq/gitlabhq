@@ -1,6 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import * as commonUtils from '~/lib/utils/common_utils';
 import MembersApp from '~/members/components/app.vue';

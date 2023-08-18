@@ -15,7 +15,7 @@ organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitla
 A single top-level group provides insights in your entire organization via a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
-[Compliance Report](../compliance/compliance_report/index.md), and
+[Compliance center](../compliance/compliance_center/index.md), and
 [Value stream analytics](../group/value_stream_analytics/index.md).
 
 ## Add a group README
@@ -215,7 +215,7 @@ To disable group mentions:
 1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
 
-## Export members as CSV **(PREMIUM)**
+## Export members as CSV **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
@@ -233,11 +233,10 @@ For members with `Minimal Access` in the selected group, their `Max Role` and `S
 
 ## User cap for groups
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330027) in GitLab 14.7 [with a flag](../../administration/feature_flags.md) named `saas_user_caps`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/9263) in GitLab 16.3.
 
-FLAG:
-On self-managed GitLab, this feature is not available. On GitLab.com, this feature is available for some groups.
-This feature is not ready for production use.
+For more information about user caps for GitLab self-managed, see [User cap](../../administration/settings/sign_up_restrictions.md#user-cap).
 
 When the number of billable members reaches the user cap, new users can't be added to the group
 without being approved by the group owner.
@@ -301,7 +300,17 @@ To approve members that are pending because they've exceeded the user cap:
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
 
-## Group file templates **(PREMIUM)**
+### Known issues
+
+The user cap cannot be enabled if a group, subgroup, or project is shared externally. If a group, subgroup,
+or project is shared externally, it is shared outside of the namespace hierarchy, regardless of its level
+in the hierarchy.
+
+To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only within the top-level namespace. This ensure that groups in the same top-leve namespace can be invited, and prevents the addition of new users (seats) when the group is shared.
+
+User cap doesn’t consider whether users are billable or not (e.g., Free Guest Users in Ultimate). In other words, if you set a cap of 500, user caps block new sign-ups after 500 users, regardless of whether those are all consuming paid seats or not.
+
+## Group file templates **(PREMIUM ALL)**
 
 Use group file templates to share a set of templates for common file
 types with every project in a group. It is analogous to the
@@ -323,7 +332,7 @@ To learn how to create templates for issues and merge requests, see
 Define project templates at a group level by setting a group as the template source.
 For more information, see [group-level project templates](custom_project_templates.md).
 
-### Enable group file template **(PREMIUM)**
+### Enable group file template **(PREMIUM ALL)**
 
 To enable group file templates:
 
@@ -333,7 +342,7 @@ To enable group file templates:
 1. Choose a project to act as the template repository.
 1. Select **Save changes**.
 
-## Group merge checks settings **(PREMIUM)**
+## Group merge checks settings **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
 
@@ -404,7 +413,7 @@ To enable this setting:
 1. Under **Merge checks**, select **All threads must be resolved**.
 1. Select **Save changes**.
 
-## Group merge request approval settings **(PREMIUM)**
+## Group merge request approval settings **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
@@ -493,7 +502,10 @@ To disable third-party AI features for a group:
 1. Under **Third-party AI services**, uncheck the **Use third-party AI services** checkbox.
 1. Select **Save changes**.
 
-## Group activity analytics **(PREMIUM)**
+When Code Suggestions are enabled and disabled, an
+[audit event](../../administration/audit_events.md#view-audit-events) is created.
+
+## Group activity analytics **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
 

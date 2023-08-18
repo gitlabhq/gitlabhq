@@ -2,17 +2,17 @@
 
 return if helper.stable_branch?
 
-data_qa_selectors = /qa_selector|data-qa-selector/
+data_testids = /testid|data-testid|find_by_testid|within_testid/
 
-deprecated_qa_selectors = /(?!.*\bdata-qa-)(?=class=.*qa-.*|class: .*qa-.*)/
+deprecated_qa_selectors = /(?=qa_selector|data-qa-selector)|(?!.*\bdata-qa-)(?=class=.*qa-.*|class: .*qa-.*)/
 
 def filter_changed_lines(files, pattern)
   lines = []
   files.each do |file|
-    qa_selector_changed_lines = helper.changed_lines(file).select { |line| line =~ pattern }
-    next unless qa_selector_changed_lines.any?
+    testid_changed_lines = helper.changed_lines(file).select { |line| line =~ pattern }
+    next unless testid_changed_lines.any?
 
-    lines += ["file `#{file}`:", qa_selector_changed_lines]
+    lines += ["file `#{file}`:", testid_changed_lines]
   end
   lines
 end
@@ -21,24 +21,25 @@ changed_code_files = helper.changed_files(/\.(vue|haml|js|rb)$/)
 
 return if changed_code_files.empty?
 
-lines_with_qa_selectors = filter_changed_lines(changed_code_files, data_qa_selectors)
+lines_with_testids = filter_changed_lines(changed_code_files, data_testids)
 
 deprecated_qa_class = filter_changed_lines(changed_code_files, deprecated_qa_selectors)
 
-return if (lines_with_qa_selectors + deprecated_qa_class).empty?
+return if (lines_with_testids + deprecated_qa_class).empty?
 
 markdown(<<~MARKDOWN)
-  ## QA Selectors
+  ## Testid Selectors
 
 MARKDOWN
 
-if lines_with_qa_selectors.any?
+if lines_with_testids.any?
   markdown(<<~MARKDOWN)
-    The following changed lines in this MR contain QA selectors:
+    The following changed lines in this MR contain testid selectors:
 
-    * #{lines_with_qa_selectors.join("\n* ")}
+    * #{lines_with_testids.join("\n* ")}
 
-    Please ensure `e2e:package-and-test` job is run and the tests are passing.
+    If the `e2e:package-and-test` job in the `qa` stage has run automatically, please ensure the tests are passing.
+    If the job has not run, please start the `trigger-omnibus-and-follow-up-e2e` job in the `qa` stage and ensure the tests in `follow-up-e2e:package-and-test-ee` pipeline are passing.
 
     For the list of known failures please refer to [the latest pipeline triage issue](https://gitlab.com/gitlab-org/quality/pipeline-triage/-/issues).
 
@@ -46,20 +47,20 @@ if lines_with_qa_selectors.any?
 
   MARKDOWN
 
-  warn "This merge request contains lines with QA selectors. Please ensure `e2e:package-and-test` job is run."
+  warn "This merge request contains lines with testid selectors. Please ensure `e2e:package-and-test` job is run."
 end
 
 if deprecated_qa_class.any?
   markdown(<<~MARKDOWN)
-    ### Deprecated .qa-selector class
+    ### Deprecated data-qa-selector
 
-    The following lines in this MR contain deprecated qa class selectors:
+    The following lines in this MR contain deprecated data-qa-selector selectors:
 
     * #{deprecated_qa_class.join("\n* ")}
 
-    Please ensure all deprecated qa class selectors are replaced with data-qa-selectors in accordance with our [Testing Guide](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/page_objects.html#data-qa-selector-vs-qa-selector).
+    Please ensure all deprecated data-qa-selector attributes are replaced with data-testid attributes in accordance with our [Testing Guide](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/page_objects.html#data-testid-vs-data-qa-selector).
 
   MARKDOWN
 
-  warn "This merge request contains deprecated .qa-selector CSS class. Please use data-qa-selector attribute instead."
+  warn "This merge request contains deprecated data-qa-selector attribute. Please use data-testid attribute instead."
 end

@@ -67,7 +67,7 @@ For more information, see [Configure Charts using Globals](https://docs.gitlab.c
      enabled: false
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -115,7 +115,7 @@ installations under `shared/dependency_proxy/` (relative to the Git home directo
      storage_path: shared/dependency_proxy
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -193,7 +193,7 @@ This section describes the earlier configuration format. [Migration steps still 
          #  path_style: false                    # If true, use 'host/bucket_name/object' instead of 'bucket_name.host/object'.
    ```
 
-1. [Restart GitLab](../restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. [Restart GitLab](../restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ::EndTabs
 
@@ -211,7 +211,7 @@ to remote storage. The processing is done in a background worker and requires no
   sudo gitlab-rake "gitlab:dependency_proxy:migrate"
   ```
 
-- For installations from source:
+- For self-compiled installations:
 
   ```shell
   RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:dependency_proxy:migrate

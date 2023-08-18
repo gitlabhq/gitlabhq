@@ -99,6 +99,11 @@ class ProjectSetting < ApplicationRecord
     Gitlab::CurrentSettings.valid_runner_registrars.include?('project') && read_attribute(:runner_registration_enabled)
   end
 
+  def emails_enabled?
+    super && project.namespace.emails_enabled?
+  end
+  strong_memoize_attr :emails_enabled?
+
   private
 
   def validates_mr_default_target_self

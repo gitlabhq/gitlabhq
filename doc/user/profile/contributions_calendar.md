@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: concepts, howto
 ---
 
-# Contributions calendar **(FREE)**
+# Contributions calendar **(FREE ALL)**
 
 The contributions calendar displays a [user's events](#user-contribution-events) from the past 12 months.
 This includes contributions made in forked and [private](#show-private-contributions-on-your-user-profile-page) repositories.

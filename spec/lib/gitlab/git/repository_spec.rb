@@ -309,6 +309,32 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#recent_objects_size' do
+    subject(:recent_objects_size) { repository.recent_objects_size }
+
+    it { is_expected.to be_a(Float) }
+
+    it 'uses repository_info for size' do
+      expect(repository.gitaly_repository_client).to receive(:repository_info).and_call_original
+
+      recent_objects_size
+    end
+
+    it 'returns the recent objects size' do
+      objects_response = Gitaly::RepositoryInfoResponse::ObjectsInfo.new(recent_size: 5.megabytes)
+
+      allow(repository.gitaly_repository_client).to receive(:repository_info).and_return(
+        Gitaly::RepositoryInfoResponse.new(objects: objects_response)
+      )
+
+      expect(recent_objects_size).to eq 5.0
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitaly::RepositoryInfoResponse::ObjectsInfo, :recent_size do
+      subject { recent_objects_size }
+    end
+  end
+
   describe '#to_s' do
     subject { repository.to_s }
 
@@ -1675,9 +1701,13 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe '#find_changed_paths' do
-    let(:commit_1) { TestEnv::BRANCH_SHA['with-executables'] }
-    let(:commit_2) { TestEnv::BRANCH_SHA['master'] }
-    let(:commit_3) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+    let_it_be(:commit_1) { repository.commit(TestEnv::BRANCH_SHA['with-executables']) }
+    let_it_be(:commit_2) { repository.commit(TestEnv::BRANCH_SHA['master']) }
+    let_it_be(:commit_3) { repository.commit('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+
+    let_it_be(:initial_commit) { repository.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
+    let_it_be(:diff_tree) { Gitlab::Git::DiffTree.from_commit(initial_commit) }
+
     let(:commit_1_files) do
       [Gitlab::Git::ChangedPath.new(status: :ADDED, path: "files/executables/ls")]
     end
@@ -1693,18 +1723,26 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       ]
     end
 
-    it 'returns a list of paths' do
-      collection = repository.find_changed_paths([commit_1, commit_2, commit_3])
-
-      expect(collection).to be_a(Enumerable)
-      expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files).as_json)
+    let(:diff_tree_files) do
+      [
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: ".gitignore"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "LICENSE"),
+        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "README.md")
+      ]
     end
 
-    it 'returns no paths when SHAs are invalid' do
+    it 'returns a list of paths' do
+      collection = repository.find_changed_paths([commit_1, commit_2, commit_3, diff_tree])
+
+      expect(collection).to be_a(Enumerable)
+      expect(collection.as_json).to eq((commit_1_files + commit_2_files + commit_3_files + diff_tree_files).as_json)
+    end
+
+    it 'returns only paths with valid SHAs' do
       collection = repository.find_changed_paths(['invalid', commit_1])
 
       expect(collection).to be_a(Enumerable)
-      expect(collection.to_a).to be_empty
+      expect(collection.as_json).to eq(commit_1_files.as_json)
     end
 
     it 'returns a list of paths even when containing a blank ref' do
@@ -2535,6 +2573,12 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#get_patch_id' do
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :get_patch_id do
+      subject { repository.get_patch_id('HEAD~', 'HEAD') }
+    end
+  end
+
   def create_remote_branch(remote_name, branch_name, source_branch_name)
     source_branch = repository.find_branch(source_branch_name)
     repository.write_ref("refs/remotes/#{remote_name}/#{branch_name}", source_branch.dereferenced_target.sha)
@@ -2721,6 +2765,41 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       single_sha = 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
       expect(repository.check_objects_exist(single_sha)).to eq({ single_sha => true })
+    end
+  end
+
+  describe '#list_all_blobs' do
+    subject { repository.list_all_blobs(expected_params) }
+
+    let(:expected_params) { { bytes_limit: 0, dynamic_timeout: nil, ignore_alternate_object_directories: true } }
+
+    it 'calls delegates to BlobService' do
+      expect(repository.gitaly_blob_client).to receive(:list_all_blobs).with(expected_params)
+      subject
+    end
+  end
+
+  describe '#object_pool' do
+    subject { repository.object_pool }
+
+    context 'without object pool' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when pool repository exists' do
+      let!(:pool) { create(:pool_repository, :ready, source_project: project) }
+
+      it { is_expected.to be_nil }
+
+      context 'when repository is linked to the pool repository' do
+        before do
+          pool.link_repository(pool.source_project.repository)
+        end
+
+        it 'returns a object pool for the repository' do
+          is_expected.to be_kind_of(Gitaly::ObjectPool)
+        end
+      end
     end
   end
 end

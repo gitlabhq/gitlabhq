@@ -10,9 +10,8 @@ module Gitlab
           AVAILABLE_TAGS = [Config::Yaml::Tags::Reference].freeze
           MAX_DOCUMENTS = 2
 
-          def initialize(content, inputs: {}, current_user: nil)
+          def initialize(content, inputs: {})
             @content = content
-            @current_user = current_user
             @inputs = inputs
           end
 
@@ -21,21 +20,21 @@ module Gitlab
 
             return yaml_result unless yaml_result.valid?
 
-            interpolator = Yaml::Interpolator.new(yaml_result, inputs, current_user: current_user)
+            interpolator = Interpolation::Interpolator.new(yaml_result, inputs)
 
             interpolator.interpolate!
 
             if interpolator.valid?
               # This Result contains only the interpolated config and does not have a header
-              Yaml::Result.new(config: interpolator.to_hash, error: nil)
+              Yaml::Result.new(config: interpolator.to_hash, error: nil, interpolated: interpolator.interpolated?)
             else
-              Yaml::Result.new(error: interpolator.error_message)
+              Yaml::Result.new(error: interpolator.error_message, interpolated: interpolator.interpolated?)
             end
           end
 
           private
 
-          attr_reader :content, :current_user, :inputs
+          attr_reader :content, :inputs
 
           def load_uninterpolated_yaml
             Yaml::Result.new(config: load_yaml!, error: nil)

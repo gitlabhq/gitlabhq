@@ -173,6 +173,48 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
       expect(doc.css('a').last.text).to eq("#{issuable.title} (#{issuable.to_reference} - closed)")
     end
 
+    context 'for references with fenced emoji' do
+      def issuable_link(issuable)
+        create_link(
+          issuable.to_reference,
+          "#{issuable_type}": issuable.id,
+          reference_type: issuable_type,
+          reference_format: '+'
+        )
+      end
+
+      it 'expands emoji for references with +' do
+        issuable = create_item(issuable_type, :opened, title: 'Some issue :eagle:')
+        doc = filter(issuable_link(issuable), context)
+
+        expect(/\p{Emoji_Presentation}/ =~ doc.css('a').last.text).not_to be_nil
+        expect(doc.css('a').last.text.scan(/\p{Emoji_Presentation}/)).to eq(["🦅"])
+      end
+
+      it 'expands when emoji is embedded at the beginning of a string' do
+        issuable = create_item(issuable_type, :opened, title: ':eagle: Some issue')
+        doc = filter(issuable_link(issuable), context)
+
+        expect(/\p{Emoji_Presentation}/ =~ doc.css('a').last.text).not_to be_nil
+        expect(doc.css('a').last.text.scan(/\p{Emoji_Presentation}/)).to eq(["🦅"])
+      end
+
+      it 'expands when emoji appears multiple times' do
+        issuable = create_item(issuable_type, :opened, title: ':eagle: Some issue :dog:')
+        doc = filter(issuable_link(issuable), context)
+
+        expect(/\p{Emoji_Presentation}/ =~ doc.css('a').last.text).not_to be_nil
+        expect(doc.css('a').last.text.scan(/\p{Emoji_Presentation}/)).to eq(["🦅", "🐶"])
+      end
+
+      it 'does not expand when emoji is embedded mid-string' do
+        issuable = create_item(issuable_type, :opened, title: 'Some:eagle:issue')
+        doc = filter(issuable_link(issuable), context)
+
+        expect(/\p{Emoji_Presentation}/ =~ doc.css('a').last.text).to be_nil
+      end
+    end
+
     it 'shows title for references with +s' do
       issuable = create_item(issuable_type, :opened, title: 'Some issue')
       link = create_link(issuable.to_reference, "#{issuable_type}": issuable.id, reference_type: issuable_type,

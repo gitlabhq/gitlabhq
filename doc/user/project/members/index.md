@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Members of a project **(FREE)**
+# Members of a project **(FREE ALL)**
 
 Members are the users and groups who have access to your project.
 
@@ -79,7 +79,7 @@ and rights into the group or project.
 | View labels of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
 | View milestones of groups higher in the hierarchy | ✓ | ✓ | ✓ | ✓ |
 | Be shared into other groups | ✓ |  |  |  |
-| Be shared into other projects | ✓ | ✓ |  |  |
+| Be shared into other projects | ✓ | ✓ | ✓ | ✓ |
 | Share the group with other members | ✓ | ✓ | ✓ | ✓ |
 
 In the following example, `User` is a:
@@ -108,6 +108,7 @@ graph TD
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
+> - Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
 
 Add users to a project so they become direct members and have permission
 to perform actions.
@@ -129,6 +130,9 @@ To add a user to a project:
 1. Select a [role](../../permissions.md).
 1. Optional. Select an **Access expiration date**.
    From that date onward, the user can no longer access the project.
+
+   If you selected an access expiration date, the project member gets an email notification
+   seven days before their access expires.
 
    WARNING:
    If you give a member the Maintainer role and select an expiration date, that member

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Plan < ApplicationRecord
+class Plan < MainClusterwide::ApplicationRecord
   DEFAULT = 'default'
 
   has_one :limits, class_name: 'PlanLimits'

@@ -162,3 +162,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Projects::Menus::SettingsMenu.prepend_mod_with('Sidebars::Projects::Menus::SettingsMenu')

@@ -1,6 +1,7 @@
 import { GlLoadingIcon, GlButton, GlIntersectionObserver, GlSearchBoxByClick } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { STATUSES } from '~/import_entities/constants';
 import ImportProjectsTable from '~/import_entities/import_projects/components/import_projects_table.vue';

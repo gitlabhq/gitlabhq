@@ -40,4 +40,5 @@
             .js-gitlab-user{ data: { name: "users[#{id}][gitlab_user]" } }
 
   .form-actions
-    = submit_tag _('Continue to the next step'), class: 'gl-button btn btn-confirm'
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm) do
+      = _('Continue to the next step')

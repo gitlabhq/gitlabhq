@@ -22,6 +22,8 @@ import {
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+
 import {
   convertWorkItemMutationResponse,
   projectWorkItemTypesQueryResponse,
@@ -38,6 +40,8 @@ describe('WorkItemActions component', () => {
   let wrapper;
   let mockApollo;
   const mockWorkItemReference = 'gitlab-org/gitlab-test#1';
+  const mockWorkItemIid = '1';
+  const mockFullPath = 'gitlab-org/gitlab-test';
   const mockWorkItemCreateNoteEmail =
     'gitlab-incoming+gitlab-org-gitlab-test-2-ddpzuq0zd2wefzofcpcdr3dg7-issue-1@gmail.com';
 
@@ -74,6 +78,7 @@ describe('WorkItemActions component', () => {
   const convertWorkItemMutationSuccessHandler = jest
     .fn()
     .mockResolvedValue(convertWorkItemMutationResponse);
+
   const convertWorkItemMutationErrorHandler = jest
     .fn()
     .mockResolvedValue(convertWorkItemMutationErrorResponse);
@@ -90,6 +95,7 @@ describe('WorkItemActions component', () => {
     workItemType = 'Task',
     workItemReference = mockWorkItemReference,
     workItemCreateNoteEmail = mockWorkItemCreateNoteEmail,
+    writeQueryCache = false,
   } = {}) => {
     const handlers = [notificationsMock];
     mockApollo = createMockApollo([
@@ -97,6 +103,18 @@ describe('WorkItemActions component', () => {
       [convertWorkItemMutation, convertWorkItemMutationHandler],
       [projectWorkItemTypesQuery, typesQuerySuccessHandler],
     ]);
+
+    // Write the query cache only when required e.g., notification widget mutation is called
+    if (writeQueryCache) {
+      const workItemQueryResponse = workItemByIidResponseFactory({ canUpdate: true });
+
+      mockApollo.clients.defaultClient.cache.writeQuery({
+        query: workItemByIidQuery,
+        variables: { fullPath: mockFullPath, iid: mockWorkItemIid },
+        data: workItemQueryResponse.data,
+      });
+    }
+
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
       apolloProvider: mockApollo,
@@ -110,9 +128,10 @@ describe('WorkItemActions component', () => {
         workItemType,
         workItemReference,
         workItemCreateNoteEmail,
+        workItemIid: '1',
       },
       provide: {
-        fullPath: 'gitlab-org/gitlab',
+        fullPath: mockFullPath,
         glFeatures: { workItemsMvc2: true },
       },
       mocks: {
@@ -233,45 +252,28 @@ describe('WorkItemActions component', () => {
 
   describe('notifications action', () => {
     const errorMessage = 'Failed to subscribe';
-    const id = 'gid://gitlab/WorkItem/1';
     const notificationToggledOffMessage = 'Notifications turned off.';
     const notificationToggledOnMessage = 'Notifications turned on.';
 
-    const inputVariablesOff = {
-      id,
-      notificationsWidget: {
-        subscribed: false,
-      },
-    };
-
-    const inputVariablesOn = {
-      id,
-      notificationsWidget: {
-        subscribed: true,
-      },
-    };
-
-    const notificationsOffExpectedResponse = workItemByIidResponseFactory({
-      subscribed: false,
-    });
-
     const toggleNotificationsOffHandler = jest.fn().mockResolvedValue({
       data: {
-        workItemUpdate: {
-          workItem: notificationsOffExpectedResponse.data.workspace.workItems.nodes[0],
+        updateWorkItemNotificationsSubscription: {
+          issue: {
+            id: 'gid://gitlab/WorkItem/1',
+            subscribed: false,
+          },
           errors: [],
         },
       },
     });
 
-    const notificationsOnExpectedResponse = workItemByIidResponseFactory({
-      subscribed: true,
-    });
-
     const toggleNotificationsOnHandler = jest.fn().mockResolvedValue({
       data: {
-        workItemUpdate: {
-          workItem: notificationsOnExpectedResponse.data.workspace.workItems.nodes[0],
+        updateWorkItemNotificationsSubscription: {
+          issue: {
+            id: 'gid://gitlab/WorkItem/1',
+            subscribed: true,
+          },
           errors: [],
         },
       },
@@ -292,7 +294,7 @@ describe('WorkItemActions component', () => {
     ];
 
     beforeEach(() => {
-      createComponent();
+      createComponent({ writeQueryCache: true });
       isLoggedIn.mockReturnValue(true);
     });
 
@@ -301,13 +303,13 @@ describe('WorkItemActions component', () => {
     });
 
     it.each`
-      scenario        | subscribedToNotifications | notificationsMock       | inputVariables       | toastMessage
-      ${'turned off'} | ${false}                  | ${notificationsOffMock} | ${inputVariablesOff} | ${notificationToggledOffMessage}
-      ${'turned on'}  | ${true}                   | ${notificationsOnMock}  | ${inputVariablesOn}  | ${notificationToggledOnMessage}
+      scenario        | subscribedToNotifications | notificationsMock       | subscribedState | toastMessage
+      ${'turned off'} | ${false}                  | ${notificationsOffMock} | ${false}        | ${notificationToggledOffMessage}
+      ${'turned on'}  | ${true}                   | ${notificationsOnMock}  | ${true}         | ${notificationToggledOnMessage}
     `(
       'calls mutation and displays toast when notification toggle is $scenario',
-      async ({ subscribedToNotifications, notificationsMock, inputVariables, toastMessage }) => {
-        createComponent({ notificationsMock });
+      async ({ subscribedToNotifications, notificationsMock, subscribedState, toastMessage }) => {
+        createComponent({ notificationsMock, writeQueryCache: true });
 
         await waitForPromises();
 
@@ -316,14 +318,18 @@ describe('WorkItemActions component', () => {
         await waitForPromises();
 
         expect(notificationsMock[1]).toHaveBeenCalledWith({
-          input: inputVariables,
+          input: {
+            projectPath: mockFullPath,
+            iid: mockWorkItemIid,
+            subscribedState,
+          },
         });
         expect(toast).toHaveBeenCalledWith(toastMessage);
       },
     );
 
     it('emits error when the update notification mutation fails', async () => {
-      createComponent({ notificationsMock: notificationsFailureMock });
+      createComponent({ notificationsMock: notificationsFailureMock, writeQueryCache: true });
 
       await waitForPromises();
 
@@ -359,6 +365,7 @@ describe('WorkItemActions component', () => {
 
       expect(convertWorkItemMutationSuccessHandler).toHaveBeenCalled();
       expect($toast.show).toHaveBeenCalledWith('Promoted to objective.');
+      expect(wrapper.emitted('promotedToObjective')).toEqual([[]]);
     });
 
     it('emits error when promote mutation fails', async () => {

@@ -444,9 +444,9 @@ The following IPs will be used as an example:
 To configure Consul:
 
 1. SSH in to the server that will host Consul.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to both follow _only_ installation steps 1 and 2
-   on the page, and to select the correct Omnibus GitLab package, with the same version
+   on the page, and to select the correct Linux package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
@@ -470,8 +470,8 @@ To configure Consul:
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -521,19 +521,19 @@ A reputable provider or solution should be used for this. [Google Cloud SQL](htt
 
 If you use a third party external service:
 
-1. Note that the HA Omnibus PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. All of these components would no longer be required when using a third party external service.
+1. Note that the HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer and Consul. These components would no longer be required when using a third party external service.
 1. Set up PostgreSQL according to the
    [database requirements document](../../install/requirements.md#database).
 1. Set up a `gitlab` username with a password of your choice. The `gitlab` user
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
    This step is covered in [Configuring the GitLab Rails application](#configure-gitlab-rails).
-1. The number of nodes required to achieve HA may differ depending on the service compared to Omnibus and doesn't need to match accordingly.
+1. The number of nodes required to achieve HA may differ depending on the service compared to the Linux package and doesn't need to match accordingly.
 1. However, if [Database Load Balancing](../postgresql/database_load_balancing.md) via Read Replicas is desired for further improved performance it's recommended to follow the node count for the Reference Architecture.
 
-### Standalone PostgreSQL using Omnibus GitLab
+### Standalone PostgreSQL using the Linux package
 
-The recommended Omnibus GitLab configuration for a PostgreSQL cluster with
+The recommended Linux package configuration for a PostgreSQL cluster with
 replication and failover requires:
 
 - A minimum of three PostgreSQL nodes.
@@ -613,9 +613,6 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    # available database connections.
    patroni['postgresql']['max_wal_senders'] = 7
 
-   # Incoming recommended value for max connections is 500. See https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5691.
-   patroni['postgresql']['max_connections'] = 500
-
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
 
@@ -670,8 +667,8 @@ PostgreSQL, with Patroni managing its failover, will default to use `pg_rewind` 
 Like most failover handling methods, this has a small chance of leading to data loss.
 For more information, see the various [Patroni replication methods](../postgresql/replication_and_failover.md#selecting-the-appropriate-patroni-replication-method).
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -743,8 +740,6 @@ The following IPs will be used as an example:
          password: '<pgbouncer_password_hash>'
       }
    }
-   # Incoming recommended value for max db connections is 150. See https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5691.
-   pgbouncer['max_db_connections'] = 150
 
    # Configure Consul agent
    consul['watchers'] = %w(postgresql)
@@ -759,8 +754,8 @@ The following IPs will be used as an example:
    node_exporter['listen_address'] = '0.0.0.0:9100'
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -868,9 +863,9 @@ a node and change its status from primary to replica (and vice versa).
 #### Configure the primary Redis Cache node
 
 1. SSH in to the **Primary** Redis server.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
-   package of your choice. Be sure to both follow _only_ installation steps 1 and 2
-   on the page, and to select the correct Omnibus GitLab package, with the same version
+1. [Download and install](https://about.gitlab.com/install/) the Linux
+   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   on the page, and to select the correct Linux package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
@@ -932,17 +927,17 @@ a node and change its status from primary to replica (and vice versa).
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Configure the replica Redis Cache nodes
 
 1. SSH in to the **replica** Redis server.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to both follow _only_ installation steps 1 and 2
-   on the page, and to select the correct Omnibus GitLab package, with the same version
+   on the page, and to select the correct Linux package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the same contents as the primary node in the previous section replacing `redis_master_node` with `redis_replica_node`:
 
@@ -1004,8 +999,8 @@ a node and change its status from primary to replica (and vice versa).
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -1031,9 +1026,9 @@ a node and change its status from primary to replica (and vice versa).
 #### Configure the primary Redis Persistent node
 
 1. SSH in to the **Primary** Redis server.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to both follow _only_ installation steps 1 and 2
-   on the page, and to select the correct Omnibus GitLab package, with the same version
+   on the page, and to select the correct Linux package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
@@ -1086,17 +1081,17 @@ a node and change its status from primary to replica (and vice versa).
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Configure the replica Redis Persistent nodes
 
 1. SSH in to the **replica** Redis Persistent server.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to both follow _only_ installation steps 1 and 2
-   on the page, and to select the correct Omnibus GitLab package, with the same version
+   on the page, and to select the correct Linux package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
@@ -1152,8 +1147,8 @@ a node and change its status from primary to replica (and vice versa).
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -1210,7 +1205,7 @@ Praefect, the routing and transaction manager for Gitaly Cluster, requires its o
 If you want to have a highly available setup, Praefect requires a third-party PostgreSQL database.
 A built-in solution is being [worked on](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 
-#### Praefect non-HA PostgreSQL standalone using Omnibus GitLab
+#### Praefect non-HA PostgreSQL standalone using the Linux package
 
 The following IPs will be used as an example:
 
@@ -1241,7 +1236,6 @@ in the second step, do not supply the `EXTERNAL_URL` value.
 
    # PostgreSQL configuration
    postgresql['listen_address'] = '0.0.0.0'
-   postgresql['max_connections'] = 500
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -1272,8 +1266,8 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    # END user configuration
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
@@ -1313,11 +1307,11 @@ After the Praefect PostgreSQL server has been set up, you'll then need to config
 We recommend the user be named `praefect` and the database `praefect_production`, and these can be configured as standard in PostgreSQL.
 The password for the user is the same as the one you configured earlier as `<praefect_postgresql_password>`.
 
-This is how this would work with a Omnibus GitLab PostgreSQL setup:
+This is how this would work with a Linux package PostgreSQL setup:
 
 1. SSH in to the Praefect PostgreSQL node.
 1. Connect to the PostgreSQL server with administrative access.
-   The `gitlab-psql` user should be used here for this as it's added by default in Omnibus.
+   The `gitlab-psql` user should be used here for this as it's added by default in the Linux package.
    The database `template1` is used because it is created by default on all PostgreSQL servers.
 
    ```shell
@@ -1378,7 +1372,7 @@ The following IPs will be used as an example:
 To configure the Praefect nodes, on each one:
 
 1. SSH in to the Praefect server.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux package
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Edit the `/etc/gitlab/gitlab.rb` file to configure Praefect:
@@ -1490,8 +1484,8 @@ Updates to example must be made at:
    # END user configuration
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. Praefect requires to run some database migrations, much like the main GitLab application. For this
    you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
@@ -1551,7 +1545,7 @@ The following IPs will be used as an example:
 
 On each node:
 
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux package
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page, and _do not_ provide the `EXTERNAL_URL` value.
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
@@ -1673,8 +1667,8 @@ Updates to example must be made at:
      }
      ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
@@ -1779,7 +1773,7 @@ examples include the Object storage configuration.
 To configure the Sidekiq nodes, on each one:
 
 1. SSH in to the Sidekiq server.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
@@ -1791,18 +1785,7 @@ Updates to example must be made at:
 -->
 
    ```ruby
-   # Avoid running unnecessary services on the Sidekiq server
-   gitaly['enable'] = false
-   postgresql['enable'] = false
-   redis['enable'] = false
-   nginx['enable'] = false
-   puma['enable'] = false
-   gitlab_workhorse['enable'] = false
-   prometheus['enable'] = false
-   alertmanager['enable'] = false
-   grafana['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_kas['enable'] = false
+   roles ["sidekiq_role"]
 
    # External URL
    ## This should match the URL of the external load balancer
@@ -1898,8 +1881,8 @@ Updates to example must be made at:
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
    ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
 
 1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
 
@@ -1945,7 +1928,7 @@ The following IPs will be used as an example:
 
 On each node perform the following:
 
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 
@@ -2061,11 +2044,11 @@ On each node perform the following:
       sudo cp cert.pem /etc/gitlab/trusted-certs/
       ```
 
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
-   the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
-1. Copy the SSH host keys (all in the name format `/etc/ssh/ssh_host_*_key*`) from the first Omnibus node you configured and
+1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
+   the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
+1. Copy the SSH host keys (all in the name format `/etc/ssh/ssh_host_*_key*`) from the first Linux package node you configured and
    add or replace the files of the same name on this server. This ensures host mismatch errors aren't thrown
-   for your users as they hit the load balanced Rails nodes. If this is the first Omnibus node you are configuring,
+   for your users as they hit the load balanced Rails nodes. If this is the first Linux package node you are configuring,
    then you can skip this step.
 1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
 
@@ -2123,7 +2106,7 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 
 ## Configure Prometheus
 
-The Omnibus GitLab package can be used to configure a standalone Monitoring node
+The Linux package can be used to configure a standalone Monitoring node
 running [Prometheus](../monitoring/prometheus/index.md) and
 [Grafana](../monitoring/performance/grafana_configuration.md).
 
@@ -2134,7 +2117,7 @@ The following IP will be used as an example:
 To configure the Monitoring node:
 
 1. SSH in to the Monitoring node.
-1. [Download and install](https://about.gitlab.com/install/) the Omnibus GitLab
+1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 
@@ -2232,7 +2215,7 @@ in the future.
 
 ### Enable incremental logging
 
-GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
+GitLab Runner returns job logs in chunks which the Linux package caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
 
 While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 
@@ -2264,7 +2247,7 @@ Prometheus, and Grafana.
 Hybrid installations leverage the benefits of both cloud native and traditional
 compute deployments. With this, _stateless_ components can benefit from cloud native
 workload management benefits while _stateful_ components are deployed in compute VMs
-with Omnibus to benefit from increased permanence.
+with Linux package installations to benefit from increased permanence.
 
 Refer to the Helm charts [Advanced configuration](https://docs.gitlab.com/charts/advanced/)
 documentation for setup instructions including guidance on what GitLab secrets to sync
@@ -2299,7 +2282,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 - Nodes configuration is shown as it is forced to ensure pod vCPU / memory ratios and avoid scaling during **performance testing**.
   - In production deployments, there is no need to assign pods to specific nodes. A minimum of three nodes per node group in three different availability zones is strongly recommended to align with resilient cloud architecture practices.
 
-Next are the backend components that run on static compute VMs via Omnibus (or External PaaS
+Next are the backend components that run on static compute VMs using the Linux package (or External PaaS
 services where applicable):
 
 | Service                                  | Nodes | Configuration          | GCP              | AWS          |

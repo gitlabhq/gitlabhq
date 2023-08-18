@@ -10,6 +10,7 @@ module Gitlab
           Error = Class.new(StandardError)
           AmbigiousSpecificationError = Class.new(Error)
           TooManyIncludesError = Class.new(Error)
+          TooMuchDataInPipelineTreeError = Class.new(Error)
 
           def initialize(values, context)
             @locations = Array.wrap(values.fetch(:include, [])).compact

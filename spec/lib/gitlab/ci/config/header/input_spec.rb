@@ -46,10 +46,27 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
     it_behaves_like 'a valid input'
   end
 
-  context 'when is a required required input' do
+  context 'when is a required input' do
     let(:input_hash) { nil }
 
     it_behaves_like 'a valid input'
+  end
+
+  context 'when given a valid type' do
+    where(:input_type) { ::Gitlab::Ci::Config::Interpolation::Inputs.input_types }
+
+    with_them do
+      let(:input_hash) { { type: input_type } }
+
+      it_behaves_like 'a valid input'
+    end
+  end
+
+  context 'when given an invalid type' do
+    let(:input_hash) { { type: 'datetime' } }
+    let(:expected_errors) { ['foo input type unknown value: datetime'] }
+
+    it_behaves_like 'an invalid input'
   end
 
   context 'when contains unknown keywords' do

@@ -1,6 +1,5 @@
 ---
 key_path: redis_hll_counters.quickactions.i_quickactions_promote_to_weekly
-name: quickactions_promote_to_weekly
 description: Count of WAU using the `/promote_to` quick action
 product_section: dev
 product_stage: plan

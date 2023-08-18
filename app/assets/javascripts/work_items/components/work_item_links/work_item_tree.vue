@@ -145,6 +145,7 @@ export default {
         :children-ids="childrenIds"
         :parent-confidential="confidential"
         @cancel="hideAddForm"
+        @addChild="$emit('addChild')"
       />
       <work-item-children-wrapper
         :children="children"

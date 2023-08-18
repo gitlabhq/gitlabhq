@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::Factory, feature_category: :continuous
   end
 
   context 'when stage has manual builds' do
-    Ci::HasStatus::BLOCKED_STATUS.each do |core_status|
+    (Ci::HasStatus::BLOCKED_STATUS + ['skipped']).each do |core_status|
       context "when status is #{core_status}" do
         let(:stage) { create(:ci_stage, pipeline: pipeline, status: core_status) }
 

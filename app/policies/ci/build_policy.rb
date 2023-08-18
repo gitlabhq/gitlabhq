@@ -2,6 +2,8 @@
 
 module Ci
   class BuildPolicy < CommitStatusPolicy
+    include Ci::DeployablePolicy
+
     delegate { @subject.project }
 
     condition(:protected_ref) do
@@ -20,15 +22,6 @@ module Ci
       else
         !ProtectedBranch.protected?(@subject.project, @subject.ref)
       end
-    end
-
-    # overridden in EE
-    condition(:protected_environment) do
-      false
-    end
-
-    condition(:outdated_deployment) do
-      @subject.outdated_deployment?
     end
 
     condition(:owner_of_job) do
@@ -73,21 +66,24 @@ module Ci
 
     # Use admin_ci_minutes for detailed quota and usage reporting
     # this is limited to total usage and total quota for a builds namespace
-    rule { can_read_project_build }.enable :read_ci_minutes_limited_summary
+    rule { can_read_project_build }.policy do
+      enable :read_ci_minutes_limited_summary
+      enable :read_build_trace
+    end
 
-    rule { can_read_project_build }.enable :read_build_trace
     rule { debug_mode & ~project_update_build }.prevent :read_build_trace
 
     # Authorizing the user to access to protected entities.
     # There is a "jailbreak" mode to exceptionally bypass the authorization,
     # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
-    rule { ~can?(:jailbreak) & (archived | (protected_ref & ~admin) | protected_environment) }.policy do
-      prevent :update_build
+    rule { ~can?(:jailbreak) & (archived | (protected_ref & ~admin)) }.policy do
       prevent :update_commit_status
-      prevent :erase_build
     end
 
-    rule { outdated_deployment }.prevent :update_build
+    rule { ~can?(:jailbreak) & (archived | protected_ref) }.policy do
+      prevent :update_build
+      prevent :erase_build
+    end
 
     rule { can?(:admin_build) | (can?(:update_build) & owner_of_job & unprotected_ref) }.enable :erase_build
 

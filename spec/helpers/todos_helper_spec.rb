@@ -370,6 +370,7 @@ RSpec.describe TodosHelper do
       Todo::APPROVAL_REQUIRED   | false | format(s_("Todos|set %{who} as an approver"), who: _('you'))
       Todo::UNMERGEABLE         | true  | s_('Todos|Could not merge')
       Todo::MERGE_TRAIN_REMOVED | true  | s_("Todos|Removed from Merge Train")
+      Todo::REVIEW_SUBMITTED    | false | s_('Todos|reviewed your merge request')
     end
 
     with_them do

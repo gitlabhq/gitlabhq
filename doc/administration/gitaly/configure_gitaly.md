@@ -19,7 +19,7 @@ Configure Gitaly in one of two ways:
 :::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitaly/config.toml` and add or change the [Gitaly settings](https://gitlab.com/gitlab-org/gitaly/blob/master/config.toml.example).
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ::EndTabs
 
@@ -183,7 +183,7 @@ Edit `/etc/gitlab/gitlab.rb`:
        token: 'abc123secret'
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. On the Gitaly servers, edit `/home/git/gitaly/config.toml`:
 
    ```toml
@@ -191,7 +191,7 @@ Edit `/etc/gitlab/gitlab.rb`:
    token = 'abc123secret'
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ::EndTabs
 
@@ -351,7 +351,7 @@ Configure Gitaly server in one of two ways:
    gitlab_url: https://gitlab.example.com
    ```
 
-1. Save the files and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the files and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. Confirm that Gitaly can perform callbacks to the GitLab internal API:
    - For GitLab 15.3 and later, run `sudo /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
    - For GitLab 15.2 and earlier, run `sudo /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
@@ -456,7 +456,7 @@ Configure Gitaly clients in one of two ways:
    this folder. This requirement is scheduled to be removed when
    [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. Run `sudo -u git -H bundle exec rake gitlab:gitaly:check RAILS_ENV=production` to confirm the
    Gitaly client can connect to Gitaly servers.
 1. Tail the logs to see the requests:
@@ -570,7 +570,7 @@ Disable Gitaly on a GitLab server in one of two ways:
    gitaly_enabled=false
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ::EndTabs
 
@@ -705,7 +705,7 @@ Configure Gitaly with TLS in one of two ways:
    in this folder. This requirement is scheduled to be removed when
    [Gitaly issue #1282](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. On the Gitaly servers, create or edit `/etc/default/gitlab` and add:
 
    ```shell
@@ -740,14 +740,14 @@ Configure Gitaly with TLS in one of two ways:
    key_path = '/etc/gitlab/ssl/key.pem'
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. Verify Gitaly traffic is being served over TLS by
    [observing the types of Gitaly connections](#observe-type-of-gitaly-connections).
 1. Optional. Improve security by:
    1. Disabling non-TLS connections by commenting out or deleting `listen_addr` in
       `/home/git/gitaly/config.toml`.
    1. Saving the file.
-   1. [Restarting GitLab](../restart_gitlab.md#installations-from-source).
+   1. [Restarting GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ::EndTabs
 
@@ -1453,7 +1453,7 @@ following keys (in this example, to disable the `hasDotgit` consistency check):
   }
   ```
 
-For source installs, edit the Gitaly configuration (`gitaly.toml`) to do the
+For self-compiled installations, edit the Gitaly configuration (`gitaly.toml`) to do the
 equivalent:
 
 ```toml
@@ -1552,7 +1552,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
    signing_key = "/etc/gitlab/gitaly/signing_key.gpg"
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ::EndTabs
 

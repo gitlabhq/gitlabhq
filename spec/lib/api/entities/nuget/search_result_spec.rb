@@ -34,6 +34,7 @@ RSpec.describe API::Entities::Nuget::SearchResult, feature_category: :package_re
       'authors': 'Author',
       'id': 'PackageTest',
       'title': 'PackageTest',
+      'description': 'Description',
       'summary': 'Description',
       'totalDownloads': 100,
       'verified': true,

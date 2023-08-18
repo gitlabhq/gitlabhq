@@ -74,6 +74,7 @@ RSpec.describe 'getting Alert Management Alerts', feature_category: :incident_ma
           'details' => { 'custom.alert' => 'payload', 'runbook' => 'runbook' },
           'createdAt' => triggered_alert.created_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
           'updatedAt' => triggered_alert.updated_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
+          'metricsDashboardUrl' => nil,
           'detailsUrl' => triggered_alert.details_url,
           'prometheusAlert' => nil,
           'runbook' => 'runbook'

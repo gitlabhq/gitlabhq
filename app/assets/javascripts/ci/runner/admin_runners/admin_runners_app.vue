@@ -52,6 +52,8 @@ export default {
     RunnerTypeTabs,
     RunnerActionsCell,
     RunnerJobStatusBadge,
+    RunnerDashboardLink: () =>
+      import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -188,12 +190,12 @@ export default {
         nav-class="gl-border-none!"
       />
 
-      <div class="gl-w-full gl-md-w-auto gl-display-flex">
+      <div class="gl-w-full gl-md-w-auto gl-display-flex gl-gap-3">
+        <runner-dashboard-link />
         <gl-button :href="newRunnerPath" variant="confirm">
           {{ s__('Runners|New instance runner') }}
         </gl-button>
         <registration-dropdown
-          class="gl-ml-3"
           :registration-token="registrationToken"
           :type="$options.INSTANCE_TYPE"
           placement="right"

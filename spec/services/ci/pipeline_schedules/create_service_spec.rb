@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineSchedules::CreateService, feature_category: :continuous_integration do
-  let_it_be(:user) { create(:user) }
   let_it_be(:reporter) { create(:user) }
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:project) { create(:project, :public, :repository) }
+
+  subject(:service) { described_class.new(project, user, params) }
 
   before_all do
     project.add_maintainer(user)
@@ -82,5 +84,7 @@ RSpec.describe Ci::PipelineSchedules::CreateService, feature_category: :continuo
         end
       end
     end
+
+    it_behaves_like 'pipeline schedules checking variables permission'
   end
 end

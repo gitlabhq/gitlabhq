@@ -167,7 +167,7 @@ class Integration < ApplicationRecord
       raise ArgumentError, "Unknown field storage: #{storage}"
     end
 
-    boolean_accessor(name) if attrs[:type] == 'checkbox' && storage != :attribute
+    boolean_accessor(name) if attrs[:type] == :checkbox && storage != :attribute
   end
   # :nocov:
 
@@ -472,7 +472,7 @@ class Integration < ApplicationRecord
   # use `#secret?` here.
   # See: https://gitlab.com/groups/gitlab-org/-/epics/7652
   def secret_fields
-    fields.select { |f| f[:type] == 'password' }.pluck(:name)
+    fields.select { |f| f[:type] == :password }.pluck(:name)
   end
 
   # Expose a list of fields in the JSON endpoint.
@@ -517,11 +517,11 @@ class Integration < ApplicationRecord
   end
 
   def api_field_names
-    fields.reject { _1[:type] == 'password' || _1[:name] == 'webhook' }.pluck(:name)
+    fields.reject { _1[:type] == :password || _1[:name] == 'webhook' || (_1.key?(:if) && _1[:if] != true) }.pluck(:name)
   end
 
   def form_fields
-    fields.reject { _1[:api_only] == true }
+    fields.reject { _1[:api_only] == true || (_1.key?(:if) && _1[:if] != true) }
   end
 
   def configurable_events

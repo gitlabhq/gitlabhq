@@ -87,19 +87,23 @@ module Ci
 
     scope :active, -> (value = true) { where(active: value) }
     scope :paused, -> { active(false) }
-    scope :online, -> { where('contacted_at > ?', online_contact_time_deadline) }
+    scope :online, -> { where(arel_table[:contacted_at].gt(online_contact_time_deadline)) }
     scope :recent, -> do
-      where('ci_runners.created_at >= :datetime OR ci_runners.contacted_at >= :datetime', datetime: stale_deadline)
+      timestamp = stale_deadline
+
+      where(arel_table[:created_at].gteq(timestamp).or(arel_table[:contacted_at].gteq(timestamp)))
     end
     scope :stale, -> do
-      where('ci_runners.created_at <= :datetime AND ' \
-            '(ci_runners.contacted_at IS NULL OR ci_runners.contacted_at <= :datetime)', datetime: stale_deadline)
+      timestamp = stale_deadline
+
+      where(arel_table[:created_at].lteq(timestamp))
+        .where(arel_table[:contacted_at].eq(nil).or(arel_table[:contacted_at].lteq(timestamp)))
     end
     scope :offline, -> { where(arel_table[:contacted_at].lteq(online_contact_time_deadline)) }
     scope :never_contacted, -> { where(contacted_at: nil) }
     scope :ordered, -> { order(id: :desc) }
 
-    scope :with_recent_runner_queue, -> { where('contacted_at > ?', recent_queue_deadline) }
+    scope :with_recent_runner_queue, -> { where(arel_table[:contacted_at].gt(recent_queue_deadline)) }
     scope :with_running_builds, -> do
       where('EXISTS(?)',
         ::Ci::Build.running.select(1)
@@ -513,7 +517,7 @@ module Ci
     private
 
     scope :with_upgrade_status, ->(upgrade_status) do
-      joins(:runner_version).where(runner_version: { status: upgrade_status })
+      joins(:runner_managers).merge(RunnerManager.with_upgrade_status(upgrade_status))
     end
 
     EXECUTOR_NAME_TO_TYPES = {

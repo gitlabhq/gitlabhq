@@ -78,7 +78,7 @@ class FeatureFlagOptionParser
           options.dry_run = value
         end
 
-        opts.on('-g', '--group [string]', String, "The group introducing a feature flag, like: `group::apm`") do |value|
+        opts.on('-g', '--group [string]', String, "The group introducing a feature flag, like: `group::project management`") do |value|
           options.group = value if value.start_with?('group::')
         end
 
@@ -112,7 +112,7 @@ class FeatureFlagOptionParser
 
     def read_group
       $stdout.puts
-      $stdout.puts ">> Specify the group introducing the feature flag, like `group::apm`:"
+      $stdout.puts ">> Specify the group introducing the feature flag, like `group::project management`:"
 
       loop do
         group = Readline.readline('?> ', false)&.strip

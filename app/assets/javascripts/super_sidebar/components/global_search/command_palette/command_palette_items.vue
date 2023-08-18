@@ -133,6 +133,12 @@ export default {
       },
       immediate: true,
     },
+    handle: {
+      handler() {
+        this.debouncedSearch();
+      },
+      immediate: false,
+    },
   },
   updated() {
     this.$emit('updated');
@@ -180,7 +186,7 @@ export default {
       }
     },
     async getScopedItems() {
-      if (this.searchQuery && this.searchQuery.length < 3) return;
+      if (this.searchQuery?.length < 3) return;
 
       this.loading = true;
 

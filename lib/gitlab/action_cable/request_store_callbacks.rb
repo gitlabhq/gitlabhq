@@ -9,7 +9,7 @@ module Gitlab
 
       def self.wrapper
         lambda do |_, inner|
-          ::Gitlab::WithRequestStore.with_request_store do
+          ::Gitlab::SafeRequestStore.ensure_request_store do
             inner.call
           end
         end

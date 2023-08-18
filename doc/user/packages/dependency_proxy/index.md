@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Dependency Proxy **(FREE)**
+# Dependency Proxy **(FREE ALL)**
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) from GitLab Premium to GitLab Free in 13.6.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) support for private groups in GitLab 13.7.
@@ -69,6 +69,7 @@ Prerequisites:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11582) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `dependency_proxy_for_private_groups`. Enabled by default.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276777) the feature flag `dependency_proxy_for_private_groups` in GitLab 15.0.
+> - Support for group access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362991) in GitLab 16.3.
 
 Because the Dependency Proxy is storing Docker images in a space associated with your group,
 you must authenticate against the Dependency Proxy.
@@ -87,6 +88,7 @@ You can authenticate using:
 - Your GitLab username and password.
 - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `read_registry` and `write_registry`.
 - A [group deploy token](../../../user/project/deploy_tokens/index.md) with the scope set to `read_registry` and `write_registry`.
+- A [group access token](../../../user/group/settings/group_access_tokens.md) for the group, with the scope set to `read_registry` and `write_registry`.
 
 Users accessing the Dependency Proxy with a personal access token or username and password must
 have at least the Guest role for the group they pull images from.

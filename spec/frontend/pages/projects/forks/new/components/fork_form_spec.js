@@ -118,6 +118,7 @@ describe('ForkForm component', () => {
   const findInternalRadio = () => wrapper.find('[data-testid="radio-internal"]');
   const findPublicRadio = () => wrapper.find('[data-testid="radio-public"]');
   const findForkNameInput = () => wrapper.find('[data-testid="fork-name-input"]');
+  const findGlFormRadioGroup = () => wrapper.findComponent(GlFormRadioGroup);
   const findForkUrlInput = () => wrapper.findComponent(ProjectNamespace);
   const findForkSlugInput = () => wrapper.find('[data-testid="fork-slug-input"]');
   const findForkDescriptionTextarea = () =>
@@ -235,7 +236,7 @@ describe('ForkForm component', () => {
       it('resets the visibility to max allowed below current level', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
-        expect(wrapper.vm.form.fields.visibility.value).toBe('public');
+        expect(findGlFormRadioGroup().vm.$attrs.checked).toBe('public');
 
         fillForm({
           name: 'one',
@@ -250,7 +251,7 @@ describe('ForkForm component', () => {
       it('does not reset the visibility when current level is allowed', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
-        expect(wrapper.vm.form.fields.visibility.value).toBe('public');
+        expect(findGlFormRadioGroup().vm.$attrs.checked).toBe('public');
 
         fillForm({
           name: 'two',
@@ -265,7 +266,7 @@ describe('ForkForm component', () => {
       it('does not reset the visibility when visibility cap is increased', async () => {
         createFullComponent({ projectVisibility: 'public' }, { namespaces });
 
-        expect(wrapper.vm.form.fields.visibility.value).toBe('public');
+        expect(findGlFormRadioGroup().vm.$attrs.checked).toBe('public');
 
         fillForm({
           name: 'three',
@@ -290,7 +291,7 @@ describe('ForkForm component', () => {
           { namespaces },
         );
 
-        wrapper.vm.form.fields.visibility.value = 'internal';
+        await findGlFormRadioGroup().vm.$emit('input', 'internal');
         fillForm({
           name: 'five',
           id: 5,
@@ -468,7 +469,8 @@ describe('ForkForm component', () => {
         jest.spyOn(axios, 'post');
 
         setupComponent();
-        wrapper.vm.form.fields.visibility.value = null;
+        await findGlFormRadioGroup().vm.$emit('input', null);
+
         await nextTick();
 
         await submitForm();

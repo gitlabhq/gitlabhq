@@ -1,6 +1,7 @@
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import TerminalSyncStatus from '~/ide/components/terminal_sync/terminal_sync_status.vue';
 import {

@@ -36,7 +36,7 @@ export default {
 
 <style scoped>
 .fake-input {
-  top: 12px;
-  left: 33px;
+  top: 18px;
+  left: 39px;
 }
 </style>

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# GitLab CI/CD variables **(FREE)**
+# GitLab CI/CD variables **(FREE ALL)**
 
 CI/CD variables are a type of environment variable. You can use them to:
 

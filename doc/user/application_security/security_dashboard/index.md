@@ -5,7 +5,7 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Security Dashboards and Security Center **(ULTIMATE)**
+# GitLab Security Dashboards and Security Center **(ULTIMATE ALL)**
 
 You can use Security Dashboards to view trends about vulnerabilities
 detected by [security scanners](../index.md#application-coverage).

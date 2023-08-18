@@ -10,13 +10,7 @@ module QA
 
         # state to be used in the GitLab API
         let(:project_name) { "project_with_slack" }
-
-        let(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = project_name
-            project.initialize_with_readme = true
-          end
-        end
+        let(:project) { create(:project, :with_readme, name: project_name) }
 
         before(:context) do
           Runtime::Env.require_slack_env!
@@ -101,12 +95,7 @@ module QA
           end
 
           context 'with target project' do
-            let(:target) do
-              Resource::Project.fabricate_via_api! do |project|
-                project.name = 'target_slack_project'
-                project.initialize_with_readme = true
-              end
-            end
+            let(:target) { create(:project, :with_readme, name: 'target_slack_project') }
 
             after do
               target.remove_via_api!

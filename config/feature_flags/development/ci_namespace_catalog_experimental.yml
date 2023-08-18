@@ -1,8 +1,0 @@
-name: ci_namespace_catalog_experimental
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113407
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/394772
-milestone: '15.10'
-type: development
-group: group::pipeline authoring
-default_enabled: false
-

@@ -12,8 +12,11 @@ module QA
 
             base.class_eval do
               view 'app/assets/javascripts/super_sidebar/components/context_switcher_toggle.vue' do
-                element :context_switcher
-                element :context_navigation
+                element 'context-switcher'
+              end
+
+              view 'app/assets/javascripts/super_sidebar/components/context_switcher.vue' do
+                element 'context-navigation'
               end
             end
           end
@@ -44,7 +47,7 @@ module QA
           end
 
           def open_context_switcher
-            click_element(:context_switcher) unless has_element?(:context_navigation, wait: 0)
+            click_element('context-switcher') unless has_element?('context-navigation', wait: 0)
           end
         end
       end

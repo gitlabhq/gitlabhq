@@ -6,18 +6,11 @@ import { createMockDirective } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as autosave from '~/lib/utils/autosave';
 import { ESC_KEY, ENTER_KEY } from '~/lib/utils/keys';
-import {
-  STATE_OPEN,
-  STATE_CLOSED,
-  STATE_EVENT_REOPEN,
-  STATE_EVENT_CLOSE,
-} from '~/work_items/constants';
+import { STATE_OPEN } from '~/work_items/constants';
 import * as confirmViaGlModal from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import createMockApollo from 'helpers/mock_apollo_helper';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import { updateWorkItemMutationResponse, workItemQueryResponse } from 'jest/work_items/mock_data';
+import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
 
 Vue.use(VueApollo);
 
@@ -44,8 +37,7 @@ describe('Work item comment form component', () => {
   const findConfirmButton = () => wrapper.find('[data-testid="confirm-button"]');
   const findInternalNoteCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findInternalNoteTooltipIcon = () => wrapper.findComponent(GlIcon);
-
-  const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
+  const findWorkItemToggleStateButton = () => wrapper.findComponent(WorkItemStateToggleButton);
 
   const createComponent = ({
     isSubmitting = false,
@@ -53,10 +45,8 @@ describe('Work item comment form component', () => {
     isNewDiscussion = false,
     workItemState = STATE_OPEN,
     workItemType = 'Task',
-    mutationHandler = mutationSuccessHandler,
   } = {}) => {
     wrapper = shallowMount(WorkItemCommentForm, {
-      apolloProvider: createMockApollo([[updateWorkItemMutation, mutationHandler]]),
       propsData: {
         workItemState,
         workItemId,
@@ -205,61 +195,20 @@ describe('Work item comment form component', () => {
   });
 
   describe('when used as a top level/is a new discussion', () => {
-    describe('cancel button text', () => {
-      it.each`
-        workItemState   | workItemType    | buttonText
-        ${STATE_OPEN}   | ${'Task'}       | ${'Close task'}
-        ${STATE_CLOSED} | ${'Task'}       | ${'Reopen task'}
-        ${STATE_OPEN}   | ${'Objective'}  | ${'Close objective'}
-        ${STATE_CLOSED} | ${'Objective'}  | ${'Reopen objective'}
-        ${STATE_OPEN}   | ${'Key result'} | ${'Close key result'}
-        ${STATE_CLOSED} | ${'Key result'} | ${'Reopen key result'}
-      `(
-        'is "$buttonText" when "$workItemType" state is "$workItemState"',
-        ({ workItemState, workItemType, buttonText }) => {
-          createComponent({ isNewDiscussion: true, workItemState, workItemType });
-
-          expect(findCancelButton().text()).toBe(buttonText);
-        },
-      );
-    });
-
-    describe('Close/reopen button click', () => {
-      it.each`
-        workItemState   | stateEvent
-        ${STATE_OPEN}   | ${STATE_EVENT_CLOSE}
-        ${STATE_CLOSED} | ${STATE_EVENT_REOPEN}
-      `(
-        'calls mutation with "$stateEvent" when workItemState is "$workItemState"',
-        async ({ workItemState, stateEvent }) => {
-          createComponent({ isNewDiscussion: true, workItemState });
-
-          findCancelButton().vm.$emit('click');
-
-          await waitForPromises();
-
-          expect(mutationSuccessHandler).toHaveBeenCalledWith({
-            input: {
-              id: workItemQueryResponse.data.workItem.id,
-              stateEvent,
-            },
-          });
-        },
-      );
-
-      it('emits an error message when the mutation was unsuccessful', async () => {
-        createComponent({
-          isNewDiscussion: true,
-          mutationHandler: jest.fn().mockRejectedValue('Error!'),
-        });
-        findCancelButton().vm.$emit('click');
-
-        await waitForPromises();
-
-        expect(wrapper.emitted('error')).toEqual([
-          ['Something went wrong while updating the task. Please try again.'],
-        ]);
+    it('emits an error message when the mutation was unsuccessful', async () => {
+      createComponent({
+        isNewDiscussion: true,
       });
+      findWorkItemToggleStateButton().vm.$emit(
+        'error',
+        'Something went wrong while updating the task. Please try again.',
+      );
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('error')).toEqual([
+        ['Something went wrong while updating the task. Please try again.'],
+      ]);
     });
   });
 

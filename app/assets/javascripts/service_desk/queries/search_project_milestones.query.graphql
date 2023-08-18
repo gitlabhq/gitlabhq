@@ -1,0 +1,17 @@
+#import "./milestone.fragment.graphql"
+
+query searchProjectMilestones($fullPath: ID!, $search: String) {
+  project(fullPath: $fullPath) {
+    id
+    milestones(
+      searchTitle: $search
+      includeAncestors: true
+      sort: EXPIRED_LAST_DUE_DATE_ASC
+      state: active
+    ) {
+      nodes {
+        ...Milestone
+      }
+    }
+  }
+}

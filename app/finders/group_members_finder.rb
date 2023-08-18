@@ -86,11 +86,6 @@ class GroupMembersFinder < UnionFinder
   end
 
   def members_of_groups(groups, shared_from_groups)
-    if Feature.disabled?(:members_with_shared_group_access, @group.root_ancestor)
-      groups << shared_from_groups unless shared_from_groups.nil?
-      return GroupMember.non_request.of_groups(find_union(groups, Group))
-    end
-
     members = GroupMember.non_request.of_groups(find_union(groups, Group))
     return members if shared_from_groups.nil?
 

@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD job token **(FREE)**
+# GitLab CI/CD job token **(FREE ALL)**
 
 When a pipeline job is about to run, GitLab generates a unique token and injects it as the
 [`CI_JOB_TOKEN` predefined variable](../variables/predefined_variables.md).
@@ -105,6 +105,8 @@ access is needed.
 
 ### Disable the job token scope allowlist
 
+> **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+
 WARNING:
 It is a security risk to disable the allowlist. A malicious user could try to compromise
 a pipeline created in an unauthorized project. If the pipeline was created by one of
@@ -122,28 +124,30 @@ To disable the job token scope allowlist:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
-1. Toggle **Allow access to this project with a CI_JOB_TOKEN** to disabled.
+1. Toggle **Limit access _to_ this project** to disabled.
    Enabled by default in new projects.
 
 You can also disable the allowlist [with the API](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate).
 
 ### Add a project to the job token scope allowlist
 
+> **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+
 You can add projects to the allowlist for a project. Projects added to the allowlist
 can make API calls from running pipelines by using the CI/CD job token.
 
 Prerequisite:
 
-- You must have at least the Maintainer role in the current project and at least
-  the Guest role in the allowed project.
-- You must not have more than 100 projects added to the allowlist.
+- You must have at least the Maintainer role in the current project. If the allowed project
+  is internal or private, you must have at least the Guest role in that project.
+- You must not have more than 200 projects added to the allowlist.
 
 To add a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
-1. Verify **Allow access to this project with a CI_JOB_TOKEN** is enabled.
+1. Verify **Limit access _to_ this project** is enabled.
 1. Under **Allow CI job tokens from the following projects to access this project**,
    add projects to the allowlist.
 
@@ -176,20 +180,22 @@ If project `B` is public or internal, you do not need to add
 
 ### Configure the job token scope
 
+> **Limit CI_JOB_TOKEN access** setting [renamed to **Limit access _from_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+
 Prerequisite:
 
-- You must not have more than 100 projects added to the token's scope.
+- You must not have more than 200 projects added to the token's scope.
 
 To configure the job token scope:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
-1. Toggle **Limit CI_JOB_TOKEN access** to enabled.
+1. Toggle **Limit access _from_ this project** to enabled.
 1. Optional. Add existing projects to the token's access scope. The user adding a
    project must have the Maintainer role in both projects.
 
-## Download an artifact from a different pipeline **(PREMIUM)**
+## Download an artifact from a different pipeline **(PREMIUM ALL)**
 
 > `CI_JOB_TOKEN` for artifacts download with the API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in GitLab 9.5.
 

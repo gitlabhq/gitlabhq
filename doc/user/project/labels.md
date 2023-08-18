@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Labels **(FREE)**
+# Labels **(FREE ALL)**
 
 As your count of issues, merge requests, and epics grows in GitLab, it gets more challenging
 to keep track of those items. Especially as your organization grows from just a few people to
@@ -153,7 +153,7 @@ To create a group label:
    a specific color in the **Background color** field.
 1. Select **Create label**.
 
-### Create a group label from an epic **(PREMIUM)**
+### Create a group label from an epic **(PREMIUM ALL)**
 
 You can also create a new group label from an epic.
 Labels you create this way belong to the same group as the epic.
@@ -317,7 +317,7 @@ The following labels are created:
 - `suggestion`
 - `support`
 
-## Scoped labels **(PREMIUM)**
+## Scoped labels **(PREMIUM ALL)**
 
 Teams can use scoped labels to annotate issues, merge requests, and epics with mutually exclusive
 labels. By preventing certain labels from being used together, you can create more complex workflows.
@@ -454,6 +454,13 @@ The labels higher in the list get higher priority.
 
 To learn what happens when you sort by priority or label priority, see
 [Sorting and ordering issue lists](issues/sorting_issue_lists.md).
+
+## Related topics
+
+Practice working with labels in the following tutorials:
+
+- [Set up a single project for issue triage](../../tutorials/issue_triage/index.md)
+- [Set up issue boards for team hand-off](../../tutorials/boards_for_teams/index.md)
 
 ## Troubleshooting
 

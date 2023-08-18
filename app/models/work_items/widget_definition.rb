@@ -31,7 +31,8 @@ module WorkItems
       test_reports: 13, # EE-only
       notifications: 14,
       current_user_todos: 15,
-      award_emoji: 16
+      award_emoji: 16,
+      linked_items: 17
     }
 
     def self.available_widgets

@@ -33,7 +33,7 @@ module Gitlab
         private
 
         def track_unique_action(action, author)
-          return unless author && Feature.enabled?(:track_work_items_activity)
+          return unless author
 
           Gitlab::UsageDataCounters::HLLRedisCounter.track_event(action, values: author.id)
         end

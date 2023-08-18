@@ -14,16 +14,20 @@ RSpec.shared_context 'with user contribution events' do
   # milestone
   let_it_be(:milestone) { create(:milestone, project: project) }
 
-  # note
-  let_it_be(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
-
   # design
   let_it_be(:design) { create(:design, project: project, issue: issue, author: user) }
 
+  # note
+  let_it_be(:note_on_issue) { create(:note_on_issue, noteable: issue, project: project) }
+  let_it_be(:note_on_merge_request) { create(:note_on_merge_request, noteable: merge_request, project: project) }
+  let_it_be(:note_on_project_snippet) { create(:note_on_project_snippet, project: project) }
+  let_it_be(:note_on_design) { create(:note_on_design, noteable: design) }
+  let_it_be(:note_on_personal_snippet) do
+    create(:note, project: nil, noteable: create(:personal_snippet, author: user))
+  end
+
   # work item
   let_it_be(:incident) { create(:work_item, :incident, author: user, project: project) }
-  let_it_be(:test_case)  { create(:work_item, :test_case, author: user, project: project) }
-  let_it_be(:requirement) { create(:work_item, :requirement, author: user, project: project) }
   let_it_be(:task) { create(:work_item, :task, author: user, project: project) }
 
   # events
@@ -36,15 +40,37 @@ RSpec.shared_context 'with user contribution events' do
   # closed
   let_it_be(:closed_issue_event) { create(:event, :closed, author: user, project: project, target: issue) }
   let_it_be(:closed_milestone_event) { create(:event, :closed, author: user, project: project, target: milestone) }
-  let_it_be(:closed_incident_event) { create(:event, :closed, author: user, project: project, target: incident) }
-  let_it_be(:closed_test_case_event) { create(:event, :closed, author: user, project: project, target: test_case) }
   let_it_be(:closed_merge_request_event) do
     create(:event, :closed, author: user, project: project, target: merge_request)
   end
 
+  let_it_be(:closed_task_event) do
+    create(:event, :closed, :for_work_item, author: user, project: project, target: task)
+  end
+
+  let_it_be(:closed_incident_event) do
+    create(:event, :closed, :for_work_item, author: user, project: project, target: incident)
+  end
+
   # commented
-  let_it_be(:commented_event) do
+  let_it_be(:commented_issue_event) do
     create(:event, :commented, author: user, project: project, target: note_on_issue)
+  end
+
+  let_it_be(:commented_merge_request_event) do
+    create(:event, :commented, author: user, project: project, target: note_on_merge_request)
+  end
+
+  let_it_be(:commented_project_snippet_event) do
+    create(:event, :commented, author: user, target: note_on_project_snippet)
+  end
+
+  let_it_be(:commented_personal_snippet_event) do
+    create(:event, :commented, project: nil, author: user, target: note_on_personal_snippet)
+  end
+
+  let_it_be(:commented_design_event) do
+    create(:event, :commented, author: user, target: note_on_design)
   end
 
   # created
@@ -55,14 +81,6 @@ RSpec.shared_context 'with user contribution events' do
   let_it_be(:created_wiki_page_event) { create(:wiki_page_event, :created, project: project, author: user) }
   let_it_be(:created_incident_event) do
     create(:event, :created, :for_work_item, author: user, project: project, target: incident)
-  end
-
-  let_it_be(:created_test_case_event) do
-    create(:event, :created, :for_work_item, author: user, project: project, target: test_case)
-  end
-
-  let_it_be(:created_requirement_event) do
-    create(:event, :created, :for_work_item, author: user, project: project, target: requirement)
   end
 
   let_it_be(:created_task_event) do
@@ -147,8 +165,8 @@ RSpec.shared_context 'with user contribution events' do
   # reopened
   let_it_be(:reopened_issue_event) { create(:event, :reopened, author: user, project: project, target: issue) }
   let_it_be(:reopened_milestone_event) { create(:event, :reopened, author: user, project: project, target: milestone) }
+  let_it_be(:reopened_task_event) { create(:event, :reopened, author: user, project: project, target: task) }
   let_it_be(:reopened_incident_event) { create(:event, :reopened, author: user, project: project, target: incident) }
-  let_it_be(:reopened_test_case_event) { create(:event, :reopened, author: user, project: project, target: test_case) }
   let_it_be(:reopened_merge_request_event) do
     create(:event, :reopened, author: user, project: project, target: merge_request)
   end

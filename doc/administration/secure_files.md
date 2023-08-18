@@ -4,7 +4,7 @@ group: Mobile DevOps
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secure Files administration **(FREE)**
+# Secure Files administration **(FREE SELF)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8 [with a flag](feature_flags.md) named `ci_secure_files`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) in GitLab 15.7. Feature flag `ci_secure_files` removed.
@@ -42,11 +42,7 @@ Prerequisite:
    gitlab_rails['ci_secure_files_enabled'] = false
    ```
 
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 **For self-compiled installations**
 
@@ -57,7 +53,7 @@ Prerequisite:
      enabled: false
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
 ## Using local storage
 
@@ -73,12 +69,7 @@ are stored locally, follow the steps below.
    gitlab_rails['ci_secure_files_storage_path'] = "/mnt/storage/ci_secure_files"
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation)
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 **For self-compiled installations**
 
@@ -91,7 +82,7 @@ are stored locally, follow the steps below.
      storage_path: /mnt/storage/ci_secure_files
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source)
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 ## Using object storage **(FREE SELF)**
@@ -109,7 +100,7 @@ Adding support is proposed in [issue 414673](https://gitlab.com/gitlab-org/gitla
 
 The following settings are:
 
-- Nested under `ci_secure_files:` and then `object_store:` on source installations.
+- Nested under `ci_secure_files:` and then `object_store:` on self-compiled installations.
 - Prefixed by `ci_secure_files_object_store_` on Linux package installations.
 
 | Setting | Description | Default |
@@ -149,14 +140,8 @@ See [the available connection settings for different providers](object_storage.m
    }
    ```
 
-1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation)
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
+1. Save the file and [reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. [Migrate any existing local states to the object storage](#migrate-to-object-storage).
 
 **For self-compiled installations**
 
@@ -175,8 +160,8 @@ See [the available connection settings for different providers](object_storage.m
          region: eu-central-1
    ```
 
-1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
-1. [Migrate any existing local states to the object storage](#migrate-to-object-storage)
+1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
+1. [Migrate any existing local states to the object storage](#migrate-to-object-storage).
 
 ### Migrate to object storage
 

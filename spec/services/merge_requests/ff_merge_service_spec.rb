@@ -19,6 +19,7 @@ RSpec.describe MergeRequests::FfMergeService, feature_category: :code_review_wor
   let(:valid_merge_params) { { sha: merge_request.diff_head_sha } }
 
   before do
+    stub_feature_flags(refactor_merge_service: false)
     project.add_maintainer(user)
     project.add_developer(user2)
   end

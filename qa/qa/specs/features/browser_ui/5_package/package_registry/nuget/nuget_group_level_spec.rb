@@ -1,20 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
-    describe 'NuGet group level endpoint' do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+    describe 'NuGet group level endpoint', :external_api_calls do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'nuget-package-project'
-          project.template_name = 'dotnetcore'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'nuget-package-project', template_name: 'dotnetcore') }
       let(:personal_access_token) do
         unless Page::Main::Menu.perform(&:signed_in?)
           Flow::Login.sign_in
@@ -42,14 +35,7 @@ module QA
         end
       end
 
-      let(:another_project) do
-        Resource::Project.fabricate_via_api! do |another_project|
-          another_project.name = 'nuget-package-install-project'
-          another_project.template_name = 'dotnetcore'
-          another_project.group = project.group
-        end
-      end
-
+      let(:another_project) { create(:project, name: 'nuget-package-install-project', template_name: 'dotnetcore', group: project.group) }
       let(:package_project_inbound_job_token_disabled) do
         Resource::CICDSettings.fabricate_via_api! do |settings|
           settings.project_path = project.full_path

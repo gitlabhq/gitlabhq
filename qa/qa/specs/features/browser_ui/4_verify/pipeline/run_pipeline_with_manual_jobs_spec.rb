@@ -6,10 +6,7 @@ module QA
       let(:executor) { "qa-runner-#{SecureRandom.hex(4)}" }
 
       let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'pipeline-with-manual-job'
-          project.description = 'Project for pipeline with manual job'
-        end
+        create(:project, name: 'pipeline-with-manual-job', description: 'Project for pipeline with manual job')
       end
 
       let!(:runner) do

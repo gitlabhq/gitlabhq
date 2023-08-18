@@ -86,7 +86,6 @@ variables:
       dotenv: suite_status.env
     expire_in: 7 days
     when: always
-  allow_failure: true
 
 download-knapsack-report:
   extends:
@@ -118,6 +117,11 @@ cache-gems:
         gdk reconfigure &&\
         gdk restart"
 
+download-fast-quarantine-report:
+  extends:
+    - .download-fast-quarantine-report
+    - .rules:download-fast-quarantine-report
+
 gdk-qa-smoke:
   extends:
     - .gdk-qa-base
@@ -143,6 +147,7 @@ gdk-qa-smoke-with-load-balancer:
     - changes:
         - ".gitlab/ci/test-on-gdk/**"
         - "lib/gitlab/database/load_balancing/**/*"
+  allow_failure: true
 
 gdk-qa-reliable:
   extends:
@@ -153,6 +158,7 @@ gdk-qa-reliable:
     QA_RUN_TYPE: gdk-qa-blocking
   rules:
     - when: always
+  allow_failure: true
 
 gdk-qa-reliable-with-load-balancer:
   extends:
@@ -171,6 +177,7 @@ gdk-qa-reliable-with-load-balancer:
     - changes:
         - ".gitlab/ci/test-on-gdk/**"
         - "lib/gitlab/database/load_balancing/**/*"
+  allow_failure: true
 
 gdk-qa-non-blocking:
   extends:
@@ -181,6 +188,7 @@ gdk-qa-non-blocking:
     QA_RUN_TYPE: gdk-qa-non-blocking
   rules:
     - when: manual
+  allow_failure: true
 
 # ==========================================
 # Post test stage

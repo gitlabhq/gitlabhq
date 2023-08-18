@@ -4,7 +4,7 @@ group: Compliance
 info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Create a compliance pipeline **(ULTIMATE)**
+# Tutorial: Create a compliance pipeline **(ULTIMATE ALL)**
 
 You can use [compliance pipelines](../../user/group/compliance_frameworks.md#compliance-pipelines) to ensure specific
 compliance-related jobs are run on pipelines for all projects in a group. Compliance pipelines are applied

@@ -3,9 +3,13 @@ include:
   - local: .gitlab/ci/cng/main.gitlab-ci.yml
 
 review-build-cng-env:
+  extends:
+    - .review-build-cng-env
   allow_failure: true
 
 review-build-cng:
+  extends:
+    - .review-build-cng
   needs: ["review-build-cng-env"]
   variables:
     IMAGE_TAG_EXT: "-${CI_COMMIT_SHORT_SHA}"

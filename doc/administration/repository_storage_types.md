@@ -29,9 +29,7 @@ The repository storage types documented here apply to any repository storage def
 
 ## Hashed storage
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28283) in GitLab 10.0.
-> - Made the default for new installations in GitLab 12.0.
-> - Enabled by default for new and renamed projects in GitLab 13.0.
+> **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
 
 Hashed storage stores projects on disk in a location based on a hash of the project's ID. Hashed
 storage is different to [legacy storage](#legacy-storage) where a project is stored based on:
@@ -81,12 +79,11 @@ To look up a project's hash path in the Admin Area:
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Projects** and select the project.
+1. Locate the **Relative path** field. The value is similar to:
 
-The **Gitaly relative path** is displayed there and looks similar to:
-
-```plaintext
-"@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git"
-```
+   ```plaintext
+   "@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git"
+   ```
 
 To look up a project's hash path using a Rails console:
 
@@ -100,7 +97,7 @@ To look up a project's hash path using a Rails console:
 
 #### From hashed path to project name
 
-Administrators can look up a project's name from its hashed storage path using:
+Administrators can look up a project's name from its hashed relative path using:
 
 - A Rails console.
 - The `config` file in the `*.git` directory.

@@ -43,9 +43,6 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
         project.add_reporter(current_user)
       end
 
-      it_behaves_like 'a mutation that returns top-level errors',
-                      errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
-
       it 'does not create the annotation' do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
@@ -56,25 +53,6 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
     context 'when the user has permission' do
       before do
         project.add_developer(current_user)
-      end
-
-      it 'creates the annotation' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-        end.to change { Metrics::Dashboard::Annotation.count }.by(1)
-      end
-
-      it 'returns the created annotation' do
-        post_graphql_mutation(mutation, current_user: current_user)
-
-        annotation = Metrics::Dashboard::Annotation.first
-        annotation_id = GitlabSchema.id_from_object(annotation).to_s
-
-        expect(mutation_response['annotation']['description']).to match(description)
-        expect(mutation_response['annotation']['startingAt'].to_time).to match(starting_at.to_time)
-        expect(mutation_response['annotation']['endingAt'].to_time).to match(ending_at.to_time)
-        expect(mutation_response['annotation']['id']).to match(annotation_id)
-        expect(annotation.environment_id).to eq(environment.id)
       end
 
       context 'when environment_id is missing' do
@@ -137,25 +115,6 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
         project.add_developer(current_user)
       end
 
-      it 'creates the annotation' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-        end.to change { Metrics::Dashboard::Annotation.count }.by(1)
-      end
-
-      it 'returns the created annotation' do
-        post_graphql_mutation(mutation, current_user: current_user)
-
-        annotation = Metrics::Dashboard::Annotation.first
-        annotation_id = GitlabSchema.id_from_object(annotation).to_s
-
-        expect(mutation_response['annotation']['description']).to match(description)
-        expect(mutation_response['annotation']['startingAt'].to_time).to match(starting_at.to_time)
-        expect(mutation_response['annotation']['endingAt'].to_time).to match(ending_at.to_time)
-        expect(mutation_response['annotation']['id']).to match(annotation_id)
-        expect(annotation.cluster_id).to eq(cluster.id)
-      end
-
       context 'when cluster_id is missing' do
         let(:mutation) do
           variables = {
@@ -176,9 +135,6 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
       before do
         project.add_guest(current_user)
       end
-
-      it_behaves_like 'a mutation that returns top-level errors',
-                    errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
 
       it 'does not create the annotation' do
         expect do

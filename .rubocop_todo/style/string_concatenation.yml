@@ -162,7 +162,6 @@ Style/StringConcatenation:
     - 'spec/graphql/mutations/issues/create_spec.rb'
     - 'spec/helpers/application_helper_spec.rb'
     - 'spec/helpers/diff_helper_spec.rb'
-    - 'spec/helpers/events_helper_spec.rb'
     - 'spec/helpers/search_helper_spec.rb'
     - 'spec/lib/api/helpers/related_resources_helpers_spec.rb'
     - 'spec/lib/backup/gitaly_backup_spec.rb'

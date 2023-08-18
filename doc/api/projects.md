@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Projects API **(FREE)**
+# Projects API **(FREE ALL)**
 
 Interact with [projects](../user/project/index.md) by using the REST API.
 
@@ -222,6 +222,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "container_registry_access_level": "enabled",
     "security_and_compliance_access_level": "private",
     "emails_disabled": null,
+    "emails_enabled": null,
     "shared_runners_enabled": true,
     "group_runners_enabled": true,
     "lfs_enabled": true,
@@ -233,6 +234,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "open_issues_count": 0,
     "ci_default_git_depth": 20,
     "ci_forward_deployment_enabled": true,
+    "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_job_token_scope_enabled": false,
     "ci_separated_caches": true,
@@ -406,6 +408,7 @@ GET /users/:user_id/projects
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 50,
     "ci_forward_deployment_enabled": true,
+    "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
     "public_jobs": true,
@@ -524,6 +527,7 @@ GET /users/:user_id/projects
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "ci_default_git_depth": 0,
     "ci_forward_deployment_enabled": true,
+    "ci_forward_deployment_rollback_allowed": true,
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
     "public_jobs": true,
@@ -1193,6 +1197,7 @@ GET /projects/:id
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "public_jobs": true,
@@ -1333,7 +1338,7 @@ target the upstream project by default.
 }
 ```
 
-### Templates for issues and merge requests **(PREMIUM)**
+### Templates for issues and merge requests **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55718) in GitLab 13.10.
 
@@ -1482,7 +1487,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
      --header "Content-Type: application/json" --data '{
         "name": "new_project", "description": "New Project", "path": "new_project",
         "namespace_id": "42", "initialize_with_readme": "true"}' \
-     --url 'https://gitlab.example.com/api/v4/projects/'
+     --url "https://gitlab.example.com/api/v4/projects/"
 ```
 
 | Attribute                                                   | Type    | Required               | Description |
@@ -1507,9 +1512,11 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `container_registry_enabled`                                | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
-| `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
+| `emails_disabled`                                           | boolean | **{dotted-circle}** No | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead|
+| `emails_enabled`                                            | boolean | **{dotted-circle}** No | Enable email notifications. |
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `group_runners_enabled`                                     | boolean | **{dotted-circle}** No | Enable group runners for this project. |
 | `group_with_project_templates_id` **(PREMIUM)**             | integer | **{dotted-circle}** No | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. |
 | `import_url`                                                | string  | **{dotted-circle}** No | URL to import repository from. When the URL value isn't empty, you must not set `initialize_with_readme` to `true`. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
 | `initialize_with_readme`                                    | boolean | **{dotted-circle}** No | Whether to create a Git repository with just a `README.md` file. Default is `false`. When this boolean is true, you must not pass `import_url` or other attributes of this endpoint which specify alternative contents for the repository. Doing so might result in the [following error](https://gitlab.com/gitlab-org/gitlab/-/issues/360266): `not a git repository`. |
@@ -1544,7 +1551,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `security_and_compliance_access_level`                      | string  | **{dotted-circle}** No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
-| `group_runners_enabled`                                     | boolean | **{dotted-circle}** No | Enable group runners for this project. |
+| `show_default_award_emojis`                                 | boolean | **{dotted-circle}** No | Show default award emojis. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_option`                                             | string  | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
@@ -1592,10 +1599,12 @@ POST /projects/user/:user_id
 | `container_registry_enabled`                                | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                            | string  | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. Requires `initialize_with_readme` to be `true`. |
 | `description`                                               | string  | **{dotted-circle}** No | Short project description. |
-| `emails_disabled`                                           | boolean | **{dotted-circle}** No | Disable email notifications. |
+| `emails_disabled`                                           | boolean | **{dotted-circle}** No | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead|
+| `emails_enabled`                                            | boolean | **{dotted-circle}** No | Enable email notifications. |
 | `enforce_auth_checks_on_uploads`                            | boolean | **{dotted-circle}** No | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `external_authorization_classification_label` **(PREMIUM)** | string  | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `group_runners_enabled`                                     | boolean | **{dotted-circle}** No | Enable group runners for this project. |
 | `group_with_project_templates_id` **(PREMIUM)**             | integer | **{dotted-circle}** No | For group-level custom templates, specifies ID of group from which all the custom project templates are sourced. Leave empty for instance-level templates. Requires `use_custom_template` to be true. |
 | `import_url`                                                | string  | **{dotted-circle}** No | URL to import repository from. |
 | `initialize_with_readme`                                    | boolean | **{dotted-circle}** No | `false` by default. |
@@ -1630,7 +1639,7 @@ POST /projects/user/:user_id
 | `resolve_outdated_diff_discussions`                         | boolean | **{dotted-circle}** No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `security_and_compliance_access_level`                      | string  | **{dotted-circle}** No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
-| `group_runners_enabled`                                     | boolean | **{dotted-circle}** No | Enable group runners for this project. |
+| `show_default_award_emojis`                                 | boolean | **{dotted-circle}** No | Show default award emojis. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `issue_branch_template`                                     | string  | **{dotted-circle}** No | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
@@ -1664,7 +1673,7 @@ For example, to toggle the setting for
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your-token>" \
-     --url 'https://gitlab.com/api/v4/projects/<your-project-ID>' \
+     --url "https://gitlab.com/api/v4/projects/<your-project-ID>" \
      --data "shared_runners_enabled=true" # to turn off: "shared_runners_enabled=false"
 ```
 
@@ -1689,6 +1698,7 @@ Supported attributes:
 | `ci_config_path`                                            | string         | **{dotted-circle}** No | The path to CI configuration file. |
 | `ci_default_git_depth`                                      | integer        | **{dotted-circle}** No | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone). |
 | `ci_forward_deployment_enabled`                             | boolean        | **{dotted-circle}** No | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
+| `ci_forward_deployment_rollback_allowed`                    | boolean        | **{dotted-circle}** No | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project`          | boolean        | **{dotted-circle}** No | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
 | `ci_separated_caches`                                       | boolean        | **{dotted-circle}** No | Set whether or not caches should be [separated](../ci/caching/index.md#cache-key-names) by branch protection status. |
 | `container_expiration_policy_attributes`                    | hash           | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
@@ -1696,10 +1706,12 @@ Supported attributes:
 | `container_registry_enabled`                                | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                            | string         | **{dotted-circle}** No | The [default branch](../user/project/repository/branches/default.md) name. |
 | `description`                                               | string         | **{dotted-circle}** No | Short project description. |
-| `emails_disabled`                                           | boolean        | **{dotted-circle}** No | Disable email notifications. |
+| `emails_disabled`                                           | boolean        | **{dotted-circle}** No | _(Deprecated)_ Disable email notifications. Use `emails_enabled` instead|
+| `emails_enabled`                                            | boolean        | **{dotted-circle}** No | Enable email notifications. |
 | `enforce_auth_checks_on_uploads`                            | boolean | **{dotted-circle}** No | Enforce [auth checks](../security/user_file_uploads.md#enable-authorization-checks-for-all-media-files) on uploads. |
 | `external_authorization_classification_label` **(PREMIUM)** | string         | **{dotted-circle}** No | The classification label for the project. |
 | `forking_access_level`                                      | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `group_runners_enabled`                                     | boolean        | **{dotted-circle}** No | Enable group runners for this project. |
 | `import_url`                                                | string         | **{dotted-circle}** No | URL the repository was imported from. |
 | `issues_access_level`                                       | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `issues_enabled`                                            | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable issues for this project. Use `issues_access_level` instead. |
@@ -1743,7 +1755,7 @@ Supported attributes:
 | `security_and_compliance_access_level`                      | string         | **{dotted-circle}** No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `service_desk_enabled`                                      | boolean        | **{dotted-circle}** No | Enable or disable Service Desk feature. |
 | `shared_runners_enabled`                                    | boolean        | **{dotted-circle}** No | Enable shared runners for this project. |
-| `group_runners_enabled`                                     | boolean        | **{dotted-circle}** No | Enable group runners for this project. |
+| `show_default_award_emojis`                                 | boolean        | **{dotted-circle}** No | Show default award emojis. |
 | `snippets_access_level`                                     | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `issue_branch_template`                                     | string         | **{dotted-circle}** No | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
@@ -2290,6 +2302,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "public_jobs": true,
@@ -2421,6 +2434,7 @@ Example response:
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "ci_default_git_depth": 50,
   "ci_forward_deployment_enabled": true,
+  "ci_forward_deployment_rollback_allowed": true,
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "public_jobs": true,
@@ -2484,7 +2498,7 @@ DELETE /projects/:id
 | `permanently_remove` **(PREMIUM)** | boolean/string    | no                     | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11                                                                                                           |
 | `full_path` **(PREMIUM)**          | string            | no                     | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-single-project) |
 
-## Restore project marked for deletion **(PREMIUM)**
+## Restore project marked for deletion **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
@@ -2646,6 +2660,33 @@ Returns:
 - `200 OK` on success.
 - `404 Project Not Found` if the target or source project does not exist or cannot be accessed by the requester.
 - `422 Unprocessable Entity` if the import of project members does not complete successfully.
+
+Example responses:
+
+When all emails were successfully sent (`200` HTTP status code):
+
+```json
+{  "status":  "success"  }
+```
+
+When there was any error importing 1 or more members (`200` HTTP status code):
+
+```json
+{
+  "status": "error",
+  "message": {
+               "john_smith": "Some individual error message",
+               "jane_smith": "Some individual error message"
+             },
+  "total_members_count": 3
+}
+```
+
+When there is a system error (`404` and `422` HTTP status codes):
+
+```json
+{  "message":  "Import failed"  }
+```
 
 ## Hooks
 
@@ -2836,7 +2877,7 @@ POST /projects/:id/housekeeping
 | `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `task`   | string           | **{dotted-circle}** No | `prune` to trigger manual prune of unreachable objects or `eager` to trigger eager housekeeping. |
 
-## Push rules **(PREMIUM)**
+## Push rules **(PREMIUM ALL)**
 
 ### Get project push rules
 
@@ -3076,6 +3117,7 @@ Example response:
   "pages_access_level": "enabled",
   "security_and_compliance_access_level": "enabled",
   "emails_disabled": null,
+  "emails_enabled": null,
   "shared_runners_enabled": true,
   "group_runners_enabled": true,
   "lfs_enabled": true,
@@ -3124,7 +3166,7 @@ Read more in the [Project members](members.md) documentation.
 
 Read more in the [Project vulnerabilities](project_vulnerabilities.md) documentation.
 
-## Get a project's pull mirror details **(PREMIUM)**
+## Get a project's pull mirror details **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.6.
 
@@ -3160,7 +3202,7 @@ Example response:
 }
 ```
 
-## Configure pull mirroring for a project **(PREMIUM)**
+## Configure pull mirroring for a project **(PREMIUM ALL)**
 
 > - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
@@ -3184,7 +3226,7 @@ with the API scope enabled.
 | `only_mirror_protected_branches`| boolean | **{dotted-circle}** No | Limits mirroring to only protected branches when set to `true`. |
 | `mirror_branch_regex`            | String  | **{dotted-circle}** No | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
 
-## Start the pull mirroring process for a Project **(PREMIUM)**
+## Start the pull mirroring process for a Project **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 

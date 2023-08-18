@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Line from '~/jobs/components/log/line.vue';
 import LineNumber from '~/jobs/components/log/line_number.vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 const httpUrl = 'http://example.com';
 const httpsUrl = 'https://example.com';
@@ -203,7 +204,7 @@ describe('Job Log Line', () => {
         searchResults: mockSearchResults,
       });
 
-      expect(wrapper.classes()).toContain('gl-bg-gray-500');
+      expect(wrapper.classes()).toContain('gl-bg-gray-700');
     });
 
     it('does not apply highlight class to search result elements', () => {
@@ -218,7 +219,49 @@ describe('Job Log Line', () => {
         searchResults: mockSearchResults,
       });
 
-      expect(wrapper.classes()).not.toContain('gl-bg-gray-500');
+      expect(wrapper.classes()).not.toContain('gl-bg-gray-700');
+    });
+  });
+
+  describe('job log hash highlighting', () => {
+    describe('with hash', () => {
+      beforeEach(() => {
+        setWindowLocation(`http://foo.com/root/ci-project/-/jobs/6353#L77`);
+      });
+
+      it('applies highlight class to job log line', () => {
+        createComponent({
+          line: {
+            offset: 24526,
+            content: [{ text: 'job log content' }],
+            section: 'custom-section',
+            lineNumber: 76,
+          },
+          path: '/root/ci-project/-/jobs/6353',
+        });
+
+        expect(wrapper.classes()).toContain('gl-bg-gray-700');
+      });
+    });
+
+    describe('without hash', () => {
+      beforeEach(() => {
+        setWindowLocation(`http://foo.com/root/ci-project/-/jobs/6353`);
+      });
+
+      it('does not apply highlight class to job log line', () => {
+        createComponent({
+          line: {
+            offset: 24500,
+            content: [{ text: 'line' }],
+            section: 'custom-section',
+            lineNumber: 10,
+          },
+          path: '/root/ci-project/-/jobs/6353',
+        });
+
+        expect(wrapper.classes()).not.toContain('gl-bg-gray-700');
+      });
     });
   });
 });

@@ -15,10 +15,6 @@ module Gitlab
               super
             end
 
-            def matching?
-              super && ::Feature.enabled?(:ci_include_components, context.project&.root_namespace)
-            end
-
             def content
               return unless component_result.success?
 

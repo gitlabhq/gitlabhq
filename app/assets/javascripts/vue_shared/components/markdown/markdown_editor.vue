@@ -13,6 +13,22 @@ import {
 import MarkdownField from './field.vue';
 import eventHub from './eventhub';
 
+async function sleep(t = 10) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, t);
+  });
+}
+
+async function waitFor(getEl, interval = 10, timeout = 2000) {
+  if (timeout <= 0) return null;
+
+  const el = getEl();
+  if (el) return el;
+
+  await sleep(interval);
+  return waitFor(getEl, timeout - interval);
+}
+
 export default {
   components: {
     LocalStorageSync,
@@ -190,8 +206,15 @@ export default {
       this.$emit(editingMode);
       this.notifyEditingModeChange(editingMode);
     },
-    notifyEditingModeChange(editingMode) {
+    async notifyEditingModeChange(editingMode) {
       this.$emit(editingMode);
+
+      const componentToFocus =
+        editingMode === EDITING_MODE_CONTENT_EDITOR
+          ? () => this.$refs.contentEditor
+          : () => this.$refs.textarea;
+
+      (await waitFor(componentToFocus)).focus();
     },
     autofocusTextarea() {
       if (this.autofocus && this.editingMode === EDITING_MODE_MARKDOWN_FIELD) {

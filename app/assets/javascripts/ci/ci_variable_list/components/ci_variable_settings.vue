@@ -1,13 +1,17 @@
 <script>
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ADD_VARIABLE_ACTION, EDIT_VARIABLE_ACTION, VARIABLE_ACTIONS } from '../constants';
+import CiVariableDrawer from './ci_variable_drawer.vue';
 import CiVariableTable from './ci_variable_table.vue';
 import CiVariableModal from './ci_variable_modal.vue';
 
 export default {
   components: {
+    CiVariableDrawer,
     CiVariableTable,
     CiVariableModal,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     areEnvironmentsLoading: {
       type: Boolean,
@@ -62,22 +66,31 @@ export default {
     };
   },
   computed: {
-    showModal() {
+    showForm() {
       return VARIABLE_ACTIONS.includes(this.mode);
+    },
+    useDrawerForm() {
+      return this.glFeatures?.ciVariableDrawer;
+    },
+    showDrawer() {
+      return this.showForm && this.useDrawerForm;
+    },
+    showModal() {
+      return this.showForm && !this.useDrawerForm;
     },
   },
   methods: {
     addVariable(variable) {
       this.$emit('add-variable', variable);
     },
+    closeForm() {
+      this.mode = null;
+    },
     deleteVariable(variable) {
       this.$emit('delete-variable', variable);
     },
     updateVariable(variable) {
       this.$emit('update-variable', variable);
-    },
-    hideModal() {
-      this.mode = null;
     },
     setSelectedVariable(variable = null) {
       if (!variable) {
@@ -104,6 +117,7 @@ export default {
         @handle-prev-page="$emit('handle-prev-page')"
         @handle-next-page="$emit('handle-next-page')"
         @set-selected-variable="setSelectedVariable"
+        @delete-variable="deleteVariable"
         @sort-changed="(val) => $emit('sort-changed', val)"
       />
       <ci-variable-modal
@@ -118,9 +132,17 @@ export default {
         :selected-variable="selectedVariable"
         @add-variable="addVariable"
         @delete-variable="deleteVariable"
-        @hideModal="hideModal"
+        @close-form="closeForm"
         @update-variable="updateVariable"
         @search-environment-scope="$emit('search-environment-scope', $event)"
+      />
+      <ci-variable-drawer
+        v-if="showDrawer"
+        :are-environments-loading="areEnvironmentsLoading"
+        :has-env-scope-query="hasEnvScopeQuery"
+        :mode="mode"
+        v-on="$listeners"
+        @close-form="closeForm"
       />
     </div>
   </div>

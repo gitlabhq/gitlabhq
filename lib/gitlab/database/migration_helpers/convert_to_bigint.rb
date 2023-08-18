@@ -15,6 +15,20 @@ module Gitlab
 
           Gitlab.com? && !Gitlab.jh?
         end
+
+        def temp_column_removed?(table_name, column_name)
+          !column_exists?(table_name.to_s, convert_to_bigint_column(column_name))
+        end
+
+        def columns_swapped?(table_name, column_name)
+          table_columns = columns(table_name.to_s)
+          temp_column_name = convert_to_bigint_column(column_name)
+
+          column = table_columns.find { |c| c.name == column_name.to_s }
+          temp_column = table_columns.find { |c| c.name == temp_column_name }
+
+          column.sql_type == 'bigint' && temp_column.sql_type == 'integer'
+        end
       end
     end
   end

@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import Tracking from '~/tracking';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
@@ -113,8 +114,8 @@ export default {
       this.$apollo.mutate({
         mutation: setActiveBoardItemMutation,
         variables: {
-          boardItem: this.item,
-          isIssue: this.isIssueBoard,
+          boardItem: this.isActive ? null : this.item,
+          isIssue: this.isActive ? undefined : this.isIssueBoard,
         },
       });
     },

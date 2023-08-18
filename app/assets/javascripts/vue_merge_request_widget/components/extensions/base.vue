@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlLoadingIcon, GlTooltipDirective, GlIntersectionObserver } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';

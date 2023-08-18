@@ -11,11 +11,9 @@ spec:
       default: "gems/"
 ---
 workflow:
-  name: '$PIPELINE_NAME'
+  name: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION pipeline'
   rules:
-    - if: $CI_MERGE_REQUEST_ID
-      variables:
-        PIPELINE_NAME: '[$[[inputs.gem_name]] gem] Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
+    - when: always
 
 variables:
   BUNDLE_PATH: "vendor"
@@ -52,7 +50,7 @@ rubocop:
   rules:
     - exists: ["$[[inputs.gem_path_prefix]]$[[inputs.gem_name]]/.rubocop.yml"]
   script:
-    - bundle exec rubocop --config .rubocop.yml
+    - bundle exec rubocop
 
 rspec:
   extends: .ruby_matrix

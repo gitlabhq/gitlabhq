@@ -11,9 +11,11 @@
 - vis1020 = _('This merge request is from an internal project to a public project.')
 - i18n = { '010' => vis010, '020' => vis020, '1020' => vis1020 }
 
-- source_level = @merge_request.source_project.visibility_level
-- source_visibility = @merge_request.source_project.visibility
-- target_level = @merge_request.target_project.visibility_level
+- source_project = @merge_request.source_project
+- target_project = @merge_request.target_project
+- source_level = source_project.visibility_level
+- source_visibility = source_project.visibility
+- target_level = target_project.visibility_level
 
 - visibilityMismatchString = i18n["#{source_level}#{target_level}"]
 
@@ -39,10 +41,18 @@
         = dropdown_filter(_("Search branches"))
         = dropdown_content
         = dropdown_loading
-
 - if source_level < target_level
   = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-4' }) do |c|
     - c.with_body do
       = visibilityMismatchString
       %br
       = _('Review the target project before submitting to avoid exposing %{source} changes.') % { source: source_visibility }
+- elsif target_level > Gitlab::VisibilityLevel::PRIVATE
+  - source_access_level = source_project.project_feature.repository_access_level
+  - target_access_level =  target_project.project_feature.repository_access_level
+  - if source_access_level < target_access_level
+    = render Pajamas::AlertComponent.new(title: _('Should these changes be private?'), variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-4' }) do |c|
+      - c.with_body do
+        - warning_message = html_escape(_("Project %{code_open}%{source_project}%{code_close} has more restricted access settings than %{code_open}%{target_project}%{code_close}. To avoid exposing private changes, make sure you're submitting changes to the correct project."))
+        = warning_message % {code_open: '<code>'.html_safe, code_close: '</code>'.html_safe, source_project: source_project.name_with_namespace, target_project: target_project.name_with_namespace}
+

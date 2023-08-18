@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
   include JavaScriptFixturesHelpers
   include ApiHelpers
+  include DesignManagementTestHelpers
 
   let_it_be(:followers) { create_list(:user, 5) }
   let_it_be(:followees) { create_list(:user, 5) }
@@ -28,16 +29,22 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project_empty_repo, group: group) }
 
-    include_context 'with user contribution events'
+    if Gitlab.ee?
+      include_context '[EE] with user contribution events'
+    else
+      include_context 'with user contribution events'
+    end
 
     before do
+      enable_design_management
+      stub_licensed_features(epics: true)
       group.add_owner(user)
       project.add_maintainer(user)
       sign_in(user)
     end
 
     it 'controller/users/activity.json' do
-      get :activity, params: { username: user.username, limit: 50 }, format: :json
+      get :activity, params: { username: user.username, limit: 100 }, format: :json
 
       expect(response).to be_successful
     end

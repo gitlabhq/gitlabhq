@@ -16,7 +16,7 @@ module Integrations
       required: true
 
     field :token,
-      type: 'password',
+      type: :password,
       title: -> { _('Token') },
       help: -> do
         s_('ProjectService|The token you get after you create a Buildkite pipeline with a GitLab repository.')

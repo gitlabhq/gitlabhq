@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { updateElementsVisibility } from '../utils/dom';
 import TreePage from './tree.vue';
@@ -5,6 +6,13 @@ import TreePage from './tree.vue';
 export default {
   components: {
     TreePage,
+  },
+  props: {
+    refType: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   mounted() {
     this.updateProjectElements(true);
@@ -21,5 +29,5 @@ export default {
 </script>
 
 <template>
-  <tree-page path="/" />
+  <tree-page path="/" :ref-type="refType" />
 </template>

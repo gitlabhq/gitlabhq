@@ -24,7 +24,7 @@ const addRequestedOffset = (offset) => {
 
 const removeLeadingSlash = (path) => path.replace(/^\//, '');
 
-const fetchData = (projectPath, path, ref, offset) => {
+const fetchData = (projectPath, path, ref, offset, refType) => {
   if (fetchedBatches.includes(offset) || offset < 0) {
     return [];
   }
@@ -41,12 +41,12 @@ const fetchData = (projectPath, path, ref, offset) => {
   );
 
   return axios
-    .get(url, { params: { format: 'json', offset } })
+    .get(url, { params: { format: 'json', offset, ref_type: refType } })
     .then(({ data }) => normalizeData(data, path))
     .catch(() => createAlert({ message: I18N_COMMIT_DATA_FETCH_ERROR }));
 };
 
-export const loadCommits = async (projectPath, path, ref, offset) => {
+export const loadCommits = async (projectPath, path, ref, offset, refType) => {
   if (isRequested(offset)) {
     return [];
   }
@@ -54,7 +54,7 @@ export const loadCommits = async (projectPath, path, ref, offset) => {
   // We fetch in batches of 25, so this ensures we don't refetch
   Array.from(Array(COMMIT_BATCH_SIZE)).forEach((_, i) => addRequestedOffset(offset + i));
 
-  const commits = await fetchData(projectPath, path, ref, offset);
+  const commits = await fetchData(projectPath, path, ref, offset, refType);
 
   return commits;
 };

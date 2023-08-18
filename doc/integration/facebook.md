@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Facebook OAuth 2.0 OmniAuth Provider **(FREE)**
+# Use Facebook as an OAuth 2.0 authentication provider **(FREE ALL)**
 
 To enable the Facebook OmniAuth provider you must register your application with
 Facebook. Facebook generates an app ID and secret key for you to use.
@@ -58,13 +58,13 @@ Facebook. Facebook generates an app ID and secret key for you to use.
 
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -76,9 +76,9 @@ Facebook. Facebook generates an app ID and secret key for you to use.
    to add `facebook` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 
-1. Add the provider configuration:
+1. Add the provider configuration.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -91,7 +91,7 @@ Facebook. Facebook generates an app ID and secret key for you to use.
    ]
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```yaml
    - { name: 'facebook',
@@ -108,7 +108,7 @@ Facebook. Facebook generates an app ID and secret key for you to use.
 
 1. For the changes to take effect:
    - If you installed using the Linux package, [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
-   - If you self-compiled your installation, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+   - If you self-compiled your installation, [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations).
 
 On the sign in page there should now be a Facebook icon below the regular sign
 in form. Select the icon to begin the authentication process. Facebook asks the

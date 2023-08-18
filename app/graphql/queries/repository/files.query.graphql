@@ -19,6 +19,7 @@ query getFiles(
   $projectPath: ID!
   $path: String
   $ref: String!
+  $refType: RefType
   $pageSize: Int!
   $nextPageCursor: String
 ) {
@@ -27,7 +28,7 @@ query getFiles(
     __typename
     repository {
       __typename
-      tree(path: $path, ref: $ref) {
+      tree(path: $path, ref: $ref, refType: $refType) {
         __typename
         trees(first: $pageSize, after: $nextPageCursor) {
           __typename

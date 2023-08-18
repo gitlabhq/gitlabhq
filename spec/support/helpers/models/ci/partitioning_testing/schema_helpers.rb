@@ -3,36 +3,27 @@
 module Ci
   module PartitioningTesting
     module SchemaHelpers
-      DEFAULT_PARTITION = 100
-
       module_function
 
       def with_routing_tables
-        # model.table_name = :routing_table
+        # previous_table_name = Model.table_name
+        # Model.table_name = routing_table_name
+
         yield
         # ensure
-        # model.table_name = :regular_table
+        # Model.table_name = previous_table_name
       end
 
-      # We're dropping the default values here to ensure that the application code
-      # populates the `partition_id` value and it's not falling back on the
-      # database default one. We should be able to clean this up after
-      # partitioning the tables and substituting the routing table in the model:
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/377822
-      #
       def setup(connection: Ci::ApplicationRecord.connection)
         each_partitionable_table do |table_name|
-          change_column_default(table_name, from: DEFAULT_PARTITION, to: nil, connection: connection)
-          change_column_default("p_#{table_name}", from: DEFAULT_PARTITION, to: nil, connection: connection)
           create_test_partition("p_#{table_name}", connection: connection)
         end
+        ensure_builds_id_uniquness(connection: connection)
       end
 
       def teardown(connection: Ci::ApplicationRecord.connection)
         each_partitionable_table do |table_name|
           drop_test_partition("p_#{table_name}", connection: connection)
-          change_column_default(table_name, from: nil, to: DEFAULT_PARTITION, connection: connection)
-          change_column_default("p_#{table_name}", from: nil, to: DEFAULT_PARTITION, connection: connection)
         end
       end
 
@@ -45,12 +36,6 @@ module Ci
 
           model.reset_column_information if model.connected?
         end
-      end
-
-      def change_column_default(table_name, from:, to:, connection:)
-        return unless table_available?(table_name, connection: connection)
-
-        connection.change_column_default(table_name, :partition_id, from: from, to: to)
       end
 
       def create_test_partition(table_name, connection:)
@@ -72,6 +57,16 @@ module Ci
         connection.execute(<<~SQL.squish)
           ALTER TABLE #{table_name} DETACH PARTITION  #{full_partition_name(table_name)};
           DROP TABLE IF EXISTS #{full_partition_name(table_name)};
+        SQL
+      end
+
+      # This can be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/421173
+      # is implemented
+      def ensure_builds_id_uniquness(connection:)
+        connection.execute(<<~SQL.squish)
+          CREATE TRIGGER assign_p_ci_builds_id_trigger
+            BEFORE INSERT ON #{full_partition_name('ci_builds')}
+            FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_id_value();
         SQL
       end
 

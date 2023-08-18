@@ -26,3 +26,5 @@ module API
     end
   end
 end
+
+API::Entities::Snippet.prepend_mod_with('API::Entities::Snippet', with_descendants: true)

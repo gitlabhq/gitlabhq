@@ -5,7 +5,7 @@
 # @param configuration [BulkImports::Configuration] Config object containing url and access token
 # @param relative_url [String] Relative URL to download the file from
 # @param tmpdir [String] Temp directory to store downloaded file to. Must be located under `Dir.tmpdir`.
-# @param file_size_limit [Integer] Maximum allowed file size
+# @param file_size_limit [Integer] Maximum allowed file size. If 0, no limit will apply.
 # @param allowed_content_types [Array<String>] Allowed file content types
 # @param filename [String] Name of the file to download, if known. Use remote filename if none given.
 module BulkImports
@@ -15,14 +15,13 @@ module BulkImports
 
     ServiceError = Class.new(StandardError)
 
-    DEFAULT_FILE_SIZE_LIMIT = 5.gigabytes
     DEFAULT_ALLOWED_CONTENT_TYPES = %w(application/gzip application/octet-stream).freeze
 
     def initialize(
       configuration:,
       relative_url:,
       tmpdir:,
-      file_size_limit: DEFAULT_FILE_SIZE_LIMIT,
+      file_size_limit: default_file_size_limit,
       allowed_content_types: DEFAULT_ALLOWED_CONTENT_TYPES,
       filename: nil)
       @configuration = configuration
@@ -117,6 +116,10 @@ module BulkImports
         allow_local_network: allow_local_requests?,
         schemes: %w(http https)
       )
+    end
+
+    def default_file_size_limit
+      Gitlab::CurrentSettings.current_application_settings.bulk_import_max_download_file_size.megabytes
     end
   end
 end

@@ -7,6 +7,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
   let(:storage_parallelism) { nil }
   let(:destination) { File.join(Gitlab.config.backup.path, 'repositories') }
   let(:backup_id) { '20220101' }
+  let(:server_side) { false }
 
   let(:progress) do
     Tempfile.new('progress').tap do |progress|
@@ -26,7 +27,14 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
     progress.close
   end
 
-  subject { described_class.new(progress, max_parallelism: max_parallelism, storage_parallelism: storage_parallelism) }
+  subject do
+    described_class.new(
+      progress,
+      max_parallelism: max_parallelism,
+      storage_parallelism: storage_parallelism,
+      server_side: server_side
+    )
+  end
 
   context 'unknown' do
     it 'fails to start unknown' do
@@ -92,6 +100,17 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         end
       end
 
+      context 'server-side option set' do
+        let(:server_side) { true }
+
+        it 'passes option through' do
+          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-server-side', '-id', backup_id).and_call_original
+
+          subject.start(:create, destination, backup_id: backup_id)
+          subject.finish!
+        end
+      end
+
       it 'raises when the exit code not zero' do
         expect(subject).to receive(:bin_path).and_return(Gitlab::Utils.which('false'))
 
@@ -132,11 +151,8 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         )
       end
 
-      before do
-        stub_const('ENV', ssl_env)
-      end
-
       it 'passes through SSL envs' do
+        expect(subject).to receive(:current_env).and_return(ssl_env)
         expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-id', backup_id).and_call_original
 
         subject.start(:create, destination, backup_id: backup_id)
@@ -146,21 +162,27 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
   end
 
   context 'restore' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository, :design_repo) }
     let_it_be(:personal_snippet) { create(:personal_snippet, author: project.first_owner) }
     let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
 
-    def copy_bundle_to_backup_path(bundle_name, destination)
-      FileUtils.mkdir_p(File.join(Gitlab.config.backup.path, 'repositories', File.dirname(destination)))
-      FileUtils.cp(Rails.root.join('spec/fixtures/lib/backup', bundle_name), File.join(Gitlab.config.backup.path, 'repositories', destination))
+    def copy_fixture_to_backup_path(backup_name, repo_disk_path)
+      FileUtils.mkdir_p(File.join(Gitlab.config.backup.path, 'repositories', File.dirname(repo_disk_path)))
+
+      %w[.bundle .refs].each do |filetype|
+        FileUtils.cp(
+          Rails.root.join('spec/fixtures/lib/backup', backup_name + filetype),
+          File.join(Gitlab.config.backup.path, 'repositories', repo_disk_path + filetype)
+        )
+      end
     end
 
     it 'restores from repository bundles', :aggregate_failures do
-      copy_bundle_to_backup_path('project_repo.bundle', project.disk_path + '.bundle')
-      copy_bundle_to_backup_path('wiki_repo.bundle', project.disk_path + '.wiki.bundle')
-      copy_bundle_to_backup_path('design_repo.bundle', project.disk_path + '.design.bundle')
-      copy_bundle_to_backup_path('personal_snippet_repo.bundle', personal_snippet.disk_path + '.bundle')
-      copy_bundle_to_backup_path('project_snippet_repo.bundle', project_snippet.disk_path + '.bundle')
+      copy_fixture_to_backup_path('project_repo', project.disk_path)
+      copy_fixture_to_backup_path('wiki_repo', project.wiki.disk_path)
+      copy_fixture_to_backup_path('design_repo', project.design_repository.disk_path)
+      copy_fixture_to_backup_path('personal_snippet_repo', personal_snippet.disk_path)
+      copy_fixture_to_backup_path('project_snippet_repo', project_snippet.disk_path)
 
       expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer').and_call_original
 
@@ -184,7 +206,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
     it 'clears specified storages when remove_all_repositories is set' do
       expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-remove-all-repositories', 'default').and_call_original
 
-      copy_bundle_to_backup_path('project_repo.bundle', project.disk_path + '.bundle')
+      copy_fixture_to_backup_path('project_repo', project.disk_path)
       subject.start(:restore, destination, backup_id: backup_id, remove_all_repositories: %w[default])
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
       subject.finish!
@@ -208,6 +230,35 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-parallel-storage', '3').and_call_original
 
         subject.start(:restore, destination, backup_id: backup_id)
+        subject.finish!
+      end
+    end
+
+    context 'server-side option set' do
+      let(:server_side) { true }
+
+      it 'passes option through' do
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-server-side', '-id', backup_id).and_call_original
+
+        subject.start(:restore, destination, backup_id: backup_id)
+        subject.finish!
+      end
+
+      context 'missing backup_id' do
+        it 'wont set the option' do
+          expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-server-side').and_call_original
+
+          subject.start(:restore, destination)
+          subject.finish!
+        end
+      end
+    end
+
+    context 'missing backup_id' do
+      it 'wont set the option' do
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer').and_call_original
+
+        subject.start(:restore, destination)
         subject.finish!
       end
     end

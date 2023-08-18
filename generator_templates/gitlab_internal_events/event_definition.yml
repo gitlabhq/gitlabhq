@@ -1,6 +1,6 @@
 ---
 description: <%= args.last %>
-category: GitlabInternalEvents
+category: InternalEventTracking
 action: <%= event %>
 label_description:
 property_description:

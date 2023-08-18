@@ -61,7 +61,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   end
 
   condition(:design_management_enabled) do
-    group_projects_for(user: @user, group: @subject, only_owned: false).any? { |p| p.design_management_enabled? }
+    group_projects_for(user: @user, group: @subject, exclude_shared: false).any? { |p| p.design_management_enabled? }
   end
 
   condition(:dependency_proxy_available, scope: :subject) do
@@ -148,6 +148,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_member
     enable :read_custom_emoji
     enable :read_counts
+    enable :read_issue
   end
 
   rule { achievements_enabled }.policy do
@@ -230,7 +231,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
     enable :read_usage_quotas
     enable :read_group_runners
-    enable :admin_group_runners
     enable :register_group_runners
     enable :create_runner
 

@@ -110,8 +110,8 @@ module MarkupHelper
     prepare_asciidoc_context(file_name, context)
 
     html = Markup::RenderingService
-      .new(text, file_name: file_name, context: context, postprocess_context: postprocess_context)
-      .execute
+             .new(text, file_name: file_name, context: context, postprocess_context: postprocess_context)
+             .execute
 
     Hamlit::RailsHelpers.preserve(html)
   end
@@ -124,8 +124,8 @@ module MarkupHelper
     prepare_asciidoc_context(wiki_page.path, context)
 
     html = Markup::RenderingService
-      .new(text, file_name: wiki_page.path, context: context, postprocess_context: postprocess_context)
-      .execute
+             .new(text, file_name: wiki_page.path, context: context, postprocess_context: postprocess_context)
+             .execute
 
     Hamlit::RailsHelpers.preserve(html)
   end
@@ -192,15 +192,21 @@ module MarkupHelper
 
   def markdown_toolbar_button(options = {})
     data = options[:data].merge({ container: 'body' })
-    css_classes = %w[gl-button btn btn-default-tertiary btn-icon btn-sm js-md has-tooltip] << options[:css_class].to_s
-    content_tag :button,
-      type: 'button',
-      class: css_classes.join(' '),
-      data: data,
-      title: options[:title],
-      aria: { label: options[:title] } do
-      sprite_icon(options[:icon])
-    end
+    css_classes = %w[js-md has-tooltip] << options[:css_class].to_s
+
+    render Pajamas::ButtonComponent.new(
+      category: :tertiary,
+      size: :small,
+      icon: options[:icon],
+      button_options: {
+        class: css_classes.join(' '),
+        data: data,
+        title: options[:title],
+        aria: {
+          label: options[:title]
+        }
+      }
+    )
   end
 
   def render_markdown_field(object, field, context = {})

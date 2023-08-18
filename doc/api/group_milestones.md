@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group milestones API **(FREE)**
+# Group milestones API **(FREE ALL)**
 
 Use the group [milestones](../user/project/milestones/index.md) using the REST API.
 There's a separate [project milestones API](milestones.md) page.
@@ -166,7 +166,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `milestone_id` | integer | yes | The ID of a group milestone |
 
-## Get all burndown chart events for a single milestone **(PREMIUM)**
+## Get all burndown chart events for a single milestone **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4737) in GitLab 12.1
 > - Moved to GitLab Premium in 13.9.

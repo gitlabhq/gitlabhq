@@ -2,26 +2,21 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Create project badge', :reliable, product_group: :tenant_scale do
+    describe 'Project badge', :reliable, product_group: :tenant_scale do
       let(:badge_name) { "project-badge-#{SecureRandom.hex(8)}" }
       let(:expected_badge_link_url) { "#{Runtime::Scenario.gitlab_address}/#{project.path_with_namespace}" }
       let(:expected_badge_image_url) do
         "#{Runtime::Scenario.gitlab_address}/#{project.path_with_namespace}/badges/main/pipeline.svg"
       end
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'badge-test-project'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'badge-test-project') }
 
       before do
         Flow::Login.sign_in
         project.visit!
       end
 
-      it 'creates project badge successfully',
+      it 'creates project badge',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/350065' do
         Resource::ProjectBadge.fabricate! do |badge|
           badge.name = badge_name

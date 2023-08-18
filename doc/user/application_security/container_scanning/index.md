@@ -5,7 +5,7 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Container Scanning **(FREE)**
+# Container Scanning **(FREE ALL)**
 
 > - Improved support for FIPS [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263482) in GitLab 13.6 by upgrading `CS_MAJOR_VERSION` from `2` to `3`.
 > - Integration with Trivy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322656) in GitLab 13.9 by upgrading `CS_MAJOR_VERSION` from `3` to `4`.
@@ -430,7 +430,7 @@ container_scanning:
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
-### Vulnerability allowlisting **(ULTIMATE)**
+### Vulnerability allowlisting **(ULTIMATE ALL)**
 
 To allowlist specific vulnerabilities, follow these steps:
 
@@ -602,7 +602,7 @@ variables:
   SOURCE_IMAGE: registry.gitlab.com/security-products/container-scanning:6
   TARGET_IMAGE: $CI_REGISTRY/namespace/container-scanning
 
-image: docker:stable
+image: docker:latest
 
 update-scanner-image:
   services:
@@ -748,7 +748,7 @@ Database update information for other analyzers is available in the
 
 After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
 
-## Solutions for vulnerabilities (auto-remediation) **(ULTIMATE)**
+## Solutions for vulnerabilities (auto-remediation) **(ULTIMATE ALL)**
 
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.

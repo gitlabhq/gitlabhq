@@ -8,3 +8,5 @@ export const PLACEHOLDERS = [
   'default_branch',
   'commit_sha',
 ];
+export const INITIAL_PAGE = 1;
+export const PAGE_SIZE = 10;

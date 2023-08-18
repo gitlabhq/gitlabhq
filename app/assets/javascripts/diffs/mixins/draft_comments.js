@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 

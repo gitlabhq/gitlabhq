@@ -98,8 +98,6 @@ module Atlassian
         # Extract Jira issue keys from commits made to the deployment's branch or tag
         # since the last successful deployment was made to the environment.
         def issue_keys_from_commits_since_last_deploy
-          return [] if Feature.disabled?(:jira_deployment_issue_keys, project)
-
           last_deployed_commit = environment
             .successful_deployments
             .id_not_in(deployment.id)

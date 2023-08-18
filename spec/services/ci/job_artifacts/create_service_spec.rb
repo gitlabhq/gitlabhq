@@ -321,6 +321,45 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
       end
     end
 
+    shared_examples_for 'handling annotations' do |storage_type|
+      context 'when artifact type is annotations' do
+        let(:params) do
+          {
+            'artifact_type' => 'annotations',
+            'artifact_format' => 'gzip'
+          }.with_indifferent_access
+        end
+
+        if storage_type == :object_storage
+          let(:object_body) { File.read('spec/fixtures/gl-annotations.json.gz') }
+          let(:upload_filename) { 'gl-annotations.json.gz' }
+
+          before do
+            stub_request(:get, %r{s3.amazonaws.com/#{remote_path}})
+              .to_return(status: 200, body: File.read('spec/fixtures/gl-annotations.json.gz'))
+          end
+        else
+          let(:artifacts_file) do
+            file_to_upload('spec/fixtures/gl-annotations.json.gz', sha256: artifacts_sha256)
+          end
+        end
+
+        it 'calls parse service' do
+          expect_any_instance_of(Ci::ParseAnnotationsArtifactService) do |service|
+            expect(service).to receive(:execute).once.and_call_original
+          end
+
+          expect(execute[:status]).to eq(:success)
+          expect(job.job_annotations.as_json).to contain_exactly(
+            hash_including('name' => 'external_links', 'data' => [
+              hash_including('external_link' => hash_including('label' => 'URL 1', 'url' => 'https://url1.example.com/')),
+              hash_including('external_link' => hash_including('label' => 'URL 2', 'url' => 'https://url2.example.com/'))
+            ])
+          )
+        end
+      end
+    end
+
     shared_examples_for 'handling object storage errors' do
       shared_examples 'rescues object storage error' do |klass, message, expected_message|
         it "handles #{klass}" do
@@ -495,6 +534,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
       it_behaves_like 'handling uploads'
       it_behaves_like 'handling dotenv', :object_storage
+      it_behaves_like 'handling annotations', :object_storage
       it_behaves_like 'handling object storage errors'
       it_behaves_like 'validating requirements'
     end
@@ -506,6 +546,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
       it_behaves_like 'handling uploads'
       it_behaves_like 'handling dotenv', :local_storage
+      it_behaves_like 'handling annotations', :local_storage
       it_behaves_like 'validating requirements'
     end
   end

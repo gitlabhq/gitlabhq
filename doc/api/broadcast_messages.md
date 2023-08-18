@@ -16,7 +16,7 @@ As of GitLab 12.8, GET requests do not require authentication. All other broadca
 - Guests result in `401 Unauthorized`.
 - Regular users result in `403 Forbidden`.
 
-## Get all broadcast messages **(FREE)**
+## Get all broadcast messages **(FREE ALL)**
 
 List all broadcast messages.
 
@@ -49,7 +49,7 @@ Example response:
 ]
 ```
 
-## Get a specific broadcast message **(FREE)**
+## Get a specific broadcast message **(FREE ALL)**
 
 Get a specific broadcast message.
 

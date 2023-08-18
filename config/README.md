@@ -73,7 +73,7 @@ An example configuration file for Redis is in this directory under the name
 | `queues`            |                   | Background job processing queues                                                                             |
 | `shared_state`      |                   | Persistent application state                                                                                 |
 | `trace_chunks`      | `shared_state`    | [CI trace chunks](https://docs.gitlab.com/ee/administration/job_logs.html#incremental-logging-architecture)  |
-| `rate_limiting`     | `cache`           | [Rate limiting](https://docs.gitlab.com/ee/user/admin_area/settings/user_and_ip_rate_limits.html) state      |
+| `rate_limiting`     | `cache`           | [Rate limiting](https://docs.gitlab.com/ee/administration/settings/user_and_ip_rate_limits.html) state      |
 | `sessions`          | `shared_state`    | [Sessions](https://docs.gitlab.com/ee/development/session.html#redis)                                        |
 | `repository_cache`  | `cache`           | Repository related information                                                                               |
 | `db_load_balancing` | `shared_state`    | [Database Load Balancing](https://docs.gitlab.com/ee/administration/postgresql/database_load_balancing.html) |

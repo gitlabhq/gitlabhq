@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserPreference < ApplicationRecord
+class UserPreference < MainClusterwide::ApplicationRecord
   include IgnorableColumns
 
   # We could use enums, but Rails 4 doesn't support multiple

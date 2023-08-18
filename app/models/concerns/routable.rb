@@ -25,17 +25,19 @@ module Routable
     #
     # We need to qualify the columns with the table name, to support both direct lookups on
     # Route/RedirectRoute, and scoped lookups through the Routable classes.
-    route =
-      route_scope.find_by(routes: { path: path }) ||
-      route_scope.iwhere(Route.arel_table[:path] => path).take
+    Gitlab::Database.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046") do
+      route =
+        route_scope.find_by(routes: { path: path }) ||
+        route_scope.iwhere(Route.arel_table[:path] => path).take
 
-    if follow_redirects
-      route ||= redirect_route_scope.iwhere(RedirectRoute.arel_table[:path] => path).take
+      if follow_redirects
+        route ||= redirect_route_scope.iwhere(RedirectRoute.arel_table[:path] => path).take
+      end
+
+      next unless route
+
+      route.is_a?(Routable) ? route : route.source
     end
-
-    return unless route
-
-    route.is_a?(Routable) ? route : route.source
   end
 
   included do
@@ -46,7 +48,9 @@ module Routable
 
     validates :route, presence: true, unless: -> { is_a?(Namespaces::ProjectNamespace) }
 
-    scope :with_route, -> { includes(:route) }
+    scope :with_route, -> do
+      includes(:route).allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
+    end
 
     after_validation :set_path_errors
 
@@ -94,7 +98,9 @@ module Routable
           joins(:route)
         end
 
-      route.where(wheres.join(' OR '))
+      route
+        .where(wheres.join(' OR '))
+        .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
     end
   end
 

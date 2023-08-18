@@ -133,7 +133,6 @@ export default {
         ref="imageName"
         class="gl-text-body gl-font-weight-bold"
         data-testid="details-link"
-        data-qa-selector="registry_image_content"
         :to="{ name: 'details', params: { id } }"
       >
         {{ imageName }}

@@ -23,12 +23,13 @@ module ResolvableNote
   class_methods do
     # This method must be kept in sync with `#resolve!`
     def resolve!(current_user)
-      unresolved.update_all(resolved_at: Time.current, resolved_by_id: current_user.id)
+      now = Time.current
+      unresolved.update_all(updated_at: now, resolved_at: now, resolved_by_id: current_user.id)
     end
 
     # This method must be kept in sync with `#unresolve!`
     def unresolve!
-      resolved.update_all(resolved_at: nil, resolved_by_id: nil)
+      resolved.update_all(updated_at: Time.current, resolved_at: nil, resolved_by_id: nil)
     end
   end
 
@@ -57,7 +58,9 @@ module ResolvableNote
     return false unless resolvable?
     return false if resolved?
 
-    self.resolved_at = Time.current
+    now = Time.current
+    self.updated_at = now
+    self.resolved_at = now
     self.resolved_by = current_user
     self.resolved_by_push = resolved_by_push
 
@@ -69,6 +72,7 @@ module ResolvableNote
     return false unless resolvable?
     return false unless resolved?
 
+    self.updated_at = Time.current
     self.resolved_at = nil
     self.resolved_by = nil
 

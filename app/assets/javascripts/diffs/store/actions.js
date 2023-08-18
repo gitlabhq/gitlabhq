@@ -113,6 +113,46 @@ export const setBaseConfig = ({ commit }, options) => {
   });
 };
 
+export const prefetchSingleFile = async ({ state, getters, commit }, treeEntry) => {
+  const versionPath = state.mergeRequestDiff?.version_path;
+
+  if (
+    treeEntry &&
+    !treeEntry.diffLoaded &&
+    !treeEntry.diffLoading &&
+    !getters.getDiffFileByHash(treeEntry.fileHash)
+  ) {
+    const urlParams = {
+      old_path: treeEntry.filePaths.old,
+      new_path: treeEntry.filePaths.new,
+      w: state.showWhitespace ? '0' : '1',
+      view: 'inline',
+      commit_id: getters.commitId,
+    };
+
+    if (versionPath) {
+      const { diffId, startSha } = getDerivedMergeRequestInformation({ endpoint: versionPath });
+
+      urlParams.diff_id = diffId;
+      urlParams.start_sha = startSha;
+    }
+
+    commit(types.TREE_ENTRY_DIFF_LOADING, { path: treeEntry.filePaths.new });
+
+    try {
+      const { data: diffData } = await axios.get(
+        mergeUrlParams({ ...urlParams }, state.endpointDiffForPath),
+      );
+
+      commit(types.SET_DIFF_DATA_BATCH, { diff_files: diffData.diff_files });
+
+      eventHub.$emit('diffFilesModified');
+    } catch (e) {
+      commit(types.TREE_ENTRY_DIFF_LOADING, { path: treeEntry.filePaths.new, loading: false });
+    }
+  }
+};
+
 export const fetchFileByFile = async ({ state, getters, commit }) => {
   const isNoteLink = isUrlHashNoteLink(window?.location?.hash);
   const id = parseUrlHashAsFileHash(window?.location?.hash, state.currentDiffFileId);
@@ -304,6 +344,17 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
       }
     });
 };
+
+export function prefetchFileNeighbors({ getters, dispatch }) {
+  const { flatBlobsList: allBlobs, currentDiffIndex: currentIndex } = getters;
+
+  const previous = Math.max(currentIndex - 1, 0);
+  const next = Math.min(allBlobs.length - 1, currentIndex + 1);
+
+  dispatch('prefetchSingleFile', allBlobs[next]);
+  dispatch('prefetchSingleFile', allBlobs[previous]);
+}
+
 export const fetchCoverageFiles = ({ commit, state }) => {
   const coveragePoll = new Poll({
     resource: {
@@ -425,7 +476,9 @@ export const showCommentForm = ({ commit }, { lineCode, fileHash }) => {
   // works. If we focus the comment form on mount and the comment form gets removed and then
   // added again the page will scroll in unexpected ways
   setTimeout(() => {
-    const el = document.querySelector(`[data-line-code="${lineCode}"] textarea`);
+    const el = document.querySelector(
+      `[data-line-code="${lineCode}"] textarea, [data-line-code="${lineCode}"] [contenteditable="true"]`,
+    );
 
     if (!el) return;
 
@@ -641,6 +694,10 @@ export const setShowTreeList = ({ commit }, { showTreeList, saving = true }) => 
   if (saving) {
     localStorage.setItem(MR_TREE_SHOW_KEY, showTreeList);
   }
+};
+
+export const toggleTreeList = ({ state, commit }) => {
+  commit(types.SET_SHOW_TREE_LIST, !state.showTreeList);
 };
 
 export const openDiffFileCommentForm = ({ commit, getters }, formData) => {

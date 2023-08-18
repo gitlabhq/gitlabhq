@@ -29,8 +29,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
       context 'incorrect_auth_found_callback callback' do
         let(:user) { create(:user) }
         let(:service) do
-          described_class.new(user,
-                              incorrect_auth_found_callback: callback)
+          described_class.new(user, incorrect_auth_found_callback: callback)
         end
 
         it 'is called' do
@@ -45,8 +44,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
 
       context 'missing_auth_found_callback callback' do
         let(:service) do
-          described_class.new(user,
-                              missing_auth_found_callback: callback)
+          described_class.new(user, missing_auth_found_callback: callback)
         end
 
         it 'is called' do
@@ -108,10 +106,7 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
   describe '#update_authorizations' do
     context 'when there are no rows to add and remove' do
       it 'does not change authorizations' do
-        expect(ProjectAuthorization).not_to receive(:delete_all_in_batches_for_user)
-        expect(ProjectAuthorization).not_to receive(:insert_all_in_batches)
-
-        service.update_authorizations([], [])
+        expect { service.update_authorizations([], []) }.to not_change { user.project_authorizations.count }
       end
     end
 
@@ -146,14 +141,15 @@ RSpec.describe Users::RefreshAuthorizedProjectsService, feature_category: :user_
       user.project_authorizations.delete_all
 
       expect(Gitlab::AppJsonLogger).to(
-        receive(:info)
-          .with(event: 'authorized_projects_refresh',
-                user_id: user.id,
-                'authorized_projects_refresh.source': source,
-                'authorized_projects_refresh.rows_deleted_count': 0,
-                'authorized_projects_refresh.rows_added_count': 1,
-                'authorized_projects_refresh.rows_deleted_slice': [],
-                'authorized_projects_refresh.rows_added_slice': [[user.id, project.id, Gitlab::Access::MAINTAINER]])
+        receive(:info).with(
+          event: 'authorized_projects_refresh',
+          user_id: user.id,
+          'authorized_projects_refresh.source': source,
+          'authorized_projects_refresh.rows_deleted_count': 0,
+          'authorized_projects_refresh.rows_added_count': 1,
+          'authorized_projects_refresh.rows_deleted_slice': [],
+          'authorized_projects_refresh.rows_added_slice': [[user.id, project.id, Gitlab::Access::MAINTAINER]]
+        )
       )
 
       to_be_added = [

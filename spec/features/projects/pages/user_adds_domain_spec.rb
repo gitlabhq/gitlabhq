@@ -178,7 +178,12 @@ RSpec.describe 'User adds pages domain', :js, feature_category: :pages do
         visit project_pages_path(project)
 
         within('#content-body') { click_link 'Edit' }
-        expect(page).to have_field :domain_dns, with: "#{domain.domain} ALIAS namespace1.example.com."
+        expect(page).to have_field :domain_dns, with: format(
+          "%{domain} ALIAS %{namespace}.%{pages_host}.",
+          domain: domain.domain,
+          namespace: domain.project.root_namespace.path,
+          pages_host: Settings.pages.host
+        )
       end
     end
   end

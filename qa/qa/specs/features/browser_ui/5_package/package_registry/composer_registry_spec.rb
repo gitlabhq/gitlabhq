@@ -1,17 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, except: { job: 'relative-url' }, product_group: :package_registry do
-    describe 'Composer Repository' do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+    describe 'Composer Repository', :external_api_calls do
       include Runtime::Fixtures
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'composer-package-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :privtae, name: 'composer-package-project') }
       let(:package) do
         Resource::Package.init do |package|
           package.name = "my_package-#{SecureRandom.hex(4)}"
@@ -28,10 +22,7 @@ module QA
         end
       end
 
-      let!(:gitlab_address_with_port) do
-        uri = URI.parse(Runtime::Scenario.gitlab_address)
-        "#{uri.scheme}://#{uri.host}:#{uri.port}"
-      end
+      let(:gitlab_host_with_port) { Support::GitlabAddress.host_with_port }
 
       before do
         Flow::Login.sign_in
@@ -71,7 +62,14 @@ module QA
         package.remove_via_api!
       end
 
-      it 'publishes a composer package and deletes it', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016' do
+      it(
+        'publishes a composer package and deletes it',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016',
+        quarantine: {
+          type: :broken,
+          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/421885"
+        }
+      ) do
         Page::Project::Menu.perform(&:go_to_package_registry)
 
         Page::Project::Packages::Index.perform do |index|

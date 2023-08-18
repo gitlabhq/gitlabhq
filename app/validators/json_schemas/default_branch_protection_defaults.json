@@ -27,7 +27,11 @@
             "additionalProperties": false,
             "properties": {
               "access_level": {
-                "type": "integer"
+                "type": "integer",
+                "enum": [
+                  30,
+                  40
+                ]
               }
             }
           }
@@ -52,7 +56,11 @@
             "additionalProperties": false,
             "properties": {
               "access_level": {
-                "type": "integer"
+                "type": "integer",
+                "enum": [
+                  30,
+                  40
+                ]
               }
             }
           }

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category: :continuous_integration do
   include RepoHelpers
+  include ExclusiveLeaseHelpers
 
   describe 'Pipeline Processing Service Tests With Yaml' do
     let_it_be(:project) { create(:project, :repository) }
@@ -1230,6 +1231,19 @@ RSpec.describe Ci::PipelineProcessing::AtomicProcessingService, feature_category
 
         expect(all_builds_names).to eq(%w[A1 A2 B])
         expect(all_builds_statuses).to eq(%w[pending created created])
+      end
+    end
+
+    context 'when the exclusive lease is taken' do
+      let(:lease_key) { "ci/pipeline_processing/atomic_processing_service::pipeline_id:#{pipeline.id}" }
+
+      it 'skips pipeline processing' do
+        create_build('linux', stage_idx: 0)
+
+        stub_exclusive_lease_taken(lease_key)
+
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(a_hash_including(message: /^Cannot obtain an exclusive lease/))
+        expect(process_pipeline).to be_falsy
       end
     end
 

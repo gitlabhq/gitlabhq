@@ -1,0 +1,8 @@
+---
+name: search_merge_requests_hide_archived_projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126024
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/417595
+milestone: '16.3'
+type: development
+group: group::global search
+default_enabled: false

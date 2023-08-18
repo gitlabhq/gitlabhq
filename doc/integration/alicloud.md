@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use AliCloud as an OmniAuth authentication provider **(FREE)**
+# Use AliCloud as an OmniAuth authentication provider **(FREE ALL)**
 
 You can enable the AliCloud OAuth 2.0 OmniAuth provider and sign in to
 GitLab using your AliCloud account.
@@ -45,13 +45,13 @@ Sign in to the AliCloud platform and create an application on it. AliCloud gener
 
 1. On your GitLab server, open the configuration file.
 
-   - **For Omnibus installations**
+   - For Linux package installations:
 
      ```shell
      sudo editor /etc/gitlab/gitlab.rb
      ```
 
-   - **For installations from source**
+   - For self-compiled installations:
 
      ```shell
      cd /home/git/gitlab
@@ -66,7 +66,7 @@ Sign in to the AliCloud platform and create an application on it. AliCloud gener
 1. Add the provider configuration. Replace `YOUR_APP_ID` with the ID on the application details page
    and `YOUR_APP_SECRET` with the **SecretValue** you got when you registered the AliCloud application.
 
-   - **For Omnibus installations**
+   - For Linux package installations:
 
      ```ruby
        gitlab_rails['omniauth_providers'] = [
@@ -78,7 +78,7 @@ Sign in to the AliCloud platform and create an application on it. AliCloud gener
        ]
      ```
 
-   - **For installations from source**
+   - For self-compiled installations:
 
      ```yaml
      - { name: 'alicloud',
@@ -89,5 +89,5 @@ Sign in to the AliCloud platform and create an application on it. AliCloud gener
 1. Save the configuration file.
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
-   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#installations-from-source)
+   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations)
    if you installed from source.

@@ -26,7 +26,7 @@ describe('DeleteApplication', () => {
   };
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findForm = () => wrapper.find('form');
+  const findForm = () => wrapper.findComponent({ ref: 'deleteForm' });
 
   beforeEach(() => {
     setHTMLFixture(`
@@ -62,7 +62,7 @@ describe('DeleteApplication', () => {
         let formSubmitSpy;
 
         beforeEach(() => {
-          formSubmitSpy = jest.spyOn(wrapper.vm.$refs.deleteForm, 'submit');
+          formSubmitSpy = jest.spyOn(findForm().element, 'submit');
           findModal().vm.$emit('primary');
         });
 

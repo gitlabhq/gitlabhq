@@ -1,5 +1,6 @@
 <script>
 import { GlSprintf, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { __ } from '~/locale';
 import FileIcon from '~/vue_shared/components/file_icon.vue';

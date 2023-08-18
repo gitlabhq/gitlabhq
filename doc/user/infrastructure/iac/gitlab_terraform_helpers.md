@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Terraform helpers **(FREE)**
+# GitLab Terraform helpers **(FREE ALL)**
 
 GitLab provides two helpers to ease your integration with the [GitLab-managed Terraform State](terraform_state.md).
 

@@ -14,6 +14,8 @@
 
     @include media-breakpoint-up(sm) {
       display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
 
       .tree-ref-container {
         flex: 1;
@@ -24,7 +26,11 @@
 
         .control {
           float: left;
-          margin-left: 8px;
+          margin-right: 8px;
+
+          &:last-child {
+            margin-right: 0;
+          }
         }
       }
 

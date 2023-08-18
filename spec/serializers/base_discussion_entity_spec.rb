@@ -30,9 +30,21 @@ RSpec.describe BaseDiscussionEntity do
       :id,
       :individual_note,
       :resolvable,
+      :resolved,
+      :resolved_by_push,
+      :resolved_by,
+      :resolved_at,
       :resolve_path,
       :resolve_with_issue_path
     )
+  end
+
+  context 'when note is on an issue' do
+    let_it_be(:note) { create(:discussion_note_on_issue) }
+
+    it 'does not include resolve_with_issue_path' do
+      expect(subject.keys.sort).not_to include(:resolve_with_issue_path)
+    end
   end
 
   context 'when is LegacyDiffDiscussion' do

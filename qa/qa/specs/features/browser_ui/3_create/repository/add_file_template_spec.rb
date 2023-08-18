@@ -6,11 +6,10 @@ module QA
       include Runtime::Fixtures
 
       let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'file-template-project'
-          project.description = 'Add file templates via the Files view'
-          project.initialize_with_readme = true
-        end
+        create(:project,
+          :with_readme,
+          name: 'file-template-project',
+          description: 'Add file templates via the Files view')
       end
 
       templates = [

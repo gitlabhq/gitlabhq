@@ -1,0 +1,8 @@
+---
+name: lower_interval_for_canceling_redundant_pipelines
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129256
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/421925
+milestone: '16.3'
+type: development
+group: group::pipeline execution
+default_enabled: false

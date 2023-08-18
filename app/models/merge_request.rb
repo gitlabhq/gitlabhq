@@ -656,8 +656,8 @@ class MergeRequest < ApplicationRecord
     [:assignees, :reviewers] + super
   end
 
-  def committers
-    @committers ||= commits.committers
+  def committers(with_merge_commits: false)
+    @committers ||= commits.committers(with_merge_commits: with_merge_commits)
   end
 
   # Verifies if title has changed not taking into account Draft prefix
@@ -984,6 +984,18 @@ class MergeRequest < ApplicationRecord
     branch_merge_base_commit.try(:sha)
   end
 
+  def existing_mrs_targeting_same_branch
+    similar_mrs = target_project
+        .merge_requests
+        .where(source_branch: source_branch, target_branch: target_branch)
+        .where(source_project: source_project)
+        .opened
+
+    similar_mrs = similar_mrs.id_not_in(id) if persisted?
+
+    similar_mrs
+  end
+
   def validate_branches
     return unless target_project && source_project
 
@@ -995,23 +1007,22 @@ class MergeRequest < ApplicationRecord
     [:source_branch, :target_branch].each { |attr| validate_branch_name(attr) }
 
     if opened?
-      similar_mrs = target_project
-        .merge_requests
-        .where(source_branch: source_branch, target_branch: target_branch)
-        .where(source_project_id: source_project&.id)
-        .opened
+      conflicting_mr = existing_mrs_targeting_same_branch.first
 
-      similar_mrs = similar_mrs.where.not(id: id) if persisted?
-
-      conflict = similar_mrs.first
-
-      if conflict.present?
+      if conflicting_mr
         errors.add(
           :validate_branches,
-          "Another open merge request already exists for this source branch: #{conflict.to_reference}"
+          conflicting_mr_message(conflicting_mr)
         )
       end
     end
+  end
+
+  def conflicting_mr_message(conflicting_mr)
+    format(
+      _("Another open merge request already exists for this source branch: %{conflicting_mr_reference}"),
+      conflicting_mr_reference: conflicting_mr.to_reference
+    )
   end
 
   def validate_branch_name(attr)
@@ -1155,7 +1166,7 @@ class MergeRequest < ApplicationRecord
     MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
 
-  def check_mergeability(async: false)
+  def check_mergeability(async: false, sync_retry_lease: false)
     return unless recheck_merge_status?
 
     check_service = MergeRequests::MergeabilityCheckService.new(self)
@@ -1163,7 +1174,7 @@ class MergeRequest < ApplicationRecord
     if async
       check_service.async_execute
     else
-      check_service.execute(retry_lease: false)
+      check_service.execute(retry_lease: sync_retry_lease)
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
@@ -1207,14 +1218,14 @@ class MergeRequest < ApplicationRecord
     }
   end
 
-  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false)
+  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false)
     return false unless mergeable_state?(
       skip_ci_check: skip_ci_check,
       skip_discussions_check: skip_discussions_check,
       skip_approved_check: skip_approved_check
     )
 
-    check_mergeability
+    check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
 
     can_be_merged? && !should_be_rebased?
   end
@@ -1537,20 +1548,29 @@ class MergeRequest < ApplicationRecord
   end
 
   def schedule_cleanup_refs(only: :all)
-    if Feature.enabled?(:merge_request_cleanup_ref_worker_async, target_project)
+    if Feature.enabled?(:merge_request_delete_gitaly_refs_in_batches, target_project)
+      async_cleanup_refs(only: only)
+    elsif Feature.enabled?(:merge_request_cleanup_ref_worker_async, target_project)
       MergeRequests::CleanupRefWorker.perform_async(id, only.to_s)
     else
       cleanup_refs(only: only)
     end
   end
 
-  def cleanup_refs(only: :all)
+  def refs_to_cleanup(only: :all)
     target_refs = []
     target_refs << ref_path       if %i[all head].include?(only)
     target_refs << merge_ref_path if %i[all merge].include?(only)
     target_refs << train_ref_path if %i[all train].include?(only)
+    target_refs
+  end
 
-    project.repository.delete_refs(*target_refs)
+  def cleanup_refs(only: :all)
+    project.repository.delete_refs(*refs_to_cleanup(only: only))
+  end
+
+  def async_cleanup_refs(only: :all)
+    project.repository.async_delete_refs(*refs_to_cleanup(only: only))
   end
 
   def self.merge_request_ref?(ref)

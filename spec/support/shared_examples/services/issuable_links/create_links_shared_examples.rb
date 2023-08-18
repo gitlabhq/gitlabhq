@@ -1,16 +1,30 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'issuable link creation' do
+RSpec.shared_examples 'issuable link creation' do |use_references: true|
+  let(:items_param) { use_references ? :issuable_references : :target_issuable }
+  let(:response_keys) { [:status, :created_references] }
+  let(:already_assigned_error_msg) { "#{issuable_type.capitalize}(s) already assigned" }
+  let(:permission_error_status) { issuable_type == :issue ? 403 : 404 }
+  let(:permission_error_msg) do
+    if issuable_type == :issue
+      "Couldn't link issue. You must have at least the Reporter role in both projects."
+    else
+      no_found_error_msg
+    end
+  end
+
+  let(:no_found_error_msg) do
+    "No matching #{issuable_type} found. Make sure that you are adding a valid #{issuable_type} URL."
+  end
+
   describe '#execute' do
     subject { described_class.new(issuable, user, params).execute }
 
-    context 'when the reference list is empty' do
-      let(:params) do
-        { issuable_references: [] }
-      end
+    context 'when the items list is empty' do
+      let(:params) { set_params([]) }
 
       it 'returns error' do
-        is_expected.to eq(message: "No matching #{issuable_type} found. Make sure that you are adding a valid #{issuable_type} URL.", status: :error, http_status: 404)
+        is_expected.to eq(message: no_found_error_msg, status: :error, http_status: 404)
       end
     end
 
@@ -20,7 +34,7 @@ RSpec.shared_examples 'issuable link creation' do
       end
 
       it 'returns error' do
-        is_expected.to eq(message: "No matching #{issuable_type} found. Make sure that you are adding a valid #{issuable_type} URL.", status: :error, http_status: 404)
+        is_expected.to eq(message: no_found_error_msg, status: :error, http_status: 404)
       end
 
       it 'no relationship is created' do
@@ -29,16 +43,10 @@ RSpec.shared_examples 'issuable link creation' do
     end
 
     context 'when user has no permission to target issuable' do
-      let(:params) do
-        { issuable_references: [restricted_issuable.to_reference(issuable_parent)] }
-      end
+      let(:params) { set_params([restricted_issuable]) }
 
       it 'returns error' do
-        if issuable_type == :issue
-          is_expected.to eq(message: "Couldn't link #{issuable_type}. You must have at least the Reporter role in both projects.", status: :error, http_status: 403)
-        else
-          is_expected.to eq(message: "No matching #{issuable_type} found. Make sure that you are adding a valid #{issuable_type} URL.", status: :error, http_status: 404)
-        end
+        is_expected.to eq(message: permission_error_msg, status: :error, http_status: permission_error_status)
       end
 
       it 'no relationship is created' do
@@ -47,9 +55,7 @@ RSpec.shared_examples 'issuable link creation' do
     end
 
     context 'source and target are the same issuable' do
-      let(:params) do
-        { issuable_references: [issuable.to_reference] }
-      end
+      let(:params) { set_params([issuable]) }
 
       it 'does not create notes' do
         expect(SystemNoteService).not_to receive(:relate_issuable)
@@ -63,9 +69,7 @@ RSpec.shared_examples 'issuable link creation' do
     end
 
     context 'when there is an issuable to relate' do
-      let(:params) do
-        { issuable_references: [issuable2.to_reference, issuable3.to_reference(issuable_parent)] }
-      end
+      let(:params) { set_params([issuable2, issuable3]) }
 
       it 'creates relationships' do
         expect { subject }.to change { issuable_link_class.count }.by(2)
@@ -75,7 +79,7 @@ RSpec.shared_examples 'issuable link creation' do
       end
 
       it 'returns success status and created links', :aggregate_failures do
-        expect(subject.keys).to match_array([:status, :created_references])
+        expect(subject.keys).to match_array(response_keys)
         expect(subject[:status]).to eq(:success)
         expect(subject[:created_references].map(&:target_id)).to match_array([issuable2.id, issuable3.id])
       end
@@ -98,15 +102,7 @@ RSpec.shared_examples 'issuable link creation' do
     end
 
     context 'when reference of any already related issue is present' do
-      let(:params) do
-        {
-          issuable_references: [
-            issuable_a.to_reference,
-            issuable_b.to_reference
-          ],
-          link_type: IssueLink::TYPE_RELATES_TO
-        }
-      end
+      let(:params) { set_params([issuable_a, issuable_b]) }
 
       it 'creates notes only for new relations' do
         expect(SystemNoteService).to receive(:relate_issuable).with(issuable, issuable_a, anything)
@@ -118,22 +114,18 @@ RSpec.shared_examples 'issuable link creation' do
       end
     end
 
-    context 'when there are invalid references' do
-      let(:params) do
-        { issuable_references: [issuable.to_reference, issuable_a.to_reference] }
-      end
-
-      it 'creates links only for valid references' do
-        expect { subject }.to change { issuable_link_class.count }.by(1)
-      end
+    context 'when reference of all related issue are present' do
+      let(:params) { set_params([issuable_b]) }
 
       it 'returns error status' do
-        expect(subject).to eq(
-          status: :error,
-          http_status: 422,
-          message: "#{issuable.to_reference} cannot be added: cannot be related to itself"
-        )
+        expect(subject).to eq(status: :error, http_status: 409, message: already_assigned_error_msg)
       end
     end
+  end
+
+  def set_params(items)
+    items_list = items_param == :issuable_references ? items.map { |item| item.to_reference(issuable_parent) } : items
+
+    { items_param => items_list }
   end
 end

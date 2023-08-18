@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ProjectSearchResults do
+RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
   include SearchHelpers
 
   let_it_be(:user) { create(:user) }

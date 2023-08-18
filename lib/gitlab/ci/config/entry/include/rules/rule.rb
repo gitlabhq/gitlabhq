@@ -14,9 +14,6 @@ module Gitlab
 
             attributes :if, :exists, :when
 
-            # Include rules are validated before Entry validations. This is because
-            # the include files are expanded before `compose!` runs in Ci::Config.
-            # The actual validation logic is in lib/gitlab/ci/config/external/rules.rb.
             validations do
               validates :config, presence: true
               validates :config, type: { with: Hash }
@@ -24,7 +21,13 @@ module Gitlab
 
               with_options allow_nil: true do
                 validates :if, expression: true
+                validates :exists, array_of_strings_or_string: true, allow_blank: true
+                validates :when, allowed_values: { in: ALLOWED_WHEN }
               end
+            end
+
+            def value
+              Feature.enabled?(:ci_refactor_external_rules) ? config.compact : super
             end
           end
         end

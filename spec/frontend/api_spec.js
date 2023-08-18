@@ -1509,6 +1509,79 @@ describe('Api', () => {
     });
   });
 
+  describe('trackInternalEvent', () => {
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/usage_data/track_event`;
+    const event = 'i_devops_adoption';
+
+    const defaultContext = {
+      data: {
+        project_id: 123,
+        namespace_id: 123,
+      },
+    };
+
+    const postData = {
+      event,
+      project_id: defaultContext.data.project_id,
+      namespace_id: defaultContext.data.namespace_id,
+    };
+
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    describe('when user is set', () => {
+      beforeEach(() => {
+        window.gon.current_user_id = 1;
+        window.gl = { snowplowStandardContext: { ...defaultContext } };
+      });
+
+      describe('when internal event is called with feature flag disabled', () => {
+        beforeEach(() => {
+          gon.features = { usageDataApi: false };
+        });
+
+        it('returns null and does not call the endpoint', () => {
+          jest.spyOn(axios, 'post');
+          const result = Api.trackInternalEvent(event);
+          expect(result).toEqual(null);
+          expect(axios.post).toHaveBeenCalledTimes(0);
+        });
+      });
+
+      describe('when internal event is called with feature flag enabled', () => {
+        beforeEach(() => {
+          gon.features = { usageDataApi: true };
+        });
+
+        it('resolves the Promise', () => {
+          jest.spyOn(axios, 'post');
+          mock.onPost(expectedUrl, postData).replyOnce(HTTP_STATUS_OK, true);
+
+          return Api.trackInternalEvent(event).then(({ data }) => {
+            expect(data).toEqual(true);
+            expect(axios.post).toHaveBeenCalledWith(expectedUrl, postData, { headers });
+          });
+        });
+      });
+    });
+
+    describe('when user is not set and feature flag enabled', () => {
+      beforeEach(() => {
+        window.gon.current_user_id = '';
+        gon.features = { usageDataApi: true };
+        window.gl = { snowplowStandardContext: { ...defaultContext } };
+      });
+
+      it('returns null and does not call the endpoint', () => {
+        jest.spyOn(axios, 'post');
+        const result = Api.trackInternalEvent(event);
+        expect(result).toEqual(null);
+        expect(axios.post).toHaveBeenCalledTimes(0);
+      });
+    });
+  });
+
   describe('deployKeys', () => {
     it('fetches deploy keys', async () => {
       const deployKeys = [

@@ -8,7 +8,7 @@ module Gitlab
           STATIC_PARTITIONS_SCHEMA = 'gitlab_partitions_static'
 
           def initialize(connection)
-            @connection = connection
+            @connection = Connection.new(connection)
           end
 
           def fetch_index_by_name(index_name)
@@ -102,7 +102,7 @@ module Gitlab
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 
-            connection.select_rows(sql, nil, schemas).to_h
+            connection.select_rows(sql, schemas).to_h
           end
 
           def table_map
@@ -136,7 +136,7 @@ module Gitlab
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 
-            connection.exec_query(sql, nil, schemas).group_by { |row| row['table_name'] }
+            connection.exec_query(sql, schemas).group_by { |row| row['table_name'] }
           end
 
           def fetch_indexes
@@ -148,7 +148,7 @@ module Gitlab
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 
-            connection.select_rows(sql, nil, schemas).to_h
+            connection.select_rows(sql, schemas).to_h
           end
 
           def index_map
@@ -183,7 +183,7 @@ module Gitlab
             SQL
             # rubocop:enable Rails/SquishedSQLHeredocs
 
-            connection.exec_query(sql, nil, [connection.current_schema])
+            connection.exec_query(sql, [connection.current_schema])
           end
         end
       end

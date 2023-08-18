@@ -188,7 +188,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
           expect(issue).not_to be_valid
           expect(issue.errors[:base])
-            .to include(_('A confidential issue cannot have a parent that already has non-confidential children.'))
+            .to include(_('A confidential issue must have only confidential children. Make any child items confidential and try again.'))
         end
 
         it 'allows to make child confidential' do
@@ -1058,7 +1058,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#to_branch_name' do
-    let_it_be(:issue) { create(:issue, project: reusable_project, iid: 123, title: 'Testing Issue') }
+    let_it_be(:issue, reload: true) { create(:issue, project: reusable_project, iid: 123, title: 'Testing Issue') }
 
     it 'returns a branch name with the issue title if not confidential' do
       expect(issue.to_branch_name).to eq('123-testing-issue')
@@ -2029,6 +2029,14 @@ RSpec.describe Issue, feature_category: :team_planning do
 
     it 'does not delete email for issue2 when issue1 is used' do
       expect { issue1.unsubscribe_email_participant(email) }.not_to change { issue2.issue_email_participants.count }
+    end
+  end
+
+  describe '#update_search_data!' do
+    it 'copies namespace_id to search data' do
+      issue = create(:issue)
+
+      expect(issue.search_data.namespace_id).to eq(issue.namespace_id)
     end
   end
 end

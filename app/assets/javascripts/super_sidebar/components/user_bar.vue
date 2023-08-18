@@ -105,17 +105,20 @@ export default {
 <template>
   <div class="user-bar">
     <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2">
-      <brand-logo :logo-url="sidebarData.logo_url" />
-      <gl-badge
-        v-if="sidebarData.gitlab_com_and_canary"
-        variant="success"
-        :href="sidebarData.canary_toggle_com_url"
-        size="sm"
-        class="gl-ml-2"
-      >
-        {{ $options.NEXT_LABEL }}
-      </gl-badge>
-      <div class="gl-flex-grow-1"></div>
+      <template v-if="sidebarData.is_logged_in">
+        <brand-logo :logo-url="sidebarData.logo_url" />
+        <gl-badge
+          v-if="sidebarData.gitlab_com_and_canary"
+          variant="success"
+          :href="sidebarData.canary_toggle_com_url"
+          size="sm"
+          class="gl-ml-2"
+        >
+          {{ $options.NEXT_LABEL }}
+        </gl-badge>
+        <div class="gl-flex-grow-1"></div>
+      </template>
+
       <super-sidebar-toggle
         v-if="hasCollapseButton"
         :class="$options.JS_TOGGLE_COLLAPSE_CLASS"
@@ -123,11 +126,11 @@ export default {
         tooltip-container="super-sidebar"
         data-testid="super-sidebar-collapse-button"
       />
-      <create-menu :groups="sidebarData.create_new_menu_groups" />
+      <create-menu v-if="sidebarData.is_logged_in" :groups="sidebarData.create_new_menu_groups" />
 
       <gl-button
         id="super-sidebar-search"
-        v-gl-tooltip.bottom.hover.html="searchTooltip"
+        v-gl-tooltip.bottom.hover.noninteractive.ds500.html="searchTooltip"
         v-gl-modal="$options.SEARCH_MODAL_ID"
         data-testid="super-sidebar-search-button"
         icon="search"
@@ -136,24 +139,26 @@ export default {
       />
       <search-modal @shown="hideSearchTooltip" @hidden="showSearchTooltip" />
 
-      <user-menu :data="sidebarData" />
+      <user-menu v-if="sidebarData.is_logged_in" :data="sidebarData" />
 
       <gl-button
         v-if="isImpersonating"
-        v-gl-tooltip
+        v-gl-tooltip.noninteractive.ds500.bottom
         :href="sidebarData.stop_impersonation_path"
         :title="$options.i18n.stopImpersonating"
         :aria-label="$options.i18n.stopImpersonating"
         icon="incognito"
-        variant="confirm"
         category="tertiary"
         data-method="delete"
         data-testid="stop-impersonation-btn"
       />
     </div>
-    <div class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-py-2 gl-gap-2">
+    <div
+      v-if="sidebarData.is_logged_in"
+      class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-py-2 gl-gap-2"
+    >
       <counter
-        v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.issues"
+        v-gl-tooltip:super-sidebar.hover.noninteractive.ds500.bottom="$options.i18n.issues"
         class="gl-flex-basis-third dashboard-shortcuts-issues"
         icon="issues"
         :count="userCounts.assigned_issues"
@@ -171,7 +176,9 @@ export default {
         @hidden="mrMenuShown = false"
       >
         <counter
-          v-gl-tooltip:super-sidebar.hover.bottom="mrMenuShown ? '' : $options.i18n.mergeRequests"
+          v-gl-tooltip:super-sidebar.hover.noninteractive.ds500.bottom="
+            mrMenuShown ? '' : $options.i18n.mergeRequests
+          "
           class="gl-w-full"
           icon="merge-request-open"
           :count="mergeRequestTotalCount"
@@ -183,7 +190,7 @@ export default {
         />
       </merge-request-menu>
       <counter
-        v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.todoList"
+        v-gl-tooltip:super-sidebar.hover.noninteractive.ds500.bottom="$options.i18n.todoList"
         class="gl-flex-basis-third shortcuts-todos js-todos-count"
         icon="todo-done"
         :count="userCounts.todos"

@@ -193,9 +193,12 @@ export default {
       }
     },
     focus() {
+      this.contentEditor.tiptapEditor.commands.focus();
+    },
+    onFocus() {
       this.focused = true;
     },
-    blur() {
+    onBlur() {
       this.focused = false;
     },
     notifyLoading() {
@@ -230,8 +233,8 @@ export default {
     <div class="md-area gl-overflow-hidden">
       <editor-state-observer
         @docUpdate="notifyChange"
-        @focus="focus"
-        @blur="blur"
+        @focus="onFocus"
+        @blur="onBlur"
         @keydown="$emit('keydown', $event)"
       />
       <content-editor-alert />

@@ -24,6 +24,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.repository_storages_weighted).to eq({}) }
     it { expect(setting.kroki_formats).to eq({}) }
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
+    it { expect(setting.max_decompressed_archive_size).to eq(25600) }
   end
 
   describe 'validations' do
@@ -32,7 +33,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     let(:ftp)   { 'ftp://example.com' }
     let(:javascript) { 'javascript:alert(window.opener.document.location)' }
 
-    let_it_be(:valid_database_apdex_settings) do
+    let_it_be(:valid_prometheus_alert_db_indicators_settings) do
       {
         prometheus_api_url: 'Prometheus URL',
         apdex_sli_query: {
@@ -42,6 +43,14 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         apdex_slo: {
           main: 0.99,
           ci: 0.98
+        },
+        wal_rate_sli_query: {
+          main: 'WAL rate query main',
+          ci: 'WAL rate query ci'
+        },
+        wal_rate_slo: {
+          main: 7000,
+          ci: 7000
         }
       }
     end
@@ -86,6 +95,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(['/example'] * 101).for(:protected_paths) }
     it { is_expected.not_to allow_value(nil).for(:protected_paths) }
     it { is_expected.to allow_value([]).for(:protected_paths) }
+    it { is_expected.to allow_value(['/example'] * 100).for(:protected_paths_for_get_request) }
+    it { is_expected.not_to allow_value(['/example'] * 101).for(:protected_paths_for_get_request) }
+    it { is_expected.not_to allow_value(nil).for(:protected_paths_for_get_request) }
+    it { is_expected.to allow_value([]).for(:protected_paths_for_get_request) }
 
     it { is_expected.to allow_value(3).for(:push_event_hooks_limit) }
     it { is_expected.not_to allow_value('three').for(:push_event_hooks_limit) }
@@ -255,9 +268,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_value(true, false).for(:gitlab_dedicated_instance) }
     it { is_expected.not_to allow_value(nil).for(:gitlab_dedicated_instance) }
 
-    it { is_expected.not_to allow_value(random: :value).for(:database_apdex_settings) }
-    it { is_expected.to allow_value(nil).for(:database_apdex_settings) }
-    it { is_expected.to allow_value(valid_database_apdex_settings).for(:database_apdex_settings) }
+    it { is_expected.not_to allow_value(apdex_slo: '10').for(:prometheus_alert_db_indicators_settings) }
+    it { is_expected.to allow_value(nil).for(:prometheus_alert_db_indicators_settings) }
+    it { is_expected.to allow_value(valid_prometheus_alert_db_indicators_settings).for(:prometheus_alert_db_indicators_settings) }
 
     it { is_expected.to allow_value([true, false]).for(:silent_mode_enabled) }
     it { is_expected.not_to allow_value(nil).for(:silent_mode_enabled) }
@@ -269,6 +282,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(10.5).for(:ci_max_includes) }
     it { is_expected.not_to allow_value(-1).for(:ci_max_includes) }
 
+    it { is_expected.to allow_value(0).for(:ci_max_total_yaml_size_bytes) }
+    it { is_expected.to allow_value(200).for(:ci_max_total_yaml_size_bytes) }
+    it { is_expected.not_to allow_value('abc').for(:ci_max_total_yaml_size_bytes) }
+    it { is_expected.not_to allow_value(nil).for(:ci_max_total_yaml_size_bytes) }
+    it { is_expected.not_to allow_value(10.5).for(:ci_max_total_yaml_size_bytes) }
+    it { is_expected.not_to allow_value(-1).for(:ci_max_total_yaml_size_bytes) }
+
     it { is_expected.to allow_value([true, false]).for(:remember_me_enabled) }
     it { is_expected.not_to allow_value(nil).for(:remember_me_enabled) }
 
@@ -276,6 +296,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to allow_values([true, false]).for(:instance_level_code_suggestions_enabled) }
     it { is_expected.not_to allow_value(nil).for(:instance_level_code_suggestions_enabled) }
+
+    it { is_expected.to allow_values([true, false]).for(:package_registry_allow_anyone_to_pull_option) }
+    it { is_expected.not_to allow_value(nil).for(:package_registry_allow_anyone_to_pull_option) }
 
     context 'when deactivate_dormant_users is enabled' do
       before do
@@ -575,6 +598,30 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     specify do
       is_expected.to validate_numericality_of(:max_import_size)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
+    end
+
+    it { is_expected.to validate_presence_of(:max_import_remote_file_size) }
+
+    specify do
+      is_expected.to validate_numericality_of(:max_import_remote_file_size)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
+    end
+
+    it { is_expected.to validate_presence_of(:bulk_import_max_download_file_size) }
+
+    specify do
+      is_expected.to validate_numericality_of(:bulk_import_max_download_file_size)
+       .only_integer
+       .is_greater_than_or_equal_to(0)
+    end
+
+    it { is_expected.to validate_presence_of(:max_decompressed_archive_size) }
+
+    specify do
+      is_expected.to validate_numericality_of(:max_decompressed_archive_size)
         .only_integer
         .is_greater_than_or_equal_to(0)
     end
@@ -1272,6 +1319,46 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         it { is_expected.to allow_value({ name: value }).for(:default_branch_protection_defaults) }
       end
     end
+
+    context 'default_project_visibility, default_group_visibility and restricted_visibility_levels validations' do
+      before do
+        subject.restricted_visibility_levels = [10]
+      end
+
+      it { is_expected.not_to allow_value(10).for(:default_group_visibility) }
+      it { is_expected.not_to allow_value(10).for(:default_project_visibility) }
+      it { is_expected.to allow_value(20).for(:default_group_visibility) }
+      it { is_expected.to allow_value(20).for(:default_project_visibility) }
+
+      it 'sets error messages when default visibility settings are not valid' do
+        subject.default_group_visibility = 10
+        subject.default_project_visibility = 10
+
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:default_group_visibility].first).to eq("cannot be set to a restricted visibility level")
+        expect(subject.errors.messages[:default_project_visibility].first).to eq("cannot be set to a restricted visibility level")
+      end
+
+      context 'when prevent_visibility_restriction FF is disabled' do
+        before do
+          stub_feature_flags(prevent_visibility_restriction: false)
+        end
+
+        it { is_expected.to allow_value(10).for(:default_group_visibility) }
+        it { is_expected.to allow_value(10).for(:default_project_visibility) }
+        it { is_expected.to allow_value(20).for(:default_group_visibility) }
+        it { is_expected.to allow_value(20).for(:default_project_visibility) }
+      end
+    end
+
+    describe 'sentry_clientside_traces_sample_rate' do
+      it do
+        is_expected.to validate_numericality_of(:sentry_clientside_traces_sample_rate)
+          .is_greater_than_or_equal_to(0)
+          .is_less_than_or_equal_to(1)
+          .with_message("must be a value between 0 and 1")
+      end
+    end
   end
 
   context 'restrict creating duplicates' do
@@ -1651,31 +1738,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
   describe '.personal_access_tokens_disabled?' do
     it 'is false' do
       expect(setting.personal_access_tokens_disabled?).to eq(false)
-    end
-  end
-
-  describe '#ai_access_token' do
-    context 'when `instance_level_code_suggestions_enabled` is true' do
-      before do
-        setting.instance_level_code_suggestions_enabled = true
-      end
-
-      it { is_expected.not_to allow_value(nil).for(:ai_access_token) }
-    end
-
-    context 'when `instance_level_code_suggestions_enabled` is false' do
-      before do
-        setting.instance_level_code_suggestions_enabled = false
-      end
-
-      it { is_expected.to allow_value(nil).for(:ai_access_token) }
-    end
-
-    it 'does not modify the token if it is unchanged in the form' do
-      setting.ai_access_token = 'foo'
-      setting.ai_access_token = ApplicationSettingMaskedAttrs::MASK
-
-      expect(setting.ai_access_token).to eq('foo')
     end
   end
 end

@@ -133,7 +133,7 @@ class IssuableFinder
 
     def projects
       strong_memoize(:projects) do
-        next [project] if project?
+        next Array.wrap(project) if project?
 
         projects =
           if current_user && params[:authorized_only].presence && !current_user_related?

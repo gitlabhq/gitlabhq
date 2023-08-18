@@ -25,5 +25,20 @@ RSpec.describe Sbom::PackageUrl::Encoder, feature_category: :dependency_manageme
     with_them do
       it { is_expected.to eq(canonical_purl) }
     end
+
+    context 'when purl requires normalization' do
+      let(:package) do
+        ::Sbom::PackageUrl.new(
+          type: 'github',
+          namespace: 'GitLab-Org',
+          name: 'GitLab',
+          version: '1.0.0'
+        )
+      end
+
+      it 'outputs normalized form' do
+        expect(encode).to eq('pkg:github/gitlab-org/gitlab@1.0.0')
+      end
+    end
   end
 end

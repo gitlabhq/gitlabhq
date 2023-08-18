@@ -1,10 +1,11 @@
 <script>
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
+import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/pipelines/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
 import eventHub from '../../event_hub';
 import { TRACKING_CATEGORIES } from '../../constants';
@@ -21,8 +22,8 @@ const DEFAULT_TH_CLASSES =
 export default {
   components: {
     GlTableLite,
+    LegacyPipelineMiniGraph,
     PipelineFailedJobsWidget,
-    PipelineMiniGraph,
     PipelineOperations,
     PipelinesStatusBadge,
     PipelineStopModal,
@@ -146,6 +147,9 @@ export default {
       const downstream = pipeline.triggered;
       return keepLatestDownstreamPipelines(downstream);
     },
+    getProjectPath(item) {
+      return cleanLeadingSeparator(item.project.full_path);
+    },
     failedJobsCount(pipeline) {
       return pipeline?.failed_builds?.length || 0;
     },
@@ -204,7 +208,7 @@ export default {
       </template>
 
       <template #cell(stages)="{ item }">
-        <pipeline-mini-graph
+        <legacy-pipeline-mini-graph
           :downstream-pipelines="getDownstreamPipelines(item)"
           :pipeline-path="item.path"
           :stages="item.details.stages"
@@ -225,6 +229,8 @@ export default {
           :is-pipeline-active="item.active"
           :pipeline-iid="item.iid"
           :pipeline-path="item.path"
+          :project-path="getProjectPath(item)"
+          class="gl-ml-n4 gl-mt-n3 gl-mb-n1"
         />
       </template>
     </gl-table-lite>

@@ -37,18 +37,6 @@ class Groups::ApplicationController < ApplicationController
     end
   end
 
-  def authorize_admin_group_runners!
-    unless can?(current_user, :admin_group_runners, group)
-      render_404
-    end
-  end
-
-  def authorize_read_group_runners!
-    unless can?(current_user, :read_group_runners, group)
-      render_404
-    end
-  end
-
   def authorize_create_deploy_token!
     unless can?(current_user, :create_deploy_token, group)
       render_404

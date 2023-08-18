@@ -56,4 +56,6 @@ export const clearStopCallbacksForTests = () => {
   additionalStopCallbacks.length = 0;
 };
 
+export const MOUSETRAP_COPY_KEYBOARD_SHORTCUT = 'mod+c';
+
 export { Mousetrap };

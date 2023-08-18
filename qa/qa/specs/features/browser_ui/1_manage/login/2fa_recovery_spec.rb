@@ -23,11 +23,7 @@ module QA
       end
 
       let(:group) do
-        QA::Resource::Group.fabricate_via_api! do |group|
-          group.sandbox = sandbox_group
-          group.api_client = owner_api_client
-          group.require_two_factor_authentication = true
-        end
+        create(:group, :require_2fa, sandbox: sandbox_group, api_client: owner_api_client)
       end
 
       before do

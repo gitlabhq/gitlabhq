@@ -39,6 +39,7 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder do
         title
         updated_at
         updated_by_id
+        draft
       ].freeze
 
       expect(safe_attribute_keys).to match_array(expected_safe_attribute_keys)
@@ -66,6 +67,7 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder do
         url
         last_commit
         work_in_progress
+        draft
         total_time_spent
         time_change
         human_total_time_spent

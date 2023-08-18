@@ -1,45 +1,70 @@
 - is_admin = defined?(admin) ? true : false
-.row.gl-mt-3
-  .col-md-4
-    = render Pajamas::CardComponent.new(body_options: { class: 'gl-py-0'}) do |c|
-      - c.with_header do
-        = _('SSH Key')
-      - c.with_body do
-        %ul.content-list
-          %li
-            %span.light= _('Title:')
-            %strong= @key.title
-          %li
-            %span.light= s_('Profiles|Usage type:')
-            %strong= ssh_key_usage_types.invert[@key.usage_type]
-          %li
-            %span.light= _('Created on:')
-            %strong= @key.created_at.to_fs(:medium)
-          %li
-            %span.light= _('Expires:')
-            %strong= @key.expires_at&.to_fs(:medium) || _('Never')
-          %li
-            %span.light= _('Last used on:')
-            %strong= @key.last_used_at&.to_fs(:medium) || _('Never')
 
-  .col-md-8
-    = form_errors(@key, type: 'key') unless @key.valid?
-    %pre.well-pre
-      = @key.key
-    = render Pajamas::CardComponent.new(body_options: { class: 'gl-py-0'}) do |c|
-      - c.with_header do
-        = _('Fingerprints')
-      - c.with_body do
-        %ul.content-list
-          %li
-            %span.light= 'MD5:'
-            %code.key-fingerprint= @key.fingerprint
-          - if @key.fingerprint_sha256.present?
-            %li
-              %span.light= 'SHA256:'
-              %code.key-fingerprint= @key.fingerprint_sha256
+%h1.gl-font-size-h-display
+  = s_('Profiles|SSH Key: %{title}').html_safe % { title: @key.title }
 
-  .col-md-12
-    .float-right
-      - if @key.can_delete?
-        = render 'shared/ssh_keys/key_delete', button_data: ssh_key_delete_modal_data(@key, path_to_key(@key, is_admin))
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0'}) do |c|
+  - c.with_header do
+    .gl-new-card-title-wrapper
+      .gl-new-card-title
+        = _('Key details')
+  - c.with_body do
+    .table-holder
+      %table.table.b-table.gl-table.b-table-stacked-md.ssh-keys-list
+        %thead
+          %th= s_('Profiles|Usage type')
+          %th= s_('Profiles|Created')
+          %th= s_('Profiles|Last used')
+          %th= s_('Profiles|Expires')
+        %tbody
+          %tr
+            %td{ data: { label: s_('Profiles|Usage type'), testid: 'usage' } }
+              = ssh_key_usage_types.invert[@key.usage_type]
+            %td{ data: { label: s_('Profiles|Created'), testid: 'created' } }
+              = @key.created_at.to_fs(:medium)
+            %td{ data: { label: s_('Profiles|Last used'), testid: 'last-used' } }
+              = @key.last_used_at&.to_fs(:medium) || _('Never')
+            %td{ data: { label: s_('Profiles|Expires'), testid: 'expires' } }
+              - if @key.expired?
+                %span.gl-text-red-500
+                  = s_('Profiles|Expired')
+                  = @key.expires_at&.to_fs(:medium)
+              - elsif @key.expires_at
+                = @key.expires_at&.to_fs(:medium)
+              - else
+                = _('Never')
+
+.gl-mt-5
+  = form_errors(@key, type: 'key') unless @key.valid?
+
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0 gl-overflow-hidden'}) do |c|
+    - c.with_header do
+      .gl-new-card-title-wrapper
+        .gl-new-card-title
+          = _('SSH Key')
+    - c.with_body do
+      .gl-display-flex
+        %pre.well-pre.gl-pl-5.gl-mb-0.gl-border-0
+          = @key.key
+        = clipboard_button(title: s_('Profiles|Copy SSH key'), text: @key.key, class: 'gl-bg-gray-10 gl-px-3! gl-border-none! gl-rounded-top-left-none! gl-rounded-bottom-left-none!')
+
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0'}) do |c|
+    - c.with_header do
+      .gl-new-card-title-wrapper
+        .gl-new-card-title
+          = _('Fingerprints')
+    - c.with_body do
+      .table-holder
+        %table.table.b-table.gl-table.b-table-stacked-md
+          %tbody
+            %tr
+              %th= _('MD5')
+              %td.gl-font-monospace.key-fingerprint= @key.fingerprint
+            - if @key.fingerprint_sha256.present?
+              %tr
+                %th= _('SHA256')
+                %td.gl-font-monospace.key-fingerprint= @key.fingerprint_sha256
+
+.gl-mt-5.gl-float-right
+  - if @key.can_delete?
+    = render 'shared/ssh_keys/key_delete', button_data: ssh_key_delete_modal_data(@key, path_to_key(@key, is_admin))

@@ -1,0 +1,15 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index 0d10385..d1a5185 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -5877,9 +5877,7 @@ function installCompatInstanceProperties(map) {
+             const res = {};
+             for (const key in i.slots) {
+                 const fn = i.slots[key];
+-                if (!fn._ns /* non-scoped slot */) {
+-                    res[key] = fn;
+-                }
++                res[key] = fn;
+             }
+             return res;
+         },

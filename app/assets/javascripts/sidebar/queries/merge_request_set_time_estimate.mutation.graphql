@@ -1,0 +1,10 @@
+mutation mergeRequestSetTimeEstimate($input: MergeRequestUpdateInput!) {
+  issuableSetTimeEstimate: mergeRequestUpdate(input: $input) {
+    errors
+    issuable: mergeRequest {
+      id
+      humanTimeEstimate
+      timeEstimate
+    }
+  }
+}

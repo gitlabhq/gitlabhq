@@ -176,22 +176,6 @@ describe('Package Files', () => {
         disabled: false,
       });
     });
-
-    it('hides pagination when only one page', async () => {
-      createComponent({
-        resolver: jest.fn().mockResolvedValue(
-          packageFilesQuery({
-            extendPagination: {
-              hasNextPage: false,
-              hasPreviousPage: false,
-            },
-          }),
-        ),
-      });
-      await waitForPromises();
-
-      expect(findPagination().exists()).toBe(false);
-    });
   });
 
   describe('link', () => {

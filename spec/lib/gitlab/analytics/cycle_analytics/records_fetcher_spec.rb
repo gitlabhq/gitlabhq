@@ -117,7 +117,7 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
       })
     end
 
-    before(:all) do
+    before_all do
       issue1.metrics.update!(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
       issue2.metrics.update!(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)
       issue3.metrics.update!(first_added_to_board_at: 3.days.ago, first_mentioned_in_commit_at: 2.days.ago)

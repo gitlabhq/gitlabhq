@@ -33,12 +33,18 @@ RSpec.describe Gitlab::Blame do
       expect(subject.count).to eq(18)
       expect(subject[0][:commit].sha).to eq('913c66a37b4a45b9769037c55c2d238bd0942d2e')
       expect(subject[0][:lines]).to eq(["require 'fileutils'", "require 'open3'", ""])
+      expect(subject[0][:span]).to eq(3)
+      expect(subject[0][:lineno]).to eq(1)
 
       expect(subject[1][:commit].sha).to eq('874797c3a73b60d2187ed6e2fcabd289ff75171e')
       expect(subject[1][:lines]).to eq(["module Popen", "  extend self"])
+      expect(subject[1][:span]).to eq(2)
+      expect(subject[1][:lineno]).to eq(4)
 
       expect(subject[-1][:commit].sha).to eq('913c66a37b4a45b9769037c55c2d238bd0942d2e')
       expect(subject[-1][:lines]).to eq(["  end", "end"])
+      expect(subject[-1][:span]).to eq(2)
+      expect(subject[-1][:lineno]).to eq(36)
     end
 
     context 'with a range 1..5' do

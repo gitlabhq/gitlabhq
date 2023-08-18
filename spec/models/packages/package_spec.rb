@@ -867,6 +867,24 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
+  describe '.with_npm_scope' do
+    let_it_be(:package1) { create(:npm_package, name: '@test/foobar') }
+    let_it_be(:package2) { create(:npm_package, name: '@test2/foobar') }
+    let_it_be(:package3) { create(:npm_package, name: 'foobar') }
+
+    subject { described_class.with_npm_scope('test') }
+
+    it { is_expected.to contain_exactly(package1) }
+
+    context 'when npm_package_registry_fix_group_path_validation is disabled' do
+      before do
+        stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
+      end
+
+      it { is_expected.to contain_exactly(package1) }
+    end
+  end
+
   describe '.without_nuget_temporary_name' do
     let!(:package1) { create(:nuget_package) }
     let!(:package2) { create(:nuget_package, name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
@@ -958,6 +976,35 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to match_array([nuget_package]) }
     end
 
+    describe '.with_case_insensitive_name' do
+      let_it_be(:nuget_package) { create(:nuget_package, name: 'TestPackage') }
+
+      subject { described_class.with_case_insensitive_name('testpackage') }
+
+      it { is_expected.to match_array([nuget_package]) }
+    end
+
+    describe '.with_nuget_version_or_normalized_version' do
+      let_it_be(:nuget_package) { create(:nuget_package, :with_metadatum, version: '1.0.7+r3456') }
+
+      before do
+        nuget_package.nuget_metadatum.update_column(:normalized_version, '1.0.7')
+      end
+
+      subject { described_class.with_nuget_version_or_normalized_version(version, with_normalized: with_normalized) }
+
+      where(:version, :with_normalized, :expected) do
+        '1.0.7'       | true  | [ref(:nuget_package)]
+        '1.0.7'       | false | []
+        '1.0.7+r3456' | true  | [ref(:nuget_package)]
+        '1.0.7+r3456' | false | [ref(:nuget_package)]
+      end
+
+      with_them do
+        it { is_expected.to match_array(expected) }
+      end
+    end
+
     context 'status scopes' do
       let_it_be(:default_package) { create(:maven_package, :default) }
       let_it_be(:hidden_package) { create(:maven_package, :hidden) }
@@ -1011,32 +1058,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
       expect(packages.size).to eq(2)
       expect(packages.pluck(:name)).to match_array([nuget_package.name, maven_package.name])
-    end
-  end
-
-  describe '.select_only_first_by_name' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:package1) { create(:package, name: 'p1', created_at: 1000, project: project) }
-    let_it_be(:package2) { create(:package, name: 'p1', created_at: 1001, project: project) }
-    let_it_be(:package3) { create(:package, name: 'p2', project: project) }
-
-    subject { described_class.order_name_desc_version_desc.select_only_first_by_name }
-
-    it 'returns only the most recent package by name' do
-      is_expected.to eq([package3, package2])
-    end
-  end
-
-  describe '.order_name_desc_version_desc' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:package1) { create(:package, name: 'p1', created_at: 1000, project: project) }
-    let_it_be(:package2) { create(:package, name: 'p1', created_at: 1001, project: project) }
-    let_it_be(:package3) { create(:package, name: 'p2', project: project) }
-
-    subject { described_class.order_name_desc_version_desc }
-
-    it 'sorts packages by name desc and created desc' do
-      is_expected.to eq([package3, package2, package1])
     end
   end
 
@@ -1438,6 +1459,19 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
       it { is_expected.to eq(normalized_name) }
     end
+  end
+
+  describe '#normalized_nuget_version' do
+    let_it_be(:package) { create(:nuget_package, :with_metadatum, version: '1.0') }
+    let(:normalized_version) { '1.0.0' }
+
+    subject { package.normalized_nuget_version }
+
+    before do
+      package.nuget_metadatum.update_column(:normalized_version, normalized_version)
+    end
+
+    it { is_expected.to eq(normalized_version) }
   end
 
   describe "#publish_creation_event" do

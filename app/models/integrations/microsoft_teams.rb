@@ -10,12 +10,12 @@ module Integrations
       required: true
 
     field :notify_only_broken_pipelines,
-      type: 'checkbox',
+      type: :checkbox,
       section: SECTION_TYPE_CONFIGURATION,
       help: 'If selected, successful pipelines do not trigger a notification event.'
 
     field :branches_to_be_notified,
-      type: 'select',
+      type: :select,
       section: SECTION_TYPE_CONFIGURATION,
       title: -> { s_('Integrations|Branches for which notifications are to be sent') },
       choices: -> { branch_choices }

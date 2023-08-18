@@ -90,7 +90,7 @@ module NavHelper
     # The new sidebar is not enabled for anonymous use
     # Once we enable the new sidebar by default, this
     # should return true
-    return false unless user
+    return Feature.enabled?(:super_sidebar_logged_out) unless user
 
     # Users who got the special `super_sidebar_nav_enrolled` enabled,
     # see the new nav as long as they don't explicitly opt-out via the toggle

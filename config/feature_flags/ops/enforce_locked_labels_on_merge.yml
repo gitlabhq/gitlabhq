@@ -1,0 +1,8 @@
+---
+name: enforce_locked_labels_on_merge
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128928
+rollout_issue_url:
+milestone: '16.3'
+type: ops
+group: group::project management
+default_enabled: false

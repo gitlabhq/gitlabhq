@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def package_url(name)
-        "https://packagist.org/packages/#{name}" if name =~ /\A#{REPO_REGEX}\z/o
+        "https://packagist.org/packages/#{name}" if /\A#{REPO_REGEX}\z/o.match?(name)
       end
     end
   end

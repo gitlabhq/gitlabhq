@@ -1,8 +1,8 @@
 <script>
-import DiffCodeQualityItem from './diff_code_quality_item.vue';
+import DiffInlineFindingsItem from './diff_inline_findings_item.vue';
 
 export default {
-  components: { DiffCodeQualityItem },
+  components: { DiffInlineFindingsItem },
   props: {
     title: {
       type: String,
@@ -22,7 +22,7 @@ export default {
       {{ title }}
     </h4>
     <ul class="gl-list-style-none gl-mb-0 gl-p-0">
-      <diff-code-quality-item
+      <diff-inline-findings-item
         v-for="finding in findings"
         :key="finding.description"
         :finding="finding"

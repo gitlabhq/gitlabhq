@@ -5,13 +5,19 @@ module Gitlab
     module Reports
       module Sbom
         class Component
-          attr_reader :component_type, :name, :version
+          include Gitlab::Utils::StrongMemoize
+
+          attr_reader :component_type, :version
 
           def initialize(type:, name:, purl:, version:)
             @component_type = type
             @name = name
-            @purl = purl
+            @raw_purl = purl
             @version = version
+          end
+
+          def <=>(other)
+            sort_by_attributes(self) <=> sort_by_attributes(other)
           end
 
           def ingestible?
@@ -19,9 +25,16 @@ module Gitlab
           end
 
           def purl
-            return unless @purl
+            return unless @raw_purl
 
-            ::Sbom::PackageUrl.parse(@purl)
+            ::Sbom::PackageUrl.parse(@raw_purl)
+          end
+          strong_memoize_attr :purl
+
+          def name
+            return @name unless purl
+
+            [purl.namespace, purl.name].compact.join('/')
           end
 
           private
@@ -36,6 +49,23 @@ module Gitlab
 
             # however, if the purl type is provided, it _must be valid_
             ::Enums::Sbom.purl_types.include?(purl.type.to_sym)
+          end
+
+          def sort_by_attributes(component)
+            [
+              component.name,
+              purl_type_int(component),
+              component_type_int(component),
+              component.version.to_s
+            ]
+          end
+
+          def component_type_int(component)
+            ::Enums::Sbom::COMPONENT_TYPES.fetch(component.component_type.to_sym)
+          end
+
+          def purl_type_int(component)
+            ::Enums::Sbom::PURL_TYPES.fetch(component.purl&.type&.to_sym, 0)
           end
         end
       end

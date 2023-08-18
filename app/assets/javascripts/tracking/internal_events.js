@@ -1,9 +1,13 @@
 import API from '~/api';
 
 import Tracking from './tracking';
-import { GITLAB_INTERNAL_EVENT_CATEGORY, SERVICE_PING_SCHEMA } from './constants';
+import {
+  GITLAB_INTERNAL_EVENT_CATEGORY,
+  LOAD_INTERNAL_EVENTS_SELECTOR,
+  SERVICE_PING_SCHEMA,
+} from './constants';
 import { Tracker } from './tracker';
-import { InternalEventHandler } from './utils';
+import { InternalEventHandler, createInternalEventPayload } from './utils';
 
 const InternalEvents = {
   /**
@@ -11,7 +15,7 @@ const InternalEvents = {
    * @param {string} event
    */
   track_event(event) {
-    API.trackRedisHllUserEvent(event);
+    API.trackInternalEvent(event);
     Tracking.event(GITLAB_INTERNAL_EVENT_CATEGORY, event, {
       context: {
         schema: SERVICE_PING_SCHEMA,
@@ -52,6 +56,27 @@ const InternalEvents = {
     const handler = { name: 'click', func: (e) => InternalEventHandler(e, this.track_event) };
     parent.addEventListener(handler.name, handler.func);
     return handler;
+  },
+  /**
+   * Attaches internal event handlers for load events.
+   * @param {HTMLElement} parent - element containing event targets
+   * @returns {Array}
+   */
+  trackInternalLoadEvents(parent = document) {
+    if (!Tracker.enabled()) {
+      return [];
+    }
+
+    const loadEvents = parent.querySelectorAll(LOAD_INTERNAL_EVENTS_SELECTOR);
+
+    loadEvents.forEach((element) => {
+      const action = createInternalEventPayload(element);
+      if (action) {
+        this.track_event(action);
+      }
+    });
+
+    return loadEvents;
   },
 };
 

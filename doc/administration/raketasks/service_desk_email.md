@@ -12,7 +12,7 @@ The following are Service Desk email-related Rake tasks.
 
 ## Secrets
 
-GitLab can use [Service Desk email](../../user/project/service_desk.md#configure-service-desk-alias-email) secrets read from an encrypted file instead of storing them in plaintext in the file system. The following Rake tasks are provided for updating the contents of the encrypted file.
+GitLab can use [Service Desk email](../../user/project/service_desk/index.md#configure-service-desk-alias-email) secrets read from an encrypted file instead of storing them in plaintext in the file system. The following Rake tasks are provided for updating the contents of the encrypted file.
 
 ### Show secret
 

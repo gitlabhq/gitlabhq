@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import MrWidgetOptions from 'ee_else_ce/vue_merge_request_widget/mr_widget_options.vue';
+import MrWidgetOptions from 'any_else_ce/vue_merge_request_widget/mr_widget_options.vue';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Translate from '../vue_shared/translate';

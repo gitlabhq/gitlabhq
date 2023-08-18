@@ -7,8 +7,7 @@ exports[`Design management design index page renders design index 1`] = `
   <div
     class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
   >
-    <design-destroyer-stub
-      filenames="test.jpg"
+    <div
       iid="1"
       project-path="project-path"
     />
@@ -126,8 +125,7 @@ exports[`Design management design index page with error GlAlert is rendered in c
   <div
     class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
   >
-    <design-destroyer-stub
-      filenames="test.jpg"
+    <div
       iid="1"
       project-path="project-path"
     />

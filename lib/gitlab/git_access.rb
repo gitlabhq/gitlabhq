@@ -513,7 +513,7 @@ module Gitlab
     end
 
     def check_size_against_limit(size)
-      if size_checker.changes_will_exceed_size_limit?(size)
+      if size_checker.changes_will_exceed_size_limit?(size, project)
         raise ForbiddenError, size_checker.error_message.new_changes_error
       end
     end

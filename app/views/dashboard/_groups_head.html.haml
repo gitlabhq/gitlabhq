@@ -4,7 +4,7 @@
   .page-title-controls.gl-display-flex.gl-align-items-center.gl-gap-5
     = link_to _("Explore groups"), explore_groups_path
     - if current_user.can_create_group?
-      = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm, button_options: { data: { qa_selector: "new_group_button", testid: "new-group-button" } }) do
+      = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm, button_options: { data: { testid: "new-group-button" } }) do
         = _("New group")
 
 .top-area.gl-py-3.gl-justify-content-end.gl-border-bottom-0

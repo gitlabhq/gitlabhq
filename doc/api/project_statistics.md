@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, api
 ---
 
-# Project statistics API **(FREE)**
+# Project statistics API **(FREE ALL)**
 
 Every API call to [project](../user/project/index.md) statistics must be authenticated.
 Retrieving these statistics requires write access to the repository.

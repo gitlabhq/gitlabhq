@@ -34,7 +34,8 @@ Example response:
 
 ## Generate code completions (Experiment)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415581) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `code_suggestions_completion_api`. Disabled by default. This feature is an Experiment.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415581) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `code_suggestions_completion_api`. Disabled by default. This feature is an Experiment.
+> - Requirement to generate a JWT before calling this endpoint was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863) in GitLab 16.3.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
@@ -49,10 +50,8 @@ POST /code_suggestions/completions
 
 Requests to this endpoint are proxied directly to the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#completions). The documentation for the endpoint is currently the SSoT for named parameters.
 
-Authentication to this endpoint requires both a GitLab access token and a Code Suggestions JWT. The access token is used to authenticate the user and the JWT is used to authenticate the request to the model gateway.
-
 ```shell
-curl --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" --header "X-Gitlab-Oidc-Token: <TOKEN_GENERATED_FROM_TOKENS_ENDPOINT>" --data "<JSON_BODY>" https://gitlab.example.com/api/v4/code_suggestions/completions
+curl --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" --data "<JSON_BODY>" https://gitlab.example.com/api/v4/code_suggestions/completions
 ```
 
 Example body:

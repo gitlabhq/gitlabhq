@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Customize pipeline configuration **(FREE)**
+# Customize pipeline configuration **(FREE ALL)**
 
 You can customize how pipelines run for your project.
 
@@ -98,6 +98,7 @@ To avoid this scenario:
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Select the **Prevent outdated deployment jobs** checkbox.
+1. Optional. Clear the **Allow job retries for rollback deployments** checkbox.
 1. Select **Save changes**.
 
 For more information, see [Deployment safety](../environments/deployment_safety.md#prevent-outdated-deployment-jobs).

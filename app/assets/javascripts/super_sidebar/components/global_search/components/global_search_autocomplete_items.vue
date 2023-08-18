@@ -1,5 +1,6 @@
 <script>
 import { GlAvatar, GlAlert, GlLoadingIcon, GlDisclosureDropdownGroup } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlight from '~/lib/utils/highlight';
@@ -23,9 +24,6 @@ export default {
   computed: {
     ...mapState(['search', 'loading', 'autocompleteError']),
     ...mapGetters(['autocompleteGroupedSearchOptions', 'scopedSearchOptions']),
-    isPrecededByScopedOptions() {
-      return this.scopedSearchOptions.length > 1;
-    },
   },
   methods: {
     highlightedName(val) {
@@ -40,9 +38,9 @@ export default {
   <div>
     <ul v-if="!loading" class="gl-m-0 gl-p-0 gl-list-style-none">
       <gl-disclosure-dropdown-group
-        v-for="group in autocompleteGroupedSearchOptions"
+        v-for="(group, index) in autocompleteGroupedSearchOptions"
         :key="group.name"
-        :class="{ 'gl-mt-0!': !isPrecededByScopedOptions }"
+        :class="{ 'gl-mt-0!': index === 0 }"
         :group="group"
         bordered
       >

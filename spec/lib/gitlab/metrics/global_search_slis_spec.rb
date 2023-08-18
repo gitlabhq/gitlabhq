@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::GlobalSearchSlis do
+RSpec.describe Gitlab::Metrics::GlobalSearchSlis, feature_category: :global_search do
   using RSpec::Parameterized::TableSyntax
 
   describe '#initialize_slis!' do
@@ -92,6 +92,7 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis do
       'basic'    | true  | 27.538
       'advanced' | false | 2.452
       'advanced' | true  | 15.52
+      'zoekt'    | true  | 15.52
     end
 
     with_them do

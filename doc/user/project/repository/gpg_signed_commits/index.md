@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sign commits with GPG **(FREE)**
+# Sign commits with GPG **(FREE ALL)**
 
 You can sign the commits you make in a GitLab repository with a
 GPG ([GNU Privacy Guard](https://gnupg.org/)) key. When you add a cryptographic
@@ -122,6 +122,7 @@ To add a GPG key to your user settings:
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. Select **GPG Keys** (**{key}**).
+1. Select **Add new key**.
 1. In **Key**, paste your _public_ key.
 1. To add the key to your account, select **Add key**. GitLab shows the key's
    fingerprint, email address, and creation date:

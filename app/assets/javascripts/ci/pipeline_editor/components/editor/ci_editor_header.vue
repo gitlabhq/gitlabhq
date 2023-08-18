@@ -107,7 +107,6 @@ export default {
       v-if="glFeatures.ciJobAssistantDrawer"
       icon="bulb"
       size="small"
-      data-testid="job-assistant-drawer-toggle"
       data-qa-selector="job_assistant_drawer_toggle"
       @click="toggleJobAssistantDrawer"
     >

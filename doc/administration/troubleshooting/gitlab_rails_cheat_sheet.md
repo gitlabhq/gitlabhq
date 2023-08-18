@@ -40,7 +40,7 @@ This content has been converted to a Rake task, see [verify database values can 
 
 ### Transfer mirror users and tokens to a single service account
 
-This content has been moved to [Troubleshooting Repository mirroring](../../user/project/repository/mirror/index.md#transfer-mirror-users-and-tokens-to-a-single-service-account-in-rails-console).
+This content has been moved to [Troubleshooting Repository mirroring](../../user/project/repository/mirror/troubleshooting.md#transfer-mirror-users-and-tokens-to-a-single-service-account-in-rails-console).
 
 ## Merge requests
 

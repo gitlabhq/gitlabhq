@@ -1,5 +1,5 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import TemplateSelectorMediator from '~/blob/file_template_mediator';
+import FilepathFormMediator from '~/blob/filepath_form_mediator';
 
 describe('Template Selector Mediator', () => {
   let mediator;
@@ -14,7 +14,7 @@ describe('Template Selector Mediator', () => {
     beforeEach(() => {
       setHTMLFixture('<div class="file-editor"><input class="js-file-path-name-input" /></div>');
       input = document.querySelector('.js-file-path-name-input');
-      mediator = new TemplateSelectorMediator({
+      mediator = new FilepathFormMediator({
         editor,
         currentAction: jest.fn(),
         projectId: jest.fn(),
@@ -44,7 +44,7 @@ describe('Template Selector Mediator', () => {
       ({ name, newName, shouldDispatch }) => {
         input.value = name;
         const eventHandler = jest.fn();
-        input.addEventListener('change', eventHandler);
+        input.addEventListener('input', eventHandler);
 
         mediator.setFilename(newName);
         if (shouldDispatch) {

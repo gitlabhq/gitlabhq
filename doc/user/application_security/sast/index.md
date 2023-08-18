@@ -4,9 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Static Application Security Testing (SAST) **(FREE)**
-
-> All open source (OSS) analyzers were moved from GitLab Ultimate to GitLab Free in GitLab 13.3.
+# Static Application Security Testing (SAST) **(FREE ALL)**
 
 NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
@@ -27,30 +25,10 @@ For more details, see the [Summary of features per tier](#summary-of-features-pe
 
 ![SAST results shown in the MR widget](img/sast_results_in_mr_v14_0.png)
 
-The results are sorted by the priority of the vulnerability:
-
-<!-- vale gitlab.SubstitutionWarning = NO -->
-
-1. Critical
-1. High
-1. Medium
-1. Low
-1. Info
-1. Unknown
-
-<!-- vale gitlab.SubstitutionWarning = YES -->
-
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
 for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST
 job finishes but the DAST job fails, the security dashboard does not show SAST results. On failure,
 the analyzer outputs an [exit code](../../../development/integrations/secure.md#exit-code).
-
-## Use cases
-
-- Your code has a potentially dangerous attribute in a class, or unsafe code
-  that can lead to unintended code execution.
-- Your application is vulnerable to cross-site scripting (XSS) attacks that can
-  be leveraged to unauthorized access to session data.
 
 ## Requirements
 
@@ -66,7 +44,7 @@ GitLab SAST analyzers don't support running on Windows or on any CPU architectur
 
 WARNING:
 If you use your own runners, make sure the Docker version installed
-is **not** `19.03.0`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
+is **not** `19.03.0`. See [troubleshooting information](troubleshooting.md#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
 
 ## Supported languages and frameworks
 
@@ -120,8 +98,6 @@ and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotB
 
 ## Multi-project support
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4895) in GitLab 13.7.
-
 GitLab SAST can scan repositories that contain multiple projects.
 
 The following analyzers have multi-project support:
@@ -143,7 +119,7 @@ The following analyzers have multi-project support:
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
 the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
-## False positive detection **(ULTIMATE)**
+## False positive detection **(ULTIMATE ALL)**
 
 > - Introduced for Ruby in GitLab 14.2.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378622) for Go in GitLab 15.8.
@@ -158,7 +134,7 @@ False positive detection is available in a subset of the [supported languages](#
 
 ![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
 
-## Advanced vulnerability tracking **(ULTIMATE)**
+## Advanced vulnerability tracking **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
 
@@ -171,11 +147,12 @@ GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately
 
 Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
 
-- C, in the Semgrep-based analyzer only
+- C, in the Semgrep-based and Flawfinder analyzers
+- C++, in the Flawfinder analyzer only
 - C#, in the Semgrep-based analyzer only
 - Go, in the Semgrep-based analyzer only
-- Java, in the Semgrep-based analyzer only
-- JavaScript, in the Semgrep-based analyzer only
+- Java, in the Semgrep-based and mobsf analyzers
+- JavaScript, in the Semgrep-based and NodeJS-Scan analyzers
 - Python, in the Semgrep-based analyzer only
 - Ruby, in the Brakeman-based analyzer
 
@@ -290,7 +267,7 @@ When downloading, you always receive the most recent SAST artifact available.
 You can enable and configure SAST by using the UI, either with the default settings or with customizations.
 The method you can use depends on your GitLab license tier.
 
-#### Configure SAST with customizations **(ULTIMATE)**
+#### Configure SAST with customizations **(ULTIMATE ALL)**
 
 > [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
 
@@ -316,8 +293,6 @@ Pipelines now include a SAST job.
 
 #### Configure SAST with default settings only
 
-> [Introduced](https://about.gitlab.com/releases/2021/02/22/gitlab-13-9-released/#security-configuration-page-for-all-users) in GitLab 13.9
-
 NOTE:
 The configuration tool works best with no existing `.gitlab-ci.yml` file, or with a minimal
 configuration file. If you have a complex GitLab configuration file it may not be parsed
@@ -334,11 +309,7 @@ Pipelines now include a SAST job.
 
 ### Overriding SAST jobs
 
-WARNING:
-Beginning in GitLab 13.0, the use of [`only` and `except`](../../../ci/yaml/index.md#only--except)
-is no longer supported. When overriding the template, you must use [`rules`](../../../ci/yaml/index.md#rules) instead.
-
-To override a job definition, (for example, change properties like `variables` or `dependencies`),
+To override a job definition, (for example, change properties like `variables`, `dependencies`, or [`rules`](../../../ci/yaml/index.md#rules)),
 declare a job with the same name as the SAST job to override. Place this new job after the template
 inclusion and specify any additional keys under it. For example, this enables `FAIL_NEVER` for the
 `spotbugs` analyzer:
@@ -580,8 +551,7 @@ Some analyzers can be customized with CI/CD variables.
 | `FAIL_NEVER`                | SpotBugs   | Set to `1` to ignore compilation failure.                                                                                                                                                                                          |
 | `SAST_GOSEC_CONFIG`         | Gosec      | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/328301)** in GitLab 14.0 - use custom rulesets instead. Path to configuration for Gosec (optional).                                                                                                                                                                                        |
 | `PHPCS_SECURITY_AUDIT_PHP_EXTENSIONS` | phpcs-security-audit | Comma separated list of additional PHP Extensions.                                                                                                                                                             |
-| `SAST_DISABLE_BABEL`        | NodeJsScan | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64025)** in GitLab 13.5 |
-| `SAST_SEMGREP_METRICS` | Semgrep | Set to `"false"` to disable sending anonymized scan metrics to [r2c](https://semgrep.dev). Default: `true`. Introduced in GitLab 14.0 from the [confidential issue](../../project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab/-/issues/330565`.      |
+| `SAST_SEMGREP_METRICS` | Semgrep | Set to `"false"` to disable sending anonymized scan metrics to [r2c](https://semgrep.dev). Default: `true`. Introduced in GitLab 14.0. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/330565`.      |
 | `SAST_SCANNER_ALLOWED_CLI_OPTS`        | Semgrep | CLI options (arguments with value, or flags) that are passed to the underlying security scanner when running scan operation. Only a limited set of [options](#security-scanner-configuration) are accepted. Separate a CLI option and its value using either a blank space or equals (`=`) character. For example: `name1 value1` or `name1=value1`. Multiple options must be separated by blank spaces. For example: `name1 value1 name2 value2`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368565) in GitLab 15.3. |
 
 #### Security scanner configuration
@@ -610,12 +580,6 @@ all [custom variables](../../../ci/variables/index.md#define-a-cicd-variable-in-
 to the underlying SAST analyzer images if
 [the SAST vendored template](#configuration) is used.
 
-NOTE:
-In [GitLab 13.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/220540),
-variables whose names started with the following prefixes are **not** propagated to either the
-analyzer containers or SAST Docker container: `DOCKER_`, `CI`, `GITLAB_`, `FF_`, `HOME`, `PWD`,
-`OLDPWD`, `PATH`, `SHLVL`, `HOSTNAME`.
-
 ### Experimental features
 
 You can receive early access to experimental features. Experimental features might be added,
@@ -624,8 +588,11 @@ removed, or promoted to regular features at any time.
 Experimental features available are:
 
 - Enable scanning of iOS and Android apps using the [MobSF analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/).
-- Disable the following rules in the [Semgrep analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) that are known to cause a high rate of false positives:
-  - [`eslint.detect-object-injection`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/6c4764567d9854f5e4a4a35dacf5a68def7fb4c1/rules/eslint.yml#L751-773)
+
+These features were previously experimental, but are now generally available:
+
+- Disable the [`eslint.detect-object-injection`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/6c4764567d9854f5e4a4a35dacf5a68def7fb4c1/rules/eslint.yml#L751-773) in the [Semgrep analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) because it causes a high rate of false positives.
+  - This rule was [disabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/373920) in 15.10.
 
 #### Enable experimental features
 
@@ -751,156 +718,3 @@ documentation for instructions.
 ## Running SAST in SELinux
 
 By default SAST analyzers are supported in GitLab instances hosted on SELinux. Adding a `before_script` in an [overridden SAST job](#overriding-sast-jobs) may not work as runners hosted on SELinux have restricted permissions.
-
-## Troubleshooting
-
-### Debug-level logging
-
-Debug-level logging can help when troubleshooting. For details, see
-[debug-level logging](../index.md#debug-level-logging).
-
-### Pipeline errors related to changes in the GitLab-managed CI/CD template
-
-The [GitLab-managed SAST CI/CD template](#configure-sast-in-your-cicd-yaml) controls which [analyzer](analyzers.md) jobs run and how they're configured. While using the template, you might experience a job failure or other pipeline error. For example, you might:
-
-- See an error message like `'<your job>' needs 'spotbugs-sast' job, but 'spotbugs-sast' is not in any previous stage` when you view an affected pipeline.
-- Experience another type of unexpected issue with your CI/CD pipeline configuration.
-
-If you're experiencing a job failure or seeing a SAST-related `yaml invalid` pipeline status, you can temporarily revert to an older version of the template so your pipelines keep working while you investigate the issue. To use an older version of the template, change the existing `include` statement in your CI/CD YAML file to refer to a specific template version, such as `v15.3.3-ee`:
-
-```yaml
-include:
-  remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/v15.3.3-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml'
-```
-
-If your GitLab instance has limited network connectivity, you can also download the file and host it elsewhere.
-
-We recommend that you only use this solution temporarily and that you return to [the standard template](#configure-sast-in-your-cicd-yaml) as soon as possible.
-
-### Errors in a specific analyzer job
-
-GitLab SAST [analyzers](analyzers.md) are released as container images.
-If you're seeing a new error that doesn't appear to be related to [the GitLab-managed SAST CI/CD template](#configure-sast-in-your-cicd-yaml) or changes in your own project, you can try [pinning the affected analyzer to a specific older version](#pinning-to-minor-image-version).
-
-Each [analyzer project](analyzers.md#sast-analyzers) has a `CHANGELOG.md` file listing the changes made in each available version.
-
-### `exec /bin/sh: exec format error` message in job log
-
-GitLab SAST analyzers [only support](#requirements) running on the `amd64` CPU architecture.
-This message indicates that the job is being run on a different architecture, such as `arm`.
-
-### `Error response from daemon: error processing tar file: docker-tar: relocation error`
-
-This error occurs when the Docker version that runs the SAST job is `19.03.0`.
-Consider updating to Docker `19.03.1` or greater. Older versions are not
-affected. Read more in
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").
-
-### Getting warning message `gl-sast-report.json: no matching files`
-
-For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
-
-### Error: `sast is used for configuration only, and its script should not be executed`
-
-For information on this, see the [GitLab Secure troubleshooting section](../index.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
-
-### Limitation when using rules:exists
-
-The [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
-uses the `rules:exists` parameter. For performance reasons, a maximum number of matches are made
-against the given glob pattern. If the number of matches exceeds the maximum, the `rules:exists`
-parameter returns `true`. Depending on the number of files in your repository, a SAST job might be
-triggered even if the scanner doesn't support your project. For more details about this issue, see
-the [`rules:exists` documentation](../../../ci/yaml/index.md#rulesexists).
-
-### SpotBugs UTF-8 unmappable character errors
-
-These errors occur when UTF-8 encoding isn't enabled on a SpotBugs build and there are UTF-8
-characters in the source code. To fix this error, enable UTF-8 for your project's build tool.
-
-For Gradle builds, add the following to your `build.gradle` file:
-
-```gradle
-compileJava.options.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-```
-
-For Maven builds, add the following to your `pom.xml` file:
-
-```xml
-<properties>
-  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-</properties>
-```
-
-### SpotBugs Error: `Project couldn't be built`
-
-If your job is failing at the build step with the message "Project couldn't be built", it's most likely because your job is asking SpotBugs to build with a tool that isn't part of its default tools. For a list of the SpotBugs default tools, see [SpotBugs' asdf dependencies](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/raw/master/config/.tool-versions).
-
-The solution is to use [pre-compilation](#pre-compilation). Pre-compilation ensures the images required by SpotBugs are available in the job's container.
-
-### Flawfinder encoding error
-
-This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, convert all source code in your project to UTF-8 character encoding. This can be done with [`cvt2utf`](https://github.com/x1angli/cvt2utf) or [`iconv`](https://www.gnu.org/software/libiconv/documentation/libiconv-1.13/iconv.1.html) either over the entire project or per job using the [`before_script`](../../../ci/yaml/index.md#before_script) feature.
-
-### Semgrep slowness, unexpected results, or other errors
-
-If Semgrep is slow, reports too many false positives or false negatives, crashes, fails, or is otherwise broken, see the Semgrep docs for [troubleshooting GitLab SAST](https://semgrep.dev/docs/troubleshooting/semgrep-ci/#troubleshooting-gitlab-sast).
-
-### SAST job fails with message `strconv.ParseUint: parsing "0.0": invalid syntax`
-
-Invoking Docker-in-Docker is the likely cause of this error. Docker-in-Docker is:
-
-- Disabled by default in GitLab 13.0 and later.
-- Unsupported from GitLab 13.4 and later.
-
-Several workarounds are available. From GitLab version 13.0 and later, you must not use
-Docker-in-Docker.
-
-#### Workaround 1: Pin analyzer versions (GitLab 12.1 and earlier)
-
-Set the following variables for the SAST job. This pins the analyzer versions to the last known
-working version, allowing SAST with Docker-in-Docker to complete as it did previously:
-
-```yaml
-sast:
-  variables:
-    SAST_DEFAULT_ANALYZERS: ""
-    SAST_ANALYZER_IMAGES: "registry.gitlab.com/gitlab-org/security-products/analyzers/bandit:2.9.6, registry.gitlab.com/gitlab-org/security-products/analyzers/brakeman:2.11.0, registry.gitlab.com/gitlab-org/security-products/analyzers/eslint:2.10.0, registry.gitlab.com/gitlab-org/security-products/analyzers/flawfinder:2.11.1, registry.gitlab.com/gitlab-org/security-products/analyzers/gosec:2.14.0, registry.gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan:2.11.0, registry.gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit:2.9.1, registry.gitlab.com/gitlab-org/security-products/analyzers/pmd-apex:2.9.0, registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:3.12.0, registry.gitlab.com/gitlab-org/security-products/analyzers/security-code-scan:2.13.0, registry.gitlab.com/gitlab-org/security-products/analyzers/sobelow:2.8.0, registry.gitlab.com/gitlab-org/security-products/analyzers/spotbugs:2.13.6, registry.gitlab.com/gitlab-org/security-products/analyzers/tslint:2.4.0"
-```
-
-Remove any analyzers you don't need from the `SAST_ANALYZER_IMAGES` list. Keep
-`SAST_DEFAULT_ANALYZERS` set to an empty string `""`.
-
-#### Workaround 2: Disable Docker-in-Docker for SAST and Dependency Scanning (GitLab 12.3 and later)
-
-Disable Docker-in-Docker for SAST. Individual `<analyzer-name>-sast` jobs are created for each
-analyzer that runs in your CI/CD pipeline.
-
-```yaml
-include:
-  - template: SAST.gitlab-ci.yml
-
-variables:
-  SAST_DISABLE_DIND: "true"
-```
-
-#### Workaround 3: Upgrade to GitLab 13.x and use the defaults
-
-From GitLab 13.0, SAST defaults to not using Docker-in-Docker. In GitLab 13.4 and later, SAST using
-Docker-in-Docker is [no longer supported](https://gitlab.com/gitlab-org/gitlab/-/issues/220540).
-If you have this problem on GitLab 13.x and later, you have customized your SAST job to
-use Docker-in-Docker. To resolve this, comment out any customizations you've made to
-your SAST CI job definition and [follow the documentation](index.md#configuration)
-to reconfigure, using the new and improved job definition default values.
-
-```yaml
-include:
-  - template: Security/SAST.gitlab-ci.yml
-```
-
-### MobSF job fails with error message `Reading from Info.plist`
-
-This error happens when `Info.plist` file is missing a `CFBundleIdentifier` key and string value.

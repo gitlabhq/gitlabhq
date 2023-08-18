@@ -1,6 +1,7 @@
 import { GlNav, GlNavItem, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { MOCK_QUERY, MOCK_NAVIGATION } from 'jest/search/mock_data';
 import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';

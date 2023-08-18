@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Microsoft Azure as an authentication provider **(FREE SELF)**
+# Use Microsoft Azure as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 You can enable the Microsoft Azure OAuth 2.0 OmniAuth provider and sign in to
 GitLab with your Microsoft Azure credentials. You can configure the provider that uses
@@ -204,13 +204,13 @@ Alternatively, add the `User.Read.All` application permission.
 
 1. On your GitLab server, open the configuration file.
 
-   - **For Omnibus installations**
+   - For Linux package installations:
 
      ```shell
      sudo editor /etc/gitlab/gitlab.rb
      ```
 
-   - **For installations from source**
+   - For self-compiled installations:
 
      ```shell
      cd /home/git/gitlab
@@ -225,7 +225,7 @@ Alternatively, add the `User.Read.All` application permission.
 1. Add the provider configuration. Replace `<client_id>`, `<client_secret>`, and `<tenant_id>`
    with the values you got when you registered the Azure application.
 
-   - **For Omnibus installations**
+   - For Linux package installations:
 
      For the v1.0 endpoint:
 
@@ -277,7 +277,7 @@ Alternatively, add the `User.Read.All` application permission.
      ]
      ```
 
-   - **For installations from source**
+   - For self-compiled installations:
 
      For the v1.0 endpoint:
 
@@ -316,7 +316,7 @@ Alternatively, add the `User.Read.All` application permission.
 1. Save the configuration file.
 
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
-   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#installations-from-source)
+   if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations)
    if you self-compiled your installation.
 
 1. Refresh the GitLab sign-in page. A Microsoft icon should display below the
@@ -326,3 +326,33 @@ Alternatively, add the `User.Read.All` application permission.
 
 Read [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user)
 for information on how existing GitLab users can connect to their new Azure AD accounts.
+
+## Troubleshooting
+
+### User sign in banner message: Extern UID has already been taken
+
+When signing in, you might get an error that states `Extern UID has already been taken`.
+
+To resolve this, use the [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session) to check if there is an existing user tied to the account:
+
+1. Find the `extern_uid`:
+
+   ```ruby
+   id = Identity.where(extern_uid: '<extern_uid>')
+   ```
+
+1. Print the content to find the username attached to that `extern_uid`:
+
+   ```ruby
+   pp id
+   ```
+
+If the `extern_uid` is attached to an account, you can use the username to sign in.
+
+If the `extern_uid` is not attached to any username, this might be because of a deletion error resulting in a ghost record.
+
+Run the following command to delete the identity to release the `extern uid`:
+
+```ruby
+ Identity.find('<id>').delete
+```

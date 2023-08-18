@@ -45,7 +45,7 @@ For versioning and upgrade details, see our [Release and Maintenance policy](../
 
 GitLab self-managed packages are semantically versioned and follow our [maintenance policy](../../policy/maintenance.md). This process applies to features and APIs that are generally available, not beta or experimental.
 
-This maintenance policy is in place to allow our customers to prepare for disruptive changes by establishing a clear and predictable pattern that is widely used in the software industry. For many of our customers, GitLab is a business-critical application and surprising changes can cause damages and erode trust. 
+This maintenance policy is in place to allow our customers to prepare for disruptive changes by establishing a clear and predictable pattern that is widely used in the software industry. For many of our customers, GitLab is a business-critical application and surprising changes can cause damages and erode trust.
 
 Introducing breaking changes in minor releases is against policy because it can disrupt our customers and introduces an element of randomness that requires customers to check for breaking changes every minor release to ensure that their business is not impacted. This does not align with our goal [to make it as easy as possible for customers to do business with GitLab](https://about.gitlab.com/company/yearlies/#fy24-yearlies) and is strongly discouraged.
 

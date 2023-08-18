@@ -7,12 +7,14 @@ import {
   GlCollapsibleListbox,
   GlIcon,
 } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import BoardAddNewColumnForm from '~/boards/components/board_add_new_column_form.vue';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import { createListMutations, listsQuery, BoardType, ListType } from 'ee_else_ce/boards/constants';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
+import { setError } from '../graphql/cache_updates';
 import { getListByTypeId } from '../boards_util';
 
 export default {
@@ -70,6 +72,12 @@ export default {
       skip() {
         return !this.isApolloBoard;
       },
+      error(error) {
+        setError({
+          error,
+          message: s__('Boards|An error occurred while fetching labels. Please try again.'),
+        });
+      },
     },
   },
   computed: {
@@ -102,36 +110,43 @@ export default {
   },
   methods: {
     ...mapActions(['createList', 'fetchLabels', 'highlightList']),
-    createListApollo({ labelId }) {
-      return this.$apollo.mutate({
-        mutation: createListMutations[this.issuableType].mutation,
-        variables: {
-          labelId,
-          boardId: this.boardId,
-        },
-        update: (
-          store,
-          {
-            data: {
-              boardListCreate: { list },
-            },
+    async createListApollo({ labelId }) {
+      try {
+        await this.$apollo.mutate({
+          mutation: createListMutations[this.issuableType].mutation,
+          variables: {
+            labelId,
+            boardId: this.boardId,
           },
-        ) => {
-          const sourceData = store.readQuery({
-            query: listsQuery[this.issuableType].query,
-            variables: this.listQueryVariables,
-          });
-          const data = produce(sourceData, (draftData) => {
-            draftData[this.boardType].board.lists.nodes.push(list);
-          });
-          store.writeQuery({
-            query: listsQuery[this.issuableType].query,
-            variables: this.listQueryVariables,
-            data,
-          });
-          this.$emit('highlight-list', list.id);
-        },
-      });
+          update: (
+            store,
+            {
+              data: {
+                boardListCreate: { list },
+              },
+            },
+          ) => {
+            const sourceData = store.readQuery({
+              query: listsQuery[this.issuableType].query,
+              variables: this.listQueryVariables,
+            });
+            const data = produce(sourceData, (draftData) => {
+              draftData[this.boardType].board.lists.nodes.push(list);
+            });
+            store.writeQuery({
+              query: listsQuery[this.issuableType].query,
+              variables: this.listQueryVariables,
+              data,
+            });
+            this.$emit('highlight-list', list.id);
+          },
+        });
+      } catch (error) {
+        setError({
+          error,
+          message: s__('Boards|An error occurred while creating the list. Please try again.'),
+        });
+      }
     },
     addList() {
       if (!this.selectedLabel) {

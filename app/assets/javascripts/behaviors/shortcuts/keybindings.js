@@ -399,6 +399,12 @@ export const ISSUABLE_CHANGE_LABEL = {
   defaultKeys: ['l'],
 };
 
+export const ISSUABLE_COPY_REF = {
+  id: 'issuables.copyIssuableRef',
+  description: __('Copy reference'),
+  defaultKeys: ['c r'], // eslint-disable-line @gitlab/require-i18n-strings
+};
+
 export const ISSUE_MR_CHANGE_ASSIGNEE = {
   id: 'issuesMRs.changeAssignee',
   description: __('Change assignee'),
@@ -427,6 +433,13 @@ export const MR_GO_TO_FILE = {
   id: 'mergeRequests.goToFile',
   description: __('Go to file'),
   defaultKeys: ['mod+p', 't'],
+  customizable: false,
+};
+
+export const MR_TOGGLE_FILE_BROWSER = {
+  id: 'mergeRequests.toggleFileBrowser',
+  description: __('Toggle file browser'),
+  defaultKeys: ['f'],
   customizable: false,
 };
 
@@ -599,7 +612,12 @@ const PROJECT_FILES_SHORTCUTS_GROUP = {
 const ISSUABLE_SHORTCUTS_GROUP = {
   id: 'issuables',
   name: __('Epics, issues, and merge requests'),
-  keybindings: [ISSUABLE_COMMENT_OR_REPLY, ISSUABLE_EDIT_DESCRIPTION, ISSUABLE_CHANGE_LABEL],
+  keybindings: [
+    ISSUABLE_COMMENT_OR_REPLY,
+    ISSUABLE_EDIT_DESCRIPTION,
+    ISSUABLE_CHANGE_LABEL,
+    ISSUABLE_COPY_REF,
+  ],
 };
 
 const ISSUE_MR_SHORTCUTS_GROUP = {

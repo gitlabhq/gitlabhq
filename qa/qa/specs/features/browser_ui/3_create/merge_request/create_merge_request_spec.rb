@@ -3,12 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Create a new merge request', product_group: :code_review do
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project'
-        end
-      end
-
+      let(:project) { create(:project) }
       let(:merge_request_title) { 'One merge request to rule them all' }
       let(:merge_request_description) { '... to find them, to bring them all, and in the darkness bind them' }
 

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import userLists from '../gitlab_user_list';
 import * as actions from './actions';

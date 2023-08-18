@@ -327,7 +327,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'on a protected branch' do
-      before(:all) do
+      before_all do
         create(:protected_branch, :create_branch_on_repository, project: project, name: 'a-protected-branch')
       end
 
@@ -369,7 +369,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'on a protected branch with protected branches defined using wildcards' do
-      before(:all) do
+      before_all do
         create(:protected_branch, :create_branch_on_repository, repository_branch_name: '1-stable', project: project, name: '*-stable')
       end
 
@@ -578,7 +578,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
       end
 
       context 'on a protected branch' do
-        before(:all) do
+        before_all do
           create(:protected_branch, :create_branch_on_repository, project: project, name: 'a-protected-branch')
         end
 
@@ -606,7 +606,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
       end
 
       context 'on a protected branch with protected branches defined usin wildcards' do
-        before(:all) do
+        before_all do
           create(:protected_branch, :create_branch_on_repository, repository_branch_name: '1-stable', project: project, name: '*-stable')
         end
 
@@ -682,7 +682,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     it_behaves_like "triggered #{integration_name} integration", event_type: "deployment"
 
     context 'on a protected branch' do
-      before(:all) do
+      before_all do
         create(:protected_branch, :create_branch_on_repository, project: project, name: 'a-protected-branch')
       end
 

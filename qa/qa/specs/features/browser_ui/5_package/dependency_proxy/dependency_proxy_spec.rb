@@ -6,13 +6,7 @@ module QA
       using RSpec::Parameterized::TableSyntax
       include Support::Helpers::MaskToken
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'dependency-proxy-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'dependency-proxy-project') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.name = "qa-runner-#{Time.now.to_i}"
@@ -35,8 +29,7 @@ module QA
 
       let(:personal_access_token) { Runtime::Env.personal_access_token }
 
-      let(:uri) { URI.parse(Runtime::Scenario.gitlab_address) }
-      let(:gitlab_host_with_port) { "#{uri.host}:#{uri.port}" }
+      let(:gitlab_host_with_port) { Support::GitlabAddress.host_with_port }
       let(:dependency_proxy_url) { "#{gitlab_host_with_port}/#{project.group.full_path}/dependency_proxy/containers" }
       let(:image_sha) { 'alpine@sha256:c3d45491770c51da4ef58318e3714da686bc7165338b7ab5ac758e75c7455efb' }
 

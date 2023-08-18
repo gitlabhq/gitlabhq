@@ -18,7 +18,7 @@ module Gitlab
 
       def each
         @blames.each do |blame|
-          yield(blame.commit, blame.line, blame.previous_path)
+          yield(blame.commit, blame.line, blame.previous_path, blame.span)
         end
       end
 
@@ -49,12 +49,12 @@ module Gitlab
         output.split("\n").each do |line|
           if line[0, 1] == "\t"
             lines << line[1, line.size]
-          elsif m = /^(\w{40}) (\d+) (\d+)/.match(line)
+          elsif m = /^(\w{40}) (\d+) (\d+)\s?(\d+)?/.match(line)
             # Removed these instantiations for performance but keeping them for reference:
-            # commit_id, old_lineno, lineno = m[1], m[2].to_i, m[3].to_i
+            # commit_id, old_lineno, lineno, span = m[1], m[2].to_i, m[3].to_i, m[4].to_i
             commit_id = m[1]
             commits[commit_id] = nil unless commits.key?(commit_id)
-            info[m[3].to_i] = [commit_id, m[2].to_i]
+            info[m[3].to_i] = [commit_id, m[2].to_i, m[4].to_i]
 
             # Assumption: the first line returned by git blame is lowest-numbered
             # This is true unless we start passing it `--incremental`.
@@ -72,13 +72,14 @@ module Gitlab
         end
 
         # get it together
-        info.sort.each do |lineno, (commit_id, old_lineno)|
+        info.sort.each do |lineno, (commit_id, old_lineno, span)|
           final << BlameLine.new(
             lineno,
             old_lineno,
             commits[commit_id],
             lines[lineno - start_line],
-            previous_paths[commit_id]
+            previous_paths[commit_id],
+            span
           )
         end
 
@@ -87,14 +88,15 @@ module Gitlab
     end
 
     class BlameLine
-      attr_accessor :lineno, :oldlineno, :commit, :line, :previous_path
+      attr_accessor :lineno, :oldlineno, :commit, :line, :previous_path, :span
 
-      def initialize(lineno, oldlineno, commit, line, previous_path)
+      def initialize(lineno, oldlineno, commit, line, previous_path, span)
         @lineno = lineno
         @oldlineno = oldlineno
         @commit = commit
         @line = line
         @previous_path = previous_path
+        @span = span
       end
     end
   end

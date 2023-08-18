@@ -126,6 +126,7 @@ The following are required to run Geo:
   - If using different operating system versions between Geo sites,
     [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility)
     across Geo sites to avoid silent corruption of database indexes.
+- All sites must define the same [repository storages](../repository_storage_paths.md).
 
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
 and use the latest version of GitLab for a better experience.
@@ -196,6 +197,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 - The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using [the GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to deploy and operate production GitLab instances based on our [Reference Architectures](../reference_architectures/index.md), including automation of common daily tasks. We are planning to [improve Geo's installation even further](https://gitlab.com/groups/gitlab-org/-/epics/1465).
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** site.
+- Using Geo secondary sites to accelerate runners is not officially supported. Support for this functionality is planned and can be tracked in [epic 9779](https://gitlab.com/groups/gitlab-org/-/epics/9779). If a replication lag occurs between the primary and secondary site, and the pipeline ref is not available on the secondary site when the job is executed, the job will fail.
 - GitLab Runners cannot register with a **secondary** site. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
 - [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
@@ -208,19 +210,6 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 ### Limitations on replication/verification
 
 There is a complete list of all GitLab [data types](replication/datatypes.md) and [existing support for replication and verification](replication/datatypes.md#limitations-on-replicationverification).
-
-### View replication data on the primary site
-
-If you try to view replication data on the primary site, you receive a warning that this may be inconsistent:
-
-> Viewing projects data from a primary site is not possible when using a unified URL. Visit the secondary site directly.
-
-The only way to view projects replication data for a particular secondary site is to visit that secondary site directly. For example, `https://<IP of your secondary site>/admin/geo/replication/projects`.
-An [epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4623) to fix this limitation.
-
-Keep in mind that mentioned URLs don't work when [Admin Mode](../settings/sign_in_restrictions.md#admin-mode) is enabled.
-
-When using Unified URL, visiting the secondary site directly means you must route your requests to the secondary site. Exactly how this might be done depends on your networking configuration. If using DNS to route requests to the appropriate site, then you can, for example, edit your local machine's `/etc/hosts` file to route your requests to the desired secondary site. If the Geo sites are all behind a load balancer, then depending on the load balancer, you might be able to configure all requests from your IP to go to a particular secondary site.
 
 ## Setup instructions
 

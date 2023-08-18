@@ -10,12 +10,7 @@ module QA
       let(:branch) { "push-options-test-#{SecureRandom.hex(8)}" }
       let(:title) { "MR push options test #{SecureRandom.hex(8)}" }
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'merge-request-push-options'
-          project.initialize_with_readme = true
-        end
-      end
+      let(:project) { create(:project, :with_readme, name: 'merge-request-push-options') }
 
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
@@ -74,7 +69,14 @@ module QA
         end
       end
 
-      it 'merges when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347842' do
+      it(
+        'merges when pipeline succeeds',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347842',
+        quarantine: {
+          type: :flaky,
+          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/346425"
+        }
+      ) do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'Add .gitlab-ci.yml'

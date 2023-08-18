@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Snippets **(FREE)**
+# Snippets **(FREE ALL)**
 
 With GitLab snippets, you can store and share bits of code and text with other users.
 You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
@@ -247,8 +247,8 @@ GitLab forwards the spam to Akismet.
   than 10 files results in an error.
 - Revisions are not visible to the user on the GitLab UI, but [an issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/39271)
   for updates.
-- The [maximum size for a snippet](../administration/snippets/index.md#snippets-content-size-limit)
-  is 50 MB, by default.
+- The default [maximum size for a snippet](../administration/snippets/index.md)
+  is 50 MB.
 - Git LFS is not supported.
 
 ### Reduce snippets repository size

@@ -185,10 +185,7 @@ export default {
     <div class="media">
       <status-icon :status="statusIconName" :size="24" class="align-self-center" />
       <div class="media-body gl-display-flex gl-align-items-flex-start gl-flex-direction-row!">
-        <div
-          data-testid="report-section-code-text"
-          class="js-code-text code-text gl-align-self-center gl-flex-grow-1"
-        >
+        <div class="js-code-text code-text gl-align-self-center gl-flex-grow-1">
           <div class="gl-display-flex gl-align-items-center">
             <p class="gl-line-height-normal gl-m-0">{{ headerText }}</p>
             <slot :name="slotName"></slot>

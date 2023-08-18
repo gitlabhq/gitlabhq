@@ -8,23 +8,17 @@
       = sprite_icon('branch', size: 12)
       = ref
     - if current_action?(:edit) || current_action?(:update)
-      %span.float-left.gl-mr-3
-      = text_field_tag 'file_path', (params[:file_path] || @path),
-        class: 'form-control gl-form-input new-file-path js-file-path-name-input'
-      = render 'template_selectors'
+      - input_options = { id: 'file_path', name: 'file_path', value: (params[:file_path] || @path), class: 'new-file-path js-file-path-name-input' }
+      = render 'filepath_form', input_options: input_options
 
     - if current_action?(:new) || current_action?(:create)
-      %span.float-left.gl-mr-3
-        \/
-      = text_field_tag 'file_name', params[:file_name], placeholder: "Filename", data: { qa_selector: 'file_name_field' },
-        required: true, class: 'form-control gl-form-input new-file-name js-file-path-name-input', value: params[:file_name] || (should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : '')
-      = render 'template_selectors'
+      - input_options = { id: 'file_name', name: 'file_name', value: params[:file_name] || (should_suggest_gitlab_ci_yml? ? '.gitlab-ci.yml' : ''), required: true, placeholder: "Filename", testid: 'file_name_field', class: 'new-file-name js-file-path-name-input' }
+      = render 'filepath_form', input_options: input_options
       - if should_suggest_gitlab_ci_yml?
-        .js-suggest-gitlab-ci-yml{ data: { target: '#gitlab-ci-yml-selector',
-          track_label: 'suggest_gitlab_ci_yml',
-          merge_request_path: params[:mr_path],
-          dismiss_key: @project.id,
-          human_access: human_access } }
+        .js-suggest-gitlab-ci-yml{ data: { track_label: 'suggest_gitlab_ci_yml',
+              merge_request_path: params[:mr_path],
+              dismiss_key: @project.id,
+              human_access: human_access } }
 
     - if Feature.enabled?(:source_editor_toolbar, current_user)
       #editor-toolbar

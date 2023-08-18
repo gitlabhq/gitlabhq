@@ -31,9 +31,8 @@ class CommitRange
   REF_PATTERN = /[0-9a-zA-Z][0-9a-zA-Z_.-]*[0-9a-zA-Z\^]/.freeze
   PATTERN = /#{REF_PATTERN}\.{2,3}#{REF_PATTERN}/.freeze
 
-  # In text references, the beginning and ending refs can only be SHAs
-  # between 7 and 40 hex characters.
-  STRICT_PATTERN = /\h{7,40}\.{2,3}\h{7,40}/.freeze
+  # In text references, the beginning and ending refs can only be valid SHAs.
+  STRICT_PATTERN = /#{Gitlab::Git::Commit::RAW_SHA_PATTERN}\.{2,3}#{Gitlab::Git::Commit::RAW_SHA_PATTERN}/.freeze
 
   def self.reference_prefix
     '@'

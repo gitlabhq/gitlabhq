@@ -64,11 +64,8 @@ export default {
     ProjectsList,
     GroupsList,
   },
+  inject: ['contextSwitcherLinks'],
   props: {
-    persistentLinks: {
-      type: Array,
-      required: true,
-    },
     username: {
       type: String,
       required: true,
@@ -177,7 +174,7 @@ export default {
     <gl-alert v-else-if="hasError" variant="danger" :dismissible="false" class="gl-m-2">
       {{ $options.i18n.searchError }}
     </gl-alert>
-    <nav v-else :aria-label="$options.i18n.contextNavigation" data-qa-selector="context_navigation">
+    <nav v-else :aria-label="$options.i18n.contextNavigation" data-testid="context-navigation">
       <ul class="gl-p-0 gl-m-0 gl-list-style-none">
         <li v-if="!isSearch">
           <ul
@@ -185,7 +182,7 @@ export default {
             class="gl-border-b gl-border-gray-50 gl-px-0 gl-py-2"
           >
             <nav-item
-              v-for="item in persistentLinks"
+              v-for="item in contextSwitcherLinks"
               :key="item.link"
               :item="item"
               :link-classes="{ [item.link_classes]: item.link_classes }"

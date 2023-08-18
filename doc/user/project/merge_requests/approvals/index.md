@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, concepts
 ---
 
-# Merge request approvals **(FREE)**
+# Merge request approvals **(FREE ALL)**
 
 You can configure your merge requests so that they must be approved before
 they can be merged. While [GitLab Free](https://about.gitlab.com/pricing/) allows
@@ -87,7 +87,7 @@ GitLab allows all users with Developer or greater [permissions](../../../permiss
 to approve merge requests. Approvals in GitLab Free are optional, and don't prevent
 a merge request from merging without approval.
 
-## Required approvals **(PREMIUM)**
+## Required approvals **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 

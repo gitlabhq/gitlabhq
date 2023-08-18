@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Releases **(FREE)**
+# Releases **(FREE ALL)**
 
 In GitLab, a release enables you to create a snapshot of your project for your users, including
 installation packages and release notes. You can create a GitLab release on any branch. Creating a
@@ -359,7 +359,7 @@ users with at least the Maintainer role
 to create, update, and delete releases by protecting the tag with a wildcard (`*`),
 and set **Maintainer** in the **Allowed to create** column.
 
-## Release Metrics **(ULTIMATE)**
+## Release Metrics **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
 

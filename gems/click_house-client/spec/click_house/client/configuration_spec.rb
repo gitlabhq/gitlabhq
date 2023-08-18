@@ -29,7 +29,7 @@ RSpec.describe ClickHouse::Client::Configuration do
       expect(configuration.databases.size).to eq(1)
       database = configuration.databases[:my_db]
 
-      expect(database.uri.to_s).to eq('http://localhost:3333?database=test_db&join_use_nulls=1')
+      expect(database.uri.to_s).to eq('http://localhost:3333?database=test_db&enable_http_compression=1&join_use_nulls=1')
     end
 
     context 'when adding the same DB multiple times' do

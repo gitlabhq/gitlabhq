@@ -29,7 +29,6 @@ module Glfm
     end
 
     def run_external_cmd(cmd)
-      # noinspection RubyMismatchedArgumentType
       rails_root = File.expand_path('../../../', __dir__)
 
       # See https://stackoverflow.com/a/20001569/25192

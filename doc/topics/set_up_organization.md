@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Set up your organization **(FREE)**
+# Set up your organization **(FREE ALL)**
 
 Configure your organization and its users. Determine user roles
 and give everyone access to the projects they need.

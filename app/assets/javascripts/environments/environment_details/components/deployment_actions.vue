@@ -107,7 +107,6 @@ export default {
       v-if="isRollbackAvailable"
       v-gl-modal.confirm-rollback-modal
       v-gl-tooltip
-      data-testid="rollback-button"
       :title="rollbackButtonTitle"
       :icon="rollbackIcon"
       :aria-label="rollbackButtonTitle"

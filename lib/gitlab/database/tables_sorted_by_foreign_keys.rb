@@ -34,7 +34,7 @@ module Gitlab
       def all_foreign_keys
         @all_foreign_keys ||= @tables.each_with_object(Hash.new { |h, k| h[k] = [] }) do |table, hash|
           foreign_keys_for(table).each do |fk|
-            hash[fk.to_table] << table
+            hash[fk.referenced_table_name] << table
           end
         end
       end
@@ -45,12 +45,10 @@ module Gitlab
         #
         # See spec/lib/gitlab/database/tables_sorted_by_foreign_keys_spec.rb
         # for an example
-        name = ActiveRecord::ConnectionAdapters::PostgreSQL::Utils.extract_schema_qualified_name(table)
+        table = ActiveRecord::ConnectionAdapters::PostgreSQL::Utils.extract_schema_qualified_name(table)
 
-        if name.schema == ::Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA.to_s
-          @connection.foreign_keys(name.identifier)
-        else
-          @connection.foreign_keys(table)
+        Gitlab::Database::SharedModel.using_connection(@connection) do
+          Gitlab::Database::PostgresForeignKey.by_constrained_table_name_or_identifier(table.identifier).load
         end
       end
     end

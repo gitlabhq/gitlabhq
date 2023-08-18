@@ -46,11 +46,11 @@ module LabelsHelper
     end
   end
 
-  def render_label(label, link: nil, tooltip: true, dataset: nil, small: false)
+  def render_label(label, link: nil, tooltip: true, dataset: nil, small: false, tooltip_shows_title: false)
     html = render_colored_label(label)
 
     if link
-      title = label_tooltip_title(label) if tooltip
+      title = label_tooltip_title(label, tooltip_shows_title: tooltip_shows_title) if tooltip
       html = render_label_link(html, link: link, title: title, dataset: dataset)
     end
 
@@ -74,8 +74,8 @@ module LabelsHelper
     %(<span class="#{wrapper_classes.join(' ')}">#{label_html}</span>).html_safe
   end
 
-  def label_tooltip_title(label)
-    Sanitize.clean(label.description)
+  def label_tooltip_title(label, tooltip_shows_title: false)
+    Sanitize.clean(tooltip_shows_title ? label.title : label.description)
   end
 
   def suggested_colors

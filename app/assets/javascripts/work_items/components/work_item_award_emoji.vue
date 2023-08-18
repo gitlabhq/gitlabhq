@@ -51,7 +51,7 @@ export default {
       return window.gon.current_user_fullname;
     },
     /**
-     * Parse and convert award emoji list to a format that AwardsList can understand
+     * Parse and convert emoji reactions list to a format that AwardsList can understand
      */
     awards() {
       if (!this.awardEmoji) {
@@ -91,11 +91,14 @@ export default {
       skip() {
         return !this.workItemIid;
       },
-      result() {
+      result({ data }) {
         if (this.hasNextPage) {
           this.fetchAwardEmojis();
         } else {
           this.isLoading = false;
+        }
+        if (data) {
+          this.$emit('emoji-updated', data.workspace?.workItems?.nodes[0]);
         }
       },
       error() {
@@ -125,7 +128,7 @@ export default {
       );
     },
     /**
-     * Prepare award emoji nodes based on emoji name
+     * Prepare emoji reactions nodes based on emoji name
      * and whether the user has toggled the emoji off or on
      */
     getAwardEmojiNodes(name, toggledOn) {
@@ -204,7 +207,7 @@ export default {
               },
             },
           ) => {
-            // update the cache of award emoji widget object
+            // update the cache of emoji reactions widget object
             this.updateWorkItemAwardEmojiWidgetCache({ cache, name, toggledOn });
           },
         })

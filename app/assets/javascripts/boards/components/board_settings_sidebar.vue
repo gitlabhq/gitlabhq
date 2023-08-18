@@ -2,6 +2,7 @@
 import produce from 'immer';
 import { GlButton, GlDrawer, GlLabel, GlModal, GlModalDirective } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import {
   LIST,
@@ -11,10 +12,11 @@ import {
   deleteListQueries,
 } from 'ee_else_ce/boards/constants';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { setError } from '../graphql/cache_updates';
 
 export default {
   listSettingsText: __('List settings'),
@@ -131,23 +133,30 @@ export default {
       }
     },
     async deleteList(listId) {
-      await this.$apollo.mutate({
-        mutation: deleteListQueries[this.issuableType].mutation,
-        variables: {
-          listId,
-        },
-        update: (store) => {
-          store.updateQuery(
-            { query: listsQuery[this.issuableType].query, variables: this.queryVariables },
-            (sourceData) =>
-              produce(sourceData, (draftData) => {
-                draftData[this.boardType].board.lists.nodes = draftData[
-                  this.boardType
-                ].board.lists.nodes.filter((list) => list.id !== listId);
-              }),
-          );
-        },
-      });
+      try {
+        await this.$apollo.mutate({
+          mutation: deleteListQueries[this.issuableType].mutation,
+          variables: {
+            listId,
+          },
+          update: (store) => {
+            store.updateQuery(
+              { query: listsQuery[this.issuableType].query, variables: this.queryVariables },
+              (sourceData) =>
+                produce(sourceData, (draftData) => {
+                  draftData[this.boardType].board.lists.nodes = draftData[
+                    this.boardType
+                  ].board.lists.nodes.filter((list) => list.id !== listId);
+                }),
+            );
+          },
+        });
+      } catch (error) {
+        setError({
+          error,
+          message: s__('Boards|An error occurred while deleting the list. Please try again.'),
+        });
+      }
     },
   },
 };

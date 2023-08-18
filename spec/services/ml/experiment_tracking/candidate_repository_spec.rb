@@ -61,6 +61,15 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository, feature_category: 
           expect(subject.name).to eq('blah')
         end
       end
+
+      context 'when name is nil and no mlflow.runName is not present' do
+        let(:tags) { nil }
+        let(:name) { nil }
+
+        it 'gives the candidate a random name' do
+          expect(subject.name).to match(/[a-z]+-[a-z]+-[a-z]+-\d+/)
+        end
+      end
     end
   end
 

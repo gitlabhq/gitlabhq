@@ -14,7 +14,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
     search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
-    namespaces: %w[organization_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    notes: %w[namespace_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -44,7 +44,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     broadcast_messages: %w[namespace_id],
     chat_names: %w[chat_id team_id user_id integration_id],
     chat_teams: %w[team_id],
-    ci_builds: %w[erased_by_id trigger_request_id partition_id],
+    ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],
     ci_pipeline_variables: %w[partition_id],
     ci_pipelines: %w[partition_id],
@@ -82,12 +82,13 @@ RSpec.describe 'Database schema', feature_category: :database do
     merge_requests_compliance_violations: %w[target_project_id],
     merge_request_diff_commits: %w[commit_author_id committer_id],
     namespaces: %w[owner_id parent_id],
-    notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id],
+    notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id confirmed_by_id discussion_id namespace_id],
     notification_settings: %w[source_id],
     oauth_access_grants: %w[resource_owner_id application_id],
     oauth_access_tokens: %w[resource_owner_id application_id],
     oauth_applications: %w[owner_id],
-    p_ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id],
+    p_ci_builds: %w[erased_by_id trigger_request_id partition_id],
+    p_batched_git_ref_updates_deletions: %w[project_id partition_id],
     product_analytics_events_experimental: %w[event_id txn_id user_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
     project_data_transfers: %w[project_id namespace_id],
@@ -109,11 +110,12 @@ RSpec.describe 'Database schema', feature_category: :database do
     todos: %w[target_id commit_id],
     uploads: %w[model_id],
     user_agent_details: %w[subject_id],
-    users: %w[color_scheme_id created_by_id theme_id email_opted_in_source_id],
+    users: %w[color_scheme_id created_by_id theme_id email_opted_in_source_id managing_group_id],
     users_star_projects: %w[user_id],
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
     security_scans: %w[pipeline_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
+    dependency_list_exports: %w[pipeline_id], # foreign key is not added as ci_pipeline table is in different db
     vulnerability_reads: %w[cluster_agent_id],
     # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
     # Fixes performance issues with the deletion of web-hooks with many log entries
@@ -194,18 +196,23 @@ RSpec.describe 'Database schema', feature_category: :database do
   IGNORED_LIMIT_ENUMS = {
     'Analytics::CycleAnalytics::Stage' => %w[start_event_identifier end_event_identifier],
     'Ci::Bridge' => %w[failure_reason],
+    'Ci::Bridge::Partitioned' => %w[failure_reason],
     'Ci::Build' => %w[failure_reason],
+    'Ci::Build::Partitioned' => %w[failure_reason],
     'Ci::BuildMetadata' => %w[timeout_source],
     'Ci::BuildTraceChunk' => %w[data_store],
     'Ci::DailyReportResult' => %w[param_type],
     'Ci::JobArtifact' => %w[file_type],
     'Ci::Pipeline' => %w[source config_source failure_reason],
     'Ci::Processable' => %w[failure_reason],
+    'Ci::Processable::Partitioned' => %w[failure_reason],
     'Ci::Runner' => %w[access_level],
     'Ci::Stage' => %w[status],
     'Clusters::Cluster' => %w[platform_type provider_type],
     'CommitStatus' => %w[failure_reason],
+    'CommitStatus::Partitioned' => %w[failure_reason],
     'GenericCommitStatus' => %w[failure_reason],
+    'GenericCommitStatus::Partitioned' => %w[failure_reason],
     'InternalId' => %w[usage],
     'List' => %w[list_type],
     'NotificationSetting' => %w[level],

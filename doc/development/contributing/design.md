@@ -61,7 +61,7 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 
 ### Visual design
 
-Check visual design properties using your browser's _elements inspector_ ([Chrome](https://developer.chrome.com/docs/devtools/css/),
+Check visual design properties using your browser's elements inspector ([Chrome](https://developer.chrome.com/docs/devtools/css/),
 [Firefox](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/open_the_inspector/index.html)).
 
 - Use recommended [colors](https://design.gitlab.com/product-foundations/color)
@@ -71,9 +71,11 @@ Check visual design properties using your browser's _elements inspector_ ([Chrom
   or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography/)
   and [illustration](https://design.gitlab.com/product-foundations/illustration/)
   guidelines.
-- _Optionally_ consider [dark mode](../../user/profile/preferences.md#dark-mode). [^1]
+- Optional: Consider dark mode. For more information, see [Change the syntax highlighting theme](../../user/profile/preferences.md#change-the-syntax-highlighting-theme).
 
- [^1]: You're not required to design for [dark mode](../../user/profile/preferences.md#dark-mode) while the feature is an [Experiment](../../policy/experiment-beta-support.md#experiment). The [UX Foundations team](https://about.gitlab.com/direction/manage/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
+### Dark Mode
+
+You're not required to design for dark mode while the feature is an [Experiment](../../policy/experiment-beta-support.md#experiment). The [UX Foundations team](https://about.gitlab.com/direction/manage/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
 
 ### States
 

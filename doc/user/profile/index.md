@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User account **(FREE)**
+# User account **(FREE ALL)**
 
 Each GitLab account has a user profile, which contains information about you and your GitLab activity.
 
@@ -57,6 +57,7 @@ To add new email to your account:
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Emails**.
+1. Select **Add new email**.
 1. In the **Email** text box, enter the new email.
 1. Select **Add email address**.
 1. Verify your email address with the verification email received.
@@ -310,7 +311,8 @@ the maximum number of users you can follow is 300.
 
 ### Disable following and being followed by other users
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a flag](../feature_flags.md) named `disable_follow_users`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a flag](../feature_flags.md) named `disable_follow_users`.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/420620) in GitLab 16.3.
 
 You can disable following and being followed by other users.
 
@@ -337,14 +339,33 @@ You can disable searching with Zoekt and use Elasticsearch instead.
 1. Clear the **Enable advanced code search** checkbox.
 1. Select **Save changes**.
 
-## View your activity
+## View a user's activity
 
 GitLab tracks [user contribution activity](contributions_calendar.md).
-To view a summary of your activity, or the activity of other users:
+To view a user's activity:
 
-1. From a user's profile, select **Follow**.
+1. Go to the user's profile.
 1. In the GitLab menu, select **Activity**.
-1. Select the **Followed users** tab.
+
+A list of **Most Recent Activity** contributions is displayed.
+
+## View your activity
+
+To view your activity:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Your work**.
+1. Select **Activity**.
+1. Optional. To filter your activity by contribution type, in the **Your Activity** tab, select a tab:
+
+   - **All**: All contributions you made in your groups and projects.
+   - **Push events**: Push events you made in your projects.
+   - **Merge events**: Merge requests you accepted in your projects.
+   - **Issue events**: Issues you opened and closed in your projects.
+   - **Comments**: Comments you posted in your projects.
+   - **Wiki**: Wiki pages you created and updated in your projects.
+   - **Designs**: Designs you added, updated, and removed in your projects.
+   - **Team**: Projects you joined and left.
 
 ## Session duration
 
@@ -405,5 +426,5 @@ a session if the browser is closed or the existing session expires.
 - Manage applications that can [use GitLab as an OAuth provider](../../integration/oauth_provider.md)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
 - Manage [SSH keys](../ssh.md) to access your account via SSH
-- Change your [syntax highlighting theme](preferences.md#syntax-highlighting-theme)
+- [Change the syntax highlighting theme](preferences.md#change-the-syntax-highlighting-theme)
 - [View your active sessions](active_sessions.md) and revoke any of them if necessary

@@ -27,7 +27,7 @@ module Integrations
 
       def attachments
         return [] unless opened_issue?
-        return description if markdown
+        return SlackMarkdownSanitizer.sanitize_slack_link(description) if markdown
 
         description_message
       end
@@ -55,7 +55,7 @@ module Integrations
         [{
           title: issue_title,
           title_link: issue_url,
-          text: format(description),
+          text: format(SlackMarkdownSanitizer.sanitize_slack_link(description)),
           color: '#C95823'
         }]
       end

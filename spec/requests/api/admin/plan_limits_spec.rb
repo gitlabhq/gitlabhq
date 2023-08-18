@@ -102,7 +102,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             'ci_registered_group_runners': 107,
             'ci_registered_project_runners': 108,
             'conan_max_file_size': 10,
-            'enforcement_limit': 15,
+            'enforcement_limit': 100,
             'generic_packages_max_file_size': 20,
             'helm_max_file_size': 25,
             'maven_max_file_size': 30,
@@ -124,11 +124,11 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['ci_registered_group_runners']).to eq(107)
           expect(json_response['ci_registered_project_runners']).to eq(108)
           expect(json_response['conan_max_file_size']).to eq(10)
-          expect(json_response['enforcement_limit']).to eq(15)
+          expect(json_response['enforcement_limit']).to eq(100)
           expect(json_response['generic_packages_max_file_size']).to eq(20)
           expect(json_response['helm_max_file_size']).to eq(25)
           expect(json_response['limits_history']).to eq(
-            { "enforcement_limit" => [{ "user_id" => admin.id, "username" => admin.username, "timestamp" => current_timestamp, "value" => 15 }],
+            { "enforcement_limit" => [{ "user_id" => admin.id, "username" => admin.username, "timestamp" => current_timestamp, "value" => 100 }],
               "notification_limit" => [{ "user_id" => admin.id, "username" => admin.username, "timestamp" => current_timestamp, "value" => 90 }],
               "storage_size_limit" => [{ "user_id" => admin.id, "username" => admin.username, "timestamp" => current_timestamp, "value" => 80 }] }
           )

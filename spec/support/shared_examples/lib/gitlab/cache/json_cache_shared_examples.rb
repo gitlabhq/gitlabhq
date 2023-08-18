@@ -18,7 +18,7 @@ RSpec.shared_examples 'Json Cache class' do
     it 'parses the cached value' do
       allow(backend).to receive(:read).with(expanded_key).and_return(json_value(broadcast_message))
 
-      expect(cache.read(key, BroadcastMessage)).to eq(broadcast_message)
+      expect(cache.read(key, System::BroadcastMessage)).to eq(broadcast_message)
     end
 
     it 'returns nil when klass is nil' do
@@ -30,14 +30,14 @@ RSpec.shared_examples 'Json Cache class' do
     it 'gracefully handles an empty hash' do
       allow(backend).to receive(:read).with(expanded_key).and_return(json_value({}))
 
-      expect(cache.read(key, BroadcastMessage)).to be_a(BroadcastMessage)
+      expect(cache.read(key, System::BroadcastMessage)).to be_a(System::BroadcastMessage)
     end
 
     context 'when the cached value is a JSON true value' do
       it 'parses the cached value' do
         allow(backend).to receive(:read).with(expanded_key).and_return(json_value(true))
 
-        expect(cache.read(key, BroadcastMessage)).to eq(true)
+        expect(cache.read(key, System::BroadcastMessage)).to eq(true)
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.shared_examples 'Json Cache class' do
       it 'parses the cached value' do
         allow(backend).to receive(:read).with(expanded_key).and_return(json_value(false))
 
-        expect(cache.read(key, BroadcastMessage)).to eq(false)
+        expect(cache.read(key, System::BroadcastMessage)).to eq(false)
       end
     end
 
@@ -53,23 +53,23 @@ RSpec.shared_examples 'Json Cache class' do
       it 'gracefully handles bad cached entry' do
         allow(backend).to receive(:read).with(expanded_key).and_return('{')
 
-        expect(cache.read(key, BroadcastMessage)).to be_nil
+        expect(cache.read(key, System::BroadcastMessage)).to be_nil
       end
 
       it 'gracefully handles unknown attributes' do
         read_value = json_value(broadcast_message.attributes.merge(unknown_attribute: 1))
         allow(backend).to receive(:read).with(expanded_key).and_return(read_value)
 
-        expect(cache.read(key, BroadcastMessage)).to be_nil
+        expect(cache.read(key, System::BroadcastMessage)).to be_nil
       end
 
       it 'gracefully handles excluded fields from attributes during serialization' do
         read_value = json_value(broadcast_message.attributes.except("message_html"))
         allow(backend).to receive(:read).with(expanded_key).and_return(read_value)
 
-        result = cache.read(key, BroadcastMessage)
+        result = cache.read(key, System::BroadcastMessage)
 
-        BroadcastMessage.cached_markdown_fields.html_fields.each do |field|
+        System::BroadcastMessage.cached_markdown_fields.html_fields.each do |field|
           expect(result.public_send(field)).to be_nil
         end
       end
@@ -79,7 +79,7 @@ RSpec.shared_examples 'Json Cache class' do
       it 'parses the cached value' do
         allow(backend).to receive(:read).with(expanded_key).and_return(json_value([broadcast_message]))
 
-        expect(cache.read(key, BroadcastMessage)).to eq([broadcast_message])
+        expect(cache.read(key, System::BroadcastMessage)).to eq([broadcast_message])
       end
 
       it 'returns an empty array when klass is nil' do
@@ -91,20 +91,20 @@ RSpec.shared_examples 'Json Cache class' do
       it 'gracefully handles bad cached entry' do
         allow(backend).to receive(:read).with(expanded_key).and_return('[')
 
-        expect(cache.read(key, BroadcastMessage)).to be_nil
+        expect(cache.read(key, System::BroadcastMessage)).to be_nil
       end
 
       it 'gracefully handles an empty array' do
         allow(backend).to receive(:read).with(expanded_key).and_return(json_value([]))
 
-        expect(cache.read(key, BroadcastMessage)).to eq([])
+        expect(cache.read(key, System::BroadcastMessage)).to eq([])
       end
 
       it 'gracefully handles items with unknown attributes' do
         read_value = json_value([{ unknown_attribute: 1 }, broadcast_message.attributes])
         allow(backend).to receive(:read).with(expanded_key).and_return(read_value)
 
-        expect(cache.read(key, BroadcastMessage)).to eq([broadcast_message])
+        expect(cache.read(key, System::BroadcastMessage)).to eq([broadcast_message])
       end
     end
   end
@@ -206,20 +206,20 @@ RSpec.shared_examples 'Json Cache class' do
         end
 
         it 'parses the cached value' do
-          result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+          result = cache.fetch(key, as: System::BroadcastMessage) { 'block result' }
 
           expect(result).to eq(broadcast_message)
         end
 
         it 'decodes enums correctly' do
-          result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+          result = cache.fetch(key, as: System::BroadcastMessage) { 'block result' }
 
           expect(result.broadcast_type).to eq(broadcast_message.broadcast_type)
         end
 
         context 'when the cached value is an instance of ActiveRecord::Base' do
           it 'returns a persisted record when id is set' do
-            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+            result = cache.fetch(key, as: System::BroadcastMessage) { 'block result' }
 
             expect(result).to be_persisted
           end
@@ -227,7 +227,7 @@ RSpec.shared_examples 'Json Cache class' do
           it 'returns a new record when id is nil' do
             backend.write(expanded_key, json_value(build(:broadcast_message)))
 
-            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+            result = cache.fetch(key, as: System::BroadcastMessage) { 'block result' }
 
             expect(result).to be_new_record
           end
@@ -235,7 +235,7 @@ RSpec.shared_examples 'Json Cache class' do
           it 'returns a new record when id is missing' do
             backend.write(expanded_key, json_value(build(:broadcast_message).attributes.except('id')))
 
-            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+            result = cache.fetch(key, as: System::BroadcastMessage) { 'block result' }
 
             expect(result).to be_new_record
           end
@@ -243,7 +243,7 @@ RSpec.shared_examples 'Json Cache class' do
           it 'gracefully handles bad cached entry' do
             allow(backend).to receive(:read).with(expanded_key).and_return('{')
 
-            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+            result = cache.fetch(key, as: System::BroadcastMessage) { 'block result' }
 
             expect(result).to eq 'block result'
           end
@@ -251,14 +251,14 @@ RSpec.shared_examples 'Json Cache class' do
           it 'gracefully handles an empty hash' do
             allow(backend).to receive(:read).with(expanded_key).and_return(json_value({}))
 
-            expect(cache.fetch(key, as: BroadcastMessage)).to be_a(BroadcastMessage)
+            expect(cache.fetch(key, as: System::BroadcastMessage)).to be_a(System::BroadcastMessage)
           end
 
           it 'gracefully handles unknown attributes' do
             read_value = json_value(broadcast_message.attributes.merge(unknown_attribute: 1))
             allow(backend).to receive(:read).with(expanded_key).and_return(read_value)
 
-            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+            result = cache.fetch(key, as: System::BroadcastMessage) { 'block result' }
 
             expect(result).to eq 'block result'
           end
@@ -267,9 +267,9 @@ RSpec.shared_examples 'Json Cache class' do
             read_value = json_value(broadcast_message.attributes.except("message_html"))
             allow(backend).to receive(:read).with(expanded_key).and_return(read_value)
 
-            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+            result = cache.fetch(key, as: System::BroadcastMessage) { 'block result' }
 
-            BroadcastMessage.cached_markdown_fields.html_fields.each do |field|
+            System::BroadcastMessage.cached_markdown_fields.html_fields.each do |field|
               expect(result.public_send(field)).to be_nil
             end
           end
@@ -294,7 +294,7 @@ RSpec.shared_examples 'Json Cache class' do
         end
 
         it 'parses the cached value' do
-          result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+          result = cache.fetch(key, as: System::BroadcastMessage) { 'block result' }
 
           expect(result).to eq([broadcast_message])
         end

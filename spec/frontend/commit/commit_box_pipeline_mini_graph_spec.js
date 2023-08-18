@@ -7,8 +7,8 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import CommitBoxPipelineMiniGraph from '~/projects/commit_box/info/components/commit_box_pipeline_mini_graph.vue';
-import GraphqlPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/graphql_pipeline_mini_graph.vue';
 import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import { COMMIT_BOX_POLL_INTERVAL } from '~/projects/commit_box/info/constants';
 import getLinkedPipelinesQuery from '~/pipelines/graphql/queries/get_linked_pipelines.query.graphql';
 import getPipelineStagesQuery from '~/pipelines/graphql/queries/get_pipeline_stages.query.graphql';
@@ -29,8 +29,8 @@ describe('Commit box pipeline mini graph', () => {
   let wrapper;
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findGraphqlPipelineMiniGraph = () => wrapper.findComponent(GraphqlPipelineMiniGraph);
   const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
+  const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
 
   const downstreamHandler = jest.fn().mockResolvedValue(mockDownstreamQueryResponse);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
@@ -79,7 +79,7 @@ describe('Commit box pipeline mini graph', () => {
       createComponent();
 
       expect(findLoadingIcon().exists()).toBe(true);
-      expect(findPipelineMiniGraph().exists()).toBe(false);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(false);
     });
   });
 
@@ -90,11 +90,11 @@ describe('Commit box pipeline mini graph', () => {
 
     it('should not display loading state after the query is resolved', () => {
       expect(findLoadingIcon().exists()).toBe(false);
-      expect(findPipelineMiniGraph().exists()).toBe(true);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(true);
     });
 
     it('should display the pipeline mini graph', () => {
-      expect(findPipelineMiniGraph().exists()).toBe(true);
+      expect(findLegacyPipelineMiniGraph().exists()).toBe(true);
     });
   });
 
@@ -127,7 +127,7 @@ describe('Commit box pipeline mini graph', () => {
 
       await waitForPromises();
 
-      expect(findPipelineMiniGraph().props('stages')).toEqual(expectedStages);
+      expect(findLegacyPipelineMiniGraph().props('stages')).toEqual(expectedStages);
     });
 
     it('should render a downstream pipeline only', async () => {
@@ -135,8 +135,8 @@ describe('Commit box pipeline mini graph', () => {
 
       await waitForPromises();
 
-      const downstreamPipelines = findPipelineMiniGraph().props('downstreamPipelines');
-      const upstreamPipeline = findPipelineMiniGraph().props('upstreamPipeline');
+      const downstreamPipelines = findLegacyPipelineMiniGraph().props('downstreamPipelines');
+      const upstreamPipeline = findLegacyPipelineMiniGraph().props('upstreamPipeline');
 
       expect(downstreamPipelines).toEqual(expect.any(Array));
       expect(upstreamPipeline).toEqual(null);
@@ -147,7 +147,7 @@ describe('Commit box pipeline mini graph', () => {
 
       await waitForPromises();
 
-      const downstreamPipelines = findPipelineMiniGraph().props('downstreamPipelines');
+      const downstreamPipelines = findLegacyPipelineMiniGraph().props('downstreamPipelines');
 
       expect(downstreamPipelines).toHaveLength(1);
     });
@@ -158,7 +158,7 @@ describe('Commit box pipeline mini graph', () => {
       await waitForPromises();
 
       const expectedPath = mockDownstreamQueryResponse.data.project.pipeline.path;
-      const pipelinePath = findPipelineMiniGraph().props('pipelinePath');
+      const pipelinePath = findLegacyPipelineMiniGraph().props('pipelinePath');
 
       expect(pipelinePath).toBe(expectedPath);
     });
@@ -168,8 +168,8 @@ describe('Commit box pipeline mini graph', () => {
 
       await waitForPromises();
 
-      const downstreamPipelines = findPipelineMiniGraph().props('downstreamPipelines');
-      const upstreamPipeline = findPipelineMiniGraph().props('upstreamPipeline');
+      const downstreamPipelines = findLegacyPipelineMiniGraph().props('downstreamPipelines');
+      const upstreamPipeline = findLegacyPipelineMiniGraph().props('upstreamPipeline');
 
       expect(upstreamPipeline).toEqual(samplePipeline);
       expect(downstreamPipelines).toHaveLength(0);
@@ -180,8 +180,8 @@ describe('Commit box pipeline mini graph', () => {
 
       await waitForPromises();
 
-      const downstreamPipelines = findPipelineMiniGraph().props('downstreamPipelines');
-      const upstreamPipeline = findPipelineMiniGraph().props('upstreamPipeline');
+      const downstreamPipelines = findLegacyPipelineMiniGraph().props('downstreamPipelines');
+      const upstreamPipeline = findLegacyPipelineMiniGraph().props('upstreamPipeline');
 
       expect(upstreamPipeline).toEqual(samplePipeline);
       expect(downstreamPipelines).toEqual(
@@ -263,18 +263,18 @@ describe('Commit box pipeline mini graph', () => {
 
   describe('feature flag behavior', () => {
     it.each`
-      state    | provide                                 | showPipelineMiniGraph | showGraphqlPipelineMiniGraph
-      ${true}  | ${{ ciGraphqlPipelineMiniGraph: true }} | ${false}              | ${true}
-      ${false} | ${{}}                                   | ${true}               | ${false}
+      state    | showLegacyPipelineMiniGraph | showPipelineMiniGraph
+      ${true}  | ${false}                    | ${true}
+      ${false} | ${true}                     | ${false}
     `(
       'renders the correct component when the feature flag is set to $state',
-      async ({ provide, showPipelineMiniGraph, showGraphqlPipelineMiniGraph }) => {
-        createComponent(provide);
+      async ({ state, showLegacyPipelineMiniGraph, showPipelineMiniGraph }) => {
+        createComponent({ ciGraphqlPipelineMiniGraph: state });
 
         await waitForPromises();
 
+        expect(findLegacyPipelineMiniGraph().exists()).toBe(showLegacyPipelineMiniGraph);
         expect(findPipelineMiniGraph().exists()).toBe(showPipelineMiniGraph);
-        expect(findGraphqlPipelineMiniGraph().exists()).toBe(showGraphqlPipelineMiniGraph);
       },
     );
 

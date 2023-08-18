@@ -13,6 +13,7 @@ class SessionsController < Devise::SessionsController
   include BizibleCSP
   include VerifiesWithEmail
   include GoogleAnalyticsCSP
+  include GoogleSyndicationCSP
   include PreferredLanguageSwitcher
   include SkipsAlreadySignedInMessage
 

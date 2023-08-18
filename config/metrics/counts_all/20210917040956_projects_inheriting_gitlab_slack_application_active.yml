@@ -1,6 +1,5 @@
 ---
 key_path: counts.projects_inheriting_gitlab_slack_application_active
-name: count_project_inheriting_gitlab_slack_application_active
 description: Count projects inheriting active slack application
 product_section: dev
 product_stage: manage

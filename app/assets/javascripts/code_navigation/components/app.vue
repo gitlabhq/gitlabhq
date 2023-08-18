@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import eventHub from '~/notes/event_hub';
 import Popover from './popover.vue';

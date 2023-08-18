@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD artifacts reports types **(FREE)**
+# GitLab CI/CD artifacts reports types **(FREE ALL)**
 
 Use [`artifacts:reports`](index.md#artifactsreports) to:
 
@@ -40,7 +40,7 @@ GitLab can display the results of one or more reports in the merge request
 
 For more information, see [Accessibility testing](../testing/accessibility_testing.md).
 
-## `artifacts:reports:api_fuzzing` **(ULTIMATE)**
+## `artifacts:reports:api_fuzzing` **(ULTIMATE ALL)**
 
 > - Introduced in GitLab 13.4.
 > - Requires GitLab Runner 13.4 or later.
@@ -55,7 +55,7 @@ GitLab can display the results of one or more reports in:
 - The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/api_fuzzing/index.md#security-dashboard).
 
-## `artifacts:reports:browser_performance` **(PREMIUM)**
+## `artifacts:reports:browser_performance` **(PREMIUM ALL)**
 
 > [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) from `artifacts:reports:performance` in GitLab 14.0.
 
@@ -106,7 +106,7 @@ GitLab can display the results of one or more reports in:
 - The merge request [diff annotations](../testing/code_quality.md#merge-request-changes-view).
 - The [full report](../testing/metrics_reports.md).
 
-## `artifacts:reports:container_scanning` **(ULTIMATE)**
+## `artifacts:reports:container_scanning` **(ULTIMATE ALL)**
 
 The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/index.md).
 The collected Container Scanning report uploads to GitLab as an artifact.
@@ -118,7 +118,7 @@ GitLab can display the results of one or more reports in:
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 
-## `artifacts:reports:coverage_fuzzing` **(ULTIMATE)**
+## `artifacts:reports:coverage_fuzzing` **(ULTIMATE ALL)**
 
 > - Introduced in GitLab 13.4.
 > - Requires GitLab Runner 13.4 or later.
@@ -157,7 +157,7 @@ artifacts:
       - gl-sbom-bundler-gem.cdx.json
 ```
 
-## `artifacts:reports:dast` **(ULTIMATE)**
+## `artifacts:reports:dast` **(ULTIMATE ALL)**
 
 The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md). The collected DAST
 report uploads to GitLab as an artifact.
@@ -169,7 +169,7 @@ GitLab can display the results of one or more reports in:
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
-## `artifacts:reports:dependency_scanning` **(ULTIMATE)**
+## `artifacts:reports:dependency_scanning` **(ULTIMATE ALL)**
 
 The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/index.md).
 The collected Dependency Scanning report uploads to GitLab as an artifact.
@@ -245,19 +245,20 @@ concatenate them into a single file. Use either:
 - A combination of both (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 - Directories are not supported(`junit: test-results`, `junit: test-results/**`).
 
-## `artifacts:reports:license_scanning` **(ULTIMATE)**
+<!--- start_remove The following content will be removed on remove_date: '2023-11-22' -->
+
+## `artifacts:reports:license_scanning` **(ULTIMATE ALL)**
 
 > Introduced in GitLab 12.8.
 
-The License Compliance report collects [Licenses](../../user/compliance/license_compliance/index.md). The License
-Compliance report uploads to GitLab as an artifact.
+The license scanning report was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/387561)
+in GitLab 15.9 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421363) in GitLab 16.3.
+You should instead migrate to use [License approval policies](../../user/compliance/license_approval_policies.md) and
+the [new method of license scanning](../../user/compliance/license_scanning_of_cyclonedx_files/index.md).
 
-GitLab can display the results of one or more reports in:
+<!--- end_remove -->
 
-- The merge request [license compliance widget](../../user/compliance/license_compliance/index.md).
-- The [license list](../../user/compliance/license_list.md).
-
-## `artifacts:reports:load_performance` **(PREMIUM)**
+## `artifacts:reports:load_performance` **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35260) in GitLab 13.2.
 > - Requires GitLab Runner 11.5 and above.
@@ -270,7 +271,7 @@ GitLab can display the results of only one report in the merge request
 
 GitLab cannot display the combined results of multiple `load_performance` reports.
 
-## `artifacts:reports:metrics` **(PREMIUM)**
+## `artifacts:reports:metrics` **(PREMIUM ALL)**
 
 The `metrics` report collects [Metrics](../testing/metrics_reports.md). The collected Metrics report uploads to GitLab as an
 artifact.
@@ -278,7 +279,7 @@ artifact.
 GitLab can display the results of one or more reports in the merge request
 [metrics reports widget](../testing/metrics_reports.md#metrics-reports).
 
-## `artifacts:reports:requirements` **(ULTIMATE)**
+## `artifacts:reports:requirements` **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
 
@@ -297,7 +298,7 @@ report uploads to GitLab as an artifact.
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [SAST widget](../../user/application_security/sast/index.md#static-application-security-testing-sast).
+- The merge request [SAST widget](../../user/application_security/sast/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
 ## `artifacts:reports:secret_detection`

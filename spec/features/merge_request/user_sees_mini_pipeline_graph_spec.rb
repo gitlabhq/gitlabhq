@@ -97,8 +97,8 @@ RSpec.describe 'Merge request < User sees mini pipeline graph', :js, feature_cat
 
     describe 'build list build item' do
       let(:build_item) do
-        find('.mini-pipeline-graph-dropdown-item')
-        first('.mini-pipeline-graph-dropdown-item')
+        find('.pipeline-job-item')
+        first('.pipeline-job-item')
       end
 
       it 'visits the build page when clicked' do

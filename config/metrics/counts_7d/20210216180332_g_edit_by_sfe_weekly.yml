@@ -13,6 +13,9 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - g_edit_by_sfe
+events:
+  - name: g_edit_by_sfe
+    unique: user.id
 distribution:
 - ce
 - ee

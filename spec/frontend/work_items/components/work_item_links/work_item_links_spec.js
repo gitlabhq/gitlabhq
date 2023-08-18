@@ -108,8 +108,8 @@ describe('WorkItemLinks', () => {
   describe('add link form', () => {
     it('displays add work item form on click add dropdown then add existing button and hides form on cancel', async () => {
       await createComponent();
-      findToggleFormDropdown().vm.$emit('click');
-      findToggleAddFormButton().vm.$emit('click');
+      findToggleFormDropdown().vm.$emit('action');
+      findToggleAddFormButton().vm.$emit('action');
       await nextTick();
 
       expect(findAddLinksForm().exists()).toBe(true);
@@ -123,8 +123,8 @@ describe('WorkItemLinks', () => {
 
     it('displays create work item form on click add dropdown then create button and hides form on cancel', async () => {
       await createComponent();
-      findToggleFormDropdown().vm.$emit('click');
-      findToggleCreateFormButton().vm.$emit('click');
+      findToggleFormDropdown().vm.$emit('action');
+      findToggleCreateFormButton().vm.$emit('action');
       await nextTick();
 
       expect(findAddLinksForm().exists()).toBe(true);
@@ -195,8 +195,8 @@ describe('WorkItemLinks', () => {
           .fn()
           .mockResolvedValue(getIssueDetailsResponse({ confidential: true })),
       });
-      findToggleFormDropdown().vm.$emit('click');
-      findToggleAddFormButton().vm.$emit('click');
+      findToggleFormDropdown().vm.$emit('action');
+      findToggleAddFormButton().vm.$emit('action');
       await nextTick();
 
       expect(findAddLinksForm().props('parentConfidential')).toBe(true);

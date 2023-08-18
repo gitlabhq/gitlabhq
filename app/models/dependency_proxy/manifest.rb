@@ -15,7 +15,8 @@ class DependencyProxy::Manifest < ApplicationRecord
   ACCEPTED_TYPES = [
     ContainerRegistry::BaseClient::DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE,
     ContainerRegistry::BaseClient::OCI_MANIFEST_V1_TYPE,
-    ContainerRegistry::BaseClient::OCI_DISTRIBUTION_INDEX_TYPE
+    ContainerRegistry::BaseClient::OCI_DISTRIBUTION_INDEX_TYPE,
+    ContainerRegistry::BaseClient::DOCKER_DISTRIBUTION_MANIFEST_LIST_V2_TYPE
   ].freeze
 
   validates :group, presence: true

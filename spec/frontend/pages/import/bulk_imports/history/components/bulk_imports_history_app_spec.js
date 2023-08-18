@@ -2,6 +2,7 @@ import { GlEmptyState, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
+import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
@@ -60,10 +61,13 @@ describe('BulkImportsHistoryApp', () => {
 
   let wrapper;
   let mock;
+  const mockRealtimeChangesPath = '/import/realtime_changes.json';
 
   function createComponent({ shallow = true } = {}) {
     const mountFn = shallow ? shallowMount : mount;
-    wrapper = mountFn(BulkImportsHistoryApp);
+    wrapper = mountFn(BulkImportsHistoryApp, {
+      provide: { realtimeChangesPath: mockRealtimeChangesPath },
+    });
   }
 
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
@@ -218,6 +222,71 @@ describe('BulkImportsHistoryApp', () => {
 
       expect(detailsRowContent.exists()).toBe(true);
       expect(JSON.parse(detailsRowContent.text())).toStrictEqual(DUMMY_RESPONSE[1].failures);
+    });
+  });
+
+  describe('status polling', () => {
+    describe('when there are no isImporting imports', () => {
+      it('does not start polling', async () => {
+        createComponent({ shallow: false });
+        await waitForPromises();
+
+        expect(mock.history.get.map((x) => x.url)).toEqual([API_URL]);
+      });
+    });
+
+    describe('when there are isImporting imports', () => {
+      const mockCreatedImport = {
+        id: 3,
+        bulk_import_id: 3,
+        status: 'created',
+        entity_type: 'group',
+        source_full_path: 'top-level-group-12',
+        destination_full_path: 'h5bp/top-level-group-12',
+        destination_name: 'top-level-group-12',
+        destination_namespace: 'h5bp',
+        created_at: '2021-07-08T10:03:44.743Z',
+        failures: [],
+      };
+      const mockImportChanges = [{ id: 3, status_name: 'finished' }];
+      const pollInterval = 1;
+
+      beforeEach(async () => {
+        const RESPONSE = [mockCreatedImport, ...DUMMY_RESPONSE];
+        const POLL_HEADERS = { 'poll-interval': pollInterval };
+
+        mock.onGet(API_URL).reply(HTTP_STATUS_OK, RESPONSE, DEFAULT_HEADERS);
+        mock.onGet(mockRealtimeChangesPath).replyOnce(HTTP_STATUS_OK, [], POLL_HEADERS);
+        mock
+          .onGet(mockRealtimeChangesPath)
+          .replyOnce(HTTP_STATUS_OK, mockImportChanges, POLL_HEADERS);
+
+        createComponent({ shallow: false });
+
+        await waitForPromises();
+      });
+
+      it('starts polling for realtime changes', () => {
+        jest.advanceTimersByTime(pollInterval);
+
+        expect(mock.history.get.map((x) => x.url)).toEqual([API_URL, mockRealtimeChangesPath]);
+        expect(wrapper.findAll('tbody tr').at(0).text()).toContain('Pending');
+      });
+
+      it('stops polling when import is finished', async () => {
+        jest.advanceTimersByTime(pollInterval);
+        await waitForPromises();
+        // Wait an extra interval to make sure we've stopped polling
+        jest.advanceTimersByTime(pollInterval);
+        await waitForPromises();
+
+        expect(mock.history.get.map((x) => x.url)).toEqual([
+          API_URL,
+          mockRealtimeChangesPath,
+          mockRealtimeChangesPath,
+        ]);
+        expect(wrapper.findAll('tbody tr').at(0).text()).toContain('Complete');
+      });
     });
   });
 });

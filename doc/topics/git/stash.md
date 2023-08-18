@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git stash **(FREE)**
+# Git stash **(FREE ALL)**
 
 We use `git stash` to store our changes when they are not ready to be committed,
 but we must change to a different branch.

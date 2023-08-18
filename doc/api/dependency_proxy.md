@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Dependency Proxy API **(FREE)**
+# Dependency Proxy API **(FREE ALL)**
 
 ## Purge the dependency proxy for a group
 

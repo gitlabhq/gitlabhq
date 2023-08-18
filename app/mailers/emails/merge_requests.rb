@@ -55,6 +55,7 @@ module Emails
 
       @previous_reviewers = []
       @previous_reviewers = User.where(id: previous_reviewer_ids) if previous_reviewer_ids.any?
+      @updated_by_user = User.find(updated_by_user_id)
 
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, reason))
     end
@@ -186,5 +187,3 @@ module Emails
     end
   end
 end
-
-Emails::MergeRequests.prepend_mod_with('Emails::MergeRequests')

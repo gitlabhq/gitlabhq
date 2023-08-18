@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference
 ---
 
-# Command palette **(FREE)**
+# Command palette **(FREE ALL)**
 
 > Introduced in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `command_palette`. Enabled by default.
 

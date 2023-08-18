@@ -6,27 +6,27 @@ module Mutations
       include Gitlab::Utils::UsageData
 
       argument :project_path, GraphQL::Types::ID,
-               required: true,
-               description: "Project the alert to mutate is in."
+        required: true,
+        description: "Project the alert to mutate is in."
 
       argument :iid, GraphQL::Types::String,
-               required: true,
-               description: "IID of the alert to mutate."
+        required: true,
+        description: "IID of the alert to mutate."
 
       field :alert,
-            Types::AlertManagement::AlertType,
-            null: true,
-            description: "Alert after mutation."
+        Types::AlertManagement::AlertType,
+        null: true,
+        description: "Alert after mutation."
 
       field :todo,
-            Types::TodoType,
-            null: true,
-            description: "To-do item after mutation."
+        Types::TodoType,
+        null: true,
+        description: "To-do item after mutation."
 
       field :issue,
-            Types::IssueType,
-            null: true,
-            description: "Issue created after mutation."
+        Types::IssueType,
+        null: true,
+        description: "Issue created after mutation."
 
       authorize :update_alert_management_alert
 

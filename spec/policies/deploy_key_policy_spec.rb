@@ -2,69 +2,89 @@
 
 require 'spec_helper'
 
-RSpec.describe DeployKeyPolicy do
+RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
   subject { described_class.new(current_user, deploy_key) }
 
-  describe 'updating a deploy_key' do
-    context 'when a regular user' do
-      let(:current_user) { create(:user) }
+  let_it_be(:current_user, refind: true) { create(:user) }
+  let_it_be(:admin) { create(:user, :admin) }
 
-      context 'tries to update private deploy key attached to project' do
-        let(:deploy_key) { create(:deploy_key, public: false) }
-        let(:project) { create(:project_empty_repo) }
+  context 'when deploy key is public' do
+    let_it_be(:deploy_key) { create(:deploy_key, public: true) }
 
-        before do
-          project.add_maintainer(current_user)
-          project.deploy_keys << deploy_key
-        end
+    context 'and current_user is nil' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:read_deploy_key) }
+
+      it { is_expected.to be_disallowed(:update_deploy_key) }
+    end
+
+    context 'and current_user is present' do
+      it { is_expected.to be_allowed(:read_deploy_key) }
+
+      it { is_expected.to be_disallowed(:update_deploy_key) }
+    end
+
+    context 'when current_user is admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_deploy_key) }
 
         it { is_expected.to be_allowed(:update_deploy_key) }
       end
 
-      context 'tries to update private deploy key attached to other project' do
-        let(:deploy_key) { create(:deploy_key, public: false) }
-        let(:other_project) { create(:project_empty_repo) }
-
-        before do
-          other_project.deploy_keys << deploy_key
-        end
+      context 'when admin mode disabled' do
+        it { is_expected.to be_allowed(:read_deploy_key) }
 
         it { is_expected.to be_disallowed(:update_deploy_key) }
       end
+    end
+  end
 
-      context 'tries to update public deploy key' do
-        let(:deploy_key) { create(:another_deploy_key, public: true) }
+  context 'when deploy key is private' do
+    let_it_be(:deploy_key) { create(:deploy_key, :private) }
+
+    context 'and current_user is nil' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:read_deploy_key) }
+
+      it { is_expected.to be_disallowed(:update_deploy_key) }
+    end
+
+    context 'when current_user is admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:read_deploy_key) }
+
+        it { is_expected.to be_allowed(:update_deploy_key) }
+      end
+
+      context 'when admin mode disabled' do
+        it { is_expected.to be_disallowed(:read_deploy_key) }
 
         it { is_expected.to be_disallowed(:update_deploy_key) }
       end
     end
 
-    context 'when an admin user' do
-      let(:current_user) { create(:user, :admin) }
+    context 'when assigned to the project' do
+      let_it_be(:deploy_keys_project) { create(:deploy_keys_project, deploy_key: deploy_key) }
 
-      context 'tries to update private deploy key' do
-        let(:deploy_key) { create(:deploy_key, public: false) }
-
-        context 'when admin mode enabled', :enable_admin_mode do
-          it { is_expected.to be_allowed(:update_deploy_key) }
-        end
-
-        context 'when admin mode disabled' do
-          it { is_expected.to be_disallowed(:update_deploy_key) }
-        end
+      before_all do
+        deploy_keys_project.project.add_maintainer(current_user)
       end
 
-      context 'when an admin user tries to update public deploy key' do
-        let(:deploy_key) { create(:another_deploy_key, public: true) }
+      it { is_expected.to be_allowed(:read_deploy_key) }
 
-        context 'when admin mode enabled', :enable_admin_mode do
-          it { is_expected.to be_allowed(:update_deploy_key) }
-        end
+      it { is_expected.to be_allowed(:update_deploy_key) }
+    end
 
-        context 'when admin mode disabled' do
-          it { is_expected.to be_disallowed(:update_deploy_key) }
-        end
-      end
+    context 'when assigned to another project' do
+      it { is_expected.to be_disallowed(:read_deploy_key) }
+
+      it { is_expected.to be_disallowed(:update_deploy_key) }
     end
   end
 end

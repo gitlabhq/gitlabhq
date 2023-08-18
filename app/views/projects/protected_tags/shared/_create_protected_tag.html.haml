@@ -1,23 +1,20 @@
 = gitlab_ui_form_for [@project, @protected_tag], html: { class: 'new-protected-tag js-new-protected-tag' } do |f|
   %input{ type: 'hidden', name: 'update_section', value: 'js-protected-tags-settings' }
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }) do |c|
-    - c.with_header do
-      = _('Protect a tag')
-    - c.with_body do
-      = form_errors(@protected_tag)
-      .form-group.row
-        = f.label :name, _('Tag:'), class: 'col-md-2 text-left text-md-right'
-        .col-md-10.protected-tags-dropdown
-          = render partial: "projects/protected_tags/shared/dropdown", locals: { f: f }
-          .form-text.text-muted
-            - wildcards_url = help_page_path('user/project/protected_tags', anchor: 'wildcard-protected-tags')
-            - wildcards_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wildcards_url }
-            = html_escape(_("%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported.")) % { wildcards_link_start: wildcards_link_start, wildcards_link_end: '</a>'.html_safe, code_tag_start: '<code>'.html_safe, code_tag_end: '</code>'.html_safe }
-      .form-group.row
-        = f.label :create_access_levels_attributes, _('Allowed to create:'), class: 'col-md-2 text-left text-md-right'
-        .col-md-10
-          .create_access_levels-container
-            = yield :create_access_levels
+  = form_errors(@protected_tag)
+  .form-group
+    = f.label :name, _('Tag')
+    .protected-tags-dropdown
+      = render partial: "projects/protected_tags/shared/dropdown", locals: { f: f }
+      .form-text.text-muted
+        - wildcards_url = help_page_path('user/project/protected_tags', anchor: 'wildcard-protected-tags')
+        - wildcards_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wildcards_url }
+        = html_escape(_("%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported.")) % { wildcards_link_start: wildcards_link_start, wildcards_link_end: '</a>'.html_safe, code_tag_start: '<code>'.html_safe, code_tag_end: '</code>'.html_safe }
+  .form-group
+    = f.label :create_access_levels_attributes, _('Allowed to create')
+    .create_access_levels-container
+      = yield :create_access_levels
 
-    - c.with_footer do
-      = f.submit _('Protect'), pajamas_button: true, disabled: true, data: { qa_selector: 'protect_tag_button' }
+  = f.submit _('Protect'), pajamas_button: true, disabled: true, data: { qa_selector: 'protect_tag_button' }
+  = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-2 js-toggle-button' }) do
+    = _('Cancel')
+

@@ -29,7 +29,6 @@ RSpec.describe 'Render Static HTML', :api, type: :request do
   include Glfm::Constants
   include Glfm::Shared
 
-  # noinspection RailsParamDefResolve (RubyMine can't find the shared context from this file location)
   include_context 'with GLFM example snapshot fixtures'
 
   it do
@@ -49,7 +48,6 @@ RSpec.describe 'Render Static HTML', :api, type: :request do
       api_url = metadata_hash.dig(name, :api_request_override_path) || (api "/markdown")
 
       post api_url, params: { text: markdown, gfm: true }
-      # noinspection RubyResolve
       expect(response).to be_successful
 
       returned_html_value =

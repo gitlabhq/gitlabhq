@@ -11,7 +11,7 @@ import {
 } from '~/pipelines/components/graph/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import GraphqlPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/graphql_pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from './pipeline_editor_mini_graph.vue';
 
 const POLL_INTERVAL = 10000;
@@ -34,8 +34,8 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlSprintf,
-    GraphqlPipelineMiniGraph,
     PipelineEditorMiniGraph,
+    PipelineMiniGraph,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -179,7 +179,7 @@ export default {
         </span>
       </div>
       <div class="gl-display-flex gl-flex-wrap-wrap">
-        <graphql-pipeline-mini-graph
+        <pipeline-mini-graph
           v-if="isUsingPipelineMiniGraphQueries"
           :full-path="projectFullPath"
           :iid="pipeline.iid"

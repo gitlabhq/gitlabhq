@@ -38,9 +38,9 @@ describe('TokenAccess component', () => {
 
   const findToggle = () => wrapper.findComponent(GlToggle);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findAddProjectBtn = () => wrapper.findByRole('button', { name: 'Add project' });
   const findRemoveProjectBtn = () => wrapper.findByRole('button', { name: 'Remove access' });
   const findDeprecationAlert = () => wrapper.findByTestId('deprecation-alert');
-  const findProjectPathInput = () => wrapper.findByTestId('project-path-input');
 
   const createMockApolloProvider = (requestHandlers) => {
     return createMockApollo(requestHandlers);
@@ -247,7 +247,7 @@ describe('TokenAccess component', () => {
   });
 
   describe('adding a new project', () => {
-    it('disables the input to add new projects', async () => {
+    it('disables the button for adding new projects', async () => {
       createComponent(
         [
           [getCIJobTokenScopeQuery, disabledJobTokenScopeHandler],
@@ -260,7 +260,7 @@ describe('TokenAccess component', () => {
 
       await waitForPromises();
 
-      expect(findProjectPathInput().attributes('disabled')).toBe('disabled');
+      expect(findAddProjectBtn().attributes('disabled')).toBe('disabled');
     });
   });
 });

@@ -9,6 +9,7 @@ import component from '~/packages_and_registries/container_registry/explorer/com
 import TagsListRow from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
 import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
+import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import getContainerRepositoryTagsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_tags.query.graphql';
 import deleteContainerRepositoryTagsMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository_tags.mutation.graphql';
@@ -40,6 +41,7 @@ describe('Tags List', () => {
   };
 
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
+  const findPersistedPagination = () => wrapper.findComponent(PersistedPagination);
   const findPersistedSearch = () => wrapper.findComponent(PersistedSearch);
   const findTagsListRow = () => wrapper.findAllComponents(TagsListRow);
   const findRegistryList = () => wrapper.findComponent(RegistryList);
@@ -47,7 +49,7 @@ describe('Tags List', () => {
   const findTagsLoader = () => wrapper.findComponent(TagsLoader);
 
   const fireFirstSortUpdate = () => {
-    findPersistedSearch().vm.$emit('update', { sort: 'NAME_ASC', filters: [] });
+    findPersistedSearch().vm.$emit('update', { sort: 'NAME_ASC', filters: [], pageInfo: {} });
   };
 
   const waitForApolloRequestRender = async () => {
@@ -103,18 +105,24 @@ describe('Tags List', () => {
     it('binds the correct props', () => {
       expect(findRegistryList().props()).toMatchObject({
         title: '2 tags',
-        pagination: tagsPageInfo,
         items: tags,
         idProperty: 'name',
         hiddenDelete: false,
       });
     });
 
+    it('has persisted pagination', () => {
+      expect(findPersistedPagination().props('pagination')).toEqual(tagsPageInfo);
+    });
+
     describe('events', () => {
-      it('prev-page fetch the previous page', async () => {
-        findRegistryList().vm.$emit('prev-page');
+      it('prev-page fetches the previous page', async () => {
+        findPersistedPagination().vm.$emit('prev');
         await waitForPromises();
 
+        // we are fetching previous page after load,
+        // so we expect the resolver to have been called twice
+        expect(resolver).toHaveBeenCalledTimes(2);
         expect(resolver).toHaveBeenCalledWith({
           first: null,
           name: '',
@@ -125,10 +133,13 @@ describe('Tags List', () => {
         });
       });
 
-      it('next-page fetch the previous page', async () => {
-        findRegistryList().vm.$emit('next-page');
+      it('next-page fetches the next page', async () => {
+        findPersistedPagination().vm.$emit('next');
         await waitForPromises();
 
+        // we are fetching next page after load,
+        // so we expect the resolver to have been called twice
+        expect(resolver).toHaveBeenCalledTimes(2);
         expect(resolver).toHaveBeenCalledWith({
           after: tagsPageInfo.endCursor,
           first: GRAPHQL_PAGE_SIZE,
@@ -178,6 +189,49 @@ describe('Tags List', () => {
             });
           });
         });
+      });
+    });
+  });
+
+  describe('when persisted search emits update', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    it('with before calls resolver with pagination params', async () => {
+      findPersistedSearch().vm.$emit('update', {
+        sort: 'NAME_ASC',
+        filters: [],
+        pageInfo: { before: tagsPageInfo.startCursor },
+      });
+      await waitForPromises();
+
+      expect(resolver).toHaveBeenCalledTimes(1);
+      expect(resolver).toHaveBeenCalledWith({
+        first: null,
+        name: '',
+        sort: 'NAME_ASC',
+        before: tagsPageInfo.startCursor,
+        last: GRAPHQL_PAGE_SIZE,
+        id: '1',
+      });
+    });
+
+    it('with after calls resolver with pagination params', async () => {
+      findPersistedSearch().vm.$emit('update', {
+        sort: 'NAME_ASC',
+        filters: [],
+        pageInfo: { after: tagsPageInfo.endCursor },
+      });
+      await waitForPromises();
+
+      expect(resolver).toHaveBeenCalledTimes(1);
+      expect(resolver).toHaveBeenCalledWith({
+        after: tagsPageInfo.endCursor,
+        first: GRAPHQL_PAGE_SIZE,
+        name: '',
+        sort: 'NAME_ASC',
+        id: '1',
       });
     });
   });
@@ -334,31 +388,44 @@ describe('Tags List', () => {
       let mutationResolver;
 
       describe('when mutation', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           mutationResolver = jest.fn().mockResolvedValue(graphQLDeleteImageRepositoryTagsMock);
           mountComponent({ mutationResolver });
 
-          return waitForApolloRequestRender();
-        });
-
-        it('is started renders loader', async () => {
+          await waitForApolloRequestRender();
           findRegistryList().vm.$emit('delete', [tags[0]]);
 
           findDeleteModal().vm.$emit('confirmDelete');
-          await nextTick();
-
-          expect(findTagsLoader().exists()).toBe(true);
-          expect(findTagsListRow().exists()).toBe(false);
         });
 
-        it('ends, loader is hidden', async () => {
-          findRegistryList().vm.$emit('delete', [tags[0]]);
+        describe('starts', () => {
+          beforeEach(async () => {
+            await nextTick();
+          });
 
-          findDeleteModal().vm.$emit('confirmDelete');
-          await waitForPromises();
+          it('renders loader', () => {
+            expect(findTagsLoader().exists()).toBe(true);
+            expect(findTagsListRow().exists()).toBe(false);
+          });
 
-          expect(findTagsLoader().exists()).toBe(false);
-          expect(findTagsListRow().exists()).toBe(true);
+          it('hides pagination', () => {
+            expect(findPersistedPagination().exists()).toEqual(false);
+          });
+        });
+
+        describe('is resolved', () => {
+          beforeEach(async () => {
+            await waitForPromises();
+          });
+
+          it('loader is hidden', () => {
+            expect(findTagsLoader().exists()).toBe(false);
+            expect(findTagsListRow().exists()).toBe(true);
+          });
+
+          it('pagination is shown', () => {
+            expect(findPersistedPagination().props('pagination')).toEqual(tagsPageInfo);
+          });
         });
       });
 
@@ -495,6 +562,11 @@ describe('Tags List', () => {
 
         expect(findTagsLoader().exists()).toBe(loadingVisible);
         expect(findTagsListRow().exists()).toBe(!loadingVisible);
+        if (queryExecuting) {
+          expect(findPersistedPagination().props('pagination')).toEqual({});
+        } else {
+          expect(findPersistedPagination().props('pagination')).toEqual(tagsPageInfo);
+        }
       },
     );
   });

@@ -1,0 +1,220 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Custom emoji settings list component renders table of custom emoji 1`] = `
+<div>
+  <div
+    class="tabs gl-tabs"
+  >
+    <!---->
+    <div
+      class=""
+    >
+      <ul
+        class="nav gl-tabs-nav"
+        role="tablist"
+      >
+        <div
+          class="gl-actions-tabs-start"
+          data-testid="actions-tabs-start"
+        >
+          <a
+            class="btn btn-info btn-md gl-button"
+            data-testid="action-primary"
+            href="/new"
+            to="/new"
+          >
+            <!---->
+             
+            <!---->
+              
+            <span
+              class="gl-button-text"
+            >
+              
+        New custom emoji
+      
+            </span>
+          </a>
+           
+          <!---->
+           
+          <!---->
+        </div>
+        <div
+          class="gl-actions-tabs-end"
+          data-testid="actions-tabs-end"
+        >
+          <a
+            class="btn btn-info btn-md gl-button"
+            data-testid="action-primary"
+            href="/new"
+            to="/new"
+          >
+            <!---->
+             
+            <!---->
+              
+            <span
+              class="gl-button-text"
+            >
+              
+        New custom emoji
+      
+            </span>
+          </a>
+           
+          <!---->
+           
+          <!---->
+        </div>
+      </ul>
+    </div>
+    <div
+      class="tab-content gl-pt-0 gl-tab-content"
+    >
+      <transition-stub
+        css="true"
+        enteractiveclass=""
+        enterclass=""
+        entertoclass="show"
+        leaveactiveclass=""
+        leaveclass="show"
+        leavetoclass=""
+        mode="out-in"
+        name=""
+      >
+        <div
+          aria-hidden="true"
+          class="tab-pane"
+          role="tabpanel"
+          style="display: none;"
+        >
+           
+          <table
+            aria-busy=""
+            aria-colcount="4"
+            class="table b-table gl-table gl-table-layout-fixed"
+            role="table"
+          >
+            <!---->
+            <colgroup>
+              <col
+                style="width: 70px;"
+              />
+              <col />
+              <col
+                style="width: 25%;"
+              />
+              <col
+                style="width: 64px;"
+              />
+            </colgroup>
+            <thead
+              class=""
+              role="rowgroup"
+            >
+              <!---->
+              <tr
+                class=""
+                role="row"
+              >
+                <th
+                  aria-colindex="1"
+                  class="gl-border-t-0!"
+                  role="columnheader"
+                  scope="col"
+                >
+                  <div>
+                    Image
+                  </div>
+                </th>
+                <th
+                  aria-colindex="2"
+                  class="gl-border-t-0!"
+                  role="columnheader"
+                  scope="col"
+                >
+                  <div>
+                    Name
+                  </div>
+                </th>
+                <th
+                  aria-colindex="3"
+                  class="gl-border-t-0!"
+                  role="columnheader"
+                  scope="col"
+                >
+                  <div>
+                    Created date
+                  </div>
+                </th>
+                <th
+                  aria-colindex="4"
+                  aria-label="Action"
+                  class="gl-border-t-0!"
+                  role="columnheader"
+                  scope="col"
+                >
+                  <div />
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              role="rowgroup"
+            >
+              <!---->
+              <tr
+                class=""
+                role="row"
+              >
+                <td
+                  aria-colindex="1"
+                  class="gl-vertical-align-middle!"
+                  role="cell"
+                >
+                  <gl-emoji
+                    data-fallback-src="https://gitlab.com/custom_emoji/custom_emoji/-/raw/main/img/confused_husky.gif"
+                    data-name="confused_husky"
+                    data-unicode-version="custom"
+                  />
+                </td>
+                <td
+                  aria-colindex="2"
+                  class="gl-vertical-align-middle! gl-font-monospace"
+                  role="cell"
+                >
+                  <strong
+                    class="gl-str-truncated"
+                  >
+                    :confused_husky:
+                  </strong>
+                </td>
+                <td
+                  aria-colindex="3"
+                  class="gl-vertical-align-middle!"
+                  role="cell"
+                >
+                  
+            created-at
+          
+                </td>
+                <td
+                  aria-colindex="4"
+                  class=""
+                  role="cell"
+                />
+              </tr>
+              <!---->
+              <!---->
+            </tbody>
+            <!---->
+          </table>
+           
+          <!---->
+        </div>
+      </transition-stub>
+      <!---->
+    </div>
+  </div>
+</div>
+`;

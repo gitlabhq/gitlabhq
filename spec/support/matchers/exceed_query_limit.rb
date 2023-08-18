@@ -271,14 +271,10 @@ RSpec::Matchers.define :issue_fewer_queries_than do
   end
 end
 
-RSpec::Matchers.define :issue_same_number_of_queries_as do
+RSpec::Matchers.define :issue_same_number_of_queries_as do |expected|
   supports_block_expectations
 
   include ExceedQueryLimitHelpers
-
-  def control
-    block_arg
-  end
 
   chain :or_fewer do
     @or_fewer = true
@@ -288,12 +284,15 @@ RSpec::Matchers.define :issue_same_number_of_queries_as do
     @skip_cached = true
   end
 
-  def control_recorder
-    @control_recorder ||= ActiveRecord::QueryRecorder.new(&control)
-  end
-
   def expected_count
-    control_recorder.count
+    # Some tests pass a query recorder, others pass a block that executes an action.
+    # Maybe, we need to clear the block usage and only accept query recorders.
+
+    @expected_count ||= if expected.is_a?(ActiveRecord::QueryRecorder)
+                          query_recorder_count(expected)
+                        else
+                          ActiveRecord::QueryRecorder.new(&block_arg).count
+                        end
   end
 
   def verify_count(&block)

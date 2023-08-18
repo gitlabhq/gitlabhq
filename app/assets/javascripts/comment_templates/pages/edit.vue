@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';

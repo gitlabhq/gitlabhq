@@ -1,75 +1,76 @@
-import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
-import Vue from 'vue';
-import Vuex from 'vuex';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import GlobalSearchDefaultItems from '~/super_sidebar/components/global_search/components/global_search_default_items.vue';
-import { MOCK_SEARCH_CONTEXT, MOCK_DEFAULT_SEARCH_OPTIONS } from '../mock_data';
+import { shallowMount } from '@vue/test-utils';
 
-Vue.use(Vuex);
+import GlobalSearchDefaultItems from '~/super_sidebar/components/global_search/components/global_search_default_items.vue';
+import GlobalSearchDefaultPlaces from '~/super_sidebar/components/global_search/components/global_search_default_places.vue';
+import FrequentProjects from '~/super_sidebar/components/global_search/components/frequent_projects.vue';
+import FrequentGroups from '~/super_sidebar/components/global_search/components/frequent_groups.vue';
+import GlobalSearchDefaultIssuables from '~/super_sidebar/components/global_search/components/global_search_default_issuables.vue';
 
 describe('GlobalSearchDefaultItems', () => {
   let wrapper;
 
-  const createComponent = (initialState, props) => {
-    const store = new Vuex.Store({
-      state: {
-        searchContext: MOCK_SEARCH_CONTEXT,
-        ...initialState,
-      },
-      getters: {
-        defaultSearchOptions: () => MOCK_DEFAULT_SEARCH_OPTIONS,
-      },
-    });
-
-    wrapper = shallowMountExtended(GlobalSearchDefaultItems, {
-      store,
-      propsData: {
-        ...props,
-      },
-      stubs: {
-        GlDisclosureDropdownGroup,
-      },
-    });
+  const createComponent = () => {
+    wrapper = shallowMount(GlobalSearchDefaultItems);
   };
 
-  const findItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
-  const findItemsData = () => findItems().wrappers.map((w) => w.props('item'));
+  const findPlaces = () => wrapper.findComponent(GlobalSearchDefaultPlaces);
+  const findProjects = () => wrapper.findComponent(FrequentProjects);
+  const findGroups = () => wrapper.findComponent(FrequentGroups);
+  const findIssuables = () => wrapper.findComponent(GlobalSearchDefaultIssuables);
+  const receivedAttrs = (wrapperInstance) => ({
+    // See https://github.com/vuejs/test-utils/issues/2151.
+    ...wrapperInstance.vm.$attrs,
+  });
 
-  describe('template', () => {
-    describe('Dropdown items', () => {
-      beforeEach(() => {
-        createComponent();
-      });
+  beforeEach(() => {
+    createComponent();
+  });
 
-      it('renders item for each option in defaultSearchOptions', () => {
-        expect(findItems()).toHaveLength(MOCK_DEFAULT_SEARCH_OPTIONS.length);
-      });
-
-      it('provides the `item` prop to the `GlDisclosureDropdownItem` component', () => {
-        expect(findItemsData()).toStrictEqual(MOCK_DEFAULT_SEARCH_OPTIONS);
-      });
+  describe('all child components can render', () => {
+    it('renders the components', () => {
+      expect(findPlaces().exists()).toBe(true);
+      expect(findProjects().exists()).toBe(true);
+      expect(findGroups().exists()).toBe(true);
+      expect(findIssuables().exists()).toBe(true);
     });
 
-    describe.each`
-      group                     | project                     | groupHeader
-      ${null}                   | ${null}                     | ${'All GitLab'}
-      ${{ name: 'Test Group' }} | ${null}                     | ${'Test Group'}
-      ${{ name: 'Test Group' }} | ${{ name: 'Test Project' }} | ${'Test Project'}
-    `('Group Header', ({ group, project, groupHeader }) => {
-      describe(`when group is ${group?.name} and project is ${project?.name}`, () => {
-        beforeEach(() => {
-          createComponent({
-            searchContext: {
-              group,
-              project,
-            },
-          });
-        });
+    it('sets the expected props on first component', () => {
+      const places = findPlaces();
+      expect(receivedAttrs(places)).toEqual({});
+      expect(places.classes()).toEqual([]);
+    });
 
-        it(`should render as ${groupHeader}`, () => {
-          expect(wrapper.text()).toContain(groupHeader);
-        });
+    it('sets the expected props on the second component onwards', () => {
+      const components = [findProjects(), findGroups(), findIssuables()];
+      components.forEach((component) => {
+        expect(receivedAttrs(component)).toEqual({ bordered: true });
+        expect(component.classes()).toEqual(['gl-mt-3']);
       });
+    });
+  });
+
+  describe('when child components emit nothing-to-render', () => {
+    beforeEach(() => {
+      // Emit from two elements to guard against naive index-based splicing
+      findPlaces().vm.$emit('nothing-to-render');
+      findIssuables().vm.$emit('nothing-to-render');
+    });
+
+    it('does not render the components', () => {
+      expect(findPlaces().exists()).toBe(false);
+      expect(findIssuables().exists()).toBe(false);
+    });
+
+    it('sets the expected props on first component', () => {
+      const projects = findProjects();
+      expect(receivedAttrs(projects)).toEqual({});
+      expect(projects.classes()).toEqual([]);
+    });
+
+    it('sets the expected props on the second component', () => {
+      const groups = findGroups();
+      expect(receivedAttrs(groups)).toEqual({ bordered: true });
+      expect(groups.classes()).toEqual(['gl-mt-3']);
     });
   });
 });

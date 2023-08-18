@@ -1,6 +1,5 @@
 ---
 key_path: counts.package_events_i_package_push_symbol_package_by_deploy_token
-name: symbol_packages_pushed_by_deploy_token
 description: A count of symbol packages that have been pushed with a deploy token to the package registry
 product_section: ops
 product_stage: package

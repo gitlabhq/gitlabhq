@@ -99,6 +99,15 @@ module QA
         url.sub(/private_token=[^&]*/, "private_token=[****]")
       end
 
+      # Returns the response body with secrets masked.
+      #
+      # @param [String] response the response body as the string value of a JSON hash
+      # @param [Array<Symbol>] mask_by_key the keys of the JSON parsed response body whose values will be masked
+      # @return [Hash] the response body with the specified secrets values replaced with `****`
+      def masked_parsed_response(response, mask_by_key:)
+        Helpers::Masker.mask(parse_body(response), by_key: Array(mask_by_key))
+      end
+
       # Merges the gitlab_canary cookie into existing cookies for mixed environment testing.
       #
       # @param [Hash] args the existing args passed to method

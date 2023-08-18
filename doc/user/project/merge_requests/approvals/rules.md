@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request approval rules **(PREMIUM)**
+# Merge request approval rules **(PREMIUM ALL)**
 
 Approval rules define how many [approvals](index.md) a merge request must receive before it can
 be merged, and which users should do the approving. They can be used in conjunction
@@ -259,7 +259,7 @@ coverage.
 
 For more information, see [Coverage check approval rule](../../../../ci/testing/code_coverage.md#coverage-check-approval-rule).
 
-## Security Approvals **(ULTIMATE)**
+## Security Approvals **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
 > - Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`. Enabled by default.

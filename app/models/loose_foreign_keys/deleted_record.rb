@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
+  include FromUnion
+
   PARTITION_DURATION = 1.day
 
   include PartitionedTable
@@ -34,13 +36,34 @@ class LooseForeignKeys::DeletedRecord < Gitlab::Database::SharedModel
   enum status: { pending: 1, processed: 2 }, _prefix: :status
 
   def self.load_batch_for_table(table, batch_size)
-    # selecting partition as partition_number to workaround the sliding partitioning column ignore
-    select(arel_table[Arel.star], arel_table[:partition].as('partition_number'))
-      .for_table(table)
-      .status_pending
-      .consume_order
-      .limit(batch_size)
-      .to_a
+    if Feature.enabled?("loose_foreign_keys_batch_load_using_union")
+      partition_names = Gitlab::Database::PostgresPartitionedTable.each_partition(table_name).map(&:name)
+
+      unions = partition_names.map do |partition_name|
+        partition_number = partition_name[/\d+/].to_i
+
+        select(arel_table[Arel.star], arel_table[:partition].as('partition_number'))
+          .from("#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{partition_name} AS #{table_name}")
+          .for_table(table)
+          .where(partition: partition_number)
+          .status_pending
+          .consume_order
+          .limit(batch_size)
+      end
+
+      select(arel_table[Arel.star])
+        .from_union(unions, remove_duplicates: false, remove_order: false)
+        .limit(batch_size)
+        .to_a
+    else
+      # selecting partition as partition_number to workaround the sliding partitioning column ignore
+      select(arel_table[Arel.star], arel_table[:partition].as('partition_number'))
+        .for_table(table)
+        .status_pending
+        .consume_order
+        .limit(batch_size)
+        .to_a
+    end
   end
 
   def self.mark_records_processed(records)

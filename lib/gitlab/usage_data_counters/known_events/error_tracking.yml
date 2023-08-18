@@ -1,5 +1,0 @@
----
-- name: error_tracking_view_details
-  aggregation: weekly
-- name: error_tracking_view_list
-  aggregation: weekly

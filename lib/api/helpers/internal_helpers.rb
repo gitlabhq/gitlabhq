@@ -5,6 +5,8 @@ module API
     module InternalHelpers
       attr_reader :redirected_path
 
+      UNKNOWN_CHECK_RESULT_ERROR = 'Unknown check result'
+
       delegate :wiki?, to: :repo_type
 
       def actor
@@ -25,6 +27,35 @@ module API
       def container
         parse_repo_path unless defined?(@container)
         @container
+      end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+      def access_check_result
+        with_admin_mode_bypass!(actor.user&.id) do
+          access_check!(actor, params)
+        end
+      rescue Gitlab::GitAccess::ForbiddenError => e
+        # The return code needs to be 401. If we return 403
+        # the custom message we return won't be shown to the user
+        # and, instead, the default message 'GitLab: API is not accessible'
+        # will be displayed
+        response_with_status(code: 401, success: false, message: e.message)
+      rescue Gitlab::GitAccess::TimeoutError => e
+        response_with_status(code: 503, success: false, message: e.message)
+      rescue Gitlab::GitAccess::NotFoundError => e
+        response_with_status(code: 404, success: false, message: e.message)
+      end
+
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      def access_check!(actor, params)
+        access_checker = access_checker_for(actor, params[:protocol])
+        access_checker.check(params[:action], params[:changes]).tap do |result|
+          break result if @project || !repo_type.project?
+
+          # If we have created a project directly from a git push
+          # we have to assign its value to both @project and @container
+          @project = @container = access_checker.container
+        end
       end
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -71,6 +102,25 @@ module API
       rescue StandardError => e
         Gitlab::AppLogger.warn("GitLab: An unexpected error occurred in pinging to Redis: #{e}")
         false
+      end
+
+      def response_with_status(code: 200, success: true, message: nil, **extra_options)
+        status code
+        { status: success, message: message }.merge(extra_options).compact
+      end
+
+      def unsuccessful_response?(response)
+        response.is_a?(Hash) && response[:status] == false
+      end
+
+      def with_admin_mode_bypass!(actor_id, &block)
+        return yield unless Gitlab::CurrentSettings.admin_mode
+
+        Gitlab::Auth::CurrentUserMode.bypass_session!(actor_id, &block)
+      end
+
+      def send_git_audit_streaming_event(msg)
+        # Defined in EE
       end
 
       private
@@ -138,3 +188,5 @@ module API
     end
   end
 end
+
+API::Helpers::InternalHelpers.prepend_mod

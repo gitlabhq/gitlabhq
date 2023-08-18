@@ -41,3 +41,9 @@
         %tr
           %td= _('Maximum snippet size')
           %td= instance_configuration_human_size_cell(size_limits[:snippet_size_limit])
+        %tr
+          %td= s_('Import|Maximum import remote file size (MB)')
+          %td= instance_configuration_human_size_cell(size_limits[:max_import_remote_file_size])
+        %tr
+          %td= s_('BulkImport|Direct transfer maximum download file size (MB)')
+          %td= instance_configuration_human_size_cell(size_limits[:bulk_import_max_download_file_size])

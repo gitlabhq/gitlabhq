@@ -25,7 +25,7 @@ RSpec.configure do |config|
   end
 
   # Reset after execution to preferred state
-  config.after do |example_file|
+  config.after do |_example_file|
     ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.suppress_in_rspec = true
 
     ::ApplicationRecord.gitlab_transactions_stack.clear

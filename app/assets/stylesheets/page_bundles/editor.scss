@@ -125,7 +125,7 @@
 @include media-breakpoint-down(sm) {
   .file-editor .file-buttons {
     flex-direction: column;
-    padding: 0;
+    padding: $gl-padding-8 0 0;
 
     .md-header-toolbar {
       margin: $gl-padding-8 0;
@@ -165,41 +165,6 @@
     display: block;
     width: 100%;
     margin: 0 0 16px;
-  }
-
-  .license-selector,
-  .gitignore-selector,
-  .gitlab-ci-yml-selector,
-  .dockerfile-selector {
-    display: inline-block;
-    vertical-align: top;
-    font-family: $regular_font;
-    margin: 0 8px 0 0;
-
-    @media(max-width: map-get($grid-breakpoints, lg)-1) {
-      display: block;
-      width: 100%;
-      margin: 5px 0;
-    }
-
-    .dropdown {
-      line-height: 21px;
-    }
-
-    .dropdown-menu-toggle {
-      width: 200px;
-      vertical-align: top;
-
-      @media (max-width: map-get($grid-breakpoints, xl)-1) {
-        width: auto;
-      }
-
-      @media(max-width: map-get($grid-breakpoints, lg)-1) {
-        display: block;
-        width: 100%;
-        margin: 5px 0;
-      }
-    }
   }
 }
 

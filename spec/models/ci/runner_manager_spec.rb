@@ -112,6 +112,33 @@ RSpec.describe Ci::RunnerManager, feature_category: :runner_fleet, type: :model 
     end
   end
 
+  describe '.with_running_builds' do
+    subject(:scope) { described_class.with_running_builds }
+
+    let_it_be(:runner) { create(:ci_runner) }
+    let_it_be(:runner_manager1) { create(:ci_runner_machine, runner: runner) }
+    let_it_be(:runner_manager2) { create(:ci_runner_machine, runner: runner) }
+
+    before_all do
+      create(:ci_runner_machine_build, runner_manager: runner_manager1,
+        build: create(:ci_build, :success, runner: runner))
+      create(:ci_runner_machine_build, runner_manager: runner_manager2,
+        build: create(:ci_build, :running, runner: runner))
+    end
+
+    it { is_expected.to contain_exactly runner_manager2 }
+  end
+
+  describe '.order_id_desc' do
+    subject(:scope) { described_class.order_id_desc }
+
+    let_it_be(:runner_manager1) { create(:ci_runner_machine) }
+    let_it_be(:runner_manager2) { create(:ci_runner_machine) }
+
+    specify { expect(described_class.all).to eq([runner_manager1, runner_manager2]) }
+    it { is_expected.to eq([runner_manager2, runner_manager1]) }
+  end
+
   describe '#status', :freeze_time do
     let(:runner_manager) { build(:ci_runner_machine, created_at: 8.days.ago) }
 
@@ -329,6 +356,61 @@ RSpec.describe Ci::RunnerManager, feature_category: :runner_fleet, type: :model 
                           .and change { runner_manager.reload.read_attribute(:architecture) }
                           .and change { runner_manager.reload.read_attribute(:config) }
                           .and change { runner_manager.reload.read_attribute(:executor_type) }
+    end
+  end
+
+  describe '#builds' do
+    let_it_be(:runner_manager) { create(:ci_runner_machine) }
+
+    subject(:builds) { runner_manager.builds }
+
+    it { is_expected.to be_empty }
+
+    context 'with an existing build' do
+      let!(:build) { create(:ci_build) }
+      let!(:runner_machine_build) do
+        create(:ci_runner_machine_build, runner_manager: runner_manager, build: build)
+      end
+
+      it { is_expected.to contain_exactly build }
+    end
+  end
+
+  describe '.with_upgrade_status' do
+    subject(:scope) { described_class.with_upgrade_status(upgrade_status) }
+
+    let_it_be(:runner_manager_14_0_0) { create(:ci_runner_machine, version: '14.0.0') }
+    let_it_be(:runner_manager_14_1_0) { create(:ci_runner_machine, version: '14.1.0') }
+    let_it_be(:runner_manager_14_1_1) { create(:ci_runner_machine, version: '14.1.1') }
+
+    before_all do
+      create(:ci_runner_version, version: '14.0.0', status: :available)
+      create(:ci_runner_version, version: '14.1.0', status: :recommended)
+      create(:ci_runner_version, version: '14.1.1', status: :unavailable)
+    end
+
+    context 'as :unavailable' do
+      let(:upgrade_status) { :unavailable }
+
+      it 'returns runners with runner managers whose version is assigned :unavailable' do
+        is_expected.to contain_exactly(runner_manager_14_1_1)
+      end
+    end
+
+    context 'as :available' do
+      let(:upgrade_status) { :available }
+
+      it 'returns runners with runner managers whose version is assigned :available' do
+        is_expected.to contain_exactly(runner_manager_14_0_0)
+      end
+    end
+
+    context 'as :recommended' do
+      let(:upgrade_status) { :recommended }
+
+      it 'returns runners with runner managers whose version is assigned :recommended' do
+        is_expected.to contain_exactly(runner_manager_14_1_0)
+      end
     end
   end
 end

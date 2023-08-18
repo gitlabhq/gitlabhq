@@ -162,6 +162,7 @@ releases:
 - milestone_releases
 - milestones
 - evidences
+- catalog_resource_version
 links:
 - release
 project_members:
@@ -325,7 +326,7 @@ ci_pipelines:
 - security_findings
 - daily_build_group_report_results
 - latest_builds
-- latest_successful_builds
+- latest_successful_jobs
 - daily_report_results
 - latest_builds_report_results
 - messages
@@ -432,6 +433,7 @@ builds:
 - dast_scanner_profiles_build
 - dast_scanner_profile
 - job_annotations
+- job_artifacts_annotations
 bridges:
 - user
 - pipeline
@@ -440,6 +442,7 @@ bridges:
 - needs
 - resource
 - sourced_pipeline
+- deployment
 - resource_group
 - metadata
 - trigger_request
@@ -516,6 +519,8 @@ container_repositories:
 - name
 project:
 - catalog_resource
+- catalog_resource_versions
+- ci_components
 - external_status_checks
 - base_tags
 - project_topics
@@ -817,6 +822,7 @@ project:
 - scan_result_policy_reads
 - project_state
 - security_policy_bots
+- target_branch_rules
 award_emoji:
 - awardable
 - user
@@ -1039,6 +1045,13 @@ iterations_cadence:
   - iterations
 catalog_resource:
   - project
+  - catalog_resource_components
+  - catalog_resource_versions
+catalog_resource_versions:
+  - project
+  - release
+  - catalog_resource
+  - catalog_resource_components
 approval_rules:
   - users
   - groups

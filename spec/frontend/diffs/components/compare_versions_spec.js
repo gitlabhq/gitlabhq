@@ -84,7 +84,7 @@ describe('CompareVersions', () => {
       const treeListBtn = wrapper.find('.js-toggle-tree-list');
 
       expect(treeListBtn.exists()).toBe(true);
-      expect(treeListBtn.attributes('title')).toBe('Hide file browser');
+      expect(treeListBtn.attributes('title')).toBe('Hide file browser (or press F)');
       expect(treeListBtn.props('icon')).toBe('file-tree');
     });
 

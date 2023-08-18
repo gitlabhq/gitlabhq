@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pipelines API **(FREE)**
+# Pipelines API **(FREE ALL)**
 
 ## Pipelines pagination
 
@@ -16,13 +16,15 @@ Read more on [pagination](rest/index.md#pagination).
 ## List project pipelines
 
 > - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
-> - `name` in request and response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+> - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+> - `name` in request [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_search`. Disabled by default.
+> - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
 
 FLAG:
-On self-managed GitLab, by default the `name` field is not available.
+On self-managed GitLab, by default the `name` field in a request is ignored.
 To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md)
-named `pipeline_name_in_api`. This feature is not ready for production use.
-On GitLab.com, this feature is not available.
+named `pipeline_name_search`.
+On GitLab.com, this feature is available.
 
 List pipelines in a project. Child pipelines are not included in the results,
 but you can [get child pipeline](pipelines.md#get-a-single-pipeline) individually.
@@ -88,12 +90,7 @@ Example of response
 
 > - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
 > - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default the `name` field is not available.
-To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md)
-named `pipeline_name_in_api`. This feature is not ready for production use.
-On GitLab.com, this feature is not available.
+> - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
 
 Get one pipeline from a project.
 
@@ -286,13 +283,8 @@ Sample response:
 
 ## Get the latest pipeline
 
-> `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default the `name` field is not available.
-To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md)
-named `pipeline_name_in_api`. This feature is not ready for production use.
-On GitLab.com, this feature is not available.
+> - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+> - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
 
 Get the latest pipeline for a specific ref in a project.
 

@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tags API **(FREE)**
+# Tags API **(FREE ALL)**
 
 ## List project repository tags
 
@@ -181,7 +181,7 @@ Parameters:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106578) in GitLab 15.7.
 
-Get the [X.509 signature from a tag](../user/project/repository/x509_signed_commits/index.md#sign-commits-and-tags-with-x509-certificates),
+Get the [X.509 signature from a tag](../user/project/repository/x509_signed_commits/index.md),
 if it is signed. Unsigned tags return a `404 Not Found` response.
 
 ```plaintext

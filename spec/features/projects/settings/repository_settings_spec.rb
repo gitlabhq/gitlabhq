@@ -156,6 +156,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :g
 
       before do
         visit project_settings_repository_path(project)
+        click_button 'Add new'
       end
 
       it 'shows push mirror settings', :js do

@@ -12,10 +12,7 @@ module QA
       end
 
       let!(:group) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.path = "group-for-access-request-#{SecureRandom.hex(8)}"
-          group.api_client = admin_api_client
-        end
+        create(:group, path: "group-for-access-request-#{SecureRandom.hex(8)}", api_client: admin_api_client)
       end
 
       before do
@@ -27,7 +24,7 @@ module QA
         Flow::Login.sign_in_as_admin
 
         Page::Main::Menu.perform do |menu|
-          menu.go_to_page_by_shortcut(:todos_shortcut_button)
+          menu.go_to_page_by_shortcut('todos-shortcut-button')
         end
 
         Page::Dashboard::Todos.perform do |todos|

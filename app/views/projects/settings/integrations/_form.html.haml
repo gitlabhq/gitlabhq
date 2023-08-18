@@ -14,10 +14,10 @@
 - if integration.to_param === 'slack'
   = render 'shared/integrations/slack_notifications_deprecation_alert'
 
-%h2.gl-mb-4
+%h2.gl-mb-0.gl-display-flex.gl-align-items-center.gl-gap-3
   = integration.title
   - if integration.operating?
-    = sprite_icon('check', css_class: 'gl-text-green-500')
+    = render Pajamas::BadgeComponent.new(s_('FeatureFlags|Active'), variant: 'success')
 
 = render 'shared/integration_settings', integration: integration
 - if lookup_context.template_exists?('show', "shared/integrations/#{integration.to_param}", true)

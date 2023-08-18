@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Create an issue **(FREE)**
+# Create an issue **(FREE ALL)**
 
 When you create an issue, you are prompted to enter the fields of the issue.
 If you know the values you want to assign to an issue, you can use
@@ -192,7 +192,7 @@ To create an issue in the GitLab project:
 
 ## Using Service Desk
 
-To offer email support, enable [Service Desk](../service_desk.md) for your project.
+To offer email support, enable [Service Desk](../service_desk/index.md) for your project.
 
 Now, when your customer sends a new email, a new issue can be created in
 the appropriate project and followed up from there.

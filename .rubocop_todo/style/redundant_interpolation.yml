@@ -17,7 +17,6 @@ Style/RedundantInterpolation:
     - 'lib/gitlab/repository_cache_adapter.rb'
     - 'lib/gitlab/repository_hash_cache.rb'
     - 'lib/gitlab/repository_set_cache.rb'
-    - 'lib/gitlab/usage/metrics/names_suggestions/relation_parsers/joins.rb'
     - 'lib/gitlab/usage_data_counters/search_counter.rb'
     - 'lib/gitlab/utils.rb'
     - 'lib/kramdown/converter/commonmark.rb'

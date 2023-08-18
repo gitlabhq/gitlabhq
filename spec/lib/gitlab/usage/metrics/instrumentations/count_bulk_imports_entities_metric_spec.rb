@@ -165,7 +165,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitie
   end
 
   context 'with has_failures: true' do
-    before(:all) do
+    before_all do
       create_list(:bulk_import_entity, 3, :project_entity, :finished, created_at: 3.weeks.ago, has_failures: true)
       create_list(:bulk_import_entity, 2, :project_entity, :finished, created_at: 2.months.ago, has_failures: true)
       create_list(:bulk_import_entity, 3, :group_entity, :finished, created_at: 3.weeks.ago, has_failures: true)

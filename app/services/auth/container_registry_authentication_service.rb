@@ -112,6 +112,28 @@ module Auth
         token.expire_time = self.class.token_expire_at
         token[:auth_type] = params[:auth_type]
         token[:access] = accesses.compact
+        token[:user] = user_info_token.encoded
+      end
+    end
+
+    def user_info_token
+      info =
+        if current_user
+          {
+            token_type: params[:auth_type],
+            username: current_user.username,
+            user_id: current_user.id
+          }
+        elsif deploy_token
+          {
+            token_type: params[:auth_type],
+            username: deploy_token.username,
+            deploy_token_id: deploy_token.id
+          }
+        end
+
+      JSONWebToken::RSAToken.new(registry.key).tap do |token|
+        token[:user_info] = info
       end
     end
 

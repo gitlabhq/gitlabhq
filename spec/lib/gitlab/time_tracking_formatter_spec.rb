@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::TimeTrackingFormatter do
+RSpec.describe Gitlab::TimeTrackingFormatter, feature_category: :team_planning do
   describe '#parse' do
     let(:keep_zero) { false }
 

@@ -41,7 +41,9 @@ RSpec.shared_context 'with FOSS query type fields' do
       :user,
       :users,
       :work_item,
-      :audit_event_definitions
+      :audit_event_definitions,
+      :abuse_report,
+      :abuse_report_labels
     ]
   end
 end

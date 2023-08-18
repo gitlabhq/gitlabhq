@@ -5,17 +5,10 @@ module QA
     describe 'User', :requires_admin, product_group: :tenant_scale do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
-      let!(:parent_group) do
-        QA::Resource::Group.fabricate_via_api! do |group|
-          group.path = "parent-group-to-test-user-access-#{SecureRandom.hex(8)}"
-        end
-      end
+      let!(:parent_group) { create(:group, path: "parent-group-to-test-user-access-#{SecureRandom.hex(8)}") }
 
       let!(:sub_group) do
-        QA::Resource::Group.fabricate_via_api! do |group|
-          group.path = "sub-group-to-test-user-access-#{SecureRandom.hex(8)}"
-          group.sandbox = parent_group
-        end
+        create(:group, path: "sub-group-to-test-user-access-#{SecureRandom.hex(8)}", sandbox: parent_group)
       end
 
       context 'when added to parent group' do
@@ -30,11 +23,7 @@ module QA
         end
 
         let!(:sub_group_project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.group = sub_group
-            project.name = "sub-group-project-to-test-user-access"
-            project.initialize_with_readme = true
-          end
+          create(:project, :with_readme, name: 'sub-groupd-project-to-test-user-access', group: sub_group)
         end
 
         before do
@@ -106,11 +95,7 @@ module QA
 
       context 'when added to sub-group' do
         let!(:parent_group_project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.group = parent_group
-            project.name = "parent-group-project-to-test-user-access"
-            project.initialize_with_readme = true
-          end
+          create(:project, :with_readme, name: 'parent-group-project-to-test-user-access', group: parent_group)
         end
 
         let!(:sub_group_user) do

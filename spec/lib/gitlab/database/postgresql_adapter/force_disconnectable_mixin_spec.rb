@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PostgresqlAdapter::ForceDisconnectableMixin, :reestablished_active_record_base do
+RSpec.describe Gitlab::Database::PostgresqlAdapter::ForceDisconnectableMixin, :delete, :reestablished_active_record_base do
   describe 'checking in a connection to the pool' do
     let(:model) do
       Class.new(ActiveRecord::Base) do
@@ -32,13 +32,28 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::ForceDisconnectableMixin, :r
     let(:timer) { connection.force_disconnect_timer }
 
     context 'when the timer is expired' do
-      it 'disconnects from the database' do
+      before do
         allow(timer).to receive(:expired?).and_return(true)
+      end
 
+      it 'disconnects from the database' do
         expect(connection).to receive(:disconnect!).and_call_original
         expect(timer).to receive(:reset!).and_call_original
 
         connection.force_disconnect_if_old!
+      end
+
+      context 'when the connection has an open transaction' do
+        it 'does not disconnect from the database' do
+          connection.begin_transaction
+
+          expect(connection).not_to receive(:disconnect!)
+          expect(timer).not_to receive(:reset!)
+
+          connection.force_disconnect_if_old!
+
+          connection.rollback_transaction
+        end
       end
     end
 

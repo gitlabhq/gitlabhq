@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { createAlert } from '~/alert';

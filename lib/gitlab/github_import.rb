@@ -16,7 +16,7 @@ module Gitlab
       }
 
       if token_pool
-        ClientPool.new(token_pool: token_pool, **options)
+        ClientPool.new(token_pool: token_pool.append(token_to_use), **options)
       else
         Client.new(token_to_use, **options)
       end

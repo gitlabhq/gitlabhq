@@ -1,23 +1,31 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
+import { GlCollapsibleListbox } from '@gitlab/ui';
+import { n__ } from '~/locale';
 
-export const PAGE_SIZES = [20, 50, 100];
+export const PAGE_SIZES = [20, 50, 100].map((value) => ({
+  value,
+  text: n__('SecurityReports|Show %d item', 'SecurityReports|Show %d items', value),
+}));
 
 export default {
-  components: { GlDropdown, GlDropdownItem },
+  components: { GlCollapsibleListbox },
   props: {
     value: {
       type: Number,
       required: true,
     },
   },
+  computed: {
+    selectedItem() {
+      return PAGE_SIZES.find(({ value }) => value === this.value);
+    },
+    toggleText() {
+      return this.selectedItem.text;
+    },
+  },
   methods: {
     emitInput(pageSize) {
       this.$emit('input', pageSize);
-    },
-    getPageSizeText(pageSize) {
-      return sprintf(s__('SecurityReports|Show %{pageSize} items'), { pageSize });
     },
   },
   PAGE_SIZES,
@@ -25,13 +33,10 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown :text="getPageSizeText(value)" right menu-class="gl-w-auto! gl-min-w-0">
-    <gl-dropdown-item
-      v-for="pageSize in $options.PAGE_SIZES"
-      :key="pageSize"
-      @click="emitInput(pageSize)"
-    >
-      <span class="gl-white-space-nowrap">{{ getPageSizeText(pageSize) }}</span>
-    </gl-dropdown-item>
-  </gl-dropdown>
+  <gl-collapsible-listbox
+    :toggle-text="toggleText"
+    :items="$options.PAGE_SIZES"
+    :selected="value"
+    @select="emitInput($event)"
+  />
 </template>

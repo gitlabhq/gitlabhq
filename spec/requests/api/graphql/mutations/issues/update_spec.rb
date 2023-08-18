@@ -147,5 +147,10 @@ RSpec.describe 'Update of an existing issue', feature_category: :team_planning d
         end
       end
     end
+
+    it_behaves_like 'updating time estimate' do
+      let(:resource) { issue }
+      let(:mutation_name) { 'updateIssue' }
+    end
   end
 end

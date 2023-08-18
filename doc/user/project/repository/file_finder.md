@@ -4,7 +4,7 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# File finder **(FREE)**
+# File finder **(FREE ALL)**
 
 With file finder, you can search for a file in a repository directly from the GitLab UI.
 

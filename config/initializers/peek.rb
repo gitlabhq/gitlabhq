@@ -6,7 +6,7 @@ Peek::Adapters::Redis.prepend ::Gitlab::PerformanceBar::RedisAdapterWhenPeekEnab
 Peek.singleton_class.prepend ::Gitlab::PerformanceBar::WithTopLevelWarnings
 
 Rails.application.config.peek.adapter = :redis, {
-  client: Gitlab::Redis::Cache.multistore_redis, # to be reverted after MultiStore in Cache is removed
+  client: ::Redis.new(Gitlab::Redis::Cache.params),
   expires_in: 5.minutes
 }
 
@@ -18,6 +18,7 @@ Peek.into Peek::Views::Elasticsearch
 Peek.into Peek::Views::Zoekt
 Peek.into Peek::Views::Rugged
 Peek.into Peek::Views::ExternalHttp
+Peek.into Peek::Views::ClickHouse
 Peek.into Peek::Views::BulletDetailed if defined?(Bullet)
 Peek.into Peek::Views::Memory
 

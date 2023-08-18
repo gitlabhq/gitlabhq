@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:user_management tasks', :silence_stdout do
+RSpec.describe 'gitlab:user_management tasks', :silence_stdout, feature_category: :groups_and_projects do
   before do
     Rake.application.rake_require 'tasks/gitlab/user_management'
   end
@@ -18,7 +18,7 @@ RSpec.describe 'gitlab:user_management tasks', :silence_stdout do
 
     context 'with users' do
       let(:user_1) { create(:user, projects_limit: 10, can_create_group: true) }
-      let(:user_2) { create(:user, projects_limit: 10, can_create_group: true) }
+      let(:user_2) { create(:user, :blocked, projects_limit: 10, can_create_group: true) }
       let(:user_other) { create(:user, projects_limit: 10, can_create_group: true) }
 
       shared_examples 'updates proper users' do
@@ -77,6 +77,19 @@ RSpec.describe 'gitlab:user_management tasks', :silence_stdout do
         end
 
         it_behaves_like 'updates proper users'
+      end
+
+      context 'when updated rows do not match the member count' do
+        before do
+          group.add_developer(user_1)
+          group.add_developer(user_2)
+
+          allow(User).to receive_message_chain(:where, :update_all).and_return(1)
+        end
+
+        it 'returns an error message' do
+          expect { run_rake }.to output(/.*Something went wrong.*/).to_stdout
+        end
       end
     end
   end

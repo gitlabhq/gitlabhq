@@ -4,8 +4,6 @@ module Gitlab
   module ImportExport
     module Project
       class BaseTask
-        include Gitlab::WithRequestStore
-
         def initialize(opts, logger: Logger.new($stdout))
           @project_path = opts.fetch(:project_path)
           @file_path    = opts.fetch(:file_path)

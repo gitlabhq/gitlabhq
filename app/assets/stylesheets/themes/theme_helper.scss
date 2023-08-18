@@ -276,3 +276,63 @@
     }
   }
 }
+
+@mixin gitlab-theme-super-sidebar(
+  $theme-color-lightest,
+  $theme-color-light,
+  $theme-color,
+  $theme-color-darkest,
+) {
+  --transparent-white-16: rgba(255, 255, 255, 0.16);
+  --transparent-white-24: rgba(255, 255, 255, 0.24);
+
+  .super-sidebar {
+    background-color: $theme-color-lightest;
+  }
+
+  .super-sidebar .user-bar {
+    background-color: $theme-color;
+
+    .counter {
+      background-color: var(--transparent-white-16) !important;
+    }
+
+    .brand-logo,
+    .btn-default-tertiary,
+    .counter {
+      color: $theme-color-lightest;
+      mix-blend-mode: normal;
+
+      &:hover,
+      &:focus {
+        background-color: var(--transparent-white-24) !important;
+        color: $white;
+      }
+
+      .gl-icon {
+        color: $theme-color-light;
+      }
+    }
+  }
+
+  .super-sidebar hr {
+    mix-blend-mode: multiply;
+  }
+
+  .btn-with-notification {
+    &:hover,
+    &:focus {
+      mix-blend-mode: multiply;
+    }
+
+    .notification-dot-info {
+      background-color: $theme-color-darkest;
+      border-color: $theme-color-lightest;
+
+    }
+  }
+
+  .active-indicator {
+    background-color: $theme-color;
+  }
+}

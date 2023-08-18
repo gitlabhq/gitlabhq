@@ -9,6 +9,8 @@ import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/cons
 import { MINIMUM_SEARCH_LENGTH } from '~/graphql_shared/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
+// This is added outside the component as each dropdown on the page triggers a query,
+// so if multiple queries fail, we only show 1 error.
 const reportNamespaceLoadError = debounce(
   () =>
     createAlert({

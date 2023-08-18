@@ -228,15 +228,12 @@ it('exists', () => {
   // Bad
   wrapper.find('.js-foo');
   wrapper.find('.btn-primary');
-  wrapper.find('.qa-foo-component');
 });
 ```
 
-It is recommended to use `kebab-case` for `data-testid` attribute.
+You should use `kebab-case` for `data-testid` attribute.
 
 It is not recommended that you add `.js-*` classes just for testing purposes. Only do this if there are no other feasible options available.
-
-Do not use `.qa-*` class attributes for any tests other than QA end-to-end testing.
 
 ### Querying for child components
 
@@ -387,7 +384,7 @@ If your tests require `window.location.href` to take a particular value, use
 the `setWindowLocation` helper:
 
 ```javascript
-import setWindowLocation from 'helpers/set_window_location';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 it('passes', () => {
   setWindowLocation('https://gitlab.test/foo?bar=true');

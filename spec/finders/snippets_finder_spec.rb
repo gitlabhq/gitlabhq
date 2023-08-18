@@ -106,8 +106,28 @@ RSpec.describe SnippetsFinder do
         expect(snippets).to contain_exactly(public_personal_snippet)
       end
 
-      it 'returns all snippets for an admin in admin mode', :enable_admin_mode do
+      it 'returns all personal snippets for an admin in admin mode', :enable_admin_mode do
         snippets = described_class.new(admin, author: user).execute
+
+        expect(snippets).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
+      end
+
+      it 'returns all snippets (everything) for an admin when all_available="true" passed in' do
+        allow(admin).to receive(:can_read_all_resources?).and_return(true)
+
+        snippets = described_class.new(admin, author: user, all_available: true).execute
+
+        expect(snippets).to contain_exactly(
+          private_project_snippet,
+          internal_project_snippet,
+          public_project_snippet,
+          private_personal_snippet,
+          internal_personal_snippet,
+          public_personal_snippet)
+      end
+
+      it 'returns all snippets for non-admin user, even when all_available="true" passed in' do
+        snippets = described_class.new(user, author: user, all_available: true).execute
 
         expect(snippets).to contain_exactly(private_personal_snippet, internal_personal_snippet, public_personal_snippet)
       end

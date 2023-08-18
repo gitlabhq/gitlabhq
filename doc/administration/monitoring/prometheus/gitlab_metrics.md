@@ -15,7 +15,7 @@ To enable the GitLab Prometheus metrics:
 1. Find the **Metrics - Prometheus** section, and select **Enable GitLab Prometheus metrics endpoint**.
 1. [Restart GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-For installations from source you must configure it yourself.
+For self-compiled installations, you must configure it yourself.
 
 ## Collecting the metrics
 
@@ -170,6 +170,16 @@ The following metrics are available:
 | `gitlab_sli_rails_request_apdex_total` | Counter | 14.4 | Total number of request Apdex measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency` |
 | `gitlab_sli_rails_request_apdex_success_total` | Counter | 14.4 | Total number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli_rails_requests_apdex_total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
 | `gitlab_sli_rails_request_error_total` | Counter | 15.7 | Total number of request error measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency`, `error` |
+| `job_register_attempts_failed_total` | Counter | 9.5 | Counts the times a runner fails to register a job |
+| `job_register_attempts_total` | Counter | 9.5 | Counts the times a runner tries to register a job |
+| `job_queue_duration_seconds` | Histogram | 9.5 | Request handling execution time |
+| `gitlab_ci_queue_operations_total` | Counter | 16.3 | Counts all the operations that are happening inside a queue |
+| `gitlab_ci_queue_depth_total` | Histogram | 16.3 | Size of a CI/CD builds queue in relation to the operation result |
+| `gitlab_ci_queue_size_total` | Histogram | 16.3 | Size of initialized CI/CD builds queue |
+| `gitlab_ci_current_queue_size` | Gauge | 16.3 | Current size of initialized CI/CD builds queue |
+| `gitlab_ci_queue_iteration_duration_seconds` | Histogram | 16.3 | Time it takes to find a build in CI/CD queue |
+| `gitlab_ci_queue_retrieval_duration_seconds` | Histogram | 16.3 | Time it takes to execute a SQL query to retrieve builds queue |
+| `gitlab_ci_queue_active_runners_total` | Histogram | 16.3 | The amount of active runners that can process queue in a project |
 
 ## Metrics controlled by a feature flag
 
@@ -178,6 +188,13 @@ The following metrics can be controlled by feature flags:
 | Metric                                                         | Feature flag                                                       |
 |:---------------------------------------------------------------|:-------------------------------------------------------------------|
 | `gitlab_view_rendering_duration_seconds`                       | `prometheus_metrics_view_instrumentation`                          |
+| `gitlab_ci_queue_depth_total` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_queue_size` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_queue_size_total` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_queue_iteration_duration_seconds` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_current_queue_size` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_queue_retrieval_duration_seconds` | `gitlab_ci_builds_queuing_metrics` |
+| `gitlab_ci_queue_active_runners_total` | `gitlab_ci_builds_queuing_metrics` |
 
 ## Praefect metrics
 
@@ -279,12 +296,16 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_snippet_repositories_synced`              | Gauge   | 13.4  | Number of syncable snippets synced on secondary | `url` |
 | `geo_snippet_repositories_failed`              | Gauge   | 13.4  | Number of syncable snippets failed on secondary | `url` |
 | `geo_snippet_repositories_registry`            | Gauge   | 13.4  | Number of syncable snippets in the registry | `url` |
-| `geo_group_wiki_repositories`                  | Gauge   | 13.10 | Number of group wikis on primary | `url` |
-| `geo_group_wiki_repositories_checksummed`      | Gauge   | 13.10 | Number of group wikis checksummed on primary | `url` |
-| `geo_group_wiki_repositories_checksum_failed`  | Gauge   | 13.10 | Number of group wikis failed to calculate the checksum on primary | `url` |
-| `geo_group_wiki_repositories_synced`           | Gauge   | 13.10 | Number of syncable group wikis synced on secondary | `url` |
-| `geo_group_wiki_repositories_failed`           | Gauge   | 13.10 | Number of syncable group wikis failed on secondary | `url` |
-| `geo_group_wiki_repositories_registry`         | Gauge   | 13.10 | Number of syncable group wikis in the registry | `url` |
+| `geo_group_wiki_repositories`                     | Gauge   | 13.10 | Number of group wikis on primary | `url` |
+| `geo_group_wiki_repositories_checksum_total`      | Gauge   | 16.3  | Number of group wikis to checksum on primary | `url` |
+| `geo_group_wiki_repositories_checksummed`         | Gauge   | 13.10 | Number of group wikis that successfully calculated the checksum on primary | `url` |
+| `geo_group_wiki_repositories_checksum_failed`     | Gauge   | 13.10 | Number of group wikis that failed to calculate the checksum on primary | `url` |
+| `geo_group_wiki_repositories_synced`              | Gauge   | 13.10 | Number of syncable group wikis synced on secondary | `url` |
+| `geo_group_wiki_repositories_failed`              | Gauge   | 13.10 | Number of syncable group wikis failed to sync on secondary | `url` |
+| `geo_group_wiki_repositories_registry`            | Gauge   | 13.10 | Number of group wikis in the registry | `url` |
+| `geo_group_wiki_repositories_verification_total`  | Gauge   | 16.3 | Number of group wikis to attempt to verify on secondary | `url` |
+| `geo_group_wiki_repositories_verified`            | Gauge   | 16.3 | Number of group wikis successfully verified on secondary | `url` |
+| `geo_group_wiki_repositories_verification_failed` | Gauge   | 16.3 | Number of group wikis that failed verification on secondary | `url` |
 | `geo_pages_deployments`                        | Gauge   | 14.3  | Number of pages deployments on primary | `url` |
 | `geo_pages_deployments_checksum_total`         | Gauge   | 14.6  | Number of pages deployments to checksum on primary | `url` |
 | `geo_pages_deployments_checksummed`            | Gauge   | 14.6  | Number of pages deployments that successfully calculated the checksum on primary | `url` |

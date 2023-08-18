@@ -23,7 +23,7 @@ module Integrations
       placeholder: 'irc://irc.network.net:6697/'
 
     field :recipients,
-      type: 'textarea',
+      type: :textarea,
       title: -> { s_('IrkerService|Recipients') },
       placeholder: 'irc[s]://irc.network.net[:port]/#channel',
       required: true,
@@ -45,7 +45,7 @@ module Integrations
       end
 
     field :colorize_messages,
-      type: 'checkbox',
+      type: :checkbox,
       title: -> { _('Colorize messages') }
 
     # NOTE: This field is only used internally to store the parsed

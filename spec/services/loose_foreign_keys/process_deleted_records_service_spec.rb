@@ -71,7 +71,7 @@ RSpec.describe LooseForeignKeys::ProcessDeletedRecordsService, feature_category:
   let(:loose_fk_child_table_1_2) { table(:_test_loose_fk_child_table_1_2) }
   let(:loose_fk_child_table_2_1) { table(:_test_loose_fk_child_table_2_1) }
 
-  before(:all) do
+  before_all do
     create_table_structure
   end
 

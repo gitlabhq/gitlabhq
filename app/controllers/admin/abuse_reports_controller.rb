@@ -4,7 +4,7 @@ class Admin::AbuseReportsController < Admin::ApplicationController
   feature_category :insider_threat
 
   before_action :set_status_param, only: :index, if: -> { Feature.enabled?(:abuse_reports_list) }
-  before_action :find_abuse_report, only: [:show, :update, :destroy]
+  before_action :find_abuse_report, only: [:show, :moderate_user, :update, :destroy]
 
   def index
     @abuse_reports = AbuseReportsFinder.new(params).execute
@@ -12,8 +12,22 @@ class Admin::AbuseReportsController < Admin::ApplicationController
 
   def show; end
 
+  # Kept for backwards compatibility.
+  # TODO: See https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/167?work_item_iid=443
+  # In 16.4 remove or re-use this endpoint after frontend has migrated to using moderate_user endpoint
   def update
-    response = Admin::AbuseReportUpdateService.new(@abuse_report, current_user, permitted_params).execute
+    response = Admin::AbuseReports::ModerateUserService.new(@abuse_report, current_user, permitted_params).execute
+
+    if response.success?
+      render json: { message: response.message }
+    else
+      render json: { message: response.message }, status: :unprocessable_entity
+    end
+  end
+
+  def moderate_user
+    response = Admin::AbuseReports::ModerateUserService.new(@abuse_report, current_user, permitted_params).execute
+
     if response.success?
       render json: { message: response.message }
     else

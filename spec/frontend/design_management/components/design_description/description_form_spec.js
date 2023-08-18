@@ -188,10 +188,9 @@ describe('Design description form', () => {
       });
 
       it('tracks submit action', () => {
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'editor_type_used', {
-          context: 'Design',
-          editorType: 'editor_type_plain_text_editor',
-          label: 'editor_tracking',
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+          label: 'markdown_editor',
+          property: 'Design',
         });
       });
     });

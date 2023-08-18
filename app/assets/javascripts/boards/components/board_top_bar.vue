@@ -1,8 +1,10 @@
 <script>
 import BoardAddNewColumnTrigger from '~/boards/components/board_add_new_column_trigger.vue';
+import { s__ } from '~/locale';
 import BoardsSelector from 'ee_else_ce/boards/components/boards_selector.vue';
 import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_filtered_search.vue';
 import { getBoardQuery } from 'ee_else_ce/boards/boards_util';
+import { setError } from '../graphql/cache_updates';
 import ConfigToggle from './config_toggle.vue';
 import NewBoardButton from './new_board_button.vue';
 import ToggleFocus from './toggle_focus.vue';
@@ -69,6 +71,12 @@ export default {
           ...board,
           labels: board.labels?.nodes,
         };
+      },
+      error(error) {
+        setError({
+          error,
+          message: s__('Boards|An error occurred while fetching board details. Please try again.'),
+        });
       },
     },
   },

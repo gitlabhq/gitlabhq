@@ -35,6 +35,11 @@ export default {
       required: false,
       default: true,
     },
+    canSetTimeEstimate: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   mounted() {
     this.listenForQuickActions();
@@ -73,6 +78,7 @@ export default {
       :issuable-iid="issuableIid"
       :limit-to-hours="limitToHours"
       :can-add-time-entries="canAddTimeEntries"
+      :can-set-time-estimate="canSetTimeEstimate"
     />
   </div>
 </template>

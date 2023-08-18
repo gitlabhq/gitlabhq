@@ -6,11 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Mattermost
 
-NOTE:
-This document applies to GitLab 11.0 and later.
-
 You can run a [GitLab Mattermost](https://gitlab.com/gitlab-org/gitlab-mattermost)
-service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between [Mattermost and GitLab](https://mattermost.com/solutions/mattermost-gitlab/), and our Linux package allows you to easily install it. But it is a separate application from a separate company.
+service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between [Mattermost and GitLab](https://mattermost.com/solutions/mattermost-gitlab/), and our Linux package allows you to install it. **However, Mattermost is a separate application from a separate company.** GitLab Support cannot help you with Mattermost-specific questions beyond the integration with GitLab. If you need help with Mattermost itself, see the [community support resources](#community-support-resources).
 
 ## Prerequisites
 
@@ -254,13 +251,13 @@ For local connections, the `mmctl` binary and Mattermost must be run from the sa
    sudo gitlab-ctl restart mattermost
    ```
 
-You can then use `/opt/gitlab/embedded/bin/mmctl --local` to run `mmctl` commands
+You can then use `sudo /opt/gitlab/embedded/bin/mmctl --local` to run `mmctl` commands
 on your Mattermost instance.
 
 For example, to show the list of users:
 
 ```shell
-$ /opt/gitlab/embedded/bin/mmctl --local user list
+$ sudo /opt/gitlab/embedded/bin/mmctl --local user list
 
 13dzo5bmg7fu8rdox347hbfxde: appsbot (appsbot@localhost)
 tbnkwjdug3dejcoddboo4yuomr: boards (boards@localhost)
@@ -272,7 +269,7 @@ There are 4 users on local instance
 ### Use `mmctl` through a remote connection
 
 For remote connections or local connections where the socket cannot be used,
-create a non SSO user and give that user administrator privileges. Those credentials
+create a non-SSO user and give that user administrator privileges. Those credentials
 can then be used to authenticate `mmctl`:
 
 ```shell
@@ -311,57 +308,52 @@ This setting can also be configured in `/var/opt/gitlab/mattermost/config.json`.
 
 ## Upgrading GitLab Mattermost
 
-Below is a list of Mattermost versions for GitLab 11.10 and later:
+Below is a list of Mattermost versions for GitLab 14.0 and later:
 
-| GitLab Version  | Mattermost Version |
-| :------------ |:----------------|
-| 11.11 | 5.10 |
-| 12.0 | 5.11 |
-| 12.1 | 5.12 |
-| 12.2 | 5.13 |
-| 12.3 | 5.14 |
-| 12.4 | 5.15 |
-| 12.5 | 5.16 |
-| 12.6 | 5.17 |
-| 12.7 | 5.17 |
-| 12.8 | 5.19 |
-| 12.9 | 5.20 |
-| 12.10 | 5.21 |
-| 13.0 | 5.22 |
-| 13.1 | 5.23 |
-| 13.2 | 5.24 |
-| 13.3 | 5.25 |
-| 13.4 | 5.26 |
-| 13.5 | 5.27 |
-| 13.6 | 5.28 |
-| 13.7 | 5.29 |
-| 13.8 | 5.30 |
-| 13.9 | 5.31 |
-| 13.10 | 5.32 |
-| 13.11 | 5.33 |
-| 13.12 | 5.34 |
-| 14.0 | 5.35 |
-| 14.1 | 5.36 |
-| 14.2 | 5.37 |
-| 14.3 | 5.38 |
-| 14.4 | 5.39 |
-| 14.5 | 5.39 |
-| 14.6 | 6.1 |
-| 14.7 | 6.2 |
+| GitLab version | Mattermost version |
+|:---------------|:-------------------|
+| 16.2           | 7.10               |
+| 16.1           | 7.10               |
+| 16.0           | 7.10               |
+| 15.11          | 7.9                |
+| 15.10          | 7.8                |
+| 15.9           | 7.7                |
+| 15.8           | 7.5                |
+| 15.7           | 7.5                |
+| 15.6           | 7.4                |
+| 15.5           | 7.3                |
+| 15.4           | 7.2                |
+| 15.3           | 7.1                |
+| 15.2           | 7.0                |
+| 15.1           | 6.7                |
+| 15.0           | 6.6                |
+| 14.10          | 6.5                |
+| 14.9           | 6.4                |
+| 14.8           | 6.3                |
+| 14.7           | 6.2                |
+| 14.6           | 6.1                |
+| 14.5           | 5.39               |
+| 14.4           | 5.39               |
+| 14.3           | 5.38               |
+| 14.2           | 5.37               |
+| 14.1           | 5.36               |
+| 14.0           | 5.35               |
 
-- GitLab 14.5 remained on Mattermost 5.39
-- GitLab 14.6 updates to Mattermost 6.1 instead of 6.0
+- GitLab 14.5 remained on Mattermost 5.39.
+- GitLab 14.6 updates to Mattermost 6.1 instead of 6.0.
+- GitLab 15.8 remained on Mattermost 7.5.
+- GitLab 16.1 and 16.2 remained on Mattermost 7.10.
 
 NOTE:
 When upgrading the Mattermost version, it is essential to check the
 [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html)
 for Mattermost to address any changes or migrations that need to be performed.
 
-Starting with GitLab 11.0, GitLab Mattermost can be upgraded through the regular Linux package update process. When upgrading previous versions of
+GitLab Mattermost can be upgraded through the regular Linux package update process. When upgrading previous versions of
 GitLab, the update process can only be used if Mattermost configuration settings have not been changed outside of GitLab. That is, no changes to the Mattermost `config.json`
 file have been made - either directly or via the Mattermost **System Console**, which saves changes to `config.json`.
 
-If you are upgrading to at least GitLab 11.0 or have only configured Mattermost using `gitlab.rb`, you can upgrade GitLab using the Linux package and then run `gitlab-ctl reconfigure` to upgrade GitLab Mattermost to the latest version.
+If you have only configured Mattermost using `gitlab.rb`, you can upgrade GitLab using the Linux package and then run `gitlab-ctl reconfigure` to upgrade GitLab Mattermost to the latest version.
 
 If this is not the case, there are two options:
 
@@ -376,121 +368,12 @@ If this is not the case, there are two options:
 
 For a complete list of upgrade notices and special considerations for older versions, see the [Mattermost documentation](https://docs.mattermost.com/administration/important-upgrade-notes.html).
 
-## Upgrading GitLab Mattermost to 15.10
-
-GitLab 15.10 ships with Mattermost 7.8. Before upgrading, [connect to the bundled PostgreSQL database](#connecting-to-the-bundled-postgresql-database) to perform the PostgreSQL maintenance described in the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html) provided by Mattermost.
-
 ## Upgrading GitLab Mattermost to 14.6
 
 GitLab 14.6 ships with Mattermost 6.1 including potentially long running database migrations for Mattermost 6.0. For information about upgrading and for ways to reduce the downtime caused by those migrations, read the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html) for both versions. If you need to perform any manual migrations, [connect to the bundled PostgreSQL database](#connecting-to-the-bundled-postgresql-database).
 
 NOTE:
 The Mattermost upgrade notes refer to different impacts when used with a PostgreSQL versus a MySQL database. The GitLab Mattermost included with the Linux package uses a PostgreSQL database.
-
-## Upgrading GitLab Mattermost from versions prior to 11.0
-
-With version 11.0, GitLab introduced breaking changes which affected Mattermost configuration.
-In versions prior to GitLab 11.0 all
-Mattermost-related settings were configurable from the `gitlab.rb` file, which
-generated the Mattermost `config.json` file. However, Mattermost also
-permitted configuration via its System Console. This configuration ended up in
-the same `config.json` file, which resulted in changes made via the System Console being
-overwritten when users ran `gitlab-ctl reconfigure`.
-
-To resolve this problem, `gitlab.rb` includes only the
-configuration necessary for GitLab<=>Mattermost integration in 11.0. GitLab no longer
-generates the `config.json` file, and instead passes limited configuration settings via environment variables.
-
-The settings that continue to be supported in `gitlab.rb` can be found in
-[`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template).
-
-From GitLab 11.0, other Mattermost settings can be configured through the Mattermost System Console,
-by editing `/var/opt/gitlab/mattermost/config.json`, or by using `mattermost['env']` in `gitlab.rb`.
-
-If you would like to keep configuring Mattermost using `gitlab.rb`, you can take the following actions
-in preparation for GitLab 11.0:
-
-1. Upgrade to version 10.x which supports the new `mattermost['env']` setting.
-1. Configure any settings not listed above through the `mattermost['env']` setting. Mattermost requires
-   environment variables to be provided in `MM_<CATEGORY>SETTINGS_<ATTRIBUTE>` format. Below is an example
-   of how to convert the old settings syntax to the new one.
-
-The following settings in `gitlab.rb`:
-
-```ruby
-mattermost['service_maximum_login_attempts'] = 10
-mattermost['team_teammate_name_display'] = "full_name"
-mattermost['sql_max_idle_conns'] = 10
-mattermost['log_file_level'] = 'INFO'
-mattermost['email_batching_interval'] = 30
-mattermost['file_enable_file_attachments'] = true
-mattermost['ratelimit_memory_store_size'] = 10000
-mattermost['support_terms_of_service_link'] = "/static/help/terms.html"
-mattermost['privacy_show_email_address'] = true
-mattermost['localization_available_locales'] = "en,es,fr,ja,pt-BR"
-mattermost['webrtc_enable'] = false
-```
-
-Would translate to:
-
-```ruby
-mattermost['env'] = {
-                    'MM_SERVICESETTINGS_MAXIMUMLOGINATTEMPTS' => '10',
-                    'MM_TEAMSETTINGS_TEAMMATENAMEDISPLAY' => 'full_name',
-                    'MM_SQLSETTINGS_MAXIDLECONNS' => '10',
-                    'MM_LOGSETTINGS_FILELEVEL' => 'INFO',
-                    'MM_EMAILSETTINGS_BATCHINGINTERVAL' => '30',
-                    'MM_FILESETTINGS_ENABLEFILEATTACHMENTS' => 'true',
-                    'MM_RATELIMITSETTINGS_MEMORYSTORESIZE' => '10000',
-                    'MM_SUPPORTSETTINGS_TERMSOFSERVICELINK' => '/static/help/terms.html',
-                    'MM_PRIVACYSETTINGS_SHOWEMAILADDRESS' => 'true',
-                    'MM_LOCALIZATIONSETTINGS_AVAILABLELOCALES' => 'en,es,fr,ja,pt-BR',
-                    'MM_WEBRTCSETTINGS_ENABLE' => 'false'
-                    }
-```
-
-Refer to the [Mattermost Configuration Settings documentation](https://docs.mattermost.com/administration/config-settings.html)
-for details about categories and configuration values.
-
-There are a few exceptions to this rule:
-
-1. `ServiceSettings.ListenAddress` configuration of Mattermost is configured
-   by `mattermost['service_address']` and `mattermost['service_port']` settings.
-1. Configuration settings named in an inconsistent way are given in the
-   following table. Use these mappings when converting them to environment
-   variables.
-
-|`gitlab.rb` configuration|Environment variable|
-|---|---|
-|`mattermost['service_lets_encrypt_cert_cache_file']`|`MM_SERVICESETTINGS_LETSENCRYPTCERTIFICATECACHEFILE`|
-|`mattermost['service_user_access_tokens']`|`MM_SERVICESETTINGS_ENABLEUSERACCESSTOKENS`|
-|`mattermost['log_console_enable']`|`MM_LOGSETTINGS_ENABLECONSOLE`|
-|`mattermost['email_enable_batching']`|`MM_EMAILSETTINGS_ENABLEEMAILBATCHING`|
-|`mattermost['email_batching_buffer_size']`|`MM_EMAILSETTINGS_EMAILBATCHINGBUFFERSIZE`|
-|`mattermost['email_batching_interval']`|`MM_EMAILSETTINGS_EMAILBATCHINGINTERVAL`|
-|`mattermost['email_smtp_auth']`|`MM_EMAILSETTINGS_ENABLESMTPAUTH`|
-|`mattermost['email_notification_content_type']`|`MM_EMAILSETTINGS_NOTIFICATIONCONTENTTYPE`|
-|`mattermost['ratelimit_enable_ratelimiter']`|`MM_RATELIMITSETTINGS_ENABLE`|
-|`mattermost['support_email']`|`MM_SUPPORTSETTINGS_SUPPORTEMAIL`|
-|`mattermost['localization_server_locale']`|`MM_LOCALIZATIONSETTINGS_DEFAULTSERVERLOCALE`|
-|`mattermost['localization_client_locale']`|`MM_LOCALIZATIONSETTINGS_DEFAULTCLIENTLOCALE`|
-|`mattermost['webrtc_gateway_stun_uri']`|`MM_WEBRTCSETTINGS_STUN_URI`|
-|`mattermost['webrtc_gateway_turn_uri']`|`MM_WEBRTCSETTINGS_TURN_URI`|
-|`mattermost['webrtc_gateway_turn_username']`|`MM_WEBRTCSETTINGS_TURN_USERNAME`|
-|`mattermost['webrtc_gateway_turn_sharedkey']`|`MM_WEBRTCSETTINGS_TURN_SHAREDKEY`|
-
-NOTE:
-GitLab 11.0 no longer generates `config.json` file from the configuration specified
-in `gitlab.rb`. Users are responsible for managing this file which can be done via the
-Mattermost System Console or manually.
-If a configuration setting is specified via both the `gitlab.rb` (as an environment variable)
-and `config.json` files, the environment variable gets precedence.
-
-If you encounter any issues [visit the GitLab Mattermost troubleshooting forum](https://forum.mattermost.com/t/upgrading-to-gitlab-mattermost-in-gitlab-8-9/1735) and share any relevant portions of `mattermost.log` along with the step at which you encountered issues.
-
-### Upgrading GitLab Mattermost outside of GitLab
-
-If you choose to upgrade Mattermost outside of the Linux package automation, [follow this guide](https://docs.mattermost.com/administration/upgrade.html).
 
 ## OAuth 2.0 sequence diagram
 

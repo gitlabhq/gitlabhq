@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::DataBuilder::Issuable do
   let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:reusable_project) { create(:project, :repository, group: group) }
 
   # This shared example requires a `builder` and `user` variable
   shared_examples 'issuable hook data' do |kind, hook_data_issuable_builder_class|
@@ -96,17 +98,17 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
 
   describe '#build' do
     it_behaves_like 'issuable hook data', 'issue', Gitlab::HookData::IssueBuilder do
-      let(:issuable) { create(:issue, description: 'A description') }
+      let_it_be(:issuable) { create(:issue, description: 'A description', project: reusable_project) }
       let(:builder) { described_class.new(issuable) }
     end
 
     it_behaves_like 'issuable hook data', 'merge_request', Gitlab::HookData::MergeRequestBuilder do
-      let(:issuable) { create(:merge_request, description: 'A description') }
+      let_it_be(:issuable) { create(:merge_request, description: 'A description', source_project: reusable_project) }
       let(:builder) { described_class.new(issuable) }
     end
 
     context 'issue is assigned' do
-      let(:issue) { create(:issue, assignees: [user]) }
+      let(:issue) { create(:issue, assignees: [user], project: reusable_project) }
       let(:data) { described_class.new(issue).build(user: user) }
 
       it 'returns correct hook data' do
@@ -117,8 +119,21 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
       end
     end
 
+    context 'when issuable is a group level work item' do
+      let(:work_item) { create(:work_item, namespace: group, description: 'work item description') }
+
+      it 'returns correct hook data', :aggregate_failures do
+        data = described_class.new(work_item).build(user: user)
+
+        expect(data[:object_kind]).to eq('work_item')
+        expect(data[:event_type]).to eq('work_item')
+        expect(data.dig(:object_attributes, :id)).to eq(work_item.id)
+        expect(data.dig(:object_attributes, :iid)).to eq(work_item.iid)
+      end
+    end
+
     context 'merge_request is assigned' do
-      let(:merge_request) { create(:merge_request, assignees: [user]) }
+      let(:merge_request) { create(:merge_request, assignees: [user], source_project: reusable_project) }
       let(:data) { described_class.new(merge_request).build(user: user) }
 
       it 'returns correct hook data' do
@@ -129,7 +144,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
     end
 
     context 'merge_request is assigned reviewers' do
-      let(:merge_request) { create(:merge_request, reviewers: [user]) }
+      let(:merge_request) { create(:merge_request, reviewers: [user], source_project: reusable_project) }
       let(:data) { described_class.new(merge_request).build(user: user) }
 
       it 'returns correct hook data' do
@@ -139,7 +154,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
     end
 
     context 'when merge_request does not have reviewers and assignees' do
-      let(:merge_request) { create(:merge_request) }
+      let(:merge_request) { create(:merge_request, source_project: reusable_project) }
       let(:data) { described_class.new(merge_request).build(user: user) }
 
       it 'returns correct hook data' do

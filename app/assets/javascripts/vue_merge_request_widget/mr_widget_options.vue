@@ -56,7 +56,6 @@ import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variab
 import getStateQuery from './queries/get_state.query.graphql';
 import getStateSubscription from './queries/get_state.subscription.graphql';
 import accessibilityExtension from './extensions/accessibility';
-import codeQualityExtension from './extensions/code_quality';
 import testReportExtension from './extensions/test_report';
 import ReportWidgetContainer from './components/report_widget_container.vue';
 import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
@@ -215,9 +214,6 @@ export default {
 
       return !hasCI && mergeRequestAddCiConfigPath && !isDismissedSuggestPipeline;
     },
-    shouldRenderCodeQuality() {
-      return this.mr?.codequalityReportsPath;
-    },
     shouldRenderCollaborationStatus() {
       return this.mr.allowCollaboration && this.mr.isOpen;
     },
@@ -278,11 +274,6 @@ export default {
       if (newVal !== oldVal && this.shouldRenderMergedPipeline) {
         // init polling
         this.initPostMergeDeploymentsPolling();
-      }
-    },
-    shouldRenderCodeQuality(newVal) {
-      if (newVal) {
-        this.registerCodeQualityExtension();
       }
     },
     shouldShowAccessibilityReport(newVal) {
@@ -534,11 +525,6 @@ export default {
         registerExtension(accessibilityExtension);
       }
     },
-    registerCodeQualityExtension() {
-      if (this.shouldRenderCodeQuality) {
-        registerExtension(codeQualityExtension);
-      }
-    },
     registerTestReportExtension() {
       if (this.shouldRenderTestReport) {
         registerExtension(testReportExtension);
@@ -559,7 +545,6 @@ export default {
     </header>
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
-      data-testid="mr-suggest-pipeline"
       class="mr-widget-workflow"
       :pipeline-path="mr.mergeRequestAddCiConfigPath"
       :pipeline-svg-path="mr.pipelinesEmptySvgPath"

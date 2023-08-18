@@ -4,7 +4,7 @@ module QA
   RSpec.describe 'Data Stores' do
     describe 'Invite group', :reliable, product_group: :tenant_scale do
       shared_examples 'invites group to project' do
-        it 'verifies group is added and members can access project with correct access level' do
+        it 'grants group and members correct access level' do
           Page::Project::Menu.perform(&:click_members)
           Page::Project::Members.perform do |project_members|
             project_members.invite_group(group.path, 'Developer')
@@ -40,19 +40,14 @@ module QA
 
       context 'with a personal namespace project',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349223' do
-        let(:group) do
-          Resource::Group.fabricate_via_api! do |group|
-            group.path = "group-for-personal-project-#{SecureRandom.hex(8)}"
-          end
-        end
+        let(:group) { create(:group, path: "group-for-personal-project-#{SecureRandom.hex(8)}") }
 
         let(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = 'personal-namespace-project'
-            project.personal_namespace = Runtime::User.username
-            project.visibility = :private
-            project.description = 'test personal namespace project'
-          end
+          create(:project,
+            :private,
+            name: 'personal-namespace-project',
+            description: 'test personal namespace project',
+            personal_namespace: Runtime::User.username)
         end
 
         after do
@@ -64,19 +59,9 @@ module QA
       end
 
       context 'with a group project', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349340' do
-        let(:group) do
-          Resource::Group.fabricate_via_api! do |group|
-            group.path = "group-for-group-project-#{SecureRandom.hex(8)}"
-          end
-        end
+        let(:group) { create(:group, path: "group-for-group-project-#{SecureRandom.hex(8)}") }
 
-        let(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = 'group-project'
-            project.visibility = :private
-            project.description = 'test group project'
-          end
-        end
+        let(:project) { create(:project, :private, name: 'group-project', description: 'test group project') }
 
         after do
           project.remove_via_api!

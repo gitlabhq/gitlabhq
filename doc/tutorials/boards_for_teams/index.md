@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up issue boards for team hand-off **(PREMIUM)**
+# Tutorial: Set up issue boards for team hand-off **(PREMIUM ALL)**
 
 <!-- vale gitlab.FutureTense = NO -->
 
@@ -82,7 +82,8 @@ Prerequisites:
 
 To create a blank project:
 
-1. In your group, on the right of the page, select **New project**.
+1. In your group, on the left sidebar, at the top, select **Create new** (**{plus}**) and then select
+   **In this group > New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, name your project `Paperclip Assistant`.
@@ -170,7 +171,7 @@ To create an issue from your board:
 
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **UX workflow**.
-1. On the `Workflow::Ready for development` list, select **List actions** (**{ellipsis_v}**) **> Create new issue**.
+1. On the `Workflow::Ready for development` list, select **Create new issue** (**{plus}**).
 1. Complete the fields:
    1. Under **Title**, enter `Redesign user profile page`.
    1. Under **Projects**, select **Paperclip Software Factory / Paperclip Assistant**.

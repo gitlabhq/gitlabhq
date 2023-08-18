@@ -218,7 +218,6 @@ module ApplicationSettingsHelper
       :admin_mode,
       :after_sign_out_path,
       :after_sign_up_text,
-      :ai_access_token,
       :akismet_api_key,
       :akismet_enabled,
       :allow_local_requests_from_hooks_and_services,
@@ -242,6 +241,7 @@ module ApplicationSettingsHelper
       :default_artifacts_expire_in,
       :default_branch_name,
       :default_branch_protection,
+      :default_branch_protection_defaults,
       :default_ci_config_path,
       :default_group_visibility,
       :default_preferred_language,
@@ -310,7 +310,6 @@ module ApplicationSettingsHelper
       :inactive_projects_delete_after_months,
       :inactive_projects_min_size_mb,
       :inactive_projects_send_warning_email_after_months,
-      :instance_level_code_suggestions_enabled,
       :invisible_captcha_enabled,
       :jira_connect_application_key,
       :jira_connect_public_key_storage_enabled,
@@ -319,6 +318,8 @@ module ApplicationSettingsHelper
       :max_attachment_size,
       :max_export_size,
       :max_import_size,
+      :max_import_remote_file_size,
+      :max_decompressed_archive_size,
       :max_pages_size,
       :max_pages_custom_domains_per_project,
       :max_terraform_state_size_bytes,
@@ -457,6 +458,7 @@ module ApplicationSettingsHelper
       :wiki_asciidoc_allow_uri_includes,
       :container_registry_delete_tags_service_timeout,
       :rate_limiting_response_text,
+      :package_registry_allow_anyone_to_pull_option,
       :package_registry_cleanup_policies_worker_capacity,
       :container_registry_expiration_policies_worker_capacity,
       :container_registry_cleanup_tags_service_max_list_size,
@@ -491,6 +493,7 @@ module ApplicationSettingsHelper
       :invitation_flow_enforcement,
       :can_create_group,
       :bulk_import_enabled,
+      :bulk_import_max_download_file_size,
       :allow_runner_registration_token,
       :user_defaults_to_private_profile,
       :deactivation_email_additional_text,
@@ -498,7 +501,9 @@ module ApplicationSettingsHelper
       :gitlab_dedicated_instance,
       :ci_max_includes,
       :allow_account_deletion,
-      :gitlab_shell_operation_limit
+      :gitlab_shell_operation_limit,
+      :namespace_aggregation_schedule_lease_duration_in_seconds,
+      :ci_max_total_yaml_size_bytes
     ].tap do |settings|
       next if Gitlab.com?
 

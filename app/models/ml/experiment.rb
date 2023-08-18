@@ -59,6 +59,10 @@ module Ml
         numeric?(iid)
       end
 
+      def find_or_create(project, name, user)
+        create_with(user: user).find_or_create_by(project: project, name: name)
+      end
+
       private
 
       def numeric?(value)

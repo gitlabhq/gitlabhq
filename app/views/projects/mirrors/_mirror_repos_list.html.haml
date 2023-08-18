@@ -1,49 +1,41 @@
 - mirror_settings_enabled = can?(current_user, :admin_remote_mirror, @project)
 
-.panel.panel-default
-  .table-responsive
-    - if !@project.mirror? && @project.remote_mirrors.count == 0
-      = render Pajamas::CardComponent.new(card_options: { class: 'gl-mt-5' }) do |c|
-        - c.with_header do
-          %strong
-            = _('Mirrored repositories') + ' (0)'
-        - c.with_body do
-          = _('There are currently no mirrored repositories.')
-    - else
-      %table.table.gl-table.gl-mt-5
-        %thead
-          %tr
-            %th
-              = _('Mirrored repositories')
-              = render_if_exists 'projects/mirrors/mirrored_repositories_count'
-            %th= _('Direction')
-            %th= _('Last update attempt')
-            %th= _('Last successful update')
-            %th
-            %th
-        %tbody.js-mirrors-table-body
-          = render_if_exists 'projects/mirrors/table_pull_row'
-          - @project.remote_mirrors.each_with_index do |mirror, index|
-            - next if mirror.new_record?
-            %tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?), data: { qa_selector: 'mirrored_repository_row_container' } }
-              %td{ data: { qa_selector: 'mirror_repository_url_content' } }
-                = mirror.safe_url || _('Invalid URL')
-                = render_if_exists 'projects/mirrors/mirror_branches_setting_badge', record: mirror
-              %td= _('Push')
-              %td
-                = mirror.last_update_started_at.present? ? time_ago_with_tooltip(mirror.last_update_started_at) : _('Never')
-              %td{ data: { qa_selector: 'mirror_last_update_at_content' } }= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
-              %td
-                - if mirror.disabled?
-                  = render 'projects/mirrors/disabled_mirror_badge'
-                - if mirror.last_error.present?
-                  = gl_badge_tag _('Error'), { variant: :danger }, { data: { toggle: 'tooltip', html: 'true', qa_selector: 'mirror_error_badge_content' }, title: html_escape(mirror.last_error.try(:strip)) }
-              %td.gl-display-flex
-                - if mirror_settings_enabled
-                  .btn-group.mirror-actions-group{ role: 'group' }
-                    - if mirror.ssh_key_auth?
-                      = clipboard_button(text: mirror.ssh_public_key, class: 'gl-button btn btn-default btn-icon', title: _('Copy SSH public key'), qa_selector: 'copy_public_key_button')
-                    = render 'shared/remote_mirror_update_button', remote_mirror: mirror
-                    = render Pajamas::ButtonComponent.new(variant: :danger,
-                      icon: 'remove',
-                      button_options: { class: 'js-delete-mirror rspec-delete-mirror', title: _('Remove'), data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' } })
+.table-responsive.gl-mb-0
+  - if !@project.mirror? && @project.remote_mirrors.count == 0
+    .gl-new-card-empty.gl-px-5.gl-py-4= _('There are currently no mirrored repositories.')
+  - else
+    %table.table.b-table.gl-table.b-table-stacked-md
+      %thead.d-none.d-md-table-header-group
+        %tr
+          %th= _('Repository')
+          %th= _('Direction')
+          %th= _('Last update attempt')
+          %th= _('Last successful update')
+          %th
+          %th
+      %tbody.js-mirrors-table-body
+        = render_if_exists 'projects/mirrors/table_pull_row'
+        - @project.remote_mirrors.each_with_index do |mirror, index|
+          - next if mirror.new_record?
+          %tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?), data: { qa_selector: 'mirrored_repository_row_container' } }
+            %td{ data: { qa_selector: 'mirror_repository_url_content' } }
+              = mirror.safe_url || _('Invalid URL')
+              = render_if_exists 'projects/mirrors/mirror_branches_setting_badge', record: mirror
+            %td= _('Push')
+            %td
+              = mirror.last_update_started_at.present? ? time_ago_with_tooltip(mirror.last_update_started_at) : _('Never')
+            %td{ data: { qa_selector: 'mirror_last_update_at_content' } }= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
+            %td
+              - if mirror.disabled?
+                = render 'projects/mirrors/disabled_mirror_badge'
+              - if mirror.last_error.present?
+                = gl_badge_tag _('Error'), { variant: :danger }, { data: { toggle: 'tooltip', html: 'true', qa_selector: 'mirror_error_badge_content' }, title: html_escape(mirror.last_error.try(:strip)) }
+            %td
+              - if mirror_settings_enabled
+                .btn-group.mirror-actions-group{ role: 'group' }
+                  - if mirror.ssh_key_auth?
+                    = clipboard_button(text: mirror.ssh_public_key, class: 'gl-button btn btn-default btn-icon', title: _('Copy SSH public key'), qa_selector: 'copy_public_key_button')
+                  = render 'shared/remote_mirror_update_button', remote_mirror: mirror
+                  = render Pajamas::ButtonComponent.new(variant: :danger,
+                    icon: 'remove',
+                    button_options: { class: 'js-delete-mirror rspec-delete-mirror', title: _('Remove'), data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' } })

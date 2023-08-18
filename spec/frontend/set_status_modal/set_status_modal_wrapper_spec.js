@@ -164,7 +164,7 @@ describe('SetStatusModalWrapper', () => {
         findAvailabilityCheckbox().vm.$emit('input', true);
 
         // set the currentClearStatusAfter to 30 minutes
-        await wrapper.find('[data-testid="thirtyMinutes"]').trigger('click');
+        await wrapper.find('[data-testid="listbox-item-thirtyMinutes"]').trigger('click');
 
         findModal().vm.$emit('primary');
         await nextTick();

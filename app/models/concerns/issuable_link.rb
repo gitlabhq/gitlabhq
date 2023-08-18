@@ -21,6 +21,10 @@ module IssuableLink
       raise NotImplementedError
     end
 
+    def issuable_name
+      issuable_type.to_s.humanize(capitalize: false)
+    end
+
     # Used to get the available types for the API
     # overriden in EE
     def available_link_types
@@ -53,7 +57,7 @@ module IssuableLink
       return unless source && target
 
       if self.class.base_class.find_by(source: target, target: source)
-        errors.add(:source, "is already related to this #{self.class.issuable_type}")
+        errors.add(:source, "is already related to this #{self.class.issuable_name}")
       end
     end
   end

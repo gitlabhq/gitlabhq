@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import { cloneDeep } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';

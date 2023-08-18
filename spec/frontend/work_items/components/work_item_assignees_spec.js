@@ -107,7 +107,7 @@ describe('WorkItemAssignees component', () => {
 
   it('container does not have shadow by default', () => {
     createComponent();
-    expect(findTokenSelector().props('containerClass')).toBe('gl-shadow-none!');
+    expect(findTokenSelector().props('containerClass')).toContain('gl-shadow-none!');
   });
 
   it('container has shadow after focusing token selector', async () => {
@@ -415,7 +415,7 @@ describe('WorkItemAssignees component', () => {
       findTokenSelector().vm.$emit('input', dropdownItems);
       await nextTick();
 
-      expect(findTokenSelector().props('containerClass')).toBe('gl-shadow-none!');
+      expect(findTokenSelector().props('containerClass')).toContain('gl-shadow-none!');
     });
 
     it('calls the mutation for updating assignees with the correct input', async () => {

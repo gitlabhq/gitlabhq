@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective, GlButton, GlFormInput, GlLink, GlLoadingIcon } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 
 // @deprecated This component should only be used when there is no GraphQL API.

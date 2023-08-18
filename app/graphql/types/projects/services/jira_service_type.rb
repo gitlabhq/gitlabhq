@@ -7,7 +7,7 @@ module Types
       class JiraServiceType < BaseObject
         graphql_name 'JiraService'
 
-        implements(Types::Projects::ServiceType)
+        implements Types::Projects::ServiceType
 
         authorize :admin_project
 

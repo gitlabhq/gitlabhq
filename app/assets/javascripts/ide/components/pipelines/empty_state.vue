@@ -1,5 +1,6 @@
 <script>
 import { GlEmptyState } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';

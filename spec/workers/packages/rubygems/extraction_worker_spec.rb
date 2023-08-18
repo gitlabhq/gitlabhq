@@ -14,41 +14,71 @@ RSpec.describe Packages::Rubygems::ExtractionWorker, type: :worker, feature_cate
 
     subject { described_class.new.perform(*job_args) }
 
-    it 'processes the gem', :aggregate_failures do
-      expect { subject }
-        .to change { Packages::Package.count }.by(0)
-        .and change { Packages::PackageFile.count }.by(1)
+    context 'without errors' do
+      let_it_be(:package_for_processing) { create(:rubygems_package, :processing) }
+      let(:package_file) { package_for_processing.package_files.first }
 
-      expect(Packages::Package.last.id).to be(package.id)
-      expect(package.name).not_to be(package_name)
+      it 'processes the gem', :aggregate_failures do
+        expect { subject }
+          .to change { Packages::Package.count }.by(0)
+          .and change { Packages::PackageFile.count }.by(1)
+
+        expect(Packages::Package.last.id).to be(package_for_processing.id)
+        expect(package_for_processing.name).not_to be(package_name)
+      end
     end
 
-    it 'handles a processing failure', :aggregate_failures do
-      expect(::Packages::Rubygems::ProcessGemService).to receive(:new)
-        .and_raise(::Packages::Rubygems::ProcessGemService::ExtractionError)
+    shared_examples 'handling error' do |error_message:, error_class:|
+      it 'mark the package as errored', :aggregate_failures do
+        expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
+          instance_of(error_class),
+          {
+            package_file_id: package_file.id,
+            project_id: package.project_id
+          }
+        )
 
-      expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-        instance_of(::Packages::Rubygems::ProcessGemService::ExtractionError),
-        project_id: package.project_id
-      )
+        expect { subject }
+          .to not_change { Packages::Package.count }
+          .and not_change { Packages::PackageFile.count }
+          .and change { package.reload.status }.from('processing').to('error')
 
-      subject
-
-      expect(package.reload).to be_error
+        expect(package.status_message).to match(error_message)
+      end
     end
 
-    it 'handles processing an unaccounted for error', :aggregate_failures do
-      expect(::Packages::Rubygems::ProcessGemService).to receive(:new)
-        .and_raise(Zip::Error)
+    context 'with controlled errors' do
+      context 'handling metadata with invalid size' do
+        include_context 'with invalid Rubygems metadata'
 
-      expect(Gitlab::ErrorTracking).to receive(:log_exception).with(
-        instance_of(Zip::Error),
-        project_id: package.project_id
-      )
+        it_behaves_like 'handling error',
+          error_class: ::Packages::Rubygems::ProcessGemService::InvalidMetadataError,
+          error_message: 'Invalid metadata'
+      end
 
-      subject
+      context 'handling a file error' do
+        before do
+          package_file.file = nil
+        end
 
-      expect(package.reload).to be_error
+        it_behaves_like 'handling error',
+          error_class: ::Packages::Rubygems::ProcessGemService::ExtractionError,
+          error_message: 'Unable to read gem file'
+      end
+    end
+
+    context 'with uncontrolled errors' do
+      [Zip::Error, StandardError].each do |exception|
+        context "handling #{exception}", :aggregate_failures do
+          before do
+            allow(::Packages::Rubygems::ProcessGemService).to receive(:new).and_raise(exception)
+          end
+
+          it_behaves_like 'handling error',
+            error_class: exception,
+            error_message: "Unexpected error: #{exception}"
+        end
+      end
     end
 
     context 'returns when there is no package file' do

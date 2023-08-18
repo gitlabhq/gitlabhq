@@ -350,7 +350,7 @@ world. Custom domains are supported, but no TLS.
 **Requirements:**
 
 - [Wildcard DNS setup](#dns-configuration)
-- Wildcard TLS certificate
+- TLS certificate. Can be either Wildcard, or any other type meeting the [requirements](../../user/project/pages/custom_domains_ssl_tls_certification/index.md#manual-addition-of-ssltls-certificates).
 - Secondary IP
 
 ---
@@ -527,10 +527,10 @@ fails to work if the custom CA is not recognized.
 This usually results in this error:
 `Post /oauth/token: x509: certificate signed by unknown authority`.
 
-For installation from source, this can be fixed by installing the custom Certificate
-Authority (CA) in the system certificate store.
-
 For Linux package installations, this is fixed by [installing a custom CA](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates).
+
+For self-compiled installations, this can be fixed by installing the custom Certificate
+Authority (CA) in the system certificate store.
 
 ### ZIP serving and cache configuration
 
@@ -968,7 +968,7 @@ See [the available connection settings for different providers](../object_storag
          region: eu-central-1
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source)
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations)
    for the changes to take effect.
 
 1. [Migrate existing Pages deployments to object storage.](#migrate-pages-deployments-to-object-storage)

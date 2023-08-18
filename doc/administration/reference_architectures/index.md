@@ -93,7 +93,7 @@ If you still need to have HA for a lower number of users, this can be achieved w
 
 #### Zero Downtime Upgrades
 
-[Zero Downtime Upgrades](../../update/zero_downtime.md) are available for standard Reference Architecture environments with HA (Cloud Native Hybrid is not supported at this time). This allows for an environment to stay up during an upgrade, but the process is more complex as a result and has some limitations as detailed in the documentation.
+[Zero Downtime Upgrades](../../update/zero_downtime.md) are available for standard Reference Architecture environments with HA (Cloud Native Hybrid is [not supported](https://gitlab.com/groups/gitlab-org/cloud-native/-/epics/52)). This allows for an environment to stay up during an upgrade, but the process is more complex as a result and has some limitations as detailed in the documentation.
 
 When going through this process it's worth noting that there may still be brief moments of downtime when the HA mechanisms take effect.
 
@@ -268,7 +268,7 @@ Through testing and real life usage, the Reference Architectures are validated a
 </thead>
 <tbody>
   <tr>
-    <td>Omnibus</td>
+    <td>Linux package</td>
     <td>🟢</td>
     <td>🟢</td>
     <td>🟡<sup>1</sup></td>

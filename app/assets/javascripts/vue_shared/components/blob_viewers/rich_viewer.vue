@@ -2,6 +2,7 @@
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { handleBlobRichViewer } from '~/blob/viewer';
 import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
+import { handleLocationHash } from '~/lib/utils/common_utils';
 import ViewerMixin from './mixins';
 
 export default {
@@ -27,6 +28,8 @@ export default {
       this.isLoading = false;
       await this.$nextTick();
       handleBlobRichViewer(this.$refs.content, this.type);
+      handleLocationHash();
+      this.$emit('richContentLoaded');
     });
   },
   safeHtmlConfig: {

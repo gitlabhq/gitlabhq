@@ -71,4 +71,5 @@ export function initDefaultTrackers() {
   Tracking.trackLoadEvents();
 
   InternalEvents.bindInternalEventDocument();
+  InternalEvents.trackInternalLoadEvents();
 }

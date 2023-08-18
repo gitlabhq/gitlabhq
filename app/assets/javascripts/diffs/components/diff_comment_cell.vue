@@ -1,4 +1,5 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import DiffDiscussionReply from './diff_discussion_reply.vue';
 import DiffDiscussions from './diff_discussions.vue';

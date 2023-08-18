@@ -38,6 +38,8 @@ class GraphqlController < ApplicationController
   before_action :track_jetbrains_usage
   before_action :track_jetbrains_bundled_usage
   before_action :track_gitlab_cli_usage
+  before_action :track_visual_studio_usage
+  before_action :track_neovim_plugin_usage
   before_action :disable_query_limiting
   before_action :limit_query_size
 
@@ -59,7 +61,7 @@ class GraphqlController < ApplicationController
   urgency :low, [:execute]
 
   def execute
-    result = if Feature.enabled?(:cache_introspection_query) && introspection_query?
+    result = if introspection_query?
                execute_introspection_query
              else
                multiplex? ? execute_multiplex : execute_query
@@ -181,6 +183,16 @@ class GraphqlController < ApplicationController
 
   def track_jetbrains_bundled_usage
     Gitlab::UsageDataCounters::JetBrainsBundledPluginActivityUniqueCounter
+      .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
+  end
+
+  def track_visual_studio_usage
+    Gitlab::UsageDataCounters::VisualStudioExtensionActivityUniqueCounter
+      .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
+  end
+
+  def track_neovim_plugin_usage
+    Gitlab::UsageDataCounters::NeovimPluginActivityUniqueCounter
       .track_api_request_when_trackable(user_agent: request.user_agent, user: current_user)
   end
 

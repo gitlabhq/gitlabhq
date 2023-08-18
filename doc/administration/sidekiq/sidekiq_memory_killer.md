@@ -13,10 +13,9 @@ for a certain amount of time.
 We use the same approach to the Sidekiq processes used by GitLab
 to process background jobs.
 
-GitLab monitors the available RSS limit by default only for installations using
-the Linux packages (Omnibus) or Docker. The reason for this is that GitLab
-relies on runit to restart Sidekiq after a memory-induced shutdown, and GitLab
-self-compiled or Helm chart based installations don't use runit or an equivalent tool.
+GitLab monitors the available RSS limit by default only for Linux package or Docker installations. The reason for this
+is that GitLab relies on runit to restart Sidekiq after a memory-induced shutdown, and self-compiled and Helm chart
+installations don't use runit or an equivalent tool.
 
 With the default settings, Sidekiq restarts no
 more often than once every 15 minutes, with the restart causing about one
@@ -24,7 +23,7 @@ minute of delay for incoming background jobs.
 
 Some background jobs rely on long-running external processes. To ensure these
 are cleanly terminated when Sidekiq is restarted, each Sidekiq process should be
-run as a process group leader (for example, using `chpst -P`). If using Omnibus or the
+run as a process group leader (for example, using `chpst -P`). If using a Linux package installation or the
 `bin/background_jobs` script with `runit` installed, this is handled for you.
 
 ## Configuring the limits

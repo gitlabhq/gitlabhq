@@ -21,7 +21,13 @@ import projectInfoQuery from '../queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
 import userInfoQuery from '../queries/user_info.query.graphql';
 import applicationInfoQuery from '../queries/application_info.query.graphql';
-import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE, LEGACY_FILE_TYPES } from '../constants';
+import {
+  DEFAULT_BLOB_INFO,
+  TEXT_FILE_TYPE,
+  LFS_STORAGE,
+  LEGACY_FILE_TYPES,
+  CODEOWNERS_FILE_NAME,
+} from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
@@ -32,6 +38,7 @@ export default {
     BlobButtonGroup,
     BlobContent,
     GlLoadingIcon,
+    CodeownersValidation: () => import('ee_component/blob/components/codeowners_validation.vue'),
     GlButton,
     ForkSuggestion,
     WebIdeLink,
@@ -76,12 +83,15 @@ export default {
     project: {
       query: blobInfoQuery,
       variables() {
-        return {
+        const queryVariables = {
           projectPath: this.projectPath,
           filePath: this.path,
-          ref: this.originalBranch || this.ref,
-          shouldFetchRawText: Boolean(this.glFeatures.highlightJs),
+          ref: this.currentRef,
+          refType: this.refType?.toUpperCase() || null,
+          shouldFetchRawText: true,
         };
+
+        return queryVariables;
       },
       result({ data }) {
         const blob = data.project?.repository?.blobs?.nodes[0] || {};
@@ -130,6 +140,11 @@ export default {
       type: String,
       required: true,
     },
+    refType: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -163,6 +178,12 @@ export default {
 
       return nodes[0] || {};
     },
+    currentRef() {
+      return this.originalBranch || this.ref;
+    },
+    isCodeownersFile() {
+      return this.path.includes(CODEOWNERS_FILE_NAME);
+    },
     viewer() {
       const { richViewer, simpleViewer } = this.blobInfo;
       return this.activeViewerType === RICH_BLOB_VIEWER ? richViewer : simpleViewer;
@@ -185,8 +206,7 @@ export default {
           );
     },
     shouldLoadLegacyViewer() {
-      const isTextFile = this.viewer.fileType === TEXT_FILE_TYPE && !this.glFeatures.highlightJs;
-      return isTextFile || LEGACY_FILE_TYPES.includes(this.blobInfo.fileType) || this.useFallback;
+      return LEGACY_FILE_TYPES.includes(this.blobInfo.fileType) || this.useFallback;
     },
     legacyViewerLoaded() {
       return (
@@ -213,7 +233,9 @@ export default {
       const { createMergeRequestIn, forkProject } = this.userPermissions;
       const { canModifyBlob } = this.blobInfo;
 
-      return this.isLoggedIn && !canModifyBlob && createMergeRequestIn && forkProject;
+      return (
+        this.isLoggedIn && !this.isUsingLfs && !canModifyBlob && createMergeRequestIn && forkProject
+      );
     },
     forkPath() {
       const forkPaths = {
@@ -259,8 +281,12 @@ export default {
       const type = this.activeViewerType;
 
       this.isLoadingLegacyViewer = true;
+
+      const newUrl = new URL(this.blobInfo.webPath, window.location.origin);
+      newUrl.searchParams.set('format', 'json');
+      newUrl.searchParams.set('viewer', type);
       axios
-        .get(`${this.blobInfo.webPath}?format=json&viewer=${type}`)
+        .get(newUrl.pathname + newUrl.search)
         .then(async ({ data: { html, binary } }) => {
           this.isRenderingLegacyTextViewer = true;
 
@@ -343,7 +369,7 @@ export default {
         :active-viewer-type="viewer.type"
         :has-render-error="hasRenderError"
         :show-path="false"
-        :override-copy="glFeatures.highlightJs"
+        :override-copy="true"
         @viewer-changed="handleViewerChanged"
         @copy="onCopy"
       >
@@ -382,6 +408,7 @@ export default {
             :is-locked="Boolean(pathLockedByUser)"
             :can-lock="canLock"
             :show-fork-suggestion="showForkSuggestion"
+            :is-using-lfs="isUsingLfs"
             @fork="setForkTarget('view')"
           />
         </template>
@@ -390,6 +417,12 @@ export default {
         v-if="forkTarget && showForkSuggestion"
         :fork-path="forkPath"
         @cancel="setForkTarget(null)"
+      />
+      <codeowners-validation
+        v-if="isCodeownersFile"
+        :current-ref="currentRef"
+        :project-path="projectPath"
+        :file-path="path"
       />
       <blob-content
         v-if="!blobViewer"
@@ -416,12 +449,12 @@ export default {
         :code-navigation-path="blobInfo.codeNavigationPath"
         :blob-path="blobInfo.path"
         :path-prefix="blobInfo.projectBlobPathRoot"
-        :wrap-text-nodes="glFeatures.highlightJs"
+        :wrap-text-nodes="true"
       />
     </div>
     <ai-genie
       v-if="explainCodeAvailable"
-      container-id="fileHolder"
+      container-selector=".file-content"
       :file-path="path"
       class="gl-ml-7"
     />

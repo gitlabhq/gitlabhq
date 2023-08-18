@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { s__ } from '~/locale';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';

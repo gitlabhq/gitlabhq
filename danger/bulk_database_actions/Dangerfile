@@ -1,0 +1,3 @@
+# frozen_string_literal: true
+
+bulk_database_actions.add_comment_for_bulk_database_action_method_usage

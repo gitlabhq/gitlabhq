@@ -1,21 +1,15 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, product_group: :package_registry, quarantine: {
-    only: { job: %w[object_storage relative_url airgapped], condition: -> { QA::Support::FIPS.enabled? } },
+  RSpec.describe 'Package', :object_storage, :external_api_calls, product_group: :package_registry, quarantine: {
+    only: { job: 'object_storage', condition: -> { QA::Support::FIPS.enabled? } },
     issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417584',
     type: :bug
   } do
     describe 'Conan Repository' do
       include Runtime::Fixtures
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'conan-package-project'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'conan-package-project') }
       let(:package) do
         Resource::Package.init do |package|
           package.name = "conantest-#{SecureRandom.hex(8)}"
@@ -33,8 +27,7 @@ module QA
       end
 
       let(:gitlab_address_with_port) do
-        uri = URI.parse(Runtime::Scenario.gitlab_address)
-        "#{uri.scheme}://#{uri.host}:#{uri.port}"
+        Support::GitlabAddress.address_with_port
       end
 
       after do

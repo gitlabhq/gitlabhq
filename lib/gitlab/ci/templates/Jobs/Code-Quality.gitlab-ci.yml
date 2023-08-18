@@ -10,6 +10,7 @@ code_quality:
     DOCKER_TLS_CERTDIR: ""
     CODE_QUALITY_IMAGE_TAG: "0.96.0"
     CODE_QUALITY_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/gitlab-org/ci-cd/codequality:$CODE_QUALITY_IMAGE_TAG"
+    DOCKER_SOCKET_PATH: /var/run/docker.sock
   needs: []
   script:
     - export SOURCE_CODE=$PWD
@@ -46,9 +47,10 @@ code_quality:
           CODECLIMATE_PREFIX \
           CODECLIMATE_REGISTRY_USERNAME \
           CODECLIMATE_REGISTRY_PASSWORD \
+          DOCKER_SOCKET_PATH \
         ) \
         --volume "$PWD":/code \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
+        --volume "$DOCKER_SOCKET_PATH":/var/run/docker.sock \
         "$CODE_QUALITY_IMAGE" /code
   artifacts:
     reports:

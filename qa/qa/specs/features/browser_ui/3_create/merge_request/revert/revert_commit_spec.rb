@@ -4,14 +4,7 @@ module QA
   RSpec.describe 'Create', :reliable, product_group: :code_review do
     describe 'Reverting a commit' do
       let(:file_name) { "secret_file.md" }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project'
-          project.initialize_with_readme = true
-        end
-      end
-
+      let(:project) { create(:project, :with_readme) }
       let(:commit) do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project

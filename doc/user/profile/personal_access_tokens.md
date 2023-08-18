@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Personal access tokens **(FREE)**
+# Personal access tokens **(FREE ALL)**
 
 > - Notifications for expiring tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
 > - Token lifetime limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
@@ -51,6 +51,7 @@ You can create as many personal access tokens as you like.
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access Tokens**.
+1. Select **Add new token**.
 1. Enter a name and expiry date for the token.
    - The token expires on that date at midnight UTC.
    - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.

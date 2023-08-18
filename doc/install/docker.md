@@ -284,7 +284,7 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
 
 ## Configuration
 
-This container uses the official Omnibus GitLab package, so all configuration
+This container uses the official Linux package, so all configuration
 is done in the unique configuration file `/etc/gitlab/gitlab.rb`.
 
 To access the GitLab configuration file, you can start a shell session in the
@@ -326,7 +326,7 @@ You can pre-configure the GitLab Docker image by adding the environment variable
 `gitlab.rb` setting and is evaluated before the loading of the container's
 `gitlab.rb` file. This behavior allows you to configure the external GitLab URL,
 and make database configuration or any other option from the
-[Omnibus GitLab template](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template).
+[Linux package template](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template).
 The settings contained in `GITLAB_OMNIBUS_CONFIG` aren't written to the
 `gitlab.rb` configuration file, and are evaluated on load.
 
@@ -544,7 +544,7 @@ To upgrade GitLab that was [installed using Docker Engine](#install-gitlab-using
 On the first run, GitLab will reconfigure and upgrade itself.
 
 Refer to the GitLab [Upgrade recommendations](../policy/maintenance.md#upgrade-recommendations)
-when upgrading between major versions.
+when upgrading between versions.
 
 ### Upgrade GitLab using Docker compose
 
@@ -640,7 +640,7 @@ page.
 
 ## Troubleshooting
 
-The following information will help if you encounter problems using Omnibus GitLab and Docker.
+The following information will help if you encounter problems with an installation that used the Linux package and Docker.
 
 ### Diagnose potential problems
 
@@ -657,8 +657,7 @@ sudo docker exec -it gitlab /bin/bash
 ```
 
 From within the container you can administer the GitLab container as you would
-usually administer an
-[Omnibus installation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md)
+usually administer a [Linux package installation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md).
 
 ### 500 Internal Error
 

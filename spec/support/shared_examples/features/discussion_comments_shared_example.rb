@@ -278,9 +278,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
             expect(page).to have_css('.discussion-notes .note', count: 1)
             expect(page).to have_content '1 reply'
           end
-        end
 
-        if resource_name == 'merge request'
           let(:note_id) { find("#{comments_selector} .note:first-child", match: :first)['data-note-id'] }
           let(:reply_id) { all("#{comments_selector} [data-note-id]")[1]['data-note-id'] }
 

@@ -45,6 +45,7 @@ class NamespaceSetting < ApplicationRecord
     enabled_git_access_protocol
     subgroup_runner_token_expiration_interval
     project_runner_token_expiration_interval
+    default_branch_protection_defaults
   ].freeze
 
   # matches the size set in the database constraint

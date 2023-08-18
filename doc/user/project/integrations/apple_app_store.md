@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Apple App Store **(FREE)**
+# Apple App Store **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104888) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `apple_app_store_integration`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385335) in GitLab 15.10. Feature flag `apple_app_store_integration` removed.
@@ -32,7 +32,7 @@ GitLab supports enabling the Apple App Store integration at the project level. C
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Integrations**.
 1. Select **Apple App Store Connect**.
-1. Turn on the **Active** toggle under **Enable Integration**.
+1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide the Apple App Store Connect configuration information:
    - **Issuer ID**: The Apple App Store Connect issuer ID.
    - **Key ID**: The key ID of the generated private key.

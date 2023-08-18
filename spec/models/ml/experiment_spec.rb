@@ -79,6 +79,45 @@ RSpec.describe Ml::Experiment, feature_category: :mlops do
     end
   end
 
+  describe '.find_or_create' do
+    let(:name) { exp.name }
+    let(:project) { exp.project }
+
+    subject(:find_or_create) { described_class.find_or_create(project, name, exp.user) }
+
+    context 'when experiments exists' do
+      it 'fetches existing experiment', :aggregate_failures do
+        expect { find_or_create }.not_to change { Ml::Experiment.count }
+
+        expect(find_or_create).to eq(exp)
+      end
+    end
+
+    context 'when experiments does not exist' do
+      let(:name) { 'a new experiment' }
+
+      it 'creates the experiment', :aggregate_failures do
+        expect { find_or_create }.to change { Ml::Experiment.count }.by(1)
+
+        expect(find_or_create.name).to eq(name)
+        expect(find_or_create.user).to eq(exp.user)
+        expect(find_or_create.project).to eq(project)
+      end
+    end
+
+    context 'when experiment name exists but project is different' do
+      let(:project) { create(:project) }
+
+      it 'creates a model', :aggregate_failures do
+        expect { find_or_create }.to change { Ml::Experiment.count }.by(1)
+
+        expect(find_or_create.name).to eq(name)
+        expect(find_or_create.user).to eq(exp.user)
+        expect(find_or_create.project).to eq(project)
+      end
+    end
+  end
+
   describe '#with_candidate_count' do
     let_it_be(:exp3) do
       create(:ml_experiments, project: exp.project).tap do |e|

@@ -1,7 +1,12 @@
 import { mount } from '@vue/test-utils';
 
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import IssuableCreateRoot from '~/vue_shared/issuable/create/components/issuable_create_root.vue';
 import IssuableForm from '~/vue_shared/issuable/create/components/issuable_form.vue';
+
+Vue.use(VueApollo);
 
 const createComponent = ({
   descriptionPreviewPath = '/gitlab-org/gitlab-shell/preview_markdown',
@@ -16,6 +21,7 @@ const createComponent = ({
       labelsFetchPath,
       labelsManagePath,
     },
+    apolloProvider: createMockApollo(),
     slots: {
       title: `
         <h1 class="js-create-title">New Issuable</h1>

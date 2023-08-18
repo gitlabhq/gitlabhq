@@ -23,15 +23,4 @@ RSpec.describe Users::Calloutable, feature_category: :shared do
       expect(callout_dismissed_day_ago.dismissed_after?(15.days.ago)).to eq(true)
     end
   end
-
-  describe '#dismissed_before?' do
-    let(:some_feature_name) { Users::Callout.feature_names.keys.second }
-    let(:callout_dismissed_hour_ago) { create(:callout, feature_name: some_feature_name, dismissed_at: 1.hour.ago) }
-    let(:callout_dismissed_minute_ago) { create(:callout, feature_name: some_feature_name, dismissed_at: 1.minute.ago) }
-
-    it 'returns whether a callout dismissed before specified date' do
-      expect(callout_dismissed_hour_ago.dismissed_before?(30.minutes.ago)).to eq(true)
-      expect(callout_dismissed_minute_ago.dismissed_before?(30.minutes.ago)).to eq(false)
-    end
-  end
 end

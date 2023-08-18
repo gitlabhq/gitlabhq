@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Branches **(FREE)**
+# Branches **(FREE ALL)**
 
 Branches are versions of a project's working tree. When you create a new
 [project](../../index.md), GitLab creates a [default branch](default.md) (which
@@ -93,7 +93,7 @@ GitLab provides you multiple methods to protect individual branches. These metho
 ensure your branches receive oversight and quality checks from their creation to their deletion:
 
 - The [default branch](default.md) in your project receives extra protection.
-- Configure [protected branches](../../protected_branches.md#protected-branches)
+- Configure [protected branches](../../protected_branches.md)
   to restrict who can commit to a branch, merge other branches into it, or merge
   the branch itself into another branch.
 - Configure [approval rules](../../merge_requests/approvals/rules.md) to set review

@@ -241,7 +241,7 @@ module QA
         end
 
         def open_file_tree
-          click_element(:file_tree_button) unless has_element?(:file_tree_container)
+          click_element(:file_tree_button) if has_no_element?(:file_tree_container, wait: 1)
         end
 
         def has_merge_button?
@@ -286,7 +286,6 @@ module QA
         end
 
         def merge!
-          close_rich_text_promo_popover_if_present
           try_to_merge!
           finished_loading?
 
@@ -311,13 +310,14 @@ module QA
           end
         end
 
-        # Check if the MR is able to be merged
-        # Waits up 10 seconds and returns false if the MR can't be merged
-        def mergeable?
-          # The merge button is enabled via JS, but `has_element?` calls
-          # `wait_for_requests`, which should ensure the disabled/enabled
-          # state of the element is reliable
-          has_element?(:merge_button, disabled: false)
+        RSpec::Matchers.define :be_mergeable do
+          match do |page|
+            page.has_element?(:merge_button, disabled: false)
+          end
+
+          match_when_negated do |page|
+            page.has_no_element?(:merge_button, disabled: false)
+          end
         end
 
         # Waits up 10 seconds and returns false if the Revert button is not enabled

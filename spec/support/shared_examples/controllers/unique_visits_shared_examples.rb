@@ -10,7 +10,7 @@ RSpec.shared_examples 'tracking unique visits' do |method|
 
     ids.each do |id|
       expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-      .to receive(:track_event).with(id, values: kind_of(String))
+      .to receive(:track_event).with(id, values: anything)
     end
 
     get method, params: request_params, format: :html
@@ -21,7 +21,7 @@ RSpec.shared_examples 'tracking unique visits' do |method|
 
     ids.each do |id|
       expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-      .to receive(:track_event).with(id, values: kind_of(String))
+      .to receive(:track_event).with(id, values: anything)
     end
 
     stub_do_not_track('0')

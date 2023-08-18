@@ -66,7 +66,7 @@ module Trigger
 
     def com_gitlab_client
       @com_gitlab_client ||= Gitlab.client(
-        endpoint: 'https://gitlab.com/api/v4',
+        endpoint: endpoint,
         private_token: self.class.access_token
       )
     end
@@ -113,12 +113,16 @@ module Trigger
     end
 
     def stable_branch?
-      ENV['CI_COMMIT_REF_NAME'] =~ /^[\d-]+-stable(-ee)?$/
+      ENV['CI_COMMIT_REF_NAME'] =~ /^[\d-]+-stable(-ee|-jh)?$/
     end
 
     def fallback_ref
       if trigger_stable_branch_if_detected? && stable_branch?
-        ENV['CI_COMMIT_REF_NAME'].delete_suffix('-ee')
+        if ENV['CI_PROJECT_NAMESPACE'] == 'gitlab-cn'
+          ENV['CI_COMMIT_REF_NAME'].delete_suffix('-jh')
+        elsif ENV['CI_PROJECT_NAMESPACE'] == 'gitlab-org'
+          ENV['CI_COMMIT_REF_NAME'].delete_suffix('-ee')
+        end
       else
         primary_ref
       end
@@ -142,6 +146,12 @@ module Trigger
         params[version_file] = version_param_value(version_file)
       end
     end
+
+    def endpoint
+      return "https://jihulab.com/api/v4" if ENV['CI_PROJECT_NAMESPACE'] == 'gitlab-cn'
+
+      "https://gitlab.com/api/v4"
+    end
   end
 
   class CNG < Base
@@ -162,7 +172,9 @@ module Trigger
     end
 
     def primary_ref
-      'master'
+      return "main-jh" if ENV['CI_PROJECT_NAMESPACE'] == 'gitlab-cn'
+
+      "master"
     end
 
     def trigger_stable_branch_if_detected?

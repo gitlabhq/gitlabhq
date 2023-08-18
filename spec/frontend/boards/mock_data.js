@@ -110,12 +110,10 @@ function boardGenerator(n) {
     const name = `board${id}`;
 
     return {
-      node: {
-        id,
-        name,
-        weight: 0,
-        __typename: 'Board',
-      },
+      id,
+      name,
+      weight: 0,
+      __typename: 'Board',
     };
   });
 }
@@ -127,7 +125,7 @@ export const mockSmallProjectAllBoardsResponse = {
   data: {
     project: {
       id: 'gid://gitlab/Project/114',
-      boards: { edges: boardGenerator(3) },
+      boards: { nodes: boardGenerator(3) },
       __typename: 'Project',
     },
   },
@@ -137,7 +135,7 @@ export const mockEmptyProjectRecentBoardsResponse = {
   data: {
     project: {
       id: 'gid://gitlab/Project/114',
-      recentIssueBoards: { edges: [] },
+      recentIssueBoards: { nodes: [] },
       __typename: 'Project',
     },
   },
@@ -147,7 +145,7 @@ export const mockGroupAllBoardsResponse = {
   data: {
     group: {
       id: 'gid://gitlab/Group/114',
-      boards: { edges: boards },
+      boards: { nodes: boards },
       __typename: 'Group',
     },
   },
@@ -157,7 +155,7 @@ export const mockProjectAllBoardsResponse = {
   data: {
     project: {
       id: 'gid://gitlab/Project/1',
-      boards: { edges: boards },
+      boards: { nodes: boards },
       __typename: 'Project',
     },
   },
@@ -167,7 +165,7 @@ export const mockGroupRecentBoardsResponse = {
   data: {
     group: {
       id: 'gid://gitlab/Group/114',
-      recentIssueBoards: { edges: recentIssueBoards },
+      recentIssueBoards: { nodes: recentIssueBoards },
       __typename: 'Group',
     },
   },
@@ -177,7 +175,7 @@ export const mockProjectRecentBoardsResponse = {
   data: {
     project: {
       id: 'gid://gitlab/Project/1',
-      recentIssueBoards: { edges: recentIssueBoards },
+      recentIssueBoards: { nodes: recentIssueBoards },
       __typename: 'Project',
     },
   },

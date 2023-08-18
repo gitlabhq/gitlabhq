@@ -1,5 +1,6 @@
 import { GlFormCheckbox } from '@gitlab/ui';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import { PROCESS_LABELS_DATA } from 'jest/search/mock_data';

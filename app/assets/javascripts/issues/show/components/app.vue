@@ -23,6 +23,8 @@ import Store from '../stores';
 import DescriptionComponent from './description.vue';
 import EditedComponent from './edited.vue';
 import FormComponent from './form.vue';
+import HeaderActions from './header_actions.vue';
+import IssueHeader from './issue_header.vue';
 import PinnedLinks from './pinned_links.vue';
 import TitleComponent from './title.vue';
 
@@ -32,6 +34,8 @@ export default {
     GlIcon,
     GlBadge,
     GlIntersectionObserver,
+    HeaderActions,
+    IssueHeader,
     TitleComponent,
     EditedComponent,
     FormComponent,
@@ -42,6 +46,11 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    author: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     endpoint: {
       required: true,
       type: String,
@@ -53,6 +62,11 @@ export default {
     canUpdate: {
       required: true,
       type: Boolean,
+    },
+    createdAt: {
+      type: String,
+      required: false,
+      default: '',
     },
     enableAutocomplete: {
       type: Boolean,
@@ -193,6 +207,31 @@ export default {
       required: false,
       default: null,
     },
+    duplicatedToIssueUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    movedToIssueUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    promotedToEpicUrl: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    isFirstContribution: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    serviceDeskReplyTo: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     const store = new Store({
@@ -222,6 +261,9 @@ export default {
     },
   },
   computed: {
+    headerClasses() {
+      return this.issuableType === TYPE_INCIDENT ? 'gl-mb-3' : 'gl-mb-6';
+    },
     issuableTemplates() {
       return this.store.formState.issuableTemplates;
     },
@@ -259,10 +301,10 @@ export default {
         : '';
     },
     statusIcon() {
-      if (this.issuableType === TYPE_ISSUE) {
-        return this.isClosed ? 'issue-closed' : 'issues';
+      if (this.issuableType === TYPE_EPIC) {
+        return this.isClosed ? 'epic-closed' : 'epic';
       }
-      return this.isClosed ? 'epic-closed' : 'epic';
+      return this.isClosed ? 'issue-closed' : 'issues';
     },
     statusVariant() {
       return this.isClosed ? 'info' : 'success';
@@ -271,7 +313,7 @@ export default {
       return issuableStatusText[this.issuableStatus];
     },
     shouldShowStickyHeader() {
-      return [TYPE_ISSUE, TYPE_EPIC].includes(this.issuableType);
+      return [TYPE_INCIDENT, TYPE_ISSUE, TYPE_EPIC].includes(this.issuableType);
     },
   },
   created() {
@@ -509,7 +551,13 @@ export default {
         :can-update="canUpdate"
         :title-html="state.titleHtml"
         :title-text="state.titleText"
-      />
+      >
+        <template #actions>
+          <slot name="actions">
+            <header-actions />
+          </slot>
+        </template>
+      </title-component>
 
       <gl-intersection-observer
         v-if="shouldShowStickyHeader"
@@ -566,6 +614,25 @@ export default {
           </div>
         </transition>
       </gl-intersection-observer>
+
+      <slot name="header">
+        <issue-header
+          class="gl-p-0 gl-mt-2 gl-sm-mt-0"
+          :class="headerClasses"
+          :author="author"
+          :confidential="isConfidential"
+          :created-at="createdAt"
+          :duplicated-to-issue-url="duplicatedToIssueUrl"
+          :is-first-contribution="isFirstContribution"
+          :is-hidden="isHidden"
+          :is-locked="isLocked"
+          :issuable-state="issuableStatus"
+          :issuable-type="issuableType"
+          :moved-to-issue-url="movedToIssueUrl"
+          :promoted-to-epic-url="promotedToEpicUrl"
+          :service-desk-reply-to="serviceDeskReplyTo"
+        />
+      </slot>
 
       <pinned-links
         :zoom-meeting-url="zoomMeetingUrl"

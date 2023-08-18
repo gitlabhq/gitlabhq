@@ -974,7 +974,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
             project: {
               project_setting_attributes: {
                 show_default_award_emojis: boolean_value,
-                enforce_auth_checks_on_uploads: boolean_value
+                enforce_auth_checks_on_uploads: boolean_value,
+                emails_enabled: boolean_value
               }
             }
           }
@@ -983,6 +984,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
           expect(project.show_default_award_emojis?).to eq(result)
           expect(project.enforce_auth_checks_on_uploads?).to eq(result)
+          expect(project.emails_enabled?).to eq(result)
+          expect(project.emails_disabled?).to eq(!result)
         end
       end
     end

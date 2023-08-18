@@ -5,7 +5,7 @@ info: 'To determine the technical writer assigned to the Stage/Group associated 
 type: reference, index, howto
 ---
 
-# Project settings **(FREE)**
+# Project settings **(FREE ALL)**
 
 Use the **Settings** page to manage the configuration options in your [project](../index.md).
 
@@ -46,7 +46,7 @@ If you're an instance administrator, you can administer all project topics from 
 NOTE:
 The assigned topics are visible only to users with access to the project, but everyone can see which topics exist on the GitLab instance. Do not include sensitive information in the name of a topic.
 
-## Add a compliance framework to a project **(PREMIUM)**
+## Add a compliance framework to a project **(PREMIUM ALL)**
 
 You can
 [add compliance frameworks to projects](../../group/compliance_frameworks.md#add-a-compliance-framework-to-a-project)
@@ -74,7 +74,7 @@ Use the toggles to enable or disable features in the project.
 | **Repository**                   | **{check-circle}** Yes | Enables [repository](../repository/index.md) functionality.
 | **Merge requests**               | **{check-circle}** Yes | Enables [merge request](../merge_requests/index.md) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project).
 | **Forks**                        | **{check-circle}** Yes | Enables [forking](../repository/forking_workflow.md) functionality.
-| **Git Large File Storage (LFS)** | **{dotted-circle}** No | Enables the use of [large files](../../../topics/git/lfs/index.md#git-large-file-storage-lfs).
+| **Git Large File Storage (LFS)** | **{dotted-circle}** No | Enables the use of [large files](../../../topics/git/lfs/index.md).
 | **Packages**                     | **{dotted-circle}** No | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality.
 | **CI/CD**                        | **{check-circle}** Yes | Enables [CI/CD](../../../ci/index.md) functionality.
 | **Container Registry**           | **{dotted-circle}** No | Activates a [registry](../../packages/container_registry/index.md) for your Docker images.
@@ -161,7 +161,7 @@ Prerequisites:
 Configure your project's merge request settings:
 
 - Set up the [merge request method](../merge_requests/methods/index.md) (merge commit, fast-forward merge).
-- Add merge request [description templates](../description_templates.md#description-templates).
+- Add merge request [description templates](../description_templates.md).
 - Enable [merge request approvals](../merge_requests/approvals/index.md).
 - Enable [status checks](../merge_requests/status_checks.md).
 - Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
@@ -175,7 +175,7 @@ Configure your project's merge request settings:
 
 ## Service Desk
 
-Enable [Service Desk](../service_desk.md) for your project to offer customer support.
+Enable [Service Desk](../service_desk/index.md) for your project to offer customer support.
 
 ## Export project
 
@@ -312,7 +312,7 @@ To delete a project:
 
 This action deletes the project and all associated resources (such as issues and merge requests).
 
-### Delayed project deletion **(PREMIUM)**
+### Delayed project deletion **(PREMIUM ALL)**
 
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
@@ -346,7 +346,7 @@ To immediately delete a project marked for deletion:
 1. In the **Delete this project** section, select **Delete project**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
-## Restore a project **(PREMIUM)**
+## Restore a project **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32935) in GitLab 12.6.
 
@@ -381,7 +381,7 @@ Automatically [create](../../../operations/incident_management/alerts.md#trigger
 
 Configure Error Tracking to discover and view [Sentry errors within GitLab](../../../operations/error_tracking.md).
 
-### Status Page **(ULTIMATE)**
+### Status Page **(ULTIMATE ALL)**
 
 [Add Storage credentials](../../../operations/incident_management/status_page.md#sync-incidents-to-the-status-page)
 to enable the syncing of public Issues to a [deployed status page](../../../operations/incident_management/status_page.md#create-a-status-page-project).

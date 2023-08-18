@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { keepAlive } from 'helpers/keep_alive_component_helper';
 import { trimText } from 'helpers/text_helper';
@@ -14,6 +15,7 @@ Vue.use(Vuex);
 describe('IDE review mode', () => {
   let wrapper;
   let store;
+  let dispatch;
 
   beforeEach(() => {
     store = createStore();
@@ -25,27 +27,28 @@ describe('IDE review mode', () => {
       loading: false,
     });
 
+    dispatch = jest.spyOn(store, 'dispatch');
+
     wrapper = mount(keepAlive(IdeReview), {
       store,
     });
   });
+
+  const findEditorModeDropdown = () => wrapper.findComponent(EditorModeDropdown);
 
   it('renders list of files', () => {
     expect(wrapper.text()).toContain('fileName');
   });
 
   describe('activated', () => {
-    let inititializeSpy;
-
     beforeEach(async () => {
-      inititializeSpy = jest.spyOn(wrapper.findComponent(IdeReview).vm, 'initialize');
       store.state.viewer = 'editor';
 
       await wrapper.vm.reactivate();
     });
 
     it('re initializes the component', () => {
-      expect(inititializeSpy).toHaveBeenCalled();
+      expect(dispatch).toHaveBeenCalledWith('updateViewer', 'diff');
     });
 
     it('updates viewer to "diff" by default', () => {
@@ -81,7 +84,7 @@ describe('IDE review mode', () => {
     });
 
     it('renders edit dropdown', () => {
-      expect(wrapper.findComponent(EditorModeDropdown).exists()).toBe(true);
+      expect(findEditorModeDropdown().exists()).toBe(true);
     });
 
     it('renders merge request link & IID', async () => {

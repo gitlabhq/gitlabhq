@@ -9,5 +9,14 @@ body {
       $gray-900,
       $white
     );
+
+    .page-with-super-sidebar {
+      @include gitlab-theme-super-sidebar(
+        $gray-50,
+        $gray-100,
+        $gray-900,
+        $gray-900,
+      );
+    }
   }
 }

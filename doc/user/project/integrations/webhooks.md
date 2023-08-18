@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Webhooks **(FREE)**
+# Webhooks **(FREE ALL)**
 
 [Webhooks](https://en.wikipedia.org/wiki/Webhook) are custom HTTP callbacks
 that you define. They are usually triggered by an
@@ -28,7 +28,7 @@ listens for specific [events](#events) and GitLab sends a POST request with data
 
 Usually, you set up your own [webhook receiver](#create-an-example-webhook-receiver)
 to receive information from GitLab and send it to another app, according to your requirements.
-We have a [built-in receiver](slack.md)
+We have a [built-in receiver](gitlab_slack_application.md#slack-notifications)
 for sending [Slack](https://api.slack.com/incoming-webhooks) notifications per project.
 
 GitLab.com enforces [webhook limits](../../../user/gitlab_com/index.md#webhooks),
@@ -37,7 +37,7 @@ including:
 - The maximum number of webhooks and their size, both per project and per group.
 - The number of webhook calls per minute.
 
-## Group webhooks **(PREMIUM)**
+## Group webhooks **(PREMIUM ALL)**
 
 You can configure a group webhook, which is triggered by events
 that occur across all projects in the group. If you configure identical webhooks
@@ -55,6 +55,7 @@ specific to a group, including:
 To configure a webhook for a project or group:
 
 1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
+1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
    The URL must be percent-encoded if it contains one or more special characters.
 1. In **Secret token**, enter the [secret token](#validate-payloads-by-using-a-secret-token) to validate payloads.
@@ -309,6 +310,7 @@ These public tools include:
 
 - [Beeceptor](https://beeceptor.com) to create a temporary HTTPS endpoint and inspect incoming payloads
 - [Webhook.site](https://webhook.site) to review incoming payloads
+- [Webhook Tester](https://webhook-test.com) to inspect and debug incoming payloads
 
 ### GitLab Development Kit (GDK)
 
@@ -378,4 +380,11 @@ If you're receiving multiple webhook requests, the webhook might have timed out.
 
 GitLab expects a response in [10 seconds](../../../user/gitlab_com/index.md#other-limits). On self-managed GitLab instances, you can [change the webhook timeout limit](../../../administration/instance_limits.md#webhook-timeout).
 
-If a webhook is not triggered, the webhook might be [automatically disabled](#failing-webhooks).
+### Webhook is not triggered
+
+> Webhooks not triggered in Silent Mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) in GitLab 16.3.
+
+If a webhook is not triggered, check that:
+
+- The webhook was not [automatically disabled](#failing-webhooks).
+- The GitLab instance is not in [Silent Mode](../../../administration/silent_mode/index.md).

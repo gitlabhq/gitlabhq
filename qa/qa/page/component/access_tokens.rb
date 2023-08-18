@@ -39,6 +39,26 @@ module QA
           base.view 'app/assets/javascripts/access_tokens/components/access_token_table_app.vue' do
             element :revoke_button
           end
+
+          base.view 'app/views/profiles/personal_access_tokens/index.html.haml' do
+            element 'add-new-token-button'
+          end
+
+          base.view 'app/views/projects/settings/access_tokens/index.html.haml' do
+            element 'add-new-token-button'
+          end
+
+          base.view 'app/views/groups/settings/access_tokens/index.html.haml' do
+            element 'add-new-token-button'
+          end
+
+          base.view 'app/views/admin/impersonation_tokens/index.html.haml' do
+            element 'add-new-token-button'
+          end
+        end
+
+        def click_add_new_token_button
+          click_element('add-new-token-button')
         end
 
         def fill_token_name(name)

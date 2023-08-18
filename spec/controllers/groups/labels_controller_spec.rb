@@ -89,6 +89,13 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
         expect { label.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
+      it 'does not remove the label if it is locked' do
+        label = create(:group_label, group: group, lock_on_merge: true)
+        delete :destroy, params: { group_id: group.to_param, id: label.to_param }
+
+        expect(label.reload).to eq label
+      end
+
       context 'when label is succesfuly destroyed' do
         it 'redirects to the group labels page' do
           label = create(:group_label, group: group)

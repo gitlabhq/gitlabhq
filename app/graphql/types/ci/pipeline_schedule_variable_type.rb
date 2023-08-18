@@ -7,7 +7,7 @@ module Types
 
       authorize :read_pipeline_schedule_variables
 
-      implements(VariableInterface)
+      implements VariableInterface
     end
   end
 end

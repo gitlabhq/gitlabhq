@@ -97,6 +97,22 @@ describe('UserNameGroup component', () => {
       it("sets the tooltip's target to the status container", () => {
         expect(findGlTooltip().props('target')?.()).toBe(findUserStatus().element);
       });
+
+      describe('Tooltip', () => {
+        it('renders the tooltip when message has some text', () => {
+          createWrapper({
+            status: { ...userMenuMockStatus, customized: true, message_html: 'Has text' },
+          });
+          expect(findGlTooltip().exists()).toBe(true);
+        });
+
+        it('does not render the tooltip when message is empty', () => {
+          createWrapper({
+            status: { ...userMenuMockStatus, customized: true, message_html: '' },
+          });
+          expect(findGlTooltip().exists()).toBe(false);
+        });
+      });
     });
   });
 

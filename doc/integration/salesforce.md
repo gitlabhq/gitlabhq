@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Salesforce OmniAuth Provider **(FREE SELF)**
+# Use Salesforce as an OAuth 2.0 authentication provider **(FREE SELF)**
 
 You can integrate your GitLab instance with [Salesforce](https://www.salesforce.com/) to enable users to sign in to your GitLab instance with their Salesforce account.
 
@@ -35,13 +35,13 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
 
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   For installations from source:
+   For self-compiled installations:
 
    ```shell
    cd /home/git/gitlab
@@ -52,9 +52,9 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
    to add `salesforce` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
 
-1. Add the provider configuration:
+1. Add the provider configuration.
 
-   For Omnibus package:
+   For Linux package installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -67,7 +67,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
    ]
    ```
 
-   For installation from source:
+   For self-compiled installations:
 
    ```yaml
    - { name: 'salesforce',
@@ -86,7 +86,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must [create
 
 1. For the changes to take effect:
    - If you installed using the Linux package, [reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation).
-   - If you self-compiled your installation, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+   - If you self-compiled your installation, [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations).
 
 On the sign in page, there should now be a Salesforce icon below the regular sign in form.
 Select the icon to begin the authentication process. Salesforce asks the user to sign in and authorize the GitLab application.

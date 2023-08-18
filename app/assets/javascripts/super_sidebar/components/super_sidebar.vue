@@ -8,6 +8,7 @@ import { sidebarState } from '../constants';
 import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
+import ContextHeader from './context_header.vue';
 import ContextSwitcher from './context_switcher.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
@@ -17,6 +18,7 @@ export default {
   components: {
     GlButton,
     UserBar,
+    ContextHeader,
     ContextSwitcher,
     HelpCenter,
     SidebarMenu,
@@ -42,6 +44,7 @@ export default {
     return {
       sidebarState,
       showPeekHint: false,
+      isMouseover: false,
     };
   },
   computed: {
@@ -57,7 +60,7 @@ export default {
   },
   watch: {
     'sidebarState.isCollapsed': function isCollapsedWatcher(newIsCollapsed) {
-      if (newIsCollapsed) {
+      if (newIsCollapsed && this.$refs['context-switcher']) {
         this.$refs['context-switcher'].close();
       }
     },
@@ -118,6 +121,8 @@ export default {
       data-testid="super-sidebar"
       data-qa-selector="navbar"
       :inert="sidebarState.isCollapsed"
+      @mouseenter="isMouseover = true"
+      @mouseleave="isMouseover = false"
     >
       <user-bar :has-collapse-button="!sidebarState.isPeek" :sidebar-data="sidebarData" />
       <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
@@ -126,15 +131,17 @@ export default {
         />
         <trial-status-popover />
       </div>
-      <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden">
+      <div
+        class="contextual-nav gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
+      >
         <div
           class="gl-flex-grow-1"
           :class="{ 'gl-overflow-auto': !sidebarState.contextSwitcherOpen }"
           data-testid="nav-container"
         >
           <context-switcher
+            v-if="sidebarData.is_logged_in"
             ref="context-switcher"
-            :persistent-links="sidebarData.context_switcher_links"
             :username="sidebarData.username"
             :projects-path="sidebarData.projects_path"
             :groups-path="sidebarData.groups_path"
@@ -142,9 +149,11 @@ export default {
             :context-header="sidebarData.current_context_header"
             @toggle="onContextSwitcherToggled"
           />
+          <context-header v-else :context="sidebarData.current_context_header" />
           <sidebar-menu
             v-if="menuItems.length"
             :items="menuItems"
+            :is-logged-in="sidebarData.is_logged_in"
             :panel-type="sidebarData.panel_type"
             :pinned-item-ids="sidebarData.pinned_items"
             :update-pins-url="sidebarData.update_pins_url"
@@ -170,6 +179,10 @@ export default {
       Only mount SidebarPeekBehavior if the sidebar is peekable, to avoid
       setting up event listeners unnecessarily.
     -->
-    <sidebar-peek-behavior v-if="sidebarState.isPeekable" @change="onPeekChange" />
+    <sidebar-peek-behavior
+      v-if="sidebarState.isPeekable"
+      :is-mouse-over-sidebar="isMouseover"
+      @change="onPeekChange"
+    />
   </div>
 </template>

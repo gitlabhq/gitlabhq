@@ -4,11 +4,11 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Container Registry API **(FREE)**
+# Container Registry API **(FREE ALL)**
 
 > The use of `CI_JOB_TOKEN` scoped to the current project was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49750) in GitLab 13.12.
 
-This is the API documentation of the [GitLab Container Registry](../user/packages/container_registry/index.md).
+This API documentation is about the [GitLab Container Registry](../user/packages/container_registry/index.md).
 
 When the `ci_job_token_scope` feature flag is enabled (it is **disabled by default**), you can use the below endpoints
 from a CI/CD job, by passing the `$CI_JOB_TOKEN` variable as the `JOB-TOKEN` header.
@@ -51,7 +51,7 @@ If the project is public, the Container Registry is also public. If the project 
 private, the Container Registry is also internal or private.
 
 - **private**: The Container Registry is visible only to project members with Reporter role or
-higher. This is similar to the behavior of a private project with Container Registry visibility set
+higher. This behavior is similar to that of a private project with Container Registry visibility set
 to **enabled**.
 
 - **disabled**: The Container Registry is disabled.
@@ -380,34 +380,45 @@ To schedule tags for automatic deletion, use a [cleanup policy](../user/packages
 
 Examples:
 
-1. Remove tag names that are matching the regex (Git SHA), keep always at least 5,
-   and remove ones that are older than 2 days:
+- Remove tag names that are matching the regex (Git SHA), keep always at least 5,
+  and remove ones that are older than 2 days:
 
-   ```shell
-   curl --request DELETE --data 'name_regex_delete=[0-9a-z]{40}' --data 'keep_n=5' --data 'older_than=2d' \
-        --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
-   ```
+  ```shell
+  curl --request DELETE --data 'name_regex_delete=[0-9a-z]{40}' --data 'keep_n=5' --data 'older_than=2d' \
+       --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+  ```
 
-1. Remove all tags, but keep always the latest 5:
+- Remove all tags, but keep always the latest 5:
 
-   ```shell
-   curl --request DELETE --data 'name_regex_delete=.*' --data 'keep_n=5' \
-        --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
-   ```
+  ```shell
+  curl --request DELETE --data 'name_regex_delete=.*' --data 'keep_n=5' \
+       --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+  ```
 
-1. Remove all tags, but keep always tags beginning with `stable`:
+- Remove all tags, but keep always tags beginning with `stable`:
 
-   ```shell
-   curl --request DELETE --data 'name_regex_delete=.*' --data 'name_regex_keep=stable.*' \
-        --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
-   ```
+  ```shell
+  curl --request DELETE --data 'name_regex_delete=.*' --data 'name_regex_keep=stable.*' \
+       --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+  ```
 
-1. Remove all tags that are older than 1 month:
+- Remove all tags that are older than 1 month:
 
-   ```shell
-   curl --request DELETE --data 'name_regex_delete=.*' --data 'older_than=1month' \
-        --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
-   ```
+  ```shell
+  curl --request DELETE --data 'name_regex_delete=.*' --data 'older_than=1month' \
+       --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+  ```
+
+### Use cURL with a regular expression that contains `+`
+
+When using cURL, the `+` character in regular expressions must be
+[URL-encoded](https://curl.se/docs/manpage.html#--data-urlencode),
+to be processed correctly by the GitLab Rails backend. For example:
+
+```shell
+curl --request DELETE --data-urlencode 'name_regex_delete=dev-.+' \
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+```
 
 ## Instance-wide endpoints
 

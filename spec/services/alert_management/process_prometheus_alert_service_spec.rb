@@ -66,22 +66,6 @@ RSpec.describe AlertManagement::ProcessPrometheusAlertService, feature_category:
           expect(alert.environment).to eq(environment)
         end
       end
-
-      context 'prometheus alert given' do
-        let(:prometheus_alert) { create(:prometheus_alert, project: project) }
-        let(:alert) { project.alert_management_alerts.last }
-
-        before do
-          payload['labels']['gitlab_alert_id'] = prometheus_alert.prometheus_metric_id
-        end
-
-        it 'sets the prometheus alert and environment' do
-          execute
-
-          expect(alert.prometheus_alert).to eq(prometheus_alert)
-          expect(alert.environment).to eq(prometheus_alert.environment)
-        end
-      end
     end
 
     context 'when alert payload is invalid' do

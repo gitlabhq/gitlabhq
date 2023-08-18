@@ -317,7 +317,7 @@ module ApplicationHelper
     class_names << 'with-performance-bar' if performance_bar_enabled?
     class_names << 'with-top-bar' if show_super_sidebar? && !@hide_top_bar
     class_names << system_message_class
-    class_names << 'logged-out-marketing-header' if !current_user && ::Gitlab.com?
+    class_names << 'logged-out-marketing-header' if !current_user && ::Gitlab.com? && !show_super_sidebar?
 
     class_names
   end
@@ -464,6 +464,25 @@ module ApplicationHelper
 
   def gitlab_ui_form_with(**args, &block)
     form_with(**args.merge({ builder: ::Gitlab::FormBuilders::GitlabUiFormBuilder }), &block)
+  end
+
+  def hidden_resource_icon(resource, css_class: nil)
+    issuable_title = _('This %{issuable} is hidden because its author has been banned')
+
+    case resource
+    when Issue
+      title = format(issuable_title, issuable: _('issue'))
+    when MergeRequest
+      title = format(issuable_title, issuable: _('merge request'))
+    when Project
+      title = _('This project is hidden because its creator has been banned')
+    end
+
+    return unless title
+
+    content_tag(:span, class: 'has-tooltip', title: title) do
+      sprite_icon('spam', css_class: ['gl-vertical-align-text-bottom', css_class].compact_blank.join(' '))
+    end
   end
 
   private

@@ -1,5 +1,6 @@
 @import 'mixins_and_variables_and_functions';
 
+$work-item-field-inset-shadow: inset 0 0 0 $gl-border-size-1 var(--gray-200, $gray-200) !important;
 $work-item-overview-right-sidebar-width: 340px;
 $work-item-sticky-header-height: 52px;
 
@@ -8,13 +9,12 @@ $work-item-sticky-header-height: 52px;
   align-items: center;
 }
 
-#weight-widget-input:not(:hover, :focus),
-#weight-widget-input[readonly] {
+.hide-unfocused-input-decoration:not(:focus, :hover),
+.hide-unfocused-input-decoration:disabled {
+  background-color: transparent;
+  border-color: transparent;
+  background-image: none;
   box-shadow: none;
-}
-
-#weight-widget-input[readonly] {
-  background-color: var(--white, $white);
 }
 
 .work-item-assignees {
@@ -68,19 +68,27 @@ $work-item-sticky-header-height: 52px;
 }
 
 .work-item-dropdown {
-  .gl-dropdown-toggle {
-    background: none !important;
+  // duplicate classname because we are fighting with gl-button styles
+  .gl-dropdown-toggle.gl-dropdown-toggle {
+    background: none;
 
     &:hover,
     &:focus {
-      box-shadow: inset 0 0 0 $gl-border-size-1 var(--gray-darkest, $gray-darkest) !important;
+      box-shadow: $work-item-field-inset-shadow;
+      background-color: $input-bg;
+
+      .gl-dark & {
+        // $input-bg is overridden in dark mode but that does not
+        // work in page bundles currently, manually override here
+        background-color: var(--gray-50, $input-bg);
+      }
     }
 
     &.is-not-focused:not(:hover, :focus) {
       box-shadow: none;
 
       .gl-button-icon {
-        display: none;
+        visibility: hidden;
       }
     }
   }
@@ -149,6 +157,13 @@ $work-item-sticky-header-height: 52px;
 .work-item-field-value {
   .work-item-overview & {
     max-width: 65%;
+  }
+
+  &.gl-form-select {
+    &:hover,
+    &:focus {
+      box-shadow: $work-item-field-inset-shadow;
+    }
   }
 }
 

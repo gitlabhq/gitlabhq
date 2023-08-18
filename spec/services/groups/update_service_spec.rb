@@ -9,32 +9,9 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
   let!(:public_group) { create(:group, :public) }
 
   describe "#execute" do
-    shared_examples 'with packages' do
-      before do
-        group.add_owner(user)
-      end
-
-      context 'with npm packages' do
-        let!(:package) { create(:npm_package, project: project) }
-
-        it 'does not allow a path update' do
-          expect(update_group(group, user, path: 'updated')).to be false
-          expect(group.errors[:path]).to include('cannot change when group contains projects with NPM packages')
-        end
-
-        it 'allows name update' do
-          expect(update_group(group, user, name: 'Updated')).to be true
-          expect(group.errors).to be_empty
-          expect(group.name).to eq('Updated')
-        end
-      end
-    end
-
     context 'with project' do
       let!(:group) { create(:group, :public) }
       let(:project) { create(:project, namespace: group) }
-
-      it_behaves_like 'with packages'
 
       context 'located in a subgroup' do
         let(:subgroup) { create(:group, parent: group) }
@@ -43,8 +20,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
         before do
           subgroup.add_owner(user)
         end
-
-        it_behaves_like 'with packages'
 
         it 'does allow a path update if there is not a root namespace change' do
           expect(update_group(subgroup, user, path: 'updated')).to be true
@@ -251,6 +226,163 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
+  context "path change validation" do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:project) { create(:project, namespace: subgroup) }
+
+    subject(:execute_update) { update_group(target_group, user, update_params) }
+
+    shared_examples 'not allowing a path update' do
+      let(:update_params) { { path: 'updated' } }
+
+      it 'does not allow a path update' do
+        target_group.add_maintainer(user)
+
+        expect(execute_update).to be false
+        expect(target_group.errors[:path]).to include('cannot change when group contains projects with NPM packages')
+      end
+    end
+
+    shared_examples 'allowing an update' do |on:|
+      let(:update_params) { { on => 'updated' } }
+
+      it "allows an update on #{on}" do
+        target_group.reload.add_maintainer(user)
+
+        expect(execute_update).to be true
+        expect(target_group.errors).to be_empty
+        expect(target_group[on]).to eq('updated')
+      end
+    end
+
+    context 'with namespaced npm packages' do
+      let_it_be(:package) { create(:npm_package, project: project, name: "@#{group.path}/test") }
+
+      context 'updating the root group' do
+        let_it_be_with_refind(:target_group) { group }
+
+        it_behaves_like 'not allowing a path update'
+        it_behaves_like 'allowing an update', on: :name
+
+        context 'when npm_package_registry_fix_group_path_validation is disabled' do
+          before do
+            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
+            expect_next_instance_of(::Groups::UpdateService) do |service|
+              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
+            end
+          end
+
+          it_behaves_like 'not allowing a path update'
+          it_behaves_like 'allowing an update', on: :name
+        end
+      end
+
+      context 'updating the subgroup' do
+        let_it_be_with_refind(:target_group) { subgroup }
+
+        it_behaves_like 'allowing an update', on: :path
+        it_behaves_like 'allowing an update', on: :name
+
+        context 'when npm_package_registry_fix_group_path_validation is disabled' do
+          before do
+            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
+            expect_next_instance_of(::Groups::UpdateService) do |service|
+              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
+            end
+          end
+
+          it_behaves_like 'not allowing a path update'
+          it_behaves_like 'allowing an update', on: :name
+        end
+      end
+    end
+
+    context 'with scoped npm packages' do
+      let_it_be(:package) { create(:npm_package, project: project, name: '@any_scope/test') }
+
+      context 'updating the root group' do
+        let_it_be_with_refind(:target_group) { group }
+
+        it_behaves_like 'allowing an update', on: :path
+        it_behaves_like 'allowing an update', on: :name
+
+        context 'when npm_package_registry_fix_group_path_validation is disabled' do
+          before do
+            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
+            expect_next_instance_of(::Groups::UpdateService) do |service|
+              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
+            end
+          end
+
+          it_behaves_like 'not allowing a path update'
+          it_behaves_like 'allowing an update', on: :name
+        end
+      end
+
+      context 'updating the subgroup' do
+        let_it_be_with_refind(:target_group) { subgroup }
+
+        it_behaves_like 'allowing an update', on: :path
+        it_behaves_like 'allowing an update', on: :name
+
+        context 'when npm_package_registry_fix_group_path_validation is disabled' do
+          before do
+            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
+            expect_next_instance_of(::Groups::UpdateService) do |service|
+              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
+            end
+          end
+
+          it_behaves_like 'not allowing a path update'
+          it_behaves_like 'allowing an update', on: :name
+        end
+      end
+    end
+
+    context 'with unscoped npm packages' do
+      let_it_be(:package) { create(:npm_package, project: project, name: 'test') }
+
+      context 'updating the root group' do
+        let_it_be_with_refind(:target_group) { group }
+
+        it_behaves_like 'allowing an update', on: :path
+        it_behaves_like 'allowing an update', on: :name
+
+        context 'when npm_package_registry_fix_group_path_validation is disabled' do
+          before do
+            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
+            expect_next_instance_of(::Groups::UpdateService) do |service|
+              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
+            end
+          end
+
+          it_behaves_like 'not allowing a path update'
+          it_behaves_like 'allowing an update', on: :name
+        end
+      end
+
+      context 'updating the subgroup' do
+        let_it_be_with_refind(:target_group) { subgroup }
+
+        it_behaves_like 'allowing an update', on: :path
+        it_behaves_like 'allowing an update', on: :name
+
+        context 'when npm_package_registry_fix_group_path_validation is disabled' do
+          before do
+            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
+            expect_next_instance_of(::Groups::UpdateService) do |service|
+              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
+            end
+          end
+
+          it_behaves_like 'not allowing a path update'
+          it_behaves_like 'allowing an update', on: :name
+        end
+      end
+    end
+  end
+
   context 'when user is not group owner' do
     context 'when group is private' do
       before do
@@ -353,6 +485,32 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     context 'for users who do not have the ability to update default_branch_protection' do
       it 'does not update the attribute' do
         expect { service.execute }.not_to change { internal_group.default_branch_protection }
+        expect { service.execute }.not_to change { internal_group.namespace_settings.default_branch_protection_defaults }
+      end
+    end
+  end
+
+  context 'updating default_branch_protection_defaults' do
+    let(:branch_protection) { ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys }
+
+    let(:service) do
+      described_class.new(internal_group, user, default_branch_protection_defaults: branch_protection)
+    end
+
+    let(:settings) { internal_group.namespace_settings }
+    let(:expected_settings) { branch_protection }
+
+    context 'for users who have the ability to update default_branch_protection_defaults' do
+      it 'updates default_branch_protection attribute' do
+        internal_group.add_owner(user)
+
+        expect { service.execute }.to change { internal_group.default_branch_protection_defaults }.from({}).to(expected_settings)
+      end
+    end
+
+    context 'for users who do not have the ability to update default_branch_protection_defaults' do
+      it 'does not update the attribute' do
+        expect { service.execute }.not_to change { internal_group.default_branch_protection_defaults }
         expect { service.execute }.not_to change { internal_group.namespace_settings.default_branch_protection_defaults }
       end
     end

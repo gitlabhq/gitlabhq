@@ -41,7 +41,7 @@ RSpec.describe NamespaceSettings::UpdateService, feature_category: :groups_and_p
       it "changes settings" do
         expect { service.execute }
           .to change { group.namespace_settings.default_branch_name }
-          .from(nil).to(example_branch_name)
+                .from(nil).to(example_branch_name)
       end
     end
 
@@ -57,7 +57,54 @@ RSpec.describe NamespaceSettings::UpdateService, feature_category: :groups_and_p
       it "updates default_branch_protection_defaults from the default_branch_protection param" do
         expect { service.execute }
           .to change { namespace_settings.default_branch_protection_defaults }
-          .from({}).to(expected)
+                .from({}).to(expected)
+      end
+    end
+
+    context 'when default_branch_protection_defaults is updated' do
+      let(:namespace_settings) { group.namespace_settings }
+      let(:branch_protection) { ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys }
+      let(:expected) { branch_protection }
+      let(:settings) { { default_branch_protection_defaults: branch_protection } }
+
+      context 'when the user has the ability to update' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, group).and_return(true)
+        end
+
+        context 'when group is root' do
+          before do
+            allow(group).to receive(:root?).and_return(true)
+          end
+
+          it "updates default_branch_protection_defaults from the default_branch_protection param" do
+            expect { service.execute }
+              .to change { namespace_settings.default_branch_protection_defaults }
+                    .from({}).to(expected)
+          end
+        end
+
+        context 'when group is not root' do
+          before do
+            allow(group).to receive(:root?).and_return(false)
+          end
+
+          it "does not update default_branch_protection_defaults and adds an error to the namespace_settings", :aggregate_failures do
+            expect { service.execute }.not_to change { namespace_settings.default_branch_protection_defaults }
+            expect(group.namespace_settings.errors[:default_branch_protection_defaults]).to include('only available on top-level groups.')
+          end
+        end
+      end
+
+      context 'when the user does not have the ability to update' do
+        before do
+          allow(Ability).to receive(:allowed?).with(user, :update_default_branch_protection, group).and_return(false)
+        end
+
+        it "does not update default_branch_protection_defaults and adds an error to the namespace_settings", :aggregate_failures do
+          expect { service.execute }.not_to change { namespace_settings.default_branch_protection_defaults }
+          expect(group.namespace_settings.errors[:default_branch_protection_defaults]).to include('can only be changed by a group admin.')
+        end
       end
     end
 
@@ -72,7 +119,7 @@ RSpec.describe NamespaceSettings::UpdateService, feature_category: :groups_and_p
         it "changes settings" do
           expect { service.execute }
             .to change { group.namespace_settings.resource_access_token_creation_allowed }
-            .from(true).to(false)
+                  .from(true).to(false)
         end
       end
 
@@ -96,8 +143,8 @@ RSpec.describe NamespaceSettings::UpdateService, feature_category: :groups_and_p
       using RSpec::Parameterized::TableSyntax
 
       where(:setting_key, :setting_changes_from, :setting_changes_to) do
-        :prevent_sharing_groups_outside_hierarchy  | false | true
-        :new_user_signups_cap                      | nil   | 100
+        :prevent_sharing_groups_outside_hierarchy | false | true
+        :new_user_signups_cap | nil | 100
       end
 
       with_them do
@@ -145,7 +192,7 @@ RSpec.describe NamespaceSettings::UpdateService, feature_category: :groups_and_p
           it 'changes settings' do
             expect { service.execute }
               .to change { group.namespace_settings.public_send(setting_key) }
-              .from(setting_changes_from).to(setting_changes_to)
+                    .from(setting_changes_from).to(setting_changes_to)
           end
         end
       end

@@ -4,11 +4,11 @@ module Types
   class MergeRequestType < BaseObject
     graphql_name 'MergeRequest'
 
-    connection_type_class(Types::MergeRequestConnectionType)
+    connection_type_class Types::MergeRequestConnectionType
 
-    implements(Types::Notes::NoteableInterface)
-    implements(Types::CurrentUserTodos)
-    implements(Types::TodoableInterface)
+    implements Types::Notes::NoteableInterface
+    implements Types::CurrentUserTodos
+    implements Types::TodoableInterface
 
     authorize :read_merge_request
 
@@ -192,6 +192,11 @@ module Types
     field :total_time_spent, GraphQL::Types::Int, null: false,
                                                   description: 'Total time reported as spent on the merge request.'
 
+    field :approved, GraphQL::Types::Boolean,
+          method: :approved?,
+          null: false, calls_gitaly: true,
+          description: 'Indicates if the merge request has all the required approvals.'
+
     field :approved_by, Types::UserType.connection_type, null: true,
                                                          description: 'Users who approved the merge request.', method: :approved_by_users
     field :auto_merge_strategy, GraphQL::Types::String, null: true,
@@ -221,7 +226,7 @@ module Types
 
     field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
       null: true,
-      description: 'List of award emojis associated with the merge request.'
+      description: 'List of emoji reactions associated with the merge request.'
 
     field :prepared_at, Types::TimeType, null: true,
                                          description: 'Timestamp of when the merge request was prepared.'

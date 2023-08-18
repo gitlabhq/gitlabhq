@@ -4,12 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Monitoring GraphQL
-
-This page gives tips on how to analyze GraphQL data in our monitoring tools.
-Please contribute your own tips to improve this document.
-
-## Kibana
+# Reading GraphQL logs
 
 We use Kibana to filter GraphQL query logs. Sign in to [Kibana](https://log.gprd.gitlab.net/)
 with a `@gitlab.com` email address.
@@ -20,7 +15,7 @@ In Kibana we can inspect two kinds of GraphQL logs:
 - Logs of the full request, which due to [query multiplexing](https://graphql-ruby.org/queries/multiplex.html)
    may have executed multiple queries.
 
-### Logs of each GraphQL query
+## Logs of each GraphQL query
 
 In a [multiplex query](https://graphql-ruby.org/queries/multiplex.html), each individual query
 is logged separately. We can use subcomponent filtering to inspect these logs.
@@ -49,11 +44,11 @@ which already has a set of Kibana fields selected. Some relevant Kibana fields i
 | `json.query_analysis.duration_s` | Duration of query execution in seconds. |
 | `json.query_analysis.complexity` | The [complexity](../api_graphql_styleguide.md#max-complexity) score of the query. |
 
-#### Useful filters
+### Useful filters
 
 Combine the [subcomponent filter](#logs-of-each-graphql-query) with the following Kibana filters to further interrogate the query logs.
 
-##### Queries that used a particular field
+#### Queries that used a particular field
 
 Filter logs by queries that used a particular field:
 
@@ -61,16 +56,16 @@ Filter logs by queries that used a particular field:
    1. Filter: `json.query_analysis.used_fields`
    1. Operator: `is`
    1. Value: `Type.myField`, where `Type.myField` is the type name and field name as it
-      appears in [our GraphQL reference documentation](../../api/graphql/reference/index.md).
+      appears in [our GraphQL API resources documentation](../../api/graphql/reference/index.md).
 1. Select **Refresh**.
 
-##### Queries that used a deprecated field
+#### Queries that used a deprecated field
 
 Filter logs of queries that used a particular deprecated field by following the
 [steps above](#queries-that-used-a-particular-field) but use the `json.graphql.used_deprecated_fields`
 filter instead.
 
-### Logs of the full request
+## Logs of the full request
 
 The full request logs encompass log data for all [multiplexed queries](https://graphql-ruby.org/queries/multiplex.html)
 in the request, as well as data from time spent outside of `GraphQLController#execute`.

@@ -7,7 +7,7 @@
   .col-12
     #js-vue-packages-detail{ data: { package: package_from_presenter(@package),
       can_delete: can?(current_user, :destroy_package, @project).to_s,
-      svg_path: image_path('illustrations/no-packages.svg'),
+      svg_path: image_path('illustrations/empty-state/empty-package-md.svg'),
       project_name: @project.name,
       project_path: @project.root_ancestor.full_path,
       gitlab_host: Gitlab.config.gitlab.host,

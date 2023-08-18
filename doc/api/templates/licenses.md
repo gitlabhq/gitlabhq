@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Licenses API **(FREE)**
+# Licenses API **(FREE ALL)**
 
 In GitLab, there is an API endpoint available for working with various open
 source license templates. For more information on the terms of various

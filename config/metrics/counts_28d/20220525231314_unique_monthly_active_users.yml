@@ -1,6 +1,5 @@
 ---
 key_path: counts_monthly.unique_active_users
-name:
 description: Users that have a last_activity_on date within the past 28 days
 product_section: dev
 product_stage: manage

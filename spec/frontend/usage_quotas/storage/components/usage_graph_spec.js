@@ -44,7 +44,6 @@ describe('UsageGraph', () => {
       buildArtifactsSize,
       lfsObjectsSize,
       packagesSize,
-      containerRegistrySize,
       repositorySize,
       wikiSize,
       snippetsSize,
@@ -57,14 +56,11 @@ describe('UsageGraph', () => {
     expect(types.at(2).text()).toMatchInterpolatedText(
       `Packages ${numberToHumanSize(packagesSize)}`,
     );
-    expect(types.at(3).text()).toMatchInterpolatedText(
-      `Container Registry ${numberToHumanSize(containerRegistrySize)}`,
-    );
-    expect(types.at(4).text()).toMatchInterpolatedText(`LFS ${numberToHumanSize(lfsObjectsSize)}`);
-    expect(types.at(5).text()).toMatchInterpolatedText(
+    expect(types.at(3).text()).toMatchInterpolatedText(`LFS ${numberToHumanSize(lfsObjectsSize)}`);
+    expect(types.at(4).text()).toMatchInterpolatedText(
       `Snippets ${numberToHumanSize(snippetsSize)}`,
     );
-    expect(types.at(6).text()).toMatchInterpolatedText(
+    expect(types.at(5).text()).toMatchInterpolatedText(
       `Job artifacts ${numberToHumanSize(buildArtifactsSize)}`,
     );
   });
@@ -102,7 +98,6 @@ describe('UsageGraph', () => {
         '0.29411764705882354',
         '0.23529411764705882',
         '0.17647058823529413',
-        '0.14705882352941177',
         '0.11764705882352941',
         '0.11764705882352941',
         '0.041176470588235294',
@@ -121,7 +116,6 @@ describe('UsageGraph', () => {
         '0.29411764705882354',
         '0.23529411764705882',
         '0.17647058823529413',
-        '0.14705882352941177',
         '0.11764705882352941',
         '0.11764705882352941',
         '0.041176470588235294',

@@ -92,16 +92,6 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
       expect(subject.issue_keys).to contain_exactly('add a')
     end
 
-    context 'when `jira_deployment_issue_keys` flag is disabled' do
-      before do
-        stub_feature_flags(jira_deployment_issue_keys: false)
-      end
-
-      it 'does not extract issue keys from commits' do
-        expect(subject.issue_keys).to be_empty
-      end
-    end
-
     context 'when deploy happened at an older commit' do
       before do
         # SHA is from a commit between 1) and 2) in the commit list above.

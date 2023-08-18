@@ -14,7 +14,8 @@ class MergeRequestTargetProjectFinder
   def execute(search: nil, include_routes: false)
     if source_project.fork_network
       items = include_routes ? projects.inc_routes : projects
-      by_search(items, search)
+      by_search(items, search).allow_cross_joins_across_databases(
+        url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
     else
       Project.id_in(source_project.id)
     end
@@ -39,3 +40,5 @@ class MergeRequestTargetProjectFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end
+
+MergeRequestTargetProjectFinder.prepend_mod_with("MergeRequestTargetProjectFinder")

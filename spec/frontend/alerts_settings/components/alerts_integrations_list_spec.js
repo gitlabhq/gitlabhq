@@ -47,7 +47,6 @@ describe('AlertIntegrationsList', () => {
   });
 
   const findTableComponent = () => wrapper.findComponent(GlTable);
-  const findTableComponentRows = () => wrapper.findComponent(GlTable).findAll('table tbody tr');
   const finsStatusCell = () => wrapper.findAll('[data-testid="integration-activated-status"]');
 
   it('renders a table', () => {
@@ -61,11 +60,6 @@ describe('AlertIntegrationsList', () => {
 
   it('renders an an edit and delete button for each integration', () => {
     expect(findTableComponent().findAllComponents(GlButton).length).toBe(4);
-  });
-
-  it('renders an highlighted row when a current integration is selected to edit', () => {
-    mountComponent({ data: { currentIntegration: { id: '1' } } });
-    expect(findTableComponentRows().at(0).classes()).toContain('gl-bg-blue-50');
   });
 
   describe('integration status', () => {

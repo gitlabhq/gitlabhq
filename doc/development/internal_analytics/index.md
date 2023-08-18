@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Internal analytics
 
-Learn how to implement internal analytics using:
+Learn how to instrument your features on GitLab using:
 
 - [Service Ping](service_ping/index.md)
 - [Snowplow](snowplow/index.md)

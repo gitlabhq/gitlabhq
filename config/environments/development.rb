@@ -69,9 +69,23 @@ Rails.application.configure do
   # Do not log asset requests
   config.assets.quiet = true
 
-  # Use 'listen' gem to watch for file changes and improve performance
-  # See: https://guides.rubyonrails.org/configuring.html#config-file-watcher
-  config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+  # Disable inotify watchers in cases when we don't need them
+  if config.cache_classes || ::Gitlab::Runtime.console? || ::Gitlab::Runtime.rake?
+    # Rails ignores reload_classes_only_on_change if cache_classes is enabled, but
+    # the lookbook gem appears to use this variable to watch files. Disabling
+    # this variable ensures that a file watcher isn't loaded, which appears to save
+    # 8 threads (2 workers * 4 threads/worker):
+    # https://github.com/ViewComponent/lookbook/blob/v2.0.5/lib/lookbook/engine.rb#L65
+    # https://github.com/ViewComponent/lookbook/blob/v2.0.5/lib/lookbook/reloaders.rb#L15-L18
+    config.reload_classes_only_on_change = false
+    # Use the simple file watcher to prevent factory_bot_rails from launching 4 file watcher threads:
+    # https://github.com/thoughtbot/factory_bot_rails/blob/v6.2.0/lib/factory_bot_rails/reloader.rb#L29
+    config.file_watcher = ActiveSupport::FileUpdateChecker
+  else
+    # Use 'listen' gem to watch for file changes and improve performance
+    # See: https://guides.rubyonrails.org/configuring.html#config-file-watcher
+    config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+  end
 
   # BetterErrors live shell (REPL) on every stack frame
   BetterErrors::Middleware.allow_ip!("127.0.0.1/0")

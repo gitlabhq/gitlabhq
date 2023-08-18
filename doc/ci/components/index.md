@@ -7,12 +7,9 @@ type: reference
 
 # CI/CD Components (Experimental)
 
-> Introduced in GitLab 16.0 as an [experimental feature](../../policy/experiment-beta-support.md).
-
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`.
-On GitLab.com, this feature is not available. This feature is not ready for production use.
+> - Introduced as an [experimental feature](../../policy/experiment-beta-support.md) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
+> - [Feature flag `ci_namespace_catalog_experimental` removed.](https://gitlab.com/gitlab-org/gitlab/-/issues/394772) in GitLab 16.3.
 
 This feature is an experimental feature and [an epic exists](https://gitlab.com/groups/gitlab-org/-/epics/9897)
 to track future work. Tell us about your use case by leaving comments in the epic.
@@ -339,7 +336,7 @@ We recommend adopting at least the `MAJOR.MINOR` format.
 
 For example: `2.1`, `1.0.0`, `1.0.0-alpha`, `2.1.3`, `3.0.0-rc.1`.
 
-## CI/CD Catalog
+## CI/CD Catalog **(PREMIUM ALL)**
 
 The CI/CD Catalog is a list of [components repositories](#components-repository),
 each containing resources that you can add to your CI/CD pipelines.
@@ -367,7 +364,7 @@ This action is not reversible.
 
 Any existing CI template, that you share with other projects via `include:` syntax, can be converted to a CI component.
 
-1. Decide whether you want the component to be part of an existing [components repository](#components-repository), 
+1. Decide whether you want the component to be part of an existing [components repository](#components-repository),
    if you want to logically group components together. Create and setup a [components repository](#components-repository) otherwise.
 1. Create a YAML file in the components repository according to the expected [directory structure](#directory-structure).
 1. Copy the content of the template YAML file into the new component YAML file.

@@ -64,7 +64,6 @@ describe('markdown example snapshots in ContentEditor', () => {
         const expectedHtml = expectedHtmlExamples[name].wysiwyg;
         const { html: actualHtml } = actualHtmlAndJsonExamples[name];
 
-        // noinspection JSUnresolvedFunction (required to avoid RubyMine type inspection warning, because custom matchers auto-imported via Jest test setup are not automatically resolved - see https://youtrack.jetbrains.com/issue/WEB-42350/matcher-for-jest-is-not-recognized-but-it-is-runable)
         expect(actualHtml).toMatchExpectedForMarkdown(
           'HTML',
           name,
@@ -82,7 +81,6 @@ describe('markdown example snapshots in ContentEditor', () => {
         const expectedJson = expectedProseMirrorJsonExamples[name];
         const { json: actualJson } = actualHtmlAndJsonExamples[name];
 
-        // noinspection JSUnresolvedFunction
         expect(actualJson).toMatchExpectedForMarkdown(
           'JSON',
           name,

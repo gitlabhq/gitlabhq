@@ -1,4 +1,10 @@
-import { GlDropdown, GlIcon, GlDropdownItem } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlButtonGroup,
+  GlButton,
+  GlIcon,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ImportActionsCell from '~/import_entities/import_groups/components/import_actions_cell.vue';
 
@@ -13,6 +19,11 @@ describe('import actions cell', () => {
         isInvalid: false,
         ...props,
       },
+      stubs: {
+        GlButtonGroup,
+        GlDisclosureDropdown,
+        GlDisclosureDropdownItem,
+      },
     });
   };
 
@@ -22,9 +33,9 @@ describe('import actions cell', () => {
     });
 
     it('renders import dropdown', () => {
-      const dropdown = wrapper.findComponent(GlDropdown);
-      expect(dropdown.exists()).toBe(true);
-      expect(dropdown.props('text')).toBe('Import with projects');
+      const button = wrapper.findComponent(GlButton);
+      expect(button.exists()).toBe(true);
+      expect(button.text()).toBe('Import with projects');
     });
 
     it('does not render icon with a hint', () => {
@@ -38,9 +49,9 @@ describe('import actions cell', () => {
     });
 
     it('renders re-import dropdown', () => {
-      const dropdown = wrapper.findComponent(GlDropdown);
-      expect(dropdown.exists()).toBe(true);
-      expect(dropdown.props('text')).toBe('Re-import with projects');
+      const button = wrapper.findComponent(GlButton);
+      expect(button.exists()).toBe(true);
+      expect(button.text()).toBe('Re-import with projects');
     });
 
     it('renders icon with a hint', () => {
@@ -55,22 +66,22 @@ describe('import actions cell', () => {
   it('does not render import dropdown when group is not available for import', () => {
     createComponent({ isAvailableForImport: false });
 
-    const dropdown = wrapper.findComponent(GlDropdown);
+    const dropdown = wrapper.findComponent(GlDisclosureDropdown);
     expect(dropdown.exists()).toBe(false);
   });
 
   it('renders import dropdown as disabled when group is invalid', () => {
     createComponent({ isInvalid: true, isAvailableForImport: true });
 
-    const dropdown = wrapper.findComponent(GlDropdown);
+    const dropdown = wrapper.findComponent(GlDisclosureDropdown);
     expect(dropdown.props().disabled).toBe(true);
   });
 
   it('emits import-group event when import button is clicked', () => {
     createComponent({ isAvailableForImport: true });
 
-    const dropdown = wrapper.findComponent(GlDropdown);
-    dropdown.vm.$emit('click');
+    const button = wrapper.findComponent(GlButton);
+    button.vm.$emit('click');
 
     expect(wrapper.emitted('import-group')).toHaveLength(1);
   });
@@ -87,23 +98,24 @@ describe('import actions cell', () => {
       });
 
       it('render import dropdown', () => {
-        const dropdown = wrapper.findComponent(GlDropdown);
-        expect(dropdown.props('text')).toBe(`${expectedAction} with projects`);
-        expect(dropdown.findComponent(GlDropdownItem).text()).toBe(
+        const button = wrapper.findComponent(GlButton);
+        const dropdown = wrapper.findComponent(GlDisclosureDropdown);
+        expect(button.element).toHaveText(`${expectedAction} with projects`);
+        expect(dropdown.findComponent(GlDisclosureDropdownItem).text()).toBe(
           `${expectedAction} without projects`,
         );
       });
 
       it('request migrate projects by default', () => {
-        const dropdown = wrapper.findComponent(GlDropdown);
-        dropdown.vm.$emit('click');
+        const button = wrapper.findComponent(GlButton);
+        button.vm.$emit('click');
 
         expect(wrapper.emitted('import-group')[0]).toStrictEqual([{ migrateProjects: true }]);
       });
 
       it('request not to migrate projects via dropdown option', () => {
-        const dropdown = wrapper.findComponent(GlDropdown);
-        dropdown.findComponent(GlDropdownItem).vm.$emit('click');
+        const dropdown = wrapper.findComponent(GlDisclosureDropdown);
+        dropdown.findComponent(GlDisclosureDropdownItem).vm.$emit('action');
 
         expect(wrapper.emitted('import-group')[0]).toStrictEqual([{ migrateProjects: false }]);
       });

@@ -13,19 +13,14 @@ module QA
 
         # do not use top level group (sandbox) to avoid issues when applying permissions etc. because it will contain
         # a lot subgroups and projects on live envs
-        let!(:source_sandbox) do
-          Resource::Group.fabricate_via_api! do |group|
-            group.api_client = admin_api_client
-          end
-        end
+        let!(:source_sandbox) { create(:group, api_client: admin_api_client) }
 
         let!(:source_group) do
-          Resource::Group.fabricate_via_api! do |group|
-            group.api_client = admin_api_client
-            group.sandbox = source_sandbox
-            group.path = "source-group-for-import-#{SecureRandom.hex(4)}"
-            group.avatar = File.new(Runtime::Path.fixture('designs', 'tanuki.jpg'), 'r')
-          end
+          create(:group,
+            api_client: admin_api_client,
+            sandbox: source_sandbox,
+            path: "source-group-for-import-#{SecureRandom.hex(4)}",
+            avatar: File.new(Runtime::Path.fixture('designs', 'tanuki.jpg'), 'r'))
         end
 
         let!(:target_sandbox) { source_sandbox }

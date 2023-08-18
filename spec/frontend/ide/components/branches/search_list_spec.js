@@ -1,6 +1,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Item from '~/ide/components/branches/item.vue';
 import List from '~/ide/components/branches/search_list.vue';

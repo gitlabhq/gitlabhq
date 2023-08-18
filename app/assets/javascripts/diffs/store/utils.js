@@ -593,6 +593,7 @@ export function markTreeEntriesLoaded({ priorEntries, loadedFiles }) {
 
     if (entry) {
       entry.diffLoaded = true;
+      entry.diffLoading = false;
     }
   });
 

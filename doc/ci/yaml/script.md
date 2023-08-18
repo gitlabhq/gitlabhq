@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Format scripts and job logs **(FREE)**
+# Format scripts and job logs **(FREE ALL)**
 
 You can use special syntax in [`script`](index.md#script) sections to:
 

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 
@@ -12,7 +13,7 @@ import NotesApp from '../notes/components/notes_app.vue';
 import { getNotesFilterData } from '../notes/utils/get_notes_filter_data';
 import initWidget from '../vue_merge_request_widget';
 
-export default ({ editorAiActions = [] } = {}) => {
+export default () => {
   requestIdleCallback(
     () => {
       renderGFM(document.getElementById('diff-notes-app'));
@@ -42,7 +43,6 @@ export default ({ editorAiActions = [] } = {}) => {
     provide: {
       reportAbusePath: notesDataset.reportAbusePath,
       newCommentTemplatePath: notesDataset.newCommentTemplatePath,
-      editorAiActions,
       mrFilter: true,
     },
     data() {

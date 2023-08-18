@@ -23,12 +23,7 @@ module QA
         }
       ]
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.initialize_with_readme = true
-        end
-      end
-
+      let(:project) { create(:project, :with_readme) }
       let(:source) do
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project

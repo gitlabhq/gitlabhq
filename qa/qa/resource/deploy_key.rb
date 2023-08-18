@@ -29,6 +29,7 @@ module QA
 
         Page::Project::Settings::Repository.perform do |setting|
           setting.expand_deploy_keys do |page|
+            page.add_new_key
             page.fill_key_title(title)
             page.fill_key_value(key)
 

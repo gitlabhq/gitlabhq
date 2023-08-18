@@ -25,6 +25,7 @@ import { loadCSSFile } from '../lib/utils/css_utils';
         exportHeight = 200,
         cropBoxWidth = 200,
         cropBoxHeight = 200,
+        onBlobChange = () => {},
       } = {},
     ) {
       this.onUploadImageBtnClick = this.onUploadImageBtnClick.bind(this);
@@ -54,6 +55,7 @@ import { loadCSSFile } from '../lib/utils/css_utils';
       this.uploadImageBtn = isString(uploadImageBtn) ? $(uploadImageBtn) : uploadImageBtn;
       this.modalCropImg = isString(modalCropImg) ? $(modalCropImg) : modalCropImg;
       this.cropActionsBtn = this.modalCrop.find('[data-method]');
+      this.onBlobChange = onBlobChange;
       this.bindEvents();
     }
 
@@ -75,6 +77,7 @@ import { loadCSSFile } from '../lib/utils/css_utils';
         const btn = this;
         return _this.onActionBtnClick(btn);
       });
+      this.onBlobChange(null);
       return (this.croppedImageBlob = null);
     }
 
@@ -187,7 +190,10 @@ import { loadCSSFile } from '../lib/utils/css_utils';
           height: 200,
         })
         .toDataURL('image/png');
-      return (this.croppedImageBlob = this.dataURLtoBlob(this.dataURL));
+
+      this.croppedImageBlob = this.dataURLtoBlob(this.dataURL);
+      this.onBlobChange(this.croppedImageBlob);
+      return this.croppedImageBlob;
     }
 
     getBlob() {

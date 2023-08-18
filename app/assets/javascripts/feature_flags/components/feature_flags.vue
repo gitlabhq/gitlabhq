@@ -1,6 +1,7 @@
 <script>
 import { GlAlert, GlBadge, GlButton, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 
 import { buildUrlWithCurrentLocation, historyPushState } from '~/lib/utils/common_utils';
@@ -154,7 +155,6 @@ export default {
           variant="confirm"
           category="tertiary"
           class="gl-mb-3"
-          data-testid="ff-new-list-button"
         >
           {{ s__('FeatureFlags|View user lists') }}
         </gl-button>
@@ -183,10 +183,7 @@ export default {
         class="gl-display-flex gl-align-items-baseline gl-flex-direction-row gl-justify-content-space-between gl-mt-6"
       >
         <div class="gl-display-flex gl-align-items-center">
-          <h2
-            data-testid="feature-flags-tab-title"
-            class="page-title gl-font-size-h-display gl-my-0"
-          >
+          <h2 class="page-title gl-font-size-h-display gl-my-0">
             {{ s__('FeatureFlags|Feature flags') }}
           </h2>
           <gl-badge v-if="count" class="gl-ml-4">{{ count }}</gl-badge>
@@ -240,7 +237,6 @@ export default {
             'FeatureFlags|Feature flags allow you to configure your code into different flavors by dynamically toggling certain functionality.',
           )
         "
-        data-testid="feature-flags-tab"
         @dismissAlert="clearAlert"
       >
         <feature-flags-table :feature-flags="featureFlags" @toggle-flag="toggleFeatureFlag" />

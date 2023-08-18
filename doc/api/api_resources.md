@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# REST API resources **(FREE)**
+# REST API resources **(FREE ALL)**
 
 Available resources for the [GitLab REST API](index.md) can be grouped in the following contexts:
 
@@ -44,6 +44,7 @@ The following API resources are available in the project context:
 | [Environments](environments.md)                                         | `/projects/:id/environments`                                                                                                                                                                          |
 | [Error Tracking](error_tracking.md)                                     | `/projects/:id/error_tracking/settings`                                                                                                                                                               |
 | [Events](events.md)                                                     | `/projects/:id/events` (also available for users and standalone)                                                                                                                                      |
+| [External status checks](status_checks.md)                              | `/projects/:id/external_status_checks`                                                                                                                                                                |
 | [Feature flag User Lists](feature_flag_user_lists.md)                   | `/projects/:id/feature_flags_user_lists`                                                                                                                                                              |
 | [Feature flags](feature_flags.md)                                       | `/projects/:id/feature_flags`                                                                                                                                                                         |
 | [Freeze Periods](freeze_periods.md)                                     | `/projects/:id/freeze_periods`                                                                                                                                                                        |
@@ -60,7 +61,6 @@ The following API resources are available in the project context:
 | [Jobs](jobs.md)                                                         | `/projects/:id/jobs`, `/projects/:id/pipelines/.../jobs`                                                                                                                                              |
 | [Jobs Artifacts](job_artifacts.md)                                      | `/projects/:id/jobs/:job_id/artifacts`                                                                                                                                                                |
 | [Labels](labels.md)                                                     | `/projects/:id/labels`                                                                                                                                                                                |
-| [Managed licenses](managed_licenses.md) **(ULTIMATE)**                  | `/projects/:id/managed_licenses`                                                                                                                                                                      |
 | [Maven repository](packages/maven.md)                                   | `/projects/:id/packages/maven` (also available for groups and standalone)                                                                                                                             |
 | [Members](members.md)                                                   | `/projects/:id/members` (also available for groups)                                                                                                                                                   |
 | [Merge request approvals](merge_request_approvals.md) **(PREMIUM)**     | `/projects/:id/approvals`, `/projects/:id/merge_requests/.../approvals`                                                                                                                               |

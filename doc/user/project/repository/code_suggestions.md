@@ -1,11 +1,11 @@
 ---
-stage: ModelOps
-group: AI Assisted
+stage: AI-powered
+group: AI Model Validation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, reference
 ---
 
-# Code Suggestions (Beta) **(FREE)**
+# Code Suggestions (Beta) **(FREE ALL)**
 
 > - [Introduced](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta) in GitLab 15.9 as [Beta](../../../policy/experiment-beta-support.md#beta) for early access Ultimate customers on GitLab.com.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/408104) as opt-in with GitLab 15.11 as [Beta](../../../policy/experiment-beta-support.md#beta).
@@ -26,8 +26,8 @@ Write code more efficiently by using generative AI to suggest code while you're 
 Code Suggestions are available:
 
 - To users of GitLab SaaS (by default) and self-managed GitLab Enterprise Edition (when requested). Code Suggestions are not available for GitLab Community Edition.
-- In VS Code and Microsoft Visual Studio when you have the corresponding GitLab extension installed.
-- In the GitLab WebIDE
+- In VS Code, Microsoft Visual Studio, JetBrains IDEs, and Neovim. You must have the corresponding GitLab extension installed.
+- In the GitLab WebIDE.
 
 <div class="video-fallback">
   <a href="https://www.youtube.com/watch?v=WnxBYxN2-p4">View an end-to-end demo of Code Suggestions in VS Code</a>.
@@ -58,13 +58,56 @@ The best results from Code Suggestions are expected [for languages the Google Ve
 - Swift
 - TypeScript
 
- Supported [code infrastructure interfaces](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_code_infrastructure_interfaces) include:
+### Supported code infrastructure interfaces
+
+Code Suggestions includes [Google Vertex AI Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview#supported_code_infrastructure_interfaces) support for the following infrastructure as code interfaces:
 
 - Google Cloud CLI
 - Kubernetes Resource Model (KRM)
 - Terraform
 
 Suggestion quality for other languages and using natural language code comments to request completions may not yet result in high-quality suggestions.
+
+### Supported languages in IDEs
+
+Editor support for languages is documented in the following table.
+
+| Language                        | VS Code                                                      | JetBrains IDEs               | Visual Studio | Neovim |
+|---------------------------------|--------------------------------------------------------------|------------------------------|---------------|--------|
+| C++                             | ✓                                                            |                              | ✓             |        |
+| C#                              | ✓                                                            | ✓                            | ✓             |        |
+| Go                              | ✓                                                            | ✓ (IDEA Ultimate / GoLand)   |               |        |
+| Google SQL                      |                                                              |                              |               |        |
+| Java                            | ✓                                                            | ✓                            |               |        |
+| JavaScript                      | ✓                                                            | ✓                            |               |        |
+| Kotlin                          | ✓                                                            | ✓                            |               |        |
+| PHP                             | ✓                                                            | ✓ (IDEA Ultimate)            |               |        |
+| Python                          | ✓                                                            | ✓                            |               | ✓      |
+| Ruby                            | ✓                                                            | ✓ (IDEA Ultimate / RubyMine) |               | ✓      |
+| Rust                            | ✓                                                            | ✓                            |               |        |
+| Scala                           | ✓                                                            | ✓                            |               |        |
+| Swift                           | ✓                                                            | ✓                            |               |        |
+| TypeScript                      | ✓                                                            | ✓                            |               |        |
+| Google Cloud CLI                |                                                              |                              |               |        |
+| Kubernetes Resource Model (KRM) |                                                              |                              |               |        |
+| Terraform                       | ✓ (Requires 3rd party extension providing Terraform support) |                              |               |        |
+
+## Supported editor extensions
+
+Code Suggestions supports a variety of popular editors including:
+
+- VS Code, using [the VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
+- [GitLab WebIDE (VS Code in the Cloud)](../../project/web_ide/index.md), with no additional configuration.
+- Microsoft Visual Studio, using the [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
+- JetBrains IDEs, using the [GitLab plugin](https://plugins.jetbrains.com/plugin/22325-gitlab).
+- Neovim, using the [`gitlab.vim` plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim).
+
+A [GitLab Language Server for Code Suggestions](https://gitlab.com/gitlab-org/editor-extensions/gitlab-language-server-for-code-suggestions)
+is also in process.
+This improvement should result in:
+
+- Faster iteration and standardization of the IDE extensions.
+- The ability to use Code Suggestions even when an official editor extension isn't available.
 
 ## Enable Code Suggestions on GitLab SaaS **(FREE SAAS)**
 
@@ -150,21 +193,13 @@ on self-managed instances. To request access:
 After GitLab has provisioned access to Code Suggestions for your instance,
 the users in your instance can now enable Code Suggestions.
 
-## Enable Code Suggestions in other IDEs and editors
-
-We have experimental support for Code Suggestions in JetBrains, Neovim, Emacs, Sublime, etc.
-
-More details in this [blog](https://about.gitlab.com/blog/2023/06/01/extending-code-suggestions/).
-
 ## Use Code Suggestions
 
 Prerequisites:
 
 - For self-managed GitLab, Code Suggestions must be enabled [for the instance](#enable-code-suggestions-on-self-managed-gitlab).
 - For GitLab SaaS, Code Suggestions must be enabled [for the top-level group](../../group/manage.md#enable-code-suggestions) and [for your user account](#enable-code-suggestions-for-an-individual-user).
-- To use VS Code, ensure you have installed [the VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-- To use Microsoft Visual Studio, ensure you have installed [the Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
-
+- Install and configure a [supported IDE editor extension](#supported-editor-extensions).
 To use Code Suggestions:
 
 1. Author your code. As you type, suggestions are displayed. Depending on the cursor position, the extension either:
@@ -202,8 +237,10 @@ Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.goo
 ### Inference window context
 
 Code Suggestions currently inferences against the currently opened file and has a context window of 2,048 tokens and 8,192 character limits. This limit includes content before and after the cursor, the file name, and the extension type.
-
 Learn more about Google Vertex AI [code-gecko](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/models).
+
+The maximum number of tokens that is generated in the response is default 64. A token is approximately four characters. 100 tokens correspond to roughly 60-80 words.
+Learn more about Google Vertex AI [`code-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-completion).
 
 ### Self-managed instance data privacy
 

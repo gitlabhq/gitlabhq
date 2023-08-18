@@ -1,5 +1,6 @@
 <script>
 import { GlFormRadioGroup, GlFormRadio } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { sprintf, __ } from '~/locale';
 
@@ -16,7 +17,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['query', 'useNewNavigation']),
+    ...mapState(['query', 'useSidebarNavigation']),
     ...mapGetters(['currentScope']),
     ANY() {
       return this.filterData.filters.ANY;
@@ -56,7 +57,7 @@ export default {
 
 <template>
   <div>
-    <h5 class="gl-mt-0 gl-mb-5" :class="{ 'gl-font-sm': useNewNavigation }">
+    <h5 class="gl-mt-0 gl-mb-5" :class="{ 'gl-font-sm': useSidebarNavigation }">
       {{ filterData.header }}
     </h5>
     <gl-form-radio-group v-model="selectedFilter">

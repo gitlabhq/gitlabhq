@@ -4,19 +4,17 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value Streams Dashboard **(ULTIMATE)**
+# Value Streams Dashboard **(ULTIMATE ALL)**
 
 > - Introduced in GitLab 15.8 as a Closed [Beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Disabled by default.
 > - Released in GitLab 15.11 as an Open [Beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 
-You can leave feedback on dashboard bugs or functionality in [issue 381787](https://gitlab.com/gitlab-org/gitlab/-/issues/381787).
+You can leave feedback on dashboard bugs or functionality in [issue 419488](https://gitlab.com/gitlab-org/gitlab/-/issues/419488).
 For more information, see also the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
 The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
-
-With the Value Streams Dashboard, you can compare software delivery metrics.
-This comparison can help you understand whether projects and groups are improving.
+The centralized UI in Value Streams Dashboard acts as the single source of truth (SSOT), where all stakeholders can access and view the same set of metrics that are relevant to the organization.
 
 The Value Streams Dashboard includes the following metrics:
 
@@ -24,14 +22,16 @@ The Value Streams Dashboard includes the following metrics:
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/index.md)
 - [Vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) metrics.
 
-The Value Streams Dashboard allows you to:
+With the Value Streams Dashboard, you can:
 
-- Aggregate data records from different APIs.
-- Track software performance (DORA) and flow of value (VSA) across the organization.
+- Track and compare the above metrics over a period of time.
+- Identify downward trends early on.
+- Understand security exposure.
+- Drill down into individual projects or metrics to take actions for improvement.
 
-## DevOps metrics comparison panel
+## DevSecOps metrics comparison panel
 
-The DevOps metrics comparison displays DORA4 and flow metrics for a group or project in the
+The DevSecOps metrics comparison displays DORA4, vulnerability, and flow metrics for a group or project in the
 month-to-date, last month, the month before, and the past 180 days.
 
 This visualization helps you get a high-level custom view over multiple DevOps metrics and
@@ -44,19 +44,52 @@ that are the largest value contributors, overperforming, or underperforming.
 You can also drill down the metrics for further analysis.
 When you hover over a metric, a tooltip displays an explanation of the metric and a link to the related documentation page.
 
+## DORA Performers score panel
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. Disabled by default.
+
+FLAG:
+By default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `dora_performers_score_panel`.
+
+The [DORA metrics](dora_metrics.md) Performers score panel is a bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
+
+The chart is a breakdown of your project's DORA scores, categorized as high, medium, or low.
+It aggregates all the child projects in the group.
+
+Each bar on the chart displays the sum of total projects per score category, calculated monthly.
+To exclude data from the chart (for example, "Not Included"), in the legend select the series you want to exclude.
+Hovering over each bar reveals a dialog that explains the score's definition.
+
+For example, if a project has a high score for Deployment Frequency (Velocity), it means that the project has one or more deploys to production per day.
+
+| Metric | Description | High | Medium | Low |
+|--------|-------------|------|--------|-----|
+| Deployment frequency  | The number of deploys to production per day | ≥30 | 1-29 | \<1 |
+| Lead time for changes | The number of days to go from code committed to code successfully running in production| ≤7 | 8-29 | ≥30 |
+| Time to restore service | The number of days to restore service when a service incident or a defect that impacts users occurs | ≤1 | 2-6 | ≥7 |
+| Change failure rate  | The percentage of changes to production resulted in degraded service | ≤15% | 16%-44% | ≥45% |
+
+These scoring are based on Google's classifications in the [DORA 2022 Accelerate State of DevOps Report](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out).
+
 ## View the value streams dashboard
 
 Prerequisite:
 
-- To view the value streams dashboard for a group, you must have at least the Reporter role for the group.
+- You must have at least the Reporter role for the group.
 
 To view the value streams dashboard:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
-1. Select **Analyze > Value stream analytics**.
-1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
-1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
-(for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
+- From Analytics Dashboards:
+
+   1. On the group left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+   1. Select **Analyze > Analytics Dashboards**.
+
+- From Value Stream Analytics:
+
+   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+   1. Select **Analyze > Value stream analytics**.
+   1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
+   1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 
 ## Customize the dashboard panels
 
@@ -117,7 +150,6 @@ description: 'Custom description'
 #       * issues
 #       * issues_completed
 #       * merge_request_throughput
-#     (This option is dependant on the `vsd_graphql_dora_and_flow_metrics` feature.)
 panels:
   - title: 'My Custom Project'
     data:
@@ -164,3 +196,13 @@ For an overview of editing label filters in the configuration file, see [GitLab 
 | Merge request throughput | The number of merge requests merged by month. | [Groups Productivity analytics](productivity_analytics.md), [Projects Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics)  | [Groups Productivity analytics](productivity_analytics.md) [Projects Merge request analytics](merge_request_analytics.md) | `merge_request_throughput` |
 | Critical vulnerabilities over time | Critical vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/index.md) | `vulnerability_critical` |
 | High vulnerabilities over time | High vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/index.md) | `vulnerability_high` |
+
+## Value Streams Dashboard metrics with Jira
+
+The following metrics do not depend on using Jira:
+
+- DORA Deployment frequency
+- DORA Lead time for changes
+- Number of deploys
+- Merge request throughput
+- Vulnerabilities

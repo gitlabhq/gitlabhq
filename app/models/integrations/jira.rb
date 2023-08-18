@@ -74,7 +74,7 @@ module Integrations
       exposes_secrets: true
 
     field :jira_auth_type,
-      type: 'select',
+      type: :select,
       required: true,
       section: SECTION_TYPE_CONNECTION,
       title: -> { s_('JiraService|Authentication type') },

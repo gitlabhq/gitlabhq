@@ -1,21 +1,17 @@
-import { GlModal } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import { stubComponent } from 'helpers/stub_component';
-import SharedDeleteButton from '~/projects/components/shared/delete_button.vue';
+import { GlForm, GlButton } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import DeleteButton from '~/projects/components/shared/delete_button.vue';
+import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'test-csrf-token' }));
 
-describe('Project remove modal', () => {
+describe('DeleteButton', () => {
   let wrapper;
 
-  const findFormElement = () => wrapper.find('form');
-  const findConfirmButton = () => wrapper.find('.js-modal-action-primary');
-  const findAuthenticityTokenInput = () => findFormElement().find('input[name=authenticity_token]');
-  const findModal = () => wrapper.findComponent(GlModal);
-  const findTitle = () => wrapper.find('[data-testid="delete-alert-title"]');
-  const findAlertBody = () => wrapper.find('[data-testid="delete-alert-body"]');
+  const findForm = () => wrapper.findComponent(GlForm);
+  const findModal = () => wrapper.findComponent(DeleteModal);
 
-  const defaultProps = {
+  const defaultPropsData = {
     confirmPhrase: 'foo',
     formPath: 'some/path',
     isFork: false,
@@ -25,88 +21,68 @@ describe('Project remove modal', () => {
     starsCount: 4,
   };
 
-  const createComponent = (data = {}, stubs = {}, props = {}) => {
-    wrapper = shallowMount(SharedDeleteButton, {
+  const createComponent = (propsData) => {
+    wrapper = shallowMountExtended(DeleteButton, {
       propsData: {
-        ...defaultProps,
-        ...props,
+        ...defaultPropsData,
+        ...propsData,
       },
-      data: () => data,
-      stubs: {
-        GlModal: stubComponent(GlModal, {
-          template: `
-            <div>
-              <slot name="modal-title"></slot>
-              <slot></slot>
-            </div>`,
-        }),
-        ...stubs,
+      scopedSlots: {
+        'modal-footer': '<div data-testid="modal-footer-slot"></div>',
       },
     });
   };
 
-  describe('intialized', () => {
+  it('renders modal and passes correct props', () => {
+    createComponent();
+
+    const { formPath, ...expectedProps } = defaultPropsData;
+
+    expect(findModal().props()).toMatchObject({
+      visible: false,
+      ...expectedProps,
+    });
+  });
+
+  it('renders form with required inputs', () => {
+    createComponent();
+
+    const form = findForm();
+
+    expect(form.find('input[name="_method"]').attributes('value')).toBe('delete');
+    expect(form.find('input[name="authenticity_token"]').attributes('value')).toBe(
+      'test-csrf-token',
+    );
+  });
+
+  describe('when button is clicked', () => {
     beforeEach(() => {
       createComponent();
+      wrapper.findComponent(GlButton).vm.$emit('click');
     });
 
-    it('matches the snapshot', () => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
-    it('sets a csrf token on the authenticity form input', () => {
-      expect(findAuthenticityTokenInput().element.value).toEqual('test-csrf-token');
-    });
-
-    it('sets the form action to the provided path', () => {
-      expect(findFormElement().attributes('action')).toEqual(defaultProps.formPath);
+    it('opens modal', () => {
+      expect(findModal().props('visible')).toBe(true);
     });
   });
 
-  describe('when the user input does not match the confirmPhrase', () => {
-    beforeEach(() => {
-      createComponent({ userInput: 'bar' }, { GlModal });
-    });
-
-    it('the confirm button is disabled', () => {
-      expect(findConfirmButton().attributes('disabled')).toBeDefined();
-    });
-  });
-
-  describe('when the user input matches the confirmPhrase', () => {
-    beforeEach(() => {
-      createComponent({ userInput: defaultProps.confirmPhrase }, { GlModal });
-    });
-
-    it('the confirm button is not disabled', () => {
-      expect(findConfirmButton().attributes('disabled')).toBe(undefined);
-    });
-  });
-
-  describe('when the modal is confirmed', () => {
-    beforeEach(() => {
+  describe('when modal emits `primary` event', () => {
+    it('submits the form', () => {
       createComponent();
-      findModal().vm.$emit('ok');
-    });
 
-    it('submits the form element', () => {
-      expect(findFormElement().element.submit).toHaveBeenCalled();
+      const submitMock = jest.fn();
+
+      findForm().element.submit = submitMock;
+
+      findModal().vm.$emit('primary');
+
+      expect(submitMock).toHaveBeenCalled();
     });
   });
 
-  describe('when project is a fork', () => {
-    beforeEach(() => {
-      createComponent({}, {}, { isFork: true });
-    });
+  it('renders `modal-footer` slot', () => {
+    createComponent();
 
-    it('matches the fork title', () => {
-      expect(findTitle().text()).toEqual('You are about to delete this forked project containing:');
-    });
-
-    it('matches the fork body', () => {
-      expect(findAlertBody().attributes().message).toEqual(
-        'This process deletes the project repository and all related resources.',
-      );
-    });
+    expect(wrapper.findByTestId('modal-footer-slot').exists()).toBe(true);
   });
 });

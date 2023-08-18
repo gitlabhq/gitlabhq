@@ -14,7 +14,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphql';
 import getEnvironmentClusterAgent from '../graphql/queries/environment_cluster_agent.query.graphql';
-import getEnvironmentClusterAgentWithNamespace from '../graphql/queries/environment_cluster_agent_with_namespace.query.graphql';
+import getEnvironmentClusterAgentWithFluxResource from '../graphql/queries/environment_cluster_agent_with_flux_resource.query.graphql';
 import ExternalUrl from './environment_external_url.vue';
 import Actions from './environment_actions.vue';
 import StopComponent from './environment_stop.vue';
@@ -83,7 +83,7 @@ export default {
     tierTooltip: s__('Environment|Deployment tier'),
   },
   data() {
-    return { visible: false, clusterAgent: null, kubernetesNamespace: '' };
+    return { visible: false, clusterAgent: null, kubernetesNamespace: '', fluxResourcePath: '' };
   },
   computed: {
     icon() {
@@ -165,8 +165,8 @@ export default {
     rolloutStatus() {
       return this.environment?.rolloutStatus;
     },
-    isKubernetesNamespaceAvailable() {
-      return this.glFeatures?.kubernetesNamespaceForEnvironment;
+    isFluxResourceAvailable() {
+      return this.glFeatures?.fluxResourceForEnvironment;
     },
   },
   methods: {
@@ -185,13 +185,14 @@ export default {
           return { environmentName: this.environment.name, projectFullPath: this.projectPath };
         },
         query() {
-          return this.isKubernetesNamespaceAvailable
-            ? getEnvironmentClusterAgentWithNamespace
+          return this.isFluxResourceAvailable
+            ? getEnvironmentClusterAgentWithFluxResource
             : getEnvironmentClusterAgent;
         },
         update(data) {
           this.clusterAgent = data?.project?.environment?.clusterAgent;
-          this.kubernetesNamespace = data?.project?.environment?.kubernetesNamespace || '';
+          this.kubernetesNamespace = data?.project?.environment?.kubernetesNamespace;
+          this.fluxResourcePath = data?.project?.environment?.fluxResourcePath || '';
         },
       });
     },
@@ -372,7 +373,12 @@ export default {
         </gl-sprintf>
       </div>
       <div v-if="clusterAgent" :class="$options.kubernetesOverviewClasses">
-        <kubernetes-overview :cluster-agent="clusterAgent" :namespace="kubernetesNamespace" />
+        <kubernetes-overview
+          :cluster-agent="clusterAgent"
+          :namespace="kubernetesNamespace"
+          :flux-resource-path="fluxResourcePath"
+          :environment-name="environment.name"
+        />
       </div>
       <div v-if="rolloutStatus" :class="$options.deployBoardClasses">
         <deploy-board-wrapper

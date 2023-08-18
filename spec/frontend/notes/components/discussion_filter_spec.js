@@ -2,6 +2,7 @@ import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { TEST_HOST } from 'helpers/test_constants';
 import createEventHub from '~/helpers/event_hub_factory';

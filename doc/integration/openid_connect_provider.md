@@ -4,7 +4,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab as OpenID Connect identity provider **(FREE)**
+# GitLab as OpenID Connect identity provider **(FREE ALL)**
 
 This document is about using GitLab as an OpenID Connect identity provider
 to sign in to other services.

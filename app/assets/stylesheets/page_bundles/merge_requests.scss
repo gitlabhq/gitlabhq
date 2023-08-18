@@ -1,6 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-$mr-widget-margin-left: 40px;
 $mr-widget-min-height: 69px;
 $tabs-holder-z-index: 250;
 
@@ -373,12 +372,13 @@ $tabs-holder-z-index: 250;
     white-space: nowrap;
   }
 
-  @include media-breakpoint-down(md) {
+  /* stylelint-disable scss/at-rule-no-unknown */
+  @container mr-widget-extension (max-width: 600px) {
     flex-direction: column;
     align-items: flex-start;
 
     .deployment-info {
-      margin-bottom: $gl-padding;
+      margin-bottom: $gl-padding-8;
     }
   }
 
@@ -413,10 +413,7 @@ $tabs-holder-z-index: 250;
 
 .deploy-heading,
 .merge-train-position-indicator {
-  padding: $gl-padding-8;
-  @include media-breakpoint-up(md) {
-    padding: $gl-padding-8 $gl-padding;
-  }
+  padding: $gl-padding-8 $gl-padding;
 
   .media-body {
     min-width: 0;
@@ -643,6 +640,13 @@ $tabs-holder-z-index: 250;
     text-transform: capitalize;
   }
 
+  .mr-pipeline-title {
+    // NOTE: CSS Hack to make the force the pipeline
+    // to the end of the line or to force it to a
+    // new line if there is not enough space.
+    flex-grow: 999;
+  }
+
   .label-branch {
     @include gl-font-monospace;
     font-size: 95%;
@@ -659,7 +663,7 @@ $tabs-holder-z-index: 250;
       > span {
         display: inline-block;
         max-width: 12.5em;
-        margin-bottom: -6px;
+        margin-bottom: -5px;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -830,6 +834,12 @@ $tabs-holder-z-index: 250;
 .mr-widget-extension {
   border-top: 1px solid var(--border-color, $border-color);
   background-color: var(--gray-10, $gray-10);
+  container-name: mr-widget-extension;
+  container-type: inline-size;
+  // Adds a fix for the view app dropdown not showing up
+  // correctly.
+  @include gl-relative;
+  @include gl-z-index-1;
 
   &.clickable:hover {
     background-color: var(--gray-50, $gray-50);
@@ -879,10 +889,6 @@ $tabs-holder-z-index: 250;
 .mr-widget-info {
   padding-left: $gl-padding;
   padding-right: $gl-padding;
-}
-
-.mr-widget-margin-left {
-  margin-left: $mr-widget-margin-left;
 }
 
 .mr-widget-section {
@@ -989,37 +995,6 @@ $tabs-holder-z-index: 250;
 
     .gl-dropdown-inner {
       max-height: none !important;
-    }
-
-    .md-header {
-      .gl-tab-nav-item {
-        color: var(--gl-text-color, $gl-text-color);
-        @include gl-py-4;
-        @include gl-px-3;
-
-        &:hover {
-          @include gl-bg-none;
-          color: var(--gl-text-color, $gl-text-color);
-
-          &:not(.gl-tab-nav-item-active) {
-            @include gl-inset-border-b-2-gray-200;
-          }
-        }
-      }
-
-      .gl-tab-nav-item-active {
-        @include gl-font-weight-bold;
-        color: var(--gl-text-color, $gl-text-color);
-        @include gl-inset-border-b-2-theme-accent;
-
-        &:active,
-        &:focus,
-        &:focus:active {
-          box-shadow: inset 0 -#{$gl-border-size-2} 0 0 var(--gl-theme-accent, $theme-indigo-500),
-            $focus-ring;
-          @include gl-outline-none;
-        }
-      }
     }
   }
 

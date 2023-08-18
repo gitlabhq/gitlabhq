@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Test coverage visualization **(FREE)**
+# Test coverage visualization **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/249811) in GitLab 13.5.
@@ -19,7 +19,7 @@ MR is merged.
 
 ## How test coverage visualization works
 
-Collecting the coverage information is done via GitLab CI/CD's
+Collecting the coverage information is done by using the GitLab CI/CD
 [artifacts reports feature](../yaml/index.md#artifactsreports).
 You can specify one or more coverage reports to collect, including wildcard paths.
 GitLab then takes the coverage information in all the files and combines it
@@ -41,8 +41,7 @@ Other coverage analysis frameworks support the format out of the box, for exampl
 - [Coverage.py](https://coverage.readthedocs.io/en/coverage-5.0.4/cmd.html#xml-reporting) (Python)
 - [PHPUnit](https://github.com/sebastianbergmann/phpunit-documentation-english/blob/master/src/textui.rst#command-line-options) (PHP)
 
-Once configured, if you create a merge request that triggers a pipeline which collects
-coverage reports, the coverage is shown in the diff view. This includes reports
+After configuration, if your merge request triggers a pipeline that collects coverage reports, the coverage information is displayed in the diff view. This includes reports
 from any job in any stage in the pipeline. The coverage displays for each line:
 
 - `covered` (green): lines which have been checked at least once by tests
@@ -431,6 +430,7 @@ the coverage report itself and verify that:
   to match the files in your repository.
 - The pipeline has completed. If the pipeline is [blocked on a manual job](../jobs/job_control.md#types-of-manual-jobs),
   the pipeline is not considered complete.
+- The coverage report file does not exceed the [limits](#limits).
 
 Report artifacts are not downloadable by default. If you want the report to be downloadable
 from the job details page, add your coverage report to the artifact `paths`:

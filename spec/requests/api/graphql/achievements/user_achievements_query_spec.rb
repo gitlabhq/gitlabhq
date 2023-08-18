@@ -14,8 +14,10 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
     <<~HEREDOC
       id
       achievements {
+        count
         nodes {
           userAchievements {
+            count
             nodes {
               id
               achievement {
@@ -56,6 +58,11 @@ RSpec.describe 'UserAchievements', feature_category: :user_profile do
       .to contain_exactly(
         a_graphql_entity_for(non_revoked_achievement1)
       )
+  end
+
+  it 'returns the correct achievement and user_achievement counts' do
+    expect(graphql_data_at(:namespace, :achievements, :count)).to be(1)
+    expect(graphql_data_at(:namespace, :achievements, :nodes, :userAchievements, :count)).to contain_exactly(1)
   end
 
   it 'can lookahead to eliminate N+1 queries', :use_clean_rails_memory_store_caching do

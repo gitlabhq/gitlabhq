@@ -1,6 +1,7 @@
 import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -30,7 +31,7 @@ describe('Feature flags', () => {
     userListPath: '/user-list',
     unleashApiUrl: `${TEST_HOST}/api/unleash`,
     projectName: 'fakeProjectName',
-    errorStateSvgPath: '/assets/illustrations/feature_flag.svg',
+    errorStateSvgPath: '/assets/illustrations/empty-state/empty-feature-flag-md.svg',
   };
 
   const mockState = {

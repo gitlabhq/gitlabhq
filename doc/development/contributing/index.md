@@ -54,7 +54,7 @@ To write and test your code, you will use the GitLab Development Kit.
    - To run the development environment locally, download and set up the
      [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
      See the [GDK README](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/README.md) for setup instructions
-     and [Troubleshooting](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/troubleshooting.md) if you get stuck.
+     and [Troubleshooting](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/troubleshooting/index.md) if you get stuck.
 
    - GDK is heavy. If you need to build something fast, by trial and error,
      consider doing so with an empty rails app and port it to GDK after.

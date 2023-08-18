@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Insights for groups **(ULTIMATE)**
+# Insights for groups **(ULTIMATE ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
 
@@ -47,8 +47,8 @@ Insights display data from the last 90 days. You can zoom in to display data onl
 
 To do this, select the pause icons (**{status-paused}**) and slide them along the horizontal axis:
 
-- To select a later start date, slide the left pause icon to the right.
-- To select an earlier end date, slide the right pause icon to the left.
+- To change the start date, slide the left pause icon to the left or right.
+- To change the end date, slide the right pause icon to the left or right.
 
 ### Exclude dimensions from charts
 

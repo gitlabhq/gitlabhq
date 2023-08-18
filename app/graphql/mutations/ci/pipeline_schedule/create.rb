@@ -51,28 +51,16 @@ module Mutations
 
           params = pipeline_schedule_attrs.merge(variables_attributes: variables.map(&:to_h))
 
-          if ::Feature.enabled?(:ci_refactoring_pipeline_schedule_create_service, project)
-            response = ::Ci::PipelineSchedules::CreateService
-                         .new(project, current_user, params)
-                         .execute
+          response = ::Ci::PipelineSchedules::CreateService
+                        .new(project, current_user, params)
+                        .execute
 
-            schedule = response.payload
+          schedule = response.payload
 
-            unless response.success?
-              return {
-                pipeline_schedule: nil, errors: response.errors
-              }
-            end
-          else
-            schedule = ::Ci::CreatePipelineScheduleService
-                         .new(project, current_user, params)
-                         .execute
-
-            unless schedule.persisted?
-              return {
-                pipeline_schedule: nil, errors: schedule.errors.full_messages
-              }
-            end
+          unless response.success?
+            return {
+              pipeline_schedule: nil, errors: response.errors
+            }
           end
 
           {

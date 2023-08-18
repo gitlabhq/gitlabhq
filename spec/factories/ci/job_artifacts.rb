@@ -478,5 +478,15 @@ FactoryBot.define do
         artifact.file_sha256 = Digest::SHA256.file(artifact.file.path).hexdigest
       end
     end
+
+    trait :annotations do
+      file_type { :annotations }
+      file_format { :gzip }
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/gl-annotations.json.gz'), 'application/x-gzip')
+      end
+    end
   end
 end

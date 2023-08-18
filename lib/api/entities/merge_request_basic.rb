@@ -107,8 +107,6 @@ module API
       end
 
       def can_check_mergeability?(project)
-        return true if ::Feature.disabled?(:restrict_merge_status_recheck, project)
-
         Ability.allowed?(options[:current_user], :update_merge_request, project)
       end
     end

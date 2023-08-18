@@ -52,7 +52,7 @@ export default {
       :aria-label="__('Title')"
       :data-placeholder="placeholder"
       :contenteditable="!disabled"
-      class="gl-px-4 gl-py-3 gl-ml-n4 gl-border gl-border-white gl-rounded-base gl-display-block"
+      class="hide-unfocused-input-decoration gl-px-4 gl-py-3 gl-ml-n4 gl-border gl-rounded-base gl-display-block"
       :class="{ 'gl-hover-border-gray-200 gl-pseudo-placeholder': !disabled }"
       @paste="handlePaste"
       @blur="handleBlur"

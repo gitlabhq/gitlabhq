@@ -26,7 +26,10 @@ module QA
           raise NotImplementedError, "Resource #{self.class.name} does not support fabrication via the API!"
         end
 
-        resource_web_url(api_post)
+        resource_web_url = resource_web_url(api_post)
+        wait_for_resource_availability(resource_web_url)
+
+        resource_web_url
       end
 
       def reload!
@@ -220,6 +223,22 @@ module QA
       def flatten_hash(param)
         param.each_pair.reduce({}) do |a, (k, v)|
           v.is_a?(Hash) ? a.merge(flatten_hash(v)) : a.merge(k.to_sym => v)
+        end
+      end
+
+      # Given a URL, wait for the given URL to return 200
+      # @param [String] resource_web_url the URL to check
+      # @example
+      #   wait_for_resource_availability('https://gitlab.com/api/v4/projects/1234')
+      # @example
+      #   wait_for_resource_availability(resource_web_url(Resource::Issue.fabricate_via_api!))
+      def wait_for_resource_availability(resource_web_url)
+        return unless Runtime::Address.valid?(resource_web_url)
+
+        Support::Retrier.retry_until(sleep_interval: 3, max_attempts: 5, raise_on_failure: false) do
+          response_check = get(resource_web_url)
+          Runtime::Logger.debug("Resource availability check ... #{response_check.code}")
+          response_check.code == HTTP_STATUS_OK
         end
       end
     end

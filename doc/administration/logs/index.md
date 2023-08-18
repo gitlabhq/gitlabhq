@@ -66,6 +66,7 @@ Some of these services have their own environment variables to override the log 
 | Sidekiq (server)     | `INFO`    |                      |
 | Snowplow Tracker     | `FATAL`   |                      |
 | gRPC Client (Gitaly) | `WARN`    | `GRPC_LOG_LEVEL`     |
+| LLM                  | `INFO`    | `LLM_DEBUG`          |
 
 ## Log Rotation
 
@@ -466,7 +467,7 @@ only. For example:
 }
 ```
 
-## `audit_json.log` **(FREE)**
+## `audit_json.log` **(FREE ALL)**
 
 NOTE:
 GitLab Free tracks a small number of different audit events.
@@ -552,7 +553,7 @@ For Linux package installations, add the configuration option:
 sidekiq['log_format'] = 'json'
 ```
 
-For installations from source, edit the `gitlab.yml` and set the Sidekiq
+For self-compiled installations, edit the `gitlab.yml` and set the Sidekiq
 `log_format` configuration option:
 
 ```yaml
@@ -819,6 +820,23 @@ This file is located at:
 This structured log file records internal activity in the `mail_room` gem.
 Its name and path are configurable, so the name and path may not match the above.
 
+## `web_hooks.log`
+
+> Introduced in GitLab 16.3.
+
+This file is located at:
+
+- `/var/log/gitlab/gitlab-rails/web_hooks.log` on Linux package installations.
+- `/home/git/gitlab/log/web_hooks.log` on self-compiled installations.
+
+The back-off, disablement, and re-enablement events for Webhook are recorded in this file. For example:
+
+```json
+{"severity":"INFO","time":"2020-11-24T02:30:59.860Z","hook_id":12,"action":"backoff","disabled_until":"2020-11-24T04:30:59.860Z","backoff_count":2,"recent_failures":2}
+{"severity":"INFO","time":"2020-11-24T02:30:59.860Z","hook_id":12,"action":"disable","disabled_until":null,"backoff_count":5,"recent_failures":100}
+{"severity":"INFO","time":"2020-11-24T02:30:59.860Z","hook_id":12,"action":"enable","disabled_until":null,"backoff_count":0,"recent_failures":0}
+```
+
 ## Reconfigure logs
 
 Reconfigure log files are in `/var/log/gitlab/reconfigure` for Linux package installations. Self-compiled installations
@@ -951,7 +969,7 @@ For example:
 
 ## `geo.log` **(PREMIUM SELF)**
 
-Geo stores structured log messages in a `geo.log` file. For Omnibus GitLab
+Geo stores structured log messages in a `geo.log` file. For Linux package
 installations, this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
 
 This file contains information about when Geo attempts to sync repositories
@@ -1127,7 +1145,7 @@ GitLab also tracks [Prometheus metrics for Praefect](../gitaly/monitoring.md#mon
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63832) in GitLab 14.1.
 
-For Omnibus installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
+For Linux package installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
 
 This log is populated when a [GitLab backup is created](../../administration/backup_restore/index.md). You can use this log to understand how the backup process performed.
 

@@ -421,6 +421,16 @@ describe('URL utility', () => {
       window.location = originalLocation;
     });
 
+    it.each`
+      inputQuery                   | expectedQuery
+      ${'?scope=all&state=merged'} | ${'?scope=all&state=merged'}
+      ${'?'}                       | ${'?'}
+    `('handles query string: $inputQuery', ({ inputQuery, expectedQuery }) => {
+      window.location.href = mockUrl;
+      urlUtils.visitUrl(inputQuery);
+      expect(window.location.assign).toHaveBeenCalledWith(`${mockUrl}${expectedQuery}`);
+    });
+
     it('does not navigate to unsafe urls', () => {
       // eslint-disable-next-line no-script-url
       const url = 'javascript:alert(document.domain)';
@@ -1107,6 +1117,7 @@ describe('URL utility', () => {
 
   describe('defaultPromoUrl', () => {
     it('Gitlab about page url', () => {
+      // eslint-disable-next-line no-restricted-syntax
       const url = 'https://about.gitlab.com';
 
       expect(urlUtils.PROMO_URL).toBe(url);
@@ -1134,6 +1145,20 @@ describe('URL utility', () => {
       ${'https://www.gitlab.com/hello'}         | ${'https://www.gitlab.com/hello'}
     `('transforms $input to $output', ({ input, output }) => {
       expect(urlUtils.removeLastSlashInUrlPath(input)).toBe(output);
+    });
+  });
+
+  describe('buildURLwithRefType', () => {
+    const base = 'http://gitlab.com/';
+
+    it.each`
+      path           | refType    | output
+      ${'foo/bar'}   | ${'heads'} | ${'/foo/bar?ref_type=heads'}
+      ${'/foo/bar/'} | ${'HEADS'} | ${'/foo/bar/?ref_type=heads'}
+      ${'/foo/bar/'} | ${''}      | ${'/foo/bar/'}
+      ${'/'}         | ${''}      | ${'/'}
+    `('path $path with ref $refType becomes $output', ({ path, refType, output }) => {
+      expect(urlUtils.buildURLwithRefType({ base, path, refType })).toBe(output);
     });
   });
 });

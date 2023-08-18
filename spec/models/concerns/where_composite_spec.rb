@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe WhereComposite do
   describe '.where_composite' do
-    let_it_be(:test_table_name) { "_test_table_#{SecureRandom.hex(10)}" }
+    let_it_be(:test_table_name) { "_test_table_where_composite" }
 
     let(:model) do
       tbl_name = test_table_name

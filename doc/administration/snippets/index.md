@@ -5,47 +5,28 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Snippets settings **(FREE SELF)**
+# Snippets **(FREE SELF)**
 
-Adjust the snippets' settings of your GitLab instance.
-
-## Snippets content size limit
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31133) in GitLab 12.6.
-
-You can set a maximum content size limit for snippets. This limit can prevent
-abuse of the feature. The default value is **52428800 Bytes** (50 MB).
-
-### How does it work?
-
-The content size limit is applied when a snippet is created or updated.
-
-This limit doesn't affect existing snippets until they're updated and their
+You can configure a maximum size for a snippet to prevent abuse.
+The default limit is 52428800 bytes (50 MB).
+The limit is applied when a snippet is created or updated.
+The limit does not affect existing snippets unless they are updated and their
 content changes.
 
-### Snippets size limit configuration
+## Configure the snippet size limit
 
-This setting is not available through the [Admin Area settings](../settings/index.md).
-To configure this setting, use either the Rails console
+To configure the snippet size limit, you can use the Rails console
 or the [Application settings API](../../api/settings.md).
 
-NOTE:
-The value of the limit **must** be in bytes.
+The limit **must** be in bytes.
 
-#### Through the Rails console
+This setting is not available in the [Admin Area settings](../settings/index.md).
 
-The steps to configure this setting through the Rails console are:
+### Use the Rails console
 
-1. Start the Rails console:
+To configure this setting through the Rails console:
 
-   ```shell
-   # For Omnibus installations
-   sudo gitlab-rails console
-
-   # For installations from source
-   sudo -u git -H bundle exec rails console -e production
-   ```
-
+1. [Start the Rails console](../operations/rails_console.md#starting-a-rails-console-session).
 1. Update the snippets maximum file size:
 
    ```ruby
@@ -58,19 +39,23 @@ To retrieve the current value, start the Rails console and run:
   Gitlab::CurrentSettings.snippet_size_limit
   ```
 
-#### Through the API
+### Use the API
 
-To set the snippets size limit through the Application Settings API (similar to
-[updating any other setting](../../api/settings.md#change-application-settings)), use this command:
+To set the limit by using the Application Settings API
+(similar to [updating any other setting](../../api/settings.md#change-application-settings)),
+use this command:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings?snippet_size_limit=52428800"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>"
+  --url "https://gitlab.example.com/api/v4/application/settings?snippet_size_limit=52428800"
 ```
 
 You can also use the API to [retrieve the current value](../../api/settings.md#get-current-application-settings).
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/settings"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/application/settings"
 ```
 
 ## Related topics

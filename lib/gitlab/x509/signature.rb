@@ -42,11 +42,13 @@ module Gitlab
             !verified_signature ||
             signed_by_user.nil?
 
-        if signed_by_user.verified_emails.include?(@email.downcase) && certificate_email.casecmp?(@email)
-          :verified
-        else
-          :unverified
+        if signed_by_user.verified_emails.include?(@email.downcase)
+          return :verified if certificate_emails.find do |ce|
+            ce.casecmp?(@email)
+          end
         end
+
+        :unverified
       end
 
       private
@@ -173,18 +175,13 @@ module Gitlab
       end
 
       def certificate_email
-        email = nil
+        certificate_emails.first
+      end
 
-        get_certificate_extension('subjectAltName').split(',').each do |item|
-          if item.strip.start_with?("email")
-            email = item.split('email:')[1]
-            break
-          end
+      def certificate_emails
+        get_certificate_extension('subjectAltName').split(',').each.with_object([]) do |item, emails|
+          emails << item.split('email:')[1] if item.strip.start_with?("email")
         end
-
-        return if email.nil?
-
-        email
       end
 
       def x509_issuer
@@ -206,6 +203,7 @@ module Gitlab
           subject_key_identifier: certificate_subject_key_identifier,
           subject: certificate_subject,
           email: certificate_email,
+          emails: certificate_emails,
           serial_number: cert.serial.to_i,
           x509_issuer_id: x509_issuer.id
         }

@@ -4,7 +4,7 @@ group: Import and Integrate
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Migrating projects using file exports **(FREE)**
+# Migrating projects using file exports **(FREE ALL)**
 
 Existing projects on any self-managed GitLab instance or GitLab.com can be exported to a file and
 then imported into another GitLab instance. You can also copy GitLab projects to another location with more automation by
@@ -155,14 +155,16 @@ For a quick overview, items that are exported include:
 - Labels
 - Milestones
 - Snippets
+- Releases
 - Time tracking and other project entities
 - Design management files and data
 - LFS objects
 - Issue boards
-- Pipelines history
+- CI/CD pipelines and pipeline schedules
+- Protected branches and tags
 - Push rules
 - Emoji reactions
-- Group members as long as the user has the Maintainer role in the
+- Project and inherited group members, as long as the user has the Maintainer role in the
   exported project's group or is an administrator
 
 ### Items that are not exported
@@ -212,7 +214,7 @@ may be possible for an attacker to steal your sensitive data.
 
 To import a project:
 
-1. When [creating a new project](../index.md#create-a-project),
+1. When [creating a new project](../index.md),
    select **Import project**.
 1. In **Import project from**, select **GitLab export**.
 1. Enter your project name and URL. Then select the file you exported previously.

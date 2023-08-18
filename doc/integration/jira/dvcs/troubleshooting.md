@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Jira DVCS connector **(FREE)**
+# Troubleshooting Jira DVCS connector **(FREE ALL)**
 
 Refer to the items in this section if you're having problems with your Jira DVCS connector.
 

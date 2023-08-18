@@ -134,7 +134,8 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
         :content,
         :url,
         :screenshot,
-        :update_path
+        :update_path,
+        :moderate_user_path
       ])
     end
   end

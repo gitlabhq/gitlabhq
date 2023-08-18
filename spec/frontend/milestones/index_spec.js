@@ -6,6 +6,7 @@ jest.mock('~/behaviors/markdown/render_gfm');
 jest.mock('~/milestones/milestone');
 jest.mock('~/right_sidebar');
 jest.mock('~/sidebar/mount_milestone_sidebar');
+jest.mock('~/lib/graphql');
 
 describe('#initShow', () => {
   beforeEach(() => {

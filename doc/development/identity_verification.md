@@ -53,10 +53,34 @@ On rows where `json.event` is `Failed Attempt`, you can find valuable debugging 
 
 | Reason  | Description |
 |---------|-------------|
- | `invalid_phone_number` | Either there was a typo in the phone number, or the user used a VOIP number. GitLab does not allow users to sign up with non-mobile phone numbers. |
+| `invalid_phone_number` | Either there was a typo in the phone number, or the user used a VOIP number. GitLab does not allow users to sign up with non-mobile phone numbers. |
 | `invalid_code` | The user entered an incorrect verification code. |
 | `rate_limited` | The user had 10 or more failed attempts, so they were rate-limited for one hour. |
 | `related_to_banned_user` | The user tried a phone number already related to a banned user. |
+
+#### View Telesign SMS status update logs
+
+To view logs of Telesign status updates for an SMS sent to a user:
+
+1. Get a `telesign_reference_id` value for an SMS sent to a specific user:
+
+   ```plaintext
+   json.message: "IdentityVerification::Phone" AND json.username:<username>`
+   ```
+
+1. Search for status update logs associated with `telesign_reference_id` value:
+
+   ```plaintext
+   json.message: "IdentityVerification::Phone" AND json.event: "Telesign transaction status update" AND json.telesign_reference_id:replace_ref_id_value_here`
+   ```
+
+Status update logs include the following fields:
+
+| Field  | Description |
+|---------|-------------|
+| `telesign_status` | Delivery status of the SMS. See the [Telesign documentation](https://developer.telesign.com/enterprise/reference/smscallbacks#status-codes) for possible status codes and their descriptions. |
+| `telesign_status_updated_on` | A timestamp indicating when the SMS delivery status was last updated. |
+| `telesign_errors` | Errors that occurred during delivery. See the [Telesign documentation](https://developer.telesign.com/enterprise/reference/smscallbacks#status-codes) for possible error codes and their descriptions. |
 
 ### View logs associated to a user and credit card verification
 

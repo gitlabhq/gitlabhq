@@ -1,3 +1,4 @@
+import { GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
 import IssuableBody from '~/vue_shared/issuable/show/components/issuable_body.vue';
@@ -72,7 +73,7 @@ describe('IssuableShowRoot', () => {
         author,
         taskCompletionStatus,
       });
-      expect(issuableHeader.find('.issuable-status-badge').text()).toContain('Open');
+      expect(issuableHeader.findComponent(GlBadge).text()).toBe('Open');
       expect(issuableHeader.find('.detail-page-header-actions button.js-close').exists()).toBe(
         true,
       );

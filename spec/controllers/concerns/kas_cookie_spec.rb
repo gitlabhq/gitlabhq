@@ -89,10 +89,14 @@ RSpec.describe KasCookie, feature_category: :deployment_management do
     end
 
     context 'when KAS is on subdomain' do
-      let_it_be(:kas_tunnel_url) { 'ws://kas.gitlab.example.com/k8s-proxy/' }
+      let_it_be(:kas_tunnel_url) { 'http://kas.gitlab.example.com/k8s-proxy/' }
 
       it 'adds KAS url to CSP connect-src directive' do
         expect(kas_csp_connect_src).to include(::Gitlab::Kas.tunnel_url)
+      end
+
+      it 'adds websocket connections' do
+        expect(kas_csp_connect_src).to include('ws://kas.gitlab.example.com/k8s-proxy/')
       end
 
       context 'when content_security_policy is disabled' do
@@ -101,6 +105,14 @@ RSpec.describe KasCookie, feature_category: :deployment_management do
         it 'does not add KAS url to CSP connect-src directive' do
           expect(kas_csp_connect_src).not_to include(::Gitlab::Kas.tunnel_url)
         end
+      end
+    end
+
+    context 'when KAS tunnel has ssl' do
+      let_it_be(:kas_tunnel_url) { 'https://kas.gitlab.example.com/k8s-proxy/' }
+
+      it 'adds websocket connections' do
+        expect(kas_csp_connect_src).to include('wss://kas.gitlab.example.com/k8s-proxy/')
       end
     end
 

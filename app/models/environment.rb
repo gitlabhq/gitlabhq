@@ -18,14 +18,13 @@ class Environment < ApplicationRecord
   belongs_to :cluster_agent, class_name: 'Clusters::Agent', optional: true, inverse_of: :environments
 
   use_fast_destroy :all_deployments
-  nullify_if_blank :external_url, :kubernetes_namespace
+  nullify_if_blank :external_url, :kubernetes_namespace, :flux_resource_path
 
   has_many :all_deployments, class_name: 'Deployment'
   has_many :deployments, -> { visible }
   has_many :successful_deployments, -> { success }, class_name: 'Deployment'
   has_many :active_deployments, -> { active }, class_name: 'Deployment'
   has_many :prometheus_alerts, inverse_of: :environment
-  has_many :metrics_dashboard_annotations, class_name: 'Metrics::Dashboard::Annotation', inverse_of: :environment
   has_many :self_managed_prometheus_alert_events, inverse_of: :environment
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
@@ -77,6 +76,10 @@ class Environment < ApplicationRecord
       with: Gitlab::Regex.kubernetes_namespace_regex,
       message: Gitlab::Regex.kubernetes_namespace_regex_message
     }
+
+  validates :flux_resource_path,
+    length: { maximum: 255 },
+    allow_nil: true
 
   validates :tier, presence: true
 
@@ -331,9 +334,9 @@ class Environment < ApplicationRecord
   end
 
   def cancel_deployment_jobs!
-    active_deployments.builds.each do |build|
-      Gitlab::OptimisticLocking.retry_lock(build, name: 'environment_cancel_deployment_jobs') do |build|
-        build.cancel! if build&.cancelable?
+    active_deployments.jobs.each do |job|
+      Gitlab::OptimisticLocking.retry_lock(job, name: 'environment_cancel_deployment_jobs') do |job|
+        job.cancel! if job&.cancelable?
       end
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, environment_id: id, deployment_id: deployment.id)
@@ -355,8 +358,12 @@ class Environment < ApplicationRecord
       Gitlab::OptimisticLocking.retry_lock(
         stop_action,
         name: 'environment_stop_with_actions'
-      ) do |build|
-        actions << build.play(current_user)
+      ) do |job|
+        actions << job.play(current_user)
+      rescue StateMachines::InvalidTransition
+        # Ci::PlayBuildService rescues an error of StateMachines::InvalidTransition and fall back to retry. However,
+        # Ci::PlayBridgeService doesn't rescue it, so we're ignoring the error if it's not playable.
+        # We should fix this inconsistency in https://gitlab.com/gitlab-org/gitlab/-/issues/420855.
       end
     end
 

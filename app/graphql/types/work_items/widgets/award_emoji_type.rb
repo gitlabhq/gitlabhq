@@ -8,14 +8,14 @@ module Types
       # rubocop:disable Graphql/AuthorizeTypes
       class AwardEmojiType < BaseObject
         graphql_name 'WorkItemWidgetAwardEmoji'
-        description 'Represents the award emoji widget'
+        description 'Represents the emoji reactions widget'
 
         implements Types::WorkItems::WidgetInterface
 
         field :award_emoji,
           ::Types::AwardEmojis::AwardEmojiType.connection_type,
           null: true,
-          description: 'Award emoji on the work item.'
+          description: 'Emoji reactions on the work item.'
         field :downvotes,
           GraphQL::Types::Int,
           null: false,

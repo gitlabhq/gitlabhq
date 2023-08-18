@@ -17,6 +17,7 @@
  *   />
  */
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderMarkdown } from '~/notes/utils';

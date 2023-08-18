@@ -34,7 +34,8 @@ describe('packages_list_row', () => {
   const packageWithTags = { ...packageWithoutTags, tags: { nodes: packageTags() } };
 
   const findPackageTags = () => wrapper.findComponent(PackageTags);
-  const findDeleteDropdown = () => wrapper.findByTestId('action-delete');
+  const findDeleteDropdown = () => wrapper.findByTestId('delete-dropdown');
+  const findDeleteButton = () => wrapper.findByTestId('action-delete');
   const findPackageType = () => wrapper.findByTestId('package-type');
   const findPackageLink = () => wrapper.findByTestId('details-link');
   const findWarningIcon = () => wrapper.findByTestId('warning-icon');
@@ -103,7 +104,7 @@ describe('packages_list_row', () => {
     });
   });
 
-  describe('delete button', () => {
+  describe('delete dropdown', () => {
     it('does not exist when package cannot be destroyed', () => {
       mountComponent({
         packageEntity: { ...packageWithoutTags, canDestroy: false },
@@ -112,19 +113,39 @@ describe('packages_list_row', () => {
       expect(findDeleteDropdown().exists()).toBe(false);
     });
 
-    it('exists and has the correct props', () => {
+    it('exists when package can be destroyed', () => {
+      mountComponent();
+
+      expect(findDeleteDropdown().props()).toMatchObject({
+        category: 'tertiary',
+        icon: 'ellipsis_v',
+        textSrOnly: true,
+        noCaret: true,
+        toggleText: 'More actions',
+      });
+    });
+  });
+
+  describe('delete button', () => {
+    it('does not exist when package cannot be destroyed', () => {
+      mountComponent({
+        packageEntity: { ...packageWithoutTags, canDestroy: false },
+      });
+
+      expect(findDeleteButton().exists()).toBe(false);
+    });
+
+    it('exists and has the correct text', () => {
       mountComponent({ packageEntity: packageWithoutTags });
 
-      expect(findDeleteDropdown().exists()).toBe(true);
-      expect(findDeleteDropdown().attributes()).toMatchObject({
-        variant: 'danger',
-      });
+      expect(findDeleteButton().exists()).toBe(true);
+      expect(findDeleteButton().text()).toBe('Delete package');
     });
 
     it('emits the delete event when the delete button is clicked', () => {
       mountComponent({ packageEntity: packageWithoutTags });
 
-      findDeleteDropdown().vm.$emit('click');
+      findDeleteButton().vm.$emit('action');
 
       expect(wrapper.emitted('delete')).toHaveLength(1);
     });

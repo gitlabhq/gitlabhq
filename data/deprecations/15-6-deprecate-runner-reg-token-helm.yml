@@ -14,4 +14,4 @@
     The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 
     From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
-  end_of_support_milestone: "17.0"  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.

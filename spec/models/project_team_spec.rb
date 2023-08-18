@@ -176,10 +176,13 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
     let_it_be(:source_project_owner) { source_project.first_owner }
     let_it_be(:source_project_developer) { create(:user) { |user| source_project.add_developer(user) } }
     let_it_be(:current_user) { create(:user) { |user| target_project.add_maintainer(user) } }
+    let(:imported_members) { [source_project_owner.members.last, source_project_developer.members.last] }
 
     subject(:import) { target_project.team.import(source_project, current_user) }
 
-    it { is_expected.to be_truthy }
+    it 'matches the imported members' do
+      is_expected.to match_array(imported_members)
+    end
 
     it 'target project includes source member with the same access' do
       import
@@ -218,6 +221,12 @@ RSpec.describe ProjectTeam, feature_category: :groups_and_projects do
       it_behaves_like 'imports source owners with correct access' do
         let(:target_access_level) { Gitlab::Access::OWNER }
       end
+    end
+
+    context 'when source_project does not exist' do
+      let_it_be(:source_project) { nil }
+
+      it { is_expected.to eq(false) }
     end
   end
 

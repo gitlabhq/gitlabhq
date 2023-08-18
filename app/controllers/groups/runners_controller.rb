@@ -49,7 +49,7 @@ class Groups::RunnersController < Groups::ApplicationController
   end
 
   def authorize_update_runner!
-    return if can?(current_user, :admin_group_runners, group) && can?(current_user, :update_runner, runner)
+    return if can?(current_user, :update_runner, runner)
 
     render_404
   end

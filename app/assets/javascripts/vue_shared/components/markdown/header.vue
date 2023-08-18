@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlPopover, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
@@ -278,6 +279,7 @@ export default {
             :button-title="__('Insert suggestion')"
             :cursor-offset="4"
             :tag-content="lineContent"
+            tracking-property="codeSuggestion"
             icon="doc-code"
             data-qa-selector="suggestion_button"
             class="js-suggestion-btn"
@@ -327,6 +329,7 @@ export default {
           "
           :shortcuts="$options.shortcuts.bold"
           icon="bold"
+          tracking-property="bold"
         />
         <toolbar-button
           v-show="!previewMarkdown"
@@ -339,6 +342,7 @@ export default {
           "
           :shortcuts="$options.shortcuts.italic"
           icon="italic"
+          tracking-property="italic"
         />
         <toolbar-button
           v-if="!restrictedToolBarItems.includes('strikethrough')"
@@ -353,6 +357,7 @@ export default {
           "
           :shortcuts="$options.shortcuts.strikethrough"
           icon="strikethrough"
+          tracking-property="strike"
         />
         <toolbar-button
           v-if="!restrictedToolBarItems.includes('quote')"
@@ -361,6 +366,7 @@ export default {
           :tag="tag"
           :button-title="__('Insert a quote')"
           icon="quote"
+          tracking-property="blockquote"
           @click="handleQuote"
         />
         <toolbar-button
@@ -369,6 +375,7 @@ export default {
           tag-block="```"
           :button-title="__('Insert code')"
           icon="code"
+          tracking-property="code"
         />
         <toolbar-button
           v-show="!previewMarkdown"
@@ -382,6 +389,7 @@ export default {
           "
           :shortcuts="$options.shortcuts.link"
           icon="link"
+          tracking-property="link"
         />
         <toolbar-button
           v-if="!restrictedToolBarItems.includes('bullet-list')"
@@ -390,6 +398,7 @@ export default {
           tag="- "
           :button-title="__('Add a bullet list')"
           icon="list-bulleted"
+          tracking-property="bulletList"
         />
         <toolbar-button
           v-if="!restrictedToolBarItems.includes('numbered-list')"
@@ -398,6 +407,7 @@ export default {
           tag="1. "
           :button-title="__('Add a numbered list')"
           icon="list-numbered"
+          tracking-property="orderedList"
         />
         <toolbar-button
           v-if="!restrictedToolBarItems.includes('task-list')"
@@ -406,6 +416,7 @@ export default {
           tag="- [ ] "
           :button-title="__('Add a checklist')"
           icon="list-task"
+          tracking-property="taskList"
         />
         <toolbar-button
           v-if="!restrictedToolBarItems.includes('indent')"
@@ -420,6 +431,7 @@ export default {
           :shortcuts="$options.shortcuts.indent"
           command="indentLines"
           icon="list-indent"
+          tracking-property="indent"
         />
         <toolbar-button
           v-if="!restrictedToolBarItems.includes('outdent')"
@@ -434,6 +446,7 @@ export default {
           :shortcuts="$options.shortcuts.outdent"
           command="outdentLines"
           icon="list-outdent"
+          tracking-property="outdent"
         />
         <toolbar-button
           v-if="!restrictedToolBarItems.includes('collapsible-section')"
@@ -443,6 +456,7 @@ export default {
           tag-select="Click to expand"
           :button-title="__('Add a collapsible section')"
           icon="details-block"
+          tracking-property="details"
         />
         <toolbar-button
           v-if="!restrictedToolBarItems.includes('table')"
@@ -451,17 +465,15 @@ export default {
           :prepend="true"
           :button-title="__('Add a table')"
           icon="table"
+          tracking-property="table"
         />
-        <gl-button
+        <toolbar-button
           v-if="!previewMarkdown && !restrictedToolBarItems.includes('attach-file')"
-          v-gl-tooltip
-          :aria-label="__('Attach a file or image')"
-          :title="__('Attach a file or image')"
-          class="gl-mr-3"
           data-testid="button-attach-file"
-          category="tertiary"
+          :button-title="__('Attach a file or image')"
           icon="paperclip"
-          size="small"
+          class="gl-mr-3"
+          tracking-property="upload"
           @click="handleAttachFile"
         />
         <drawio-toolbar-button
@@ -477,6 +489,7 @@ export default {
           tag="/"
           :button-title="__('Add a quick action')"
           icon="quick-actions"
+          tracking-property="quickAction"
         />
         <comment-templates-dropdown
           v-if="!previewMarkdown && newCommentTemplatePath && glFeatures.savedReplies"
@@ -484,16 +497,13 @@ export default {
           @select="insertSavedReply"
         />
         <div v-if="!previewMarkdown" class="full-screen">
-          <gl-button
+          <toolbar-button
             v-if="!restrictedToolBarItems.includes('full-screen')"
-            v-gl-tooltip
             class="js-zen-enter"
-            category="tertiary"
             icon="maximize"
-            size="small"
-            :title="__('Go full screen')"
+            :button-title="__('Go full screen')"
             :prepend="true"
-            :aria-label="__('Go full screen')"
+            tracking-property="fullScreen"
           />
         </div>
       </div>

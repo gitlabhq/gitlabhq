@@ -135,7 +135,7 @@ module Gitlab
         end
       end
 
-      def user_merge_to_ref(user, source_sha:, branch:, target_ref:, message:, first_parent_ref:)
+      def user_merge_to_ref(user, source_sha:, branch:, target_ref:, message:, first_parent_ref:, expected_old_oid: "")
         request = Gitaly::UserMergeToRefRequest.new(
           repository: @gitaly_repo,
           source_sha: source_sha,
@@ -144,6 +144,7 @@ module Gitlab
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           message: encode_binary(message),
           first_parent_ref: encode_binary(first_parent_ref),
+          expected_old_oid: expected_old_oid,
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
         )
 
@@ -342,6 +343,23 @@ module Gitlab
         end
       ensure
         request_enum.close
+      end
+
+      def user_rebase_to_ref(user, source_sha:, target_ref:, first_parent_ref:, expected_old_oid: "")
+        request = Gitaly::UserRebaseToRefRequest.new(
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          repository: @gitaly_repo,
+          source_sha: source_sha,
+          target_ref: encode_binary(target_ref),
+          first_parent_ref: encode_binary(first_parent_ref),
+          expected_old_oid: expected_old_oid,
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+        )
+
+        response = gitaly_client_call(@repository.storage, :operation_service,
+                                     :user_rebase_to_ref, request, timeout: GitalyClient.long_timeout)
+
+        response.commit_id
       end
 
       def user_squash(user, start_sha, end_sha, author, message, time = Time.now.utc)

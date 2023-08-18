@@ -1,6 +1,8 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { debounce } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';
 import { __ } from '~/locale';
 import TokenedInput from '../shared/tokened_input.vue';

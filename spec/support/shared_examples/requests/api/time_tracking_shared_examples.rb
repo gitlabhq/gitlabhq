@@ -20,40 +20,49 @@ RSpec.shared_examples 'time tracking endpoints' do |issuable_name|
   issuable_collection_name = issuable_name.pluralize
 
   describe "POST /projects/:id/#{issuable_collection_name}/:#{issuable_name}_id/time_estimate" do
+    subject(:set_time_estimate) do
+      post(api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), params: { duration: duration })
+    end
+
+    let(:duration) { '2h' }
+
     context 'with an unauthorized user' do
-      subject { post(api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", non_member), params: { duration: '1w' }) }
+      let(:user) { non_member }
 
       it_behaves_like 'an unauthorized API user'
       it_behaves_like 'API user with insufficient permissions'
     end
 
-    it "sets the time estimate for #{issuable_name}" do
-      post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), params: { duration: '1w' }
+    context 'with an authorized user' do
+      it "sets the time estimate for #{issuable_name}" do
+        set_time_estimate
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['human_time_estimate']).to eq('1w')
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['time_estimate']).to eq(7200)
+      end
     end
 
     describe 'updating the current estimate' do
       before do
-        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), params: { duration: '1w' }
+        post(api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), params: { duration: '2h' })
       end
 
-      context 'when duration has a bad format' do
-        it 'does not modify the original estimate' do
-          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), params: { duration: 'foo' }
+      using RSpec::Parameterized::TableSyntax
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(issuable.reload.human_time_estimate).to eq('1w')
-        end
+      where(:updated_duration, :expected_http_status, :expected_time_estimate) do
+        'foo' | :bad_request | 7200
+        '-1'  | :bad_request | 7200
+        '1h'  | :ok          | 3600
+        '0'   | :ok          | 0
       end
 
-      context 'with a valid duration' do
-        it 'updates the estimate' do
-          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), params: { duration: '3w1h' }
+      with_them do
+        let(:duration) { updated_duration }
+        it 'returns expected HTTP status and time estimate' do
+          set_time_estimate
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(issuable.reload.human_time_estimate).to eq('3w 1h')
+          expect(response).to have_gitlab_http_status(expected_http_status)
+          expect(issuable.reload.time_estimate).to eq(expected_time_estimate)
         end
       end
     end

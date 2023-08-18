@@ -5,6 +5,7 @@ import {
   GlCard,
   GlFormInput,
   GlLink,
+  GlIcon,
   GlLoadingIcon,
   GlSprintf,
   GlToggle,
@@ -21,9 +22,9 @@ import TokenProjectsTable from './token_projects_table.vue';
 
 export default {
   i18n: {
-    toggleLabelTitle: s__('CICD|Allow access to this project with a CI_JOB_TOKEN'),
+    toggleLabelTitle: s__('CICD|Limit access %{italicStart}to%{italicEnd} this project'),
     toggleHelpText: s__(
-      `CICD|Manage which projects can use their CI_JOB_TOKEN to access this project. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
+      `CICD|Prevent access to this project from other project CI/CD job tokens, unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more.%{linkEnd}`,
     ),
     cardHeaderTitle: s__(
       'CICD|Allow CI job tokens from the following projects to access this project',
@@ -64,6 +65,7 @@ export default {
     GlCard,
     GlFormInput,
     GlLink,
+    GlIcon,
     GlLoadingIcon,
     GlSprintf,
     GlToggle,
@@ -109,6 +111,7 @@ export default {
       inboundJobTokenScopeEnabled: null,
       targetProjectPath: '',
       projects: [],
+      isAddFormVisible: false,
     };
   },
   computed: {
@@ -193,9 +196,13 @@ export default {
     },
     clearTargetProjectPath() {
       this.targetProjectPath = '';
+      this.isAddFormVisible = false;
     },
     getProjects() {
       this.$apollo.queries.projects.refetch();
+    },
+    showAddForm() {
+      this.isAddFormVisible = true;
     },
   },
 };
@@ -209,6 +216,13 @@ export default {
         :label="$options.i18n.toggleLabelTitle"
         @change="updateCIJobTokenScope"
       >
+        <template #label>
+          <gl-sprintf :message="$options.i18n.toggleLabelTitle">
+            <template #italic="{ content }">
+              <i>{{ content }}</i>
+            </template>
+          </gl-sprintf>
+        </template>
         <template #help>
           <gl-sprintf :message="$options.i18n.toggleHelpText">
             <template #link="{ content }">
@@ -221,22 +235,55 @@ export default {
       </gl-toggle>
 
       <div>
-        <gl-card class="gl-mt-5 gl-mb-3">
+        <gl-card
+          class="gl-new-card"
+          header-class="gl-new-card-header"
+          body-class="gl-new-card-body gl-px-0"
+        >
           <template #header>
-            <h5 class="gl-my-0">{{ $options.i18n.cardHeaderTitle }}</h5>
+            <div class="gl-new-card-title-wrapper">
+              <h5 class="gl-new-card-title">{{ $options.i18n.cardHeaderTitle }}</h5>
+              <span class="gl-new-card-count">
+                <gl-icon name="project" class="gl-mr-2" />
+                {{ projects.length }}
+              </span>
+            </div>
+            <div class="gl-new-card-actions">
+              <gl-button
+                v-if="!isAddFormVisible"
+                size="small"
+                data-testid="toggle-form-btn"
+                @click="showAddForm"
+                >{{ $options.i18n.addProject }}</gl-button
+              >
+            </div>
           </template>
-          <template #default>
+
+          <div v-if="isAddFormVisible" class="gl-new-card-add-form gl-m-3">
+            <h4 class="gl-mt-0">{{ $options.i18n.addProject }}</h4>
             <gl-form-input
               v-model="targetProjectPath"
               :placeholder="$options.i18n.addProjectPlaceholder"
             />
-          </template>
-          <template #footer>
-            <gl-button variant="confirm" :disabled="isProjectPathEmpty" @click="addProject">
-              {{ $options.i18n.addProject }}
-            </gl-button>
-            <gl-button @click="clearTargetProjectPath">{{ $options.i18n.cancel }}</gl-button>
-          </template>
+            <div class="gl-display-flex gl-mt-5">
+              <gl-button
+                variant="confirm"
+                :disabled="isProjectPathEmpty"
+                class="gl-mr-3"
+                data-testid="add-project-btn"
+                @click="addProject"
+              >
+                {{ $options.i18n.addProject }}
+              </gl-button>
+              <gl-button @click="clearTargetProjectPath">{{ $options.i18n.cancel }}</gl-button>
+            </div>
+          </div>
+
+          <token-projects-table
+            :projects="projects"
+            :table-fields="$options.fields"
+            @removeProject="removeProject"
+          />
         </gl-card>
         <gl-alert
           v-if="!inboundJobTokenScopeEnabled"
@@ -247,11 +294,6 @@ export default {
         >
           {{ $options.i18n.settingDisabledMessage }}
         </gl-alert>
-        <token-projects-table
-          :projects="projects"
-          :table-fields="$options.fields"
-          @removeProject="removeProject"
-        />
       </div>
     </template>
   </div>

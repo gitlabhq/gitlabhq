@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import DiffFileDrafts from '~/batch_comments/components/diff_file_drafts.vue';
 import DraftNote from '~/batch_comments/components/draft_note.vue';

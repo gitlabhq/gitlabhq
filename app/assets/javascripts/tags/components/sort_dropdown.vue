@@ -60,7 +60,6 @@ export default {
       v-model="searchTerm"
       :placeholder="$options.i18n.searchPlaceholder"
       class="gl-pr-3"
-      data-testid="tag-search"
       @submit="visitUrlFromOption(selectedKey)"
     />
     <gl-collapsible-listbox

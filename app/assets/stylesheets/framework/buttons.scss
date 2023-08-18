@@ -126,23 +126,12 @@
 }
 
 @mixin btn-with-margin {
-  margin-left: $btn-side-margin;
+  @include gl-ml-3;
   float: left;
 
   &.inline {
     float: none;
   }
-
-  &.btn-sm {
-    margin-left: $btn-sm-side-margin;
-  }
-}
-
-@mixin btn-svg {
-  height: $gl-padding;
-  width: $gl-padding;
-  top: 0;
-  vertical-align: text-top;
 }
 
 .btn {
@@ -346,14 +335,6 @@
     background: transparent;
     box-shadow: none;
   }
-}
-
-// The .btn-svg class is available for legacy icon buttons to
-// preserve a 34px height and have 16x16 icons at the same time.
-// Once a button is migrated (to the current 32px height)
-// please remove this class from the new button.
-.btn-svg svg {
-  @include btn-svg;
 }
 
 // All disabled buttons, regardless of color, type, etc

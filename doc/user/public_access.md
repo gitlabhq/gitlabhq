@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Project and group visibility **(FREE)**
+# Project and group visibility **(FREE ALL)**
 
 Projects and groups in GitLab can be private, internal, or public.
 

@@ -1,6 +1,7 @@
 import { GlDropdownItem, GlDropdownSectionHeader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import HeaderSearchDefaultItems from '~/header_search/components/header_search_default_items.vue';
 import { MOCK_SEARCH_CONTEXT, MOCK_DEFAULT_SEARCH_OPTIONS } from '../mock_data';

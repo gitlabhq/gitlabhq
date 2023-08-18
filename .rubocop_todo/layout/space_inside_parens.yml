@@ -169,7 +169,6 @@ Layout/SpaceInsideParens:
     - 'spec/lib/gitlab/sidekiq_middleware/duplicate_jobs/strategies/until_executing_spec.rb'
     - 'spec/lib/gitlab/usage/metric_definition_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/generic_metric_spec.rb'
-    - 'spec/lib/gitlab/usage/metrics/name_suggestion_spec.rb'
     - 'spec/lib/gitlab/usage_data_spec.rb'
     - 'spec/lib/gitlab/utils/delegator_override/validator_spec.rb'
     - 'spec/lib/gitlab/utils/usage_data_spec.rb'

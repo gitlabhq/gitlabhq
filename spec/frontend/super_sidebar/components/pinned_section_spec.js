@@ -2,10 +2,12 @@ import { nextTick } from 'vue';
 import Cookies from '~/lib/utils/cookies';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
+import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { SIDEBAR_PINS_EXPANDED_COOKIE, SIDEBAR_COOKIE_EXPIRATION } from '~/super_sidebar/constants';
 import { setCookie } from '~/lib/utils/common_utils';
 
+jest.mock('@floating-ui/dom');
 jest.mock('~/lib/utils/common_utils', () => ({
   getCookie: jest.requireActual('~/lib/utils/common_utils').getCookie,
   setCookie: jest.fn(),
@@ -16,10 +18,11 @@ describe('PinnedSection component', () => {
 
   const findToggle = () => wrapper.find('button');
 
-  const createWrapper = () => {
+  const createWrapper = (props = {}) => {
     wrapper = mountExtended(PinnedSection, {
       propsData: {
         items: [{ title: 'Pin 1', href: '/page1' }],
+        ...props,
       },
     });
   };
@@ -69,6 +72,18 @@ describe('PinnedSection component', () => {
         expect(setCookie).toHaveBeenCalledWith(SIDEBAR_PINS_EXPANDED_COOKIE, false, {
           expires: SIDEBAR_COOKIE_EXPIRATION,
         });
+      });
+    });
+  });
+
+  describe('hasFlyout prop', () => {
+    describe.each([true, false])(`when %s`, (hasFlyout) => {
+      beforeEach(() => {
+        createWrapper({ hasFlyout });
+      });
+
+      it(`passes ${hasFlyout} to the section's hasFlyout prop`, () => {
+        expect(wrapper.findComponent(MenuSection).props('hasFlyout')).toBe(hasFlyout);
       });
     });
   });

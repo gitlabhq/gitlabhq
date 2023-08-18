@@ -46,6 +46,9 @@ module API
         at_least_one_of :content, :description, :files, :file_name, :title, :visibility
       end
 
+      params :optional_list_params_ee do # rubocop:disable Lint/EmptyBlock
+      end
+
       def content_for(snippet)
         if snippet.empty_repo?
           env['api.format'] = :txt
@@ -96,3 +99,5 @@ module API
     end
   end
 end
+
+API::Helpers::SnippetsHelpers.prepend_mod_with('API::Helpers::SnippetsHelpers')

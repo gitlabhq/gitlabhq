@@ -13,7 +13,6 @@ Style/SymbolProc:
     - 'app/models/members/project_member.rb'
     - 'app/models/namespace.rb'
     - 'app/models/preloaders/merge_request_diff_preloader.rb'
-    - 'app/models/project_team.rb'
     - 'app/models/release.rb'
     - 'app/models/remote_mirror.rb'
     - 'app/models/snippet_input_action_collection.rb'

@@ -1,6 +1,5 @@
 ---
 key_path: redis_hll_counters.code_review.i_code_review_total_suggestions_applied_monthly
-name: "count_notes_with_applied_suggestions_monthly"
 description: Total number of monthly suggestions applied
 product_section: dev
 product_stage: create

@@ -135,7 +135,7 @@ drivers, we could have the importer retry more time and for more errors. There's
 a risk we would retry several times on non-retryable errors, but since no writes
 are being made to object storage, this should not ultimately be harmful.
 
-Additionally, implementing [Validate Self-Managed Imports](https://gitlab.com/gitlab-org/container-registry/-/issues/938)
+Additionally, implementing [Validate self-managed imports](https://gitlab.com/gitlab-org/container-registry/-/issues/938)
 would perform a consistency check against a sample of images before and after
 import which would lead to greater consistency across all storage driver implementations.
 

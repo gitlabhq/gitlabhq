@@ -5,11 +5,11 @@ module QA
     module Group
       class DependencyProxy < QA::Page::Base
         view 'app/assets/javascripts/packages_and_registries/dependency_proxy/app.vue' do
-          element :dependency_proxy_count
+          element 'proxy-count'
         end
 
         def has_blob_count?(blob_text)
-          has_element?(:dependency_proxy_count, text: blob_text)
+          has_element?('proxy-count', text: blob_text)
         end
       end
     end

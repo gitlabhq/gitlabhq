@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import project from repository by URL **(FREE)**
+# Import project from repository by URL **(FREE ALL)**
 
 You can import your existing repositories by providing the Git URL.
 
@@ -30,7 +30,7 @@ You can import your existing repositories by providing the Git URL.
 
 Your newly created project is displayed.
 
-## Automate group and project import **(PREMIUM)**
+## Automate group and project import **(PREMIUM ALL)**
 
 For information on automating user, group, and project import API calls, see
 [Automate group and project import](index.md#automate-group-and-project-import).

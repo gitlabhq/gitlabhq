@@ -1,15 +1,36 @@
-import { GlTableLite, GlPopover } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlTableLite } from '@gitlab/ui';
+import { mount, Wrapper } from '@vue/test-utils'; // eslint-disable-line no-unused-vars
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ProjectStorageDetail from '~/usage_quotas/storage/components/project_storage_detail.vue';
-import { containerRegistryPopoverId, containerRegistryId } from '~/usage_quotas/storage/constants';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { projectData, projectHelpLinks } from '../mock_data';
 
 describe('ProjectStorageDetail', () => {
+  /** @type { Wrapper } */
   let wrapper;
 
-  const { storageTypes } = projectData.storage;
+  const generateStorageType = (props) => {
+    return {
+      id: 'id',
+      name: 'name',
+      description: 'description',
+      helpPath: '/help-path',
+      detailsPath: '/details-link',
+      value: 42,
+      ...props,
+    };
+  };
+
+  const storageTypes = [
+    generateStorageType({ id: 'one' }),
+    generateStorageType({ id: 'two' }),
+    generateStorageType({
+      id: 'three',
+      warning: {
+        content: 'warning message',
+      },
+    }),
+  ];
+
   const defaultProps = { storageTypes };
 
   const createComponent = (props = {}) => {
@@ -26,23 +47,7 @@ describe('ProjectStorageDetail', () => {
     );
   };
 
-  const generateStorageType = (id = 'buildArtifacts') => {
-    return {
-      storageType: {
-        id,
-        name: 'Test Name',
-        description: 'Test Description',
-        helpPath: '/test-type',
-      },
-      value: 400000,
-    };
-  };
-
   const findTable = () => wrapper.findComponent(GlTableLite);
-  const findPopoverById = (id) =>
-    wrapper.findAllComponents(GlPopover).filter((p) => p.attributes('data-testid') === id);
-  const findContainerRegistryPopover = () => findPopoverById(containerRegistryPopoverId);
-  const findContainerRegistryWarningIcon = () => wrapper.find(`#${containerRegistryPopoverId}`);
 
   beforeEach(() => {
     createComponent();
@@ -51,33 +56,23 @@ describe('ProjectStorageDetail', () => {
   describe('with storage types', () => {
     it.each(storageTypes)(
       'renders table row correctly %o',
-      ({ storageType: { id, name, description } }) => {
+      ({ id, name, value, description, helpPath, warning }) => {
         expect(wrapper.findByTestId(`${id}-name`).text()).toBe(name);
         expect(wrapper.findByTestId(`${id}-description`).text()).toBe(description);
         expect(wrapper.findByTestId(`${id}-icon`).props('name')).toBe(id);
-        expect(wrapper.findByTestId(`${id}-help-link`).attributes('href')).toBe(
-          projectHelpLinks[id],
-        );
+        expect(wrapper.findByTestId(`${id}-help-link`).attributes('href')).toBe(helpPath);
+        expect(wrapper.findByTestId(`${id}-value`).text()).toContain(numberToHumanSize(value, 1));
+
+        expect(wrapper.findByTestId(`${id}-warning-icon`).exists()).toBe(Boolean(warning));
+        expect(wrapper.findByTestId(`${id}-popover`).exists()).toBe(Boolean(warning));
       },
     );
-
-    it('should render items in order from the biggest usage size to the smallest', () => {
-      const rows = findTable().find('tbody').findAll('tr');
-      // Cloning array not to mutate the source
-      const sortedStorageTypes = [...storageTypes].sort((a, b) => b.value - a.value);
-
-      sortedStorageTypes.forEach((storageType, i) => {
-        const rowUsageAmount = rows.wrappers[i].find('td:last-child').text();
-        const expectedUsageAmount = numberToHumanSize(storageType.value, 1);
-        expect(rowUsageAmount).toBe(expectedUsageAmount);
-      });
-    });
   });
 
   describe('with details links', () => {
     it.each(storageTypes)('each $storageType.id', (item) => {
-      const shouldExist = Boolean(item.storageType.detailsPath && item.value);
-      const detailsLink = wrapper.findByTestId(`${item.storageType.id}-details-link`);
+      const shouldExist = Boolean(item.detailsPath && item.value);
+      const detailsLink = wrapper.findByTestId(`${item.id}-details-link`);
       expect(detailsLink.exists()).toBe(shouldExist);
     });
   });
@@ -93,23 +88,6 @@ describe('ProjectStorageDetail', () => {
 
     it('should not render any table data <td>', () => {
       expect(findTable().find('td').exists()).toBe(false);
-    });
-  });
-
-  describe.each`
-    description                                    | mockStorageTypes                              | rendersContainerRegistryPopover
-    ${'without any storage type that has popover'} | ${[generateStorageType()]}                    | ${false}
-    ${'with container registry storage type'}      | ${[generateStorageType(containerRegistryId)]} | ${true}
-  `('$description', ({ mockStorageTypes, rendersContainerRegistryPopover }) => {
-    beforeEach(() => {
-      createComponent({ storageTypes: mockStorageTypes });
-    });
-
-    it(`does ${
-      rendersContainerRegistryPopover ? '' : ' not'
-    } render container registry warning icon and popover`, () => {
-      expect(findContainerRegistryWarningIcon().exists()).toBe(rendersContainerRegistryPopover);
-      expect(findContainerRegistryPopover().exists()).toBe(rendersContainerRegistryPopover);
     });
   });
 });

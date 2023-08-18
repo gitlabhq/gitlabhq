@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Downstream pipelines **(FREE)**
+# Downstream pipelines **(FREE ALL)**
 
 A downstream pipeline is any GitLab CI/CD pipeline triggered by another pipeline.
 Downstream pipelines run independently and concurrently to the upstream pipeline
@@ -209,8 +209,9 @@ To trigger a child pipeline from a dynamically generated configuration file:
          - generated-config.yml
    ```
 
-1. Configure the trigger job to run after the job that generated the configuration file,
-   and set `include: artifact` to the generated artifact:
+1. Configure the trigger job to run after the job that generated the configuration file.
+   Set `include: artifact` to the generated artifact, and set `include: job` to
+   the job that created the artifact:
 
    ```yaml
    child-pipeline:
@@ -381,7 +382,7 @@ trigger_job:
 
 ::EndTabs
 
-### View multi-project pipelines in pipeline graphs **(PREMIUM)**
+### View multi-project pipelines in pipeline graphs **(PREMIUM ALL)**
 
 After you trigger a multi-project pipeline, the downstream pipeline displays
 to the right of the [pipeline graph](index.md#visualize-pipelines).
@@ -389,7 +390,51 @@ to the right of the [pipeline graph](index.md#visualize-pipelines).
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
 
-## Fetch artifacts from an upstream pipeline **(PREMIUM)**
+## Fetch artifacts from an upstream pipeline **(PREMIUM ALL)**
+
+::Tabs
+
+:::TabTitle Parent-child pipeline
+
+Use [`needs:pipeline:job`](../yaml/index.md#needspipelinejob) to fetch artifacts from an
+upstream pipeline:
+
+1. In the upstream pipeline, save the artifacts in a job with the [`artifacts`](../yaml/index.md#artifacts)
+   keyword, then trigger the downstream pipeline with a trigger job:
+
+   ```yaml
+   build_artifacts:
+     stage: build
+     script:
+       - echo "This is a test artifact!" >> artifact.txt
+     artifacts:
+       paths:
+         - artifact.txt
+
+   deploy:
+     stage: deploy
+     trigger:
+       include:
+         - local: path/to/child-pipeline.yml
+     variables:
+       PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+   ```
+
+1. Use `needs:pipeline:job` in a job in the downstream pipeline to fetch the artifacts.
+
+   ```yaml
+   test:
+     stage: test
+     script:
+       - cat artifact.txt
+     needs:
+       - pipeline: $PARENT_PIPELINE_ID
+         job: build_artifacts
+   ```
+
+   Set `job` to the job in the upstream pipeline that created the artifacts.
+
+:::TabTitle Multi-project pipeline
 
 Use [`needs:project`](../yaml/index.md#needsproject) to fetch artifacts from an
 upstream pipeline:
@@ -408,7 +453,7 @@ upstream pipeline:
 
    deploy:
      stage: deploy
-     trigger: my/downstream_project
+     trigger: my/downstream_project   # Path to the project to trigger a pipeline in
    ```
 
 1. Use `needs:project` in a job in the downstream pipeline to fetch the artifacts.
@@ -430,6 +475,8 @@ upstream pipeline:
    - `job` to the job in the upstream pipeline that created the artifacts.
    - `ref` to the branch.
    - `artifacts` to `true`.
+
+::EndTabs
 
 ### Fetch artifacts from an upstream merge request pipeline
 
@@ -623,7 +670,7 @@ Upstream pipelines take precedence over downstream ones. If there are two
 variables with the same name defined in both upstream and downstream projects,
 the ones defined in the upstream project take precedence.
 
-### Pass dotenv variables created in a job **(PREMIUM)**
+### Pass dotenv variables created in a job **(PREMIUM ALL)**
 
 You can pass variables to a downstream job with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job)
 and [`needs:project`](../yaml/index.md#needsproject). These variables are only available in

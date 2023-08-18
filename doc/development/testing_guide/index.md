@@ -10,8 +10,8 @@ This document describes various guidelines and best practices for automated
 testing of the GitLab project.
 
 It is meant to be an _extension_ of the
-[Thoughtbot testing style guide](https://github.com/thoughtbot/guides/tree/master/testing-rspec). If
-this guide defines a rule that contradicts the Thoughtbot guide, this guide
+[thoughtbot testing style guide](https://github.com/thoughtbot/guides/tree/master/testing-rspec). If
+this guide defines a rule that contradicts the thoughtbot guide, this guide
 takes precedence. Some guidelines may be repeated verbatim to stress their
 importance.
 

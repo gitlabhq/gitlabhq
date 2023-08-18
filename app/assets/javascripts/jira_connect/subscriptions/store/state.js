@@ -1,4 +1,5 @@
 export default function createState({
+  accessToken = null,
   subscriptions = [],
   subscriptionsLoading = false,
   currentUser = null,
@@ -13,6 +14,6 @@ export default function createState({
     currentUser,
     currentUserError: null,
 
-    accessToken: null,
+    accessToken,
   };
 }

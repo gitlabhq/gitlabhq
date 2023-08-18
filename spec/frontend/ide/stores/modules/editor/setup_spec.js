@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import eventHub from '~/ide/eventhub';
 import { createStoreOptions } from '~/ide/stores';

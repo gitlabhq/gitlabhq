@@ -1,5 +1,6 @@
 <script>
 import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { TOOLBAR_CONTROL_TRACKING_ACTION, MARKDOWN_EDITOR_TRACKING_LABEL } from './tracking';
 
 export default {
   components: {
@@ -66,11 +67,27 @@ export default {
       required: false,
       default: () => [],
     },
+    trackingProperty: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     shortcutsString() {
       const shortcutArray = Array.isArray(this.shortcuts) ? this.shortcuts : [this.shortcuts];
       return JSON.stringify(shortcutArray);
+    },
+    trackingProps() {
+      const { trackingProperty } = this;
+
+      return trackingProperty
+        ? {
+            'data-track-action': TOOLBAR_CONTROL_TRACKING_ACTION,
+            'data-track-label': MARKDOWN_EDITOR_TRACKING_LABEL,
+            'data-track-property': trackingProperty,
+          }
+        : {};
     },
   },
 };
@@ -90,6 +107,7 @@ export default {
     :title="buttonTitle"
     :aria-label="buttonTitle"
     :icon="icon"
+    v-bind="trackingProps"
     type="button"
     category="tertiary"
     size="small"

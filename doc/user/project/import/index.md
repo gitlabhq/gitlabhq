@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import and migrate projects **(FREE)**
+# Import and migrate projects **(FREE ALL)**
 
 If you want to bring existing projects to GitLab or copy GitLab projects to a different location, you can:
 
@@ -147,7 +147,7 @@ repository. For example, if an administrator creates the alias `gitlab` for the 
 `https://gitlab.com/gitlab-org/gitlab`, you can clone the project with
 `git clone git@gitlab.com:gitlab.git` instead of `git clone git@gitlab.com:gitlab-org/gitlab.git`.
 
-## Automate group and project import **(PREMIUM)**
+## Automate group and project import **(PREMIUM ALL)**
 
 The GitLab Professional Services team uses [Congregate](https://gitlab.com/gitlab-org/professional-services-automation/tools/migration/congregate)
 to orchestrate user, group, and project import API calls. With Congregate, you can migrate data to

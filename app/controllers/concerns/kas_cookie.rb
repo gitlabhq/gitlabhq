@@ -8,11 +8,10 @@ module KasCookie
       next unless ::Gitlab::Kas::UserAccess.enabled?
       next unless Settings.gitlab.content_security_policy['enabled']
 
-      kas_url = ::Gitlab::Kas.tunnel_url
       next if URI(kas_url).host == ::Gitlab.config.gitlab.host # already allowed, no need for exception
 
-      kas_url += '/' unless kas_url.end_with?('/')
-      p.connect_src(*Array.wrap(p.directives['connect-src']), kas_url)
+      p.connect_src(*Array.wrap(p.directives['connect-src']), kas_ws_url.sub(%r{/?$}, '/'))
+      p.connect_src(*Array.wrap(p.directives['connect-src']), kas_url.sub(%r{/?$}, '/'))
     end
   end
 
@@ -25,5 +24,15 @@ module KasCookie
     cookie_data = ::Gitlab::Kas::UserAccess.cookie_data(public_session_id)
 
     cookies[::Gitlab::Kas::COOKIE_KEY] = cookie_data
+  end
+
+  private
+
+  def kas_url
+    ::Gitlab::Kas.tunnel_url
+  end
+
+  def kas_ws_url
+    ::Gitlab::Kas.tunnel_ws_url
   end
 end

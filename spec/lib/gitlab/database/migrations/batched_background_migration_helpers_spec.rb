@@ -473,7 +473,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers d
             "\n\n" \
             "For more information, check the documentation" \
             "\n\n" \
-            "\thttps://docs.gitlab.com/ee/user/admin_area/monitoring/background_migrations.html#database-migrations-failing-because-of-batched-background-migration-not-finished"
+            "\thttps://docs.gitlab.com/ee/update/background_migrations.html#database-migrations-failing-because-of-batched-background-migration-not-finished"
     end
 
     it 'does not raise error when migration exists and is marked as finished' do

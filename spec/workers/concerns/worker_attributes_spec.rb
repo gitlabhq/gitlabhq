@@ -37,7 +37,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
       :worker_has_external_dependencies? | :worker_has_external_dependencies! | false            | []                                 | true
       :idempotent?                       | :idempotent!                       | false            | []                                 | true
       :big_payload?                      | :big_payload!                      | false            | []                                 | true
-      :database_health_check_attrs       | :defer_on_database_health_signal   | nil              | [:gitlab_main, 1.minute, [:users]] | { gitlab_schema: :gitlab_main, delay_by: 1.minute, tables: [:users] }
+      :database_health_check_attrs       | :defer_on_database_health_signal   | nil              | [:gitlab_main, [:users], 1.minute] | { gitlab_schema: :gitlab_main, tables: [:users], delay_by: 1.minute }
     end
     # rubocop: enable Layout/LineLength
 
@@ -148,7 +148,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
 
     context 'when defer_on_database_health_signal is set' do
       before do
-        worker.defer_on_database_health_signal(:gitlab_main, 1.minute, [:users])
+        worker.defer_on_database_health_signal(:gitlab_main, [:users], 1.minute)
       end
 
       it { is_expected.to be(true) }

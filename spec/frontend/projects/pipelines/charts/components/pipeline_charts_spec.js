@@ -72,6 +72,7 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
         expect(charts.props()).toEqual({
           charts: wrapper.vm.areaCharts,
           chartOptions: wrapper.vm.$options.areaChartOptions,
+          loading: false,
         });
       });
     });

@@ -524,6 +524,64 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         end
       end
     end
+
+    describe '#duplicatedToIssueUrl' do
+      let(:issue) { create(:issue, author: user) }
+
+      before do
+        assign(:project, issue.project)
+      end
+
+      context 'when issue is duplicated' do
+        before do
+          allow(issue).to receive(:duplicated?).and_return(true)
+          allow(issue).to receive(:duplicated_to).and_return(issue)
+        end
+
+        it 'returns url' do
+          expect(helper.issuable_initial_data(issue)[:duplicatedToIssueUrl]).to be_truthy
+        end
+      end
+
+      context 'when issue is not duplicated' do
+        before do
+          allow(issue).to receive(:duplicated?).and_return(false)
+        end
+
+        it 'returns nil' do
+          expect(helper.issuable_initial_data(issue)[:duplicatedToIssueUrl]).to be_nil
+        end
+      end
+    end
+
+    describe '#movedToIssueUrl' do
+      let(:issue) { create(:issue, author: user) }
+
+      before do
+        assign(:project, issue.project)
+      end
+
+      context 'when issue is moved' do
+        before do
+          allow(issue).to receive(:moved?).and_return(true)
+          allow(issue).to receive(:moved_to).and_return(issue)
+        end
+
+        it 'returns url' do
+          expect(helper.issuable_initial_data(issue)[:movedToIssueUrl]).to be_truthy
+        end
+      end
+
+      context 'when issue is not moved' do
+        before do
+          allow(issue).to receive(:moved?).and_return(false)
+        end
+
+        it 'returns nil' do
+          expect(helper.issuable_initial_data(issue)[:movedToIssueUrl]).to be_nil
+        end
+      end
+    end
   end
 
   describe '#assignee_sidebar_data' do
@@ -671,30 +729,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
       expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq(
         '&lt;img onerror=alert(1)&gt;<br/>Jun 26, 2022 (<strong>Past due</strong>)'
       )
-    end
-  end
-
-  describe '#hidden_issuable_icon', feature_category: :insider_threat do
-    let_it_be(:mock_svg) { '<svg></svg>'.html_safe }
-
-    before do
-      allow(helper).to receive(:sprite_icon).and_return(mock_svg)
-    end
-
-    context 'when issuable is an issue' do
-      let_it_be(:issuable) { build(:issue) }
-
-      it 'returns icon with tooltip' do
-        expect(helper.hidden_issuable_icon(issuable)).to eq("<span class=\"has-tooltip\" title=\"This issue is hidden because its author has been banned\">#{mock_svg}</span>")
-      end
-    end
-
-    context 'when issuable is a merge request' do
-      let_it_be(:issuable) { build(:merge_request) }
-
-      it 'returns icon with tooltip' do
-        expect(helper.hidden_issuable_icon(issuable)).to eq("<span class=\"has-tooltip\" title=\"This merge request is hidden because its author has been banned\">#{mock_svg}</span>")
-      end
     end
   end
 

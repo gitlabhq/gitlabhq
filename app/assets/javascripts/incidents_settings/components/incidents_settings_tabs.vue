@@ -38,7 +38,7 @@ export default {
       <gl-button ref="toggleBtn" class="js-settings-toggle">{{
         $options.i18n.expandBtnLabel
       }}</gl-button>
-      <p ref="sectionSubHeader">
+      <p ref="sectionSubHeader" class="gl-text-secondary">
         {{ $options.i18n.subHeaderText }}
       </p>
     </div>

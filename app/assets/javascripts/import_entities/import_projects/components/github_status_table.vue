@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlSearchBoxByClick, GlTabs, GlTab } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { s__ } from '~/locale';
 import ImportProjectsTable from './import_projects_table.vue';

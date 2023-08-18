@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Groups **(FREE)**
+# Groups **(FREE ALL)**
 
 In GitLab, you use groups to manage one or more related projects at the same time.
 
@@ -27,7 +27,7 @@ organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitla
 A single top-level group provides insights in your entire organization via a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
-[Compliance Report](../compliance/compliance_report/index.md), and
+[Compliance center](../compliance/compliance_center/index.md), and
 [Value stream analytics](../group/value_stream_analytics/index.md).
 
 ## Group visibility
@@ -62,6 +62,24 @@ This page shows groups that you are a member of:
 
 - Through membership of a subgroup's parent group.
 - Through direct or inherited membership of a project in the group or subgroup.
+
+## View group activity
+
+To view the activity of a project:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. Select **Manage > Activity**.
+1. Optional. To filter activity by contribution type, select a tab:
+
+   - **All**: All contributions by group members in the group and group's projects.
+   - **Push events**: Push events in the group's projects.
+   - **Merge events**: Accepted merge requests in the group's projects.
+   - **Issue events**: Issues opened and closed in the group's projects.
+   - **Epic events**: Epics opened and closed in the group.
+   - **Comments**: Comments posted by group members in the group's projects.
+   - **Wiki**: Updates to wiki pages in the group.
+   - **Designs**: Designs added, updated, and removed in the group's projects.
+   - **Team**: Group members who joined and left the group's projects.
 
 ## Create a group
 
@@ -111,7 +129,7 @@ In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257),
 
 In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
-## Remove a group immediately **(PREMIUM)**
+## Remove a group immediately **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336985) in GitLab 14.2.
 > - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
@@ -134,7 +152,7 @@ To immediately remove a group marked for deletion:
 Your group, its subgroups, projects, and all related resources, including issues and merge requests,
 are deleted.
 
-## Restore a group **(PREMIUM)**
+## Restore a group **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
 
@@ -231,6 +249,8 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 ## Add users to a group
 
+> Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
+
 You can give a user access to all projects in a group.
 
 Prerequisite:
@@ -242,8 +262,12 @@ Prerequisite:
 1. Select **Invite members**.
 1. Fill in the fields.
    - The role applies to all projects in the group. For more information, see [permissions](../permissions.md).
-   - On the **Access expiration date**, the user can no longer access projects in the group.
+   - Optional. Select an **Access expiration date**. From that date onward, the
+     user can no longer access the project.
 1. Select **Invite**.
+
+If you selected an access expiration date, the group member gets an email notification
+seven days before their access expires.
 
 Members that are not automatically added are displayed on the **Invited** tab.
 Users can be on this tab because they:
@@ -283,7 +307,7 @@ To avoid this problem, GitLab administrators can [ensure removed users cannot in
 
 There are two different ways to add a new project to a group:
 
-- Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/index.md#create-a-project).
+- Select a group, and then select **New project**. You can then continue [creating your project](../../user/project/index.md).
 - While you are creating a project, select a group from the dropdown list.
 
   ![Select group](img/select_group_dropdown_13_10.png)

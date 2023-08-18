@@ -26,6 +26,8 @@ module ServiceDesk
     validates :project, presence: true
     validates :state, presence: true
 
+    scope :overdue, -> { where('triggered_at < ?', TIMEFRAME.ago) }
+
     delegate :service_desk_setting, to: :project
 
     state_machine :state do

@@ -1,0 +1,27 @@
+# invalid needs:parallel:matrix where parallel value is incorrect
+job_with_needs_parallel_matrix:
+  script: exit 0
+  needs:
+    - job: some_job_with_parallel_matrix
+      parallel:
+        not_matrix:
+          - VAR_1: [a1, a2]
+            VAR_2: [b1, b2]
+
+job_with_needs_parallel_matrix_2:
+  script: exit 0
+  needs:
+    - job: some_job_with_parallel_matrix
+      parallel: [a1, a2]
+
+job_with_needs_parallel_matrix_3:
+  script: exit 0
+  needs:
+    - job: some_job_with_parallel_matrix
+      parallel: "matrix"
+
+job_with_needs_parallel_matrix_4:
+  script: exit 0
+  needs:
+    - job: some_job_with_parallel_matrix
+      parallel: object

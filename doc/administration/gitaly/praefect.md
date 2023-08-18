@@ -671,8 +671,6 @@ Updates to example must be made at:
    }
    ```
 
-1. Enable [distribution of reads](index.md#distributed-reads).
-
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
    [reconfigure Praefect](../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
@@ -853,7 +851,7 @@ For self-compiled installations:
    data is stored in this folder. This requirement is scheduled to be removed when
    [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/1282) is resolved.
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. Copy all Praefect server certificates, or their certificate authority, to the system
    trusted certificates on each Gitaly server so the Praefect server trusts the
    certificate when called by Gitaly servers:
@@ -873,7 +871,7 @@ For self-compiled installations:
    key_path = '/etc/gitlab/ssl/key.pem'
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 #### Service discovery
 
@@ -990,7 +988,7 @@ with Praefect service discovery address, such as `praefect.service.consul`.
    data is stored in this folder. [Issue 375254](https://gitlab.com/gitlab-org/gitlab/-/issues/375254)
    proposes to remove this requirement.
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
+1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ::EndTabs
 
@@ -1020,10 +1018,10 @@ Particular attention should be shown to:
 - The `gitaly['configuration'][:auth][:token]` configured in this section must match the `token`
   value under `praefect['configuration'][:virtual_storage][<index>][:node][<index>][:token]` on the Praefect node. This value was
   set in the [previous section](#praefect). This document uses the placeholder `PRAEFECT_INTERNAL_TOKEN` throughout.
-- The storage names in `gitaly['configuration'][:storage]` configured in this section must match the
-  storage names under `praefect['configuration'][:virtual_storage]` on the Praefect node. This
+- The physical storage names in `gitaly['configuration'][:storage]` configured in this section must match the
+  physical storage names under `praefect['configuration'][:virtual_storage]` on the Praefect node. This
   was set in the [previous section](#praefect). This document uses `gitaly-1`,
-  `gitaly-2`, and `gitaly-3` as Gitaly storage names.
+  `gitaly-2`, and `gitaly-3` as physical storage names.
 
 For more information on Gitaly server configuration, see our
 [Gitaly documentation](configure_gitaly.md#configure-gitaly-servers).
@@ -1419,11 +1417,11 @@ cluster.
 
 ## Configure replication factor
 
-WARNING:
-Configurable replication factors require [repository-specific primary nodes](#repository-specific-primary-nodes) to be used.
-
 Praefect supports configuring a replication factor on a per-repository basis, by assigning
 specific storage nodes to host a repository.
+
+WARNING:
+Configurable replication factors requires [repository-specific primary nodes](#repository-specific-primary-nodes).
 
 Praefect does not store the actual replication factor, but assigns enough storages to host the repository
 so the desired replication factor is met. If a storage node is later removed from the virtual storage,
@@ -1436,13 +1434,13 @@ You can configure either:
 
 ### Configure default replication factor
 
-If `default_replication_factor` is unset, the repositories are always replicated on every node defined in
-`virtual_storages`. If a new node is introduced to the virtual storage, both new and existing repositories are
+If `default_replication_factor` is unset, the repositories are always replicated on every storage node defined in
+`virtual_storages`. If a new storage node is introduced to the virtual storage, both new and existing repositories are
 replicated to the node automatically.
 
-For large Gitaly Cluster deployments with many Gitaly nodes, replicating a repository to every storage is often not
-sensible and can cause problems. The higher the replication factor, the higher the pressure on the primary repository.
-You should explicitly set the default replication factor for large Gitaly Cluster deployments.
+For large Gitaly Cluster deployments with many storage nodes, replicating a repository to every storage node is often not
+sensible and can cause problems. A replication factor of 3 is usually sufficient, which means replicate repositories to
+three storages even if more are available. Higher replication factors increase the pressure on the primary storage.
 
 To configure a default replication factor, add configuration to the `/etc/gitlab/gitlab.rb` file:
 
@@ -1453,7 +1451,7 @@ praefect['configuration'] = {
       {
          # ...
          name: 'default',
-         default_replication_factor: 1,
+         default_replication_factor: 3,
       },
    ],
 }
@@ -1718,26 +1716,3 @@ To migrate existing clusters:
       1. Uncomment the secondary Gitaly node configuration commented out in the earlier step on all Praefect nodes.
 
       1. Run `gitlab-ctl reconfigure` on all Praefect nodes to reconfigure and restart the Praefect processes.
-
-### Deprecated election strategies
-
-WARNING:
-The below election strategies are deprecated and were removed in GitLab 14.0.
-Migrate to [repository-specific primary nodes](#repository-specific-primary-nodes).
-
-- **PostgreSQL:** Enabled by default until GitLab 14.0, and equivalent to:
-  `praefect['failover_election_strategy'] = 'sql'`.
-
-  This configuration option:
-
-  - Allows multiple Praefect nodes to coordinate via the PostgreSQL database to elect a primary
-    Gitaly node.
-  - Causes Praefect nodes to elect a new primary Gitaly node, monitor its health, and elect a new primary
-    Gitaly node if the current one is not reached within 10 seconds by a majority of the Praefect
-    nodes.
-- **Memory:** Enabled by setting `praefect['failover_election_strategy'] = 'local'`
-  in `/etc/gitlab/gitlab.rb` on the Praefect node.
-
-  If a sufficient number of health checks fail for the current primary Gitaly node, a new primary is
-  elected. **Do not use with multiple Praefect nodes!** Using with multiple Praefect nodes is
-  likely to result in a split brain.

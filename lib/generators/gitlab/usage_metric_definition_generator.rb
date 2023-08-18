@@ -73,10 +73,6 @@ module Gitlab
 
     private
 
-    def metric_name_suggestion(key_path)
-      "\nname: \"#{Usage::Metrics::NamesSuggestions::Generator.generate(key_path)}\""
-    end
-
     def file_path(key_path)
       path = File.join(TOP_LEVEL_DIR, 'metrics', directory&.name, "#{file_name(key_path)}.yml")
       path = File.join(TOP_LEVEL_DIR_EE, path) if ee?

@@ -40,7 +40,8 @@ module API
         optional :infrastructure_access_level, type: String, values: %w(disabled private enabled), desc: 'Infrastructure access level. One of `disabled`, `private` or `enabled`'
         optional :monitor_access_level, type: String, values: %w(disabled private enabled), desc: 'Monitor access level. One of `disabled`, `private` or `enabled`'
 
-        optional :emails_disabled, type: Boolean, desc: 'Disable email notifications'
+        optional :emails_disabled, type: Boolean, desc: 'Deprecated: Use emails_enabled instead.'
+        optional :emails_enabled, type: Boolean, desc: 'Enable email notifications'
         optional :show_default_award_emojis, type: Boolean, desc: 'Show default award emojis'
         optional :show_diff_preview_in_email, type: Boolean, desc: 'Include the code diff preview in merge request notification emails'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about Potentially Unwanted Characters'
@@ -102,6 +103,7 @@ module API
         optional :ci_default_git_depth, type: Integer, desc: 'Default number of revisions for shallow cloning'
         optional :keep_latest_artifact, type: Boolean, desc: 'Indicates if the latest artifact should be kept for this project.'
         optional :ci_forward_deployment_enabled, type: Boolean, desc: 'Prevent older deployment jobs that are still pending'
+        optional :ci_forward_deployment_rollback_allowed, type: Boolean, desc: 'Allow job retries for rollback deployments'
         optional :ci_allow_fork_pipelines_to_run_in_parent_project, type: Boolean, desc: 'Allow fork merge request pipelines to run in parent project'
         optional :ci_separated_caches, type: Boolean, desc: 'Enable or disable separated caches based on branch protection.'
         optional :restrict_user_defined_variables, type: Boolean, desc: 'Restrict use of user-defined variables when triggering a pipeline'
@@ -139,12 +141,14 @@ module API
           :ci_default_git_depth,
           :ci_allow_fork_pipelines_to_run_in_parent_project,
           :ci_forward_deployment_enabled,
+          :ci_forward_deployment_rollback_allowed,
           :ci_separated_caches,
           :container_registry_access_level,
           :container_expiration_policy_attributes,
           :default_branch,
           :description,
-          :emails_disabled,
+          :emails_disabled, # deprecated
+          :emails_enabled,
           :forking_access_level,
           :issues_access_level,
           :lfs_enabled,

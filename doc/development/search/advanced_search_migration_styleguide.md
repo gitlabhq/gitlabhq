@@ -6,12 +6,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Advanced search migration style guide
 
-## Creating a new advanced search migration
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/234046) in GitLab 13.6.
+## Create a new advanced search migration
 
 NOTE:
 This functionality is only supported for indices created in GitLab 13.0 and later.
+
+### With a script
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
+
+Execute `scripts/elastic-migration` and follow the prompts to create:
+
+- A migration file to define the migration: `ee/elastic/migrate/YYYYMMDDHHMMSS_migration_name.rb`
+- A spec file to test the migration: `ee/spec/elastic/migrate/YYYYMMDDHHMMSS_migration_name_spec.rb`
+- A dictionary file to identify the migration: `ee/elastic/docs/YYYYMMDDHHMMSS_migration_name.yml`
+
+### Manually
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/234046) in GitLab 13.6.
 
 In the [`ee/elastic/migrate/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/elastic/migrate) folder, create a new file with the filename format `YYYYMMDDHHMMSS_migration_name.rb`. This format is the same for Rails database migrations.
 
@@ -195,6 +207,27 @@ class MigrationName < Elastic::Migration
   def target_class
     Epic
   end
+end
+```
+
+#### `Search::Elastic::MigrationReindexBasedOnSchemaVersion`
+
+Reindexes all documents in the index that stores the specified document type and updates `schema_version`.
+
+Requires the `DOCUMENT_TYPE` and `NEW_SCHEMA_VERSION` constants.
+The index mapping must have a `schema_version` integer field in a `YYMM` format.
+
+```ruby
+class MigrationName < Elastic::Migration
+  include Search::Elastic::MigrationReindexBasedOnSchemaVersion
+
+  batched!
+  batch_size 9_000
+  throttle_delay 1.minute
+
+  DOCUMENT_TYPE = WorkItem
+  NEW_SCHEMA_VERSION = 23_08
+  UPDATE_BATCH_SIZE = 100
 end
 ```
 

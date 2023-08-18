@@ -4,7 +4,7 @@ group: Product Analytics
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Product analytics (Experiment) **(ULTIMATE)**
+# Product analytics (Experiment) **(ULTIMATE ALL)**
 
 > - Introduced in GitLab 15.4 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
@@ -94,11 +94,9 @@ Prerequisites:
 - Product analytics must be enabled at the instance-level.
 - You must have at least the Maintainer role for the project or group the project belongs to.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Admin Area**.
-1. Select **Settings > General**
-1. Expand **Product Analytics**.
-1. In the **Connect to your instance** section, enter the configuration values.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > Analytics**.
+1. Expand **Configure** and enter the configuration values.
 1. Select **Save changes**.
 
 ## Instrument a GitLab project

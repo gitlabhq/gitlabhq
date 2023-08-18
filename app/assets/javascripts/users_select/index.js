@@ -4,7 +4,7 @@
 
 import $ from 'jquery';
 import { escape, template, uniqBy } from 'lodash';
-import { AJAX_USERS_SELECT_PARAMS_MAP } from 'ee_else_ce/users_select/constants';
+import { AJAX_USERS_SELECT_PARAMS_MAP } from '~/users_select/constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { isUserBusy } from '~/set_status_modal/utils';

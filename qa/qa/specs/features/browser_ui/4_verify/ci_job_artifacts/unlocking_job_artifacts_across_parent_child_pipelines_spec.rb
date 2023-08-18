@@ -2,15 +2,9 @@
 
 module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
-    describe "Unlocking job artifacts across parent-child pipelines" do
+    describe 'Unlocking job artifacts across parent-child pipelines' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'unlock-job-artifacts-parent-child-project'
-        end
-      end
-
+      let(:project) { create(:project, name: 'unlock-job-artifacts-parent-child-project') }
       let!(:runner) do
         Resource::ProjectRunner.fabricate! do |runner|
           runner.project = project
@@ -249,6 +243,8 @@ module QA
       private
 
       def update_parent_child_ci_files(parent_job_name:, parent_script:, child_job_name:, child_script:)
+        original_pipeline_count = pipeline_count
+
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'Update parent and child pipelines CI files.'
@@ -259,9 +255,13 @@ module QA
             ]
           )
         end
+
+        wait_for_pipeline_creation(original_pipeline_count)
       end
 
       def add_parent_child_ci_files(parent_job_name:, parent_script:, child_job_name:, child_script:)
+        original_pipeline_count = pipeline_count
+
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'Add parent and child pipelines CI files.'
@@ -272,6 +272,8 @@ module QA
             ]
           )
         end
+
+        wait_for_pipeline_creation(original_pipeline_count)
       end
 
       def parent_ci_file(job_name, script)
@@ -315,6 +317,16 @@ module QA
           job.project = project
           job.id = project.job_by_name(job_name)[:id]
         end
+      end
+
+      def wait_for_pipeline_creation(original_pipeline_count)
+        Support::Waiter.wait_until(sleep_interval: 1, message: 'Wait for pipeline creation') do
+          pipeline_count > original_pipeline_count
+        end
+      end
+
+      def pipeline_count
+        project.pipelines.length
       end
     end
   end

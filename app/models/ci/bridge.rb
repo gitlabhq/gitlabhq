@@ -3,7 +3,7 @@
 module Ci
   class Bridge < Ci::Processable
     include Ci::Contextable
-    include Ci::Metadatable
+    include Ci::Deployable
     include Importable
     include AfterCommitQueue
     include Ci::HasRef
@@ -71,7 +71,7 @@ module Ci
     def self.clone_accessors
       %i[pipeline project ref tag options name
          allow_failure stage stage_idx
-         yaml_variables when description needs_attributes
+         yaml_variables when environment description needs_attributes
          scheduling_type ci_stage partition_id].freeze
     end
 
@@ -180,20 +180,6 @@ module Ci
       false
     end
 
-    def outdated_deployment?
-      false
-    end
-
-    def expanded_environment_name
-    end
-
-    def persisted_environment
-    end
-
-    def deployment_job?
-      false
-    end
-
     def execute_hooks
       raise NotImplementedError
     end
@@ -263,6 +249,12 @@ module Ci
         result = options&.dig(:trigger, :forward, :pipeline_variables)
 
         result.nil? ? FORWARD_DEFAULTS[:pipeline_variables] : result
+      end
+    end
+
+    def expand_file_refs?
+      strong_memoize(:expand_file_refs) do
+        !Feature.enabled?(:ci_prevent_file_var_expansion_downstream_pipeline, project)
       end
     end
 

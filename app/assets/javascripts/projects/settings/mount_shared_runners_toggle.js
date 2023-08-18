@@ -9,10 +9,15 @@ export default (containerId = 'toggle-shared-runners-form') => {
   }
 
   const {
+    // required
     isDisabledAndUnoverridable,
     isEnabled,
     updatePath,
     isCreditCardValidationRequired,
+
+    // optional
+    groupName,
+    groupSettingsPath,
   } = containerEl.dataset;
 
   return new Vue({
@@ -24,6 +29,9 @@ export default (containerId = 'toggle-shared-runners-form') => {
           isEnabled: parseBoolean(isEnabled),
           isCreditCardValidationRequired: parseBoolean(isCreditCardValidationRequired),
           updatePath,
+
+          groupName,
+          groupSettingsPath,
         },
       });
     },

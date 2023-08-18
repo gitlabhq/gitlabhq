@@ -182,6 +182,16 @@ export default Extension.create({
               );
             }
 
+            const preStartRegex = /^<pre[^>]*lang="markdown"[^>]*>/;
+            const preEndRegex = /<\/pre>$/;
+            const htmlContentWithoutMeta = htmlContent?.replace(/^<meta[^>]*>/, '');
+            const pastingMarkdownBlock =
+              hasHTML &&
+              preStartRegex.test(htmlContentWithoutMeta) &&
+              preEndRegex.test(htmlContentWithoutMeta);
+
+            if (pastingMarkdownBlock) return this.editor.commands.pasteContent(textContent, true);
+
             return this.editor.commands.pasteContent(hasHTML ? htmlContent : textContent, !hasHTML);
           },
         },

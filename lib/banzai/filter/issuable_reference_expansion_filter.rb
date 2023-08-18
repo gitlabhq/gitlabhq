@@ -45,7 +45,7 @@ module Banzai
 
       # Example: Issue Title (#123 - closed)
       def expand_reference_with_title_and_state(node, issuable)
-        node.content = "#{issuable.title.truncate(50)} (#{node.content}"
+        node.content = "#{expand_emoji(issuable.title).truncate(50)} (#{node.content}"
         node.content += " - #{issuable_state_text(issuable)}" if VISIBLE_STATES.include?(issuable.state)
         node.content += ')'
       end
@@ -123,6 +123,13 @@ module Banzai
 
       def group
         context[:group]
+      end
+
+      def expand_emoji(string)
+        string.gsub(/(?<!\w):(\w+):(?!\w)/) do |match|
+          emoji_codepoint = TanukiEmoji.find_by_alpha_code(::Regexp.last_match(1))&.codepoints
+          !emoji_codepoint.nil? ? emoji_codepoint : match
+        end
       end
     end
   end

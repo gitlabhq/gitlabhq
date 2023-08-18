@@ -42,6 +42,7 @@ import { IssuableAttributeType } from './constants';
 import CrmContacts from './components/crm_contacts/crm_contacts.vue';
 import trackShowInviteMemberLink from './track_invite_members';
 import MoveIssueButton from './components/move/move_issue_button.vue';
+import ConfidentialityDropdown from './components/confidential/confidentiality_dropdown.vue';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -545,6 +546,7 @@ function mountSidebarTimeTracking() {
     issuableType,
     timeTrackingLimitToHours,
     canCreateTimelogs,
+    editable,
   } = getSidebarOptions();
 
   if (!el) {
@@ -564,6 +566,7 @@ function mountSidebarTimeTracking() {
           issuableIid: iid.toString(),
           limitToHours: timeTrackingLimitToHours,
           canAddTimeEntries: canCreateTimelogs,
+          canSetTimeEstimate: parseBoolean(editable),
         },
       }),
   });
@@ -691,6 +694,20 @@ export function mountSubscriptionsDropdown() {
     el,
     name: 'SubscriptionsDropdownRoot',
     render: (createElement) => createElement(SubscriptionsDropdown),
+  });
+}
+
+export function mountConfidentialityDropdown() {
+  const el = document.querySelector('.js-confidentiality-dropdown');
+
+  if (!el) {
+    return null;
+  }
+
+  return new Vue({
+    el,
+    name: 'ConfidentialityDropdownRoot',
+    render: (createElement) => createElement(ConfidentialityDropdown),
   });
 }
 

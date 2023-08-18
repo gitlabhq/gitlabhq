@@ -104,7 +104,7 @@ export const mockSearchExamples = [
     },
   },
   {
-    name: 'a two terms text search',
+    name: 'a two words text search',
     urlQuery: '?search=something+else',
     search: {
       runnerType: null,
@@ -112,11 +112,7 @@ export const mockSearchExamples = [
       filters: [
         {
           type: FILTERED_SEARCH_TERM,
-          value: { data: 'something' },
-        },
-        {
-          type: FILTERED_SEARCH_TERM,
-          value: { data: 'else' },
+          value: { data: 'something else' },
         },
       ],
       pagination: {},
@@ -323,6 +319,7 @@ export const mockRegistrationToken = 'MOCK_REGISTRATION_TOKEN';
 export const mockAuthenticationToken = 'MOCK_AUTHENTICATION_TOKEN';
 
 export const newRunnerPath = '/runners/new';
+export const runnerInstallHelpPage = 'https://docs.example.com/runner/install/';
 
 export {
   allRunnersData,

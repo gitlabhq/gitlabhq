@@ -22,6 +22,8 @@ RSpec.describe Issues::ImportCsvService, feature_category: :team_planning do
   describe '#execute' do
     subject { service.execute }
 
+    it_behaves_like 'performs a spam check', true
+
     it 'sets all issueable attributes and executes quick actions' do
       project.add_developer(user)
       project.add_developer(assignee)
@@ -37,6 +39,14 @@ RSpec.describe Issues::ImportCsvService, feature_category: :team_planning do
           due_date: Date.new(2022, 6, 28)
         )
       )
+    end
+
+    context 'when user is an admin' do
+      before do
+        allow(user).to receive(:can_admin_all_resources?).and_return(true)
+      end
+
+      it_behaves_like 'performs a spam check', false
     end
   end
 end

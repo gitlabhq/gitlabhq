@@ -32,6 +32,24 @@ RSpec.describe Approvable do
     end
   end
 
+  describe '#approved?' do
+    context 'when a merge request is approved' do
+      before do
+        create(:approval, merge_request: merge_request, user: user)
+      end
+
+      it 'returns true' do
+        expect(merge_request.approved?).to eq(true)
+      end
+    end
+
+    context 'when a merge request is not approved' do
+      it 'returns false' do
+        expect(merge_request.approved?).to eq(false)
+      end
+    end
+  end
+
   describe '#eligible_for_approval_by?' do
     subject { merge_request.eligible_for_approval_by?(user) }
 
@@ -40,14 +58,14 @@ RSpec.describe Approvable do
     end
 
     it 'returns true' do
-      is_expected.to be_truthy
+      is_expected.to eq(true)
     end
 
     context 'when a user has approved' do
       let!(:approval) { create(:approval, merge_request: merge_request, user: user) }
 
       it 'returns false' do
-        is_expected.to be_falsy
+        is_expected.to eq(false)
       end
     end
 
@@ -55,7 +73,7 @@ RSpec.describe Approvable do
       let(:user) { nil }
 
       it 'returns false' do
-        is_expected.to be_falsy
+        is_expected.to eq(false)
       end
     end
   end

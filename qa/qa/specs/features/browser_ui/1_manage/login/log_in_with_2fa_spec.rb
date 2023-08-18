@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :requires_admin, :skip_live_env, product_group: :authentication_and_authorization do
+  RSpec.describe 'Manage', :requires_admin, product_group: :authentication_and_authorization do
     describe '2FA' do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
       let(:owner_api_client) { Runtime::API::Client.new(:gitlab, user: owner_user) }
@@ -14,6 +14,7 @@ module QA
       end
 
       let(:sandbox_group) do
+        Flow::Login.sign_in(as: owner_user)
         Resource::Sandbox.fabricate! do |sandbox_group|
           sandbox_group.path = "gitlab-qa-2fa-sandbox-group-#{SecureRandom.hex(8)}"
           sandbox_group.api_client = owner_api_client
@@ -21,11 +22,7 @@ module QA
       end
 
       let(:group) do
-        QA::Resource::Group.fabricate_via_api! do |group|
-          group.sandbox = sandbox_group
-          group.api_client = owner_api_client
-          group.path = "group-with-2fa-#{SecureRandom.hex(8)}"
-        end
+        create(:group, sandbox: sandbox_group, api_client: owner_api_client, path: "group-with-2fa-#{SecureRandom.hex(8)}")
       end
 
       let(:developer_user) do
@@ -46,7 +43,7 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931',
         quarantine: {
           type: :bug,
-          only: { condition: -> { !QA::Runtime::Env.super_sidebar_enabled? } },
+          only: { condition: -> { QA::Runtime::Env.super_sidebar_enabled? } },
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409336'
         }
       ) do

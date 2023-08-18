@@ -1,10 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { throttle } from 'lodash';
 import DiffView from '~/diffs/components/diff_view.vue';
 import DiffLine from '~/diffs/components/diff_line.vue';
-import { diffCodeQuality } from '../mock_data/diff_code_quality';
+import { diffCodeQuality } from '../mock_data/inline_findings';
 
 jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
 const lodash = jest.requireActual('lodash');
@@ -18,7 +19,7 @@ describe('DiffView', () => {
   const setSelectedCommentPosition = jest.fn();
   const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
 
-  const createWrapper = (props) => {
+  const createWrapper = ({ props, flag = false } = {}) => {
     Vue.use(Vuex);
 
     const batchComments = {
@@ -50,9 +51,21 @@ describe('DiffView', () => {
       diffFile: { file_hash: '123' },
       diffLines: [],
       ...props,
+      provide: {
+        glFeatures: {
+          sastReportsInInlineDiff: flag,
+        },
+      },
     };
+
+    const provide = {
+      glFeatures: {
+        sastReportsInInlineDiff: flag,
+      },
+    };
+
     const stubs = { DiffExpansionCell, DiffRow, DiffCommentCell, DraftNote };
-    return shallowMount(DiffView, { propsData, store, stubs });
+    return shallowMount(DiffView, { propsData, provide, store, stubs });
   };
 
   beforeEach(() => {
@@ -69,10 +82,24 @@ describe('DiffView', () => {
   });
 
   it('does render a diff-line component with the correct props when there is a finding', async () => {
-    const wrapper = createWrapper(diffCodeQuality);
+    const wrapper = createWrapper({ props: diffCodeQuality });
     wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
     await nextTick();
     expect(wrapper.findComponent(DiffLine).props('line')).toBe(diffCodeQuality.diffLines[2]);
+  });
+
+  it('does not render a diff-line component when there is a finding and sastReportsInInlineDiff flag is true', async () => {
+    const wrapper = createWrapper({ props: diffCodeQuality, flag: true });
+    wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
+    await nextTick();
+    expect(wrapper.findComponent(DiffLine).exists()).toBe(false);
+  });
+
+  it('does render a diff-line component when there is a finding and sastReportsInInlineDiff flag is false', async () => {
+    const wrapper = createWrapper({ props: diffCodeQuality });
+    wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
+    await nextTick();
+    expect(wrapper.findComponent(DiffLine).exists()).toBe(true);
   });
 
   it.each`
@@ -86,8 +113,10 @@ describe('DiffView', () => {
     'renders a $type comment row with comment cell on $side',
     ({ type, container, sides, total }) => {
       const wrapper = createWrapper({
-        diffLines: [{ renderCommentRow: true, ...sides }],
-        inline: type === 'inline',
+        props: {
+          diffLines: [{ renderCommentRow: true, ...sides }],
+          inline: type === 'inline',
+        },
       });
       expect(wrapper.findAllComponents(DiffCommentCell).length).toBe(total);
       expect(wrapper.find(container).findComponent(DiffCommentCell).exists()).toBe(true);
@@ -96,21 +125,20 @@ describe('DiffView', () => {
 
   it('renders a draft row', () => {
     const wrapper = createWrapper({
-      diffLines: [{ renderCommentRow: true, left: { lineDrafts: [{ isDraft: true }] } }],
+      props: { diffLines: [{ renderCommentRow: true, left: { lineDrafts: [{ isDraft: true }] } }] },
     });
     expect(wrapper.findComponent(DraftNote).exists()).toBe(true);
   });
 
   describe('drag operations', () => {
     it('sets `dragStart` onStartDragging', () => {
-      const wrapper = createWrapper({ diffLines: [{}] });
-
+      const wrapper = createWrapper({ props: { diffLines: [{}] } });
       wrapper.findComponent(DiffRow).vm.$emit('startdragging', { line: { test: true } });
       expect(wrapper.vm.idState.dragStart).toEqual({ test: true });
     });
 
     it('does not call `setSelectedCommentPosition` on different chunks onDragOver', () => {
-      const wrapper = createWrapper({ diffLines: [{}] });
+      const wrapper = createWrapper({ props: { diffLines: [{}] } });
       const diffRow = getDiffRow(wrapper);
 
       diffRow.$emit('startdragging', { line: { chunk: 0 } });
@@ -127,7 +155,7 @@ describe('DiffView', () => {
     `(
       'calls `setSelectedCommentPosition` with correct `updatedLineRange`',
       ({ start, end, expectation }) => {
-        const wrapper = createWrapper({ diffLines: [{}] });
+        const wrapper = createWrapper({ props: { diffLines: [{}] } });
         const diffRow = getDiffRow(wrapper);
 
         diffRow.$emit('startdragging', { line: { chunk: 1, index: start } });
@@ -140,7 +168,7 @@ describe('DiffView', () => {
     );
 
     it('sets `dragStart` to null onStopDragging', () => {
-      const wrapper = createWrapper({ diffLines: [{}] });
+      const wrapper = createWrapper({ props: { diffLines: [{}] } });
       const diffRow = getDiffRow(wrapper);
 
       diffRow.$emit('startdragging', { line: { test: true } });
@@ -152,7 +180,8 @@ describe('DiffView', () => {
     });
 
     it('throttles multiple calls to enterdragging', () => {
-      const wrapper = createWrapper({ diffLines: [{}] });
+      const wrapper = createWrapper({ props: { diffLines: [{}] } });
+
       const diffRow = getDiffRow(wrapper);
 
       diffRow.$emit('startdragging', { line: { chunk: 1, index: 1 } });

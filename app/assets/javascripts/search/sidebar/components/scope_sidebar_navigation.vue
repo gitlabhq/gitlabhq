@@ -1,7 +1,7 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
-import Tracking from '~/tracking';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { NAV_LINK_DEFAULT_CLASSES, NAV_LINK_COUNT_DEFAULT_CLASSES } from '../constants';
 
@@ -13,7 +13,6 @@ export default {
   components: {
     NavItem,
   },
-  mixins: [Tracking.mixin()],
   computed: {
     ...mapState(['navigation', 'urlQuery']),
     ...mapGetters(['navigationItems']),

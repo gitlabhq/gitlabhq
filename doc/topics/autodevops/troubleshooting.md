@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Auto DevOps **(FREE)**
+# Troubleshooting Auto DevOps **(FREE ALL)**
 
 The information in this documentation page describes common errors when using
 Auto DevOps, and any available workarounds.

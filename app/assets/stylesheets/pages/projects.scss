@@ -65,7 +65,6 @@
     white-space: normal;
   }
 
-  .deploy-project-label,
   .key-created-at {
     svg {
       vertical-align: text-top;
@@ -83,18 +82,6 @@
 
 .deploy-project-list {
   margin-bottom: -$gl-padding-4;
-
-  a.deploy-project-label {
-    margin-right: $gl-padding-4;
-    margin-bottom: $gl-padding-4;
-    color: $gl-text-color-secondary;
-    background-color: $gray-50;
-    line-height: $gl-btn-line-height;
-
-    &:hover {
-      color: $blue-600;
-    }
-  }
 }
 
 .vs-public {
@@ -492,32 +479,6 @@
     cursor: auto;
   }
 }
-
-.protected-branches-list,
-.protected-tags-list {
-  margin-bottom: 32px;
-
-  .settings-message {
-    margin: 0;
-    border-radius: 0 0 1px 1px;
-    padding: 20px 0;
-    border: 0;
-  }
-
-  .table-bordered {
-    border-radius: 1px;
-
-    th:not(:last-child),
-    td:not(:last-child) {
-      border-right: solid 1px transparent;
-    }
-  }
-
-  .flash-container {
-    padding: 0;
-  }
-}
-
 
 .compare-revision-cards {
   @media (max-width: $breakpoint-lg) {

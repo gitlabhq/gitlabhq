@@ -83,7 +83,7 @@ Every user is included in seat usage, with the following exceptions:
 - GitLab-created service accounts:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
   - Bots such as:
-    - [Support Bot](../../user/project/service_desk.md#support-bot-user).
+    - [Support Bot](../../user/project/service_desk/index.md#support-bot-user).
     - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
 
@@ -166,7 +166,7 @@ For example, if you purchase a subscription for 10 users:
 
 Seats owed = 12 - 10 (Maximum users - users in subscription)
 
-### Free Guest users **(ULTIMATE)**
+### Free Guest users **(ULTIMATE ALL)**
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab SaaS.

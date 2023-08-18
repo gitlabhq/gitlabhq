@@ -11,6 +11,15 @@ This page contains information about the settings that are used on GitLab.com, a
 
 See some of these settings on the [instance configuration page](https://gitlab.com/help/instance_configuration) of GitLab.com.
 
+## Email confirmation
+
+GitLab.com has the:
+
+- [`email_confirmation_setting`](../../administration/settings/sign_up_restrictions.md#confirm-user-email)
+  setting set to **Hard**.
+- [`unconfirmed_users_delete_after_days`](../../administration/moderate_users.md#automatically-delete-unconfirmed-users)
+  setting set to one day.
+
 ## Password requirements
 
 GitLab.com has the following requirements for passwords on new accounts and password changes:
@@ -73,7 +82,7 @@ The IP addresses for `mg.gitlab.com` are subject to change at any time.
 
 On GitLab.com, there's a mailbox configured for Service Desk with the email address:
 `contact-project+%{key}@incoming.gitlab.com`. To use this mailbox, configure the
-[custom suffix](../project/service_desk.md#configure-a-suffix-for-service-desk-alias-email) in project
+[custom suffix](../project/service_desk/index.md#configure-a-suffix-for-service-desk-alias-email) in project
 settings.
 
 ## Backups
@@ -201,11 +210,14 @@ varies by format:
 GitLab.com has the following account limits enabled. If a setting is not listed,
 the default value [is the same as for self-managed instances](../../administration/settings/account_and_limit_settings.md):
 
-| Setting                       | GitLab.com default |
-|-------------------------------|--------------------|
-| [Repository size including LFS](../../administration/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB |
-| [Maximum import size](../project/settings/import_export.md#import-a-project-and-its-data)                   | 5 GB  |
-| Maximum attachment size       | 100 MB              |
+| Setting                                                                                                            | GitLab.com default |
+|--------------------------------------------------------------------------------------------------------------------|--------------------|
+| [Repository size including LFS](../../administration/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB              |
+| [Maximum import size](../project/settings/import_export.md#import-a-project-and-its-data)                          | 5 GB               |
+| Maximum remote file size for imports from external object storages                                                 | 10 GB              |
+| Maximum download file size when importing from source GitLab instances by direct transfer                          | 5 GB               |
+| Maximum attachment size                                                                                            | 100 MB             |
+| [Maximum decompressed file size for imported archives](../../administration/settings/account_and_limit_settings.md#maximum-decompressed-file-size-for-imported-archives) | 25 GB |
 
 If you are near or over the repository size limit, you can either
 [reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md)

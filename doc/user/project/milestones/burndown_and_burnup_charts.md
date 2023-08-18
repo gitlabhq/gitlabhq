@@ -5,7 +5,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Burndown and burnup charts **(PREMIUM)**
+# Burndown and burnup charts **(PREMIUM ALL)**
 
 [Burndown](#burndown-charts) and [burnup](#burnup-charts) charts show the progress of completing a milestone.
 

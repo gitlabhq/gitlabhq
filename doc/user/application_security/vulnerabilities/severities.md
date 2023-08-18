@@ -5,7 +5,7 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Vulnerability severity levels **(ULTIMATE)**
+# Vulnerability severity levels **(ULTIMATE ALL)**
 
 GitLab vulnerability analyzers attempt to return vulnerability severity level values whenever
 possible. The following is a list of available GitLab vulnerability severity levels, ranked from
@@ -22,7 +22,7 @@ GitLab analyzers make an effort to fit the severity descriptions below, but they
 
 ## Critical severity
 
-Vulnerabilities identified at the Critical Severity level should be investigated immediately. Vulnerabilities at this level assume exploitation of the flaw could lead to full system or data compromise. Examples of critical severity flaws are Command/Code Injection and SQL Injection. Typically these flaws are rated with CVSS 3.1 between 9.0-10.0. 
+Vulnerabilities identified at the Critical Severity level should be investigated immediately. Vulnerabilities at this level assume exploitation of the flaw could lead to full system or data compromise. Examples of critical severity flaws are Command/Code Injection and SQL Injection. Typically these flaws are rated with CVSS 3.1 between 9.0-10.0.
 
 ## High severity
 

@@ -5,7 +5,7 @@
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Repository cleanup')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       - link_url = 'https://github.com/newren/git-filter-repo'
       - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: link_url }
       - link_end = '</a>'.html_safe
@@ -21,7 +21,7 @@
         .gl-mb-3
           %h5.gl-mt-0
             = _("Upload object map")
-          %button.gl-button.btn.btn-default.js-choose-file{ type: "button" }
+          = render Pajamas::ButtonComponent.new(button_options: { class: 'js-choose-file' }) do
             = _("Choose a file")
           %span.gl-ml-3.js-filename
             = _("No file selected")

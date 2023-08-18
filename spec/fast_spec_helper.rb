@@ -32,3 +32,5 @@ ActiveSupport::XmlMini.backend = 'Nokogiri'
 
 # Consider tweaking configuration in `spec/support/rspec.rb` which is also
 # used by `spec/spec_helper.rb`.
+
+require_relative('../jh/spec/fast_spec_helper') if Gitlab.jh?

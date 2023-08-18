@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI Lint API **(FREE)**
+# CI Lint API **(FREE ALL)**
 
 ## Validate the CI/CD configuration for a namespace
 

@@ -44,7 +44,7 @@ RSpec.describe AwardEmojis::DestroyService, feature_category: :team_planning do
 
     context 'when user is not authorized' do
       it_behaves_like 'a service that does not authorize the user',
-                      error: 'User cannot destroy emoji on the awardable'
+        error: 'User cannot destroy emoji on the awardable'
     end
 
     context 'when the user is authorized' do
@@ -56,7 +56,7 @@ RSpec.describe AwardEmojis::DestroyService, feature_category: :team_planning do
         let!(:award_from_user) { create(:award_emoji, name: name, user: user) }
 
         it_behaves_like 'a service that does not authorize the user',
-                         error: 'User has not awarded emoji of type thumbsup on the awardable'
+          error: 'User has not awarded emoji of type thumbsup on the awardable'
       end
 
       context 'when user has awarded an emoji to the awardable' do

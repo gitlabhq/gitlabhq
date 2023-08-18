@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import DurationBadge from '~/jobs/components/log/duration_badge.vue';
 import LineHeader from '~/jobs/components/log/line_header.vue';
 import LineNumber from '~/jobs/components/log/line_number.vue';
@@ -15,7 +16,7 @@ describe('Job Log Header Line', () => {
           style: 'term-fg-l-green',
         },
       ],
-      lineNumber: 0,
+      lineNumber: 76,
     },
     isClosed: true,
     path: '/jashkenas/underscore/-/jobs/335',
@@ -87,6 +88,32 @@ describe('Job Log Header Line', () => {
 
     it('renders the duration badge', () => {
       expect(wrapper.findComponent(DurationBadge).exists()).toBe(true);
+    });
+  });
+
+  describe('line highlighting', () => {
+    describe('with hash', () => {
+      beforeEach(() => {
+        setWindowLocation(`http://foo.com/root/ci-project/-/jobs/6353#L77`);
+
+        createComponent(data);
+      });
+
+      it('highlights line', () => {
+        expect(wrapper.classes()).toContain('gl-bg-gray-700');
+      });
+    });
+
+    describe('without hash', () => {
+      beforeEach(() => {
+        setWindowLocation(`http://foo.com/root/ci-project/-/jobs/6353`);
+
+        createComponent(data);
+      });
+
+      it('does not highlight line', () => {
+        expect(wrapper.classes()).not.toContain('gl-bg-gray-700');
+      });
     });
   });
 });

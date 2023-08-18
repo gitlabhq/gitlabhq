@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Create Jira credentials **(FREE)**
+# Tutorial: Create Jira credentials **(FREE ALL)**
 
 This tutorial shows you how to create Jira credentials. You can use your new Jira credentials to
 configure the [Jira issue integration](configure.md) in GitLab for Jira Data Center or Jira Server.
@@ -17,7 +17,7 @@ To create Jira credentials, here's what we're going to do:
 
 Prerequisite:
 
-- You must have administrator access to the Jira instance.
+- You must have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access to the Jira instance.
 
 ## Create a Jira user
 

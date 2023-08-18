@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"context"
 	"sync"
 	"testing"
 	"time"
@@ -9,6 +10,8 @@ import (
 	"github.com/rafaeljusto/redigomock/v3"
 	"github.com/stretchr/testify/require"
 )
+
+var ctx = context.Background()
 
 const (
 	runnerKey = "runner:build_queue:10"
@@ -131,7 +134,7 @@ func TestKeyChangesInstantReturn(t *testing.T) {
 			defer kw.Shutdown()
 			kw.conn = &redis.PubSubConn{Conn: redigomock.NewConn()}
 
-			val, err := kw.WatchKey(runnerKey, tc.watchValue, tc.timeout)
+			val, err := kw.WatchKey(ctx, runnerKey, tc.watchValue, tc.timeout)
 
 			require.NoError(t, err, "Expected no error")
 			require.Equal(t, tc.expectedStatus, val, "Expected value")
@@ -187,7 +190,7 @@ func TestKeyChangesWhenWatching(t *testing.T) {
 			go func() {
 				defer wg.Done()
 				<-ready
-				val, err := kw.WatchKey(runnerKey, tc.watchValue, time.Second)
+				val, err := kw.WatchKey(ctx, runnerKey, tc.watchValue, time.Second)
 
 				require.NoError(t, err, "Expected no error")
 				require.Equal(t, tc.expectedStatus, val, "Expected value")
@@ -245,7 +248,7 @@ func TestKeyChangesParallel(t *testing.T) {
 				go func() {
 					defer wg.Done()
 					<-ready
-					val, err := kw.WatchKey(runnerKey, tc.watchValue, time.Second)
+					val, err := kw.WatchKey(ctx, runnerKey, tc.watchValue, time.Second)
 
 					require.NoError(t, err, "Expected no error")
 					require.Equal(t, tc.expectedStatus, val, "Expected value")
@@ -273,7 +276,7 @@ func TestShutdown(t *testing.T) {
 
 	go func() {
 		defer wg.Done()
-		val, err := kw.WatchKey(runnerKey, "something", 10*time.Second)
+		val, err := kw.WatchKey(ctx, runnerKey, "something", 10*time.Second)
 
 		require.NoError(t, err, "Expected no error")
 		require.Equal(t, WatchKeyStatusNoChange, val, "Expected value not to change")
@@ -295,7 +298,7 @@ func TestShutdown(t *testing.T) {
 	var err error
 	done := make(chan struct{})
 	go func() {
-		val, err = kw.WatchKey(runnerKey, "something", 10*time.Second)
+		val, err = kw.WatchKey(ctx, runnerKey, "something", 10*time.Second)
 		close(done)
 	}()
 

@@ -14,22 +14,79 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
   end
 
   shared_examples 'fork button on project page' do
-    it 'allows user to fork project from the project page' do
-      visit project_path(project)
-
-      expect(page).not_to have_css('a.disabled', text: 'Fork')
-    end
-
-    context 'user has exceeded personal project limit' do
+    context 'when the user has access to only one namespace and has already forked the project', :js do
       before do
-        user.update!(projects_limit: 0)
+        fork_project(project, user, repository: true, namespace: user.namespace)
       end
 
-      it 'disables fork button on project page' do
+      it 'allows user to go to their fork' do
         visit project_path(project)
 
-        expect(page).to have_css('a.disabled', text: 'Fork')
+        path = namespace_project_path(user, user.fork_of(project))
+
+        fork_button = find_link 'Fork'
+        expect(fork_button['href']).to include(path)
+        expect(fork_button['class']).not_to include('disabled')
       end
+    end
+
+    shared_examples 'fork button creates new fork' do
+      it 'allows user to fork the project from the project page' do
+        visit project_path(project)
+
+        path = new_project_fork_path(project)
+
+        fork_button = find_link 'Fork'
+        expect(fork_button['href']).to include(path)
+        expect(fork_button['class']).not_to include('disabled')
+      end
+
+      context 'when the user cannot fork the project' do
+        let(:project) do
+          # Disabling the repository makes sure that the user cannot fork the project
+          create(:project, :public, :repository, :repository_disabled, description: 'some description')
+        end
+
+        it 'disables fork button on project page' do
+          visit project_path(project)
+
+          path = new_project_fork_path(project)
+
+          fork_button = find_link 'Fork'
+          expect(fork_button['href']).to include(path)
+          expect(fork_button['class']).to include('disabled')
+        end
+      end
+
+      context 'user has exceeded personal project limit' do
+        before do
+          user.update!(projects_limit: 0)
+        end
+
+        it 'disables fork button on project page' do
+          visit project_path(project)
+
+          path = new_project_fork_path(project)
+
+          fork_button = find_link 'Fork'
+          expect(fork_button['href']).to include(path)
+          expect(fork_button['class']).to include('disabled')
+        end
+      end
+    end
+
+    context 'when the user has not already forked the project', :js do
+      it_behaves_like 'fork button creates new fork'
+    end
+
+    context 'when the user has access to more than one namespace', :js do
+      let(:group) { create(:group) }
+
+      before do
+        group.add_developer(user)
+      end
+
+      it_behaves_like 'fork button creates new fork'
     end
   end
 
@@ -42,11 +99,11 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
     context 'forking is enabled' do
       let(:forking_access_level) { ProjectFeature::ENABLED }
 
-      it 'enables fork button' do
+      it 'enables fork button', :js do
         visit project_path(project)
 
-        expect(page).to have_css('a', text: 'Fork')
-        expect(page).not_to have_css('a.disabled', text: 'Select')
+        fork_button = find_link 'Fork'
+        expect(fork_button['class']).not_to include('disabled')
       end
 
       it 'renders new project fork page' do
@@ -60,11 +117,13 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
     context 'forking is disabled' do
       let(:forking_access_level) { ProjectFeature::DISABLED }
 
-      it 'render a disabled fork button' do
+      it 'render a disabled fork button', :js do
         visit project_path(project)
 
-        expect(page).to have_css('a.disabled', text: 'Fork')
-        expect(page).to have_css('a.count', text: '0')
+        fork_button = find_link 'Fork'
+
+        expect(fork_button['class']).to include('disabled')
+        expect(page).to have_selector('[data-testid="forks-count"]')
       end
 
       it 'does not render new project fork page' do
@@ -82,11 +141,13 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
       end
 
       context 'user is not a team member' do
-        it 'render a disabled fork button' do
+        it 'render a disabled fork button', :js do
           visit project_path(project)
 
-          expect(page).to have_css('a.disabled', text: 'Fork')
-          expect(page).to have_css('a.count', text: '0')
+          fork_button = find_link 'Fork'
+
+          expect(fork_button['class']).to include('disabled')
+          expect(page).to have_selector('[data-testid="forks-count"]')
         end
 
         it 'does not render new project fork page' do
@@ -101,12 +162,13 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
           project.add_developer(user)
         end
 
-        it 'enables fork button' do
+        it 'enables fork button', :js do
           visit project_path(project)
 
-          expect(page).to have_css('a', text: 'Fork')
-          expect(page).to have_css('a.count', text: '0')
-          expect(page).not_to have_css('a.disabled', text: 'Fork')
+          fork_button = find_link 'Fork'
+
+          expect(fork_button['class']).not_to include('disabled')
+          expect(page).to have_selector('[data-testid="forks-count"]')
         end
 
         it 'renders new project fork page' do
@@ -185,7 +247,8 @@ RSpec.describe 'Project fork', feature_category: :groups_and_projects do
 
         visit project_path(project)
 
-        expect(page).to have_css('.fork-count', text: 2)
+        forks_count_button = find('[data-testid="forks-count"]')
+        expect(forks_count_button).to have_content("2")
       end
     end
   end
@@ -195,7 +258,9 @@ private
 
 def create_fork(group_obj = group)
   visit project_path(project)
-  find('.fork-btn').click
+
+  click_link 'Fork'
+
   submit_form(group_obj)
   wait_for_requests
 end

@@ -18,7 +18,6 @@ module Sidebars
         def configure_menu_items
           [
             :dependency_proxy,
-            :container_registry,
             :group_kubernetes_clusters
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end

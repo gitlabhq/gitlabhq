@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Composer packages in the Package Registry **(FREE)**
+# Composer packages in the Package Registry **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab 13.2.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
@@ -38,7 +38,7 @@ Prerequisites:
   the [Composer specification](https://getcomposer.org/doc/04-schema.md#version).
   If the version is not valid, for example, it has three dots (`1.0.0.0`), an
   error (`Validation failed: Version is invalid`) occurs when you publish.
-- A valid `composer.json` file.
+- A valid `composer.json` file at the project root directory.
 - The Packages feature is enabled in a GitLab repository.
 - The project ID, which is on the project's home page.
 - One of the following token types:
@@ -323,6 +323,14 @@ If you committed your `composer.lock`, you could do a `composer install` in CI w
 
 In GitLab 14.10 and later, authorization is required for the [downloading a package archive](../../../api/packages/composer.md#download-a-package-archive) endpoint.
 If you encounter a credentials prompt when you are using `composer install`, follow the instructions in the [install a composer package](#install-a-composer-package) section to create an `auth.json` file.
+
+### Publish fails with `The file composer.json was not found`
+
+You might see an error that says `The file composer.json was not found`.
+
+This issue occurs when [configuration requirements for publishing a package](#publish-a-composer-package-by-using-the-api) are not met.
+
+To resolve the error, commit a `composer.json` file to the project root directory.
 
 ## Supported CLI commands
 

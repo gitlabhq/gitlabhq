@@ -15,32 +15,26 @@ we can document the reasons for not choosing this approach.
 
 # Cells: Secrets
 
-Where possible, each cell should have its own distinct set of secrets.
-However, there will be some secrets that will be required to be the same for all
-cells in the cluster
+Where possible, each Cell should have its own distinct set of secrets.
+However, there will be some secrets that will be required to be the same for all Cells in the cluster.
 
 ## 1. Definition
 
-GitLab has a lot of
-[secrets](https://docs.gitlab.com/charts/installation/secrets.html) that needs
-to be configured.
-
-Some secrets are for inter-component communication, for example, `GitLab Shell secret`,
-and used only within a cell.
-
+GitLab has a lot of [secrets](https://docs.gitlab.com/charts/installation/secrets.html) that need to be configured.
+Some secrets are for inter-component communication, for example, `GitLab Shell secret`, and used only within a Cell.
 Some secrets are used for features, for example, `ci_jwt_signing_key`.
 
 ## 2. Data flow
 
 ## 3. Proposal
 
-1. Secrets used for features will need to be consistent across all cells, so that the UX is consistent.
+1. Secrets used for features will need to be consistent across all Cells, so that the UX is consistent.
     1. This is especially true for the `db_key_base` secret which is used for
-       encrypting data at rest in the database - so that projects that are
-       transferred to another cell will continue to work. We do not want to have
-       to re-encrypt such rows when we move projects/groups between cells.
-1. Secrets which are used for intra-cell communication only should be uniquely generated
-   per-cell.
+       encrypting data at rest in the database - so that Projects that are
+       transferred to another Cell will continue to work. We do not want to have
+       to re-encrypt such rows when we move Projects/Groups between Cells.
+1. Secrets which are used for intra-Cell communication only should be uniquely generated
+   per Cell.
 
 ## 4. Evaluation
 

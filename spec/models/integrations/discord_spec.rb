@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Integrations::Discord do
+RSpec.describe Integrations::Discord, feature_category: :integrations do
   it_behaves_like "chat integration", "Discord notifications" do
     let(:client) { Discordrb::Webhooks::Client }
     let(:client_arguments) { { url: webhook_url } }
@@ -17,6 +17,26 @@ RSpec.describe Integrations::Discord do
           )
         ]
       }
+    end
+  end
+
+  describe 'validations' do
+    let_it_be(:project) { create(:project) }
+
+    subject { integration }
+
+    describe 'only allows one channel on events' do
+      context 'when given more than one channel' do
+        let(:integration) { build(:discord_integration, project: project, note_channel: 'webhook1,webhook2') }
+
+        it { is_expected.not_to be_valid }
+      end
+
+      context 'when given one channel' do
+        let(:integration) { build(:discord_integration, project: project, note_channel: 'webhook1') }
+
+        it { is_expected.to be_valid }
+      end
     end
   end
 

@@ -11,7 +11,7 @@ class Event < ApplicationRecord
   include ShaAttribute
   include IgnorableColumns
 
-  ignore_column :target_id_convert_to_bigint, remove_with: '16.2', remove_after: '2023-07-22'
+  ignore_column :target_id_convert_to_bigint, remove_with: '16.4', remove_after: '2023-09-22'
 
   ACTIONS = HashWithIndifferentAccess.new(
     created: 1,

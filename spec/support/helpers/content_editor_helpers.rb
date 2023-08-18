@@ -9,6 +9,10 @@ module ContentEditorHelpers
     end
   end
 
+  def switch_to_markdown_editor
+    click_button("Switch to plain text editing")
+  end
+
   def switch_to_content_editor
     click_button("Switch to rich text editing")
   end

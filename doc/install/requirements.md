@@ -14,7 +14,7 @@ This page includes information about the minimum requirements you need to instal
 
 The necessary hard drive space largely depends on the size of the repositories you want to store in GitLab but as a *guideline* you should have at least as much free space as all your repositories combined take up.
 
-The Omnibus GitLab package requires about 2.5 GB of storage space for installation.
+The Linux package requires about 2.5 GB of storage space for installation.
 
 If you want to be flexible about growing your hard drive space in the future consider mounting it using [logical volume management (LVM)](https://en.wikipedia.org/wiki/Logical_volume_management) so you can add more hard drives when you need them.
 
@@ -66,14 +66,13 @@ process, such as PostgreSQL, which can have disastrous consequences.
 
 ## Database
 
-PostgreSQL is the only supported database, which is bundled with the Omnibus GitLab package.
+PostgreSQL is the only supported database, which is bundled with the Linux package.
 You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
-Support for MySQL was removed in [GitLab 12.1](../update/index.md#1210).
 
 ### PostgreSQL Requirements
 
 The server running PostgreSQL should have _at least_ 5-10 GB of storage
-available, though the exact requirements [depend on the number of users](../administration/reference_architectures/index.md).
+available, though the exact requirements [depend on the number of users](../administration/reference_architectures/index.md). For Ultimate customers the server should have _at least_ 12 GB of storage available, as 1 GB of vulnerability data needs to be imported.
 
 We highly recommend using at least the minimum PostgreSQL versions (as specified in
 the following table) as these were used for development and testing:
@@ -107,10 +106,9 @@ Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.git
 #### Additional requirements for GitLab Geo
 
 If you're using [GitLab Geo](../administration/geo/index.md), we strongly
-recommend running Omnibus GitLab-managed instances, as we actively develop and
-test based on those. We try to be compatible with most external (not managed by
-Omnibus GitLab) databases (for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)),
-but we can't guarantee compatibility.
+recommend running instances installed by using the Linux package, as we actively develop and
+test based on those. We try to be compatible with most external (not managed by a Linux package installation) databases
+(for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)), but we can't guarantee compatibility.
 
 #### Operating system locale compatibility and silent index corruption
 
@@ -249,7 +247,7 @@ Redis stores all user sessions and the background task queue.
 
 The requirements for Redis are as follows:
 
-- Redis 6.0 is required from GitLab 16.0 and later.
+- Redis 6.x or 7.x is required in GitLab 16.0 and later.
 - Redis Cluster mode is not supported. Redis Standalone must be used.
 - Storage requirements for Redis are minimal, about 25 kB per user on average.
 

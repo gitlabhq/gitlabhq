@@ -1,6 +1,7 @@
 import { GlFormInput, GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import ErrorTrackingForm from '~/error_tracking_settings/components/error_tracking_form.vue';
 import createStore from '~/error_tracking_settings/store';

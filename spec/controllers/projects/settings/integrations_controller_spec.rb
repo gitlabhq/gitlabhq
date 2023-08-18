@@ -379,6 +379,26 @@ RSpec.describe Projects::Settings::IntegrationsController, feature_category: :in
           end
         end
       end
+
+      context 'with chat notification integration which masks channel params' do
+        let_it_be(:integration) do
+          create(:discord_integration, project: project, note_channel: 'https://discord.com/api/webhook/note')
+        end
+
+        let(:message) { 'Discord Notifications settings saved and active.' }
+
+        it_behaves_like 'integration update'
+
+        context 'with masked channel param' do
+          let(:integration_params) { { active: true, note_channel: '************' } }
+
+          it_behaves_like 'integration update'
+
+          it 'does not update the channel' do
+            expect(integration.reload.note_channel).to eq('https://discord.com/api/webhook/note')
+          end
+        end
+      end
     end
 
     describe 'as JSON' do

@@ -5,14 +5,7 @@ module QA
     describe 'Self-managed Container Registry' do
       include Support::Helpers::MaskToken
 
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-with-registry'
-          project.template_name = 'express'
-          project.visibility = :private
-        end
-      end
-
+      let(:project) { create(:project, :private, name: 'project-with-registry', template_name: 'express') }
       let(:project_deploy_token) do
         Resource::ProjectDeployToken.fabricate_via_api! do |deploy_token|
           deploy_token.name = 'registry-deploy-token'
@@ -41,10 +34,6 @@ module QA
       before do
         Flow::Login.sign_in
         project.visit!
-      end
-
-      after do
-        runner.remove_via_api!
       end
 
       context "when tls is disabled" do
@@ -200,27 +189,27 @@ module QA
                     file_path: '.gitlab-ci.yml',
                     content:
                       <<~YAML
-                        build:
-                          image: docker:23.0.6
-                          stage: build
-                          services:
+                      build:
+                        image: docker:23.0.6
+                        stage: build
+                        services:
                           - name: docker:23.0.6-dind
                             command:
-                            - /bin/sh
-                            - -c
-                            - |
-                              apk add --no-cache openssl
-                              true | openssl s_client -showcerts -connect gitlab.test:5050 > /usr/local/share/ca-certificates/gitlab.test.crt
-                              update-ca-certificates
-                              dockerd-entrypoint.sh || exit
-                          variables:
-                            IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-                          script:
-                            - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD gitlab.test:5050
-                            - docker build -t $IMAGE_TAG .
-                            - docker push $IMAGE_TAG
-                          tags:
-                            - "runner-for-#{project.name}"
+                              - /bin/sh
+                              - -c
+                              - |
+                                apk add --no-cache openssl
+                                true | openssl s_client -showcerts -connect gitlab.test:5050 > /usr/local/share/ca-certificates/gitlab.test.crt
+                                update-ca-certificates
+                                dockerd-entrypoint.sh || exit
+                        variables:
+                          IMAGE_TAG: "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+                        script:
+                          - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD gitlab.test:5050
+                          - docker build -t $IMAGE_TAG .
+                          - docker push $IMAGE_TAG
+                        tags:
+                          - "runner-for-#{project.name}"
                       YAML
                   }
                 ]
@@ -234,7 +223,11 @@ module QA
             pipeline.click_job('build')
           end
 
-          Support::Retrier.retry_until(max_duration: 800, sleep_interval: 10) do
+          Page::Project::Job::Show.perform do |job|
+            expect(job).to be_successful(timeout: 200)
+          end
+
+          Support::Retrier.retry_until(max_duration: 500, sleep_interval: 10) do
             project.pipelines.last[:status] == 'success'
           end
 

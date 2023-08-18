@@ -6,7 +6,7 @@
       full_path: @project.full_path,
       endpoint: project_packages_path(@project),
       page_type: 'projects',
-      empty_list_illustration: image_path('illustrations/no-packages.svg'),
+      empty_list_illustration: image_path('illustrations/empty-state/empty-package-md.svg'),
       npm_instance_url: package_registry_instance_url(:npm),
       project_list_url: project_packages_path(@project),
       settings_path: show_package_registry_settings(@project) ? project_settings_packages_and_registries_path(@project) : '',

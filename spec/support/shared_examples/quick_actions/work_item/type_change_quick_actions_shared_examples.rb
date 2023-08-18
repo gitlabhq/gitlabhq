@@ -78,16 +78,6 @@ RSpec.shared_examples 'quick actions that change work item type' do
       end
 
       it_behaves_like 'action with validation errors'
-
-      context 'when task has a parent' do
-        let_it_be(:parent) { create(:work_item, :issue, project: project) }
-
-        before do
-          create(:parent_link, work_item: task, work_item_parent: parent)
-        end
-
-        it_behaves_like 'quick command error', 'A task cannot be promoted when a parent issue is present', 'promote'
-      end
     end
   end
 end

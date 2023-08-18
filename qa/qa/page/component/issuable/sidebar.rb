@@ -31,7 +31,7 @@ module QA
             end
 
             base.view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents.vue' do
-              element :labels_select_dropdown_contents
+              element 'labels-select-dropdown-contents'
             end
 
             base.view 'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_value.vue' do
@@ -49,7 +49,7 @@ module QA
             end
 
             base.view 'app/assets/javascripts/sidebar/components/sidebar_editable_item.vue' do
-              element :edit_button
+              element 'edit-button'
             end
 
             base.view 'app/helpers/dropdowns_helper.rb' do
@@ -59,7 +59,7 @@ module QA
 
           def assign_milestone(milestone)
             wait_milestone_block_finish_loading do
-              click_element(:edit_button)
+              click_element('edit-button')
               click_on(milestone.title)
             end
 
@@ -134,17 +134,17 @@ module QA
 
           def select_labels(labels)
             within_element(:labels_block) do
-              click_element(:edit_button)
+              click_element('edit-button')
 
               labels.each do |label|
-                within_element(:labels_select_dropdown_contents) do
+                within_element('labels-select-dropdown-contents') do
                   fill_element(:dropdown_input_field, label)
                   click_button(text: label)
                 end
               end
             end
 
-            click_element(:issue_title) # to blur dropdown
+            click_element('issue-title') # to blur dropdown
           end
 
           def toggle_more_assignees_link

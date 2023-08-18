@@ -504,6 +504,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy).to(:namespace_settings).allow_nil }
     it { is_expected.to delegate_method(:runner_registration_enabled).to(:namespace_settings) }
     it { is_expected.to delegate_method(:runner_registration_enabled?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:default_branch_protection_defaults).to(:namespace_settings) }
     it { is_expected.to delegate_method(:allow_runner_registration_token).to(:namespace_settings) }
     it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:package_settings) }
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:package_settings) }
@@ -552,6 +553,22 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           end
 
           it { is_expected.to eq true }
+        end
+      end
+    end
+
+    describe '#default_branch_protection_defaults' do
+      context 'when namespace_settings is nil' do
+        before do
+          allow(subject).to receive(:namespace_settings).and_return(nil)
+        end
+
+        it 'does not raise an error' do
+          expect { subject.default_branch_protection_defaults }.not_to raise_error
+        end
+
+        it 'returns nil' do
+          expect(subject.default_branch_protection_defaults).to be_nil
         end
       end
     end
@@ -2389,7 +2406,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
 
         context 'when parent has shared runners disabled but allows override' do
-          let(:parent) { create(:group, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners) }
+          let(:parent) { create(:group, :shared_runners_disabled_and_overridable) }
           let(:group) { build(:group, shared_runners_enabled: true, parent_id: parent.id) }
 
           it 'is valid' do
@@ -2415,7 +2432,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     context 'when namespace is a group' do
       context 'without a parent' do
         context 'with shared runners disabled' do
-          let(:namespace) { build(:group, :allow_descendants_override_disabled_shared_runners, :shared_runners_disabled) }
+          let(:namespace) { build(:group, :shared_runners_disabled_and_overridable) }
 
           it 'is valid' do
             expect(namespace).to be_valid
@@ -2423,13 +2440,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
 
         context 'with shared runners enabled' do
-          let(:namespace) { create(:namespace) }
+          let(:namespace) { build(:group) }
 
           it 'is invalid' do
             namespace.allow_descendants_override_disabled_shared_runners = true
 
             expect(namespace).to be_invalid
-            expect(namespace.errors[:allow_descendants_override_disabled_shared_runners]).to include('cannot be changed if shared runners are enabled')
+            expect(namespace.errors[:allow_descendants_override_disabled_shared_runners]).to include('can not be true if shared runners are enabled')
           end
         end
       end
@@ -2437,7 +2454,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       context 'with a parent' do
         context 'when parent does not allow shared runners' do
           let(:parent) { create(:group, :shared_runners_disabled) }
-          let(:group) { build(:group, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners, parent_id: parent.id) }
+          let(:group) { build(:group, :shared_runners_disabled_and_overridable, parent_id: parent.id) }
 
           it 'is invalid' do
             expect(group).to be_invalid
@@ -2447,7 +2464,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
         context 'when parent allows shared runners and setting to true' do
           let(:parent) { create(:group, shared_runners_enabled: true) }
-          let(:group) { build(:group, :shared_runners_disabled, :allow_descendants_override_disabled_shared_runners, parent_id: parent.id) }
+          let(:group) { build(:group, :shared_runners_disabled_and_overridable, parent_id: parent.id) }
 
           it 'is valid' do
             expect(group).to be_valid

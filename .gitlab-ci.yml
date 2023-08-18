@@ -37,6 +37,12 @@ default:
   CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
   CREATE_RAILS_SLOW_TEST_ISSUES: "true"
 
+.if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync
+  if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+
+.if-not-security-canonical-sync: &if-not-security-canonical-sync
+  if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH != "gitlab-org/security/gitlab" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME != $CI_DEFAULT_BRANCH'
+
 workflow:
   name: '$PIPELINE_NAME'
   rules:
@@ -67,6 +73,10 @@ workflow:
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline (community contribution)'
         NO_SOURCEMAPS: 'true'
+    - <<: *if-merge-request-security-canonical-sync
+      variables:
+        PIPELINE_NAME: '$CI_DEFAULT_BRANCH security->canonical sync'
+        SKIP_MESSAGE: 'MR only contains changes from the security mirror, which have already been reviewed, tested and deployed.'
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
@@ -123,7 +133,7 @@ workflow:
 
 variables:
   PG_VERSION: "14"
-  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}.patched-golang-${GO_VERSION}-rust-${RUST_VERSION}-node-18.16-postgresql-${PG_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-yarn-1.22-graphicsmagick-1.3.36"
+  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}.patched-golang-${GO_VERSION}-rust-${RUST_VERSION}-node-18.17-postgresql-${PG_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-yarn-1.22-graphicsmagick-1.3.36"
   # We set $GITLAB_DEPENDENCY_PROXY to another variable (since it's set at the group level and has higher precedence than .gitlab-ci.yml)
   # so that we can override $GITLAB_DEPENDENCY_PROXY_ADDRESS in workflow rules.
   GITLAB_DEPENDENCY_PROXY_ADDRESS: "${GITLAB_DEPENDENCY_PROXY}"
@@ -133,7 +143,7 @@ variables:
   BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3"
   BUNDLE_FROZEN: "true"
   # we override the max_old_space_size to prevent OOM errors
-  NODE_OPTIONS: --max_old_space_size=4096
+  NODE_OPTIONS: --max_old_space_size=5120
   GIT_DEPTH: "20"
   # 'GIT_STRATEGY: clone' optimizes the pack-objects cache hit ratio
   GIT_STRATEGY: "clone"
@@ -153,7 +163,7 @@ variables:
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
   RSPEC_FAIL_FAST_THRESHOLD: 20
-  RSPEC_FAST_QUARANTINE_LOCAL_PATH: rspec/fast_quarantine-gitlab.txt
+  RSPEC_FAST_QUARANTINE_PATH: rspec/fast_quarantine-gitlab.txt
   RSPEC_FOSS_IMPACT_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-foss-impact.gitlab-ci.yml.erb
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
   RSPEC_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
@@ -165,6 +175,7 @@ variables:
   RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
   RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
   RSPEC_VIEWS_INCLUDING_PARTIALS_PATH: rspec/views_including_partials.txt
+  RSPEC_AUTO_EXPLAIN_LOG_PATH: auto_explain/auto_explain.ndjson.gz
   TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"
   TMP_TEST_GITLAB_WORKHORSE_PATH: "${TMP_TEST_FOLDER}/${GITLAB_WORKHORSE_FOLDER}"
 
@@ -205,5 +216,12 @@ variables:
   NOKOGIRI_LIBXML_MEMORY_MANAGEMENT: default
 
 include:
+  - local: .gitlab/ci/_skip.yml
+    rules:
+      - <<: *if-merge-request-security-canonical-sync
   - local: .gitlab/ci/*.gitlab-ci.yml
+    rules:
+      - <<: *if-not-security-canonical-sync
   - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/templates/merge_request_pipelines.yml'
+    rules:
+      - <<: *if-not-security-canonical-sync

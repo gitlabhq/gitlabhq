@@ -5,7 +5,7 @@ group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deleting a user account **(FREE)**
+# Deleting a user account **(FREE ALL)**
 
 Users can be deleted from a GitLab instance, either by:
 

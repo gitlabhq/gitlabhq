@@ -1,14 +1,16 @@
 - expanded = expanded_by_default?
-%section.rspec-deploy-keys-settings.settings.no-animate#js-deploy-keys-settings{ class: ('expanded' if expanded), data: { qa_selector: 'deploy_keys_settings_content' } }
+%section.rspec-deploy-keys-settings.settings.no-animate#js-deploy-keys-settings{ class: ('expanded' if expanded), data: { testid: 'deploy-keys-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Deploy keys')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/deploy_keys/index') }
       = _("Add deploy keys to grant read/write access to this repository. %{link_start}What are deploy keys?%{link_end}").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
   .settings-content
-    %h5.gl-mt-0
-    = render @deploy_keys.form_partial_path
-    %hr
-    #js-deploy-keys{ data: { endpoint: project_deploy_keys_path(@project), project_id: @project.id } }
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+      - c.with_body do
+        .gl-new-card-add-form.gl-m-3.gl-display-none.js-toggle-content
+          = render @deploy_keys.form_partial_path
+
+        #js-deploy-keys{ data: { endpoint: project_deploy_keys_path(@project), project_id: @project.id } }

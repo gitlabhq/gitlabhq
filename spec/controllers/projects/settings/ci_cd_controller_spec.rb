@@ -325,6 +325,14 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           end
         end
 
+        context 'when changing forward_deployment_rollback_allowed' do
+          let(:params) { { ci_cd_settings_attributes: { forward_deployment_rollback_allowed: false } } }
+
+          it 'changes forward deployment rollback allowed' do
+            expect { subject }.to change { project.reload.ci_forward_deployment_rollback_allowed }.from(true).to(false)
+          end
+        end
+
         context 'when max_artifacts_size is specified' do
           let(:params) { { max_artifacts_size: 10 } }
 

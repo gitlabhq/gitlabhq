@@ -1,4 +1,3 @@
-import { truncatePathMiddleToLength } from '~/lib/utils/text_utility';
 import { TREE_TYPE } from '../constants';
 
 export const getLowestSingleFolder = (folder) => {
@@ -28,7 +27,7 @@ export const getLowestSingleFolder = (folder) => {
   const { path, tree } = getFolder(folder, [folder.name]);
 
   return {
-    path: truncatePathMiddleToLength(path.join('/'), 40),
+    path: path.join('/'),
     treeAcc: tree.length ? tree[tree.length - 1].tree : null,
   };
 };
@@ -86,6 +85,7 @@ export const generateTreeList = (files) => {
             Object.assign(entry, {
               changed: true,
               diffLoaded: false,
+              diffLoading: false,
               filePaths: {
                 old: file.old_path,
                 new: file.new_path,

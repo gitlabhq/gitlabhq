@@ -81,7 +81,6 @@ export default {
           extraAttrs: {
             class: 'gl-text-red-500!',
             'data-testid': 'single-delete-button',
-            'data-qa-selector': 'tag_delete_button',
           },
           action: () => {
             this.$emit('delete');
@@ -143,7 +142,6 @@ export default {
         <div
           v-gl-tooltip="{ title: tag.name }"
           data-testid="name"
-          data-qa-selector="tag_name_content"
           class="gl-text-overflow-ellipsis gl-overflow-hidden gl-white-space-nowrap"
           :class="mobileClasses"
         >
@@ -201,7 +199,6 @@ export default {
         placement="right"
         :class="{ 'gl-opacity-0 gl-pointer-events-none': disabled }"
         data-testid="additional-actions"
-        data-qa-selector="more_actions_menu"
         :items="items"
       />
     </template>

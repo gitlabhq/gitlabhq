@@ -1968,19 +1968,29 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '.with_upgrade_status' do
-    subject { described_class.with_upgrade_status(upgrade_status) }
+    subject(:scope) { described_class.with_upgrade_status(upgrade_status) }
 
-    let_it_be(:runner_14_0_0) { create(:ci_runner, version: '14.0.0') }
-    let_it_be(:runner_14_1_0) { create(:ci_runner, version: '14.1.0') }
-    let_it_be(:runner_14_1_1) { create(:ci_runner, version: '14.1.1') }
-    let_it_be(:runner_version_14_0_0) { create(:ci_runner_version, version: '14.0.0', status: :available) }
-    let_it_be(:runner_version_14_1_0) { create(:ci_runner_version, version: '14.1.0', status: :recommended) }
-    let_it_be(:runner_version_14_1_1) { create(:ci_runner_version, version: '14.1.1', status: :unavailable) }
+    let_it_be(:runner_14_0_0) { create(:ci_runner) }
+    let_it_be(:runner_14_1_0_and_14_0_0) { create(:ci_runner) }
+    let_it_be(:runner_14_1_0) { create(:ci_runner) }
+    let_it_be(:runner_14_1_1) { create(:ci_runner) }
+
+    before_all do
+      create(:ci_runner_machine, runner: runner_14_1_0_and_14_0_0, version: '14.0.0')
+      create(:ci_runner_machine, runner: runner_14_1_0_and_14_0_0, version: '14.1.0')
+      create(:ci_runner_machine, runner: runner_14_0_0, version: '14.0.0')
+      create(:ci_runner_machine, runner: runner_14_1_0, version: '14.1.0')
+      create(:ci_runner_machine, runner: runner_14_1_1, version: '14.1.1')
+
+      create(:ci_runner_version, version: '14.0.0', status: :available)
+      create(:ci_runner_version, version: '14.1.0', status: :recommended)
+      create(:ci_runner_version, version: '14.1.1', status: :unavailable)
+    end
 
     context ':unavailable' do
       let(:upgrade_status) { :unavailable }
 
-      it 'returns runners whose version is assigned :unavailable' do
+      it 'returns runners with runner managers whose version is assigned :unavailable' do
         is_expected.to contain_exactly(runner_14_1_1)
       end
     end
@@ -1988,23 +1998,27 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     context ':available' do
       let(:upgrade_status) { :available }
 
-      it 'returns runners whose version is assigned :available' do
-        is_expected.to contain_exactly(runner_14_0_0)
+      it 'returns runners with runner managers whose version is assigned :available' do
+        is_expected.to contain_exactly(runner_14_0_0, runner_14_1_0_and_14_0_0)
       end
     end
 
     context ':recommended' do
       let(:upgrade_status) { :recommended }
 
-      it 'returns runners whose version is assigned :recommended' do
-        is_expected.to contain_exactly(runner_14_1_0)
+      it 'returns runners with runner managers whose version is assigned :recommended' do
+        is_expected.to contain_exactly(runner_14_1_0_and_14_0_0, runner_14_1_0)
       end
     end
 
     describe 'composed with other scopes' do
       subject { described_class.active(false).with_upgrade_status(:available) }
 
-      let(:inactive_runner_14_0_0) { create(:ci_runner, version: '14.0.0', active: false) }
+      before do
+        create(:ci_runner_machine, runner: inactive_runner_14_0_0, version: '14.0.0')
+      end
+
+      let(:inactive_runner_14_0_0) { create(:ci_runner, active: false) }
 
       it 'returns runner matching the composed scope' do
         is_expected.to contain_exactly(inactive_runner_14_0_0)

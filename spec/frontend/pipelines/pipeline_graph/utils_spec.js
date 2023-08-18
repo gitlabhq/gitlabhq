@@ -1,5 +1,5 @@
 import { createJobsHash, generateJobNeedsDict, getPipelineDefaultTab } from '~/pipelines/utils';
-import { validPipelineTabNames } from '~/pipelines/constants';
+import { validPipelineTabNames, pipelineTabName } from '~/pipelines/constants';
 
 describe('utils functions', () => {
   const jobName1 = 'build_1';
@@ -173,8 +173,8 @@ describe('utils functions', () => {
 
   describe('getPipelineDefaultTab', () => {
     const baseUrl = 'http://gitlab.com/user/multi-projects-small/-/pipelines/332/';
-    it('returns null if there is only the base url', () => {
-      expect(getPipelineDefaultTab(baseUrl)).toBe(null);
+    it('returns pipeline tab name if there is only the base url', () => {
+      expect(getPipelineDefaultTab(baseUrl)).toBe(pipelineTabName);
     });
 
     it('returns null if there was no valid last url part', () => {

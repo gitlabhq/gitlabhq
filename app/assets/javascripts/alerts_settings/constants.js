@@ -1,6 +1,9 @@
 import { s__, __ } from '~/locale';
 
 export const i18n = {
+  card: {
+    title: s__('AlertSettings|Active alerts'),
+  },
   integrationTabs: {
     configureDetails: s__('AlertSettings|Configure details'),
     viewCredentials: s__('AlertSettings|View credentials'),

@@ -35,6 +35,7 @@ export default {
               projectPath: this.projectPath,
               clusterAgentId: this.environment.clusterAgentId,
               kubernetesNamespace: this.environment.kubernetesNamespace,
+              fluxResourcePath: this.environment.fluxResourcePath,
             },
           },
         });

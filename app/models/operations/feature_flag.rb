@@ -30,7 +30,9 @@ module Operations
       length: 2..63,
       format: {
         with: Gitlab::Regex.feature_flag_regex,
-        message: Gitlab::Regex.feature_flag_regex_message
+        message: ->(_object, _data) {
+          s_("Validation|can contain only lowercase letters, digits, '_' and '-'. Must start with a letter, and cannot end with '-' or '_'")
+        }
       }
     validates :name, uniqueness: { scope: :project_id }
     validates :description, allow_blank: true, length: 0..255

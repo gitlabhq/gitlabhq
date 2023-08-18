@@ -27,6 +27,10 @@ module QA
           "/projects/#{agent.project.id}/cluster_agents/#{agent.id}/tokens"
         end
 
+        def api_delete_path
+          api_get_path
+        end
+
         def api_post_body
           {
             id: agent.project.id,

@@ -20,7 +20,7 @@ This style of test works by counting the number of SQL queries executed by Activ
 it "avoids N+1 database queries" do
   control = ActiveRecord::QueryRecorder.new { visit_some_page }
   create_list(:issue, 5)
-  expect { visit_some_page }.not_to exceed_query_limit(control)
+  expect { visit_some_page }.to issue_same_number_of_queries_as(control)
 end
 ```
 
@@ -33,13 +33,15 @@ it "avoids N+1 database queries" do
   create_list(:issue, 5)
   action = ActiveRecord::QueryRecorder.new { visit_some_page }
 
-  expect(action).not_to exceed_query_limit(control)
+  expect(action).to issue_same_number_of_queries_as(control)
 end
 ```
 
 As an example you might create 5 issues in between counts, which would cause the query count to increase by 5 if an N+1 problem exists.
 
-In some cases, the query count might change slightly between runs for unrelated reasons. In this case you might need to test `exceed_query_limit(control_count + acceptable_change)`, but this should be avoided if possible.
+In some cases, the query count might change slightly between runs for unrelated reasons.
+In this case you might need to test `issue_same_number_of_queries_as(control_count + acceptable_change)`,
+but this should be avoided if possible.
 
 If this test fails, and the control was passed as a `QueryRecorder`, then the
 failure message indicates where the extra queries are by matching queries on
@@ -50,18 +52,45 @@ warm the cache, second one to establish a control, third one to validate that
 there are no N+1 queries. Rather than make an extra request to warm the cache, prefer two requests
 (control and test) and configure your test to ignore [cached queries](#cached-queries) in N+1 specs.
 
+```ruby
+it "avoids N+1 database queries" do
+  # warm up
+  visit_some_page
+
+  control = ActiveRecord::QueryRecorder.new(skip_cached: true) { visit_some_page }
+  create_list(:issue, 5)
+  expect { visit_some_page }.to issue_same_number_of_queries_as(control)
+end
+```
+
 ## Cached queries
 
-By default, QueryRecorder ignores [cached queries](../merge_request_concepts/performance.md#cached-queries) in the count. However, it may be better to count
-all queries to avoid introducing an N+1 query that may be masked by the statement cache.
+By default, QueryRecorder ignores [cached queries](../merge_request_concepts/performance.md#cached-queries) in the count.
+However, it may be better to count all queries to avoid introducing an N+1 query that may be masked by the statement cache.
 To do this, this requires the `:use_sql_query_cache` flag to be set.
-You should pass the `skip_cached` variable to `QueryRecorder` and use the `exceed_all_query_limit` matcher:
+You should pass the `skip_cached` variable to `QueryRecorder` and use the `issue_same_number_of_queries_as` matcher:
 
 ```ruby
 it "avoids N+1 database queries", :use_sql_query_cache do
   control = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }
   create_list(:issue, 5)
-  expect { visit_some_page }.not_to exceed_all_query_limit(control)
+  expect { visit_some_page }.to issue_same_number_of_queries_as(control)
+end
+```
+
+## Using RequestStore
+
+[`RequestStore` / `Gitlab::SafeRequestStore`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-safe_request_store/README.md)
+helps us to avoid N+1 queries by caching data in memory for the duration of a request. However, it is disabled by default in tests
+and can lead to false negatives when testing for N+1 queries.
+
+To enable `RequestStore` in tests, use the `request_store` helper when needed:
+
+```ruby
+it "avoids N+1 database queries", :request_store do
+  control = ActiveRecord::QueryRecorder.new(skip_cached: true) { visit_some_page }
+  create_list(:issue, 5)
+  expect { visit_some_page }.to issue_same_number_of_queries_as(control)
 end
 ```
 
@@ -71,6 +100,11 @@ Use a [request spec](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/req
 
 Controller specs should not be used to write N+1 tests as the controller is only initialized once per example.
 This could lead to false successes where subsequent "requests" could have queries reduced (for example, because of memoization).
+
+## Never trust a test you haven't seen fail
+
+Before you add a test for N+1 queries, you should first verify that the test fails without your change.
+This is because the test may be broken, or the test may be passing for the wrong reasons.
 
 ## Finding the source of the query
 

@@ -18,5 +18,6 @@ describe('IntegrationsList', () => {
 
     expect(findActiveIntegrationsTable().props('integrations')).toEqual(mockActiveIntegrations);
     expect(findInactiveIntegrationsTable().props('integrations')).toEqual(mockInactiveIntegrations);
+    expect(findInactiveIntegrationsTable().props('inactive')).toBe(true);
   });
 });

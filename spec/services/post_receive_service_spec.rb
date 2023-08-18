@@ -243,7 +243,7 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
 
   context 'nil broadcast message' do
     it 'does not output a broadcast message' do
-      allow(BroadcastMessage).to receive(:current).and_return(nil)
+      allow(System::BroadcastMessage).to receive(:current).and_return(nil)
 
       expect(has_alert_messages?(subject)).to be_falsey
     end

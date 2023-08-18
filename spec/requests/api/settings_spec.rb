@@ -59,6 +59,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['group_runner_token_expiration_interval']).to be_nil
       expect(json_response['project_runner_token_expiration_interval']).to be_nil
       expect(json_response['max_export_size']).to eq(0)
+      expect(json_response['max_decompressed_archive_size']).to eq(25600)
       expect(json_response['max_terraform_state_size_bytes']).to eq(0)
       expect(json_response['pipeline_limit_per_project_user_sha']).to eq(0)
       expect(json_response['delete_inactive_projects']).to be(false)
@@ -81,6 +82,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['ci_max_includes']).to eq(150)
       expect(json_response['allow_account_deletion']).to eq(true)
       expect(json_response['gitlab_shell_operation_limit']).to eq(600)
+      expect(json_response['namespace_aggregation_schedule_lease_duration_in_seconds']).to eq(300)
+      expect(json_response['default_branch_protection_defaults']).to be_kind_of(Hash)
     end
   end
 
@@ -154,6 +157,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             diff_max_files: 2000,
             diff_max_lines: 50000,
             default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
+            default_branch_protection_defaults: ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys,
             local_markdown_version: 3,
             allow_local_requests_from_web_hooks_and_services: true,
             allow_local_requests_from_system_hooks: false,
@@ -168,6 +172,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             mailgun_events_enabled: true,
             mailgun_signing_key: 'MAILGUN_SIGNING_KEY',
             max_export_size: 6,
+            max_decompressed_archive_size: 20000,
             max_terraform_state_size_bytes: 1_000,
             disabled_oauth_sign_in_sources: 'unknown',
             import_sources: 'github,bitbucket',
@@ -186,6 +191,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             jira_connect_application_key: '123',
             jira_connect_proxy_url: 'http://example.com',
             bulk_import_enabled: false,
+            bulk_import_max_download_file_size: 1,
             allow_runner_registration_token: true,
             user_defaults_to_private_profile: true,
             default_syntax_highlighting_theme: 2,
@@ -193,7 +199,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             silent_mode_enabled: true,
             valid_runner_registrars: ['group'],
             allow_account_deletion: false,
-            gitlab_shell_operation_limit: 500
+            gitlab_shell_operation_limit: 500,
+            namespace_aggregation_schedule_lease_duration_in_seconds: 400,
+            max_import_remote_file_size: 2
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -230,6 +238,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['diff_max_files']).to eq(2000)
         expect(json_response['diff_max_lines']).to eq(50000)
         expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        expect(json_response['default_branch_protection_defaults']).to eq(::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys)
         expect(json_response['local_markdown_version']).to eq(3)
         expect(json_response['allow_local_requests_from_web_hooks_and_services']).to eq(true)
         expect(json_response['allow_local_requests_from_system_hooks']).to eq(false)
@@ -244,6 +253,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['mailgun_events_enabled']).to be(true)
         expect(json_response['mailgun_signing_key']).to eq('MAILGUN_SIGNING_KEY')
         expect(json_response['max_export_size']).to eq(6)
+        expect(json_response['max_decompressed_archive_size']).to eq(20000)
         expect(json_response['max_terraform_state_size_bytes']).to eq(1_000)
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w(github bitbucket))
@@ -270,6 +280,9 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['valid_runner_registrars']).to eq(['group'])
         expect(json_response['allow_account_deletion']).to be(false)
         expect(json_response['gitlab_shell_operation_limit']).to be(500)
+        expect(json_response['namespace_aggregation_schedule_lease_duration_in_seconds']).to be(400)
+        expect(json_response['max_import_remote_file_size']).to be(2)
+        expect(json_response['bulk_import_max_download_file_size']).to be(1)
       end
     end
 

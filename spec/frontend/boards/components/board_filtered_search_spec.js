@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import BoardFilteredSearch from '~/boards/components/board_filtered_search.vue';
 import { updateHistory } from '~/lib/utils/url_utility';

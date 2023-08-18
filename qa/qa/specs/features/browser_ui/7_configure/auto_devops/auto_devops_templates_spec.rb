@@ -25,12 +25,11 @@ module QA
 
       with_them do
         let!(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = "#{template}-autodevops-project-template"
-            project.template_name = template
-            project.description = "Let's see if the #{template} project works..."
-            project.auto_devops_enabled = true
-          end
+          create(:project,
+            :auto_devops,
+            name: "#{template}-autodevops-project-template",
+            template_name: template,
+            description: "Let's see if the #{template} project works")
         end
 
         let(:pipeline) do

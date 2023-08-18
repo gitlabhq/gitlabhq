@@ -162,4 +162,22 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
       expect(described_class.where(id: organization)).not_to exist
     end
   end
+
+  describe '#user?' do
+    let_it_be(:user) { create :user }
+
+    subject { organization.user?(user) }
+
+    context 'when user is an organization user' do
+      before do
+        create :organization_user, organization: organization, user: user
+      end
+
+      it { is_expected.to eq true }
+    end
+
+    context 'when user is not an organization user' do
+      it { is_expected.to eq false }
+    end
+  end
 end

@@ -1,5 +1,6 @@
 <script>
 import { GlSorting, GlSortingItem } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { FIELDS } from '~/members/constants';

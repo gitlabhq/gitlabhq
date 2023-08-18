@@ -23,6 +23,9 @@ if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
     config.middleware.insert_before Gitlab::Database::LoadBalancing::RackMiddleware,
                                    Gitlab::Middleware::RailsQueueDuration
 
+    config.middleware.move_after Gitlab::Metrics::RackMiddleware,
+      Gitlab::EtagCaching::Middleware
+
     config.middleware.use(Gitlab::Metrics::ElasticsearchRackMiddleware)
   end
 
@@ -32,6 +35,7 @@ if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
   elsif Gitlab::Runtime.sidekiq?
     Gitlab::Metrics::GlobalSearchIndexingSlis.initialize_slis! if Gitlab.ee?
     Gitlab::Metrics::LooseForeignKeysSlis.initialize_slis!
+    Gitlab::Metrics::Llm.initialize_slis! if Gitlab.ee?
   end
 
   GC::Profiler.enable

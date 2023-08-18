@@ -35,4 +35,5 @@ tier:
 performance_indicator_type:
 - smau
 - gmau
+- customer_health_score
 milestone: "<13.9"

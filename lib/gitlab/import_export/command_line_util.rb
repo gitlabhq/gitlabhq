@@ -56,7 +56,7 @@ module Gitlab
 
       private
 
-      def download_or_copy_upload(uploader, upload_path, size_limit: nil)
+      def download_or_copy_upload(uploader, upload_path, size_limit: 0)
         if uploader.upload.local?
           copy_files(uploader.path, upload_path)
         else
@@ -64,7 +64,7 @@ module Gitlab
         end
       end
 
-      def download(url, upload_path, size_limit: nil)
+      def download(url, upload_path, size_limit: 0)
         File.open(upload_path, 'wb') do |file|
           current_size = 0
 
@@ -74,7 +74,7 @@ module Gitlab
             elsif fragment.code == 200
               current_size += fragment.bytesize
 
-              raise FileOversizedError if size_limit.present? && current_size > size_limit
+              raise FileOversizedError if size_limit > 0 && current_size > size_limit
 
               file.write(fragment)
             else

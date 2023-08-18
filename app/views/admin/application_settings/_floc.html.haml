@@ -6,8 +6,8 @@
       = s_('FloC|Federated Learning of Cohorts (FLoC)')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
-      - floc_link_url = help_page_path('user/admin_area/settings/floc.md')
+    %p.gl-text-secondary
+      - floc_link_url = help_page_path('administration/settings/floc.md')
       - floc_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: floc_link_url }
       = html_escape(s_('FloC|Configure whether you want to participate in FLoC. %{floc_link_start}What is FLoC?%{floc_link_end}')) % { floc_link_start: floc_link_start, floc_link_end: '</a>'.html_safe }
 

@@ -54,7 +54,6 @@ module EnvironmentsHelper
     {
       'settings_path' => edit_project_settings_integration_path(project, 'prometheus'),
       'clusters_path' => project_clusters_path(project),
-      'dashboards_endpoint' => project_performance_monitoring_dashboards_path(project, format: :json),
       'default_branch' => project.default_branch,
       'project_path' => project_path(project),
       'tags_path' => project_tags_path(project),
@@ -82,8 +81,7 @@ module EnvironmentsHelper
     {
       'deployments_endpoint' => project_environment_deployments_path(project, environment, format: :json),
       'operations_settings_path' => project_settings_operations_path(project),
-      'can_access_operations_settings' => can?(current_user, :admin_operations, project).to_s,
-      'panel_preview_endpoint' => project_metrics_dashboards_builder_path(project, format: :json)
+      'can_access_operations_settings' => can?(current_user, :admin_operations, project).to_s
     }
   end
 

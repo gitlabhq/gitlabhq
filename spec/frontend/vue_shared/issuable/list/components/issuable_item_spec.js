@@ -15,6 +15,8 @@ const createComponent = ({
   showCheckbox = true,
   slots = {},
   showWorkItemTypeIcon = false,
+  isActive = false,
+  preventRedirect = false,
 } = {}) =>
   shallowMount(IssuableItem, {
     propsData: {
@@ -24,6 +26,8 @@ const createComponent = ({
       showDiscussions: true,
       showCheckbox,
       showWorkItemTypeIcon,
+      isActive,
+      preventRedirect,
     },
     slots,
     stubs: {
@@ -43,6 +47,8 @@ describe('IssuableItem', () => {
 
   const findTimestampWrapper = () => wrapper.find('[data-testid="issuable-timestamp"]');
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
+  const findIssuableTitleLink = () => wrapper.findComponentByTestId('issuable-title-link');
+  const findIssuableItemWrapper = () => wrapper.findByTestId('issuable-item-wrapper');
 
   beforeEach(() => {
     gon.gitlab_url = MOCK_GITLAB_URL;
@@ -551,6 +557,37 @@ describe('IssuableItem', () => {
           expect(wrapper.findAllComponents(GlLabel).at(labelPosition).props('scoped')).toBe(scoped);
         });
       });
+    });
+  });
+
+  describe('when preventing redirect on clicking the link', () => {
+    it('emits an event on item click', () => {
+      const { iid, webUrl } = mockIssuable;
+
+      wrapper = createComponent({
+        preventRedirect: true,
+      });
+
+      findIssuableTitleLink().vm.$emit('click', new MouseEvent('click'));
+
+      expect(wrapper.emitted('select-issuable')).toEqual([[{ iid, webUrl }]]);
+    });
+
+    it('does not apply highlighted class when item is not active', () => {
+      wrapper = createComponent({
+        preventRedirect: true,
+      });
+
+      expect(findIssuableItemWrapper().classes('gl-bg-blue-50')).toBe(false);
+    });
+
+    it('applies highlghted class when item is active', () => {
+      wrapper = createComponent({
+        isActive: true,
+        preventRedirect: true,
+      });
+
+      expect(findIssuableItemWrapper().classes('gl-bg-blue-50')).toBe(true);
     });
   });
 });

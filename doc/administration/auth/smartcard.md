@@ -230,7 +230,7 @@ For self-compiled installations:
    Assign a value to at least one of the following variables:
    `client_certificate_required_host` or `client_certificate_required_port`.
 
-1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
+1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
 ### Additional steps when using SAN extensions
@@ -260,7 +260,7 @@ For self-compiled installations:
       san_extensions: true
    ```
 
-1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
+1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
 ### Additional steps when authenticating against an LDAP server
@@ -297,7 +297,7 @@ For self-compiled installations:
            smartcard_auth: optional
    ```
 
-1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
+1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
 ### Require browser session with smartcard sign-in for Git access
@@ -325,7 +325,7 @@ For self-compiled installations:
      required_for_git_access: true
    ```
 
-1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
+1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
 ## Passwords for users created via smartcard authentication

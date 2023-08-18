@@ -1,6 +1,5 @@
 ---
 key_path: redis_hll_counters.quickactions.i_quickactions_blocks_weekly
-name: quickactions_blocks_weekly
 description: Count of MAU using the `/blocks` quick action
 product_section: dev
 product_stage: plan

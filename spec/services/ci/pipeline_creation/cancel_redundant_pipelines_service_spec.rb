@@ -20,6 +20,38 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
     create(:ci_build, :interruptible, pipeline: pipeline)
   end
 
+  shared_examples 'time limits pipeline cancellation' do
+    context 'with old pipelines' do
+      let(:old_pipeline) { create(:ci_pipeline, project: project, created_at: 5.days.ago) }
+
+      before do
+        create(:ci_build, :interruptible, :pending, pipeline: old_pipeline)
+      end
+
+      it 'ignores old pipelines' do
+        execute
+
+        expect(build_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'canceled')
+        expect(build_statuses(pipeline)).to contain_exactly('pending')
+        expect(build_statuses(old_pipeline)).to contain_exactly('pending')
+      end
+
+      context 'with lower_interval_for_canceling_redundant_pipelines disabled' do
+        before do
+          stub_feature_flags(lower_interval_for_canceling_redundant_pipelines: false)
+        end
+
+        it 'cancels pipelines created more than 3 days ago' do
+          execute
+
+          expect(build_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'canceled')
+          expect(build_statuses(pipeline)).to contain_exactly('pending')
+          expect(build_statuses(old_pipeline)).to contain_exactly('canceled')
+        end
+      end
+    end
+  end
+
   describe '#execute!' do
     subject(:execute) { service.execute }
 
@@ -218,6 +250,8 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
 
         expect(build_statuses(pipeline.reload)).to contain_exactly('pending')
       end
+
+      it_behaves_like 'time limits pipeline cancellation'
     end
 
     context 'when auto-cancel is disabled' do
@@ -452,6 +486,8 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
 
           expect(build_statuses(pipeline.reload)).to contain_exactly('pending')
         end
+
+        it_behaves_like 'time limits pipeline cancellation'
       end
 
       context 'when auto-cancel is disabled' do

@@ -4,7 +4,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Design management **(FREE)**
+# Design management **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in GitLab 12.2.
 > - Support for SVGs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12771) in GitLab 12.4.
@@ -44,7 +44,7 @@ For a video overview, see [Design Management (GitLab 12.2)](https://www.youtube.
 
   A GitLab administrator can verify the storage type of a project by going to **Admin Area > Projects**
   and then selecting the project in question. A project can be identified as
-  hashed-stored if its **Gitaly relative path** contains `@hashed`.
+  hashed-stored if the value of the **Relative path** field contains `@hashed`.
 
 If the requirements are not met, you are notified in the **Designs** section.
 

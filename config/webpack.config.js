@@ -193,8 +193,6 @@ const alias = {
   ),
   '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
   emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
-  empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
-  icons: path.join(ROOT_PATH, 'app/views/shared/icons'),
   images: path.join(ROOT_PATH, 'app/assets/images'),
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
   jquery$: 'jquery/dist/jquery.slim.js',
@@ -231,8 +229,6 @@ if (IS_EE) {
   Object.assign(alias, {
     ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
     ee_component: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
-    ee_empty_states: path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
-    ee_icons: path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
     ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
     ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
     jh_else_ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
@@ -249,8 +245,6 @@ if (IS_JH) {
   Object.assign(alias, {
     jh: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
     jh_component: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
-    jh_empty_states: path.join(ROOT_PATH, 'jh/app/views/shared/empty_states'),
-    jh_icons: path.join(ROOT_PATH, 'jh/app/views/shared/icons'),
     jh_images: path.join(ROOT_PATH, 'jh/app/assets/images'),
     // jh path alias https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74305#note_732793956
     jh_else_ce: path.join(ROOT_PATH, 'jh/app/assets/javascripts'),
@@ -368,6 +362,11 @@ module.exports = {
       },
       {
         test: /(@cubejs-client\/vue).*\.(js)?$/,
+        include: /node_modules/,
+        loader: 'babel-loader',
+      },
+      {
+        test: /gridstack\/.*\.js$/,
         include: /node_modules/,
         loader: 'babel-loader',
       },

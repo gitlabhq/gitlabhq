@@ -15,6 +15,7 @@ RSpec.describe 'Profile > Comment templates > User creates comment template', :j
   end
 
   it 'shows the user a list of their saved replies' do
+    click_button 'Add new'
     find('[data-testid="comment-template-name-input"]').set('test')
     find('[data-testid="comment-template-content-input"]').set('Test content')
 
@@ -22,7 +23,7 @@ RSpec.describe 'Profile > Comment templates > User creates comment template', :j
 
     wait_for_requests
 
-    expect(page).to have_content('My comment templates (1)')
+    expect(page).to have_content('My comment templates')
     expect(page).to have_content('test')
     expect(page).to have_content('Test content')
   end

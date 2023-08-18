@@ -7,8 +7,8 @@ module Mutations
         graphql_name 'PrometheusIntegrationResetToken'
 
         argument :id, Types::GlobalIDType[::Integrations::Prometheus],
-                 required: true,
-                 description: "ID of the integration to mutate."
+          required: true,
+          description: "ID of the integration to mutate."
 
         def resolve(id:)
           integration = authorized_find!(id: id)

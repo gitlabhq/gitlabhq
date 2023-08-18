@@ -203,7 +203,7 @@ export default {
 <template>
   <gl-loading-icon v-if="$apollo.queries.variables.loading" class="gl-mt-9" size="lg" />
   <div v-else class="row gl-justify-content-center">
-    <div class="col-10" data-testid="manual-vars-form">
+    <div class="col-10">
       <label>{{ $options.i18n.header }}</label>
 
       <div

@@ -5,10 +5,14 @@ module Integrations
     include RequestAwareEntity
     include Gitlab::Utils::StrongMemoize
 
-    expose :section, :type, :name, :placeholder, :required, :choices, :checkbox_label
+    expose :section, :name, :placeholder, :required, :choices, :checkbox_label
 
     expose :title do |field|
       non_empty_password?(field) ? field[:non_empty_password_title] : field[:title]
+    end
+
+    expose :type do |field|
+      field[:type].to_s
     end
 
     expose :help do |field|
@@ -20,7 +24,7 @@ module Integrations
 
       if non_empty_password?(field)
         'true'
-      elsif field[:type] == 'checkbox'
+      elsif field[:type] == :checkbox
         ActiveRecord::Type::Boolean.new.deserialize(value).to_s
       elsif field[:name] == 'webhook' && integration.chat?
         BaseChatNotification::SECRET_MASK if value.present?
@@ -44,7 +48,7 @@ module Integrations
 
     def non_empty_password?(field)
       strong_memoize(:non_empty_password) do
-        field[:type] == 'password' && value_for(field).present?
+        field[:type] == :password && value_for(field).present?
       end
     end
   end

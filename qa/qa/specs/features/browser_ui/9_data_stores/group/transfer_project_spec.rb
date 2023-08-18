@@ -2,26 +2,10 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Project transfer between groups', :reliable, product_group: :tenant_scale do
-      let(:source_group) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.path = "source-group-#{SecureRandom.hex(8)}"
-        end
-      end
-
-      let!(:target_group) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.path = "target-group-for-transfer_#{SecureRandom.hex(8)}"
-        end
-      end
-
-      let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.group = source_group
-          project.name = 'transfer-project'
-        end
-      end
-
+    describe 'Project transfer', :reliable, product_group: :tenant_scale do
+      let(:project) { create(:project, name: 'transfer-project', group: source_group) }
+      let(:source_group) { create(:group, path: "source-group-#{SecureRandom.hex(8)}") }
+      let!(:target_group) { create(:group, path: "target-group-for-transfer_#{SecureRandom.hex(8)}") }
       let(:readme_content) { 'Here is the edited content.' }
 
       before do

@@ -39,6 +39,12 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     encrypted_tofa_url_iv
     vertex_project
   ], remove_with: '16.3', remove_after: '2023-07-22'
+  ignore_column :database_apdex_settings, remove_with: '16.4', remove_after: '2023-08-22'
+  ignore_columns %i[
+    dashboard_notification_limit
+    dashboard_enforcement_limit
+    dashboard_limit_new_namespace_creation_enforcement_date
+  ], remove_with: '16.5', remove_after: '2023-08-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -254,6 +260,18 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :max_import_remote_file_size,
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :bulk_import_max_download_file_size,
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :max_decompressed_archive_size,
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :max_pages_size,
     presence: true,
     numericality: {
@@ -407,6 +425,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
     allow_nil: false
 
+  validates :protected_paths_for_get_request,
+    length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
+    allow_nil: false
+
   validates :push_event_hooks_limit,
     numericality: { greater_than_or_equal_to: 0 }
 
@@ -418,6 +440,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :wiki_asciidoc_allow_uri_includes, inclusion: { in: [true, false], message: N_('must be a boolean value') }
   validates :max_yaml_size_bytes, numericality: { only_integer: true, greater_than: 0 }, presence: true
   validates :max_yaml_depth, numericality: { only_integer: true, greater_than: 0 }, presence: true
+
+  validates :ci_max_total_yaml_size_bytes, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, presence: true
 
   validates :ci_max_includes, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, presence: true
 
@@ -497,6 +521,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       end
     end
   end
+
+  validates :default_project_visibility, :default_group_visibility,
+    exclusion: { in: :restricted_visibility_levels, message: "cannot be set to a restricted visibility level" },
+    if: :should_prevent_visibility_restriction?
 
   validates_each :import_sources do |record, attr, value|
     value&.each do |source|
@@ -712,18 +740,21 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :inactive_projects_send_warning_email_after_months,
     numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
 
-  validates :database_apdex_settings, json_schema: { filename: 'application_setting_database_apdex_settings' }, allow_nil: true
+  validates :prometheus_alert_db_indicators_settings, json_schema: { filename: 'application_setting_prometheus_alert_db_indicators_settings' }, allow_nil: true
 
   validates :namespace_aggregation_schedule_lease_duration_in_seconds,
     numericality: { only_integer: true, greater_than: 0 }
+
+  validates :sentry_clientside_traces_sample_rate,
+    presence: true,
+    numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1, message: N_('must be a value between 0 and 1') }
 
   validates :instance_level_code_suggestions_enabled,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  validates :ai_access_token,
-    presence: { message: N_("is required to enable Code Suggestions") },
-    if: :instance_level_code_suggestions_enabled
+  validates :package_registry_allow_anyone_to_pull_option,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
@@ -951,7 +982,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   def reset_deletion_warning_redis_key
     Gitlab::InactiveProjectsDeletionWarningTracker.reset_all
   end
+
+  def should_prevent_visibility_restriction?
+    Feature.enabled?(:prevent_visibility_restriction) &&
+      (default_project_visibility_changed? ||
+        default_group_visibility_changed? ||
+        restricted_visibility_levels_changed?)
+  end
 end
 
-ApplicationSetting.prepend(ApplicationSettingMaskedAttrs)
 ApplicationSetting.prepend_mod_with('ApplicationSetting')

@@ -4,7 +4,7 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages custom domains **(FREE)**
+# GitLab Pages custom domains **(FREE ALL)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4, you can use verified domains to [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
 
@@ -25,6 +25,7 @@ To set up Pages with a custom domain name, read the requirements and steps below
 
 ### Prerequisites
 
+- An administrator has configured the server for [GitLab Pages custom domains](../../../../administration/pages/index.md#advanced-configuration)
 - A GitLab Pages website up and running, served under the default Pages domain
   (`*.gitlab.io`, for GitLab.com).
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
@@ -32,17 +33,6 @@ To set up Pages with a custom domain name, read the requirements and steps below
   - A DNS record (`A`, `ALIAS`, or `CNAME`) pointing your domain to the GitLab Pages server. If
     there are multiple DNS records on that name, you must use an `ALIAS` record.
   - A DNS `TXT` record to verify your domain's ownership.
-- Set either `external_http` or `external_https` in `/etc/gitlab/gitlab.rb` to the IP and port of
-  your [Pages daemon](../../../../administration/pages/index.md#the-gitlab-pages-daemon).
-  If you don't have IPv6, you can omit the IPv6 address.
-
-  Example:
-
-  ```ruby
-  # Redirect pages from HTTP to HTTPS
-  gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
-  gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001:db8::2]:443'] # The secondary IPs for the GitLab Pages daemon
-  ```
 
 ### Steps
 
@@ -300,6 +290,33 @@ To enable this setting:
 
 If you use Cloudflare CDN in front of GitLab Pages, make sure to set the SSL connection setting to
 `full` instead of `flexible`. For more details, see the [Cloudflare CDN directions](https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes#h_4e0d1a7c-eb71-4204-9e22-9d3ef9ef7fef).
+
+## Edit a custom domain
+
+You can edit a custom domain to:
+
+- View the custom domain.
+- View the DNS record to add.
+- View the TXT verification entry.
+- Retry verification.
+- Edit the certificate settings.
+
+To edit a custom domain:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Deploy > Pages**.
+1. Next to the domain name, select **Edit**.
+
+## Delete a custom domain
+
+After a custom domain is deleted, the domain is no longer verified in GitLab and cannot be used with GitLab Pages.
+
+To delete and remove a custom domain:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Deploy > Pages**.
+1. Next to the domain name, select **Remove**.
+1. When prompted, select **Remove domain**.
 
 ## Troubleshooting
 

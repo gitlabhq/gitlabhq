@@ -59,6 +59,10 @@ module QA
 
               Support::WaitForRequests.wait_for_requests
 
+              # Needed as a workaround to help avoid race condition with initial search request
+              # https://gitlab.com/gitlab-org/gitlab/-/issues/349379
+              sleep 2
+
               search_and_select(group_name)
 
               set_access_level(access_level)

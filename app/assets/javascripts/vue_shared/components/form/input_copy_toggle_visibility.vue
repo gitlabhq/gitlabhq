@@ -8,6 +8,7 @@ import {
 } from '@gitlab/ui';
 
 import { __ } from '~/locale';
+import { Mousetrap, MOUSETRAP_COPY_KEYBOARD_SHORTCUT } from '~/lib/mousetrap';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
@@ -52,6 +53,11 @@ export default {
       required: false,
       default: __('Copy'),
     },
+    readonly: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     formInputGroupProps: {
       type: Object,
       required: false,
@@ -59,8 +65,19 @@ export default {
         return {};
       },
     },
+    size: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
+    if (!this.readonly && !this.value) {
+      return {
+        valueIsVisible: true,
+      };
+    }
+
     return {
       valueIsVisible: this.initialVisibility,
     };
@@ -77,33 +94,60 @@ export default {
     computedValueIsVisible() {
       return !this.showToggleVisibilityButton || this.valueIsVisible;
     },
-    displayedValue() {
-      return this.computedValueIsVisible ? this.value : '*'.repeat(this.value.length || 20);
+    inputType() {
+      return this.computedValueIsVisible ? 'text' : 'password';
     },
   },
+  mounted() {
+    this.$options.mousetrap = new Mousetrap(this.$refs.input.$el);
+    this.$options.mousetrap.bind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT, this.handleFormInputCopy);
+  },
+  beforeDestroy() {
+    this.$options.mousetrap?.unbind(MOUSETRAP_COPY_KEYBOARD_SHORTCUT);
+  },
+
   methods: {
     handleToggleVisibilityButtonClick() {
       this.valueIsVisible = !this.valueIsVisible;
 
       this.$emit('visibility-change', this.valueIsVisible);
     },
-    handleClick() {
-      this.$refs.input.$el.select();
+    async handleClick() {
+      if (this.readonly) {
+        this.$refs.input.$el.select();
+      } else if (!this.valueIsVisible) {
+        const { selectionStart, selectionEnd } = this.$refs.input.$el;
+        this.handleToggleVisibilityButtonClick();
+
+        setTimeout(() => {
+          // When the input type is changed from 'password'' to 'text', cursor position is reset in some browsers.
+          // This makes clicking to edit difficult due to typing in unexpected location, so we preserve the cursor position / selection
+          this.$refs.input.$el.setSelectionRange(selectionStart, selectionEnd);
+        }, 0);
+      }
     },
     handleCopyButtonClick() {
       this.$emit('copy');
     },
-    handleFormInputCopy(event) {
-      this.handleCopyButtonClick();
-
+    async handleFormInputCopy() {
+      // Value will be copied by native browser behavior
       if (this.computedValueIsVisible) {
         return;
       }
 
-      event.clipboardData.setData('text/plain', this.value);
-      event.preventDefault();
+      try {
+        // user is trying to copy from the password input, set their clipboard for them
+        await navigator.clipboard?.writeText(this.value);
+        this.handleCopyButtonClick();
+      } catch (e) {
+        // Nothing we can do here, best effort to set clipboard value
+      }
+    },
+    handleInput(newValue) {
+      this.$emit('input', newValue);
     },
   },
+  mousetrap: null,
 };
 </script>
 <template>
@@ -111,11 +155,13 @@ export default {
     <gl-form-input-group>
       <gl-form-input
         ref="input"
-        readonly
+        :readonly="readonly"
+        :size="size"
         class="gl-font-monospace! gl-cursor-default!"
         v-bind="formInputGroupProps"
-        :value="displayedValue"
-        @copy="handleFormInputCopy"
+        :value="value"
+        :type="inputType"
+        @input="handleInput"
         @click="handleClick"
       />
 

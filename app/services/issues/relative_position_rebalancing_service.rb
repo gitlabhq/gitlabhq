@@ -10,8 +10,8 @@ module Issues
     TooManyConcurrentRebalances = Class.new(StandardError)
 
     def initialize(projects)
-      @projects_collection = (projects.is_a?(Array) ? Project.id_in(projects) : projects).projects_order_id_asc
-      @root_namespace = @projects_collection.take.root_namespace # rubocop:disable CodeReuse/ActiveRecord
+      @projects_collection = (projects.is_a?(Array) ? Project.id_in(projects) : projects).select(:id).projects_order_id_asc
+      @root_namespace = @projects_collection.select(:namespace_id).reorder(nil).take.root_namespace # rubocop:disable CodeReuse/ActiveRecord
       @caching = ::Gitlab::Issues::Rebalancing::State.new(@root_namespace, @projects_collection)
     end
 

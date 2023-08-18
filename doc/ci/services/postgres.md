@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Using PostgreSQL **(FREE)**
+# Using PostgreSQL **(FREE ALL)**
 
 As many applications depend on PostgreSQL as their database, you
 eventually need it in order for your tests to run. Below you are guided how to

@@ -1,11 +1,18 @@
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import savedRepliesResponse from 'test_fixtures/graphql/comment_templates/saved_replies.query.graphql.json';
+import { mockTracking } from 'helpers/tracking_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
 import savedRepliesQuery from '~/vue_shared/components/markdown/saved_replies.query.graphql';
+import {
+  TRACKING_SAVED_REPLIES_USE,
+  TRACKING_SAVED_REPLIES_USE_IN_MR,
+} from '~/vue_shared/components/markdown/constants';
 
 let wrapper;
 let savedRepliesResp;
@@ -31,6 +38,22 @@ function createComponent(options = {}) {
   });
 }
 
+function findDropdownComponent() {
+  return wrapper.findComponent(GlCollapsibleListbox);
+}
+
+async function selectSavedReply() {
+  const dropdown = findDropdownComponent();
+
+  dropdown.vm.$emit('shown');
+
+  await waitForPromises();
+
+  dropdown.vm.$emit('select', savedRepliesResponse.data.currentUser.savedReplies.nodes[0].id);
+}
+
+useMockLocationHelper();
+
 describe('Comment templates dropdown', () => {
   it('fetches data when dropdown gets opened', async () => {
     const mockApollo = createMockApolloProvider(savedRepliesResponse);
@@ -43,16 +66,64 @@ describe('Comment templates dropdown', () => {
     expect(savedRepliesResp).toHaveBeenCalled();
   });
 
-  it('adds emits a select event on selecting a comment', async () => {
-    const mockApollo = createMockApolloProvider(savedRepliesResponse);
-    wrapper = createComponent({ mockApollo });
+  describe('when selecting a comment', () => {
+    let trackingSpy;
+    let mockApollo;
 
-    wrapper.find('.js-comment-template-toggle').trigger('click');
+    beforeEach(() => {
+      trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
+      mockApollo = createMockApolloProvider(savedRepliesResponse);
+      wrapper = createComponent({ mockApollo });
+    });
 
-    await waitForPromises();
+    it('emits a select event', async () => {
+      wrapper.find('.js-comment-template-toggle').trigger('click');
 
-    wrapper.find('.gl-new-dropdown-item').trigger('click');
+      await waitForPromises();
 
-    expect(wrapper.emitted().select[0]).toEqual(['Saved Reply Content']);
+      wrapper.find('.gl-new-dropdown-item').trigger('click');
+
+      expect(wrapper.emitted().select[0]).toEqual(['Saved Reply Content']);
+    });
+
+    describe('tracking', () => {
+      it('tracks overall usage', async () => {
+        await selectSavedReply();
+
+        expect(trackingSpy).toHaveBeenCalledWith(
+          expect.any(String),
+          TRACKING_SAVED_REPLIES_USE,
+          expect.any(Object),
+        );
+      });
+
+      describe('MR-specific usage event', () => {
+        it('is sent when in an MR', async () => {
+          window.location.toString.mockReturnValue('this/looks/like/a/-/merge_requests/1');
+
+          await selectSavedReply();
+
+          expect(trackingSpy).toHaveBeenCalledWith(
+            expect.any(String),
+            TRACKING_SAVED_REPLIES_USE_IN_MR,
+            expect.any(Object),
+          );
+          expect(trackingSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('is not sent when not in an MR', async () => {
+          window.location.toString.mockReturnValue('this/looks/like/a/-/issues/1');
+
+          await selectSavedReply();
+
+          expect(trackingSpy).not.toHaveBeenCalledWith(
+            expect.any(String),
+            TRACKING_SAVED_REPLIES_USE_IN_MR,
+            expect.any(Object),
+          );
+          expect(trackingSpy).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
   });
 });

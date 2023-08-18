@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import Vue from 'vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';

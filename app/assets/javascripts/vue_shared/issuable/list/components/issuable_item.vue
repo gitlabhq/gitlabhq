@@ -7,8 +7,10 @@ import { isScopedLabel } from '~/lib/utils/common_utils';
 import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
-import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import { STATE_CLOSED } from '~/work_items/constants';
+import { isAssigneesWidget, isLabelsWidget } from '~/work_items/utils';
 
 export default {
   components: {
@@ -57,6 +59,16 @@ export default {
       required: false,
       default: false,
     },
+    isActive: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    preventRedirect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     issuableId() {
@@ -80,26 +92,41 @@ export default {
     reference() {
       return this.issuable.reference || `${this.issuableSymbol}${this.issuable.iid}`;
     },
+    type() {
+      return this.issuable.type || this.issuable.workItemType?.name.toUpperCase();
+    },
     labels() {
-      return this.issuable.labels?.nodes || this.issuable.labels || [];
+      return (
+        this.issuable.labels?.nodes ||
+        this.issuable.labels ||
+        this.issuable.widgets?.find(isLabelsWidget)?.labels.nodes ||
+        []
+      );
     },
     labelIdsString() {
       return JSON.stringify(this.labels.map((label) => getIdFromGraphQLId(label.id)));
     },
     assignees() {
-      return this.issuable.assignees?.nodes || this.issuable.assignees || [];
+      return (
+        this.issuable.assignees?.nodes ||
+        this.issuable.assignees ||
+        this.issuable.widgets?.find(isAssigneesWidget)?.assignees.nodes ||
+        []
+      );
     },
     createdAt() {
       return this.timeFormatted(this.issuable.createdAt);
     },
+    isClosed() {
+      return this.issuable.state === STATUS_CLOSED || this.issuable.state === STATE_CLOSED;
+    },
     timestamp() {
-      if (this.issuable.state === STATUS_CLOSED && this.issuable.closedAt) {
-        return this.issuable.closedAt;
-      }
-      return this.issuable.updatedAt;
+      return this.isClosed && this.issuable.closedAt
+        ? this.issuable.closedAt
+        : this.issuable.updatedAt;
     },
     formattedTimestamp() {
-      if (this.issuable.state === STATUS_CLOSED && this.issuable.closedAt) {
+      if (this.isClosed && this.issuable.closedAt) {
         return sprintf(__('closed %{timeago}'), {
           timeago: this.timeFormatted(this.issuable.closedAt),
         });
@@ -157,7 +184,10 @@ export default {
       return Boolean(this.$slots[slotName]);
     },
     scopedLabel(label) {
-      return this.hasScopedLabelsFeature && isScopedLabel(label);
+      const allowsScopedLabels =
+        this.hasScopedLabelsFeature ||
+        this.issuable.widgets?.find(isLabelsWidget)?.allowsScopedLabels;
+      return allowsScopedLabels && isScopedLabel(label);
     },
     labelTitle(label) {
       return label.title || label.name;
@@ -177,6 +207,13 @@ export default {
       }
       return '';
     },
+    handleIssuableItemClick(e) {
+      if (e.metaKey || e.ctrlKey || !this.preventRedirect) {
+        return;
+      }
+      e.preventDefault();
+      this.$emit('select-issuable', { iid: this.issuableIid, webUrl: this.webUrl });
+    },
   },
 };
 </script>
@@ -185,9 +222,10 @@ export default {
   <li
     :id="`issuable_${issuableId}`"
     class="issue gl-display-flex! gl-px-5!"
-    :class="{ closed: issuable.closedAt }"
+    :class="{ closed: issuable.closedAt, 'gl-bg-blue-50': isActive }"
     :data-labels="labelIdsString"
     :data-qa-issue-id="issuableId"
+    data-testid="issuable-item-wrapper"
   >
     <gl-form-checkbox
       v-if="showCheckbox"
@@ -195,7 +233,7 @@ export default {
       :checked="checked"
       :data-id="issuableId"
       :data-iid="issuableIid"
-      :data-type="issuable.type"
+      :data-type="type"
       @input="$emit('checked-input', $event)"
     >
       <span class="gl-sr-only">{{ issuable.title }}</span>
@@ -204,7 +242,7 @@ export default {
       <div data-testid="issuable-title" class="issue-title title">
         <work-item-type-icon
           v-if="showWorkItemTypeIcon"
-          :work-item-type="issuable.type"
+          :work-item-type="type"
           show-tooltip-on-hover
         />
         <gl-icon
@@ -226,7 +264,9 @@ export default {
           dir="auto"
           :href="webUrl"
           data-qa-selector="issuable_title_link"
+          data-testid="issuable-title-link"
           v-bind="issuableTitleProps"
+          @click="handleIssuableItemClick"
         >
           {{ issuable.title }}
           <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />

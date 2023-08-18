@@ -1,0 +1,8 @@
+---
+name: gitlab_ci_builds_queuing_metrics
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54909
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350888
+milestone: '13.10'
+type: ops
+group: group::pipeline execution
+default_enabled: false

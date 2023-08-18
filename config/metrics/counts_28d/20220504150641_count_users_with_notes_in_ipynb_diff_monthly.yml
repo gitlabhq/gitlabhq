@@ -1,6 +1,5 @@
 ---
 key_path: redis_hll_counters.code_review.i_code_review_count_users_with_notes_in_ipynb_diff_monthly
-name: "count_users_with_notes_in_ipynb_diff_monthly"
 description: Monthly unique users with notes on ipynb diffs
 product_section: dev
 product_stage: create

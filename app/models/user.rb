@@ -2,7 +2,7 @@
 
 require 'carrierwave/orm/activerecord'
 
-class User < ApplicationRecord
+class User < MainClusterwide::ApplicationRecord
   extend Gitlab::ConfigHelper
 
   include Gitlab::ConfigHelper
@@ -403,6 +403,7 @@ class User < ApplicationRecord
   delegate :location, :location=, to: :user_detail, allow_nil: true
   delegate :organization, :organization=, to: :user_detail, allow_nil: true
   delegate :discord, :discord=, to: :user_detail, allow_nil: true
+  delegate :email_reset_offered_at, :email_reset_offered_at=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -520,7 +521,11 @@ class User < ApplicationRecord
   scope :active, -> { with_state(:active).non_internal }
   scope :active_without_ghosts, -> { with_state(:active).without_ghosts }
   scope :deactivated, -> { with_state(:deactivated).non_internal }
-  scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
+  scope :without_projects, -> do
+    joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id')
+    .where(project_authorizations: { user_id: nil })
+    .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045')
+  end
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :by_name, -> (names) { iwhere(name: Array(names)) }
   scope :by_login, -> (login) do
@@ -1765,13 +1770,7 @@ class User < ApplicationRecord
   def following_users_allowed?(user)
     return false if self.id == user.id
 
-    following_users_enabled? && user.following_users_enabled?
-  end
-
-  def following_users_enabled?
-    return true unless ::Feature.enabled?(:disable_follow_users, self)
-
-    enabled_following
+    enabled_following && user.enabled_following
   end
 
   def forkable_namespaces
@@ -2190,14 +2189,6 @@ class User < ApplicationRecord
     callout = callouts_by_feature_name[feature_name]
 
     callout_dismissed?(callout, ignore_dismissal_earlier_than)
-  end
-
-  def dismissed_callout_before?(feature_name, dismissed_before)
-    callout = callouts_by_feature_name[feature_name]
-
-    return false unless callout
-
-    callout.dismissed_before?(dismissed_before)
   end
 
   def dismissed_callout_for_group?(feature_name:, group:, ignore_dismissal_earlier_than: nil)

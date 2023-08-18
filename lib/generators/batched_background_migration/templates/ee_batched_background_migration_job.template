@@ -13,7 +13,7 @@ module EE
         extend ::Gitlab::Utils::Override
 
         prepended do
-          # operation_name :my_operation
+          # operation_name :my_operation # This is used as the key on collecting metrics
           # scope_to ->(relation) { relation.where(column: "value") }
         end
 

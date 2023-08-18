@@ -155,6 +155,19 @@ $ grep "eslint-disable.*import/no-deprecated" -r .
 ./app/assets/javascripts/issuable_form.js:  // eslint-disable-next-line import/no-deprecated
 ```
 
+### `vue/multi-word-component-names` is disabled in my file
+
+Single name components are discouraged by the
+[Vue style guide](https://vuejs.org/style-guide/rules-essential.html#use-multi-word-component-names).
+
+They are problematic because they can be confused with other HTML components: We could name a
+component `<table>` and it would stop rendering an HTML `<table>`.
+
+To solve this, you should rename the `.vue` file and its references to use at least two words,
+for example:
+
+- `user/table.vue` could be renamed to `user/users_table.vue` and be imported as `UsersTable` and used with `<users-table />`.
+
 ### GraphQL schema and operations validation
 
 We use [`@graphql-eslint/eslint-plugin`](https://www.npmjs.com/package/@graphql-eslint/eslint-plugin)

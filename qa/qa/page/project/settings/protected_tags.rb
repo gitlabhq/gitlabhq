@@ -21,6 +21,7 @@ module QA
           end
 
           def set_tag(tag_name)
+            click_button 'Add tag'
             click_element :tags_dropdown
             filter_and_select(tag_name)
           end
@@ -32,6 +33,7 @@ module QA
             within_element(:access_levels_content) do
               click_on role
             end
+            click_element :access_levels_dropdown
           end
 
           def click_protect_tag_button

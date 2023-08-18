@@ -11,11 +11,10 @@ module QA
       include Runtime::Fixtures
 
       before(:all) do
-        @project = Resource::Project.fabricate_via_api! do |project|
-          project.name = 'file-template-project'
-          project.description = 'Add file templates via the Web IDE'
-          project.initialize_with_readme = true
-        end
+        @project = create(:project,
+          :with_readme,
+          name: 'file-template-project',
+          description: 'Add file templates via Web IDE')
       end
 
       templates = [

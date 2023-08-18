@@ -63,9 +63,9 @@ GitLab in a Kubernetes cluster, you might need a different version of Kubernetes
 You can upgrade your
 Kubernetes version to a supported version at any time:
 
+- 1.27 (support ends on July 22, 2024 or when 1.30 becomes supported)
 - 1.26 (support ends on March 22, 2024 or when 1.29 becomes supported)
 - 1.25 (support ends on October 22, 2023 or when 1.28 becomes supported)
-- 1.24 (support ends on July 22, 2023 or when 1.27 becomes supported)
 
 GitLab aims to support a new minor Kubernetes version three months after its initial release. GitLab supports at least three production-ready Kubernetes minor
 versions at any given time.
@@ -79,6 +79,18 @@ Some GitLab features might work on versions not listed here. [This epic](https:/
 ## Migrate to the agent from the legacy certificate-based integration
 
 Read about how to [migrate to the agent for Kubernetes](../../infrastructure/clusters/migrate_to_gitlab_agent.md) from the certificate-based integration.
+
+## Agent connection
+
+The agent opens a bidirectional channel to KAS for communication.
+This channel is used for all communication between the agent and KAS:
+
+- Each agent can maintain up to 500 logical gRPC streams, including active and idle streams.
+- The number of TCP connections used by the gRPC streams is determined by gRPC itself.
+- Each connection has a maximum lifetime of two hours, with a one-hour grace period.
+  - A proxy in front of KAS might influence the maximum lifetime of connections. On GitLab.com, this is [two hours](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/-/blob/68df3484087f0af368d074215e17056d8ab69f1c/attributes/default.rb#L217). The grace period is 50% of the maximum lifetime.
+
+For detailed information about channel routing, see [Routing KAS requests in the agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kas_request_routing.md).
 
 ## Related topics
 

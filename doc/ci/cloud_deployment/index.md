@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Deploy to AWS from GitLab CI/CD **(FREE)**
+# Deploy to AWS from GitLab CI/CD **(FREE ALL)**
 
 GitLab provides Docker images with the libraries and tools you need to deploy
 to AWS. You can reference these images in your CI/CD pipeline.

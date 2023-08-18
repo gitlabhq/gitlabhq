@@ -1,0 +1,56 @@
+query getWorkItems($fullPath: ID!) {
+  group(fullPath: $fullPath) {
+    id
+    workItems {
+      nodes {
+        id
+        author {
+          id
+          avatarUrl
+          name
+          username
+          webUrl
+        }
+        closedAt
+        confidential
+        createdAt
+        iid
+        reference(full: true)
+        state
+        title
+        updatedAt
+        webUrl
+        widgets {
+          ... on WorkItemWidgetAssignees {
+            assignees {
+              nodes {
+                id
+                avatarUrl
+                name
+                username
+                webUrl
+              }
+            }
+            type
+          }
+          ... on WorkItemWidgetLabels {
+            allowsScopedLabels
+            labels {
+              nodes {
+                id
+                color
+                description
+                title
+              }
+            }
+            type
+          }
+        }
+        workItemType {
+          id
+          name
+        }
+      }
+    }
+  }
+}

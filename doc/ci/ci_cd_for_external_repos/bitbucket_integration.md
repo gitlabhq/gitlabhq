@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: howto
 ---
 
-# Using GitLab CI/CD with a Bitbucket Cloud repository **(PREMIUM)**
+# Using GitLab CI/CD with a Bitbucket Cloud repository **(PREMIUM ALL)**
 
 GitLab CI/CD can be used with Bitbucket Cloud by:
 

@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Protected tags **(FREE)**
+# Protected tags **(FREE ALL)**
 
 Protected [tags](repository/tags/index.md):
 
@@ -34,6 +34,7 @@ Prerequisites:
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected tags**.
+1. Select **Add new**.
 1. To protect a single tag, select **Tag**, then choose your tag from the dropdown list.
 1. To protect all tags with names matching a string:
    1. Select **Tag**.

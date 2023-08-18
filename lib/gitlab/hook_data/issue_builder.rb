@@ -11,6 +11,7 @@ module Gitlab
           time_change
           severity
           escalation_status
+          customer_relations_contacts
         ].freeze
       end
 
@@ -56,7 +57,8 @@ module Gitlab
             assignee_id: issue.assignee_ids.first, # This key is deprecated
             labels: issue.labels_hook_attrs,
             state: issue.state,
-            severity: issue.severity
+            severity: issue.severity,
+            customer_relations_contacts: issue.customer_relations_contacts.map(&:hook_attrs)
         }
 
         if issue.supports_escalation? && issue.escalation_status

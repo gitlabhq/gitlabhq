@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator, feature
   let(:gzip_valid?) { true }
   let(:validator) { instance_double(::Gitlab::Ci::DecompressedGzipSizeValidator, valid?: gzip_valid?) }
 
-  before(:all) do
+  before_all do
     Zlib::GzipWriter.open(file_path) do |gz|
       gz.write('Hello World!')
     end

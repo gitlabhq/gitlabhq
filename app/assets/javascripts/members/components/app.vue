@@ -1,5 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
 import { mapState, mapMutations } from 'vuex';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { HIDE_ERROR } from '../store/mutation_types';

@@ -118,6 +118,9 @@
               "null"
             ]
           },
+          "resolved_by_push": {
+            "type": "boolean"
+          },
           "resolved_at": {
             "type": [
               "string",

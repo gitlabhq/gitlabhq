@@ -42,7 +42,7 @@
       .js-sidebar-labels-widget-root{ data: sidebar_labels_data(issuable_sidebar, @project) }
 
       - if issuable_sidebar[:supports_milestone]
-        .block.milestone{ :class => ("gl-border-b-0!" if in_group_context_with_iterations), data: { qa_selector: 'milestone_block', testid: 'sidebar-milestones' } }
+        .block.milestone{ data: { qa_selector: 'milestone_block', testid: 'sidebar-milestones' } }
           .js-sidebar-milestone-widget-root{ data: { can_edit: can_edit_issuable.to_s, project_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }
 
       - if in_group_context_with_iterations

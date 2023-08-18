@@ -17,7 +17,7 @@ module Gitlab
       scope :valid, -> { where(constraint_valid: true) }
 
       scope :by_table_identifier, ->(identifier) do
-        unless identifier =~ Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER
+        unless Gitlab::Database::FULLY_QUALIFIED_IDENTIFIER.match?(identifier)
           raise ArgumentError, "Table name is not fully qualified with a schema: #{identifier}"
         end
 

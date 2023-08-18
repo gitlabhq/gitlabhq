@@ -1,4 +1,5 @@
 import Vue from 'vue';
+// eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import ResponsiveApp from './components/responsive_app.vue';
 import App from './components/top_nav_app.vue';

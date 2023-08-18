@@ -7,22 +7,11 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 
 # Documentation Style Guide
 
-This document defines the standards for GitLab documentation, including grammar, formatting, word use, and more.
+This document defines the standards for GitLab documentation, including grammar, formatting, and more.
+For guidelines on specific words, see [the word list](word_list.md).
 
 For style questions, mention `@tw-style` in an issue or merge request. If you have access to the GitLab Slack workspace,
 use the `#docs-processes` channel.
-
-In addition to this page, the following resources can help you craft and contribute to documentation:
-
-- [Doc contribution guidelines](../index.md)
-- [Recommended word list](word_list.md)
-- [Doc style and consistency testing](../testing.md)
-- [Guidelines for UI error messages](https://design.gitlab.com/content/voice-and-tone#clear-error-messages)
-- [Documentation global navigation](../site_architecture/global_nav.md)
-- [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
-- [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/)
-- [Google Developer Documentation Style Guide](https://developers.google.com/style)
-- [Recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix)
 
 ## The GitLab voice
 
@@ -34,107 +23,42 @@ direct, and precise. The goal is to provide information that's easy to search an
 
 The voice in the documentation should be conversational but brief, friendly but succinct.
 
-## Documentation is the single source of truth (SSOT)
+## Documentation is the single source of truth (SSoT)
 
-The GitLab documentation is the SSOT for all
-information related to GitLab implementation, usage, and troubleshooting. It evolves
-continuously, in keeping with new products and features, and with improvements
-for clarity, accuracy, and completeness.
+The GitLab documentation is the SSoT for all information related to implementation,
+use, and troubleshooting. The documentation evolves continuously. It is updated with
+new products and features, and with improvements for clarity, accuracy, and completeness.
 
 This policy prevents information silos, making it easier to find information
-about GitLab products.
+about GitLab products. It also informs decisions about the kinds of content that
+is included in the documentation.
 
-It also informs decisions about the kinds of content we include in our
-documentation.
+## Topic types
 
-### The documentation includes all information
+GitLab uses [topic types](../topic_types/index.md) to organize the product documentation.
 
-Include problem-solving actions that may address rare cases or be considered
-risky, but provide proper context through fully detailed
-warnings and caveats. This kind of content should be included as it could be
-helpful to others and, when properly explained, its benefits outweigh the risks.
-If you think you have found an exception to this rule, contact the
-Technical Writing team.
+Topic types help users digest information more quickly. They also help address these issues:
 
-GitLab adds all troubleshooting information to the documentation, no matter how
-unlikely a user is to encounter a situation.
-
-GitLab Support maintains their own
-[troubleshooting content](../../../administration/troubleshooting/index.md)
-in the GitLab documentation.
-
-### The documentation includes all media types
-
-Include any media types/sources if the content is relevant to readers. You can
-freely include or link presentations, diagrams, and videos. No matter who
-it was originally composed for, if it is helpful to any of our audiences, we can
-include it.
-
-- If you use an image that has a separate source file (for example, a vector or
-  diagram format), link the image to the source file so that anyone can update or reuse it.
-- Do not copy and paste content from other sources unless it is a limited
-  quotation with the source cited. Typically it is better to either rephrase
-  relevant information in your own words or link out to the other source.
-
-### Topic types
-
-In the software industry, it is a best practice to organize documentation in
-different types. For example:
-
-- Concepts
-- Tasks
-- Reference
-- Troubleshooting
-
-At GitLab, we have not traditionally used topic types. However, we are starting to
-move in this direction, so we can address these issues:
-
-- **Content is hard to find.** Our docs are comprehensive and include a large amount of
-  useful information. Topic types create repeatable patterns that make our content easier
+- **Content is hard to find.** The GitLab docs are comprehensive and include a large amount of
+  useful information. Topic types create repeatable patterns that make the content easier
   to scan and parse.
-- **Content is often written from the contributor's point of view.**  Our docs
-  are written by contributors. Topic types (tasks specifically) help put
+- **Content is often written from the contributor's point of view.**  The GitLab docs
+  are written by a variety of contributors. Topic types (tasks, specifically) help put
   information into a format that is geared toward helping others, rather than
   documenting how a feature was implemented.
 
-GitLab uses these [topic types](../topic_types/index.md).
+## Docs-first methodology
 
-### Link instead of repeating text
-
-Rather than repeating information from another topic, link to the single source
-of truth and explain why it is important.
-
-### Docs-first methodology
-
-We employ a documentation-first methodology. This method ensures the documentation
-remains a complete and trusted resource, and makes communicating about the use
-of GitLab more efficient.
+The product documentation should be a complete and trusted resource.
 
 - If the answer to a question exists in documentation, share the link to the
   documentation instead of rephrasing the information.
-- When you encounter new information not available in GitLab documentation (for
-  example, when working on a support case or testing a feature), your first step
-  should be to create a merge request (MR) to add this information to the
-  documentation. You can then share the MR to communicate this information.
-
-New information that would be useful toward the future usage or troubleshooting
-of GitLab should not be written directly in a forum or other messaging system,
-but added to a documentation MR and then referenced, as described above.
+- When you encounter information that's not available in GitLab documentation,
+  create a merge request (MR) to add the information to the
+  documentation. Then share the MR to communicate the information.
 
 The more we reflexively add information to the documentation, the more
 the documentation helps others efficiently accomplish tasks and solve problems.
-
-If you have questions when considering, authoring, or editing documentation, ask
-the Technical Writing team. They're available on Slack in `#docs` or in GitLab by
-mentioning [the writer for](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
-the applicable [DevOps stage or group](https://about.gitlab.com/handbook/product/categories/#devops-stages).
-Otherwise, forge ahead with your best effort. It does not need to be perfect;
-the team is happy to review and improve upon your content. Review the
-[Documentation guidelines](index.md) before you begin your first documentation MR.
-
-Maintaining a knowledge base separate from the documentation would
-be against the documentation-first methodology because the content would overlap with
-the documentation.
 
 ## Writing for localization
 
@@ -155,12 +79,17 @@ also aid in consistency, which is important for localization.
 
 ## Markdown
 
-All GitLab documentation is written using [Markdown](https://en.wikipedia.org/wiki/Markdown).
+All GitLab documentation is written in [Markdown](https://en.wikipedia.org/wiki/Markdown).
 
-The [documentation website](https://docs.gitlab.com) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/gitlab_kramdown),
+The [documentation website](https://docs.gitlab.com) uses [GitLab Kramdown](https://gitlab.com/gitlab-org/ruby/gems/gitlab_kramdown),
 a "flavored" Kramdown engine to render pages from Markdown to HTML. The use of Kramdown
 features is limited by our linters, so, use regular Markdown and follow the rules in the
 linked style guide. You can't use Kramdown-specific markup (for example, `{:.class}`).
+
+For a complete Kramdown reference, see the
+[GitLab Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
+
+The Markdown format is [tested](../testing.md) by using markdownlint and Vale.
 
 ### HTML in Markdown
 
@@ -193,43 +122,92 @@ Use backticks for:
 - Commands, parameters, and filenames.
 - Values. For example: "In the **Name** text box, type `test`."
 
-### Markdown Rules
+## Metadata
 
-GitLab ensures that the Markdown used across all documentation is consistent, as
-well as easy to review and maintain, by [testing documentation changes](../testing.md)
-with [markdownlint](../testing.md#markdownlint). This lint test fails when any
-document has an issue with Markdown formatting that may cause the page to render
-incorrectly in GitLab. It also fails when a document has
-non-standard Markdown (which may render correctly, but is not the current
-standard for GitLab documentation).
+Each documentation Markdown page contains YAML front matter.
+All values in the metadata are treated as strings and are used for the
+docs website only.
 
-#### Markdown rule `MD044/proper-names` (capitalization)
+### Stage and group metadata
 
-A rule that could cause confusion is `MD044/proper-names`, as it might not be
-immediately clear what caused markdownlint to fail, or how to correct the
-failure. This rule checks a list of known words, listed in the `.markdownlint.yml`
-file in each project, to verify proper use of capitalization and backticks.
-Words in backticks are ignored by markdownlint.
+Each page should have metadata related to the stage and group it
+belongs to, as well as an information block. For example:
 
-In general, product names should follow the exact capitalization of the official
-names of the products, protocols, and so on.
+```yaml
+---
+stage: Example Stage
+group: Example Group
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+---
+```
 
-Some examples fail if incorrect capitalization is used:
+To populate the metadata, include this information:
 
-- MinIO (needs capital `IO`)
-- NGINX (needs all capitals)
-- runit (needs lowercase `r`)
+- `stage`: The [Stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+  that the majority of the page's content belongs to.
+- `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
+  that the majority of the page's content belongs to.
+- `info`: How to find the Technical Writer associated with the page's stage and
+  group.
 
-Additionally, commands, parameters, values, filenames, and so on must be
-included in backticks. For example:
+### Additional metadata
 
-- "Change the `needs` keyword in your `.gitlab-ci.yml`..."
-  - `needs` is a parameter, and `.gitlab-ci.yml` is a file, so both need backticks.
-    Additionally, `.gitlab-ci.yml` without backticks fails markdownlint because it
-    does not have capital G or L.
-- "Run `git clone` to clone a Git repository..."
-  - `git clone` is a command, so it must be lowercase, while Git is the product,
-    so it must have a capital G.
+Each page can have additional, optional metadata (set in the
+[default.html](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/fc3577921343173d589dfa43d837b4307e4e620f/layouts/default.html#L30-52)
+Nanoc layout), which is displayed at the top of the page if defined.
+
+### Deprecated metadata
+
+The `type` metadata parameter is deprecated but still exists in documentation
+pages. You can remove the `type` metadata parameter and its values.
+
+### Batch updates for TW metadata
+
+The [`CODEOWNERS`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/CODEOWNERS)
+file contains a list of files and the associated technical writers.
+
+When a merge request contains documentation, the information in the `CODEOWNERS` file determines:
+
+- The list of users in the **Approvers** section.
+- The technical writer that the GitLab Bot pings for community contributions.
+
+You can use a Rake task to update the `CODEOWNERS` file.
+
+#### Update the `CODEOWNERS` file
+
+When groups or [TW assignments](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments)
+change, you must update the `CODEOWNERS` file:
+
+1. Update the [stage and group metadata](#stage-and-group-metadata) for any affected doc pages, if necessary. If there are many changes, you can do this step in a separate MR.
+1. Update the [`codeowners.rake`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/tw/codeowners.rake) file with the changes.
+1. Go to the root of the `gitlab` repository.
+1. Run the Rake task with this command: `bundle exec rake tw:codeowners`
+1. Review the changes in the `CODEOWNERS` file.
+1. Add and commit all your changes and push your branch up to `origin`.
+1. Create a merge request and assign it to a technical writing manager for review.
+
+When you update the `codeowners.rake` file:
+
+- To specify multiple writers for a single group, use a space between writer names. Files are assigned to both writers.
+
+  ```ruby
+  CodeOwnerRule.new('Group Name', '@writer1 @writer2'),
+  ```
+
+  - To assign different writers within a group to docs in different directories, use the `path` parameter to specify a directory:
+
+    ```ruby
+    CodeOwnerRule.new('Group Name', ->(path) { path.start_with?('/doc/user') ? '@writer1' : '@writer2' }),
+    ```
+
+    In this example, `writer1` is a code owner for files related to this group that are in `/doc/user`.
+    For everything else, `writer2` is made code owner. For an example, see [MR 127903](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127903).
+
+- For a group that does not have an assigned writer, include the group name in the file and comment out the line:
+
+  ```ruby
+  # CodeOwnerRule.new('Group Name', ''),
+  ```
 
 ## Language
 
@@ -386,8 +364,6 @@ For numbers in text, spell out zero through nine and use numbers for 10 and grea
 ## Text
 
 - [Write in Markdown](#markdown).
-- Splitting long lines (preferably up to 100 characters) can make it easier to
-  provide feedback on small chunks of text.
 - Insert an empty line for new paragraphs.
 - Insert an empty line between different markups (for example, after every
   paragraph, header, list, and so on). Example:
@@ -400,6 +376,14 @@ For numbers in text, spell out zero through nine and use numbers for 10 and grea
   - List item 1
   - List item 2
   ```
+
+### Line length
+
+To make the source content easy to read, and to more easily compare diffs,
+follow these best practices when possible.
+
+- Split long lines at approximately 100 characters.
+- Start each new sentence on a new line.
 
 ### Comments
 
@@ -453,7 +437,7 @@ Do not use these punctuation characters:
 
 ### Placeholder text
 
-You might want to provide a command or configuration that
+In a code block, you might want to provide a command or configuration that
 uses specific values.
 
 In these cases, use [`<` and `>`](https://en.wikipedia.org/wiki/Usage_message#Pattern)
@@ -463,6 +447,13 @@ For example:
 
 ```shell
 cp <your_source_directory> <your_destination_directory>
+```
+
+If the placeholder is not in a code block, use [`<` and `>`] and wrap the placeholder
+in a single backtick. For example:
+
+```plaintext
+Select **Grant admin consent for `<application_name>`**.
 ```
 
 ### Keyboard commands
@@ -477,17 +468,23 @@ When the docs are generated, the output is:
 
 To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.
 
+### Buttons in the UI
+
+For elements with a visible label, use the label in bold with matching case.
+
+For example: `Select **Cancel**.`
+
 ### Text entered in the UI
 
 If you want the user to type something in the UI, use backticks. For example:
 
 ```plaintext
-In the **Commit message** box, type `This is my merge request`.
+In the **Commit message** text box, type `This is my merge request`.
 ```
 
 Backticks are more precise than quotes. For example, in this string:
 
-- In the **Commit message** box, type "This is my merge request."
+- In the **Commit message** text box, type "This is my merge request."
 
 It's not clear whether the user should include the period in the string.
 
@@ -652,10 +649,10 @@ To help keep tables easier to maintain, you can:
 - Add additional spaces to make the column widths consistent. For example:
 
   ```markdown
-  | App name | Description         | Requirements   |
-  |----------|---------------------|----------------|
-  | App 1    | Description text 1. | Requirements 1 |
-  | App 2    | Description text 2. | None           |
+  | App name | Description         | Requirements |
+  |----------|---------------------|--------------|
+  | App 1    | Description text 1. | A, B, and C. |
+  | App 2    | Description text 2. | None         |
   ```
 
 - Skip the additional spaces in the rightmost column for tables that are very wide.
@@ -669,11 +666,32 @@ To help keep tables easier to maintain, you can:
   | Setting 3 | `0`     | Another short description. |
   ```
 
-Consider installing a plugin or extension in your editor for formatting tables:
+### Editor extensions for table formatting
 
-- [Markdown Table Prettifier](https://marketplace.visualstudio.com/items?itemName=darkriszty.markdown-table-prettify) for Visual Studio Code
-- [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter) for Sublime Text
-- [Markdown Table Formatter](https://atom.io/packages/markdown-table-formatter) for Atom
+To ensure consistent table formatting across all Markdown files, consider formatting your tables
+with the VS Code [Markdown Table Formatter](https://github.com/fcrespo82/vscode-markdown-table-formatter).
+To configure this extension to follow the guidelines above, enable the **Follow header row length** setting.
+To enable the setting:
+
+- In the UI:
+
+  1. In the VS Code menu, go to **Code > Settings > Settings**.
+  1. Search for `Limit Last Column Length`.
+  1. In the **Limit Last Column Length** dropdown list, select **Follow header row length**.
+
+- In your VS Code `settings.json`, add a new line with:
+
+  ```json
+  {
+    "markdown-table-formatter.limitLastColumnLength": "Follow header row length"
+  }
+  ```
+
+To format a table with this extension, select the entire table, right-click the selection,
+and select **Format selection**.
+
+Alternatively, if you use Sublime Text you can try the [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter)
+plugin, but it does not have a **Follow header row length** setting.
 
 ### Updates to existing tables
 
@@ -706,31 +724,44 @@ Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-
 ### Footnotes
 
 To indicate a footnote, use the HTML tag `<sup>` with a number.
-Put the tag at the end of the sentence or term.
-
-For the footnotes below the table, use a bold number followed by a sentence.
-
-For example:
+Put the tag at the end of the sentence or term. For example:
 
 ```markdown
 | App name | Description                    |
 |:---------|:-------------------------------|
 | App A    | Description text. <sup>1</sup> |
 | App B    | Description text. <sup>2</sup> |
-
-1. This is the footnote.
-1. This is the other footnote.
 ```
 
-This text renders this output:
+For the footnotes below the table, use the HTML tags `<small>`, `<ol>` and `<li>`.
+For example:
+
+```html
+<html>
+<small>Footnotes
+  <ol>
+    <li>This is the footnote.</li>
+    <li>This is the other footnote.</li>
+  </ol>
+</small>
+</html>
+```
+
+This text renders as this output:
 
 | App name | Description                    |
 |:---------|:-------------------------------|
 | App A    | Description text. <sup>1</sup> |
 | App B    | Description text. <sup>2</sup> |
 
-1. This is the footnote.
-1. This is the other footnote.
+<html>
+<small>Footnotes
+  <ol>
+    <li>This is the footnote.</li>
+    <li>This is the other footnote.</li>
+  </ol>
+</small>
+</html>
 
 ## Quotes
 
@@ -785,7 +816,7 @@ but do not use it. Link to the page instead.
 
 If a topic title has a [product tier badge](#product-tier-badges),
 do not include it in the anchor link. For example, for the topic
-`## This is an example **(FREE)**`, use the anchor `#this-is-an-example`.
+`## This is an example **(FREE ALL)**`, use the anchor `#this-is-an-example`.
 
 With Kramdown, you can add a custom ID to an HTML element, but these IDs
 don't work in `/help`, so you should not use them.
@@ -866,11 +897,12 @@ Sometimes they are more precise and will be maintained more actively.
 
 For each external link you add, weigh the customer benefit with the maintenance difficulties.
 
-### Links that require permissions
+### Confidential or restricted access links
 
 Don't link directly to:
 
 - [Confidential issues](../../../user/project/issues/confidential_issues.md).
+- Internal handbook pages.
 - Project features that require [special permissions](../../../user/permissions.md)
   to view.
 
@@ -881,8 +913,8 @@ These links fail for:
 
 If you must use one of these links:
 
-- If the link is to a confidential issue, mention that the issue is visible only to GitLab team members, as in the first example.
-- If the link requires a specific role or permissions, mention that information, as in the second example.
+- If the link is to a confidential issue or internal handbook page, mention that the issue or page is visible only to GitLab team members.
+- If the link requires a specific role or permissions, mention that information.
 - Put the link in backticks so that it does not cause link checkers to fail.
 
 Examples:
@@ -891,6 +923,9 @@ Examples:
 GitLab team members can view more information in this confidential issue:
 `https://gitlab.com/gitlab-org/gitlab/-/issues/<issue_number>`
 ```
+
+GitLab team members can view more information in this internal handbook page:
+`https://internal.gitlab.com/handbook/<link>`
 
 ```markdown
 Users with the Maintainer role for the project can use the pipeline editor:
@@ -1200,6 +1235,61 @@ include a visual representation to help readers understand it, you can:
 - Use a static image (screenshot) and if necessary, add callouts to emphasize an
   an area of the screen.
 - Create a short video of the interaction and link to it.
+
+### Automatic screenshot generator
+
+You can use an automatic screenshot generator to take and compress screenshots.
+
+1. Set up the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/gitlab_docs.md).
+1. Navigate to the subdirectory with your cloned GitLab repository, typically `gdk/gitlab`.
+1. Make sure that your GDK database is fully migrated: `bin/rake db:migrate RAILS_ENV=development`.
+1. Install `pngquant`, see the tool website for more information: [`pngquant`](https://pngquant.org/)
+1. Run `scripts/docs_screenshots.rb spec/docs_screenshots/<name_of_screenshot_generator>.rb <milestone-version>`.
+1. Identify the location of the screenshots, based on the `gitlab/doc` location defined by the `it` parameter in your script.
+1. Commit the newly created screenshots.
+
+#### Extending the tool
+
+To add an additional **screenshot generator**, complete the following steps:
+
+1. Locate the `spec/docs_screenshots` directory.
+1. Add a new file with a `_docs.rb` extension.
+1. Be sure to include the following information in the file:
+
+   ```ruby
+   require 'spec_helper'
+
+   RSpec.describe '<What I am taking screenshots of>', :js do
+     include DocsScreenshotHelpers # Helper that enables the screenshots taking mechanism
+
+     before do
+       page.driver.browser.manage.window.resize_to(1366, 1024) # length and width of the page
+     end
+   ```
+
+1. In addition, every `it` block must include the path where the screenshot is saved:
+
+   ```ruby
+   it 'user/packages/container_registry/img/project_image_repositories_list'
+   ```
+
+##### Full page screenshots
+
+To take a full page screenshot, `visit the page` and perform any expectation on real content (to have capybara wait till the page is ready and not take a white screenshot).
+
+##### Element screenshot
+
+To have the screenshot focuses few more steps are needed:
+
+- **find the area**: `screenshot_area = find('#js-registry-policies')`
+- **scroll the area in focus**: `scroll_to screenshot_area`
+- **wait for the content**: `expect(screenshot_area).to have_content 'Expiration interval'`
+- **set the crop area**: `set_crop_data(screenshot_area, 20)`
+
+In particular, `set_crop_data` accepts as arguments: a `DOM` element and a
+padding. The padding is added around the element, enlarging the screenshot area.
+
+Use `spec/docs_screenshots/container_registry_docs.rb` as a guide and as an example to create your own scripts.
 
 ## Emoji
 
@@ -1522,19 +1612,11 @@ Until we implement automated testing for broken links to tabs ([Issue 1355](http
 See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for more
 details on tabs.
 
-## Terms
+## Plagiarism
 
-To maintain consistency through GitLab documentation, use these styles and terms.
-
-### Describe UI elements
-
-Follow these styles when you're describing user interface elements in an
-application:
-
-- For elements with a visible label, use that label in bold with matching case.
-  For example, `Select **Cancel**`.
-- For elements with a tooltip or hover label, use that label in bold with
-  matching case. For example, `Select **Add status emoji**`.
+Do not copy and paste content from other sources unless it is a limited
+quotation with the source cited. Typically it is better to rephrase
+relevant information in your own words or link out to the other source.
 
 ## Products and features
 
@@ -1548,8 +1630,7 @@ When names change, it is more complicated to search or grep text that has line b
 
 ### Product tier badges
 
-Tier badges are displayed as orange text next to a topic title. These badges link to the GitLab
-pricing page.
+Tier badges provide information about a feature and are displayed next to the topic title.
 
 You should assign a tier badge:
 
@@ -1558,37 +1639,59 @@ You should assign a tier badge:
 
 The H1 tier badge should be the badge that applies to the lowest tier for the features on the page.
 
-Some pages won't have a tier badge, because no obvious tier badge applies. For example:
+#### Available product tier badges
 
-- Tutorials.
-- Pages that compare features from different tiers.
+Tier badges must include two components, in this order: a subscription tier and an offering.
+These components are surrounded by bold and parentheses, for example `**(ULTIMATE SAAS)**`.
+
+Subscription tiers:
+
+- `FREE` - Applies to all tiers.
+- `PREMIUM` - Applies to Premium and Ultimate tiers.
+- `ULTIMATE` - Applies to Ultimate tier only.
+
+Offerings:
+
+- `SELF`
+- `SAAS`
+- `ALL` - Applies to both self-managed and SaaS.
+
+You can also add a third component for the feature's status:
+
+- `EXPERIMENT`
+- `BETA`
 
 #### Add a tier badge
 
-To add a tier badge to a topic title, add the relevant tier badge
-after the title text. For example:
+To add a tier badge to a topic title, add the two relevant components
+after the title text. You must include the subscription tier first, and then the offering.
+For example:
 
 ```markdown
-# Topic title **(FREE)**
+# Topic title **(FREE ALL)**
 ```
+
+Optionally, you can add the feature status as the last part of the badge:
+
+```markdown
+# Topic title **(FREE ALL EXPERIMENT)**
+```
+
+##### Inline tier badges
 
 Do not add tier badges inline with other text, except for [API attributes](../restful_api_styleguide.md).
 The single source of truth for a feature should be the topic where the
 functionality is described.
 
-#### Available product tier badges
+##### Pages that don't need a tier badge
 
-| Where feature is available                                                               | Tier badge            |
-|:-----------------------------------------------------------------------------------------|:----------------------|
-| On GitLab self-managed and GitLab SaaS, available in all tiers.                          | `**(FREE)**`          |
-| On GitLab self-managed and GitLab SaaS, available in Premium and Ultimate.               | `**(PREMIUM)**`       |
-| On GitLab self-managed and GitLab SaaS, available in Ultimate.                           | `**(ULTIMATE)**`      |
-| On GitLab self-managed, available in all tiers. Not available on GitLab SaaS.            | `**(FREE SELF)**`     |
-| On GitLab self-managed, available in Premium and Ultimate. Not available on GitLab SaaS. | `**(PREMIUM SELF)**`  |
-| On GitLab self-managed, available in Ultimate. Not available on GitLab SaaS.             | `**(ULTIMATE SELF)**` |
-| On GitLab SaaS, available in all tiers. Not available on self-managed.                   | `**(FREE SAAS)**`     |
-| On GitLab SaaS, available in Premium and Ultimate. Not available on self-managed.        | `**(PREMIUM SAAS)**`  |
-| On GitLab SaaS, available in Ultimate. Not available on self-managed.                    | `**(ULTIMATE SAAS)**` |
+Some pages won't have a tier badge, because no obvious tier badge applies. For example:
+
+- Tutorials.
+- Pages that compare features from different tiers.
+- Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
+
+##### Administrator documentation tier badges
 
 Topics that are only for instance administrators should be badged `<TIER> SELF`. Instance
 administrator documentation often includes sections that mention:
@@ -1604,6 +1707,25 @@ instance administrator.
 
 Certain styles should be applied to specific sections. Styles for specific
 sections are outlined in this section.
+
+### Help and feedback section
+
+This section ([introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/319) in GitLab 11.4)
+is displayed at the end of each document and can be omitted by adding a key into
+the front matter:
+
+```yaml
+---
+feedback: false
+---
+```
+
+The default is to leave it there. If you want to omit it from a document, you
+must check with a technical writer before doing so.
+
+The click events in the feedback section are tracked with Google Tag Manager.
+The conversions can be viewed on Google Analytics by navigating to
+**Behavior > Events > Top events > docs**.
 
 ### GitLab restart
 
@@ -1822,8 +1944,3 @@ It renders as:
    ```
 
 ::EndTabs
-
-## Feature flags
-
-Learn how to [document features deployed behind flags](../feature_flags.md). For
-guidance on developing GitLab with feature flags, see [Feature flags in development of GitLab](../../feature_flags/index.md).

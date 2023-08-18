@@ -24,7 +24,7 @@ exports[`packages_list_row renders 1`] = `
           >
             <gl-link-stub
               class="gl-text-body gl-min-w-0"
-              data-qa-selector="package_link"
+              data-testid="details-link"
               href="foo"
             >
               <gl-truncate-stub

@@ -6,7 +6,7 @@
       = s_('JiraConnect|GitLab for Jira App')
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded ? _('Collapse') : _('Expand')
-    %p
+    %p.gl-text-secondary
       = s_('JiraConnect|Configure your Jira Connect Application ID.')
       = link_to sprite_icon('question-o'),
           help_page_path('integration/jira/connect-app',
@@ -18,19 +18,13 @@
   .settings-content
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-jira-connect-application-id-settings'), html: { class: 'fieldset-form', id: 'jira-connect-application-id-settings' } do |f|
       = form_errors(@application_setting)
-
-      %fieldset
-        .form-group
-          = f.label :jira_connect_application_key, s_('JiraConnect|Jira Connect Application ID'), class: 'label-bold'
-          = f.text_field :jira_connect_application_key, class: 'form-control gl-form-input'
-
-      %fieldset
-        .form-group
-          = f.label :jira_connect_proxy_url, s_('JiraConnect|Jira Connect Proxy URL'), class: 'label-bold'
-          = f.text_field :jira_connect_proxy_url, class: 'form-control gl-form-input'
-
-      %fieldset
-        .form-group
-          = f.gitlab_ui_checkbox_component :jira_connect_public_key_storage_enabled, s_('JiraConnect|Enable public key storage')
+      .gl-form-group
+        = f.label :jira_connect_application_key, s_('JiraConnect|Jira Connect Application ID'), class: 'label-bold'
+        = f.text_field :jira_connect_application_key, class: 'form-control gl-form-input'
+      .gl-form-group
+        = f.label :jira_connect_proxy_url, s_('JiraConnect|Jira Connect Proxy URL'), class: 'label-bold'
+        = f.text_field :jira_connect_proxy_url, class: 'form-control gl-form-input'
+      .gl-form-group
+        = f.gitlab_ui_checkbox_component :jira_connect_public_key_storage_enabled, s_('JiraConnect|Enable public key storage')
 
       = f.submit _('Save changes'), pajamas_button: true

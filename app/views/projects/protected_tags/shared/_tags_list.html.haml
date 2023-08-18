@@ -1,31 +1,27 @@
 .protected-tags-list.js-protected-tags-list
   - if @protected_tags.empty?
-    .card-header
-      = s_('ProtectedBranch|Protected tags (%{tags_count})') % { tags_count: 0 }
-    %p.settings-message.text-center
+    .gl-new-card-empty.gl-px-5.gl-py-4
       = s_('ProtectedBranch|No tags are protected.')
   - else
     - can_admin_project = can?(current_user, :admin_project, @project)
 
-    %table.table.table-bordered
+    %table.table.b-table.gl-table.b-table-stacked-md
       %colgroup
         %col{ width: "25%" }
         %col{ width: "25%" }
         %col{ width: "50%" }
         - if can_admin_project
           %col
-      %thead
+      %thead.d-none.d-md-table-header-group
         %tr
           %th
-            = s_('ProtectedBranch|Protected tags (%{tags_count})') % { tags_count: @protected_tags_count }
+            = s_('ProtectedBranch|Tag')
           %th
             = s_('ProtectedBranch|Last commit')
           %th
             = s_('ProtectedBranch|Allowed to create')
           - if can_admin_project
             %th
-      %tbody
-        %tr
-        = yield
+      %tbody= yield
 
     = paginate @protected_tags, theme: 'gitlab'

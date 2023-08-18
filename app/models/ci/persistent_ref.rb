@@ -11,7 +11,7 @@ module Ci
 
     delegate :project, :sha, to: :pipeline
     delegate :repository, to: :project
-    delegate :ref_exists?, :create_ref, :delete_refs, to: :repository
+    delegate :ref_exists?, :create_ref, :delete_refs, :async_delete_refs, to: :repository
 
     def exist?
       ref_exists?(path)
@@ -40,6 +40,12 @@ module Ci
     rescue StandardError => e
       Gitlab::ErrorTracking
         .track_exception(e, pipeline_id: pipeline.id)
+    end
+
+    def async_delete
+      return unless should_delete?
+
+      async_delete_refs(path)
     end
 
     def path

@@ -33,6 +33,11 @@ module Mutations
         required: false,
         description: 'Kubernetes namespace of the environment.'
 
+      argument :flux_resource_path,
+        GraphQL::Types::String,
+        required: false,
+        description: 'Flux resource path of the environment.'
+
       field :environment,
         Types::EnvironmentType,
         null: true,

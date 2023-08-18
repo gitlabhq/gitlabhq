@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tags **(FREE)**
+# Tags **(FREE ALL)**
 
 In Git, a tag marks an important point in a repository's history.
 Git supports two types of tags:
@@ -97,7 +97,7 @@ To create a tag from the GitLab UI:
    create a lightweight tag.
 1. Select **Create tag**.
 
-## Prevent tag deletion **(PREMIUM)**
+## Prevent tag deletion **(PREMIUM ALL)**
 
 To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
 

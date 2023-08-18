@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Discussion, feature_category: :team_planning do
   subject { described_class.new([first_note, second_note, third_note]) }
 
-  let(:first_note) { create(:diff_note_on_merge_request) }
-  let(:merge_request) { first_note.noteable }
-  let(:second_note) { create(:diff_note_on_merge_request, in_reply_to: first_note) }
-  let(:third_note) { create(:diff_note_on_merge_request) }
+  let_it_be(:first_note) { create(:diff_note_on_merge_request) }
+  let_it_be(:merge_request) { first_note.noteable }
+  let_it_be(:second_note) { create(:diff_note_on_merge_request, in_reply_to: first_note) }
+  let_it_be(:third_note) { create(:diff_note_on_merge_request) }
 
   describe '.lazy_find' do
     let!(:note1) { create(:discussion_note_on_merge_request).to_discussion }
@@ -54,7 +54,7 @@ RSpec.describe Discussion, feature_category: :team_planning do
   end
 
   describe '#cache_key' do
-    let(:notes_sha) { Digest::SHA1.hexdigest("#{first_note.post_processed_cache_key}:#{second_note.post_processed_cache_key}:#{third_note.post_processed_cache_key}") }
+    let(:notes_sha) { Digest::SHA1.hexdigest("#{subject.notes[0].post_processed_cache_key}:#{subject.notes[1].post_processed_cache_key}:#{subject.notes[2].post_processed_cache_key}") }
 
     it 'returns the cache key' do
       expect(subject.cache_key).to eq("#{described_class::CACHE_VERSION}:#{subject.id}:#{notes_sha}:")

@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configuring runners **(FREE)**
+# Configuring runners **(FREE ALL)**
 
 If you have installed your own runners, you can configure and secure them in GitLab.
 
@@ -57,60 +57,53 @@ How this feature works:
 1. You start a job
 1. The job, if running longer, times out after **30 minutes**
 
-## Be careful with sensitive information
+## Protecting sensitive information
 
-With some [runner executors](https://docs.gitlab.com/runner/executors/),
-if you can run a job on the runner, you can get full access to the file system,
-and thus any code it runs as well as the token of the runner. With shared runners, this means that anyone
-that runs jobs on the runner, can access another user's code that runs on the
-runner.
+To avoid exposing sensitive information, you can restrict the usage
+of shared runners on large GitLab instances. This ensures that you
+control access to your GitLab instances and secure [runner executors](https://docs.gitlab.com/runner/executors/).
 
-In addition, because you can get access to the runner token, it is possible
-to create a clone of a runner and submit false jobs, for example.
-
-The above is easily avoided by restricting the usage of shared runners
-on large public GitLab instances, controlling access to your GitLab instance,
-and using more secure [runner executors](https://docs.gitlab.com/runner/executors/).
+If certain executors run a job, the file system, the code the runner executes,
+and the runner token may be exposed. This means that anyone that runs jobs
+on a _shared runner_ can access another user's code that runs on the runner.
+Users with access to the runner token can use it to create a clone of
+a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
 
 ### Prevent runners from revealing sensitive information
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/13194) in GitLab 10.0.
+To ensure runners don't reveal sensitive information, you can configure them to only run jobs
+on [protected branches](../../user/project/protected_branches.md), or jobs that have [protected tags](../../user/project/protected_tags.md).
 
-You can protect runners so they don't reveal sensitive information.
-When a runner is protected, the runner picks jobs created on
-[protected branches](../../user/project/protected_branches.md) or [protected tags](../../user/project/protected_tags.md) only,
-and ignores other jobs.
+To prevent runners from revealing sensitive information:
 
-To protect or unprotect a runner:
-
-1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
-1. Find the runner you want to protect or unprotect. Make sure it's enabled.
-1. Select the pencil button.
-1. Check the **Protected** option.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. Find the runner you want to protect or unprotect. Make sure the runner is enabled.
+1. Select **Edit** (**{pencil}**).
+1. Select the **Protected** checkbox.
 1. Select **Save changes**.
 
-![Protect project runners checkbox](img/protected_runners_check_box_v14_1.png)
+### Using shared runners in forked projects
 
-### Forks
+When a project is forked, the job settings related to jobs are copied. If you have shared runners
+configured for a project and a user forks that project, the shared runners serve jobs of this project.
 
-Whenever a project is forked, it copies the settings of the jobs that relate
-to it. This means that if you have shared runners set up for a project and
-someone forks that project, the shared runners serve jobs of this project.
+Due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364303), if the runner settings
+of the forked project does not match the new project namespace, the following message displays:
+`An error occurred while forking the project. Please try again.`.
 
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364303), you might encounter the message `An error occurred while forking the project. Please try again.` if the runner settings of the project you are forking does not match the new project namespace.
-
-To work around this issue, you should make sure that the shared runner settings are consistent in the forked project and the new namespace.
+To work around this issue, ensure that the shared runner settings are consistent in the forked project and the new namespace.
 
 - If shared runners are **enabled** on the forked project, then this should also be **enabled** on the new namespace.
 - If shared runners are **disabled** on the forked project, then this should also be **disabled** on the new namespace.
 
-### Attack vectors in runners
+### Reset the runner registration token for a project (deprecated)
 
-Mentioned briefly earlier, but the following things of runners can be exploited.
-We're always looking for contributions that can mitigate these
-[Security Considerations](https://docs.gitlab.com/runner/security/).
-
-### Reset the runner registration token for a project
+WARNING:
+The ability to pass a runner registration token, and support for certain configuration arguments was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. Authentication tokens
+should be used instead. For more information, see [Migrating to the new runner registration workflow](new_creation_workflow.md).
 
 If you think that a registration token for a project was revealed, you should
 reset it. A registration token can be used to register another runner for the project.
@@ -118,42 +111,41 @@ That new runner may then be used to obtain the values of secret variables or to 
 
 To reset the registration token:
 
-1. Go to the project's **Settings > CI/CD**.
-1. Expand the **General pipelines settings** section.
-1. Find the **Runner token** form field and select **Reveal value**.
-1. Delete the value and save the form.
-1. After the page is refreshed, expand the **Runners settings** section
-   and check the registration token - it should be changed.
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Runners**.
+1. To the right of **New project runner**, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Reset registration token**.
+1. Select **Reset token**.
 
-From now on the old token is no longer valid and does not register
-any new runners to the project. If you are using any tools to provision and
-register new runners, the tokens used in those tools should be updated to reflect the
-value of the new token.
+After you reset the registration token, it is no longer valid and does not register
+any new runners to the project. You should also update the registration token in tools
+you use to provision and register new values.
 
 ### Reset the runner authentication token
 
-If you think that an authentication token for a runner was revealed, you should
-reset it. An attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
+If an authentication token is revealed, an attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
 
-To reset the authentication token, [unregister the runner](https://docs.gitlab.com/runner/commands/#gitlab-runner-unregister)
-and then [register](https://docs.gitlab.com/runner/commands/#gitlab-runner-register) it again.
+To reset the authentication token:
 
-To verify that the previous authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
+1. Delete the runner:
+   - [Delete a shared runner](runners_scope.md#delete-shared-runners).
+   - [Delete a group runner](runners_scope.md#delete-a-group-runner).
+   - [Delete a project runner](runners_scope.md#delete-a-project-runner).
+1. Create a new runner so that it is assigned a new authentication token:
+   - [Create a shared runner](runners_scope.md#create-a-shared-runner-with-an-authentication-token).
+   - [Create a group runner](runners_scope.md#create-a-group-runner-with-an-authentication-token).
+   - [Create a project runner](runners_scope.md#create-a-project-runner-with-an-authentication-token).
+1. Optional. To verify that the previous authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
 
 ## Use tags to control which jobs a runner can run
 
-You must set up a runner to be able to run all the different types of jobs
-that it may encounter on the projects it's shared over. This would be
-problematic for large amounts of projects, if it weren't for tags.
+You can use [tags](../yaml/index.md#tags) to ensure that runners only run the jobs they are equipped
+to run. For example, you can specify the `rails` tag for runners that have the dependencies to run
+Rails test suites.
 
-GitLab CI/CD tags are not the same as Git tags. GitLab CI/CD tags are associated with runners.
+GitLab CI/CD tags are different to Git tags. GitLab CI/CD tags are associated with runners.
 Git tags are associated with commits.
-
-By tagging a runner for the types of jobs it can handle, you can make sure
-shared runners will [only run the jobs they are equipped to run](../yaml/index.md#tags).
-
-For instance, at GitLab we have runners tagged with `rails` if they contain
-the appropriate dependencies to run Rails test suites.
 
 ### Set a runner to run untagged jobs
 
@@ -302,9 +294,6 @@ When using the Kubernetes executor, you can use variables to
 
 ### Git strategy
 
-> - Introduced in GitLab 8.9 as an experimental feature.
-> - `GIT_STRATEGY=none` requires GitLab Runner v1.7+.
-
 You can set the `GIT_STRATEGY` used to fetch the repository content, either
 globally or per-job in the [`variables`](../yaml/index.md#variables) section:
 
@@ -340,8 +329,6 @@ Git repository data may be present, but it's likely out of date. You should only
 rely on files brought into the local working copy from cache or artifacts.
 
 ### Git submodule strategy
-
-> Requires GitLab Runner v1.10+.
 
 The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how Git
 submodules are included when fetching the code before a build. You can set them
@@ -381,8 +368,6 @@ You can provide additional flags to control advanced behavior using [`GIT_SUBMOD
 
 ### Git checkout
 
-> Introduced in GitLab Runner 9.3.
-
 The `GIT_CHECKOUT` variable can be used when the `GIT_STRATEGY` is set to either
 `clone` or `fetch` to specify whether a `git checkout` should be run. If not
 specified, it defaults to true. You can set them globally or per-job in the
@@ -410,8 +395,6 @@ script:
 
 ### Git clean flags
 
-> Introduced in GitLab Runner 11.10
-
 The `GIT_CLEAN_FLAGS` variable is used to control the default behavior of
 `git clean` after checking out the sources. You can set it globally or per-job in the
 [`variables`](../yaml/index.md#variables) section.
@@ -436,8 +419,6 @@ script:
 ```
 
 ### Git fetch extra flags
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4142) in GitLab Runner 13.1.
 
 Use the `GIT_FETCH_EXTRA_FLAGS` variable to control the behavior of
 `git fetch`. You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
@@ -503,8 +484,6 @@ to wrap the string in single quotes so the YAML can be parsed successfully.
 
 ### Git submodule update flags
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3192) in GitLab Runner 14.8.
-
 Use the `GIT_SUBMODULE_UPDATE_FLAGS` variable to control the behavior of `git submodule update`
 when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to either `normal` or `recursive`.
 You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
@@ -561,8 +540,6 @@ the permissions of the user executing the job, and does not require SSH credenti
 
 ### Shallow cloning
 
-> Introduced in GitLab 8.9 as an experimental feature.
-
 You can specify the depth of fetching and cloning using `GIT_DEPTH`.
 `GIT_DEPTH` does a shallow clone of the repository and can significantly speed up cloning.
 It can be helpful for repositories with a large number of commits or old, large binaries. The value is
@@ -612,8 +589,6 @@ variables:
 ```
 
 ### Custom build directories
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2211) in GitLab Runner 11.10.
 
 By default, GitLab Runner clones the repository in a unique subpath of the
 `$CI_BUILDS_DIR` directory. However, your project might require the code in a
@@ -696,8 +671,6 @@ because `$CI_BUILDS_DIR` is not expanded.
 
 ### Job stages attempts
 
-> Introduced in GitLab, it requires GitLab Runner v1.9+.
-
 You can set the number of attempts that the running job tries to execute
 the following stages:
 
@@ -724,8 +697,6 @@ You can set them globally or per-job in the [`variables`](../yaml/index.md#varia
 GitLab.com shared runners run on CoreOS. This means that you cannot use some system calls, like `getlogin`, from the C standard library.
 
 ## Artifact and cache settings
-
-> Introduced in GitLab Runner 13.9.
 
 Artifact and cache settings control the compression ratio of artifacts and caches.
 Use these settings to specify the size of the archive produced by a job.

@@ -12,6 +12,7 @@ module VerifiesWithEmail
     skip_before_action :required_signup_info, only: :successful_verification
   end
 
+  # rubocop:disable Metrics/PerceivedComplexity
   def verify_with_email
     return unless user = find_user || find_verification_user
 
@@ -34,18 +35,42 @@ module VerifiesWithEmail
           # - their account has been locked because of too many failed login attempts, or
           # - they have logged in before, but never from the current ip address
           reason = 'sign in from untrusted IP address' unless user.access_locked?
-          send_verification_instructions(user, reason: reason)
+          send_verification_instructions(user, reason: reason) unless send_rate_limited?(user)
           prompt_for_email_verification(user)
         end
       end
     end
   end
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def resend_verification_code
     return unless user = find_verification_user
 
-    send_verification_instructions(user)
-    prompt_for_email_verification(user)
+    if send_rate_limited?(user)
+      message = format(
+        s_("IdentityVerification|You've reached the maximum amount of resends. Wait %{interval} and try again."),
+        interval: rate_limit_interval(:email_verification_code_send)
+      )
+      render json: { status: :failure, message: message }
+    else
+      send_verification_instructions(user)
+      render json: { status: :success }
+    end
+  end
+
+  def update_email
+    return unless user = find_verification_user
+
+    log_verification(user, :email_update_requested)
+    result = Users::EmailVerification::UpdateEmailService.new(user: user).execute(email: email_params[:email])
+
+    if result[:status] == :success
+      send_verification_instructions(user)
+    else
+      handle_verification_failure(user, result[:reason], result[:message])
+    end
+
+    render json: result
   end
 
   def successful_verification
@@ -67,19 +92,7 @@ module VerifiesWithEmail
     User.find_by_id(session[:verification_user_id])
   end
 
-  # After successful verification and calling sign_in, devise redirects the
-  # user to this path. Override it to show the successful verified page.
-  def after_sign_in_path_for(resource)
-    if action_name == 'create' && session[:verification_user_id] == resource.id
-      return users_successful_verification_path
-    end
-
-    super
-  end
-
   def send_verification_instructions(user, reason: nil)
-    return if send_rate_limited?(user)
-
     service = Users::EmailVerification::GenerateTokenService.new(attr: :unlock_token, user: user)
     raw_token, encrypted_token = service.execute
     user.unlock_token = encrypted_token
@@ -90,7 +103,8 @@ module VerifiesWithEmail
   def send_verification_instructions_email(user, token)
     return unless user.can?(:receive_notifications)
 
-    Notify.verification_instructions_email(user.email, token: token).deliver_later
+    email = verification_email(user)
+    Notify.verification_instructions_email(email, token: token).deliver_later
 
     log_verification(user, :instructions_sent)
   end
@@ -101,21 +115,23 @@ module VerifiesWithEmail
 
     if result[:status] == :success
       handle_verification_success(user)
+      render json: { status: :success, redirect_path: users_successful_verification_path }
     else
       handle_verification_failure(user, result[:reason], result[:message])
+      render json: result
     end
   end
 
   def render_sign_in_rate_limited
     message = format(
       s_('IdentityVerification|Maximum login attempts exceeded. Wait %{interval} and try again.'),
-      interval: user_sign_in_interval
+      interval: rate_limit_interval(:user_sign_in)
     )
     redirect_to new_user_session_path, alert: message
   end
 
-  def user_sign_in_interval
-    interval_in_seconds = Gitlab::ApplicationRateLimiter.rate_limits[:user_sign_in][:interval]
+  def rate_limit_interval(rate_limit)
+    interval_in_seconds = Gitlab::ApplicationRateLimiter.rate_limits[rate_limit][:interval]
     distance_of_time_in_words(interval_in_seconds)
   end
 
@@ -126,15 +142,19 @@ module VerifiesWithEmail
   def handle_verification_failure(user, reason, message)
     user.errors.add(:base, message)
     log_verification(user, :failed_attempt, reason)
-
-    prompt_for_email_verification(user)
   end
 
   def handle_verification_success(user)
+    user.confirm if unconfirmed_verification_email?(user)
+    user.email_reset_offered_at = Time.current if user.email_reset_offered_at.nil?
     user.unlock_access!
     log_verification(user, :successful)
 
     sign_in(user)
+
+    log_audit_event(current_user, user, with: authentication_method)
+    log_user_activity(user)
+    verify_known_sign_in
   end
 
   def trusted_ip_address?(user)
@@ -146,12 +166,17 @@ module VerifiesWithEmail
   def prompt_for_email_verification(user)
     session[:verification_user_id] = user.id
     self.resource = user
+    add_gon_variables # Necessary to set the sprite_icons path, since we skip the ApplicationController before_filters
 
     render 'devise/sessions/email_verification'
   end
 
   def verification_params
     params.require(:user).permit(:verification_token)
+  end
+
+  def email_params
+    params.require(:user).permit(:email)
   end
 
   def log_verification(user, event, reason = nil)

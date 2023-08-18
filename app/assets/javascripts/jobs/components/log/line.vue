@@ -1,6 +1,7 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script>
+import { getLocationHash } from '~/lib/utils/url_utility';
 import { linkRegex } from '../../utils';
-
 import LineNumber from './line_number.vue';
 
 export default {
@@ -63,10 +64,19 @@ export default {
       });
     }
 
+    if (window.location.hash) {
+      const hash = getLocationHash();
+      const lineToMatch = `L${line.lineNumber + 1}`;
+
+      if (hash === lineToMatch) {
+        applyHighlight = true;
+      }
+    }
+
     return h(
       'div',
       {
-        class: ['js-line', 'log-line', applyHighlight ? 'gl-bg-gray-500' : ''],
+        class: ['js-line', 'log-line', applyHighlight ? 'gl-bg-gray-700' : ''],
       },
       [
         h(LineNumber, {

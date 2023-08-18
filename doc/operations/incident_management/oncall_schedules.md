@@ -4,7 +4,7 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# On-call Schedule Management **(PREMIUM)**
+# On-call Schedule Management **(PREMIUM ALL)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4544) in GitLab 13.11.
 

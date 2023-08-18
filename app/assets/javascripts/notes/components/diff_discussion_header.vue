@@ -1,6 +1,7 @@
 <script>
 import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import { escape } from 'lodash';
+// eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { truncateSha } from '~/lib/utils/text_utility';

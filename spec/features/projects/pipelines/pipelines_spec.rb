@@ -559,7 +559,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             find(dropdown_selector).click
 
             within('.js-builds-dropdown-list') do
-              build_element = page.find('.mini-pipeline-graph-dropdown-item')
+              build_element = page.find('.pipeline-job-item')
               expect(build_element['title']).to eq('build - failed - (unknown failure)')
             end
           end
@@ -818,7 +818,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       describe 'when the `ios_specific_templates` experiment is enabled and the "Set up a runner" button is clicked' do
         before do
           stub_experiments(ios_specific_templates: :candidate)
-          create(:project_setting, project: project, target_platforms: %w(ios))
+          project.project_setting.update!(target_platforms: %w(ios))
           visit project_pipelines_path(project)
           click_button 'Set up a runner'
         end

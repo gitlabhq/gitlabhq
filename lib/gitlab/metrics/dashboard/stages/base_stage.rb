@@ -5,8 +5,6 @@ module Gitlab
     module Dashboard
       module Stages
         class BaseStage
-          include Gitlab::Metrics::Dashboard::Defaults
-
           attr_reader :project, :dashboard, :params
 
           def initialize(project, dashboard, params)

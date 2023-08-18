@@ -6,7 +6,7 @@ module Types
       graphql_name 'PackageBase'
       description 'Represents a package in the Package Registry'
 
-      connection_type_class(Types::CountableConnectionType)
+      connection_type_class Types::CountableConnectionType
 
       authorize :read_package
 

@@ -76,10 +76,8 @@ module API
           authorize! :read_pipeline, user_project
           authorize! :read_build, user_project
 
-          params.delete(:name) unless ::Feature.enabled?(:pipeline_name_in_api, user_project)
-
           pipelines = ::Ci::PipelinesFinder.new(user_project, current_user, params).execute
-          pipelines = pipelines.preload_pipeline_metadata if ::Feature.enabled?(:pipeline_name_in_api, user_project)
+          pipelines = pipelines.preload_pipeline_metadata
 
           present paginate(pipelines), with: Entities::Ci::PipelineBasicWithMetadata, project: user_project
         end

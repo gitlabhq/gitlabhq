@@ -88,44 +88,6 @@ Primary-->>Secondary: /group/project logged in response (session on primary crea
 Secondary-->>Client: proxy full response
 ```
 
-### Requests requiring a user session on the secondary
-
-At the moment, this flow only applies to Project Replication Details and Design Replication Details in the Geo Admin
-Area. For more context, see
-[View replication data on the primary site](../../administration/geo/index.md#view-replication-data-on-the-primary-site).
-
-```mermaid
-sequenceDiagram
-autoNumber
-participant Client
-participant Secondary
-participant Primary
-
-Client->>Secondary: `admin/geo/replication/projects` request
-opt secondary not signed in
-Secondary-->>Client: 302 redirect
-Client->>Secondary: /users/auth/geo/sign_in
-Secondary-->>Client: 302 redirect
-Client->>Secondary: /oauth/geo/auth/geo/sign_in
-Secondary-->>Client: 302 redirect
-Client->>Secondary: /oauth/authorize
-Secondary->>Primary: proxy /oauth/authorize
-opt primary not signed in
-Primary-->>Secondary: 302 redirect
-Secondary-->>Client: proxy 302 redirect
-Client->>Secondary: /users/sign_in
-Secondary->>Primary: proxy /users/sign_in
-Note right of Primary: authentication happens, POST to same URL etc
-end
-Primary-->>Secondary: 302 redirect
-Secondary-->>Client: proxy 302 redirect
-Client->>Secondary: /oauth/geo/callback
-Secondary-->>Client: 302 redirect
-Client->>Secondary: admin/geo/replication/projects
-end
-Secondary-->>Client: admin/geo/replication/projects logged in response (session on both primary and secondary)
-```
-
 ## Git pull
 
 For historical reasons, the `push_from_secondary` path is used to forward a Git pull. There is

@@ -3,7 +3,11 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { RichViewer, SimpleViewer } from '~/vue_shared/components/blob_viewers';
 import BlobContentError from './blob_content_error.vue';
 
-import { BLOB_RENDER_EVENT_LOAD, BLOB_RENDER_EVENT_SHOW_SOURCE } from './constants';
+import {
+  BLOB_RENDER_EVENT_LOAD,
+  BLOB_RENDER_EVENT_SHOW_SOURCE,
+  RICH_BLOB_VIEWER,
+} from './constants';
 
 export default {
   name: 'BlobContent',
@@ -47,6 +51,9 @@ export default {
       default: false,
     },
   },
+  data() {
+    return { richContentLoaded: false };
+  },
   computed: {
     viewer() {
       switch (this.activeViewer.type) {
@@ -59,13 +66,18 @@ export default {
     viewerError() {
       return this.activeViewer.renderError;
     },
+    isContentLoaded() {
+      return this.activeViewer.type === RICH_BLOB_VIEWER
+        ? !this.loading && this.richContentLoaded
+        : !this.loading;
+    },
   },
   BLOB_RENDER_EVENT_LOAD,
   BLOB_RENDER_EVENT_SHOW_SOURCE,
 };
 </script>
 <template>
-  <div class="blob-viewer" :data-type="activeViewer.type" :data-loaded="!loading">
+  <div class="blob-viewer" :data-type="activeViewer.type" :data-loaded="isContentLoaded">
     <gl-loading-icon v-if="loading" size="lg" color="dark" class="my-4 mx-auto" />
 
     <template v-else>
@@ -87,6 +99,7 @@ export default {
         :type="activeViewer.fileType"
         :hide-line-numbers="hideLineNumbers"
         data-qa-selector="blob_viewer_file_content"
+        @richContentLoaded="richContentLoaded = true"
       />
     </template>
   </div>

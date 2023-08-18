@@ -90,6 +90,19 @@ namespace :gitlab do
         puts "- #{name}: \t#{repository_storage.gitaly_address}"
       end
       puts "GitLab Shell path:\t\t#{Gitlab.config.gitlab_shell.path}"
+
+      # check Gitaly version
+      puts ""
+      puts "Gitaly".color(:yellow)
+      Gitlab.config.repositories.storages.each do |storage_name, storage|
+        gitaly_server_service = Gitlab::GitalyClient::ServerService.new(storage_name)
+        gitaly_server_info = gitaly_server_service.info
+        puts "- #{storage_name} Address: \t#{storage.gitaly_address}"
+        puts "- #{storage_name} Version: \t#{gitaly_server_info.server_version}"
+        puts "- #{storage_name} Git Version: \t#{gitaly_server_info.git_version}"
+      rescue GRPC::DeadlineExceeded
+        puts "Unable to reach storage #{storage_name}".color(red)
+      end
     end
   end
 end

@@ -6,7 +6,7 @@ export const initListboxInputs = () => {
   const els = [...document.querySelectorAll('.js-listbox-input')];
 
   els.forEach((el, index) => {
-    const { label, description, name, defaultToggleText, value = null } = el.dataset;
+    const { label, description, name, defaultToggleText, value = null, toggleClass } = el.dataset;
     const { id } = el;
     const items = JSON.parse(el.dataset.items);
 
@@ -34,6 +34,7 @@ export const initListboxInputs = () => {
             block: parseBoolean(el.dataset.block),
             fluidWidth: parseBoolean(el.dataset.fluidWidth),
             items,
+            toggleClass,
           },
           attrs: {
             id,

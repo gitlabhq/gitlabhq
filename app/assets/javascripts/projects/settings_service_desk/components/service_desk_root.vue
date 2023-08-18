@@ -4,7 +4,10 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import axios from '~/lib/utils/axios_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ServiceDeskSetting from './service_desk_setting.vue';
+
+const CustomEmailWrapper = () => import('./custom_email_wrapper.vue');
 
 export default {
   serviceDeskEmailHelpPath: helpPagePath('/user/project/service_desk.html', {
@@ -15,10 +18,12 @@ export default {
     GlSprintf,
     GlLink,
     ServiceDeskSetting,
+    CustomEmailWrapper,
   },
   directives: {
     SafeHtml,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     initialIsEnabled: {
       default: false,
@@ -56,6 +61,9 @@ export default {
     publicProject: {
       default: false,
     },
+    customEmailEndpoint: {
+      default: '',
+    },
   },
   data() {
     return {
@@ -67,6 +75,11 @@ export default {
       incomingEmail: this.initialIncomingEmail,
       updatedServiceDeskEmail: this.serviceDeskEmail,
     };
+  },
+  computed: {
+    showCustomEmailWrapper() {
+      return this.glFeatures.serviceDeskCustomEmail && this.isEnabled && this.isIssueTrackerEnabled;
+    },
   },
   methods: {
     onEnableToggled(isChecked) {
@@ -178,6 +191,11 @@ export default {
       :is-template-saving="isTemplateSaving"
       @save="onSaveTemplate"
       @toggle="onEnableToggled"
+    />
+    <custom-email-wrapper
+      v-if="showCustomEmailWrapper"
+      :incoming-email="incomingEmail"
+      :custom-email-endpoint="customEmailEndpoint"
     />
   </div>
 </template>

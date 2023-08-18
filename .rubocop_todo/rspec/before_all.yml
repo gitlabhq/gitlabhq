@@ -1,0 +1,6 @@
+---
+# Cop supports --autocorrect.
+RSpec/BeforeAll:
+  Details: grace period
+  Exclude:
+    - 'ee/spec/support/shared_examples/finders/security/findings_finder_shared_examples.rb'

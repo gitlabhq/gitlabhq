@@ -148,7 +148,7 @@ export default {
       };
     },
     containerClass() {
-      return !this.isEditing ? 'gl-shadow-none!' : '';
+      return !this.isEditing ? 'gl-shadow-none! hide-unfocused-input-decoration' : '';
     },
     isLoadingUsers() {
       return this.$apollo.queries.users.loading;
@@ -318,7 +318,7 @@ export default {
       :loading="isLoadingUsers && !isLoadingMore"
       :view-only="!canUpdate"
       :allow-clear-all="isEditing"
-      class="assignees-selector gl-flex-grow-1 gl-border gl-border-white gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2 work-item-field-value"
+      class="assignees-selector hide-unfocused-input-decoration work-item-field-value gl-flex-grow-1 gl-border gl-rounded-base col-9 gl-align-self-start gl-px-0! gl-mx-2"
       data-testid="work-item-assignees-input"
       @input="handleAssigneesInput"
       @text-input="debouncedSearchKeyUpdate"

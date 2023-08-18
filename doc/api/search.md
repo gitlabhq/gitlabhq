@@ -4,13 +4,13 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Search API **(FREE)**
+# Search API **(FREE ALL)**
 
 > [Feature flag `search_filter_by_confidential` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/244923) in GitLab 13.6.
 
 Every API call to search must be authenticated.
 
-## Additional scopes **(PREMIUM)**
+## Additional scopes **(PREMIUM ALL)**
 
 Additional scopes are available for the [Advanced Search API](#advanced-search-api)
 and [Group Search API](#group-search-api) if
@@ -269,7 +269,7 @@ Example response:
 ]
 ```
 
-### Scope: `wiki_blobs` **(PREMIUM)**
+### Scope: `wiki_blobs` **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -301,7 +301,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: commits **(PREMIUM)**
+### Scope: commits **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -336,7 +336,7 @@ Example response:
 ]
 ```
 
-### Scope: blobs **(PREMIUM)**
+### Scope: blobs **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -377,7 +377,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: notes **(PREMIUM)**
+### Scope: notes **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -660,7 +660,7 @@ Example response:
 ]
 ```
 
-### Scope: `wiki_blobs` **(PREMIUM)**
+### Scope: `wiki_blobs` **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -692,7 +692,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: `commits` **(PREMIUM)**
+### Scope: `commits` **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -727,7 +727,7 @@ Example response:
 ]
 ```
 
-### Scope: `blobs` **(PREMIUM)**
+### Scope: `blobs` **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -768,7 +768,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: `notes` **(PREMIUM)**
+### Scope: `notes` **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -1019,7 +1019,7 @@ Example response:
 ]
 ```
 
-### Scope: `notes` **(PREMIUM)**
+### Scope: `notes` **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -1056,7 +1056,7 @@ Example response:
 ]
 ```
 
-### Scope: `wiki_blobs` **(PREMIUM)**
+### Scope: `wiki_blobs` **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -1105,7 +1105,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` are intended to be only the filename and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: `commits` **(PREMIUM)**
+### Scope: `commits` **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 
@@ -1140,7 +1140,7 @@ Example response:
 ]
 ```
 
-### Scope: `blobs` **(PREMIUM)**
+### Scope: `blobs` **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.
 

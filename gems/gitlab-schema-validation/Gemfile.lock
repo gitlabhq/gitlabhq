@@ -40,6 +40,7 @@ GEM
     parser (3.2.2.3)
       ast (~> 2.4.1)
       racc
+    pg (1.5.3)
     pg_query (4.2.1)
       google-protobuf (>= 3.22.3)
     proc_to_ast (0.1.0)
@@ -126,6 +127,7 @@ PLATFORMS
 DEPENDENCIES
   gitlab-schema-validation!
   gitlab-styles (~> 10.1.0)
+  pg (~> 1.5.3)
   pry
   rspec (~> 3.0)
   rspec-benchmark (~> 0.6.0)

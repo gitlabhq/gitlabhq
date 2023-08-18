@@ -110,6 +110,8 @@ describe('processFilters', () => {
       { type: 'foo', value: { data: 'foo', operator: '=' } },
       { type: 'bar', value: { data: 'bar1', operator: '=' } },
       { type: 'bar', value: { data: 'bar2', operator: '!=' } },
+      'just a string',
+      'and another',
     ]);
 
     expect(result).toStrictEqual({
@@ -117,6 +119,10 @@ describe('processFilters', () => {
       bar: [
         { value: 'bar1', operator: '=' },
         { value: 'bar2', operator: '!=' },
+      ],
+      'filtered-search-term': [
+        { value: 'just a string', operator: undefined },
+        { value: 'and another', operator: undefined },
       ],
     });
   });
@@ -208,6 +214,67 @@ describe('filterToQueryObject', () => {
       expect(res).toEqual(result);
     },
   );
+
+  describe('with custom operators', () => {
+    it('does not handle filters without custom operators', () => {
+      const res = filterToQueryObject({
+        foo: [
+          { value: '100', operator: '>' },
+          { value: '200', operator: '<' },
+        ],
+      });
+      expect(res).toEqual({ foo: null, 'not[foo]': null });
+    });
+
+    it('handles filters with custom operators', () => {
+      const res = filterToQueryObject(
+        {
+          foo: [
+            { value: '100', operator: '>' },
+            { value: '200', operator: '<' },
+          ],
+        },
+        {
+          customOperators: [
+            {
+              operator: '>',
+              prefix: 'gt',
+            },
+            {
+              operator: '<',
+              prefix: 'lt',
+            },
+          ],
+        },
+      );
+      expect(res).toEqual({ foo: null, 'gt[foo]': ['100'], 'lt[foo]': ['200'], 'not[foo]': null });
+    });
+  });
+
+  it('when applyOnlyToKey is present, it only process custom operators for the given key', () => {
+    const res = filterToQueryObject(
+      {
+        foo: [{ value: '100', operator: '>' }],
+        bar: [{ value: '100', operator: '>' }],
+      },
+      {
+        customOperators: [
+          {
+            operator: '>',
+            prefix: 'gt',
+            applyOnlyToKey: 'foo',
+          },
+        ],
+      },
+    );
+    expect(res).toEqual({
+      bar: null,
+      'not[bar]': null,
+      foo: null,
+      'gt[foo]': ['100'],
+      'not[foo]': null,
+    });
+  });
 });
 
 describe('urlQueryToFilter', () => {
@@ -275,28 +342,40 @@ describe('urlQueryToFilter', () => {
     [
       'search=my terms',
       {
-        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+        [FILTERED_SEARCH_TERM]: [{ value: 'my terms' }],
       },
       { filteredSearchTermKey: 'search' },
     ],
     [
       'search[]=my&search[]=terms',
       {
-        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+        [FILTERED_SEARCH_TERM]: [{ value: 'my terms' }],
       },
       { filteredSearchTermKey: 'search' },
     ],
     [
       'search=my+terms',
       {
-        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+        [FILTERED_SEARCH_TERM]: [{ value: 'my terms' }],
       },
       { filteredSearchTermKey: 'search' },
     ],
     [
       'search=my terms&foo=bar&nop=xxx',
       {
-        [FILTERED_SEARCH_TERM]: [{ value: 'my' }, { value: 'terms' }],
+        [FILTERED_SEARCH_TERM]: [{ value: 'my terms' }],
+        foo: { value: 'bar', operator: '=' },
+      },
+      { filteredSearchTermKey: 'search', filterNamesAllowList: ['foo'] },
+    ],
+    [
+      {
+        search: 'my terms',
+        foo: 'bar',
+        nop: 'xxx',
+      },
+      {
+        [FILTERED_SEARCH_TERM]: [{ value: 'my terms' }],
         foo: { value: 'bar', operator: '=' },
       },
       { filteredSearchTermKey: 'search', filterNamesAllowList: ['foo'] },
@@ -308,6 +387,20 @@ describe('urlQueryToFilter', () => {
       expect(res).toEqual(result);
     },
   );
+
+  describe('custom operators', () => {
+    it('handles query param with custom operators', () => {
+      const res = urlQueryToFilter('gt[foo]=bar', {
+        customOperators: [{ operator: '>', prefix: 'gt' }],
+      });
+      expect(res).toEqual({ foo: { operator: '>', value: 'bar' } });
+    });
+
+    it('does not handle query param without custom operators', () => {
+      const res = urlQueryToFilter('gt[foo]=bar');
+      expect(res).toEqual({ 'gt[foo]': { operator: '=', value: 'bar' } });
+    });
+  });
 });
 
 describe('getRecentlyUsedSuggestions', () => {

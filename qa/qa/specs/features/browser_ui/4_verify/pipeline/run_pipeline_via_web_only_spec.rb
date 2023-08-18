@@ -5,12 +5,7 @@ module QA
     describe 'Run pipeline', :reliable, product_group: :pipeline_execution do
       context 'with web only rule' do
         let(:job_name) { 'test_job' }
-        let(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.name = 'web-only-pipeline'
-          end
-        end
-
+        let(:project) { create(:project, name: 'web-only-pipeline') }
         let!(:ci_file) do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
             commit.project = project

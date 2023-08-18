@@ -1,16 +1,21 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
 import component from '~/packages_and_registries/shared/components/persisted_search.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
-import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
+import {
+  getQueryParams,
+  extractFilterAndSorting,
+  extractPageInfo,
+} from '~/packages_and_registries/shared/utils';
 
 jest.mock('~/packages_and_registries/shared/utils');
 
-useMockLocationHelper();
+Vue.use(VueRouter);
 
 describe('Persisted Search', () => {
+  let router;
   let wrapper;
 
   const defaultQueryParamsMock = {
@@ -31,8 +36,11 @@ describe('Persisted Search', () => {
   const findUrlSync = () => wrapper.findComponent(UrlSync);
 
   const mountComponent = (propsData = defaultProps) => {
+    router = new VueRouter({ mode: 'history' });
+
     wrapper = shallowMountExtended(component, {
       propsData,
+      router,
       stubs: {
         UrlSync,
       },
@@ -41,6 +49,10 @@ describe('Persisted Search', () => {
 
   beforeEach(() => {
     extractFilterAndSorting.mockReturnValue(defaultQueryParamsMock);
+    extractPageInfo.mockReturnValue({
+      after: '123',
+      before: null,
+    });
   });
 
   it('has a registry search component', async () => {
@@ -63,6 +75,48 @@ describe('Persisted Search', () => {
     expect(findUrlSync().exists()).toBe(true);
   });
 
+  it('emits update event on mount', () => {
+    mountComponent();
+
+    expect(wrapper.emitted('update')[0]).toEqual([
+      {
+        filters: ['foo'],
+        sort: 'TEST_DESC',
+        pageInfo: {
+          after: '123',
+          before: null,
+        },
+      },
+    ]);
+  });
+
+  it('re-emits update event when route changes', async () => {
+    mountComponent();
+
+    extractFilterAndSorting.mockReturnValue({
+      filters: [],
+      sorting: {},
+    });
+    extractPageInfo.mockReturnValue({
+      after: null,
+      before: '456',
+    });
+
+    await router.push({ query: { before: '456' } });
+
+    // there is always a first call on mounted that emits up default values
+    expect(wrapper.emitted('update')[1]).toEqual([
+      {
+        filters: [],
+        sort: 'TEST_DESC',
+        pageInfo: {
+          before: '456',
+          after: null,
+        },
+      },
+    ]);
+  });
+
   it('on sorting:changed emits update event and update internal sort', async () => {
     const payload = { sort: 'desc', orderBy: 'test' };
 
@@ -81,6 +135,7 @@ describe('Persisted Search', () => {
       {
         filters: ['foo'],
         sort: 'TEST_DESC',
+        pageInfo: {},
       },
     ]);
   });
@@ -110,6 +165,10 @@ describe('Persisted Search', () => {
       {
         filters: ['foo'],
         sort: 'TEST_DESC',
+        pageInfo: {
+          after: '123',
+          before: null,
+        },
       },
     ]);
   });
@@ -126,7 +185,7 @@ describe('Persisted Search', () => {
     expect(UrlSync.methods.updateQuery).toHaveBeenCalled();
   });
 
-  it('sets the component sorting and filtering based on the querystring', async () => {
+  it('sets the component sorting, filtering and page info based on the querystring', async () => {
     mountComponent();
 
     await nextTick();
