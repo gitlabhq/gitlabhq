@@ -139,7 +139,10 @@ export default {
       <ci-variable-drawer
         v-if="showDrawer"
         :are-environments-loading="areEnvironmentsLoading"
-        :has-env-scope-query="hasEnvScopeQuery"
+        :are-scoped-variables-available="areScopedVariablesAvailable"
+        :environments="environments"
+        :hide-environment-scope="hideEnvironmentScope"
+        :selected-variable="selectedVariable"
         :mode="mode"
         v-on="$listeners"
         @close-form="closeForm"

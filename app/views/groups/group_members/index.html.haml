@@ -15,7 +15,7 @@
             = render_if_exists 'groups/group_members/create_service_account'
           .js-invite-members-trigger{ data: { variant: 'confirm',
             classes: 'gl-md-w-auto gl-w-full',
-            trigger_source: 'group-members-page',
+            trigger_source: 'group_members_page',
             display_text: _('Invite members') } }
         = render 'groups/invite_groups_modal', group: @group, reload_page_on_submit: true
 

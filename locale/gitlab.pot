@@ -1904,6 +1904,9 @@ msgstr ""
 msgid "AI|Apply AI-generated description"
 msgstr ""
 
+msgid "AI|Ask GitLab Duo"
+msgstr ""
+
 msgid "AI|Ask a question"
 msgstr ""
 
@@ -2013,9 +2016,6 @@ msgid "AI|Wrong"
 msgstr ""
 
 msgid "AI|You are not allowed to copy any part of this output into issues, comments, GitLab source code, commit messages, merge requests or any other user interface in the %{gitlabOrg} or %{gitlabCom} groups."
-msgstr ""
-
-msgid "AI|You can ask AI for more information."
 msgstr ""
 
 msgid "AI|finding"
@@ -10133,6 +10133,9 @@ msgid "CiVariables|Delete variable"
 msgstr ""
 
 msgid "CiVariables|Do you want to delete the variable %{key}?"
+msgstr ""
+
+msgid "CiVariables|Edit Variable"
 msgstr ""
 
 msgid "CiVariables|Environments"

@@ -7,6 +7,7 @@
 - Namespaces::FreeUserCap::UsersFinder # Reason: There is no need to have anything else besides the count
 - Groups::EnvironmentScopesFinder # Reason: There is no need to have anything else besides the simple strucutre with the scope name
 - Security::RelatedPipelinesFinder # Reason: There is no need to have anything else besides the IDs of pipelines
+- Llm::ExtraResourceFinder # Reason: The finder does not deal with DB-backend resource for now.
 
 # Temporary excludes (aka TODOs)
 # For example:

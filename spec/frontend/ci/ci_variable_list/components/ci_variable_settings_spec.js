@@ -77,6 +77,21 @@ describe('Ci variable table', () => {
         selectedVariable: {},
       });
     });
+
+    it('passes props down correctly to the ci drawer', async () => {
+      createComponent({ featureFlags: { ciVariableDrawer: true } });
+
+      await findCiVariableTable().vm.$emit('set-selected-variable');
+
+      expect(findCiVariableDrawer().props()).toEqual({
+        areEnvironmentsLoading: defaultProps.areEnvironmentsLoading,
+        areScopedVariablesAvailable: defaultProps.areScopedVariablesAvailable,
+        environments: defaultProps.environments,
+        hideEnvironmentScope: defaultProps.hideEnvironmentScope,
+        mode: ADD_VARIABLE_ACTION,
+        selectedVariable: {},
+      });
+    });
   });
 
   describe.each`

@@ -1,0 +1,8 @@
+---
+name: push_ai_to_load_identified_issue_json
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128342
+rollout_issue_url:
+milestone: '16.3'
+type: development
+group: group::ai framework
+default_enabled: false

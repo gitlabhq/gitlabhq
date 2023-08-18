@@ -909,6 +909,27 @@ Previous work helped [align the vulnerabilities calls for pipeline security tabs
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="16.6">
+
+## GitLab 16.6
+
+<div class="deprecation breaking-change" data-milestone="16.6">
+
+### Job token allowlist covers public and internal projects
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- Removal in GitLab <span class="milestone">16.6</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420678).
+</div>
+
+Starting in 16.6, projects that are **public** or **internal** will no longer authorize job token requests from projects that are **not** on the project's allowlist when [**Limit access to this project**](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#allow-access-to-your-project-with-a-job-token) is enabled.
+
+If you have [public or internal](https://docs.gitlab.com/ee/user/public_access.html#change-project-visibility) projects with the **Limit access to this project** setting enabled, you must add any projects which make job token requests to your project's allowlist for continued authorization.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="16.5">
 
 ## GitLab 16.5

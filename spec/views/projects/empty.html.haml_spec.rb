@@ -73,7 +73,7 @@ RSpec.describe 'projects/empty' do
       expect(rendered).to have_content('Invite your team')
       expect(rendered).to have_content('Add members to this project and start collaborating with your team.')
       expect(rendered).to have_selector('.js-invite-members-trigger')
-      expect(rendered).to have_selector('[data-trigger-source=project-empty-page]')
+      expect(rendered).to have_selector('[data-trigger-source=project_empty_page]')
     end
 
     context 'when user does not have permissions to invite members' do

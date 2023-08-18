@@ -17,3 +17,4 @@ variables:
   RSPEC_FAST_QUARANTINE_FILE: "fast_quarantine-gitlab.txt"
   # This path is relative to /home/gitlab/qa/ in the QA container
   RSPEC_FAST_QUARANTINE_PATH: "rspec/${RSPEC_FAST_QUARANTINE_FILE}"
+  QA_OMNIBUS_MR_TESTS: "only-smoke-reliable"

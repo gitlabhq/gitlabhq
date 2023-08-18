@@ -5,6 +5,7 @@ import {
   GlFormCheckbox,
   GlFormCombobox,
   GlFormGroup,
+  GlFormInput,
   GlFormSelect,
   GlFormTextarea,
   GlIcon,
@@ -16,7 +17,9 @@ import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
+  allEnvironments,
   defaultVariableState,
+  EDIT_VARIABLE_ACTION,
   ENVIRONMENT_SCOPE_LINK_TITLE,
   EXPANDED_VARIABLES_NOTE,
   FLAG_LINK_TITLE,
@@ -26,9 +29,11 @@ import {
 import CiEnvironmentsDropdown from './ci_environments_dropdown.vue';
 import { awsTokenList } from './ci_variable_autocomplete_tokens';
 
-const i18n = {
+export const i18n = {
   addVariable: s__('CiVariables|Add Variable'),
   cancel: __('Cancel'),
+  defaultScope: allEnvironments.text,
+  editVariable: s__('CiVariables|Edit Variable'),
   environments: __('Environments'),
   environmentScopeLinkTitle: ENVIRONMENT_SCOPE_LINK_TITLE,
   expandedField: s__('CiVariables|Expand variable reference'),
@@ -57,26 +62,33 @@ export default {
     GlFormCheckbox,
     GlFormCombobox,
     GlFormGroup,
+    GlFormInput,
     GlFormSelect,
     GlFormTextarea,
     GlIcon,
     GlLink,
     GlSprintf,
   },
-  inject: ['environmentScopeLink'],
+  inject: ['environmentScopeLink', 'isProtectedByDefault'],
   props: {
     areEnvironmentsLoading: {
       type: Boolean,
       required: true,
+    },
+    areScopedVariablesAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     environments: {
       type: Array,
       required: false,
       default: () => [],
     },
-    hasEnvScopeQuery: {
+    hideEnvironmentScope: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: false,
     },
     mode: {
       type: String,
@@ -85,21 +97,46 @@ export default {
         return VARIABLE_ACTIONS.includes(val);
       },
     },
+    selectedVariable: {
+      type: Object,
+      required: false,
+      default: () => {},
+    },
   },
   data() {
     return {
-      key: defaultVariableState.key,
-      variableType: defaultVariableState.variableType,
+      variable: { ...defaultVariableState, ...this.selectedVariable },
     };
   },
   computed: {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
     },
+    isExpanded() {
+      return !this.variable.raw;
+    },
+    isEditing() {
+      return this.mode === EDIT_VARIABLE_ACTION;
+    },
+    modalActionText() {
+      return this.isEditing ? this.$options.i18n.editVariable : this.$options.i18n.addVariable;
+    },
+  },
+  mounted() {
+    if (this.isProtectedByDefault && !this.isEditing) {
+      this.variable = { ...this.variable, protected: true };
+    }
   },
   methods: {
     close() {
       this.$emit('close-form');
+    },
+    setRaw(expanded) {
+      this.variable = { ...this.variable, raw: !expanded };
+    },
+    submit() {
+      this.$emit(this.isEditing ? 'update-variable' : 'add-variable', this.variable);
+      this.close();
     },
   },
   awsTokenList,
@@ -119,20 +156,25 @@ export default {
     @close="close"
   >
     <template #title>
-      <h2 class="gl-m-0">{{ $options.i18n.addVariable }}</h2>
+      <h2 class="gl-m-0">{{ modalActionText }}</h2>
     </template>
     <gl-form-group
       :label="$options.i18n.type"
       label-for="ci-variable-type"
-      class="gl-border-none gl-mb-n5"
+      class="gl-border-none"
+      :class="{
+        'gl-mb-n5': !hideEnvironmentScope,
+        'gl-mb-n1': hideEnvironmentScope,
+      }"
     >
       <gl-form-select
         id="ci-variable-type"
-        v-model="variableType"
+        v-model="variable.variableType"
         :options="$options.variableOptions"
       />
     </gl-form-group>
     <gl-form-group
+      v-if="!hideEnvironmentScope"
       class="gl-border-none gl-mb-n5"
       label-for="ci-variable-env"
       data-testid="environment-scope"
@@ -154,11 +196,18 @@ export default {
         </div>
       </template>
       <ci-environments-dropdown
+        v-if="areScopedVariablesAvailable"
         class="gl-mb-5"
+        has-env-scope-query
         :are-environments-loading="areEnvironmentsLoading"
         :environments="environments"
-        :has-env-scope-query="hasEnvScopeQuery"
-        selected-environment-scope=""
+        :selected-environment-scope="variable.environmentScope"
+      />
+      <gl-form-input
+        v-else
+        :value="$options.i18n.defaultScope"
+        class="gl-w-full gl-mb-5"
+        readonly
       />
     </gl-form-group>
     <gl-form-group class="gl-border-none gl-mb-n8">
@@ -177,17 +226,21 @@ export default {
           </gl-link>
         </div>
       </template>
-      <gl-form-checkbox data-testid="ci-variable-protected-checkbox">
+      <gl-form-checkbox v-model="variable.protected" data-testid="ci-variable-protected-checkbox">
         {{ $options.i18n.protectedField }}
         <p class="gl-text-secondary">
           {{ $options.i18n.protectedDescription }}
         </p>
       </gl-form-checkbox>
-      <gl-form-checkbox data-testid="ci-variable-masked-checkbox">
+      <gl-form-checkbox v-model="variable.masked" data-testid="ci-variable-masked-checkbox">
         {{ $options.i18n.maskedField }}
         <p class="gl-text-secondary">{{ $options.i18n.maskedDescription }}</p>
       </gl-form-checkbox>
-      <gl-form-checkbox data-testid="ci-variable-expanded-checkbox">
+      <gl-form-checkbox
+        data-testid="ci-variable-expanded-checkbox"
+        :checked="isExpanded"
+        @change="setRaw"
+      >
         {{ $options.i18n.expandedField }}
         <p class="gl-text-secondary">
           <gl-sprintf :message="$options.i18n.expandedDescription" class="gl-text-secondary">
@@ -199,7 +252,7 @@ export default {
       </gl-form-checkbox>
     </gl-form-group>
     <gl-form-combobox
-      v-model="key"
+      v-model="variable.key"
       :token-list="$options.awsTokenList"
       :label-text="$options.i18n.key"
       class="gl-border-none gl-pb-0! gl-mb-n5"
@@ -222,11 +275,15 @@ export default {
       />
     </gl-form-group>
     <div class="gl-display-flex gl-justify-content-end">
-      <gl-button category="primary" class="gl-mr-3" data-testid="cancel-button" @click="close"
+      <gl-button category="secondary" class="gl-mr-3" data-testid="cancel-button" @click="close"
         >{{ $options.i18n.cancel }}
       </gl-button>
-      <gl-button category="primary" variant="confirm" data-testid="confirm-button"
-        >{{ $options.i18n.addVariable }}
+      <gl-button
+        category="primary"
+        variant="confirm"
+        data-testid="ci-variable-confirm-btn"
+        @click="submit"
+        >{{ modalActionText }}
       </gl-button>
     </div>
   </gl-drawer>

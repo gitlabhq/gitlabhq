@@ -155,6 +155,15 @@
     - *default-branch
     - *feature-flags-set-manual
 
+.rules:test:smoke-for-omnibus-mr:
+  rules:
+    - if: '$CI_PROJECT_NAME == "omnibus-gitlab" && $PIPELINE_TYPE =~ /TRIGGERED_(CE|EE)_PIPELINE/ && $QA_OMNIBUS_MR_TESTS == "only-smoke-reliable"'
+      variables:
+        QA_RSPEC_TAGS: "--tag smoke --tag reliable --tag ~orchestrated --tag ~skip_live_env"
+    - if: '$CI_PROJECT_NAME == "omnibus-gitlab" && $PIPELINE_TYPE =~ /TRIGGERED_(CE|EE)_PIPELINE/ && $QA_OMNIBUS_MR_TESTS == "except-smoke-reliable"'
+      variables:
+        QA_RSPEC_TAGS: "--tag ~smoke --tag ~reliable --tag ~orchestrated --tag ~skip_live_env --tag ~transient"
+
 # ------------------------------------------
 # Report
 # ------------------------------------------

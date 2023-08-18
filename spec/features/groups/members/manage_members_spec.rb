@@ -85,7 +85,7 @@ RSpec.describe 'Groups > Members > Manage members', feature_category: :groups_an
       end
     end
 
-    it_behaves_like 'inviting members', 'group-members-page' do
+    it_behaves_like 'inviting members', 'group_members_page' do
       let_it_be(:entity) { group }
       let_it_be(:members_page_path) { group_group_members_path(entity) }
       let_it_be(:subentity) { create(:group, parent: group) }

@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     triggerSource() {
-      return `${this.issuableType}-assignee-dropdown`;
+      return `${this.issuableType}_assignee_dropdown`;
     },
   },
 };

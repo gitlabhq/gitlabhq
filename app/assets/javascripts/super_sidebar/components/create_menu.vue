@@ -83,7 +83,7 @@ export default {
           <invite-members-trigger
             v-if="isInvitedMembers(groupItem)"
             :key="`${groupItem.text}-trigger`"
-            trigger-source="top-nav"
+            trigger-source="top_nav"
             :trigger-element="$options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN"
           />
           <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
