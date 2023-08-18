@@ -45,6 +45,11 @@ msgstr ""
 msgid " and %{sliced}"
 msgstr ""
 
+msgid " except branch:"
+msgid_plural " except branches:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid " or "
 msgstr ""
 
@@ -1436,6 +1441,9 @@ msgid "+ %{amount} more"
 msgstr ""
 
 msgid "+ %{count} more"
+msgstr ""
+
+msgid "+ %{hiddenBranchesLength} more"
 msgstr ""
 
 msgid "+ %{moreCount} more"
@@ -6215,9 +6223,6 @@ msgstr ""
 msgid "Are you sure you want to delete this label?"
 msgstr ""
 
-msgid "Are you sure you want to delete this pipeline schedule?"
-msgstr ""
-
 msgid "Are you sure you want to delete this pipeline? Doing so will expire all pipeline caches and delete all related objects, such as builds, logs, artifacts, and triggers. This action cannot be undone."
 msgstr ""
 
@@ -10132,9 +10137,6 @@ msgstr ""
 msgid "CiVariables|Cancel"
 msgstr ""
 
-msgid "CiVariables|Cannot use Masked Variable with current value"
-msgstr ""
-
 msgid "CiVariables|Delete variable"
 msgstr ""
 
@@ -10195,9 +10197,6 @@ msgstr ""
 msgid "CiVariables|Remove variable"
 msgstr ""
 
-msgid "CiVariables|Remove variable row"
-msgstr ""
-
 msgid "CiVariables|Run job"
 msgstr ""
 
@@ -10238,9 +10237,6 @@ msgid "CiVariables|Variables store information, like passwords and secret keys, 
 msgstr ""
 
 msgid "CiVariables|You have reached the maximum number of variables available. To add new variables, you must reduce the number of defined variables."
-msgstr ""
-
-msgid "CiVariable|* (All environments)"
 msgstr ""
 
 msgid "CiVariable|All environments"
@@ -13218,6 +13214,15 @@ msgstr ""
 msgid "ContributionEvent|Reopened test case %{targetLink} in %{resourceParentLink}."
 msgstr ""
 
+msgid "ContributionEvent|Updated design %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
+msgid "ContributionEvent|Updated resource."
+msgstr ""
+
+msgid "ContributionEvent|Updated wiki page %{targetLink} in %{resourceParentLink}."
+msgstr ""
+
 msgid "ContributionEvent|…and %{count} more commits. %{linkStart}Compare%{linkEnd}."
 msgstr ""
 
@@ -14140,9 +14145,6 @@ msgid "Crm|Organization has been added."
 msgstr ""
 
 msgid "Crm|Organization has been updated."
-msgstr ""
-
-msgid "Cron Timezone"
 msgstr ""
 
 msgid "Cron time zone"
@@ -15478,9 +15480,6 @@ msgstr ""
 msgid "Define custom rules for what constitutes spam, independent of Akismet"
 msgstr ""
 
-msgid "Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here."
-msgstr ""
-
 msgid "Define how approval rules are applied to merge requests."
 msgstr ""
 
@@ -15601,9 +15600,6 @@ msgid "Delete label: %{labelName}"
 msgstr ""
 
 msgid "Delete pipeline"
-msgstr ""
-
-msgid "Delete pipeline schedule"
 msgstr ""
 
 msgid "Delete project"
@@ -16344,9 +16340,6 @@ msgstr ""
 msgid "Deployments|You don't have any deployments right now."
 msgstr ""
 
-msgid "Deployment|API"
-msgstr ""
-
 msgid "Deployment|Cancelled"
 msgstr ""
 
@@ -16393,9 +16386,6 @@ msgid "Deployment|Success"
 msgstr ""
 
 msgid "Deployment|Sync status is unknown. %{linkStart}How do I configure Flux for my deployment?%{linkEnd}"
-msgstr ""
-
-msgid "Deployment|This deployment was created using the API"
 msgstr ""
 
 msgid "Deployment|Triggerer"
@@ -25565,9 +25555,6 @@ msgstr ""
 msgid "Interval"
 msgstr ""
 
-msgid "Interval Pattern"
-msgstr ""
-
 msgid "Introducing Your DevOps Reports"
 msgstr ""
 
@@ -27561,9 +27548,6 @@ msgid "Last Activity"
 msgstr ""
 
 msgid "Last Name"
-msgstr ""
-
-msgid "Last Pipeline"
 msgstr ""
 
 msgid "Last Seen"
@@ -31180,9 +31164,6 @@ msgstr ""
 msgid "New runners registration token has been generated!"
 msgstr ""
 
-msgid "New schedule"
-msgstr ""
-
 msgid "New snippet"
 msgstr ""
 
@@ -31499,9 +31480,6 @@ msgid "No results found."
 msgstr ""
 
 msgid "No runner executable"
-msgstr ""
-
-msgid "No schedules"
 msgstr ""
 
 msgid "No service accounts"
@@ -34295,9 +34273,6 @@ msgstr ""
 msgid "PipelineSchedules|A scheduled pipeline starts automatically at regular intervals, like daily or weekly. The pipeline: "
 msgstr ""
 
-msgid "PipelineSchedules|Activated"
-msgstr ""
-
 msgid "PipelineSchedules|Active"
 msgstr ""
 
@@ -34410,12 +34385,6 @@ msgid "PipelineSchedules|There was a problem playing the pipeline schedule."
 msgstr ""
 
 msgid "PipelineSchedules|There was a problem taking ownership of the pipeline schedule."
-msgstr ""
-
-msgid "PipelineSchedules|Variables"
-msgstr ""
-
-msgid "PipelineSchedule|Take ownership to edit"
 msgstr ""
 
 msgid "PipelineSource|API"
@@ -41379,9 +41348,6 @@ msgstr ""
 msgid "Save password"
 msgstr ""
 
-msgid "Save pipeline schedule"
-msgstr ""
-
 msgid "Saving"
 msgstr ""
 
@@ -42214,6 +42180,12 @@ msgstr ""
 msgid "SecurityOrchestration|%{agent} for %{namespaces}"
 msgstr ""
 
+msgid "SecurityOrchestration|%{branchName}"
+msgstr ""
+
+msgid "SecurityOrchestration|%{branchName} (in %{codeStart}%{fullPath}%{codeEnd})"
+msgstr ""
+
 msgid "SecurityOrchestration|%{cadence} on %{branches}"
 msgstr ""
 
@@ -42359,6 +42331,9 @@ msgid "SecurityOrchestration|For large groups, there may be a significant delay 
 msgstr ""
 
 msgid "SecurityOrchestration|Groups"
+msgstr ""
+
+msgid "SecurityOrchestration|Hide extra branches"
 msgstr ""
 
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."
@@ -42645,13 +42620,13 @@ msgstr ""
 msgid "SecurityOrchestration|Vulnerability age requires previously existing vulnerability states (detected, confirmed, resolved, or dismissed)"
 msgstr ""
 
-msgid "SecurityOrchestration|When %{scanners} %{vulnerabilitiesAllowed} %{vulnerability} in an open merge request %{targeting}%{branches}%{criteriaApply}"
+msgid "SecurityOrchestration|When %{scanners} %{vulnerabilitiesAllowed} %{vulnerability} in an open merge request %{targeting}%{branches}%{branchExceptionsString}%{criteriaApply}"
 msgstr ""
 
-msgid "SecurityOrchestration|When license scanner finds any license except %{licenses}%{detection} in an open merge request %{targeting}%{branches}."
+msgid "SecurityOrchestration|When license scanner finds any license except %{licenses}%{detection} in an open merge request %{targeting}%{branches}%{branchExceptionsString}"
 msgstr ""
 
-msgid "SecurityOrchestration|When license scanner finds any license matching %{licenses}%{detection} in an open merge request %{targeting}%{branches}."
+msgid "SecurityOrchestration|When license scanner finds any license matching %{licenses}%{detection} in an open merge request %{targeting}%{branches}%{branchExceptionsString}"
 msgstr ""
 
 msgid "SecurityOrchestration|When this policy is enabled, protected branches cannot be unprotected and users will not be allowed to force push to protected branches."
@@ -46637,9 +46612,6 @@ msgid "Target Path"
 msgstr ""
 
 msgid "Target branch"
-msgstr ""
-
-msgid "Target branch or tag"
 msgstr ""
 
 msgid "Target branch: %{target_branch}"
@@ -54315,9 +54287,6 @@ msgid "You don't have any applications."
 msgstr ""
 
 msgid "You don't have any authorized applications."
-msgstr ""
-
-msgid "You don't have any deployments right now."
 msgstr ""
 
 msgid "You don't have any open merge requests"

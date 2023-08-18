@@ -149,7 +149,6 @@ export default {
             id="custom-email-form-forwarding"
             ref="service-desk-incoming-email"
             type="text"
-            data-testid="custom-email-form-forwarding"
             :aria-label="$options.I18N_FORM_FORWARDING_LABEL"
             :value="incomingEmail"
             :disabled="true"
@@ -167,7 +166,6 @@ export default {
       <gl-form-group
         :label="$options.I18N_FORM_CUSTOM_EMAIL_LABEL"
         label-for="custom-email-form-custom-email"
-        data-testid="form-group-custom-email"
         :invalid-feedback="$options.I18N_FORM_INVALID_FEEDBACK_CUSTOM_EMAIL"
         class="gl-mt-3"
         :description="$options.I18N_FORM_CUSTOM_EMAIL_DESCRIPTION"
@@ -191,7 +189,6 @@ export default {
       <gl-form-group
         :label="$options.I18N_FORM_SMTP_ADDRESS_LABEL"
         label-for="custom-email-form-smtp-address"
-        data-testid="form-group-smtp-address"
         :invalid-feedback="$options.I18N_FORM_INVALID_FEEDBACK_SMTP_ADDRESS"
         class="gl-mt-3"
       >

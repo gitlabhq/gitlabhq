@@ -573,7 +573,7 @@ PUT /projects/:id/members/:user_id
 | `user_id` | integer | yes   | The user ID of the member |
 | `access_level` | integer | yes | A valid access level |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
-| `member_role_id` | integer | no | The ID of a member role **(ULTIMATE)** |
+| `member_role_id` | integer | no | The ID of a member role **(ULTIMATE ALL)** |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id?access_level=40"

@@ -119,14 +119,24 @@ export const EVENT_COMMENTED_I18N = Object.freeze({
   [COMMIT_NOTEABLE_TYPE]: s__(
     'ContributionEvent|Commented on commit %{noteableLink} in %{resourceParentLink}.',
   ),
-  fallback: s__('ContributionEvent|Commented on %{noteableLink}.'),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Commented on %{noteableLink}.'),
 });
 
 export const EVENT_COMMENTED_SNIPPET_I18N = Object.freeze({
   [RESOURCE_PARENT_TYPE_PROJECT]: s__(
     'ContributionEvent|Commented on snippet %{noteableLink} in %{resourceParentLink}.',
   ),
-  fallback: s__('ContributionEvent|Commented on snippet %{noteableLink}.'),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Commented on snippet %{noteableLink}.'),
+});
+
+export const EVENT_UPDATED_I18N = Object.freeze({
+  [TARGET_TYPE_DESIGN]: s__(
+    'ContributionEvent|Updated design %{targetLink} in %{resourceParentLink}.',
+  ),
+  [TARGET_TYPE_WIKI]: s__(
+    'ContributionEvent|Updated wiki page %{targetLink} in %{resourceParentLink}.',
+  ),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Updated resource.'),
 });
 
 export const EVENT_CLOSED_ICONS = Object.freeze({

@@ -27,10 +27,13 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-icon :name="iconName" />
+  <div data-testid="pipeline-schedule-target">
     <span v-if="refPath">
+      <gl-icon :name="iconName" />
       <gl-link :href="refPath" class="gl-text-gray-900">{{ refDisplay }}</gl-link>
+    </span>
+    <span v-else>
+      {{ s__('PipelineSchedules|None') }}
     </span>
   </div>
 </template>

@@ -85,7 +85,7 @@ export default {
 
     <template #cell(stage)="{ item }">
       <div class="gl-text-truncate">
-        <span data-testid="job-stage-name">{{ item.stage.name }}</span>
+        <span v-if="item.stage" data-testid="job-stage-name">{{ item.stage.name }}</span>
       </div>
     </template>
 

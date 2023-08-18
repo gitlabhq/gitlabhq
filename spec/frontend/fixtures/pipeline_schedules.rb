@@ -16,35 +16,6 @@ RSpec.describe 'Pipeline schedules (JavaScript fixtures)' do
   let!(:pipeline_schedule_variable1) { create(:ci_pipeline_schedule_variable, key: 'foo', value: 'foovalue', pipeline_schedule: pipeline_schedule_populated) }
   let!(:pipeline_schedule_variable2) { create(:ci_pipeline_schedule_variable, key: 'bar', value: 'barvalue', pipeline_schedule: pipeline_schedule_populated) }
 
-  describe Projects::PipelineSchedulesController, type: :controller do
-    render_views
-
-    before do
-      sign_in(user)
-      stub_feature_flags(pipeline_schedules_vue: false)
-    end
-
-    it 'pipeline_schedules/edit.html' do
-      get :edit, params: {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: pipeline_schedule.id
-      }
-
-      expect(response).to be_successful
-    end
-
-    it 'pipeline_schedules/edit_with_variables.html' do
-      get :edit, params: {
-        namespace_id: project.namespace.to_param,
-        project_id: project,
-        id: pipeline_schedule_populated.id
-      }
-
-      expect(response).to be_successful
-    end
-  end
-
   describe GraphQL::Query, type: :request do
     before do
       pipeline_schedule.pipelines << build(:ci_pipeline, project: project)

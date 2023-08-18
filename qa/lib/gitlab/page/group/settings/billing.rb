@@ -11,7 +11,7 @@ module Gitlab
           link :upgrade_to_ultimate
 
           # Subscription details
-          strong :subscription_header
+          h5 :subscription_header
           button :refresh_seats
 
           # Usage

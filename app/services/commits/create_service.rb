@@ -39,7 +39,12 @@ module Commits
            Gitlab::Git::PreReceiveError,
            Gitlab::Git::CommandError => ex
       Gitlab::ErrorTracking.log_exception(ex)
-      error(ex.message)
+
+      if Feature.enabled?(:errors_utf_8_encoding)
+        error(Gitlab::EncodingHelper.encode_utf8_no_detect(ex.message))
+      else
+        error(ex.message)
+      end
     end
 
     private

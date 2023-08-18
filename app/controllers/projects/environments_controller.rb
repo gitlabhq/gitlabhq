@@ -8,10 +8,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   layout 'project'
 
-  before_action only: [:show] do
-    push_frontend_feature_flag(:environment_details_vue, @project)
-  end
-
   before_action only: [:index, :edit, :new] do
     push_frontend_feature_flag(:flux_resource_for_environment)
   end

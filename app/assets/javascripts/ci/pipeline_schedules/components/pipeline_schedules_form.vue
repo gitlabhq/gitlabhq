@@ -81,7 +81,7 @@ export default {
           this.description = schedule.description;
           this.cron = schedule.cron;
           this.cronTimezone = schedule.cronTimezone;
-          this.scheduleRef = schedule.ref;
+          this.scheduleRef = schedule.ref || this.defaultBranch;
           this.variables = variables.map((variable) => {
             return {
               id: variable.id,

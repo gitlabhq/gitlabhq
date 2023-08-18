@@ -843,12 +843,10 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
         end
 
         it 'displays the PipelineSchedule in an inactive state' do
-          stub_feature_flags(pipeline_schedules_vue: false)
-
           visit project_pipeline_schedules_path(project)
           page.click_link('Inactive')
 
-          expect(page).to have_selector('table.ci-table > tbody > tr > td', text: 'blocked user schedule')
+          expect(page).to have_selector('[data-testid="pipeline-schedule-description"]', text: 'blocked user schedule')
         end
 
         it 'does not create a new Pipeline', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408215' do

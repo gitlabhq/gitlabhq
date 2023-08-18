@@ -64,7 +64,7 @@ content directly. Instead, it enhances the results with additional properties, i
 
 - CWEs.
 - Location tracking fields.
-- A means of identifying false positives or insignificant findings. **(ULTIMATE)**
+- A means of identifying false positives or insignificant findings. **(ULTIMATE ALL)**
 
 ## Transition to Semgrep-based scanning
 

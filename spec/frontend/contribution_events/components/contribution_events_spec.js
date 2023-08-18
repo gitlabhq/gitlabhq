@@ -11,6 +11,7 @@ import ContributionEventCreated from '~/contribution_events/components/contribut
 import ContributionEventClosed from '~/contribution_events/components/contribution_event/contribution_event_closed.vue';
 import ContributionEventReopened from '~/contribution_events/components/contribution_event/contribution_event_reopened.vue';
 import ContributionEventCommented from '~/contribution_events/components/contribution_event/contribution_event_commented.vue';
+import ContributionEventUpdated from '~/contribution_events/components/contribution_event/contribution_event_updated.vue';
 import {
   eventApproved,
   eventExpired,
@@ -23,6 +24,7 @@ import {
   eventClosed,
   eventReopened,
   eventCommented,
+  eventUpdated,
 } from '../utils';
 
 describe('ContributionEvents', () => {
@@ -43,6 +45,7 @@ describe('ContributionEvents', () => {
           eventClosed(),
           eventReopened(),
           eventCommented(),
+          eventUpdated(),
         ],
       },
     });
@@ -61,6 +64,7 @@ describe('ContributionEvents', () => {
     ${ContributionEventClosed}    | ${eventClosed()}
     ${ContributionEventReopened}  | ${eventReopened()}
     ${ContributionEventCommented} | ${eventCommented()}
+    ${ContributionEventUpdated}   | ${eventUpdated()}
   `(
     'renders `$expectedComponent.name` component and passes expected event',
     ({ expectedComponent, expectedEvent }) => {

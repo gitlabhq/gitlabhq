@@ -36,7 +36,7 @@ export default {
       <deployment-status-link :deployment-job="item.job" :status="item.status" />
     </template>
     <template #cell(id)="{ item }">
-      <strong>{{ item.id }}</strong>
+      <strong data-testid="deployment-id">{{ item.id }}</strong>
     </template>
     <template #cell(triggerer)="{ item }">
       <deployment-triggerer :triggerer="item.triggerer" />

@@ -68,7 +68,10 @@ module Types
             null: false, description: 'Timestamp of when the pipeline schedule was last updated.'
 
       def ref_path
-        ::Gitlab::Routing.url_helpers.project_commits_path(object.project, object.ref_for_display)
+        ref_for_display = object.ref_for_display
+        return unless ref_for_display
+
+        ::Gitlab::Routing.url_helpers.project_commits_path(object.project, ref_for_display)
       end
 
       def edit_path

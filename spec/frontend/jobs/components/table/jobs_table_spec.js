@@ -62,6 +62,15 @@ describe('Jobs Table', () => {
       });
       expect(findAllCoverageJobs()).toHaveLength(jobsThatHaveCoverage.length);
     });
+
+    describe('when stage of a job is missing', () => {
+      it('shows no stage', () => {
+        const stagelessJob = { ...mockJobsNodes[0], stage: null };
+        createComponent({ jobs: [stagelessJob] });
+
+        expect(findJobStage().exists()).toBe(false);
+      });
+    });
   });
 
   describe('regular user', () => {
