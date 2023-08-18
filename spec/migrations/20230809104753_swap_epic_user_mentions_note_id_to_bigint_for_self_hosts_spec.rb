@@ -50,6 +50,11 @@ RSpec.describe SwapEpicUserMentionsNoteIdToBigintForSelfHosts, feature_category:
         connection.execute('ALTER TABLE epic_user_mentions ADD COLUMN IF NOT EXISTS note_id_convert_to_bigint integer')
       end
 
+      after do
+        connection = described_class.new.connection
+        connection.execute('ALTER TABLE epic_user_mentions DROP COLUMN IF EXISTS note_id_convert_to_bigint')
+      end
+
       it 'does not swap the columns' do
         # rubocop: disable RSpec/AnyInstanceOf
         allow_any_instance_of(described_class).to receive(:com_or_dev_or_test_but_not_jh?).and_return(false)
@@ -113,6 +118,11 @@ RSpec.describe SwapEpicUserMentionsNoteIdToBigintForSelfHosts, feature_category:
         connection.execute('DROP INDEX IF EXISTS index_epic_user_mentions_on_note_id_convert_to_bigint')
         connection.execute('CREATE OR REPLACE FUNCTION trigger_c5a5f48f12b0() RETURNS trigger LANGUAGE plpgsql AS $$
           BEGIN NEW."note_id_convert_to_bigint" := NEW."note_id"; RETURN NEW; END; $$;')
+      end
+
+      after do
+        connection = described_class.new.connection
+        connection.execute('ALTER TABLE epic_user_mentions DROP COLUMN IF EXISTS note_id_convert_to_bigint')
       end
 
       it 'swaps the columns' do
