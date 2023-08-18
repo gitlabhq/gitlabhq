@@ -28,16 +28,18 @@ RSpec.shared_examples 'search results filtered by archived' do |feature_flag_nam
     end
   end
 
-  context "when the #{feature_flag_name} feature flag is disabled" do
-    let(:filters) { {} }
+  if feature_flag_name.present?
+    context "when the #{feature_flag_name} feature flag is disabled" do
+      let(:filters) { {} }
 
-    before do
-      stub_feature_flags("#{feature_flag_name}": false)
-    end
+      before do
+        stub_feature_flags("#{feature_flag_name}": false)
+      end
 
-    it 'returns archived and unarchived results' do
-      expect(results.objects(scope)).to include unarchived_result
-      expect(results.objects(scope)).to include archived_result
+      it 'returns archived and unarchived results' do
+        expect(results.objects(scope)).to include unarchived_result
+        expect(results.objects(scope)).to include archived_result
+      end
     end
   end
 end

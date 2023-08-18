@@ -1496,7 +1496,13 @@ value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
 
 ## Configure commit signing for GitLab UI commits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4.
+> - Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../feature_flags.md) named `gitaly_gpg_signing`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../feature_flags.md) named `gitaly_gpg_signing`.
+On GitLab.com, this feature is not available.
 
 By default, Gitaly doesn't sign commits made using GitLab UI. For example, commits made using:
 
@@ -1514,10 +1520,18 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 :::TabTitle Linux package (Omnibus)
 
 1. [Create a GPG key](../../user/project/repository/gpg_signed_commits/index.md#create-a-gpg-key)
-   and export it. For optimal performance, consider using an EdDSA key.
+   and export it, or [create an SSH key](../../user/ssh.md#generate-an-ssh-key-pair). For optimal performance, use an EdDSA key.
+
+   Export GPG key:
 
    ```shell
    gpg --export-secret-keys <ID> > signing_key.gpg
+   ```
+
+   Or create an SSH key (with no passphrase):
+
+   ```shell
+   ssh-keygen -t ed25519 -f signing_key.ssh
    ```
 
 1. On the Gitaly nodes, copy the key into `/etc/gitlab/gitaly/`.
@@ -1538,10 +1552,18 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 :::TabTitle Self-compiled (source)
 
 1. [Create a GPG key](../../user/project/repository/gpg_signed_commits/index.md#create-a-gpg-key)
-   and export it. For optimal performance, consider using an EdDSA key.
+   and export it, or [create an SSH key](../../user/ssh.md#generate-an-ssh-key-pair). For optimal performance, use an EdDSA key.
+
+   Export GPG key:
 
    ```shell
    gpg --export-secret-keys <ID> > signing_key.gpg
+   ```
+
+   Or create an SSH key (with no passphrase):
+
+   ```shell
+   ssh-keygen -t ed25519 -f signing_key.ssh
    ```
 
 1. On the Gitaly nodes, copy the key into `/etc/gitlab`.

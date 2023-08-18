@@ -28,7 +28,11 @@ describe('buildClient', () => {
   describe('fetchTrace', () => {
     it('fetches the trace from the tracing URL', async () => {
       const mockTraces = [
-        { trace_id: 'trace-1', spans: [{ duration_nano: 1000 }, { duration_nano: 2000 }] },
+        {
+          trace_id: 'trace-1',
+          duration_nano: 3000,
+          spans: [{ duration_nano: 1000 }, { duration_nano: 2000 }],
+        },
       ];
 
       axiosMock.onGet(tracingUrl).reply(200, {
@@ -42,10 +46,7 @@ describe('buildClient', () => {
         withCredentials: true,
         params: { trace_id: 'trace-1' },
       });
-      expect(result).toEqual({
-        ...mockTraces[0],
-        duration: 1,
-      });
+      expect(result).toEqual(mockTraces[0]);
     });
 
     it('rejects if trace id is missing', () => {
@@ -68,8 +69,12 @@ describe('buildClient', () => {
   describe('fetchTraces', () => {
     it('fetches traces from the tracing URL', async () => {
       const mockTraces = [
-        { trace_id: 'trace-1', spans: [{ duration_nano: 1000 }, { duration_nano: 2000 }] },
-        { trace_id: 'trace-2', spans: [{ duration_nano: 2000 }] },
+        {
+          trace_id: 'trace-1',
+          duration_nano: 3000,
+          spans: [{ duration_nano: 1000 }, { duration_nano: 2000 }],
+        },
+        { trace_id: 'trace-2', duration_nano: 3000, spans: [{ duration_nano: 2000 }] },
       ];
 
       axiosMock.onGet(tracingUrl).reply(200, {
@@ -83,16 +88,7 @@ describe('buildClient', () => {
         withCredentials: true,
         params: new URLSearchParams(),
       });
-      expect(result).toEqual([
-        {
-          ...mockTraces[0],
-          duration: 1,
-        },
-        {
-          ...mockTraces[1],
-          duration: 2,
-        },
-      ]);
+      expect(result).toEqual(mockTraces);
     });
 
     it('rejects if traces are missing', () => {

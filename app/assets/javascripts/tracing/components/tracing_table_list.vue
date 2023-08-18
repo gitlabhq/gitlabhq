@@ -1,6 +1,7 @@
 <script>
 import { GlTable, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { formatTraceDuration } from './trace_utils';
 
 export const tableDataClass = 'gl-display-flex gl-md-display-table-cell gl-align-items-center';
 export default {
@@ -47,10 +48,18 @@ export default {
       type: Array,
     },
   },
+  computed: {
+    formattedTraces() {
+      return this.traces.map((x) => ({
+        ...x,
+        duration: formatTraceDuration(x.duration_nano),
+      }));
+    },
+  },
   methods: {
     onSelect(items) {
       if (items[0]) {
-        this.$emit('trace-selected', items[0]);
+        this.$emit('trace-selected', { traceId: items[0].trace_id });
       }
     },
   },
@@ -62,7 +71,7 @@ export default {
     <h4 class="gl-display-block gl-md-display-none! gl-my-5">{{ $options.i18n.title }}</h4>
 
     <gl-table
-      :items="traces"
+      :items="formattedTraces"
       :fields="$options.fields"
       show-empty
       sort-by="timestamp"
@@ -75,23 +84,6 @@ export default {
       selected-variant=""
       @row-selected="onSelect"
     >
-      <template #cell(timestamp)="data">
-        {{ data.item.timestamp }}
-      </template>
-
-      <template #cell(service_name)="data">
-        {{ data.item.service_name }}
-      </template>
-
-      <template #cell(operation)="data">
-        {{ data.item.operation }}
-      </template>
-
-      <template #cell(duration)="data">
-        <!-- eslint-disable-next-line @gitlab/vue-require-i18n-strings -->
-        {{ `${data.item.duration} ms` }}
-      </template>
-
       <template #empty>
         {{ $options.i18n.emptyText }}
         <gl-link @click="$emit('reload')">{{ $options.i18n.emptyLinkText }}</gl-link>

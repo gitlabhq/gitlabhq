@@ -20,7 +20,7 @@ describe('GlobalSearchSidebar', () => {
     currentScope: jest.fn(() => 'issues'),
   };
 
-  const createComponent = (initialState = {}, ff = false) => {
+  const createComponent = (initialState = {}) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -31,11 +31,6 @@ describe('GlobalSearchSidebar', () => {
 
     wrapper = shallowMount(GlobalSearchSidebar, {
       store,
-      provide: {
-        glFeatures: {
-          searchProjectsHideArchived: ff,
-        },
-      },
     });
   };
 
@@ -73,18 +68,14 @@ describe('GlobalSearchSidebar', () => {
       });
     });
 
-    describe.each`
-      featureFlag
-      ${false}
-      ${true}
-    `('with sidebar $scope scope:', ({ featureFlag }) => {
+    describe('with sidebar $scope scope:', () => {
       beforeEach(() => {
         getterSpies.currentScope = jest.fn(() => 'projects');
-        createComponent({ urlQuery: { scope: 'projects' } }, featureFlag);
+        createComponent({ urlQuery: { scope: 'projects' } });
       });
 
       it(`shows filter ProjectsFilters}`, () => {
-        expect(findProjectsFilters().exists()).toBe(featureFlag);
+        expect(findProjectsFilters().exists()).toBe(true);
       });
     });
 

@@ -89,7 +89,7 @@ describe('TracingList', () => {
       setWindowLocation('base_path');
       const visitUrlMock = jest.spyOn(urlUtility, 'visitUrl').mockReturnValue({});
 
-      findTableList().vm.$emit('trace-selected', { trace_id: 'test-trace-id' });
+      findTableList().vm.$emit('trace-selected', { traceId: 'test-trace-id' });
 
       expect(visitUrlMock).toHaveBeenCalledTimes(1);
       expect(visitUrlMock).toHaveBeenCalledWith('/base_path/test-trace-id');

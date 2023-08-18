@@ -3,10 +3,14 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { visitUrl, isSafeURL } from '~/lib/utils/url_utility';
+import TracingDetailsChart from './tracing_details_chart.vue';
+import TracingDetailsHeader from './tracing_details_header.vue';
 
 export default {
   components: {
     GlLoadingIcon,
+    TracingDetailsChart,
+    TracingDetailsHeader,
   },
   i18n: {
     error: s__('Tracing|Failed to load trace details.'),
@@ -82,9 +86,8 @@ export default {
     <gl-loading-icon size="lg" />
   </div>
 
-  <!-- TODO Replace with actual trace-details component-->
   <div v-else-if="trace" data-testid="trace-details">
-    <p>{{ tracingIndexUrl }}</p>
-    <p>{{ trace }}</p>
+    <tracing-details-header :trace="trace" />
+    <tracing-details-chart :trace="trace" />
   </div>
 </template>

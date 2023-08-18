@@ -97,21 +97,18 @@ To filter code search results by one or more languages:
 1. On the code search page, on the left sidebar, select one or more languages.
 1. On the left sidebar, select **Apply**.
 
-## Exclude search results
+## Include archived projects in search results
 
-### From archived projects
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/413821) in GitLab 16.3. Feature flag `search_projects_hide_archived` removed.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. Disabled by default.
+By default, archived projects are excluded from search results.
+To include archived projects in search results:
 
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../administration/feature_flags.md) named `search_projects_hide_archived`. On GitLab.com, this feature is not available.
+1. On the project search page, on the left sidebar, select the **Include archived** checkbox.
+1. On the left sidebar, select **Apply**.
 
-Archived projects are included in search results by default. To exclude archived projects, ensure the `search_projects_hide_archived` flag is enabled.
-
-To include archived projects with `search_projects_hide_archived` enabled, you must add the parameter `include_archived=true` to the URL.
-
-### From issues in archived projects
+## Exclude issues in archived projects from search results
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124846) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `search_issues_hide_archived_projects`. Disabled by default.
 

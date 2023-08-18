@@ -2568,7 +2568,8 @@ Example response:
   "created_at": "2016-07-26T14:44:48.926Z",
   "merge_request_id": 105,
   "state": "collected",
-  "real_size": "1"
+  "real_size": "1",
+  "patch_id_sha": "d504412d5b6e6739647e752aff8e468dde093f2f"
 }, {
   "id": 108,
   "head_commit_sha": "3eed087b29835c48015768f839d76e5ea8f07a24",
@@ -2577,7 +2578,8 @@ Example response:
   "created_at": "2016-07-25T14:21:33.028Z",
   "merge_request_id": 105,
   "state": "collected",
-  "real_size": "1"
+  "real_size": "1",
+  "patch_id_sha": "72c30d1f0115fc1d2bb0b29b24dc2982cbcdfd32"
 }]
 ```
 
@@ -2620,6 +2622,7 @@ Example response:
   "merge_request_id": 105,
   "state": "collected",
   "real_size": "1",
+  "patch_id_sha": "d504412d5b6e6739647e752aff8e468dde093f2f",
   "commits": [{
     "id": "33e2ee8579fda5bc36accc9c6fbd0b4fefda9e30",
     "short_id": "33e2ee85",

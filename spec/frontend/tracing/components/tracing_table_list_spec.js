@@ -9,13 +9,13 @@ describe('TracingTableList', () => {
       timestamp: '2023-07-10T15:02:30.677538Z',
       service_name: 'tracegen',
       operation: 'lets-go',
-      duration: 150,
+      duration_nano: 150000,
     },
     {
       timestamp: '2023-07-10T15:02:30.677538Z',
       service_name: 'tracegen',
       operation: 'lets-go',
-      duration: 200,
+      duration_nano: 200000,
     },
   ];
 
@@ -52,7 +52,7 @@ describe('TracingTableList', () => {
       expect(getCell(i, 0).text()).toBe(trace.timestamp);
       expect(getCell(i, 1).text()).toBe(trace.service_name);
       expect(getCell(i, 2).text()).toBe(trace.operation);
-      expect(getCell(i, 3).text()).toBe(`${trace.duration} ms`);
+      expect(getCell(i, 3).text()).toBe(`${trace.duration_nano / 1000} ms`);
     });
   });
 
@@ -61,7 +61,7 @@ describe('TracingTableList', () => {
 
     await selectRow(0);
     expect(wrapper.emitted('trace-selected')).toHaveLength(1);
-    expect(wrapper.emitted('trace-selected')[0][0]).toBe(mockTraces[0]);
+    expect(wrapper.emitted('trace-selected')[0][0]).toEqual({ trace_id: mockTraces[0].trace_id });
   });
 
   it('renders the empty state when no traces are provided', () => {

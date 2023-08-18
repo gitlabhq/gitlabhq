@@ -94,8 +94,8 @@ export default {
         this.loading = false;
       }
     },
-    selectTrace(trace) {
-      visitUrl(joinPaths(window.location.pathname, trace.trace_id));
+    selectTrace({ traceId }) {
+      visitUrl(joinPaths(window.location.pathname, traceId));
     },
     handleFilters(filterTokens) {
       this.filters = filterTokensToFilterObj(filterTokens);

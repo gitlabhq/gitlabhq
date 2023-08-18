@@ -38,7 +38,7 @@ export default {
     },
     showProjectsFilters() {
       // for now the feature flag is here. Since we have only one filter in projects scope
-      return this.currentScope === SCOPE_PROJECTS && this.glFeatures.searchProjectsHideArchived;
+      return this.currentScope === SCOPE_PROJECTS;
     },
     showScopeNavigation() {
       // showScopeNavigation refers to whether the scope navigation should be shown

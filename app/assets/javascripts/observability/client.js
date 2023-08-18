@@ -20,16 +20,6 @@ function isTracingEnabled() {
   });
 }
 
-function traceWithDuration(trace) {
-  // aggregating duration on the client for now, but expecting to be coming from the backend
-  // https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2274
-  const duration = trace.spans[0].duration_nano;
-  return {
-    ...trace,
-    duration: duration / 1000,
-  };
-}
-
 async function fetchTrace(tracingUrl, traceId) {
   if (!traceId) {
     throw new Error('traceId is required.');
@@ -43,15 +33,13 @@ async function fetchTrace(tracingUrl, traceId) {
   });
 
   // TODO: Improve local GDK dev experience with tracing https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2308
-  // const data = mockData;
-  // const trace = data.traces.find((t) => t.trace_id === traceId);
+  // const data = { traces: [mockData.traces.find((t) => t.trace_id === traceId)] };
 
   if (!Array.isArray(data.traces) || data.traces.length === 0) {
     throw new Error('traces are missing/invalid in the response.'); // eslint-disable-line @gitlab/require-i18n-strings
   }
 
-  const trace = data.traces[0];
-  return traceWithDuration(trace);
+  return data.traces[0];
 }
 
 /**
@@ -175,7 +163,7 @@ async function fetchTraces(tracingUrl, filters = {}) {
   if (!Array.isArray(data.traces)) {
     throw new Error('traces are missing/invalid in the response.'); // eslint-disable-line @gitlab/require-i18n-strings
   }
-  return data.traces.map(traceWithDuration);
+  return data.traces;
 }
 
 export function buildClient({ provisioningUrl, tracingUrl }) {

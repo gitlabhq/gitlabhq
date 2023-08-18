@@ -49603,6 +49603,9 @@ msgstr ""
 msgid "Total Score"
 msgstr ""
 
+msgid "Total Spans"
+msgstr ""
+
 msgid "Total cores (CPUs)"
 msgstr ""
 
@@ -49633,7 +49636,13 @@ msgstr ""
 msgid "Trace Details"
 msgstr ""
 
+msgid "Trace Start"
+msgstr ""
+
 msgid "Tracing"
+msgstr ""
+
+msgid "Tracing|%{ms} ms"
 msgstr ""
 
 msgid "Tracing|Check again"
