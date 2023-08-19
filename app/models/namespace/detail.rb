@@ -3,7 +3,6 @@
 class Namespace::Detail < ApplicationRecord
   include IgnorableColumns
 
-  ignore_column :free_user_cap_over_limt_notified_at, remove_with: '15.7', remove_after: '2022-11-22'
   ignore_column :dashboard_notification_at, remove_with: '16.5', remove_after: '2023-08-22'
   ignore_column :dashboard_enforcement_at, remove_with: '16.5', remove_after: '2023-08-22'
   ignore_column :next_over_limit_check_at, remove_with: '16.5', remove_after: '2023-08-22'

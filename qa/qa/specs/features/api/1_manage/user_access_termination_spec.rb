@@ -15,11 +15,11 @@ module QA
 
         @sandbox = create(:sandbox, path: "sandbox-for-access-termination-#{SecureRandom.hex(4)}", api_client: admin_api_client)
 
-        group = create(:group, path: "group-to-test-access-termination-#{SecureRandom.hex(8)}", sandbox: @sandbox)
+        group = create(:group, path: "group-to-test-access-termination-#{SecureRandom.hex(8)}", sandbox: @sandbox, api_client: admin_api_client)
 
         @sandbox.add_member(@user)
 
-        @project = create(:project, :with_readme, name: 'project-for-user-group-access-termination', group: group)
+        @project = create(:project, :with_readme, name: 'project-for-user-group-access-termination', group: group, api_client: admin_api_client)
       end
 
       context 'after parent group membership termination' do
