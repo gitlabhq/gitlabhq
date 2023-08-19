@@ -344,7 +344,7 @@ export default {
       :show-friendly-text="showFilteredSearchFriendlyText"
       terms-as-tokens
       class="gl-flex-grow-1 gl-border-t-none row-content-block"
-      data-qa-selector="issuable_search_container"
+      data-testid="issuable-search-container"
       @checked-input="handleAllIssuablesCheckedInput"
       @onFilter="$emit('filter', $event)"
       @onSort="$emit('sort', $event)"
@@ -377,7 +377,7 @@ export default {
           v-for="issuable in issuables"
           :key="issuableId(issuable)"
           :class="{ 'gl-cursor-grab': isManualOrdering }"
-          data-qa-selector="issuable_container"
+          data-testid="issuable-container"
           :data-qa-issuable-title="issuable.title"
           :has-scoped-labels-feature="hasScopedLabelsFeature"
           :issuable-symbol="issuableSymbol"

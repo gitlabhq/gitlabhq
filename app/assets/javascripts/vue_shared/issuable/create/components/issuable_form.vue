@@ -36,7 +36,7 @@ export default {
     ariaLabel: __('Description'),
     class: 'rspec-issuable-form-description',
     placeholder: __('Write a comment or drag your files here…'),
-    dataQaSelector: 'issuable_form_description_field',
+    dataTestid: 'issuable-form-description-field',
     id: 'issuable-description',
     name: 'issuable-description',
   },

@@ -47,7 +47,7 @@ export default {
           href: this.exportCsvPath,
           variant: 'confirm',
           'data-method': 'post',
-          'data-qa-selector': `export_issues_button`,
+          'data-testid': 'export-issues-button',
           'data-track-action': 'click_button',
           'data-track-label': this.dataTrackLabel,
         },
@@ -78,7 +78,7 @@ export default {
     :action-cancel="$options.actionCancel"
     body-class="gl-p-0!"
     :title="exportText"
-    data-qa-selector="export_issuable_modal"
+    data-testid="export-issuable-modal"
   >
     <div
       class="gl-justify-content-start gl-align-items-center gl-p-4 gl-border-b-solid gl-border-1 gl-border-gray-50"

@@ -82,7 +82,7 @@ export default {
           v-if="showCsvButtons"
           class="gl-w-full gl-sm-w-auto gl-sm-mr-3"
           :toggle-text="$options.i18n.importIssues"
-          data-qa-selector="import_issues_dropdown"
+          data-testid="import-issues-dropdown"
         >
           <csv-import-export-buttons
             :export-csv-path="exportCsvPathWithQuery"

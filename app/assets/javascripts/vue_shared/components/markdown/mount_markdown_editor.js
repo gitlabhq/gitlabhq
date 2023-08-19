@@ -72,7 +72,7 @@ export function mountMarkdownEditor(options = {}) {
     quickActionsDocsPath,
     formFieldPlaceholder,
     formFieldClasses,
-    qaSelector,
+    testid,
     newIssuePath,
   } = el.dataset;
 
@@ -115,7 +115,7 @@ export function mountMarkdownEditor(options = {}) {
             id: formFieldId,
             name: formFieldName,
             class: formFieldClasses,
-            'data-qa-selector': qaSelector,
+            'data-testid': testid,
           },
           autosaveKey,
           enableAutocomplete,

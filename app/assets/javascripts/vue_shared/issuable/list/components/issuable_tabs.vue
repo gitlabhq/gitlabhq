@@ -56,7 +56,7 @@ export default {
         @click="$emit('click', tab.name)"
       >
         <template #title>
-          <span :title="tab.titleTooltip" :data-qa-selector="`${tab.name}_issuables_tab`">
+          <span :title="tab.titleTooltip" :data-testid="`${tab.name}-issuables-tab`">
             {{ tab.title }}
           </span>
           <gl-badge

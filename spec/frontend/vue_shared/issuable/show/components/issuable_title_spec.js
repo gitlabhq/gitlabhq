@@ -66,11 +66,11 @@ describe('IssuableTitle', () => {
       });
 
       await nextTick();
-      const titleEl = wrapperWithTitle.find('[data-testid="title"]');
+      const titleEl = wrapperWithTitle.find('[data-testid="issuable-title"]');
 
       expect(titleEl.exists()).toBe(true);
       expect(titleEl.html()).toBe(
-        '<h1 dir="auto" data-qa-selector="title_content" data-testid="title" class="title gl-font-size-h-display"><b>Sample</b> title</h1>',
+        '<h1 dir="auto" data-testid="issuable-title" class="title gl-font-size-h-display"><b>Sample</b> title</h1>',
       );
 
       wrapperWithTitle.destroy();

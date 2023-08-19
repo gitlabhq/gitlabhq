@@ -104,6 +104,7 @@ test: &test
     password:
     host: localhost
     prepared_statements: false
+    reaping_frequency: nil
     variables:
       statement_timeout: 15s
   ci:
@@ -115,6 +116,7 @@ test: &test
     password:
     host: localhost
     prepared_statements: false
+    reaping_frequency: nil
     variables:
       statement_timeout: 15s
   geo:
@@ -124,6 +126,7 @@ test: &test
     username: postgres
     password:
     host: localhost
+    reaping_frequency: nil
   embedding:
     adapter: postgresql
     encoding: unicode
@@ -131,3 +134,4 @@ test: &test
     username: postgres
     password:
     host: localhost
+    reaping_frequency: nil

@@ -105,7 +105,7 @@ export default {
 </script>
 
 <template>
-  <div class="issuable-show-container" data-qa-selector="issuable_show_container">
+  <div class="issuable-show-container" data-testid="issuable-show-container">
     <issuable-header
       :issuable-state="issuable.state"
       :status-icon="statusIcon"

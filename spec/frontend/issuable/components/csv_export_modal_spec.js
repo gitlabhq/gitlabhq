@@ -53,7 +53,7 @@ describe('CsvExportModal', () => {
             href: 'export/csv/path',
             variant: 'confirm',
             'data-method': 'post',
-            'data-qa-selector': `export_issues_button`,
+            'data-testid': 'export-issues-button',
             'data-track-action': 'click_button',
             'data-track-label': dataTrackLabel,
           },

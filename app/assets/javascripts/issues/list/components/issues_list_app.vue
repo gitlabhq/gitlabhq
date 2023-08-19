@@ -1059,7 +1059,7 @@ export default {
           no-caret
           :toggle-text="$options.i18n.actionsLabel"
           text-sr-only
-          data-qa-selector="issues_list_more_actions_dropdown"
+          data-testid="issues-list-more-actions-dropdown"
         >
           <csv-import-export-buttons
             v-if="showCsvButtons"
