@@ -412,7 +412,7 @@ RSpec.configure do |config|
     example.run unless GitalySetup.praefect_with_db?
   end
 
-  config.around(:example, :yaml_processor_feature_flag_corectness) do |example|
+  config.around(:example, :yaml_processor_feature_flag_correctness) do |example|
     ::Gitlab::Ci::YamlProcessor::FeatureFlags.ensure_correct_usage do
       example.run
     end

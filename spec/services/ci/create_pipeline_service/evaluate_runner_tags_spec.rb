@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness,
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_correctness,
   feature_category: :pipeline_composition do
   let_it_be(:group)          { create(:group, :private) }
   let_it_be(:group_variable) { create(:ci_group_variable, group: group, key: 'RUNNER_TAG', value: 'group') }

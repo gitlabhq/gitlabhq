@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness,
+RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_correctness,
   feature_category: :pipeline_composition do
   context 'needs' do
     let_it_be(:project) { create(:project, :repository) }

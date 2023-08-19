@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags do
   end
 
   context 'when feature flag is checked outside the "with_actor" block' do
-    context 'when yaml_processor_feature_flag_corectness is used', :yaml_processor_feature_flag_corectness do
+    context 'when yaml_processor_feature_flag_correctness is used', :yaml_processor_feature_flag_correctness do
       it 'raises an error on dev/test environment' do
         expect { described_class.enabled?(feature_flag) }.to raise_error(described_class::NoActorError)
       end
@@ -69,7 +69,7 @@ RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags do
       end
     end
 
-    context 'when yaml_processor_feature_flag_corectness is not used' do
+    context 'when yaml_processor_feature_flag_correctness is not used' do
       it 'checks the feature flag without actor' do
         expect(Feature).to receive(:enabled?).with(feature_flag, nil)
         expect(Gitlab::ErrorTracking)
