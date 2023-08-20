@@ -738,7 +738,7 @@ For example:
 
 ```html
 <html>
-<small>Footnotes
+<small>Footnotes:
   <ol>
     <li>This is the footnote.</li>
     <li>This is the other footnote.</li>
@@ -755,7 +755,7 @@ This text renders as this output:
 | App B    | Description text. <sup>2</sup> |
 
 <html>
-<small>Footnotes
+<small>Footnotes:
   <ol>
     <li>This is the footnote.</li>
     <li>This is the other footnote.</li>
