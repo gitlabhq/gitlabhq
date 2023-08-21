@@ -52,7 +52,7 @@ class Repository
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
                       has_visible_content? issue_template_names_hash merge_request_template_names_hash
-                      user_defined_metrics_dashboard_paths xcode_project? has_ambiguous_refs?).freeze
+                      xcode_project? has_ambiguous_refs?).freeze
 
   # Certain method caches should be refreshed when certain types of files are
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
@@ -67,7 +67,6 @@ class Repository
     avatar: :avatar,
     issue_template: :issue_template_names_hash,
     merge_request_template: :merge_request_template_names_hash,
-    metrics_dashboard: :user_defined_metrics_dashboard_paths,
     xcode_config: :xcode_project?
   }.freeze
 
@@ -627,11 +626,6 @@ class Repository
     Gitlab::Template::MergeRequestTemplate.repository_template_names(project)
   end
   cache_method :merge_request_template_names_hash, fallback: {}
-
-  def user_defined_metrics_dashboard_paths
-    Gitlab::Metrics::Dashboard::RepoDashboardFinder.list_dashboards(project)
-  end
-  cache_method :user_defined_metrics_dashboard_paths, fallback: []
 
   def readme
     head_tree&.readme

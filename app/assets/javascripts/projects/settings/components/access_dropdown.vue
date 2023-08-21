@@ -12,10 +12,10 @@ import { debounce, intersectionWith, groupBy, differenceBy, intersectionBy } fro
 import { createAlert } from '~/alert';
 import { __, s__, n__ } from '~/locale';
 import { getUsers, getGroups, getDeployKeys } from '../api/access_dropdown_api';
-import { LEVEL_TYPES, ACCESS_LEVELS } from '../constants';
+import { LEVEL_TYPES, ACCESS_LEVELS, ACCESS_LEVEL_NONE } from '../constants';
 
 export const i18n = {
-  selectUsers: s__('ProtectedEnvironment|Select users'),
+  defaultLabel: s__('AccessDropdown|Select'),
   rolesSectionHeader: s__('AccessDropdown|Roles'),
   groupsSectionHeader: s__('AccessDropdown|Groups'),
   usersSectionHeader: s__('AccessDropdown|Users'),
@@ -51,7 +51,7 @@ export default {
     label: {
       type: String,
       required: false,
-      default: i18n.selectUsers,
+      default: i18n.defaultLabel,
     },
     disabled: {
       type: Boolean,
@@ -67,6 +67,26 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    toggleClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    searchEnabled: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    block: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    testId: {
+      type: String,
+      required: false,
+      default: undefined,
     },
   },
   data() {
@@ -132,8 +152,11 @@ export default {
 
       return labelPieces.join(', ') || this.label;
     },
-    toggleClass() {
-      return this.toggleLabel === this.label ? 'gl-text-gray-500!' : '';
+    dropdownToggleClass() {
+      return {
+        'gl-text-gray-500!': this.toggleLabel === this.label,
+        [this.toggleClass]: true,
+      };
     },
     selection() {
       return [
@@ -180,7 +203,7 @@ export default {
       );
     },
     focusInput() {
-      this.$refs.search.focusInput();
+      this.$refs.search?.focusInput();
     },
     getData({ initial = false } = {}) {
       this.initialLoading = initial;
@@ -332,10 +355,19 @@ export default {
       this.emitUpdate();
     },
     toggleSelection(arr, item) {
+      if (item.id === ACCESS_LEVEL_NONE) {
+        arr.splice(0, arr.length, item);
+        return;
+      }
       const itemIndex = arr.findIndex(({ id }) => id === item.id);
-      if (itemIndex > -1) {
-        arr.splice(itemIndex, 1);
-      } else arr.push(item);
+      if (itemIndex === -1) {
+        arr.push(item);
+        this.unselectNone(arr);
+      } else arr.splice(itemIndex, 1);
+    },
+    unselectNone(arr) {
+      const noneIndex = arr.findIndex(({ id }) => id === ACCESS_LEVEL_NONE);
+      if (noneIndex > -1) arr.splice(noneIndex, 1);
     },
     isSelected(item) {
       return this.selected[item.type].some((selected) => selected.id === item.id);
@@ -346,6 +378,10 @@ export default {
     onHide() {
       this.$emit('hidden', this.selection);
     },
+    onShown() {
+      this.$emit('shown');
+      this.focusInput();
+    },
   },
 };
 </script>
@@ -354,13 +390,15 @@ export default {
   <gl-dropdown
     :disabled="disabled || initialLoading"
     :text="toggleLabel"
-    class="gl-min-w-20"
-    :toggle-class="toggleClass"
+    :block="block"
+    class="gl-min-w-20 gl-p-0!"
+    :toggle-class="dropdownToggleClass"
     aria-labelledby="allowed-users-label"
-    @shown="focusInput"
+    :data-testid="testId"
+    @shown="onShown"
     @hidden="onHide"
   >
-    <template #header>
+    <template v-if="searchEnabled" #header>
       <gl-search-box-by-type ref="search" v-model.trim="query" :is-loading="loading" />
     </template>
     <template v-if="roles.length">

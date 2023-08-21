@@ -101,7 +101,7 @@ parameters. All fields are optional. If the incoming alert does not contain a va
 | `monitoring_tool`         | String          | The name of the associated monitoring tool. |
 | `hosts`                   | String or Array | One or more hosts, as to where this incident occurred. |
 | `severity`                | String          | The severity of the alert. Case-insensitive. Can be one of: `critical`, `high`, `medium`, `low`, `info`, `unknown`. Defaults to `critical` if missing or value is not in this list. |
-| `fingerprint`             | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. |
+| `fingerprint`             | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. When the `generic_alert_fingerprinting` feature is enabled, the fingerprint is generated automatically based on the payload (excluding the `start_time`, `end_time`, and `hosts` parameters). |
 | `gitlab_environment_name` | String          | The name of the associated GitLab [environment](../../ci/environments/index.md). Required to [display alerts on a dashboard](../../user/operations_dashboard/index.md#adding-a-project-to-the-dashboard). |
 
 You can also add custom fields to the alert's payload. The values of extra

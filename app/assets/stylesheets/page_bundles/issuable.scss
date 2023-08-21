@@ -1,5 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 
+$issuable-warning-size: 24px;
+
 .status-box {
   padding: 0 $gl-btn-padding;
   border-radius: $border-radius-default;
@@ -18,7 +20,6 @@
   width: $issuable-warning-size;
   height: $issuable-warning-size;
   text-align: center;
-  margin-right: $issuable-warning-icon-margin;
   line-height: $gl-line-height-24;
   flex: 0 0 auto;
 }

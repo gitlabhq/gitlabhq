@@ -39,7 +39,6 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
         'custom_metrics_path' => project_prometheus_metrics_path(project),
         'validate_query_path' => validate_query_project_prometheus_metrics_path(project),
         'custom_metrics_available' => 'true',
-        'custom_dashboard_base_path' => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT,
         'operations_settings_path' => project_settings_operations_path(project),
         'can_access_operations_settings' => 'true'
       )

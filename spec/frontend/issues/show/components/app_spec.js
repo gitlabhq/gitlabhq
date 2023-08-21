@@ -25,6 +25,7 @@ import eventHub from '~/issues/show/event_hub';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import {
   appProps,
   initialRequest,
@@ -46,9 +47,9 @@ describe('Issuable output', () => {
 
   const findStickyHeader = () => wrapper.findByTestId('issue-sticky-header');
   const findLockedBadge = () => wrapper.findByTestId('locked');
-  const findConfidentialBadge = () => wrapper.findByTestId('confidential');
   const findHiddenBadge = () => wrapper.findByTestId('hidden');
 
+  const findConfidentialBadge = () => wrapper.findComponent(ConfidentialityBadge);
   const findTitle = () => wrapper.findComponent(TitleComponent);
   const findDescription = () => wrapper.findComponent(DescriptionComponent);
   const findEdited = () => wrapper.findComponent(EditedComponent);

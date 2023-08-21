@@ -571,9 +571,9 @@ export default {
             data-testid="issue-sticky-header"
           >
             <div
-              class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-mx-auto gl-px-5"
+              class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-gap-2 gl-mx-auto gl-px-5"
             >
-              <gl-badge :variant="statusVariant" class="gl-mr-2">
+              <gl-badge :variant="statusVariant">
                 <gl-icon :name="statusIcon" />
                 <span class="gl-display-none gl-sm-display-block gl-ml-2">{{
                   statusText
@@ -590,9 +590,8 @@ export default {
               </span>
               <confidentiality-badge
                 v-if="isConfidential"
-                data-testid="confidential"
-                :workspace-type="$options.WORKSPACE_PROJECT"
                 :issuable-type="issuableType"
+                :workspace-type="$options.WORKSPACE_PROJECT"
               />
               <span
                 v-if="isHidden"

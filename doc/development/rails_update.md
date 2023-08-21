@@ -4,11 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rails update guidelines
+# Rails upgrade guidelines
 
 We strive to run GitLab using the latest Rails releases to benefit from performance, security updates, and new features.
 
-## Rails update approach
+## Rails upgrade approach
 
 1. [Prepare an MR for GitLab](#prepare-an-mr-for-gitlab).
 1. [Prepare an MR for Gitaly](#prepare-an-mr-for-gitaly).
@@ -40,7 +40,7 @@ We strive to run GitLab using the latest Rails releases to benefit from performa
 
 ### Create patch releases and backports for security patches
 
-If the Rails update was over a patch release and it contains important security fixes,
+If the Rails upgrade was over a patch release and it contains important security fixes,
 make sure to release it in a
 GitLab patch release to self-managed customers. Consult with our [release managers](https://about.gitlab.com/community/release-managers/)
 for how to proceed.

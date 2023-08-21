@@ -719,4 +719,8 @@ export class GitLabDropdown {
   clearField(field, isInput) {
     return isInput ? field.val('') : field.remove();
   }
+
+  close() {
+    this.dropdown.find('.dropdown-menu-toggle').dropdown('hide');
+  }
 }

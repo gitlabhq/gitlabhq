@@ -7,8 +7,8 @@ export const initAccessDropdown = (el, options) => {
     return null;
   }
 
-  const { accessLevelsData, accessLevel } = options;
-  const { label, disabled, preselectedItems } = el.dataset;
+  const { accessLevelsData, ...props } = options;
+  const { label, disabled, preselectedItems } = el.dataset || {};
   let preselected = [];
   try {
     preselected = JSON.parse(preselectedItems);
@@ -22,15 +22,18 @@ export const initAccessDropdown = (el, options) => {
       const vm = this;
       return createElement(AccessDropdown, {
         props: {
-          accessLevel,
-          accessLevelsData: accessLevelsData.roles,
-          preselectedItems: preselected,
           label,
           disabled,
+          accessLevelsData: accessLevelsData.roles,
+          preselectedItems: preselected,
+          ...props,
         },
         on: {
           select(selected) {
             vm.$emit('select', selected);
+          },
+          shown() {
+            vm.$emit('shown');
           },
         },
       });

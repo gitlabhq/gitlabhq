@@ -283,14 +283,20 @@ Your personal access token enables a secure API connection to GitLab.com.
 This API connection securely transmits a context window from your IDE/editor to the Code Suggestions GitLab hosted service which calls Google Vertex AI Codey APIs,
 and the generated suggestion is transmitted back to your IDE/editor.
 
-GitLab currently leverages [Google Cloud's Vertex AI Codey API models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview).
+GitLab currently leverages [Google Cloud's Vertex AI Codey API models](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview). Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance).
 
-### Data privacy
+### Telemetry
 
-No new additional data is collected to enable this feature. Private non-public GitLab customer data is
-not used as training data.
+For self-managed instances that have enabled Code Suggestions and SaaS accounts, we collect aggregated or de-identified first-party usage data through our [Snowplow collector](https://about.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
 
-Learn more about Google Vertex AI Codey APIs [Data Governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance)
+- Language the code suggestion was in (for example, Python)
+- Editor being used (for example, VS Code)
+- Number of suggestions shown, accepted, rejected, or that had errors
+- Duration of time that a suggestion was shown
+- Prompt and suffix lengths
+- Model used
+- Number of unique users
+- Number of unique instances
 
 ### Inference window context
 

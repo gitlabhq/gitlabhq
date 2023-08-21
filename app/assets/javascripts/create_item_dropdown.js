@@ -114,4 +114,8 @@ export default class CreateItemDropdown {
   toggleFooter(toggleState) {
     this.$dropdownFooter.toggleClass('hidden', toggleState);
   }
+
+  close() {
+    this.$dropdown.data('deprecatedJQueryDropdown').close();
+  }
 }

@@ -150,6 +150,9 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
     wait_for_requests
 
     sticky_header = find_by_scrolling('[data-testid=issue-sticky-header]')
-    expect(sticky_header.find('[data-testid=confidential]')).to be_present
+
+    page.within(sticky_header) do
+      expect(page).to have_text 'Confidential'
+    end
   end
 end

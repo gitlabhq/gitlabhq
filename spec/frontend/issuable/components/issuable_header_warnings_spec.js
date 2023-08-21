@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import mrStore from '~/mr_notes/stores';
 import createIssueStore from '~/notes/stores';
 import IssuableHeaderWarnings from '~/issuable/components/issuable_header_warnings.vue';
+import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
 const ISSUABLE_TYPE_ISSUE = 'issue';
 const ISSUABLE_TYPE_MR = 'merge_request';
@@ -12,7 +13,7 @@ jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/
 describe('IssuableHeaderWarnings', () => {
   let wrapper;
 
-  const findConfidentialIcon = () => wrapper.findByTestId('confidential');
+  const findConfidentialIcon = () => wrapper.findComponent(ConfidentialityBadge);
   const findLockedIcon = () => wrapper.findByTestId('locked');
   const findHiddenIcon = () => wrapper.findByTestId('hidden');
 

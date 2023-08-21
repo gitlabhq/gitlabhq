@@ -63,9 +63,9 @@ export default {
   <div class="gl-display-inline-block">
     <confidentiality-badge
       v-if="isConfidential"
-      data-testid="confidential"
-      :workspace-type="$options.WORKSPACE_PROJECT"
+      class="gl-mr-3"
       :issuable-type="$options.TYPE_ISSUE"
+      :workspace-type="$options.WORKSPACE_PROJECT"
     />
     <template v-for="meta in warningIconsMeta">
       <div

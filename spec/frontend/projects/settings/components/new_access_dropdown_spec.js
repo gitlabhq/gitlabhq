@@ -50,6 +50,7 @@ jest.mock('~/projects/settings/api/access_dropdown_api', () => ({
 
 describe('Access Level Dropdown', () => {
   let wrapper;
+  const defaultToggleClass = 'gl-text-gray-500!';
   const mockAccessLevelsData = [
     {
       id: 1,
@@ -177,12 +178,12 @@ describe('Access Level Dropdown', () => {
       const customLabel = 'Set the access level';
       createComponent({ label: customLabel });
       expect(findDropdownToggleLabel()).toBe(customLabel);
-      expect(findDropdown().props('toggleClass')).toBe('gl-text-gray-500!');
+      expect(findDropdown().props('toggleClass')[defaultToggleClass]).toBe(true);
     });
 
     it('when no items selected, displays a default fallback label and has default CSS class', () => {
-      expect(findDropdownToggleLabel()).toBe(i18n.selectUsers);
-      expect(findDropdown().props('toggleClass')).toBe('gl-text-gray-500!');
+      expect(findDropdownToggleLabel()).toBe(i18n.defaultLabel);
+      expect(findDropdown().props('toggleClass')[defaultToggleClass]).toBe(true);
     });
 
     it('displays a number of selected items for each group level', async () => {
@@ -196,7 +197,7 @@ describe('Access Level Dropdown', () => {
     it('with only role selected displays the role name and has no class applied', async () => {
       await findItemByNameAndClick('role1');
       expect(findDropdownToggleLabel()).toBe('role1');
-      expect(findDropdown().props('toggleClass')).toBe('');
+      expect(findDropdown().props('toggleClass')[defaultToggleClass]).toBe(false);
     });
 
     it('with only groups selected displays the number of selected groups', async () => {
@@ -204,14 +205,14 @@ describe('Access Level Dropdown', () => {
       await findItemByNameAndClick('group5');
       await findItemByNameAndClick('group6');
       expect(findDropdownToggleLabel()).toBe('3 groups');
-      expect(findDropdown().props('toggleClass')).toBe('');
+      expect(findDropdown().props('toggleClass')[defaultToggleClass]).toBe(false);
     });
 
     it('with only users selected displays the number of selected users', async () => {
       await findItemByNameAndClick('user7');
       await findItemByNameAndClick('user8');
       expect(findDropdownToggleLabel()).toBe('2 users');
-      expect(findDropdown().props('toggleClass')).toBe('');
+      expect(findDropdown().props('toggleClass')[defaultToggleClass]).toBe(false);
     });
 
     it('with users and groups selected displays the number of selected users & groups', async () => {
@@ -220,7 +221,7 @@ describe('Access Level Dropdown', () => {
       await findItemByNameAndClick('user7');
       await findItemByNameAndClick('user9');
       expect(findDropdownToggleLabel()).toBe('2 users, 2 groups');
-      expect(findDropdown().props('toggleClass')).toBe('');
+      expect(findDropdown().props('toggleClass')[defaultToggleClass]).toBe(false);
     });
 
     it('with users and deploy keys selected displays the number of selected users & keys', async () => {
@@ -228,7 +229,7 @@ describe('Access Level Dropdown', () => {
       await findItemByNameAndClick('key10');
       await findItemByNameAndClick('key11');
       expect(findDropdownToggleLabel()).toBe('1 user, 2 deploy keys');
-      expect(findDropdown().props('toggleClass')).toBe('');
+      expect(findDropdown().props('toggleClass')[defaultToggleClass]).toBe(false);
     });
   });
 

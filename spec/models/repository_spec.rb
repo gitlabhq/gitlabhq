@@ -2424,7 +2424,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
           :has_visible_content?,
           :issue_template_names_hash,
           :merge_request_template_names_hash,
-          :user_defined_metrics_dashboard_paths,
           :xcode_project?,
           :has_ambiguous_refs?
         ]

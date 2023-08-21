@@ -1493,7 +1493,6 @@ ee/lib/ee/api/entities/project.rb
 /ee/app/controllers/remote_development/
 /ee/app/services/remote_development/
 /ee/lib/remote_development/
-/ee/spec/frontend/remote_development/
 /ee/spec/features/remote_development/
 /ee/spec/models/remote_development/
 /ee/spec/policies/remote_development/
@@ -1511,8 +1510,10 @@ ee/lib/ee/api/entities/project.rb
 /qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/remote-development/backend @gl-quality/qe-maintainers
 
 [Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/remote-development/frontend
+/ee/app/assets/remote_development/
 /ee/app/assets/**/remote_development/
 /ee/app/views/remote_development/
+/ee/spec/frontend/remote_development/
 /ee/spec/frontend/**/remote_development/
 
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528

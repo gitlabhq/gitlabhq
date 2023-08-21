@@ -28,12 +28,7 @@ export default {
 </script>
 
 <template>
-  <gl-badge
-    v-gl-tooltip.bottom
-    :title="confidentialTooltip"
-    icon="eye-slash"
-    variant="warning"
-    class="gl-display-inline gl-mr-3"
-    >{{ __('Confidential') }}</gl-badge
-  >
+  <gl-badge v-gl-tooltip icon="eye-slash" :title="confidentialTooltip" variant="warning">
+    {{ __('Confidential') }}
+  </gl-badge>
 </template>

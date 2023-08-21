@@ -19,7 +19,7 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
         find(".js-allowed-to-create").click
         wait_for_requests
 
-        within('[data-testid="allowed-to-create-dropdown"]') do
+        within('.dropdown-menu') do
           dropdown_headers = page.all('.dropdown-header').map(&:text)
 
           expect(dropdown_headers).to contain_exactly(*all_dropdown_sections)
@@ -53,7 +53,7 @@ RSpec.shared_examples 'Deploy keys with protected tags' do
         find(".js-allowed-to-create").click
         wait_for_requests
 
-        within('[data-testid="allowed-to-create-dropdown"]') do
+        within('.dropdown-menu') do
           dropdown_headers = page.all('.dropdown-header').map(&:text)
 
           expect(dropdown_headers).to contain_exactly(*dropdown_sections_minus_deploy_keys)

@@ -515,9 +515,9 @@ export default {
                 <gl-loading-icon v-if="updateInProgress" class="gl-mr-3" />
                 <confidentiality-badge
                   v-if="workItem.confidential"
-                  data-testid="confidential"
-                  :workspace-type="$options.WORKSPACE_PROJECT"
+                  class="gl-mr-3"
                   :issuable-type="workItemType"
+                  :workspace-type="$options.WORKSPACE_PROJECT"
                 />
                 <work-item-todos
                   v-if="showWorkItemCurrentUserTodos"

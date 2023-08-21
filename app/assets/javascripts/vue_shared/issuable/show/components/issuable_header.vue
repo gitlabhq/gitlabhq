@@ -162,8 +162,8 @@ export default {
 
 <template>
   <div class="detail-page-header gl-flex-direction-column gl-sm-flex-direction-row">
-    <div class="detail-page-header-body gl-flex-wrap">
-      <gl-badge class="gl-mr-2" :variant="badgeVariant">
+    <div class="detail-page-header-body gl-flex-wrap gl-gap-2">
+      <gl-badge :variant="badgeVariant">
         <gl-icon v-if="statusIcon" :name="statusIcon" :class="statusIconClass" />
         <span class="gl-display-none gl-sm-display-block" :class="{ 'gl-ml-2': statusIcon }">
           <slot name="status-badge">{{ badgeText }}</slot>
@@ -192,19 +192,20 @@ export default {
       </span>
       <work-item-type-icon
         v-if="shouldShowWorkItemTypeIcon"
+        class="gl-m-0!"
         show-text
         :work-item-type="issuableType.toUpperCase()"
       />
       <gl-sprintf :message="createdMessage">
         <template #timeAgo>
-          <time-ago-tooltip class="gl-mx-2" :time="createdAt" />
+          <time-ago-tooltip :time="createdAt" />
         </template>
         <template #email>
           {{ serviceDeskReplyTo }}
         </template>
         <template #author>
           <gl-link
-            class="gl-font-weight-bold gl-mx-2 js-user-link"
+            class="gl-font-weight-bold js-user-link"
             :href="author.webUrl"
             :data-user-id="authorId"
           >
@@ -225,7 +226,6 @@ export default {
       <gl-icon
         v-if="isFirstContribution"
         v-gl-tooltip
-        class="gl-mr-2"
         name="first-contribution"
         :title="__('1st contribution!')"
         :aria-label="__('1st contribution!')"

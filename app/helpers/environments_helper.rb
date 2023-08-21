@@ -93,8 +93,7 @@ module EnvironmentsHelper
       'empty_loading_svg_path' => image_path('illustrations/monitoring/loading.svg'),
       'empty_no_data_svg_path' => image_path('illustrations/monitoring/no_data.svg'),
       'empty_no_data_small_svg_path' => image_path('illustrations/chart-empty-state-small.svg'),
-      'empty_unable_to_connect_svg_path' => image_path('illustrations/monitoring/unable_to_connect.svg'),
-      'custom_dashboard_base_path' => Gitlab::Metrics::Dashboard::RepoDashboardFinder::DASHBOARD_ROOT
+      'empty_unable_to_connect_svg_path' => image_path('illustrations/monitoring/unable_to_connect.svg')
     }
   end
 end

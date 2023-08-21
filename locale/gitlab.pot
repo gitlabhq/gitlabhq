@@ -675,9 +675,6 @@ msgstr ""
 msgid "%{count} total weight"
 msgstr ""
 
-msgid "%{dashboard_path} could not be found."
-msgstr ""
-
 msgid "%{days} days until tags are automatically removed"
 msgstr ""
 
@@ -1915,6 +1912,9 @@ msgstr ""
 msgid "AI|AI generated explanations will appear here."
 msgstr ""
 
+msgid "AI|An %{linkStart}Experiment%{linkEnd} is a feature that's in the process of being developed. It's not production-ready. We encourage users to try Experimental features and provide feedback. An Experiment: %{bullets}"
+msgstr ""
+
 msgid "AI|Apply AI-generated description"
 msgstr ""
 
@@ -1925,6 +1925,9 @@ msgid "AI|Ask a question"
 msgstr ""
 
 msgid "AI|Autocomplete"
+msgstr ""
+
+msgid "AI|Can be removed at any time"
 msgstr ""
 
 msgid "AI|Close the Code Explanation"
@@ -1966,10 +1969,16 @@ msgstr ""
 msgid "AI|GitLab Duo"
 msgstr ""
 
+msgid "AI|Has no support and might not be documented"
+msgstr ""
+
 msgid "AI|Helpful"
 msgstr ""
 
 msgid "AI|I don't see how I can help. Please give better instructions!"
+msgstr ""
+
+msgid "AI|May be unstable"
 msgstr ""
 
 msgid "AI|May provide inappropriate responses not representative of GitLab's views. Do not input personal data."
@@ -2018,6 +2027,9 @@ msgid "AI|Use third-party AI services"
 msgstr ""
 
 msgid "AI|What does the selected code mean?"
+msgstr ""
+
+msgid "AI|What's an Experiment?"
 msgstr ""
 
 msgid "AI|Write a brief description and have AI fill in the details."
@@ -2459,6 +2471,9 @@ msgid "AccessDropdown|Groups"
 msgstr ""
 
 msgid "AccessDropdown|Roles"
+msgstr ""
+
+msgid "AccessDropdown|Select"
 msgstr ""
 
 msgid "AccessDropdown|Users"
@@ -31419,9 +31434,6 @@ msgstr ""
 msgid "No other labels with such name or description"
 msgstr ""
 
-msgid "No panels matching properties %{opts}"
-msgstr ""
-
 msgid "No parent group"
 msgstr ""
 
@@ -38201,6 +38213,9 @@ msgstr ""
 msgid "ProtectedEnvironments|Save"
 msgstr ""
 
+msgid "ProtectedEnvironments|Select users"
+msgstr ""
+
 msgid "ProtectedEnvironments|Set which groups, access levels or users are required to approve."
 msgstr ""
 
@@ -38279,9 +38294,6 @@ msgstr ""
 msgid "ProtectedEnvironment|Select groups"
 msgstr ""
 
-msgid "ProtectedEnvironment|Select users"
-msgstr ""
-
 msgid "ProtectedEnvironment|There are currently no protected environments."
 msgstr ""
 
@@ -38346,9 +38358,6 @@ msgid "Provision instructions"
 msgstr ""
 
 msgid "Provisioned by:"
-msgstr ""
-
-msgid "Proxy support for this API is not available currently"
 msgstr ""
 
 msgid "Public"

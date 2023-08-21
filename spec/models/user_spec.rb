@@ -2906,7 +2906,7 @@ RSpec.describe User, feature_category: :user_profile do
       it 'applies defaults to user' do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
-        expect(user.theme_id).to eq(1)
+        expect(user.theme_id).to eq(3)
       end
 
       it 'does not undo projects_limit setting if it matches old DB default of 10' do
