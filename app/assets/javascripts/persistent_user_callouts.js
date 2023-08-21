@@ -19,7 +19,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-namespace-storage-alert',
   '.js-web-hook-disabled-callout',
   '.js-merge-request-settings-callout',
-  '.js-ultimate-feature-removal-banner',
   '.js-geo-enable-hashed-storage-callout',
   '.js-geo-migrate-hashed-storage-callout',
   '.js-unlimited-members-during-trial-alert',

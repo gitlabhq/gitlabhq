@@ -9,7 +9,7 @@ description: Control the job concurrency in GitLab CI/CD
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
 
-By default, pipelines in GitLab CI/CD run in parallel. The parallelization is an important factor to improve
+By default, pipelines in GitLab CI/CD run concurrently. Concurrency is an important factor to improve
 the feedback loop in merge requests, however, there are some situations that
 you may want to limit the concurrency on deployment
 jobs to run them one by one.
@@ -130,13 +130,13 @@ pipelines run almost at the same time:
 Depending on the process mode of the resource group:
 
 - If the process mode is set to `unordered`:
-  - `deploy-1`, `deploy-2`, and `deploy-3` do not run in parallel.
+  - `deploy-1`, `deploy-2`, and `deploy-3` do not run concurrently.
   - There is no guarantee on the job execution order, for example, `deploy-1` could run before or after `deploy-3` runs.
 - If the process mode is `oldest_first`:
-  - `deploy-1`, `deploy-2`, and `deploy-3` do not run in parallel.
+  - `deploy-1`, `deploy-2`, and `deploy-3` do not run concurrently.
   - `deploy-1` runs first, `deploy-2` runs second, and `deploy-3` runs last.
 - If the process mode is `newest_first`:
-  - `deploy-1`, `deploy-2`, and `deploy-3` do not run in parallel.
+  - `deploy-1`, `deploy-2`, and `deploy-3` do not run concurrently.
   - `deploy-3` runs first, `deploy-2` runs second and `deploy-1` runs last.
 
 ## Pipeline-level concurrency control with cross-project/parent-child pipelines

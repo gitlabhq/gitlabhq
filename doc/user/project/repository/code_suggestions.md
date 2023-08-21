@@ -83,18 +83,18 @@ Editor support for languages is documented in the following table.
 |---------------------------------|--------------------------------------------------------------|------------------------------|---------------|--------|
 | C++                             | ✓                                                            |                              | ✓             |        |
 | C#                              | ✓                                                            | ✓                            | ✓             |        |
-| Go                              | ✓                                                            | ✓ (IDEA Ultimate / GoLand)   |               |        |
-| Google SQL                      |                                                              |                              |               |        |
-| Java                            | ✓                                                            | ✓                            |               |        |
-| JavaScript                      | ✓                                                            | ✓                            |               |        |
-| Kotlin                          | ✓                                                            | ✓                            |               |        |
-| PHP                             | ✓                                                            | ✓ (IDEA Ultimate)            |               |        |
-| Python                          | ✓                                                            | ✓                            |               | ✓      |
-| Ruby                            | ✓                                                            | ✓ (IDEA Ultimate / RubyMine) |               | ✓      |
-| Rust                            | ✓                                                            | ✓                            |               |        |
-| Scala                           | ✓                                                            | ✓                            |               |        |
-| Swift                           | ✓                                                            | ✓                            |               |        |
-| TypeScript                      | ✓                                                            | ✓                            |               |        |
+| Go                              | ✓                                                            | ✓ (IDEA Ultimate / GoLand)   | ✓             |        |
+| Google SQL                      |                                                              |                              | ✓             |        |
+| Java                            | ✓                                                            | ✓                            | ✓             |        |
+| JavaScript                      | ✓                                                            | ✓                            | ✓             |        |
+| Kotlin                          | ✓                                                            | ✓                            | ✓             |        |
+| PHP                             | ✓                                                            | ✓ (IDEA Ultimate)            | ✓             |        |
+| Python                          | ✓                                                            | ✓                            | ✓             | ✓      |
+| Ruby                            | ✓                                                            | ✓ (IDEA Ultimate / RubyMine) | ✓             | ✓      |
+| Rust                            | ✓                                                            | ✓                            | ✓             |        |
+| Scala                           | ✓                                                            | ✓                            | ✓             |        |
+| Swift                           | ✓                                                            | ✓                            | ✓             |        |
+| TypeScript                      | ✓                                                            | ✓                            | ✓             |        |
 | Google Cloud CLI                |                                                              |                              |               |        |
 | Kubernetes Resource Model (KRM) |                                                              |                              |               |        |
 | Terraform                       | ✓ (Requires 3rd party extension providing Terraform support) |                              |               |        |

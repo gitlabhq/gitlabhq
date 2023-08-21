@@ -149,7 +149,7 @@ else
     if [ -n "${MD_DOC_PATH}" ]
     then
       # shellcheck disable=2059
-      printf "${COLOR_GREEN}INFO: Merged results pipeline detected. Testing only the following files:${COLOR_RESET}\n${MD_DOC_PATH}"
+      printf "${COLOR_GREEN}INFO: Merged results pipeline detected. Testing only the following files:${COLOR_RESET}\n${MD_DOC_PATH}\n"
     fi
   fi
 fi

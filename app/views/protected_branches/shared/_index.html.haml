@@ -13,6 +13,13 @@
   .settings-content
     .js-alert-protected-branch-created-container.gl-mt-5
 
+    = render Pajamas::AlertComponent.new(variant: :warning,
+      alert_options: { class: 'gl-mb-5' },
+      dismissible: false) do |c|
+      - c.with_body do
+        =  s_("ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features.")
+        = link_to s_("ProtectedBranch|What are the security implications?"), help_page_path('ci/pipelines/index', anchor: 'pipeline-security-on-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
+
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
       - c.with_header do
         .gl-new-card-title-wrapper.gl-justify-content-space-between

@@ -14,7 +14,6 @@ module Users
     PAGES_MOVED_CALLOUT = 'pages_moved_callout'
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
     WEB_HOOK_DISABLED = 'web_hook_disabled'
-    ULTIMATE_FEATURE_REMOVAL_BANNER = 'ultimate_feature_removal_banner'
     BRANCH_RULES_INFO_CALLOUT = 'branch_rules_info_callout'
     NEW_NAVIGATION_CALLOUT = 'new_navigation_callout'
 
@@ -92,12 +91,6 @@ module Users
       return true unless current_user
 
       Gitlab.com? && current_user.created_at >= Date.new(2023, 6, 2)
-    end
-
-    def ultimate_feature_removal_banner_dismissed?(project)
-      return false unless project
-
-      user_dismissed?(ULTIMATE_FEATURE_REMOVAL_BANNER, object: project)
     end
 
     private

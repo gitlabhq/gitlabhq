@@ -23,6 +23,7 @@ do more day-to-day tasks in Visual Studio Code, such as:
 - [Browse repositories](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#browse-a-repository-without-cloning)
   without cloning them.
 - [Receive Code Suggestions](../../user/project/repository/code_suggestions.md).
+- [View Security findings](https://marketplace.visualstudio.com/items?itemName=gitlab.gitlab-workflow#security-findings).
 
 ## Download the extension
 

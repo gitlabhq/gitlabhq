@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Yaml::Tags::Reference do
+RSpec.describe Gitlab::Ci::Config::Yaml::Tags::Reference, feature_category: :pipeline_composition do
   let(:config) do
-    Gitlab::Ci::Config::Yaml.load!(yaml)
+    Gitlab::Ci::Config::Yaml::Loader.new(yaml).load.content
   end
 
   describe '.tag' do

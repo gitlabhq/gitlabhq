@@ -162,13 +162,13 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
     end
   end
 
-  describe 'GET /api/v4/packages/npm/-/package/*package_name/dist-tags' do
+  describe 'GET /api/v4/groups/:id/-/packages/npm/-/package/*package_name/dist-tags' do
     it_behaves_like 'handling get dist tags requests', scope: :group do
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags") }
     end
   end
 
-  describe 'PUT /api/v4/packages/npm/-/package/*package_name/dist-tags/:tag' do
+  describe 'PUT /api/v4/groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag' do
     it_behaves_like 'handling create dist tag requests', scope: :group do
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
     end
@@ -183,7 +183,7 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
     end
   end
 
-  describe 'DELETE /api/v4/packages/npm/-/package/*package_name/dist-tags/:tag' do
+  describe 'DELETE /api/v4/groups/:id/-/packages/npm/-/package/*package_name/dist-tags/:tag' do
     it_behaves_like 'handling delete dist tag requests', scope: :group do
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
     end

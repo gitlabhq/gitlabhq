@@ -3,7 +3,6 @@
 - search = params[:search]
 - subscribed = params[:subscribed]
 - labels_or_filters = @labels.exists? || @prioritized_labels.exists? || search.present? || subscribed.present?
-= render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
 
 - if labels_or_filters
   #js-promote-label-modal

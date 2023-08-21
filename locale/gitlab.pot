@@ -4927,9 +4927,6 @@ msgstr ""
 msgid "An error occurred previewing the blob"
 msgstr ""
 
-msgid "An error occurred when loading the user verification challenge. Refresh to try again."
-msgstr ""
-
 msgid "An error occurred when updating the title"
 msgstr ""
 
@@ -38068,6 +38065,9 @@ msgstr ""
 msgid "ProtectedBranch|Create wildcard"
 msgstr ""
 
+msgid "ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features."
+msgstr ""
+
 msgid "ProtectedBranch|Inherited - This setting can be changed at the group level"
 msgstr ""
 
@@ -38138,6 +38138,9 @@ msgid "ProtectedBranch|View protected branches as branch rules"
 msgstr ""
 
 msgid "ProtectedBranch|What are protected branches?"
+msgstr ""
+
+msgid "ProtectedBranch|What are the security implications?"
 msgstr ""
 
 msgid "ProtectedBranch|When pushing directly to the branch. Does not apply to users **Allowed to push**. Optional sections are not enforced."
@@ -43694,6 +43697,9 @@ msgid "Session ID"
 msgstr ""
 
 msgid "Session duration (minutes)"
+msgstr ""
+
+msgid "Session|Unable to verify the user. An error occurred when loading the user verification challenge. Refresh to try again."
 msgstr ""
 
 msgid "Set %{epic_ref} as the parent epic."
@@ -50193,9 +50199,6 @@ msgstr ""
 msgid "Unable to update this issue at this time."
 msgstr ""
 
-msgid "Unable to verify the user"
-msgstr ""
-
 msgid "Unapprove a merge request"
 msgstr ""
 
@@ -54905,9 +54908,6 @@ msgid "Your personal access tokens will expire in %{days_to_expire} days or less
 msgstr ""
 
 msgid "Your profile"
-msgstr ""
-
-msgid "Your project is no longer receiving GitLab Ultimate benefits as of 2022-07-01. As notified in-app previously, public open source projects on the Free tier can apply to the GitLab for Open Source Program to receive GitLab Ultimate benefits. Please refer to the %{faq_link_start}FAQ%{link_end} for more details."
 msgstr ""
 
 msgid "Your project limit is %{limit} projects! Please contact your administrator to increase it"

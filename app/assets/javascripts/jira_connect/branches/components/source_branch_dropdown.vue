@@ -113,6 +113,7 @@ export default {
     :searchable="true"
     :searching="sourceBranchNamesLoading"
     :toggle-text="branchDropdownText"
+    fluid-width
     @search="onSearch"
     @select="onSourceBranchSelect"
   />

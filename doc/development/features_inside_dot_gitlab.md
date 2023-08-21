@@ -16,6 +16,6 @@ When implementing new features, please refer to these existing features to avoid
 - [Route Maps](../ci/review_apps/index.md#route-maps): `.gitlab/route-map.yml`.
 - [Customize Auto DevOps Helm Values](../topics/autodevops/customize.md#customize-helm-chart-values): `.gitlab/auto-deploy-values.yaml`.
 - [Insights](../user/project/insights/index.md#configure-project-insights): `.gitlab/insights.yml`.
-- [Service Desk Templates](../user/project/service_desk/index.md#customize-emails-sent-to-the-requester): `.gitlab/service_desk_templates/`.
+- [Service Desk Templates](../user/project/service_desk/configure.md#customize-emails-sent-to-the-requester): `.gitlab/service_desk_templates/`.
 - [Secret Detection Custom Rulesets](../user/application_security/secret_detection/index.md#disable-predefined-analyzer-rules): `.gitlab/secret-detection-ruleset.toml`
 - [Static Analysis Custom Rulesets](../user/application_security/sast/customize_rulesets.md#create-the-configuration-file): `.gitlab/sast-ruleset.toml`

@@ -283,6 +283,12 @@ By default, the vulnerability report does not show vulnerabilities of `dismissed
 
 [Read more about the Vulnerability report](vulnerability_report/index.md).
 
+## View security scan information in the extension for VS Code
+
+You can now see security findings directly in Visual Studio Code (VS Code) using [GitLab Workflow VS Code extension](../../editor_extensions/visual_studio_code/index.md), just as you would in a merge request.
+
+For more details, see [extension page](https://marketplace.visualstudio.com/items?itemName=gitlab.gitlab-workflow#security-findings).
+
 ## Security approvals in merge requests
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9928) in GitLab 12.2.

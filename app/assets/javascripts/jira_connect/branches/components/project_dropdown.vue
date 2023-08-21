@@ -98,13 +98,13 @@ export default {
     :loading="initialProjectsLoading"
     :searchable="true"
     :searching="projectsLoading"
+    fluid-width
     @search="onSearch"
     @select="onProjectSelect"
   >
     <template #list-item="{ item: project }">
       <gl-avatar-labeled
         v-if="project"
-        class="gl-text-truncate"
         :shape="$options.AVATAR_SHAPE_OPTION_RECT"
         :size="32"
         :src="project.avatarUrl"

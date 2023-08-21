@@ -5,8 +5,6 @@
 - reduce_visibility_form_id = 'reduce-visibility-form'
 - @force_desktop_expanded_sidebar = true
 
-= render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
-
 = render Pajamas::AlertComponent.new(title: _('GitLab Pages has moved'),
     alert_options: { class: 'gl-my-5', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
   - c.with_body do

@@ -11,10 +11,10 @@ module Users
     enum feature_name: {
       awaiting_members_banner: 1, # EE-only
       web_hook_disabled: 2,
-      ultimate_feature_removal_banner: 3,
+      # 3 was used and removed https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129703,
+      # it cannot be used without a cleanup migration
       namespace_storage_pre_enforcement_banner: 4, # EE-only
-      # 5,6,7 were unused and removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118330,
-      # they can be replaced.
+      # 5,6,7 were removed https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118330, they can be replaced
       license_check_deprecation_alert: 8 # EE-only
     }
 
