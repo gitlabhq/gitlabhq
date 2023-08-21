@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab 16 changes
+# GitLab 16 changes **(FREE SELF)**
 
 This page contains upgrade information for minor and patch versions of GitLab 16.
 Ensure you review these instructions for:

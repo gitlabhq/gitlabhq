@@ -308,7 +308,8 @@ To enable group sync:
 
 ### Access to application logs
 
-GitLab [application logs](../../administration/logs/index.md) are delivered to an S3 bucket in the GitLab tenant account, which can be shared with you.
+GitLab [application logs](../../administration/logs/index.md) are delivered to an S3 bucket in the GitLab tenant account, which can be shared with you. Logs stored in the S3 bucket are retained indefinitely, until the 1 year retention policy is fully enforced. GitLab team members can view more information in this confidential issue:
+`https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/483`.
 
 To gain read only access to this bucket:
 

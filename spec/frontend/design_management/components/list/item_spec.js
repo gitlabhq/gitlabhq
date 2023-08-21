@@ -1,5 +1,5 @@
 import { GlIcon, GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueRouter from 'vue-router';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -49,7 +49,7 @@ describe('Design management list item component', () => {
             imageLoading,
           };
         },
-        stubs: ['router-link'],
+        stubs: { RouterLink: RouterLinkStub },
       }),
     );
   }

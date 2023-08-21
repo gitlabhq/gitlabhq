@@ -418,6 +418,11 @@ receives a payload with the end time of the alert set. For HTTP Endpoints
 without [custom mappings](#map-fields-in-custom-alerts), the expected
 field is `end_time`. With custom mappings, you can select the expected field.
 
+GitLab determines which alert to resolve based on the `fingerprint` value that can be provided as
+part of the payload.
+For more information on alert properties and mappings, see
+[Customize the alert payload outside of GitLab](#customize-the-alert-payload-outside-of-gitlab).
+
 You can also configure the associated [incident to be closed automatically](../incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
 
 ## Link to your Opsgenie Alerts **(PREMIUM ALL)**

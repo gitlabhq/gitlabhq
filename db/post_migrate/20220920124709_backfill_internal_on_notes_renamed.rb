@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class BackfillInternalOnNotes < Gitlab::Database::Migration[2.0]
+# Renamed from BackfillInternalOnNotes to BackfillInternalOnNotesRenamed to avoid collision with an Elasticsearch
+# migration  from the same name. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129012
+class BackfillInternalOnNotesRenamed < Gitlab::Database::Migration[2.0]
   MIGRATION = 'BackfillInternalOnNotes'
   DELAY_INTERVAL = 2.minutes
   TABLE = :notes

@@ -9,6 +9,8 @@
 ---
 - advisory_database
 - ai_abstraction_layer
+- ai_evaluation
+- ai_research
 - api
 - api_security
 - application_instrumentation
@@ -50,6 +52,7 @@
 - devops_reports
 - disaster_recovery
 - dora_metrics
+- duo_chat
 - dynamic_application_security_testing
 - editor_extensions
 - environment_management
@@ -68,7 +71,6 @@
 - gitaly
 - gitlab_cli
 - gitlab_docs
-- gitlab_duo_chat
 - global_search
 - groups_and_projects
 - helm_chart_registry

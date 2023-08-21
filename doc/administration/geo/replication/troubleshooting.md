@@ -116,6 +116,38 @@ The following environment variables are supported.
 |`NTP_PORT`   | The NTP port the host listens on. |`ntp`|
 |`NTP_TIMEOUT`| The NTP timeout in seconds. | The value defined in the `net-ntp` Ruby library ([60 seconds](https://github.com/zencoder/net-ntp/blob/3d0990214f439a5127782e0f50faeaf2c8ca7023/lib/net/ntp/ntp.rb#L6)). |
 
+If the Rake task skips the `OpenSSH configured to use AuthorizedKeysCommand` check, the
+following output displays:
+
+```plaintext
+OpenSSH configured to use AuthorizedKeysCommand ... skipped
+  Reason:
+  Cannot access OpenSSH configuration file
+  Try fixing it:
+  This is expected if you are using SELinux. You may want to check configuration manually
+  For more information see:
+  doc/administration/operations/fast_ssh_key_lookup.md
+```
+
+This issue may occur if:
+
+- You [use SELinux](../../operations/fast_ssh_key_lookup.md#selinux-support-and-limitations).
+- You don't use SELinux, and the `git` user cannot access the OpenSSH configuration file due to restricted file permissions.
+
+In the latter case, the following output shows that only the `root` user can read this file:
+
+```plaintext
+sudo stat -c '%G:%U %A %a %n' /etc/ssh/sshd_config
+
+root:root -rw------- 600 /etc/ssh/sshd_config
+```
+
+To allow the `git` user to read the OpenSSH configuration file, without changing the file owner or permissions, use `acl`:
+
+```plaintext
+sudo setfacl -m u:git:r /etc/ssh/sshd_config
+```
+
 #### Sync status Rake task
 
 Current sync information can be found manually by running this Rake task on any

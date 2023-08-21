@@ -165,6 +165,8 @@ Additional technical documentation for `gitlab-sshd` may be found in the
 
 ## Troubleshooting
 
+### SSH traffic slow or high CPU load
+
 If your SSH traffic is [slow](https://github.com/linux-pam/linux-pam/issues/270)
 or causing high CPU load, be sure to check the size of `/var/log/btmp`, and ensure it is rotated on a regular basis or after reaching a certain size.
 If this file is very large, GitLab SSH fast lookup can cause the bottleneck to be hit more frequently, thus decreasing performance even further.

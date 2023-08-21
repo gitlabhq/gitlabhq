@@ -1,0 +1,35 @@
+diff --git a/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js b/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js
+index f6afe09..842766d 100644
+--- a/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js
++++ b/node_modules/@vue/compiler-core/dist/compiler-core.cjs.js
+@@ -980,6 +980,8 @@ function parseChildren(context, mode, ancestors) {
+             const node = nodes[i];
+             if (node.type === 2 /* NodeTypes.TEXT */) {
+                 if (!context.inPre) {
++                    const isInTextTemplate = parent && parent.tag === 'template' && !nodes.some(n => n && n.tag);
++
+                     if (!/[^\t\r\n\f ]/.test(node.content)) {
+                         const prev = nodes[i - 1];
+                         const next = nodes[i + 1];
+@@ -988,8 +990,8 @@ function parseChildren(context, mode, ancestors) {
+                         // - (condense mode) the whitespace is between twos comments, or:
+                         // - (condense mode) the whitespace is between comment and element, or:
+                         // - (condense mode) the whitespace is between two elements AND contains newline
+-                        if (!prev ||
+-                            !next ||
++                        if ((!prev && !isInTextTemplate) ||
++                            (!next && !isInTextTemplate) ||
+                             (shouldCondense &&
+                                 ((prev.type === 3 /* NodeTypes.COMMENT */ &&
+                                     next.type === 3 /* NodeTypes.COMMENT */) ||
+@@ -1005,7 +1007,9 @@ function parseChildren(context, mode, ancestors) {
+                         }
+                         else {
+                             // Otherwise, the whitespace is condensed into a single space
+-                            node.content = ' ';
++                            if (!isInTextTemplate) {
++                              node.content = ' ';
++                            }
+                         }
+                     }
+                     else if (shouldCondense) {

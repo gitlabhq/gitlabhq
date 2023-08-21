@@ -208,24 +208,22 @@ export const WORK_ITEM_NOTES_FILTER_KEY = 'filter_key_work_item';
 
 export const WORK_ITEM_ACTIVITY_FILTER_OPTIONS = [
   {
-    key: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+    value: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
     text: s__('WorkItem|All activity'),
   },
   {
-    key: WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
+    value: WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
     text: s__('WorkItem|Comments only'),
-    testid: 'comments-activity',
   },
   {
-    key: WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
+    value: WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
     text: s__('WorkItem|History only'),
-    testid: 'history-activity',
   },
 ];
 
 export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
-  { key: DESC, text: __('Newest first'), testid: 'newest-first' },
-  { key: ASC, text: __('Oldest first') },
+  { value: DESC, text: __('Newest first') },
+  { value: ASC, text: __('Oldest first') },
 ];
 
 export const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-action';

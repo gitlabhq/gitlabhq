@@ -372,7 +372,6 @@ $tabs-holder-z-index: 250;
     white-space: nowrap;
   }
 
-  /* stylelint-disable scss/at-rule-no-unknown */
   @container mr-widget-extension (max-width: 600px) {
     flex-direction: column;
     align-items: flex-start;

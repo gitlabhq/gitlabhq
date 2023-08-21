@@ -9,12 +9,8 @@ exports[`Design management list item component when item appears in view after i
 `;
 
 exports[`Design management list item component with notes renders item with multiple comments 1`] = `
-<router-link-stub
-  ariacurrentvalue="page"
+<a
   class="card design-list-item gl-cursor-pointer gl-mb-0 js-design-list-item text-plain"
-  event="click"
-  tag="a"
-  to="[object Object]"
 >
   <div
     class="card-body gl-align-items-center gl-display-flex gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
@@ -74,16 +70,12 @@ exports[`Design management list item component with notes renders item with mult
       </span>
     </div>
   </div>
-</router-link-stub>
+</a>
 `;
 
 exports[`Design management list item component with notes renders item with single comment 1`] = `
-<router-link-stub
-  ariacurrentvalue="page"
+<a
   class="card design-list-item gl-cursor-pointer gl-mb-0 js-design-list-item text-plain"
-  event="click"
-  tag="a"
-  to="[object Object]"
 >
   <div
     class="card-body gl-align-items-center gl-display-flex gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
@@ -143,5 +135,5 @@ exports[`Design management list item component with notes renders item with sing
       </span>
     </div>
   </div>
-</router-link-stub>
+</a>
 `;

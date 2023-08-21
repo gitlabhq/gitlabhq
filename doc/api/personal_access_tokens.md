@@ -243,12 +243,13 @@ For each rotated token, the previous and now revoked token is referenced. This
 chain of references defines a token family. In a token family, only the latest
 token is active, and all other tokens in that family are revoked.
 
-When a revoked token from a token family is used in an authentication attempt,
-that attempt fails and the active token from the token family gets revoked.
+When a revoked token from a token family is used in an authentication attempt
+for the token rotation endpoint, that attempt fails and the active token from
+the token family gets revoked.
 This mechanism helps to prevent compromise when a personal access token is
 leaked.
 
-Automatic reuse detection is enabled for API requests.
+Automatic reuse detection is enabled for token rotation API requests.
 
 ## Revoke a personal access token
 
