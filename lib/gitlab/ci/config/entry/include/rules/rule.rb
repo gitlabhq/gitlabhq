@@ -27,7 +27,7 @@ module Gitlab
             end
 
             def value
-              Feature.enabled?(:ci_refactor_external_rules) ? config.compact : super
+              config.compact
             end
           end
         end

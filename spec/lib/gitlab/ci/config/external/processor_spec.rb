@@ -563,16 +563,6 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
         it 'raises IncludeError' do
           expect { subject }.to raise_error(described_class::IncludeError, /contains unknown keys: changes/)
         end
-
-        context 'when FF `ci_refactor_external_rules` is disabled' do
-          before do
-            stub_feature_flags(ci_refactor_external_rules: false)
-          end
-
-          it 'raises IncludeError' do
-            expect { subject }.to raise_error(described_class::IncludeError, /invalid include rule/)
-          end
-        end
       end
     end
   end

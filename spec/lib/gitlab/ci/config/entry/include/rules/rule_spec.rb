@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper' # Change this to fast spec helper when FF `ci_refactor_external_rules` is removed
+require 'fast_spec_helper'
 require_dependency 'active_model'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category: :pipeline_composition do
@@ -19,16 +19,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category
 
     it 'returns the expected value' do
       expect(entry.value).to eq(config.compact)
-    end
-
-    context 'when FF `ci_refactor_external_rules` is disabled' do
-      before do
-        stub_feature_flags(ci_refactor_external_rules: false)
-      end
-
-      it 'returns the expected value' do
-        expect(entry.value).to eq(config)
-      end
     end
   end
 

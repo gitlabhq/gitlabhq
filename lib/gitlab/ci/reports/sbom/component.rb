@@ -31,6 +31,14 @@ module Gitlab
           end
           strong_memoize_attr :purl
 
+          def purl_type
+            purl.type
+          end
+
+          def type
+            component_type
+          end
+
           def name
             return @name unless purl
 

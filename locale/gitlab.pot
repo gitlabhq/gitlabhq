@@ -50724,6 +50724,9 @@ msgstr ""
 msgid "UsageQuota|Namespace storage used"
 msgstr ""
 
+msgid "UsageQuota|Namespace total storage represents the sum of storage consumed by all projects, Container Registry, and Dependency Proxy."
+msgstr ""
+
 msgid "UsageQuota|No compute usage data available."
 msgstr ""
 
