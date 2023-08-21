@@ -277,6 +277,11 @@ References to pull requests and issues are preserved. Each imported repository m
 [visibility level is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects), in which case it
 defaults to the default project visibility.
 
+### Known issue
+
+GitHub pull request comments (known as diff notes in GitLab) created before 2017 are imported in separate threads. This occurs because of a limitation of the GitHub
+API that doesn't include `in_reply_to_id` for comments before 2017.
+
 ### Branch protection rules and project settings
 
 When they are imported, supported GitHub branch protection rules are mapped to either:
