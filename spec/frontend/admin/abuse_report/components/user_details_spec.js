@@ -18,7 +18,7 @@ describe('UserDetails', () => {
   const findLinkFor = (attribute) => findLinkIn(findUserDetail(attribute));
   const findTimeIn = (component) => component.findComponent(TimeAgoTooltip).props('time');
   const findTimeFor = (attribute) => findTimeIn(findUserDetail(attribute));
-  const findOtherReport = (index) => wrapper.findByTestId(`other-report-${index}`);
+  const findPastReport = (index) => wrapper.findByTestId(`past-report-${index}`);
 
   const createComponent = (props = {}) => {
     wrapper = shallowMountExtended(UserDetails, {
@@ -38,8 +38,8 @@ describe('UserDetails', () => {
 
   describe('createdAt', () => {
     it('renders the users createdAt with the correct label', () => {
-      expect(findUserDetailLabel('createdAt')).toBe(USER_DETAILS_I18N.createdAt);
-      expect(findTimeFor('createdAt')).toBe(user.createdAt);
+      expect(findUserDetailLabel('created-at')).toBe(USER_DETAILS_I18N.createdAt);
+      expect(findTimeFor('created-at')).toBe(user.createdAt);
     });
   });
 
@@ -67,32 +67,34 @@ describe('UserDetails', () => {
 
   describe('creditCard', () => {
     it('renders the correct label', () => {
-      expect(findUserDetailLabel('creditCard')).toBe(USER_DETAILS_I18N.creditCard);
+      expect(findUserDetailLabel('credit-card-verification')).toBe(USER_DETAILS_I18N.creditCard);
     });
 
     it('renders the users name', () => {
-      expect(findUserDetail('creditCard').text()).toContain(
+      expect(findUserDetail('credit-card-verification').text()).toContain(
         sprintf(USER_DETAILS_I18N.registeredWith, { ...user.creditCard }),
       );
 
-      expect(findUserDetail('creditCard').text()).toContain(user.creditCard.name);
+      expect(findUserDetail('credit-card-verification').text()).toContain(user.creditCard.name);
     });
 
     describe('similar credit cards', () => {
       it('renders the number of similar records', () => {
-        expect(findUserDetail('creditCard').text()).toContain(
+        expect(findUserDetail('credit-card-verification').text()).toContain(
           sprintf('Card matches %{similarRecordsCount} accounts', { ...user.creditCard }),
         );
       });
 
       it('renders a link to the matching cards', () => {
-        expect(findLinkFor('creditCard').attributes('href')).toBe(user.creditCard.cardMatchesLink);
+        expect(findLinkFor('credit-card-verification').attributes('href')).toBe(
+          user.creditCard.cardMatchesLink,
+        );
 
-        expect(findLinkFor('creditCard').text()).toBe(
+        expect(findLinkFor('credit-card-verification').text()).toBe(
           sprintf('%{similarRecordsCount} accounts', { ...user.creditCard }),
         );
 
-        expect(findLinkFor('creditCard').text()).toContain(
+        expect(findLinkFor('credit-card-verification').text()).toContain(
           user.creditCard.similarRecordsCount.toString(),
         );
       });
@@ -105,13 +107,13 @@ describe('UserDetails', () => {
         });
 
         it('does not render the number of similar records', () => {
-          expect(findUserDetail('creditCard').text()).not.toContain(
+          expect(findUserDetail('credit-card-verification').text()).not.toContain(
             sprintf('Card matches %{similarRecordsCount} accounts', { ...user.creditCard }),
           );
         });
 
         it('does not render a link to the matching cards', () => {
-          expect(findLinkFor('creditCard').exists()).toBe(false);
+          expect(findLinkFor('credit-card-verification').exists()).toBe(false);
         });
       });
     });
@@ -124,55 +126,55 @@ describe('UserDetails', () => {
       });
 
       it('does not render the users creditCard', () => {
-        expect(findUserDetail('creditCard').exists()).toBe(false);
+        expect(findUserDetail('credit-card-verification').exists()).toBe(false);
       });
     });
   });
 
   describe('otherReports', () => {
     it('renders the correct label', () => {
-      expect(findUserDetailLabel('otherReports')).toBe(USER_DETAILS_I18N.otherReports);
+      expect(findUserDetailLabel('past-closed-reports')).toBe(USER_DETAILS_I18N.pastReports);
     });
 
-    describe.each(user.otherReports)('renders a line for report %#', (otherReport) => {
-      const index = user.otherReports.indexOf(otherReport);
+    describe.each(user.pastClosedReports)('renders a line for report %#', (pastReport) => {
+      const index = user.pastClosedReports.indexOf(pastReport);
 
       it('renders the category', () => {
-        expect(findOtherReport(index).text()).toContain(
-          sprintf('Reported for %{category}', { ...otherReport }),
+        expect(findPastReport(index).text()).toContain(
+          sprintf('Reported for %{category}', { ...pastReport }),
         );
       });
 
       it('renders a link to the report', () => {
-        expect(findLinkIn(findOtherReport(index)).attributes('href')).toBe(otherReport.reportPath);
+        expect(findLinkIn(findPastReport(index)).attributes('href')).toBe(pastReport.reportPath);
       });
 
       it('renders the time it was created', () => {
-        expect(findTimeIn(findOtherReport(index))).toBe(otherReport.createdAt);
+        expect(findTimeIn(findPastReport(index))).toBe(pastReport.createdAt);
       });
     });
 
     describe('when the users otherReports is empty', () => {
       beforeEach(() => {
         createComponent({
-          user: { ...user, otherReports: [] },
+          user: { ...user, pastClosedReports: [] },
         });
       });
 
       it('does not render the users otherReports', () => {
-        expect(findUserDetail('otherReports').exists()).toBe(false);
+        expect(findUserDetail('past-closed-reports').exists()).toBe(false);
       });
     });
   });
 
   describe('normalLocation', () => {
     it('renders the correct label', () => {
-      expect(findUserDetailLabel('normalLocation')).toBe(USER_DETAILS_I18N.normalLocation);
+      expect(findUserDetailLabel('normal-location')).toBe(USER_DETAILS_I18N.normalLocation);
     });
 
     describe('when the users mostUsedIp is blank', () => {
       it('renders the users lastSignInIp', () => {
-        expect(findUserDetailValue('normalLocation')).toBe(user.lastSignInIp);
+        expect(findUserDetailValue('normal-location')).toBe(user.lastSignInIp);
       });
     });
 
@@ -186,23 +188,25 @@ describe('UserDetails', () => {
       });
 
       it('renders the users mostUsedIp', () => {
-        expect(findUserDetailValue('normalLocation')).toBe(mostUsedIp);
+        expect(findUserDetailValue('normal-location')).toBe(mostUsedIp);
       });
     });
   });
 
   describe('lastSignInIp', () => {
     it('renders the users lastSignInIp with the correct label', () => {
-      expect(findUserDetailLabel('lastSignInIp')).toBe(USER_DETAILS_I18N.lastSignInIp);
-      expect(findUserDetailValue('lastSignInIp')).toBe(user.lastSignInIp);
+      expect(findUserDetailLabel('last-sign-in-ip')).toBe(USER_DETAILS_I18N.lastSignInIp);
+      expect(findUserDetailValue('last-sign-in-ip')).toBe(user.lastSignInIp);
     });
   });
 
   it.each(['snippets', 'groups', 'notes'])(
     'renders the users %s with the correct label',
     (attribute) => {
-      expect(findUserDetailLabel(attribute)).toBe(USER_DETAILS_I18N[attribute]);
-      expect(findUserDetailValue(attribute)).toBe(
+      const testId = `user-${attribute}-count`;
+
+      expect(findUserDetailLabel(testId)).toBe(USER_DETAILS_I18N[attribute]);
+      expect(findUserDetailValue(testId)).toBe(
         USER_DETAILS_I18N[`${attribute}Count`](user[`${attribute}Count`]),
       );
     },

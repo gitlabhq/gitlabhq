@@ -10,7 +10,7 @@ import { mockAbuseReport } from '../mock_data';
 describe('HistoryItems', () => {
   let wrapper;
 
-  const { report, reporter } = mockAbuseReport;
+  const { report } = mockAbuseReport;
 
   const findHistoryItem = () => wrapper.findComponent(HistoryItem);
   const findTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
@@ -19,7 +19,6 @@ describe('HistoryItems', () => {
     wrapper = shallowMount(HistoryItems, {
       propsData: {
         report,
-        reporter,
         ...props,
       },
       stubs: {
@@ -39,7 +38,7 @@ describe('HistoryItems', () => {
   describe('rendering the title', () => {
     it('renders the reporters name and the category', () => {
       const title = sprintf(HISTORY_ITEMS_I18N.reportedByForCategory, {
-        name: reporter.name,
+        name: report.reporter.name,
         category: report.category,
       });
       expect(findHistoryItem().text()).toContain(title);
@@ -47,7 +46,7 @@ describe('HistoryItems', () => {
 
     describe('when the reporter is not defined', () => {
       beforeEach(() => {
-        createComponent({ reporter: undefined });
+        createComponent({ report: { ...report, reporter: undefined } });
       });
 
       it('renders the `No user found` as the reporters name and the category', () => {

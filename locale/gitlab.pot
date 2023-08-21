@@ -2236,9 +2236,6 @@ msgstr ""
 msgid "AbuseReport|%{reportLinkStart}Reported%{reportLinkEnd} for %{category} %{timeAgo}."
 msgstr ""
 
-msgid "AbuseReport|Abuse reports"
-msgstr ""
-
 msgid "AbuseReport|Abuse unconfirmed"
 msgstr ""
 
@@ -2351,6 +2348,9 @@ msgid "AbuseReport|Offensive or Abusive"
 msgstr ""
 
 msgid "AbuseReport|Other"
+msgstr ""
+
+msgid "AbuseReport|Past abuse reports"
 msgstr ""
 
 msgid "AbuseReport|Personal information or credentials"

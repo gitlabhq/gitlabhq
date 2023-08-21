@@ -58,7 +58,7 @@ export const USER_DETAILS_I18N = {
   plan: s__('AbuseReport|Tier'),
   verification: s__('AbuseReport|Verification'),
   creditCard: s__('AbuseReport|Credit card'),
-  otherReports: s__('AbuseReport|Abuse reports'),
+  pastReports: s__('AbuseReport|Past abuse reports'),
   normalLocation: s__('AbuseReport|Normal location'),
   lastSignInIp: s__('AbuseReport|Last login'),
   snippets: s__('AbuseReport|Snippets'),
@@ -72,7 +72,7 @@ export const USER_DETAILS_I18N = {
     phone: s__('AbuseReport|Phone'),
     creditCard: s__('AbuseReport|Credit card'),
   },
-  otherReport: s__(
+  reportedFor: s__(
     'AbuseReport|%{reportLinkStart}Reported%{reportLinkEnd} for %{category} %{timeAgo}.',
   ),
   registeredWith: s__('AbuseReport|Registered with name %{name}.'),

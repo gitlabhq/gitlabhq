@@ -23,6 +23,16 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
     end
   end
 
+  describe 'organization field' do
+    subject { described_class.fields['organization'] }
+
+    it 'finds organization by path' do
+      is_expected.to have_graphql_arguments(:id)
+      is_expected.to have_graphql_type(Types::Organizations::OrganizationType)
+      is_expected.to have_graphql_resolver(Resolvers::Organizations::OrganizationResolver)
+    end
+  end
+
   describe 'project field' do
     subject { described_class.fields['project'] }
 

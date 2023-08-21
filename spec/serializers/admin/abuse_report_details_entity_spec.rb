@@ -5,10 +5,11 @@ require 'spec_helper'
 RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threat do
   include Gitlab::Routing
 
-  let(:report) { build_stubbed(:abuse_report) }
-  let(:user) { report.user }
-  let(:reporter) { report.reporter }
-  let!(:other_report) { create(:abuse_report, user: user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate
+  let_it_be(:report) { build_stubbed(:abuse_report) }
+  let_it_be(:user) { report.user }
+  let_it_be(:reporter) { report.reporter }
+  let_it_be(:past_report) { create_default(:abuse_report, :closed, user: user) }
+  let_it_be(:similar_open_report) { create_default(:abuse_report, user: user, category: report.category) }
 
   let(:entity) do
     described_class.new(report)
@@ -18,11 +19,10 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
     subject(:entity_hash) { entity.as_json }
 
     it 'exposes correct attributes' do
-      expect(entity_hash.keys).to include(
+      expect(entity_hash.keys).to match_array([
         :user,
-        :reporter,
         :report
-      )
+      ])
     end
 
     it 'correctly exposes `user`', :aggregate_failures do
@@ -39,7 +39,8 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
         :admin_path,
         :plan,
         :verification_state,
-        :other_reports,
+        :past_closed_reports,
+        :similar_open_reports,
         :most_used_ip,
         :last_sign_in_ip,
         :snippets_count,
@@ -53,10 +54,74 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
         :credit_card
       ])
 
-      expect(user_hash[:other_reports][0].keys).to match_array([
+      expect(user_hash[:past_closed_reports][0].keys).to match_array([
         :created_at,
         :category,
         :report_path
+      ])
+
+      similar_open_report_hash = user_hash[:similar_open_reports][0]
+      expect(similar_open_report_hash.keys).to match_array([
+        :id,
+        :status,
+        :message,
+        :reported_at,
+        :category,
+        :type,
+        :content,
+        :url,
+        :screenshot,
+        :update_path,
+        :moderate_user_path,
+        :reporter
+      ])
+
+      similar_reporter_hash = similar_open_report_hash[:reporter]
+      expect(similar_reporter_hash.keys).to match_array([
+        :name,
+        :username,
+        :avatar_url,
+        :path
+      ])
+    end
+
+    context 'when report is closed' do
+      let(:report) { build_stubbed(:abuse_report, :closed) }
+
+      it 'does not expose `user.similar_open_reports`' do
+        user_hash = entity_hash[:user]
+
+        expect(user_hash).not_to include(:similar_open_reports)
+      end
+    end
+
+    it 'correctly exposes `report`', :aggregate_failures do
+      report_hash = entity_hash[:report]
+
+      expect(report_hash.keys).to match_array([
+        :id,
+        :status,
+        :message,
+        :reported_at,
+        :category,
+        :type,
+        :content,
+        :url,
+        :screenshot,
+        :update_path,
+        :moderate_user_path,
+        :reporter
+      ])
+    end
+
+    it 'correctly exposes `reporter`' do
+      reporter_hash = entity_hash[:report][:reporter]
+
+      expect(reporter_hash.keys).to match_array([
+        :name,
+        :username,
+        :avatar_url,
+        :path
       ])
     end
 
@@ -109,34 +174,6 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
           end
         end
       end
-    end
-
-    it 'correctly exposes `reporter`' do
-      reporter_hash = entity_hash[:reporter]
-
-      expect(reporter_hash.keys).to match_array([
-        :name,
-        :username,
-        :avatar_url,
-        :path
-      ])
-    end
-
-    it 'correctly exposes `report`' do
-      report_hash = entity_hash[:report]
-
-      expect(report_hash.keys).to match_array([
-        :status,
-        :message,
-        :reported_at,
-        :category,
-        :type,
-        :content,
-        :url,
-        :screenshot,
-        :update_path,
-        :moderate_user_path
-      ])
     end
   end
 end

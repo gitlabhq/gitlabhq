@@ -14,7 +14,7 @@ const modalId = 'abuse-report-screenshot-modal';
 describe('ReportedContent', () => {
   let wrapper;
 
-  const { report, reporter } = { ...mockAbuseReport };
+  const { report } = { ...mockAbuseReport };
 
   const findScreenshotButton = () => wrapper.findByTestId('screenshot-button');
   const findReportUrlButton = () => wrapper.findByTestId('report-url-button');
@@ -32,7 +32,6 @@ describe('ReportedContent', () => {
     wrapper = shallowMountExtended(ReportedContent, {
       propsData: {
         report,
-        reporter,
         ...props,
       },
       stubs: {
@@ -167,18 +166,18 @@ describe('ReportedContent', () => {
 
   describe('rendering the card footer', () => {
     it('renders the reporters avatar', () => {
-      expect(findAvatar().props('src')).toBe(reporter.avatarUrl);
+      expect(findAvatar().props('src')).toBe(report.reporter.avatarUrl);
     });
 
     it('renders the users name', () => {
-      expect(findCardFooter().text()).toContain(reporter.name);
+      expect(findCardFooter().text()).toContain(report.reporter.name);
     });
 
     it('renders a link to the users profile page', () => {
       const link = findProfileLink();
 
-      expect(link.attributes('href')).toBe(reporter.path);
-      expect(link.text()).toBe(`@${reporter.username}`);
+      expect(link.attributes('href')).toBe(report.reporter.path);
+      expect(link.text()).toBe(`@${report.reporter.username}`);
     });
 
     it('renders the time-ago tooltip', () => {

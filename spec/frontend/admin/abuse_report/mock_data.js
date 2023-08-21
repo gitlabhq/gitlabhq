@@ -15,7 +15,7 @@ export const mockAbuseReport = {
       similarRecordsCount: 2,
       cardMatchesLink: '/admin/users/spamuser417/card_match',
     },
-    otherReports: [
+    pastClosedReports: [
       {
         category: 'offensive',
         createdAt: '2023-02-28T10:09:54.982Z',
@@ -32,12 +32,24 @@ export const mockAbuseReport = {
     snippetsCount: 0,
     groupsCount: 0,
     notesCount: 6,
-  },
-  reporter: {
-    username: 'reporter',
-    name: 'R Porter',
-    avatarUrl: 'https://www.gravatar.com/avatar/a2579caffc69ea5d7606f9dd9d8504ba?s=80&d=identicon',
-    path: '/reporter',
+    similarOpenReports: [
+      {
+        status: 'open',
+        message: 'This is obvious spam',
+        reportedAt: '2023-03-29T09:39:50.502Z',
+        category: 'spam',
+        type: 'issue',
+        content: '',
+        screenshot: null,
+        reporter: {
+          username: 'reporter 2',
+          name: 'Another Reporter',
+          avatarUrl: 'https://www.gravatar.com/avatar/anotherreporter',
+          path: '/reporter-2',
+        },
+        updatePath: '/admin/abuse_reports/28',
+      },
+    ],
   },
   report: {
     status: 'open',
@@ -52,5 +64,12 @@ export const mockAbuseReport = {
       '/uploads/-/system/abuse_report/screenshot/27/Screenshot_2023-03-30_at_16.56.37.png',
     updatePath: '/admin/abuse_reports/27',
     moderateUserPath: '/admin/abuse_reports/27/moderate_user',
+    reporter: {
+      username: 'reporter',
+      name: 'R Porter',
+      avatarUrl:
+        'https://www.gravatar.com/avatar/a2579caffc69ea5d7606f9dd9d8504ba?s=80&d=identicon',
+      path: '/reporter',
+    },
   },
 };

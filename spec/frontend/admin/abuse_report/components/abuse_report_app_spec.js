@@ -1,5 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AbuseReportApp from '~/admin/abuse_report/components/abuse_report_app.vue';
 import ReportHeader from '~/admin/abuse_report/components/report_header.vue';
 import UserDetails from '~/admin/abuse_report/components/user_details.vue';
@@ -14,11 +14,14 @@ describe('AbuseReportApp', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findReportHeader = () => wrapper.findComponent(ReportHeader);
   const findUserDetails = () => wrapper.findComponent(UserDetails);
-  const findReportedContent = () => wrapper.findComponent(ReportedContent);
+  const findReportedContent = () => wrapper.findByTestId('reported-content');
+  const findSimilarOpenReports = () => wrapper.findAllByTestId('similar-open-reports');
+  const findSimilarReportedContent = () =>
+    findSimilarOpenReports().at(0).findComponent(ReportedContent);
   const findHistoryItems = () => wrapper.findComponent(HistoryItems);
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(AbuseReportApp, {
+    wrapper = shallowMountExtended(AbuseReportApp, {
       propsData: {
         abuseReport: mockAbuseReport,
         ...props,
@@ -103,11 +106,16 @@ describe('AbuseReportApp', () => {
 
   it('renders ReportedContent', () => {
     expect(findReportedContent().props('report')).toBe(mockAbuseReport.report);
-    expect(findReportedContent().props('reporter')).toBe(mockAbuseReport.reporter);
+  });
+
+  it('renders similar abuse reports', () => {
+    const { similarOpenReports } = mockAbuseReport.user;
+
+    expect(findSimilarOpenReports()).toHaveLength(similarOpenReports.length);
+    expect(findSimilarReportedContent().props('report')).toBe(similarOpenReports[0]);
   });
 
   it('renders HistoryItems', () => {
     expect(findHistoryItems().props('report')).toBe(mockAbuseReport.report);
-    expect(findHistoryItems().props('reporter')).toBe(mockAbuseReport.reporter);
   });
 });

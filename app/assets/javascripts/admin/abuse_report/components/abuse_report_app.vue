@@ -31,6 +31,11 @@ export default {
       alert: { ...alertDefaults },
     };
   },
+  computed: {
+    similarOpenReports() {
+      return this.abuseReport.user?.similarOpenReports || [];
+    },
+  },
   methods: {
     showAlert(variant, message) {
       this.alert.visible = true;
@@ -49,6 +54,7 @@ export default {
     <gl-alert v-if="alert.visible" :variant="alert.variant" class="gl-mt-4" @dismiss="closeAlert">{{
       alert.message
     }}</gl-alert>
+
     <report-header
       v-if="abuseReport.user"
       :user="abuseReport.user"
@@ -56,7 +62,13 @@ export default {
       @showAlert="showAlert"
     />
     <user-details v-if="abuseReport.user" :user="abuseReport.user" />
-    <reported-content :report="abuseReport.report" :reporter="abuseReport.reporter" />
-    <history-items :report="abuseReport.report" :reporter="abuseReport.reporter" />
+
+    <reported-content :report="abuseReport.report" data-testid="reported-content" />
+
+    <div v-for="report in similarOpenReports" :key="report.id" data-testid="similar-open-reports">
+      <reported-content :report="report" />
+    </div>
+
+    <history-items :report="abuseReport.report" />
   </section>
 </template>

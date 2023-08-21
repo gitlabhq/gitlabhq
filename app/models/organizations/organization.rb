@@ -38,7 +38,7 @@ module Organizations
     end
 
     def user?(user)
-      users.exists?(user.id)
+      organization_users.exists?(user: user)
     end
 
     private

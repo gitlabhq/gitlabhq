@@ -385,13 +385,28 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     end
   end
 
-  describe '#other_reports_for_user' do
-    let(:report) { create(:abuse_report) }
-    let(:another_user_report) { create(:abuse_report, user: report.user) }
-    let(:another_report) { create(:abuse_report) }
+  describe '#past_closed_reports_for_user' do
+    let(:report_1) { create(:abuse_report, :closed) }
+    let(:report_2) { create(:abuse_report, user: report.user) }
+    let(:report_3) { create(:abuse_report, :closed, user: report.user) }
 
-    it 'returns other reports for the same user' do
-      expect(report.other_reports_for_user).to match_array(another_user_report)
+    it 'returns past closed reports for the same user' do
+      expect(report.past_closed_reports_for_user).to match_array(report_3)
+    end
+  end
+
+  describe '#similar_open_reports_for_user' do
+    let(:report_1) { create(:abuse_report, category: 'spam') }
+    let(:report_2) { create(:abuse_report, category: 'spam', user: report.user) }
+    let(:report_3) { create(:abuse_report, category: 'offensive', user: report.user) }
+    let(:report_4) { create(:abuse_report, :closed, category: 'spam', user: report.user) }
+
+    it 'returns open reports for the same user and category' do
+      expect(report.similar_open_reports_for_user).to match_array(report_2)
+    end
+
+    it 'returns no abuse reports when the report is closed' do
+      expect(report_4.similar_open_reports_for_user).to match_array(described_class.none)
     end
   end
 

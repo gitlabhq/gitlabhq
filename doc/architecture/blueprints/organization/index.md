@@ -244,6 +244,7 @@ Organizations will have an Owner role. Compared to Users, they can perform the f
 | View Groups overview | ✓ | ✓ (1) |
 | View Projects overview | ✓ | ✓ (1) |
 | View Users overview | ✓ | ✓ (2) |
+| View Organization activity page | ✓ | ✓ (1) |
 | Transfer top-level Group into Organization if Owner of both | ✓ |  |
 
 (1) Users can only see what they have access to.
@@ -251,13 +252,30 @@ Organizations will have an Owner role. Compared to Users, they can perform the f
 
 [Roles](../../../user/permissions.md) at the Group and Project level remain as they currently are.
 
+#### Relationship between Organization Owner and Instance Admin
+
+Users with the (Instance) Admin role can currently [administer a self-managed GitLab instance](../../../administration/index.md).
+As functionality is moved to the Organization level, Organization Owners will be able to access more features that are currently only accessible to Admins.
+On our SaaS platform, this helps us in empowering enterprises to manage their own Organization more efficiently without depending on the Instance Admin, which is currently a GitLab team member.
+On SaaS, we expect the Instance Admin and the Organization Owner to be different users.
+Self-managed instances are generally scoped to a single organization, so in this case it is possible that both roles are fulfilled by the same person.
+There are situations that might require intervention by an Instance Admin, for instance when Users are abusing the system.
+When that is the case, actions taken by the Instance Admin overrule actions of the Organization Owner.
+For instance, the Instance Admin can ban or delete a User on behalf of the Organization Owner.
+
 ### Routing
 
-Today only Users, Projects, Namespaces and container images are considered routable entities which require global uniqueness on `https://gitlab.com/<path>/-/`. Initially, Organization routes will be [unscoped](../../../development/routing.md). Organizations will follow the path `https://gitlab.com/-/organizations/org-name/` as one of the design goals is that the addition of Organizations should not change existing Group and Project paths.
+Today only Users, Projects, Namespaces and container images are considered routable entities which require global uniqueness on `https://gitlab.com/<path>/-/`.
+Initially, Organization routes will be [unscoped](../../../development/routing.md).
+Organizations will follow the path `https://gitlab.com/-/organizations/org-name/` as one of the design goals is that the addition of Organizations should not change existing Group and Project paths.
 
 ### Impact of the Organization on Other Features
 
-We want a minimal amount of infrequently written tables in the shared database. If we have high write volume or large amounts of data in the shared database then this can become a single bottleneck for scaling and we lose the horizontal scalability objective of Cells. With isolation being one of the main requirements to make Cells work, this means that existing features will mostly be scoped to an Organization rather than work across Organizations. One exception to this are Users, which are stored in the cluster-wide shared database. For a deeper exploration of the impact on select features, see the [list of features impacted by Cells](../cells/index.md#impacted-features).
+We want a minimal amount of infrequently written tables in the shared database.
+If we have high write volume or large amounts of data in the shared database then this can become a single bottleneck for scaling and we lose the horizontal scalability objective of Cells.
+With isolation being one of the main requirements to make Cells work, this means that existing features will mostly be scoped to an Organization rather than work across Organizations.
+One exception to this are Users, which are stored in the cluster-wide shared database.
+For a deeper exploration of the impact on select features, see the [list of features impacted by Cells](../cells/index.md#impacted-features).
 
 ## Iteration Plan
 
@@ -284,6 +302,7 @@ In iteration 2, an Organization MVC Experiment will be released. We will test th
 
 - Users are listed in the User overview. Every Organization User can access the User overview and see Users that are part of the Groups and Projects they have access to.
 - Organizations can be deleted.
+- Organization Owners can access the Activity page for the Organization.
 - Forking across Organizations will be defined.
 
 ### Iteration 3: Organization MVC Beta (FY24Q4)

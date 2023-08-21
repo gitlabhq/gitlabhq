@@ -532,6 +532,22 @@ Returns [`Note`](#note).
 | ---- | ---- | ----------- |
 | <a id="querynoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note. |
 
+### `Query.organization`
+
+Find an organization.
+
+WARNING:
+**Introduced** in 16.4.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`Organization`](#organization).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryorganizationid"></a>`id` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | ID of the organization. |
+
 ### `Query.package`
 
 Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.
@@ -20252,6 +20268,39 @@ Active period time range for on-call rotation.
 | <a id="oncallrotationactiveperiodtypeendtime"></a>`endTime` | [`String`](#string) | End of the rotation active period. |
 | <a id="oncallrotationactiveperiodtypestarttime"></a>`startTime` | [`String`](#string) | Start of the rotation active period. |
 
+### `Organization`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. ID of the organization. |
+| <a id="organizationname"></a>`name` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Name of the organization. |
+| <a id="organizationpath"></a>`path` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Path of the organization. |
+
+#### Fields with arguments
+
+##### `Organization.groups`
+
+Groups within this organization that the user has access to.
+
+WARNING:
+**Introduced** in 16.4.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`GroupConnection!`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationgroupssearch"></a>`search` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Search query for group name or full path. |
+| <a id="organizationgroupssort"></a>`sort` **{warning-solid}** | [`OrganizationGroupSort`](#organizationgroupsort) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Criteria to sort organization groups by. |
+
 ### `OrganizationStateCounts`
 
 Represents the total number of organizations for the represented states.
@@ -27246,6 +27295,23 @@ Rotation length unit of an on-call rotation.
 | <a id="oncallrotationunitenumhours"></a>`HOURS` | Hours. |
 | <a id="oncallrotationunitenumweeks"></a>`WEEKS` | Weeks. |
 
+### `OrganizationGroupSort`
+
+Values for sorting organization groups.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="organizationgroupsortcreated_at_asc"></a>`CREATED_AT_ASC` **{warning-solid}** | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Created at in ascending order. |
+| <a id="organizationgroupsortcreated_at_desc"></a>`CREATED_AT_DESC` **{warning-solid}** | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Created at in descending order. |
+| <a id="organizationgroupsortid_asc"></a>`ID_ASC` **{warning-solid}** | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. ID in ascending order. |
+| <a id="organizationgroupsortid_desc"></a>`ID_DESC` **{warning-solid}** | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. ID in descending order. |
+| <a id="organizationgroupsortname_asc"></a>`NAME_ASC` **{warning-solid}** | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Name in ascending order. |
+| <a id="organizationgroupsortname_desc"></a>`NAME_DESC` **{warning-solid}** | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Name in descending order. |
+| <a id="organizationgroupsortpath_asc"></a>`PATH_ASC` **{warning-solid}** | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Path in ascending order. |
+| <a id="organizationgroupsortpath_desc"></a>`PATH_DESC` **{warning-solid}** | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Path in descending order. |
+| <a id="organizationgroupsortupdated_at_asc"></a>`UPDATED_AT_ASC` **{warning-solid}** | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Updated at in ascending order. |
+| <a id="organizationgroupsortupdated_at_desc"></a>`UPDATED_AT_DESC` **{warning-solid}** | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Updated at in descending order. |
+
 ### `OrganizationSort`
 
 Values for sorting organizations.
@@ -28718,6 +28784,12 @@ An example `NoteID` is: `"gid://gitlab/Note/1"`.
 A `NoteableID` is a global ID. It is encoded as a string.
 
 An example `NoteableID` is: `"gid://gitlab/Noteable/1"`.
+
+### `OrganizationsOrganizationID`
+
+A `OrganizationsOrganizationID` is a global ID. It is encoded as a string.
+
+An example `OrganizationsOrganizationID` is: `"gid://gitlab/Organizations::Organization/1"`.
 
 ### `PackagesConanFileMetadatumID`
 
