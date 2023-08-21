@@ -2,14 +2,13 @@
 
 exports[`Code navigation popover component renders popover 1`] = `
 <div
-  class="popover code-navigation-popover popover-font-size-normal gl-popover bs-popover-bottom show"
+  class="bs-popover-bottom code-navigation-popover gl-popover popover popover-font-size-normal show"
   style="left: 0px; top: 0px;"
 >
   <div
     class="arrow"
     style="left: 0px;"
   />
-   
   <gl-tabs-stub
     contentclass="gl-py-0"
     navclass="gl-hidden"
@@ -21,13 +20,11 @@ exports[`Code navigation popover component renders popover 1`] = `
       titlelinkclass=""
     >
       <div
-        class="overflow-auto code-navigation-popover-container"
+        class="code-navigation-popover-container overflow-auto"
       >
-        <div
-          class=""
-        >
+        <div>
           <pre
-            class="border-0 bg-transparent m-0 code highlight text-wrap"
+            class="bg-transparent border-0 code highlight m-0 text-wrap"
           >
             <span
               class="line"
@@ -39,9 +36,8 @@ exports[`Code navigation popover component renders popover 1`] = `
                 function
               </span>
               <span>
-                 main() {
+                main() {
               </span>
-               
               <br />
             </span>
             <span
@@ -51,15 +47,13 @@ exports[`Code navigation popover component renders popover 1`] = `
               <span>
                 }
               </span>
-               
               <br />
             </span>
           </pre>
         </div>
       </div>
-       
       <div
-        class="popover-body border-top"
+        class="border-top popover-body"
       >
         <gl-button-stub
           buttontextclasses=""
@@ -72,25 +66,19 @@ exports[`Code navigation popover component renders popover 1`] = `
           target="_blank"
           variant="default"
         >
-          
           Go to definition
-        
         </gl-button-stub>
       </div>
     </gl-tab-stub>
-     
     <gl-tab-stub
       class="py-2"
       data-testid="references-tab"
       titlelinkclass=""
     >
-       
       <p
         class="gl-my-4 gl-px-4"
       >
-        
         No references found
-      
       </p>
     </gl-tab-stub>
   </gl-tabs-stub>

@@ -25,7 +25,6 @@ const PERSISTENT_USER_CALLOUTS = [
   '.js-unlimited-members-during-trial-alert',
   '.js-branch-rules-info-callout',
   '.js-new-navigation-callout',
-  '.js-code-suggestions-third-party-callout',
   '.js-namespace-over-storage-users-combined-alert',
 ];
 

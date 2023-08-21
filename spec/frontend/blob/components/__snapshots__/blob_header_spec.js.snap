@@ -2,7 +2,7 @@
 
 exports[`Blob Header Default Actions rendering matches the snapshot 1`] = `
 <div
-  class="js-file-title file-title-flex-parent"
+  class="file-title-flex-parent js-file-title"
 >
   <div
     class="gl-display-flex"
@@ -10,21 +10,18 @@ exports[`Blob Header Default Actions rendering matches the snapshot 1`] = `
     <table-of-contents-stub
       class="gl-pr-2"
     />
-     
     <blob-filepath-stub
       blob="[object Object]"
       showpath="true"
     />
   </div>
-   
   <div
-    class="gl-display-flex gl-flex-wrap file-actions"
+    class="file-actions gl-display-flex gl-flex-wrap"
   >
     <viewer-switcher-stub
       docicon="document"
       value="simple"
     />
-      
     <default-actions-stub
       activeviewer="simple"
       rawpath="https://testing.com/flightjs/flight/snippets/51/raw"

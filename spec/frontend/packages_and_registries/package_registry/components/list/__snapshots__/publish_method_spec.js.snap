@@ -2,27 +2,24 @@
 
 exports[`publish_method renders 1`] = `
 <div
-  class="gl-display-flex gl-align-items-center"
+  class="gl-align-items-center gl-display-flex"
 >
   <gl-icon-stub
     class="gl-mr-2"
     name="git-merge"
     size="16"
   />
-   
   <span
     class="gl-mr-2"
     data-testid="pipeline-ref"
   >
     master
   </span>
-   
   <gl-icon-stub
     class="gl-mr-2"
     name="commit"
     size="16"
   />
-   
   <gl-link-stub
     class="gl-mr-2"
     data-testid="pipeline-sha"
@@ -30,7 +27,6 @@ exports[`publish_method renders 1`] = `
   >
     b83d6e39
   </gl-link-stub>
-   
   <clipboard-button-stub
     category="tertiary"
     size="small"

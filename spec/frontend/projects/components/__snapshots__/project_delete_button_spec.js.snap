@@ -10,12 +10,10 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
     type="hidden"
     value="delete"
   />
-   
   <input
     name="authenticity_token"
     type="hidden"
   />
-   
   <delete-modal-stub
     confirmphrase="foo"
     forkscount="3"
@@ -23,7 +21,6 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
     mergerequestscount="2"
     starscount="4"
   />
-   
   <gl-button-stub
     buttontextclasses=""
     category="primary"

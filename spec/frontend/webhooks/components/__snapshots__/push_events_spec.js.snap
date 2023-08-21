@@ -11,7 +11,7 @@ exports[`Webhook push events form editor component Different push events rules w
   valuefield="value"
 >
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_all_branches"
     value="all_branches"
   >
@@ -21,50 +21,34 @@ exports[`Webhook push events form editor component Different push events rules w
       All branches
     </div>
   </gl-form-radio-stub>
-   
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_wildcard"
     value="wildcard"
   >
     <div
       data-qa-selector="strategy_radio_wildcard"
     >
-      
-          Wildcard pattern
-        
+      Wildcard pattern
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
-  >
-    <!---->
-  </div>
-   
-  <!---->
-   
+  />
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_regex"
     value="regex"
   >
     <div
       data-qa-selector="strategy_radio_regex"
     >
-      
-          Regular expression
-        
+      Regular expression
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
-  >
-    <!---->
-  </div>
-   
-  <!---->
+  />
 </gl-form-radio-group-stub>
 `;
 
@@ -79,7 +63,7 @@ exports[`Webhook push events form editor component Different push events rules w
   valuefield="value"
 >
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_all_branches"
     value="all_branches"
   >
@@ -89,43 +73,31 @@ exports[`Webhook push events form editor component Different push events rules w
       All branches
     </div>
   </gl-form-radio-stub>
-   
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_wildcard"
     value="wildcard"
   >
     <div
       data-qa-selector="strategy_radio_wildcard"
     >
-      
-          Wildcard pattern
-        
+      Wildcard pattern
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
-  >
-    <!---->
-  </div>
-   
-  <!---->
-   
+  />
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_regex"
     value="regex"
   >
     <div
       data-qa-selector="strategy_radio_regex"
     >
-      
-          Regular expression
-        
+      Regular expression
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
   >
@@ -136,9 +108,8 @@ exports[`Webhook push events form editor component Different push events rules w
       value="foo"
     />
   </div>
-   
   <p
-    class="form-text text-muted custom-control"
+    class="custom-control form-text text-muted"
   >
     <gl-sprintf-stub
       message="Regular expressions such as %{REGEX_CODE} are supported."
@@ -158,7 +129,7 @@ exports[`Webhook push events form editor component Different push events rules w
   valuefield="value"
 >
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_all_branches"
     value="all_branches"
   >
@@ -168,21 +139,17 @@ exports[`Webhook push events form editor component Different push events rules w
       All branches
     </div>
   </gl-form-radio-stub>
-   
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_wildcard"
     value="wildcard"
   >
     <div
       data-qa-selector="strategy_radio_wildcard"
     >
-      
-          Wildcard pattern
-        
+      Wildcard pattern
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
   >
@@ -193,36 +160,27 @@ exports[`Webhook push events form editor component Different push events rules w
       value="foo"
     />
   </div>
-   
   <p
-    class="form-text text-muted custom-control"
+    class="custom-control form-text text-muted"
   >
     <gl-sprintf-stub
       message="Wildcards such as %{WILDCARD_CODE_STABLE} or %{WILDCARD_CODE_PRODUCTION} are supported."
     />
   </p>
-   
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_regex"
     value="regex"
   >
     <div
       data-qa-selector="strategy_radio_regex"
     >
-      
-          Regular expression
-        
+      Regular expression
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
-  >
-    <!---->
-  </div>
-   
-  <!---->
+  />
 </gl-form-radio-group-stub>
 `;
 
@@ -237,7 +195,7 @@ exports[`Webhook push events form editor component Different push events rules w
   valuefield="value"
 >
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_all_branches"
     value="all_branches"
   >
@@ -247,50 +205,34 @@ exports[`Webhook push events form editor component Different push events rules w
       All branches
     </div>
   </gl-form-radio-stub>
-   
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_wildcard"
     value="wildcard"
   >
     <div
       data-qa-selector="strategy_radio_wildcard"
     >
-      
-          Wildcard pattern
-        
+      Wildcard pattern
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
-  >
-    <!---->
-  </div>
-   
-  <!---->
-   
+  />
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_regex"
     value="regex"
   >
     <div
       data-qa-selector="strategy_radio_regex"
     >
-      
-          Regular expression
-        
+      Regular expression
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
-  >
-    <!---->
-  </div>
-   
-  <!---->
+  />
 </gl-form-radio-group-stub>
 `;
 
@@ -305,7 +247,7 @@ exports[`Webhook push events form editor component Different push events rules w
   valuefield="value"
 >
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_all_branches"
     value="all_branches"
   >
@@ -315,43 +257,31 @@ exports[`Webhook push events form editor component Different push events rules w
       All branches
     </div>
   </gl-form-radio-stub>
-   
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_wildcard"
     value="wildcard"
   >
     <div
       data-qa-selector="strategy_radio_wildcard"
     >
-      
-          Wildcard pattern
-        
+      Wildcard pattern
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
-  >
-    <!---->
-  </div>
-   
-  <!---->
-   
+  />
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_regex"
     value="regex"
   >
     <div
       data-qa-selector="strategy_radio_regex"
     >
-      
-          Regular expression
-        
+      Regular expression
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
   >
@@ -362,9 +292,8 @@ exports[`Webhook push events form editor component Different push events rules w
       value=""
     />
   </div>
-   
   <p
-    class="form-text text-muted custom-control"
+    class="custom-control form-text text-muted"
   >
     <gl-sprintf-stub
       message="Regular expressions such as %{REGEX_CODE} are supported."
@@ -384,7 +313,7 @@ exports[`Webhook push events form editor component Different push events rules w
   valuefield="value"
 >
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_all_branches"
     value="all_branches"
   >
@@ -394,21 +323,17 @@ exports[`Webhook push events form editor component Different push events rules w
       All branches
     </div>
   </gl-form-radio-stub>
-   
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_wildcard"
     value="wildcard"
   >
     <div
       data-qa-selector="strategy_radio_wildcard"
     >
-      
-          Wildcard pattern
-        
+      Wildcard pattern
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
   >
@@ -419,35 +344,26 @@ exports[`Webhook push events form editor component Different push events rules w
       value=""
     />
   </div>
-   
   <p
-    class="form-text text-muted custom-control"
+    class="custom-control form-text text-muted"
   >
     <gl-sprintf-stub
       message="Wildcards such as %{WILDCARD_CODE_STABLE} or %{WILDCARD_CODE_PRODUCTION} are supported."
     />
   </p>
-   
   <gl-form-radio-stub
-    class="gl-mt-2 branch-filter-strategy-radio"
+    class="branch-filter-strategy-radio gl-mt-2"
     data-testid="rule_regex"
     value="regex"
   >
     <div
       data-qa-selector="strategy_radio_regex"
     >
-      
-          Regular expression
-        
+      Regular expression
     </div>
   </gl-form-radio-stub>
-   
   <div
     class="gl-ml-6"
-  >
-    <!---->
-  </div>
-   
-  <!---->
+  />
 </gl-form-radio-group-stub>
 `;

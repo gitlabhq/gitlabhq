@@ -682,9 +682,6 @@ Settings.cron_jobs['packages_cleanup_delete_orphaned_dependencies_worker']['job_
 Settings.cron_jobs['cleanup_dangling_debian_package_files_worker'] ||= {}
 Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['cron'] ||= '20 21 * * *'
 Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['job_class'] = 'Packages::Debian::CleanupDanglingPackageFilesWorker'
-Settings.cron_jobs['global_metrics_update_worker'] ||= {}
-Settings.cron_jobs['global_metrics_update_worker']['cron'] ||= '*/1 * * * *'
-Settings.cron_jobs['global_metrics_update_worker']['job_class'] ||= 'Metrics::GlobalMetricsUpdateWorker'
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker'] ||= {}
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['cron'] ||= '*/6 * * * *'
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['job_class'] = 'ObjectStorage::DeleteStaleDirectUploadsWorker'

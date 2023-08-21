@@ -258,6 +258,9 @@ module Gitlab
     # Enable the asset pipeline
     config.assets.enabled = true
 
+    # Disable adding field_with_errors wrapper to form elements
+    config.action_view.field_error_proc = proc { |html_tag, instance| html_tag }
+
     # Support legacy unicode file named img emojis, `1F939.png`
     config.assets.paths << TanukiEmoji.images_path
     config.assets.paths << "#{config.root}/vendor/assets/fonts"

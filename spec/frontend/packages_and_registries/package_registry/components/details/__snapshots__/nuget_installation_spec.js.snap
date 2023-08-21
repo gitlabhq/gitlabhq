@@ -6,7 +6,6 @@ exports[`NugetInstallation renders all the messages 1`] = `
     options="[object Object]"
     packagetype="nuget"
   />
-   
   <code-instruction-stub
     copytext="Copy NuGet Command"
     instruction="nuget install @gitlab-org/package-15 -Source \\"GitLab\\""
@@ -14,13 +13,11 @@ exports[`NugetInstallation renders all the messages 1`] = `
     trackingaction="copy_nuget_install_command"
     trackinglabel="code_instruction"
   />
-   
   <h3
     class="gl-font-lg"
   >
     Registry setup
   </h3>
-   
   <code-instruction-stub
     copytext="Copy NuGet Setup Command"
     instruction="nuget source Add -Name \\"GitLab\\" -Source \\"http://gdk.test:3000/api/v4/projects/1/packages/nuget/index.json\\" -UserName <your_username> -Password <your_token>"
@@ -28,7 +25,7 @@ exports[`NugetInstallation renders all the messages 1`] = `
     trackingaction="copy_nuget_setup_command"
     trackinglabel="code_instruction"
   />
-   For more information on the NuGet registry, 
+  For more information on the NuGet registry,
   <gl-link-stub
     href="/help/user/packages/nuget_repository/index"
     target="_blank"

@@ -3,15 +3,14 @@
 exports[`Issue type info popover renders 1`] = `
 <span
   class="gl-ml-2"
-  id="popovercontainer"
+  id="reference-0"
 >
   <gl-icon-stub
     class="gl-text-blue-600"
-    id="issue-type-info"
+    id="reference-1"
     name="question-o"
     size="16"
   />
-   
   <gl-popover-stub
     container="popovercontainer"
     cssclasses=""
@@ -20,7 +19,7 @@ exports[`Issue type info popover renders 1`] = `
     triggers="focus hover"
   >
     <ul
-      class="gl-list-style-none gl-p-0 gl-m-0"
+      class="gl-list-style-none gl-m-0 gl-p-0"
     >
       <li
         class="gl-mb-3"
@@ -30,19 +29,16 @@ exports[`Issue type info popover renders 1`] = `
         >
           Issue
         </div>
-         
         <span>
           For general work
         </span>
       </li>
-       
       <li>
         <div
           class="gl-font-weight-bold"
         >
           Incident
         </div>
-         
         <span>
           For investigating IT service disruptions or outages
         </span>

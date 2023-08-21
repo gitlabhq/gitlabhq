@@ -8,14 +8,12 @@ exports[`IntegrationHelpText component should not render the link when start and
 
 exports[`IntegrationHelpText component should render the help text 1`] = `
 <span>
-  Click 
+  Click
   <gl-link-stub
     href="http://bar.com"
     target="_blank"
   >
-    
-        Bar
-        
+    Bar
     <gl-icon-stub
       class="gl-vertical-align-middle"
       name="external-link"

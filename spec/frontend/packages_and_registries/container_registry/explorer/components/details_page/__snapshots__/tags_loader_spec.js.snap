@@ -10,7 +10,6 @@ exports[`TagsLoader component has the correct markup 1`] = `
       x="0"
       y="12.5"
     />
-     
     <rect
       height="20"
       rx="4"
@@ -18,13 +17,11 @@ exports[`TagsLoader component has the correct markup 1`] = `
       x="25"
       y="10"
     />
-     
     <circle
       cx="290"
       cy="20"
       r="10"
     />
-     
     <rect
       height="20"
       rx="4"
@@ -32,7 +29,6 @@ exports[`TagsLoader component has the correct markup 1`] = `
       x="315"
       y="10"
     />
-     
     <rect
       height="20"
       rx="4"
@@ -40,7 +36,6 @@ exports[`TagsLoader component has the correct markup 1`] = `
       x="500"
       y="10"
     />
-     
     <rect
       height="20"
       rx="4"
@@ -48,7 +43,6 @@ exports[`TagsLoader component has the correct markup 1`] = `
       x="630"
       y="10"
     />
-     
     <rect
       height="40"
       rx="4"

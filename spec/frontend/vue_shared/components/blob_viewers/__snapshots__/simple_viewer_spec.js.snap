@@ -3,80 +3,69 @@
 exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
 <div>
   <div
-    class="file-content code js-syntax-highlight"
+    class="code file-content js-syntax-highlight"
   >
     <div
-      class="line-numbers gl-pt-0!"
+      class="gl-pt-0! line-numbers"
     >
       <a
         class="diff-line-num js-line-number"
         data-line-number="1"
         href="#LC1"
-        id="L1"
+        id="reference-0"
       >
         <gl-icon-stub
           name="link"
           size="12"
         />
-        
         1
-      
       </a>
       <a
         class="diff-line-num js-line-number"
         data-line-number="2"
         href="#LC2"
-        id="L2"
+        id="reference-1"
       >
         <gl-icon-stub
           name="link"
           size="12"
         />
-        
         2
-      
       </a>
       <a
         class="diff-line-num js-line-number"
         data-line-number="3"
         href="#LC3"
-        id="L3"
+        id="reference-2"
       >
         <gl-icon-stub
           name="link"
           size="12"
         />
-        
         3
-      
       </a>
     </div>
-     
     <div
       class="blob-content"
     >
       <pre
-        class="code highlight gl-p-0! gl-display-flex"
+        class="code gl-display-flex gl-p-0! highlight"
       >
         <code
           data-blob-hash="foo-bar"
         >
           <span
-            id="LC1"
+            id="reference-3"
           >
             First
           </span>
-          
-
           <span
-            id="LC2"
+            id="reference-4"
           >
             Second
           </span>
-          
-
           <span
-            id="LC3"
+            id="reference-5"
           >
             Third
           </span>

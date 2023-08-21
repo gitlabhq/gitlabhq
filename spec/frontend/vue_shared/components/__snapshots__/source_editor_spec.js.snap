@@ -4,7 +4,7 @@ exports[`Source Editor component rendering matches the snapshot 1`] = `
 <div
   data-editor-loading=""
   data-qa-selector="source_editor_container"
-  id="source-editor-snippet_777"
+  id="reference-0"
 >
   <pre
     class="editor-loading-content"

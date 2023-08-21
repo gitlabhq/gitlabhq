@@ -5,25 +5,21 @@ exports[`DependencyRow renders full dependency 1`] = `
   class="gl-responsive-table-row"
 >
   <div
-    class="table-section section-50"
+    class="section-50 table-section"
   >
     <strong
       class="gl-text-body"
     >
       Ninject.Extensions.Factory
     </strong>
-     
     <span
       data-testid="target-framework"
     >
-      
       (.NETCoreApp3.1)
-    
     </span>
   </div>
-   
   <div
-    class="table-section section-50 gl-display-flex gl-md-justify-content-end"
+    class="gl-display-flex gl-md-justify-content-end section-50 table-section"
     data-testid="version-pattern"
   >
     <span

@@ -11,6 +11,9 @@ import CodeBlockWrapper from '~/content_editor/components/wrappers/code_block.vu
 import codeBlockLanguageLoader from '~/content_editor/services/code_block_language_loader';
 import { emitEditorEvent, createTestEditor, mockChainedCommands } from '../../test_utils';
 
+// Disabled due to eslint reporting errors for inline snapshots
+/* eslint-disable no-irregular-whitespace */
+
 const SAMPLE_README_CONTENT = `# Sample README
 
 This is a sample README.
@@ -212,12 +215,20 @@ describe('content/components/wrappers/code_block', () => {
 
     it('shows a code suggestion block', () => {
       expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 5 to 5');
-      expect(findCodeDeleted()).toMatchInlineSnapshot(
-        `"<code data-line-number=\\"5\\">## Usage\u200b</code>"`,
-      );
-      expect(findCodeAdded()).toMatchInlineSnapshot(
-        `"<code data-line-number=\\"5\\">\u200b</code>"`,
-      );
+      expect(findCodeDeleted()).toMatchInlineSnapshot(`
+        <code
+          data-line-number="5"
+        >
+          ## Usage​
+        </code>
+      `);
+      expect(findCodeAdded()).toMatchInlineSnapshot(`
+        <code
+          data-line-number="5"
+        >
+          ​
+        </code>
+      `);
     });
 
     describe('decrement line start button', () => {
@@ -232,9 +243,11 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 4 to 5');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          "<code data-line-number=\\"4\\">\u200b
+          <code
+            data-line-number="4"
+          >
+            ​
           </code>
-          <code data-line-number=\\"5\\">## Usage\u200b</code>"
         `);
       });
 
@@ -248,15 +261,11 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 1 to 5');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          "<code data-line-number=\\"1\\"># Sample README\u200b
+          <code
+            data-line-number="1"
+          >
+            # Sample README​
           </code>
-          <code data-line-number=\\"2\\">\u200b
-          </code>
-          <code data-line-number=\\"3\\">This is a sample README.\u200b
-          </code>
-          <code data-line-number=\\"4\\">\u200b
-          </code>
-          <code data-line-number=\\"5\\">## Usage\u200b</code>"
         `);
 
         expect(button.attributes('disabled')).toBe('disabled');
@@ -291,9 +300,11 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 4 to 5');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          "<code data-line-number=\\"4\\">\u200b
+          <code
+            data-line-number="4"
+          >
+            ​
           </code>
-          <code data-line-number=\\"5\\">## Usage\u200b</code>"
         `);
       });
     });
@@ -326,9 +337,11 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 5 to 6');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          "<code data-line-number=\\"5\\">## Usage\u200b
+          <code
+            data-line-number="5"
+          >
+            ## Usage​
           </code>
-          <code data-line-number=\\"6\\">\u200b</code>"
         `);
       });
     });
@@ -345,9 +358,11 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 5 to 6');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          "<code data-line-number=\\"5\\">## Usage\u200b
+          <code
+            data-line-number="5"
+          >
+            ## Usage​
           </code>
-          <code data-line-number=\\"6\\">\u200b</code>"
         `);
       });
 
@@ -361,15 +376,11 @@ describe('content/components/wrappers/code_block', () => {
 
         expect(findCodeSuggestionBoxText()).toContain('Suggested change From line 5 to 9');
         expect(findCodeDeleted()).toMatchInlineSnapshot(`
-          "<code data-line-number=\\"5\\">## Usage\u200b
+          <code
+            data-line-number="5"
+          >
+            ## Usage​
           </code>
-          <code data-line-number=\\"6\\">\u200b
-          </code>
-          <code data-line-number=\\"7\\">\`\`\`yaml\u200b
-          </code>
-          <code data-line-number=\\"8\\">foo: bar\u200b
-          </code>
-          <code data-line-number=\\"9\\">\`\`\`\u200b</code>"
         `);
 
         expect(button.attributes('disabled')).toBe('disabled');

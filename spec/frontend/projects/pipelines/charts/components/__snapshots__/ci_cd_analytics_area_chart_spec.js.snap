@@ -7,7 +7,6 @@ exports[`CiCdAnalyticsAreaChart matches the snapshot 1`] = `
   <p>
     Some title
   </p>
-   
   <glareachart-stub
     annotations=""
     data="[object Object],[object Object]"

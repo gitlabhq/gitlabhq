@@ -11521,12 +11521,6 @@ msgstr ""
 msgid "CodeSuggestionsSM|Personal access token"
 msgstr ""
 
-msgid "CodeSuggestionsThirdPartyAlert|%{code_suggestions_link_start}Code Suggestions%{link_end} now uses third-party AI services to provide higher quality suggestions. You can %{third_party_link_start}disable third-party services%{link_end} for your group, or disable Code Suggestions entirely in %{profile_settings_link_start}your user profile%{link_end}."
-msgstr ""
-
-msgid "CodeSuggestionsThirdPartyAlert|We use third-party AI services to improve Code Suggestions."
-msgstr ""
-
 msgid "CodeSuggestions|%{link_start}What are code suggestions?%{link_end}"
 msgstr ""
 

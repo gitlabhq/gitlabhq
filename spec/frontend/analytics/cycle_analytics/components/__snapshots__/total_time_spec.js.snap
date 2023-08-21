@@ -1,28 +1,52 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TotalTime with a blank object should render -- 1`] = `"<span> -- </span>"`;
+exports[`TotalTime with a blank object should render -- 1`] = `
+<span>
+  --
+</span>
+`;
 
 exports[`TotalTime with a valid time object with {"days": 3, "mins": 47, "seconds": 3} 1`] = `
-"<span>
-    3 <span>days</span></span>"
+<span>
+  3
+  <span>
+    days
+  </span>
+</span>
 `;
 
 exports[`TotalTime with a valid time object with {"hours": 7, "mins": 20, "seconds": 10} 1`] = `
-"<span>
-    7 <span>hrs</span></span>"
+<span>
+  7
+  <span>
+    hrs
+  </span>
+</span>
 `;
 
 exports[`TotalTime with a valid time object with {"hours": 23, "mins": 10} 1`] = `
-"<span>
-    23 <span>hrs</span></span>"
+<span>
+  23
+  <span>
+    hrs
+  </span>
+</span>
 `;
 
 exports[`TotalTime with a valid time object with {"mins": 47, "seconds": 3} 1`] = `
-"<span>
-    47 <span>mins</span></span>"
+<span>
+  47
+  <span>
+    mins
+  </span>
+</span>
 `;
 
 exports[`TotalTime with a valid time object with {"seconds": 35} 1`] = `
-"<span>
-    35 <span>s</span></span>"
+<span>
+  35
+  <span>
+    s
+  </span>
+</span>
 `;

@@ -2,14 +2,14 @@
 
 exports[`Upload dropzone component correctly overrides description and drop messages 1`] = `
 <div
-  class="gl-w-full gl-relative"
+  class="gl-relative gl-w-full"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-px-5 gl-py-4 gl-mb-0"
+    class="card gl-align-items-center gl-h-full gl-justify-content-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      class="gl-align-items-center gl-display-flex gl-flex-direction-column gl-justify-content-center gl-text-center"
       data-testid="dropzone-area"
     >
       <gl-icon-stub
@@ -17,7 +17,6 @@ exports[`Upload dropzone component correctly overrides description and drop mess
         name="upload"
         size="24"
       />
-       
       <p
         class="gl-mb-0"
         data-testid="upload-text"
@@ -28,50 +27,37 @@ exports[`Upload dropzone component correctly overrides description and drop mess
       </p>
     </div>
   </button>
-   
   <input
     accept="image/jpg,image/jpeg"
     class="hide"
-    multiple="multiple"
+    multiple=""
     name="upload_file"
     type="file"
   />
-   
   <transition-stub
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
+      class="card gl-absolute gl-align-items-center gl-display-flex gl-h-full gl-justify-content-center gl-p-4 gl-w-full upload-dropzone-border upload-dropzone-overlay"
       style="display: none;"
     >
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style="display: none;"
       >
-        <h3
-          class=""
-        >
-          
-            Oh no!
-          
+        <h3>
+          Oh no!
         </h3>
-         
         <span>
           You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
         </span>
       </div>
-       
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
       >
-        <h3
-          class=""
-        >
-          
-            Incoming!
-          
+        <h3>
+          Incoming!
         </h3>
-         
         <span>
           Test drop-to-start message.
         </span>
@@ -83,14 +69,14 @@ exports[`Upload dropzone component correctly overrides description and drop mess
 
 exports[`Upload dropzone component when dragging renders correct template when drag event contains files 1`] = `
 <div
-  class="gl-w-full gl-relative"
+  class="gl-relative gl-w-full"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-px-5 gl-py-4 gl-mb-0"
+    class="card gl-align-items-center gl-h-full gl-justify-content-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      class="gl-align-items-center gl-display-flex gl-flex-direction-column gl-justify-content-center gl-text-center"
       data-testid="dropzone-area"
     >
       <gl-icon-stub
@@ -98,65 +84,49 @@ exports[`Upload dropzone component when dragging renders correct template when d
         name="upload"
         size="24"
       />
-       
       <p
         class="gl-mb-0"
         data-testid="upload-text"
       >
-        Drop or 
+        Drop or
         <gl-link-stub>
-          
-                  upload
-                
+          upload
         </gl-link-stub>
-         files to attach
+        files to attach
       </p>
     </div>
   </button>
-   
   <input
     accept="image/*"
     class="hide"
-    multiple="multiple"
+    multiple=""
     name="upload_file"
     type="file"
   />
-   
   <transition-stub
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
+      class="card gl-absolute gl-align-items-center gl-display-flex gl-h-full gl-justify-content-center gl-p-4 gl-w-full upload-dropzone-border upload-dropzone-overlay"
       style=""
     >
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style="display: none;"
       >
-        <h3
-          class=""
-        >
-          
-            Oh no!
-          
+        <h3>
+          Oh no!
         </h3>
-         
         <span>
           You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
         </span>
       </div>
-       
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
       >
-        <h3
-          class=""
-        >
-          
-            Incoming!
-          
+        <h3>
+          Incoming!
         </h3>
-         
         <span>
           Drop your files to start your upload.
         </span>
@@ -168,14 +138,14 @@ exports[`Upload dropzone component when dragging renders correct template when d
 
 exports[`Upload dropzone component when dragging renders correct template when drag event contains files and text 1`] = `
 <div
-  class="gl-w-full gl-relative"
+  class="gl-relative gl-w-full"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-px-5 gl-py-4 gl-mb-0"
+    class="card gl-align-items-center gl-h-full gl-justify-content-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      class="gl-align-items-center gl-display-flex gl-flex-direction-column gl-justify-content-center gl-text-center"
       data-testid="dropzone-area"
     >
       <gl-icon-stub
@@ -183,65 +153,49 @@ exports[`Upload dropzone component when dragging renders correct template when d
         name="upload"
         size="24"
       />
-       
       <p
         class="gl-mb-0"
         data-testid="upload-text"
       >
-        Drop or 
+        Drop or
         <gl-link-stub>
-          
-                  upload
-                
+          upload
         </gl-link-stub>
-         files to attach
+        files to attach
       </p>
     </div>
   </button>
-   
   <input
     accept="image/*"
     class="hide"
-    multiple="multiple"
+    multiple=""
     name="upload_file"
     type="file"
   />
-   
   <transition-stub
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
+      class="card gl-absolute gl-align-items-center gl-display-flex gl-h-full gl-justify-content-center gl-p-4 gl-w-full upload-dropzone-border upload-dropzone-overlay"
       style=""
     >
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style="display: none;"
       >
-        <h3
-          class=""
-        >
-          
-            Oh no!
-          
+        <h3>
+          Oh no!
         </h3>
-         
         <span>
           You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
         </span>
       </div>
-       
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
       >
-        <h3
-          class=""
-        >
-          
-            Incoming!
-          
+        <h3>
+          Incoming!
         </h3>
-         
         <span>
           Drop your files to start your upload.
         </span>
@@ -253,14 +207,14 @@ exports[`Upload dropzone component when dragging renders correct template when d
 
 exports[`Upload dropzone component when dragging renders correct template when drag event contains text 1`] = `
 <div
-  class="gl-w-full gl-relative"
+  class="gl-relative gl-w-full"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-px-5 gl-py-4 gl-mb-0"
+    class="card gl-align-items-center gl-h-full gl-justify-content-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      class="gl-align-items-center gl-display-flex gl-flex-direction-column gl-justify-content-center gl-text-center"
       data-testid="dropzone-area"
     >
       <gl-icon-stub
@@ -268,66 +222,50 @@ exports[`Upload dropzone component when dragging renders correct template when d
         name="upload"
         size="24"
       />
-       
       <p
         class="gl-mb-0"
         data-testid="upload-text"
       >
-        Drop or 
+        Drop or
         <gl-link-stub>
-          
-                  upload
-                
+          upload
         </gl-link-stub>
-         files to attach
+        files to attach
       </p>
     </div>
   </button>
-   
   <input
     accept="image/*"
     class="hide"
-    multiple="multiple"
+    multiple=""
     name="upload_file"
     type="file"
   />
-   
   <transition-stub
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
+      class="card gl-absolute gl-align-items-center gl-display-flex gl-h-full gl-justify-content-center gl-p-4 gl-w-full upload-dropzone-border upload-dropzone-overlay"
       style=""
     >
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style=""
       >
-        <h3
-          class=""
-        >
-          
-            Oh no!
-          
+        <h3>
+          Oh no!
         </h3>
-         
         <span>
           You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
         </span>
       </div>
-       
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style="display: none;"
       >
-        <h3
-          class=""
-        >
-          
-            Incoming!
-          
+        <h3>
+          Incoming!
         </h3>
-         
         <span>
           Drop your files to start your upload.
         </span>
@@ -339,14 +277,14 @@ exports[`Upload dropzone component when dragging renders correct template when d
 
 exports[`Upload dropzone component when dragging renders correct template when drag event is empty 1`] = `
 <div
-  class="gl-w-full gl-relative"
+  class="gl-relative gl-w-full"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-px-5 gl-py-4 gl-mb-0"
+    class="card gl-align-items-center gl-h-full gl-justify-content-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      class="gl-align-items-center gl-display-flex gl-flex-direction-column gl-justify-content-center gl-text-center"
       data-testid="dropzone-area"
     >
       <gl-icon-stub
@@ -354,66 +292,50 @@ exports[`Upload dropzone component when dragging renders correct template when d
         name="upload"
         size="24"
       />
-       
       <p
         class="gl-mb-0"
         data-testid="upload-text"
       >
-        Drop or 
+        Drop or
         <gl-link-stub>
-          
-                  upload
-                
+          upload
         </gl-link-stub>
-         files to attach
+        files to attach
       </p>
     </div>
   </button>
-   
   <input
     accept="image/*"
     class="hide"
-    multiple="multiple"
+    multiple=""
     name="upload_file"
     type="file"
   />
-   
   <transition-stub
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
+      class="card gl-absolute gl-align-items-center gl-display-flex gl-h-full gl-justify-content-center gl-p-4 gl-w-full upload-dropzone-border upload-dropzone-overlay"
       style=""
     >
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style=""
       >
-        <h3
-          class=""
-        >
-          
-            Oh no!
-          
+        <h3>
+          Oh no!
         </h3>
-         
         <span>
           You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
         </span>
       </div>
-       
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style="display: none;"
       >
-        <h3
-          class=""
-        >
-          
-            Incoming!
-          
+        <h3>
+          Incoming!
         </h3>
-         
         <span>
           Drop your files to start your upload.
         </span>
@@ -425,14 +347,14 @@ exports[`Upload dropzone component when dragging renders correct template when d
 
 exports[`Upload dropzone component when dragging renders correct template when dragging stops 1`] = `
 <div
-  class="gl-w-full gl-relative"
+  class="gl-relative gl-w-full"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-px-5 gl-py-4 gl-mb-0"
+    class="card gl-align-items-center gl-h-full gl-justify-content-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      class="gl-align-items-center gl-display-flex gl-flex-direction-column gl-justify-content-center gl-text-center"
       data-testid="dropzone-area"
     >
       <gl-icon-stub
@@ -440,66 +362,50 @@ exports[`Upload dropzone component when dragging renders correct template when d
         name="upload"
         size="24"
       />
-       
       <p
         class="gl-mb-0"
         data-testid="upload-text"
       >
-        Drop or 
+        Drop or
         <gl-link-stub>
-          
-                  upload
-                
+          upload
         </gl-link-stub>
-         files to attach
+        files to attach
       </p>
     </div>
   </button>
-   
   <input
     accept="image/*"
     class="hide"
-    multiple="multiple"
+    multiple=""
     name="upload_file"
     type="file"
   />
-   
   <transition-stub
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
+      class="card gl-absolute gl-align-items-center gl-display-flex gl-h-full gl-justify-content-center gl-p-4 gl-w-full upload-dropzone-border upload-dropzone-overlay"
       style="display: none;"
     >
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style=""
       >
-        <h3
-          class=""
-        >
-          
-            Oh no!
-          
+        <h3>
+          Oh no!
         </h3>
-         
         <span>
           You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
         </span>
       </div>
-       
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style="display: none;"
       >
-        <h3
-          class=""
-        >
-          
-            Incoming!
-          
+        <h3>
+          Incoming!
         </h3>
-         
         <span>
           Drop your files to start your upload.
         </span>
@@ -511,14 +417,14 @@ exports[`Upload dropzone component when dragging renders correct template when d
 
 exports[`Upload dropzone component when no slot provided renders default dropzone card 1`] = `
 <div
-  class="gl-w-full gl-relative"
+  class="gl-relative gl-w-full"
 >
   <button
-    class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-px-5 gl-py-4 gl-mb-0"
+    class="card gl-align-items-center gl-h-full gl-justify-content-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
-      class="gl-display-flex gl-align-items-center gl-justify-content-center gl-text-center gl-flex-direction-column"
+      class="gl-align-items-center gl-display-flex gl-flex-direction-column gl-justify-content-center gl-text-center"
       data-testid="dropzone-area"
     >
       <gl-icon-stub
@@ -526,65 +432,49 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
         name="upload"
         size="24"
       />
-       
       <p
         class="gl-mb-0"
         data-testid="upload-text"
       >
-        Drop or 
+        Drop or
         <gl-link-stub>
-          
-                  upload
-                
+          upload
         </gl-link-stub>
-         files to attach
+        files to attach
       </p>
     </div>
   </button>
-   
   <input
     accept="image/*"
     class="hide"
-    multiple="multiple"
+    multiple=""
     name="upload_file"
     type="file"
   />
-   
   <transition-stub
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
+      class="card gl-absolute gl-align-items-center gl-display-flex gl-h-full gl-justify-content-center gl-p-4 gl-w-full upload-dropzone-border upload-dropzone-overlay"
       style="display: none;"
     >
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style="display: none;"
       >
-        <h3
-          class=""
-        >
-          
-            Oh no!
-          
+        <h3>
+          Oh no!
         </h3>
-         
         <span>
           You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
         </span>
       </div>
-       
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
       >
-        <h3
-          class=""
-        >
-          
-            Incoming!
-          
+        <h3>
+          Incoming!
         </h3>
-         
         <span>
           Drop your files to start your upload.
         </span>
@@ -596,47 +486,35 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
 
 exports[`Upload dropzone component when slot provided renders dropzone with slot content 1`] = `
 <div
-  class="gl-w-full gl-relative"
+  class="gl-relative gl-w-full"
 >
   <div>
     dropzone slot
   </div>
-   
   <transition-stub
     name="upload-dropzone-fade"
   >
     <div
-      class="card upload-dropzone-border upload-dropzone-overlay gl-w-full gl-h-full gl-absolute gl-display-flex gl-align-items-center gl-justify-content-center gl-p-4"
+      class="card gl-absolute gl-align-items-center gl-display-flex gl-h-full gl-justify-content-center gl-p-4 gl-w-full upload-dropzone-border upload-dropzone-overlay"
       style="display: none;"
     >
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
         style="display: none;"
       >
-        <h3
-          class=""
-        >
-          
-            Oh no!
-          
+        <h3>
+          Oh no!
         </h3>
-         
         <span>
           You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico.
         </span>
       </div>
-       
       <div
-        class="mw-50 gl-text-center"
+        class="gl-text-center mw-50"
       >
-        <h3
-          class=""
-        >
-          
-            Incoming!
-          
+        <h3>
+          Incoming!
         </h3>
-         
         <span>
           Drop your files to start your upload.
         </span>

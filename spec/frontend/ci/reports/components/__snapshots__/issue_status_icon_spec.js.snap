@@ -2,7 +2,7 @@
 
 exports[`IssueStatusIcon renders "failed" state correctly 1`] = `
 <div
-  class="report-block-list-icon failed"
+  class="failed report-block-list-icon"
 >
   <gl-icon-stub
     data-qa-selector="status_failed_icon"
@@ -14,7 +14,7 @@ exports[`IssueStatusIcon renders "failed" state correctly 1`] = `
 
 exports[`IssueStatusIcon renders "neutral" state correctly 1`] = `
 <div
-  class="report-block-list-icon neutral"
+  class="neutral report-block-list-icon"
 >
   <gl-icon-stub
     data-qa-selector="status_neutral_icon"

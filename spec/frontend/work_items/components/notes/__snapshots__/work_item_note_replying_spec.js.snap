@@ -1,3 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Work Item Note Replying should have the note body and header 1`] = `"<note-header-stub author=\\"[object Object]\\" actiontext=\\"\\" noteabletype=\\"\\" expanded=\\"true\\" showspinner=\\"true\\" noteurl=\\"\\" emailparticipant=\\"\\"></note-header-stub>"`;
+exports[`Work Item Note Replying should have the note body and header 1`] = `
+<note-header-stub
+  actiontext=""
+  author="[object Object]"
+  emailparticipant=""
+  expanded="true"
+  noteabletype=""
+  noteurl=""
+  showspinner="true"
+/>
+`;

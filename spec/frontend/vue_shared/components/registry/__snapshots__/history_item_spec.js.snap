@@ -2,20 +2,19 @@
 
 exports[`History Item renders the correct markup 1`] = `
 <li
-  class="timeline-entry system-note note-wrapper"
+  class="note-wrapper system-note timeline-entry"
 >
   <div
     class="timeline-entry-inner"
   >
     <div
-      class="gl--flex-center gl-rounded-full gl-mt-n1 gl-ml-2 gl-w-6 gl-h-6 gl-bg-gray-50 gl-text-gray-600 gl-float-left"
+      class="gl--flex-center gl-bg-gray-50 gl-float-left gl-h-6 gl-ml-2 gl-mt-n1 gl-rounded-full gl-text-gray-600 gl-w-6"
     >
       <gl-icon-stub
         name="pencil"
         size="16"
       />
     </div>
-     
     <div
       class="timeline-content"
     >
@@ -30,7 +29,6 @@ exports[`History Item renders the correct markup 1`] = `
           />
         </div>
       </div>
-       
       <div
         class="note-body"
       >

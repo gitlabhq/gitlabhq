@@ -28,7 +28,7 @@ describe('Code Block Highlighted', () => {
           >
             const
           </span>
-           foo = 
+          foo =
           <span
             class="hljs-number"
           >

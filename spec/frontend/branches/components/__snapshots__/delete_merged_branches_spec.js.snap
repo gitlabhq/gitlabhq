@@ -16,102 +16,82 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
     toggletext=""
     variant="default"
   >
-      
     <ul
       aria-labelledby="dropdown-toggle-btn-25"
       class="gl-new-dropdown-contents"
       data-testid="disclosure-content"
-      id="disclosure-26"
+      id="reference-0"
       tabindex="-1"
     >
       <gl-disclosure-dropdown-item-stub
         item="[object Object]"
       />
     </ul>
-     
   </gl-base-dropdown-stub>
-   
   <b-button-stub
-    class="gl-display-block gl-md-display-none! gl-button btn-danger-secondary"
+    class="btn-danger-secondary gl-button gl-display-block gl-md-display-none!"
     data-testid="delete-merged-branches-button"
     size="md"
     tag="button"
     type="button"
     variant="danger"
   >
-    <!---->
-     
-    <!---->
-      
     <span
       class="gl-button-text"
     >
-      
-    Delete merged branches
-  
+      Delete merged branches
     </span>
   </b-button-stub>
-   
   <div>
     <form
       action="/namespace/project/-/merged_branches"
       method="post"
     >
       <p>
-        You are about to 
+        You are about to
         <strong>
           delete all branches
         </strong>
-         that were merged into 
+        that were merged into
         <code>
           master
         </code>
         .
       </p>
-       
       <p>
-        
         This may include merged branches that are not visible on the current screen.
-      
       </p>
-       
       <p>
-        
         A branch won't be deleted if it is protected or associated with an open merge request.
-      
       </p>
-       
       <p>
-        This bulk action is 
+        This bulk action is
         <strong>
           permanent and cannot be undone or recovered
         </strong>
         .
       </p>
-       
       <p>
-        Plese type the following to confirm: 
+        Plese type the following to confirm:
         <code>
           delete
         </code>
-        . 
+        .
         <b-form-input-stub
           aria-labelledby="input-label"
           autocomplete="off"
-          class="gl-form-input gl-mt-2 gl-form-input-sm"
+          class="gl-form-input gl-form-input-sm gl-mt-2"
           debounce="0"
           formatter="[Function]"
           type="text"
           value=""
         />
       </p>
-       
       <input
         name="_method"
         type="hidden"
         value="delete"
       />
-       
       <input
         name="authenticity_token"
         type="hidden"
@@ -119,7 +99,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
       />
     </form>
     <div
-      class="gl-display-flex gl-flex-direction-row gl-justify-content-end gl-flex-wrap gl-m-0 gl-mr-3"
+      class="gl-display-flex gl-flex-direction-row gl-flex-wrap gl-justify-content-end gl-m-0 gl-mr-3"
     >
       <b-button-stub
         class="gl-button"
@@ -129,19 +109,12 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
         type="button"
         variant="default"
       >
-        <!---->
-         
-        <!---->
-          
         <span
           class="gl-button-text"
         >
-          
           Cancel
-        
         </span>
       </b-button-stub>
-       
       <b-button-stub
         class="gl-button"
         data-testid="delete-merged-branches-confirmation-button"
@@ -151,10 +124,6 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
         type="button"
         variant="danger"
       >
-        <!---->
-         
-        <!---->
-          
         <span
           class="gl-button-text"
         >

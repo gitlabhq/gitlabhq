@@ -5,42 +5,27 @@ exports[`Remove cluster confirmation modal renders buttons with modal included 1
   class="gl-display-flex"
 >
   <button
-    class="btn gl-mr-3 btn-danger btn-md gl-button"
+    class="btn btn-danger btn-md gl-button gl-mr-3"
     data-testid="remove-integration-and-resources-button"
     type="button"
   >
-    <!---->
-     
-    <!---->
-      
     <span
       class="gl-button-text"
     >
-      
-    Remove integration and resources
-  
+      Remove integration and resources
     </span>
   </button>
-   
   <button
-    class="btn btn-danger btn-md gl-button btn-danger-secondary"
+    class="btn btn-danger btn-danger-secondary btn-md gl-button"
     data-testid="remove-integration-button"
     type="button"
   >
-    <!---->
-     
-    <!---->
-      
     <span
       class="gl-button-text"
     >
-      
-    Remove integration
-  
+      Remove integration
     </span>
   </button>
-   
-  <!---->
 </div>
 `;
 
@@ -49,63 +34,44 @@ exports[`Remove cluster confirmation modal two buttons open modal with "cleanup"
   class="gl-display-flex"
 >
   <button
-    class="btn gl-mr-3 btn-danger btn-md gl-button"
+    class="btn btn-danger btn-md gl-button gl-mr-3"
     data-testid="remove-integration-and-resources-button"
     type="button"
   >
-    <!---->
-     
-    <!---->
-      
     <span
       class="gl-button-text"
     >
-      
-    Remove integration and resources
-  
+      Remove integration and resources
     </span>
   </button>
-   
   <button
-    class="btn btn-danger btn-md gl-button btn-danger-secondary"
+    class="btn btn-danger btn-danger-secondary btn-md gl-button"
     data-testid="remove-integration-button"
     type="button"
   >
-    <!---->
-     
-    <!---->
-      
     <span
       class="gl-button-text"
     >
-      
-    Remove integration
-  
+      Remove integration
     </span>
   </button>
-   
   <div
     kind="danger"
   >
     <p>
       You are about to remove your cluster integration and all GitLab-created resources associated with this cluster.
     </p>
-     
     <div>
-      
       This will permanently delete the following resources:
-      
       <ul>
         <li>
           Any project namespaces
         </li>
-         
         <li>
           <code>
             clusterroles
           </code>
         </li>
-         
         <li>
           <code>
             clusterrolebindings
@@ -113,15 +79,13 @@ exports[`Remove cluster confirmation modal two buttons open modal with "cleanup"
         </li>
       </ul>
     </div>
-     
     <strong>
-      To remove your integration and resources, type 
+      To remove your integration and resources, type
       <code>
         my-test-cluster
       </code>
-       to confirm:
+      to confirm:
     </strong>
-     
     <form
       action="clusterPath"
       class="gl-mb-5"
@@ -132,27 +96,23 @@ exports[`Remove cluster confirmation modal two buttons open modal with "cleanup"
         type="hidden"
         value="delete"
       />
-       
       <input
         name="authenticity_token"
         type="hidden"
       />
-       
       <input
         name="cleanup"
         type="hidden"
         value="true"
       />
-       
       <input
         autocomplete="off"
-        class="gl-form-input form-control"
-        id="__BVID__14"
+        class="form-control gl-form-input"
+        id="reference-0"
         name="confirm_cluster_name_input"
         type="text"
       />
     </form>
-     
     <span>
       If you do not wish to delete all associated GitLab resources, you can simply remove the integration.
     </span>
@@ -165,58 +125,40 @@ exports[`Remove cluster confirmation modal two buttons open modal without "clean
   class="gl-display-flex"
 >
   <button
-    class="btn gl-mr-3 btn-danger btn-md gl-button"
+    class="btn btn-danger btn-md gl-button gl-mr-3"
     data-testid="remove-integration-and-resources-button"
     type="button"
   >
-    <!---->
-     
-    <!---->
-      
     <span
       class="gl-button-text"
     >
-      
-    Remove integration and resources
-  
+      Remove integration and resources
     </span>
   </button>
-   
   <button
-    class="btn btn-danger btn-md gl-button btn-danger-secondary"
+    class="btn btn-danger btn-danger-secondary btn-md gl-button"
     data-testid="remove-integration-button"
     type="button"
   >
-    <!---->
-     
-    <!---->
-      
     <span
       class="gl-button-text"
     >
-      
-    Remove integration
-  
+      Remove integration
     </span>
   </button>
-   
   <div
     kind="danger"
   >
     <p>
       You are about to remove your cluster integration.
     </p>
-     
-    <!---->
-     
     <strong>
-      To remove your integration, type 
+      To remove your integration, type
       <code>
         my-test-cluster
       </code>
-       to confirm:
+      to confirm:
     </strong>
-     
     <form
       action="clusterPath"
       class="gl-mb-5"
@@ -227,28 +169,23 @@ exports[`Remove cluster confirmation modal two buttons open modal without "clean
         type="hidden"
         value="delete"
       />
-       
       <input
         name="authenticity_token"
         type="hidden"
       />
-       
       <input
         name="cleanup"
         type="hidden"
         value="true"
       />
-       
       <input
         autocomplete="off"
-        class="gl-form-input form-control"
-        id="__BVID__21"
+        class="form-control gl-form-input"
+        id="reference-0"
         name="confirm_cluster_name_input"
         type="text"
       />
     </form>
-     
-    <!---->
   </div>
 </div>
 `;

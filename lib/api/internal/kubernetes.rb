@@ -78,6 +78,30 @@ module API
           ::Clusters::Agents::Authorizations::CiAccess::RefreshService.new(agent, config: config).execute
           ::Clusters::Agents::Authorizations::UserAccess::RefreshService.new(agent, config: config).execute
         end
+
+        def retrieve_user_from_session_cookie
+          # Load session
+          public_session_id_string =
+            begin
+              Gitlab::Kas::UserAccess.decrypt_public_session_id(params[:access_key])
+            rescue StandardError
+              bad_request!('Invalid access_key')
+            end
+
+          session_id = Rack::Session::SessionId.new(public_session_id_string)
+          session = ActiveSession.sessions_from_ids([session_id.private_id]).first
+          unauthorized!('Invalid session') unless session
+
+          # CSRF check
+          unless ::Gitlab::Kas::UserAccess.valid_authenticity_token?(session.symbolize_keys, params[:csrf_token])
+            unauthorized!('CSRF token does not match')
+          end
+
+          # Load user
+          user = Warden::SessionSerializer.new('rack.session' => session).fetch(:user)
+          unauthorized!('Invalid user in session') unless user
+          user
+        end
       end
 
       namespace 'internal' do
@@ -162,26 +186,9 @@ module API
             end
           end
           post '/', feature_category: :deployment_management do
-            # Load session
-            public_session_id_string =
-              begin
-                Gitlab::Kas::UserAccess.decrypt_public_session_id(params[:access_key])
-              rescue StandardError
-                bad_request!('Invalid access_key')
-              end
-
-            session_id = Rack::Session::SessionId.new(public_session_id_string)
-            session = ActiveSession.sessions_from_ids([session_id.private_id]).first
-            unauthorized!('Invalid session') unless session
-
-            # CSRF check
-            unless ::Gitlab::Kas::UserAccess.valid_authenticity_token?(session.symbolize_keys, params[:csrf_token])
-              unauthorized!('CSRF token does not match')
-            end
-
             # Load user
-            user = Warden::SessionSerializer.new('rack.session' => session).fetch(:user)
-            unauthorized!('Invalid user in session') unless user
+            user = (retrieve_user_from_session_cookie if params[:access_type] == 'session_cookie')
+            bad_request!('Unable to get user from request data') unless user
 
             # Load agent
             agent = ::Clusters::Agent.find(params[:agent_id])

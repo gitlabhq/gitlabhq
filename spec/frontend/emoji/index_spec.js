@@ -134,9 +134,11 @@ describe('emoji', () => {
       const emojiKey = 'bomb';
       const markup = glEmojiTag(emojiKey);
 
-      expect(trimText(markup)).toMatchInlineSnapshot(
-        `"<gl-emoji data-name=\\"bomb\\"></gl-emoji>"`,
-      );
+      expect(trimText(markup)).toMatchInlineSnapshot(`
+        <gl-emoji
+          data-name="bomb"
+        />
+      `);
     });
 
     it('bomb emoji with sprite fallback readiness', () => {
@@ -144,9 +146,12 @@ describe('emoji', () => {
       const markup = glEmojiTag(emojiKey, {
         sprite: true,
       });
-      expect(trimText(markup)).toMatchInlineSnapshot(
-        `"<gl-emoji data-fallback-sprite-class=\\"emoji-bomb\\" data-name=\\"bomb\\"></gl-emoji>"`,
-      );
+      expect(trimText(markup)).toMatchInlineSnapshot(`
+        <gl-emoji
+          data-fallback-sprite-class="emoji-bomb"
+          data-name="bomb"
+        />
+      `);
     });
   });
 

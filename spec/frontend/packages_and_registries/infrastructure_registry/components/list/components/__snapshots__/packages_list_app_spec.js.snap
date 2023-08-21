@@ -6,12 +6,10 @@ exports[`packages_list_app renders 1`] = `
     count="1"
     helpurl="foo"
   />
-   
   <infrastructure-search-stub />
-   
   <div>
     <section
-      class="gl-display-flex empty-state gl-text-center gl-flex-direction-column"
+      class="empty-state gl-display-flex gl-flex-direction-column gl-text-center"
     >
       <div
         class="gl-max-w-full"
@@ -21,15 +19,14 @@ exports[`packages_list_app renders 1`] = `
         >
           <img
             alt=""
-            class="gl-max-w-full gl-dark-invert-keep-hue"
+            class="gl-dark-invert-keep-hue gl-max-w-full"
             role="img"
             src="helpSvg"
           />
         </div>
       </div>
-       
       <div
-        class="gl-max-w-full gl-m-auto"
+        class="gl-m-auto gl-max-w-full"
         data-testid="gl-empty-state-content"
       >
         <div
@@ -38,15 +35,12 @@ exports[`packages_list_app renders 1`] = `
           <h1
             class="gl-font-size-h-display gl-line-height-36 h4"
           >
-            
-          There are no packages yet
-        
+            There are no packages yet
           </h1>
-           
           <p
             class="gl-mt-3"
           >
-            Learn how to 
+            Learn how to
             <b-link-stub
               class="gl-link"
               href="helpUrl"
@@ -54,16 +48,11 @@ exports[`packages_list_app renders 1`] = `
             >
               publish and share your packages
             </b-link-stub>
-             with GitLab.
+            with GitLab.
           </p>
-           
           <div
             class="gl-display-flex gl-flex-wrap gl-justify-content-center"
-          >
-            <!---->
-             
-            <!---->
-          </div>
+          />
         </div>
       </div>
     </section>

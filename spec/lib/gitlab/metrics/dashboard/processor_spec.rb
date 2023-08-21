@@ -10,13 +10,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Processor do
   let(:dashboard_yml) { load_sample_dashboard }
 
   describe 'process' do
-    let(:sequence) do
-      [
-        Gitlab::Metrics::Dashboard::Stages::UrlValidator
-      ]
-    end
-
-    let(:process_params) { [project, dashboard_yml, sequence, { environment: environment }] }
+    let(:process_params) { [project, dashboard_yml, nil, { environment: environment }] }
     let(:dashboard) { described_class.new(*process_params).process }
 
     context 'when the dashboard is not present' do

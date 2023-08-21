@@ -3,20 +3,18 @@
 exports[`Design note pin component should match the snapshot of note with index 1`] = `
 <button
   aria-label="Comment '1' position"
-  class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm js-image-badge design-note-pin gl-absolute"
+  class="design-note-pin gl-absolute gl-align-items-center gl-display-flex gl-font-sm gl-justify-content-center js-image-badge"
   style="left: 10px; top: 10px;"
   type="button"
 >
-  
-    1
-  
+  1
 </button>
 `;
 
 exports[`Design note pin component should match the snapshot of note without index 1`] = `
 <button
   aria-label="Comment form position"
-  class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm btn-transparent comment-indicator gl-absolute"
+  class="btn-transparent comment-indicator gl-absolute gl-align-items-center gl-display-flex gl-font-sm gl-justify-content-center"
   style="left: 10px; top: 10px;"
   type="button"
 >
@@ -30,7 +28,7 @@ exports[`Design note pin component should match the snapshot of note without ind
 exports[`Design note pin component should match the snapshot when pin is resolved 1`] = `
 <button
   aria-label="Comment form position"
-  class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm btn-transparent comment-indicator resolved gl-absolute"
+  class="btn-transparent comment-indicator gl-absolute gl-align-items-center gl-display-flex gl-font-sm gl-justify-content-center resolved"
   style="left: 10px; top: 10px;"
   type="button"
 >
@@ -44,7 +42,7 @@ exports[`Design note pin component should match the snapshot when pin is resolve
 exports[`Design note pin component should match the snapshot when position is absent 1`] = `
 <button
   aria-label="Comment form position"
-  class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm btn-transparent comment-indicator"
+  class="btn-transparent comment-indicator gl-align-items-center gl-display-flex gl-font-sm gl-justify-content-center"
   type="button"
 >
   <gl-icon-stub

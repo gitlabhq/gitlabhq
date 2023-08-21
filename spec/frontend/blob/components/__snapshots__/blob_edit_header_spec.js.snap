@@ -2,10 +2,10 @@
 
 exports[`Blob Header Editing rendering matches the snapshot 1`] = `
 <div
-  class="js-file-title file-title-flex-parent"
+  class="file-title-flex-parent js-file-title"
 >
   <div
-    class="gl-display-flex gl-align-items-center gl-w-full"
+    class="gl-align-items-center gl-display-flex gl-w-full"
   >
     <gl-form-input-stub
       class="form-control js-snippet-file-name"
@@ -14,8 +14,6 @@ exports[`Blob Header Editing rendering matches the snapshot 1`] = `
       type="text"
       value="foo.md"
     />
-     
-    <!---->
   </div>
 </div>
 `;

@@ -2,16 +2,15 @@
 
 exports[`GroupItemName template matches the snapshot 1`] = `
 <div
-  class="gl-display-flex gl-align-items-center"
+  class="gl-align-items-center gl-display-flex"
 >
   <gl-icon-stub
     class="gl-mr-3"
     name="folder-o"
     size="16"
   />
-   
   <div
-    class="gl-display-none gl-flex-shrink-0 gl-sm-display-flex gl-mr-3"
+    class="gl-display-none gl-flex-shrink-0 gl-mr-3 gl-sm-display-flex"
   >
     <gl-avatar-stub
       alt="avatar"
@@ -22,19 +21,15 @@ exports[`GroupItemName template matches the snapshot 1`] = `
       src="avatar.png"
     />
   </div>
-   
   <div>
     <span
-      class="gl-mr-3 gl-text-gray-900! gl-font-weight-bold"
+      class="gl-font-weight-bold gl-mr-3 gl-text-gray-900!"
     >
-      
       Gitlab Org
-    
     </span>
-     
     <div>
       <p
-        class="gl-mt-2! gl-mb-0 gl-text-gray-600"
+        class="gl-mb-0 gl-mt-2! gl-text-gray-600"
       >
         Open source software to collaborate on code
       </p>

@@ -29,12 +29,10 @@ exports[`SplitButton renders actionItems 1`] = `
     <strong>
       professor
     </strong>
-     
     <div>
       very symphonic
     </div>
   </gl-dropdown-item-stub>
-   
   <gl-dropdown-divider-stub />
   <gl-dropdown-item-stub
     avatarurl=""
@@ -48,12 +46,9 @@ exports[`SplitButton renders actionItems 1`] = `
     <strong>
       captain
     </strong>
-     
     <div>
       warp drive
     </div>
   </gl-dropdown-item-stub>
-   
-  <!---->
 </gl-dropdown-stub>
 `;

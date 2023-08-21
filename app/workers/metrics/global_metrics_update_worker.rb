@@ -16,9 +16,7 @@ module Metrics
 
     LEASE_TIMEOUT = 2.minutes
 
-    def perform
-      try_obtain_lease { ::Metrics::GlobalMetricsUpdateService.new.execute }
-    end
+    def perform; end
 
     def lease_timeout
       LEASE_TIMEOUT

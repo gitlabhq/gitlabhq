@@ -2,17 +2,16 @@
 
 exports[`Design management design presentation component currentCommentForm is equal to current annotation position when isAnnotating is true 1`] = `
 <div
-  class="gl-h-full gl-w-full gl-p-5 overflow-auto gl-relative"
+  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
 >
   <div
-    class="gl-h-full gl-w-full gl-display-flex gl-align-items-center gl-relative"
+    class="gl-align-items-center gl-display-flex gl-h-full gl-relative gl-w-full"
   >
     <design-image-stub
       image="test.jpg"
       name="test"
       scale="1"
     />
-     
     <design-overlay-stub
       currentcommentform="[object Object]"
       dimensions="[object Object]"
@@ -25,17 +24,16 @@ exports[`Design management design presentation component currentCommentForm is e
 
 exports[`Design management design presentation component currentCommentForm is null when isAnnotating is false 1`] = `
 <div
-  class="gl-h-full gl-w-full gl-p-5 overflow-auto gl-relative"
+  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
 >
   <div
-    class="gl-h-full gl-w-full gl-display-flex gl-align-items-center gl-relative"
+    class="gl-align-items-center gl-display-flex gl-h-full gl-relative gl-w-full"
   >
     <design-image-stub
       image="test.jpg"
       name="test"
       scale="1"
     />
-     
     <design-overlay-stub
       dimensions="[object Object]"
       notes=""
@@ -47,17 +45,16 @@ exports[`Design management design presentation component currentCommentForm is n
 
 exports[`Design management design presentation component currentCommentForm is null when isAnnotating is true but annotation position is falsey 1`] = `
 <div
-  class="gl-h-full gl-w-full gl-p-5 overflow-auto gl-relative"
+  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
 >
   <div
-    class="gl-h-full gl-w-full gl-display-flex gl-align-items-center gl-relative"
+    class="gl-align-items-center gl-display-flex gl-h-full gl-relative gl-w-full"
   >
     <design-image-stub
       image="test.jpg"
       name="test"
       scale="1"
     />
-     
     <design-overlay-stub
       dimensions="[object Object]"
       notes=""
@@ -69,31 +66,26 @@ exports[`Design management design presentation component currentCommentForm is n
 
 exports[`Design management design presentation component renders empty state when no image provided 1`] = `
 <div
-  class="gl-h-full gl-w-full gl-p-5 overflow-auto gl-relative"
+  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
 >
   <div
-    class="gl-h-full gl-w-full gl-display-flex gl-align-items-center gl-relative"
-  >
-    <!---->
-     
-    <!---->
-  </div>
+    class="gl-align-items-center gl-display-flex gl-h-full gl-relative gl-w-full"
+  />
 </div>
 `;
 
 exports[`Design management design presentation component renders image and overlay when image provided 1`] = `
 <div
-  class="gl-h-full gl-w-full gl-p-5 overflow-auto gl-relative"
+  class="gl-h-full gl-p-5 gl-relative gl-w-full overflow-auto"
 >
   <div
-    class="gl-h-full gl-w-full gl-display-flex gl-align-items-center gl-relative"
+    class="gl-align-items-center gl-display-flex gl-h-full gl-relative gl-w-full"
   >
     <design-image-stub
       image="test.jpg"
       name="test"
       scale="1"
     />
-     
     <design-overlay-stub
       dimensions="[object Object]"
       notes=""

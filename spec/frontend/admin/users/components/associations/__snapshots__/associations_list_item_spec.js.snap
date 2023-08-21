@@ -1,3 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AssociationsListItem renders interpolated message in a \`li\` element 1`] = `"<li><strong>5</strong> groups</li>"`;
+exports[`AssociationsListItem renders interpolated message in a \`li\` element 1`] = `
+<li>
+  <strong>
+    5
+  </strong>
+  groups
+</li>
+`;

@@ -2,18 +2,13 @@
 
 exports[`FileSha renders 1`] = `
 <div
-  class="gl-display-flex gl-align-items-center gl-font-monospace gl-font-sm gl-word-break-all gl-py-2 gl-border-b-solid gl-border-gray-100 gl-border-b-1"
+  class="gl-align-items-center gl-border-b-1 gl-border-b-solid gl-border-gray-100 gl-display-flex gl-font-monospace gl-font-sm gl-py-2 gl-word-break-all"
 >
-  <!---->
-   
   <span>
     <div
       class="gl-px-4"
     >
-      
-    bar:
-    foo
-    
+      bar: foo
       <gl-button-stub
         aria-label="Copy SHA"
         aria-live="polite"
@@ -22,7 +17,7 @@ exports[`FileSha renders 1`] = `
         data-clipboard-handle-tooltip="false"
         data-clipboard-text="foo"
         icon="copy-to-clipboard"
-        id="clipboard-button-1"
+        id="reference-0"
         size="small"
         title="Copy SHA"
         variant="default"

@@ -7,7 +7,6 @@ exports[`Alert integration settings form default state should match the default 
       message="Action to take when receiving an alert. %{docsLink}"
     />
   </p>
-   
   <form>
     <gl-form-group-stub
       class="gl-pl-0"
@@ -17,14 +16,13 @@ exports[`Alert integration settings form default state should match the default 
       <gl-form-checkbox-stub
         checked="true"
         data-qa-selector="create_incident_checkbox"
-        id="2"
+        id="reference-0"
       >
         <span>
           Create an incident. Incidents are created for each alert triggered.
         </span>
       </gl-form-checkbox-stub>
     </gl-form-group-stub>
-     
     <gl-form-group-stub
       class="col-8 col-md-9 gl-px-6"
       label-for="alert-integration-settings-issue-template"
@@ -34,11 +32,9 @@ exports[`Alert integration settings form default state should match the default 
     >
       <label
         class="gl-display-inline-flex"
-        for="alert-integration-settings-issue-template"
+        for="reference-1"
       >
-        
         Incident template (optional).
-        
         <gl-link-stub
           href="/help/user/project/description_templates#create-an-issue-template"
           target="_blank"
@@ -50,14 +46,13 @@ exports[`Alert integration settings form default state should match the default 
           </span>
         </gl-link-stub>
       </label>
-       
       <gl-collapsible-listbox-stub
         block="true"
         category="primary"
         data-qa-selector="incident_templates_dropdown"
         headertext=""
         icon=""
-        id="alert-integration-settings-issue-template"
+        id="reference-1"
         items="[object Object]"
         noresultstext="No results found"
         placement="left"
@@ -71,37 +66,34 @@ exports[`Alert integration settings form default state should match the default 
         variant="default"
       />
     </gl-form-group-stub>
-     
     <gl-form-group-stub
-      class="gl-pl-0 gl-mb-5"
+      class="gl-mb-5 gl-pl-0"
       labeldescription=""
       optionaltext="(optional)"
     >
       <gl-form-checkbox-stub
         data-qa-selector="enable_email_notification_checkbox"
-        id="3"
+        id="reference-2"
       >
         <span>
           Send a single email notification to Owners and Maintainers for new alerts.
         </span>
       </gl-form-checkbox-stub>
     </gl-form-group-stub>
-     
     <gl-form-group-stub
-      class="gl-pl-0 gl-mb-5"
+      class="gl-mb-5 gl-pl-0"
       labeldescription=""
       optionaltext="(optional)"
     >
       <gl-form-checkbox-stub
         checked="true"
-        id="4"
+        id="reference-3"
       >
         <span>
           Automatically close associated incident when a recovery alert notification resolves an alert
         </span>
       </gl-form-checkbox-stub>
     </gl-form-group-stub>
-     
     <gl-button-stub
       buttontextclasses=""
       category="primary"
@@ -112,9 +104,7 @@ exports[`Alert integration settings form default state should match the default 
       type="submit"
       variant="confirm"
     >
-      
       Save changes
-    
     </gl-button-stub>
   </form>
 </div>

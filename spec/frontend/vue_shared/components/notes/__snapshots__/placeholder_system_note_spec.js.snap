@@ -2,7 +2,7 @@
 
 exports[`Placeholder system note component matches snapshot 1`] = `
 <timeline-entry-item-stub
-  class="note system-note being-posted fade-in-half"
+  class="being-posted fade-in-half note system-note"
 >
   <div
     class="timeline-content"

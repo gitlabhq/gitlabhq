@@ -2,14 +2,14 @@
 
 exports[`Design management toolbar component renders design and updated data 1`] = `
 <header
-  class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-bg-white gl-py-4 gl-pl-4 js-design-header"
+  class="gl-align-items-center gl-bg-white gl-display-flex gl-justify-content-space-between gl-pl-4 gl-py-4 js-design-header"
 >
   <div
-    class="gl-display-flex gl-align-items-center"
+    class="gl-align-items-center gl-display-flex"
   >
     <a
       aria-label="Go back to designs"
-      class="gl-mr-5 gl-display-flex gl-align-items-center gl-justify-content-center text-plain"
+      class="gl-align-items-center gl-display-flex gl-justify-content-center gl-mr-5 text-plain"
       data-testid="close-design"
     >
       <gl-icon-stub
@@ -17,16 +17,14 @@ exports[`Design management toolbar component renders design and updated data 1`]
         size="16"
       />
     </a>
-     
     <div
-      class="gl-overflow-hidden gl-display-flex gl-align-items-center"
+      class="gl-align-items-center gl-display-flex gl-overflow-hidden"
     >
       <h2
-        class="gl-m-0 str-truncated-100 gl-font-base"
+        class="gl-font-base gl-m-0 str-truncated-100"
       >
         test.jpg
       </h2>
-       
       <small
         class="gl-text-gray-500"
       >
@@ -34,12 +32,10 @@ exports[`Design management toolbar component renders design and updated data 1`]
       </small>
     </div>
   </div>
-   
   <design-navigation-stub
-    class="gl-ml-auto gl-flex-shrink-0"
-    id="1"
+    class="gl-flex-shrink-0 gl-ml-auto"
+    id="reference-0"
   />
-   
   <gl-button-stub
     aria-label="Download design"
     buttontextclasses=""
@@ -50,7 +46,6 @@ exports[`Design management toolbar component renders design and updated data 1`]
     title="Download design"
     variant="default"
   />
-   
   <delete-button-stub
     buttoncategory="secondary"
     buttonclass=""

@@ -10,7 +10,6 @@ exports[`DeleteApplication the modal component form matches the snapshot 1`] = `
     type="hidden"
     value="delete"
   />
-   
   <input
     name="authenticity_token"
     type="hidden"

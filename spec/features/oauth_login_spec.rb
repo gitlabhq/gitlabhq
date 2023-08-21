@@ -136,7 +136,7 @@ RSpec.describe 'OAuth Login', :allow_forgery_protection, feature_category: :syst
     # record as the host / port depends on whether or not the spec uses
     # JS.
     let(:application) do
-      create(:oauth_application, scopes: 'api', redirect_uri: redirect_uri, confidential: false)
+      create(:oauth_application, scopes: 'api', redirect_uri: redirect_uri, confidential: true)
     end
 
     let(:params) do

@@ -13,22 +13,16 @@ exports[`Secure File Metadata Modal when a .cer file is supplied matches cer the
   <div
     data-testid="slot-default"
   >
-     
     <table
       aria-busy=""
       aria-colcount="2"
-      class="table b-table gl-table"
+      class="b-table gl-table table"
       role="table"
     >
-      <!---->
-      <!---->
       <thead
-        class=""
         role="rowgroup"
       >
-        <!---->
         <tr
-          class=""
           role="row"
         >
           <th
@@ -56,14 +50,11 @@ exports[`Secure File Metadata Modal when a .cer file is supplied matches cer the
       <tbody
         role="rowgroup"
       >
-        <!---->
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -72,21 +63,16 @@ exports[`Secure File Metadata Modal when a .cer file is supplied matches cer the
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    Apple Distribution: Team Name (ABC123XYZ)
-  
+            Apple Distribution: Team Name (ABC123XYZ)
           </td>
         </tr>
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -95,21 +81,16 @@ exports[`Secure File Metadata Modal when a .cer file is supplied matches cer the
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    33669367788748363528491290218354043267
-  
+            33669367788748363528491290218354043267
           </td>
         </tr>
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -118,21 +99,16 @@ exports[`Secure File Metadata Modal when a .cer file is supplied matches cer the
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    Team Name (ABC123XYZ)
-  
+            Team Name (ABC123XYZ)
           </td>
         </tr>
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -141,21 +117,16 @@ exports[`Secure File Metadata Modal when a .cer file is supplied matches cer the
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    Apple Worldwide Developer Relations Certification Authority - G3
-  
+            Apple Worldwide Developer Relations Certification Authority - G3
           </td>
         </tr>
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -164,18 +135,12 @@ exports[`Secure File Metadata Modal when a .cer file is supplied matches cer the
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    April 26, 2023 at 7:20:39 PM GMT
-  
+            April 26, 2023 at 7:20:39 PM GMT
           </td>
         </tr>
-        <!---->
-        <!---->
       </tbody>
-      <!---->
     </table>
   </div>
 </div>
@@ -194,22 +159,16 @@ exports[`Secure File Metadata Modal when a .mobileprovision file is supplied mat
   <div
     data-testid="slot-default"
   >
-     
     <table
       aria-busy=""
       aria-colcount="2"
-      class="table b-table gl-table"
+      class="b-table gl-table table"
       role="table"
     >
-      <!---->
-      <!---->
       <thead
-        class=""
         role="rowgroup"
       >
-        <!---->
         <tr
-          class=""
           role="row"
         >
           <th
@@ -237,14 +196,11 @@ exports[`Secure File Metadata Modal when a .mobileprovision file is supplied mat
       <tbody
         role="rowgroup"
       >
-        <!---->
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -253,21 +209,16 @@ exports[`Secure File Metadata Modal when a .mobileprovision file is supplied mat
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    6b9fcce1-b9a9-4b37-b2ce-ec4da2044abf
-  
+            6b9fcce1-b9a9-4b37-b2ce-ec4da2044abf
           </td>
         </tr>
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -276,21 +227,16 @@ exports[`Secure File Metadata Modal when a .mobileprovision file is supplied mat
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    iOS
-  
+            iOS
           </td>
         </tr>
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -299,21 +245,16 @@ exports[`Secure File Metadata Modal when a .mobileprovision file is supplied mat
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    Team Name (ABC123XYZ)
-  
+            Team Name (ABC123XYZ)
           </td>
         </tr>
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -322,21 +263,16 @@ exports[`Secure File Metadata Modal when a .mobileprovision file is supplied mat
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    iOS Demo - match Development com.gitlab.ios-demo
-  
+            iOS Demo - match Development com.gitlab.ios-demo
           </td>
         </tr>
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -345,21 +281,16 @@ exports[`Secure File Metadata Modal when a .mobileprovision file is supplied mat
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    33669367788748363528491290218354043267
-  
+            33669367788748363528491290218354043267
           </td>
         </tr>
         <tr
-          class=""
           role="row"
         >
           <td
             aria-colindex="1"
-            class=""
             role="cell"
           >
             <strong>
@@ -368,18 +299,12 @@ exports[`Secure File Metadata Modal when a .mobileprovision file is supplied mat
           </td>
           <td
             aria-colindex="2"
-            class=""
             role="cell"
           >
-            
-    August 1, 2023 at 11:15:13 PM GMT
-  
+            August 1, 2023 at 11:15:13 PM GMT
           </td>
         </tr>
-        <!---->
-        <!---->
       </tbody>
-      <!---->
     </table>
   </div>
 </div>
