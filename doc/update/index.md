@@ -1377,6 +1377,22 @@ Other issues:
   **GitLab 13.2 or older** directly to 14.0, this is [unsupported](#upgrading-to-a-new-major-version).
   You should instead follow a [supported upgrade path](#upgrade-paths).
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
+- **In GitLab 13.12.2 and later**, users with expired passwords can no longer authenticate with API and Git using tokens because of
+  the [Insufficient Expired Password Validation](https://about.gitlab.com/releases/2021/06/01/security-release-gitlab-13-12-2-released/#insufficient-expired-password-validation)
+  security fix. If your users get authentication issues following the upgrade, check that their password is not expired:
+
+  1. [Connect to the PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-postgresql-database) and execute the
+     following query:
+
+     ```sql
+     select id,username,password_expires_at from users where password_expires_at < now();
+     ```
+
+  1. If the user is in the returned list, reset the `password_expires_at` for that user:
+
+     ```sql
+     update users set password_expires_at = null where username='<USERNAME>';
+     ```
 
 #### Upgrading to later 14.Y releases
 
