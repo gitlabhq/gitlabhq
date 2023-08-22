@@ -162,6 +162,7 @@ export default {
           v-if="hasPill"
           size="sm"
           variant="neutral"
+          class="gl-bg-t-gray-a-08!"
           :class="{ 'nav-item-badge gl-absolute gl-right-0 gl-top-2': isPinnable }"
         >
           {{ pillData }}

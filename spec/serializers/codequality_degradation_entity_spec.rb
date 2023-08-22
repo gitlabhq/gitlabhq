@@ -2,11 +2,23 @@
 
 require 'spec_helper'
 
-RSpec.describe CodequalityDegradationEntity do
+RSpec.describe CodequalityDegradationEntity, feature_category: :code_quality do
   let(:entity) { described_class.new(codequality_degradation) }
 
   describe '#as_json' do
     subject { entity.as_json }
+
+    context 'when sast_reports_in_inline_diff is disabled' do
+      before do
+        stub_feature_flags(sast_reports_in_inline_diff: false)
+      end
+
+      let(:codequality_degradation) { build(:codequality_degradation_1) }
+
+      it 'does not contain fingerprint' do
+        expect(subject[:fingerprint]).to be_nil
+      end
+    end
 
     context 'when codequality contains an error' do
       context 'when line is included in location' do
@@ -14,6 +26,7 @@ RSpec.describe CodequalityDegradationEntity do
 
         it 'contains correct codequality degradation details', :aggregate_failures do
           expect(subject[:description]).to eq("Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.")
+          expect(subject[:fingerprint]).to eq("f3bdc1e8c102ba5fbd9e7f6cda51c95e")
           expect(subject[:severity]).to eq("major")
           expect(subject[:file_path]).to eq("file_a.rb")
           expect(subject[:line]).to eq(10)
@@ -27,6 +40,7 @@ RSpec.describe CodequalityDegradationEntity do
 
         it 'contains correct codequality degradation details', :aggregate_failures do
           expect(subject[:description]).to eq("Avoid parameter lists longer than 5 parameters. [12/5]")
+          expect(subject[:fingerprint]).to eq("ab5f8b935886b942d621399f5a2ca16e")
           expect(subject[:severity]).to eq("minor")
           expect(subject[:file_path]).to eq("file_b.rb")
           expect(subject[:line]).to eq(10)
@@ -44,6 +58,7 @@ RSpec.describe CodequalityDegradationEntity do
 
         it 'lowercases severity', :aggregate_failures do
           expect(subject[:description]).to eq("Avoid parameter lists longer than 5 parameters. [12/5]")
+          expect(subject[:fingerprint]).to eq("ab5f8b935886b942d621399f5a2ca16e")
           expect(subject[:severity]).to eq("minor")
           expect(subject[:file_path]).to eq("file_b.rb")
           expect(subject[:line]).to eq(10)

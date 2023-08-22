@@ -28,6 +28,14 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
         expect(subject.note).to eq "marked this issue as related to #{noteable_ref.to_reference(project)}"
       end
     end
+
+    context 'with work items' do
+      let_it_be(:noteable) { create(:work_item, :task, project: project) }
+
+      it 'sets the note text with the correct work item type' do
+        expect(subject.note).to eq "marked this task as related to #{noteable_ref.to_reference(project)}"
+      end
+    end
   end
 
   describe '#unrelate_issuable' do

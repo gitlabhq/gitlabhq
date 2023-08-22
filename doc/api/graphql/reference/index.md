@@ -14197,6 +14197,58 @@ Code Quality report for a pipeline.
 | <a id="codequalityreportsummaryminor"></a>`minor` | [`Int`](#int) | Total number of minor status. |
 | <a id="codequalityreportsummaryunknown"></a>`unknown` | [`Int`](#int) | Total number of unknown status. |
 
+### `CodequalityReportsComparer`
+
+Represents reports comparison for code quality.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codequalityreportscomparerreport"></a>`report` | [`CodequalityReportsComparerReport`](#codequalityreportscomparerreport) | Compared codequality report. |
+
+### `CodequalityReportsComparerReport`
+
+Represents compared code quality report.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codequalityreportscomparerreportexistingerrors"></a>`existingErrors` | [`[CodequalityReportsComparerReportDegradation!]`](#codequalityreportscomparerreportdegradation) | All code quality degradations. |
+| <a id="codequalityreportscomparerreportnewerrors"></a>`newErrors` | [`[CodequalityReportsComparerReportDegradation!]!`](#codequalityreportscomparerreportdegradation) | New code quality degradations. |
+| <a id="codequalityreportscomparerreportresolvederrors"></a>`resolvedErrors` | [`[CodequalityReportsComparerReportDegradation!]`](#codequalityreportscomparerreportdegradation) | Resolved code quality degradations. |
+| <a id="codequalityreportscomparerreportstatus"></a>`status` | [`CodequalityReportsComparerReportStatus!`](#codequalityreportscomparerreportstatus) | Status of report. |
+| <a id="codequalityreportscomparerreportsummary"></a>`summary` | [`CodequalityReportsComparerReportSummary!`](#codequalityreportscomparerreportsummary) | Codequality report summary. |
+
+### `CodequalityReportsComparerReportDegradation`
+
+Represents a degradation on the compared codequality report.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codequalityreportscomparerreportdegradationdescription"></a>`description` | [`String!`](#string) | Description of the code quality degradation. |
+| <a id="codequalityreportscomparerreportdegradationenginename"></a>`engineName` | [`String!`](#string) | Code quality plugin that reported the degradation. |
+| <a id="codequalityreportscomparerreportdegradationfilepath"></a>`filePath` | [`String!`](#string) | Relative path to the file containing the code quality degradation. |
+| <a id="codequalityreportscomparerreportdegradationfingerprint"></a>`fingerprint` | [`String!`](#string) | Unique fingerprint to identify the code quality degradation. For example, an MD5 hash. |
+| <a id="codequalityreportscomparerreportdegradationline"></a>`line` | [`Int!`](#int) | Line on which the code quality degradation occurred. |
+| <a id="codequalityreportscomparerreportdegradationseverity"></a>`severity` | [`CodeQualityDegradationSeverity!`](#codequalitydegradationseverity) | Severity of the code quality degradation (BLOCKER, CRITICAL, MAJOR, MINOR, INFO, UNKNOWN). |
+| <a id="codequalityreportscomparerreportdegradationweburl"></a>`webUrl` | [`String`](#string) | URL to the file along with line number. |
+
+### `CodequalityReportsComparerReportSummary`
+
+Represents a summary of the compared codequality report.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codequalityreportscomparerreportsummaryerrored"></a>`errored` | [`Int`](#int) | Count of code quality errors. |
+| <a id="codequalityreportscomparerreportsummaryresolved"></a>`resolved` | [`Int`](#int) | Count of resolved code quality degradations. |
+| <a id="codequalityreportscomparerreportsummarytotal"></a>`total` | [`Int`](#int) | Total count of code quality degradations. |
+
 ### `Commit`
 
 #### Fields
@@ -18539,6 +18591,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestautomergestrategy"></a>`autoMergeStrategy` | [`String`](#string) | Selected auto merge strategy. |
 | <a id="mergerequestavailableautomergestrategies"></a>`availableAutoMergeStrategies` | [`[String!]`](#string) | Array of available auto merge strategies. |
 | <a id="mergerequestawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the merge request. (see [Connections](#connections)) |
+| <a id="mergerequestcodequalityreportscomparer"></a>`codequalityReportsComparer` **{warning-solid}** | [`CodequalityReportsComparer`](#codequalityreportscomparer) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Code quality reports comparison reported on the merge request. Returns `null` if `sast_reports_in_inline_diff` feature flag is disabled. |
 | <a id="mergerequestcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="mergerequestcommitcount"></a>`commitCount` | [`Int`](#int) | Number of commits in the merge request. |
 | <a id="mergerequestcommits"></a>`commits` | [`CommitConnection`](#commitconnection) | Merge request commits. (see [Connections](#connections)) |
@@ -26159,6 +26212,16 @@ Values for sorting variables.
 | <a id="codequalitydegradationseveritymajor"></a>`MAJOR` | Code Quality degradation has a status of major. |
 | <a id="codequalitydegradationseverityminor"></a>`MINOR` | Code Quality degradation has a status of minor. |
 | <a id="codequalitydegradationseverityunknown"></a>`UNKNOWN` | Code Quality degradation has a status of unknown. |
+
+### `CodequalityReportsComparerReportStatus`
+
+Report comparison status.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="codequalityreportscomparerreportstatusfailed"></a>`FAILED` | Report failed to generate. |
+| <a id="codequalityreportscomparerreportstatusnot_found"></a>`NOT_FOUND` | Head report or base report not found. |
+| <a id="codequalityreportscomparerreportstatussuccess"></a>`SUCCESS` | Report successfully generated. |
 
 ### `CommitActionMode`
 

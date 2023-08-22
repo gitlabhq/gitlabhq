@@ -100,6 +100,9 @@ GitLab displays dependencies with the following information:
 Displayed dependencies are initially sorted by packager. They
 can also be sorted by name.
 
+NOTE:
+The project search feature is only supported on groups that have up to 600 occurrences within their group hierarchy.
+
 ## Downloading the dependency list
 
 You can download the full list of dependencies and their details in

@@ -1,0 +1,10 @@
+{
+  "prompt_version": 1,
+  "project_path": "gitlab-org/gitlab",
+  "project_id": 278964,
+  "current_file": {
+    "file_name": "test.py",
+    "content_above_cursor": "import pytest",
+    "content_below_cursor": ""
+  }
+}

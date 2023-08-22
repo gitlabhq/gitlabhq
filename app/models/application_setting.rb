@@ -20,6 +20,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     dashboard_enforcement_limit
     dashboard_limit_new_namespace_creation_enforcement_date
   ], remove_with: '16.5', remove_after: '2023-08-22'
+  ignore_column :relay_state_domain_allowlist, remove_with: '16.6', remove_after: '2023-10-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

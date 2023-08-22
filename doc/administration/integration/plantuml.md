@@ -73,8 +73,6 @@ Inside the block you can add any of the diagrams PlantUML supports, such as:
 
 You can add parameters to block definitions:
 
-- `format`: Can be either `png` (default) or `svg`. Use `svg` with care, as it's
-  not supported by all browsers, and isn't supported by Markdown.
 - `id`: A CSS ID added to the diagram HTML tag.
 - `width`: Width attribute added to the image tag.
 - `height`: Height attribute added to the image tag.

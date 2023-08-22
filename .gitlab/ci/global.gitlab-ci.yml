@@ -179,11 +179,6 @@
   cache:
     - *ruby-coverage-gems-cache-push
 
-# This cache should eventually be replaced by .ruby-gems-coverage-cache.
-.coverage-cache:
-  cache:
-    - *ruby-gems-cache
-
 .ruby-node-cache:
   cache:
     - *ruby-gems-cache

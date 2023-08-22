@@ -22,7 +22,8 @@ RSpec.describe 'getting merge request information nested in a project', feature_
 
   it_behaves_like 'a working graphql query' do
     # we exclude Project.pipeline because it needs arguments
-    let(:mr_fields) { all_graphql_fields_for('MergeRequest', excluded: %w[jobs pipeline]) }
+    # and codequalityReportsComparer because no pipeline exist yet
+    let(:mr_fields) { all_graphql_fields_for('MergeRequest', excluded: %w[jobs pipeline codequalityReportsComparer]) }
 
     before do
       post_graphql(query, current_user: current_user)

@@ -32,8 +32,7 @@ module SystemNotes
     #
     # Returns the created Note object
     def relate_issuable(noteable_ref)
-      issuable_type = noteable.to_ability_name.humanize(capitalize: false)
-      body = "marked this #{issuable_type} as related to #{noteable_ref.to_reference(noteable.resource_parent)}"
+      body = "marked this #{noteable_name} as related to #{noteable_ref.to_reference(noteable.resource_parent)}"
 
       track_issue_event(:track_issue_related_action)
 
@@ -533,6 +532,12 @@ module SystemNotes
       return unless noteable.is_a?(Issue)
 
       issue_activity_counter.public_send(event_name, author: author, project: project || noteable.project) # rubocop: disable GitlabSecurity/PublicSend
+    end
+
+    def noteable_name
+      name = noteable.try(:issue_type) || noteable.to_ability_name
+
+      name.humanize(capitalize: false)
     end
   end
 end

@@ -115,11 +115,16 @@ module AutoExplain
     private
 
     def record_auto_explain?(connection)
-      ENV['CI'] \
-        && ENV['CI_MERGE_REQUEST_LABELS']&.include?('pipeline:record-queries') \
-        && ENV['CI_JOB_NAME_SLUG'] != 'db-migrate-non-superuser' \
-        && connection.database_version.to_s[0..1].to_i >= 14 \
-        && connection.select_one('SHOW is_superuser')['is_superuser'] == 'on'
+      return false unless ENV['CI']
+      return false if ENV['CI_JOB_NAME_SLUG'] == 'db-migrate-non-superuser'
+      return false if connection.database_version.to_s[0..1].to_i < 14
+      return false if connection.select_one('SHOW is_superuser')['is_superuser'] != 'on'
+
+      # This condition matches the pipeline rules for if-merge-request-labels-record-queries
+      return true if ENV['CI_MERGE_REQUEST_LABELS']&.include?('pipeline:record-queries')
+
+      # This condition matches the pipeline rules for if-default-branch-refs
+      ENV['CI_COMMIT_REF_NAME'] == ENV['CI_DEFAULT_BRANCH'] && !ENV['CI_MERGE_REQUEST_IID']
     end
   end
 end

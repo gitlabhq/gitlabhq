@@ -193,9 +193,10 @@ Because batched migrations are update heavy and there were few incidents in the 
 These database indicators are checked to throttle a migration. On getting a
 stop signal, the migration is paused for a set time (10 minutes):
 
-- WAL queue pending archival crossing a threshold.
+- WAL queue pending archival crossing the threshold.
 - Active autovacuum on the tables on which the migration works on.
 - Patroni apdex SLI dropping below the SLO.
+- WAL rate crossing the threshold.
 
 It's an ongoing effort to add more indicators to further enhance the
 database health check framework. For more details, see

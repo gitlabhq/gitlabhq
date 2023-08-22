@@ -155,7 +155,7 @@ export default {
     </div>
     <div
       v-if="sidebarData.is_logged_in"
-      class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-py-2 gl-gap-2"
+      class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-pt-2 gl-pb-3 gl-gap-2"
     >
       <counter
         v-gl-tooltip:super-sidebar.hover.noninteractive.ds500.bottom="$options.i18n.issues"

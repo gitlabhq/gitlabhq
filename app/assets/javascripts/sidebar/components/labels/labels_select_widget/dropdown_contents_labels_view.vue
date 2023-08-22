@@ -135,6 +135,16 @@ export default {
         this.handleLabelClick(this.visibleLabels[0]);
       }
     },
+    handleFocus(event, index) {
+      if (index === 0 && event.target.classList.contains('is-focused')) {
+        event.target.classList.remove('is-focused');
+
+        // Focus next element (if available) as the first item was already focused.
+        if (event.target.parentNode?.nextElementSibling?.querySelector('button')) {
+          event.target.parentNode.nextElementSibling.querySelector('button').focus();
+        }
+      }
+    },
   },
 };
 </script>
@@ -157,6 +167,7 @@ export default {
             :active="shouldHighlightFirstItem && index === 0"
             active-class="is-focused"
             data-testid="labels-list"
+            @focus.native.capture="handleFocus($event, index)"
             @click.native.capture.stop="handleLabelClick(label)"
           >
             <label-item :label="label" />

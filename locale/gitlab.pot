@@ -15834,6 +15834,9 @@ msgstr ""
 msgid "Dependencies|Packager"
 msgstr ""
 
+msgid "Dependencies|Project list unavailable"
+msgstr ""
+
 msgid "Dependencies|Projects"
 msgstr ""
 
@@ -15850,6 +15853,9 @@ msgid "Dependencies|The component dependency path is based on the lock file. The
 msgstr ""
 
 msgid "Dependencies|There may be multiple paths"
+msgstr ""
+
+msgid "Dependencies|This group exceeds the maximum number of sub-groups of 600. We cannot accurately display a project list at this time. Please access a sub-group dependency list to view this information or see the %{linkStart}dependency list help %{linkEnd} page to learn more."
 msgstr ""
 
 msgid "Dependencies|Toggle vulnerability list"

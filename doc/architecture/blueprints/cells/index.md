@@ -20,7 +20,6 @@ For more information about Cells, see also:
 
 - [Glossary](glossary.md)
 - [Goals](goals.md)
-- [Cross-section impact](impact.md)
 
 ## Work streams
 
@@ -310,19 +309,6 @@ This section links all different technical proposals that are being evaluated.
 - [Stateless Router That Uses a Cache to Pick Cell and Is Redirected When Wrong Cell Is Reached](proposal-stateless-router-with-buffering-requests.md)
 - [Stateless Router That Uses a Cache to Pick Cell and pre-flight `/api/v4/cells/learn`](proposal-stateless-router-with-routes-learning.md)
 
-## Data pipeline ingestion
-
-The Cells architecture will have a significant impact on the current [data pipeline](https://about.gitlab.com/handbook/business-technology/data-team/platform/pipelines/SAAS-Gitlab-com/) which exports data from Postgres to Snowflake for the use of data analytics. This data pipeline fulfils many use cases (i.e. SAAS Service ping, Gainsight metrics and Reporting and Analytics of the SAAS Platform).
-
-The current data pipeline is limited by not having the possibility to get data via a CDC mechanism (which leads to data quality issues) and works by polling the Postgres database and looking for new and updated records or fully extracting data for certain tables which causes a lot of overhead.
-At the moment the data pipeline runs against two instances that get created from a snapshot of both the `main` and `ci` databases.
-This is done to avoid workload on the production databases.
-In the Cells architecture there will be more Postgres instances because of which the current pipeline couldn't scale to pull data from all the Postgres instances. Requirements around the data pipeline moving forward are as follows:
-
-- We need a process that allows capturing all the CDC (insert, update and delete) from all Cells, scaling automatically with N number of Cells.
-- We need to have (direct or indirect) access to database instances which allows it to do data catch up in case of major failure or root cause analysis for data anomalies.
-- We need monitoring in place to alert any incident that can delay the data ingestion.
-
 ## Impacted features
 
 The Cells architecture will impact many features requiring some of them to be rewritten, or changed significantly.
@@ -356,6 +342,7 @@ The following list of impacted features only represents placeholders that still 
 - [Cells: Router Endpoints Classification](impacted_features/router-endpoints-classification.md)
 - [Cells: Schema changes (Postgres and Elasticsearch migrations)](impacted_features/schema-changes.md)
 - [Cells: Uploads](impacted_features/uploads.md)
+- [Cells: Data pipeline ingestion](impacted_features/data-pipeline-ingestion.md)
 - ...
 
 ## Frequently Asked Questions

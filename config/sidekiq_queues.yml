@@ -597,6 +597,8 @@
   - 1
 - - security_refresh_project_policies
   - 1
+- - security_scan_execution_policies_rule_schedule
+  - 1
 - - security_scan_result_policies_sync_opened_merge_requests
   - 1
 - - security_scan_result_policies_sync_project
