@@ -1669,3 +1669,172 @@ Gitaly fails to start up if either:
 
 - The configuration command fails.
 - The output produced by the command cannot be parsed as valid JSON.
+
+## Configure server-side backups
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4941) in GitLab 16.3.
+
+Repository backups can be configured so that the Gitaly node that hosts each
+repository is responsible for creating the backup and streaming it to
+object storage. This helps reduce the network resources required to create and
+restore a backup.
+
+Each Gitaly node must be configured to connect to object storage for backups.
+
+After configuring server-side backups, you can
+[create a server-side repository backup](../backup_restore/backup_gitlab.md#create-server-side-repository-backups).
+
+### Configure Azure Blob storage
+
+How you configure Azure Blob storage for backups depends on the type of installation you have. For self-compiled installations, you must set
+the `AZURE_STORAGE_ACCOUNT` and `AZURE_STORAGE_KEY` environment variables outside of GitLab.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
+
+```ruby
+gitaly['env'] = {
+    'AZURE_STORAGE_ACCOUNT' => 'azure_storage_account',
+    'AZURE_STORAGE_KEY' => 'azure_storage_key' # or 'AZURE_STORAGE_SAS_TOKEN'
+}
+gitaly['configuration'] = {
+    backup: {
+        go_cloud_url: 'azblob://gitaly-backups'
+    }
+}
+```
+
+:::TabTitle Self-compiled (source)
+
+Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
+
+```toml
+[backup]
+go_cloud_url = "azblob://gitaly-backups"
+```
+
+::EndTabs
+
+### Configure Google Cloud storage
+
+Google Cloud storage (GCP) authenticates using Application Default Credentials. Set up Application Default Credentials on each Gitaly server using either:
+
+- The [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command.
+- The `GOOGLE_APPLICATION_CREDENTIALS` environment variable. For self-compiled installations, set the environment
+  variable outside of GitLab.
+
+For more information, see [Application Default Credentials](https://cloud.google.com/docs/authentication/provide-credentials-adc).
+
+The destination bucket is configured using the `go_cloud_url` option.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
+
+```ruby
+gitaly['env'] = {
+    'GOOGLE_APPLICATION_CREDENTIALS' => '/path/to/service.json'
+}
+gitaly['configuration'] = {
+    backup: {
+        go_cloud_url: 'gs://gitaly-backups'
+    }
+}
+```
+
+:::TabTitle Self-compiled (source)
+
+Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
+
+```toml
+[backup]
+go_cloud_url = "gs://gitaly-backups"
+```
+
+::EndTabs
+
+### Configure S3 storage
+
+To configure S3 storage authentication:
+
+- If you authenticate with the AWS CLI, you can use the default AWS session.
+- Otherwise, you can use the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables. For self-compiled installations, set the environment
+  variables outside of GitLab.
+
+For more information, see [AWS Session documentation](https://docs.aws.amazon.com/sdk-for-go/api/aws/session/).
+
+The destination bucket and region are configured using the `go_cloud_url` option.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
+
+```ruby
+gitaly['env'] = {
+    'AWS_ACCESS_KEY_ID' => 'aws_access_key_id',
+    'AWS_SECRET_ACCESS_KEY' => 'aws_secret_access_key'
+}
+gitaly['configuration'] = {
+    backup: {
+        go_cloud_url: 's3://gitaly-backups?region=us-west-1'
+    }
+}
+```
+
+:::TabTitle Self-compiled (source)
+
+Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
+
+```toml
+[backup]
+go_cloud_url = "s3://gitaly-backups?region=us-west-1"
+```
+
+::EndTabs
+
+#### Configure S3-compatible servers
+
+S3-compatible servers such as MinIO are configured similarly to S3 with the addition of the `endpoint` parameter.
+
+The following parameters are supported:
+
+- `region`: The AWS region.
+- `endpoint`: The endpoint URL.
+- `disabledSSL`: A value of `true` disables SSL.
+- `s3ForcePathStyle`: A value of `true` forces path-style addressing.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
+
+```ruby
+gitaly['env'] = {
+    'AWS_ACCESS_KEY_ID' => 'minio_access_key_id',
+    'AWS_SECRET_ACCESS_KEY' => 'minio_secret_access_key'
+}
+gitaly['configuration'] = {
+    backup: {
+        go_cloud_url: 's3://gitaly-backups?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true'
+    }
+}
+```
+
+:::TabTitle Self-compiled (source)
+
+Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
+
+```toml
+[backup]
+go_cloud_url = "s3://gitaly-backups?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true"
+```
+
+::EndTabs

@@ -435,6 +435,34 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=producti
 
 ::EndTabs
 
+#### Create server-side repository backups
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4941) in GitLab 16.3.
+
+Instead of storing large repository backups in the backup archive, repository
+backups can be configured so that the Gitaly node that hosts each repository is
+responsible for creating the backup and streaming it to object storage. This
+helps reduce the network resources required to create and restore a backup.
+
+1. [Configure a server-side backup destination in Gitaly](../gitaly/configure_gitaly.md#configure-server-side-backups).
+1. Create a back up using the `REPOSITORIES_SERVER_SIDE` variable. See the following examples.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+```shell
+sudo gitlab-backup create REPOSITORIES_SERVER_SIDE=true
+```
+
+:::TabTitle Self-compiled
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_SERVER_SIDE=true
+```
+
+::EndTabs
+
 #### Back up Git repositories concurrently
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37158) in GitLab 13.3.

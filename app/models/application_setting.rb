@@ -14,31 +14,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_column :send_user_confirmation_email, remove_with: '15.8', remove_after: '2022-12-18'
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
-  ignore_columns %i[
-    encrypted_tofa_access_token_expires_in
-    encrypted_tofa_access_token_expires_in_iv
-    encrypted_tofa_client_library_args
-    encrypted_tofa_client_library_args_iv
-    encrypted_tofa_client_library_class
-    encrypted_tofa_client_library_class_iv
-    encrypted_tofa_client_library_create_credentials_method
-    encrypted_tofa_client_library_create_credentials_method_iv
-    encrypted_tofa_client_library_fetch_access_token_method
-    encrypted_tofa_client_library_fetch_access_token_method_iv
-    encrypted_tofa_credentials
-    encrypted_tofa_credentials_iv
-    encrypted_tofa_host
-    encrypted_tofa_host_iv
-    encrypted_tofa_request_json_keys
-    encrypted_tofa_request_json_keys_iv
-    encrypted_tofa_request_payload
-    encrypted_tofa_request_payload_iv
-    encrypted_tofa_response_json_keys
-    encrypted_tofa_response_json_keys_iv
-    encrypted_tofa_url
-    encrypted_tofa_url_iv
-    vertex_project
-  ], remove_with: '16.3', remove_after: '2023-07-22'
   ignore_column :database_apdex_settings, remove_with: '16.4', remove_after: '2023-08-22'
   ignore_columns %i[
     dashboard_notification_limit

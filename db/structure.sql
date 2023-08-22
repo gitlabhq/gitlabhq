@@ -11850,8 +11850,6 @@ CREATE TABLE application_settings (
     dashboard_limit_enabled boolean DEFAULT false NOT NULL,
     dashboard_limit integer DEFAULT 0 NOT NULL,
     dashboard_notification_limit integer DEFAULT 0 NOT NULL,
-    dashboard_enforcement_limit integer DEFAULT 0 NOT NULL,
-    dashboard_limit_new_namespace_creation_enforcement_date date,
     can_create_group boolean DEFAULT true NOT NULL,
     lock_maven_package_requests_forwarding boolean DEFAULT false NOT NULL,
     lock_pypi_package_requests_forwarding boolean DEFAULT false NOT NULL,

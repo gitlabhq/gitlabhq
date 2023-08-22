@@ -12565,6 +12565,7 @@ Information about a connected Agent.
 | <a id="airesponseresponsebody"></a>`responseBody` | [`String`](#string) | Response body from AI API. |
 | <a id="airesponserole"></a>`role` | [`AiCachedMessageRole!`](#aicachedmessagerole) | Message role. |
 | <a id="airesponsetimestamp"></a>`timestamp` | [`Time!`](#time) | Message timestamp. |
+| <a id="airesponsetype"></a>`type` | [`String`](#string) | Message type. |
 
 ### `AlertManagementAlert`
 
@@ -25758,6 +25759,7 @@ Roles to filter in chat message.
 | Value | Description |
 | ----- | ----------- |
 | <a id="aicachedmessageroleassistant"></a>`ASSISTANT` | Filter only assistant messages. |
+| <a id="aicachedmessagerolesystem"></a>`SYSTEM` | Filter only system messages. |
 | <a id="aicachedmessageroleuser"></a>`USER` | Filter only user messages. |
 
 ### `AlertManagementAlertSort`
