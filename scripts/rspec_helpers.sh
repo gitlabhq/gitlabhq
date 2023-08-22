@@ -166,7 +166,6 @@ function debug_shell_options() {
 }
 
 function debug_rspec_variables() {
-  echoinfo "SKIP_FLAKY_TESTS_AUTOMATICALLY: ${SKIP_FLAKY_TESTS_AUTOMATICALLY:-}"
   echoinfo "RETRY_FAILED_TESTS_IN_NEW_PROCESS: ${RETRY_FAILED_TESTS_IN_NEW_PROCESS:-}"
 
   echoinfo "KNAPSACK_GENERATE_REPORT: ${KNAPSACK_GENERATE_REPORT:-}"

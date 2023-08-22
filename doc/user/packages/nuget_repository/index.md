@@ -432,6 +432,21 @@ choco push MyPackage.1.0.0.nupkg --source "https://gitlab.example.com/api/v4/pro
 When you publish a package with the same name or version as an existing package,
 the existing package is overwritten.
 
+### Do not allow duplicate NuGet packages
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293748) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `nuget_duplicates_option`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `nuget_duplicates_option`.
+The feature is not ready for production use.
+
+To prevent users from publishing duplicate NuGet packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings).
+
+WARNING:
+If the .nuspec file isn't located in the root of the package, the package might
+not be recognized as a duplicate.
+
 ## Install packages
 
 If multiple packages have the same name and version, when you install

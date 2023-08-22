@@ -40,6 +40,10 @@ module Gitlab
       @commits[commit.id] ||= get_commit_data(commit, previous_path)
     end
 
+    def groups_commit_data
+      groups.each { |group| group[:commit_data] = commit_data(group[:commit]) }
+    end
+
     private
 
     # Huge source files with a high churn rate (e.g. 'locale/gitlab.pot') could have
@@ -85,6 +89,18 @@ module Gitlab
 
     def mail_to(*args, &block)
       ActionController::Base.helpers.mail_to(*args, &block)
+    end
+
+    def project
+      return super.project if defined?(super.project)
+
+      blame.commit.repository.project
+    end
+
+    def page
+      return super.page if defined?(super.page)
+
+      nil
     end
   end
 end

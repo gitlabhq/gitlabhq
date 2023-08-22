@@ -98,7 +98,7 @@ The following managed PostgreSQL services are known to be incompatible and shoul
 
 | GitLab version | Managed service                                       |
 |----------------|-------------------------------------------------------|
-| 14.4+          | Amazon Aurora (see [14.4.0](../update/index.md#1440)) |
+| 14.4+          | Amazon Aurora (see [14.4.0](../update/versions/gitlab_14_changes.md#1440)) |
 
 NOTE:
 Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning.

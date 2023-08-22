@@ -227,7 +227,7 @@ Methods to reduce Docker image size:
 - Use a small base image, for example `debian-slim`.
 - Do not install convenience tools such as vim or curl if they aren't strictly needed.
 - Create a dedicated development image.
-- Disable man pages and docs installed by packages to save space.
+- Disable man pages and documentation installed by packages to save space.
 - Reduce the `RUN` layers and combine software installation steps.
 - Use [multi-stage builds](https://blog.alexellis.io/mutli-stage-docker-builds/)
   to merge multiple Dockerfiles that use the builder pattern into one Dockerfile, which can reduce image size.

@@ -1,5 +1,5 @@
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/projects_list/constants';
+import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 
 export const formatProjects = (projects) =>
   projects.map(({ id, nameWithNamespace, accessLevel, webUrl, ...project }) => ({
@@ -13,7 +13,7 @@ export const formatProjects = (projects) =>
     },
     webUrl,
     editPath: `${webUrl}/edit`,
-    actions: [ACTION_EDIT, ACTION_DELETE],
+    availableActions: [ACTION_EDIT, ACTION_DELETE],
   }));
 
 export const formatGroups = (groups) =>

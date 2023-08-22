@@ -74,9 +74,9 @@ func uploadTestServer(t *testing.T, allowedHashFunctions []string, authorizeTest
 			var err error
 
 			if len(allowedHashFunctions) == 0 {
-				_, err = fmt.Fprintf(w, `{"TempPath":"%s"}`, scratchDir)
+				_, err = fmt.Fprintf(w, `{"TempPath":"%s"}`, t.TempDir())
 			} else {
-				_, err = fmt.Fprintf(w, `{"TempPath":"%s", "UploadHashFunctions": ["%s"]}`, scratchDir, strings.Join(allowedHashFunctions, `","`))
+				_, err = fmt.Fprintf(w, `{"TempPath":"%s", "UploadHashFunctions": ["%s"]}`, t.TempDir(), strings.Join(allowedHashFunctions, `","`))
 			}
 
 			require.NoError(t, err)
@@ -386,7 +386,7 @@ func TestLfsUpload(t *testing.T) {
 
 	lfsApiResponse := fmt.Sprintf(
 		`{"TempPath":%q, "LfsOid":%q, "LfsSize": %d}`,
-		scratchDir, oid, len(reqBody),
+		t.TempDir(), oid, len(reqBody),
 	)
 
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
@@ -512,7 +512,7 @@ func packageUploadTestServer(t *testing.T, method string, resource string, reqBo
 	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, r.Method, method)
 		apiResponse := fmt.Sprintf(
-			`{"TempPath":%q, "Size": %d}`, scratchDir, len(reqBody),
+			`{"TempPath":%q, "Size": %d}`, t.TempDir(), len(reqBody),
 		)
 		switch r.RequestURI {
 		case resource + "/authorize":

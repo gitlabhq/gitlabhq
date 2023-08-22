@@ -5417,6 +5417,9 @@ msgstr ""
 msgid "Analytics|Host"
 msgstr ""
 
+msgid "Analytics|Invalid visualization configuration"
+msgstr ""
+
 msgid "Analytics|Language"
 msgstr ""
 
@@ -5475,6 +5478,9 @@ msgid "Analytics|Select a visualization type"
 msgstr ""
 
 msgid "Analytics|Single Statistic"
+msgstr ""
+
+msgid "Analytics|Something is wrong with your panel visualization configuration. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
 msgid "Analytics|Something went wrong while connecting to your data source. See %{linkStart}troubleshooting documentation%{linkEnd}."
@@ -21541,6 +21547,9 @@ msgstr ""
 msgid "GitLabPages|Updating your Pages configuration..."
 msgstr ""
 
+msgid "GitLabPages|Use multiple versions"
+msgstr ""
+
 msgid "GitLabPages|Use unique domain"
 msgstr ""
 
@@ -21554,6 +21563,9 @@ msgid "GitLabPages|When enabled, a unique domain is generated to access pages."
 msgstr ""
 
 msgid "GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "GitLabPages|When enabled, you can create multiple versions of your pages site."
 msgstr ""
 
 msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with subdomains of subdomains. If your namespace or groupname contains a dot, it does not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages work if you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}"
@@ -48494,7 +48506,13 @@ msgstr ""
 msgid "This merge request is from an internal project to a public project."
 msgstr ""
 
+msgid "This merge request is hidden because its author has been banned"
+msgstr ""
+
 msgid "This merge request is locked."
+msgstr ""
+
+msgid "This merge request is locked. Only project members can comment."
 msgstr ""
 
 msgid "This merge request was merged. To apply this suggestion, edit this file directly."
@@ -53507,9 +53525,6 @@ msgstr ""
 msgid "WorkItem|Create %{workItemType}"
 msgstr ""
 
-msgid "WorkItem|Create objective"
-msgstr ""
-
 msgid "WorkItem|Create work item"
 msgstr ""
 
@@ -53555,7 +53570,7 @@ msgstr ""
 msgid "WorkItem|Milestone"
 msgstr ""
 
-msgid "WorkItem|New objective"
+msgid "WorkItem|New %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|New task"
@@ -53697,9 +53712,6 @@ msgid "WorkItem|Test case"
 msgstr ""
 
 msgid "WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least Reporter access"
-msgstr ""
-
-msgid "WorkItem|This objective is confidential and should only be visible to team members with at least Reporter access"
 msgstr ""
 
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."

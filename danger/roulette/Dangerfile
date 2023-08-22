@@ -16,11 +16,14 @@ MARKDOWN
 
 POST_TABLE_MESSAGE = <<MARKDOWN
 
-To spread load more evenly across eligible reviewers, Danger has picked a candidate for each
-review slot, based on their timezone. Feel free to
-[override these selections](https://about.gitlab.com/handbook/engineering/projects/#gitlab)
+**Please check reviewer's status!**
+- ![available](https://gitlab-org.gitlab.io/gitlab-roulette/status-svg/_success.svg) Reviewer is available!
+- ![unavailable](https://gitlab-org.gitlab.io/gitlab-roulette/status-svg/_alert.svg) Reviewer is unavailable!
+
+Feel free to [override these selections](https://about.gitlab.com/handbook/engineering/projects/#gitlab)
 if you think someone else would be better-suited
-or use the [GitLab Review Workload Dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) to find other available reviewers.
+or use the [GitLab Review Workload Dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/)
+to find other available reviewers.
 
 To read more on how to use the reviewer roulette, please take a look at the
 [Engineering workflow](https://about.gitlab.com/handbook/engineering/workflow/#basics)

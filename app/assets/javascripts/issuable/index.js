@@ -5,7 +5,6 @@ import Sidebar from '~/right_sidebar';
 import { getSidebarOptions } from '~/sidebar/mount_sidebar';
 import CsvImportExportButtons from './components/csv_import_export_buttons.vue';
 import IssuableByEmail from './components/issuable_by_email.vue';
-import IssuableHeaderWarnings from './components/issuable_header_warnings.vue';
 import issuableBulkUpdateActions from './issuable_bulk_update_actions';
 import IssuableBulkUpdateSidebar from './issuable_bulk_update_sidebar';
 import IssuableContext from './issuable_context';
@@ -94,24 +93,6 @@ export function initIssuableByEmail() {
       resetPath,
     },
     render: (createElement) => createElement(IssuableByEmail),
-  });
-}
-
-export function initIssuableHeaderWarnings(store) {
-  const el = document.getElementById('js-issuable-header-warnings');
-
-  if (!el) {
-    return null;
-  }
-
-  const { hidden } = el.dataset;
-
-  return new Vue({
-    el,
-    name: 'IssuableHeaderWarningsRoot',
-    store,
-    provide: { hidden: parseBoolean(hidden) },
-    render: (createElement) => createElement(IssuableHeaderWarnings),
   });
 }
 

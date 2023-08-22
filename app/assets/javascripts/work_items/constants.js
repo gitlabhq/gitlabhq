@@ -57,6 +57,9 @@ export const i18n = {
 export const I18N_WORK_ITEM_ERROR_FETCHING_LABELS = s__(
   'WorkItem|Something went wrong when fetching labels. Please try again.',
 );
+export const I18N_WORK_ITEM_ERROR_FETCHING_TYPES = s__(
+  'WorkItem|Something went wrong when fetching work item types. Please try again',
+);
 export const I18N_WORK_ITEM_ERROR_CREATING = s__(
   'WorkItem|Something went wrong when creating %{workItemType}. Please try again.',
 );
@@ -239,10 +242,6 @@ export const TODO_DONE_ICON = 'todo-done';
 export const TODO_DONE_STATE = 'done';
 export const TODO_PENDING_STATE = 'pending';
 
-export const CURRENT_USER_TODOS_TYPENAME = 'WorkItemWidgetCurrentUserTodos';
-
-export const EMOJI_ACTION_ADD = 'ADD';
-export const EMOJI_ACTION_REMOVE = 'REMOVE';
 export const EMOJI_THUMBSUP = 'thumbsup';
 export const EMOJI_THUMBSDOWN = 'thumbsdown';
 

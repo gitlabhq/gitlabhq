@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :package_registry do
-  let_it_be(:package_file) { create(:nuget_package).package_files.first }
+  let_it_be_with_reload(:package_file) { create(:nuget_package).package_files.first }
 
-  let(:service) { described_class.new(package_file.id) }
+  let(:service) { described_class.new(package_file) }
 
   describe '#execute' do
     subject { service.execute }
@@ -14,7 +14,7 @@ RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :p
       it { expect { subject }.to raise_error(described_class::ExtractionError, error_message) }
     end
 
-    context 'with valid package file id' do
+    context 'with valid package file' do
       expected_metadata = <<~XML.squish
         <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
           <metadata>
@@ -39,8 +39,8 @@ RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :p
       end
     end
 
-    context 'with invalid package file id' do
-      let(:package_file) { instance_double('Packages::PackageFile', id: 555) }
+    context 'with invalid package file' do
+      let(:package_file) { nil }
 
       it_behaves_like 'raises an error', 'invalid package file'
     end
@@ -53,7 +53,7 @@ RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :p
       it_behaves_like 'raises an error', 'invalid package file'
     end
 
-    context 'with a 0 byte package file id' do
+    context 'with a 0 byte package file' do
       before do
         allow_next_instance_of(Packages::PackageFileUploader) do |instance|
           allow(instance).to receive(:size).and_return(0)
@@ -76,7 +76,7 @@ RSpec.describe Packages::Nuget::ExtractMetadataFileService, feature_category: :p
     context 'with a too big nuspec file' do
       before do
         allow_next_instance_of(Zip::File) do |instance|
-          allow(instance).to receive(:glob).and_return([instance_double('File', size: 6.megabytes)])
+          allow(instance).to receive(:glob).and_return([instance_double(File, size: 6.megabytes)])
         end
       end
 

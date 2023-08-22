@@ -139,13 +139,13 @@ func TestAllowedClone(t *testing.T) {
 			defer ws.Close()
 
 			// Do the git clone
-			require.NoError(t, os.RemoveAll(scratchDir))
-			cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), checkoutDir)
+			tmpDir := t.TempDir()
+			cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), tmpDir)
 			runOrFail(t, cloneCmd)
 
 			// We may have cloned an 'empty' repository, 'git log' will fail in it
 			logCmd := exec.Command("git", "log", "-1", "--oneline")
-			logCmd.Dir = checkoutDir
+			logCmd.Dir = tmpDir
 			runOrFail(t, logCmd)
 		})
 	}
@@ -167,13 +167,13 @@ func TestAllowedShallowClone(t *testing.T) {
 			defer ws.Close()
 
 			// Shallow git clone (depth 1)
-			require.NoError(t, os.RemoveAll(scratchDir))
-			cloneCmd := exec.Command("git", "clone", "--depth", "1", fmt.Sprintf("%s/%s", ws.URL, testRepo), checkoutDir)
+			tmpDir := t.TempDir()
+			cloneCmd := exec.Command("git", "clone", "--depth", "1", fmt.Sprintf("%s/%s", ws.URL, testRepo), tmpDir)
 			runOrFail(t, cloneCmd)
 
 			// We may have cloned an 'empty' repository, 'git log' will fail in it
 			logCmd := exec.Command("git", "log", "-1", "--oneline")
-			logCmd.Dir = checkoutDir
+			logCmd.Dir = tmpDir
 			runOrFail(t, logCmd)
 		})
 	}
@@ -194,9 +194,14 @@ func TestAllowedPush(t *testing.T) {
 			ws := startWorkhorseServer(ts.URL)
 			defer ws.Close()
 
+			// Do the git clone
+			tmpDir := t.TempDir()
+			cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), tmpDir)
+			runOrFail(t, cloneCmd)
+
 			// Perform the git push
 			pushCmd := exec.Command("git", "push", fmt.Sprintf("%s/%s", ws.URL, testRepo), fmt.Sprintf("master:%s", newBranch()))
-			pushCmd.Dir = checkoutDir
+			pushCmd.Dir = tmpDir
 			runOrFail(t, pushCmd)
 		})
 	}
@@ -249,7 +254,7 @@ func TestAllowedGetGitArchive(t *testing.T) {
 			apiResponse := realGitalyOkBody(t, gitalyAddress)
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
 
-			archivePath := path.Join(scratchDir, "my/path")
+			archivePath := path.Join(t.TempDir(), "my/path")
 			archivePrefix := "repo-1"
 
 			msg := serializedProtoMessage("GetArchiveRequest", &gitalypb.GetArchiveRequest{
@@ -296,7 +301,7 @@ func TestAllowedGetGitArchiveOldPayload(t *testing.T) {
 			repo := &apiResponse.Repository
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
 
-			archivePath := path.Join(scratchDir, "my/path")
+			archivePath := path.Join(t.TempDir(), "my/path")
 			archivePrefix := "repo-1"
 
 			jsonParams := fmt.Sprintf(

@@ -4412,7 +4412,7 @@ Input type: `IssuesBulkUpdateInput`
 | <a id="mutationissuesbulkupdateids"></a>`ids` | [`[IssueID!]!`](#issueid) | Global ID array of the issues that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
 | <a id="mutationissuesbulkupdateiterationid"></a>`iterationId` | [`IterationID`](#iterationid) | Global ID of the iteration that will be assigned to the issues. |
 | <a id="mutationissuesbulkupdatemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Global ID of the milestone that will be assigned to the issues. |
-| <a id="mutationissuesbulkupdateparentid"></a>`parentId` | [`IssueParentID!`](#issueparentid) | Global ID of the parent to which the bulk update will be scoped. The parent can be a project **(FREE)** or a group **(PREMIUM)**. Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`. |
+| <a id="mutationissuesbulkupdateparentid"></a>`parentId` | [`IssueParentID!`](#issueparentid) | Global ID of the parent to which the bulk update will be scoped. The parent can be a project **(FREE ALL)** or a group **(PREMIUM ALL)**. Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`. |
 | <a id="mutationissuesbulkupdateremovelabelids"></a>`removeLabelIds` | [`[LabelID!]`](#labelid) | Global ID array of the labels that will be removed from the issues. |
 | <a id="mutationissuesbulkupdatestateevent"></a>`stateEvent` | [`IssueStateEvent`](#issuestateevent) | Close or reopen an issue. |
 | <a id="mutationissuesbulkupdatesubscriptionevent"></a>`subscriptionEvent` | [`IssuableSubscriptionEvent`](#issuablesubscriptionevent) | Subscribe to or unsubscribe from issue notifications. |
@@ -13133,6 +13133,15 @@ An emoji awarded by a user.
 | <a id="baseserviceservicetype"></a>`serviceType` | [`ServiceType`](#servicetype) | Type of the service. |
 | <a id="baseservicetype"></a>`type` | [`String`](#string) | Class name of the service. |
 
+### `Blame`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="blamefirstline"></a>`firstLine` | [`String`](#string) | First line of Git Blame for given range. |
+| <a id="blamegroups"></a>`groups` | [`[Groups!]`](#groups) | Git Blame grouped by contiguous lines for commit. |
+
 ### `Blob`
 
 #### Fields
@@ -14243,6 +14252,19 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="commitpipelinesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Pipelines updated before this date. |
 | <a id="commitpipelinesusername"></a>`username` | [`String`](#string) | Filter pipelines by the user that triggered the pipeline. |
 
+### `CommitData`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="commitdataagemapclass"></a>`ageMapClass` | [`String!`](#string) | CSS class for age of commit. |
+| <a id="commitdataauthoravatar"></a>`authorAvatar` | [`String!`](#string) | Link to author avatar. |
+| <a id="commitdatacommitauthorlink"></a>`commitAuthorLink` | [`String!`](#string) | Link to the commit author. |
+| <a id="commitdatacommitlink"></a>`commitLink` | [`String!`](#string) | Link to the commit. |
+| <a id="commitdataprojectblamelink"></a>`projectBlameLink` | [`String`](#string) | Link to blame prior to the change. |
+| <a id="commitdatatimeagotooltip"></a>`timeAgoTooltip` | [`String!`](#string) | Time of commit. |
+
 ### `CommitParentNames`
 
 #### Fields
@@ -14349,7 +14371,7 @@ Represents a ComplianceFramework associated with a Project.
 | <a id="complianceframeworkdescription"></a>`description` | [`String!`](#string) | Description of the compliance framework. |
 | <a id="complianceframeworkid"></a>`id` | [`ID!`](#id) | Compliance framework ID. |
 | <a id="complianceframeworkname"></a>`name` | [`String!`](#string) | Name of the compliance framework. |
-| <a id="complianceframeworkpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` | [`String`](#string) | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE)**. |
+| <a id="complianceframeworkpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` | [`String`](#string) | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE ALL)**. |
 
 ### `ComplianceStandardsAdherence`
 
@@ -17802,6 +17824,18 @@ Represents the Geo sync and verification state of a group wiki repository.
 | <a id="groupwikirepositoryregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the GroupWikiRepositoryRegistry. |
 | <a id="groupwikirepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the GroupWikiRepositoryRegistry. |
+
+### `Groups`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupscommit"></a>`commit` | [`Commit!`](#commit) | Commit responsible for specified group. |
+| <a id="groupscommitdata"></a>`commitData` | [`CommitData`](#commitdata) | HTML data derived from commit needed to present blame. |
+| <a id="groupslineno"></a>`lineno` | [`Int!`](#int) | Starting line number for the commit group. |
+| <a id="groupslines"></a>`lines` | [`[String!]!`](#string) | Array of lines added for the commit group. |
+| <a id="groupsspan"></a>`span` | [`Int!`](#int) | Number of contiguous lines which the blame spans for the commit group. |
 
 ### `HelmFileMetadata`
 
@@ -23181,6 +23215,25 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 | <a id="repositoryblobsize"></a>`size` | [`BigInt`](#bigint) | Size (in bytes) of the blob. |
 | <a id="repositoryblobstoredexternally"></a>`storedExternally` | [`Boolean`](#boolean) | Whether the blob's content is stored externally (for instance, in LFS). |
 | <a id="repositoryblobwebpath"></a>`webPath` | [`String`](#string) | Web path of the blob. |
+
+#### Fields with arguments
+
+##### `RepositoryBlob.blame`
+
+Blob blame.  Available only when feature flag `graphql_git_blame` is enabled.
+
+WARNING:
+**Introduced** in 16.3.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`Blame`](#blame).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositoryblobblamefromline"></a>`fromLine` | [`Int`](#int) | Range starting from the line. Cannot be less than 1 or greater than `to_line`. |
+| <a id="repositoryblobblametoline"></a>`toLine` | [`Int`](#int) | Range ending on the line. Cannot be less than 1 or less than `to_line`. |
 
 ### `RepositoryCodeownerError`
 
@@ -29984,7 +30037,7 @@ Attributes for defining a CI/CD variable.
 | <a id="complianceframeworkinputdefault"></a>`default` | [`Boolean`](#boolean) | Set this compliance framework as the default framework for the group. |
 | <a id="complianceframeworkinputdescription"></a>`description` | [`String`](#string) | New description for the compliance framework. |
 | <a id="complianceframeworkinputname"></a>`name` | [`String`](#string) | New name for the compliance framework. |
-| <a id="complianceframeworkinputpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` | [`String`](#string) | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE)**. |
+| <a id="complianceframeworkinputpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` | [`String`](#string) | Full path of the compliance pipeline configuration stored in a project repository, such as `.gitlab/.compliance-gitlab-ci.yml@compliance/hipaa` **(ULTIMATE ALL)**. |
 
 ### `ComplianceStandardsAdherenceInput`
 

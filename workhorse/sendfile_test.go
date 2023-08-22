@@ -20,7 +20,6 @@ func TestDeniedLfsDownload(t *testing.T) {
 	contentFilename := "b68143e6463773b1b6c6fd009a76c32aeec041faff32ba2ed42fd7f708a17f80"
 	url := fmt.Sprintf("gitlab-lfs/objects/%s", contentFilename)
 
-	prepareDownloadDir(t)
 	deniedXSendfileDownload(t, contentFilename, url)
 }
 
@@ -28,14 +27,11 @@ func TestAllowedLfsDownload(t *testing.T) {
 	contentFilename := "b68143e6463773b1b6c6fd009a76c32aeec041faff32ba2ed42fd7f708a17f80"
 	url := fmt.Sprintf("gitlab-lfs/objects/%s", contentFilename)
 
-	prepareDownloadDir(t)
 	allowedXSendfileDownload(t, contentFilename, url)
 }
 
 func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath string) {
-	contentPath := path.Join(cacheDir, contentFilename)
-	prepareDownloadDir(t)
-
+	contentPath := path.Join(t.TempDir(), contentFilename)
 	// Prepare test server and backend
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{"method": r.Method, "url": r.URL}).Info("UPSTREAM")
@@ -51,7 +47,6 @@ func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath str
 	ws := startWorkhorseServer(ts.URL)
 	defer ws.Close()
 
-	require.NoError(t, os.MkdirAll(cacheDir, 0755))
 	contentBytes := []byte("content")
 	require.NoError(t, os.WriteFile(contentPath, contentBytes, 0644))
 
@@ -68,8 +63,6 @@ func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath str
 }
 
 func deniedXSendfileDownload(t *testing.T, contentFilename string, filePath string) {
-	prepareDownloadDir(t)
-
 	// Prepare test server and backend
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{"method": r.Method, "url": r.URL}).Info("UPSTREAM")

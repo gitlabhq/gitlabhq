@@ -267,6 +267,11 @@ include:
 - When you include a YAML file from another private project, the user running the pipeline
   must be a member of both projects and have the appropriate permissions to run pipelines.
   A `not found or access denied` error may be displayed if the user does not have access to any of the included files.
+- Be careful when including another project's CI/CD configuration file. No pipelines or notifications trigger when CI/CD configuration files change.
+  From a security perspective, this is similar to pulling a third-party dependency. For the `ref`, consider:
+  - Using a specific SHA hash, which should be the most stable option.
+  - Applying both [protected branch](../../user/project/protected_branches.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches) rules to
+  the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
 
 #### `include:remote`
 
@@ -293,9 +298,11 @@ include:
 
 - All [nested includes](includes.md#use-nested-includes) are executed without context as a public user,
   so you can only include public projects or templates. No variables are available in the `include` section of nested includes.
-- Be careful when including a remote CI/CD configuration file. No pipelines or notifications
-  trigger when external CI/CD configuration files change. From a security perspective,
-  this is similar to pulling a third-party dependency.
+- Be careful when including another project's CI/CD configuration file. No pipelines or notifications trigger
+  when the other project's files change. From a security perspective, this is similar to
+  pulling a third-party dependency. If you link to another GitLab project you own, consider the use of both
+  [protected branches](../../user/project/protected_branches.md) and [protected tags](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)
+  to enforce change management rules.
 
 #### `include:template`
 

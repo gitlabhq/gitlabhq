@@ -112,6 +112,7 @@ module Projects
       # overridden by EE module
     end
 
+    # overridden by EE module
     def remove_unallowed_params
       params.delete(:emails_enabled) unless can?(current_user, :set_emails_disabled, project)
 

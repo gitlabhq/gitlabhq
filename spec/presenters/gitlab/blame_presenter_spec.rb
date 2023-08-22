@@ -70,4 +70,33 @@ RSpec.describe Gitlab::BlamePresenter do
       end
     end
   end
+
+  describe '#groups_commit_data' do
+    shared_examples 'groups_commit_data' do
+      it 'combines group and commit data' do
+        data = subject.groups_commit_data
+
+        aggregate_failures do
+          expect(data.size).to eq 18
+          expect(data.first[:commit].sha).to eq("913c66a37b4a45b9769037c55c2d238bd0942d2e")
+          expect(data.first[:lines].size).to eq 3
+          expect(data.first[:commit_data].author_avatar).to include('src="https://www.gravatar.com/')
+        end
+      end
+    end
+
+    it_behaves_like 'groups_commit_data'
+
+    context 'when page is not sent as attribute' do
+      subject { described_class.new(blame, project: project, path: path) }
+
+      it_behaves_like 'groups_commit_data'
+    end
+
+    context 'when project is not sent as attribute' do
+      subject { described_class.new(blame, path: path, page: 1) }
+
+      it_behaves_like 'groups_commit_data'
+    end
+  end
 end

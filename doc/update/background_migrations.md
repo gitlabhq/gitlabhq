@@ -30,7 +30,7 @@ are created by GitLab developers and run automatically on upgrade. However, such
 limited in scope to help with migrating some `integer` database columns to `bigint`. This is needed to
 prevent integer overflow for some tables.
 
-Some installations [may need to run GitLab 14.0 for at least a day](index.md#1400)
+Some installations [may need to run GitLab 14.0 for at least a day](versions/gitlab_14_changes.md#1400)
 to complete the database changes introduced by that upgrade.
 
 Batched background migrations are handled by Sidekiq and
@@ -319,7 +319,7 @@ Expected batched background migration for the given configuration to be marked a
   }
 ```
 
-First, check if you have followed the [version-specific upgrade instructions for 14.2](../update/index.md#1420).
+First, check if you have followed the [version-specific upgrade instructions for 14.2](../update/versions/gitlab_14_changes.md#1420).
 If you have, you can [manually finish the batched background migration](#manually-finishing-a-batched-background-migration).
 If you haven't, choose one of the following methods:
 
@@ -516,26 +516,26 @@ of Sidekiq jobs that perform various database or file updates.
   `BackfillDraftStatusOnMergeRequests` can be permanently stuck in a
   **pending** state across upgrades when the instance lacks records that match
   the migration's target. To clean up this stuck migration, see the
-  [14.2.0 version-specific instructions](index.md#1420).
+  [14.2.0 version-specific instructions](versions/gitlab_14_changes.md#1420).
 - GitLab 14.4 introduced an issue where a background migration named
   `PopulateTopicsTotalProjectsCountCache` can be permanently stuck in a
   **pending** state across upgrades when the instance lacks records that match
   the migration's target. To clean up this stuck migration, see the
-  [14.4.0 version-specific instructions](index.md#1440).
+  [14.4.0 version-specific instructions](versions/gitlab_14_changes.md#1440).
 - GitLab 14.5 introduced an issue where a background migration named
   `UpdateVulnerabilityOccurrencesLocation` can be permanently stuck in a
   **pending** state across upgrades when the instance lacks records that match
   the migration's target. To clean up this stuck migration, see the
-  [14.5.0 version-specific instructions](index.md#1450).
+  [14.5.0 version-specific instructions](versions/gitlab_14_changes.md#1450).
 - GitLab 14.8 introduced an issue where a background migration named
   `PopulateTopicsNonPrivateProjectsCount` can be permanently stuck in a
   **pending** state across upgrades. To clean up this stuck migration, see the
-  [14.8.0 version-specific instructions](index.md#1480).
+  [14.8.0 version-specific instructions](versions/gitlab_14_changes.md#1480).
 - GitLab 14.9 introduced an issue where a background migration named
   `ResetDuplicateCiRunnersTokenValuesOnProjects` can be permanently stuck in a
   **pending** state across upgrades when the instance lacks records that match
   the migration's target. To clean up this stuck migration, see the
-  [14.9.0 version-specific instructions](index.md#1490).
+  [14.9.0 version-specific instructions](versions/gitlab_14_changes.md#1490).
 
 For other background migrations stuck in pending, run the following check. If
 it returns non-zero and the count does not decrease over time, follow the rest

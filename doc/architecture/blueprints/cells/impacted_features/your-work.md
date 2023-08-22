@@ -43,6 +43,8 @@ This overview contains dashboards relating to:
 Your Work will be scoped to an Organization, giving the user an overview of all the items they can access in the Organization they are currently viewing.
 
 - Issue, Merge request and To-Do list counts will refer to the selected Organization.
+- The URL will reference the Organization with the following URL structure `/-/organizations/<organization>/dashboard`.
+- The default URL `/dashboard` will refer to the default Organization.
 
 ## 4. Evaluation
 

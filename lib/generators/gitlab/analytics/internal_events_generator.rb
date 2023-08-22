@@ -87,9 +87,11 @@ module Gitlab
       def create_metric_file
         validate!
 
-        template "event_definition.yml",
-          event_file_path(event),
-          ask_description(event, "event", "what the event is supposed to track, where, and when")
+        unless event_exists?
+          template "event_definition.yml",
+            event_file_path(event),
+            ask_description(event, "event", "what the event is supposed to track, where, and when")
+        end
 
         time_frames.each do |time_frame|
           template "metric_definition.yml",
@@ -190,8 +192,6 @@ module Gitlab
       end
 
       def validate!
-        raise "An event '#{event}' already exists" if event_exists?
-
         validate_tiers!
 
         %i[unique event mr section stage group].each do |option|

@@ -209,8 +209,12 @@ To edit an existing custom dashboard:
 
 If the dashboard displays a global error message that data could not be loaded, first try reloading the page. If the error persists:
 
-- Check that your configurations match the [JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
+- Check that your configurations match the [dashboard JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
 - For product analytics, check your [admin and project settings](../product_analytics/index.md#project-level-settings), and make sure they are set up correctly.
+
+### `Invalid visualization configuration`
+
+If a dashboard panel displays a message that the visualization configuration is invalid, check that your visualization configurations match the [visualization JSON schema](#define-a-chart-visualization) defined in `ee/app/validators/json_schemas/analytics_visualization.json`.
 
 ### Dashboard panel error
 

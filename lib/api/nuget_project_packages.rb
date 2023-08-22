@@ -84,6 +84,8 @@ module API
           file_name: file_name(symbol_package)
         )
 
+        check_duplicate(file_params, symbol_package)
+
         package = ::Packages::CreateTemporaryPackageService.new(
           project, current_user, declared_params.merge(build: current_authenticated_job)
         ).execute(:nuget, name: temp_file_name(symbol_package))
@@ -96,6 +98,14 @@ module API
         ::Packages::Nuget::ExtractionWorker.perform_async(package_file.id) # rubocop:disable CodeReuse/Worker
 
         created!
+      end
+
+      def check_duplicate(file_params, symbol_package)
+        return if symbol_package || Feature.disabled?(:nuget_duplicates_option, project_or_group.namespace)
+
+        service_params = file_params.merge(remote_url: params['package.remote_url'])
+        response = ::Packages::Nuget::CheckDuplicatesService.new(project_or_group, current_user, service_params).execute
+        render_api_error!(response.message, response.reason) if response.error?
       end
 
       def publish_package(symbol_package: false)

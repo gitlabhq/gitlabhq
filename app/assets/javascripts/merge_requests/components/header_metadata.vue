@@ -2,15 +2,9 @@
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
-import { sprintf, __ } from '~/locale';
-import { TYPE_ISSUE, TYPE_MERGE_REQUEST, WORKSPACE_PROJECT } from '~/issues/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { __ } from '~/locale';
+import { TYPE_ISSUE, WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
-
-const noteableTypeText = {
-  issue: __('issue'),
-  merge_request: __('merge request'),
-};
 
 export default {
   TYPE_ISSUE,
@@ -22,7 +16,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['hidden'],
   computed: {
     ...mapGetters(['getNoteableData']),
@@ -32,26 +25,19 @@ export default {
     isConfidential() {
       return this.getNoteableData.confidential;
     },
-    isMergeRequest() {
-      return this.getNoteableData.targetType === TYPE_MERGE_REQUEST;
-    },
     warningIconsMeta() {
       return [
         {
           iconName: 'lock',
           visible: this.isLocked,
           dataTestId: 'locked',
-          tooltip: sprintf(__('This %{issuable} is locked. Only project members can comment.'), {
-            issuable: noteableTypeText[this.getNoteableData.targetType],
-          }),
+          tooltip: __('This merge request is locked. Only project members can comment.'),
         },
         {
           iconName: 'spam',
           visible: this.hidden,
           dataTestId: 'hidden',
-          tooltip: sprintf(__('This %{issuable} is hidden because its author has been banned'), {
-            issuable: noteableTypeText[this.getNoteableData.targetType],
-          }),
+          tooltip: __('This merge request is hidden because its author has been banned'),
         },
       ];
     },
@@ -74,11 +60,7 @@ export default {
         v-gl-tooltip.bottom
         :data-testid="meta.dataTestId"
         :title="meta.tooltip || null"
-        :class="{
-          'gl-mr-3 gl-mt-2 gl-display-flex gl-justify-content-center gl-align-items-center': isMergeRequest,
-          'gl-display-inline-block': !isMergeRequest,
-        }"
-        class="issuable-warning-icon"
+        class="issuable-warning-icon gl-mr-3 gl-mt-2 gl-display-flex gl-justify-content-center gl-align-items-center"
       >
         <gl-icon :name="meta.iconName" class="icon" />
       </div>

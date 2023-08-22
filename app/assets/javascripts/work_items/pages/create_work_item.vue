@@ -3,7 +3,11 @@ import { GlButton, GlAlert, GlLoadingIcon, GlFormSelect } from '@gitlab/ui';
 import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { getPreferredLocales, s__ } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { sprintfWorkItem, I18N_WORK_ITEM_ERROR_CREATING } from '../constants';
+import {
+  I18N_WORK_ITEM_ERROR_CREATING,
+  I18N_WORK_ITEM_ERROR_FETCHING_TYPES,
+  sprintfWorkItem,
+} from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
@@ -11,9 +15,6 @@ import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import ItemTitle from '../components/item_title.vue';
 
 export default {
-  fetchTypesErrorText: s__(
-    'WorkItem|Something went wrong when fetching work item types. Please try again',
-  ),
   components: {
     GlButton,
     GlAlert,
@@ -53,7 +54,7 @@ export default {
         }));
       },
       error() {
-        this.error = this.$options.fetchTypesErrorText;
+        this.error = I18N_WORK_ITEM_ERROR_FETCHING_TYPES;
       },
     },
   },

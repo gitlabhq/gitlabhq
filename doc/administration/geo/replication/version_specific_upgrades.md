@@ -48,7 +48,7 @@ For information on how to fix this, see
 
 ## Upgrading to 14.4
 
-There is [an issue in GitLab 14.4.0 through 14.4.2](../../../update/index.md#1440) that can affect Geo and other features that rely on cronjobs. We recommend upgrading to GitLab 14.4.3 or later.
+There is [an issue in GitLab 14.4.0 through 14.4.2](../../../update/versions/gitlab_14_changes.md#1440) that can affect Geo and other features that rely on cronjobs. We recommend upgrading to GitLab 14.4.3 or later.
 
 ## Upgrading to 14.1, 14.2, 14.3
 

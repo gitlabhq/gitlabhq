@@ -27,7 +27,7 @@ Users added through LDAP:
   even if password authentication for Git
   [is disabled](../../settings/sign_in_restrictions.md#password-authentication-enabled).
 
-The LDAP DN is associated with existing GitLab users when:
+The LDAP distinguished name (DN) is associated with existing GitLab users when:
 
 - The existing user signs in to GitLab with LDAP for the first time.
 - The LDAP email address is the primary email address of an existing GitLab user. If the LDAP email
@@ -40,9 +40,7 @@ If an existing GitLab user wants to enable LDAP sign-in for themselves, they sho
 
 ## Security
 
-GitLab has multiple mechanisms to verify a user is still active in LDAP. If the user is no longer active in
-LDAP, they are placed in an `ldap_blocked` status and are signed out. They are unable to sign in using any authentication provider until they are
-reactivated in LDAP.
+GitLab verifies if a user is still active in LDAP.
 
 Users are considered inactive in LDAP when they:
 
@@ -51,13 +49,19 @@ Users are considered inactive in LDAP when they:
 - Are marked as disabled or deactivated in Active Directory through the user account control attribute. This means attribute
   `userAccountControl:1.2.840.113556.1.4.803` has bit 2 set.
 
-Status is checked for all LDAP users:
+GitLab checks LDAP users' status:
 
 - When signing in using any authentication provider. [In GitLab 14.4 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/343298), status was
   checked only when signing in using LDAP directly.
 - Once per hour for active web sessions or Git requests using tokens or SSH keys.
 - When performing Git over HTTP requests using LDAP username and password.
 - Once per day during [User Sync](ldap_synchronization.md#user-sync).
+
+If the user is no longer active in LDAP, they are:
+
+- Signed out.
+- Placed in an `ldap_blocked` status.
+- Unable to sign in using any authentication provider until they are reactivated in LDAP.
 
 ### Security risks
 
@@ -1143,7 +1147,7 @@ read about [Helm LDAP secrets](https://docs.gitlab.com/charts/installation/secre
 
 ## Updating LDAP DN and email
 
-When an LDAP server creates a user in GitLab, the user's LDAP distinguished name (DN) is linked to their GitLab account
+When an LDAP server creates a user in GitLab, the user's LDAP DN is linked to their GitLab account
 as an identifier.
 
 When a user tries to sign in with LDAP, GitLab tries to find the user using the DN saved on that user's account.

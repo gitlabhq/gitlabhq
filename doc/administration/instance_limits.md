@@ -600,6 +600,8 @@ Plan.default.actual_limits.update!(project_ci_variables: 10000)
 
 ### Maximum file size per type of artifact
 
+> `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
@@ -615,6 +617,7 @@ setting is used:
 | Artifact limit name                         | Default value |
 |---------------------------------------------|---------------|
 | `ci_max_artifact_size_accessibility`        | 0             |
+| `ci_max_artifact_size_annotations`          | 0             |
 | `ci_max_artifact_size_api_fuzzing`          | 0             |
 | `ci_max_artifact_size_archive`              | 0             |
 | `ci_max_artifact_size_browser_performance`  | 0             |
@@ -812,6 +815,36 @@ To set this limit to 5 KB on a self-managed installation, run the following in t
 
 ```ruby
 Plan.default.actual_limits.update!(dotenv_size: 5.kilobytes)
+```
+
+### Limit CI/CD job annotations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
+You can set a limit on the maximum number of annotations on a CI/CD job.
+
+Set the limit to `0` to disable it. Defaults to `20` on self-managed instances.
+
+To set this limit to `100` on a self-managed instance, run the following command in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(ci_job_annotations_num: 100)
+```
+
+### Limit CI/CD job annotations file size
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
+You can set a limit on the maximum size of a CI/CD job annotation.
+
+Set the limit to `0` to disable it. Defaults to 80 KB.
+
+To set this limit to 100 KB on a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(ci_job_annotations_size: 100.kilobytes)
 ```
 
 ## Instance monitoring and metrics

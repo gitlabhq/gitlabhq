@@ -3,7 +3,7 @@ import IssuableForm from 'ee_else_ce/issuable/issuable_form';
 import IssuableLabelSelector from '~/issuable/issuable_label_selector';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
-import { initIssuableHeaderWarnings, initIssuableSidebar } from '~/issuable';
+import { initIssuableSidebar } from '~/issuable';
 import { TYPE_INCIDENT } from '~/issues/constants';
 import Issue from '~/issues/issue';
 import { initTitleSuggestions, initTypePopover, initTypeSelect } from '~/issues/new';
@@ -62,7 +62,6 @@ export function initShow({ notesParams } = {}) {
   new Issue(); // eslint-disable-line no-new
   new ShortcutsIssuable(); // eslint-disable-line no-new
   new ZenMode(); // eslint-disable-line no-new
-  initIssuableHeaderWarnings(store);
   initIssuableSidebar();
   initNotesApp(notesParams);
   initRelatedMergeRequests();

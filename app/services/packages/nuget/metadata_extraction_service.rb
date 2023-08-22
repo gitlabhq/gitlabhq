@@ -3,8 +3,8 @@
 module Packages
   module Nuget
     class MetadataExtractionService
-      def initialize(package_file_id)
-        @package_file_id = package_file_id
+      def initialize(package_file)
+        @package_file = package_file
       end
 
       def execute
@@ -13,18 +13,18 @@ module Packages
 
       private
 
-      attr_reader :package_file_id
-
-      def nuspec_file_content
-        ExtractMetadataFileService
-          .new(package_file_id)
-          .execute
-          .payload
-      end
+      attr_reader :package_file
 
       def metadata
         ExtractMetadataContentService
           .new(nuspec_file_content)
+          .execute
+          .payload
+      end
+
+      def nuspec_file_content
+        ExtractMetadataFileService
+          .new(package_file)
           .execute
           .payload
       end

@@ -25,13 +25,14 @@ Each GitLab account has a [User Profile](../../../../user/profile/index.md), whi
 
 ## 3. Proposal
 
-User Profiles will be scoped to an Organization.
+User Profiles will be scoped to an Organization. We follow the same pattern as is used for `Your Work`, meaning that profiles are always seen in the context of an Organization.
 
+- User Profile URLs will reference the Organization with the following URL structure `/-/organizations/<organization>/username`.
 - Users can set a Home Organization as their main Organization.
+- The default User Profile URL `/<username>` will refer to the user's Home Organization, or the default Organization if the user's Home Organization is not set.
 - Users who do not exist in the database at all display a 404 not found error when trying to access their User Profile.
 - User who haven't contributed to an Organization display their User Profile with an empty state.
 - When displaying a User Profile empty state, if the profile has a Home Organization set to another Organization, we display a call-to-action allowing navigation to the main Organization.
-- User Profile URLs will not reference the Organization and remain as: `/<username>`. We follow the same pattern as is used for `Your Work`, meaning that profiles are always seen in the context of an Organization.
 - Breadcrumbs on the User Profile will present as `[Organization Name] / [Username]`.
 
 See [issue #411931](https://gitlab.com/gitlab-org/gitlab/-/issues/411931) for design proposals.

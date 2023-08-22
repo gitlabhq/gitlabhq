@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Known limitation:
 
-- [Tasks currently cannot be accessed via REST API.](https://gitlab.com/gitlab-org/gitlab/-/issues/368055)
+- [Tasks cannot be accessed via REST API.](https://gitlab.com/gitlab-org/gitlab/-/issues/368055)
 
 For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103).
 
@@ -41,7 +41,7 @@ View tasks in issues, in the **Tasks** section.
 You can also [filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
 for `Type = task`.
 
-If you select a task from an issue, it opens in a modal window.
+If you select a task from an issue, it opens in a dialog window.
 If you select a task to open in a new browser tab, or select it from the issue list,
 the task opens in a full-page view.
 
@@ -107,7 +107,7 @@ To edit a task:
 
 ### Using the rich text editor
 
-> - Rich text editing in the modal view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363007) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
+> - Rich text editing in the dialog view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363007) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
 > - Rich text editing in the full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104533) in GitLab 15.7.
 
 FLAG:
