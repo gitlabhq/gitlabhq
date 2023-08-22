@@ -54,37 +54,30 @@ describe('ReportHeader', () => {
   });
 
   describe.each`
-    status           | text                                 | variant      | className                         | badgeIcon
-    ${STATUS_OPEN}   | ${REPORT_HEADER_I18N[STATUS_OPEN]}   | ${'success'} | ${'issuable-status-badge-open'}   | ${'issues'}
-    ${STATUS_CLOSED} | ${REPORT_HEADER_I18N[STATUS_CLOSED]} | ${'info'}    | ${'issuable-status-badge-closed'} | ${'issue-closed'}
-  `(
-    'rendering the report $status status badge',
-    ({ status, text, variant, className, badgeIcon }) => {
-      beforeEach(() => {
-        createComponent({ report: { ...report, status } });
-      });
+    status           | text                                 | variant      | badgeIcon
+    ${STATUS_OPEN}   | ${REPORT_HEADER_I18N[STATUS_OPEN]}   | ${'success'} | ${'issues'}
+    ${STATUS_CLOSED} | ${REPORT_HEADER_I18N[STATUS_CLOSED]} | ${'info'}    | ${'issue-closed'}
+  `('rendering the report $status status badge', ({ status, text, variant, badgeIcon }) => {
+    beforeEach(() => {
+      createComponent({ report: { ...report, status } });
+    });
 
-      it(`indicates the ${status} status`, () => {
-        expect(findBadge().text()).toBe(text);
-      });
+    it(`indicates the ${status} status`, () => {
+      expect(findBadge().text()).toBe(text);
+    });
 
-      it(`with the ${variant} variant`, () => {
-        expect(findBadge().props('variant')).toBe(variant);
-      });
+    it(`with the ${variant} variant`, () => {
+      expect(findBadge().props('variant')).toBe(variant);
+    });
 
-      it(`with the text '${text}' as 'aria-label'`, () => {
-        expect(findBadge().attributes('aria-label')).toBe(text);
-      });
+    it(`with the text '${text}' as 'aria-label'`, () => {
+      expect(findBadge().attributes('aria-label')).toBe(text);
+    });
 
-      it(`contains the ${className} class`, () => {
-        expect(findBadge().element.classList).toContain(className);
-      });
-
-      it(`has an icon with the ${badgeIcon} name`, () => {
-        expect(findIcon().props('name')).toBe(badgeIcon);
-      });
-    },
-  );
+    it(`has an icon with the ${badgeIcon} name`, () => {
+      expect(findIcon().props('name')).toBe(badgeIcon);
+    });
+  });
 
   it('renders the actions', () => {
     const actionsComponent = findActions();

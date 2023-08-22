@@ -12,17 +12,17 @@ describe('Merge request status box component', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
 
   describe.each`
-    issuableType       | badgeText   | initialState | badgeClass                        | badgeVariant | badgeIcon
-    ${'merge_request'} | ${'Open'}   | ${'opened'}  | ${'issuable-status-badge-open'}   | ${'success'} | ${'merge-request-open'}
-    ${'merge_request'} | ${'Closed'} | ${'closed'}  | ${'issuable-status-badge-closed'} | ${'danger'}  | ${'merge-request-close'}
-    ${'merge_request'} | ${'Merged'} | ${'merged'}  | ${'issuable-status-badge-merged'} | ${'info'}    | ${'merge'}
-    ${'issue'}         | ${'Open'}   | ${'opened'}  | ${'issuable-status-badge-open'}   | ${'success'} | ${'issues'}
-    ${'issue'}         | ${'Closed'} | ${'closed'}  | ${'issuable-status-badge-closed'} | ${'info'}    | ${'issue-closed'}
-    ${'epic'}          | ${'Open'}   | ${'opened'}  | ${'issuable-status-badge-open'}   | ${'success'} | ${'epic'}
-    ${'epic'}          | ${'Closed'} | ${'closed'}  | ${'issuable-status-badge-closed'} | ${'info'}    | ${'epic-closed'}
+    issuableType       | badgeText   | initialState | badgeVariant | badgeIcon
+    ${'merge_request'} | ${'Open'}   | ${'opened'}  | ${'success'} | ${'merge-request-open'}
+    ${'merge_request'} | ${'Closed'} | ${'closed'}  | ${'danger'}  | ${'merge-request-close'}
+    ${'merge_request'} | ${'Merged'} | ${'merged'}  | ${'info'}    | ${'merge'}
+    ${'issue'}         | ${'Open'}   | ${'opened'}  | ${'success'} | ${'issues'}
+    ${'issue'}         | ${'Closed'} | ${'closed'}  | ${'info'}    | ${'issue-closed'}
+    ${'epic'}          | ${'Open'}   | ${'opened'}  | ${'success'} | ${'epic'}
+    ${'epic'}          | ${'Closed'} | ${'closed'}  | ${'info'}    | ${'epic-closed'}
   `(
     'with issuableType set to "$issuableType" and state set to "$initialState"',
-    ({ issuableType, badgeText, initialState, badgeClass, badgeVariant, badgeIcon }) => {
+    ({ issuableType, badgeText, initialState, badgeVariant, badgeIcon }) => {
       beforeEach(() => {
         factory({
           initialState,
@@ -32,10 +32,6 @@ describe('Merge request status box component', () => {
 
       it(`renders badge with text '${badgeText}'`, () => {
         expect(findBadge().text()).toBe(badgeText);
-      });
-
-      it(`sets badge css class as '${badgeClass}'`, () => {
-        expect(findBadge().classes()).toContain(badgeClass);
       });
 
       it(`sets badge variant as '${badgeVariant}`, () => {

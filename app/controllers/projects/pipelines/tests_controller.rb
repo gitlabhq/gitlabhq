@@ -50,7 +50,7 @@ module Projects
       end
 
       def test_suite
-        suite = builds.sum do |build|
+        suite = builds.sum(Gitlab::Ci::Reports::TestSuite.new) do |build|
           test_report = build.collect_test_reports!(Gitlab::Ci::Reports::TestReport.new)
           test_report.get_suite(build.test_suite_name)
         end

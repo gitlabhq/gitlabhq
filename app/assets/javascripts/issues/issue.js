@@ -49,12 +49,7 @@ export default class Issue {
     issueFailMessage = __('Unable to update this issue at this time.'),
   ) {
     if ('id' in data) {
-      const isClosedBadge = $('.issuable-status-badge-closed');
-      const isOpenBadge = $('.issuable-status-badge-open');
       const projectIssuesCounter = $('.issue_counter');
-
-      isClosedBadge.toggleClass('hidden', !isClosed);
-      isOpenBadge.toggleClass('hidden', isClosed);
 
       $(document).trigger('issuable:change', isClosed);
 

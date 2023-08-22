@@ -19,7 +19,7 @@ RSpec.shared_examples 'content publicly cached' do
   end
 end
 
-RSpec.describe UploadsController do
+RSpec.describe UploadsController, feature_category: :groups_and_projects do
   include WorkhorseHelpers
 
   let!(:user) { create(:user, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }

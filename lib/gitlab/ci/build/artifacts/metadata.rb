@@ -18,7 +18,11 @@ module Gitlab
 
           def initialize(stream, path, **opts)
             @stream = stream
-            @path = path
+
+            # Ensure to remove any ./ prefix from the path
+            # so that the pattern matching will work as expected
+            @path = path.gsub(%r{^\./}, '')
+
             @opts = opts
             @full_version = read_version
           end
@@ -59,7 +63,7 @@ module Gitlab
             entries = {}
 
             child_pattern = '[^/]*/?$' unless @opts[:recursive]
-            match_pattern = /^#{Regexp.escape(@path)}#{child_pattern}/
+            match_pattern = /^#{Regexp.escape(path)}#{child_pattern}/
 
             until gz.eof?
               begin

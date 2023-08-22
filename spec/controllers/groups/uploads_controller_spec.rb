@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::UploadsController do
+RSpec.describe Groups::UploadsController, feature_category: :portfolio_management do
   include WorkhorseHelpers
 
   let(:model) { create(:group, :public) }

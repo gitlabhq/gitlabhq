@@ -17,13 +17,6 @@ export const badgeState = Vue.observable({
   updateStatus: null,
 });
 
-const CLASSES = {
-  opened: 'issuable-status-badge-open',
-  locked: 'issuable-status-badge-open',
-  closed: 'issuable-status-badge-closed',
-  merged: 'issuable-status-badge-merged',
-};
-
 const ICONS = {
   [TYPE_EPIC]: {
     opened: 'epic',
@@ -82,14 +75,6 @@ export default {
     return badgeState;
   },
   computed: {
-    badgeClass() {
-      return [
-        CLASSES[this.state],
-        {
-          'gl-vertical-align-bottom': this.issuableType === TYPE_MERGE_REQUEST,
-        },
-      ];
-    },
     badgeVariant() {
       if (this.state === STATUS_OPEN) {
         return 'success';
@@ -134,12 +119,7 @@ export default {
 </script>
 
 <template>
-  <gl-badge
-    class="issuable-status-badge gl-mr-3 gl-align-self-center"
-    :class="badgeClass"
-    :variant="badgeVariant"
-    :aria-label="badgeText"
-  >
+  <gl-badge class="gl-mr-3 gl-align-self-center" :variant="badgeVariant" :aria-label="badgeText">
     <gl-icon :name="badgeIcon" class="gl-badge-icon" />
     <span class="gl-display-none gl-sm-display-block gl-ml-2">{{ badgeText }}</span>
   </gl-badge>

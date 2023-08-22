@@ -77,7 +77,7 @@ module Gitlab
 
         def +(other)
           self.class.new.tap do |test_suite|
-            test_suite.name = self.name
+            test_suite.name = other.name
             test_suite.test_cases = self.test_cases.deep_merge(other.test_cases)
             test_suite.total_time = self.total_time + other.total_time
           end
