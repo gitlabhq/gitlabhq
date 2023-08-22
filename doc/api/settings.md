@@ -65,6 +65,7 @@ Example response:
   "container_registry_expiration_policies_caching": true,
   "container_registry_expiration_policies_worker_capacity": 4,
   "container_registry_token_expire_delay": 5,
+  "decompress_archive_file_timeout": 210,
   "repository_storages_weighted": {"default": 100},
   "plantuml_enabled": false,
   "plantuml_url": null,
@@ -208,6 +209,7 @@ Example response:
   "container_registry_expiration_policies_caching": true,
   "container_registry_expiration_policies_worker_capacity": 4,
   "container_registry_token_expire_delay": 5,
+  "decompress_archive_file_timeout": 210,
   "package_registry_cleanup_policies_worker_capacity": 2,
   "repository_storages": ["default"],
   "plantuml_enabled": false,
@@ -346,6 +348,7 @@ listed in the descriptions of the relevant settings.
 | `allow_account_deletion`                 | boolean          | no                                   | Enable [users to delete their accounts](../administration/settings/account_and_limit_settings.md#prevent-users-from-deleting-their-accounts). |
 | `deactivate_dormant_users`               | boolean          | no                                   | Enable [automatic deactivation of dormant users](../administration/moderate_users.md#automatically-deactivate-dormant-users). |
 | `deactivate_dormant_users_period`        | integer          | no                                   | Length of time (in days) after which a user is considered dormant. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336747) in GitLab 15.3. |
+| `decompress_archive_file_timeout`        | integer          | no                                   | Default timeout for decompressing archived files, in seconds. Set to 0 to disable timeouts. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129161) in GitLab 16.4. |
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
 | `default_branch_name`                    | string           | no                                   | [Instance-level custom initial branch name](../user/project/repository/branches/default.md#instance-level-custom-initial-branch-name). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225258) in GitLab 13.2. |
 | `default_branch_protection`              | integer          | no                                   | Determine if developers can push to the default branch. Can take: `0` _(not protected, both users with the Developer role or Maintainer role can push new commits and force push)_, `1` _(partially protected, users with the Developer role or Maintainer role can push new commits, but cannot force push)_ or `2` _(fully protected, users with the Developer or Maintainer role cannot push new commits, but users with the Developer or Maintainer role can; no one can force push)_ as a parameter. Default is `2`. |

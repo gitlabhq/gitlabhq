@@ -84,6 +84,33 @@ RSpec.describe BulkImports::Groups::Loaders::GroupLoader, feature_category: :imp
 
         include_examples 'calls Group Create Service to create a new group'
       end
+
+      context 'when user does not have 2FA enabled' do
+        before do
+          allow(user).to receive(:two_factor_enabled?).and_return(false)
+        end
+
+        context 'when require_two_factor_authentication is not passed' do
+          include_examples 'calls Group Create Service to create a new group'
+        end
+
+        context 'when require_two_factor_authentication is false' do
+          let(:data) { { 'require_two_factor_authentication' => false, 'path' => 'test' } }
+
+          include_examples 'calls Group Create Service to create a new group'
+        end
+
+        context 'when require_two_factor_authentication is true' do
+          let(:data) { { 'require_two_factor_authentication' => true, 'path' => 'test' } }
+
+          it 'does not create new group' do
+            expect(::Groups::CreateService).not_to receive(:new)
+
+            expect { subject.load(context, data) }
+              .to raise_error(described_class::GroupCreationError, 'User requires Two-Factor Authentication')
+          end
+        end
+      end
     end
 
     context 'when user cannot create group' do

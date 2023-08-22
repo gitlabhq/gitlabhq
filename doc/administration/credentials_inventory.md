@@ -17,7 +17,8 @@ their self-managed instance.
 Use Credentials inventory to see for your GitLab instance all:
 
 - Personal access tokens (PAT).
-- Project access tokens (GitLab 14.8 and later).
+- Project access tokens (introduced in GitLab 14.8).
+- Group access tokens ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102959) in GitLab 15.6).
 - SSH keys.
 - GPG keys.
 

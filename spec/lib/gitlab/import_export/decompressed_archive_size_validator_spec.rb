@@ -93,7 +93,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
       end
 
       context 'when timeout occurs' do
-        let(:error_message) { 'Timeout reached during archive decompression' }
+        let(:error_message) { 'Timeout of 210 seconds reached during archive decompression' }
         let(:exception) { Timeout::Error }
 
         include_examples 'logs raised exception and terminates validator process group'

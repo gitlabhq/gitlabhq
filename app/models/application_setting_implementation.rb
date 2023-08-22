@@ -53,6 +53,7 @@ module ApplicationSettingImplementation
         container_registry_vendor: '',
         container_registry_version: '',
         custom_http_clone_url_root: nil,
+        decompress_archive_file_timeout: 210,
         default_artifacts_expire_in: '30 days',
         default_branch_name: nil,
         default_branch_protection: Settings.gitlab['default_branch_protection'],

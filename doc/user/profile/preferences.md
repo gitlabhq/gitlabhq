@@ -53,59 +53,167 @@ For more information, view [Rouge Ruby Library](https://github.com/rouge-ruby/ro
 
 ## Change the diff colors
 
-Diffs use two different background colors to show changes between versions of code. By default, the original file in red and the changes made in green.
+Diffs use two different background colors to show changes between versions of code. By default, the original file is in red, and the changes are in green.
 
 To change the diff colors:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Go to the **Diff colors** section. 
-1. Complete the fields.
+1. Select a color or enter a color code.
 1. Select **Save changes**.
-1. Optional. Type a color code in the fields.
+
+To change back to the default colors, clear the **Color for removed lines** and **Color for added lines** text boxes and select **Save changes**.
 
 ## Behavior
 
-The following settings allow you to customize the behavior of the GitLab layout
-and default views of your dashboard and the projects' landing pages.
+Use the **Behavior** section to customize the behavior and layout of your GitLab self-managed instance. You can change your layout width and choose the default content for your homepage, group and project overview pages. You have options to customize appearance and function, like whitespace rendering, file display, and text automation.
 
-### Layout width
+### Change the layout width on the UI
 
-GitLab can be set up to use different widths depending on your liking. Choose
-between the fixed (max. `1280px`) and the fluid (`100%`) application layout.
+You can stretch content on the GitLab UI to fill the entire page. By default, page content is fixed at 1280 pixels wide.
 
-NOTE:
-While `1280px` is the standard max width when using fixed layout, some pages still use 100% width, depending on the content.
+To change the layout width of your UI:
 
-### Homepage
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. Under **Layout width**, choose **Fixed** or **Fluid**.
+1. Select **Save changes**.
 
-This setting changes the behavior of the tanuki icon in the upper-left corner of GitLab.
+### Choose your homepage
 
-### Group overview content
+Control what page you view when you select the GitLab logo (**{tanuki}**). You can set your homepage to be Projects (default), Your Groups, Your Activity, and other content.
 
-The **Group overview content** dropdown list allows you to choose what information is
-displayed on a group's home page.
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. For **Homepage**, select a default.
+1. Select **Save changes**.
 
-You can choose between 2 options:
+### Customize default content on your group overview page
 
-- Details (default)
-- [Security dashboard](../application_security/security_dashboard/index.md)
+You can change the main content on your group overview page. Your group overview page is the page that shows when you select **Groups** on the left sidebar. You can customize the default content for your group overview page to the:
 
-### Project overview content
+- Details Dashboard (default), which includes an overview of group activities and projects.
+- Security Dashboard, which might include group security policies and other security topics.
 
-The **Project overview content** setting allows you to choose what content you want to
-see on a project's home page.
+For more information, view [Groups](../../user/group/index.md).
 
-If **Files and Readme** is selected, you can show or hide the shortcut buttons above the file list on the project overview with the **Show shortcut buttons above files on project overview** setting.
+To change the default content on your group overview page:
 
-### Tab width
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. For **Group overivew content**, select an option.
+1. Select **Save changes**.
 
-You can set the displayed width of tab characters across various parts of
-GitLab, for example, blobs, diffs, and snippets.
+### Customize default content on your project overview page
 
-NOTE:
-Some parts of GitLab do not respect this setting, including the WebIDE, file
-editor and Markdown editor.
+Your project overview page is the page you view when you select **Project overview** on the left sidebar. You can set your main project overview page to the Activity page, the Readme file, and other content.
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. For **Project overivew content**, select an option.
+1. Select **Save changes**.
+
+### Hide shortcut buttons
+
+Shortcut buttons precede the list of files on a project's overview page. These buttons provide links to parts of a project, such as the README file or license agreements.
+
+To hide shortcut buttons on the project overview page:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. Clear the **Show shortcut buttons above files on project overview** checkbox.
+1. Select **Save changes**.
+
+### Show whitespace characters in the Web IDE
+
+Whitespace characters are any blank characters in a text, such as spaces and indentations. You might use whitespace to structure content in code. If your programming language is sensitive to whitespaces, the Web IDE can detect changes to them.
+
+To render whitespace in the Web IDE:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. Select the **Render whitespace characters in the Web IDE** checkbox.
+1. Select **Save changes**.
+
+You can view changes to whitespace in diffs. 
+
+To view diffs on the Web IDE, follow these steps:
+
+1. On the left sidebar, select **Source Control** (**{branch}**).
+1. Under the **Changes** tab, select your file.
+
+### Show whitespace changes in diffs
+
+View changes to whitespace in diff files. For more information on whitespaces, view the previous task.
+
+To view changes to whitespace in diffs:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. Select the **Show whitespace changes in diffs** checkbox.
+1. Select **Save changes**.
+
+For more information on diffs, view [Change the diff colors](#change-the-diff-colors).
+
+### Show one file per page in a merge request
+
+The **Changes** tab lets you view all file changes in a merge request on one page.
+Instead, you can choose to view one file at a time.
+
+To show one file per page on the **Changes** tab:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. Select the **Show one file at a time on merge request's Changes tab** checkbox.
+1. Select **Save changes**.
+
+Then, to move between files on the **Changes** tab, below each file, select the **Previous** and **Next** buttons.
+
+### Autocomplete characters
+
+When you type an opening character, like a bracket or quote mark, in a description or comment box,
+GitLab can automatically insert the closing character as you type. For example, if you begin your text with an open bracket, GitLab can insert the closing bracket.
+
+To autocomplete characters in description and comment boxes:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. Select the **Surround text selection when typing quotes or brackets** checkbox.
+1. Select **Save changes**.
+
+### Automate new list items
+
+Create a new list item when you press <kbd>Enter</kbd> within a list in description and comment boxes.
+
+To add a new list item when you press the <kbd>Enter</kbd> key:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. Select the **Automatically add new list items** checkbox.
+1. Select **Save changes**.
+
+### Change the tab width
+
+Change the default size of tabs in diffs, blobs, and snippets. The WebIDE, file editor, and Markdown editor do not support this feature.
+
+To adjust the default tab width:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Go to the **Behavior** section.
+1. For **Tab width**, enter a value.
+1. Select **Save changes**.
 
 ## Localization
 

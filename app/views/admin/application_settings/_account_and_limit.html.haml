@@ -38,6 +38,10 @@
       = f.number_field :max_decompressed_archive_size, class: 'form-control gl-form-input', title: s_('Import|Maximum size of decompressed archive.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted= _('Set to 0 for no size limit.')
     .form-group
+      = f.label :decompress_archive_file_timeout, s_('Import|Timeout for decompressing archived files (seconds)'), class: 'label-light'
+      = f.number_field :decompress_archive_file_timeout, class: 'form-control gl-form-input', title: s_('Import|Timeout for decompressing archived files.'), data: { toggle: 'tooltip', container: 'body' }
+      %span.form-text.text-muted= _('Set to 0 to disable timeout.')
+    .form-group
       = f.label :session_expire_delay, _('Session duration (minutes)'), class: 'label-light'
       = f.number_field :session_expire_delay, class: 'form-control gl-form-input', title: _('Maximum duration of a session.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted#session_expire_delay_help_block= _('Restart GitLab to apply changes.')

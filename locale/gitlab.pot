@@ -24238,6 +24238,12 @@ msgstr ""
 msgid "Import|There is not a valid Git repository at this URL. If your HTTP repository is not publicly accessible, verify your credentials."
 msgstr ""
 
+msgid "Import|Timeout for decompressing archived files (seconds)"
+msgstr ""
+
+msgid "Import|Timeout for decompressing archived files."
+msgstr ""
+
 msgid "Improve customer support with Service Desk"
 msgstr ""
 
@@ -35722,9 +35728,6 @@ msgstr ""
 msgid "ProductAnalytics|Click Events"
 msgstr ""
 
-msgid "ProductAnalytics|Clickhouse URL"
-msgstr ""
-
 msgid "ProductAnalytics|Compares all events against each other"
 msgstr ""
 
@@ -35738,9 +35741,6 @@ msgid "ProductAnalytics|Compares feature usage of all features against each othe
 msgstr ""
 
 msgid "ProductAnalytics|Compares page views of all pages against each other"
-msgstr ""
-
-msgid "ProductAnalytics|Connection string"
 msgstr ""
 
 msgid "ProductAnalytics|Create a visualization"
@@ -35842,6 +35842,9 @@ msgstr ""
 msgid "ProductAnalytics|Set up to track how your product is performing and optimize your product and development processes."
 msgstr ""
 
+msgid "ProductAnalytics|Snowplow configurator connection string"
+msgstr ""
+
 msgid "ProductAnalytics|The connection string for your Snowplow configurator instance."
 msgstr ""
 
@@ -35864,9 +35867,6 @@ msgid "ProductAnalytics|Track specific features"
 msgstr ""
 
 msgid "ProductAnalytics|Unique Users"
-msgstr ""
-
-msgid "ProductAnalytics|Used to connect Snowplow to the Clickhouse instance."
 msgstr ""
 
 msgid "ProductAnalytics|Used to retrieve dashboard data from the Cube instance."
@@ -41366,7 +41366,7 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{period} %{days} at %{time} %{timezoneLabel} %{timezone}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{rules} actions for %{scopes} %{branches} %{branchExceptions} %{agents} %{namespaces} %{period}"
+msgid "ScanExecutionPolicy|%{rules} actions for %{scopes} %{branches} %{agents} %{branchExceptions} %{namespaces} %{period}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{branchExceptions} %{agents} %{namespaces}"
@@ -42192,7 +42192,7 @@ msgstr ""
 msgid "SecurityOrchestration|%{branchName} (in %{codeStart}%{fullPath}%{codeEnd})"
 msgstr ""
 
-msgid "SecurityOrchestration|%{cadence} on %{branches}"
+msgid "SecurityOrchestration|%{cadence} on %{branches}%{branchExceptionsString}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{licenses} and %{lastLicense}"
@@ -42321,7 +42321,7 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce security for this project. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
-msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}"
+msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}%{branchExceptionsString}"
 msgstr ""
 
 msgid "SecurityOrchestration|Exceptions"
@@ -42677,7 +42677,7 @@ msgstr ""
 msgid "SecurityOrchestration|branches"
 msgstr ""
 
-msgid "SecurityOrchestration|by the agent named %{agents} %{cadence}"
+msgid "SecurityOrchestration|by the agent named %{agents} %{cadence}%{branchExceptionsString}"
 msgstr ""
 
 msgid "SecurityOrchestration|group level branch input"
@@ -43820,6 +43820,9 @@ msgid "Set time estimate to %{time_estimate}."
 msgstr ""
 
 msgid "Set to 0 for no size limit."
+msgstr ""
+
+msgid "Set to 0 to disable timeout."
 msgstr ""
 
 msgid "Set to auto-merge"

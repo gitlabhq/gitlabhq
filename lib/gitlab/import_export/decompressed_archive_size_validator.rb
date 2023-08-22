@@ -5,13 +5,12 @@ module Gitlab
     class DecompressedArchiveSizeValidator
       include Gitlab::Utils::StrongMemoize
 
-      TIMEOUT_LIMIT = 210.seconds
-
       ServiceError = Class.new(StandardError)
 
-      def initialize(archive_path:, max_bytes: self.class.max_bytes)
+      def initialize(archive_path:, max_bytes: self.class.max_bytes, timeout: self.class.timeout)
         @archive_path = archive_path
         @max_bytes = max_bytes
+        @timeout = timeout
       end
 
       def valid?
@@ -24,6 +23,10 @@ module Gitlab
         Gitlab::CurrentSettings.current_application_settings.max_decompressed_archive_size.megabytes
       end
 
+      def self.timeout
+        Gitlab::CurrentSettings.current_application_settings.decompress_archive_file_timeout
+      end
+
       private
 
       def validate
@@ -32,7 +35,7 @@ module Gitlab
 
         validate_archive_path
 
-        Timeout.timeout(TIMEOUT_LIMIT) do
+        Timeout.timeout(@timeout) do
           stderr_r, stderr_w = IO.pipe
           stdout, wait_threads = Open3.pipeline_r(*command, pgroup: true, err: stderr_w)
 
@@ -70,7 +73,7 @@ module Gitlab
 
         valid_archive
       rescue Timeout::Error
-        log_error('Timeout reached during archive decompression')
+        log_error("Timeout of #{@timeout} seconds reached during archive decompression")
 
         pgrps.each { |pgrp| Process.kill(-1, pgrp) } if pgrps
 

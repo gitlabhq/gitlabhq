@@ -25,6 +25,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.kroki_formats).to eq({}) }
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
     it { expect(setting.max_decompressed_archive_size).to eq(25600) }
+    it { expect(setting.decompress_archive_file_timeout).to eq(210) }
   end
 
   describe 'validations' do
@@ -133,6 +134,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_presence_of(:container_registry_import_target_plan) }
     it { is_expected.to validate_presence_of(:container_registry_import_created_before) }
+
+    it { is_expected.to validate_numericality_of(:decompress_archive_file_timeout).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.not_to allow_value(nil).for(:decompress_archive_file_timeout) }
 
     it { is_expected.to validate_numericality_of(:dependency_proxy_ttl_group_policy_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.not_to allow_value(nil).for(:dependency_proxy_ttl_group_policy_worker_capacity) }

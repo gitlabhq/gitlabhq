@@ -155,6 +155,20 @@ To modify the maximum decompressed file size for imports in GitLab:
 1. Expand **Account and limit**.
 1. Set another value for **Maximum decompressed size (MiB)**.
 
+## Timeout for decompressing archived files
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128218) in GitLab 16.4.
+
+When you [import a project](../../user/project/settings/import_export.md), you can specify the maximum time out for decompressing imported archives. The default value is 210 seconds.
+
+To modify the maximum decompressed file size for imports in GitLab:
+
+1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. Select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Set another value for **Timeout for decompressing archived files (seconds)**.
+
 ## Personal access token prefix
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20968) in GitLab 13.7.

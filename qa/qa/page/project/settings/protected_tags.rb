@@ -32,6 +32,8 @@ module QA
             within_element :allowed_to_create_dropdown do
               click_on role
             end
+            # confirm selection and remove dropdown
+            click_element :allowed_to_create_dropdown
           end
 
           def click_protect_tag_button

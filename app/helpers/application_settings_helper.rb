@@ -238,6 +238,7 @@ module ApplicationSettingsHelper
       :container_expiration_policies_enable_historic_entries,
       :container_registry_expiration_policies_caching,
       :container_registry_token_expire_delay,
+      :decompress_archive_file_timeout,
       :default_artifacts_expire_in,
       :default_branch_name,
       :default_branch_protection,
