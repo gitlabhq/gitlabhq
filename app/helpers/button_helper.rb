@@ -7,6 +7,15 @@ module ButtonHelper
   #         :text   - Text to copy (optional)
   #         :gfm    - GitLab Flavored Markdown to copy, if different from `text` (optional)
   #         :target - Selector for target element to copy from (optional)
+  #         :class  - CSS classes to be applied to the button (optional)
+  #         :title  - Button's title attribute (used for the tooltip) (optional)
+  #         :button_text - Button's displayed label (optional)
+  #         :hide_tooltip - Whether the tooltip should be hidden (optional, default: false)
+  #         :hide_button_icon - Whether the icon should be hidden (optional, default: false)
+  #         :item_prop - itemprop attribute
+  #         :variant - Button variant (optional, default: :default)
+  #         :category - Button category (optional, default: :tertiary)
+  #         :size - Button size (optional, default: :small)
   #
   # Examples:
   #
@@ -20,6 +29,65 @@ module ButtonHelper
   #
   # See http://clipboardjs.com/#usage
   def clipboard_button(data = {})
+    css_class = data.delete(:class)
+    title = data.delete(:title) || _('Copy')
+    button_text = data[:button_text] || nil
+    hide_tooltip = data[:hide_tooltip] || false
+    hide_button_icon = data[:hide_button_icon] || false
+    item_prop = data[:itemprop] || nil
+    variant = data[:variant] || :default
+    category = data[:category] || :tertiary
+    size = data[:size] || :small
+
+    # This supports code in app/assets/javascripts/copy_to_clipboard.js that
+    # works around ClipboardJS limitations to allow the context-specific copy/pasting of plain text or GFM.
+    if text = data.delete(:text)
+      data[:clipboard_text] =
+        if gfm = data.delete(:gfm)
+          { text: text, gfm: gfm }
+        else
+          text
+        end
+    end
+
+    target = data.delete(:target)
+    data[:clipboard_target] = target if target
+
+    unless hide_tooltip
+      data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
+    end
+
+    render ::Pajamas::ButtonComponent.new(
+      icon: hide_button_icon ? nil : 'copy-to-clipboard',
+      variant: variant,
+      category: category,
+      size: size,
+      button_options: { class: css_class, title: title, aria: { label: title, live: 'polite' }, data: data, itemprop: item_prop }) do
+      button_text
+    end
+  end
+
+  # Output a "Copy to Clipboard" button
+  # Note: This is being replaced by a Pajamas-compliant helper that renders the button
+  # via ::Pajamas::ButtonComponent. Please use clipboard_button instead.
+  #
+  # data  - Data attributes passed to `content_tag` (default: {}):
+  #         :text   - Text to copy (optional)
+  #         :gfm    - GitLab Flavored Markdown to copy, if different from `text` (optional)
+  #         :target - Selector for target element to copy from (optional)
+  #
+  # Examples:
+  #
+  #   # Define the clipboard's text
+  #   clipboard_button(text: "Foo")
+  #   # => "<button class='...' data-clipboard-text='Foo'>...</button>"
+  #
+  #   # Define the target element
+  #   clipboard_button(target: "div#foo")
+  #   # => "<button class='...' data-clipboard-target='div#foo'>...</button>"
+  #
+  # See http://clipboardjs.com/#usage
+  def deprecated_clipboard_button(data = {})
     css_class = data.delete(:class) || 'btn-clipboard gl-button btn-default-tertiary btn-icon btn-sm'
     title = data.delete(:title) || _('Copy')
     button_text = data[:button_text] || nil

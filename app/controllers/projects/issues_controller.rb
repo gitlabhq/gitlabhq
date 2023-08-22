@@ -282,7 +282,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def service_desk
     @issues = @issuables
-    @users.push(User.support_bot)
+    @users.push(Users::Internal.support_bot)
   end
 
   protected
@@ -433,7 +433,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if service_desk?
       options.reject! { |key| key == 'author_username' || key == 'author_id' }
-      options[:author_id] = User.support_bot
+      options[:author_id] = Users::Internal.support_bot
     end
 
     options

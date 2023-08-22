@@ -221,7 +221,7 @@ Assets that need to be served to the user are stored under the `app/assets` dire
 However, you cannot access the content of any file from within `app/assets` from the application code, as we do not include that folder in production installations as a [space saving measure](https://gitlab.com/gitlab-org/omnibus-gitlab/-/commit/ca049f990b223f5e1e412830510a7516222810be).
 
 ```ruby
-support_bot = User.support_bot
+support_bot = Users::Internal.support_bot
 
 # accessing a file from the `app/assets` folder
 support_bot.avatar = Rails.root.join('app', 'assets', 'images', 'bot_avatars', 'support_bot.png').open

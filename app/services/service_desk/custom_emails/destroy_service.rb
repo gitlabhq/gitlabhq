@@ -13,6 +13,7 @@ module ServiceDesk
         project.reset
         project.service_desk_setting&.update!(custom_email: nil, custom_email_enabled: false)
 
+        log_info
         ServiceResponse.success
       end
 

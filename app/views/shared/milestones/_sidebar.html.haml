@@ -162,10 +162,10 @@
     - if milestone_ref.present?
       .block.reference
         .sidebar-collapsed-icon.js-dont-change-state
-          = clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport')
+          = deprecated_clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport')
         .gl-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-mb-2.hide-collapsed
           %span.gl-overflow-hidden.gl-text-overflow-ellipsis.gl-white-space-nowrap
             = s_('MilestoneSidebar|Reference:')
             %span{ title: milestone_ref }
               = milestone_ref
-          = clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport')
+          = deprecated_clipboard_button(text: milestone_ref, title: s_('MilestoneSidebar|Copy reference'), placement: "left", boundary: 'viewport')

@@ -220,7 +220,7 @@ class Issue < ApplicationRecord
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
-  scope :service_desk, -> { where(author: ::User.support_bot) }
+  scope :service_desk, -> { where(author: ::Users::Internal.support_bot) }
   scope :inc_relations_for_view, -> do
     includes(author: :status, assignees: :status)
     .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422155')
@@ -642,7 +642,7 @@ class Issue < ApplicationRecord
   end
 
   def from_service_desk?
-    author.id == User.support_bot.id
+    author.id == Users::Internal.support_bot.id
   end
 
   def issue_link_type

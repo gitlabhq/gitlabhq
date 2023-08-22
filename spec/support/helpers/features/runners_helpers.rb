@@ -23,11 +23,13 @@ module Features
     def input_filtered_search_keys(search_term)
       focus_filtered_search
 
-      page.find(search_bar_selector).find('input').send_keys(search_term)
-      # blur input
-      find('body').click
+      page.within(search_bar_selector) do
+        send_keys(search_term)
+        send_keys(:enter)
 
-      page.click_on 'Search'
+        click_on 'Search'
+      end
+
       wait_for_requests
     end
 

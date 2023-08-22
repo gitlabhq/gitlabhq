@@ -149,11 +149,109 @@ RSpec.describe ButtonHelper do
   describe 'clipboard_button' do
     include IconsHelper
 
-    let(:user) { create(:user) }
+    let_it_be(:user) { create(:user) }
     let(:project) { build_stubbed(:project) }
 
     def element(data = {})
       element = helper.clipboard_button(data)
+      Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
+    end
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'with default options' do
+      context 'when no `text` attribute is not provided' do
+        it 'shows copy to clipboard button with default configuration and no text set to copy' do
+          expect(element.attr('class')).to match('btn-sm')
+          expect(element.attr('class')).to match('btn-default')
+          expect(element.attr('class')).to match('btn-default-tertiary')
+          expect(element.attr('title')).to eq('Copy')
+          expect(element.attr('type')).to eq('button')
+          expect(element.attr('aria-label')).to eq('Copy')
+          expect(element.attr('aria-live')).to eq('polite')
+          expect(element.attr('data-toggle')).to eq('tooltip')
+          expect(element.attr('data-placement')).to eq('bottom')
+          expect(element.attr('data-container')).to eq('body')
+          expect(element.attr('data-clipboard-text')).to eq(nil)
+          expect(element.attr('itemprop')).to eq(nil)
+          expect(element.inner_text.strip).to eq('')
+
+          expect(element.to_html).to match('svg#copy-to-clipboard')
+        end
+      end
+
+      context 'when `text` attribute is provided' do
+        it 'shows copy to clipboard button with provided `text` to copy' do
+          expect(element(text: 'Hello World!').attr('data-clipboard-text')).to eq('Hello World!')
+        end
+      end
+
+      context 'when `title` attribute is provided' do
+        it 'shows copy to clipboard button with provided `title` as tooltip' do
+          expect(element(title: 'Copy to my clipboard!').attr('aria-label')).to eq('Copy to my clipboard!')
+        end
+      end
+    end
+
+    context 'with `button_text` attribute provided' do
+      it 'shows copy to clipboard button with provided `button_text` as button label' do
+        expect(element(button_text: 'Copy text').inner_text.strip).to eq('Copy text')
+      end
+
+      it 'adds `gl-button-icon` class to icon' do
+        expect(element(button_text: 'Copy text')).to have_css('svg.gl-button-icon')
+      end
+    end
+
+    context 'with `hide_tooltip` attribute provided' do
+      it 'shows copy to clipboard button without tooltip support' do
+        expect(element(hide_tooltip: true).attr('data-placement')).to eq(nil)
+        expect(element(hide_tooltip: true).attr('data-toggle')).to eq(nil)
+        expect(element(hide_tooltip: true).attr('data-container')).to eq(nil)
+      end
+    end
+
+    context 'with `hide_button_icon` attribute provided' do
+      it 'shows copy to clipboard button without tooltip support' do
+        expect(element(hide_button_icon: true).to_html).not_to match('svg#copy-to-clipboard')
+      end
+    end
+
+    context 'with `itemprop` attribute provided' do
+      it 'shows copy to clipboard button with `itemprop` attribute' do
+        expect(element(itemprop: 'identifier').attr('itemprop')).to eq('identifier')
+      end
+    end
+
+    context 'when variant option is provided' do
+      it 'inherits the correct ButtonComponent class' do
+        expect(element(variant: :confirm).attr('class')).to match('btn-confirm-tertiary')
+      end
+    end
+
+    context 'when category option is provided' do
+      it 'inherits the correct ButtonComponent class' do
+        expect(element(category: :secondary).attr('class')).to match('btn-default-secondary')
+      end
+    end
+
+    context 'when size option is provided' do
+      it 'inherits the correct ButtonComponent class' do
+        expect(element(size: :medium).attr('class')).to match('btn-md')
+      end
+    end
+  end
+
+  describe 'deprecated_clipboard_button' do
+    include IconsHelper
+
+    let(:user) { create(:user) }
+    let(:project) { build_stubbed(:project) }
+
+    def element(data = {})
+      element = helper.deprecated_clipboard_button(data)
       Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
     end
 
@@ -190,16 +288,6 @@ RSpec.describe ButtonHelper do
         it 'shows copy to clipboard button with provided `title` as tooltip' do
           expect(element(title: 'Copy to my clipboard!').attr('aria-label')).to eq('Copy to my clipboard!')
         end
-      end
-    end
-
-    context 'with `button_text` attribute provided' do
-      it 'shows copy to clipboard button with provided `button_text` as button label' do
-        expect(element(button_text: 'Copy text').inner_text).to eq('Copy text')
-      end
-
-      it 'adds `gl-button-icon` class to icon' do
-        expect(element(button_text: 'Copy text')).to have_css('svg.gl-button-icon')
       end
     end
 

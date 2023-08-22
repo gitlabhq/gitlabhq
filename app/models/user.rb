@@ -22,7 +22,6 @@ class User < MainClusterwide::ApplicationRecord
   include FromUnion
   include BatchDestroyDependentAssociations
   include BatchNullifyDependentAssociations
-  include HasUniqueInternalUsers
   include IgnorableColumns
   include UpdateHighestRole
   include HasUserType
@@ -31,7 +30,6 @@ class User < MainClusterwide::ApplicationRecord
   include RestrictedSignup
   include StripAttribute
   include EachBatch
-  include SafelyChangeColumnDefault
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -59,8 +57,6 @@ class User < MainClusterwide::ApplicationRecord
 
   INCOMING_MAIL_TOKEN_PREFIX = 'glimt-'
   FEED_TOKEN_PREFIX = 'glft-'
-
-  columns_changing_default :project_view
 
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token }
@@ -882,92 +878,6 @@ class User < MainClusterwide::ApplicationRecord
           #{Regexp.escape(reference_prefix)}
           (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
         }x
-    end
-
-    # Return (create if necessary) the ghost user. The ghost user
-    # owns records previously belonging to deleted users.
-    def ghost
-      email = 'ghost%s@example.com'
-      unique_internal(where(user_type: :ghost), 'ghost', email) do |u|
-        u.bio = _('This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.')
-        u.name = 'Ghost User'
-      end
-    end
-
-    def alert_bot
-      email_pattern = "alert%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :alert_bot), 'alert-bot', email_pattern) do |u|
-        u.bio = 'The GitLab alert bot'
-        u.name = 'GitLab Alert Bot'
-        u.avatar = bot_avatar(image: 'alert-bot.png')
-      end
-    end
-
-    def migration_bot
-      email_pattern = "noreply+gitlab-migration-bot%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :migration_bot), 'migration-bot', email_pattern) do |u|
-        u.bio = 'The GitLab migration bot'
-        u.name = 'GitLab Migration Bot'
-        u.confirmed_at = Time.zone.now
-      end
-    end
-
-    def security_bot
-      email_pattern = "security-bot%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :security_bot), 'GitLab-Security-Bot', email_pattern) do |u|
-        u.bio = 'System bot that monitors detected vulnerabilities for solutions and creates merge requests with the fixes.'
-        u.name = 'GitLab Security Bot'
-        u.website_url = Gitlab::Routing.url_helpers.help_page_url('user/application_security/security_bot/index.md')
-        u.avatar = bot_avatar(image: 'security-bot.png')
-        u.confirmed_at = Time.zone.now
-      end
-    end
-
-    def support_bot
-      email_pattern = "support%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :support_bot), 'support-bot', email_pattern) do |u|
-        u.bio = 'The GitLab support bot used for Service Desk'
-        u.name = 'GitLab Support Bot'
-        u.avatar = bot_avatar(image: 'support-bot.png')
-        u.confirmed_at = Time.zone.now
-      end
-    end
-
-    def automation_bot
-      email_pattern = "automation%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :automation_bot), 'automation-bot', email_pattern) do |u|
-        u.bio = 'The GitLab automation bot used for automated workflows and tasks'
-        u.name = 'GitLab Automation Bot'
-        u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for automation-bot
-      end
-    end
-
-    def llm_bot
-      email_pattern = "llm-bot%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :llm_bot), 'GitLab-Llm-Bot', email_pattern) do |u|
-        u.bio = 'The Gitlab LLM bot used for fetching LLM-generated content'
-        u.name = 'GitLab LLM Bot'
-        u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for llm-bot
-        u.confirmed_at = Time.zone.now
-      end
-    end
-
-    def admin_bot
-      email_pattern = "admin-bot%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :admin_bot), 'GitLab-Admin-Bot', email_pattern) do |u|
-        u.bio = 'Admin bot used for tasks that require admin privileges'
-        u.name = 'GitLab Admin Bot'
-        u.avatar = bot_avatar(image: 'admin-bot.png')
-        u.admin = true
-        u.confirmed_at = Time.zone.now
-      end
     end
 
     # Return true if there is only single non-internal user in the deployment,
@@ -2354,7 +2264,7 @@ class User < MainClusterwide::ApplicationRecord
 
   def ban_and_report
     msg = 'Potential spammer account deletion'
-    attrs = { user_id: id, reporter: User.security_bot, category: 'spam' }
+    attrs = { user_id: id, reporter: Users::Internal.security_bot, category: 'spam' }
     abuse_report = AbuseReport.find_by(attrs)
 
     if abuse_report.nil?

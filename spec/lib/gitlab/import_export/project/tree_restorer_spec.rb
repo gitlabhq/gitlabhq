@@ -467,7 +467,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
               aggregate_failures do
                 expect(release.tag).to eq('release-1.0')
-                expect(release.author_id).to eq(User.select(:id).ghost.id)
+                expect(release.author_id).to eq(Users::Internal.ghost.id)
               end
             end
 

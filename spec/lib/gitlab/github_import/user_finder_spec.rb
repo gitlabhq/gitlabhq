@@ -37,11 +37,11 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
       it 'returns the ID of the ghost user when the object has no user' do
         note = { author: nil }
 
-        expect(finder.author_id_for(note)).to eq([User.ghost.id, true])
+        expect(finder.author_id_for(note)).to eq([Users::Internal.ghost.id, true])
       end
 
       it 'returns the ID of the ghost user when the given object is nil' do
-        expect(finder.author_id_for(nil)).to eq([User.ghost.id, true])
+        expect(finder.author_id_for(nil)).to eq([Users::Internal.ghost.id, true])
       end
     end
 

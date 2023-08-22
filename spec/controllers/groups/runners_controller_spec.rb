@@ -11,56 +11,92 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
   let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
   let!(:instance_runner) { create(:ci_runner, :instance) }
 
-  let(:params_runner_project) { { group_id: group, id: project_runner } }
-  let(:params_runner_instance) { { group_id: group, id: instance_runner } }
-  let(:params) { { group_id: group, id: runner } }
-
   before do
     sign_in(user)
   end
 
   describe '#index', :snowplow do
-    context 'when user is owner' do
-      before do
-        group.add_owner(user)
-      end
+    subject(:execute_get_request) { get :index, params: { group_id: group } }
 
-      it 'renders show with 200 status code' do
-        get :index, params: { group_id: group }
+    shared_examples 'can access the page' do
+      it 'renders index with 200 status code' do
+        execute_get_request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:index)
       end
 
       it 'tracks the event' do
-        get :index, params: { group_id: group }
+        execute_get_request
 
         expect_snowplow_event(category: described_class.name, action: 'index', user: user, namespace: group)
       end
-
-      it 'assigns variables' do
-        get :index, params: { group_id: group }
-
-        expect(assigns(:group_new_runner_path)).to eq(new_group_runner_path(group))
-      end
     end
 
-    context 'when user is not owner' do
-      before do
-        group.add_maintainer(user)
-      end
-
-      it 'renders a 404' do
-        get :index, params: { group_id: group }
+    shared_examples 'cannot access the page' do
+      it 'renders 404' do
+        execute_get_request
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'does not track the event' do
-        get :index, params: { group_id: group }
+        execute_get_request
 
         expect_no_snowplow_event
       end
+    end
+
+    context 'when the user is a maintainer' do
+      before do
+        group.add_maintainer(user)
+      end
+
+      include_examples 'can access the page'
+
+      it 'does not expose runner creation and registration variables' do
+        execute_get_request
+
+        expect(assigns(:group_runner_registration_token)).to be_nil
+        expect(assigns(:group_new_runner_path)).to be_nil
+      end
+    end
+
+    context 'when the user is an owner' do
+      before do
+        group.add_owner(user)
+      end
+
+      include_examples 'can access the page'
+
+      it 'exposes runner creation and registration variables' do
+        execute_get_request
+
+        expect(assigns(:group_runner_registration_token)).not_to be_nil
+        expect(assigns(:group_new_runner_path)).to eq(new_group_runner_path(group))
+      end
+    end
+
+    context 'with maintainers_allowed_to_read_group_runners disabled' do
+      before do
+        stub_feature_flags(maintainers_allowed_to_read_group_runners: false)
+      end
+
+      context 'when the user is a maintainer' do
+        before do
+          group.add_maintainer(user)
+        end
+
+        include_examples 'cannot access the page'
+      end
+    end
+
+    context 'when user is not maintainer' do
+      before do
+        group.add_developer(user)
+      end
+
+      include_examples 'cannot access the page'
     end
   end
 
@@ -139,9 +175,9 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
   end
 
   describe '#show' do
-    context 'when user is owner' do
+    context 'when user is maintainer' do
       before do
-        group.add_owner(user)
+        group.add_maintainer(user)
       end
 
       it 'renders show with 200 status code' do
@@ -166,9 +202,9 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
       end
     end
 
-    context 'when user is not owner' do
+    context 'when user is not maintainer' do
       before do
-        group.add_maintainer(user)
+        group.add_developer(user)
       end
 
       it 'renders a 404' do
@@ -197,20 +233,20 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
         group.add_owner(user)
       end
 
-      it 'renders edit with 200 status code' do
+      it 'renders 200 for group runner' do
         get :edit, params: { group_id: group, id: runner }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:edit)
       end
 
-      it 'renders a 404 instance runner' do
+      it 'renders 404 for instance runner' do
         get :edit, params: { group_id: group, id: instance_runner }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
-      it 'renders edit with 200 status code project runner' do
+      it 'renders 200 for project runner' do
         get :edit, params: { group_id: group, id: project_runner }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -218,18 +254,49 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
       end
     end
 
-    context 'when user is not owner' do
+    context 'when user is maintainer' do
       before do
         group.add_maintainer(user)
       end
 
-      it 'renders a 404' do
+      it 'renders 404 for group runner' do
         get :edit, params: { group_id: group, id: runner }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
 
-      it 'renders a 404 project runner' do
+      it 'renders 404 for instance runner' do
+        get :edit, params: { group_id: group, id: instance_runner }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'renders 200 for project runner' do
+        get :edit, params: { group_id: group, id: project_runner }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template(:edit)
+      end
+    end
+
+    context 'when user is not maintainer' do
+      before do
+        group.add_developer(user)
+      end
+
+      it 'renders 404 for group runner' do
+        get :edit, params: { group_id: group, id: runner }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'renders 404 for instance runner' do
+        get :edit, params: { group_id: group, id: instance_runner }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'renders 404 for project runner' do
         get :edit, params: { group_id: group, id: project_runner }
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -238,83 +305,113 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
   end
 
   describe '#update' do
-    let!(:runner) { create(:ci_runner, :group, groups: [group]) }
+    let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
 
-    context 'when user is an owner' do
-      before do
-        group.add_owner(user)
-      end
-
+    shared_examples 'updates the runner' do
       it 'updates the runner, ticks the queue, and redirects' do
         new_desc = runner.description.swapcase
 
         expect do
-          post :update, params: params.merge(runner: { description: new_desc })
+          post :update, params: { group_id: group, id: runner, runner: { description: new_desc } }
+          runner.reload
         end.to change { runner.ensure_runner_queue_value }
 
         expect(response).to have_gitlab_http_status(:found)
         expect(runner.reload.description).to eq(new_desc)
       end
+    end
 
-      it 'does not update the instance runner' do
-        new_desc = instance_runner.description.swapcase
+    shared_examples 'rejects the update' do
+      it 'does not update the runner' do
+        new_desc = runner.description.swapcase
 
         expect do
-          post :update, params: params_runner_instance.merge(runner: { description: new_desc })
-        end.to not_change { instance_runner.ensure_runner_queue_value }
-           .and not_change { instance_runner.description }
+          post :update, params: { group_id: group, id: runner, runner: { description: new_desc } }
+          runner.reload
+        end.to not_change { runner.ensure_runner_queue_value }
+           .and not_change { runner.description }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
+    end
 
-      it 'updates the project runner, ticks the queue, and redirects project runner' do
-        new_desc = project_runner.description.swapcase
+    context 'when user is owner' do
+      before do
+        group.add_owner(user)
+      end
 
-        expect do
-          post :update, params: params_runner_project.merge(runner: { description: new_desc })
-        end.to change { project_runner.ensure_runner_queue_value }
+      context 'with group runner' do
+        let(:runner) { group_runner }
 
-        expect(response).to have_gitlab_http_status(:found)
-        expect(project_runner.reload.description).to eq(new_desc)
+        it_behaves_like 'updates the runner'
+      end
+
+      context 'with instance runner' do
+        let(:runner) { instance_runner }
+
+        it_behaves_like 'rejects the update'
+      end
+
+      context 'with project runner' do
+        let(:runner) { project_runner }
+
+        it_behaves_like 'updates the runner'
       end
     end
 
-    context 'when user is not an owner' do
+    context 'when user is maintainer' do
       before do
         group.add_maintainer(user)
       end
 
-      it 'rejects the update and responds 404' do
-        old_desc = runner.description
+      context 'with group runner' do
+        let(:runner) { group_runner }
 
-        expect do
-          post :update, params: params.merge(runner: { description: old_desc.swapcase })
-        end.not_to change { runner.ensure_runner_queue_value }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(runner.reload.description).to eq(old_desc)
+        it_behaves_like 'rejects the update'
       end
 
-      it 'rejects the update and responds 404 instance runner' do
-        old_desc = instance_runner.description
+      context 'with instance runner' do
+        let(:runner) { instance_runner }
 
-        expect do
-          post :update, params: params_runner_instance.merge(runner: { description: old_desc.swapcase })
-        end.not_to change { instance_runner.ensure_runner_queue_value }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(instance_runner.reload.description).to eq(old_desc)
+        it_behaves_like 'rejects the update'
       end
 
-      it 'rejects the update and responds 404 project runner' do
-        old_desc = project_runner.description
+      context 'with project runner' do
+        let(:runner) { project_runner }
 
-        expect do
-          post :update, params: params_runner_project.merge(runner: { description: old_desc.swapcase })
-        end.not_to change { project_runner.ensure_runner_queue_value }
+        it_behaves_like 'updates the runner'
 
-        expect(response).to have_gitlab_http_status(:not_found)
-        expect(project_runner.reload.description).to eq(old_desc)
+        context 'when maintainers_allowed_to_read_group_runners is disabled' do
+          before do
+            stub_feature_flags(maintainers_allowed_to_read_group_runners: false)
+          end
+
+          it_behaves_like 'rejects the update'
+        end
+      end
+    end
+
+    context 'when user is not maintainer' do
+      before do
+        group.add_developer(user)
+      end
+
+      context 'with group runner' do
+        let(:runner) { group_runner }
+
+        it_behaves_like 'rejects the update'
+      end
+
+      context 'with instance runner' do
+        let(:runner) { instance_runner }
+
+        it_behaves_like 'rejects the update'
+      end
+
+      context 'with project runner' do
+        let(:runner) { project_runner }
+
+        it_behaves_like 'rejects the update'
       end
     end
   end

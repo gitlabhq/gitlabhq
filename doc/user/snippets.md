@@ -110,11 +110,11 @@ content was saved as the initial commit to the snippets' repository.
 ## Filenames
 
 Snippets support syntax highlighting based on the filename and
-extension provided for them. While you can submit a snippet
-without a filename and extension, it needs a valid name so the
-content can be created as a file in the snippet's repository.
+extension provided for them. You can submit a snippet
+without a filename and extension, but a valid name is required for
+creating content as a file in the repository.
 
-If you don't give a snippet a filename and extension,
+If no filename and extension are provided for the snippet,
 GitLab adds a filename in the format `snippetfile<x>.txt`
 where `<x>` represents a number added to the file, starting with 1. This
 number increments if you add more unnamed snippets.
@@ -138,7 +138,7 @@ A single snippet can support up to 10 files, which helps keep related files toge
 - A `gulpfile.js` file and a `package.json` file, which together can be
   used to bootstrap a project and manage its dependencies.
 
-If you need more than 10 files for your snippet, we recommend you create a
+If you need more than 10 files for your snippet, you should create a
 [wiki](project/wiki/index.md) instead. Wikis are available for projects at all
 subscription levels, and [groups](project/wiki/group.md) for
 [GitLab Premium](https://about.gitlab.com/pricing/).
@@ -167,9 +167,9 @@ To delete a file from your snippet through the GitLab UI:
 
 ## Clone snippets
 
-Instead of copying a snippet to a local file, you may want to clone a snippet to
-preserve its relationship with the repository, so you can receive or make updates
-as needed. Select **Clone** on a snippet to display the URLs to clone with SSH or HTTPS:
+To ensure you receive updates, clone the snippet instead of copying it locally. Cloning
+maintains the snippet's connection with the repository. Select **Clone** on a snippet
+to display the URLs to clone with SSH or HTTPS:
 
 ![Clone snippet](img/snippet_clone_button_v13_0.png)
 

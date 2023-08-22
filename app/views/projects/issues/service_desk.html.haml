@@ -6,7 +6,7 @@
 - content_for :breadcrumbs_extra do
   = render "projects/issues/service_desk/nav_btns", show_export_button: false, show_rss_button: false
 
-- support_bot_attrs = { service_desk_enabled: @project.service_desk_enabled?, **UserSerializer.new.represent(User.support_bot) }.to_json
+- support_bot_attrs = { service_desk_enabled: @project.service_desk_enabled?, **UserSerializer.new.represent(Users::Internal.support_bot) }.to_json
 
 .js-service-desk-issues.service-desk-issues{ data: { support_bot: support_bot_attrs } }
   - if ::Feature.enabled?(:service_desk_vue_list, @project)

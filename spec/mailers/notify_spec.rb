@@ -1560,7 +1560,7 @@ RSpec.describe Notify do
         end
 
         it 'uses service bot name by default' do
-          expect_sender(User.support_bot)
+          expect_sender(Users::Internal.support_bot)
         end
 
         context 'when custom outgoing name is set' do
@@ -1577,7 +1577,7 @@ RSpec.describe Notify do
           let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: '') }
 
           it 'uses service bot name' do
-            expect_sender(User.support_bot)
+            expect_sender(Users::Internal.support_bot)
           end
         end
 
@@ -1589,7 +1589,7 @@ RSpec.describe Notify do
           it_behaves_like 'a mail with default delivery method'
 
           it 'uses service bot name by default' do
-            expect_sender(User.support_bot)
+            expect_sender(Users::Internal.support_bot)
           end
 
           context 'when custom email is enabled' do
@@ -1611,7 +1611,7 @@ RSpec.describe Notify do
             end
 
             it 'uses custom email and service bot name in "from" header' do
-              expect_sender(User.support_bot, sender_email: 'supersupport@example.com')
+              expect_sender(Users::Internal.support_bot, sender_email: 'supersupport@example.com')
             end
 
             it 'uses SMTP delivery method and has correct settings' do

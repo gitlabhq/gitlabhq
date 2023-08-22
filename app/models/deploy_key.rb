@@ -43,7 +43,7 @@ class DeployKey < Key
   end
 
   def user
-    super || User.ghost
+    super || Users::Internal.ghost
   end
 
   def audit_details

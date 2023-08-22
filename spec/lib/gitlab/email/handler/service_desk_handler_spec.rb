@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
         new_issue = Issue.last
 
-        expect(new_issue.author).to eql(User.support_bot)
+        expect(new_issue.author).to eql(Users::Internal.support_bot)
         expect(new_issue.confidential?).to be true
         expect(new_issue.all_references.all).to be_empty
         expect(new_issue.title).to eq("The message subject! @all")
@@ -131,7 +131,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
             expect(notes.count).to eq(1)
             expect(new_note.note).to eq("Service desk reply!\n\n`/label ~label2`")
-            expect(new_note.author).to eql(User.support_bot)
+            expect(new_note.author).to eql(Users::Internal.support_bot)
           end
 
           it 'does not send thank you email' do
@@ -267,7 +267,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
                 issue = Issue.last
                 expect(issue.description).to include('Text from service_desk2 template')
                 expect(issue.label_ids).to include(label.id)
-                expect(issue.author_id).to eq(User.support_bot.id)
+                expect(issue.author_id).to eq(Users::Internal.support_bot.id)
                 expect(issue.milestone).to eq(milestone)
               end
             end
@@ -294,7 +294,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             note = Note.last
 
             expect(note.note).to include("WARNING: The template file unknown.md used for service desk issues is empty or could not be found.")
-            expect(note.author).to eq(User.support_bot)
+            expect(note.author).to eq(Users::Internal.support_bot)
           end
 
           it 'does not send warning note email' do

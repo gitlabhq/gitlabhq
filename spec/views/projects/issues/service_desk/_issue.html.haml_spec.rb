@@ -40,7 +40,7 @@ RSpec.describe 'projects/issues/service_desk/_issue.html.haml', feature_category
     context 'when issue is service desk issue' do
       let_it_be(:email) { 'user@example.com' }
       let_it_be(:obfuscated_email) { 'us*****@e*****.c**' }
-      let_it_be(:issue) { create(:issue, author: User.support_bot, service_desk_reply_to: email) }
+      let_it_be(:issue) { create(:issue, author: Users::Internal.support_bot, service_desk_reply_to: email) }
 
       context 'with anonymous user' do
         it 'obfuscates service_desk_reply_to email for anonymous user' do

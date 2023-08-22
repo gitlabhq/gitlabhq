@@ -21,8 +21,8 @@ services on a hyper-cloud based on a foundation of Terraform and infrastructure-
 We believe that it should be **trivial** to deploy web applications (and other workloads) from GitLab to major cloud
 providers.
 
-To support this effort, Cloud Seed makes it simple and intuitive to consume appropriate Google Cloud services
-within GitLab.
+To support this effort, Cloud Seed makes it straightforward and intuitive to consume appropriate Google Cloud services
+in GitLab.
 
 ## Why Google Cloud
 
@@ -114,11 +114,11 @@ the underlying Google Cloud service that is used to provision the database insta
 
 The following databases and versions are supported:
 
-- PostgreSQL: 14, 13, 12, 11, 10 and 9.6
+- PostgreSQL: 14, 13, 12, 11, 10, and 9.6
 - MySQL: 8.0, 5.7 and 5.6
 - SQL Server
-  - 2019: Standard, Enterprise, Express and Web
-  - 2017: Standard, Enterprise, Express and Web
+  - 2019: Standard, Enterprise, Express, and Web
+  - 2017: Standard, Enterprise, Express, and Web
 
 Google Cloud pricing applies. Please refer to the [Cloud SQL pricing page](https://cloud.google.com/sql/pricing).
 
@@ -129,7 +129,7 @@ Google Cloud pricing applies. Please refer to the [Cloud SQL pricing page](https
 
 ### Create a database instance
 
-From the `Project :: Infrastructure :: Google Cloud` page, select the **Database** tab. Here you will find three
+From the `Project :: Infrastructure :: Google Cloud` page, select the **Database** tab. Here you find three
 buttons to create Postgres, MySQL, and SQL Server database instances.
 
 The database instance creation form has fields for GCP project, Git ref (branch or tag), database version and
@@ -145,7 +145,7 @@ Successful creation of the database instance triggers a background worker to per
 
 ### Connect to the database
 
-Once the database instance setup is complete, the database connection details are available as project variables. These
+After the database instance setup is complete, the database connection details are available as project variables. These
 can be managed through the `Project :: Settings :: CI` page and are made available to pipeline executing in the
 appropriate environment.
 

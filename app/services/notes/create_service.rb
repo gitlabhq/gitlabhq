@@ -192,7 +192,7 @@ module Notes
     end
 
     def tracking_data_for(note)
-      label = Gitlab.ee? && note.author == User.visual_review_bot ? 'anonymous_visual_review_note' : 'note'
+      label = Gitlab.ee? && note.author == Users::Internal.visual_review_bot ? 'anonymous_visual_review_note' : 'note'
 
       {
         label: label,

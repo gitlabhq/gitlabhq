@@ -77,7 +77,7 @@ RSpec.describe NewNoteWorker, feature_category: :team_planning do
   end
 
   context 'when Note author has been deleted' do
-    let_it_be(:note) { create(:note, author: User.ghost) }
+    let_it_be(:note) { create(:note, author: Users::Internal.ghost) }
 
     it "does not call NotificationService" do
       expect(NotificationService).not_to receive(:new)

@@ -34,7 +34,32 @@ module ServiceDesk
       end
 
       def error_response(message)
+        with_context do
+          Gitlab::AppLogger.warn(build_log_message(error_message: message))
+        end
         ServiceResponse.error(message: message)
+      end
+
+      def log_info(error_message: nil)
+        with_context do
+          Gitlab::AppLogger.info(build_log_message(error_message: error_message))
+        end
+      end
+
+      def with_context(&block)
+        Gitlab::ApplicationContext.with_context(
+          related_class: self.class.to_s,
+          user: current_user,
+          project: project,
+          &block
+        )
+      end
+
+      def build_log_message(error_message: nil)
+        {
+          category: 'custom_email',
+          error_message: error_message
+        }.compact
       end
     end
   end

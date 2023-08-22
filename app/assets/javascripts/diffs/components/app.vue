@@ -19,7 +19,6 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import notesEventHub from '~/notes/event_hub';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
@@ -76,7 +75,6 @@ export default {
     GenerateTestFileDrawer: () =>
       import('ee_component/ai/components/generate_test_file_drawer.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
     ALERT_MERGE_CONFLICT,
@@ -580,11 +578,7 @@ export default {
 
 <template>
   <div v-show="shouldShow">
-    <findings-drawer
-      v-if="glFeatures.codeQualityInlineDrawer"
-      :drawer="activeDrawer"
-      @close="closeDrawer"
-    />
+    <findings-drawer :drawer="activeDrawer" @close="closeDrawer" />
     <div v-if="isLoading || !isTreeLoaded" class="loading"><gl-loading-icon size="lg" /></div>
     <div v-else id="diffs" :class="{ active: shouldShow }" class="diffs tab-pane">
       <compare-versions :diff-files-count-text="numTotalFiles" />

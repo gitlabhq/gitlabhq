@@ -46,49 +46,37 @@ If you're an instance administrator, you can administer all project topics from 
 NOTE:
 The assigned topics are visible only to users with access to the project, but everyone can see which topics exist on the GitLab instance. Do not include sensitive information in the name of a topic.
 
-## Add a compliance framework to a project **(PREMIUM ALL)**
+## Rename a repository
 
-You can
-[add compliance frameworks to projects](../../group/compliance_frameworks.md#add-a-compliance-framework-to-a-project)
-in a group that has a compliance framework.
+A project's repository name defines its URL and its place on the file disk
+where GitLab is installed.
 
-## Configure project visibility, features, and permissions
+Prerequisites:
 
-To configure visibility, features, and permissions for a project:
+You must be a project maintainer, owner, or administrator to rename a repository.
+
+NOTE:
+When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
+[redirects when renaming repositories](../repository/index.md#what-happens-when-a-repository-path-changes).
+
+To rename a repository:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Change path** text box, edit the path.
+1. Select **Change path**.
+
+## Configure project features and permissions
+
+To configure features and permissions for a project:
 
 1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. To change the project visibility, select the dropdown list. If you select to **Public**, you limit access to some features to **Only Project Members**.
 1. To allow users to request access to the project, select the **Users can request access** checkbox.
-1. Use the [toggles](#project-feature-settings) to enable or disable features in the project.
+1. To enable or disable features in the project, use the feature toggles.
 1. Select **Save changes**.
-
-### Project feature settings
-
-Use the toggles to enable or disable features in the project.
-
-| Option                           | More access limit options | Description
-| :------------------------------- | :------------------------ | :---------- |
-| **Issues**                       | **{check-circle}** Yes | Activates the GitLab issues tracker.
-| **Repository**                   | **{check-circle}** Yes | Enables [repository](../repository/index.md) functionality.
-| **Merge requests**               | **{check-circle}** Yes | Enables [merge request](../merge_requests/index.md) functionality; also see [Merge request settings](#configure-merge-request-settings-for-a-project).
-| **Forks**                        | **{check-circle}** Yes | Enables [forking](../repository/forking_workflow.md) functionality.
-| **Git Large File Storage (LFS)** | **{dotted-circle}** No | Enables the use of [large files](../../../topics/git/lfs/index.md).
-| **Packages**                     | **{dotted-circle}** No | Supports configuration of a [package registry](../../../administration/packages/index.md#gitlab-package-registry-administration) functionality.
-| **CI/CD**                        | **{check-circle}** Yes | Enables [CI/CD](../../../ci/index.md) functionality.
-| **Container Registry**           | **{dotted-circle}** No | Activates a [registry](../../packages/container_registry/index.md) for your Docker images.
-| **Analytics**                    | **{check-circle}** Yes | Enables [analytics](../../analytics/index.md).
-| **Requirements**                 | **{check-circle}** Yes | Control access to [Requirements Management](../requirements/index.md).
-| **Security and Compliance**      | **{check-circle}** Yes | Control access to [security features](../../application_security/index.md).
-| **Wiki**                         | **{check-circle}** Yes | Enables a separate system for [documentation](../wiki/index.md).
-| **Snippets**                     | **{check-circle}** Yes | Enables [sharing of code and text](../../snippets.md).
-| **Pages**                        | **{check-circle}** Yes | Allows you to [publish static websites](../pages/index.md).
-| **Releases**                     | **{check-circle}** Yes | Control access to [Releases](../releases/index.md).
-| **Environments**                 | **{check-circle}** Yes | Control access to [Environments and Deployments](../../../ci/environments/index.md).
-| **Feature flags**                | **{check-circle}** Yes | Control access to [Feature flags](../../../operations/feature_flags.md).
-| **Monitor**                      | **{check-circle}** Yes | Control access to [Monitor](../../../operations/index.md) features.
-| **Infrastructure**               | **{check-circle}** Yes | Control access to [Infrastructure](../../infrastructure/index.md) features.
 
 When you disable a feature, the following additional features are also disabled:
 
@@ -114,48 +102,6 @@ When you disable a feature, the following additional features are also disabled:
 - Metrics dashboard access requires reading project environments and deployments.
   Users with access to the metrics dashboard can also access environments and deployments.
 
-### Manage project access through LDAP groups
-
-You can [use LDAP to manage group membership](../../group/access_and_permissions.md#manage-group-memberships-via-ldap).
-
-You cannot use LDAP groups to manage project access, but you can use the following
-workaround.
-
-Prerequisites:
-
-- You must [integrate LDAP with GitLab](../../../administration/auth/ldap/index.md).
-- You must be an administrator.
-
-1. [Create a group](../../group/index.md#create-a-group) to track membership of your project.
-1. [Set up LDAP synchronization](../../../administration/auth/ldap/ldap_synchronization.md) for that group.
-1. To use LDAP groups to manage access to a project, [add the LDAP-synchronized group as a member](../members/index.md#add-groups-to-a-project)
-   to the project.
-
-## Disable CVE identifier request in issues **(FREE SAAS)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
-
-In some environments, users can submit a [CVE identifier request](../../application_security/cve_id_request.md) in an issue.
-
-To disable the CVE identifier request option in issues in your project:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
-1. Select **Save changes**.
-
-## Disable project email notifications
-
-Prerequisites:
-
-- You must be an Owner of the project to disable email notifications related to the project.
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. Clear the **Disable email notifications** checkbox.
-
 ## Configure merge request settings for a project
 
 Configure your project's merge request settings:
@@ -173,75 +119,7 @@ Configure your project's merge request settings:
 - Configure [the default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
 - Enable [Suggested Reviewers](../merge_requests/reviews/index.md#suggested-reviewers).
 
-## Service Desk
-
-Enable [Service Desk](../service_desk/index.md) for your project to offer customer support.
-
-## Export project
-
-Learn how to [export a project](import_export.md#import-a-project-and-its-data) in GitLab.
-
-## Advanced project settings
-
-Use the advanced settings to archive, rename, transfer,
-[remove a fork relationship](../repository/forking_workflow.md#unlink-a-fork), or delete a project.
-
-### Archive a project
-
-When you archive a project, the repository, packages, issues, merge requests, and all
-other features are read-only. Archived projects are also hidden from project listings.
-
-To archive a project:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Settings > General**.
-1. Expand **Advanced**.
-1. In the **Archive project** section, select **Archive project**.
-1. To confirm, select **OK**.
-
-### Unarchive a project
-
-When you unarchive a project, you remove the read-only restriction and make it
-available in project lists.
-
-Prerequisites:
-
-- To unarchive a project, you must be an administrator or a project Owner.
-
-1. Find the archived project.
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-   1. Select **View all your projects**.
-   1. Select **Explore projects**.
-   1. In the **Sort projects** dropdown list, select **Show archived projects**.
-   1. In the **Filter by name** field, enter the project name.
-   1. Select the project link.
-1. On the left sidebar, select **Settings > General**.
-1. Under **Advanced**, select **Expand**.
-1. In the **Unarchive project** section, select **Unarchive project**.
-1. To confirm, select **OK**.
-
-### Rename a repository
-
-A project's repository name defines its URL and its place on the file disk
-where GitLab is installed.
-
-Prerequisites:
-
-You must be a project maintainer, owner, or administrator to rename a repository.
-
-NOTE:
-When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
-[redirects when renaming repositories](../repository/index.md#what-happens-when-a-repository-path-changes).
-
-To rename a repository:
-
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
-1. Select **Settings > General**.
-1. Expand **Advanced**.
-1. In the **Change path** text box, edit the path.
-1. Select **Change path**.
-
-## Delete the source branch on merge by default
+### Delete the source branch on merge by default
 
 In merge requests, you can change the default behavior so that the
 **Delete the source branch** checkbox is always selected.
@@ -252,6 +130,10 @@ To set this default:
 1. Select **Settings > Merge requests**.
 1. Select **Enable "Delete source branch" option by default**.
 1. Select **Save changes**.
+
+## Export project
+
+You can [export a project and its data](import_export.md#export-a-project-and-its-data).
 
 ## Transfer a project to another namespace
 
@@ -288,6 +170,40 @@ When you transfer a project from a namespace licensed for GitLab SaaS Premium or
 - [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked
 - [Pipeline subscriptions](../../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
   and [test cases](../../../ci/test_cases/index.md) are deleted.
+
+## Archive a project
+
+When you archive a project, the repository, packages, issues, merge requests, and all
+other features are read-only. Archived projects are also hidden from project listings.
+
+To archive a project:
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Archive project** section, select **Archive project**.
+1. To confirm, select **OK**.
+
+## Unarchive a project
+
+When you unarchive a project, you remove the read-only restriction and make it
+available in project lists.
+
+Prerequisites:
+
+- To unarchive a project, you must be an administrator or a project Owner.
+
+1. Find the archived project.
+   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. Select **View all your projects**.
+   1. Select **Explore projects**.
+   1. In the **Sort projects** dropdown list, select **Show archived projects**.
+   1. In the **Filter by name** field, enter the project name.
+   1. Select the project link.
+1. On the left sidebar, select **Settings > General**.
+1. Under **Advanced**, select **Expand**.
+1. In the **Unarchive project** section, select **Unarchive project**.
+1. To confirm, select **OK**.
 
 ## Delete a project
 
@@ -357,34 +273,62 @@ To restore a project marked for deletion:
 1. Expand **Advanced**.
 1. In the Restore project section, select **Restore project**.
 
-## Monitor settings
+## Add a compliance framework to a project **(PREMIUM)**
 
-### Alerts
+You can
+[add compliance frameworks to projects](../../group/compliance_frameworks.md#add-a-compliance-framework-to-a-project)
+in a group that has a compliance framework.
 
-Configure [alert integrations](../../../operations/incident_management/integrations.md#configuration) to triage and manage critical problems in your application as [alerts](../../../operations/incident_management/alerts.md).
+### Manage project access through LDAP groups
 
-### Incidents
+You can [use LDAP to manage group membership](../../group/access_and_permissions.md#manage-group-memberships-via-ldap).
 
-#### Alert integration
+You cannot use LDAP groups to manage project access, but you can use the following
+workaround.
 
-Automatically [create](../../../operations/incident_management/alerts.md#trigger-actions-from-alerts), [notify on](../../../operations/incident_management/paging.md#email-notifications-for-alerts), and [resolve](../../../operations/incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) incidents based on GitLab alerts.
+Prerequisites:
 
-#### PagerDuty integration
+- You must [integrate LDAP with GitLab](../../../administration/auth/ldap/index.md).
+- You must be an administrator.
 
-[Create incidents in GitLab for each PagerDuty incident](../../../operations/incident_management/manage_incidents.md#using-the-pagerduty-webhook).
+1. [Create a group](../../group/index.md#create-a-group) to track membership of your project.
+1. [Set up LDAP synchronization](../../../administration/auth/ldap/ldap_synchronization.md) for that group.
+1. To use LDAP groups to manage access to a project, [add the LDAP-synchronized group as a member](../members/index.md#add-groups-to-a-project)
+   to the project.
 
-#### Incident settings
+## Disable CVE identifier request in issues **(FREE SAAS)**
 
-[Manage Service Level Agreements for incidents](../../../operations/incident_management/incidents.md#service-level-agreement-countdown-timer) with an SLA countdown timer.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
 
-### Error Tracking
+In some environments, users can submit a [CVE identifier request](../../application_security/cve_id_request.md) in an issue.
 
-Configure Error Tracking to discover and view [Sentry errors within GitLab](../../../operations/error_tracking.md).
+To disable the CVE identifier request option in issues in your project:
 
-### Status Page **(ULTIMATE ALL)**
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
+1. Select **Save changes**.
 
-[Add Storage credentials](../../../operations/incident_management/status_page.md#sync-incidents-to-the-status-page)
-to enable the syncing of public Issues to a [deployed status page](../../../operations/incident_management/status_page.md#create-a-status-page-project).
+## Disable project email notifications
+
+Prerequisites:
+
+- You must be an Owner of the project to disable email notifications related to the project.
+
+1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Clear the **Disable email notifications** checkbox.
+
+## Related topics
+
+- [Alert integrations](../../../operations/incident_management/integrations.md#configuration)
+- [PagerDuty incident management](../../../operations/incident_management/manage_incidents.md#using-the-pagerduty-webhook)
+- [SLA countdown timer](../../../operations/incident_management/incidents.md#service-level-agreement-countdown-timer)
+- [Error tracking](../../../operations/error_tracking.md)
+- [Incidents sync](../../../operations/incident_management/status_page.md#sync-incidents-to-the-status-page)
+- [Service Desk](../service_desk/index.md)
 
 ## Troubleshooting
 

@@ -6,7 +6,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
   let(:project) { create(:project, :private, service_desk_enabled: true) }
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:support_bot) { User.support_bot }
+  let_it_be(:support_bot) { Users::Internal.support_bot }
 
   before do
     # The following two conditions equate to Gitlab::ServiceDesk.supported == true

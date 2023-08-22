@@ -6,7 +6,7 @@ RSpec.describe IncidentManagement::CloseIncidentWorker, feature_category: :incid
   subject(:worker) { described_class.new }
 
   describe '#perform' do
-    let_it_be(:user) { User.alert_bot }
+    let_it_be(:user) { Users::Internal.alert_bot }
     let_it_be(:project) { create(:project) }
     let_it_be(:issue, reload: true) { create(:incident, project: project) }
 

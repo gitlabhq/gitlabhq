@@ -305,7 +305,7 @@ module Types
     end
 
     def security_auto_fix
-      object.author == User.security_bot
+      object.author == ::Users::Internal.security_bot
     end
 
     def merge_user

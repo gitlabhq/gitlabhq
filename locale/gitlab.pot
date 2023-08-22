@@ -20161,9 +20161,6 @@ msgstr ""
 msgid "Filter users"
 msgstr ""
 
-msgid "Filter..."
-msgstr ""
-
 msgid "Finalizing"
 msgstr ""
 

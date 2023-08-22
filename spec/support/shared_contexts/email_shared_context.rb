@@ -191,7 +191,7 @@ RSpec.shared_examples 'note handler shared examples' do |forwardable|
 
   context 'when the service desk' do
     let(:project) { create(:project, :public, service_desk_enabled: true) }
-    let(:support_bot) { User.support_bot }
+    let(:support_bot) { Users::Internal.support_bot }
     let(:noteable) { create(:issue, project: project, author: support_bot, title: 'service desk issue') }
     let!(:note) { create(:note, project: project, noteable: noteable) }
     let(:email_raw) { with_quick_actions }

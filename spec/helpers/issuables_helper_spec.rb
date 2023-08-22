@@ -267,8 +267,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         {
           updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
           updatedBy: {
-            name: User.ghost.name,
-            path: user_path(User.ghost)
+            name: Users::Internal.ghost.name,
+            path: user_path(Users::Internal.ghost)
           }
         }
       end

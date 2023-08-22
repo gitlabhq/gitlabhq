@@ -953,7 +953,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     subject { issue.from_service_desk? }
 
     context 'when issue author is support bot' do
-      let(:issue) { create(:issue, project: reusable_project, author: ::User.support_bot) }
+      let(:issue) { create(:issue, project: reusable_project, author: ::Users::Internal.support_bot) }
 
       it { is_expected.to be_truthy }
     end
@@ -1527,7 +1527,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#check_for_spam?' do
-    let_it_be(:support_bot) { ::User.support_bot }
+    let_it_be(:support_bot) { ::Users::Internal.support_bot }
 
     where(:support_bot?, :visibility_level, :confidential, :new_attributes, :check_for_spam?) do
       ### non-support-bot cases
@@ -1640,7 +1640,7 @@ RSpec.describe Issue, feature_category: :team_planning do
 
   describe '.service_desk' do
     it 'returns the service desk issue' do
-      service_desk_issue = create(:issue, project: reusable_project, author: ::User.support_bot)
+      service_desk_issue = create(:issue, project: reusable_project, author: ::Users::Internal.support_bot)
       regular_issue = create(:issue, project: reusable_project)
 
       expect(described_class.service_desk).to include(service_desk_issue)

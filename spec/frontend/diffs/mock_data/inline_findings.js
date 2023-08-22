@@ -4,7 +4,6 @@ export const multipleFindingsArrCodeQualityScale = [
     description: 'mocked minor Issue',
     line: 2,
     scale: 'codeQuality',
-    href: '#',
     text: 'mocked minor Issue',
   },
   {
@@ -45,7 +44,6 @@ export const multipleFindingsArrSastScale = [
     description: 'mocked low Issue',
     line: 2,
     scale: 'sast',
-    href: '#',
     text: 'mocked low Issue',
   },
   {

@@ -2744,7 +2744,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/bulk_imports/common/extractors/ndjson_extractor_spec.rb'
     - 'spec/lib/bulk_imports/common/extractors/rest_extractor_spec.rb'
     - 'spec/lib/bulk_imports/common/pipelines/badges_pipeline_spec.rb'
-    - 'spec/lib/bulk_imports/common/pipelines/entity_finisher_spec.rb'
     - 'spec/lib/bulk_imports/common/pipelines/lfs_objects_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/common/pipelines/members_pipeline_spec.rb'
     - 'spec/lib/bulk_imports/common/rest/get_badges_query_spec.rb'

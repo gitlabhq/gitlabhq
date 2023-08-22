@@ -436,7 +436,7 @@ class NotificationService
 
     return unless recipients.any?
 
-    support_bot = User.support_bot
+    support_bot = Users::Internal.support_bot
     recipients.delete(issue.external_author) if note.author == support_bot
 
     recipients.each do |recipient|

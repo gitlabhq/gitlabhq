@@ -313,125 +313,131 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
         end
       end
 
-      context 'with user as group owner' do
-        before do
-          group.add_owner(user)
+      context 'with user is group maintainer or owner' do
+        where(:user_role) do
+          [GroupMember::OWNER, GroupMember::MAINTAINER]
         end
 
-        context 'with :group as target group' do
-          let(:target_group) { group }
-
-          context 'passing no membership params' do
-            it_behaves_like 'membership equal to :descendants'
+        with_them do
+          before do
+            group.add_member(user, user_role)
           end
 
-          context 'with :descendants membership' do
-            let(:membership) { :descendants }
+          context 'with :group as target group' do
+            let(:target_group) { group }
 
-            it_behaves_like 'membership equal to :descendants'
-          end
-
-          context 'with :direct membership' do
-            let(:membership) { :direct }
-
-            it 'returns runners belonging to group' do
-              expect(subject).to eq([runner_group])
+            context 'passing no membership params' do
+              it_behaves_like 'membership equal to :descendants'
             end
-          end
 
-          context 'with :all_available membership' do
-            let(:membership) { :all_available }
+            context 'with :descendants membership' do
+              let(:membership) { :descendants }
 
-            it 'returns runners available to group' do
-              expect(subject).to match_array([runner_project_7, runner_project_6, runner_project_5,
-                                              runner_project_4, runner_project_3, runner_project_2,
-                                              runner_project_1, runner_sub_group_4, runner_sub_group_3,
-                                              runner_sub_group_2, runner_sub_group_1, runner_group, runner_instance])
+              it_behaves_like 'membership equal to :descendants'
             end
-          end
 
-          context 'with unknown membership' do
-            let(:membership) { :unsupported }
+            context 'with :direct membership' do
+              let(:membership) { :direct }
 
-            it 'raises an error' do
-              expect { subject }.to raise_error(ArgumentError, 'Invalid membership filter')
-            end
-          end
-
-          context 'with nil group' do
-            let(:target_group) { nil }
-
-            it 'returns no runners' do
-              # Query should run against all runners, however since user is not admin, query returns no results
-              expect(subject).to eq([])
-            end
-          end
-
-          context 'with sort param' do
-            let(:extra_params) { { sort: 'contacted_asc' } }
-
-            it 'sorts by specified attribute' do
-              expect(subject).to eq([runner_group, runner_sub_group_1, runner_sub_group_2,
-                                     runner_sub_group_3, runner_sub_group_4, runner_project_1,
-                                     runner_project_2, runner_project_3, runner_project_4,
-                                     runner_project_5, runner_project_6, runner_project_7])
-            end
-          end
-
-          context 'filtering' do
-            context 'by search term' do
-              let(:extra_params) { { search: 'runner_project_search' } }
-
-              it 'returns correct runner' do
-                expect(subject).to match_array([runner_project_3])
+              it 'returns runners belonging to group' do
+                expect(subject).to eq([runner_group])
               end
             end
 
-            context 'by active status' do
-              let(:extra_params) { { active: false } }
+            context 'with :all_available membership' do
+              let(:membership) { :all_available }
 
-              it 'returns correct runner' do
-                expect(subject).to match_array([runner_sub_group_1])
+              it 'returns runners available to group' do
+                expect(subject).to match_array([runner_project_7, runner_project_6, runner_project_5,
+                                                runner_project_4, runner_project_3, runner_project_2,
+                                                runner_project_1, runner_sub_group_4, runner_sub_group_3,
+                                                runner_sub_group_2, runner_sub_group_1, runner_group, runner_instance])
               end
             end
 
-            context 'by status' do
-              let(:extra_params) { { status_status: 'paused' } }
+            context 'with unknown membership' do
+              let(:membership) { :unsupported }
 
-              it 'returns correct runner' do
-                expect(subject).to match_array([runner_sub_group_1])
+              it 'raises an error' do
+                expect { subject }.to raise_error(ArgumentError, 'Invalid membership filter')
               end
             end
 
-            context 'by tag_name' do
-              let(:extra_params) { { tag_name: %w[runner_tag] } }
+            context 'with nil group' do
+              let(:target_group) { nil }
 
-              it 'returns correct runner' do
-                expect(subject).to match_array([runner_project_5])
+              it 'returns no runners' do
+                # Query should run against all runners, however since user is not admin, query returns no results
+                expect(subject).to eq([])
               end
             end
 
-            context 'by runner type' do
-              let(:extra_params) { { type_type: 'project_type' } }
+            context 'with sort param' do
+              let(:extra_params) { { sort: 'contacted_asc' } }
 
-              it 'returns correct runners' do
-                expect(subject).to eq([runner_project_7, runner_project_6,
-                                       runner_project_5, runner_project_4,
-                                       runner_project_3, runner_project_2, runner_project_1])
+              it 'sorts by specified attribute' do
+                expect(subject).to eq([runner_group, runner_sub_group_1, runner_sub_group_2,
+                                      runner_sub_group_3, runner_sub_group_4, runner_project_1,
+                                      runner_project_2, runner_project_3, runner_project_4,
+                                      runner_project_5, runner_project_6, runner_project_7])
+              end
+            end
+
+            context 'filtering' do
+              context 'by search term' do
+                let(:extra_params) { { search: 'runner_project_search' } }
+
+                it 'returns correct runner' do
+                  expect(subject).to match_array([runner_project_3])
+                end
+              end
+
+              context 'by active status' do
+                let(:extra_params) { { active: false } }
+
+                it 'returns correct runner' do
+                  expect(subject).to match_array([runner_sub_group_1])
+                end
+              end
+
+              context 'by status' do
+                let(:extra_params) { { status_status: 'paused' } }
+
+                it 'returns correct runner' do
+                  expect(subject).to match_array([runner_sub_group_1])
+                end
+              end
+
+              context 'by tag_name' do
+                let(:extra_params) { { tag_name: %w[runner_tag] } }
+
+                it 'returns correct runner' do
+                  expect(subject).to match_array([runner_project_5])
+                end
+              end
+
+              context 'by runner type' do
+                let(:extra_params) { { type_type: 'project_type' } }
+
+                it 'returns correct runners' do
+                  expect(subject).to eq([runner_project_7, runner_project_6,
+                                        runner_project_5, runner_project_4,
+                                        runner_project_3, runner_project_2, runner_project_1])
+                end
               end
             end
           end
         end
       end
 
-      context 'when user is not group owner' do
-        where(:user_permission) do
-          [:maintainer, :developer, :reporter, :guest]
+      context 'when user is group developer or below' do
+        where(:user_role) do
+          [GroupMember::DEVELOPER, GroupMember::REPORTER, GroupMember::GUEST]
         end
 
         with_them do
           before do
-            create(:group_member, user_permission, group: sub_group_1, user: user)
+            group.add_member(user, user_role)
           end
 
           context 'with :sub_group_1 as target group' do

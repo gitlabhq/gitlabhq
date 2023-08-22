@@ -8,6 +8,6 @@ module Editable
   end
 
   def last_edited_by
-    super || User.ghost
+    super || Users::Internal.ghost
   end
 end

@@ -2469,6 +2469,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: bulk_imports_finish_project_import
+  :worker_name: BulkImports::FinishProjectImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: bulk_imports_pipeline
   :worker_name: BulkImports::PipelineWorker
   :feature_category: :importers

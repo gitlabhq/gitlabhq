@@ -25,7 +25,7 @@ module IncidentManagement
     private
 
     def user
-      @user ||= User.alert_bot
+      @user ||= Users::Internal.alert_bot
     end
 
     def close_incident(incident)

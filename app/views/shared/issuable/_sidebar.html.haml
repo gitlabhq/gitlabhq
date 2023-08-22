@@ -88,11 +88,11 @@
           - if is_merge_request && !moved_sidebar_enabled
             .sub-block.js-sidebar-source-branch
               .sidebar-collapsed-icon.js-dont-change-state
-                = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport', class: 'btn-clipboard gl-button btn-default-tertiary btn-icon btn-sm js-source-branch-copy')
+                = deprecated_clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport', class: 'btn-clipboard gl-button btn-default-tertiary btn-icon btn-sm js-source-branch-copy')
               .gl-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-mb-2.hide-collapsed
                 %span.gl-overflow-hidden.gl-text-overflow-ellipsis.gl-white-space-nowrap
                   = _('Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}').html_safe % { source_branch_open: "<span class='gl-font-monospace' data-testid='ref-name' title='#{html_escape(source_branch)}'>".html_safe, source_branch_close: "</span>".html_safe, source_branch: html_escape(source_branch) }
-                = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport', class: 'btn-clipboard gl-button btn-default-tertiary btn-icon btn-sm js-source-branch-copy')
+                = deprecated_clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport', class: 'btn-clipboard gl-button btn-default-tertiary btn-icon btn-sm js-source-branch-copy')
 
       - if show_forwarding_email && !moved_sidebar_enabled
         .block

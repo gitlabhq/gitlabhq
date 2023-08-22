@@ -17,9 +17,14 @@ RSpec.describe ServiceDesk::CustomEmails::CreateService, feature_category: :serv
     let(:params) { {} }
     let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
     let(:message) { instance_double(Mail::Message) }
+    let(:logger_params) { { category: 'custom_email' } }
 
     shared_examples 'a service that exits with error' do
       it 'exits early' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
+          error_message: expected_error_message
+        )).once
+
         response = service.execute
 
         expect(response).to be_error
@@ -29,6 +34,10 @@ RSpec.describe ServiceDesk::CustomEmails::CreateService, feature_category: :serv
 
     shared_examples 'a failing service that does not create records' do
       it 'exits with error and does not create records' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
+          error_message: expected_error_message
+        )).once
+
         response = service.execute
         project.reset
 
@@ -148,6 +157,8 @@ RSpec.describe ServiceDesk::CustomEmails::CreateService, feature_category: :serv
         end
 
         it 'creates all records returns a successful response' do
+          expect(Gitlab::AppLogger).to receive(:info).with(logger_params).once
+
           response = service.execute
           project.reset
 

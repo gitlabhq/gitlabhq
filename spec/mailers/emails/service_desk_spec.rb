@@ -295,7 +295,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       end
 
       context 'with all-user reference in a an external author comment' do
-        let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: User.support_bot) }
+        let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: Users::Internal.support_bot) }
 
         let(:template_content) { 'some text %{ NOTE_TEXT  }' }
 
@@ -443,7 +443,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     it_behaves_like 'a custom email verification process email'
 
     it 'uses service bot name and custom email as sender' do
-      expect_sender(User.support_bot, sender_email: service_desk_setting.custom_email)
+      expect_sender(Users::Internal.support_bot, sender_email: service_desk_setting.custom_email)
     end
 
     it 'forcibly uses SMTP delivery method and has correct settings' do

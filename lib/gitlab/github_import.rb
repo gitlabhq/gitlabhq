@@ -26,7 +26,7 @@ module Gitlab
     def self.ghost_user_id
       key = 'github-import/ghost-user-id'
 
-      Gitlab::Cache::Import::Caching.read_integer(key) || Gitlab::Cache::Import::Caching.write(key, User.select(:id).ghost.id)
+      Gitlab::Cache::Import::Caching.read_integer(key) || Gitlab::Cache::Import::Caching.write(key, Users::Internal.ghost.id)
     end
 
     # Get formatted GitHub import URL. If github.com is in the import URL, this will return nil and octokit will use the default github.com API URL

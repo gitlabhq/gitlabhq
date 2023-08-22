@@ -45,7 +45,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:sast_reports_in_inline_diff, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:saved_replies, current_user)
-    push_frontend_feature_flag(:code_quality_inline_drawer, project)
     push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
     push_frontend_feature_flag(:mr_activity_filters, current_user)
     push_frontend_feature_flag(:review_apps_redeploy_mr_widget, project)

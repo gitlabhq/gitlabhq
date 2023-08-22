@@ -5,7 +5,7 @@
       - if can?(current_user, :read_milestone, @milestone)
         %span.gl-display-inline-block.gl-vertical-align-middle
           = s_('MilestonePage|Milestone ID: %{milestone_id}') % { milestone_id: @milestone.id }
-          = clipboard_button(title: s_('MilestonePage|Copy milestone ID'), text: @milestone.id)
+          = deprecated_clipboard_button(title: s_('MilestonePage|Copy milestone ID'), text: @milestone.id)
 
   - if milestone.try(:description).present?
     %div{ data: { qa_selector: "milestone_description_content" } }

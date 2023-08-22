@@ -157,7 +157,7 @@ export default {
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="hasPill || isPinnable" class="gl-text-right gl-relative">
+      <span v-if="hasPill || isPinnable" class="gl-text-right gl-relative gl-min-w-8">
         <gl-badge
           v-if="hasPill"
           size="sm"

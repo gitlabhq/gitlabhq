@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService, feature_category: :incident_management do
   let_it_be(:project, reload: true) { create(:project) }
-  let_it_be(:user) { User.alert_bot }
+  let_it_be(:user) { Users::Internal.alert_bot }
 
   let(:webhook_payload) { Gitlab::Json.parse(fixture_file('pager_duty/webhook_incident_trigger.json')) }
   let(:parsed_payload) { ::PagerDuty::WebhookPayloadParser.call(webhook_payload) }
@@ -29,7 +29,7 @@ RSpec.describe IncidentManagement::PagerDuty::CreateIncidentIssueService, featur
         end
 
         it 'the issue author is Alert bot' do
-          expect(execute.payload[:issue].author).to eq(User.alert_bot)
+          expect(execute.payload[:issue].author).to eq(Users::Internal.alert_bot)
         end
 
         it 'issue has a correct title' do

@@ -96,7 +96,7 @@ module Gitlab
             issues_with_embedded_grafana_charts_approx: grafana_embed_usage_data,
             issues_created_from_alerts: total_alert_issues,
             incident_issues: count(::Issue.with_issue_type(:incident), start: minimum_id(Issue), finish: maximum_id(Issue)),
-            alert_bot_incident_issues: count(::Issue.authored(::User.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue)),
+            alert_bot_incident_issues: count(::Issue.authored(::Users::Internal.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue)),
             keys: count(Key),
             label_lists: count(List.label),
             lfs_objects: count(LfsObject),
@@ -529,7 +529,7 @@ module Gitlab
           service_desk_issues: count(
             ::Issue.where(
               project: projects_with_service_desk,
-              author: ::User.support_bot,
+              author: ::Users::Internal.support_bot,
               confidential: true
             )
           )

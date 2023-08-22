@@ -449,7 +449,7 @@ For example:
 cp <your_source_directory> <your_destination_directory>
 ```
 
-If the placeholder is not in a code block, use [`<` and `>`] and wrap the placeholder
+If the placeholder is not in a code block, use `<` and `>` and wrap the placeholder
 in a single backtick. For example:
 
 ```plaintext

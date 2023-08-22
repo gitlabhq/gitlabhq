@@ -139,8 +139,8 @@ RSpec.describe IssuesHelper do
   describe '#show_moved_service_desk_issue_warning?' do
     let(:project1) { create(:project, service_desk_enabled: true) }
     let(:project2) { create(:project, service_desk_enabled: true) }
-    let!(:old_issue) { create(:issue, author: User.support_bot, project: project1) }
-    let!(:new_issue) { create(:issue, author: User.support_bot, project: project2) }
+    let!(:old_issue) { create(:issue, author: Users::Internal.support_bot, project: project1) }
+    let!(:new_issue) { create(:issue, author: Users::Internal.support_bot, project: project2) }
 
     before do
       allow(Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }

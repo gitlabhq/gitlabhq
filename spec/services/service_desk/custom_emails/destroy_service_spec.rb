@@ -12,9 +12,14 @@ RSpec.describe ServiceDesk::CustomEmails::DestroyService, feature_category: :ser
     let(:error_user_not_authorized) { s_('ServiceDesk|User cannot manage project.') }
     let(:error_does_not_exist) { s_('ServiceDesk|Custom email does not exist') }
     let(:expected_error_message) { nil }
+    let(:logger_params) { { category: 'custom_email' } }
 
     shared_examples 'a service that exits with error' do
       it 'exits early' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
+          error_message: expected_error_message
+        )).once
+
         response = service.execute
 
         expect(response).to be_error
@@ -24,6 +29,8 @@ RSpec.describe ServiceDesk::CustomEmails::DestroyService, feature_category: :ser
 
     shared_examples 'a successful service that destroys all custom email records' do
       it 'ensures no custom email records exist' do
+        expect(Gitlab::AppLogger).to receive(:info).with(logger_params).once
+
         project.reset
 
         response = service.execute

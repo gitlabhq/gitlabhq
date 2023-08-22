@@ -6,7 +6,7 @@ module IncidentManagement
       include IncidentManagement::Settings
 
       def initialize(project, incident_payload)
-        super(project, User.alert_bot, incident_payload)
+        super(project, Users::Internal.alert_bot, incident_payload)
       end
 
       def execute

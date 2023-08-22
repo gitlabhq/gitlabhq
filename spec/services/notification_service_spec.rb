@@ -324,7 +324,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe "never emails the ghost user" do
-        let(:key_options) { { user: User.ghost } }
+        let(:key_options) { { user: Users::Internal.ghost } }
 
         it "does not send email to key owner" do
           expect { subject }.not_to have_enqueued_email(key.id, mail: "new_ssh_key_email")
@@ -345,7 +345,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe "never emails the ghost user" do
-        let(:key_options) { { user: User.ghost } }
+        let(:key_options) { { user: Users::Internal.ghost } }
 
         it "does not send email to key owner" do
           expect { subject }.not_to have_enqueued_email(key.id, mail: "new_gpg_key_email")
@@ -534,7 +534,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
         let(:subject) { described_class.new }
         let(:mailer) { double(deliver_later: true) }
-        let(:issue) { create(:issue, author: User.support_bot) }
+        let(:issue) { create(:issue, author: Users::Internal.support_bot) }
         let(:project) { issue.project }
         let(:note) { create(:note, noteable: issue, project: project) }
 

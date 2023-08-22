@@ -32,7 +32,7 @@ RSpec.shared_examples 'migrating records to the ghost user' do |record_class, fi
       migrated_record = record_class.find_by_id(record.id)
 
       migrated_fields.each do |field|
-        expect(migrated_record.public_send(field)).to eq(User.ghost)
+        expect(migrated_record.public_send(field)).to eq(Users::Internal.ghost)
       end
     end
   end

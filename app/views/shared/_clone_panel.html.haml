@@ -18,5 +18,5 @@
 
   = text_field_tag :clone_url, default_url_to_repo(container), class: "js-select-on-focus btn gl-button", readonly: true, aria: { label: _('Repository clone URL') }, data: { qa_selector: 'clone_url_content' }
   .input-group-append
-    = clipboard_button(target: '#clone_url', title: _("Copy URL"), class: "input-group-text gl-button btn-default btn-clipboard")
+    = deprecated_clipboard_button(target: '#clone_url', title: _("Copy URL"), class: "input-group-text gl-button btn-default btn-clipboard")
 

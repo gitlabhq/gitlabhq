@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Pipelines::EntityFinisher do
+RSpec.describe BulkImports::Common::Pipelines::EntityFinisher, feature_category: :importers do
   it 'updates the entity status to finished' do
-    entity = create(:bulk_import_entity, :started)
+    entity = create(:bulk_import_entity, :project_entity, :started)
     pipeline_tracker = create(:bulk_import_tracker, entity: entity)
     context = BulkImports::Pipeline::Context.new(pipeline_tracker)
     subject = described_class.new(context)
@@ -24,7 +24,7 @@ RSpec.describe BulkImports::Common::Pipelines::EntityFinisher do
         )
     end
 
-    expect(context.portable).to receive(:try).with(:after_import)
+    expect(BulkImports::FinishProjectImportWorker).to receive(:perform_async).with(entity.project_id)
 
     expect { subject.run }
       .to change(entity, :status_name).to(:finished)

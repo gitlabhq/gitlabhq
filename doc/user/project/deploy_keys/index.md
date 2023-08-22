@@ -192,7 +192,7 @@ If you need to find the keys that belong to a non-member or blocked user,
 you can use [the Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session) to identify unusable deploy keys using a script similar to the following:
 
 ```ruby
-ghost_user_id = User.ghost.id
+ghost_user_id = Users::Internal.ghost.id
 
 DeployKeysProject.with_write_access.find_each do |deploy_key_mapping|
   project = deploy_key_mapping.project

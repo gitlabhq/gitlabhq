@@ -107,7 +107,7 @@ Maintainer role.
   - **Allowed to deploy** sets which entities can execute the deployment job.
   - **Approvers** sets which entities can approve the deployment job.
 
-After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy.
+After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy. Once a deployment job is approved, it must be [run manually](../jobs/job_control.md#run-a-manual-job).
 
 A configuration that uses the REST API might look like:
 

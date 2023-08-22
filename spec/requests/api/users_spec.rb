@@ -494,7 +494,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
 
     context "when admin" do
       context 'exclude_internal param' do
-        let_it_be(:internal_user) { User.alert_bot }
+        let_it_be(:internal_user) { Users::Internal.alert_bot }
 
         it 'returns all users when it is not set' do
           get api("/users?exclude_internal=false", admin)
@@ -3602,7 +3602,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         end
 
         context 'for an internal user' do
-          let(:user) { User.alert_bot }
+          let(:user) { Users::Internal.alert_bot }
 
           it 'returns 403' do
             deactivate

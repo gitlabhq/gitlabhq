@@ -180,7 +180,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         .to increment(:user_unauthenticated_counter)
         .and increment(:user_password_invalid_counter)
 
-      gitlab_sign_in(User.ghost)
+      gitlab_sign_in(Users::Internal.ghost)
 
       expect(page).to have_content('Invalid login or password.')
     end
@@ -190,8 +190,8 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         .to increment(:user_unauthenticated_counter)
         .and increment(:user_password_invalid_counter)
 
-      expect { gitlab_sign_in(User.ghost) }
-        .not_to change { User.ghost.reload.sign_in_count }
+      expect { gitlab_sign_in(Users::Internal.ghost) }
+        .not_to change { Users::Internal.ghost.reload.sign_in_count }
     end
   end
 

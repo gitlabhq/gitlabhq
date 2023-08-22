@@ -13,7 +13,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:snippet) { create(:project_snippet, :public, :repository, project: project) }
-  let_it_be(:migration_bot) { User.migration_bot }
+  let_it_be(:migration_bot) { Users::Internal.migration_bot }
 
   let(:repository) { snippet.repository }
   let(:actor) { user }

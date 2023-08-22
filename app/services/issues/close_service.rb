@@ -86,7 +86,7 @@ module Issues
       issue = alert.issue
 
       if alert.resolve
-        SystemNoteService.change_alert_status(alert, User.alert_bot, " because #{current_user.to_reference} closed incident #{issue.to_reference(project)}")
+        SystemNoteService.change_alert_status(alert, Users::Internal.alert_bot, " because #{current_user.to_reference} closed incident #{issue.to_reference(project)}")
       else
         Gitlab::AppLogger.warn(
           message: 'Cannot resolve an associated Alert Management alert',

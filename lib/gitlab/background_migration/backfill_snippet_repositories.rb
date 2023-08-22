@@ -129,7 +129,7 @@ module Gitlab
       end
 
       def migration_bot_user
-        @migration_bot_user ||= User.migration_bot
+        @migration_bot_user ||= Users::Internal.migration_bot
       end
 
       # We sometimes receive invalid path errors from Gitaly if the Snippet filename
