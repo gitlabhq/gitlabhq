@@ -42,7 +42,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     aws_roles: %w[role_external_id],
     boards: %w[milestone_id iteration_id],
     broadcast_messages: %w[namespace_id],
-    chat_names: %w[chat_id team_id user_id integration_id],
+    chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
     ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],

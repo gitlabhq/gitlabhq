@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 When you want a group to have access to your project,
 you can invite [a group](../../group/index.md) to the project.
-The group's members get access to the project, which becomes a *shared project*.
+The group's direct and inherited members get access to the project, which becomes a *shared project*.
 
 ## Example
 
@@ -53,7 +53,8 @@ must be at least as restrictive as that of the project. For example, you can inv
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
     [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
-You can share a project with a group by inviting that group to the project.
+Similar to how you [share a group with another group](../../group/manage.md#share-a-group-with-another-group),
+you can share a project with a group by inviting that group to the project.
 
 To invite a group to a project:
 

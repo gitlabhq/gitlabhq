@@ -2227,11 +2227,11 @@
       when: never
     - <<: *if-merge-request-labels-skip-undercoverage
       when: never
+    - <<: *if-merge-request-labels-run-all-rspec
     # We cannot get the coverage data from child pipeline so we only run undercoverage on full pipelines for now
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113410#note_1335422806
     - <<: *if-merge-request-not-approved
       when: never
-    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *backend-patterns
 

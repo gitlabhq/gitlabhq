@@ -4,7 +4,14 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# List repository directories Rake task **(FREE SELF)**
+<!--- start_remove The following content will be removed on remove_date: '2024-05-16' -->
+
+# List repository directories Rake task (deprecated) **(FREE SELF)**
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/384361) in GitLab 16.4 and is planned for removal in 17.0.
+[If migrating GitLab, use backup and restore](../administration/operations/moving_repositories.md#recommended-approach-in-all-cases)
+instead.
 
 You can print a list of all Git repositories on disk managed by GitLab.
 
@@ -34,3 +41,5 @@ sudo gitlab-rake gitlab:list_repos SINCE='Sep 1 2015'
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:list_repos RAILS_ENV=production SINCE='Sep 1 2015'
 ```
+
+<!--- end_remove -->

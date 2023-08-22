@@ -2,6 +2,9 @@
 
 namespace :gitlab do
   task list_repos: :environment do
+    warn "The Rake task gitlab:list_repos is deprecated in 16.4 and will be removed in 17.0: " \
+         "https://gitlab.com/gitlab-org/gitlab/-/issues/384361"
+
     scope = Project
     if ENV['SINCE']
       date = Time.parse(ENV['SINCE'])
