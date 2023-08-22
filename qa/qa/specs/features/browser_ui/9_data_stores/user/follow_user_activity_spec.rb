@@ -45,12 +45,7 @@ module QA
         end
       end
 
-      let(:issue) do
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.project = project
-          issue.api_client = followed_user_api_client
-        end
-      end
+      let(:issue) { create(:issue, project: project, api_client: followed_user_api_client) }
 
       let(:comment) do
         Resource::ProjectIssueNote.fabricate_via_api! do |project_issue_note|

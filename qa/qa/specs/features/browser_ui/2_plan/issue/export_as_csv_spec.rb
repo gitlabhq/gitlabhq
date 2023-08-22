@@ -8,11 +8,7 @@ module QA
       before do
         Flow::Login.sign_in
 
-        2.times do
-          Resource::Issue.fabricate_via_api! do |issue|
-            issue.project = project
-          end
-        end
+        create_list(:issue, 2, project: project)
 
         project.visit!
         Page::Project::Menu.perform(&:go_to_issues)

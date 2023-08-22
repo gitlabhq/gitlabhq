@@ -6,11 +6,7 @@ module QA
       include_context 'with gitlab project migration'
 
       let!(:source_issue) do
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.api_client = source_admin_api_client
-          issue.project = source_project
-          issue.labels = %w[label_one label_two]
-        end
+        create(:issue, project: source_project, labels: %w[label_one label_two], api_client: source_admin_api_client)
       end
 
       let(:source_issue_comments) do

@@ -7,12 +7,8 @@ module QA
     include Support::API
 
     describe 'Issue', product_group: :project_management do
-      let(:issue) do
-        Resource::Issue.fabricate_via_api!
-      end
-
+      let(:issue) { create(:issue) }
       let(:issue_id) { issue.api_response[:iid] }
-
       let(:api_client) { Runtime::API::Client.new(:gitlab) }
 
       before do

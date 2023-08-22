@@ -55,12 +55,7 @@ module QA
         end
 
         context 'with gitlab issue' do
-          let!(:issue) do
-            Resource::Issue.fabricate_via_api! do |issue|
-              issue.project = project
-            end
-          end
-
+          let!(:issue) { create(:issue, project: project) }
           let(:comment) { "Comment #{SecureRandom.hex(6)}" }
 
           it 'displays an issue', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377891' do

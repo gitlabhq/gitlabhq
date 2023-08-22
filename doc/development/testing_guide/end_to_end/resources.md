@@ -392,7 +392,7 @@ In this case, the result is similar to calling `Resource::Shirt.fabricate!`.
 
 ### Factories
 
-You may also use FactoryBot invocations to create resources within your tests.
+You may also use [FactoryBot](https://github.com/thoughtbot/factory_bot/) invocations to create resources within your tests.
 
 ```ruby
 # create a project via the API to use in the test
@@ -405,7 +405,63 @@ let(:issue) { create(:issue, project: project) }
 let(:project) { create(:project, :private, name: 'my-project-name', add_name_uuid: false) }
 ```
 
-All factories are defined in [`qa/qa/factories`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/factories/).
+All factories are defined in [`qa/qa/factories`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/factories/) and are representative of
+their respective `QA::Resource::Base` class.
+
+For example, a factory `:issue` can be found in `qa/resource/issue.rb`. A factory `:project` can be found in `qa/resource/project.rb`.
+
+#### Create a new Factory
+
+Given a resource:
+
+```ruby
+# qa/resource/shirt.rb
+module QA
+  module Resource
+    class Shirt < Base
+      attr_accessor :name
+      attr_reader :read_only
+
+      attribute :brand
+
+      def api_post_body
+        { name: name, brand: brand }
+      end
+    end
+  end
+end
+```
+
+Define a factory with defaults and overrides:
+
+```ruby
+# qa/factories/shirts.rb
+module QA
+  FactoryBot.define do
+    factory :shirt, class: 'QA::Resource::Shirt' do
+      brand { 'BrandName' }
+
+      trait :with_name do
+        name { 'Shirt Name' }
+      end
+    end
+  end
+end
+```
+
+In the test, create the resource via the API:
+
+```ruby
+let(:my_shirt) { create(:shirt, brand: 'AnotherBrand') } #<Resource::Shirt @brand="AnotherBrand" @name=nil>
+let(:named_shirt) { create(:shirt, :with_name) } #<Resource::Shirt @brand="Brand Name" @name="Shirt Name">
+let(:invalid_shirt) { create(:shirt, read_only: true) } # NoMethodError
+
+it 'creates a shirt' do
+  expect(my_shirt.brand).to eq('AnotherBrand')
+  expect(named_shirt.name).to eq('Shirt Name')
+  expect(invalid_shirt).to raise_error(NoMethodError) # tries to call Resource::Shirt#read_only=
+end
+```
 
 ### Resources cleanup
 

@@ -18,9 +18,7 @@ module QA
 
         project.add_member(user)
 
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.project = project
-        end.visit!
+        create(:issue, project: project).visit!
       end
 
       after do

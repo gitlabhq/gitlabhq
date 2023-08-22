@@ -14,125 +14,248 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   end
 
   describe 'FQDN path' do
-    let_it_be(:existing_project) { create(:project, :repository) }
-
-    let(:project_path) { existing_project.full_path }
-    let(:address) { "acme.com/#{project_path}/component@#{version}" }
     let(:version) { 'master' }
 
-    context 'when project exists' do
-      it 'provides the expected attributes', :aggregate_failures do
-        expect(path.project).to eq(existing_project)
-        expect(path.host).to eq(current_host)
-        expect(path.sha).to eq(existing_project.commit('master').id)
-        expect(path.project_file_path).to eq('component/template.yml')
+    context 'when the project repository contains a templates directory' do
+      let_it_be(:existing_project) do
+        create(
+          :project, :custom_repo,
+          files: {
+            'templates/file.yml' => 'image: alpine_1',
+            'templates/dir/template.yml' => 'image: alpine_2'
+          }
+        )
       end
 
-      context 'when content exists' do
-        let(:content) { 'image: alpine' }
+      let(:project_path) { existing_project.full_path }
+      let(:address) { "acme.com/#{project_path}/file@#{version}" }
 
-        before do
-          allow_next_instance_of(Repository) do |instance|
-            allow(instance)
-              .to receive(:blob_data_at)
-              .with(existing_project.commit('master').id, 'component/template.yml')
-              .and_return(content)
-          end
+      before do
+        existing_project.add_developer(user)
+      end
+
+      context 'when user does not have permissions' do
+        it 'raises an error when fetching the content' do
+          expect { path.fetch_content!(current_user: build(:user)) }
+            .to raise_error(Gitlab::Access::AccessDeniedError)
+        end
+      end
+
+      context 'when templates directory is top level' do
+        it 'fetches the content' do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_1')
         end
 
-        context 'when user has permissions to read code' do
-          before do
-            existing_project.add_developer(user)
-          end
+        it 'provides the expected attributes', :aggregate_failures do
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('file/template.yml')
+          expect(path.project).to eq(existing_project)
+          expect(path.sha).to eq(existing_project.commit('master').id)
+        end
+
+        context 'when file name is `template.yml`' do
+          let(:address) { "acme.com/#{project_path}/dir@#{version}" }
 
           it 'fetches the content' do
-            expect(path.fetch_content!(current_user: user)).to eq(content)
+            expect(path.fetch_content!(current_user: user)).to eq('image: alpine_2')
+          end
+
+          it 'provides the expected attributes', :aggregate_failures do
+            expect(path.host).to eq(current_host)
+            expect(path.project_file_path).to eq('dir/template.yml')
+            expect(path.project).to eq(existing_project)
+            expect(path.sha).to eq(existing_project.commit('master').id)
           end
         end
+      end
 
-        context 'when user does not have permissions to download code' do
-          it 'raises an error when fetching the content' do
-            expect { path.fetch_content!(current_user: user) }
-              .to raise_error(Gitlab::Access::AccessDeniedError)
-          end
+      context 'when the project is nested under a subgroup' do
+        let_it_be(:existing_group) { create(:group, :nested) }
+        let_it_be(:existing_project) do
+          create(
+            :project, :custom_repo,
+            files: {
+              'templates/file.yml' => 'image: alpine_1'
+            },
+            group: existing_group
+          )
+        end
+
+        it 'fetches the content' do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_1')
+        end
+
+        it 'provides the expected attributes', :aggregate_failures do
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('file/template.yml')
+          expect(path.project).to eq(existing_project)
+          expect(path.sha).to eq(existing_project.commit('master').id)
+        end
+      end
+
+      context 'when fetching the latest version' do
+        let_it_be(:existing_project) do
+          create(
+            :project, :custom_repo,
+            files: {
+              'templates/file.yml' => 'image: alpine_1'
+            }
+          )
+        end
+
+        let(:version) { '~latest' }
+
+        let(:latest_sha) do
+          existing_project.repository.find_commits_by_message('Updates image').commits.last.sha
+        end
+
+        before do
+          create(:release, project: existing_project, sha: existing_project.repository.root_ref_sha,
+            released_at: Time.zone.now - 1.day)
+
+          existing_project.repository.update_file(
+            user, 'templates/file.yml', 'image: alpine_2',
+            message: 'Updates image', branch_name: existing_project.default_branch
+          )
+
+          create(:release, project: existing_project, sha: latest_sha,
+            released_at: Time.zone.now)
+        end
+
+        it 'fetches the content' do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_2')
+        end
+
+        it 'provides the expected attributes', :aggregate_failures do
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('file/template.yml')
+          expect(path.project).to eq(existing_project)
+          expect(path.sha).to eq(latest_sha)
+        end
+      end
+
+      context 'when version does not exist' do
+        let(:version) { 'non-existent' }
+
+        it 'returns nil when fetching the content' do
+          expect(path.fetch_content!(current_user: user)).to be_nil
+        end
+
+        it 'provides the expected attributes', :aggregate_failures do
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('file/template.yml')
+          expect(path.project).to eq(existing_project)
+          expect(path.sha).to be_nil
+        end
+      end
+
+      context 'when current GitLab instance is installed on a relative URL' do
+        let(:address) { "acme.com/gitlab/#{project_path}/file@#{version}" }
+        let(:current_host) { 'acme.com/gitlab/' }
+
+        it 'fetches the content' do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_1')
+        end
+
+        it 'provides the expected attributes', :aggregate_failures do
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('file/template.yml')
+          expect(path.project).to eq(existing_project)
+          expect(path.sha).to eq(existing_project.commit('master').id)
         end
       end
     end
 
-    context 'when project path is nested under a subgroup' do
-      let(:existing_group) { create(:group, :nested) }
-      let(:existing_project) { create(:project, :repository, group: existing_group) }
+    # All the following tests are for deprecated code and will be removed
+    # in https://gitlab.com/gitlab-org/gitlab/-/issues/415855
+    context 'when the project does not contain a templates directory' do
+      let(:project_path) { existing_project.full_path }
+      let(:address) { "acme.com/#{project_path}/component@#{version}" }
+
+      let_it_be(:existing_project) do
+        create(
+          :project, :custom_repo,
+          files: {
+            'component/template.yml' => 'image: alpine'
+          }
+        )
+      end
+
+      before do
+        existing_project.add_developer(user)
+      end
+
+      it 'fetches the content' do
+        expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
+      end
 
       it 'provides the expected attributes', :aggregate_failures do
-        expect(path.project).to eq(existing_project)
         expect(path.host).to eq(current_host)
+        expect(path.project_file_path).to eq('component/template.yml')
+        expect(path.project).to eq(existing_project)
         expect(path.sha).to eq(existing_project.commit('master').id)
-        expect(path.project_file_path).to eq('component/template.yml')
-      end
-    end
-
-    context 'when current GitLab instance is installed on a relative URL' do
-      let(:address) { "acme.com/gitlab/#{project_path}/component@#{version}" }
-      let(:current_host) { 'acme.com/gitlab/' }
-
-      it 'provides the expected attributes', :aggregate_failures do
-        expect(path.project).to eq(existing_project)
-        expect(path.host).to eq(current_host)
-        expect(path.sha).to eq(existing_project.commit('master').id)
-        expect(path.project_file_path).to eq('component/template.yml')
-      end
-    end
-
-    context 'when version does not exist' do
-      let(:version) { 'non-existent' }
-
-      it 'provides the expected attributes', :aggregate_failures do
-        expect(path.project).to eq(existing_project)
-        expect(path.host).to eq(current_host)
-        expect(path.sha).to be_nil
-        expect(path.project_file_path).to eq('component/template.yml')
       end
 
-      it 'returns nil when fetching the content' do
-        expect(path.fetch_content!(current_user: user)).to be_nil
-      end
-    end
-
-    context 'when version is `~latest`' do
-      let(:version) { '~latest' }
-
-      context 'when project has releases' do
-        let_it_be(:latest_release) do
-          create(:release, project: existing_project, sha: 'sha-1', released_at: Time.zone.now)
+      context 'when project path is nested under a subgroup' do
+        let_it_be(:existing_group) { create(:group, :nested) }
+        let_it_be(:existing_project) do
+          create(
+            :project, :custom_repo,
+            files: {
+              'component/template.yml' => 'image: alpine'
+            },
+            group: existing_group
+          )
         end
 
-        before_all do
-          # Previous release
-          create(:release, project: existing_project, sha: 'sha-2', released_at: Time.zone.now - 1.day)
+        it 'fetches the content' do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
         end
 
-        it 'returns the sha of the latest release' do
-          expect(path.sha).to eq(latest_release.sha)
+        it 'provides the expected attributes', :aggregate_failures do
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('component/template.yml')
+          expect(path.project).to eq(existing_project)
+          expect(path.sha).to eq(existing_project.commit('master').id)
         end
       end
 
-      context 'when project does not have releases' do
-        it { expect(path.sha).to be_nil }
+      context 'when current GitLab instance is installed on a relative URL' do
+        let(:address) { "acme.com/gitlab/#{project_path}/component@#{version}" }
+        let(:current_host) { 'acme.com/gitlab/' }
+
+        it 'fetches the content' do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
+        end
+
+        it 'provides the expected attributes', :aggregate_failures do
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('component/template.yml')
+          expect(path.project).to eq(existing_project)
+          expect(path.sha).to eq(existing_project.commit('master').id)
+        end
       end
-    end
 
-    context 'when project does not exist' do
-      let(:project_path) { 'non-existent/project' }
+      context 'when version does not exist' do
+        let(:version) { 'non-existent' }
 
-      it 'provides the expected attributes', :aggregate_failures do
-        expect(path.project).to be_nil
-        expect(path.host).to eq(current_host)
-        expect(path.sha).to be_nil
-        expect(path.project_file_path).to be_nil
+        it 'returns nil when fetching the content' do
+          expect(path.fetch_content!(current_user: user)).to be_nil
+        end
+
+        it 'provides the expected attributes', :aggregate_failures do
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('component/template.yml')
+          expect(path.project).to eq(existing_project)
+          expect(path.sha).to be_nil
+        end
       end
 
-      it 'returns nil when fetching the content' do
-        expect(path.fetch_content!(current_user: user)).to be_nil
+      context 'when user does not have permissions' do
+        it 'raises an error when fetching the content' do
+          expect { path.fetch_content!(current_user: build(:user)) }
+            .to raise_error(Gitlab::Access::AccessDeniedError)
+        end
       end
     end
   end

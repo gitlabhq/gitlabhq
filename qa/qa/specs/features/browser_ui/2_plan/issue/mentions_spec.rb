@@ -36,9 +36,7 @@ module QA
             issue.project = project
           end.visit!
         else
-          Resource::Issue.fabricate_via_api! do |issue|
-            issue.project = project
-          end.visit!
+          create(:issue, project: project).visit!
         end
       end
 

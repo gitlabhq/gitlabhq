@@ -169,18 +169,14 @@ Page::Main::Menu.perform do |menu|
 end
 
 #=> Good
-issue = Resource::Issue.fabricate_via_api! do |issue|
-  issue.name = 'issue-name'
-end
+issue = create(:issue, name: 'issue-name')
 
 Project::Issues::Index.perform do |index|
   expect(index).to have_issue(issue)
 end
 
 #=> Bad
-issue = Resource::Issue.fabricate_via_api! do |issue|
-  issue.name = 'issue-name'
-end
+issue = create(:issue, name: 'issue-name')
 
 Project::Issues::Index.perform do |index|
   expect(index).to have_issue(issue)

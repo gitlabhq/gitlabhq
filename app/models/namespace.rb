@@ -166,6 +166,7 @@ class Namespace < ApplicationRecord
   scope :sort_by_type, -> { order(arel_table[:type].asc.nulls_first) }
   scope :include_route, -> { includes(:route) }
   scope :by_parent, -> (parent) { where(parent_id: parent) }
+  scope :by_root_id, -> (root_id) { where('traversal_ids[1] IN (?)', root_id) }
   scope :filter_by_path, -> (query) { where('lower(path) = :query', query: query.downcase) }
   scope :in_organization, -> (organization) { where(organization: organization) }
 

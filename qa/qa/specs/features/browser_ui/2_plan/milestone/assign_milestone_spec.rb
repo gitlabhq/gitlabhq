@@ -12,11 +12,7 @@ module QA
 
       let(:project) { create(:project, name: "project-to-test-milestones-#{SecureRandom.hex(4)}", group: group) }
 
-      let(:issue) do
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.project = project
-        end
-      end
+      let(:issue) { create(:issue, project: project) }
 
       before do
         Flow::Login.sign_in

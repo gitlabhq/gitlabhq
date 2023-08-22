@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Plan', product_group: :product_planning do
     describe 'Design Management' do
-      let(:issue) { Resource::Issue.fabricate_via_api! }
+      let(:issue) { create(:issue) }
       let(:design_filename) { 'banana_sample.gif' }
       let(:design) { Runtime::Path.fixture('designs', design_filename) }
       let(:annotation) { "This design is great!" }

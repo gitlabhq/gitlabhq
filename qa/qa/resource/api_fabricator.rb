@@ -231,7 +231,7 @@ module QA
       # @example
       #   wait_for_resource_availability('https://gitlab.com/api/v4/projects/1234')
       # @example
-      #   wait_for_resource_availability(resource_web_url(Resource::Issue.fabricate_via_api!))
+      #   wait_for_resource_availability(resource_web_url(create(:issue)))
       def wait_for_resource_availability(resource_web_url)
         return unless Runtime::Address.valid?(resource_web_url)
 

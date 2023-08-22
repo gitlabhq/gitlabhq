@@ -31,6 +31,12 @@ module QA
 
           def go_to_admin_area
             go_to_context("Admin Area")
+            return unless has_text?('Enter admin mode', wait: 1.0)
+
+            Admin::NewSession.perform do |new_session|
+              new_session.set_password(Runtime::User.admin_password)
+              new_session.click_enter_admin_mode
+            end
           end
 
           def has_admin_area_link?(wait: Capybara.default_max_wait_time)

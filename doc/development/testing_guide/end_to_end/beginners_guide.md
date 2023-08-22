@@ -274,12 +274,7 @@ stage and the Project Management Group, so [create a file](#identify-the-devops-
 module QA
   RSpec.describe 'Plan' do
     describe 'Issues', product_group: :project_management do
-      let(:issue) do
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = 'My issue'
-          issue.description = 'This is an issue specific to this test'
-        end
-      end
+      let(:issue) { create(:issue) }
 
       before do
         Flow::Login.sign_in

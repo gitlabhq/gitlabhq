@@ -15,11 +15,7 @@ module QA
 
       shared_examples 'adds user as owner' do |project_type, testcase|
         let!(:issue) do
-          Resource::Issue.fabricate_via_api! do |issue|
-            issue.api_client = owner_api_client
-            issue.project = project
-            issue.title = 'Test Owner Deletes Issue'
-          end
+          create(:issue, title: 'Test Owner Deletes Issue', project: project, api_client: owner_api_client)
         end
 
         before do
@@ -46,11 +42,7 @@ module QA
 
       shared_examples 'adds user as maintainer' do |testcase|
         let!(:issue) do
-          Resource::Issue.fabricate_via_api! do |issue|
-            issue.api_client = owner_api_client
-            issue.project = project
-            issue.title = 'Test Maintainer Deletes Issue'
-          end
+          create(:issue, title: 'Test Maintainer Deletes Issue', project: project, api_client: owner_api_client)
         end
 
         before do

@@ -5,7 +5,7 @@ module QA
     describe 'collapse comments in issue discussions' do
       let(:my_first_reply) { 'My first reply' }
       let(:one_reply) { '1 reply' }
-      let(:issue) { Resource::Issue.fabricate_via_api! }
+      let(:issue) { create(:issue) }
 
       before do
         Flow::Login.sign_in

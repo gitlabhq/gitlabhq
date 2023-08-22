@@ -39,14 +39,71 @@ To create a components repository, you must:
 
 ### Directory structure
 
-A components repository can host one or more components.
+A components repository can host one or more components, and must follow a mandatory file structure.
 
-Components repositories must follow a mandatory file structure, containing:
+Component configurations can be saved through the following directory structure, containing:
+
+- A `templates` directory at the top level of your components repository. All component configuration files
+  should be saved under this directory.
+- Files ending in `.yml` containing the component configurations, one file per component.
+- A Markdown `README.md` file explaining the details of all the components in the repository.
+
+For example, if the project contains a single component and a pipeline to test the component,
+the file structure should be similar to:
+
+```plaintext
+├── templates/
+│   └── only_template.yml
+├── README.md
+└── .gitlab-ci.yml
+```
+
+This example component could be referenced with a path similar to `gitlab.com/my-username/my-component/only_template@<version>`,
+if the project is:
+
+- On GitLab.com
+- Named `my-component`
+- In a personal namespace named `my-username`
+
+The templates directory and the suffix of the configuration file should be excluded from the referenced path.
+
+If the project contains multiple components, then the file structure should be similar to:
+
+```plaintext
+├── README.md
+├── .gitlab-ci.yml
+└── templates/
+    └── all-scans.yml
+    └── secret-detection.yml
+```
+
+These components would be referenced with these paths:
+
+- `gitlab.com/my-username/my-component/all-scans`
+- `gitlab.com/my-username/my-component/secret-detection`
+
+You can omit the filename in the path if the configuration file is named `template.yml`.
+For example, the following component could be referenced with `gitlab.com/my-username/my-component/dast`:
+
+```plaintext
+├── README.md
+├── .gitlab-ci.yml
+├── templates/
+│   └── dast
+│       └── template.yml
+```
+
+#### Component configurations saved in any directory (deprecated)
+
+NOTE:
+Saving component configurations through this directory structure is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/415855).
+
+Components configurations can be saved through the following directory structure, containing:
 
 - `template.yml`: The component configuration, one file per component. If there is
   only one component, this file can be in the root of the project. If there are multiple
   components, each file must be in a separate subdirectory.
-- `README.md`: A documentation file explaining the details of the all the components in the repository.
+- `README.md`: A documentation file explaining the details of all the components in the repository.
 
 For example, if the project is on GitLab.com, named `my-component`, and in a personal
 namespace named `my-username`:

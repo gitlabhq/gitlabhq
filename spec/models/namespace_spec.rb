@@ -443,6 +443,15 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.by_root_id' do
+      it 'returns correct namespaces' do
+        expect(described_class.by_root_id(namespace1.id)).to match_array([namespace1, namespace1sub])
+        expect(described_class.by_root_id(namespace2.id)).to match_array([namespace2, namespace2sub])
+        expect(described_class.by_root_id(namespace1sub.id)).to be_empty
+        expect(described_class.by_root_id(nil)).to be_empty
+      end
+    end
+
     describe '.filter_by_path' do
       it 'includes correct namespaces' do
         expect(described_class.filter_by_path(namespace1.path)).to eq([namespace1])
