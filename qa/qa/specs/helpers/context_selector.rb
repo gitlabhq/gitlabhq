@@ -121,7 +121,7 @@ module QA
         end
 
         def opts_tld
-          GitlabEdition.jh? ? '(.com|.hk)' : '.com'
+          GitlabEdition.jh? ? '(.com|.hk)' : '(.com|.net)'
         end
 
         def get_tld(host)

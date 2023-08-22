@@ -29,6 +29,12 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
       expect(described_class.dot_com?).to be_truthy
     end
 
+    it 'returns true when url has .net' do
+      QA::Runtime::Scenario.define(:gitlab_address, "https://release.gitlab.net")
+
+      expect(described_class.context_matches?).to be_truthy
+    end
+
     it 'returns false when url does not have .com' do
       QA::Runtime::Scenario.define(:gitlab_address, "https://gitlab.test")
 
