@@ -5493,7 +5493,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:ref) { subject.target_project.repository.commit.id }
 
     before do
-      expect(subject.target_project).to receive(:mark_primary_write_location)
+      expect(subject.target_project.sticking).to receive(:stick)
+        .with(:project, subject.target_project.id)
     end
 
     it 'updates commit ID' do

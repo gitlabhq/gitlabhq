@@ -290,7 +290,7 @@ module Gitlab
         if consistent_archived_trace?(build)
           ::Ci::Build
             .sticking
-            .unstick_or_continue_sticking(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
+            .find_caught_up_replica(LOAD_BALANCING_STICKING_NAMESPACE, build.id)
         end
 
         yield

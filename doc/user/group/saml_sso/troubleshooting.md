@@ -318,3 +318,4 @@ If you see this message after trying to invite a user to a group:
 
 1. Ensure the user has been [added to the SAML identity provider](index.md#user-access-and-management).
 1. Ask the user to [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account), if they have one. Otherwise, ask the user to create a GitLab.com account by [accessing GitLab.com through the identity provider's dashboard](index.md#user-access-and-management), or by [signing up manually](https://gitlab.com/users/sign_up) and linking SAML to their new account.
+1. If the user has a SCIM identity, ensure that the `active` attribute is `true`.

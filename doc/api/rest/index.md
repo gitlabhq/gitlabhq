@@ -22,7 +22,7 @@ endpoint. New features can be added to the API in the same
 version number.
 
 New features and bug fixes are released in tandem with GitLab. Apart
-from incidental patch and security releases, GitLab is released on the 22nd of each
+from incidental patch and security releases, new minor versions of GitLab are released every
 month. Major API version changes, and removal of entire API versions, are done in tandem
 with major GitLab releases.
 

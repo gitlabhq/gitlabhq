@@ -1871,7 +1871,8 @@ Example response:
       "id" : 2,
       "created_at" : "2017-03-17T17:18:09.283Z",
       "impersonation" : true,
-      "expires_at" : "2017-04-04"
+      "expires_at" : "2017-04-04",
+      "last_used_at": "2017-03-24T09:44:21.722Z"
    },
    {
       "active" : false,
@@ -1884,7 +1885,8 @@ Example response:
       "created_at" : "2017-03-17T17:19:28.697Z",
       "id" : 3,
       "impersonation" : true,
-      "expires_at" : "2017-04-14"
+      "expires_at" : "2017-04-14",
+      "last_used_at": "2017-03-24T09:44:21.722Z"
    }
 ]
 ```

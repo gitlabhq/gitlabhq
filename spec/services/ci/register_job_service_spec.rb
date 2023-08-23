@@ -26,7 +26,9 @@ module Ci
         end
 
         it 'result is valid if replica did caught-up', :aggregate_failures do
-          expect(ApplicationRecord.sticking).to receive(:all_caught_up?).with(:runner, runner.id) { true }
+          expect(ApplicationRecord.sticking).to receive(:find_caught_up_replica)
+            .with(:runner, runner.id, use_primary_on_failure: false)
+            .and_return(true)
 
           expect { execute }.not_to change { Ci::RunnerManagerBuild.count }.from(0)
           expect(execute).to be_valid
@@ -35,8 +37,9 @@ module Ci
         end
 
         it 'result is invalid if replica did not caught-up', :aggregate_failures do
-          expect(ApplicationRecord.sticking).to receive(:all_caught_up?)
-            .with(:runner, shared_runner.id) { false }
+          expect(ApplicationRecord.sticking).to receive(:find_caught_up_replica)
+            .with(:runner, shared_runner.id, use_primary_on_failure: false)
+            .and_return(false)
 
           expect(subject).not_to be_valid
           expect(subject.build).to be_nil

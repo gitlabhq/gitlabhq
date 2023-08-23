@@ -11,7 +11,6 @@ RSpec.describe API::Helpers, feature_category: :shared do
     include Rack::Test::Methods
 
     let(:user) { build(:user, id: 42) }
-    let(:request) { instance_double(Rack::Request) }
     let(:helper) do
       Class.new(Grape::API::Instance) do
         helpers API::APIGuard::HelperMethods
@@ -36,18 +35,23 @@ RSpec.describe API::Helpers, feature_category: :shared do
       allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(user)
 
       expect(ApplicationRecord.sticking)
-        .to receive(:stick_or_unstick_request).with(any_args, :user, 42)
+        .to receive(:find_caught_up_replica).with(:user, 42)
 
       get 'user'
 
       expect(Gitlab::Json.parse(last_response.body)).to eq({ 'id' => user.id })
+
+      stick_object = last_request.env[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].first
+      expect(stick_object[0]).to eq(User.sticking)
+      expect(stick_object[1]).to eq(:user)
+      expect(stick_object[2]).to eq(42)
     end
 
     it 'does not handle sticking if no user could be found' do
       allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(nil)
 
       expect(ApplicationRecord.sticking)
-        .not_to receive(:stick_or_unstick_request)
+        .not_to receive(:find_caught_up_replica)
 
       get 'user'
 

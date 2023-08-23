@@ -187,6 +187,44 @@ RSpec.describe 'Database schema', feature_category: :database do
               expect(ignored_columns).to match_array(ignored_columns - foreign_keys)
             end
           end
+
+          context 'btree indexes' do
+            it 'only has existing indexes in the ignored duplicate indexes duplicate_indexes.yml' do
+              table_ignored_indexes = (ignored_indexes[table] || {}).to_a.flatten.uniq
+              indexes_by_name = indexes.map(&:name)
+              expect(indexes_by_name).to include(*table_ignored_indexes)
+            end
+
+            it 'does not have any duplicated indexes' do
+              duplicate_indexes = Database::DuplicateIndexes.new(table, indexes).duplicate_indexes
+              expect(duplicate_indexes).to be_an_instance_of Hash
+
+              table_ignored_indexes = ignored_indexes[table] || {}
+
+              # We ignore all the indexes that are explicitly ignored in duplicate_indexes.yml
+              duplicate_indexes.each do |index, matching_indexes|
+                duplicate_indexes[index] = matching_indexes.reject do |matching_index|
+                  table_ignored_indexes.fetch(index.name, []).include?(matching_index.name) ||
+                    table_ignored_indexes.fetch(matching_index.name, []).include?(index.name)
+                end
+
+                duplicate_indexes.delete(index) if duplicate_indexes[index].empty?
+              end
+
+              if duplicate_indexes.present?
+                btree_index = duplicate_indexes.each_key.first
+                matching_indexes = duplicate_indexes[btree_index]
+
+                error_message = <<~ERROR
+                    Duplicate index: #{btree_index.name} with #{matching_indexes.map(&:name)}
+                    #{btree_index.name} : #{btree_index.columns.inspect}
+                    #{matching_indexes.first.name} : #{matching_indexes.first.columns.inspect}.
+                    Consider dropping the indexes #{matching_indexes.map(&:name).join(', ')}
+                ERROR
+                raise error_message
+              end
+            end
+          end
         end
       end
     end
@@ -408,5 +446,10 @@ RSpec.describe 'Database schema', feature_category: :database do
 
   def ignored_jsonb_columns(model)
     IGNORED_JSONB_COLUMNS.fetch(model, [])
+  end
+
+  def ignored_indexes
+    duplicate_indexes_file_path = "spec/support/helpers/database/duplicate_indexes.yml"
+    @ignored_indexes ||= YAML.load_file(Rails.root.join(duplicate_indexes_file_path)) || {}
   end
 end

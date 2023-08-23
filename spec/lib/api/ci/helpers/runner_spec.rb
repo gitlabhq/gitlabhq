@@ -3,10 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe API::Ci::Helpers::Runner do
-  let(:helper) { Class.new { include API::Ci::Helpers::Runner }.new }
+  let(:helper) do
+    Class.new do
+      include API::Ci::Helpers::Runner
+      include Gitlab::RackLoadBalancingHelpers
+    end.new
+  end
+
+  let(:env_hash) { {} }
+  let(:request) { instance_double(Rack::Request, env: env_hash) }
 
   before do
-    allow(helper).to receive(:env).and_return({})
+    allow(helper).to receive(:request).and_return(request)
   end
 
   describe '#current_job', feature_category: :continuous_integration do
@@ -16,17 +24,22 @@ RSpec.describe API::Ci::Helpers::Runner do
       allow(helper).to receive(:params).and_return(id: build.id)
 
       expect(Ci::Build.sticking)
-        .to receive(:stick_or_unstick_request)
-        .with({}, :build, build.id)
+        .to receive(:find_caught_up_replica)
+        .with(:build, build.id)
 
       helper.current_job
+
+      stick_object = env_hash[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].first
+      expect(stick_object[0]).to eq(Ci::Build.sticking)
+      expect(stick_object[1]).to eq(:build)
+      expect(stick_object[2]).to eq(build.id)
     end
 
     it 'does not handle sticking if no build ID was specified' do
       allow(helper).to receive(:params).and_return({})
 
       expect(Ci::Build.sticking)
-        .not_to receive(:stick_or_unstick_request)
+        .not_to receive(:find_caught_up_replica)
 
       helper.current_job
     end
@@ -45,17 +58,22 @@ RSpec.describe API::Ci::Helpers::Runner do
       allow(helper).to receive(:params).and_return(token: runner.token)
 
       expect(Ci::Runner.sticking)
-        .to receive(:stick_or_unstick_request)
-        .with({}, :runner, runner.token)
+        .to receive(:find_caught_up_replica)
+        .with(:runner, runner.token)
 
       helper.current_runner
+
+      stick_object = env_hash[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].first
+      expect(stick_object[0]).to eq(Ci::Runner.sticking)
+      expect(stick_object[1]).to eq(:runner)
+      expect(stick_object[2]).to eq(runner.token)
     end
 
     it 'does not handle sticking if no token was specified' do
       allow(helper).to receive(:params).and_return({})
 
       expect(Ci::Runner.sticking)
-        .not_to receive(:stick_or_unstick_request)
+        .not_to receive(:find_caught_up_replica)
 
       helper.current_runner
     end

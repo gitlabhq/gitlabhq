@@ -11,7 +11,7 @@ module Gitlab
 
           ::Gitlab::Database::LoadBalancing.each_load_balancer.all? do |lb|
             if (location = wal_locations.with_indifferent_access[lb.name])
-              lb.select_up_to_date_host(location)
+              lb.select_up_to_date_host(location) != LoadBalancer::NONE_CAUGHT_UP
             else
               true
             end

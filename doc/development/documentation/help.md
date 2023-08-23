@@ -28,9 +28,6 @@ For example:
 1. The change shows up in the 14.5 self-managed release, due to missing the release cutoff
    for 14.4.
 
-The exact cutoff date for each release is flexible, and can be sooner or later
-than expected due to holidays, weekends or other events. In general, MRs merged
-by the 17th should be present in the release on the 22nd, though it is not guaranteed.
 If it is important that a documentation update is present in that month's release,
 merge it as early as possible.
 

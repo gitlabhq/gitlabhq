@@ -8,6 +8,7 @@ module API
     include Helpers::PaginationStrategies
     include Gitlab::Ci::Artifacts::Logger
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::RackLoadBalancingHelpers
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
@@ -91,9 +92,7 @@ module API
       save_current_token_in_env
 
       if @current_user
-        ::ApplicationRecord
-          .sticking
-          .stick_or_unstick_request(env, :user, @current_user.id)
+        load_balancer_stick_request(::ApplicationRecord, :user, @current_user.id)
       end
 
       @current_user

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:warden_user) { double(:warden, user: double(:user, id: 42)) }
-  let(:single_sticking_object) { Set.new([[ActiveRecord::Base.sticking, :user, 42]]) }
+  let(:single_sticking_object) { Set.new([[ActiveRecord::Base.sticking, :user, 99]]) }
   let(:multiple_sticking_objects) do
     Set.new([
               [ActiveRecord::Base.sticking, :user, 42],
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
 
       expect(middleware).to receive(:clear).twice
 
-      expect(middleware).to receive(:unstick_or_continue_sticking).with(env)
+      expect(middleware).to receive(:find_caught_up_replica).with(env)
       expect(middleware).to receive(:stick_if_necessary).with(env)
 
       expect(app).to receive(:call).with(env).and_return(10)
@@ -41,12 +41,12 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
     end
   end
 
-  describe '#unstick_or_continue_sticking' do
+  describe '#find_caught_up_replica' do
     it 'does not stick if no namespace and identifier could be found' do
       expect(ApplicationRecord.sticking)
-        .not_to receive(:unstick_or_continue_sticking)
+        .not_to receive(:find_caught_up_replica)
 
-      middleware.unstick_or_continue_sticking({})
+      middleware.find_caught_up_replica({})
     end
 
     it 'sticks to the primary if a warden user is found' do
@@ -54,94 +54,125 @@ RSpec.describe Gitlab::Database::LoadBalancing::RackMiddleware, :redis do
 
       Gitlab::Database::LoadBalancing.base_models.each do |model|
         expect(model.sticking)
-          .to receive(:unstick_or_continue_sticking)
+          .to receive(:find_caught_up_replica)
           .with(:user, 42)
       end
 
-      middleware.unstick_or_continue_sticking(env)
+      middleware.find_caught_up_replica(env)
     end
 
     it 'sticks to the primary if a sticking namespace and identifier is found' do
       env = { described_class::STICK_OBJECT => single_sticking_object }
 
       expect(ApplicationRecord.sticking)
-        .to receive(:unstick_or_continue_sticking)
-        .with(:user, 42)
+        .to receive(:find_caught_up_replica)
+        .with(:user, 99)
 
-      middleware.unstick_or_continue_sticking(env)
+      middleware.find_caught_up_replica(env)
     end
 
     it 'sticks to the primary if multiple sticking namespaces and identifiers were found' do
       env = { described_class::STICK_OBJECT => multiple_sticking_objects }
 
       expect(ApplicationRecord.sticking)
-        .to receive(:unstick_or_continue_sticking)
+        .to receive(:find_caught_up_replica)
         .with(:user, 42)
         .ordered
 
       expect(ApplicationRecord.sticking)
-        .to receive(:unstick_or_continue_sticking)
+        .to receive(:find_caught_up_replica)
         .with(:runner, '123456789')
         .ordered
 
       expect(ApplicationRecord.sticking)
-        .to receive(:unstick_or_continue_sticking)
+        .to receive(:find_caught_up_replica)
         .with(:runner, '1234')
         .ordered
 
-      middleware.unstick_or_continue_sticking(env)
+      middleware.find_caught_up_replica(env)
     end
   end
 
   describe '#stick_if_necessary' do
-    it 'does not stick to the primary if not necessary' do
-      expect(ApplicationRecord.sticking)
-        .not_to receive(:stick_if_necessary)
+    let(:env) { { 'warden' => warden, described_class::STICK_OBJECT => stick_object }.compact }
+    let(:stick_object) { nil }
+    let(:write_performed) { true }
+    let(:warden) { warden_user }
 
-      middleware.stick_if_necessary({})
+    before do
+      allow(::Gitlab::Database::LoadBalancing::Session.current).to receive(:performed_write?)
+        .and_return(write_performed)
     end
 
-    it 'sticks to the primary if a warden user is found' do
-      env = { 'warden' => warden_user }
+    subject { middleware.stick_if_necessary(env) }
 
+    it 'sticks to the primary for the user' do
       Gitlab::Database::LoadBalancing.base_models.each do |model|
         expect(model.sticking)
-          .to receive(:stick_if_necessary)
+          .to receive(:stick)
           .with(:user, 42)
       end
 
-      middleware.stick_if_necessary(env)
+      subject
     end
 
-    it 'sticks to the primary if a a single sticking object is found' do
-      env = { described_class::STICK_OBJECT => single_sticking_object }
+    context 'when no write was performed' do
+      let(:write_performed) { false }
 
-      expect(ApplicationRecord.sticking)
-        .to receive(:stick_if_necessary)
-        .with(:user, 42)
+      it 'does not stick to the primary' do
+        expect(ApplicationRecord.sticking)
+          .not_to receive(:stick)
 
-      middleware.stick_if_necessary(env)
+        subject
+      end
     end
 
-    it 'sticks to the primary if multiple sticking namespaces and identifiers were found' do
-      env = { described_class::STICK_OBJECT => multiple_sticking_objects }
+    context 'when there is no user in the env' do
+      let(:warden) { nil }
 
-      expect(ApplicationRecord.sticking)
-        .to receive(:stick_if_necessary)
-        .with(:user, 42)
-        .ordered
+      context 'when there is an explicit single sticking object in the env' do
+        let(:stick_object) { single_sticking_object }
 
-      expect(ApplicationRecord.sticking)
-        .to receive(:stick_if_necessary)
-        .with(:runner, '123456789')
-        .ordered
+        it 'sticks to the single sticking object' do
+          expect(ApplicationRecord.sticking)
+            .to receive(:stick)
+            .with(:user, 99)
 
-      expect(ApplicationRecord.sticking)
-        .to receive(:stick_if_necessary)
-        .with(:runner, '1234')
-        .ordered
+          subject
+        end
+      end
 
-      middleware.stick_if_necessary(env)
+      context 'when there is multiple explicit sticking objects' do
+        let(:stick_object) { multiple_sticking_objects }
+
+        it 'sticks to the sticking objects' do
+          expect(ApplicationRecord.sticking)
+            .to receive(:stick)
+            .with(:user, 42)
+            .ordered
+
+          expect(ApplicationRecord.sticking)
+            .to receive(:stick)
+            .with(:runner, '123456789')
+            .ordered
+
+          expect(ApplicationRecord.sticking)
+            .to receive(:stick)
+            .with(:runner, '1234')
+            .ordered
+
+          subject
+        end
+      end
+
+      context 'when there no explicit sticking objects' do
+        it 'does not stick to the primary' do
+          expect(ApplicationRecord.sticking)
+            .not_to receive(:stick)
+
+          subject
+        end
+      end
     end
   end
 

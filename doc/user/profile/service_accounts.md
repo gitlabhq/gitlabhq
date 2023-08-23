@@ -52,6 +52,9 @@ Prerequisite:
 
 1. Use the returned personal access token value to authenticate with the GitLab API as the service account user.
 
+This service account user is provisioned by the top-level group, but is not yet a group member.
+You must [manually add the service account user to the group](#add-a-service-account-to-subgroup-or-project).
+
 ### Self-managed GitLab
 
 Prerequisite:
@@ -88,27 +91,13 @@ A service account:
 - Can have different roles across multiple subgroups and projects of the same top level group.
 - On GitLab.com, only belongs to one top-level group.
 
-### Add to a subgroup
+### Add to a subgroup or project
 
-You can add the service account to a subgroup [through the UI](../group/index.md#add-users-to-a-group)
-or API.
+You can add the service account to a subgroup or project through the:
 
-To add the service account through the API, call the following endpoint:
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <ACCESS TOKEN>" --data "user_id=<service_account_user_id>&access_level=30" "https://gitlab.example.com/api/v4/groups/<subgroup_id>/members"
-```
-
-### Add to a project
-
-You can add the service account to a project [through the UI](../project/members/index.md#add-users-to-a-project)
-or API.
-
-To add the service account through the API, call the following endpoint:
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>" --data "user_id=<service_account_user_id>&access_level=30" "https://gitlab.example.com/api/v4/projects/<project_id>/members"
-```
+- [API](../../api/members.md#add-a-member-to-a-group-or-project).
+- [Group members UI](../group/index.md#add-users-to-a-group).
+- [Project members UI](../project/members/index.md#add-users-to-a-project).
 
 ### Change a service account role in a subgroup or project
 

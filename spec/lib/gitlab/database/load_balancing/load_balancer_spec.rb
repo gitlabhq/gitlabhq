@@ -469,25 +469,58 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
 
     context 'when none of the replicas are caught up' do
       before do
-        expect(hosts).to all(receive(:caught_up?).with(location).and_return(false))
+        expect(hosts[0]).to receive(:caught_up?).with(location).and_return(false)
+        expect(hosts[1]).to receive(:caught_up?).with(location).and_return(false)
       end
 
-      it 'returns false and does not update the host thread-local variable' do
-        expect(subject).to be false
+      it 'returns NONE_CAUGHT_UP and does not update the host thread-local variable' do
+        expect(subject).to eq(described_class::NONE_CAUGHT_UP)
         expect(set_host).to be_nil
+      end
+
+      it 'notifies caught_up_replica_pick.load_balancing with result false' do
+        expect(ActiveSupport::Notifications).to receive(:instrument)
+          .with('caught_up_replica_pick.load_balancing', { result: false })
+
+        subject
       end
     end
 
-    context 'when any of the replicas is caught up' do
+    context 'when any replica is caught up' do
       before do
-        # `allow` for non-caught up host, because we may not even check it, if will find the caught up one earlier
-        allow(hosts[0]).to receive(:caught_up?).with(location).and_return(false)
+        expect(hosts[0]).to receive(:caught_up?).with(location).and_return(true)
+        expect(hosts[1]).to receive(:caught_up?).with(location).and_return(false)
+      end
+
+      it 'returns ANY_CAUGHT_UP and sets host thread-local variable' do
+        expect(subject).to eq(described_class::ANY_CAUGHT_UP)
+        expect(set_host).to eq(hosts[0])
+      end
+
+      it 'notifies caught_up_replica_pick.load_balancing with result true' do
+        expect(ActiveSupport::Notifications).to receive(:instrument)
+          .with('caught_up_replica_pick.load_balancing', { result: true })
+
+        subject
+      end
+    end
+
+    context 'when all of the replicas is caught up' do
+      before do
+        expect(hosts[0]).to receive(:caught_up?).with(location).and_return(true)
         expect(hosts[1]).to receive(:caught_up?).with(location).and_return(true)
       end
 
-      it 'returns true and sets host thread-local variable' do
-        expect(subject).to be true
-        expect(set_host).to eq(hosts[1])
+      it 'returns ALL_CAUGHT_UP and sets host thread-local variable' do
+        expect(subject).to eq(described_class::ALL_CAUGHT_UP)
+        expect(set_host).to be_in([hosts[0], hosts[1]])
+      end
+
+      it 'notifies caught_up_replica_pick.load_balancing with result true' do
+        expect(ActiveSupport::Notifications).to receive(:instrument)
+          .with('caught_up_replica_pick.load_balancing', { result: true })
+
+        subject
       end
     end
   end

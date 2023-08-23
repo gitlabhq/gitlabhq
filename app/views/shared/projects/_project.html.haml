@@ -26,8 +26,8 @@
   .project-cell{ class: css_class }
     .project-details.gl-pr-9.gl-sm-pr-0.gl-w-full.gl-display-flex.gl-flex-direction-column{ data: { qa_selector: 'project_content', qa_project_name: project.name } }
       .gl-display-flex.gl-align-items-center.gl-flex-wrap
-        %h2.gl-font-base.gl-line-height-20.gl-my-0
-          = link_to project_path(project), class: 'text-plain gl-mr-3 js-prefetch-document' do
+        %h2.gl-font-base.gl-line-height-20.gl-my-0.gl-overflow-wrap-anywhere
+          = link_to project_path(project), class: 'text-plain gl-mr-3 js-prefetch-document', title: project.name do
             %span.namespace-name.gl-font-weight-normal
               - if project.namespace && !skip_namespace
                 = project.namespace.human_name

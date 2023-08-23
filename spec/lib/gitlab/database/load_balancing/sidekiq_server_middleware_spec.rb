@@ -8,6 +8,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
   let(:location) { '0/D525E3A8' }
   let(:wal_locations) { { Gitlab::Database::MAIN_DATABASE_NAME.to_s => location } }
   let(:job) { { "retry" => 3, "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e", 'wal_locations' => wal_locations } }
+  let(:any_caught_up) { Gitlab::Database::LoadBalancing::LoadBalancer::ANY_CAUGHT_UP }
+  let(:all_caught_up) { Gitlab::Database::LoadBalancing::LoadBalancer::ALL_CAUGHT_UP }
+  let(:none_caught_up) { Gitlab::Database::LoadBalancing::LoadBalancer::NONE_CAUGHT_UP }
 
   before do
     skip_feature_flags_yaml_validation
@@ -67,7 +70,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         expect(ActiveRecord::Base.load_balancer)
           .to receive(:select_up_to_date_host)
           .with(location)
-          .and_return(true)
+          .and_return(any_caught_up)
 
         run_middleware do
           expect(Gitlab::Database::LoadBalancing::Session.current.use_primary?).not_to be_truthy
@@ -86,7 +89,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
             allow(lb)
               .to receive(:select_up_to_date_host)
               .with(location)
-              .and_return(true)
+              .and_return(any_caught_up)
           end
         end
 
@@ -100,7 +103,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
           allow(ActiveRecord::Base.load_balancer)
             .to receive(:select_up_to_date_host)
             .with(wal_locations[:main])
-            .and_return(true)
+            .and_return(any_caught_up)
         end
 
         it_behaves_like 'replica is up to date', 'replica'
@@ -133,7 +136,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
           context 'when replica is up to date' do
             before do
               Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-                allow(lb).to receive(:select_up_to_date_host).and_return(true)
+                allow(lb).to receive(:select_up_to_date_host).and_return(any_caught_up)
               end
             end
 
@@ -147,7 +150,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
           context 'when replica is not up to date' do
             before do
               Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-                allow(lb).to receive(:select_up_to_date_host).and_return(false, true)
+                allow(lb).to receive(:select_up_to_date_host).and_return(none_caught_up, any_caught_up)
               end
             end
 
@@ -161,7 +164,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
           context 'when replica is never not up to date' do
             before do
               Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-                allow(lb).to receive(:select_up_to_date_host).and_return(false, false)
+                allow(lb).to receive(:select_up_to_date_host).and_return(none_caught_up, none_caught_up)
               end
             end
 
@@ -267,7 +270,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
       context 'when replica is not up to date' do
         before do
           Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-            allow(lb).to receive(:select_up_to_date_host).and_return(false)
+            allow(lb).to receive(:select_up_to_date_host).and_return(none_caught_up)
           end
         end
 
@@ -282,7 +285,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         .to eq(true)
     end
 
-    it 'returns true when all load balancers are in sync' do
+    it 'returns true when all load balancers are in sync for some replicas' do
       locations = {}
 
       Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
@@ -291,7 +294,23 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         expect(lb)
           .to receive(:select_up_to_date_host)
           .with('foo')
-          .and_return(true)
+          .and_return(any_caught_up)
+      end
+
+      expect(middleware.send(:databases_in_sync?, locations))
+        .to eq(true)
+    end
+
+    it 'returns true when all load balancers are in sync for all replicas' do
+      locations = {}
+
+      Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
+        locations[lb.name] = 'foo'
+
+        expect(lb)
+          .to receive(:select_up_to_date_host)
+          .with('foo')
+          .and_return(all_caught_up)
       end
 
       expect(middleware.send(:databases_in_sync?, locations))
@@ -307,7 +326,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
         allow(lb)
           .to receive(:select_up_to_date_host)
           .with('foo')
-          .and_return(false)
+          .and_return(none_caught_up)
       end
 
       expect(middleware.send(:databases_in_sync?, locations))
@@ -324,7 +343,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
           allow(lb)
             .to receive(:select_up_to_date_host)
                   .with('foo')
-                  .and_return(false)
+                  .and_return(none_caught_up)
         end
 
         expect(middleware.send(:databases_in_sync?, locations))
@@ -346,8 +365,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
   end
 
   def replication_lag!(exists)
+    caught_up = exists ? none_caught_up : all_caught_up
     Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-      allow(lb).to receive(:select_up_to_date_host).and_return(!exists)
+      allow(lb).to receive(:select_up_to_date_host).and_return(caught_up)
     end
   end
 end

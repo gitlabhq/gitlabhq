@@ -1,0 +1,264 @@
+---
+# It maps table_name to {index1: array_of_duplicate_indexes, index2: array_of_duplicate_indexes, ... }
+abuse_reports:
+  idx_abuse_reports_user_id_status_and_category:
+  - index_abuse_reports_on_user_id
+alert_management_http_integrations:
+  index_http_integrations_on_project_and_endpoint:
+  - index_alert_management_http_integrations_on_project_id
+analytics_cycle_analytics_group_stages:
+  index_group_stages_on_group_id_group_value_stream_id_and_name:
+  - index_analytics_ca_group_stages_on_group_id
+approval_project_rules_users:
+  index_approval_project_rules_users_1:
+  - index_approval_project_rules_users_on_approval_project_rule_id
+approvals:
+  index_approvals_on_merge_request_id_and_created_at:
+  - index_approvals_on_merge_request_id
+board_group_recent_visits:
+  index_board_group_recent_visits_on_user_group_and_board:
+  - index_board_group_recent_visits_on_user_id
+board_project_recent_visits:
+  index_board_project_recent_visits_on_user_project_and_board:
+  - index_board_project_recent_visits_on_user_id
+board_user_preferences:
+  index_board_user_preferences_on_user_id_and_board_id:
+  - index_board_user_preferences_on_user_id
+boards_epic_board_recent_visits:
+  index_epic_board_recent_visits_on_user_group_and_board:
+  - index_boards_epic_board_recent_visits_on_user_id
+boards_epic_user_preferences:
+  index_boards_epic_user_preferences_on_board_user_epic_unique:
+  - index_boards_epic_user_preferences_on_board_id
+bulk_import_batch_trackers:
+  i_bulk_import_trackers_id_batch_number:
+  - index_bulk_import_batch_trackers_on_tracker_id
+bulk_import_export_batches:
+  i_bulk_import_export_batches_id_batch_number:
+  - index_bulk_import_export_batches_on_export_id
+ci_job_artifacts:
+  index_ci_job_artifacts_on_id_project_id_and_created_at:
+  - index_ci_job_artifacts_on_project_id
+  index_ci_job_artifacts_on_id_project_id_and_file_type:
+  - index_ci_job_artifacts_on_project_id
+  index_ci_job_artifacts_on_project_id_and_id:
+  - index_ci_job_artifacts_on_project_id
+ci_pipeline_artifacts:
+  index_ci_pipeline_artifacts_on_pipeline_id_and_file_type:
+  - index_ci_pipeline_artifacts_on_pipeline_id
+ci_stages:
+  index_ci_stages_on_pipeline_id_and_name:
+  - index_ci_stages_on_pipeline_id
+  index_ci_stages_on_pipeline_id_and_position:
+  - index_ci_stages_on_pipeline_id
+dast_site_tokens:
+  index_dast_site_token_on_project_id_and_url:
+  - index_dast_site_tokens_on_project_id
+design_management_designs:
+  index_design_management_designs_on_iid_and_project_id:
+  - index_design_management_designs_on_project_id
+design_management_designs_versions:
+  design_management_designs_versions_uniqueness:
+  - index_design_management_designs_versions_on_design_id
+error_tracking_errors:
+  index_et_errors_on_project_id_and_status_and_id:
+  - index_error_tracking_errors_on_project_id
+  index_et_errors_on_project_id_and_status_events_count_id_desc:
+  - index_error_tracking_errors_on_project_id
+  index_et_errors_on_project_id_and_status_first_seen_at_id_desc:
+  - index_error_tracking_errors_on_project_id
+  index_et_errors_on_project_id_and_status_last_seen_at_id_desc:
+  - index_error_tracking_errors_on_project_id
+geo_node_namespace_links:
+  index_geo_node_namespace_links_on_geo_node_id_and_namespace_id:
+  - index_geo_node_namespace_links_on_geo_node_id
+in_product_marketing_emails:
+  index_in_product_marketing_emails_on_user_campaign:
+  - index_in_product_marketing_emails_on_user_id
+  index_in_product_marketing_emails_on_user_track_series:
+  - index_in_product_marketing_emails_on_user_id
+incident_management_oncall_participants:
+  index_inc_mgmnt_oncall_participants_on_user_id_and_rotation_id:
+  - index_inc_mgmnt_oncall_participants_on_oncall_user_id
+incident_management_oncall_schedules:
+  index_im_oncall_schedules_on_project_id_and_iid:
+  - index_incident_management_oncall_schedules_on_project_id
+instance_audit_events_streaming_headers:
+  idx_instance_external_audit_event_destination_id_key_uniq:
+  - idx_headers_instance_external_audit_event_destination_id
+issue_links:
+  index_issue_links_on_source_id_and_target_id:
+  - index_issue_links_on_source_id
+issues:
+  index_issues_on_author_id_and_id_and_created_at:
+  - index_issues_on_author_id
+jira_connect_subscriptions:
+  idx_jira_connect_subscriptions_on_installation_id_namespace_id:
+  - idx_jira_connect_subscriptions_on_installation_id
+list_user_preferences:
+  index_list_user_preferences_on_user_id_and_list_id:
+  - index_list_user_preferences_on_user_id
+member_tasks:
+  index_member_tasks_on_member_id_and_project_id:
+  - index_member_tasks_on_member_id
+members:
+  index_members_on_member_namespace_id_compound:
+  - index_members_on_member_namespace_id
+merge_request_assignees:
+  index_merge_request_assignees_on_merge_request_id_and_user_id:
+  - index_merge_request_assignees_on_merge_request_id
+merge_request_metrics:
+  index_mr_metrics_on_target_project_id_merged_at_nulls_last:
+  - index_merge_request_metrics_on_target_project_id
+merge_requests:
+  index_merge_requests_on_author_id_and_created_at:
+  - index_merge_requests_on_author_id
+  index_merge_requests_on_author_id_and_id:
+  - index_merge_requests_on_author_id
+  index_merge_requests_on_author_id_and_target_project_id:
+  - index_merge_requests_on_author_id
+ml_candidate_params:
+  index_ml_candidate_params_on_candidate_id_on_name:
+  - index_ml_candidate_params_on_candidate_id
+ml_candidates:
+  index_ml_candidates_on_project_id_on_internal_id:
+  - index_ml_candidates_on_project_id
+ml_model_versions:
+  index_ml_model_versions_on_project_id_and_model_id_and_version:
+  - index_ml_model_versions_on_project_id
+ml_models:
+  index_ml_models_on_project_id_and_name:
+  - index_ml_models_on_project_id
+p_ci_runner_machine_builds:
+  index_p_ci_runner_machine_builds_on_runner_machine_id:
+  - index_ci_runner_machine_builds_on_runner_machine_id
+packages_debian_group_distributions:
+  uniq_pkgs_debian_group_distributions_group_id_and_codename:
+  - index_packages_debian_group_distributions_on_group_id
+  uniq_pkgs_debian_group_distributions_group_id_and_suite:
+  - index_packages_debian_group_distributions_on_group_id
+packages_debian_project_distributions:
+  uniq_pkgs_debian_project_distributions_project_id_and_codename:
+  - index_packages_debian_project_distributions_on_project_id
+  uniq_pkgs_debian_project_distributions_project_id_and_suite:
+  - index_packages_debian_project_distributions_on_project_id
+packages_tags:
+  index_packages_tags_on_package_id_and_updated_at:
+  - index_packages_tags_on_package_id
+pages_deployments:
+  index_pages_deployments_unique_path_prefix_by_project:
+  - index_pages_deployments_on_project_id
+pages_domains:
+  index_pages_domains_on_project_id_and_enabled_until:
+  - index_pages_domains_on_project_id
+  index_pages_domains_on_verified_at_and_enabled_until:
+  - index_pages_domains_on_verified_at
+personal_access_tokens:
+  index_pat_on_user_id_and_expires_at:
+  - index_personal_access_tokens_on_user_id
+pm_affected_packages:
+  i_affected_packages_unique_for_upsert:
+  - index_pm_affected_packages_on_pm_advisory_id
+pm_package_version_licenses:
+  i_pm_package_version_licenses_join_ids:
+  - index_pm_package_version_licenses_on_pm_package_version_id
+pm_package_versions:
+  i_pm_package_versions_on_package_id_and_version:
+  - index_pm_package_versions_on_pm_package_id
+project_compliance_standards_adherence:
+  u_project_compliance_standards_adherence_for_reporting:
+  - index_project_compliance_standards_adherence_on_project_id
+project_relation_exports:
+  index_project_export_job_relation:
+  - index_project_relation_exports_on_project_export_job_id
+project_repositories:
+  index_project_repositories_on_shard_id_and_project_id:
+  - index_project_repositories_on_shard_id
+project_topics:
+  index_project_topics_on_project_id_and_topic_id:
+  - index_project_topics_on_project_id
+projects:
+  index_projects_api_path_id_desc:
+  - index_on_projects_path
+  index_projects_on_path_and_id:
+  - index_on_projects_path
+protected_environments:
+  index_protected_environments_on_project_id_and_name:
+  - index_protected_environments_on_project_id
+protected_tags:
+  index_protected_tags_on_project_id_and_name:
+  - index_protected_tags_on_project_id
+related_epic_links:
+  index_related_epic_links_on_source_id_and_target_id:
+  - index_related_epic_links_on_source_id
+requirements_management_test_reports:
+  idx_test_reports_on_issue_id_created_at_and_id:
+  - index_requirements_management_test_reports_on_issue_id
+sbom_component_versions:
+  index_sbom_component_versions_on_component_id_and_version:
+  - index_sbom_component_versions_on_component_id
+sbom_occurrences:
+  index_sbom_occurrences_for_input_file_path_search:
+  - index_sbom_occurrences_on_project_id_component_id
+  - index_sbom_occurrences_on_project_id
+  idx_sbom_occurrences_on_project_id_and_source_id:
+  - index_sbom_occurrences_on_project_id
+  index_sbom_occurrences_on_project_id_and_id:
+  - index_sbom_occurrences_on_project_id
+  index_sbom_occurrences_on_project_id_component_id:
+  - index_sbom_occurrences_on_project_id
+  index_sbom_occurrences_on_project_id_and_component_id_and_id:
+  - index_sbom_occurrences_on_project_id_component_id
+  - index_sbom_occurrences_on_project_id
+  index_sbom_occurrences_on_project_id_and_package_manager:
+  - index_sbom_occurrences_on_project_id
+scan_result_policies:
+  index_scan_result_policies_on_position_in_configuration:
+  - index_scan_result_policies_on_policy_configuration_id
+search_namespace_index_assignments:
+  index_search_namespace_index_assignments_uniqueness_index_type:
+  - index_search_namespace_index_assignments_on_namespace_id
+  index_search_namespace_index_assignments_uniqueness_on_index_id:
+  - index_search_namespace_index_assignments_on_namespace_id
+sprints:
+  sequence_is_unique_per_iterations_cadence_id:
+  - index_sprints_iterations_cadence_id
+taggings:
+  taggings_idx:
+  - index_taggings_on_tag_id
+term_agreements:
+  term_agreements_unique_index:
+  - index_term_agreements_on_user_id
+todos:
+  index_todos_on_author_id_and_created_at:
+  - index_todos_on_author_id
+user_callouts:
+  index_user_callouts_on_user_id_and_feature_name:
+  - index_user_callouts_on_user_id
+users:
+  index_users_on_state_and_user_type:
+  - index_users_on_state
+vulnerabilities:
+  index_vulnerabilities_project_id_state_severity_default_branch:
+  - index_vulnerabilities_on_project_id_and_state_and_severity
+vulnerability_external_issue_links:
+  idx_vulnerability_ext_issue_links_on_vulne_id_and_ext_issue:
+  - index_vulnerability_external_issue_links_on_vulnerability_id
+vulnerability_finding_links:
+  finding_link_name_url_idx:
+  - finding_links_on_vulnerability_occurrence_id
+vulnerability_finding_signatures:
+  idx_vuln_signatures_uniqueness_signature_sha:
+  - index_vulnerability_finding_signatures_on_finding_id
+vulnerability_flags:
+  index_vulnerability_flags_on_unique_columns:
+  - index_vulnerability_flags_on_vulnerability_occurrence_id
+web_hook_logs:
+  index_web_hook_logs_on_web_hook_id_and_created_at:
+  - index_web_hook_logs_part_on_web_hook_id
+web_hooks:
+  index_web_hooks_on_project_id_recent_failures:
+  - index_web_hooks_on_project_id
+work_item_hierarchy_restrictions:
+  index_work_item_hierarchy_restrictions_on_parent_and_child:
+  - index_work_item_hierarchy_restrictions_on_parent_type_id

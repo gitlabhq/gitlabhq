@@ -2759,10 +2759,6 @@ class Project < ApplicationRecord
     []
   end
 
-  def mark_primary_write_location
-    self.class.sticking.mark_primary_write_location(:project, self.id)
-  end
-
   def toggle_ci_cd_settings!(settings_attribute)
     ci_cd_settings.toggle!(settings_attribute)
   end

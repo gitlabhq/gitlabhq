@@ -18,7 +18,7 @@ module Gitlab
           # doesn't linger around.
           clear
 
-          unstick_or_continue_sticking(env)
+          find_caught_up_replica(env)
 
           result = @app.call(env)
 
@@ -35,20 +35,22 @@ module Gitlab
         #
         # Typically this code will only be reachable for Rails requests as
         # Grape data is not yet available at this point.
-        def unstick_or_continue_sticking(env)
+        def find_caught_up_replica(env)
           namespaces_and_ids = sticking_namespaces(env)
 
           namespaces_and_ids.each do |(sticking, namespace, id)|
-            sticking.unstick_or_continue_sticking(namespace, id)
+            sticking.find_caught_up_replica(namespace, id)
           end
         end
 
         # Determine if we need to stick after handling a request.
         def stick_if_necessary(env)
+          return unless ::Gitlab::Database::LoadBalancing::Session.current.performed_write?
+
           namespaces_and_ids = sticking_namespaces(env)
 
           namespaces_and_ids.each do |sticking, namespace, id|
-            sticking.stick_if_necessary(namespace, id)
+            sticking.stick(namespace, id)
           end
         end
 

@@ -25,8 +25,8 @@ module Ci
     end
 
     def execute(params = {})
-      db_all_caught_up =
-        ::Ci::Runner.sticking.all_caught_up?(:runner, runner.id)
+      replica_caught_up =
+        ::Ci::Runner.sticking.find_caught_up_replica(:runner, runner.id, use_primary_on_failure: false)
 
       @metrics.increment_queue_operation(:queue_attempt)
 
@@ -40,7 +40,7 @@ module Ci
       # we might still have some CI builds to be picked. Instead we should say to runner:
       # "Hi, we don't have any more builds now,  but not everything is right anyway, so try again".
       # Runner will retry, but again, against replica, and again will check if replication lag did catch-up.
-      if !db_all_caught_up && !result.build
+      if !replica_caught_up && !result.build
         metrics.increment_queue_operation(:queue_replication_lag)
 
         ::Ci::RegisterJobService::Result.new(nil, nil, nil, false) # rubocop:disable Cop/AvoidReturnFromBlocks

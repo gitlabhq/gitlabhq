@@ -1593,7 +1593,7 @@ class MergeRequest < ApplicationRecord
     # Since another process checks for matching merge request, we need
     # to make it possible to detect whether the query should go to the
     # primary.
-    target_project.mark_primary_write_location
+    target_project.sticking.stick(:project, target_project.id)
   end
 
   def diverged_commits_count

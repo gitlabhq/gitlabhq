@@ -45,9 +45,7 @@ module API
         def current_runner
           token = params[:token]
 
-          if token
-            ::Ci::Runner.sticking.stick_or_unstick_request(env, :runner, token)
-          end
+          load_balancer_stick_request(::Ci::Runner, :runner, token) if token
 
           strong_memoize(:current_runner) do
             ::Ci::Runner.find_by_token(token.to_s)
@@ -111,11 +109,7 @@ module API
         def current_job
           id = params[:id]
 
-          if id
-            ::Ci::Build
-              .sticking
-              .stick_or_unstick_request(env, :build, id)
-          end
+          load_balancer_stick_request(::Ci::Build, :build, id) if id
 
           strong_memoize(:current_job) do
             ::Ci::Build.find_by_id(id)
