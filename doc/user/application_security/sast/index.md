@@ -55,21 +55,16 @@ For more information about our plans for language support in SAST, see the [cate
 
 | Language / framework         | [Analyzer](analyzers.md) used for scanning                                                                   | Minimum supported GitLab version                                                        |
 |------------------------------|--------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| .NET Core<sup>3</sup>        | [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)           | 11.0                                                                                    |
-| .NET Framework<sup>3</sup>   | [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)           | 13.0                                                                                    |
 | .NET (all versions, C# only) | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 15.4                                                                                    |
 | Apex (Salesforce)            | [PMD](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)                                    | 12.1                                                                                    |
 | C                            | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 14.2                                                                                    |
 | C/C++                        | [Flawfinder](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder)                           | 10.7                                                                                    |
 | Elixir (Phoenix)             | [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                                 | 11.1                                                                                    |
-| Go<sup>2</sup>               | [Gosec](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)                                     | 10.7                                                                                    |
 | Go                           | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 14.4                                                                                    |
 | Groovy<sup>1</sup>           | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 11.3 (Gradle) & 11.9 (Maven, SBT)                                                       |
 | Helm Charts                  | [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                                 | 13.1                                                                                    |
 | Java (any build system)      | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 14.10                                                                                   |
-| Java<sup>1, 2</sup>          | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (SBT)                                                |
 | Java (Android)               | [MobSF (beta)](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                              | 13.5                                                                                    |
-| JavaScript<sup>2</sup>       | [ESLint security plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                   | 11.8                                                                                    |
 | JavaScript                   | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 13.10                                                                                   |
 | Kotlin (Android)             | [MobSF (beta)](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                              | 13.5                                                                                    |
 | Kotlin (General)<sup>1</sup> | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 13.11                                                                                   |
@@ -77,24 +72,34 @@ For more information about our plans for language support in SAST, see the [cate
 | Node.js                      | [NodeJsScan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)                          | 11.1                                                                                    |
 | Objective-C (iOS)            | [MobSF (beta)](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                              | 13.5                                                                                    |
 | PHP                          | [phpcs-security-audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit)       | 10.8                                                                                    |
-| Python<sup>2</sup>           | [bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit)                                   | 10.3                                                                                    |
 | Python                       | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 13.9                                                                                    |
-| React<sup>2</sup>            | [ESLint react plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                      | 12.5                                                                                    |
 | React                        | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 13.10                                                                                   |
 | Ruby                         | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                               | 13.9                                                                                    |
 | Ruby on Rails                | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                               | 10.3                                                                                    |
 | Scala (any build system)     | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 16.0                                                                                    |
 | Scala<sup>1</sup>            | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 11.0 (SBT) & 11.9 (Gradle, Maven)                                                       |
 | Swift (iOS)                  | [MobSF (beta)](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                              | 13.5                                                                                    |
-| TypeScript<sup>2</sup>       | [ESLint security plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                   | 11.9, [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/36059) with ESLint in 13.2 |
 | TypeScript                   | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/RULES.md)       | 13.10                                                                                   |
 
 1. The SpotBugs-based analyzer supports [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the
 [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html),
 [Grails](https://grails.org/),
 and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. We recommend using the Semgrep-based analyzer for Ant-based Java or Scala projects.
-1. These analyzers reached [End of Support](https://about.gitlab.com/handbook/product/gitlab-the-product/#end-of-support) status [in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554).
-1. Security Code Scan reached [End of Support](https://about.gitlab.com/handbook/product/gitlab-the-product/#end-of-support) status [in GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/390416).
+
+## End of supported analyzers
+
+GitLab has reached [End of Support](https://about.gitlab.com/handbook/product/gitlab-the-product/#end-of-support) for the below analyzers. These analyzers have been replaced by the Semgrep-based analyzer.
+
+| Language / framework         | [Analyzer](analyzers.md) used for scanning                                                                   | Minimum supported GitLab version         | End Of Support GitLab version                                 |
+|------------------------------|--------------------------------------------------------------------------------------------------------------| ---------------------------------        | ------------------------------------------------------------- |
+| .NET Core        | [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)           | 11.0                                     | [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/390416)  |
+| .NET Framework   | [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)           | 13.0                                     | [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/390416)  |
+| Go                           | [Gosec](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)                                     | 10.7                                     | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
+| Java                         | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (SBT) | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
+| Python                       | [bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit)                                   | 10.3                                     | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
+| React                        | [ESLint react plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                      | 12.5                                     | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
+| JavaScript                   | [ESLint security plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                   | 11.8                                     | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
+| TypeScript                   | [ESLint security plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                   | 11.9, with ESLint in 13.2                | [15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554)  |
 
 ## Multi-project support
 
@@ -151,7 +156,7 @@ Advanced vulnerability tracking is available in a subset of the [supported langu
 - C++, in the Flawfinder analyzer only
 - C#, in the Semgrep-based analyzer only
 - Go, in the Semgrep-based analyzer only
-- Java, in the Semgrep-based and mobsf analyzers
+- Java, in the mobsf, Semgrep-based and SpotBugs analyzers
 - JavaScript, in the Semgrep-based and NodeJS-Scan analyzers
 - Python, in the Semgrep-based analyzer only
 - Ruby, in the Brakeman-based analyzer
