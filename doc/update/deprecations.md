@@ -3423,7 +3423,7 @@ By default, all new applications expire access tokens after 2 hours. In GitLab 1
 had no expiration. In GitLab 15.0, an expiry will be automatically generated for any existing token that does not
 already have one.
 
-You should [opt in](https://docs.gitlab.com/ee/integration/oauth_provider.html#expiring-access-tokens) to expiring
+You should [opt in](https://docs.gitlab.com/ee/integration/oauth_provider.html#access-token-expiration) to expiring
 tokens before GitLab 15.0 is released:
 
 1. Edit the application.

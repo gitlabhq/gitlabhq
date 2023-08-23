@@ -44,6 +44,7 @@ module NotificationRecipients
       def add_recipients(users, type, reason)
         if users.is_a?(ActiveRecord::Relation)
           users = users.includes(:notification_settings)
+            .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421821')
         end
 
         users = Array(users).compact

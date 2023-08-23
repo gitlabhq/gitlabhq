@@ -235,7 +235,6 @@ export const noSearchResultsDescription = __(
   'To widen your search, change or remove filters above',
 );
 export const noSearchResultsTitle = __('Sorry, your filter produced no results');
-export const searchPlaceholder = __('Search or filter results...');
 export const issueRepositioningMessage = __(
   'Issues are being rebalanced at the moment, so manual reordering is disabled.',
 );

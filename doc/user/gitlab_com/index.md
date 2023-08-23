@@ -18,7 +18,7 @@ GitLab.com has the:
 - [`email_confirmation_setting`](../../administration/settings/sign_up_restrictions.md#confirm-user-email)
   setting set to **Hard**.
 - [`unconfirmed_users_delete_after_days`](../../administration/moderate_users.md#automatically-delete-unconfirmed-users)
-  setting set to one day.
+  setting set to three days.
 
 ## Password requirements
 

@@ -44,7 +44,6 @@ describe('WorkItemsListApp component', () => {
       issuablesLoading: true,
       namespace: 'work-items',
       recentSearchesStorageKey: 'issues',
-      searchInputPlaceholder: 'Search or filter results...',
       searchTokens: [],
       showWorkItemTypeIcon: true,
       sortOptions: [],

@@ -1,0 +1,13 @@
+query abuseReportQuery($id: AbuseReportID!) {
+  abuseReport(id: $id) {
+    labels {
+      nodes {
+        id
+        title
+        description
+        color
+        textColor
+      }
+    }
+  }
+}

@@ -13,7 +13,18 @@ This section contains possible solutions for problems you might encounter.
 When you remove a user, they are removed from the group but their account is not deleted
 (see [remove access](scim_setup.md#remove-access)).
 
-When the user is added back to the SCIM app, GitLab cannot create a new user because the user already exists.
+When the user is added back to the SCIM app, GitLab does not create a new user because the user already exists.
+
+From August 11, 2023, the `skip_saml_identity_destroy_during_scim_deprovision` feature flag is enabled.
+
+For a user de-provisioned by SCIM from that date, their SAML identity is not removed.
+
+When that user is added back to the SCIM app:
+
+- Their SCIM identity `active` attribute is set to `true`.
+- They can sign in using SSO.
+
+For users de-provisioned by SCIM before that date, their SAML identity is destroyed.
 
 To solve this problem:
 

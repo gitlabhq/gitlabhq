@@ -24835,6 +24835,7 @@ Represents a vulnerability.
 | <a id="vulnerabilityupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the vulnerability was last updated. |
 | <a id="vulnerabilityusernotescount"></a>`userNotesCount` | [`Int!`](#int) | Number of user notes attached to the vulnerability. |
 | <a id="vulnerabilityuserpermissions"></a>`userPermissions` | [`VulnerabilityPermissions!`](#vulnerabilitypermissions) | Permissions for the current user on the resource. |
+| <a id="vulnerabilityuuid"></a>`uuid` | [`String!`](#string) | UUID of the vulnerability finding. Can be used to look up the associated security report finding. |
 | <a id="vulnerabilityvulnerabilitypath"></a>`vulnerabilityPath` | [`String`](#string) | Path to the vulnerability's details page. |
 | <a id="vulnerabilityweburl"></a>`webUrl` | [`String`](#string) | URL to the vulnerability's details page. |
 

@@ -50,7 +50,6 @@ import reorderServiceDeskIssuesMutation from '../queries/reorder_service_desk_is
 import {
   errorFetchingCounts,
   errorFetchingIssues,
-  searchPlaceholder,
   issueRepositioningMessage,
   reorderError,
   SERVICE_DESK_BOT_USERNAME,
@@ -77,7 +76,6 @@ export default {
   i18n: {
     errorFetchingCounts,
     errorFetchingIssues,
-    searchPlaceholder,
     issueRepositioningMessage,
     reorderError,
   },
@@ -559,7 +557,6 @@ export default {
       namespace="service-desk"
       recent-searches-storage-key="service-desk-issues"
       :error="issuesError"
-      :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
       :issuables-loading="isLoading"
       :initial-filter-value="filterTokens"

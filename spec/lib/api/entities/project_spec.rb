@@ -26,7 +26,7 @@ RSpec.describe ::API::Entities::Project do
     end
   end
 
-  describe '.service_desk_address' do
+  describe '.service_desk_address', feature_category: :service_desk do
     before do
       allow(project).to receive(:service_desk_enabled?).and_return(true)
     end

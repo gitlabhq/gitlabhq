@@ -24,7 +24,7 @@ describe('Filtered Search Manager', () => {
   let manager;
   let tokensContainer;
   const page = 'issues';
-  const placeholder = 'Search or filter results...';
+  const placeholder = 'Search or filter results…';
 
   function dispatchBackspaceEvent(element, eventType) {
     const event = new Event(eventType);

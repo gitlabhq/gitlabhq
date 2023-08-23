@@ -5,6 +5,9 @@ module Admin
     include RequestAwareEntity
 
     expose :id
+    expose :global_id do |report|
+      Gitlab::GlobalId.build(report, id: report.id).to_s
+    end
     expose :status
     expose :message
     expose :created_at, as: :reported_at
@@ -24,9 +27,6 @@ module Admin
       end
     end
 
-    # Kept for backwards compatibility.
-    # TODO: See https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/167?work_item_iid=443
-    # In 16.4 remove or re-use this field after frontend has migrated to using moderate_user_path
     expose :update_path do |report|
       admin_abuse_report_path(report)
     end

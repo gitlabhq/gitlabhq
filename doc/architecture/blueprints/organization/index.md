@@ -269,13 +269,25 @@ Today only Users, Projects, Namespaces and container images are considered routa
 Initially, Organization routes will be [unscoped](../../../development/routing.md).
 Organizations will follow the path `https://gitlab.com/-/organizations/org-name/` as one of the design goals is that the addition of Organizations should not change existing Group and Project paths.
 
-### Impact of the Organization on Other Features
+## Impact of the Organization on Other Features
 
 We want a minimal amount of infrequently written tables in the shared database.
 If we have high write volume or large amounts of data in the shared database then this can become a single bottleneck for scaling and we lose the horizontal scalability objective of Cells.
 With isolation being one of the main requirements to make Cells work, this means that existing features will mostly be scoped to an Organization rather than work across Organizations.
 One exception to this are Users, which are stored in the cluster-wide shared database.
 For a deeper exploration of the impact on select features, see the [list of features impacted by Cells](../cells/index.md#impacted-features).
+
+### Alignment between Organization and Fulfillment
+
+Fulfillment is supportive of an entity above top-level groups. Their perspective is outlined in issue [#1138](https://gitlab.com/gitlab-org/fulfillment-meta/-/issues/1138).
+
+#### Goals of Fulfillment
+
+- Fulfillment has a longstanding plan to move billing from the top-level Group to a level above. This would mean that a license applies to an Organization and all its top-level Groups.
+- Fulfillment uses Zuora for billing and would like to have a 1-to-1 relationship between an Organization and their Zuora entity called BillingAccount. They want to move away from tying a license to a single top-level Group.
+- If a customer needs multiple Organizations, they will need to have a separate BillingAccount per each.
+- Ideally, a self-managed instance has a single Organization by default, which should be enough for most customers.
+- Fulfillment prefers only one additional entity.
 
 ## Iteration Plan
 

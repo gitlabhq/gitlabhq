@@ -249,7 +249,7 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
       create(:ci_runner, :group, groups: [group], description: 'runner-foo')
     end
 
-    let_it_be(:group_runner_job) { create(:ci_build, runner: group_runner) }
+    let_it_be(:group_runner_job) { create(:ci_build, runner: group_runner, project: project) }
 
     context 'when logged in as group maintainer' do
       before do

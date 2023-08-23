@@ -73,7 +73,8 @@ export default {
     },
     searchInputPlaceholder: {
       type: String,
-      required: true,
+      required: false,
+      default: __('Search or filter results…'),
     },
     suggestionsListClass: {
       type: String,

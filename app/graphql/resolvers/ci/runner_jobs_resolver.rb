@@ -18,6 +18,8 @@ module Resolvers
       alias_method :runner, :object
 
       def resolve_with_lookahead(statuses: nil)
+        context[:job_field_authorization] = :read_build # Instruct JobType to perform field-level authorization
+
         jobs = ::Ci::JobsFinder.new(current_user: current_user, runner: runner, params: { scope: statuses }).execute
 
         apply_lookahead(jobs)
@@ -30,7 +32,7 @@ module Resolvers
           previous_stage_jobs_or_needs: [:needs, :pipeline],
           artifacts: [:job_artifacts],
           pipeline: [:user],
-          project: [{ project: [:route, { namespace: [:route] }] }],
+          project: [{ project: [:route, { namespace: [:route] }, :project_feature] }],
           detailed_status: [
             :metadata,
             { pipeline: [:merge_request] },

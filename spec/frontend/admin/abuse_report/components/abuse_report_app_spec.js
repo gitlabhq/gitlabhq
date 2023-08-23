@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AbuseReportApp from '~/admin/abuse_report/components/abuse_report_app.vue';
 import ReportHeader from '~/admin/abuse_report/components/report_header.vue';
 import UserDetails from '~/admin/abuse_report/components/user_details.vue';
+import ReportDetails from '~/admin/abuse_report/components/report_details.vue';
 import ReportedContent from '~/admin/abuse_report/components/reported_content.vue';
 import HistoryItems from '~/admin/abuse_report/components/history_items.vue';
 import { SUCCESS_ALERT } from '~/admin/abuse_report/constants';
@@ -19,13 +20,15 @@ describe('AbuseReportApp', () => {
   const findSimilarReportedContent = () =>
     findSimilarOpenReports().at(0).findComponent(ReportedContent);
   const findHistoryItems = () => wrapper.findComponent(HistoryItems);
+  const findReportDetails = () => wrapper.findComponent(ReportDetails);
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = {}, provide = {}) => {
     wrapper = shallowMountExtended(AbuseReportApp, {
       propsData: {
         abuseReport: mockAbuseReport,
         ...props,
       },
+      provide,
     });
   };
 
@@ -100,6 +103,24 @@ describe('AbuseReportApp', () => {
 
       it('does not render the UserDetails', () => {
         expect(findUserDetails().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('ReportDetails', () => {
+    describe('when abuseReportLabels feature flag is enabled', () => {
+      it('renders ReportDetails', () => {
+        createComponent({}, { glFeatures: { abuseReportLabels: true } });
+
+        expect(findReportDetails().props('reportId')).toBe(mockAbuseReport.report.globalId);
+      });
+    });
+
+    describe('when abuseReportLabels feature flag is disabled', () => {
+      it('does not render ReportDetails', () => {
+        createComponent({}, { glFeatures: { abuseReportLabels: false } });
+
+        expect(findReportDetails().exists()).toBe(false);
       });
     });
   });

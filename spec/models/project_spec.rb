@@ -2380,7 +2380,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#service_desk_address' do
+  describe '#service_desk_address', feature_category: :service_desk do
     let_it_be(:project, reload: true) { create(:project, service_desk_enabled: true) }
 
     subject { project.service_desk_address }
@@ -2424,7 +2424,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'when project_key is set' do
-        it 'returns custom address including the project_key' do
+        it 'returns Service Desk alias address including the project_key' do
           create(:service_desk_setting, project: project, project_key: 'key1')
 
           expect(subject).to eq("foo+#{project.full_path_slug}-key1@bar.com")
@@ -2432,8 +2432,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'when project_key is not set' do
-        it 'returns custom address including the project full path' do
+        it 'returns Service Desk alias address including the project full path' do
           expect(subject).to eq("foo+#{project.full_path_slug}-#{project.project_id}-issue-@bar.com")
+        end
+      end
+    end
+
+    context 'when custom email is enabled' do
+      let(:custom_email) { 'support@example.com' }
+
+      before do
+        setting = ServiceDeskSetting.new(project: project, custom_email: custom_email, custom_email_enabled: true)
+        allow(project).to receive(:service_desk_setting).and_return(setting)
+      end
+
+      it 'returns custom email address' do
+        expect(subject).to eq(custom_email)
+      end
+
+      context 'when feature flag service_desk_custom_email is disabled' do
+        before do
+          stub_feature_flags(service_desk_custom_email: false)
+        end
+
+        it 'returns custom email address' do
+          # Don't check for a specific value. Just make sure it's not the custom email
+          expect(subject).not_to eq(custom_email)
         end
       end
     end

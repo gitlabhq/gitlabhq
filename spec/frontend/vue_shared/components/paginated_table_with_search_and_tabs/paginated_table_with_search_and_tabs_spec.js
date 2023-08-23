@@ -291,7 +291,7 @@ describe('AlertManagementEmptyState', () => {
 
     it('renders the search component for incidents', () => {
       const filteredSearchBar = findFilteredSearchBar();
-      expect(filteredSearchBar.props('searchInputPlaceholder')).toBe('Search or filter results…');
+
       expect(filteredSearchBar.props('tokens')).toEqual([
         {
           type: TOKEN_TYPE_AUTHOR,

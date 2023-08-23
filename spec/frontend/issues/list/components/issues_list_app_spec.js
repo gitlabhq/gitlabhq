@@ -237,7 +237,6 @@ describe('CE IssuesListApp component', () => {
       expect(findIssuableList().props()).toMatchObject({
         namespace: defaultProvide.fullPath,
         recentSearchesStorageKey: 'issues',
-        searchInputPlaceholder: IssuesListApp.i18n.searchPlaceholder,
         sortOptions: getSortOptions({
           hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
           hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,

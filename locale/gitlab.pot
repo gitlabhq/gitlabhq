@@ -5017,6 +5017,9 @@ msgstr ""
 msgid "An error occurred while fetching label colors."
 msgstr ""
 
+msgid "An error occurred while fetching labels, please try again."
+msgstr ""
+
 msgid "An error occurred while fetching participants"
 msgstr ""
 
@@ -5200,6 +5203,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "An error occurred while saving your settings. Try saving them again."
+msgstr ""
+
+msgid "An error occurred while searching for labels, please try again."
 msgstr ""
 
 msgid "An error occurred while triggering the job."
@@ -26253,7 +26259,7 @@ msgstr ""
 msgid "Issues, merge requests, pushes, and comments."
 msgstr ""
 
-msgid "IssuesAnalytics|After you begin creating issues for your projects, we can start tracking and displaying metrics for them"
+msgid "IssuesAnalytics|After you begin creating issues for your projects, we can start tracking and displaying metrics for them."
 msgstr ""
 
 msgid "IssuesAnalytics|Avg/Month:"
@@ -26265,7 +26271,7 @@ msgstr ""
 msgid "IssuesAnalytics|Issues created per month"
 msgstr ""
 
-msgid "IssuesAnalytics|Last 12 months"
+msgid "IssuesAnalytics|Last 12 months (%{chartDateRange})"
 msgstr ""
 
 msgid "IssuesAnalytics|Sorry, your filter produced no results"
@@ -26274,7 +26280,7 @@ msgstr ""
 msgid "IssuesAnalytics|There are no issues for the projects in your group"
 msgstr ""
 
-msgid "IssuesAnalytics|To widen your search, change or remove filters in the filter bar above"
+msgid "IssuesAnalytics|To widen your search, change or remove filters in the filter bar above."
 msgstr ""
 
 msgid "IssuesAnalytics|Total:"
@@ -41793,12 +41799,6 @@ msgid "Search milestones"
 msgstr ""
 
 msgid "Search or filter commits"
-msgstr ""
-
-msgid "Search or filter results"
-msgstr ""
-
-msgid "Search or filter results..."
 msgstr ""
 
 msgid "Search or filter results…"

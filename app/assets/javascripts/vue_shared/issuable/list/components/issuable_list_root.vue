@@ -5,6 +5,7 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -51,7 +52,8 @@ export default {
     },
     searchInputPlaceholder: {
       type: String,
-      required: true,
+      required: false,
+      default: __('Search or filter results…'),
     },
     searchTokens: {
       type: Array,

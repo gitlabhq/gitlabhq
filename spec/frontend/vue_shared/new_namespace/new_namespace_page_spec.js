@@ -1,6 +1,6 @@
 import { GlBreadcrumb } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import LegacyContainer from '~/vue_shared/new_namespace/components/legacy_container.vue';
 import WelcomePage from '~/vue_shared/new_namespace/components/welcome.vue';
 import NewNamespacePage from '~/vue_shared/new_namespace/new_namespace_page.vue';
@@ -14,6 +14,7 @@ describe('Experimental new namespace creation app', () => {
 
   const findWelcomePage = () => wrapper.findComponent(WelcomePage);
   const findLegacyContainer = () => wrapper.findComponent(LegacyContainer);
+  const findTopBar = () => wrapper.findByTestId('top-bar');
   const findBreadcrumb = () => wrapper.findComponent(GlBreadcrumb);
   const findImage = () => wrapper.find('img');
   const findNewTopLevelGroupAlert = () => wrapper.findComponent(NewTopLevelGroupAlert);
@@ -30,7 +31,7 @@ describe('Experimental new namespace creation app', () => {
   };
 
   const createComponent = ({ slots, propsData } = {}) => {
-    wrapper = shallowMount(NewNamespacePage, {
+    wrapper = shallowMountExtended(NewNamespacePage, {
       slots,
       propsData: {
         ...DEFAULT_PROPS,
@@ -165,6 +166,21 @@ describe('Experimental new namespace creation app', () => {
           expect(findNewTopLevelGroupAlert().exists()).toBe(true);
         });
       });
+    });
+  });
+
+  describe('top bar', () => {
+    it('adds "top-bar-fixed" and "container-fluid" classes when new navigation enabled', () => {
+      gon.use_new_navigation = true;
+      createComponent();
+
+      expect(findTopBar().classes()).toEqual(['top-bar-fixed', 'container-fluid']);
+    });
+
+    it('does not add classes when new navigation is not enabled', () => {
+      createComponent();
+
+      expect(findTopBar().classes()).toEqual([]);
     });
   });
 });

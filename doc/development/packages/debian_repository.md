@@ -17,11 +17,13 @@ This guide explains:
 There are two types of [Debian packages](https://www.debian.org/doc/manuals/debian-faq/pkg-basics.en.html): binary and source.
 
 - **Binary** - These are usually `.deb` files and contain executables, config files, and other data. A binary package must match your OS or architecture since it is already compiled. These are usually installed using `dpkg`. Dependencies must already exist on the system when installing a binary package.
-- **Source** - These are usual made up of `.dsc` files and `.gz` files. A source package is compiled on your system. These are fetched and installed with [`apt`](https://manpages.debian.org/bullseye/apt/apt.8.en.html), which then uses `dpkg` after the package is compiled. When you use `apt`, it will fetch and install the necessary dependencies.
+- **Source** - These are usually made up of `.dsc` files and compressed `.tar` files. A source package may be compiled on your system.
 
-The `.deb` file follows the naming convention `<PackageName>_<VersionNumber>-<DebianRevisionNumber>_<DebianArchitecture>.deb`
+Packages are fetched with [`apt`](https://manpages.debian.org/bullseye/apt/apt.8.en.html) and installed with `dpkg`. When you use `apt`, it also fetches and installs any dependencies.
 
-It includes a `control file` that contains metadata about the package. You can view the control file by using `dpkg --info <deb_file>`
+The `.deb` file follows the naming convention `<PackageName>_<VersionNumber>-<DebianRevisionNumber>_<DebianArchitecture>.deb`.
+
+It includes a `control file` that contains metadata about the package. You can view the control file by using `dpkg --info <deb_file>`.
 
 The [`.changes` file](https://www.debian.org/doc/debian-policy/ch-controlfields.html#debian-changes-files-changes) is used to tell the Debian repository how to process updates to packages. It contains a variety of metadata for the package, including architecture, distribution, and version. In addition to the metadata, they contain three lists of checksums: `sha1`, `sha256`, and `md5` in the `Files` section. Refer to [sample_1.2.3~alpha2_amd64.changes](https://gitlab.com/gitlab-org/gitlab/-/blob/dd1e70d3676891025534dc4a1e89ca9383178fe7/spec/fixtures/packages/debian/sample_1.2.3~alpha2_amd64.changes) for an example of how these files are structured.
 
@@ -40,8 +42,8 @@ When it comes to Debian, packages don't exist on their own. They belong to a _di
 ## What does a Debian Repository look like?
 
 - A [Debian repository](https://wiki.debian.org/DebianRepository) is made up of many releases.
-- Each release is given a **codename**. For the public Debian repository, these are things like "bullseye" and "jesse".
-  - There is also the concept of **suites** which are essentially aliases of codenames synonymous with release channels like "stable" and "edge".
+- Each release is given a stable **codename**. For the public Debian repository, these are names like "bullseye" and "jessie".
+  - There is also the concept of **suites** which are essentially aliases of codenames synonymous with release channels like "stable" and "edge". Over time they change and point to different _codenames_.
 - Each release has many **components**. In the public repository, these are "main", "contrib", and "non-free".
 - Each release has many **architectures** such as "amd64", "arm64", or "i386".
 - Each release has a signed **Release** file (see below about [GPG signing](#what-are-gpg-keys-and-what-are-signed-releases))

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
+RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :runner_fleet do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user, :admin) }
@@ -228,7 +228,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       end
     end
 
-    context 'with build running', :freeze_time do
+    context 'with build running' do
       let!(:pipeline) { create(:ci_pipeline, project: project1) }
       let!(:runner_manager) do
         create(:ci_runner_machine,
@@ -355,6 +355,77 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
           'runner1' => a_graphql_entity_for(runner1, owner_project: a_graphql_entity_for(project2)),
           'runner2' => a_graphql_entity_for(runner2, owner_project: a_graphql_entity_for(project1))
         )
+      end
+    end
+
+    describe 'jobs' do
+      let(:query) do
+        %(
+          query {
+            runner(id: "#{project_runner.to_global_id}") { #{runner_query_fragment} }
+          }
+        )
+      end
+
+      context 'with a job from a non-owned project' do
+        let(:runner_query_fragment) do
+          %(
+            id
+            jobs {
+              nodes {
+                id status shortSha finishedAt duration queuedDuration tags webPath
+                project { id }
+                runner { id }
+              }
+            }
+          )
+        end
+
+        let_it_be(:owned_project_owner) { create(:user) }
+        let_it_be(:owned_project) { create(:project) }
+        let_it_be(:other_project) { create(:project) }
+        let_it_be(:project_runner) { create(:ci_runner, :project_type, projects: [other_project, owned_project]) }
+        let_it_be(:owned_project_pipeline) { create(:ci_pipeline, project: owned_project) }
+        let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: other_project) }
+        let_it_be(:owned_build) do
+          create(:ci_build, :running, runner: project_runner, pipeline: owned_project_pipeline,
+            tag_list: %i[a b c], created_at: 1.hour.ago, started_at: 59.minutes.ago, finished_at: 30.minutes.ago)
+        end
+
+        let_it_be(:other_build) do
+          create(:ci_build, :success, runner: project_runner, pipeline: other_project_pipeline,
+            tag_list: %i[d e f], created_at: 30.minutes.ago, started_at: 19.minutes.ago, finished_at: 1.minute.ago)
+        end
+
+        before_all do
+          owned_project.add_owner(owned_project_owner)
+        end
+
+        it 'returns empty values for sensitive fields in non-owned jobs' do
+          post_graphql(query, current_user: owned_project_owner)
+
+          jobs_data = graphql_data_at(:runner, :jobs, :nodes)
+          expect(jobs_data).not_to be_nil
+          expect(jobs_data).to match([
+            a_graphql_entity_for(other_build,
+              status: other_build.status.upcase,
+              project: nil, tags: nil, web_path: nil,
+              runner: a_graphql_entity_for(project_runner),
+              short_sha: other_build.short_sha, finished_at: other_build.finished_at&.iso8601,
+              duration: a_value_within(0.001).of(other_build.duration),
+              queued_duration: a_value_within(0.001).of((other_build.started_at - other_build.queued_at).to_f)),
+            a_graphql_entity_for(owned_build,
+              status: owned_build.status.upcase,
+              project: a_graphql_entity_for(owned_project),
+              tags: owned_build.tag_list.map(&:to_s),
+              web_path: ::Gitlab::Routing.url_helpers.project_job_path(owned_project, owned_build),
+              runner: a_graphql_entity_for(project_runner),
+              short_sha: owned_build.short_sha,
+              finished_at: owned_build.finished_at&.iso8601,
+              duration: a_value_within(0.001).of(owned_build.duration),
+              queued_duration: a_value_within(0.001).of((owned_build.started_at - owned_build.queued_at).to_f))
+          ])
+        end
       end
     end
   end
@@ -501,8 +572,14 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
   end
 
   describe 'for runner with status' do
-    let_it_be(:stale_runner) { create(:ci_runner, description: 'Stale runner 1', created_at: 3.months.ago) }
-    let_it_be(:never_contacted_instance_runner) { create(:ci_runner, description: 'Missing runner 1', created_at: 1.month.ago, contacted_at: nil) }
+    let_it_be(:stale_runner) do
+      create(:ci_runner, description: 'Stale runner 1',
+             created_at: (3.months + 1.second).ago, contacted_at: (3.months + 1.second).ago)
+    end
+
+    let_it_be(:never_contacted_instance_runner) do
+      create(:ci_runner, description: 'Missing runner 1', created_at: 1.month.ago, contacted_at: nil)
+    end
 
     let(:query) do
       %(

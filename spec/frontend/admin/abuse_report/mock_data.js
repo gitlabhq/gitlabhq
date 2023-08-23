@@ -52,6 +52,7 @@ export const mockAbuseReport = {
     ],
   },
   report: {
+    globalId: 'gid://gitlab/AbuseReport/1',
     status: 'open',
     message: 'This is obvious spam',
     reportedAt: '2023-03-29T09:39:50.502Z',
@@ -70,6 +71,43 @@ export const mockAbuseReport = {
       avatarUrl:
         'https://www.gravatar.com/avatar/a2579caffc69ea5d7606f9dd9d8504ba?s=80&d=identicon',
       path: '/reporter',
+    },
+  },
+};
+
+export const mockLabel1 = {
+  id: 'gid://gitlab/AbuseReportLabel/1',
+  title: 'Uno',
+  color: '#F0AD4E',
+  textColor: '#FFFFFF',
+  description: null,
+};
+
+export const mockLabel2 = {
+  id: 'gid://gitlab/AbuseReportLabel/2',
+  title: 'Dos',
+  color: '#F0AD4E',
+  textColor: '#FFFFFF',
+  description: null,
+};
+
+export const mockLabelsQueryResponse = {
+  data: {
+    abuseReportLabels: {
+      nodes: [mockLabel1, mockLabel2],
+      __typename: 'LabelConnection',
+    },
+  },
+};
+
+export const mockReportQueryResponse = {
+  data: {
+    abuseReport: {
+      labels: {
+        nodes: [mockLabel1],
+        __typename: 'LabelConnection',
+      },
+      __typename: 'AbuseReport',
     },
   },
 };

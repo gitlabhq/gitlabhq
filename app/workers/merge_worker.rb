@@ -29,3 +29,5 @@ class MergeWorker # rubocop:disable Scalability/IdempotentWorker
       .execute(merge_request)
   end
 end
+
+MergeWorker.prepend_mod

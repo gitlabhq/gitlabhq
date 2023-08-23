@@ -63,6 +63,7 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
       similar_open_report_hash = user_hash[:similar_open_reports][0]
       expect(similar_open_report_hash.keys).to match_array([
         :id,
+        :global_id,
         :status,
         :message,
         :reported_at,
@@ -100,6 +101,7 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
 
       expect(report_hash.keys).to match_array([
         :id,
+        :global_id,
         :status,
         :message,
         :reported_at,

@@ -966,7 +966,6 @@ export default {
       v-if="hasAnyIssues"
       :namespace="fullPath"
       recent-searches-storage-key="issues"
-      :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
       :has-scoped-labels-feature="hasScopedLabelsFeature"
       :initial-filter-value="filterTokens"

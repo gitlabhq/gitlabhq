@@ -10,9 +10,6 @@ import { STATE_CLOSED } from '../../constants';
 import getWorkItemsQuery from '../queries/get_work_items.query.graphql';
 
 export default {
-  i18n: {
-    searchPlaceholder: __('Search or filter results...'),
-  },
   issuableListTabs,
   components: {
     IssuableList,
@@ -64,7 +61,6 @@ export default {
     :issuables-loading="$apollo.queries.workItems.loading"
     namespace="work-items"
     recent-searches-storage-key="issues"
-    :search-input-placeholder="$options.i18n.searchPlaceholder"
     :search-tokens="searchTokens"
     show-work-item-type-icon
     :sort-options="sortOptions"

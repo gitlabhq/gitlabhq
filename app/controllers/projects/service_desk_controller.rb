@@ -36,7 +36,7 @@ class Projects::ServiceDeskController < Projects::ApplicationController
     service_desk_settings = project.service_desk_setting
 
     {
-      service_desk_address: project.service_desk_address,
+      service_desk_address: project.service_desk_system_address,
       service_desk_enabled: project.service_desk_enabled,
       issue_template_key: service_desk_settings&.issue_template_key,
       template_file_missing: service_desk_settings&.issue_template_missing?,

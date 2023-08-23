@@ -688,6 +688,34 @@ RSpec.describe ApplicationHelper do
     end
 
     it { is_expected.not_to include('logged-out-marketing-header') }
+
+    context 'when show_super_sidebar? is true' do
+      context 'when @hide_top_bar_padding is false' do
+        before do
+          allow(helper).to receive(:show_super_sidebar?).and_return(true)
+          helper.instance_variable_set(:@hide_top_bar_padding, false)
+        end
+
+        it { is_expected.to include('with-top-bar') }
+      end
+
+      context 'when @hide_top_bar_padding is true' do
+        before do
+          allow(helper).to receive(:show_super_sidebar?).and_return(true)
+          helper.instance_variable_set(:@hide_top_bar_padding, true)
+        end
+
+        it { is_expected.not_to include('with-top-bar') }
+      end
+    end
+
+    context 'when show_super_sidebar? is false' do
+      before do
+        allow(helper).to receive(:show_super_sidebar?).and_return(false)
+      end
+
+      it { is_expected.not_to include('with-top-bar') }
+    end
   end
 
   describe '#dispensable_render' do

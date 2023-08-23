@@ -479,7 +479,7 @@ module SearchHelper
     end.to_json
   end
 
-  def search_filter_input_options(type, placeholder = _('Search or filter results...'))
+  def search_filter_input_options(type, placeholder = _('Search or filter results…'))
     opts =
       {
         id: "filtered-search-#{type}",

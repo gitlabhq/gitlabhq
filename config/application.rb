@@ -505,6 +505,15 @@ module Gitlab
           methods: %i(get head)
         end
       end
+
+      # Allow assets to be loaded to web-ide
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/421177
+      allow do
+        origins 'https://*.web-ide.gitlab-static.net'
+        resource '/assets/webpack/*',
+                 credentials: false,
+                 methods: %i(get head)
+      end
     end
 
     # Use caching across all environments

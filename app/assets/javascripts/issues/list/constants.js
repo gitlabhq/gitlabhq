@@ -121,7 +121,6 @@ export const i18n = {
   reorderError: __('An error occurred while reordering issues.'),
   deleteError: __('An error occurred while deleting an issuable.'),
   rssLabel: __('Subscribe to RSS feed'),
-  searchPlaceholder: __('Search or filter results...'),
   upvotes: __('Upvotes'),
   titles: __('Titles'),
   descriptions: __('Descriptions'),

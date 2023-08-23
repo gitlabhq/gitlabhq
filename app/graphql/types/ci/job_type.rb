@@ -8,6 +8,7 @@ module Types
       graphql_name 'CiJob'
 
       present_using ::Ci::BuildPresenter
+      field_class Types::Ci::JobBaseField
 
       connection_type_class Types::LimitedCountableConnectionType
 

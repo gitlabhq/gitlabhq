@@ -2963,7 +2963,11 @@ class Project < ApplicationRecord
   alias_method :service_desk_enabled?, :service_desk_enabled
 
   def service_desk_address
-    service_desk_custom_address || service_desk_incoming_address
+    service_desk_custom_address || service_desk_system_address
+  end
+
+  def service_desk_system_address
+    service_desk_alias_address || service_desk_incoming_address
   end
 
   def service_desk_incoming_address
@@ -2975,12 +2979,19 @@ class Project < ApplicationRecord
     config.address&.gsub(wildcard, "#{full_path_slug}-#{default_service_desk_suffix}")
   end
 
-  def service_desk_custom_address
+  def service_desk_alias_address
     return unless Gitlab::Email::ServiceDeskEmail.enabled?
 
     key = service_desk_setting&.project_key || default_service_desk_suffix
 
     Gitlab::Email::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
+  end
+
+  def service_desk_custom_address
+    return unless Feature.enabled?(:service_desk_custom_email, self)
+    return unless service_desk_setting&.custom_email_enabled?
+
+    service_desk_setting.custom_email
   end
 
   def default_service_desk_suffix

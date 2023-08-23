@@ -1,7 +1,9 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ReportHeader from './report_header.vue';
 import UserDetails from './user_details.vue';
+import ReportDetails from './report_details.vue';
 import ReportedContent from './reported_content.vue';
 import HistoryItems from './history_items.vue';
 
@@ -17,9 +19,11 @@ export default {
     GlAlert,
     ReportHeader,
     UserDetails,
+    ReportDetails,
     ReportedContent,
     HistoryItems,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     abuseReport: {
       type: Object,
@@ -62,6 +66,12 @@ export default {
       @showAlert="showAlert"
     />
     <user-details v-if="abuseReport.user" :user="abuseReport.user" />
+
+    <report-details
+      v-if="glFeatures.abuseReportLabels"
+      :report-id="abuseReport.report.globalId"
+      class="gl-mt-6"
+    />
 
     <reported-content :report="abuseReport.report" data-testid="reported-content" />
 
