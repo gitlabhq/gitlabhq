@@ -6,15 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Repository storage types **(FREE SELF)**
 
-GitLab can be configured to use one or multiple repository storages. These storages can be:
+GitLab can be configured to use one or multiple repository storages. These storages are accessed through either:
 
-- Accessed via [Gitaly](gitaly/index.md), optionally on
-  [its own server](gitaly/configure_gitaly.md#run-gitaly-on-its-own-server).
-- Mounted to the local disk. This [method](repository_storage_paths.md#configure-repository-storage-paths)
-  is deprecated and [scheduled to be removed](https://gitlab.com/groups/gitlab-org/-/epics/2320) in
-  GitLab 14.0.
-- Exposed as an NFS shared volume. This method is deprecated and
-  [scheduled to be removed](https://gitlab.com/groups/gitlab-org/-/epics/3371) in GitLab 14.0.
+- [Gitaly](gitaly/index.md).
+- [Gitaly Cluster](gitaly/index.md#gitaly-cluster) as virtual storage.
 
 In GitLab:
 
@@ -31,14 +26,9 @@ The repository storage types documented here apply to any repository storage def
 
 > **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
 
-Hashed storage stores projects on disk in a location based on a hash of the project's ID. Hashed
-storage is different to [legacy storage](#legacy-storage) where a project is stored based on:
-
-- The project's URL.
-- The folder structure where the repository is stored on disk.
-
-This makes the folder structure immutable and eliminates the need to synchronize state from URLs to
-disk structure. This means that renaming a group, user, or project:
+Hashed storage stores projects on disk in a location based on a hash of the project's ID. This makes the folder
+structure immutable and eliminates the need to synchronize state from URLs to disk structure. This means that renaming a
+group, user, or project:
 
 - Costs only the database transaction.
 - Takes effect immediately.
@@ -131,8 +121,6 @@ To look up a project's name using the `config` file in the `*.git` directory:
 
 ### Hashed object pools
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/1606) in GitLab 12.1.
-
 Object pools are repositories used to deduplicate forks of public and internal projects and
 contain the objects from the source project. Using `objects/info/alternates`, the source project and
 forks use the object pool for shared objects. For more information, see
@@ -152,8 +140,6 @@ This can cause data loss in the regular repositories that depend on the object p
 
 ### Group wiki storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in GitLab 13.5.
-
 Unlike project wikis that are stored in the `@hashed` directory, group wikis are stored in a directory called `@groups`.
 Like project wikis, group wikis follow the hashed storage folder convention, but use a hash of the group ID rather than the project ID.
 
@@ -166,24 +152,26 @@ For example:
 
 ### Gitaly Cluster storage
 
-If Gitaly Cluster is used, Praefect manages storage locations. For more information, see [Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later).
+If Gitaly Cluster is used, Praefect manages storage locations. The internal path used by Praefect for the repository
+differs from the hashed path. For more information, see
+[Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later).
 
 ### Object storage support
 
 This table shows which storable objects are storable in each storage type:
 
-| Storable object  | Legacy storage | Hashed storage | S3 compatible | GitLab version |
-|:-----------------|:---------------|:---------------|:--------------|:---------------|
-| Repository       | Yes            | Yes            | -             | 10.0           |
-| Attachments      | Yes            | Yes            | -             | 10.2           |
-| Avatars          | Yes            | No             | -             | -              |
-| Pages            | Yes            | No             | -             | -              |
-| Docker Registry  | Yes            | No             | -             | -              |
-| CI/CD job logs   | No             | No             | -             | -              |
-| CI/CD artifacts  | No             | No             | Yes           | 9.4 / 10.6     |
-| CI/CD cache      | No             | No             | Yes           | -              |
-| LFS objects      | Yes            | Similar        | Yes           | 10.0 / 10.7    |
-| Repository pools | No             | Yes            | -             | 11.6           |
+| Storable object  | Hashed storage | S3 compatible |
+|:-----------------|:---------------|:--------------|
+| Repository       | Yes            | -             |
+| Attachments      | Yes            | -             |
+| Avatars          | No             | -             |
+| Pages            | No             | -             |
+| Docker Registry  | No             | -             |
+| CI/CD job logs   | No             | -             |
+| CI/CD artifacts  | No             | Yes           |
+| CI/CD cache      | No             | Yes           |
+| LFS objects      | Similar        | Yes           |
+| Repository pools | Yes            | -             |
 
 Files stored in an S3-compatible endpoint can have the same advantages as
 [hashed storage](#hashed-storage), as long as they are not prefixed with
@@ -197,10 +185,7 @@ destroyed and a new one takes place with a different `id`.
 
 #### CI/CD artifacts
 
-CI/CD artifacts are:
-
-- S3-compatible since GitLab 9.4, initially available in [GitLab Premium](https://about.gitlab.com/pricing/).
-- Available in [GitLab Free](https://about.gitlab.com/pricing/) since GitLab 10.6.
+CI/CD artifacts are S3-compatible.
 
 #### LFS objects
 
@@ -215,31 +200,3 @@ storage pattern using two characters and two-level folders, following the Git im
 ```
 
 LFS objects are also [S3-compatible](lfs/index.md#storing-lfs-objects-in-remote-object-storage).
-
-## Legacy storage
-
-WARNING:
-In GitLab 13.0, legacy storage is deprecated. If you haven't migrated to hashed storage yet, check
-the [migration instructions](raketasks/storage.md#migrate-to-hashed-storage). Support for legacy
-storage is [scheduled to be removed](https://gitlab.com/gitlab-org/gitaly/-/issues/1690) in GitLab
-14.0. In GitLab 13.0 and later, switching new projects to legacy storage is not possible. The
-option to choose between hashed and legacy storage in the Admin Area is disabled.
-
-Legacy storage was the storage behavior prior to version GitLab 10.0. For historical reasons,
-GitLab replicated the same mapping structure from the projects URLs:
-
-- Project's repository: `#{namespace}/#{project_name}.git`.
-- Project's wiki: `#{namespace}/#{project_name}.wiki.git`.
-
-This structure enabled you to migrate from existing solutions to GitLab, and for Administrators to
-find where the repository was stored. This approach also had some drawbacks:
-
-- Storage location concentrated a large number of top-level namespaces. The impact could be
-  reduced by [multiple repository storage paths](repository_storage_paths.md).
-- Because backups were a snapshot of the same URL mapping, if you tried to recover a very old
-  backup, you needed to verify whether any project had taken the place of an old removed or renamed
-  project sharing the same URL. This meant that `mygroup/myproject` from your backup may not have
-  been the same original project that was at that same URL today.
-- Any change in the URL needed to be reflected on disk (when groups, users, or projects were
-  renamed. This could add a lot of load in big installations, especially if using any type of
-  network-based file system.
