@@ -339,6 +339,12 @@ It points to the commit you're rolling back to.
 For the rollback to succeed, the deployment process must be defined in
 the job's `script`.
 
+Only the [deployment jobs](../jobs/index.md#deployment-jobs) are run.
+In cases where a previous job generates artifacts that must be regenerated
+on deploy, you must manually run the necessary jobs from the pipelines page.
+For example, if you use Terraform and your `plan` and `apply` commands are separated
+into multiple jobs, you must manually run the jobs to deploy or roll back.
+
 #### Retry or roll back a deployment
 
 If there is a problem with a deployment, you can retry it or roll it back.

@@ -120,7 +120,7 @@ To install `agentk`:
    apiVersion: v1
    kind: Secret
    metadata:
-     name: gitlab-agent-token
+     name: gitlab-agent-token-initial
    type: Opaque
    stringData:
      values.yaml: |-
@@ -175,9 +175,11 @@ To install `agentk`:
          kasAddress: "wss://kas.gitlab.com"  
      valuesFrom:
        - kind: Secret
-         name: gitlab-agent-token
+         name: gitlab-agent-token-initial
          valuesKey: values.yaml
    ```
+
+   The Helm release creates a new secret with the name `gitlab-agent-token`, which is managed by Helm.
 
 1. To verify that `agentk` is installed and running in the cluster, run the following command:
 

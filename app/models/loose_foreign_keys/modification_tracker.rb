@@ -2,10 +2,6 @@
 
 module LooseForeignKeys
   class ModificationTracker
-    MAX_DELETES = 100_000
-    MAX_UPDATES = 50_000
-    MAX_RUNTIME = 30.seconds # must be less than the scheduling frequency of the LooseForeignKeys::CleanupWorker cron worker
-
     delegate :monotonic_time, to: :'Gitlab::Metrics::System'
 
     def initialize
@@ -22,6 +18,18 @@ module LooseForeignKeys
       )
     end
 
+    def max_runtime
+      30.seconds
+    end
+
+    def max_deletes
+      100_000
+    end
+
+    def max_updates
+      50_000
+    end
+
     def add_deletions(table, count)
       @delete_count_by_table[table] += count
       @deletes_counter.increment({ table: table }, count)
@@ -33,9 +41,9 @@ module LooseForeignKeys
     end
 
     def over_limit?
-      @delete_count_by_table.values.sum >= MAX_DELETES ||
-        @update_count_by_table.values.sum >= MAX_UPDATES ||
-        monotonic_time - @start_time >= MAX_RUNTIME
+      @delete_count_by_table.values.sum >= max_deletes ||
+        @update_count_by_table.values.sum >= max_updates ||
+        monotonic_time - @start_time >= max_runtime
     end
 
     def stats

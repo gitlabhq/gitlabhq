@@ -245,7 +245,7 @@ gem 'gitlab-sidekiq-fetcher', path: 'vendor/gems/sidekiq-reliable-fetch', requir
 gem 'fugit', '~> 1.8.1'
 
 # HTTP requests
-gem 'httparty', '~> 0.20.0'
+gem 'httparty', '~> 0.21.0'
 
 # Colored output to console
 gem 'rainbow', '~> 3.0'

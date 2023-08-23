@@ -1,0 +1,16 @@
+query getMergeRequestPipelines($mergeRequestIid: String!, $fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    mergeRequest(iid: $mergeRequestIid) {
+      id
+      pipelines {
+        count
+        nodes {
+          id
+          iid
+          path
+        }
+      }
+    }
+  }
+}

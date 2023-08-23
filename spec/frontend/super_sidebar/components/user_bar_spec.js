@@ -165,7 +165,7 @@ describe('UserBar component', () => {
 
     it('search button should have tooltip', () => {
       const tooltip = getBinding(findSearchButton().element, 'gl-tooltip');
-      expect(tooltip.value).toBe(`Search GitLab <kbd>/</kbd>`);
+      expect(tooltip.value).toBe(`Type <kbd>/</kbd> to search`);
     });
 
     it('should render search modal', () => {
@@ -184,7 +184,7 @@ describe('UserBar component', () => {
         findSearchModal().vm.$emit('hidden');
         await nextTick();
         const tooltip = getBinding(findSearchButton().element, 'gl-tooltip');
-        expect(tooltip.value).toBe(`Search GitLab <kbd>/</kbd>`);
+        expect(tooltip.value).toBe(`Type <kbd>/</kbd> to search`);
       });
     });
   });

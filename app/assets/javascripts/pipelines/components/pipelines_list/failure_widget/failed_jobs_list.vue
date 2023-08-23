@@ -3,8 +3,9 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, sprintf } from '~/locale';
 import { getQueryHeaders } from '~/pipelines/components/graph/utils';
+import { graphqlEtagPipelinePath } from '~/pipelines/utils';
 import getPipelineFailedJobs from '../../../graphql/queries/get_pipeline_failed_jobs.query.graphql';
-import { graphqlEtagPipelinePath, sortJobsByStatus } from './utils';
+import { sortJobsByStatus } from './utils';
 import FailedJobDetails from './failed_job_details.vue';
 
 const POLL_INTERVAL = 10000;

@@ -21829,9 +21829,6 @@ msgstr ""
 msgid "GlobalSearch|Search GitLab"
 msgstr ""
 
-msgid "GlobalSearch|Search GitLab %{kbdOpen}/%{kbdClose}"
-msgstr ""
-
 msgid "GlobalSearch|Search for projects, issues, etc."
 msgstr ""
 
@@ -21860,6 +21857,9 @@ msgid "GlobalSearch|There was an error fetching search autocomplete suggestions.
 msgstr ""
 
 msgid "GlobalSearch|There was an error fetching the \"Syntax Options\" document."
+msgstr ""
+
+msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
 msgstr ""
 
 msgid "GlobalSearch|Type and press the enter key to submit search."
@@ -41804,6 +41804,9 @@ msgstr ""
 msgid "Search or filter results…"
 msgstr ""
 
+msgid "Search or go to…"
+msgstr ""
+
 msgid "Search page"
 msgstr ""
 
@@ -47904,6 +47907,9 @@ msgid "There was an error fetching the top labels for the selected group"
 msgstr ""
 
 msgid "There was an error fetching the variables."
+msgstr ""
+
+msgid "There was an error fetching this merge request's pipelines."
 msgstr ""
 
 msgid "There was an error fetching value stream analytics stages."

@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlButton, GlModalDirective, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import {
   destroyUserCountsManager,
@@ -34,20 +34,21 @@ export default {
       ),
     SuperSidebarToggle,
     BrandLogo,
+    GlIcon,
   },
   i18n: {
     createNew: __('Create new...'),
     homepage: __('Homepage'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
-    search: __('Search'),
     searchKbdHelp: sprintf(
-      s__('GlobalSearch|Search GitLab %{kbdOpen}/%{kbdClose}'),
+      s__('GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search'),
       { kbdOpen: '<kbd>', kbdClose: '</kbd>' },
       false,
     ),
     todoList: __('To-Do list'),
     stopImpersonating: __('Stop impersonating'),
+    searchBtnText: __('Search or go to…'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -128,17 +129,6 @@ export default {
       />
       <create-menu v-if="sidebarData.is_logged_in" :groups="sidebarData.create_new_menu_groups" />
 
-      <gl-button
-        id="super-sidebar-search"
-        v-gl-tooltip.bottom.hover.noninteractive.ds500.html="searchTooltip"
-        v-gl-modal="$options.SEARCH_MODAL_ID"
-        data-testid="super-sidebar-search-button"
-        icon="search"
-        :aria-label="$options.i18n.search"
-        category="tertiary"
-      />
-      <search-modal @shown="hideSearchTooltip" @hidden="showSearchTooltip" />
-
       <user-menu v-if="sidebarData.is_logged_in" :data="sidebarData" />
 
       <gl-button
@@ -201,6 +191,19 @@ export default {
         data-track-label="todos_link"
         data-track-property="nav_core_menu"
       />
+    </div>
+    <div class="gl-px-3 gl-pt-2 gl-pb-3">
+      <button
+        id="super-sidebar-search"
+        v-gl-tooltip.bottom.hover.noninteractive.ds500.html="searchTooltip"
+        v-gl-modal="$options.SEARCH_MODAL_ID"
+        class="counter gl-display-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-inset-border-1-gray-a-08 gl-line-height-1 gl-focus--focus gl-w-full"
+        data-testid="super-sidebar-search-button"
+      >
+        <gl-icon name="search" />
+        {{ $options.i18n.searchBtnText }}
+      </button>
+      <search-modal @shown="hideSearchTooltip" @hidden="showSearchTooltip" />
     </div>
   </div>
 </template>

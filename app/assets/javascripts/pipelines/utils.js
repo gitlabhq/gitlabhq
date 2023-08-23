@@ -154,3 +154,11 @@ export const getPipelineDefaultTab = (url) => {
 
   return null;
 };
+
+export const graphqlEtagPipelinePath = (graphqlPath, pipelineId) => {
+  return `${graphqlPath}pipelines/id/${pipelineId}`;
+};
+
+export const graphqlEtagMergeRequestPipelines = (graphqlPath, mergeRequestId) => {
+  return `${graphqlPath}merge_requests/id/${mergeRequestId}`;
+};

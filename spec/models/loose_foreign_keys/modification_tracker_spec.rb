@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe LooseForeignKeys::ModificationTracker do
+RSpec.describe LooseForeignKeys::ModificationTracker, feature_category: :database do
   subject(:tracker) { described_class.new }
 
   describe '#over_limit?' do
-    it 'is true when deletion MAX_DELETES is exceeded' do
-      stub_const('LooseForeignKeys::ModificationTracker::MAX_DELETES', 5)
+    it 'is true when deletion max_deletes is exceeded' do
+      expect(tracker).to receive(:max_deletes).and_return(5)
 
       tracker.add_deletions('issues', 10)
       expect(tracker).to be_over_limit
@@ -20,7 +20,7 @@ RSpec.describe LooseForeignKeys::ModificationTracker do
     end
 
     it 'is true when deletion MAX_UPDATES is exceeded' do
-      stub_const('LooseForeignKeys::ModificationTracker::MAX_UPDATES', 5)
+      expect(tracker).to receive(:max_updates).and_return(5)
 
       tracker.add_updates('issues', 3)
       tracker.add_updates('issues', 4)
@@ -36,9 +36,11 @@ RSpec.describe LooseForeignKeys::ModificationTracker do
 
     it 'is true when max runtime is exceeded' do
       monotonic_time_before = 1 # this will be the start time
-      monotonic_time_after = described_class::MAX_RUNTIME.to_i + 1 # this will be returned when over_limit? is called
+      monotonic_time_after = 31 # this will be returned when over_limit? is called
 
-      allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(monotonic_time_before, monotonic_time_after)
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(
+        monotonic_time_before, monotonic_time_after
+      )
 
       tracker
 

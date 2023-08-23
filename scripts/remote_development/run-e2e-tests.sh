@@ -7,7 +7,7 @@
 # them to be overridden.
 #
 # For details on how to run this, see the documentation comments at the top of
-# qa/qa/specs/features/ee/browser_ui/3_create/remote_development/create_new_workspace_and_terminate_spec.rb
+# qa/qa/specs/features/ee/browser_ui/3_create/remote_development/with_prerequisite_done/workspace_actions_with_prerequisite_done_spec.rb
 
 DEFAULT_PASSWORD='5iveL!fe'
 
@@ -28,9 +28,8 @@ echo "TEST_INSTANCE_URL: ${TEST_INSTANCE_URL}"
 
 working_directory="$(git rev-parse --show-toplevel)/qa"
 
-# TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/397005
-#       Remove the '--tag quarantine' from below once this test is removed from quarantine
+#  This test is currently quarantined as its only used for local testing, so we have to use the '--tag quarantine'
 (cd "$working_directory" && \
   bundle && \
   bundle exec bin/qa Test::Instance::All "$TEST_INSTANCE_URL" -- \
-  --tag quarantine qa/specs/features/ee/browser_ui/3_create/remote_development/without_setup)
+  --tag quarantine qa/specs/features/ee/browser_ui/3_create/remote_development/with_prerequisite_done/workspace_actions_with_prerequisite_done_spec.rb)

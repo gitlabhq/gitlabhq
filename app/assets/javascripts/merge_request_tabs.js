@@ -93,7 +93,11 @@ function mountPipelines() {
   const { mrWidgetData } = gl;
   const table = new Vue({
     components: {
-      CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
+      CommitPipelinesTable: () => {
+        return gon.features.mrPipelinesGraphql
+          ? import('~/commit/pipelines/pipelines_table_wrapper.vue')
+          : import('~/commit/pipelines/pipelines_table.vue');
+      },
     },
     apolloProvider,
     provide: {
@@ -103,6 +107,8 @@ function mountPipelines() {
       fullPath: pipelineTableViewEl.dataset.fullPath,
       graphqlPath: pipelineTableViewEl.dataset.graphqlPath,
       manualActionsLimit: 50,
+      mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
+      sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
       withFailedJobsDetails: true,
     },
     render(createElement) {

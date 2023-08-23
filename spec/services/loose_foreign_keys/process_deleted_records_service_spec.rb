@@ -162,7 +162,9 @@ RSpec.describe LooseForeignKeys::ProcessDeletedRecordsService, feature_category:
       end
 
       before do
-        stub_const('LooseForeignKeys::ModificationTracker::MAX_DELETES', 2)
+        allow_next_instance_of(LooseForeignKeys::ModificationTracker) do |instance|
+          allow(instance).to receive(:max_deletes).and_return(2)
+        end
         stub_const('LooseForeignKeys::CleanerService::DELETE_LIMIT', 1)
       end
 

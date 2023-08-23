@@ -867,8 +867,8 @@ GEM
     http-cookie (1.0.5)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
-    httparty (0.20.0)
-      mime-types (~> 3.0)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
     i18n (1.12.0)
@@ -1862,7 +1862,7 @@ DEPENDENCIES
   health_check (~> 3.0)
   html-pipeline (~> 2.14.3)
   html2text
-  httparty (~> 0.20.0)
+  httparty (~> 0.21.0)
   icalendar
   invisible_captcha (~> 2.0.0)
   ipaddr (~> 1.2.5)
