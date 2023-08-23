@@ -1,3 +1,9 @@
+/* eslint-disable @gitlab/require-i18n-strings */
+
+// This is temporary mock data that will be removed when completing the following:
+// https://gitlab.com/gitlab-org/gitlab/-/issues/420777
+// https://gitlab.com/gitlab-org/gitlab/-/issues/421441
+
 export const organization = {
   id: 'gid://gitlab/Organization/1',
   __typename: 'Organization',

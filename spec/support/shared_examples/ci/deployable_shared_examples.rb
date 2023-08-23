@@ -96,7 +96,7 @@ RSpec.shared_examples 'a deployable job' do
           ActiveRecord::QueryRecorder.new { subject }
         end
 
-        index_for_build = recorded.log.index { |l| l.include?("UPDATE #{Ci::Build.quoted_table_name}") }
+        index_for_build = recorded.log.index { |l| l.include?("UPDATE #{described_class.quoted_table_name}") }
         index_for_deployment = recorded.log.index { |l| l.include?("UPDATE \"deployments\"") }
 
         expect(index_for_build).to be < index_for_deployment
@@ -259,7 +259,7 @@ RSpec.shared_examples 'a deployable job' do
   describe '#environment_tier_from_options' do
     subject { job.environment_tier_from_options }
 
-    let(:job) { Ci::Build.new(options: options) }
+    let(:job) { described_class.new(options: options) }
     let(:options) { { environment: { deployment_tier: 'production' } } }
 
     it { is_expected.to eq('production') }
@@ -276,7 +276,7 @@ RSpec.shared_examples 'a deployable job' do
 
     let(:options) { { environment: { deployment_tier: 'production' } } }
     let!(:environment) { create(:environment, name: 'production', tier: 'development', project: project) }
-    let(:job) { Ci::Build.new(options: options, environment: 'production', project: project) }
+    let(:job) { described_class.new(options: options, environment: 'production', project: project) }
 
     it { is_expected.to eq('production') }
 
@@ -536,10 +536,6 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#deployment_status' do
-    before do
-      allow_any_instance_of(Ci::Build).to receive(:create_deployment) # rubocop:disable RSpec/AnyInstanceOf
-    end
-
     context 'when job is a last deployment' do
       let(:job) { create(factory_type, :success, environment: 'production', pipeline: pipeline) }
       let(:environment) { create(:environment, name: 'production', project: job.project) }

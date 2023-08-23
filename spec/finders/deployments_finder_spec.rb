@@ -280,6 +280,22 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
           it { is_expected.to match_array([deployment_2]) }
         end
       end
+
+      context 'with mixed deployable types' do
+        let!(:deployment_1) do
+          create(:deployment, :success, project: project, deployable: create(:ci_build))
+        end
+
+        let!(:deployment_2) do
+          create(:deployment, :success, project: project, deployable: create(:ci_bridge))
+        end
+
+        let(:params) { { **base_params, status: 'success' } }
+
+        it 'successfuly fetches deployments' do
+          is_expected.to contain_exactly(deployment_1, deployment_2)
+        end
+      end
     end
 
     context 'at group scope' do

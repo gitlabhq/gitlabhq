@@ -1,7 +1,7 @@
 import { formatProjects, formatGroups } from '~/organizations/groups_and_projects/utils';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { organizationProjects, organizationGroups } from './mock_data';
+import { organizationProjects, organizationGroups } from '~/organizations/mock_data';
 
 describe('formatProjects', () => {
   it('correctly formats the projects', () => {

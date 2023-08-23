@@ -388,6 +388,13 @@ describe('Work Item Note', () => {
       });
     });
 
+    it('confidential information on note', async () => {
+      createComponent();
+      await findNoteActions().vm.$emit('startEditing');
+      const { confidential } = workItemByIidResponseFactory().data.workspace.workItems.nodes[0];
+      expect(findCommentForm().props('isWorkItemConfidential')).toBe(confidential);
+    });
+
     describe('author and user role badges', () => {
       describe('author badge props', () => {
         it.each`

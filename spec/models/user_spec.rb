@@ -219,28 +219,53 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe '#user_detail' do
-      it 'does not persist `user_detail` by default' do
-        expect(create(:user).user_detail).not_to be_persisted
+      context 'when user is not persisted' do
+        let(:user) { build(:user) }
+
+        it 'builds `user_detail`' do
+          expect(user.user_detail).to be_instance_of(UserDetail)
+          expect(user.user_detail).not_to be_persisted
+        end
       end
 
-      shared_examples 'delegated field' do |field|
-        it 'creates `user_detail` when the field is given' do
-          user = create(:user, field => 'my field')
+      context 'when user is persisted' do
+        let(:user) { create(:user) }
 
+        it 'creates `user_detail`' do
+          expect(UserDetail.exists?(user_id: user.id)).to eq(false)
+
+          user.user_detail
+
+          expect(UserDetail.exists?(user_id: user.id)).to eq(true)
+
+          expect(user.user_detail).to be_instance_of(UserDetail)
           expect(user.user_detail).to be_persisted
-          expect(user.user_detail[field]).to eq('my field')
         end
+      end
 
-        it 'delegates to `user_detail`' do
-          user = create(:user, field => 'my field')
+      shared_examples 'delegated field' do |field, value = 'field value'|
+        context "when #{field} field" do
+          it 'creates `user_detail` when the field is given', :aggregate_failures do
+            user = create(:user, field => value)
 
-          expect(user.public_send(field)).to eq(user.user_detail[field])
-        end
+            expect(user.user_detail).to be_persisted
+            expect(user.user_detail[field]).to eq(value)
+          end
 
-        it 'creates `user_detail` when first updated' do
-          user = create(:user)
+          it 'delegates the field to `user_detail`' do
+            user = create(:user, field => value)
 
-          expect { user.update!(field => 'my field') }.to change { user.user_detail.persisted? }.from(false).to(true)
+            expect(user.public_send(field)).to eq(user.user_detail[field])
+          end
+
+          it 'creates `user_detail` when the field is first updated', :aggregate_failures do
+            user = create(:user)
+
+            user.update!(field => value)
+
+            expect(user.user_detail).to be_persisted
+            expect(user.user_detail[field]).to eq(value)
+          end
         end
       end
 
@@ -250,36 +275,27 @@ RSpec.describe User, feature_category: :user_profile do
       it_behaves_like 'delegated field', :skype
       it_behaves_like 'delegated field', :location
       it_behaves_like 'delegated field', :organization
+      it_behaves_like 'delegated field', :website_url, 'https://example.com'
+      it_behaves_like 'delegated field', :pronouns, 'they/them'
+      it_behaves_like 'delegated field', :pronunciation, 'uhg-zaam-pl'
 
-      it 'creates `user_detail` when `website_url` is given' do
-        user = create(:user, website_url: 'https://example.com')
+      context 'when race condition' do
+        it 'handles it properly' do
+          user = create(:user)
+          stale_user = described_class.find(user.id)
 
-        expect(user.user_detail).to be_persisted
-        expect(user.user_detail.website_url).to eq('https://example.com')
-      end
+          user.user_detail
+          stale_user.user_detail
 
-      it 'delegates `website_url` to `user_detail`' do
-        user = create(:user, website_url: 'http://example.com')
+          user.update!(bio: 'hello')
 
-        expect(user.website_url).to eq(user.user_detail.website_url)
-      end
+          expect { stale_user.update!(pronunciation: 'my-pronunciation') }.not_to raise_error
 
-      it 'creates `user_detail` when `website_url` is first updated' do
-        user = create(:user)
+          user.reload
 
-        expect { user.update!(website_url: 'https://example.com') }.to change { user.user_detail.persisted? }.from(false).to(true)
-      end
-
-      it 'delegates `pronouns` to `user_detail`' do
-        user = create(:user, pronouns: 'they/them')
-
-        expect(user.pronouns).to eq(user.user_detail.pronouns)
-      end
-
-      it 'delegates `pronunciation` to `user_detail`' do
-        user = create(:user, name: 'Example', pronunciation: 'uhg-zaam-pl')
-
-        expect(user.pronunciation).to eq(user.user_detail.pronunciation)
+          expect(user.bio).to eq('hello')
+          expect(user.pronunciation).to eq('my-pronunciation')
+        end
       end
     end
 
@@ -450,7 +466,7 @@ RSpec.describe User, feature_category: :user_profile do
 
   describe 'validations' do
     describe 'password' do
-      let!(:user) { build_stubbed(:user) }
+      let!(:user) { build_stubbed(:user, user_detail: build_stubbed(:user_detail)) }
 
       before do
         allow(Devise).to receive(:password_length).and_return(8..128)
@@ -622,7 +638,7 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context 'when username is changed' do
-        let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:user_namespace)) }
+        let(:user) { build_stubbed(:user, username: 'old_path', namespace: build_stubbed(:user_namespace), user_detail: build_stubbed(:user_detail)) }
 
         it 'validates move_dir is allowed for the namespace' do
           expect(user.namespace).to receive(:any_project_has_container_registry_tags?).and_return(true)

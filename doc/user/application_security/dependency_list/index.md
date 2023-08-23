@@ -73,6 +73,7 @@ Dependency paths are supported for the following package managers:
 - [NuGet](https://www.nuget.org/)
 - [Yarn 1.x](https://classic.yarnpkg.com/lang/en/)
 - [sbt](https://www.scala-sbt.org)
+- [Conan](https://conan.io)
 
 ### Licenses
 

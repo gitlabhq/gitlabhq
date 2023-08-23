@@ -74,6 +74,11 @@ export default {
       required: false,
       default: false,
     },
+    isWorkItemConfidential: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -263,6 +268,7 @@ export default {
             :work-item-id="workItemId"
             :autofocus="autofocus"
             :comment-button-text="commentButtonText"
+            :is-work-item-confidential="isWorkItemConfidential"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
             @error="$emit('error', $event)"

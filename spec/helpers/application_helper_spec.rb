@@ -203,7 +203,7 @@ RSpec.describe ApplicationHelper do
   describe '#linkedin_url?' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:user) { build_stubbed(:user) }
+    let(:user) { build_stubbed(:user, user_detail: build_stubbed(:user_detail)) }
 
     subject { helper.linkedin_url(user) }
 
@@ -230,7 +230,7 @@ RSpec.describe ApplicationHelper do
   describe '#twitter_url?' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:user) { build_stubbed(:user) }
+    let(:user) { build_stubbed(:user, user_detail: build_stubbed(:user_detail)) }
 
     subject { helper.twitter_url(user) }
 

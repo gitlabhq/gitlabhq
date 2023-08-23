@@ -65,6 +65,11 @@ export default {
       required: false,
       default: false,
     },
+    isWorkItemConfidential: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -235,6 +240,7 @@ export default {
                       :autocomplete-data-sources="autocompleteDataSources"
                       :markdown-preview-path="markdownPreviewPath"
                       :is-internal-thread="note.internal"
+                      :is-work-item-confidential="isWorkItemConfidential"
                       @startReplying="showReplyForm"
                       @cancelEditing="hideReplyForm"
                       @replied="onReplied"

@@ -17,7 +17,6 @@ module Gitlab
           # Usage
           p :seats_in_subscription
           p :seats_currently_in_use
-          link :see_seats_usage
           p :max_seats_used
           p :seats_owed
 

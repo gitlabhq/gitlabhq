@@ -558,6 +558,13 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   upgrading to 15.2.0 or later:
 
   1. Ensure all GitLab web nodes are running GitLab 15.1.Z.
+  1. If you run [GitLab on Kubernetes](https://docs.gitlab.com/charts/installation/) by using the cloud native GitLab Helm chart, make sure that all
+     webservice pods are running GitLab 15.1.Z:
+
+     ```shell
+     kubectl get pods -l app=webservice -o custom-columns=webservice-image:{.spec.containers[0].image},workhorse-image:{.spec.containers[1].image}
+     ```
+
   1. [Enable the `active_support_hash_digest_sha256` feature flag](../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to switch `ActiveSupport::Digest` to use SHA256:
 
      1. [Start the rails console](../../administration/operations/rails_console.md)

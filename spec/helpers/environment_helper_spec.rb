@@ -22,6 +22,15 @@ RSpec.describe EnvironmentHelper, feature_category: :environment_management do
       end
     end
 
+    context 'when deploying from a bridge' do
+      it 'renders a span tag' do
+        deploy = build(:deployment, deployable: create(:ci_bridge), status: :success)
+        html = helper.render_deployment_status(deploy)
+
+        expect(html).to have_css('span.ci-status.ci-success')
+      end
+    end
+
     context 'for a blocked deployment' do
       subject { helper.render_deployment_status(deployment) }
 

@@ -197,30 +197,6 @@ module Gitlab
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
-          # @note Defined as +link :see_seats_usage+
-          # Clicks +see_seats_usage+
-          def see_seats_usage
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::Billing.perform do |billing|
-          #     expect(billing.see_seats_usage_element).to exist
-          #   end
-          # @return [Watir::Link] The raw +Link+ element
-          def see_seats_usage_element
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::Billing.perform do |billing|
-          #     expect(billing).to be_see_seats_usage
-          #   end
-          # @return [Boolean] true if the +see_seats_usage+ element is present on the page
-          def see_seats_usage?
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
           # @note Defined as +p :max_seats_used+
           # @return [String] The text content or value of +max_seats_used+
           def max_seats_used

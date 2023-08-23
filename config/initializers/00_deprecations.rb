@@ -44,7 +44,8 @@ else
     # https://gitlab.com/gitlab-org/gitlab/-/issues/414556
     /Merging .* no longer maintain both conditions, and will be replaced by the latter in Rails 7\.0/,
     # https://gitlab.com/gitlab-org/gitlab/-/issues/415890
-    /(Date|Time|TimeWithZone)#to_s.+ is deprecated/
+    /(Date|Time|TimeWithZone)#to_s.+ is deprecated/,
+    /Sum of non-numeric elements requires an initial argument/
   ]
 
   view_component_3_warnings = [

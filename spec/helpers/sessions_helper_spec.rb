@@ -54,7 +54,7 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
   describe '#unconfirmed_verification_email?', :freeze_time do
     using RSpec::Parameterized::TableSyntax
 
-    let(:user) { build_stubbed(:user) }
+    let(:user) { build_stubbed(:user, user_detail: build_stubbed(:user_detail)) }
     let(:token_valid_for) { ::Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES }
 
     subject { helper.unconfirmed_verification_email?(user) }
@@ -101,7 +101,7 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
   end
 
   describe '#verification_data' do
-    let(:user) { build_stubbed(:user) }
+    let(:user) { build_stubbed(:user, user_detail: build_stubbed(:user_detail)) }
 
     it 'returns the expected data' do
       expect(helper.verification_data(user)).to eq({

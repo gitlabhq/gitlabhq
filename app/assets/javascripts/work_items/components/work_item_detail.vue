@@ -600,6 +600,7 @@ export default {
               :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
               :can-set-work-item-metadata="canAssignUnassignUser"
               :report-abuse-path="reportAbusePath"
+              :is-work-item-confidential="workItem.confidential"
               class="gl-pt-5"
               @error="updateError = $event"
               @has-notes="updateHasNotes"

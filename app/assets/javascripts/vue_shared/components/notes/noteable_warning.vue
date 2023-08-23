@@ -6,6 +6,9 @@ const noteableTypeText = {
   Issue: __('issue'),
   Epic: __('epic'),
   MergeRequest: __('merge request'),
+  Task: __('task'),
+  KeyResult: __('key result'),
+  Objective: __('objective'),
 };
 
 export default {

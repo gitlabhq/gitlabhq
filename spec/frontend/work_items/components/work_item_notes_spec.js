@@ -88,6 +88,7 @@ describe('WorkItemNotes component', () => {
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
     isModal = false,
+    isWorkItemConfidential = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
@@ -106,6 +107,7 @@ describe('WorkItemNotes component', () => {
         workItemType: 'task',
         reportAbusePath: '/report/abuse/path',
         isModal,
+        isWorkItemConfidential,
       },
       stubs: {
         GlModal: stubComponent(GlModal, { methods: { show: showModal } }),
@@ -343,5 +345,15 @@ describe('WorkItemNotes component', () => {
         noteableId: mockWorkItemId,
       });
     });
+  });
+
+  it('passes confidential props when the work item is confidential', async () => {
+    createComponent({
+      isWorkItemConfidential: true,
+      defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
+    });
+    await waitForPromises();
+
+    expect(findWorkItemCommentNoteAtIndex(0).props('isWorkItemConfidential')).toBe(true);
   });
 });

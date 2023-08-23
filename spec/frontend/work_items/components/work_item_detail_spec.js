@@ -586,7 +586,10 @@ describe('WorkItemDetail component', () => {
       createComponent();
       await waitForPromises();
 
+      const { confidential } = workItemQueryResponse.data.workspace.workItems.nodes[0];
+
       expect(findNotesWidget().exists()).toBe(true);
+      expect(findNotesWidget().props('isWorkItemConfidential')).toBe(confidential);
     });
   });
 

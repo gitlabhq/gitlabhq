@@ -111,6 +111,10 @@ FactoryBot.define do
       last_sign_in_ip { '127.0.0.1' }
     end
 
+    trait :with_user_detail do
+      after :build, &:user_detail
+    end
+
     trait :with_credit_card_validation do
       after :create do |user|
         create :credit_card_validation, user: user

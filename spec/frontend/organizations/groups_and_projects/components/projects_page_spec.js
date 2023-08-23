@@ -9,7 +9,7 @@ import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { organizationProjects } from '../mock_data';
+import { organizationProjects } from '~/organizations/mock_data';
 
 jest.mock('~/alert');
 

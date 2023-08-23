@@ -1,8 +1,4 @@
-import {
-  organization,
-  organizationProjects,
-  organizationGroups,
-} from 'jest/organizations/groups_and_projects/mock_data';
+import { organization, organizationProjects, organizationGroups } from '../../mock_data';
 
 export default {
   Query: {

@@ -67,7 +67,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           get api(members_url, maintainer)
         end
 
-        project.add_developer(create(:user))
+        project.add_developer(create(:user, :with_user_detail))
 
         expect do
           get api(members_url, maintainer)

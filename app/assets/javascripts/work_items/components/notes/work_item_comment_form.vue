@@ -3,11 +3,13 @@ import { GlButton, GlFormCheckbox, GlIcon, GlTooltipDirective } from '@gitlab/ui
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
-import { STATE_OPEN, TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { STATE_OPEN, TRACKING_CATEGORY_SHOW, TASK_TYPE_NAME } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import WorkItemStateToggleButton from '~/work_items/components/work_item_state_toggle_button.vue';
+import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 
 export default {
   i18n: {
@@ -22,6 +24,7 @@ export default {
     markdownDocsPath: helpPagePath('user/markdown'),
   },
   components: {
+    CommentFieldLayout,
     GlButton,
     MarkdownEditor,
     GlFormCheckbox,
@@ -89,6 +92,11 @@ export default {
       required: false,
       default: false,
     },
+    isWorkItemConfidential: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -118,6 +126,23 @@ export default {
     },
     commentButtonTextComputed() {
       return this.isNoteInternal ? this.$options.i18n.addInternalNote : this.commentButtonText;
+    },
+    workItemDocPath() {
+      return this.workItemType === TASK_TYPE_NAME ? 'user/tasks.html' : 'user/okrs.html';
+    },
+    workItemDocAnchor() {
+      return this.workItemType === TASK_TYPE_NAME ? 'confidential-tasks' : 'confidential-okrs';
+    },
+    getWorkItemData() {
+      return {
+        confidential: this.isWorkItemConfidential,
+        confidential_issues_docs_path: helpPagePath(this.workItemDocPath, {
+          anchor: this.workItemDocAnchor,
+        }),
+      };
+    },
+    workItemTypeKey() {
+      return capitalizeFirstCharacter(this.workItemType).replace(' ', '');
     },
   },
   methods: {
@@ -158,66 +183,73 @@ export default {
 <template>
   <div class="timeline-discussion-body gl-overflow-visible!">
     <div class="note-body gl-p-0! gl-overflow-visible!">
-      <form class="common-note-form gfm-form js-main-target-form gl-flex-grow-1">
-        <markdown-editor
-          :value="commentText"
-          :render-markdown-path="markdownPreviewPath"
-          :markdown-docs-path="$options.constantOptions.markdownDocsPath"
-          :autocomplete-data-sources="autocompleteDataSources"
-          :form-field-props="formFieldProps"
-          :add-spacing-classes="false"
-          data-testid="work-item-add-comment"
-          class="gl-mb-5"
-          use-bottom-toolbar
-          supports-quick-actions
-          :autofocus="autofocus"
-          @input="setCommentText"
-          @keydown.meta.enter="$emit('submitForm', { commentText, isNoteInternal })"
-          @keydown.ctrl.enter="$emit('submitForm', { commentText, isNoteInternal })"
-          @keydown.esc.stop="cancelEditing"
-        />
-        <gl-form-checkbox
-          v-if="isNewDiscussion"
-          v-model="isNoteInternal"
-          class="gl-mb-2"
-          data-testid="internal-note-checkbox"
+      <form class="common-note-form gfm-form js-main-target-form gl-flex-grow-1 new-note">
+        <comment-field-layout
+          :with-alert-container="isWorkItemConfidential"
+          :noteable-data="getWorkItemData"
+          :noteable-type="workItemTypeKey"
         >
-          {{ $options.i18n.internal }}
-          <gl-icon
-            v-gl-tooltip:tooltipcontainer.bottom
-            name="question-o"
-            :size="16"
-            :title="$options.i18n.internalVisibility"
-            class="gl-text-blue-500"
+          <markdown-editor
+            :value="commentText"
+            :render-markdown-path="markdownPreviewPath"
+            :markdown-docs-path="$options.constantOptions.markdownDocsPath"
+            :autocomplete-data-sources="autocompleteDataSources"
+            :form-field-props="formFieldProps"
+            :add-spacing-classes="false"
+            data-testid="work-item-add-comment"
+            use-bottom-toolbar
+            supports-quick-actions
+            :autofocus="autofocus"
+            @input="setCommentText"
+            @keydown.meta.enter="$emit('submitForm', { commentText, isNoteInternal })"
+            @keydown.ctrl.enter="$emit('submitForm', { commentText, isNoteInternal })"
+            @keydown.esc.stop="cancelEditing"
           />
-        </gl-form-checkbox>
-        <gl-button
-          category="primary"
-          variant="confirm"
-          data-testid="confirm-button"
-          :disabled="!commentText.length"
-          :loading="isSubmitting"
-          @click="$emit('submitForm', { commentText, isNoteInternal })"
-          >{{ commentButtonTextComputed }}
-        </gl-button>
-        <work-item-state-toggle-button
-          v-if="isNewDiscussion"
-          class="gl-ml-3"
-          :work-item-id="workItemId"
-          :work-item-state="workItemState"
-          :work-item-type="workItemType"
-          can-update
-          @error="$emit('error', $event)"
-        />
-        <gl-button
-          v-else
-          data-testid="cancel-button"
-          category="primary"
-          class="gl-ml-3"
-          :loading="updateInProgress"
-          @click="cancelEditing"
-          >{{ $options.i18n.cancelButtonText }}
-        </gl-button>
+        </comment-field-layout>
+        <div class="note-form-actions">
+          <gl-form-checkbox
+            v-if="isNewDiscussion"
+            v-model="isNoteInternal"
+            class="gl-mb-2"
+            data-testid="internal-note-checkbox"
+          >
+            {{ $options.i18n.internal }}
+            <gl-icon
+              v-gl-tooltip:tooltipcontainer.bottom
+              name="question-o"
+              :size="16"
+              :title="$options.i18n.internalVisibility"
+              class="gl-text-blue-500"
+            />
+          </gl-form-checkbox>
+          <gl-button
+            category="primary"
+            variant="confirm"
+            data-testid="confirm-button"
+            :disabled="!commentText.length"
+            :loading="isSubmitting"
+            @click="$emit('submitForm', { commentText, isNoteInternal })"
+            >{{ commentButtonTextComputed }}
+          </gl-button>
+          <work-item-state-toggle-button
+            v-if="isNewDiscussion"
+            class="gl-ml-3"
+            :work-item-id="workItemId"
+            :work-item-state="workItemState"
+            :work-item-type="workItemType"
+            can-update
+            @error="$emit('error', $event)"
+          />
+          <gl-button
+            v-else
+            data-testid="cancel-button"
+            category="primary"
+            class="gl-ml-3"
+            :loading="updateInProgress"
+            @click="cancelEditing"
+            >{{ $options.i18n.cancelButtonText }}
+          </gl-button>
+        </div>
       </form>
     </div>
   </div>

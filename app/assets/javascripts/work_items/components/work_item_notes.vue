@@ -79,6 +79,11 @@ export default {
       type: String,
       required: true,
     },
+    isWorkItemConfidential: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -124,6 +129,7 @@ export default {
         isNewDiscussion: true,
         markdownPreviewPath: this.markdownPreviewPath,
         autocompleteDataSources: this.autocompleteDataSources,
+        isWorkItemConfidential: this.isWorkItemConfidential,
       };
     },
     notesArray() {
@@ -366,6 +372,7 @@ export default {
                 :markdown-preview-path="markdownPreviewPath"
                 :assignees="assignees"
                 :can-set-work-item-metadata="canSetWorkItemMetadata"
+                :is-work-item-confidential="isWorkItemConfidential"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
                 @reportAbuse="reportAbuse(true, $event)"
                 @error="$emit('error', $event)"
