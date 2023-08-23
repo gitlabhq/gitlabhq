@@ -35,7 +35,7 @@ You can execute your job in one of the following Windows versions:
 
 | Version tag    | Status        |
 |----------------|---------------|
-| `windows-1809` | `maintenance` |
+| `windows-1809` | `Beta`        |
 
 You can find a full list of available pre-installed software in
 the [pre-installed software documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/main/cookbooks/preinstalled-software/README.md).
@@ -81,16 +81,15 @@ test:
     - echo "running scripts in the test job"
 ```
 
-## Limitations and known issues
+## Known issues
 
-- All the limitations mentioned in our [Beta definition](../../../policy/experiment-beta-support.md#beta).
-- The average provisioning time for a new Windows VM is 5 minutes.
-  This means that you may notice slower build start times
-  on the Windows runner fleet during the beta. In a future
-  release we intend to update the autoscaler to enable
-  the pre-provisioning of virtual machines. This is intended to significantly reduce
-  the time it takes to provision a VM on the Windows fleet. You can
-  follow along in the [related issue](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/issues/32).
+- For more information about support for Beta features, see [Beta](../../../policy/experiment-beta-support.md#beta).
+- The average provisioning time for a new Windows virtual machine (VM) is five minutes, so
+  you might notice slower start times for builds on the Windows runner
+  fleet during the Beta. Updating the autoscaler to enable the pre-provisioning
+  of virtual machines is proposed in a future release. This update is intended to
+  significantly reduce the time it takes to provision a VM on the Windows fleet.
+  For more information, see [issue 32](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/issues/32).
 - The Windows runner fleet may be unavailable occasionally
   for maintenance or updates.
 - The job may stay in a pending state for longer than the

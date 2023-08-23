@@ -11849,7 +11849,6 @@ CREATE TABLE application_settings (
     encrypted_jitsu_administrator_password_iv bytea,
     dashboard_limit_enabled boolean DEFAULT false NOT NULL,
     dashboard_limit integer DEFAULT 0 NOT NULL,
-    dashboard_notification_limit integer DEFAULT 0 NOT NULL,
     can_create_group boolean DEFAULT true NOT NULL,
     lock_maven_package_requests_forwarding boolean DEFAULT false NOT NULL,
     lock_pypi_package_requests_forwarding boolean DEFAULT false NOT NULL,
@@ -34195,8 +34194,6 @@ CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_req
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
 CREATE INDEX tmp_idx_packages_on_project_id_when_npm_not_pending_destruction ON packages_packages USING btree (project_id) WHERE ((package_type = 2) AND (status <> 4));
-
-CREATE INDEX tmp_idx_vuln_reads_where_dismissal_reason_null ON vulnerability_reads USING btree (id) WHERE ((state = 2) AND (dismissal_reason IS NULL));
 
 CREATE INDEX tmp_idx_vulns_on_converted_uuid ON vulnerability_occurrences USING btree (id, uuid_convert_string_to_uuid) WHERE (uuid_convert_string_to_uuid = '00000000-0000-0000-0000-000000000000'::uuid);
 

@@ -10,6 +10,29 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
     sign_in(admin)
   end
 
+  describe 'PATCH #update' do
+    let(:user) { create(:user) }
+
+    context "when admin changes user email" do
+      let(:new_email) { 'new-email@example.com' }
+
+      subject(:request) { patch admin_user_path(user), params: { user: { email: new_email } } }
+
+      it 'allows change user email', :aggregate_failures do
+        expect { request }
+          .to change { user.reload.email }.from(user.email).to(new_email)
+
+        expect(response).to redirect_to(admin_user_path(user))
+        expect(flash[:notice]).to eq('User was successfully updated.')
+      end
+
+      it 'does not email the user with confirmation_instructions' do
+        expect { request }
+          .not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+      end
+    end
+  end
+
   describe 'PUT #block' do
     context 'when request format is :json' do
       subject(:request) { put block_admin_user_path(user, format: :json) }

@@ -201,9 +201,6 @@ GitLab takes advantage of our connected ecosystem to automatically pull these ki
 your merge requests, pipeline details pages, and other locations. You may find that you actually don't
 need to configure anything to have these appear.
 
-Our [CI/CD feature index](../index.md#features) has the full list of bundled features and links to the documentation for each.
-Refer to this index if these features aren't working as expected, or if you'd like to see what's available.
-
 ### Templates
 
 For advanced CI/CD teams, project templates can enable the reuse of pipeline configurations,

@@ -45,14 +45,14 @@ const (
 )
 
 var (
-	totalConnections = promauto.NewCounter(
+	TotalConnections = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_redis_total_connections",
 			Help: "How many connections gitlab-workhorse has opened in total. Can be used to track Redis connection rate for this process",
 		},
 	)
 
-	errorCounter = promauto.NewCounterVec(
+	ErrorCounter = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_redis_errors",
 			Help: "Counts different types of Redis errors encountered by workhorse, by type and destination (redis, sentinel)",
@@ -100,7 +100,7 @@ func sentinelConn(master string, urls []config.TomlURL) *sentinel.Sentinel {
 			}
 
 			if err != nil {
-				errorCounter.WithLabelValues("dial", "sentinel").Inc()
+				ErrorCounter.WithLabelValues("dial", "sentinel").Inc()
 				return nil, err
 			}
 			return c, nil
@@ -159,7 +159,7 @@ func sentinelDialer(dopts []redis.DialOption) redisDialerFunc {
 	return func() (redis.Conn, error) {
 		address, err := sntnl.MasterAddr()
 		if err != nil {
-			errorCounter.WithLabelValues("master", "sentinel").Inc()
+			ErrorCounter.WithLabelValues("master", "sentinel").Inc()
 			return nil, err
 		}
 		dopts = append(dopts, redis.DialNetDial(keepAliveDialer))
@@ -214,9 +214,9 @@ func countDialer(dialer redisDialerFunc) redisDialerFunc {
 	return func() (redis.Conn, error) {
 		c, err := dialer()
 		if err != nil {
-			errorCounter.WithLabelValues("dial", "redis").Inc()
+			ErrorCounter.WithLabelValues("dial", "redis").Inc()
 		} else {
-			totalConnections.Inc()
+			TotalConnections.Inc()
 		}
 		return c, err
 	}

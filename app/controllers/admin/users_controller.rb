@@ -221,8 +221,7 @@ class Admin::UsersController < Admin::ApplicationController
 
     respond_to do |format|
       result = Users::UpdateService.new(current_user, user_params_with_pass.merge(user: user)).execute do |user|
-        user.skip_reconfirmation!
-        user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user?
+        prepare_user_for_update(user)
       end
 
       if result[:status] == :success
@@ -392,6 +391,12 @@ class Admin::UsersController < Admin::ApplicationController
   def set_shared_view_parameters
     @can_impersonate = helpers.can_impersonate_user(user, impersonation_in_progress?)
     @impersonation_error_text = @can_impersonate ? nil : helpers.impersonation_error_text(user, impersonation_in_progress?)
+  end
+
+  # method overriden in EE
+  def prepare_user_for_update(user)
+    user.skip_reconfirmation!
+    user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user?
   end
 end
 

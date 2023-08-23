@@ -576,6 +576,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           end
 
           it_behaves_like 'notification with exact metric events', 1
+
+          context 'when service desk is disabled' do
+            before do
+              project.update!(service_desk_enabled: false)
+            end
+
+            it_behaves_like 'no participants are notified'
+          end
         end
 
         context 'do exist and note is confidential' do

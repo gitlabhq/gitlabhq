@@ -57,14 +57,6 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
     context 'when cache is Rails.cache' do
       let(:cache) { Rails.cache }
 
-      context 'when reading using secondary store as default' do
-        before do
-          stub_feature_flags(use_primary_store_as_default_for_cache: false)
-        end
-
-        it_behaves_like 'reading using cache stores'
-      end
-
       it_behaves_like 'reading using cache stores'
     end
 

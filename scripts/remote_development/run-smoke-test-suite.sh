@@ -32,7 +32,7 @@ printf "${Color_Off}"
 printf "${BBlue}Running Remote Development backend specs${Color_Off}\n\n"
 
 bin/rspec -r spec_helper \
-$(find . -path '**/remote_development/**/*_spec.rb') \
+$(find . -path './**/remote_development/*_spec.rb' | grep -v 'qa/qa') \
 ee/spec/graphql/types/query_type_spec.rb \
 ee/spec/graphql/types/subscription_type_spec.rb \
 ee/spec/requests/api/internal/kubernetes_spec.rb \

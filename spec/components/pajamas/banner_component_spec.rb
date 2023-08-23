@@ -27,7 +27,7 @@ RSpec.describe Pajamas::BannerComponent, type: :component do
     end
 
     it 'renders a close button' do
-      expect(page).to have_css "button.gl-banner-close"
+      expect(page).to have_css "button.gl-button.gl-banner-close"
     end
 
     describe 'button_text and button_link' do

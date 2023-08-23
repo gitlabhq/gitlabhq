@@ -22,6 +22,7 @@ require (
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/prometheus/client_golang v1.16.0
 	github.com/rafaeljusto/redigomock/v3 v3.1.2
+	github.com/redis/go-redis/v9 v9.0.5
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/sirupsen/logrus v1.9.3
 	github.com/smartystreets/goconvey v1.7.2
@@ -65,6 +66,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/client9/reopen v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect

@@ -6,7 +6,6 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
   include GroupAPIHelpers
   include UploadHelpers
   include WorkhorseHelpers
-  include KeysetPaginationHelpers
 
   let_it_be(:user1) { create(:user, can_create_group: false) }
   let_it_be(:user2) { create(:user) }
@@ -196,37 +195,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           end
         end
 
-        context 'keyset pagination' do
-          context 'on making requests with supported ordering structure' do
-            it 'paginates the records correctly', :aggregate_failures do
-              # first page
-              get api('/groups'), params: { pagination: 'keyset', per_page: 1 }
-
-              expect(response).to have_gitlab_http_status(:ok)
-              records = json_response
-              expect(records.size).to eq(1)
-              expect(records.first['id']).to eq(group_1.id)
-
-              params_for_next_page = pagination_params_from_next_url(response)
-              expect(params_for_next_page).to include('cursor')
-
-              get api('/groups'), params: params_for_next_page
-
-              expect(response).to have_gitlab_http_status(:ok)
-              records = Gitlab::Json.parse(response.body)
-              expect(records.size).to eq(1)
-              expect(records.first['id']).to eq(group_2.id)
-            end
-          end
-
-          context 'on making requests with unsupported ordering structure' do
-            it 'returns error', :aggregate_failures do
-              get api('/groups'), params: { pagination: 'keyset', per_page: 1, order_by: 'path', sort: 'desc' }
-
-              expect(response).to have_gitlab_http_status(:method_not_allowed)
-              expect(json_response['error']).to eq('Keyset pagination is not yet available for this type of request')
-            end
-          end
+        it_behaves_like 'an endpoint with keyset pagination', invalid_order: 'path' do
+          let(:first_record) { group_1 }
+          let(:second_record) { group_2 }
+          let(:api_call) { api('/groups') }
         end
       end
     end

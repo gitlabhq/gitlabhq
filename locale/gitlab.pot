@@ -47462,9 +47462,6 @@ msgstr ""
 msgid "The parent epic is confidential and can only contain confidential epics and issues"
 msgstr ""
 
-msgid "The parsed YAML is too big"
-msgstr ""
-
 msgid "The password for the Jenkins server."
 msgstr ""
 
@@ -56640,6 +56637,9 @@ msgid "must be inside the fork network"
 msgstr ""
 
 msgid "must be less than the limit of %{tag_limit} tags"
+msgstr ""
+
+msgid "must be owned by the user's enterprise group"
 msgstr ""
 
 msgid "must be set for a project namespace"
