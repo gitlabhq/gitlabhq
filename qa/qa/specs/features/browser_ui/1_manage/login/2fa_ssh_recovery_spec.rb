@@ -3,7 +3,7 @@
 module QA
   context 'Manage', :reliable, :requires_admin, :skip_live_env, product_group: :authentication_and_authorization do
     describe '2FA' do
-      let!(:user) { Resource::User.fabricate_via_api! }
+      let!(:user) { create(:user) }
       let!(:user_api_client) { Runtime::API::Client.new(:gitlab, user: user) }
       let(:address) { QA::Runtime::Scenario.gitlab_address }
       let(:uri) { URI.parse(address) }

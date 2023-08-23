@@ -320,7 +320,7 @@ gem 'charlock_holmes', '~> 0.7.7'
 gem 'ruby-magic', '~> 0.6'
 
 # Faster blank
-gem 'fast_blank'
+gem 'fast_blank', '~> 1.0.1'
 
 # Parse time & duration
 gem 'gitlab-chronic', '~> 0.10.5'

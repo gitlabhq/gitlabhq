@@ -821,7 +821,8 @@ Plan.default.actual_limits.update!(dotenv_size: 5.kilobytes)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
 
-You can set a limit on the maximum number of annotations on a CI/CD job.
+You can set a limit on the maximum number of [annotations](../ci/yaml/artifacts_reports.md#artifactsreportsannotations)
+per CI/CD job.
 
 Set the limit to `0` to disable it. Defaults to `20` on self-managed instances.
 
@@ -836,7 +837,7 @@ Plan.default.actual_limits.update!(ci_job_annotations_num: 100)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
 
-You can set a limit on the maximum size of a CI/CD job annotation.
+You can set a limit on the maximum size of a CI/CD job [annotation](../ci/yaml/artifacts_reports.md#artifactsreportsannotations).
 
 Set the limit to `0` to disable it. Defaults to 80 KB.
 

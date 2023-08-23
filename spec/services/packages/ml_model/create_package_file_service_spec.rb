@@ -38,12 +38,12 @@ RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :m
 
       it 'creates package file', :aggregate_failures do
         expect { execute_service }
-          .to change { project.packages.ml_model.count }.by(1)
+          .to change { Packages::MlModel::Package.count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
           .and change { Packages::PackageFileBuildInfo.count }.by(0)
           .and change { Ml::ModelVersion.count }.by(1)
 
-        new_model = project.packages.ml_model.last
+        new_model = Packages::MlModel::Package.last
         package_file = new_model.package_files.last
         new_model_version = Ml::ModelVersion.last
 

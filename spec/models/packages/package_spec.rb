@@ -1505,4 +1505,38 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
     end
   end
+
+  describe 'inheritance' do
+    let_it_be(:project) { create(:project) }
+
+    let(:format) { "" }
+    let(:package) { create("#{format}_package", project: project) }
+    let(:package_id) { package.id }
+
+    subject { described_class.find_by(id: package_id).class }
+
+    described_class
+      .package_types
+      .keys
+      .map(&:to_sym)
+      .each do |package_format|
+      if described_class.inheritance_column_to_class_map[package_format].nil?
+        context "for package format #{package_format}" do
+          let(:format) { package_format }
+
+          it 'maps to Packages::Package' do
+            is_expected.to eq(described_class)
+          end
+        end
+      else
+        context "for package format #{package_format}" do
+          let(:format) { package_format }
+
+          it 'maps to the correct class' do
+            is_expected.to eq(described_class.inheritance_column_to_class_map[package_format].constantize)
+          end
+        end
+      end
+    end
+  end
 end

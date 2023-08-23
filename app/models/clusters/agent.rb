@@ -50,7 +50,7 @@ module Clusters
     end
 
     def connected?
-      agent_tokens.active.where("last_used_at > ?", INACTIVE_AFTER.ago).exists?
+      agent_tokens.connected.exists?
     end
 
     def activity_event_deletion_cutoff

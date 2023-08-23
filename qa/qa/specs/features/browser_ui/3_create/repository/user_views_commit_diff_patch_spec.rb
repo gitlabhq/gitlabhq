@@ -5,9 +5,7 @@ module QA
     describe 'Commit data', :reliable, product_group: :source_code do
       before(:context) do
         # Get the user's details to confirm they're included in the email patch
-        @user = Resource::User.fabricate_via_api! do |user|
-          user.username = Runtime::User.username
-        end
+        @user = create(:user, username: Runtime::User.username)
 
         project_push = Resource::Repository::ProjectPush.fabricate! do |push|
           push.file_name = 'README.md'

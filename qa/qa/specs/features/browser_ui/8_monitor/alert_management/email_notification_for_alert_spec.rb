@@ -12,12 +12,7 @@ module QA
 
       let!(:admin_api_client) { Runtime::API::Client.as_admin }
 
-      let!(:user) do
-        Resource::User.fabricate_via_api! do |user|
-          user.api_client = admin_api_client
-          user.hard_delete_on_api_removal = true
-        end
-      end
+      let!(:user) { create(:user, :hard_delete, api_client: admin_api_client) }
 
       let(:project) { create(:project, name: 'project-for-alerts', description: 'Project for alerts') }
       let(:alert_title) { Faker::Lorem.word }

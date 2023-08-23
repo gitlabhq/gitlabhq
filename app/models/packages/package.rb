@@ -7,6 +7,7 @@ class Packages::Package < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Packages::Installable
   include Packages::Downloadable
+  include EnumInheritance
 
   DISPLAYABLE_STATUSES = [:default, :error].freeze
   INSTALLABLE_STATUSES = [:default, :hidden].freeze
@@ -219,6 +220,12 @@ class Packages::Package < ApplicationRecord
 
     joins(:project).reorder(keyset_order)
   end
+
+  def self.inheritance_column = 'package_type'
+
+  def self.inheritance_column_to_class_map = {
+    ml_model: 'Packages::MlModel::Package'
+  }.freeze
 
   def self.only_maven_packages_with_path(path, use_cte: false)
     if use_cte

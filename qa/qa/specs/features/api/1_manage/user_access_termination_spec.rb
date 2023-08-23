@@ -7,9 +7,7 @@ module QA
       before(:all) do
         admin_api_client = Runtime::API::Client.as_admin
 
-        @user = Resource::User.fabricate_via_api! do |user|
-          user.api_client = admin_api_client
-        end
+        @user = create(:user, api_client: admin_api_client)
 
         @user_api_client = Runtime::API::Client.new(:gitlab, user: @user)
 

@@ -6,12 +6,7 @@ module QA
       let(:admin_api_client) { Runtime::API::Client.as_admin }
       let(:owner_api_client) { Runtime::API::Client.new(:gitlab, user: owner_user) }
 
-      let!(:owner_user) do
-        Resource::User.fabricate_via_api! do |usr|
-          usr.username = "owner_user_#{SecureRandom.hex(4)}"
-          usr.api_client = admin_api_client
-        end
-      end
+      let!(:owner_user) { create(:user, username: "owner_user_#{SecureRandom.hex(4)}", api_client: admin_api_client) }
 
       let(:sandbox_group) do
         Flow::Login.sign_in(as: owner_user)
@@ -25,12 +20,7 @@ module QA
         create(:group, sandbox: sandbox_group, api_client: owner_api_client, path: "group-with-2fa-#{SecureRandom.hex(8)}")
       end
 
-      let(:developer_user) do
-        Resource::User.fabricate_via_api! do |resource|
-          resource.username = "developer_user_#{SecureRandom.hex(4)}"
-          resource.api_client = admin_api_client
-        end
-      end
+      let(:developer_user) { create(:user, username: "developer_user_#{SecureRandom.hex(4)}", api_client: admin_api_client) }
 
       let(:two_fa_expected_text) { /The group settings for.*require you to enable Two-Factor Authentication for your account.*You need to do this before/ }
 

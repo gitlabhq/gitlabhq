@@ -5,11 +5,7 @@ module QA
     describe 'User', :requires_admin, :reliable, product_group: :tenant_scale do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
-      let!(:user) do
-        Resource::User.fabricate_via_api! do |user|
-          user.api_client = admin_api_client
-        end
-      end
+      let!(:user) { create(:user, api_client: admin_api_client) }
 
       let!(:group) { create(:group, path: "group-to-test-access-termination-#{SecureRandom.hex(8)}") }
 

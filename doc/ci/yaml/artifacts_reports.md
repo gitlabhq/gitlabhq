@@ -40,6 +40,55 @@ GitLab can display the results of one or more reports in the merge request
 
 For more information, see [Accessibility testing](../testing/accessibility_testing.md).
 
+## `artifacts:reports:annotations`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
+The `annotations` report is used to attach auxiliary data to a job.
+
+An annotations report is a JSON file with annotation sections. Each annotation
+section can have any desired name and can have any number of annotations of the
+same or differing types.
+
+Each annotation is a single key (the annotation type), containing the subkeys with
+the data for that annotation.
+
+### Annotation types
+
+#### `external_link`
+
+An `external_link` annotation can be attached to a job to add a link to the job
+output page. The value of an `external_link` annotation is an object with the
+following keys:
+
+| Key     | Description                                        |
+|---------|----------------------------------------------------|
+| `label` | The human-readable label associated with the link. |
+| `url`   | The URL pointed to by the link.                    |
+
+### Example report
+
+The following is an example of what a job annotations report might look like:
+
+```json
+{
+  "my_annotation_section_1": [
+    {
+      "external_link": {
+        "label": "URL 1",
+        "url": "https://url1.example.com/"
+      }
+    },
+    {
+      "external_link": {
+        "label": "URL 2",
+        "url": "https://url2.example.com/"
+      }
+    }
+  ]
+}
+```
+
 ## `artifacts:reports:api_fuzzing` **(ULTIMATE ALL)**
 
 > - Introduced in GitLab 13.4.

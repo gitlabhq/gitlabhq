@@ -51,11 +51,7 @@ module QA
         it_behaves_like 'registration and login'
 
         context 'when user account is deleted' do
-          let(:user) do
-            Resource::User.fabricate_via_api! do |resource|
-              resource.api_client = admin_api_client
-            end
-          end
+          let(:user) { create(:user, api_client: admin_api_client) }
 
           before do
             # Use the UI instead of API to delete the account since

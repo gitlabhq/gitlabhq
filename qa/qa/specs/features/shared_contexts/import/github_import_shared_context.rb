@@ -13,12 +13,7 @@ module QA
       create(:group, api_client: api_client, path: "destination-group-for-import-#{SecureRandom.hex(4)}")
     end
 
-    let!(:user) do
-      Resource::User.fabricate_via_api! do |resource|
-        resource.api_client = api_client
-        resource.hard_delete_on_api_removal = true
-      end
-    end
+    let!(:user) { create(:user, :hard_delete, api_client: api_client) }
 
     let!(:user_api_client) { Runtime::API::Client.new(user: user) }
 

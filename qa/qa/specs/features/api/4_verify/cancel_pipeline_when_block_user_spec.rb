@@ -6,11 +6,7 @@ module QA
       let!(:admin_api_client) { Runtime::API::Client.as_admin }
       let!(:user_api_client) { Runtime::API::Client.new(:gitlab, user: user) }
 
-      let(:user) do
-        Resource::User.fabricate_via_api! do |resource|
-          resource.api_client = admin_api_client
-        end
-      end
+      let(:user) { create(:user, api_client: admin_api_client) }
 
       let(:project) { create(:project, name: 'project-for-canceled-schedule') }
 

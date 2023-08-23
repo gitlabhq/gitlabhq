@@ -17,7 +17,7 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:model) }
-    it { is_expected.to belong_to(:package) }
+    it { is_expected.to belong_to(:package).class_name('Packages::MlModel::Package') }
   end
 
   describe 'validation' do
@@ -82,14 +82,6 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
         end
 
         it { expect(errors[:package]).to include(error_message) }
-      end
-
-      context 'when package is not ml_model' do
-        let(:package) do
-          build_stubbed(:generic_package, project: base_project, name: model1.name, version: valid_version)
-        end
-
-        it { expect(errors[:package]).to include('package must be ml_model') }
       end
     end
   end

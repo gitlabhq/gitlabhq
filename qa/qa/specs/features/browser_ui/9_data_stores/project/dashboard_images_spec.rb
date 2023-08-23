@@ -5,12 +5,7 @@ module QA
     shared_examples 'loads all images' do |admin|
       let(:api_client) { Runtime::API::Client.as_admin }
 
-      let(:user) do
-        Resource::User.fabricate_via_api! do |resource|
-          resource.admin = admin
-          resource.api_client = api_client
-        end
-      end
+      let(:user) { create(:user, admin: admin, api_client: api_client) }
 
       after do
         user.remove_via_api!

@@ -80,11 +80,7 @@ module QA
 
       let(:api_client) { Runtime::API::Client.as_admin }
 
-      let(:user) do
-        Resource::User.fabricate_via_api! do |resource|
-          resource.api_client = api_client
-        end
-      end
+      let(:user) { create(:user, api_client: api_client) }
 
       let(:github_client) do
         Octokit::Client.new(

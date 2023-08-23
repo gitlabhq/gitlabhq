@@ -28,6 +28,12 @@ discussions, nitpicking, or back-and-forth in reviews. The
 [GitLab Ruby style guide](backend/ruby_style_guide.md) includes a non-exhaustive
 list of styles that commonly come up in reviews and are not enforced.
 
+By default, we should not
+[disable a RuboCop rule inline](https://docs.rubocop.org/rubocop/configuration.html#disabling-cops-within-source-code), because it negates agreed-upon code standards that the rule is attempting to apply to the codebase.
+
+If you must use inline disable, provide the reason on the MR and ensure the reviewers agree
+before merging.
+
 Additionally, we have dedicated
 [test-specific style guides and best practices](testing_guide/index.md).
 

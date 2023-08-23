@@ -3,11 +3,10 @@
 module QA
   RSpec.describe 'Plan', :reliable, product_group: :project_management do
     let!(:user) do
-      Resource::User.fabricate_via_api! do |user|
-        user.name = "QA User <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;"
-        user.password = "pw_#{SecureRandom.hex(12)}"
-        user.api_client = Runtime::API::Client.as_admin
-      end
+      create(:user,
+        name: "QA User <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;",
+        password: "pw_#{SecureRandom.hex(12)}",
+        api_client: Runtime::API::Client.as_admin)
     end
 
     let!(:project) { create(:project, name: 'xss-test-for-mentions-project') }

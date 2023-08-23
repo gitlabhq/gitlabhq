@@ -14,11 +14,7 @@ module QA
       end
 
       context 'when added to parent group' do
-        let!(:parent_group_user) do
-          Resource::User.fabricate_via_api! do |user|
-            user.api_client = admin_api_client
-          end
-        end
+        let!(:parent_group_user) { create(:user, api_client: admin_api_client) }
 
         let!(:parent_group_user_api_client) do
           Runtime::API::Client.new(:gitlab, user: parent_group_user)
@@ -68,11 +64,7 @@ module QA
           end
         end
 
-        let!(:sub_group_user) do
-          Resource::User.fabricate_via_api! do |user|
-            user.api_client = admin_api_client
-          end
-        end
+        let!(:sub_group_user) { create(:user, api_client: admin_api_client) }
 
         let!(:sub_group_user_api_client) do
           Runtime::API::Client.new(:gitlab, user: sub_group_user)

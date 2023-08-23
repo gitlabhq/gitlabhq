@@ -5,17 +5,10 @@ module QA
     describe 'Gitlab migration', product_group: :import_and_integrate do
       include_context 'with gitlab project migration'
 
-      let!(:source_member) do
-        Resource::User.fabricate_via_api! do |usr|
-          usr.api_client = source_admin_api_client
-        end.tap(&:set_public_email)
-      end
+      let!(:source_member) { create(:user, :set_public_email, api_client: source_admin_api_client) }
 
       let!(:target_member) do
-        Resource::User.fabricate_via_api! do |usr|
-          usr.api_client = admin_api_client
-          usr.email = source_member.email
-        end.tap(&:set_public_email)
+        create(:user, :set_public_email, api_client: admin_api_client, email: source_member.email)
       end
 
       let(:imported_group_member) do

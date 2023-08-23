@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::AgentToken do
+RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
   it { is_expected.to belong_to(:agent).class_name('Clusters::Agent').required }
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
   it { is_expected.to validate_length_of(:description).is_at_most(1024) }
@@ -12,8 +12,9 @@ RSpec.describe Clusters::AgentToken do
   it_behaves_like 'having unique enum values'
 
   describe 'scopes' do
+    let_it_be(:agent) { create(:cluster_agent) }
+
     describe '.order_last_used_at_desc' do
-      let_it_be(:agent) { create(:cluster_agent) }
       let_it_be(:token_1) { create(:cluster_agent_token, agent: agent, last_used_at: 7.days.ago) }
       let_it_be(:token_2) { create(:cluster_agent_token, agent: agent, last_used_at: nil) }
       let_it_be(:token_3) { create(:cluster_agent_token, agent: agent, last_used_at: 2.days.ago) }
@@ -25,8 +26,8 @@ RSpec.describe Clusters::AgentToken do
     end
 
     describe 'status-related scopes' do
-      let!(:active_token) { create(:cluster_agent_token) }
-      let!(:revoked_token) { create(:cluster_agent_token, :revoked) }
+      let!(:active_token) { create(:cluster_agent_token, agent: agent) }
+      let!(:revoked_token) { create(:cluster_agent_token, :revoked, agent: agent) }
 
       describe '.with_status' do
         context 'when filtering by active status' do
@@ -46,6 +47,29 @@ RSpec.describe Clusters::AgentToken do
         subject { described_class.active }
 
         it { is_expected.to contain_exactly(active_token) }
+      end
+    end
+
+    describe '.connected' do
+      let!(:token) { create(:cluster_agent_token, agent: agent, status: status, last_used_at: last_used_at) }
+
+      let(:status) { :active }
+      let(:last_used_at) { 2.minutes.ago }
+
+      subject { described_class.connected }
+
+      it { is_expected.to contain_exactly(token) }
+
+      context 'when the token has not been used recently' do
+        let(:last_used_at) { 2.hours.ago }
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'when the token is not active' do
+        let(:status) { :revoked }
+
+        it { is_expected.to be_empty }
       end
     end
   end

@@ -7,11 +7,7 @@ module QA
     let(:mr_title) { Faker::Lorem.sentence }
     let(:admin_api_client) { Runtime::API::Client.as_admin }
 
-    let(:user) do
-      Resource::User.fabricate_via_api! do |user|
-        user.api_client = admin_api_client
-      end
-    end
+    let(:user) { create(:user, api_client: admin_api_client) }
 
     let(:project) do
       Resource::Project.fabricate_via_api! do |project|

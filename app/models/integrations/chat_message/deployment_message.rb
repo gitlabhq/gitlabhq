@@ -26,8 +26,10 @@ module Integrations
       end
 
       def attachments
+        return description_message if markdown
+
         [{
-          text: "#{project_link} with job #{deployment_link} by #{user_link}\n#{commit_link}: #{strip_markup(commit_title)}",
+          text: format(description_message),
           color: color
         }]
       end
@@ -81,6 +83,10 @@ module Integrations
 
       def running?
         status == 'running'
+      end
+
+      def description_message
+        "#{project_link} with job #{deployment_link} by #{user_link}\n#{commit_link}: #{strip_markup(commit_title)}"
       end
     end
   end

@@ -5,11 +5,7 @@ module QA
     describe 'Group member access request' do
       let!(:admin_api_client) { Runtime::API::Client.as_admin }
 
-      let!(:user) do
-        Resource::User.fabricate_via_api! do |user|
-          user.api_client = admin_api_client
-        end
-      end
+      let!(:user) { create(:user, api_client: admin_api_client) }
 
       let!(:group) do
         create(:group, path: "group-for-access-request-#{SecureRandom.hex(8)}", api_client: admin_api_client)

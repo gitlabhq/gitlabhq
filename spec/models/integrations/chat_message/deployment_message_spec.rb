@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::ChatMessage::DeploymentMessage do
+RSpec.describe Integrations::ChatMessage::DeploymentMessage, feature_category: :integrations do
   subject { described_class.new(args) }
 
   let_it_be(:user) { create(:user, name: 'John Smith', username: 'smith') }
@@ -103,15 +103,33 @@ RSpec.describe Integrations::ChatMessage::DeploymentMessage do
       }.merge(params)
     end
 
-    it 'returns attachments with the data returned by the deployment data builder' do
-      job_url = Gitlab::Routing.url_helpers.project_job_url(project, ci_build)
-      commit_url = Gitlab::UrlBuilder.build(deployment.commit)
-      user_url = Gitlab::Routing.url_helpers.user_url(user)
+    context 'without markdown' do
+      it 'returns attachments with the data returned by the deployment data builder' do
+        job_url = Gitlab::Routing.url_helpers.project_job_url(project, ci_build)
+        commit_url = Gitlab::UrlBuilder.build(deployment.commit)
+        user_url = Gitlab::Routing.url_helpers.user_url(user)
 
-      expect(subject.attachments).to eq([{
-        text: "[myspace/myproject](#{project.web_url}) with job [##{ci_build.id}](#{job_url}) by [John Smith (smith)](#{user_url})\n[#{deployment.short_sha}](#{commit_url}): #{commit.title}",
-        color: "good"
-      }])
+        expect(subject.attachments).to eq([{
+          text: "<#{project.web_url}|myspace/myproject> with job <#{job_url}|##{ci_build.id}> by <#{user_url}|John Smith (smith)>\n<#{commit_url}|#{deployment.short_sha}>: #{commit.title}",
+          color: "good"
+        }])
+      end
+    end
+
+    context 'with markdown' do
+      before do
+        args.merge!(markdown: true)
+      end
+
+      it 'returns attachments with the data returned by the deployment data builder' do
+        job_url = Gitlab::Routing.url_helpers.project_job_url(project, ci_build)
+        commit_url = Gitlab::UrlBuilder.build(deployment.commit)
+        user_url = Gitlab::Routing.url_helpers.user_url(user)
+
+        expect(subject.attachments).to eq(
+          "[myspace/myproject](#{project.web_url}) with job [##{ci_build.id}](#{job_url}) by [John Smith (smith)](#{user_url})\n[#{deployment.short_sha}](#{commit_url}): #{commit.title}"
+        )
+      end
     end
 
     it 'returns attachments for a failed deployment' do
