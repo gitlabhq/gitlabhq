@@ -109,6 +109,7 @@ including the major methods:
 ## ClickHouse
 
 - [Introduction](clickhouse/index.md)
+- [ClickHouse within GitLab](clickhouse/clickhouse_within_gitlab.md)
 - [Optimizing query execution](clickhouse/optimization.md)
 - [Rebuild GitLab features using ClickHouse 1: Activity data](clickhouse/gitlab_activity_data.md)
 - [Rebuild GitLab features using ClickHouse 2: Merge Request analytics](clickhouse/merge_request_analytics.md)

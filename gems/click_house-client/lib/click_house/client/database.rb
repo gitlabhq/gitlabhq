@@ -28,8 +28,7 @@ module ClickHouse
         @headers ||= {
           'X-ClickHouse-User' => @username,
           'X-ClickHouse-Key' => @password,
-          'X-ClickHouse-Format' => 'JSON', # always return JSON data
-          'Content-Encoding' => 'gzip' # tell the server that we send compressed data
+          'X-ClickHouse-Format' => 'JSON' # always return JSON data
         }.freeze
       end
     end

@@ -30,6 +30,7 @@ describe('StickyHeader component', () => {
         issuableType: TYPE_ISSUE,
         show: true,
         title: 'A sticky issue',
+        titleHtml: '',
         ...props,
       },
     });
@@ -123,5 +124,12 @@ describe('StickyHeader component', () => {
 
     expect(title.text()).toContain('A sticky issue');
     expect(title.attributes('href')).toBe('#top');
+  });
+
+  it('shows title containing markup', () => {
+    const titleHtml = '<b>A sticky issue</b>';
+    createComponent({ titleHtml });
+
+    expect(wrapper.find('a').html()).toContain(titleHtml);
   });
 });

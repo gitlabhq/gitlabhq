@@ -20,8 +20,9 @@ ClickHouse::Client.configure do |config|
   config.json_parser = Gitlab::Json
   config.http_post_proc = ->(url, headers, body) do
     options = {
+      multipart: true,
       headers: headers,
-      body: ActiveSupport::Gzip.compress(body),
+      body: body,
       allow_local_requests: Rails.env.development? || Rails.env.test?
     }
 

@@ -1,8 +1,0 @@
----
-name: refactor_merge_service
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128177
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/420949
-milestone: '16.3'
-type: development
-group: group::pipeline execution
-default_enabled: false

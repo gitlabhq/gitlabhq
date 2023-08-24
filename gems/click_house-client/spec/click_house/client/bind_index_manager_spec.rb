@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ClickHouse::BindIndexManager, feature_category: :database do
+RSpec.describe ClickHouse::Client::BindIndexManager do
   describe '#next_bind_str' do
     context 'when initialized without a start index' do
       let(:bind_manager) { described_class.new }

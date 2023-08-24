@@ -42,7 +42,7 @@ export const mockCurrentUserTodo = {
 export const mockIssuable = {
   iid: '30',
   title: 'Dismiss Cipher with no integrity',
-  titleHtml: 'Dismiss Cipher with no integrity',
+  titleHtml: '<gl-emoji title="party-parrot"></gl-emoji>Dismiss Cipher with no integrity',
   description: 'fortitudinis _fomentis_ dolor mitigari solet.',
   descriptionHtml: 'fortitudinis <i>fomentis</i> dolor mitigari solet.',
   state: 'opened',

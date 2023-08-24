@@ -2,7 +2,7 @@
 
 # rubocop:disable CodeReuse/ActiveRecord
 module ClickHouse
-  class QueryBuilder
+  class QueryBuilder < ClickHouse::Client::QueryLike
     attr_reader :table
     attr_accessor :conditions, :manager
 
@@ -93,8 +93,8 @@ module ClickHouse
       manager.to_sql
     end
 
-    def to_redacted_sql
-      ::ClickHouse::Redactor.redact(self)
+    def to_redacted_sql(bind_index_manager = ClickHouse::Client::BindIndexManager.new)
+      ::ClickHouse::Redactor.redact(self, bind_index_manager)
     end
 
     private

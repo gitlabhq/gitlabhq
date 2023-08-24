@@ -71,7 +71,7 @@ RSpec.describe ClickHouse::Client do
     end
 
     context 'when the DB is not configured' do
-      it 'raises erro' do
+      it 'raises error' do
         expect do
           described_class.select('SELECT * FROM issues', :different_db, configuration)
         end.to raise_error(ClickHouse::Client::ConfigurationError, /not configured/)

@@ -14,9 +14,8 @@ module ClickHouse
     #   redacted_query = ClickHouse::Redactor.redact(query_builder)
     #   # The redacted_query will contain the SQL query with values replaced by placeholders.
     #   output: "SELECT * FROM \"users\" WHERE \"users\".\"name\" = $1"
-    def self.redact(query_builder)
+    def self.redact(query_builder, bind_manager = ClickHouse::Client::BindIndexManager.new)
       cloned_query_builder = query_builder.clone
-      bind_manager = ::ClickHouse::BindIndexManager.new
 
       cloned_query_builder.conditions = cloned_query_builder.conditions.map do |condition|
         redact_condition(condition, bind_manager)

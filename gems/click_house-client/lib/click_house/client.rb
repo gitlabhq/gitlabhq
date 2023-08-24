@@ -6,6 +6,9 @@ require 'active_support/time'
 require 'active_support/notifications'
 require_relative "client/database"
 require_relative "client/configuration"
+require_relative "client/bind_index_manager"
+require_relative "client/query_like"
+require_relative "client/query"
 require_relative "client/formatter"
 require_relative "client/response"
 
@@ -25,6 +28,7 @@ module ClickHouse
     Error = Class.new(StandardError)
     ConfigurationError = Class.new(Error)
     DatabaseError = Class.new(Error)
+    QueryError = Class.new(Error)
 
     # Executes a SELECT database query
     def self.select(query, database, configuration = self.configuration)
@@ -58,11 +62,17 @@ module ClickHouse
     private_class_method def self.instrumented_execute(query, database, configuration)
       db = lookup_database(configuration, database)
 
+      query = ClickHouse::Client::Query.new(raw_query: query) unless query.is_a?(ClickHouse::Client::QueryLike)
       ActiveSupport::Notifications.instrument('sql.click_house', { query: query, database: database }) do |instrument|
+        # Use a multipart POST request where the placeholders are sent with the param_ prefix
+        # See: https://github.com/ClickHouse/ClickHouse/issues/8842
+        query_with_params = query.placeholders.transform_keys { |key| "param_#{key}" }
+        query_with_params['query'] = query.to_sql
+
         response = configuration.http_post_proc.call(
           db.uri.to_s,
           db.headers,
-          query
+          query_with_params
         )
 
         raise DatabaseError, response.body unless response.success?

@@ -8,6 +8,7 @@ import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { STATE_CLOSED } from '~/work_items/constants';
 import { isAssigneesWidget, isLabelsWidget } from '~/work_items/utils';
@@ -24,6 +25,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   mixins: [timeagoMixin],
   props: {
@@ -85,6 +87,9 @@ export default {
     },
     authorId() {
       return getIdFromGraphQLId(this.author.id);
+    },
+    isIssueTrackerExternal() {
+      return Boolean(this.issuable.externalTracker);
     },
     isIssuableUrlExternal() {
       return isExternal(this.webUrl);
@@ -259,18 +264,33 @@ export default {
           :title="__('This issue is hidden because its author has been banned')"
           :aria-label="__('Hidden')"
         />
-        <gl-link
-          class="issue-title-text"
-          dir="auto"
-          :href="webUrl"
-          data-qa-selector="issuable_title_link"
-          data-testid="issuable-title-link"
-          v-bind="issuableTitleProps"
-          @click="handleIssuableItemClick"
-        >
-          {{ issuable.title }}
+        <template v-if="isIssueTrackerExternal">
+          <gl-link
+            class="issue-title-text"
+            dir="auto"
+            :href="webUrl"
+            data-qa-selector="issuable_title_link"
+            data-testid="issuable-title-link"
+            v-bind="issuableTitleProps"
+            @click="handleIssuableItemClick"
+          >
+            {{ issuable.title }}
+            <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
+          </gl-link>
+        </template>
+        <template v-else>
+          <gl-link
+            v-safe-html="issuable.titleHtml || issuable.title"
+            class="issue-title-text"
+            dir="auto"
+            :href="webUrl"
+            data-qa-selector="issuable_title_link"
+            data-testid="issuable-title-link"
+            v-bind="issuableTitleProps"
+            @click="handleIssuableItemClick"
+          />
           <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
-        </gl-link>
+        </template>
         <span
           v-if="taskStatus"
           class="task-status gl-display-none gl-sm-display-inline-block! gl-ml-2 gl-font-sm"

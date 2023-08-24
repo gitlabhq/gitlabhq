@@ -4,8 +4,8 @@ RSpec.shared_examples 'project features apply to issuables' do |klass|
   let(:described_class) { klass }
 
   let(:group) { create(:group) }
-  let(:user_in_group) { create(:group_member, :developer, user: create(:user), group: group ).user }
-  let(:user_outside_group) { create(:user) }
+  let(:user_in_group) { create(:group_member, :developer, user: create(:user, :no_super_sidebar), group: group ).user }
+  let(:user_outside_group) { create(:user, :no_super_sidebar) }
 
   let(:project) { create(:project, :public, project_args) }
 

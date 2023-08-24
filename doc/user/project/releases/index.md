@@ -287,17 +287,35 @@ are defined as [crontab](https://crontab.guru/) entries.
 If the job that's executing is in a freeze period, GitLab CI/CD creates an environment
 variable named `$CI_DEPLOY_FREEZE`.
 
-To prevent the deployment job from executing, create a `rules` entry in your
-`.gitlab-ci.yml`, for example:
+To prevent the deployment job from executing in multiple projects in a group,
+define the `.freezedeployment` job in a file shared across the group.
+Use the [`includes`](../../../ci/yaml/includes.md) keyword to incorporate the
+template in your project's `.gitlab-ci.yml` file:
+
+```yaml
+.freezedeployment:
+  stage: deploy
+  before_script:
+    - '[[ ! -z "$CI_DEPLOY_FREEZE" ]] && echo "INFRASTRUCTURE OUTAGE WINDOW" && exit 1; '
+  rules:
+    - if: '$CI_DEPLOY_FREEZE'
+      when: manual
+      allow_failure: true
+    - when: on_success
+```
+
+To prevent the deployment job from executing, use the [`extends`](../../../ci/yaml/index.md#extends) keyword in the `deploy_to_production` job of your `.gitlab-ci.yml` file to inherit the configuration from the `.freezedeployment` template job:
 
 ```yaml
 deploy_to_production:
-  stage: deploy
+  extends: .freezedeployment
   script: deploy_to_prod.sh
-  rules:
-    - if: $CI_DEPLOY_FREEZE == null
   environment: production
 ```
+
+This configuration blocks deployment jobs conditionally and maintains pipeline continuity. When a freeze period is defined, the job fails and the pipeline can proceed without deployment. Manual deployment is possible after the freeze period.
+
+This approach offers deployment control during critical maintenance, and ensures the uninterrupted flow of the CI/CD pipeline.
 
 To set a deploy freeze window in the UI, complete these steps:
 

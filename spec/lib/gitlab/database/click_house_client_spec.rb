@@ -89,9 +89,19 @@ RSpec.describe 'ClickHouse::Client', feature_category: :database do
             'target_type' => event3.target_type
           ))
 
-          ClickHouse::Client.execute("DELETE FROM events WHERE id = #{event3.id}", :main)
+          delete_query = ClickHouse::Client::Query.new(
+            raw_query: 'DELETE FROM events WHERE id = {id:UInt64}',
+            placeholders: { id: event3.id }
+          )
 
-          results = ClickHouse::Client.select("SELECT * FROM events WHERE id = #{event3.id}", :main)
+          ClickHouse::Client.execute(delete_query, :main)
+
+          select_query = ClickHouse::Client::Query.new(
+            raw_query: 'SELECT * FROM events WHERE id = {id:UInt64}',
+            placeholders: { id: event3.id }
+          )
+
+          results = ClickHouse::Client.select(select_query, :main)
           expect(results).to be_empty
         end
       end
