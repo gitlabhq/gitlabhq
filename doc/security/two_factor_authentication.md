@@ -17,24 +17,23 @@ If you are [using and enforcing SSO](../user/group/saml_sso/index.md#sso-enforce
 
 ## Enforce 2FA for all users **(FREE SELF)**
 
-Users on GitLab can enable it without any administrator's intervention. If you
-want to enforce everyone to set up 2FA, you can choose from two different ways:
+Administrators can enforce 2FA for all users in two different ways:
 
-- Enforce on next login.
-- Suggest on next login, but allow a grace period before enforcing.
+- Enforce on next sign in.
+- Suggest on next sign in, but allow a grace period before enforcing.
 
-After the configured grace period has elapsed, users can sign in but
-cannot leave the 2FA configuration area at `/-/profile/two_factor_auth`.
+  After the configured grace period has elapsed, users can sign in but
+  cannot leave the 2FA configuration area at `/-/profile/two_factor_auth`.
 
 To enable 2FA for all users:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
-1. Expand the **Sign-in restrictions** section, where you can configure both.
-
-If you want 2FA enforcement to take effect during the next sign-in attempt,
-change the grace period to `0`.
+1. Expand the **Sign-in restrictions** section:
+   - Select **Enforce two-factor authentication** to enable this feature.
+   - In **Two-factor grace period**, enter a number of hours. If you want to
+     enforce 2FA on next sign-in attempt, enter `0`.
 
 ### Disable 2FA enforcement through Rails console
 

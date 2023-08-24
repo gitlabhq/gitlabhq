@@ -63,9 +63,6 @@ Before following any of those steps, make sure you have `root` access to the
 **secondary** to promote it, because there isn't provided an automated way to
 promote a Geo replica and perform a failover.
 
-NOTE:
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary site statuses appear to stop updating and become unhealthy. For more information, see [Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](../../replication/troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
-
 On the **secondary** site:
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
@@ -256,8 +253,6 @@ Data that was created on the primary while the secondary was paused is lost.
    ```shell
    sudo gitlab-ctl promote-db
    ```
-
-   In GitLab 12.8 and earlier, see [Message: `sudo: gitlab-pg-ctl: command not found`](../../replication/troubleshooting.md#message-sudo-gitlab-pg-ctl-command-not-found).
 
 1. Edit `/etc/gitlab/gitlab.rb` on every machine in the **secondary** to
    reflect its new status as **primary** by removing any lines that enabled the

@@ -176,6 +176,7 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
 
       with_them do
         before do
+          skip unless Gitlab::Database.has_config?(database_name)
           stub_feature_flags(feature_flag => false)
         end
 
@@ -205,6 +206,7 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
 
       with_them do
         before do
+          skip unless Gitlab::Database.has_config?(database_name)
           stub_feature_flags(feature_flag => true)
         end
 

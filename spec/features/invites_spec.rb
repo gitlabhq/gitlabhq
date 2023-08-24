@@ -266,7 +266,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
               allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
             end
 
-            it 'signs up and redirects to the group activity page' do
+            it 'signs up and redirects to the group activity page',
+              quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414971' do
               fill_in_sign_up_form(new_user)
               fill_in_welcome_form
 

@@ -14,6 +14,12 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
 
     let(:service) { described_class.new(project: project, current_user: user) }
 
+    let(:error_feature_flag_disabled) { 'Feature flag service_desk_custom_email is not enabled' }
+    let(:error_user_not_authorized) { s_('ServiceDesk|User cannot manage project.') }
+    let(:error_settings_missing) { s_('ServiceDesk|Service Desk setting missing') }
+    let(:expected_error_message) { error_settings_missing }
+    let(:logger_params) { { category: 'custom_email_verification' } }
+
     before do
       allow(message_delivery).to receive(:deliver_later)
       allow(Notify).to receive(:service_desk_verification_triggered_email).and_return(message_delivery)
@@ -28,6 +34,10 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
         # Because we exit early it should not send any verification or notification emails
         expect(service).to receive(:setup_and_deliver_verification_email).exactly(0).times
         expect(Notify).to receive(:service_desk_verification_triggered_email).exactly(0).times
+
+        expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
+          error_message: expected_error_message
+        )).once
 
         response = service.execute
 
@@ -48,6 +58,10 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
         # Correct amount of result notification emails were sent
         expect(Notify).to receive(:service_desk_verification_result_email).exactly(project.owners.size + 1).times
 
+        expect(Gitlab::AppLogger).to receive(:info).with(logger_params.merge(
+          error_message: error_identifier.to_s
+        )).once
+
         response = service.execute
 
         expect(response).to be_error
@@ -67,6 +81,8 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
     it_behaves_like 'a verification process that exits early'
 
     context 'when feature flag :service_desk_custom_email is disabled' do
+      let(:expected_error_message) { error_feature_flag_disabled }
+
       before do
         stub_feature_flags(service_desk_custom_email: false)
       end
@@ -77,11 +93,16 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
     context 'when service desk setting exists' do
       let(:settings) { create(:service_desk_setting, project: project, custom_email: 'user@example.com') }
       let(:service) { described_class.new(project: settings.project, current_user: user) }
+      let(:expected_error_message) { error_user_not_authorized }
 
       it 'aborts verification process and exits early', :aggregate_failures do
         # Because we exit early it should not send any verification or notification emails
         expect(service).to receive(:setup_and_deliver_verification_email).exactly(0).times
         expect(Notify).to receive(:service_desk_verification_triggered_email).exactly(0).times
+
+        expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
+          error_message: expected_error_message
+        )).once
 
         response = service.execute
         settings.reload
@@ -104,6 +125,8 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::CreateService, feature_cat
 
           # Check whether the correct amount of notification emails were sent
           expect(Notify).to receive(:service_desk_verification_triggered_email).exactly(project.owners.size + 1).times
+
+          expect(Gitlab::AppLogger).to receive(:info).with(logger_params).once
 
           response = service.execute
 

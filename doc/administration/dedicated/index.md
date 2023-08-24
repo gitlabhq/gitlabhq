@@ -80,6 +80,9 @@ The turnaround time for processing configuration change requests is [documented 
 
 ### Encrypted Data At Rest (BYOK)
 
+NOTE:
+To enable BYOK, you must do it during onboarding.
+
 You can opt to encrypt your GitLab data at rest with AWS KMS keys, which must be made accessible to GitLab Dedicated infrastructure. GitLab Dedicated only supports keys with AWS-managed key material (the [AWS_KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin) origin type).
 
 For instructions on how to create and manage KMS keys, see the [AWS KMS documentation](https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html).
@@ -97,7 +100,10 @@ Make sure the AWS KMS keys are replicated to your desired primary, secondary, an
 
 #### Create KMS keys in AWS
 
-To create a KMS key using the AWS Console:
+To enable BYOK, indicate on your onboarding ticket that you'd like to use this functionality.
+GitLab will provide you with your AWS account ID which is necessary to enable BYOK.
+
+After you have received the AWS account ID, create your KMS keys using the AWS Console:
 
 1. In `Configure key`, select:
     1. Key type: **Symmetrical**
@@ -189,6 +195,8 @@ The last page asks you to confirm the KMS key policy. It should look similar to 
     ]
 }
 ```
+
+Make sure the AWS KMS keys are replicated to your desired primary, secondary and backup region specified during [onboarding](#onboarding). After you have created the keys, send GitLab the corresponding ARNs of each key so that GitLab can use to encrypt the data stored in your Dedicated instance.
 
 ### Inbound Private Link
 

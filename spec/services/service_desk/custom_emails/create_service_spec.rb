@@ -157,6 +157,8 @@ RSpec.describe ServiceDesk::CustomEmails::CreateService, feature_category: :serv
         end
 
         it 'creates all records returns a successful response' do
+          # Because we also log in ServiceDesk::CustomEmailVerifications::CreateService
+          expect(Gitlab::AppLogger).to receive(:info).with({ category: 'custom_email_verification' }).once
           expect(Gitlab::AppLogger).to receive(:info).with(logger_params).once
 
           response = service.execute

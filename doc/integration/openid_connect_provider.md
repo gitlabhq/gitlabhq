@@ -55,7 +55,7 @@ The following user information is shared with clients:
 | `name`               | `string`  | The user's full name |
 | `nickname`           | `string`  | The user's GitLab username |
 | `preferred_username` | `string`  | The user's GitLab username |
-| `email`              | `string`  | The user's email address<br>This is the user's *primary* email address if the application has access to the `email` claim and the user's *public* email address otherwise |
+| `email`              | `string`  | The user's email address<br>This is the user's *primary* email address |
 | `email_verified`     | `boolean` | Whether the user's email address was verified |
 | `website`            | `string`  | URL for the user's website |
 | `profile`            | `string`  | URL for the user's GitLab profile |
@@ -66,4 +66,4 @@ The following user information is shared with clients:
 | `https://gitlab.org/claims/groups/maintainer` | `array`   | Names of the groups the user is a direct member of with Maintainer role |
 | `https://gitlab.org/claims/groups/developer`  | `array`   | Names of the groups the user is a direct member of with Developer role |
 
-The claims `sub`, `sub_legacy`, `email`, `email_verified` and `groups_direct` are included in the ID token. All other claims are available from the `/oauth/userinfo` endpoint used by OIDC clients.
+The claims `sub`, `sub_legacy` and `groups_direct` are included in the ID token. The claims `email` and `email_verified` are only added if the application has access to the `email` claim and the user's *public* email address, otherwise they are not included. All other claims are available from the `/oauth/userinfo` endpoint used by OIDC clients.

@@ -24,6 +24,7 @@ module ServiceDesk
         else
           verification.mark_as_finished!
 
+          log_info
           ServiceResponse.success
         end
       end
@@ -75,15 +76,15 @@ module ServiceDesk
       end
 
       def error_parameter_missing
-        error_response(_('ServiceDesk|Service Desk setting or verification object missing'))
+        error_response(s_('ServiceDesk|Service Desk setting or verification object missing'))
       end
 
       def error_already_finished
-        error_response(_('ServiceDesk|Custom email address has already been verified.'))
+        error_response(s_('ServiceDesk|Custom email address has already been verified.'))
       end
 
       def error_already_failed
-        error_response(_('ServiceDesk|Custom email address verification has already been processed and failed.'))
+        error_response(s_('ServiceDesk|Custom email address verification has already been processed and failed.'))
       end
     end
   end

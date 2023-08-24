@@ -133,8 +133,8 @@ Specific information applies to installations using Geo:
   This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing
   repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for
   these design repositories. You could be impacted by this issue even if you have not imported projects.
-  - Impacted versions: GitLab versions 16.1.x.
-  - Versions containing fix: GitLab 16.2.0 and later.
+  - Impacted versions: GitLab versions 16.1.0 - 16.1.2
+  - Versions containing fix: GitLab 16.1.3 and later.
 
 ## 16.0.0
 

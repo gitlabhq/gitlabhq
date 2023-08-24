@@ -51,9 +51,6 @@ Before following any of those steps, make sure you have `root` access to the
 **secondary** to promote it, since there isn't provided an automated way to
 promote a Geo replica and perform a failover.
 
-NOTE:
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary site statuses appears to stop updating and become unhealthy. For more information, see [Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](../../replication/troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
-
 On the **secondary** site, navigate to the **Admin Area > Geo** dashboard to
 review its status. Replicated objects (shown in green) should be close to 100%,
 and there should be no failures (shown in red). If a large proportion of

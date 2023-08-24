@@ -208,9 +208,6 @@ be disabled on the **primary** site:
 
 ## Finish replicating and verifying all data
 
-NOTE:
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary site statuses appears to stop updating and become unhealthy. For more information, see [Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](../replication/troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
-
 1. If you are manually replicating any data not managed by Geo, trigger the
    final replication process now.
 1. On the **primary** site:

@@ -194,8 +194,7 @@ When upgrading:
      GitLab instances with multiple web nodes) > [`15.4.6`](versions/gitlab_15_changes.md#1540) >
      [`15.11.13`](versions/gitlab_15_changes.md#15110).
    - GitLab 16: [`16.0.x`](versions/gitlab_16_changes.md#1600) (only
-     [instances with lots of users](versions/gitlab_16_changes.md#long-running-user-type-data-change)) >
-     [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
+     [instances with lots of users](versions/gitlab_16_changes.md#long-running-user-type-data-change)) > [`16.3`](versions/gitlab_16_changes.md#1630) > [latest `16.Y.Z`](https://gitlab.com/gitlab-org/gitlab/-/releases).
 
 1. Check for [required upgrade stops](#required-upgrade-stops).
 1. Consult the [version-specific upgrade instructions](#version-specific-upgrading-instructions).
@@ -214,11 +213,9 @@ crucial database schema and migration patches may be included in the latest patc
 Required upgrade stops are versions of GitLab that you must upgrade to before upgrading to later versions. Required
 upgrade stops allow required background migrations to finish.
 
-During GitLab 16.x, we are scheduling two or three required upgrade stops. We will give at least two milestones of
-notice when we schedule a required upgrade stop.
+During GitLab 16.x, we are scheduling required upgrade stops beforehand so users can better plan out appropriate upgrade stops and downtime when necessary.
 
-The first planned required upgrade stop is scheduled for GitLab 16.3. If nothing is introduced requiring an upgrade stop,
-GitLab 16.3 will be treated as a regular upgrade.
+The first scheduled required upgrade stop has been announced for 16.3. When planning upgrades, please take this into account.
 
 ### Earlier GitLab versions
 

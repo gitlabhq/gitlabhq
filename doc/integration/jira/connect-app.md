@@ -139,10 +139,11 @@ To create branches from Jira Cloud, [install the app manually](#install-the-gitl
 - The instance must be on GitLab version 15.7 or later.
 - You must set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
 - Your network must allow inbound and outbound connections between GitLab and Jira. For self-managed instances that are behind a
-  firewall and cannot be directly accessed from the internet, you can:
+  firewall and cannot be directly accessed from the internet:
   - Open your firewall and only allow inbound traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections).
   - Set up an internet-facing reverse proxy in front of your self-managed instance. To secure this proxy further, only allow inbound
     traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections).
+  - Add [GitLab IP addresses](../../user/gitlab_com/index.md#ip-range) to the allowlist of your firewall.
 
 ### Set up your instance
 

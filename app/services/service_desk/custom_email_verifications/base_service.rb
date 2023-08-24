@@ -3,6 +3,8 @@
 module ServiceDesk
   module CustomEmailVerifications
     class BaseService < ::BaseProjectService
+      include ::ServiceDesk::CustomEmails::Logger
+
       attr_reader :settings
 
       def initialize(project:, current_user: nil, params: {})
@@ -35,14 +37,20 @@ module ServiceDesk
       end
 
       def error_response(message)
+        log_warning(error_message: message)
         ServiceResponse.error(message: message)
       end
 
       def error_not_verified(error_identifier)
+        log_info(error_message: error_identifier.to_s)
         ServiceResponse.error(
           message: _('ServiceDesk|Custom email address could not be verified.'),
           reason: error_identifier.to_s
         )
+      end
+
+      def log_category
+        'custom_email_verification'
       end
     end
   end

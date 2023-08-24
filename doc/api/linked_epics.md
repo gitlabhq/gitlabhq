@@ -17,7 +17,7 @@ Get a list of a given group's related epic links within group and sub-groups, fi
 The user needs to have access to the `source_epic` and `target_epic` to access the related epic link.
 
 ```plaintext
-GET /groups/:id/epics/related_epic_links
+GET /groups/:id/related_epic_links
 ```
 
 Supported attributes:

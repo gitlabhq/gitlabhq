@@ -87,10 +87,6 @@ Otherwise, for each **secondary** site, on a Rails application node, open a [Rai
 
 If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry, we recommend [upgrading](upgrading_the_geo_sites.md) to at least GitLab 14.1.
 
-### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
-
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop upgrading and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
-
 ## Upgrading to GitLab 14.0/14.1
 
 ### Primary sites cannot be removed from the UI
@@ -100,7 +96,3 @@ We found an issue where [Primary sites cannot be removed from the UI](https://gi
 This bug only exists in the UI and does not block the removal of Primary sites using any other method.
 
 If you are running an affected version and need to remove your Primary site, you can manually remove the Primary site by using the [Geo Sites API](../../../api/geo_nodes.md#delete-a-geo-node).
-
-### Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode
-
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab Maintenance Mode](../../maintenance_mode/index.md) causes Geo secondary site statuses to appear to stop upgrading and become unhealthy. For more information, see [Troubleshooting - Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).

@@ -28,6 +28,9 @@ When importing projects:
 - If a user referenced in the project is not found in the GitLab database, the project creator is set as the author and
   assignee. The project creator is usually the user that initiated the import process. A note on the issue mentioning the
   original GitHub author is added.
+- Reviewers assigned to GitHub pull requests that do not exist in GitLab are not imported. In this case, the import
+  creates comments describing that non-existent users were added as reviewers and approvers. However, the actual
+  reviewer status and approval are not applied to the merge request in GitLab.
 - You can change the target namespace and target repository name before you import.
 - The importer also imports branches on forks of projects related to open pull requests. These branches are
   imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`. This may lead to
@@ -59,9 +62,6 @@ To import projects from GitHub:
   are properly mapped to the same user in GitLab. GitHub Enterprise does not require this field to be populated so you
   may have to add it on existing accounts.
 
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383047), if you are using GitHub as an OmniAuth provider, ensure that the URL
-perimeter is specified in the [OmniAuth configuration](../../../integration/github.md#enable-github-oauth-in-gitlab).
-
 ### Importing from GitHub Enterprise to self-managed GitLab
 
 If you are importing from GitHub Enterprise to a self-managed GitLab instance:
@@ -79,6 +79,14 @@ If you are importing from GitHub.com to a self-managed GitLab instance:
 - You don't need to enable the [GitHub integration](../../../integration/github.md).
 - GitHub must be enabled as an import source in the
   [Admin Area](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+
+### Known issues
+
+- GitHub pull request comments (known as diff notes in GitLab) created before 2017 are imported in separate threads.
+  This occurs because of a limitation of the GitHub API that doesn't include `in_reply_to_id` for comments before 2017.
+- Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383047), if you are using GitHub as an
+  OmniAuth provider, ensure that the URL perimeter is specified in the
+  [OmniAuth configuration](../../../integration/github.md#enable-github-oauth-in-gitlab).
 
 ## Import your GitHub repository into GitLab
 
@@ -276,11 +284,6 @@ The following items of a project are imported:
 References to pull requests and issues are preserved. Each imported repository maintains visibility level unless that
 [visibility level is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects), in which case it
 defaults to the default project visibility.
-
-### Known issue
-
-GitHub pull request comments (known as diff notes in GitLab) created before 2017 are imported in separate threads. This occurs because of a limitation of the GitHub
-API that doesn't include `in_reply_to_id` for comments before 2017.
 
 ### Branch protection rules and project settings
 
@@ -510,11 +513,3 @@ To disable the feature flag, run this command:
 # Disable
 Feature.disable(:github_importer_lower_per_page_limit, group)
 ```
-
-## Known limitations
-
-When importing a GitHub pull request with assigned reviewers that do not exist in the GitLab instance, the reviewers will not be imported.
-
-In this case, the import will create comment events showing the non-existent users were added as reviewers and approvers. However, the actual reviewer status and approval are not applied to the merge request in GitLab.
-
-There is currently no workaround to map the reviewers if they do not exist in the GitLab instance. The importer cannot apply approvals or reviewers from users that cannot be mapped.

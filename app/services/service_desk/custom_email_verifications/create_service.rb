@@ -17,6 +17,7 @@ module ServiceDesk
         if ramp_up_error
           handle_error_case
         else
+          log_info
           ServiceResponse.success
         end
       end
@@ -63,11 +64,11 @@ module ServiceDesk
       end
 
       def error_settings_missing
-        error_response(_('ServiceDesk|Service Desk setting missing'))
+        error_response(s_('ServiceDesk|Service Desk setting missing'))
       end
 
       def error_user_not_authorized
-        error_response(_('ServiceDesk|User cannot manage project.'))
+        error_response(s_('ServiceDesk|User cannot manage project.'))
       end
     end
   end
