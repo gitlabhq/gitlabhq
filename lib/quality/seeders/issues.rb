@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require './spec/support/sidekiq_middleware'
-
 # rubocop:disable CodeReuse/ActiveRecord
 module Quality
   module Seeders
@@ -85,7 +83,7 @@ module Quality
         3.times do |i|
           params = {
             project: project,
-            title: "Sprint #{i}",
+            title: "Sprint #{i + suffix}",
             description: FFaker::Lorem.sentence,
             state: [:active, :closed].sample
           }

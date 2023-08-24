@@ -27,9 +27,16 @@ For an overview, see [Merge request review](https://www.youtube.com/watch?v=2May
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/368356) in GitLab 15.6.
 > - Beta designation [removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113058) in GitLab 15.10.
 
-GitLab can suggest reviewers. Using the changes in a merge request and a project's contribution graph, machine learning suggestions appear in the reviewer section of the right sidebar.
+GitLab uses machine learning to suggest reviewers for your merge request.
 
-![Suggested Reviewers](img/suggested_reviewers_v15_9.png)
+To suggest reviewers, GitLab uses:
+
+- The changes in the merge request
+- The project's contribution graph
+
+Suggested Reviewers also integrates with Code Owners, profile status, and merge request rules, helping you make a more informed decision when choosing reviewers that can meet your review criteria.
+
+![Suggested Reviewers](img/suggested_reviewers_v16_3.png)
 
 For more information, see [Data usage in Suggested Reviewers](data_usage.md).
 

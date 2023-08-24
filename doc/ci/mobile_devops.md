@@ -189,8 +189,7 @@ fastlane init
 ```
 
 This command creates a `fastlane` folder in the project with an `Appfile` and a stubbed-out `fastfile`.
-This process asks you for login credentials to App Store Connect
-to generate an app identifier and App Store app if they don't already exist.
+During this process, you are prompted for App Store Connect login credentials to generate an app identifier and an App Store app if they don't already exist.
 
 The next step sets up fastlane match to manage code signing files for the project.
 Run the following command to generate a `Matchfile` with the configuration:

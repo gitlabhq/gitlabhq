@@ -205,6 +205,24 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
       context 'when LFS is enabled' do
         let(:lfs_enabled) { true }
 
+        context 'and object storage is not in use' do
+          let(:lfs_config) do
+            {
+              enabled: false,
+              remote_directory: 'lfs-objects',
+              connection: {},
+              direct_upload: false,
+              proxy_download: true,
+              storage_options: {}
+            }
+          end
+
+          it 'is expected to be skipped' do
+            expect(described_class.send(:allow_lfs, directives)).to be_nil
+            expect(connect_src).not_to include('lfs-objects')
+          end
+        end
+
         context 'and direct downloads are enabled' do
           let(:provider) { LfsObjectUploader.object_store_options.connection.provider }
 

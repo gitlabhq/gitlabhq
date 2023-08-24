@@ -35,6 +35,11 @@ module Routing
     end
 
     def issue_url(entity, *args)
+      # TODO: we do not have a route to access group level work items yet.
+      # That is to be done as part of view group level work item issue:
+      # see https://gitlab.com/gitlab-org/gitlab/-/work_items/393987
+      return unless entity.project.present?
+
       if use_work_items_path?(entity)
         work_item_url(entity, *args)
       else

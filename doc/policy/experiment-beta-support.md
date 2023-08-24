@@ -20,7 +20,7 @@ Support is not provided for features listed as "Experimental" or "Alpha" or any 
 - Can be removed at any time.
 - Data loss may occur.
 - Documentation may not exist or just be in a blog format.
-- Offer an easy way to choose to opt-in to experimental features with minimal friction. For example, needing to flip a feature flag is too much friction, but a group or project-level setting that is in the UI is not.
+- Offer a way to opt-in with minimal friction. For example, needing to flip a feature flag is too much friction, but a group or project-level setting in the UI is not.
 - Link out to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/) in the opt-in.
 - Documentation reflects that the feature is subject to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
 - [UI reflects experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).

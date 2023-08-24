@@ -1365,7 +1365,7 @@ Example request:
 
 ```shell
 curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" \
-     --data '{ "Operations": [{"op":"Update","path":"name.formatted","value":"New Name"}] }' \
+     --data '{ "Operations": [{"op":"replace","path":"id","value":"1234abcd"}] }' \
      --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
 ```
 

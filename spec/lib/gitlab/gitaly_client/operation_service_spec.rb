@@ -567,18 +567,56 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     end
   end
 
-  describe '#user_cherry_pick' do
+  describe '#user_cherry_pick', :freeze_time do
     let(:response_class) { Gitaly::UserCherryPickResponse }
+    let(:sha) { '54cec5282aa9f21856362fe321c800c236a61615' }
+    let(:branch_name) { 'master' }
+    let(:cherry_pick_message) { 'Cherry-pick message' }
+    let(:time) { Time.now.utc }
+
+    let(:branch_update) do
+      Gitaly::OperationBranchUpdate.new(
+        commit_id: sha,
+        repo_created: false,
+        branch_created: false
+      )
+    end
+
+    let(:request) do
+      Gitaly::UserCherryPickRequest.new(
+        repository: repository.gitaly_repository,
+        user: gitaly_user,
+        commit: repository.commit.to_gitaly_commit,
+        branch_name: branch_name,
+        start_branch_name: branch_name,
+        start_repository: repository.gitaly_repository,
+        message: cherry_pick_message,
+        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+      )
+    end
+
+    let(:response) { Gitaly::UserCherryPickResponse.new(branch_update: branch_update) }
 
     subject do
       client.user_cherry_pick(
         user: user,
         commit: repository.commit,
-        branch_name: 'master',
-        message: 'Cherry-pick message',
-        start_branch_name: 'master',
+        branch_name: branch_name,
+        message: cherry_pick_message,
+        start_branch_name: branch_name,
         start_repository: repository
       )
+    end
+
+    it 'sends a user_cherry_pick message and returns a BranchUpdate' do
+      expect_any_instance_of(Gitaly::OperationService::Stub)
+        .to receive(:user_cherry_pick).with(request, kind_of(Hash))
+                                      .and_return(response)
+
+      expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
+      expect(subject.newrev).to be_present
+      expect(subject.repo_created).to be(false)
+      expect(subject.branch_created).to be(false)
     end
 
     context 'when AccessCheckError is raised' do
@@ -641,27 +679,68 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     end
   end
 
-  describe '#user_revert' do
-    let(:response_class) { Gitaly::UserRevertResponse }
+  describe '#user_revert', :freeze_time do
+    let(:sha) { '54cec5282aa9f21856362fe321c800c236a61615' }
+    let(:branch_name) { 'master' }
+    let(:revert_message) { 'revert message' }
+    let(:time) { Time.now.utc }
+
+    let(:branch_update) do
+      Gitaly::OperationBranchUpdate.new(
+        commit_id: sha,
+        repo_created: false,
+        branch_created: false
+      )
+    end
+
+    let(:request) do
+      Gitaly::UserRevertRequest.new(
+        repository: repository.gitaly_repository,
+        user: gitaly_user,
+        commit: repository.commit.to_gitaly_commit,
+        branch_name: branch_name,
+        start_branch_name: branch_name,
+        start_repository: repository.gitaly_repository,
+        message: revert_message,
+        timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+      )
+    end
+
+    let(:response) { Gitaly::UserRevertResponse.new(branch_update: branch_update) }
 
     subject do
       client.user_revert(
         user: user,
         commit: repository.commit,
-        branch_name: 'master',
-        message: 'Revert message',
-        start_branch_name: 'master',
+        branch_name: branch_name,
+        message: revert_message,
+        start_branch_name: branch_name,
         start_repository: repository
       )
     end
 
-    before do
+    it 'sends a user_revert message and returns a BranchUpdate' do
       expect_any_instance_of(Gitaly::OperationService::Stub)
-        .to receive(:user_revert).with(kind_of(Gitaly::UserRevertRequest), kind_of(Hash))
-        .and_return(response)
+        .to receive(:user_revert).with(request, kind_of(Hash))
+                                 .and_return(response)
+
+      expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
+      expect(subject.newrev).to be_present
+      expect(subject.repo_created).to be(false)
+      expect(subject.branch_created).to be(false)
     end
 
-    it_behaves_like 'cherry pick and revert errors'
+    context 'when errors are raised' do
+      let(:response_class) { Gitaly::UserRevertResponse }
+
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_revert).with(kind_of(Gitaly::UserRevertRequest), kind_of(Hash))
+                                   .and_return(response)
+      end
+
+      it_behaves_like 'cherry pick and revert errors'
+    end
   end
 
   describe '#rebase' do
