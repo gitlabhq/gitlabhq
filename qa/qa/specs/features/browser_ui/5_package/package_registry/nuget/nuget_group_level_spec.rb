@@ -163,7 +163,7 @@ module QA
 
           project.group.visit!
 
-          Page::Group::Menu.perform(&:go_to_group_packages)
+          Page::Group::Menu.perform(&:go_to_package_registry)
 
           Page::Project::Packages::Index.perform do |index|
             expect(index).to have_package(package.name)

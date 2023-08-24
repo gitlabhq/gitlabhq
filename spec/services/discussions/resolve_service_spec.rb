@@ -94,9 +94,11 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
 
     it 'raises an argument error if discussions do not belong to the same noteable' do
       other_merge_request = create(:merge_request)
-      other_discussion = create(:diff_note_on_merge_request,
-                                noteable: other_merge_request,
-                                project: other_merge_request.source_project).to_discussion
+      other_discussion = create(
+        :diff_note_on_merge_request,
+        noteable: other_merge_request,
+        project: other_merge_request.source_project
+      ).to_discussion
       expect do
         described_class.new(project, user, one_or_more_discussions: [discussion, other_discussion])
       end.to raise_error(

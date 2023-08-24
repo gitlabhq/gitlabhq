@@ -42,9 +42,7 @@ RSpec.describe Releases::DestroyService, feature_category: :release_orchestratio
       let!(:release) {}
 
       it 'returns an error' do
-        is_expected.to include(status: :error,
-                               message: 'Release does not exist',
-                               http_status: 404)
+        is_expected.to include(status: :error, message: 'Release does not exist', http_status: 404)
       end
     end
 
@@ -52,9 +50,7 @@ RSpec.describe Releases::DestroyService, feature_category: :release_orchestratio
       let(:user) { repoter }
 
       it 'returns an error' do
-        is_expected.to include(status: :error,
-                               message: 'Access Denied',
-                               http_status: 403)
+        is_expected.to include(status: :error, message: 'Access Denied', http_status: 403)
       end
     end
 

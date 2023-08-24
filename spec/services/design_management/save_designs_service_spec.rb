@@ -43,9 +43,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
     design_files = files_to_upload || files
     design_files.each(&:rewind)
 
-    service = described_class.new(project, user,
-                                  issue: issue,
-                                  files: design_files)
+    service = described_class.new(project, user, issue: issue, files: design_files)
     service.execute
   end
 
@@ -390,9 +388,12 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
         before do
           path = File.join(build(:design, issue: issue, filename: filename).full_path)
           design_repository.create_if_not_exists
-          design_repository.create_file(user, path, 'something fake',
-                                        branch_name: project.default_branch_or_main,
-                                        message: 'Somehow created without being tracked in db')
+          design_repository.create_file(
+            user,
+            path, 'something fake',
+            branch_name: project.default_branch_or_main,
+            message: 'Somehow created without being tracked in db'
+          )
         end
 
         it 'creates the design and a new version for it' do

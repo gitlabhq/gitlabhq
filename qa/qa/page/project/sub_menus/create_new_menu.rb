@@ -11,21 +11,12 @@ module QA
             super
 
             base.class_eval do
-              # TODO: remove this when the super sidebar is enabled by default
-              view 'app/helpers/nav/new_dropdown_helper.rb' do
-                element :new_issue_link
-              end
-
-              view 'app/helpers/sidebars_helper.rb' do
-                element :create_menu_item
-              end
+              include QA::Page::SubMenus::CreateNewMenu
             end
           end
 
           def go_to_new_issue
             within_new_item_menu do
-              next click_element(:new_issue_link) unless QA::Runtime::Env.super_sidebar_enabled?
-
               click_element(:create_menu_item, create_menu_item: 'new_issue')
             end
           end

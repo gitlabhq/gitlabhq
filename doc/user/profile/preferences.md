@@ -178,12 +178,11 @@ To show one file per page on the **Changes** tab:
 
 Then, to move between files on the **Changes** tab, below each file, select the **Previous** and **Next** buttons.
 
-### Autocomplete characters
+### Auto-enclose characters
 
-When you type an opening character, like a bracket or quote mark, in a description or comment box,
-GitLab can automatically insert the closing character as you type. For example, if you begin your text with an open bracket, GitLab can insert the closing bracket.
+Automatically add the corresponding closing character to text when you type the opening character. For example, you can automatically insert a closing bracket when you type an opening bracket. This setting works only in description and comment boxes and for the following characters: `**"`, `'`, ```, `(`, `[`, `{`, `<`, `*`, `_**`.
 
-To autocomplete characters in description and comment boxes:
+To auto-enclose characters in description and comment boxes:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
@@ -191,9 +190,12 @@ To autocomplete characters in description and comment boxes:
 1. Select the **Surround text selection when typing quotes or brackets** checkbox.
 1. Select **Save changes**.
 
+In a description or comment box, you can now type a word, highlight it, then type an
+opening character. Instead of replacing the text, the closing character is added to the end.
+
 ### Automate new list items
 
-Create a new list item when you press <kbd>Enter</kbd> within a list in description and comment boxes.
+Create a new list item when you press <kbd>Enter</kbd> in a list in description and comment boxes.
 
 To add a new list item when you press the <kbd>Enter</kbd> key:
 

@@ -17,25 +17,31 @@ module QA
       end
 
       let(:group) do
-        create(:group, sandbox: sandbox_group, api_client: owner_api_client, path: "group-with-2fa-#{SecureRandom.hex(8)}")
+        create(:group, sandbox: sandbox_group, api_client: owner_api_client,
+          path: "group-with-2fa-#{SecureRandom.hex(8)}")
       end
 
       let(:developer_user) { create(:user, username: "developer_user_#{SecureRandom.hex(4)}", api_client: admin_api_client) }
 
-      let(:two_fa_expected_text) { /The group settings for.*require you to enable Two-Factor Authentication for your account.*You need to do this before/ }
+      let(:two_fa_expected_text) do
+        /The group settings for.*require you to enable Two-Factor Authentication for your account.*You need to do this before/
+      end
 
       before do
         group.add_member(developer_user, Resource::Members::AccessLevel::DEVELOPER)
       end
 
+      after do
+        group.set_require_two_factor_authentication(value: 'false')
+        group.remove_via_api! do |resource|
+          resource.api_client = admin_api_client
+        end
+        developer_user.remove_via_api!
+      end
+
       it(
         'allows enforcing 2FA via UI and logging in with 2FA',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931',
-        quarantine: {
-          type: :bug,
-          only: { condition: -> { QA::Runtime::Env.super_sidebar_enabled? } },
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409336'
-        }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347931'
       ) do
         enforce_two_factor_authentication_on_group(group)
 
@@ -58,21 +64,13 @@ module QA
         expect(Page::Main::Menu.perform(&:signed_in?)).to be_truthy
       end
 
-      after do
-        group.set_require_two_factor_authentication(value: 'false')
-        group.remove_via_api! do |resource|
-          resource.api_client = admin_api_client
-        end
-        developer_user.remove_via_api!
-      end
-
       # We are intentionally using the UI to enforce 2FA to exercise the flow with UI.
       # Any future tests should use the API for this purpose.
       def enforce_two_factor_authentication_on_group(group)
         Flow::Login.while_signed_in(as: owner_user) do
           group.visit!
 
-          Page::Group::Menu.perform(&:click_group_general_settings_item)
+          Page::Group::Menu.perform(&:go_to_general_settings)
           Page::Group::Settings::General.perform(&:set_require_2fa_enabled)
 
           QA::Support::Retrier.retry_on_exception(reload_page: page) do

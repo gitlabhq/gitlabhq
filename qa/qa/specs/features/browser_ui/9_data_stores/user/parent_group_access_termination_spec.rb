@@ -24,7 +24,7 @@ module QA
           Flow::Login.while_signed_in_as_admin do
             group.visit!
 
-            Page::Group::Menu.perform(&:click_subgroup_members_item)
+            Page::Group::Menu.perform(&:go_to_members)
             Page::Group::Members.perform do |members_page|
               members_page.search_member(user.username)
               members_page.remove_member(user.username)

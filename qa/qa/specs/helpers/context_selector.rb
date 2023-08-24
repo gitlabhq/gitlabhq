@@ -116,12 +116,12 @@ module QA
         # @return [String] 'gitlab' or 'jihulab'
         def production_domain(tld)
           return 'gitlab' unless GitlabEdition.jh?
-          return 'gitlab' if tld == 'hk'
+          return 'gitlab' if tld == 'hk' || tld == 'cn'
           return 'jihulab' if tld == 'com'
         end
 
         def opts_tld
-          GitlabEdition.jh? ? '(.com|.hk)' : '(.com|.net)'
+          GitlabEdition.jh? ? '(.com|.hk|.cn)' : '(.com|.net)'
         end
 
         def get_tld(host)

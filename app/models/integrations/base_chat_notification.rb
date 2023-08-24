@@ -154,6 +154,15 @@ module Integrations
       supported_events.map { |event| event_channel_name(event) }
     end
 
+    override :api_field_names
+    def api_field_names
+      if mask_configurable_channels?
+        super - event_channel_names
+      else
+        super
+      end
+    end
+
     def form_fields
       super.reject { |field| field[:name].end_with?('channel') }
     end

@@ -1219,9 +1219,11 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let_it_be(:member_and_not_mentioned) { create(:user, developer_projects: [project]) }
       let_it_be(:non_member_and_mentioned) { create(:user) }
       let_it_be(:note) do
-        create(:diff_note_on_design,
-           noteable: design,
-           note: "Hello #{member_and_mentioned.to_reference}, G'day #{non_member_and_mentioned.to_reference}")
+        create(
+          :diff_note_on_design,
+          noteable: design,
+          note: "Hello #{member_and_mentioned.to_reference}, G'day #{non_member_and_mentioned.to_reference}"
+        )
       end
 
       let_it_be(:note_2) do
@@ -3506,12 +3508,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let(:commit) { project.commit }
 
       def create_pipeline(user, status)
-        create(:ci_pipeline, status,
-               project: project,
-               user: user,
-               ref: 'refs/heads/master',
-               sha: commit.id,
-               before_sha: '00000000')
+        create(
+          :ci_pipeline, status,
+          project: project,
+          user: user,
+          ref: 'refs/heads/master',
+          sha: commit.id,
+          before_sha: '00000000'
+        )
       end
 
       before_all do
@@ -4020,12 +4024,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       project.add_maintainer(reviewer)
       merge_request.assignees.each { |assignee| project.add_maintainer(assignee) }
 
-      create(:diff_note_on_merge_request,
-             project: project,
-             noteable: merge_request,
-             author: reviewer,
-             review: review,
-             note: "cc @mention")
+      create(
+        :diff_note_on_merge_request,
+        project: project,
+        noteable: merge_request,
+        author: reviewer,
+        review: review,
+        note: "cc @mention"
+      )
     end
 
     it 'sends emails' do
@@ -4067,10 +4073,18 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     subject { notification.inactive_project_deletion_warning(project, deletion_date) }
 
     it "sends email to project owners and maintainers" do
-      expect { subject }.to have_enqueued_email(project, maintainer, deletion_date,
-                                                mail: "inactive_project_deletion_warning_email")
-      expect { subject }.not_to have_enqueued_email(project, developer, deletion_date,
-                                                    mail: "inactive_project_deletion_warning_email")
+      expect { subject }.to have_enqueued_email(
+        project,
+        maintainer,
+        deletion_date,
+        mail: "inactive_project_deletion_warning_email"
+      )
+      expect { subject }.not_to have_enqueued_email(
+        project,
+        developer,
+        deletion_date,
+        mail: "inactive_project_deletion_warning_email"
+      )
     end
   end
 

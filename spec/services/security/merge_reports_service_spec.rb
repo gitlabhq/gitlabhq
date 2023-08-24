@@ -16,78 +16,87 @@ RSpec.describe Security::MergeReportsService, '#execute', feature_category: :cod
   let(:identifier_wasc) { build(:ci_reports_security_identifier, external_id: '13', external_type: 'wasc') }
 
   let(:finding_id_1) do
-    build(:ci_reports_security_finding,
-          identifiers: [identifier_1_primary, identifier_1_cve],
-          scanner: scanner_1,
-          severity: :low
-         )
+    build(
+      :ci_reports_security_finding,
+      identifiers: [identifier_1_primary, identifier_1_cve],
+      scanner: scanner_1,
+      severity: :low
+    )
   end
 
   let(:finding_id_1_extra) do
-    build(:ci_reports_security_finding,
-          identifiers: [identifier_1_primary, identifier_1_cve],
-          scanner: scanner_1,
-          severity: :low
-         )
+    build(
+      :ci_reports_security_finding,
+      identifiers: [identifier_1_primary, identifier_1_cve],
+      scanner: scanner_1,
+      severity: :low
+    )
   end
 
   let(:finding_id_2_loc_1) do
-    build(:ci_reports_security_finding,
-          identifiers: [identifier_2_primary, identifier_2_cve],
-          location: build(:ci_reports_security_locations_sast, start_line: 32, end_line: 34),
-          scanner: scanner_2,
-          severity: :medium
-         )
+    build(
+      :ci_reports_security_finding,
+      identifiers: [identifier_2_primary, identifier_2_cve],
+      location: build(:ci_reports_security_locations_sast, start_line: 32, end_line: 34),
+      scanner: scanner_2,
+      severity: :medium
+    )
   end
 
   let(:finding_id_2_loc_1_extra) do
-    build(:ci_reports_security_finding,
-          identifiers: [identifier_2_primary, identifier_2_cve],
-          location: build(:ci_reports_security_locations_sast, start_line: 32, end_line: 34),
-          scanner: scanner_2,
-          severity: :medium
-         )
+    build(
+      :ci_reports_security_finding,
+      identifiers: [identifier_2_primary, identifier_2_cve],
+      location: build(:ci_reports_security_locations_sast, start_line: 32, end_line: 34),
+      scanner: scanner_2,
+      severity: :medium
+    )
   end
 
   let(:finding_id_2_loc_2) do
-    build(:ci_reports_security_finding,
-          identifiers: [identifier_2_primary, identifier_2_cve],
-          location: build(:ci_reports_security_locations_sast, start_line: 42, end_line: 44),
-          scanner: scanner_2,
-          severity: :medium
-         )
+    build(
+      :ci_reports_security_finding,
+      identifiers: [identifier_2_primary, identifier_2_cve],
+      location: build(:ci_reports_security_locations_sast, start_line: 42, end_line: 44),
+      scanner: scanner_2,
+      severity: :medium
+    )
   end
 
   let(:finding_cwe_1) do
-    build(:ci_reports_security_finding,
-          identifiers: [identifier_cwe],
-          scanner: scanner_3,
-          severity: :high
-         )
+    build(
+      :ci_reports_security_finding,
+      identifiers: [identifier_cwe],
+      scanner: scanner_3,
+      severity: :high
+    )
   end
 
   let(:finding_cwe_2) do
-    build(:ci_reports_security_finding,
-          identifiers: [identifier_cwe],
-          scanner: scanner_1,
-          severity: :critical
-         )
+    build(
+      :ci_reports_security_finding,
+      identifiers: [identifier_cwe],
+      scanner: scanner_1,
+      severity: :critical
+    )
   end
 
   let(:finding_wasc_1) do
-    build(:ci_reports_security_finding,
-          identifiers: [identifier_wasc],
-          scanner: scanner_1,
-          severity: :medium
-         )
+    build(
+      :ci_reports_security_finding,
+      identifiers: [identifier_wasc],
+      scanner: scanner_1,
+      severity: :medium
+    )
   end
 
   let(:finding_wasc_2) do
-    build(:ci_reports_security_finding,
-          identifiers: [identifier_wasc],
-          scanner: scanner_2,
-          severity: :critical
-         )
+    build(
+      :ci_reports_security_finding,
+      identifiers: [identifier_wasc],
+      scanner: scanner_2,
+      severity: :critical
+    )
   end
 
   let(:report_1_findings) { [finding_id_1, finding_id_2_loc_1, finding_id_2_loc_1_extra, finding_cwe_2, finding_wasc_1] }

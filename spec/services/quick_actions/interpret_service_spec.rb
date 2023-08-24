@@ -29,9 +29,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   end
 
   before do
-    stub_licensed_features(multiple_issue_assignees: false,
-                           multiple_merge_request_reviewers: false,
-                           multiple_merge_request_assignees: false)
+    stub_licensed_features(
+      multiple_issue_assignees: false,
+      multiple_merge_request_reviewers: false,
+      multiple_merge_request_assignees: false
+    )
   end
 
   describe '#execute' do

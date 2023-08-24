@@ -180,11 +180,7 @@ class Packages::Package < ApplicationRecord
   scope :preload_conan_metadatum, -> { preload(:conan_metadatum) }
 
   scope :with_npm_scope, ->(scope) do
-    if Feature.enabled?(:npm_package_registry_fix_group_path_validation)
-      npm.where("position('/' in packages_packages.name) > 0 AND split_part(packages_packages.name, '/', 1) = :package_scope", package_scope: "@#{sanitize_sql_like(scope)}")
-    else
-      npm.where("name ILIKE :package_name", package_name: "@#{sanitize_sql_like(scope)}/%")
-    end
+    npm.where("position('/' in packages_packages.name) > 0 AND split_part(packages_packages.name, '/', 1) = :package_scope", package_scope: "@#{sanitize_sql_like(scope)}")
   end
 
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }

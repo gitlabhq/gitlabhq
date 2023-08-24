@@ -10,16 +10,18 @@ import {
   TYPE_ISSUE,
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
+import updateDescription from '~/issues/show/utils/update_description';
+import { sanitize } from '~/lib/dompurify';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
+import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
-import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
 import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
 import Service from '../services/index';
-import Store from '../stores';
 import DescriptionComponent from './description.vue';
 import EditedComponent from './edited.vue';
 import FormComponent from './form.vue';
@@ -234,21 +236,26 @@ export default {
     },
   },
   data() {
-    const store = new Store({
-      titleHtml: this.initialTitleHtml,
-      titleText: this.initialTitleText,
-      descriptionHtml: this.initialDescriptionHtml,
-      descriptionText: this.initialDescriptionText,
-      updatedAt: this.updatedAt,
-      updatedByName: this.updatedByName,
-      updatedByPath: this.updatedByPath,
-      taskCompletionStatus: this.initialTaskCompletionStatus,
-      lock_version: this.lockVersion,
-    });
-
     return {
-      store,
-      state: store.state,
+      formState: {
+        title: '',
+        description: '',
+        lockedWarningVisible: false,
+        updateLoading: false,
+        lock_version: 0,
+        issuableTemplates: {},
+      },
+      state: {
+        titleHtml: this.initialTitleHtml,
+        titleText: this.initialTitleText,
+        descriptionHtml: this.initialDescriptionHtml,
+        descriptionText: this.initialDescriptionText,
+        updatedAt: this.updatedAt,
+        updatedByName: this.updatedByName,
+        updatedByPath: this.updatedByPath,
+        taskCompletionStatus: this.initialTaskCompletionStatus,
+        lock_version: this.lockVersion,
+      },
       showForm: false,
       templatesRequested: false,
       isStickyHeaderShowing: false,
@@ -264,17 +271,9 @@ export default {
     headerClasses() {
       return this.issuableType === TYPE_INCIDENT ? 'gl-mb-3' : 'gl-mb-6';
     },
-    issuableTemplates() {
-      return this.store.formState.issuableTemplates;
-    },
-    formState() {
-      return this.store.formState;
-    },
     issueChanged() {
       const {
-        store: {
-          formState: { description, title },
-        },
+        formState: { description, title },
         initialDescriptionText,
         initialTitleText,
       } = this;
@@ -322,7 +321,7 @@ export default {
     this.poll = new Poll({
       resource: this.service,
       method: 'getData',
-      successCallback: (res) => this.store.updateState(res.data),
+      successCallback: (res) => this.updateState(res.data),
       errorCallback(err) {
         throw new Error(err);
       },
@@ -360,23 +359,37 @@ export default {
       }
       return undefined;
     },
+    updateState(data) {
+      const stateShouldUpdate =
+        this.state.titleText !== data.title_text ||
+        this.state.descriptionText !== data.description_text;
 
-    updateStoreState() {
+      if (stateShouldUpdate) {
+        this.formState.lockedWarningVisible = true;
+      }
+
+      Object.assign(this.state, convertObjectPropsToCamelCase(data));
+      // find if there is an open details node inside of the issue description.
+      const descriptionSection = document.body.querySelector(
+        '.detail-page-description.content-block',
+      );
+      const details =
+        descriptionSection != null && descriptionSection.getElementsByTagName('details');
+
+      this.state.descriptionHtml = updateDescription(sanitize(data.description), details);
+      this.state.titleHtml = sanitize(data.title);
+      this.state.lock_version = data.lock_version;
+    },
+    refetchData() {
       return this.service
         .getData()
         .then((res) => res.data)
-        .then((data) => {
-          this.store.updateState(data);
-        })
-        .catch(() => {
-          createAlert({
-            message: this.defaultErrorMessage,
-          });
-        });
+        .then(this.updateState)
+        .catch(() => createAlert({ message: this.defaultErrorMessage }));
     },
 
     setFormState(state) {
-      this.store.setFormState(state);
+      this.formState = { ...this.formState, ...state };
     },
 
     updateFormState(templates = {}) {
@@ -416,7 +429,7 @@ export default {
         this.templatesRequested = true;
         this.requestTemplatesAndShowForm();
       } else {
-        this.updateAndShowForm(this.issuableTemplates);
+        this.updateAndShowForm(this.formState.issuableTemplates);
       }
     },
 
@@ -427,10 +440,7 @@ export default {
     async updateIssuable() {
       this.setFormState({ updateLoading: true });
 
-      const {
-        store: { formState },
-        issueState,
-      } = this;
+      const { formState, issueState } = this;
       const issuablePayload = issueState.isDirty
         ? { ...formState, issue_type: issueState.issueType }
         : formState;
@@ -464,7 +474,7 @@ export default {
             visitUrl(URI);
           }
         })
-        .then(this.updateStoreState)
+        .then(this.refetchData)
         .then(() => {
           eventHub.$emit('close.form');
         })
@@ -518,7 +528,7 @@ export default {
       this.poll.enable();
       this.poll.makeDelayedRequest(POLLING_DELAY);
 
-      this.updateStoreState();
+      this.refetchData();
     },
   },
 };
@@ -531,7 +541,7 @@ export default {
         :endpoint="endpoint"
         :form-state="formState"
         :initial-description-text="initialDescriptionText"
-        :issuable-templates="issuableTemplates"
+        :issuable-templates="formState.issuableTemplates"
         :markdown-docs-path="markdownDocsPath"
         :markdown-preview-path="markdownPreviewPath"
         :project-path="projectPath"

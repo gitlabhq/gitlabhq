@@ -12,7 +12,7 @@ module QA
       def fabricate!
         project.visit!
 
-        Page::Project::Menu.perform { |sidebar| sidebar.click_snippets }
+        Page::Project::Menu.perform(&:go_to_snippets)
 
         Page::Project::Snippet::New.perform do |new_snippet|
           new_snippet.click_create_first_snippet

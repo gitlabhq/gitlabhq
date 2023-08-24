@@ -364,4 +364,17 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
       expect { subject.event_channel_value(:foo) }.to raise_error(NoMethodError)
     end
   end
+
+  describe '#api_field_names' do
+    context 'when channels are masked' do
+      let(:project) { build(:project) }
+      let(:integration) { build(:discord_integration, project: project, webhook: 'https://discord.com/api/') }
+
+      it 'does not include channel properties', :aggregate_failures do
+        integration.event_channel_names.each do |field|
+          expect(integration.api_field_names).not_to include(field)
+        end
+      end
+    end
+  end
 end

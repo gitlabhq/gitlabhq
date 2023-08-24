@@ -18,7 +18,7 @@ module QA
       it 'is received by a user for project invitation', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347961' do
         project.visit!
 
-        Page::Project::Menu.perform(&:click_members)
+        Page::Project::Menu.perform(&:go_to_members)
         Page::Project::Members.perform do |member_settings|
           member_settings.add_member(user.username)
         end

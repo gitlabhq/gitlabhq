@@ -4,12 +4,12 @@ module QA
   module Page
     module SubMenus
       module Common
-        prepend Mobile::Page::SubMenus::Common if QA::Runtime::Env.mobile_layout?
-
         def self.included(base)
           super
 
           base.class_eval do
+            prepend Mobile::Page::SubMenus::Common if QA::Runtime::Env.mobile_layout?
+
             view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
               element :navbar
             end
@@ -33,7 +33,7 @@ module QA
           yield
         end
 
-        # Implementation for super-sidebar, will replace within_submenu
+        # Open sidebar navigation submenu
         #
         # @param [String] parent_menu_name
         # @param [String] parent_section_id

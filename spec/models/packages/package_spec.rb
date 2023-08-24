@@ -875,14 +875,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     subject { described_class.with_npm_scope('test') }
 
     it { is_expected.to contain_exactly(package1) }
-
-    context 'when npm_package_registry_fix_group_path_validation is disabled' do
-      before do
-        stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
-      end
-
-      it { is_expected.to contain_exactly(package1) }
-    end
   end
 
   describe '.without_nuget_temporary_name' do

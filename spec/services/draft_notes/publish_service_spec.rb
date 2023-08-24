@@ -292,9 +292,12 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       other_user = create(:user)
       project.add_developer(other_user)
 
-      create(:draft_note, merge_request: merge_request,
-                          author: user,
-                          note: "thanks\n/assign #{other_user.to_reference}")
+      create(
+        :draft_note,
+        merge_request: merge_request,
+        author: user,
+        note: "thanks\n/assign #{other_user.to_reference}"
+      )
 
       expect { publish }.to change { DraftNote.count }.by(-1).and change { Note.count }.by(2)
       expect(merge_request.reload.assignees).to match_array([other_user])

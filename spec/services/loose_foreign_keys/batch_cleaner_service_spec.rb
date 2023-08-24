@@ -88,10 +88,11 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
       expect(loose_fk_child_table_1.count).to eq(4)
       expect(loose_fk_child_table_2.count).to eq(4)
 
-      described_class.new(parent_table: '_test_loose_fk_parent_table',
-                          loose_foreign_key_definitions: loose_foreign_key_definitions,
-                          deleted_parent_records: LooseForeignKeys::DeletedRecord.load_batch_for_table('public._test_loose_fk_parent_table', 100)
-                         ).execute
+      described_class.new(
+        parent_table: '_test_loose_fk_parent_table',
+        loose_foreign_key_definitions: loose_foreign_key_definitions,
+        deleted_parent_records: LooseForeignKeys::DeletedRecord.load_batch_for_table('public._test_loose_fk_parent_table', 100)
+      ).execute
     end
 
     it 'cleans up the child records' do
@@ -125,11 +126,12 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
       let(:deleted_records_incremented_counter) { Gitlab::Metrics.registry.get(:loose_foreign_key_incremented_deleted_records) }
 
       let(:cleaner) do
-        described_class.new(parent_table: '_test_loose_fk_parent_table',
-                            loose_foreign_key_definitions: loose_foreign_key_definitions,
-                            deleted_parent_records: LooseForeignKeys::DeletedRecord.load_batch_for_table('public._test_loose_fk_parent_table', 100),
-                            modification_tracker: modification_tracker
-                           )
+        described_class.new(
+          parent_table: '_test_loose_fk_parent_table',
+          loose_foreign_key_definitions: loose_foreign_key_definitions,
+          deleted_parent_records: LooseForeignKeys::DeletedRecord.load_batch_for_table('public._test_loose_fk_parent_table', 100),
+          modification_tracker: modification_tracker
+        )
       end
 
       before do

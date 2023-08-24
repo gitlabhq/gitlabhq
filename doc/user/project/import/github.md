@@ -510,3 +510,11 @@ To disable the feature flag, run this command:
 # Disable
 Feature.disable(:github_importer_lower_per_page_limit, group)
 ```
+
+## Known limitations
+
+When importing a GitHub pull request with assigned reviewers that do not exist in the GitLab instance, the reviewers will not be imported.
+
+In this case, the import will create comment events showing the non-existent users were added as reviewers and approvers. However, the actual reviewer status and approval are not applied to the merge request in GitLab.
+
+There is currently no workaround to map the reviewers if they do not exist in the GitLab instance. The importer cannot apply approvals or reviewers from users that cannot be mapped.

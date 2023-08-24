@@ -4,10 +4,6 @@ module QA
   module Page
     module User
       class Show < Page::Base
-        view 'app/views/users/show.html.haml' do
-          element :following_tab
-        end
-
         view 'app/views/users/_follow_user.html.haml' do
           element :follow_user_link
         end
@@ -25,9 +21,7 @@ module QA
         end
 
         def click_following_tab
-          return click_element(:nav_item_link, submenu_item: 'Following') if Runtime::Env.super_sidebar_enabled?
-
-          click_element(:following_tab)
+          click_element(:nav_item_link, submenu_item: 'Following')
         end
 
         def click_user_link(username)

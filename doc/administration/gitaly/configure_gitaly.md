@@ -872,10 +872,6 @@ When reached, limits _do_ result in disconnects that negatively impact users.
 For consistent and stable performance, you should first explore other options such as
 adjusting node specifications, and [reviewing large repositories](../../user/project/repository/managing_large_repositories.md) or workloads.
 
-FLAG:
-On self-managed GitLab, by default repository cgroups are not available. To make it available, an administrator can
-[enable the feature flag](../feature_flags.md) named `gitaly_run_cmds_in_cgroup`.
-
 When enabling cgroups for memory, you should ensure that no swap is configured on the Gitaly nodes as
 processes may switch to using that instead of being terminated. This situation could lead to notably compromised
 performance.
