@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require './spec/support/sidekiq_middleware'
+
 # rubocop:disable CodeReuse/ActiveRecord
 module Quality
   module Seeders
@@ -71,7 +73,10 @@ module Quality
           project.add_owner(user)
         end
 
-        AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
+        Sidekiq::Worker.skipping_transaction_check do
+          AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
+        end
+
         # Refind object toreload ProjectTeam association which is memoized at Project model
         @project = Project.find(project.id)
       end

@@ -2,7 +2,12 @@
 
 module QA
   RSpec.shared_examples 'registration and login' do
-    it 'allows the user to register and login' do
+    it 'allows the user to register and login',
+      quarantine: {
+        only: { job: 'airgapped' },
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414247',
+        type: :investigating
+      } do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
       Resource::User.fabricate_via_browser_ui! do |user_resource|
@@ -75,7 +80,12 @@ module QA
           end
 
           it 'allows recreating with same credentials', :reliable,
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868' do
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347868',
+            quarantine: {
+              only: { job: 'airgapped' },
+              issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414247',
+              type: :investigating
+            } do
             expect(Page::Main::Menu.perform(&:signed_in?)).to be_falsy
 
             Flow::Login.sign_in(as: user, skip_page_validation: true)
@@ -122,7 +132,12 @@ module QA
         end
 
         it 'allows user login after approval',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347871' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347871',
+          quarantine: {
+            only: { job: 'airgapped' },
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414247',
+            type: :investigating
+          } do
           user # sign up user
 
           expect(page).to have_text(signed_up_waiting_approval_text)

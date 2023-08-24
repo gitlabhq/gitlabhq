@@ -158,6 +158,7 @@ Advanced vulnerability tracking is available in a subset of the [supported langu
 - Go, in the Semgrep-based analyzer only
 - Java, in the mobsf, Semgrep-based and SpotBugs analyzers
 - JavaScript, in the Semgrep-based and NodeJS-Scan analyzers
+- PHP, in the phpcs-security-audit analyzer
 - Python, in the Semgrep-based analyzer only
 - Ruby, in the Brakeman-based analyzer
 

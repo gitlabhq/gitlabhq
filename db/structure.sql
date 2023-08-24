@@ -25102,6 +25102,27 @@ CREATE SEQUENCE work_item_widget_definitions_id_seq
 
 ALTER SEQUENCE work_item_widget_definitions_id_seq OWNED BY work_item_widget_definitions.id;
 
+CREATE TABLE workspace_variables (
+    id bigint NOT NULL,
+    workspace_id bigint NOT NULL,
+    variable_type smallint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    key text NOT NULL,
+    encrypted_value bytea NOT NULL,
+    encrypted_value_iv bytea NOT NULL,
+    CONSTRAINT check_5545042100 CHECK ((char_length(key) <= 255))
+);
+
+CREATE SEQUENCE workspace_variables_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE workspace_variables_id_seq OWNED BY workspace_variables.id;
+
 CREATE TABLE workspaces (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25123,6 +25144,8 @@ CREATE TABLE workspaces (
     processed_devfile text,
     url text NOT NULL,
     deployment_resource_version text,
+    personal_access_token_id bigint,
+    config_version integer DEFAULT 1 NOT NULL,
     CONSTRAINT check_15543fb0fa CHECK ((char_length(name) <= 64)),
     CONSTRAINT check_157d5f955c CHECK ((char_length(namespace) <= 64)),
     CONSTRAINT check_2b401b0034 CHECK ((char_length(deployment_resource_version) <= 64)),
@@ -26419,6 +26442,8 @@ ALTER TABLE ONLY work_item_parent_links ALTER COLUMN id SET DEFAULT nextval('wor
 ALTER TABLE ONLY work_item_types ALTER COLUMN id SET DEFAULT nextval('work_item_types_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_widget_definitions ALTER COLUMN id SET DEFAULT nextval('work_item_widget_definitions_id_seq'::regclass);
+
+ALTER TABLE ONLY workspace_variables ALTER COLUMN id SET DEFAULT nextval('workspace_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY workspaces ALTER COLUMN id SET DEFAULT nextval('workspaces_id_seq'::regclass);
 
@@ -29036,6 +29061,9 @@ ALTER TABLE ONLY work_item_types
 
 ALTER TABLE ONLY work_item_widget_definitions
     ADD CONSTRAINT work_item_widget_definitions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY workspace_variables
+    ADD CONSTRAINT workspace_variables_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY workspaces
     ADD CONSTRAINT workspaces_pkey PRIMARY KEY (id);
@@ -34067,9 +34095,13 @@ CREATE UNIQUE INDEX index_work_item_widget_definitions_on_namespace_type_and_nam
 
 CREATE INDEX index_work_item_widget_definitions_on_work_item_type_id ON work_item_widget_definitions USING btree (work_item_type_id);
 
+CREATE INDEX index_workspace_variables_on_workspace_id ON workspace_variables USING btree (workspace_id);
+
 CREATE INDEX index_workspaces_on_cluster_agent_id ON workspaces USING btree (cluster_agent_id);
 
 CREATE UNIQUE INDEX index_workspaces_on_name ON workspaces USING btree (name);
+
+CREATE INDEX index_workspaces_on_personal_access_token_id ON workspaces USING btree (personal_access_token_id);
 
 CREATE INDEX index_workspaces_on_project_id ON workspaces USING btree (project_id);
 
@@ -36980,6 +37012,9 @@ ALTER TABLE ONLY pages_domains
 ALTER TABLE ONLY catalog_resource_components
     ADD CONSTRAINT fk_ec417536da FOREIGN KEY (catalog_resource_id) REFERENCES catalog_resources(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY workspaces
+    ADD CONSTRAINT fk_ec70695b2c FOREIGN KEY (personal_access_token_id) REFERENCES personal_access_tokens(id) ON DELETE RESTRICT;
+
 ALTER TABLE ONLY merge_requests_compliance_violations
     ADD CONSTRAINT fk_ec881c1c6f FOREIGN KEY (violating_user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -37645,6 +37680,9 @@ ALTER TABLE ONLY elastic_group_index_statuses
 
 ALTER TABLE ONLY bulk_import_configurations
     ADD CONSTRAINT fk_rails_536b96bff1 FOREIGN KEY (bulk_import_id) REFERENCES bulk_imports(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY workspace_variables
+    ADD CONSTRAINT fk_rails_539844891e FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY x509_commit_signatures
     ADD CONSTRAINT fk_rails_53fe41188f FOREIGN KEY (x509_certificate_id) REFERENCES x509_certificates(id) ON DELETE CASCADE;
