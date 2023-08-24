@@ -11,6 +11,7 @@ import {
   EVENT_TYPE_REOPENED,
   EVENT_TYPE_COMMENTED,
   EVENT_TYPE_UPDATED,
+  EVENT_TYPE_DESTROYED,
   PUSH_EVENT_REF_TYPE_BRANCH,
   PUSH_EVENT_REF_TYPE_TAG,
   EVENT_TYPE_CREATED,
@@ -64,6 +65,8 @@ const findCommentedSnippet = (resourceParentType) => () =>
   );
 const findUpdatedEvent = (targetType) =>
   findEventByActionAndTargetType(EVENT_TYPE_UPDATED, targetType);
+const findDestroyedEvent = (targetType) =>
+  findEventByActionAndTargetType(EVENT_TYPE_DESTROYED, targetType);
 
 // Finders that are used by EE
 export const findCreatedEvent = (targetType) =>
@@ -105,7 +108,7 @@ export const eventBulkPushedBranch = findPushEvent({ commitCount: 5 });
 export const eventPrivate = () => ({ ...events[0], action: EVENT_TYPE_PRIVATE });
 
 export const eventCreated = findEventByAction(EVENT_TYPE_CREATED);
-export const eventProjectCreated = findCreatedEvent(undefined);
+export const eventProjectCreated = findCreatedEvent(null);
 export const eventMilestoneCreated = findCreatedEvent(TARGET_TYPE_MILESTONE);
 export const eventIssueCreated = findCreatedEvent(TARGET_TYPE_ISSUE);
 export const eventMergeRequestCreated = findCreatedEvent(TARGET_TYPE_MERGE_REQUEST);
@@ -154,3 +157,8 @@ export const eventCommentedCommit = () => ({
 export const eventUpdated = findEventByAction(EVENT_TYPE_UPDATED);
 export const eventDesignUpdated = findUpdatedEvent(TARGET_TYPE_DESIGN);
 export const eventWikiPageUpdated = findUpdatedEvent(TARGET_TYPE_WIKI);
+
+export const eventDestroyed = findEventByAction(EVENT_TYPE_DESTROYED);
+export const eventDesignDestroyed = findDestroyedEvent(TARGET_TYPE_DESIGN);
+export const eventWikiPageDestroyed = findDestroyedEvent(TARGET_TYPE_WIKI);
+export const eventMilestoneDestroyed = findDestroyedEvent(TARGET_TYPE_MILESTONE);

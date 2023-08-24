@@ -139,6 +139,13 @@ export const EVENT_UPDATED_I18N = Object.freeze({
   [TYPE_FALLBACK]: s__('ContributionEvent|Updated resource.'),
 });
 
+export const EVENT_DESTROYED_I18N = Object.freeze({
+  [TARGET_TYPE_DESIGN]: s__('ContributionEvent|Archived design in %{resourceParentLink}.'),
+  [TARGET_TYPE_WIKI]: s__('ContributionEvent|Deleted wiki page in %{resourceParentLink}.'),
+  [TARGET_TYPE_MILESTONE]: s__('ContributionEvent|Deleted milestone in %{resourceParentLink}.'),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Deleted resource.'),
+});
+
 export const EVENT_CLOSED_ICONS = Object.freeze({
   [WORK_ITEM_ISSUE_TYPE_ISSUE]: 'issue-closed',
   [TARGET_TYPE_MERGE_REQUEST]: 'merge-request-close',
@@ -148,4 +155,9 @@ export const EVENT_CLOSED_ICONS = Object.freeze({
 export const EVENT_REOPENED_ICONS = Object.freeze({
   [TARGET_TYPE_MERGE_REQUEST]: 'merge-request-open',
   [TYPE_FALLBACK]: 'status_open',
+});
+
+export const EVENT_DESTROYED_ICONS = Object.freeze({
+  [TARGET_TYPE_DESIGN]: 'archive',
+  [TYPE_FALLBACK]: 'remove',
 });

@@ -23,11 +23,7 @@ module QA
         end
       end
 
-      let!(:project_access_token) do
-        QA::Resource::ProjectAccessToken.fabricate_via_api! do |pat|
-          pat.project = project
-        end
-      end
+      let!(:project_access_token) { create(:project_access_token, project: project) }
 
       let(:masked_token) do
         use_ci_variable(name: 'PAT', value: project_access_token.token, project: project)

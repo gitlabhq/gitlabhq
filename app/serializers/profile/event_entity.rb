@@ -47,23 +47,26 @@ module Profile
       end
     end
 
-    expose :target, if: ->(event) { event.target && event.visible_to_user?(current_user) } do
-      expose(:id) { |event| event.target.id }
+    expose :target, if: ->(event) { event.visible_to_user?(current_user) } do
       expose(:target_type, as: :type)
-      expose(:target_title, as: :title)
-      expose(:issue_type, if: ->(event) { event.work_item? || event.issue? }) do |event|
-        event.target.issue_type
-      end
 
-      expose :reference_link_text, if: ->(event) { event.target.respond_to?(:reference_link_text) } do |event|
-        event.target.reference_link_text
-      end
+      with_options if: ->(event) { event.target } do
+        expose(:id) { |event| event.target.id }
+        expose(:target_title, as: :title)
+        expose(:issue_type, if: ->(event) { event.work_item? || event.issue? }) do |event|
+          event.target.issue_type
+        end
 
-      expose :web_url do |event|
-        if event.wiki_page?
-          event_wiki_page_target_url(event)
-        else
-          Gitlab::UrlBuilder.build(event.target)
+        expose :reference_link_text, if: ->(event) { event.target.respond_to?(:reference_link_text) } do |event|
+          event.target.reference_link_text
+        end
+
+        expose :web_url do |event|
+          if event.wiki_page?
+            event_wiki_page_target_url(event)
+          else
+            Gitlab::UrlBuilder.build(event.target)
+          end
         end
       end
     end

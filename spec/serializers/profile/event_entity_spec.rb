@@ -153,6 +153,17 @@ RSpec.describe Profile::EventEntity, feature_category: :user_profile do
     end
   end
 
+  context 'without target' do
+    let(:event) do
+      build(:event, :destroyed, author: user, project: project, target_type: Milestone.to_s)
+    end
+
+    it 'only exposes target.type' do
+      expect(subject[:target][:type]).to eq(Milestone.to_s)
+      expect(subject[:target]).not_to include(:web_url)
+    end
+  end
+
   context 'with resource parent' do
     it 'exposes resource parent fields' do
       resource_parent = event.resource_parent

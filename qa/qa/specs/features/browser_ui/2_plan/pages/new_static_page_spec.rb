@@ -25,10 +25,7 @@ module QA
 
       before do
         Flow::Login.sign_in
-        Resource::ProjectRunner.fabricate_via_api! do |runner|
-          runner.project = project
-          runner.executor = :docker
-        end
+        create(:project_runner, project: project, executor: :docker)
         pipeline.visit!
       end
 

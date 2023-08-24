@@ -12,13 +12,7 @@ module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
     context 'Endpoint Coverage' do
       let!(:project) { create(:project, name: 'endpoint-coverage') }
-      let!(:runner) do
-        Resource::ProjectRunner.fabricate_via_api! do |runner|
-          runner.project = project
-          runner.name = project.name
-          runner.tags = [project.name]
-        end
-      end
+      let!(:runner) { create(:project_runner, project: project, name: project.name, tags: [project.name]) }
 
       before do
         Flow::Login.sign_in

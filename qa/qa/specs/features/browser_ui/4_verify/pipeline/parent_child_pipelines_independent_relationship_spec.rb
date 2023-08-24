@@ -4,13 +4,7 @@ module QA
   RSpec.describe 'Verify', :runner, :reliable, product_group: :pipeline_execution do
     describe 'Parent-child pipelines independent relationship' do
       let!(:project) { create(:project, name: 'pipeline-independent-relationship') }
-      let!(:runner) do
-        Resource::ProjectRunner.fabricate_via_api! do |runner|
-          runner.project = project
-          runner.name = project.name
-          runner.tags = [project.name]
-        end
-      end
+      let!(:runner) { create(:project_runner, project: project, name: project.name, tags: [project.name]) }
 
       before do
         Flow::Login.sign_in

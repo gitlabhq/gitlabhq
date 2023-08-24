@@ -38,7 +38,7 @@ inherit_mode:
 AllCops:
   # Target the current Ruby version. For example, "2.7" or "3.0".
   TargetRubyVersion: <%= RUBY_VERSION[/^\d+\.\d+/, 0] %>
-  TargetRailsVersion: 6.0
+  TargetRailsVersion: 7.0
   Exclude:
     - 'gems/**/*'
     - 'vendor/**/*'

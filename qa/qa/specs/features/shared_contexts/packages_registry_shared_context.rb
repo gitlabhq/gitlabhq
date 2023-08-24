@@ -4,20 +4,10 @@ module QA
   RSpec.shared_context 'packages registry qa scenario' do
     let(:personal_access_token) { Runtime::Env.personal_access_token }
 
-    let(:package_project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.name = "#{package_type}_package_project"
-        project.initialize_with_readme = true
-        project.visibility = :private
-      end
-    end
+    let(:package_project) { create(:project, :private, :with_readme, name: "packages-#{SecureRandom.hex(8)}") }
 
     let(:client_project) do
-      Resource::Project.fabricate_via_api! do |client_project|
-        client_project.name = "#{package_type}_client_project"
-        client_project.initialize_with_readme = true
-        client_project.group = package_project.group
-      end
+      create(:project, :with_readme, name: "client-#{SecureRandom.hex(8)}", group: package_project.group)
     end
 
     let(:package_project_inbound_job_token_disabled) do

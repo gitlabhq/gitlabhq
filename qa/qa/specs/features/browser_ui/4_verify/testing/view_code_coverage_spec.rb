@@ -4,12 +4,7 @@ module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_execution do
     describe 'Code coverage statistics' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
-      let(:runner) do
-        Resource::ProjectRunner.fabricate_via_api! do |runner|
-          runner.name = executor
-          runner.tags = ['e2e-test']
-        end
-      end
+      let(:runner) { create(:project_runner, name: executor, tags: ['e2e-test']) }
 
       let(:merge_request) do
         Resource::MergeRequest.fabricate_via_api! do |mr|

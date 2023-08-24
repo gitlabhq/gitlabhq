@@ -280,7 +280,10 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
         end
       end
 
-      status = :not_found if scope == :group && params[:package_name_type] == :non_existing && !params[:request_forward]
+      if (scope == :group && params[:package_name_type] == :non_existing) &&
+          (!params[:request_forward] || (!params[:auth] && params[:request_forward] && params[:visibility] != :public))
+        status = :not_found
+      end
 
       # Check the error message for :not_found
       example_name = 'returning response status with error' if status == :not_found

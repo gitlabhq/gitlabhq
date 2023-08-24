@@ -8,27 +8,24 @@ module QA
     let(:group) { create(:group, path: "group-for-variable-inheritance-#{random_string}") }
 
     let(:upstream_project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.group = group
-        project.name = 'upstream-variable-inheritance'
-        project.description = 'Project for pipeline with variable defined via UI - Upstream'
-      end
+      create(:project,
+        name: 'upstream-variable-inheritance',
+        description: 'Project for pipeline with variable defined via UI - Upstream',
+        group: group)
     end
 
     let(:downstream1_project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.group = group
-        project.name = 'downstream1-variable-inheritance'
-        project.description = 'Project for pipeline with variable defined via UI - Downstream'
-      end
+      create(:project,
+        name: 'downstream1-variable-inheritance',
+        description: 'Project for pipeline with variable defined via UI - Downstream',
+        group: group)
     end
 
     let(:downstream2_project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.group = group
-        project.name = 'downstream2-variable-inheritance'
-        project.description = 'Project for pipeline with variable defined via UI - Downstream'
-      end
+      create(:project,
+        name: 'downstream2-variable-inheritance',
+        description: 'Project for pipeline with variable defined via UI - Downstream',
+        group: group)
     end
 
     let!(:runner) do
