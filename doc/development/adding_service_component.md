@@ -23,7 +23,7 @@ The following outline re-uses the [maturity metric](https://about.gitlab.com/dir
   - [Release management](#release-management)
   - [Enabled on GitLab.com](feature_flags/controls.md#enabling-a-feature-for-gitlabcom)
 - Complete
-  - [Configurable by the GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit)
+  - [Validated by the Reference Architecture group and scaled out recommendations made](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/self-managed-excellence/#reference-architectures)
 - Lovable
   - Enabled by default for the majority of users
 

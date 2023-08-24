@@ -1,15 +1,7 @@
 <script>
-import { GlIcon, GlBadge, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
 import { createAlert } from '~/alert';
-import {
-  issuableStatusText,
-  STATUS_CLOSED,
-  TYPE_EPIC,
-  TYPE_INCIDENT,
-  TYPE_ISSUE,
-  WORKSPACE_PROJECT,
-} from '~/issues/constants';
+import { TYPE_EPIC, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import updateDescription from '~/issues/show/utils/update_description';
 import { sanitize } from '~/lib/dompurify';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -17,7 +9,6 @@ import Poll from '~/lib/utils/poll';
 import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
-import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, POLLING_DELAY } from '../constants';
 import eventHub from '../event_hub';
 import getIssueStateQuery from '../queries/get_issue_state.query.graphql';
@@ -28,24 +19,18 @@ import FormComponent from './form.vue';
 import HeaderActions from './header_actions.vue';
 import IssueHeader from './issue_header.vue';
 import PinnedLinks from './pinned_links.vue';
+import StickyHeader from './sticky_header.vue';
 import TitleComponent from './title.vue';
 
 export default {
-  WORKSPACE_PROJECT,
   components: {
-    GlIcon,
-    GlBadge,
-    GlIntersectionObserver,
     HeaderActions,
     IssueHeader,
     TitleComponent,
     EditedComponent,
     FormComponent,
     PinnedLinks,
-    ConfidentialityBadge,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    StickyHeader,
   },
   props: {
     author: {
@@ -291,26 +276,13 @@ export default {
     defaultErrorMessage() {
       return sprintf(__('Error updating %{issuableType}'), { issuableType: this.issuableType });
     },
-    isClosed() {
-      return this.issuableStatus === STATUS_CLOSED;
-    },
+
     pinnedLinkClasses() {
       return this.showTitleBorder
         ? 'gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-mb-6'
         : '';
     },
-    statusIcon() {
-      if (this.issuableType === TYPE_EPIC) {
-        return this.isClosed ? 'epic-closed' : 'epic';
-      }
-      return this.isClosed ? 'issue-closed' : 'issues';
-    },
-    statusVariant() {
-      return this.isClosed ? 'info' : 'success';
-    },
-    statusText() {
-      return issuableStatusText[this.issuableStatus];
-    },
+
     shouldShowStickyHeader() {
       return [TYPE_INCIDENT, TYPE_ISSUE, TYPE_EPIC].includes(this.issuableType);
     },
@@ -569,60 +541,18 @@ export default {
         </template>
       </title-component>
 
-      <gl-intersection-observer
+      <sticky-header
         v-if="shouldShowStickyHeader"
-        @appear="hideStickyHeader"
-        @disappear="showStickyHeader"
-      >
-        <transition name="issuable-header-slide">
-          <div
-            v-if="isStickyHeaderShowing"
-            class="issue-sticky-header gl-fixed gl-z-index-3 gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-py-3"
-            data-testid="issue-sticky-header"
-          >
-            <div
-              class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-gap-2 gl-mx-auto gl-px-5"
-            >
-              <gl-badge :variant="statusVariant">
-                <gl-icon :name="statusIcon" />
-                <span class="gl-display-none gl-sm-display-block gl-ml-2">{{
-                  statusText
-                }}</span></gl-badge
-              >
-              <span
-                v-if="isLocked"
-                v-gl-tooltip.bottom
-                data-testid="locked"
-                class="issuable-warning-icon"
-                :title="__('This issue is locked. Only project members can comment.')"
-              >
-                <gl-icon name="lock" :aria-label="__('Locked')" />
-              </span>
-              <confidentiality-badge
-                v-if="isConfidential"
-                :issuable-type="issuableType"
-                :workspace-type="$options.WORKSPACE_PROJECT"
-              />
-              <span
-                v-if="isHidden"
-                v-gl-tooltip.bottom
-                :title="__('This issue is hidden because its author has been banned')"
-                data-testid="hidden"
-                class="issuable-warning-icon"
-              >
-                <gl-icon name="spam" />
-              </span>
-              <a
-                href="#top"
-                class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-text-black-normal"
-                :title="state.titleText"
-              >
-                {{ state.titleText }}
-              </a>
-            </div>
-          </div>
-        </transition>
-      </gl-intersection-observer>
+        :is-confidential="isConfidential"
+        :is-hidden="isHidden"
+        :is-locked="isLocked"
+        :issuable-status="issuableStatus"
+        :issuable-type="issuableType"
+        :show="isStickyHeaderShowing"
+        :title="state.titleText"
+        @hide="hideStickyHeader"
+        @show="showStickyHeader"
+      />
 
       <slot name="header">
         <issue-header

@@ -413,7 +413,7 @@ For more information, see our [handbook page](https://about.gitlab.com/handbook/
 
 Testing occurs against all reference architectures and cloud providers in an automated and ad-hoc fashion. This is done by two tools:
 
-- The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) for building the environments.
+- The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts for building the environments.
 - The [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) for performance testing.
 
 Network latency on the test environments between components on all Cloud Providers were measured at <5 ms. This is shared as an observation and not as an implicit recommendation.

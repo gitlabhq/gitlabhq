@@ -32,38 +32,12 @@ Amazon provides a managed Kubernetes service offering known as [Amazon Elastic K
 
 ## Available Infrastructure as Code for GitLab Cloud Native Hybrid
 
-The [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md) is an effort made by GitLab to create a multi-cloud, multi-GitLab (Linux package installation + Cloud Native Hybrid) toolkit to provision GitLab. GET is developed by GitLab developers and is open to community contributions. GET is where GitLab is investing its resources as the primary option for Infrastructure as Code, and is being actively used in production as a part of [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md).
+The [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md) is a set of opinionated Terraform
+and Ansible scripts. These scripts help with the deployment of Linux package or Cloud Native Hybrid environments on selected cloud providers and are used
+by GitLab developers for [GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md) (for example).
 
-For more information about the project, see [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md).
-
-The [AWS Quick Start for GitLab Cloud Native Hybrid on EKS](https://aws-quickstart.github.io/quickstart-eks-gitlab/) is developed by AWS, GitLab, and the community that contributes to AWS Quick Starts, whether directly to the GitLab Quick Start or to the underlying Quick Start dependencies GitLab inherits (for example, EKS Quick Start).
-
-GET is recommended for most deployments. The AWS Quick Start can be used if the IaC language of choice is CloudFormation, integration with AWS services like Control Tower is desired, or preference for a UI-driven configuration experience or when any aspect in the below table is an overriding concern.
-
-NOTE:
-This automation is in **[Open Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#open-beta)**. GitLab is working with AWS on resolving [the outstanding issues](https://github.com/aws-quickstart/quickstart-eks-gitlab/issues?q=is%3Aissue+is%3Aopen+%5BHL%5D) before it is fully released. You can subscribe to this issue to be notified of progress and release announcements: [AWS Quick Start for GitLab Cloud Native Hybrid on EKS Status: Beta](https://gitlab.com/gitlab-com/alliances/aws/public-tracker/-/issues/11).<br><br>
-The Beta version deploys Aurora PostgreSQL, but the release version will deploy Amazon RDS PostgreSQL due to [known issues](https://gitlab.com/gitlab-com/alliances/aws/public-tracker/-/issues?label_name%5B%5D=AWS+Known+Issue) with Aurora. All performance testing results will also be redone after this change has been made.
-
-|                                                              | [AWS Quick Start for GitLab Cloud Native Hybrid on EKS](https://aws-quickstart.github.io/quickstart-eks-gitlab/) | [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Overview and Vision                                          | [AWS Quick Start](https://aws.amazon.com/solutions/implementations/amazon-eks/)        | [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md) |
-| Licensing                                                    | [Open Source (Apache 2.0)](https://github.com/aws-quickstart/quickstart-eks-gitlab/blob/main/LICENSE.txt) | [GitLab Enterprise Edition license](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/LICENSE) ([GitLab Premium tier](https://gitlab.com/gitlab-org/gitlab-environment-toolkit/-/blob/main/README.md)) |
-| GitLab Support                                               | [GitLab Beta Support](../../policy/experiment-beta-support.md#beta) | [GitLab GA Support](../../policy/experiment-beta-support.md#generally-available-ga) |
-| GitLab Reference Architecture Compliant                      | Yes                                                          | Yes                                                          |
-| GitLab Performance Tool (GPT) Tested                         | Yes                                                          | Yes                                                          |
-| Amazon Well Architected Compliant                            | Yes<br />(via Quick Start program)                           | Critical portions <br />reviewed by AWS                      |
-| Target Cloud Platforms                                       | AWS                                                          | AWS, Google, Azure                                           |
-| IaC Languages                                                | CloudFormation (Quick Starts)                                | Terraform, Ansible                                           |
-| Community Contributions and Participation (EcoSystem)        | <u>GitLab QSG</u>: Getting Started<br /><u>For QSG Dependencies (for example, EKS)</u>: Substantial | Getting Started                                              |
-| Compatible with AWS Meta-Automation Services (via CloudFormation) | - [AWS Service Catalog](https://aws.amazon.com/servicecatalog/) (Direct Import)<br>- [ServiceNow via an AWS Service Catalog Connector](https://docs.aws.amazon.com/servicecatalog/latest/adminguide/integrations-servicenow.html#integrations-servicenow)<br>- [Jira Service Manager via an AWS Service Catalog Connector](https://docs.aws.amazon.com/servicecatalog/latest/adminguide/integrations-jiraservicedesk.html#integrations-jiraservicedesk)<br>- [AWS Control Tower](https://docs.aws.amazon.com/controltower/) ([Integration](https://aws.amazon.com/blogs/infrastructure-and-automation/deploy-aws-quick-start-to-multiple-accounts-using-aws-control-tower/))<br>- Quick Starts<br>- [AWS SaaS Factory](https://aws.amazon.com/partners/programs/saas-factory/) | No                                                           |
-| Results in a Ready-to-Use instance                           | Yes                                                          | Manual Actions or <br />Supplemental IaC Required            |
-| **<u>Configuration Features</u>**                            |                                                              |                                                              |
-| Can deploy Linux package (non-Kubernetes)                    | No                                                           | Yes                                                          |
-| Can deploy a single instance by using the Linux package (non-Kubernetes) | No                                                           | Yes                                                          |
-| Complete Internal Encryption                                 | 85%, Targeting 100%                                          | Manual                                                       |
-| AWS GovCloud Support                                         | Yes                                                          | TBD                                                          |
-| No Code Form-Based Deployment User Experience Available    | Yes                                                          | No                                                          |
-| Full IaC User Experience Available                         | Yes                                                          | Yes                                                          |
+You can use the GitLab Environment Toolkit to deploy a Cloud Native Hybrid environment on AWS. However, it's not required and may not support every valid
+permutation. That said, the scripts are presented as-is and you can adapt them accordingly.
 
 ### Two and Three Zone High Availability
 

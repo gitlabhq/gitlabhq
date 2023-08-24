@@ -39,7 +39,7 @@ When onboarding, you must also specify your preference for the weekly four-hour 
 
 Available scheduled maintenance windows, performed outside standard working hours:
 
-- APAC: Wednesday 1 AM - 5 AM UTC
+- APAC: Wednesday 1 PM - 5 PM UTC
 - EU: Tuesday 1 AM - 5 AM UTC
 - AMER Option 1: Tuesday 7 AM - 11 AM UTC
 - AMER Option 2: Sunday 9 PM - Monday 1 AM UTC
@@ -261,9 +261,9 @@ To activate SAML for your GitLab Dedicated instance:
      "admin_groups": [
        // optional
      ],
-     "idp_cert_fingerprint": "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8", 
+     "idp_cert_fingerprint": "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8",
      "idp_sso_target_url": "https://login.example.com/idp",
-     "label": "IDP Name", 
+     "label": "IDP Name",
      "name_identifier_format": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
      "security": {
        // optional

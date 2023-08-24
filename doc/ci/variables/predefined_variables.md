@@ -165,13 +165,15 @@ These variables are available when:
 | `CI_MERGE_REQUEST_PROJECT_PATH`             | 11.6   | all    | The path of the project of the merge request. For example `namespace/awesome-project`. |
 | `CI_MERGE_REQUEST_PROJECT_URL`              | 11.6   | all    | The URL of the project of the merge request. For example, `http://192.168.10.15:3000/namespace/awesome-project`. |
 | `CI_MERGE_REQUEST_REF_PATH`                 | 11.6   | all    | The ref path of the merge request. For example, `refs/merge-requests/1/head`. |
+| `CI_MERGE_REQUEST_SQUASH_ON_MERGE`          | 16.3   | all    | `true` when the [squash on merge](../../user/project/merge_requests/squash_and_merge.md) option is set. |
 | `CI_MERGE_REQUEST_SOURCE_BRANCH_NAME`       | 11.6   | all    | The source branch name of the merge request. |
+| `CI_MERGE_REQUEST_SOURCE_BRANCH_PROTECTED`  | 16.3   | all    | `true` when the source branch of the merge request is [protected](../../user/project/protected_branches.md). |
 | `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`        | 11.9   | all    | The HEAD SHA of the source branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_ID`        | 11.6   | all    | The ID of the source project of the merge request. |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_PATH`      | 11.6   | all    | The path of the source project of the merge request. |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_URL`       | 11.6   | all    | The URL of the source project of the merge request. |
 | `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`       | 11.6   | all    | The target branch name of the merge request. |
-| `CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED`  | 15.2   | all    | The protection status for the target branch of the merge request. |
+| `CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED`  | 15.2   | all    | `true` when the target branch of the merge request is [protected](../../user/project/protected_branches.md). |
 | `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`        | 11.9   | all    | The HEAD SHA of the target branch of the merge request. The variable is empty in merge request pipelines. The SHA is present only in [merged results pipelines](../pipelines/merged_results_pipelines.md). |
 | `CI_MERGE_REQUEST_TITLE`                    | 11.9   | all    | The title of the merge request. |
 | `CI_MERGE_REQUEST_EVENT_TYPE`               | 12.3   | all    | The event type of the merge request. Can be `detached`, `merged_result` or `merge_train`. |

@@ -666,6 +666,37 @@ In this example:
 - `user` has a value of `test-user`, because that is the default when not specified.
 - `flags` has no value, because it is optional and has no default when not specified.
 
+### Use `include:inputs` with multiple files
+
+`inputs` must be specified separately for each included file. For example:
+
+```yaml
+include:
+  - component: gitlab.com/org/my-component@1.0
+    inputs:
+      stage: my-stage
+  - local: path/to/file.yml
+    inputs:
+      stage: my-stage
+```
+
+You can also include the same file multiple times, with different inputs.
+For example:
+
+```yaml
+include:
+  - local: path/to/my-super-linter.yml
+    inputs:
+      type: docs
+      job-name: lint-docs
+      lint-path: "doc/"
+  - local: path/to/my-super-linter.yml
+    inputs:
+      type: yaml
+      job-name: lint-yaml
+      lint-path: "data/yaml/"
+```
+
 ## Troubleshooting
 
 ### `Maximum of 150 nested includes are allowed!` error

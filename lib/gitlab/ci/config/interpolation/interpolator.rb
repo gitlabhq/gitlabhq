@@ -37,7 +37,12 @@ module Gitlab
 
           def interpolate!
             return @errors.push(config.error) unless config.valid?
-            return @errors.push('unknown input arguments') if inputs_without_header?
+
+            if inputs_without_header?
+              return @errors.push(
+                _('Given inputs not defined in the `spec` section of the included configuration file'))
+            end
+
             return @result ||= config.content unless config.has_header?
 
             return @errors.concat(header.errors) unless header.valid?

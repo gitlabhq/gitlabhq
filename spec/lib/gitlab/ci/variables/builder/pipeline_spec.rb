@@ -108,12 +108,17 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :secr
               'CI_MERGE_REQUEST_SOURCE_PROJECT_URL' => merge_request.source_project.web_url,
               'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => merge_request.source_branch.to_s,
               'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => '',
+              'CI_MERGE_REQUEST_SOURCE_BRANCH_PROTECTED' => ProtectedBranch.protected?(
+                merge_request.source_project,
+                merge_request.source_branch
+              ).to_s,
               'CI_MERGE_REQUEST_TITLE' => merge_request.title,
               'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
               'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
               'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).sort.join(','),
               'CI_MERGE_REQUEST_EVENT_TYPE' => 'detached',
-              'CI_OPEN_MERGE_REQUESTS' => merge_request.to_reference(full: true))
+              'CI_OPEN_MERGE_REQUESTS' => merge_request.to_reference(full: true)),
+              'CI_MERGE_REQUEST_SQUASH_ON_MERGE' => merge_request.squash_on_merge?.to_s
         end
 
         it 'exposes diff variables' do

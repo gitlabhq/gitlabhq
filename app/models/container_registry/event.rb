@@ -60,7 +60,7 @@ module ContainerRegistry
 
     def target_tag?
       # There is no clear indication in the event structure when we delete a top-level manifest
-      # except existance of "tag" key
+      # except existence of "tag" key
       event['target'].has_key?('tag')
     end
 

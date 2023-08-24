@@ -57,9 +57,25 @@ RSpec.describe LimitedCapacity::Worker, :clean_gitlab_redis_queues, :aggregate_f
     it 'enqueues jobs' do
       expect(worker_class)
         .to receive(:bulk_perform_async)
-        .with([[:arg], [:arg], [:arg]])
+        .with([[:arg], [:arg], [:arg]]).and_call_original
+
+      expect(Sidekiq::Client).to receive(:push_bulk)
 
       perform_with_capacity
+    end
+
+    context 'when max_running_jobs is 0' do
+      let(:max_running_jobs) { 0 }
+
+      it 'does not enqueue jobs' do
+        expect(worker_class)
+          .to receive(:bulk_perform_async)
+          .with([]).and_call_original
+
+        expect(Sidekiq::Client).not_to receive(:push_bulk)
+
+        perform_with_capacity
+      end
     end
   end
 
