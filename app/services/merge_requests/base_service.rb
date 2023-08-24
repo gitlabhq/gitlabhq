@@ -185,8 +185,7 @@ module MergeRequests
     # Only supported for merged MRs.
     def filter_locked_labels(merge_request)
       return unless params[:remove_label_ids].present?
-      return unless merge_request.merged?
-      return unless Feature.enabled?(:enforce_locked_labels_on_merge, merge_request.project, type: :ops)
+      return unless merge_request.supports_lock_on_merge?
 
       params[:remove_label_ids] -= labels_service.filter_locked_labels_ids_in_param(:remove_label_ids)
     end

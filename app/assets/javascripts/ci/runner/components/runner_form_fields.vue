@@ -10,7 +10,12 @@ import {
   GlSkeletonLoader,
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { ACCESS_LEVEL_NOT_PROTECTED, ACCESS_LEVEL_REF_PROTECTED, PROJECT_TYPE } from '../constants';
+import {
+  ACCESS_LEVEL_NOT_PROTECTED,
+  ACCESS_LEVEL_REF_PROTECTED,
+  PROJECT_TYPE,
+  RUNNER_TYPES,
+} from '../constants';
 
 export default {
   name: 'RunnerFormFields',
@@ -26,6 +31,12 @@ export default {
       import('ee_component/ci/runner/components/runner_maintenance_note_field.vue'),
   },
   props: {
+    runnerType: {
+      type: String,
+      required: false,
+      default: null,
+      validator: (t) => RUNNER_TYPES.includes(t),
+    },
     value: {
       type: Object,
       default: null,
@@ -44,7 +55,7 @@ export default {
   },
   computed: {
     canBeLockedToProject() {
-      return this.value?.runnerType === PROJECT_TYPE;
+      return this.runnerType === PROJECT_TYPE;
     },
   },
   watch: {

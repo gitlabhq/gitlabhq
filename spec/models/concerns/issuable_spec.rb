@@ -1023,6 +1023,22 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
   end
 
+  describe '#supports_lock_on_merge?' do
+    where(:issuable_type, :supports_lock_on_merge) do
+      :issue         | false
+      :merge_request | false
+      :incident      | false
+    end
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type) }
+
+      subject { issuable.supports_lock_on_merge? }
+
+      it { is_expected.to eq(supports_lock_on_merge) }
+    end
+  end
+
   describe '#severity' do
     subject { issuable.severity }
 

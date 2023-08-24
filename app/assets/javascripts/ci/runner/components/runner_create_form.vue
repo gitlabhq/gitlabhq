@@ -120,7 +120,7 @@ export default {
 </script>
 <template>
   <gl-form @submit.prevent="onSubmit">
-    <runner-form-fields v-model="runner" />
+    <runner-form-fields v-model="runner" :runner-type="runnerType" />
 
     <div class="gl-display-flex gl-mt-6">
       <gl-button type="submit" variant="confirm" class="js-no-auto-disable" :loading="saving">

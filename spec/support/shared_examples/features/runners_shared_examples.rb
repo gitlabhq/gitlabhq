@@ -202,6 +202,13 @@ RSpec.shared_examples 'shows runner jobs tab' do
   end
 end
 
+RSpec.shared_examples 'shows locked field' do
+  it 'shows locked checkbox with description', :js do
+    expect(page).to have_selector('input[type="checkbox"][name="locked"]')
+    expect(page).to have_content(_('Lock to current projects'))
+  end
+end
+
 RSpec.shared_examples 'submits edit runner form' do
   it 'breadcrumb contains runner id and token' do
     page.within '[data-testid="breadcrumb-links"]' do

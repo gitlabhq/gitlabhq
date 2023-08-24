@@ -444,15 +444,15 @@ for the ability to set merge request approval rules for groups is tracked in
 
 WARNING:
 This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
-Beta users should read about the [known limitations](../project/repository/code_suggestions.md#known-limitations).
-We look forward to hearing your [feedback](../project/repository/code_suggestions.md#feedback).
+Beta users should read about the [known limitations](../project/repository/code_suggestions/index.md#known-limitations).
+We look forward to hearing your [feedback](../project/repository/code_suggestions/index.md#feedback).
 
 You can give all users in a group and its subgroups access to [Code Suggestions](../project/repository/code_suggestions.md).
 
 - This setting
   [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.
 - Each user can
-  [enable or disable Code Suggestions for themselves](../project/repository/code_suggestions.md#enable-code-suggestions-for-an-individual-user).
+  [enable or disable Code Suggestions for themselves](../project/repository/code_suggestions/saas.md#enable-code-suggestions-for-an-individual-user).
 
 To enable Code Suggestions for a group:
 

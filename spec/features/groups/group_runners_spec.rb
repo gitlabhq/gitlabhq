@@ -308,6 +308,8 @@ RSpec.describe "Group Runners", feature_category: :runner_fleet do
         let(:runner) { project_runner }
         let(:runner_page_path) { group_runner_path(group, project_runner) }
       end
+
+      it_behaves_like 'shows locked field'
     end
   end
 end

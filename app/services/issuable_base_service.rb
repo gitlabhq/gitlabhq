@@ -169,7 +169,7 @@ class IssuableBaseService < ::BaseContainerService
     params[:incident_management_issuable_escalation_status_attributes] = result[:escalation_status]
   end
 
-  def process_label_ids(attributes, existing_label_ids: nil, extra_label_ids: [])
+  def process_label_ids(attributes, issuable:, existing_label_ids: nil, extra_label_ids: []) # rubocop:disable Lint/UnusedMethodArgument
     label_ids = attributes.delete(:label_ids)
     add_label_ids = attributes.delete(:add_label_ids)
     remove_label_ids = attributes.delete(:remove_label_ids)
@@ -221,7 +221,7 @@ class IssuableBaseService < ::BaseContainerService
 
     params.delete(:state_event)
     params[:author] ||= current_user
-    params[:label_ids] = process_label_ids(params, extra_label_ids: issuable.label_ids.to_a)
+    params[:label_ids] = process_label_ids(params, issuable: issuable, extra_label_ids: issuable.label_ids.to_a)
 
     if issuable.respond_to?(:assignee_ids)
       params[:assignee_ids] = process_assignee_ids(params, extra_assignee_ids: issuable.assignee_ids.to_a)
@@ -469,7 +469,7 @@ class IssuableBaseService < ::BaseContainerService
   # rubocop: enable CodeReuse/ActiveRecord
 
   def assign_requested_labels(issuable)
-    label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
+    label_ids = process_label_ids(params, issuable: issuable, existing_label_ids: issuable.label_ids)
     return unless ids_changing?(issuable.label_ids, label_ids)
 
     params[:label_ids] = label_ids

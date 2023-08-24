@@ -655,10 +655,10 @@ describe('CE ServiceDeskListApp', () => {
 
   describe('Errors', () => {
     describe.each`
-      error                      | responseHandler
-      ${'fetching issues'}       | ${'serviceDeskIssuesQueryResponseHandler'}
-      ${'fetching issue counts'} | ${'serviceDeskIssuesCountsQueryResponseHandler'}
-    `('when there is an error $error', ({ responseHandler }) => {
+      error                      | responseHandler                                  | message
+      ${'fetching issues'}       | ${'serviceDeskIssuesQueryResponseHandler'}       | ${'An error occurred while loading issues'}
+      ${'fetching issue counts'} | ${'serviceDeskIssuesCountsQueryResponseHandler'} | ${'An error occurred while getting issue counts'}
+    `('when there is an error $error', ({ responseHandler, message }) => {
       beforeEach(() => {
         wrapper = createComponent({
           [responseHandler]: jest.fn().mockRejectedValue(new Error('ERROR')),
@@ -667,8 +667,23 @@ describe('CE ServiceDeskListApp', () => {
       });
 
       it('shows an error message', () => {
+        expect(findIssuableList().props('error')).toBe(message);
+      });
+
+      it('is captured with Sentry', () => {
         expect(Sentry.captureException).toHaveBeenCalledWith(new Error('ERROR'));
       });
+    });
+
+    it('clears error message when "dismiss-alert" event is emitted from IssuableList', async () => {
+      wrapper = createComponent({
+        serviceDeskIssuesQueryResponseHandler: jest.fn().mockRejectedValue(new Error()),
+      });
+      await waitForPromises();
+      findIssuableList().vm.$emit('dismiss-alert');
+      await nextTick();
+
+      expect(findIssuableList().props('error')).toBe('');
     });
   });
 

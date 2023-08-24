@@ -734,6 +734,12 @@ class MergeRequest < ApplicationRecord
     true
   end
 
+  def supports_lock_on_merge?
+    return false unless merged?
+
+    Feature.enabled?(:enforce_locked_labels_on_merge, project, type: :ops)
+  end
+
   # Calls `MergeWorker` to proceed with the merge process and
   # updates `merge_jid` with the MergeWorker#jid.
   # This helps tracking enqueued and ongoing merge jobs.

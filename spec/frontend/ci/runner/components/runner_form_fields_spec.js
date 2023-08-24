@@ -132,8 +132,8 @@ describe('RunnerFormFields', () => {
 
   it('when runner is of project type, locked checkbox can be checked', async () => {
     createComponent({
+      runnerType: PROJECT_TYPE,
       value: {
-        runnerType: PROJECT_TYPE,
         locked: false,
       },
     });
@@ -144,7 +144,6 @@ describe('RunnerFormFields', () => {
 
     expect(wrapper.emitted('input').at(-1)).toEqual([
       {
-        runnerType: PROJECT_TYPE,
         locked: true,
       },
     ]);

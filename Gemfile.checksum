@@ -336,7 +336,7 @@
 {"name":"letter_opener_web","version":"2.0.0","platform":"ruby","checksum":"33860ad41e1785d75456500e8ca8bba8ed71ee6eaf08a98d06bbab67c5577b6f"},
 {"name":"libyajl2","version":"1.2.0","platform":"ruby","checksum":"1117cd1e48db013b626e36269bbf1cef210538ca6d2e62d3fa3db9ded005b258"},
 {"name":"license_finder","version":"7.0.1","platform":"ruby","checksum":"0b22c9567e2a8b102c7245da49ebeddaec60f66d237d2bb91b9feddf5d242f6a"},
-{"name":"licensee","version":"9.15.2","platform":"ruby","checksum":"4b6959b544da88499d3be0d9f486179c90b93d5049ef500ae340ac1420493ded"},
+{"name":"licensee","version":"9.16.0","platform":"ruby","checksum":"7b1693639019dbb1d3e020d72c4470ca84da3cfc67e4d6da1d1cdcb736d09044"},
 {"name":"listen","version":"3.7.1","platform":"ruby","checksum":"3b80caa7aa77fae836916c2f9e3fbcafbd15f5d695dd487c1f5b5e7e465efe29"},
 {"name":"llhttp-ffi","version":"0.4.0","platform":"ruby","checksum":"e5f7327db3cf8007e648342ef76347d6e0ae545a8402e519cca9c886eb37b001"},
 {"name":"locale","version":"2.1.3","platform":"ruby","checksum":"b6ddee011e157817cb98e521b3ce7cb626424d5882f1e844aafdee3e8b212725"},

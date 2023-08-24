@@ -308,10 +308,8 @@ gem 'babosa', '~> 2.0'
 # Sanitizes SVG input
 gem 'loofah', '~> 2.21.3'
 
-# Working with license
-# Detects the open source license the repository includes
-# This version needs to be in sync with gitlab-org/gitaly
-gem 'licensee', '~> 9.15'
+# Used to provide license templates
+gem 'licensee', '~> 9.16'
 
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.7'

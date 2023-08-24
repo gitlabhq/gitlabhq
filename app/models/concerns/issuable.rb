@@ -225,6 +225,10 @@ module Issuable
       false
     end
 
+    def supports_lock_on_merge?
+      false
+    end
+
     def severity
       return IssuableSeverity::DEFAULT unless supports_severity?
 

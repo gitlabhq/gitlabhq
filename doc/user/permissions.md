@@ -488,6 +488,8 @@ The following custom roles are available:
 
 - The Guest+1 role, which allows users with the Guest role to view code.
 - In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and change the status of the vulnerabilities.
+- In GitLab 16.3 and later, you can create a custom role that can view the dependency list.
+- In GitLab 16.4 and later, you can create a custom role that can approve merge requests.
 
 You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 
@@ -518,7 +520,9 @@ You can see the required minimal access levels and abilities requirements in the
 | Ability | Minimal access level | Required ability |
 | -- | -- | -- |
 | `read_code` | Guest    | - |
+| `read_dependency` | Guest    | - |
 | `read_vulnerability` | Guest | - |
+| `admin_merge_request` | Guest | - |
 | `admin_vulnerability` | Guest | `read_vulnerability` |
 
 ### Associate a custom role with an existing group member

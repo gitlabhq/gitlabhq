@@ -16,6 +16,7 @@ GitLab SAML SSO SCIM doesn't support updating users.
 When SCIM is enabled for a GitLab group, membership of that group is synchronized between GitLab and an identity provider.
 
 The [internal GitLab group SCIM API](../../../development/internal_api/index.md#group-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+Identity providers can use the [internal GitLab group SCIM API](../../../development/internal_api/index.md#group-scim-api) to develop a SCIM app.
 
 ## Configure GitLab
 
@@ -40,7 +41,7 @@ You can configure one of the following as an identity provider:
 - [Okta](#configure-okta).
 
 NOTE:
-Other providers can work with GitLab but they have not been tested and are not supported.
+Other providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
 
 ### Configure Azure Active Directory
 

@@ -25,7 +25,9 @@ Administrators can enforce 2FA for all users in two different ways:
   After the configured grace period has elapsed, users can sign in but
   cannot leave the 2FA configuration area at `/-/profile/two_factor_auth`.
 
-To enable 2FA for all users:
+You can use the UI or the API to enforce 2FA for all users.
+
+### Use the UI
 
 1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
 1. Select **Admin Area**.
@@ -35,14 +37,14 @@ To enable 2FA for all users:
    - In **Two-factor grace period**, enter a number of hours. If you want to
      enforce 2FA on next sign-in attempt, enter `0`.
 
-### Disable 2FA enforcement through Rails console
+### Use the API
 
-Using the [Rails console](../administration/operations/rails_console.md), enforcing 2FA for
-all user can be disabled. Connect to the Rails console and run:
+Use the [application settings API](../api/settings.md) to modify the following settings:
 
-```ruby
-Gitlab::CurrentSettings.update!('require_two_factor_authentication': false)
-```
+- `require_two_factor_authentication`.
+- `two_factor_grace_period`.
+
+For more information, see the [list of settings that can be accessed through API calls](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
 ## Enforce 2FA for all users in a group **(FREE ALL)**
 
@@ -90,23 +92,22 @@ The following are important notes about 2FA:
 
 ## Disable 2FA **(FREE SELF)**
 
+You can disable 2FA for a single user or all users.
+
+This is a permanent and irreversible action. Users must reactivate 2FA to use it again.
+
 WARNING:
 Disabling 2FA for users does not disable the [enforce 2FA for all users](#enforce-2fa-for-all-users)
 or [enforce 2FA for all users in a group](#enforce-2fa-for-all-users-in-a-group)
 settings. You must also disable any enforced 2FA settings so users aren't asked to set up 2FA again
 when they next sign in to GitLab.
 
-WARNING:
-This is a permanent and irreversible action. Users must reactivate 2FA to use it again.
-
 ### For a single user
 
-To disable 2FA for non-administrator users, you should use the [API endpoint](../api/users.md#disable-two-factor-authentication)
-instead of the Rails console.
-Using the [Rails console](../administration/operations/rails_console.md), 2FA for a single user can be disabled.
-Connect to the Rails console and run:
+#### Administrators
 
-**In GitLab 13.5 and later:**
+In GitLab 13.5 and later, use the [Rails console](../administration/operations/rails_console.md)
+to disable 2FA for a single administrator:
 
 ```ruby
 admin = User.find_by_username('<USERNAME>')
@@ -115,7 +116,17 @@ user_to_disable = User.find_by_username('<USERNAME>')
 TwoFactor::DestroyService.new(admin, user: user_to_disable).execute
 ```
 
-The target user is notified that 2FA has been disabled.
+The administrator is notified that 2FA has been disabled.
+
+#### Non-administrators
+
+In GitLab 15.2 and later, you can use either the Rails console or the
+[API endpoint](../api/users.md#disable-two-factor-authentication) to disable 2FA
+for a non-administrator.
+
+You can disable 2FA for your own account.
+
+You cannot use the API endpoint to disable 2FA for administrators.
 
 ### For all users
 

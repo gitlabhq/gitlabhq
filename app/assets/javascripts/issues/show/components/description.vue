@@ -307,7 +307,8 @@ export default {
       );
 
       taskListItems?.forEach((item) => {
-        const dropdown = this.createTaskListItemActions({ canUpdate: this.canUpdate });
+        const provide = { canUpdate: this.canUpdate, issuableType: this.issuableType };
+        const dropdown = this.createTaskListItemActions(provide);
         this.insertNextToTaskListItemText(dropdown, item);
         this.addPointerEventListeners(item, '.task-list-item-actions');
         this.hasTaskListItemActions = true;

@@ -30,34 +30,6 @@ module Ci
       s_(translation)
     end
 
-    def ci_text_for_status(status)
-      if detailed_status?(status)
-        return status.text
-      end
-
-      case status
-      when 'success'
-        s_('CiStatusText|passed')
-      when 'success-with-warnings'
-        s_('CiStatusText|passed')
-      when 'manual'
-        s_('CiStatusText|blocked')
-      when 'scheduled'
-        s_('CiStatusText|delayed')
-      else
-        # All states are already being translated inside the detailed statuses:
-        # :running => Gitlab::Ci::Status::Running
-        # :skipped => Gitlab::Ci::Status::Skipped
-        # :failed => Gitlab::Ci::Status::Failed
-        # :success => Gitlab::Ci::Status::Success
-        # :canceled => Gitlab::Ci::Status::Canceled
-        # The following states are customized above:
-        # :manual => Gitlab::Ci::Status::Manual
-        status_translation = "CiStatusText|#{status}"
-        s_(status_translation)
-      end
-    end
-
     def ci_status_for_statuseable(subject)
       status = subject.try(:status) || 'not found'
       status.humanize

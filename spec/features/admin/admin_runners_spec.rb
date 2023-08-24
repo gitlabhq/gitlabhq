@@ -580,6 +580,8 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       let(:runner_page_path) { admin_runner_path(project_runner) }
     end
 
+    it_behaves_like 'shows locked field'
+
     describe 'breadcrumbs' do
       it 'contains the current runner id and token' do
         page.within '[data-testid="breadcrumb-links"]' do

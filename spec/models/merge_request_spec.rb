@@ -5807,4 +5807,30 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#supports_lock_on_merge?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject { merge_request.supports_lock_on_merge? }
+
+    context 'when MR is open' do
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when MR is merged' do
+      before do
+        merge_request.state = :merged
+      end
+
+      it { is_expected.to eq(true) }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
 end

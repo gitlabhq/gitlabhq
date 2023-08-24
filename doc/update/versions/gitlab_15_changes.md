@@ -86,7 +86,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   ```
 
   This error is caused by a [batched background migration introduced in GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81410)
-  not being finalized before upgrading to GitLab 15.10 or later. To resolve this error, it is safe to [mark the migration as complete](../background_migrations.md#mark-a-batched-migration-finished):
+  not being finalized before upgrading to GitLab 15.10 or later. To resolve this error, it is safe to [mark the migration as complete](../background_migrations.md#mark-a-failed-migration-finished):
 
   ```ruby
   # Start the rails console

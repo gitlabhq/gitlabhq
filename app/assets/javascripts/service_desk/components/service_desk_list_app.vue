@@ -121,7 +121,7 @@ export default {
       sortKey: CREATED_DESC,
       state: STATUS_OPEN,
       pageSize: DEFAULT_PAGE_SIZE,
-      issuesError: null,
+      issuesError: '',
     };
   },
   apollo: {
@@ -234,11 +234,14 @@ export default {
         page_before: this.pageParams.beforeCursor ?? undefined,
       };
     },
-    isInfoBannerVisible() {
-      return this.isServiceDeskSupported && this.hasAnyServiceDeskIssues;
-    },
-    hasAnyServiceDeskIssues() {
+    hasAnyServiceDeskIssue() {
       return this.hasSearch || Boolean(this.tabCounts.all);
+    },
+    isInfoBannerVisible() {
+      return this.isServiceDeskSupported && this.hasAnyServiceDeskIssue;
+    },
+    canShowIssuesList() {
+      return this.isLoading || this.issuesError.length || this.hasAnyServiceDeskIssue;
     },
     hasOrFeature() {
       return this.glFeatures.orIssuableQueries;
@@ -415,6 +418,9 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
+    handleDismissAlert() {
+      this.issuesError = '';
+    },
     handleNextPage() {
       this.pageParams = {
         afterCursor: this.pageInfo.endCursor,
@@ -553,7 +559,7 @@ export default {
   <section>
     <info-banner v-if="isInfoBannerVisible" />
     <issuable-list
-      v-if="isLoading || hasAnyServiceDeskIssues"
+      v-if="canShowIssuesList"
       namespace="service-desk"
       recent-searches-storage-key="service-desk-issues"
       :error="issuesError"
@@ -576,6 +582,7 @@ export default {
       sync-filter-and-sort
       use-keyset-pagination
       @click-tab="handleClickTab"
+      @dismiss-alert="handleDismissAlert"
       @filter="handleFilter"
       @sort="handleSort"
       @reorder="handleReorder"
