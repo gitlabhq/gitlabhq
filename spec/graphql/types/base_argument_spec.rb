@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::BaseArgument do
+RSpec.describe Types::BaseArgument, feature_category: :api do
   let_it_be(:field) do
     Types::BaseField.new(name: 'field', type: String, null: true)
   end

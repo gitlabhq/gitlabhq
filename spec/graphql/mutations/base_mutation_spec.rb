@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Mutations::BaseMutation do
+RSpec.describe ::Mutations::BaseMutation, feature_category: :api do
   include GraphqlHelpers
 
   describe 'argument nullability' do

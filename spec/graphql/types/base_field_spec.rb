@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::BaseField do
+RSpec.describe Types::BaseField, feature_category: :api do
   describe 'authorized?' do
     let(:object) { double }
     let(:current_user) { nil }

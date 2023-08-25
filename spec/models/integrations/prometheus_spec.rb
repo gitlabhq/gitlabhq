@@ -422,6 +422,34 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
     end
   end
 
+  describe '#sync_http_integration after_save callback' do
+    context 'with corresponding HTTP integration' do
+      let_it_be_with_reload(:http_integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }
+
+      it 'syncs the attribute' do
+        expect { integration.update!(manual_configuration: false) }
+          .to change { http_integration.reload.active }
+          .from(true).to(false)
+      end
+
+      context 'when changing a different attribute' do
+        it 'does not sync the attribute or execute extra queries' do
+          expect { integration.update!(api_url: 'https://any.url') }
+            .to issue_fewer_queries_than { integration.update!(manual_configuration: false) }
+        end
+      end
+    end
+
+    context 'without corresponding HTTP integration' do
+      let_it_be(:other_http_integration) { create(:alert_management_prometheus_integration, project: project) }
+
+      it 'does not sync the attribute or execute extra queries' do
+        expect { integration.update!(manual_configuration: false) }
+          .not_to change { other_http_integration.reload.active }
+      end
+    end
+  end
+
   describe '#editable?' do
     it 'is editable' do
       expect(integration.editable?).to be(true)

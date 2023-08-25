@@ -41,6 +41,7 @@ module Integrations
     before_save :synchronize_service_state
 
     after_save :clear_reactive_cache!
+    after_commit :sync_http_integration!
 
     after_commit :track_events
 
@@ -180,5 +181,16 @@ module Integrations
       nil
     end
     strong_memoize_attr :iap_client
+
+    # Remove in next required stop after %16.4
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/338838
+    def sync_http_integration!
+      return unless manual_configuration_changed?
+
+      project.alert_management_http_integrations
+        .for_endpoint_identifier('legacy-prometheus')
+        .take
+        &.update_columns(active: manual_configuration)
+    end
   end
 end

@@ -86,9 +86,9 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
       end
 
       context 'with simultaneous manual configuration' do
-        let_it_be(:integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }
+        let_it_be(:alerting_setting) { create(:project_alerting_setting, :with_http_integration, project: project) }
         let_it_be(:old_prometheus_integration) { create(:prometheus_integration, project: project) }
-        let_it_be(:alerting_setting) { create(:project_alerting_setting, project: project, token: integration.token) }
+        let_it_be(:integration) { project.alert_management_http_integrations.last! }
 
         subject { service.execute(integration.token, integration) }
 
