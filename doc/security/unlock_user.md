@@ -46,13 +46,13 @@ To unlock a locked user:
    sudo -u git -H bundle exec rails console -e production
    ```
 
-1. Find the user to unlock. You can search by email or ID.
+1. Find the user to unlock. You can search by email:
 
    ```ruby
    user = User.find_by(email: 'admin@local.host')
    ```
 
-   or
+   Or you can search by ID:
 
    ```ruby
    user = User.where(id: 1).first
@@ -64,7 +64,7 @@ To unlock a locked user:
    user.unlock_access!
    ```
 
-1. Exit the console with <kbd>Control</kbd>+<kbd>d</kbd>
+1. Exit the console with <kbd>Control</kbd>+<kbd>d</kbd>.
 
 The user should now be able to sign in.
 

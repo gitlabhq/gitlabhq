@@ -3670,7 +3670,6 @@ RSpec/MissingFeatureCategory:
     - 'spec/lib/gitlab/github_import/logger_spec.rb'
     - 'spec/lib/gitlab/github_import/markdown_text_spec.rb'
     - 'spec/lib/gitlab/github_import/milestone_finder_spec.rb'
-    - 'spec/lib/gitlab/github_import/object_counter_spec.rb'
     - 'spec/lib/gitlab/github_import/parallel_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/diff_note_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/diff_notes/suggestion_formatter_spec.rb'

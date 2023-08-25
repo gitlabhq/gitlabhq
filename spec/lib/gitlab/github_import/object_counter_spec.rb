@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started, import_type: 'github', import_url: 'https://github.com/vim/vim.git') }
 
   it 'validates the operation being incremented' do
@@ -38,9 +38,6 @@ RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache do
     expect(Gitlab::Metrics)
       .not_to receive(:counter)
 
-    expect(Gitlab::Metrics)
-      .not_to receive(:counter)
-
     described_class.increment(project, :issue, :fetched, value: 0)
     described_class.increment(project, :issue, :imported, value: nil)
 
@@ -69,6 +66,27 @@ RSpec.describe Gitlab::GithubImport::ObjectCounter, :clean_gitlab_redis_cache do
         expect(described_class.summary(project)).to eq(
           'fetched' => { 'issue' => 10 },
           'imported' => { 'issue' => 8 }
+        )
+      end
+    end
+
+    context 'when import is in progress but cache expired' do
+      before do
+        described_class.increment(project, :issue, :fetched, value: 10)
+        described_class.increment(project, :issue, :imported, value: 8)
+        allow(Gitlab::Cache::Import::Caching).to receive(:read_integer).and_return(nil)
+      end
+
+      it 'returns 0 instead of nil so process can complete' do
+        expect(described_class.summary(project)).to eq(
+          {
+            "fetched" => {
+              "issue" => 0
+            },
+            "imported" => {
+              "issue" => 0
+            }
+          }
         )
       end
     end

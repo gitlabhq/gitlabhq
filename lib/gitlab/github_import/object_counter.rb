@@ -14,6 +14,8 @@ module Gitlab
 
       CACHING = Gitlab::Cache::Import::Caching
 
+      IMPORT_CACHING_TIMEOUT = 2.weeks.to_i
+
       class << self
         # Increments the project and the global counters if the given value is >= 1
         def increment(project, object_type, operation, value: 1)
@@ -50,7 +52,7 @@ module Gitlab
               .sort
               .each do |counter|
                 object_type = counter.split('/').last
-                result[operation][object_type] = CACHING.read_integer(counter)
+                result[operation][object_type] = CACHING.read_integer(counter) || 0
               end
           end
         end
@@ -84,11 +86,11 @@ module Gitlab
 
           add_counter_to_list(project, operation, counter_key)
 
-          CACHING.increment_by(counter_key, value)
+          CACHING.increment_by(counter_key, value, timeout: IMPORT_CACHING_TIMEOUT)
         end
 
         def add_counter_to_list(project, operation, key)
-          CACHING.set_add(counter_list_key(project, operation), key)
+          CACHING.set_add(counter_list_key(project, operation), key, timeout: IMPORT_CACHING_TIMEOUT)
         end
 
         def counter_list_key(project, operation)

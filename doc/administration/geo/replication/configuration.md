@@ -95,7 +95,14 @@ This causes all SSH requests to the newly promoted **primary** site to
 fail due to SSH host key mismatch. To prevent this, the primary SSH host
 keys must be manually replicated to the **secondary** site.
 
-1. SSH into **each node on your secondary** site and login as the `root` user:
+The SSH host key path depends on the used software:
+
+- If you use OpenSSH, the path is `/etc/ssh`.
+- If you use [`gitlab-sshd`](../../operations/gitlab_sshd.md), the path is `/var/opt/gitlab/gitlab-sshd`.
+
+In the following steps, replace `<ssh_host_key_path>` with the one you're using:
+
+1. SSH into **each Rails node on your secondary** site and log in as the `root` user:
 
    ```shell
    sudo -i
@@ -104,40 +111,40 @@ keys must be manually replicated to the **secondary** site.
 1. Make a backup of any existing SSH host keys:
 
    ```shell
-   find /etc/ssh -iname 'ssh_host_*' -exec cp {} {}.backup.`date +%F` \;
+   find <ssh_host_key_path> -iname 'ssh_host_*' -exec cp {} {}.backup.`date +%F` \;
    ```
 
-1. Copy OpenSSH host keys from the **primary** site:
+1. Copy the SSH host keys from the **primary** site:
 
    If you can access one of the **nodes on your primary** site serving SSH traffic (usually, the main GitLab Rails application nodes) using the **root** user:
 
    ```shell
    # Run this from the secondary site, change `<primary_site_fqdn>` for the IP or FQDN of the server
-   scp root@<primary_node_fqdn>:/etc/ssh/ssh_host_*_key* /etc/ssh
+   scp root@<primary_node_fqdn>:<ssh_host_key_path>/ssh_host_*_key* <ssh_host_key_path>
    ```
 
    If you only have access through a user with `sudo` privileges:
 
    ```shell
    # Run this from the node on your primary site:
-   sudo tar --transform 's/.*\///g' -zcvf ~/geo-host-key.tar.gz /etc/ssh/ssh_host_*_key*
+   sudo tar --transform 's/.*\///g' -zcvf ~/geo-host-key.tar.gz <ssh_host_key_path>/ssh_host_*_key*
 
    # Run this on each node on your secondary site:
    scp <user_with_sudo>@<primary_site_fqdn>:geo-host-key.tar.gz .
-   tar zxvf ~/geo-host-key.tar.gz -C /etc/ssh
+   tar zxvf ~/geo-host-key.tar.gz -C <ssh_host_key_path>
    ```
 
-1. On **each node on your secondary** site, ensure the file permissions are correct:
+1. On **each Rails node on your secondary** site, ensure the file permissions are correct:
 
    ```shell
-   chown root:root /etc/ssh/ssh_host_*_key*
-   chmod 0600 /etc/ssh/ssh_host_*_key
+   chown root:root <ssh_host_key_path>/ssh_host_*_key*
+   chmod 0600 <ssh_host_key_path>/ssh_host_*_key
    ```
 
 1. To verify key fingerprint matches, execute the following command on both primary and secondary nodes on each site:
 
    ```shell
-   for file in /etc/ssh/ssh_host_*_key; do ssh-keygen -lf $file; done
+   for file in <ssh_host_key_path>/ssh_host_*_key; do ssh-keygen -lf $file; done
    ```
 
    You should get an output similar to this one and they should be identical on both nodes:
@@ -153,24 +160,32 @@ keys must be manually replicated to the **secondary** site.
 
    ```shell
    # This will print the fingerprint for private keys:
-   for file in /etc/ssh/ssh_host_*_key; do ssh-keygen -lf $file; done
+   for file in <ssh_host_key_path>/ssh_host_*_key; do ssh-keygen -lf $file; done
 
    # This will print the fingerprint for public keys:
-   for file in /etc/ssh/ssh_host_*_key.pub; do ssh-keygen -lf $file; done
+   for file in <ssh_host_key_path>/ssh_host_*_key.pub; do ssh-keygen -lf $file; done
    ```
 
    NOTE:
    The output for private keys and public keys command should generate the same fingerprint.
 
-1. Restart `sshd` on **each node on your secondary** site:
+1. Restart either `sshd` for OpenSSH or the `gitlab-sshd` service on **each Rails node on your secondary** site:
 
-   ```shell
-   # Debian or Ubuntu installations
-   sudo service ssh reload
+   - For OpenSSH:
 
-   # CentOS installations
-   sudo service sshd reload
-   ```
+     ```shell
+     # Debian or Ubuntu installations
+     sudo service ssh reload
+
+     # CentOS installations
+     sudo service sshd reload
+     ```
+
+   - For `gitlab-sshd`:
+
+      ```shell
+      sudo gitlab-ctl restart gitlab-sshd
+      ```
 
 1. Verify SSH is still functional.
 
