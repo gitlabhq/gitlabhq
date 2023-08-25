@@ -27,7 +27,7 @@ You can run scans and view [Secret Detection JSON report artifacts](../../../ci/
 
 With GitLab Ultimate, Secret Detection results are also processed so you can:
 
-- See them in the [merge request widget](../index.md#view-security-scan-information-in-merge-requests), [pipeline security report](../vulnerability_report/pipeline.md), and [Vulnerability Report](../vulnerability_report/index.md).
+- See them in the [merge request widget](../index.md#view-security-scan-information-in-merge-requests), [pipeline security report](../vulnerability_report/pipeline.md), and [Vulnerability Report](../vulnerability_report/index.md) UIs.
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](automatic_response.md) to leaks in public repositories.
@@ -343,7 +343,9 @@ To enable full history Secret Detection, set the variable `SECRET_DETECTION_HIST
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in
 >   GitLab 14.8.
 
-You can customize the default Secret Detection rules provided with GitLab.
+You can customize which [secrets are reported in the GitLab UI](#secret-detection).
+However, the `secret_detection` job logs always include the number
+of secrets detected by the default Secret Detection rules.
 
 The following customization options can be used separately, or in combination:
 
