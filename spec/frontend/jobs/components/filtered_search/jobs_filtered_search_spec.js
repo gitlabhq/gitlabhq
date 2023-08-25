@@ -4,6 +4,8 @@ import {
   OPERATORS_IS,
   TOKEN_TITLE_STATUS,
   TOKEN_TYPE_STATUS,
+  TOKEN_TYPE_JOBS_RUNNER_TYPE,
+  TOKEN_TITLE_JOBS_RUNNER_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
 import { mockFailedSearchToken } from '../../mock_data';
@@ -18,11 +20,16 @@ describe('Jobs filtered search', () => {
       .find((token) => token.type === type);
 
   const findStatusToken = () => getSearchToken('status');
+  const findRunnerTypeToken = () => getSearchToken('jobs-runner-type');
 
-  const createComponent = (props) => {
+  const createComponent = (props, provideOptions = {}) => {
     wrapper = shallowMount(JobsFilteredSearch, {
       propsData: {
         ...props,
+      },
+      provide: {
+        glFeatures: { adminJobsFilterRunnerType: true },
+        ...provideOptions,
       },
     });
   };
@@ -45,6 +52,16 @@ describe('Jobs filtered search', () => {
     });
   });
 
+  it('displays token for runner type', () => {
+    createComponent();
+
+    expect(findRunnerTypeToken()).toMatchObject({
+      type: TOKEN_TYPE_JOBS_RUNNER_TYPE,
+      title: TOKEN_TITLE_JOBS_RUNNER_TYPE,
+      operators: OPERATORS_IS,
+    });
+  });
+
   it('emits filter token to parent component', () => {
     createComponent();
 
@@ -59,13 +76,48 @@ describe('Jobs filtered search', () => {
     expect(findFilteredSearch().props('value')).toEqual([]);
   });
 
-  it('filtered search returns correct data shape when passed query string', () => {
-    const value = 'SUCCESS';
+  describe('with query string passed', () => {
+    it('filtered search returns correct data shape', () => {
+      const tokenStatusesValue = 'SUCCESS';
+      const tokenRunnerTypesValue = 'INSTANCE_VALUE';
 
-    createComponent({ queryString: { statuses: value } });
+      createComponent({
+        queryString: { statuses: tokenStatusesValue, runnerTypes: tokenRunnerTypesValue },
+      });
 
-    expect(findFilteredSearch().props('value')).toEqual([
-      { type: TOKEN_TYPE_STATUS, value: { data: value, operator: '=' } },
-    ]);
+      expect(findFilteredSearch().props('value')).toEqual([
+        { type: TOKEN_TYPE_STATUS, value: { data: tokenStatusesValue, operator: '=' } },
+        {
+          type: TOKEN_TYPE_JOBS_RUNNER_TYPE,
+          value: { data: tokenRunnerTypesValue, operator: '=' },
+        },
+      ]);
+    });
+  });
+
+  describe('when feature flag `adminJobsFilterRunnerType` is disabled', () => {
+    const provideOptions = { glFeatures: { adminJobsFilterRunnerType: false } };
+
+    it('does not display token for runner type', () => {
+      createComponent(null, provideOptions);
+
+      expect(findRunnerTypeToken()).toBeUndefined();
+    });
+
+    describe('with query string passed', () => {
+      it('filtered search returns only data shape for search token `status` and not for search token `jobs runner type`', () => {
+        const tokenStatusesValue = 'SUCCESS';
+        const tokenRunnerTypesValue = 'INSTANCE_VALUE';
+
+        createComponent(
+          { queryString: { statuses: tokenStatusesValue, runnerTypes: tokenRunnerTypesValue } },
+          provideOptions,
+        );
+
+        expect(findFilteredSearch().props('value')).toEqual([
+          { type: TOKEN_TYPE_STATUS, value: { data: tokenStatusesValue, operator: '=' } },
+        ]);
+      });
+    });
   });
 });

@@ -8,6 +8,7 @@ class Admin::JobsController < Admin::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:admin_jobs_vue)
+    push_frontend_feature_flag(:admin_jobs_filter_runner_type, type: :ops)
   end
 
   def index

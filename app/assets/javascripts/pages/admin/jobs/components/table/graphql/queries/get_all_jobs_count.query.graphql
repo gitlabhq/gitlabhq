@@ -1,5 +1,5 @@
-query getAllJobsCount($statuses: [CiJobStatus!]) {
-  jobs(statuses: $statuses) {
+query getAllJobsCount($statuses: [CiJobStatus!], $runnerTypes: [CiRunnerType!]) {
+  jobs(statuses: $statuses, runnerTypes: $runnerTypes) {
     count
   }
 }

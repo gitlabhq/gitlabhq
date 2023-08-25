@@ -5,8 +5,8 @@ module Ci
     include Gitlab::Allowable
 
     def initialize(current_user:, pipeline: nil, project: nil, runner: nil, params: {}, type: ::Ci::Build)
-      @pipeline = pipeline
       @current_user = current_user
+      @pipeline = pipeline
       @project = project
       @runner = runner
       @params = params
@@ -17,6 +17,7 @@ module Ci
     def execute
       builds = init_collection.order_id_desc
       builds = filter_by_with_artifacts(builds)
+      builds = filter_by_runner_types(builds)
       filter_by_scope(builds)
     rescue Gitlab::Access::AccessDeniedError
       type.none
@@ -71,6 +72,16 @@ module Ci
       else
         builds
       end
+    end
+
+    def filter_by_runner_types(builds)
+      return builds unless use_runner_type_filter?
+
+      builds.with_runner_type(params[:runner_type])
+    end
+
+    def use_runner_type_filter?
+      params[:runner_type].present? && Feature.enabled?(:admin_jobs_filter_runner_type, project, type: :ops)
     end
 
     def filter_by_with_artifacts(builds)

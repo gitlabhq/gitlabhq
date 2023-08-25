@@ -1,16 +1,22 @@
 <script>
 import { GlFilteredSearch } from '@gitlab/ui';
 import {
+  OPERATOR_IS,
   OPERATORS_IS,
   TOKEN_TITLE_STATUS,
   TOKEN_TYPE_STATUS,
+  TOKEN_TITLE_JOBS_RUNNER_TYPE,
+  TOKEN_TYPE_JOBS_RUNNER_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import JobStatusToken from './tokens/job_status_token.vue';
+import JobRunnerTypeToken from './tokens/job_runner_type_token.vue';
 
 export default {
   components: {
     GlFilteredSearch,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     queryString: {
       type: Object,
@@ -20,7 +26,7 @@ export default {
   },
   computed: {
     tokens() {
-      return [
+      const tokens = [
         {
           type: TOKEN_TYPE_STATUS,
           icon: 'status',
@@ -30,20 +36,49 @@ export default {
           operators: OPERATORS_IS,
         },
       ];
+
+      if (this.glFeatures.adminJobsFilterRunnerType) {
+        tokens.push({
+          type: TOKEN_TYPE_JOBS_RUNNER_TYPE,
+          title: TOKEN_TITLE_JOBS_RUNNER_TYPE,
+          unique: true,
+          token: JobRunnerTypeToken,
+          operators: OPERATORS_IS,
+        });
+      }
+
+      return tokens;
     },
     filteredSearchValue() {
-      if (this.queryString?.statuses) {
-        return [
-          {
-            type: TOKEN_TYPE_STATUS,
-            value: {
-              data: this.queryString?.statuses,
-              operator: '=',
-            },
-          },
-        ];
-      }
-      return [];
+      return Object.entries(this.queryString || {}).reduce(
+        (acc, [queryStringKey, queryStringValue]) => {
+          switch (queryStringKey) {
+            case 'statuses':
+              return [
+                ...acc,
+                {
+                  type: TOKEN_TYPE_STATUS,
+                  value: { data: queryStringValue, operator: OPERATOR_IS },
+                },
+              ];
+            case 'runnerTypes':
+              if (!this.glFeatures.adminJobsFilterRunnerType) {
+                return acc;
+              }
+
+              return [
+                ...acc,
+                {
+                  type: TOKEN_TYPE_JOBS_RUNNER_TYPE,
+                  value: { data: queryStringValue, operator: OPERATOR_IS },
+                },
+              ];
+            default:
+              return acc;
+          }
+        },
+        [],
+      );
     },
   },
   methods: {

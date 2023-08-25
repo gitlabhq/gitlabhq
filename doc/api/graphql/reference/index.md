@@ -462,6 +462,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryjobsrunnertypes"></a>`runnerTypes` **{warning-solid}** | [`[CiRunnerType!]`](#cirunnertype) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Filter jobs by runner type if feature flag `:admin_jobs_filter_runner_type` is enabled. |
 | <a id="queryjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 
 ### `Query.licenseHistoryEntries`

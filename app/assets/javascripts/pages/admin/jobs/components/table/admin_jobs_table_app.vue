@@ -7,7 +7,11 @@ import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
 import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
 import JobsTableEmptyState from '~/jobs/components/table/jobs_table_empty_state.vue';
 import { createAlert } from '~/alert';
-import JobsSkeletonLoader from '../jobs_skeleton_loader.vue';
+import {
+  TOKEN_TYPE_STATUS,
+  TOKEN_TYPE_JOBS_RUNNER_TYPE,
+} from '~/vue_shared/components/filtered_search_bar/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   DEFAULT_FIELDS_ADMIN,
   RAW_TEXT_WARNING_ADMIN,
@@ -16,6 +20,7 @@ import {
   LOADING_ARIA_LABEL,
   CANCELABLE_JOBS_ERROR_MSG,
 } from '../constants';
+import JobsSkeletonLoader from '../jobs_skeleton_loader.vue';
 import GetAllJobs from './graphql/queries/get_all_jobs.query.graphql';
 import GetAllJobsCount from './graphql/queries/get_all_jobs_count.query.graphql';
 import CancelableJobs from './graphql/queries/get_cancelable_jobs_count.query.graphql';
@@ -39,6 +44,7 @@ export default {
     GlIntersectionObserver,
     GlLoadingIcon,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     jobStatuses: {
       default: null,
@@ -72,6 +78,9 @@ export default {
     },
     jobsCount: {
       query: GetAllJobsCount,
+      variables() {
+        return this.variables;
+      },
       update(data) {
         return data?.jobs?.count || 0;
       },
@@ -150,11 +159,11 @@ export default {
     },
   },
   methods: {
-    updateHistoryAndFetchCount(status = null) {
-      this.$apollo.queries.jobsCount.refetch({ statuses: status });
+    updateHistoryAndFetchCount(filterParams = {}) {
+      this.$apollo.queries.jobsCount.refetch(filterParams);
 
       updateHistory({
-        url: setUrlParams({ statuses: status }, window.location.href, true),
+        url: setUrlParams(filterParams, window.location.href, true),
       });
     },
     fetchJobsByStatus(scope) {
@@ -184,33 +193,36 @@ export default {
       this.infiniteScrollingTriggered = false;
       this.filterSearchTriggered = true;
 
-      // all filters have been cleared reset query param
-      // and refetch jobs/count with defaults
-      if (!filters.length) {
-        this.updateHistoryAndFetchCount();
-        this.$apollo.queries.jobs.refetch({ statuses: null });
-
-        return;
-      }
-
-      // Eventually there will be more tokens available
-      // this code is written to scale for those tokens
-      filters.forEach((filter) => {
+      if (filters.some((filter) => !filter.type)) {
         // Raw text input in filtered search does not have a type
         // when a user enters raw text we alert them that it is
         // not supported and we do not make an additional API call
-        if (!filter.type) {
-          createAlert({
-            message: RAW_TEXT_WARNING_ADMIN,
-            type: 'warning',
-          });
-        }
+        createAlert({ message: RAW_TEXT_WARNING_ADMIN, type: 'warning' });
+        return;
+      }
 
-        if (filter.type === 'status') {
-          this.updateHistoryAndFetchCount(filter.value.data);
-          this.$apollo.queries.jobs.refetch({ statuses: filter.value.data });
+      const defaultFilterParams = this.glFeatures.adminJobsFilterRunnerType
+        ? { statuses: null, runnerTypes: null }
+        : { statuses: null };
+
+      const filterParams = filters.reduce((acc, filter) => {
+        switch (filter.type) {
+          case TOKEN_TYPE_STATUS:
+            return { ...acc, statuses: filter.value.data };
+
+          case TOKEN_TYPE_JOBS_RUNNER_TYPE:
+            if (this.glFeatures.adminJobsFilterRunnerType) {
+              return { ...acc, runnerTypes: filter.value.data };
+            }
+            return acc;
+
+          default:
+            return acc;
         }
-      });
+      }, defaultFilterParams);
+
+      this.updateHistoryAndFetchCount(filterParams);
+      this.$apollo.queries.jobs.refetch(filterParams);
     },
   },
 };

@@ -11,8 +11,15 @@ module Resolvers
               required: false,
               description: 'Filter jobs by status.'
 
-      def resolve_with_lookahead(statuses: nil)
-        jobs = ::Ci::JobsFinder.new(current_user: current_user, params: { scope: statuses }).execute
+      argument :runner_types, [::Types::Ci::RunnerTypeEnum],
+              required: false,
+              alpha: { milestone: '16.4' },
+              description: 'Filter jobs by runner type if ' \
+                           'feature flag `:admin_jobs_filter_runner_type` is enabled.'
+
+      def resolve_with_lookahead(statuses: nil, runner_types: nil)
+        jobs = ::Ci::JobsFinder.new(current_user: current_user,
+params: { scope: statuses, runner_type: runner_types }).execute
 
         apply_lookahead(jobs)
       end

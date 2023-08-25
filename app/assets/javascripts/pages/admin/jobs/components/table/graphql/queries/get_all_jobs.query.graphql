@@ -1,5 +1,10 @@
-query getAllJobs($after: String, $first: Int = 50, $statuses: [CiJobStatus!]) {
-  jobs(after: $after, first: $first, statuses: $statuses) {
+query getAllJobs(
+  $after: String
+  $first: Int = 50
+  $statuses: [CiJobStatus!]
+  $runnerTypes: [CiRunnerType!]
+) {
+  jobs(after: $after, first: $first, statuses: $statuses, runnerTypes: $runnerTypes) {
     pageInfo {
       endCursor
       hasNextPage

@@ -23,6 +23,7 @@ import {
   RAW_TEXT_WARNING_ADMIN,
   JOBS_COUNT_ERROR_MESSAGE,
 } from '~/pages/admin/jobs/components/constants';
+import { TOKEN_TYPE_JOBS_RUNNER_TYPE } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   mockAllJobsResponsePaginated,
   mockCancelableJobsCountResponse,
@@ -54,6 +55,11 @@ describe('Job table app', () => {
   const findCancelJobsButton = () => wrapper.findComponent(CancelJobs);
   const findFilteredSearch = () => wrapper.findComponent(JobsFilteredSearch);
 
+  const mockSearchTokenRunnerType = {
+    type: TOKEN_TYPE_JOBS_RUNNER_TYPE,
+    value: { data: 'INSTANCE_TYPE', operator: '=' },
+  };
+
   const triggerInfiniteScroll = () =>
     wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
 
@@ -73,6 +79,7 @@ describe('Job table app', () => {
     countHandler = countSuccessHandler,
     mountFn = shallowMount,
     data = {},
+    provideOptions = {},
   } = {}) => {
     wrapper = mountFn(AdminJobsTableApp, {
       data() {
@@ -82,6 +89,8 @@ describe('Job table app', () => {
       },
       provide: {
         jobStatuses: statuses,
+        glFeatures: { adminJobsFilterRunnerType: true },
+        ...provideOptions,
       },
       apolloProvider: createMockApolloProvider(handler, cancelableHandler, countHandler),
     });
@@ -304,24 +313,37 @@ describe('Job table app', () => {
       },
     );
 
-    it('refetches jobs query when filtering', async () => {
-      createComponent();
+    describe.each`
+      searchTokens                                          | expectedQueryParams
+      ${[]}                                                 | ${{ runnerTypes: null, statuses: null }}
+      ${[mockFailedSearchToken]}                            | ${{ runnerTypes: null, statuses: 'FAILED' }}
+      ${[mockFailedSearchToken, mockSearchTokenRunnerType]} | ${{ runnerTypes: 'INSTANCE_TYPE', statuses: 'FAILED' }}
+    `('when filtering jobs by searchTokens', ({ searchTokens, expectedQueryParams }) => {
+      it(`refetches jobs query including filters ${JSON.stringify(
+        expectedQueryParams,
+      )}`, async () => {
+        createComponent();
 
-      expect(successHandler).toHaveBeenCalledTimes(1);
+        expect(successHandler).toHaveBeenCalledTimes(1);
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+        await findFilteredSearch().vm.$emit('filterJobsBySearch', searchTokens);
 
-      expect(successHandler).toHaveBeenCalledTimes(2);
-    });
+        expect(successHandler).toHaveBeenCalledTimes(2);
+        expect(successHandler).toHaveBeenNthCalledWith(2, { first: 50, ...expectedQueryParams });
+      });
 
-    it('refetches jobs count query when filtering', async () => {
-      createComponent();
+      it(`refetches jobs count query including filters ${JSON.stringify(
+        expectedQueryParams,
+      )}`, async () => {
+        createComponent();
 
-      expect(countSuccessHandler).toHaveBeenCalledTimes(1);
+        expect(countSuccessHandler).toHaveBeenCalledTimes(1);
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockFailedSearchToken]);
+        await findFilteredSearch().vm.$emit('filterJobsBySearch', searchTokens);
 
-      expect(countSuccessHandler).toHaveBeenCalledTimes(2);
+        expect(countSuccessHandler).toHaveBeenCalledTimes(2);
+        expect(countSuccessHandler).toHaveBeenNthCalledWith(2, expectedQueryParams);
+      });
     });
 
     it('shows raw text warning when user inputs raw text', async () => {
@@ -364,6 +386,7 @@ describe('Job table app', () => {
       expect(successHandler).toHaveBeenCalledWith({
         first: 50,
         statuses: 'FAILED',
+        runnerTypes: null,
       });
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
         url: `${TEST_HOST}/?statuses=FAILED`,
@@ -378,6 +401,44 @@ describe('Job table app', () => {
       expect(successHandler).toHaveBeenCalledWith({
         first: 50,
         statuses: null,
+        runnerTypes: null,
+      });
+    });
+
+    describe('when feature flag `adminJobsFilterRunnerType` is disabled', () => {
+      const provideOptions = { glFeatures: { adminJobsFilterRunnerType: false } };
+
+      describe.each`
+        searchTokens                                          | expectedQueryParams
+        ${[]}                                                 | ${{ statuses: null }}
+        ${[mockFailedSearchToken]}                            | ${{ statuses: 'FAILED' }}
+        ${[mockFailedSearchToken, mockSearchTokenRunnerType]} | ${{ statuses: 'FAILED' }}
+      `('when filtering jobs by searchTokens', ({ searchTokens, expectedQueryParams }) => {
+        it(`refetches jobs query including filters ${JSON.stringify(
+          expectedQueryParams,
+        )}`, async () => {
+          createComponent({ provideOptions });
+
+          expect(successHandler).toHaveBeenCalledTimes(1);
+
+          await findFilteredSearch().vm.$emit('filterJobsBySearch', searchTokens);
+
+          expect(successHandler).toHaveBeenCalledTimes(2);
+          expect(successHandler).toHaveBeenNthCalledWith(2, { first: 50, ...expectedQueryParams });
+        });
+
+        it(`refetches jobs count query including filters ${JSON.stringify(
+          expectedQueryParams,
+        )}`, async () => {
+          createComponent({ provideOptions });
+
+          expect(countSuccessHandler).toHaveBeenCalledTimes(1);
+
+          await findFilteredSearch().vm.$emit('filterJobsBySearch', searchTokens);
+
+          expect(countSuccessHandler).toHaveBeenCalledTimes(2);
+          expect(countSuccessHandler).toHaveBeenNthCalledWith(2, expectedQueryParams);
+        });
       });
     });
   });

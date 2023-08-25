@@ -11,3 +11,13 @@ export const jobStatusValues = [
   'SKIPPED',
   'WAITING_FOR_RESOURCE',
 ];
+
+export const JOB_RUNNER_TYPE_INSTANCE_TYPE = 'INSTANCE_TYPE';
+export const JOB_RUNNER_TYPE_GROUP_TYPE = 'GROUP_TYPE';
+export const JOB_RUNNER_TYPE_PROJECT_TYPE = 'PROJECT_TYPE';
+
+export const jobRunnerTypeValues = [
+  JOB_RUNNER_TYPE_INSTANCE_TYPE,
+  JOB_RUNNER_TYPE_GROUP_TYPE,
+  JOB_RUNNER_TYPE_PROJECT_TYPE,
+];

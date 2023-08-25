@@ -27234,6 +27234,9 @@ msgstr ""
 msgid "Job|Run again"
 msgstr ""
 
+msgid "Job|Runner type"
+msgstr ""
+
 msgid "Job|Running"
 msgstr ""
 
