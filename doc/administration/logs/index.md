@@ -505,22 +505,16 @@ and as follows.
 
 ### `sidekiq.log`
 
+> The default log format for Helm chart installations [changed from `text` to `json`](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3169) in GitLab 16.0 and later.
+
 This file is located at:
 
 - `/var/log/gitlab/sidekiq/current` on Linux package installations.
 - `/home/git/gitlab/log/sidekiq.log` on self-compiled installations.
 
 GitLab uses background jobs for processing tasks which can take a long
-time. All information about processing these jobs are written down to
-this file. For example:
-
-```plaintext
-2014-06-10T07:55:20Z 2037 TID-tm504 ERROR: /opt/bitnami/apps/discourse/htdocs/vendor/bundle/ruby/1.9.1/gems/redis-3.0.7/lib/redis/client.rb:228:in `read'
-2014-06-10T18:18:26Z 14299 TID-55uqo INFO: Booting Sidekiq 3.0.0 with redis options {:url=>"redis://localhost:6379/0", :namespace=>"sidekiq"}
-```
-
-Instead of the previous format, you can opt to generate JSON logs for
-Sidekiq. For example:
+time. All information about processing these jobs are written to this
+file. For example:
 
 ```json
 {
@@ -547,10 +541,25 @@ Sidekiq. For example:
 }
 ```
 
+Instead of JSON logs, you can opt to generate text logs for Sidekiq. For example:
+
+```plaintext
+2023-05-16T16:08:55.272Z pid=82525 tid=23rl INFO: Initializing websocket
+2023-05-16T16:08:55.279Z pid=82525 tid=23rl INFO: Booted Rails 6.1.7.2 application in production environment
+2023-05-16T16:08:55.279Z pid=82525 tid=23rl INFO: Running in ruby 3.0.5p211 (2022-11-24 revision ba5cf0f7c5) [arm64-darwin22]
+2023-05-16T16:08:55.279Z pid=82525 tid=23rl INFO: See LICENSE and the LGPL-3.0 for licensing details.
+2023-05-16T16:08:55.279Z pid=82525 tid=23rl INFO: Upgrade to Sidekiq Pro for more features and support: https://sidekiq.org
+2023-05-16T16:08:55.286Z pid=82525 tid=7p4t INFO: Cleaning working queues
+2023-05-16T16:09:06.043Z pid=82525 tid=7p7d class=ScheduleMergeRequestCleanupRefsWorker jid=efcc73f169c09a514b06da3f INFO: start
+2023-05-16T16:09:06.050Z pid=82525 tid=7p7d class=ScheduleMergeRequestCleanupRefsWorker jid=efcc73f169c09a514b06da3f INFO: arguments: []
+2023-05-16T16:09:06.065Z pid=82525 tid=7p81 class=UserStatusCleanup::BatchWorker jid=e279aa6409ac33031a314822 INFO: start
+2023-05-16T16:09:06.066Z pid=82525 tid=7p81 class=UserStatusCleanup::BatchWorker jid=e279aa6409ac33031a314822 INFO: arguments: []
+```
+
 For Linux package installations, add the configuration option:
 
 ```ruby
-sidekiq['log_format'] = 'json'
+sidekiq['log_format'] = 'text'
 ```
 
 For self-compiled installations, edit the `gitlab.yml` and set the Sidekiq
@@ -559,7 +568,7 @@ For self-compiled installations, edit the `gitlab.yml` and set the Sidekiq
 ```yaml
   ## Sidekiq
   sidekiq:
-    log_format: json
+    log_format: text
 ```
 
 ### `sidekiq_client.log`

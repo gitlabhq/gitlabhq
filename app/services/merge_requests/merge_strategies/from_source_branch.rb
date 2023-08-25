@@ -110,3 +110,5 @@ module MergeRequests
     end
   end
 end
+
+::MergeRequests::MergeStrategies::FromSourceBranch.prepend_mod

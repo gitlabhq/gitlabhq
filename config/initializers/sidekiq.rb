@@ -34,7 +34,7 @@ unless Gitlab::Utils.to_boolean(ENV['SIDEKIQ_ENQUEUE_NON_NAMESPACED'])
   queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
 end
 
-enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
+enable_json_logs = Gitlab.config.sidekiq.log_format != 'text'
 
 Sidekiq.configure_server do |config|
   config[:strict] = false

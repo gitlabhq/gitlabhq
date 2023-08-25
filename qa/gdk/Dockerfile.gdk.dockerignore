@@ -1,10 +1,16 @@
 .bundle/
+builds/
+changelogs/
 danger/
+data/
 doc/
+rubocop/
+storybook/
 log/*.log
 node_modules/
-rubocop/
 tmp/*
+
+*.md
 
 db/fixtures/
 !db/fixtures/development/01_admin.rb
@@ -19,3 +25,13 @@ scripts/
 
 qa/
 !qa/gdk
+
+spec/
+!spec/contracts
+!spec/factories
+!spec/support
+
+ee/spec
+!ee/spec/contracts
+!ee/spec/factories
+!ee/spec/support

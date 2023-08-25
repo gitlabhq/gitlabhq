@@ -613,7 +613,10 @@
   - qa/gdk/**/*
   - Gemfile.lock
   - yarn.lock
+  - scripts/frontend/postinstall.js
   - workhorse/**/*
+  - vendor/gems/**/*
+  - gems/**/*
   - VERSION
   - GITLAB_WORKHORSE_VERSION
   - GITLAB_METRICS_EXPORTER_VERSION
@@ -914,14 +917,16 @@
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-default-branch-schedule-nightly # already executed in the 2-hourly schedule
       when: never
-    - <<: *if-default-branch-refs # Includes scheduled pipelines
-      variables:
-        BUILD_GDK_BASE: "true"
-    # We want to also rebuild the base image if MRs change certain components.
-    - <<: *if-merge-request
-      variables:
-        BUILD_GDK_BASE: "true"
+    - <<: *if-default-branch-refs
+    # Rebuild base only when relevant components change
+    - <<: *if-default-branch-refs
       changes: *gdk-component-patterns
+      variables:
+        BUILD_GDK_BASE: "true"
+    - <<: *if-merge-request
+      changes: *gdk-component-patterns
+      variables:
+        BUILD_GDK_BASE: "true"
     # The rest are included to be consistent with .qa:rules:e2e:test-on-gdk
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
