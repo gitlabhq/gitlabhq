@@ -2724,7 +2724,7 @@ linux:rspec:
       parallel:
         matrix:
           - PROVIDER: aws
-          - STACK: app1
+            STACK: app1
   script: echo "Running rspec on linux..."
 ```
 
