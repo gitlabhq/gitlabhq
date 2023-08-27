@@ -18974,10 +18974,8 @@ CREATE TABLE namespace_details (
     cached_markdown_version integer,
     description text,
     description_html text,
-    free_user_cap_over_limit_notified_at timestamp with time zone,
     dashboard_notification_at timestamp with time zone,
-    dashboard_enforcement_at timestamp with time zone,
-    next_over_limit_check_at timestamp with time zone
+    dashboard_enforcement_at timestamp with time zone
 );
 
 CREATE TABLE namespace_ldap_settings (
@@ -31778,8 +31776,6 @@ CREATE UNIQUE INDEX index_fork_network_members_on_project_id ON fork_network_mem
 
 CREATE UNIQUE INDEX index_fork_networks_on_root_project_id ON fork_networks USING btree (root_project_id);
 
-CREATE INDEX index_fuc_over_limit_notified_at ON namespace_details USING btree (free_user_cap_over_limit_notified_at);
-
 CREATE INDEX index_geo_event_log_on_cache_invalidation_event_id ON geo_event_log USING btree (cache_invalidation_event_id) WHERE (cache_invalidation_event_id IS NOT NULL);
 
 CREATE INDEX index_geo_event_log_on_geo_event_id ON geo_event_log USING btree (geo_event_id) WHERE (geo_event_id IS NOT NULL);
@@ -32581,8 +32577,6 @@ CREATE INDEX index_namespaces_on_updated_at ON namespaces USING btree (updated_a
 CREATE INDEX index_namespaces_public_groups_name_id ON namespaces USING btree (name, id) WHERE (((type)::text = 'Group'::text) AND (visibility_level = 20));
 
 CREATE INDEX index_namespaces_sync_events_on_namespace_id ON namespaces_sync_events USING btree (namespace_id);
-
-CREATE INDEX index_next_over_limit_check_at_asc_order ON namespace_details USING btree (next_over_limit_check_at NULLS FIRST);
 
 CREATE INDEX index_non_requested_project_members_on_source_id_and_type ON members USING btree (source_id, source_type) WHERE ((requested_at IS NULL) AND ((type)::text = 'ProjectMember'::text));
 
