@@ -216,6 +216,11 @@ To render an OpenAPI file:
 1. Go to the OpenAPI file in your repository.
 1. Between the **Display source** and **Edit** buttons, select **Display OpenAPI**. When an OpenAPI file is found, it replaces the
    **Display rendered file** button.
+1. To display the `operationId` in the operations list, add `displayOperationId=true` to the query string.
+
+NOTE:
+When `displayOperationId` is present in the query string and has _any_ value, it
+evaluates to `true`. This behavior matches the default behavior of Swagger.
 
 ## Repository size
 

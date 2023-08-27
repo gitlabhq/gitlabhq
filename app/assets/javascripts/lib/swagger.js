@@ -27,7 +27,7 @@ const renderSwaggerUI = (value) => {
         spec,
         dom_id: '#swagger-ui',
         deepLinking: true,
-        displayOperationId: true,
+        displayOperationId: Boolean(getParameterByName('displayOperationId')),
       });
     })
     .catch((error) => {

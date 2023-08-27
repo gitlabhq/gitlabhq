@@ -5,6 +5,7 @@ import {
   relativePathToAbsolute,
   joinPaths,
   setUrlParams,
+  getParameterByName,
 } from '~/lib/utils/url_utility';
 
 const SANDBOX_FRAME_PATH = '/-/sandbox/swagger';
@@ -12,10 +13,14 @@ const SANDBOX_FRAME_PATH = '/-/sandbox/swagger';
 const getSandboxFrameSrc = () => {
   const path = joinPaths(gon.relative_url_root || '', SANDBOX_FRAME_PATH);
   const absoluteUrl = relativePathToAbsolute(path, getBaseURL());
+  const displayOperationId = getParameterByName('displayOperationId');
+  const params = { displayOperationId };
+
   if (window.gon?.relative_url_root) {
-    return setUrlParams({ relativeRootPath: window.gon.relative_url_root }, absoluteUrl);
+    params.relativeRootPath = window.gon.relative_url_root;
   }
-  return absoluteUrl;
+
+  return setUrlParams(params, absoluteUrl);
 };
 
 const createSandbox = () => {
