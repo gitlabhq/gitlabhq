@@ -3,8 +3,8 @@
 class Admin::AbuseReportsController < Admin::ApplicationController
   feature_category :insider_threat
 
-  before_action :set_status_param, only: :index, if: -> { Feature.enabled?(:abuse_reports_list) }
-  before_action :find_abuse_report, only: [:show, :update, :moderate_user, :destroy]
+  before_action :set_status_param, only: :index
+  before_action :find_abuse_report, only: [:show, :moderate_user, :update, :destroy]
   before_action only: :show do
     push_frontend_feature_flag(:abuse_report_labels)
   end

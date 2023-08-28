@@ -29,18 +29,6 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
       expect(assigns(:abuse_reports).count).to eq 1
       expect(assigns(:abuse_reports).first.closed?).to eq true
     end
-
-    context 'when abuse_reports_list flag is disabled' do
-      before do
-        stub_feature_flags(abuse_reports_list: false)
-      end
-
-      it 'returns all reports by default' do
-        get admin_abuse_reports_path
-
-        expect(assigns(:abuse_reports).count).to eq 2
-      end
-    end
   end
 
   describe 'GET #show' do

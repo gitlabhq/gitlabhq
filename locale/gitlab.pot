@@ -20149,9 +20149,6 @@ msgstr ""
 msgid "Filter by test cases that are currently open."
 msgstr ""
 
-msgid "Filter by user"
-msgstr ""
-
 msgid "Filter parameters are not valid. Make sure that the end date is after the start date."
 msgstr ""
 
@@ -27331,9 +27328,6 @@ msgid "Join a project"
 msgstr ""
 
 msgid "Join your team on GitLab and contribute to an existing project"
-msgstr ""
-
-msgid "Joined %{time_ago}"
 msgstr ""
 
 msgid "Joined %{user_created_time}"
@@ -39234,9 +39228,6 @@ msgstr ""
 msgid "Remove priority"
 msgstr ""
 
-msgid "Remove report"
-msgstr ""
-
 msgid "Remove reviewer"
 msgstr ""
 
@@ -39259,9 +39250,6 @@ msgid "Remove topic avatar"
 msgstr ""
 
 msgid "Remove user"
-msgstr ""
-
-msgid "Remove user & report"
 msgstr ""
 
 msgid "Remove user from group"
@@ -39541,12 +39529,6 @@ msgid "ReportAbuse|Why are you reporting this user?"
 msgstr ""
 
 msgid "Reported %{timeAgo} by %{reportedBy}"
-msgstr ""
-
-msgid "Reported by"
-msgstr ""
-
-msgid "Reported by %{reporter}"
 msgstr ""
 
 msgid "Reporter"
@@ -47675,9 +47657,6 @@ msgstr ""
 msgid "There are no Spam Logs"
 msgstr ""
 
-msgid "There are no abuse reports!"
-msgstr ""
-
 msgid "There are no approval rules for the given `represent_as` parameter. Use a valid User/Group/Role name instead."
 msgstr ""
 
@@ -50110,9 +50089,6 @@ msgid "URL or request ID"
 msgstr ""
 
 msgid "USER %{user_name} WILL BE REMOVED! Are you sure?"
-msgstr ""
-
-msgid "USER %{user} WILL BE REMOVED! Are you sure?"
 msgstr ""
 
 msgid "USER WILL BE BLOCKED! Are you sure?"

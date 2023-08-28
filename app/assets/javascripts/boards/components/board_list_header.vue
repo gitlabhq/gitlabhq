@@ -490,7 +490,11 @@ export default {
       >
         <span class="gl-display-inline-flex" :class="{ 'gl-rotate-90': list.collapsed }">
           <gl-tooltip :target="() => $refs.itemCount" :title="itemsTooltipLabel" />
-          <span ref="itemCount" class="gl-display-inline-flex gl-align-items-center">
+          <span
+            ref="itemCount"
+            class="gl-display-inline-flex gl-align-items-center"
+            data-testid="item-count"
+          >
             <gl-icon class="gl-mr-2" :name="countIcon" :size="14" />
             <item-count
               v-if="!isLoading"

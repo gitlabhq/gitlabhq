@@ -27,30 +27,16 @@ class AbuseReportsFinder
   private
 
   def filter_reports
-    if Feature.disabled?(:abuse_reports_list)
-      filter_by_user_id
-      return
-    end
-
     filter_by_status
     filter_by_user
     filter_by_reporter
     filter_by_category
   end
 
-  def filter_by_user_id
-    return unless params[:user_id].present?
-
-    @reports = @reports.by_user_id(params[:user_id])
-  end
-
   def filter_by_status
     return unless params[:status].present?
 
-    status = params[:status]
-    status = STATUS_OPEN unless status.in?(AbuseReport.statuses.keys)
-
-    case status
+    case status_filter
     when 'open'
       @reports = @reports.open
     when 'closed'
@@ -92,11 +78,6 @@ class AbuseReportsFinder
   end
 
   def sort_reports
-    if Feature.disabled?(:abuse_reports_list)
-      @reports = @reports.with_order_id_desc
-      return
-    end
-
     # let sub_query in aggregate_reports do the sorting if sorting by number of reports
     return if sort_key.in?(SORT_BY_COUNT)
 
@@ -107,15 +88,6 @@ class AbuseReportsFinder
     User.by_username(username).pick(:id)
   end
 
-  def status_open?
-    return unless Feature.enabled?(:abuse_reports_list) && params[:status].present?
-
-    status = params[:status]
-    status = STATUS_OPEN unless status.in?(AbuseReport.statuses.keys)
-
-    status == STATUS_OPEN
-  end
-
   def aggregate_reports
     if status_open?
       sort_by_count = sort_key.in?(SORT_BY_COUNT)
@@ -123,5 +95,20 @@ class AbuseReportsFinder
     end
 
     @reports
+  end
+
+  def status_filter
+    @status_filter ||=
+      if params[:status].in?(AbuseReport.statuses.keys)
+        params[:status]
+      else
+        STATUS_OPEN
+      end
+  end
+
+  def status_open?
+    return false if params[:status].blank?
+
+    status_filter == STATUS_OPEN
   end
 end
