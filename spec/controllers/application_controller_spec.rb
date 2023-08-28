@@ -865,33 +865,6 @@ RSpec.describe ApplicationController, feature_category: :shared do
     end
   end
 
-  describe '#required_signup_info' do
-    controller(described_class) do
-      def index; end
-    end
-
-    let(:user) { create(:user) }
-
-    context 'user with required role' do
-      before do
-        user.set_role_required!
-        sign_in(user)
-        get :index
-      end
-
-      it { is_expected.to redirect_to users_sign_up_welcome_path }
-    end
-
-    context 'user without a required role' do
-      before do
-        sign_in(user)
-        get :index
-      end
-
-      it { is_expected.not_to redirect_to users_sign_up_welcome_path }
-    end
-  end
-
   describe 'rescue_from Gitlab::Auth::IpBlocked' do
     controller(described_class) do
       skip_before_action :authenticate_user!

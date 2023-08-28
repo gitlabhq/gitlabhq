@@ -237,4 +237,15 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
 
     expect(page).to have_link("Explore groups", href: explore_groups_path)
   end
+
+  context 'when there are no groups to display' do
+    before do
+      sign_in(user)
+      visit dashboard_groups_path
+    end
+
+    it 'shows empty state' do
+      expect(page).to have_content(s_('GroupsEmptyState|A group is a collection of several projects'))
+    end
+  end
 end

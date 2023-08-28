@@ -13,9 +13,8 @@ import {
   FILTERED_SEARCH_TERM,
   TOKEN_EMPTY_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '../../constants';
 import {
-  DISPLAY_QUERY_GROUPS,
-  DISPLAY_QUERY_PROJECTS,
   DISPLAY_LISTBOX_ITEMS,
   SORT_DIRECTION_ASC,
   SORT_DIRECTION_DESC,
@@ -45,10 +44,10 @@ export default {
       const { display } = this.$route.query;
 
       switch (display) {
-        case DISPLAY_QUERY_GROUPS:
+        case RESOURCE_TYPE_GROUPS:
           return GroupsPage;
 
-        case DISPLAY_QUERY_PROJECTS:
+        case RESOURCE_TYPE_PROJECTS:
           return ProjectsPage;
 
         default:
@@ -80,9 +79,9 @@ export default {
     displayListboxSelected() {
       const { display } = this.$route.query;
 
-      return [DISPLAY_QUERY_GROUPS, DISPLAY_QUERY_PROJECTS].includes(display)
+      return [RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS].includes(display)
         ? display
-        : DISPLAY_QUERY_GROUPS;
+        : RESOURCE_TYPE_GROUPS;
     },
   },
   methods: {

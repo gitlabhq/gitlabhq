@@ -332,7 +332,6 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
         click_button 'Register'
 
         expect(page).to have_current_path(users_sign_up_welcome_path), ignore_query: true
-        visit new_project_path
 
         select 'Software Developer', from: 'user_role'
         click_button 'Get started!'
@@ -341,7 +340,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
 
         expect(created_user.software_developer_role?).to be_truthy
         expect(created_user.setup_for_company).to be_nil
-        expect(page).to have_current_path(new_project_path)
+        expect(page).to have_current_path(dashboard_projects_path)
       end
 
       it_behaves_like 'Signup name validation', 'new_user_first_name', 127, 'First name'
@@ -388,7 +387,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
       end
     end
 
-    it 'redirects to step 2 of the signup process, sets the role and redirects back' do
+    it 'allows visiting of a page after initial registration' do
       visit new_user_registration_path
 
       fill_in_signup_form
@@ -397,15 +396,6 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
 
       visit new_project_path
 
-      expect(page).to have_current_path(users_sign_up_welcome_path)
-
-      select 'Software Developer', from: 'user_role'
-      click_button 'Get started!'
-
-      created_user = User.find_by_username(new_user.username)
-
-      expect(created_user.software_developer_role?).to be_truthy
-      expect(created_user.setup_for_company).to be_nil
       expect(page).to have_current_path(new_project_path)
     end
 

@@ -2085,16 +2085,6 @@ class User < MainClusterwide::ApplicationRecord
     [last_activity, last_sign_in].compact.max
   end
 
-  REQUIRES_ROLE_VALUE = 99
-
-  def role_required?
-    role_before_type_cast == REQUIRES_ROLE_VALUE
-  end
-
-  def set_role_required!
-    update_column(:role, REQUIRES_ROLE_VALUE)
-  end
-
   def dismissed_callout?(feature_name:, ignore_dismissal_earlier_than: nil)
     callout = callouts_by_feature_name[feature_name]
 

@@ -8,7 +8,7 @@ module Registrations
     include ::Gitlab::Utils::StrongMemoize
 
     layout 'minimal'
-    skip_before_action :required_signup_info, :check_two_factor_requirement
+    skip_before_action :check_two_factor_requirement
 
     helper_method :welcome_update_params
     helper_method :onboarding_status
@@ -43,7 +43,7 @@ module Registrations
     end
 
     def completed_welcome_step?
-      current_user.role.present? && !current_user.setup_for_company.nil?
+      !current_user.setup_for_company.nil?
     end
 
     def update_params

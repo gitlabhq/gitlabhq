@@ -38,7 +38,6 @@ class ApplicationController < ActionController::Base
   before_action :active_user_check, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
-  before_action :required_signup_info
 
   # Make sure the `auth_user` is memoized so it can be logged, we do this after
   # all other before filters that could have set the user.
@@ -554,15 +553,6 @@ class ApplicationController < ActionController::Base
   # `auth_user` again would also trigger the Warden callbacks again
   def context_user
     auth_user if strong_memoized?(:auth_user)
-  end
-
-  def required_signup_info
-    return unless current_user
-    return unless current_user.role_required?
-
-    store_location_for :user, request.fullpath
-
-    redirect_to users_sign_up_welcome_path
   end
 end
 

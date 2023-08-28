@@ -44,9 +44,6 @@ Each image runs a specific version of macOS and Xcode.
 | `macos-12-xcode-14`        | `GA`   |
 | `macos-13-xcode-14`        | `Beta` |
 
-NOTE:
-If your job requires tooling or dependencies not available in our available images, those can only be installed in the job execution.
-
 ## Image update policy for macOS
 
 macOS and Xcode follow a yearly release cadence, during which GitLab increments its versions synchronously. GitLab typically supports multiple versions of preinstalled tools. For more information, see
@@ -59,7 +56,7 @@ GitLab provides `stable` and `latest` macOS images that follow different update 
 By definition, the `latest` images are always Beta.
 A `latest` image is not available.
 
-### Release process
+### Image release process**
 
 When Apple releases a new macOS version, GitLab releases both `stable` and `latest` images based on the OS in the next release. Both images are Beta.
 

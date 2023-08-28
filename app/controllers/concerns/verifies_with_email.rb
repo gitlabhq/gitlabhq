@@ -9,7 +9,6 @@ module VerifiesWithEmail
 
   included do
     prepend_before_action :verify_with_email, only: :create, unless: -> { skip_verify_with_email? }
-    skip_before_action :required_signup_info, only: :successful_verification
   end
 
   # rubocop:disable Metrics/PerceivedComplexity
