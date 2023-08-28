@@ -326,3 +326,5 @@ export const TEMP_PROVIDER_URLS = {
   [__('Secure Code Warrior')]: 'https://www.securecodewarrior.com/',
   SecureFlag: 'https://www.secureflag.com/',
 };
+
+export const TAB_VULNERABILITY_MANAGEMENT_INDEX = 1;

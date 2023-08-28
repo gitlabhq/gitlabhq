@@ -288,4 +288,39 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :groups_and_pro
       end
     end
   end
+
+  context 'filter by non-invite' do
+    let_it_be(:member) { group.add_maintainer(user1) }
+    let_it_be(:invited_member) do
+      create(:group_member, :invited, { user: user2, group: group })
+    end
+
+    context 'params is not passed in' do
+      subject { described_class.new(group, user1).execute }
+
+      it 'does not filter members by invite' do
+        expect(subject).to match_array([member, invited_member])
+      end
+    end
+
+    context 'params is passed in' do
+      subject { described_class.new(group, user1, params: { non_invite: non_invite_param }).execute }
+
+      context 'filtering is set to false' do
+        let(:non_invite_param) { false }
+
+        it 'does not filter members by invite' do
+          expect(subject).to match_array([member, invited_member])
+        end
+      end
+
+      context 'filtering is set to true' do
+        let(:non_invite_param) { true }
+
+        it 'filters members by invite' do
+          expect(subject).to match_array([member])
+        end
+      end
+    end
+  end
 end

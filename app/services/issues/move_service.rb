@@ -141,15 +141,23 @@ module Issues
     end
 
     def add_note_from
-      SystemNoteService.noteable_moved(new_entity, target_project,
-                                       original_entity, current_user,
-                                       direction: :from)
+      SystemNoteService.noteable_moved(
+        new_entity,
+        target_project,
+        original_entity,
+        current_user,
+        direction: :from
+      )
     end
 
     def add_note_to
-      SystemNoteService.noteable_moved(original_entity, old_project,
-                                       new_entity, current_user,
-                                       direction: :to)
+      SystemNoteService.noteable_moved(
+        original_entity,
+        old_project,
+        new_entity,
+        current_user,
+        direction: :to
+      )
     end
   end
 end

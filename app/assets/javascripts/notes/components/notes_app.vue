@@ -169,7 +169,6 @@ export default {
     });
   },
   beforeDestroy() {
-    this.stopPolling();
     window.removeEventListener('hashchange', this.handleHashChanged);
     eventHub.$off('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
   },
@@ -182,7 +181,6 @@ export default {
       'expandDiscussion',
       'startTaskList',
       'convertToDiscussion',
-      'stopPolling',
       'setConfidentiality',
       'fetchNotes',
     ]),

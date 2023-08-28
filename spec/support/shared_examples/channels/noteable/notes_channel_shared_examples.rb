@@ -15,16 +15,4 @@ RSpec.shared_examples 'handle subscription based on user access' do
 
     expect(subscription).to be_rejected
   end
-
-  context 'when action_cable_notes is disabled' do
-    before do
-      stub_feature_flags(action_cable_notes: false)
-    end
-
-    it 'rejects the subscription' do
-      subscribe(subscribe_params)
-
-      expect(subscription).to be_rejected
-    end
-  end
 end

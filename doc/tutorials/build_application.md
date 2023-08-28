@@ -30,6 +30,7 @@ Set up runners to run jobs in a pipeline.
 |-------|-------------|--------------------|
 | [Create, register, and run your own project runner](create_register_first_runner/index.md) | Learn the basics of how to create and register a project runner that runs jobs for your project. | **{star}** |
 | [Configure GitLab Runner to use the Google Kubernetes Engine](configure_gitlab_runner_to_use_gke/index.md) | Learn how to configure GitLab Runner to use the GKE to run jobs. | |
+| [Automate the creation of runners](https://about.gitlab.com/blog/2023/07/06/how-to-automate-creation-of-runners/) | Learn how to automate runner creation as an authenticated user to optimize your runner fleet.  | |
 
 ## Publish a static website
 

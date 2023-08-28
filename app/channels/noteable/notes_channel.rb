@@ -13,7 +13,6 @@ module Noteable
       }).target
 
       return reject if noteable.nil?
-      return reject if Feature.disabled?(:action_cable_notes, project || noteable.try(:group))
 
       stream_for noteable
     rescue ActiveRecord::RecordNotFound

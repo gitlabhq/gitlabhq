@@ -18,12 +18,13 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_ACCEPTED } from '~/lib/utils/http_status';
-
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import DependencyProxyApp from '~/packages_and_registries/dependency_proxy/app.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ManifestsList from '~/packages_and_registries/dependency_proxy/components/manifests_list.vue';
-
+import createRouter from '~/packages_and_registries/dependency_proxy/router';
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
 
 import { proxyDetailsQuery, proxyData, pagination, proxyManifests } from './mock_data';
@@ -37,6 +38,7 @@ Vue.use(VueApollo);
 
 describe('DependencyProxyApp', () => {
   let wrapper;
+  let router;
   let apolloProvider;
   let resolver;
   let mock;
@@ -53,15 +55,16 @@ describe('DependencyProxyApp', () => {
     const requestHandlers = [[getDependencyProxyDetailsQuery, resolver]];
 
     apolloProvider = createMockApollo(requestHandlers);
+    router = createRouter('/');
 
     wrapper = shallowMountExtended(DependencyProxyApp, {
       apolloProvider,
       provide,
+      router,
       stubs: {
         GlAlert,
         GlDropdown,
         GlDropdownItem,
-        GlFormInputGroup,
         GlFormGroup,
         GlModal,
         GlSprintf,
@@ -94,6 +97,7 @@ describe('DependencyProxyApp', () => {
 
     mock = new MockAdapter(axios);
     mock.onDelete(expectedUrl).reply(HTTP_STATUS_ACCEPTED, {});
+    setWindowLocation(TEST_HOST);
   });
 
   afterEach(() => {
@@ -121,6 +125,13 @@ describe('DependencyProxyApp', () => {
         beforeEach(() => {
           createComponent();
           return waitForPromises();
+        });
+
+        it('resolver is called with right arguments', () => {
+          expect(resolver).toHaveBeenCalledWith({
+            first: GRAPHQL_PAGE_SIZE,
+            fullPath: provideDefaults.groupPath,
+          });
         });
 
         it('renders a form group with a label', () => {
@@ -225,6 +236,7 @@ describe('DependencyProxyApp', () => {
                   fullPath: provideDefaults.groupPath,
                   last: GRAPHQL_PAGE_SIZE,
                 });
+                expect(window.location.search).toBe(`?before=${pagination().startCursor}`);
               });
             });
 
@@ -252,6 +264,7 @@ describe('DependencyProxyApp', () => {
                   first: GRAPHQL_PAGE_SIZE,
                   fullPath: provideDefaults.groupPath,
                 });
+                expect(window.location.search).toBe(`?after=${pagination().endCursor}`);
               });
             });
 
@@ -311,6 +324,48 @@ describe('DependencyProxyApp', () => {
               it('does not show link to settings', () => {
                 expect(findSettingsLink().exists()).toBe(false);
               });
+            });
+          });
+        });
+      });
+
+      describe('pagination params', () => {
+        it('after is set from the url params', async () => {
+          setWindowLocation('?after=1234');
+          createComponent();
+          await waitForPromises();
+
+          expect(resolver).toHaveBeenCalledWith({
+            first: GRAPHQL_PAGE_SIZE,
+            after: '1234',
+            fullPath: provideDefaults.groupPath,
+          });
+        });
+
+        it('before is set from the url params', async () => {
+          setWindowLocation('?before=1234');
+          createComponent();
+          await waitForPromises();
+
+          expect(resolver).toHaveBeenCalledWith({
+            first: null,
+            last: GRAPHQL_PAGE_SIZE,
+            before: '1234',
+            fullPath: provideDefaults.groupPath,
+          });
+        });
+
+        describe('when url params are changed', () => {
+          it('after is set from the url params', async () => {
+            createComponent();
+            await waitForPromises();
+            router.push('?after=1234');
+            await waitForPromises();
+
+            expect(resolver).toHaveBeenCalledWith({
+              first: GRAPHQL_PAGE_SIZE,
+              after: '1234',
+              fullPath: provideDefaults.groupPath,
             });
           });
         });

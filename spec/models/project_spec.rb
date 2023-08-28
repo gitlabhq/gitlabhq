@@ -143,7 +143,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:alert_management_alerts) }
     it { is_expected.to have_many(:alert_management_http_integrations) }
     it { is_expected.to have_many(:jira_imports) }
-    it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:project) }
     it { is_expected.to have_many(:repository_storage_moves) }
     it { is_expected.to have_many(:reviews).inverse_of(:project) }
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }

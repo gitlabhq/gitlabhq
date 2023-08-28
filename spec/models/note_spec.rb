@@ -1612,18 +1612,6 @@ RSpec.describe Note, feature_category: :team_planning do
       note.save!
     end
 
-    context 'when action_cable_notes is disabled' do
-      before do
-        stub_feature_flags(action_cable_notes: false)
-      end
-
-      it 'does not broadcast an Action Cable event' do
-        expect(Noteable::NotesChannel).not_to receive(:broadcast_to)
-
-        note.save!
-      end
-    end
-
     it "expires cache for note's issue when note is saved" do
       expect_expiration(note.noteable)
 

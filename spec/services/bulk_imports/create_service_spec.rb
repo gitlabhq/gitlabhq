@@ -470,7 +470,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
           context 'when the source_full_path contains only integer characters' do
             let(:query_string) { BulkImports::Projects::Graphql::GetProjectQuery.new(context: nil).to_s }
             let(:graphql_response) do
-              double(original_hash: { 'data' => { 'project' => { 'id' => entity_source_id } } })  # rubocop:disable RSpec/VerifiedDoubles
+              double(original_hash: { 'data' => { 'project' => { 'id' => entity_source_id } } }) # rubocop:disable RSpec/VerifiedDoubles
             end
 
             let(:params) do

@@ -131,11 +131,11 @@ module DesignManagement
 
     def track_usage_metrics(action)
       if action == :update
-        ::Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_designs_modified_action(author: current_user,
-                                                                                                    project: project)
+        ::Gitlab::UsageDataCounters::IssueActivityUniqueCounter
+          .track_issue_designs_modified_action(author: current_user, project: project)
       else
-        ::Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_designs_added_action(author: current_user,
-                                                                                                 project: project)
+        ::Gitlab::UsageDataCounters::IssueActivityUniqueCounter
+          .track_issue_designs_added_action(author: current_user, project: project)
       end
 
       ::Gitlab::UsageDataCounters::DesignsCounter.count(action)

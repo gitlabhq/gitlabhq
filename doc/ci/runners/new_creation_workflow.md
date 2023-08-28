@@ -21,8 +21,6 @@ For information about the current development status of the new workflow, see [e
 
 For information about the technical design and reasons for the new architecture, see [Next GitLab Runner Token Architecture](../../architecture/blueprints/runner_tokens/index.md).
 
-## Feedback
-
 If you experience problems or have concerns about the new runner registration workflow,
 or if the following information is not sufficient,
 you can let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387993).
@@ -138,10 +136,8 @@ Existing runners will continue to work as usual. This change only affects regist
 
 ## Creating runners programmatically
 
-A new [POST /user/runners REST API](../../api/users.md#create-a-runner) was introduced in
-GitLab 15.11, which allows a runner to be created in the context of an authenticated user. This should only be used in
-scenarios where the runner configuration is dynamic, or not reusable. If the runner configuration is static, it is
-preferable to reuse the authentication token of an existing runner.
+In GitLab 15.11 and later, you can use the [POST /user/runners REST API](../../api/users.md#create-a-runner) to create a runner as an authenticated user. This should only be used if the runner configuration is dynamic or not reusable. If the runner configuration is static, you should
+reuse the authentication token of an existing runner. For more information, see [How to automate the creation of GitLab Runners](https://about.gitlab.com/blog/2023/07/06/how-to-automate-creation-of-runners/).
 
 The following snippet shows how a group runner could be created and registered with a
 [Group Access Token](../../user/group/settings/group_access_tokens.md) using the new creation flow.
@@ -212,3 +208,7 @@ data:
   runner-registration-token: "" # need to leave as an empty string for compatibility reasons
   runner-token: "REDACTED"
 ```
+
+NOTE:
+If your secret management solution doesn't allow you to set an empty string for `runner-registration-token`,
+you can set it to any string - it will be ignored when `runner-token` is present.

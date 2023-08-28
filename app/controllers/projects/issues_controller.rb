@@ -73,7 +73,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:move_close_into_dropdown, project)
-    push_frontend_feature_flag(:action_cable_notes, project)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

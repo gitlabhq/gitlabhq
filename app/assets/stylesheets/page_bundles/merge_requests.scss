@@ -416,7 +416,7 @@ $tabs-holder-z-index: 250;
 
   .media-body {
     min-width: 0;
-    font-size: 12px;
+    font-size: $gl-font-size-sm;
     margin-left: 32px;
   }
 
@@ -648,7 +648,6 @@ $tabs-holder-z-index: 250;
 
   .label-branch {
     @include gl-font-monospace;
-    font-size: 95%;
     overflow: hidden;
     word-break: break-all;
   }
@@ -662,7 +661,7 @@ $tabs-holder-z-index: 250;
       > span {
         display: inline-block;
         max-width: 12.5em;
-        margin-bottom: -5px;
+        margin-bottom: px-to-rem(-5px);
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;

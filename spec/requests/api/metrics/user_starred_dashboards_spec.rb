@@ -58,11 +58,6 @@ RSpec.describe API::Metrics::UserStarredDashboards, feature_category: :metrics d
   end
 
   describe 'DELETE /projects/:id/metrics/user_starred_dashboards' do
-    let_it_be(:user_starred_dashboard_1) { create(:metrics_users_starred_dashboard, user: user, project: project, dashboard_path: dashboard) }
-    let_it_be(:user_starred_dashboard_2) { create(:metrics_users_starred_dashboard, user: user, project: project) }
-    let_it_be(:other_user_starred_dashboard) { create(:metrics_users_starred_dashboard, project: project) }
-    let_it_be(:other_project_starred_dashboard) { create(:metrics_users_starred_dashboard, user: user) }
-
     before do
       project.add_reporter(user)
     end

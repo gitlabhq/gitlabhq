@@ -7,7 +7,7 @@ module Issues
     include ::Services::ReturnServiceResponses
 
     rate_limit key: :issues_create,
-               opts: { scope: [:project, :current_user, :external_author] }
+      opts: { scope: [:project, :current_user, :external_author] }
 
     def initialize(container:, current_user: nil, params: {}, build_service: nil, perform_spam_check: true)
       @extra_params = params.delete(:extra_params) || {}
@@ -90,9 +90,12 @@ module Issues
     def resolve_discussions_with_issue(issue)
       return if discussions_to_resolve.empty?
 
-      Discussions::ResolveService.new(project, current_user,
-                                      one_or_more_discussions: discussions_to_resolve,
-                                      follow_up_issue: issue).execute
+      Discussions::ResolveService.new(
+        project,
+        current_user,
+        one_or_more_discussions: discussions_to_resolve,
+        follow_up_issue: issue
+      ).execute
     end
 
     private

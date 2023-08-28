@@ -49,7 +49,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_activity_filters, current_user)
     push_frontend_feature_flag(:review_apps_redeploy_mr_widget, project)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
-    push_frontend_feature_flag(:action_cable_notes, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
   end
 

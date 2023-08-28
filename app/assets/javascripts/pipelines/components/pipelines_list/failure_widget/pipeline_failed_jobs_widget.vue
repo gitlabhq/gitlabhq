@@ -91,7 +91,7 @@ export default {
     <template #header>
       <gl-button
         variant="link"
-        class="gl-text-gray-700! gl-font-weight-semibold"
+        class="gl-text-gray-500! gl-font-weight-semibold"
         @click="toggleWidget"
       >
         <gl-icon :name="iconName" />

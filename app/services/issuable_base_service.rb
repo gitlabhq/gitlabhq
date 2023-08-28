@@ -184,11 +184,14 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def process_assignee_ids(attributes, existing_assignee_ids: nil, extra_assignee_ids: [])
-    process = Issuable::ProcessAssignees.new(assignee_ids: attributes.delete(:assignee_ids),
-                                             add_assignee_ids: attributes.delete(:add_assignee_ids),
-                                             remove_assignee_ids: attributes.delete(:remove_assignee_ids),
-                                             existing_assignee_ids: existing_assignee_ids,
-                                             extra_assignee_ids: extra_assignee_ids)
+    process = Issuable::ProcessAssignees.new(
+      assignee_ids: attributes.delete(:assignee_ids),
+      add_assignee_ids: attributes.delete(:add_assignee_ids),
+      remove_assignee_ids: attributes.delete(:remove_assignee_ids),
+      existing_assignee_ids: existing_assignee_ids,
+      extra_assignee_ids: extra_assignee_ids
+    )
+
     process.execute
   end
 
@@ -373,9 +376,11 @@ class IssuableBaseService < ::BaseContainerService
     filter_params(issuable)
 
     if issuable.changed? || params.present?
-      issuable.assign_attributes(params.merge(updated_by: current_user,
-                                              last_edited_at: Time.current,
-                                              last_edited_by: current_user))
+      issuable.assign_attributes(params.merge(
+        updated_by: current_user,
+        last_edited_at: Time.current,
+        last_edited_by: current_user
+      ))
 
       before_update(issuable, skip_spam_check: true)
 
@@ -404,10 +409,13 @@ class IssuableBaseService < ::BaseContainerService
     update_task_params = params.delete(:update_task)
     return unless update_task_params
 
-    tasklist_toggler = TaskListToggleService.new(issuable.description, issuable.description_html,
-                                                 line_source: update_task_params[:line_source],
-                                                 line_number: update_task_params[:line_number].to_i,
-                                                 toggle_as_checked: update_task_params[:checked])
+    tasklist_toggler = TaskListToggleService.new(
+      issuable.description,
+      issuable.description_html,
+      line_source: update_task_params[:line_source],
+      line_number: update_task_params[:line_number].to_i,
+      toggle_as_checked: update_task_params[:checked]
+    )
 
     unless tasklist_toggler.execute
       # if we make it here, the data is much newer than we thought it was - fail fast

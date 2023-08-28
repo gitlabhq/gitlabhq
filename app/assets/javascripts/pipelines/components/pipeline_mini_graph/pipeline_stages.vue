@@ -42,7 +42,7 @@ export default {
     <div
       v-for="stage in stages"
       :key="stage.name"
-      class="pipeline-mini-graph-stage-container dropdown gl-display-inline-block gl-mr-2 gl-my-2 gl-vertical-align-middle"
+      class="pipeline-mini-graph-stage-container dropdown gl-display-inline-flex gl-mr-2 gl-my-2 gl-vertical-align-middle"
     >
       <pipeline-stage
         v-if="isGraphql"

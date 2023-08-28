@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import Visibility from 'visibilityjs';
 import Vue from 'vue';
 import actionCable from '~/actioncable_consumer';
 import Api from '~/api';
@@ -14,8 +13,6 @@ import updateIssueLockMutation from '~/sidebar/queries/update_issue_lock.mutatio
 import updateMergeRequestLockMutation from '~/sidebar/queries/update_merge_request_lock.mutation.graphql';
 import loadAwardsHandler from '~/awards_handler';
 import { isInViewport, scrollToElement, isInMRPage } from '~/lib/utils/common_utils';
-import Poll from '~/lib/utils/poll';
-import { create } from '~/lib/utils/recurrence';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import sidebarTimeTrackingEventHub from '~/sidebar/event_hub';
 import TaskList from '~/task_list';
@@ -29,9 +26,6 @@ import promoteTimelineEvent from '../graphql/promote_timeline_event.mutation.gra
 import * as constants from '../constants';
 import * as types from './mutation_types';
 import * as utils from './utils';
-
-const NOTES_POLLING_INTERVAL = 6000;
-let eTagPoll;
 
 export const updateLockedAttribute = ({ commit, getters }, { locked, fullPath }) => {
   const { iid, targetType } = getters.getNoteableData;
@@ -152,29 +146,25 @@ export const initPolling = ({ state, dispatch, getters, commit }) => {
 
   dispatch('setLastFetchedAt', getters.getNotesDataByProp('lastFetchedAt'));
 
-  if (gon.features?.actionCableNotes) {
-    actionCable.subscriptions.create(
-      {
-        channel: 'Noteable::NotesChannel',
-        project_id: state.notesData.projectId,
-        group_id: state.notesData.groupId,
-        noteable_type: state.notesData.noteableType,
-        noteable_id: state.notesData.noteableId,
+  actionCable.subscriptions.create(
+    {
+      channel: 'Noteable::NotesChannel',
+      project_id: state.notesData.projectId,
+      group_id: state.notesData.groupId,
+      noteable_type: state.notesData.noteableType,
+      noteable_id: state.notesData.noteableId,
+    },
+    {
+      connected() {
+        dispatch('fetchUpdatedNotes');
       },
-      {
-        connected() {
+      received(data) {
+        if (data.event === 'updated') {
           dispatch('fetchUpdatedNotes');
-        },
-        received(data) {
-          if (data.event === 'updated') {
-            dispatch('fetchUpdatedNotes');
-          }
-        },
+        }
       },
-    );
-  } else {
-    dispatch('poll');
-  }
+    },
+  );
 
   commit(types.SET_IS_POLLING_INITIALIZED, true);
 };
@@ -515,8 +505,6 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
      {"commands_changes":{},"valid":false,"errors":{"commands_only":["Commands applied"]}}
      */
     if (hasQuickActions && message) {
-      if (eTagPoll) eTagPoll.makeRequest();
-
       // synchronizing the quick action with the sidebar widget
       // this is a temporary solution until we have confidentiality real-time updates
       if (
@@ -624,69 +612,7 @@ export const fetchUpdatedNotes = ({ commit, state, getters, dispatch }) => {
     .then(({ data }) => {
       pollSuccessCallBack(data, commit, state, getters, dispatch);
     })
-    .catch(() => {
-      createAlert({
-        message: __('Something went wrong while fetching latest comments.'),
-      });
-    });
-};
-
-export const poll = ({ commit, state, getters, dispatch }) => {
-  const notePollOccurrenceTracking = create();
-  let alert;
-
-  notePollOccurrenceTracking.handle(1, () => {
-    // Since polling halts internally after 1 failure, we manually try one more time
-    setTimeout(() => eTagPoll.restart(), NOTES_POLLING_INTERVAL);
-  });
-  notePollOccurrenceTracking.handle(2, () => {
-    // On the second failure in a row, show the alert and try one more time (hoping to succeed and clear the error)
-    alert = createAlert({
-      message: __('Something went wrong while fetching latest comments.'),
-    });
-    setTimeout(() => eTagPoll.restart(), NOTES_POLLING_INTERVAL);
-  });
-
-  eTagPoll = new Poll({
-    resource: {
-      poll: () => {
-        const { endpoint, options } = getFetchDataParams(state);
-        return axios.get(endpoint, options);
-      },
-    },
-    method: 'poll',
-    successCallback: ({ data }) => {
-      pollSuccessCallBack(data, commit, state, getters, dispatch);
-
-      if (notePollOccurrenceTracking.count) {
-        notePollOccurrenceTracking.reset();
-      }
-      alert?.dismiss();
-    },
-    errorCallback: () => notePollOccurrenceTracking.occur(),
-  });
-
-  if (!Visibility.hidden()) {
-    eTagPoll.makeDelayedRequest(2500);
-  } else {
-    eTagPoll.makeRequest();
-  }
-
-  Visibility.change(() => {
-    if (!Visibility.hidden()) {
-      eTagPoll.restart();
-    } else {
-      eTagPoll.stop();
-    }
-  });
-};
-
-export const stopPolling = () => {
-  if (eTagPoll) eTagPoll.stop();
-};
-
-export const restartPolling = () => {
-  if (eTagPoll) eTagPoll.restart();
+    .catch(() => {});
 };
 
 export const toggleAward = ({ commit, getters }, { awardName, noteId }) => {
@@ -766,7 +692,6 @@ export const submitSuggestion = (
     dispatch('resolveDiscussion', { discussionId }).catch(() => {});
 
   commit(types.SET_RESOLVING_DISCUSSION, true);
-  dispatch('stopPolling');
 
   return Api.applySuggestion(suggestionId, message)
     .then(dispatchResolveDiscussion)
@@ -786,7 +711,6 @@ export const submitSuggestion = (
     })
     .finally(() => {
       commit(types.SET_RESOLVING_DISCUSSION, false);
-      dispatch('restartPolling');
     });
 };
 
@@ -801,7 +725,6 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { message, fl
 
   commit(types.SET_APPLYING_BATCH_STATE, true);
   commit(types.SET_RESOLVING_DISCUSSION, true);
-  dispatch('stopPolling');
 
   return Api.applySuggestionBatch(suggestionIds, message)
     .then(() => Promise.all(resolveAllDiscussions()))
@@ -823,7 +746,6 @@ export const submitSuggestionBatch = ({ commit, dispatch, state }, { message, fl
     .finally(() => {
       commit(types.SET_APPLYING_BATCH_STATE, false);
       commit(types.SET_RESOLVING_DISCUSSION, false);
-      dispatch('restartPolling');
     });
 };
 

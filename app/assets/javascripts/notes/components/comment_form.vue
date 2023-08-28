@@ -210,8 +210,6 @@ export default {
   methods: {
     ...mapActions([
       'saveNote',
-      'stopPolling',
-      'restartPolling',
       'removePlaceholderNotes',
       'closeIssuable',
       'reopenIssuable',
@@ -253,7 +251,6 @@ export default {
         }
 
         this.note = ''; // Empty textarea while being requested. Repopulate in catch
-        this.stopPolling();
 
         this.isSubmitting = true;
 
@@ -264,7 +261,6 @@ export default {
 
         this.saveNote(noteData)
           .then(() => {
-            this.restartPolling();
             this.discard();
 
             if (withIssueAction) {

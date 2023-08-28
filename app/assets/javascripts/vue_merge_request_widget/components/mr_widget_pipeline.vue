@@ -205,9 +205,7 @@ export default {
               data-qa-selector="merge_request_pipeline_info_content"
               class="gl-display-flex gl-flex-wrap gl-align-items-center gl-justify-content-space-between"
             >
-              <p
-                class="mr-pipeline-title gl-m-0! gl-mr-3! gl-font-weight-bold gl-line-height-32 gl-text-gray-900"
-              >
+              <p class="mr-pipeline-title gl-m-0! gl-mr-3! gl-font-weight-bold gl-text-gray-900">
                 {{ pipeline.details.event_type_name }}
                 <gl-link
                   :href="pipeline.path"
@@ -253,7 +251,7 @@ export default {
                   v-safe-html="sourceBranchLink"
                   :title="sourceBranch"
                   truncate-target="child"
-                  class="label-branch label-truncate gl-font-weight-normal gl-vertical-align-text-bottom"
+                  class="label-branch label-truncate gl-font-weight-normal"
                 />
               </template>
               <template v-if="finishedAt">

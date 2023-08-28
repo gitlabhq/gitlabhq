@@ -569,7 +569,7 @@ export default {
           v-if="hasMergeError"
           type="danger"
           dismissible
-          data-testid="merge_error"
+          data-testid="merge-error"
         >
           <span v-safe-html="mergeError"></span>
         </mr-widget-alert-message>
@@ -577,6 +577,7 @@ export default {
           v-if="showMergePipelineForkWarning"
           type="warning"
           :help-path="mr.mergeRequestPipelinesHelpPath"
+          data-testid="merge-pipeline-fork-warning"
         >
           {{
             s__(

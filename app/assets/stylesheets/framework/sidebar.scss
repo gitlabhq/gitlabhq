@@ -799,29 +799,6 @@
   }
 }
 
-.participants-more,
-.user-list-more {
-  margin-left: 5px;
-
-  a,
-  .btn-link {
-    color: $gl-text-color-secondary;
-  }
-
-  .btn-link {
-    padding: 0;
-  }
-
-  .btn-link:hover {
-    color: $blue-800;
-    text-decoration: none;
-  }
-
-  .btn-link:focus {
-    text-decoration: none;
-  }
-}
-
 .sidebar-help-wrap {
   .sidebar-help-state {
     margin: 16px -20px -20px;

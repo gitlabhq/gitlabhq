@@ -6,10 +6,12 @@ module Issues
     def execute(issue, commit: nil, notifications: true, system_note: true, skip_authorization: false)
       return issue unless can_close?(issue, skip_authorization: skip_authorization)
 
-      close_issue(issue,
-                  closed_via: commit,
-                  notifications: notifications,
-                  system_note: system_note)
+      close_issue(
+        issue,
+        closed_via: commit,
+        notifications: notifications,
+        system_note: system_note
+      )
     end
 
     # Closes the supplied issue without checking if the user is authorized to

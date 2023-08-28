@@ -21,12 +21,15 @@ import {
   registerExtension,
   registeredExtensions,
 } from '~/vue_merge_request_widget/components/extensions';
+import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import { STATE_QUERY_POLLING_INTERVAL_BACKOFF } from '~/vue_merge_request_widget/constants';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import Approvals from '~/vue_merge_request_widget/components/approvals/approvals.vue';
+import ConflictsState from '~/vue_merge_request_widget/components/states/mr_widget_conflicts.vue';
 import Preparing from '~/vue_merge_request_widget/components/states/mr_widget_preparing.vue';
+import ShaMismatch from '~/vue_merge_request_widget/components/states/sha_mismatch.vue';
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
 import WidgetSuggestPipeline from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
 import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
@@ -81,6 +84,7 @@ describe('MrWidgetOptions', () => {
   const findMergedPipelineContainer = () => wrapper.findByTestId('merged-pipeline-container');
   const findPipelineContainer = () => wrapper.findByTestId('pipeline-container');
   const findAlertMessage = () => wrapper.findComponent(MrWidgetAlertMessage);
+  const findMergePipelineForkAlert = () => wrapper.findByTestId('merge-pipeline-fork-warning');
 
   beforeEach(() => {
     gl.mrWidgetData = { ...mockData };
@@ -101,11 +105,12 @@ describe('MrWidgetOptions', () => {
   });
 
   const createComponent = ({
-    mrData = mockData,
+    updatedMrData = {},
     options = {},
     data = {},
     mountFn = shallowMountExtended,
   } = {}) => {
+    const mrData = { ...mockData, ...updatedMrData };
     const mockedApprovalsSubscription = createMockApolloSubscription();
     queryResponse = {
       data: {
@@ -153,9 +158,7 @@ describe('MrWidgetOptions', () => {
     });
 
     wrapper = mountFn(MrWidgetOptions, {
-      propsData: {
-        mrData: { ...mrData },
-      },
+      propsData: { mrData },
       data() {
         return {
           loading: false,
@@ -180,12 +183,15 @@ describe('MrWidgetOptions', () => {
   describe('default', () => {
     beforeEach(() => {
       jest.spyOn(document, 'dispatchEvent');
-      return createComponent();
     });
 
     // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/385238
     // eslint-disable-next-line jest/no-disabled-tests
     describe.skip('data', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
       it('should instantiate Store and Service', () => {
         expect(wrapper.vm.mr).toBeDefined();
         expect(wrapper.vm.service).toBeDefined();
@@ -194,6 +200,10 @@ describe('MrWidgetOptions', () => {
 
     describe('computed', () => {
       describe('componentName', () => {
+        beforeEach(async () => {
+          await createComponent();
+        });
+
         // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/409365
         // eslint-disable-next-line jest/no-disabled-tests
         it.skip.each`
@@ -205,143 +215,144 @@ describe('MrWidgetOptions', () => {
         });
 
         it.each`
-          state            | componentName
-          ${'conflicts'}   | ${'mr-widget-conflicts'}
-          ${'shaMismatch'} | ${'sha-mismatch'}
-        `('should translate $state into $componentName', ({ state, componentName }) => {
-          wrapper.vm.mr.state = state;
-
-          expect(wrapper.vm.componentName).toEqual(componentName);
+          state            | componentName       | component
+          ${'conflicts'}   | ${'ConflictsState'} | ${ConflictsState}
+          ${'shaMismatch'} | ${'ShaMismatch'}    | ${ShaMismatch}
+        `('should translate $state into $componentName component', async ({ state, component }) => {
+          Vue.set(wrapper.vm.mr, 'state', state);
+          await nextTick();
+          expect(wrapper.findComponent(component).exists()).toBe(true);
         });
       });
 
       describe('MrWidgetPipelineContainer', () => {
-        it('should return true when hasCI is true', async () => {
-          wrapper.vm.mr.hasCI = true;
-          await nextTick();
+        it('renders the pipeline container when it has CI', () => {
+          createComponent({ updatedMrData: { has_ci: true } });
           expect(findPipelineContainer().exists()).toBe(true);
         });
 
-        it('should return false when hasCI is false', async () => {
-          wrapper.vm.mr.hasCI = false;
-          await nextTick();
-
+        it('does not render the pipeline container when it does not have CI', () => {
+          createComponent({ updatedMrData: { has_ci: false } });
           expect(findPipelineContainer().exists()).toBe(false);
         });
       });
 
       describe('shouldRenderCollaborationStatus', () => {
-        describe('when collaboration is allowed', () => {
-          beforeEach(() => {
-            wrapper.vm.mr.allowCollaboration = true;
+        it('renders collaboration message when collaboration is allowed and the MR is open', () => {
+          createComponent({
+            updatedMrData: { allow_collaboration: true, state: STATUS_OPEN, not: false },
           });
-
-          describe('when merge request is opened', () => {
-            beforeEach(() => {
-              wrapper.vm.mr.isOpen = true;
-              return nextTick();
-            });
-
-            it('should render collaboration status', () => {
-              expect(wrapper.text()).toContain(COLLABORATION_MESSAGE);
-            });
+          expect(findPipelineContainer().props('mr')).toMatchObject({
+            allowCollaboration: true,
+            isOpen: true,
           });
-
-          describe('when merge request is not opened', () => {
-            beforeEach(() => {
-              wrapper.vm.mr.isOpen = false;
-              return nextTick();
-            });
-
-            it('should not render collaboration status', () => {
-              expect(wrapper.text()).not.toContain(COLLABORATION_MESSAGE);
-            });
-          });
+          expect(wrapper.text()).toContain(COLLABORATION_MESSAGE);
         });
 
-        describe('when collaboration is not allowed', () => {
-          beforeEach(() => {
-            wrapper.vm.mr.allowCollaboration = false;
+        it('does not render collaboration message when collaboration is allowed and the MR is closed', () => {
+          createComponent({
+            updatedMrData: { allow_collaboration: true, state: STATUS_CLOSED, not: true },
           });
-
-          describe('when merge request is opened', () => {
-            beforeEach(() => {
-              wrapper.vm.mr.isOpen = true;
-              return nextTick();
-            });
-
-            it('should not render collaboration status', () => {
-              expect(wrapper.text()).not.toContain(COLLABORATION_MESSAGE);
-            });
+          expect(findPipelineContainer().props('mr')).toMatchObject({
+            allowCollaboration: true,
+            isOpen: false,
           });
+          expect(wrapper.text()).not.toContain(COLLABORATION_MESSAGE);
+        });
+
+        it('does not render collaboration message when collaboration is not allowed and the MR is closed', () => {
+          createComponent({
+            updatedMrData: { allow_collaboration: undefined, state: STATUS_CLOSED, not: true },
+          });
+          expect(findPipelineContainer().props('mr')).toMatchObject({
+            allowCollaboration: undefined,
+            isOpen: false,
+          });
+          expect(wrapper.text()).not.toContain(COLLABORATION_MESSAGE);
+        });
+
+        it('does not render collaboration message when collaboration is not allowed and the MR is open', () => {
+          createComponent({
+            updatedMrData: { allow_collaboration: undefined, state: STATUS_OPEN, not: true },
+          });
+          expect(findPipelineContainer().props('mr')).toMatchObject({
+            allowCollaboration: undefined,
+            isOpen: true,
+          });
+          expect(wrapper.text()).not.toContain(COLLABORATION_MESSAGE);
         });
       });
 
       describe('showMergePipelineForkWarning', () => {
-        describe('when the source project and target project are the same', () => {
-          beforeEach(() => {
-            Vue.set(wrapper.vm.mr, 'mergePipelinesEnabled', true);
-            Vue.set(wrapper.vm.mr, 'sourceProjectId', 1);
-            Vue.set(wrapper.vm.mr, 'targetProjectId', 1);
-            return nextTick();
+        it('hides the alert when the source project and target project are the same', async () => {
+          createComponent({
+            updatedMrData: {
+              source_project_id: 1,
+              target_project_id: 1,
+            },
           });
-
-          it('should be false', () => {
-            expect(findAlertMessage().exists()).toBe(false);
-          });
+          await nextTick();
+          Vue.set(wrapper.vm.mr, 'mergePipelinesEnabled', true);
+          await nextTick();
+          expect(findMergePipelineForkAlert().exists()).toBe(false);
         });
 
-        describe('when merge pipelines are not enabled', () => {
-          beforeEach(() => {
-            Vue.set(wrapper.vm.mr, 'mergePipelinesEnabled', false);
-            Vue.set(wrapper.vm.mr, 'sourceProjectId', 1);
-            Vue.set(wrapper.vm.mr, 'targetProjectId', 2);
-            return nextTick();
+        it('hides the alert when merge pipelines are not enabled', async () => {
+          createComponent({
+            updatedMrData: {
+              source_project_id: 1,
+              target_project_id: 2,
+            },
           });
-
-          it('should be false', () => {
-            expect(findAlertMessage().exists()).toBe(false);
-          });
+          await nextTick();
+          expect(findMergePipelineForkAlert().exists()).toBe(false);
         });
 
-        describe('when merge pipelines are enabled _and_ the source project and target project are different', () => {
-          beforeEach(() => {
-            Vue.set(wrapper.vm.mr, 'mergePipelinesEnabled', true);
-            Vue.set(wrapper.vm.mr, 'sourceProjectId', 1);
-            Vue.set(wrapper.vm.mr, 'targetProjectId', 2);
-            return nextTick();
+        it('shows the alert when merge pipelines are enabled and the source project and target project are different', async () => {
+          createComponent({
+            updatedMrData: {
+              source_project_id: 1,
+              target_project_id: 2,
+            },
           });
-
-          it('should be true', () => {
-            expect(findAlertMessage().exists()).toBe(true);
-          });
+          await nextTick();
+          Vue.set(wrapper.vm.mr, 'mergePipelinesEnabled', true);
+          await nextTick();
+          expect(findMergePipelineForkAlert().exists()).toBe(true);
         });
       });
 
       describe('formattedHumanAccess', () => {
-        it('when user is a tool admin but not a member of project', async () => {
-          wrapper.vm.mr.humanAccess = null;
-          wrapper.vm.mr.mergeRequestAddCiConfigPath = 'test';
-          wrapper.vm.mr.hasCI = false;
-          wrapper.vm.mr.isDismissedSuggestPipeline = false;
-          await nextTick();
-
+        it('renders empty string when user is a tool admin but not a member of project', () => {
+          createComponent({
+            updatedMrData: {
+              human_access: null,
+              merge_request_add_ci_config_path: 'test',
+              has_ci: false,
+              is_dismissed_suggest_pipeline: false,
+            },
+          });
           expect(findSuggestPipeline().props('humanAccess')).toBe('');
         });
-
-        it('when user a member of the project', async () => {
-          wrapper.vm.mr.humanAccess = 'Owner';
-          wrapper.vm.mr.mergeRequestAddCiConfigPath = 'test';
-          wrapper.vm.mr.hasCI = false;
-          wrapper.vm.mr.isDismissedSuggestPipeline = false;
-          await nextTick();
-
+        it('renders human access when user is a member of the project', () => {
+          createComponent({
+            updatedMrData: {
+              human_access: 'Owner',
+              merge_request_add_ci_config_path: 'test',
+              has_ci: false,
+              is_dismissed_suggest_pipeline: false,
+            },
+          });
           expect(findSuggestPipeline().props('humanAccess')).toBe('owner');
         });
       });
     });
 
     describe('methods', () => {
+      beforeEach(async () => {
+        await createComponent();
+      });
+
       describe('checkStatus', () => {
         let cb;
         let isCbExecuted;
@@ -434,22 +445,30 @@ describe('MrWidgetOptions', () => {
         });
 
         it('should bind to SetBranchRemoveFlag', () => {
-          expect(wrapper.vm.mr.isRemovingSourceBranch).toBe(false);
-
+          expect(findPipelineContainer().props('mr')).toMatchObject({
+            isRemovingSourceBranch: false,
+          });
           eventHub.$emit('SetBranchRemoveFlag', [true]);
-
-          expect(wrapper.vm.mr.isRemovingSourceBranch).toBe(true);
+          expect(findPipelineContainer().props('mr')).toMatchObject({
+            isRemovingSourceBranch: true,
+          });
         });
 
-        it('should bind to FailedToMerge', () => {
-          wrapper.vm.mr.state = '';
-          wrapper.vm.mr.mergeError = '';
-
+        it('should bind to FailedToMerge', async () => {
+          expect(findAlertMessage().exists()).toBe(false);
+          expect(findPipelineContainer().props('mr')).toMatchObject({
+            mergeError: null,
+            state: 'merged',
+          });
           const mergeError = 'Something bad happened!';
-          eventHub.$emit('FailedToMerge', mergeError);
+          await eventHub.$emit('FailedToMerge', mergeError);
 
-          expect(wrapper.vm.mr.state).toBe('failedToMerge');
-          expect(wrapper.vm.mr.mergeError).toBe(mergeError);
+          expect(findAlertMessage().exists()).toBe(true);
+          expect(findAlertMessage().text()).toBe(`${mergeError}. Try again.`);
+          expect(findPipelineContainer().props('mr')).toMatchObject({
+            mergeError,
+            state: 'failedToMerge',
+          });
         });
 
         it('should bind to UpdateWidgetData', () => {
@@ -546,7 +565,6 @@ describe('MrWidgetOptions', () => {
           wrapper.destroy();
 
           return createComponent({
-            mrData: mockData,
             options: {},
             data: {
               pollInterval: interval,
@@ -628,16 +646,17 @@ describe('MrWidgetOptions', () => {
       };
 
       it('renders multiple deployments', async () => {
-        wrapper.vm.mr.deployments.push(
-          {
-            ...deploymentMockData,
+        await createComponent({
+          updatedMrData: {
+            deployments: [
+              deploymentMockData,
+              {
+                ...deploymentMockData,
+                id: deploymentMockData.id + 1,
+              },
+            ],
           },
-          {
-            ...deploymentMockData,
-            id: deploymentMockData.id + 1,
-          },
-        );
-        await nextTick();
+        });
         expect(findPipelineContainer().props('isPostMerge')).toBe(false);
         expect(findPipelineContainer().props('mr').deployments).toHaveLength(2);
         expect(findPipelineContainer().props('mr').postMergeDeployments).toHaveLength(0);
@@ -646,7 +665,8 @@ describe('MrWidgetOptions', () => {
 
     describe('pipeline for target branch after merge', () => {
       describe('with information for target branch pipeline', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
+          await createComponent();
           wrapper.vm.mr.state = 'merged';
           wrapper.vm.mr.mergePipeline = {
             id: 127,
@@ -804,7 +824,8 @@ describe('MrWidgetOptions', () => {
       });
 
       describe('without information for target branch pipeline', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
+          await createComponent();
           wrapper.vm.mr.state = 'merged';
 
           return nextTick();
@@ -816,7 +837,8 @@ describe('MrWidgetOptions', () => {
       });
 
       describe('when state is not merged', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
+          await createComponent();
           wrapper.vm.mr.state = 'archived';
 
           return nextTick();
@@ -829,6 +851,7 @@ describe('MrWidgetOptions', () => {
     });
 
     it('should not suggest pipelines when feature flag is not present', () => {
+      createComponent();
       expect(findSuggestPipeline().exists()).toBe(false);
     });
   });
@@ -875,11 +898,11 @@ describe('MrWidgetOptions', () => {
       ${'merged'} | ${true}  | ${'shows'}
       ${'open'}   | ${true}  | ${'shows'}
     `('$showText merge error when state is $state', async ({ state, show }) => {
-      createComponent({ mrData: { ...mockData, state, mergeError: 'Error!' } });
+      createComponent({ updatedMrData: { state, mergeError: 'Error!' } });
 
       await waitForPromises();
 
-      expect(wrapper.find('[data-testid="merge_error"]').exists()).toBe(show);
+      expect(wrapper.findByTestId('merge-error').exists()).toBe(show);
     });
   });
 
@@ -1278,11 +1301,7 @@ describe('MrWidgetOptions', () => {
 
     it('renders the Preparing state component when the MR state is initially "preparing"', async () => {
       await createComponent({
-        mrData: {
-          ...mockData,
-          state: 'opened',
-          detailedMergeStatus: 'PREPARING',
-        },
+        updatedMrData: { state: 'opened', detailedMergeStatus: 'PREPARING' },
       });
 
       expect(findApprovalsWidget().exists()).toBe(false);
@@ -1296,11 +1315,7 @@ describe('MrWidgetOptions', () => {
 
       it("shows the Preparing widget when the MR reports it's not ready yet", async () => {
         await createComponent({
-          mrData: {
-            ...mockData,
-            state: 'opened',
-            detailedMergeStatus: 'PREPARING',
-          },
+          updatedMrData: { state: 'opened', detailedMergeStatus: 'PREPARING' },
           options: {},
           data: {},
         });
@@ -1310,11 +1325,7 @@ describe('MrWidgetOptions', () => {
 
       it('removes the Preparing widget when the MR indicates it has been prepared', async () => {
         await createComponent({
-          mrData: {
-            ...mockData,
-            state: 'opened',
-            detailedMergeStatus: 'PREPARING',
-          },
+          updatedMrData: { state: 'opened', detailedMergeStatus: 'PREPARING' },
           options: {},
           data: {},
         });

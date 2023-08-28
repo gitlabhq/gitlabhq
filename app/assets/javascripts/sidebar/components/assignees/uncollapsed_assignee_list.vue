@@ -1,4 +1,5 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
@@ -9,6 +10,7 @@ const DEFAULT_RENDER_COUNT = 5;
 
 export default {
   components: {
+    GlButton,
     AssigneeAvatarLink,
     UserNameWithStatus,
   },
@@ -97,10 +99,11 @@ export default {
         </assignee-avatar-link>
       </div>
     </div>
-    <div v-if="renderShowMoreSection" class="user-list-more gl-hover-text-blue-800">
-      <button
-        type="button"
-        class="btn-link gl-button gl-reset-color!"
+    <div v-if="renderShowMoreSection" class="gl-hover-text-blue-800" data-testid="user-list-more">
+      <gl-button
+        category="tertiary"
+        size="small"
+        data-testid="user-list-more-button"
         data-qa-selector="more_assignees_link"
         @click="toggleShowLess"
       >
@@ -108,7 +111,7 @@ export default {
           {{ hiddenAssigneesLabel }}
         </template>
         <template v-else>{{ __('- show less') }}</template>
-      </button>
+      </gl-button>
     </div>
   </div>
 </template>

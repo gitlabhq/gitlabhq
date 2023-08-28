@@ -695,7 +695,7 @@ The deprecated endpoints are:
 - `POST /groups/:id/runners/reset_registration_token`
 
 We plan to implement a new method to bind runners to a GitLab instance
-as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
 The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 This new architecture introduces a new method for registering runners and will eliminate the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
@@ -841,7 +841,7 @@ removed in 17.0.
 The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html#required-configuration) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
 
 We plan to implement a new method to bind runners to a GitLab instance leveraging `runnerToken`
-as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
 The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
 
 From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.

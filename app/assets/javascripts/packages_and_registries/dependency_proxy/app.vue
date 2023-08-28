@@ -18,6 +18,8 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import ManifestsList from '~/packages_and_registries/dependency_proxy/components/manifests_list.vue';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
+import { getPageParams } from '~/packages_and_registries/dependency_proxy/utils';
+import { extractPageInfo } from '~/packages_and_registries/shared/utils';
 
 import getDependencyProxyDetailsQuery from '~/packages_and_registries/dependency_proxy/graphql/queries/get_dependency_proxy_details.query.graphql';
 
@@ -79,10 +81,14 @@ export default {
   },
   computed: {
     queryVariables() {
-      return { fullPath: this.groupPath, first: GRAPHQL_PAGE_SIZE };
+      return { fullPath: this.groupPath, first: GRAPHQL_PAGE_SIZE, ...this.pageParams };
     },
     pageInfo() {
       return this.group.dependencyProxyManifests?.pageInfo;
+    },
+    pageParams() {
+      const pageInfo = extractPageInfo(this.$route.query);
+      return getPageParams(pageInfo);
     },
     manifests() {
       return this.group.dependencyProxyManifests?.nodes ?? [];
@@ -123,25 +129,10 @@ export default {
   },
   methods: {
     fetchNextPage() {
-      this.fetchMore({
-        first: GRAPHQL_PAGE_SIZE,
-        after: this.pageInfo?.endCursor,
-      });
+      this.$router.push({ query: { after: this.pageInfo?.endCursor } });
     },
     fetchPreviousPage() {
-      this.fetchMore({
-        first: null,
-        last: GRAPHQL_PAGE_SIZE,
-        before: this.pageInfo?.startCursor,
-      });
-    },
-    fetchMore(variables) {
-      this.$apollo.queries.group.fetchMore({
-        variables: { ...this.queryVariables, ...variables },
-        updateQuery(_, { fetchMoreResult }) {
-          return fetchMoreResult;
-        },
-      });
+      this.$router.push({ query: { before: this.pageInfo?.startCursor } });
     },
     async submit() {
       try {
@@ -198,14 +189,14 @@ export default {
       <gl-form-input-group
         id="proxy-url"
         readonly
-        :value="group.dependencyProxyImagePrefix"
+        :value="dependencyProxyImagePrefix"
         select-on-click
         class="gl-layout-w-limited"
         data-testid="proxy-url"
       >
         <template #append>
           <clipboard-button
-            :text="group.dependencyProxyImagePrefix"
+            :text="dependencyProxyImagePrefix"
             :title="$options.i18n.copyImagePrefixText"
           />
         </template>

@@ -153,21 +153,18 @@ describe('issue_comment_form component', () => {
         mountComponent({ mountFunction: mount, initialData: { note: 'hello world' } });
 
         jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
-        jest.spyOn(wrapper.vm, 'stopPolling');
 
         findCloseReopenButton().trigger('click');
 
         expect(wrapper.vm.isSubmitting).toBe(true);
         expect(wrapper.vm.note).toBe('');
         expect(wrapper.vm.saveNote).toHaveBeenCalled();
-        expect(wrapper.vm.stopPolling).toHaveBeenCalled();
       });
 
       it('tracks event', () => {
         mountComponent({ mountFunction: mount, initialData: { note: 'hello world' } });
 
         jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
-        jest.spyOn(wrapper.vm, 'stopPolling');
 
         findCloseReopenButton().trigger('click');
 
@@ -302,7 +299,6 @@ describe('issue_comment_form component', () => {
         const saveNotePromise = Promise.resolve();
 
         jest.spyOn(wrapper.vm, 'saveNote').mockReturnValue(saveNotePromise);
-        jest.spyOn(wrapper.vm, 'stopPolling');
 
         const actionButton = findCloseReopenButton();
 
@@ -351,7 +347,6 @@ describe('issue_comment_form component', () => {
         it('should make textarea disabled while requesting', async () => {
           mountComponent({ mountFunction: mount });
 
-          jest.spyOn(wrapper.vm, 'stopPolling');
           jest.spyOn(wrapper.vm, 'saveNote').mockResolvedValue();
 
           findMarkdownEditor().vm.$emit('input', 'hello world');

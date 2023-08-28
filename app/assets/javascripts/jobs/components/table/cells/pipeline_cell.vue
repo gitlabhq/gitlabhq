@@ -41,7 +41,7 @@ export default {
         {{ pipelineId }}
       </gl-link>
     </div>
-    <div>
+    <div class="gl-font-sm gl-text-secondary gl-mt-2">
       <span>{{ __('created by') }}</span>
       <gl-link v-if="showAvatar" :href="userPath" data-testid="pipeline-user-link">
         <gl-avatar :src="pipelineUserAvatar" :size="16" />

@@ -140,7 +140,7 @@
     %p.gl-text-secondary
       = s_('Preferences|Configure how dates and times display for you.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'time-preferences'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'show-exact-times-instead-of-relative-times'), target: '_blank', rel: 'noopener noreferrer'
     .form-group
       = f.gitlab_ui_checkbox_component :time_display_relative,
         s_('Preferences|Use relative times'),

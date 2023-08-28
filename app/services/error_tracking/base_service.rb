@@ -17,8 +17,7 @@ module ErrorTracking
     private
 
     def perform
-      raise NotImplementedError,
-          "#{self.class} does not implement #{__method__}"
+      raise NotImplementedError, "#{self.class} does not implement #{__method__}"
     end
 
     def compose_response(response, &block)
@@ -33,8 +32,7 @@ module ErrorTracking
     end
 
     def parse_response(response)
-      raise NotImplementedError,
-          "#{self.class} does not implement #{__method__}"
+      raise NotImplementedError, "#{self.class} does not implement #{__method__}"
     end
 
     def unauthorized

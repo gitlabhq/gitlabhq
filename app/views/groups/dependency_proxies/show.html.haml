@@ -1,6 +1,7 @@
 - page_title _("Dependency Proxy")
 
 #js-dependency-proxy{ data: { group_path: @group.full_path,
+  endpoint: group_dependency_proxy_path(@group),
   no_manifests_illustration: image_path('illustrations/docker-empty-state.svg'),
   group_id: @group.id,
   settings_path: group_settings_packages_and_registries_path(@group),

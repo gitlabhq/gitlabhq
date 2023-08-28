@@ -18,9 +18,11 @@ module GoogleCloud
 
       subnets = fetch_and_update_cache!
 
-      Gitlab::AppJsonLogger.info(class: self.class.name,
-                                 message: 'Successfully retrieved Google IP list',
-                                 subnet_count: subnets.count)
+      Gitlab::AppJsonLogger.info(
+        class: self.class.name,
+        message: 'Successfully retrieved Google IP list',
+        subnet_count: subnets.count
+      )
 
       success({ subnets: subnets })
     rescue IpListNotRetrievedError => err

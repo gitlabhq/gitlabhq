@@ -105,7 +105,7 @@ export default {
       v-gl-tooltip="{ title: pipelineTooltipText(pipeline) }"
       :href="pipeline.path"
       :class="triggerButtonClass(pipeline)"
-      class="linked-pipeline-mini-item gl-display-inline-block gl-h-6 gl-mr-2 gl-my-2 gl-rounded-full gl-vertical-align-middle"
+      class="linked-pipeline-mini-item gl-display-inline-flex gl-mr-2 gl-my-2 gl-rounded-full gl-vertical-align-middle"
       data-testid="linked-pipeline-mini-item"
     >
       <ci-icon

@@ -258,8 +258,6 @@ class User < MainClusterwide::ApplicationRecord
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users
 
-  has_many :metrics_users_starred_dashboards, class_name: 'Metrics::UsersStarredDashboard', inverse_of: :user
-
   has_one :status, class_name: 'UserStatus'
   has_one :user_preference
   has_one :user_detail

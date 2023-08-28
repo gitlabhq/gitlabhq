@@ -27,6 +27,9 @@ export default {
     durationFormatted() {
       return formatTime(this.duration * 1000);
     },
+    hasDurationAndFinishedTime() {
+      return this.finishedTime && this.duration;
+    },
   },
 };
 </script>
@@ -37,7 +40,11 @@ export default {
       <gl-icon name="timer" :size="$options.iconSize" data-testid="duration-icon" />
       {{ durationFormatted }}
     </div>
-    <div v-if="finishedTime" data-testid="job-finished-time">
+    <div
+      v-if="finishedTime"
+      :class="{ 'gl-mt-2': hasDurationAndFinishedTime }"
+      data-testid="job-finished-time"
+    >
       <gl-icon name="calendar" :size="$options.iconSize" data-testid="finished-time-icon" />
       <time-ago-tooltip :time="finishedTime" />
     </div>

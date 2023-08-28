@@ -58,8 +58,8 @@ module DesignManagement
       private
 
       attr_reader :designs, :event_enum_map, :git_user, :sha_attribute, :shas,
-                  :temporary_branch, :target_design_collection, :target_issue,
-                  :target_repository, :target_project, :versions
+        :temporary_branch, :target_design_collection, :target_issue,
+        :target_repository, :target_project, :versions
 
       alias_method :merge_branch, :target_branch
 

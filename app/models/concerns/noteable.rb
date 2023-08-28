@@ -175,7 +175,7 @@ module Noteable
     # TODO: We need to figure out a way to make ETag caching work for group-level work items
     Gitlab::EtagCaching::Store.new.touch(note_etag_key) unless is_a?(Issue) && project.nil?
 
-    Noteable::NotesChannel.broadcast_to(self, event: 'updated') if Feature.enabled?(:action_cable_notes, project || try(:group))
+    Noteable::NotesChannel.broadcast_to(self, event: 'updated')
   end
 
   def note_etag_key

@@ -288,7 +288,6 @@ describe('note_app', () => {
       wrapper.vm.$store.hotUpdate({
         actions: {
           toggleAward: toggleAwardAction,
-          stopPolling() {},
         },
       });
 
