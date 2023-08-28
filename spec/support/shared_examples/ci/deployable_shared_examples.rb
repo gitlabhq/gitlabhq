@@ -295,6 +295,52 @@ RSpec.shared_examples 'a deployable job' do
     end
   end
 
+  describe '#environment_url' do
+    subject { job.environment_url }
+
+    let!(:job) { create(factory_type, :with_deployment, :deploy_to_production, pipeline: pipeline) }
+
+    it { is_expected.to eq('http://prd.example.com/$CI_JOB_NAME') }
+
+    context 'when options does not include url' do
+      before do
+        job.update!(options: { environment: { url: nil } })
+        job.persisted_environment.update!(external_url: 'http://prd.example.com/$CI_JOB_NAME')
+      end
+
+      it 'fetches from the persisted environment' do
+        expect_any_instance_of(::Environment) do |environment|
+          expect(environment).to receive(:external_url).once
+        end
+
+        is_expected.to eq('http://prd.example.com/$CI_JOB_NAME')
+      end
+
+      context 'when persisted environment is absent' do
+        before do
+          job.clear_memoization(:persisted_environment)
+          job.persisted_environment = nil
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
+  describe '#environment_slug' do
+    subject { job.environment_slug }
+
+    let!(:job) { create(factory_type, :with_deployment, :start_review_app, pipeline: pipeline) }
+
+    it { is_expected.to eq('review-master-8dyme2') }
+
+    context 'when persisted environment is absent' do
+      let!(:job) { create(factory_type, :start_review_app, pipeline: pipeline) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe 'environment' do
     describe '#has_environment_keyword?' do
       subject { job.has_environment_keyword? }

@@ -21,6 +21,7 @@ module Gitlab
     InvalidPageToken = Class.new(BaseError)
     InvalidRefFormatError = Class.new(BaseError)
     ReferencesLockedError = Class.new(BaseError)
+    ReferenceStateMismatchError = Class.new(BaseError)
 
     class ResourceExhaustedError < BaseError
       def initialize(msg = nil, retry_after = 0)

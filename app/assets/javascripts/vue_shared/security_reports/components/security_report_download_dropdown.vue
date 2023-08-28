@@ -1,15 +1,11 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
 export default {
   name: 'SecurityReportDownloadDropdown',
   components: {
-    GlDropdown,
-    GlDropdownItem,
-  },
-  directives: {
-    GlTooltip,
+    GlDisclosureDropdown,
   },
   props: {
     artifacts: {
@@ -26,19 +22,23 @@ export default {
       required: false,
       default: '',
     },
-    title: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     showDropdown() {
       return this.loading || this.artifacts.length > 0;
     },
+    items() {
+      return this.artifacts.map(({ name, path }) => ({
+        text: this.artifactText(name),
+        href: path,
+        extraAttrs: {
+          download: '',
+        },
+      }));
+    },
   },
   methods: {
-    artifactText({ name }) {
+    artifactText(name) {
       return sprintf(s__('SecurityReports|Download %{artifactName}'), {
         artifactName: name,
       });
@@ -48,23 +48,13 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown
+  <gl-disclosure-dropdown
     v-if="showDropdown"
-    v-gl-tooltip
-    :text="text"
-    :title="title"
+    :items="items"
+    :toggle-text="text"
     :loading="loading"
     icon="download"
     size="small"
-    right
-  >
-    <gl-dropdown-item
-      v-for="artifact in artifacts"
-      :key="artifact.path"
-      :href="artifact.path"
-      download
-    >
-      {{ artifactText(artifact) }}
-    </gl-dropdown-item>
-  </gl-dropdown>
+    placement="right"
+  />
 </template>

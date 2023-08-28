@@ -298,6 +298,46 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         end
       end
 
+      context 'with CI_ENVIRONMENT_* predefined variables' do
+        let(:config) do
+          <<-EOY
+          deploy:
+            script: "deploy"
+            environment:
+              name: review/$CI_COMMIT_REF_NAME
+              deployment_tier: development
+              url: https://gitlab.com
+            rules:
+              - if: $CI_ENVIRONMENT_NAME =~ /^review\// && $CI_ENVIRONMENT_ACTION == "start" && $CI_ENVIRONMENT_TIER == "development" && $CI_ENVIRONMENT_URL == "https://gitlab.com"
+
+          teardown:
+            script: "teardown"
+            environment:
+              name: review/$CI_COMMIT_REF_NAME
+              deployment_tier: development
+              url: https://gitlab.com
+              action: stop
+            rules:
+              - if: $CI_ENVIRONMENT_NAME =~ /^review\// && $CI_ENVIRONMENT_ACTION == "stop" && $CI_ENVIRONMENT_TIER == "development" && $CI_ENVIRONMENT_URL == "https://gitlab.com"
+                when: manual
+          EOY
+        end
+
+        it 'assigns correct attributes to the jobs' do
+          expect(pipeline).to be_persisted
+
+          BatchLoader::Executor.clear_current
+
+          expect(build_names).to contain_exactly('deploy', 'teardown')
+          expect(find_job('deploy').when).to eq('on_success')
+          expect(find_job('teardown').when).to eq('manual')
+          expect(find_job('deploy').allow_failure).to eq(false)
+          expect(find_job('teardown').allow_failure).to eq(false)
+          expect(find_job('deploy').actual_persisted_environment.name).to eq('review/master')
+          expect(find_job('teardown').actual_persisted_environment.name).to eq('review/master')
+        end
+      end
+
       context 'with simple if: clauses' do
         let(:config) do
           <<-EOY

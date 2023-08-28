@@ -2468,8 +2468,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         context 'when build has environment and user-provided variables' do
           let(:expected_variables) do
             predefined_variables.map { |variable| variable.fetch(:key) } +
-              %w[YAML_VARIABLE CI_ENVIRONMENT_NAME CI_ENVIRONMENT_SLUG
-                 CI_ENVIRONMENT_ACTION CI_ENVIRONMENT_TIER CI_ENVIRONMENT_URL]
+              %w[YAML_VARIABLE CI_ENVIRONMENT_SLUG CI_ENVIRONMENT_URL]
           end
 
           before do
@@ -2478,8 +2477,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             build.yaml_variables = [{ key: 'YAML_VARIABLE', value: 'var', public: true }]
             build.environment = 'staging'
 
-            # CI_ENVIRONMENT_NAME is set in predefined_variables when job environment is provided
-            predefined_variables.insert(18, { key: 'CI_ENVIRONMENT_NAME', value: 'staging', public: true, masked: false })
+            insert_expected_predefined_variables(
+              [
+                { key: 'CI_ENVIRONMENT_NAME', value: 'staging', public: true, masked: false },
+                { key: 'CI_ENVIRONMENT_ACTION', value: 'start', public: true, masked: false },
+                { key: 'CI_ENVIRONMENT_TIER', value: 'staging', public: true, masked: false },
+                { key: 'CI_ENVIRONMENT_URL', value: 'https://gitlab.com', public: true, masked: false }
+              ],
+              after: 'CI_NODE_TOTAL')
           end
 
           it 'matches explicit variables ordering' do
@@ -2550,6 +2555,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           expect(runner_vars).not_to include('CI_JOB_JWT_V2')
         end
       end
+
+      def insert_expected_predefined_variables(variables, after:)
+        index = predefined_variables.index { |h| h[:key] == after }
+        predefined_variables.insert(index + 1, *variables)
+      end
     end
 
     context 'when build has user' do
@@ -2583,34 +2593,28 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when build has an environment' do
-      let(:environment_variables) do
+      let(:expected_environment_variables) do
         [
           { key: 'CI_ENVIRONMENT_NAME', value: 'production', public: true, masked: false },
-          { key: 'CI_ENVIRONMENT_SLUG', value: 'prod-slug',  public: true, masked: false },
-          { key: 'CI_ENVIRONMENT_TIER', value: 'production', public: true, masked: false }
+          { key: 'CI_ENVIRONMENT_ACTION', value: 'start', public: true, masked: false },
+          { key: 'CI_ENVIRONMENT_TIER', value: 'production', public: true, masked: false },
+          { key: 'CI_ENVIRONMENT_URL', value: 'http://prd.example.com/$CI_JOB_NAME', public: true, masked: false }
         ]
       end
 
-      let!(:environment) do
-        create(
-          :environment,
-          project: build.project,
-          name: 'production',
-          slug: 'prod-slug',
-          tier: 'production',
-          external_url: ''
-        )
-      end
-
-      before do
-        build.update!(environment: 'production')
-      end
+      let(:build) { create(:ci_build, :with_deployment, :deploy_to_production, ref: pipeline.ref, pipeline: pipeline) }
 
       shared_examples 'containing environment variables' do
-        it { is_expected.to include(*environment_variables) }
+        it { is_expected.to include(*expected_environment_variables) }
       end
 
       context 'when no URL was set' do
+        before do
+          build.update!(options: { environment: { url: nil } })
+          build.persisted_environment.update!(external_url: nil)
+          expected_environment_variables.delete_if { |var| var[:key] == 'CI_ENVIRONMENT_URL' }
+        end
+
         it_behaves_like 'containing environment variables'
 
         it 'does not have CI_ENVIRONMENT_URL' do
@@ -2620,12 +2624,34 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
       end
 
+      context 'when environment is created dynamically' do
+        let(:build) { create(:ci_build, :with_deployment, :start_review_app, ref: pipeline.ref, pipeline: pipeline) }
+
+        let(:expected_environment_variables) do
+          [
+            { key: 'CI_ENVIRONMENT_NAME', value: 'review/master', public: true, masked: false },
+            { key: 'CI_ENVIRONMENT_ACTION', value: 'start', public: true, masked: false },
+            { key: 'CI_ENVIRONMENT_TIER', value: 'development', public: true, masked: false },
+            { key: 'CI_ENVIRONMENT_URL', value: 'http://staging.example.com/$CI_JOB_NAME', public: true, masked: false }
+          ]
+        end
+
+        it_behaves_like 'containing environment variables'
+
+        context 'when support_ci_environment_variables_in_job_rules feature flag is disabled' do
+          before do
+            stub_feature_flags(support_ci_environment_variables_in_job_rules: false)
+          end
+
+          it_behaves_like 'containing environment variables'
+        end
+      end
+
       context 'when an URL was set' do
         let(:url) { 'http://host/test' }
 
         before do
-          environment_variables <<
-            { key: 'CI_ENVIRONMENT_URL', value: url, public: true, masked: false }
+          expected_environment_variables.find { |var| var[:key] == 'CI_ENVIRONMENT_URL' }[:value] = url
         end
 
         context 'when the URL was set from the job' do
@@ -2641,14 +2667,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             it_behaves_like 'containing environment variables'
 
             it 'puts $CI_ENVIRONMENT_URL in the last so all other variables are available to be used when runners are trying to expand it' do
-              expect(subject.to_runner_variables.last).to eq(environment_variables.last)
+              expect(subject.to_runner_variables.last).to eq(expected_environment_variables.last)
             end
           end
         end
 
         context 'when the URL was not set from the job, but environment' do
           before do
-            environment.update!(external_url: url)
+            build.update!(options: { environment: { url: nil } })
+            build.persisted_environment.update!(external_url: url)
           end
 
           it_behaves_like 'containing environment variables'
@@ -2682,10 +2709,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         context 'when environment scope matches build environment' do
-          before do
-            create(:environment, name: 'staging', project: project)
-            build.update!(environment: 'staging')
-          end
+          let(:build) { create(:ci_build, :with_deployment, :start_staging, ref: pipeline.ref, pipeline: pipeline) }
 
           it { is_expected.to include(environment_specific_variable) }
         end

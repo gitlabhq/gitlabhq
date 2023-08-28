@@ -104,6 +104,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         expect(pipeline).to be_created_successfully
         expect(Environment.find_by_name('test/deploy/2')).to be_persisted
         expect(pipeline.builds.size).to eq(1)
+        # Clearing cache of BatchLoader in `build.persisted_environment` for fetching fresh data.
+        BatchLoader::Executor.clear_current
         expect(build.persisted_environment.name).to eq('test/deploy/2')
         expect(build.name).to eq('deploy-review-app-2')
         expect(build.environment).to eq('test/$CI_JOB_STAGE/2')

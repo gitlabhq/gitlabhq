@@ -122,6 +122,37 @@ module Gitlab
         end
       end
 
+      def update_refs(ref_list:)
+        request = Enumerator.new do |y|
+          ref_list.each_slice(100) do |refs|
+            updates = refs.map do |ref_pair|
+              Gitaly::UpdateReferencesRequest::Update.new(
+                old_object_id: ref_pair[:old_sha],
+                new_object_id: ref_pair[:new_sha],
+                reference: encode_binary(ref_pair[:reference])
+              )
+            end
+
+            y.yield Gitaly::UpdateReferencesRequest.new(repository: @gitaly_repo, updates: updates)
+          end
+        end
+
+        gitaly_client_call(@repository.storage, :ref_service, :update_references, request, timeout: GitalyClient.long_timeout)
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error.try(:error)
+        when :invalid_format
+          raise Gitlab::Git::InvalidRefFormatError, "references have an invalid format: #{detailed_error.invalid_format.refs.join(",")}"
+        when :references_locked
+          raise Gitlab::Git::ReferencesLockedError
+        when :reference_state_mismatch
+          raise Gitlab::Git::ReferenceStateMismatchError
+        else
+          raise e
+        end
+      end
+
       def delete_refs(refs: [], except_with_prefixes: [])
         request = Gitaly::DeleteRefsRequest.new(
           repository: @gitaly_repo,

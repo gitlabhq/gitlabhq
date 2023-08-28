@@ -763,6 +763,20 @@ module Gitlab
         BatchedGitRefUpdates::Deletion.bulk_insert!(records)
       end
 
+      # Update a list of references from X -> Y
+      #
+      # Ref list is expected to be an array of hashes in the form:
+      # old_sha:
+      # new_sha
+      # reference:
+      #
+      # When new_sha is Gitlab::Git::BLANK_SHA, then this will be deleted
+      def update_refs(ref_list)
+        wrapped_gitaly_errors do
+          gitaly_ref_client.update_refs(ref_list: ref_list) if ref_list.any?
+        end
+      end
+
       def delete_refs(...)
         wrapped_gitaly_errors do
           gitaly_delete_refs(...)

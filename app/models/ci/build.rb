@@ -490,10 +490,14 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless persisted? && persisted_environment.present?
 
-        variables.concat(persisted_environment.predefined_variables)
+        if ::Feature.enabled?(:support_ci_environment_variables_in_job_rules, project)
+          variables.append(key: 'CI_ENVIRONMENT_SLUG', value: environment_slug)
+        else
+          variables.concat(persisted_environment.predefined_variables)
 
-        variables.append(key: 'CI_ENVIRONMENT_ACTION', value: environment_action)
-        variables.append(key: 'CI_ENVIRONMENT_TIER', value: environment_tier)
+          variables.append(key: 'CI_ENVIRONMENT_ACTION', value: environment_action)
+          variables.append(key: 'CI_ENVIRONMENT_TIER', value: environment_tier)
+        end
 
         # Here we're passing unexpanded environment_url for runner to expand,
         # and we need to make sure that CI_ENVIRONMENT_NAME and

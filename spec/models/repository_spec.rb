@@ -2113,6 +2113,17 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#update_refs' do
+    let(:expected_return) { 'updated' }
+    let(:params) { double }
+
+    it 'calls the update_refs method on the raw repo with the same params' do
+      expect(repository.raw_repository).to receive(:update_refs).with(params).and_return('updated')
+
+      expect(repository.update_refs(params)).to eq(expected_return)
+    end
+  end
+
   describe '#ff_merge' do
     let(:target_branch) { 'ff-target' }
     let(:merge_request) do

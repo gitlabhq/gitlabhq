@@ -589,6 +589,37 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#update_refs' do
+    let(:repository) { mutable_repository }
+    let(:sha) { TestEnv::BRANCH_SHA['master'] }
+    let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
+
+    before do
+      repository.write_ref(tmp_ref, sha)
+    end
+
+    it 'updates the ref' do
+      expect do
+        repository.update_refs(
+          [
+            {
+              old_sha: sha,
+              new_sha: Gitlab::Git::BLANK_SHA,
+              reference: tmp_ref
+            }
+          ]
+        )
+      end.to change { repository.ref_exists?(tmp_ref) }
+        .from(true).to(false)
+    end
+
+    it 'does not call gitaly when no refs given' do
+      expect_any_instance_of(Gitlab::GitalyClient::RefService).not_to receive(:update_refs)
+
+      repository.update_refs([])
+    end
+  end
+
   describe '#delete_refs' do
     let(:repository) { mutable_repository }
 

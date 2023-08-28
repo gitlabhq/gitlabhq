@@ -1,0 +1,8 @@
+---
+name: support_ci_environment_variables_in_job_rules
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128694
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/421377
+milestone: '16.4'
+type: development
+group: group::environments
+default_enabled: false

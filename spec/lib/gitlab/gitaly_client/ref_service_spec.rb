@@ -314,6 +314,116 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
     end
   end
 
+  describe '#update_refs' do
+    let(:old_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
+    let(:new_sha) { Gitlab::Git::EMPTY_TREE_ID }
+    let(:reference) { 'refs/does/not/exist' }
+    let(:expected_param) do
+      Gitaly::UpdateReferencesRequest::Update.new(
+        old_object_id: old_sha,
+        new_object_id: new_sha,
+        reference: reference
+      )
+    end
+
+    let(:ref_list) do
+      [
+        {
+          old_sha: old_sha,
+          new_sha: new_sha,
+          reference: reference
+        }
+      ]
+    end
+
+    subject(:update_refs) { client.update_refs(ref_list: ref_list) }
+
+    it 'sends a update_refs message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:update_references)
+        .with(array_including(gitaly_request_with_params(updates: [expected_param])), kind_of(Hash))
+        .and_return(double('update_refs_response', git_error: ""))
+
+      update_refs
+    end
+
+    context 'with a generic BadStatus error' do
+      let(:generic_error) do
+        GRPC::BadStatus.new(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          "error message"
+        )
+      end
+
+      it 'raises the BadStatus error' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:update_references)
+          .with(array_including(gitaly_request_with_params(updates: [expected_param])), kind_of(Hash))
+          .and_raise(generic_error)
+
+        expect { update_refs }.to raise_error(GRPC::BadStatus)
+      end
+    end
+
+    context 'with a reference state mismatch error' do
+      let(:reference_state_mismatch_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          "error message",
+          Gitaly::UpdateReferencesError.new(reference_state_mismatch: Gitaly::ReferenceStateMismatchError.new))
+      end
+
+      it 'raises ReferencesLockedError' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:update_references)
+          .with(array_including(gitaly_request_with_params(updates: [expected_param])), kind_of(Hash))
+          .and_raise(reference_state_mismatch_error)
+
+        expect { update_refs }.to raise_error(Gitlab::Git::ReferenceStateMismatchError)
+      end
+    end
+
+    context 'with a references locked error' do
+      let(:references_locked_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+          "error message",
+          Gitaly::UpdateReferencesError.new(references_locked: Gitaly::ReferencesLockedError.new))
+      end
+
+      it 'raises ReferencesLockedError' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:update_references)
+          .with(array_including(gitaly_request_with_params(updates: [expected_param])), kind_of(Hash))
+          .and_raise(references_locked_error)
+
+        expect { update_refs }.to raise_error(Gitlab::Git::ReferencesLockedError)
+      end
+    end
+
+    context 'with a invalid format error' do
+      let(:invalid_refs) { ['\invali.\d/1', '\.invali/d/2'] }
+      let(:invalid_reference_format_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::INVALID_ARGUMENT,
+          "error message",
+          Gitaly::UpdateReferencesError.new(invalid_format: Gitaly::InvalidRefFormatError.new(refs: invalid_refs)))
+      end
+
+      it 'raises InvalidRefFormatError' do
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:update_references)
+          .with(array_including(gitaly_request_with_params(updates: [expected_param])), kind_of(Hash))
+          .and_raise(invalid_reference_format_error)
+
+        expect { update_refs }.to raise_error do |error|
+          expect(error).to be_a(Gitlab::Git::InvalidRefFormatError)
+          expect(error.message).to eq("references have an invalid format: #{invalid_refs.join(",")}")
+        end
+      end
+    end
+  end
+
   describe '#delete_refs' do
     let(:prefixes) { %w(refs/heads refs/keep-around) }
 
