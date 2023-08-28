@@ -5,7 +5,7 @@ module Gitlab
     module Deprecations
       class Deprecation
         REASON_RENAMED = :renamed
-        REASON_ALPHA = :alpha # TODO remove support in this class
+        REASON_ALPHA = :alpha
 
         REASONS = {
           REASON_RENAMED => 'This was renamed.',
@@ -27,7 +27,7 @@ module Gitlab
           return unless options
 
           if alpha
-            raise ArgumentError, '`experiment` and `deprecated` arguments cannot be passed at the same time' \
+            raise ArgumentError, '`alpha` and `deprecated` arguments cannot be passed at the same time' \
               if deprecated
 
             options[:reason] = :alpha

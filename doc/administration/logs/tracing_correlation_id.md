@@ -25,7 +25,7 @@ You can use your browser's developer tools to monitor and inspect network
 activity with the site that you're visiting. See the links below for network monitoring
 documentation for some popular browsers.
 
-- [Network Monitor - Firefox Developer Tools](https://developer.mozilla.org/en-US/docs/Tools/Network_Monitor)
+- [Network Monitor - Firefox Developer Tools](https://firefox-source-docs.mozilla.org/devtools-user/network_monitor/index.html)
 - [Inspect Network Activity In Chrome DevTools](https://developer.chrome.com/docs/devtools/network/)
 - [Safari Web Development Tools](https://developer.apple.com/safari/tools/)
 - [Microsoft Edge Network panel](https://learn.microsoft.com/en-us/microsoft-edge/devtools-guide-chromium/network/)

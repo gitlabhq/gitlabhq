@@ -17,8 +17,6 @@ module Resolvers
         alias_method :dashboard, :object
 
         def resolve(**_args)
-          return if Feature.enabled?(:remove_monitor_metrics)
-
           []
         end
       end

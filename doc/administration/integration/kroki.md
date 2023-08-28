@@ -36,9 +36,9 @@ Supported libraries include:
 
 <!-- vale gitlab.Spelling = NO -->
 
-- [Bytefield](https://bytefield-svg.deepsymmetry.org/)
+- [Bytefield](https://bytefield-svg.deepsymmetry.org/bytefield-svg/intro.html)
 - [D2](https://d2lang.com/tour/intro/)
-- [DBML](https://www.dbml.org/home/)
+- [DBML](https://dbml.dbdiagram.io/home/)
 - [Ditaa](https://ditaa.sourceforge.net)
 - [Erd](https://github.com/BurntSushi/erd)
 - [GraphViz](https://www.graphviz.org/)

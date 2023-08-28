@@ -24,22 +24,8 @@ RSpec.describe Resolvers::Metrics::Dashboards::AnnotationResolver, feature_categ
         environment.project.add_developer(current_user)
       end
 
-      before do
-        stub_feature_flags(remove_monitor_metrics: false)
-      end
-
       context 'with annotation records' do
-        context 'when metrics dashboard feature is unavailable' do
-          before do
-            stub_feature_flags(remove_monitor_metrics: true)
-          end
-
-          it 'returns nothing' do
-            expect(resolve_annotations).to be_nil
-          end
-        end
-
-        it 'returns [] all the time' do
+        it 'returns empty all the time' do
           expect(resolve_annotations).to be_empty
         end
       end

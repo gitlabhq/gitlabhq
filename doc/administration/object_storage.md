@@ -237,7 +237,7 @@ To set up an instance profile:
    }
    ```
 
-1. [Attach this role](https://aws.amazon.com/premiumsupport/knowledge-center/attach-replace-ec2-instance-profile/)
+1. [Attach this role](https://repost.aws/knowledge-center/attach-replace-ec2-instance-profile)
    to the EC2 instance hosting your GitLab instance.
 1. Set the `use_iam_profile` GitLab configuration option to `true`.
 

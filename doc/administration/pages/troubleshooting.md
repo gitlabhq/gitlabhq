@@ -152,7 +152,7 @@ This can happen to GitLab instances with multiple servers
 running both the core GitLab application and GitLab Pages. This can also happen when a single
 container is running both the core GitLab application and GitLab Pages.
 
-AWS [recommends using an IP target type](https://aws.amazon.com/premiumsupport/knowledge-center/target-connection-fails-load-balancer/)
+AWS [recommends using an IP target type](https://repost.aws/knowledge-center/target-connection-fails-load-balancer)
 to resolve this issue.
 
 Turning off [client IP preservation](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation)

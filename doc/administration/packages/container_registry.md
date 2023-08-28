@@ -500,7 +500,7 @@ To configure the `s3` storage driver for a Linux package installation:
      `bucket_name.host/object`. [Set to false for AWS S3](https://aws.amazon.com/blogs/aws/amazon-s3-path-deprecation-plan-the-rest-of-the-story/).
 
    You can set a rate limit on connections to S3 to avoid 503 errors from the S3 API. To do this,
-   set `maxrequestspersecond` to a number within the [S3 request rate threshold](https://repost.aws/knowledge-center/s3-503-within-request-rate-prefix):
+   set `maxrequestspersecond` to a number within the [S3 request rate threshold](https://repost.aws/knowledge-center/http-5xx-errors-s3):
 
    ```ruby
       registry['storage'] = {

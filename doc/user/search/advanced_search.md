@@ -53,11 +53,12 @@ Advanced search uses [Elasticsearch syntax](https://www.elastic.co/guide/en/elas
 | `#`          | Issue ID                        | [`#23456`](https://gitlab.com/search?snippets=&scope=issues&repository_ref=&search=%2323456&group_id=9970&project_id=278964)               |
 | `!`          | Merge request ID                | [`!23456`](https://gitlab.com/search?snippets=&scope=merge_requests&repository_ref=&search=%2123456&group_id=9970&project_id=278964)       |
 
-### Refining user search
+### User search
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
+> Ability to refine user search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
 
-In user search, a [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/reference/7.2/query-dsl-fuzzy-query.html) is used by default. You can refine your search with [Elasticsearch syntax](#syntax).
+When you search for a user, a [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/reference/7.2/query-dsl-fuzzy-query.html) is used by default.
+You can refine user search with [Elasticsearch syntax](#syntax).
 
 ### Code search
 
@@ -68,7 +69,7 @@ In user search, a [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/re
 | `extension:` | File extension without `.` <sup>2</sup>      | [`extension:js`](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=extension%3Ajs&snippets=)          |
 | `blob:`      | Git object ID <sup>2</sup>                   | [`blob:998707*`](https://gitlab.com/search?snippets=false&scope=blobs&repository_ref=&search=blob%3A998707*&group_id=9970)                       |
 
-1. `path:` returns matches for full paths or subpaths.
+1. `path:` returns matches for full or partial paths.
 1. `extension:` and `blob:` return exact matches only.
 
 ### Examples
@@ -81,7 +82,6 @@ In user search, a [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/re
 | [<code>helper -extension:yml -extension:js</code>](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=helper+-extension%3Ayml+-extension%3Ajs&snippets=)  | Returns `helper` in all files except files with a `.yml` or `.js` extension.                        |
 | [<code>helper path:lib/git</code>](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=helper+path%3Alib%2Fgit)  | Returns `helper` in all files with a `lib/git*` path (for example, `spec/lib/gitlab`).                        |
 
-
 <!-- markdownlint-enable -->
 
 ## Known issues
@@ -89,8 +89,8 @@ In user search, a [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/re
 - You can only search files smaller than 1 MB.
   For more information, see [issue 195764](https://gitlab.com/gitlab-org/gitlab/-/issues/195764).
   For self-managed GitLab instances, an administrator can
-  [change this limit](../../integration/advanced_search/elasticsearch.md#advanced-search-configuration).
-- You can only use advanced search on the default branch of a project.
+  [configure this setting](../../integration/advanced_search/elasticsearch.md#advanced-search-configuration).
+- You can use advanced search on the default branch of a project only.
   For more information, see [issue 229966](https://gitlab.com/gitlab-org/gitlab/-/issues/229966).
 - The search query must not contain any of the following characters:
 

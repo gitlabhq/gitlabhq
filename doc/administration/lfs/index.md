@@ -453,7 +453,7 @@ settings to allow the GitLab domain. See the following documentation
 for more details:
 
 1. [AWS S3](https://repost.aws/knowledge-center/s3-configure-cors)
-1. [Google Cloud Storage](https://cloud.google.com/storage/docs/configuring-cors)
+1. [Google Cloud Storage](https://cloud.google.com/storage/docs/using-cors)
 1. [Azure Storage](https://learn.microsoft.com/en-us/rest/api/storageservices/cross-origin-resource-sharing--cors--support-for-the-azure-storage-services).
 
 ## Known limitations

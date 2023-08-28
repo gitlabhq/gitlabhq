@@ -58,7 +58,6 @@ The [Jira issue integration](configure.md) posts GitLab data in the form of comm
 The GitLab for Jira Cloud app and Jira DVCS connector share this data through the [Jira development panel](development_panel.md).
 This method provides more fine-grained access control because access can be restricted to certain user groups or roles.
 
-## Third-party Jira integrations
+## Related topics
 
-Developers have built several third-party Jira integrations for GitLab that are
-listed on the [Atlassian Marketplace](https://marketplace.atlassian.com/search?product=jira&query=gitlab).
+- [Third-party Jira integrations](https://marketplace.atlassian.com/search?product=jira&query=gitlab)
