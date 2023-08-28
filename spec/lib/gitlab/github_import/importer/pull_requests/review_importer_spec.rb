@@ -17,6 +17,10 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter,
     )
   end
 
+  before do
+    allow(client_double).to receive_message_chain(:octokit, :last_response, :headers).and_return({ etag: nil })
+  end
+
   subject { described_class.new(review, project, client_double) }
 
   shared_examples 'imports a reviewer for the Merge Request' do

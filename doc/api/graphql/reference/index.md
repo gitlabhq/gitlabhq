@@ -2383,6 +2383,7 @@ Input type: `CreateTestCaseInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatetestcaseclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatetestcaseconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the test case confidentiality. |
 | <a id="mutationcreatetestcasedescription"></a>`description` | [`String`](#string) | Test case description. |
 | <a id="mutationcreatetestcaselabelids"></a>`labelIds` | [`[ID!]`](#id) | IDs of labels to be added to the test case. |
 | <a id="mutationcreatetestcaseprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path to create the test case in. |

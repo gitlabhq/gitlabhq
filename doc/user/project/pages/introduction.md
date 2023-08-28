@@ -47,9 +47,9 @@ depending on your static generator configuration.
 
 If the case of `404.html`, there are different scenarios. For example:
 
-- If you use project Pages (served under `/projectname/`) and try to access
-  `/projectname/non/existing_file`, GitLab Pages tries to serve first
-  `/projectname/404.html`, and then `/404.html`.
+- If you use project Pages (served under `/project-slug/`) and try to access
+  `/project-slug/non/existing_file`, GitLab Pages tries to serve first
+  `/project-slug/404.html`, and then `/404.html`.
 - If you use user or group Pages (served under `/`) and try to access
   `/non/existing_file` GitLab Pages tries to serve `/404.html`.
 - If you use a custom domain and try to access `/non/existing_file`, GitLab
@@ -87,7 +87,7 @@ For [group websites](../../project/pages/getting_started_part_one.md#user-and-gr
 the group must be at the top level and not a subgroup.
 
 For [project websites](../../project/pages/getting_started_part_one.md#project-website-examples),
-you can create your project first and access it under `http(s)://namespace.example.io/projectname`.
+you can create your project first and access it under `http(s)://namespace.example.io/project-path`.
 
 ## Enable unique domains
 
@@ -308,7 +308,7 @@ For a list of known issues, see the GitLab [public issue tracker](https://gitlab
 
 This problem most likely results from a missing `index.html` file in the public directory. If after deploying a Pages site
 a 404 is encountered, confirm that the public directory contains an `index.html` file. If the file contains a different name
-such as `test.html`, the Pages site can still be accessed, but the full path would be needed. For example: `https//group-name.pages.example.com/project-name/test.html`.
+such as `test.html`, the Pages site can still be accessed, but the full path would be needed. For example: `https//group-name.pages.example.com/project-slug/test.html`.
 
 The contents of the public directory can be confirmed by [browsing the artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts) from the latest pipeline.
 

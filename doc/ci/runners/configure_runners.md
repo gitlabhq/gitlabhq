@@ -64,9 +64,9 @@ of shared runners on large GitLab instances. This ensures that you
 control access to your GitLab instances and secure [runner executors](https://docs.gitlab.com/runner/executors/).
 
 If certain executors run a job, the file system, the code the runner executes,
-and the runner token may be exposed. This means that anyone that runs jobs
+and the runner authentication token may be exposed. This means that anyone that runs jobs
 on a _shared runner_ can access another user's code that runs on the runner.
-Users with access to the runner token can use it to create a clone of
+Users with access to the runner authentication token can use it to create a clone of
 a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
 
 ### Prevent runners from revealing sensitive information
@@ -124,19 +124,19 @@ you use to provision and register new values.
 
 ### Reset the runner authentication token
 
-If an authentication token is revealed, an attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
+If a runner authentication token is revealed, an attacker could use the token to [clone a runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
 
-To reset the authentication token:
+To reset the runner authentication token:
 
 1. Delete the runner:
    - [Delete a shared runner](runners_scope.md#delete-shared-runners).
    - [Delete a group runner](runners_scope.md#delete-a-group-runner).
    - [Delete a project runner](runners_scope.md#delete-a-project-runner).
-1. Create a new runner so that it is assigned a new authentication token:
-   - [Create a shared runner](runners_scope.md#create-a-shared-runner-with-an-authentication-token).
-   - [Create a group runner](runners_scope.md#create-a-group-runner-with-an-authentication-token).
-   - [Create a project runner](runners_scope.md#create-a-project-runner-with-an-authentication-token).
-1. Optional. To verify that the previous authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
+1. Create a new runner so that it is assigned a new runner authentication token:
+   - [Create a shared runner](runners_scope.md#create-a-shared-runner-with-a-runner-authentication-token).
+   - [Create a group runner](runners_scope.md#create-a-group-runner-with-a-runner-authentication-token).
+   - [Create a project runner](runners_scope.md#create-a-project-runner-with-a-runner-authentication-token).
+1. Optional. To verify that the previous runner authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
 
 ## Use tags to control which jobs a runner can run
 
@@ -874,7 +874,7 @@ defaults to the number of CPUs available.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `enforce_runner_token_expires_at`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/377902) in GitLab 15.5. Feature flag `enforce_runner_token_expires_at` removed.
 
-Each runner has an [authentication token](../../api/runners.md#registration-and-authentication-tokens)
+Each runner has an [runner authentication token](../../api/runners.md#registration-and-authentication-tokens)
 to connect with the GitLab instance.
 
 To help prevent the token from being compromised, you can have the
@@ -883,12 +883,12 @@ they are updated for each runner, regardless of the runner's status (`online` or
 
 No manual intervention should be required, and no running jobs should be affected.
 
-If you need to manually update the authentication token, you can run a
+If you need to manually update the runner authentication token, you can run a
 command to [reset the token](https://docs.gitlab.com/runner/commands/#gitlab-runner-reset-token).
 
-### Automatically rotate authentication tokens
+### Automatically rotate runner authentication tokens
 
-You can specify an interval for authentication tokens to rotate.
+You can specify an interval for runner authentication tokens to rotate.
 This rotation helps ensure the security of the tokens assigned to your runners.
 
 Prerequisites:
@@ -904,4 +904,4 @@ To automatically rotate runner authentication tokens:
 1. Set a **Runners expiration** time for runners, leave empty for no expiration.
 1. Select **Save**.
 
-Before the interval expires, runners automatically request a new authentication token.
+Before the interval expires, runners automatically request a new runner authentication token.

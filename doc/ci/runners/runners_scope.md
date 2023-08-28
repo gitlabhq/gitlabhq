@@ -34,7 +34,7 @@ If you are using GitLab.com:
 - The shared runners consume the [compute minutes](../pipelines/cicd_minutes.md)
   included with your account.
 
-### Create a shared runner with an authentication token
+### Create a shared runner with a runner authentication token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383139) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_admin` [flag](../../administration/feature_flags.md)
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/389269) in GitLab 16.0.
@@ -44,7 +44,7 @@ Prerequisite:
 
 - You must be an administrator.
 
-When you create a runner, it is assigned an authentication token that you use to register it. The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
+When you create a runner, it is assigned a runner authentication token that you use to register it. The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
 
 To create a shared runner:
 
@@ -57,10 +57,10 @@ To create a shared runner:
 1. Select **Submit**.
 1. Follow the on-screen instructions to register the runner from the command line.
 
-You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate an authentication token.
+You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate a runner authentication token.
 
 NOTE:
-The authentication token displays in the UI for only a short period of time during registration.
+The runner authentication token displays in the UI for only a short period of time during registration.
 
 ### Create a shared runner with a registration token (deprecated)
 
@@ -222,7 +222,7 @@ to have access to a set of runners.
 
 Group runners process jobs by using a first in, first out queue.
 
-### Create a group runner with an authentication token
+### Create a group runner with a runner authentication token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags.md). Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/393919) in GitLab 16.0.
@@ -233,7 +233,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 You can create a group runner for your self-managed GitLab instance or for GitLab.com.
-When you create a runner, it is assigned an authentication token that you use to register it. The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
+When you create a runner, it is assigned a runner authentication token that you use to register it. The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
 
 To create a group runner:
 
@@ -248,7 +248,7 @@ To create a group runner:
 You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate an authentication token.
 
 NOTE:
-The authentication token displays in the UI for only a short period of time during registration.
+The runner authentication token displays in the UI for only a short period of time during registration.
 
 ### Create a group runner with a registration token (deprecated)
 
@@ -399,7 +399,7 @@ NOTE:
 Project runners do not get shared with forked projects automatically.
 A fork *does* copy the CI/CD settings of the cloned repository.
 
-### Create a project runner with an authentication token
+### Create a project runner with a runner authentication token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383143) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_namespace` [flag](../../administration/feature_flags.md). Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/393919) in GitLab 16.0.
@@ -409,7 +409,7 @@ Prerequisites:
 
 - You must have the Maintainer role for the project.
 
-You can create a project runner for your self-managed GitLab instance or for GitLab.com. When you create a runner, it is assigned an authentication token that you use to register to the runner. The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
+You can create a project runner for your self-managed GitLab instance or for GitLab.com. When you create a runner, it is assigned a runner authentication token that you use to register to the runner. The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
 
 To create a project runner:
 
@@ -422,10 +422,10 @@ To create a project runner:
 1. Select **Submit**.
 1. Follow the on-screen instructions to register the runner from the command line.
 
-You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate an authentication token.
+You can also [create a runner](../../api/users.md#create-a-runner) with the API to generate a runner authentication token.
 
 NOTE:
-The authentication token displays in the UI for only a short period of time during registration.
+The runner authentication token displays in the UI for only a short period of time during registration.
 
 ### Create a project runner with a registration token (deprecated)
 

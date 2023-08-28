@@ -28,6 +28,17 @@ module Gitlab
       EMAIL_FOR_USERNAME_CACHE_KEY =
         'github-import/user-finder/email-for-username/%s'
 
+      # The base cache key to use for caching the user ETAG response headers
+      USERNAME_ETAG_CACHE_KEY = 'github-import/user-finder/user-etag/%s'
+
+      # The base cache key to store whether an email has been fetched for a project
+      EMAIL_FETCHED_FOR_PROJECT_CACHE_KEY = 'github-import/user-finder/%{project}/email-fetched/%{username}'
+
+      EMAIL_API_CALL_LOGGING_MESSAGE = {
+        true => 'Fetching email from GitHub with ETAG header',
+        false => 'Fetching email from GitHub'
+      }.freeze
+
       # project - An instance of `Project`
       # client - An instance of `Gitlab::GithubImport::Client`
       def initialize(project, client)
@@ -109,24 +120,39 @@ module Gitlab
         id_for_github_id(id) || id_for_github_email(email)
       end
 
-      # Find the public email of a given username in GitHub. The public email is cached to avoid multiple calls to
-      # GitHub. In case the username does not exist or the public email is nil, a blank value is cached to also prevent
-      # multiple calls to GitHub.
+      # Find the public email of a given username in GitHub.
+      # The email is cached to avoid multiple calls to GitHub. The cache is shared among all projects.
+      # If the email was not found, a blank email is cached.
+      # If the email is blank, we attempt to fetch it from GitHub using an ETAG request once for every project.
+
+      # @param username [String] The username of the GitHub user.
       #
       # @return [String] If public email is found
       # @return [Nil] If public email or username does not exist
       def email_for_github_username(username)
-        cache_key = EMAIL_FOR_USERNAME_CACHE_KEY % username
-        email = Gitlab::Cache::Import::Caching.read(cache_key)
+        email = read_email_from_cache(username)
 
-        if email.nil?
-          user = client.user(username)
-          email = Gitlab::Cache::Import::Caching.write(cache_key, user[:email].to_s, timeout: timeout(user[:email]))
+        if email.blank? && !email_fetched_for_project?(username)
+          # If an ETAG is available, make an API call with the ETAG.
+          # Only make a rate-limited API call if the ETAG is not available and the email is nil.
+          etag = read_etag_from_cache(username)
+          email = fetch_email_from_github(username, etag: etag) || email
+
+          cache_email!(username, email)
+          cache_etag!(username) if email.blank? && etag.nil?
+
+          # If a non-blank email is cached, we don't need the ETAG or project check caches.
+          # Otherwise, indicate that the project has been checked.
+          if email.present?
+            clear_caches!(username)
+          else
+            set_project_as_checked!(username)
+          end
         end
 
         email.presence
       rescue ::Octokit::NotFound
-        Gitlab::Cache::Import::Caching.write(cache_key, '')
+        cache_email!(username, '')
         nil
       end
 
@@ -192,12 +218,66 @@ module Gitlab
 
       private
 
-      def timeout(email)
-        if email
-          Gitlab::Cache::Import::Caching::TIMEOUT
-        else
-          Gitlab::Cache::Import::Caching::SHORTER_TIMEOUT
-        end
+      def read_email_from_cache(username)
+        Gitlab::Cache::Import::Caching.read(email_cache_key(username))
+      end
+
+      def read_etag_from_cache(username)
+        Gitlab::Cache::Import::Caching.read(etag_cache_key(username))
+      end
+
+      def email_fetched_for_project?(username)
+        email_fetched_for_project_cache_key = email_fetched_for_project_cache_key(username)
+        Gitlab::Cache::Import::Caching.read(email_fetched_for_project_cache_key)
+      end
+
+      def fetch_email_from_github(username, etag: nil)
+        log(EMAIL_API_CALL_LOGGING_MESSAGE[etag.present?], username: username)
+        user = client.user(username, { headers: { 'If-None-Match' => etag }.compact })
+
+        user[:email] || '' if user
+      end
+
+      def cache_email!(username, email)
+        return unless email
+
+        Gitlab::Cache::Import::Caching.write(email_cache_key(username), email)
+      end
+
+      def cache_etag!(username)
+        etag = client.octokit.last_response.headers[:etag]
+        Gitlab::Cache::Import::Caching.write(etag_cache_key(username), etag)
+      end
+
+      def set_project_as_checked!(username)
+        Gitlab::Cache::Import::Caching.write(email_fetched_for_project_cache_key(username), 1)
+      end
+
+      def clear_caches!(username)
+        Gitlab::Cache::Import::Caching.expire(etag_cache_key(username), 0)
+        Gitlab::Cache::Import::Caching.expire(email_fetched_for_project_cache_key(username), 0)
+      end
+
+      def email_cache_key(username)
+        EMAIL_FOR_USERNAME_CACHE_KEY % username
+      end
+
+      def etag_cache_key(username)
+        USERNAME_ETAG_CACHE_KEY % username
+      end
+
+      def email_fetched_for_project_cache_key(username)
+        format(EMAIL_FETCHED_FOR_PROJECT_CACHE_KEY, project: project.id, username: username)
+      end
+
+      def log(message, username: nil)
+        Gitlab::Import::Logger.info(
+          import_type: :github,
+          project_id: project.id,
+          class: self.class.name,
+          username: username,
+          message: message
+        )
       end
     end
   end

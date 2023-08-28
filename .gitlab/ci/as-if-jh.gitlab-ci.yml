@@ -1,6 +1,7 @@
 .as-if-jh-sandbox-variables:
   variables:
     AS_IF_JH_BRANCH: "as-if-jh/${CI_COMMIT_REF_NAME}"
+    JH_MIRROR_REPOSITORY: "https://dummy:${ADD_JH_FILES_TOKEN}@gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab.git"
     SANDBOX_REPOSITORY: "https://dummy:${AS_IF_JH_TOKEN}@gitlab.com/gitlab-org-sandbox/gitlab-jh-validation.git"
 
 .shared-as-if-jh:
@@ -22,18 +23,22 @@ add-jh-files:
     - source ./scripts/setup/as-if-jh.sh
     - install_gitlab_gem
   script:
-    - prepare_jh_branch
-    - download_jh_path ${JH_FILES_TO_COMMIT}
+    - set_jh_branch_env_variable
+    - download_jh_files ${JH_FILES_TO_COMMIT}
     - echoinfo "Changes after downloading JiHu files:"
     - git diff
     - git status
   artifacts:
     expire_in: 2d
+    when: always  # We also want the artifacts when we exit with error 3 (detached pipeline in that case)
     paths:
       # This should match JH_FILES_TO_COMMIT
       - jh/
       - package.json
       - yarn.lock
+  allow_failure:
+    exit_codes:
+      - 3  # Set in the download_jh_files_from_git_clone function
 
 prepare-as-if-jh-branch:
   extends:

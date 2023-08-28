@@ -32852,8 +32852,6 @@ CREATE INDEX index_pages_deployments_on_file_store_and_id ON pages_deployments U
 
 CREATE INDEX index_pages_deployments_on_project_id ON pages_deployments USING btree (project_id);
 
-CREATE UNIQUE INDEX index_pages_deployments_unique_path_prefix_by_project ON pages_deployments USING btree (project_id, path_prefix);
-
 CREATE INDEX index_pages_domain_acme_orders_on_challenge_token ON pages_domain_acme_orders USING btree (challenge_token);
 
 CREATE INDEX index_pages_domain_acme_orders_on_pages_domain_id ON pages_domain_acme_orders USING btree (pages_domain_id);

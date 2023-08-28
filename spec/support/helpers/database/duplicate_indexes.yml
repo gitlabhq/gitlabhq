@@ -145,9 +145,6 @@ packages_debian_project_distributions:
 packages_tags:
   index_packages_tags_on_package_id_and_updated_at:
   - index_packages_tags_on_package_id
-pages_deployments:
-  index_pages_deployments_unique_path_prefix_by_project:
-  - index_pages_deployments_on_project_id
 pages_domains:
   index_pages_domains_on_project_id_and_enabled_until:
   - index_pages_domains_on_project_id

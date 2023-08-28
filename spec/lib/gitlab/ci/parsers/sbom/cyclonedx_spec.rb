@@ -3,18 +3,20 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependency_management do
-  let(:report) { instance_double('Gitlab::Ci::Reports::Sbom::Report') }
+  let(:report) { Gitlab::Ci::Reports::Sbom::Report.new }
   let(:report_data) { base_report_data }
   let(:raw_report_data) { report_data.to_json }
   let(:report_valid?) { true }
   let(:validator_errors) { [] }
   let(:properties_parser) { class_double('Gitlab::Ci::Parsers::Sbom::CyclonedxProperties') }
+  let(:uuid) { 'c9d550a3-feb8-483b-a901-5aa892d039f9' }
 
   let(:base_report_data) do
     {
       'bomFormat' => 'CycloneDX',
       'specVersion' => '1.4',
-      'version' => 1
+      'version' => 1,
+      'serialNumber' => "urn:uuid:#{uuid}"
     }
   end
 
@@ -28,6 +30,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
 
     allow(properties_parser).to receive(:parse_source)
     stub_const('Gitlab::Ci::Parsers::Sbom::CyclonedxProperties', properties_parser)
+    allow(SecureRandom).to receive(:uuid).and_return(uuid)
   end
 
   context 'when report JSON is invalid' do
@@ -149,8 +152,22 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
     end
   end
 
-  context 'when report has metadata properties' do
-    let(:report_data) { base_report_data.merge({ 'metadata' => { 'properties' => properties } }) }
+  context 'when report has metadata tools, author and properties' do
+    let(:report_data) { base_report_data.merge(metadata) }
+
+    let(:tools) do
+      [
+        { name: 'Gemnasium', vendor: 'vendor-1', version: '2.34.0' },
+        { name: 'Gemnasium', vendor: 'vendor-2', version: '2.34.0' }
+      ]
+    end
+
+    let(:authors) do
+      [
+        { name: 'author-1', email: 'support@gitlab.com' },
+        { name: 'author-2', email: 'support@gitlab.com' }
+      ]
+    end
 
     let(:properties) do
       [
@@ -163,10 +180,44 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
       ]
     end
 
-    it 'passes them to the properties parser' do
-      expect(properties_parser).to receive(:parse_source).with(properties)
+    context 'when metadata attributes are present' do
+      let(:metadata) do
+        {
+          'metadata' => {
+            'tools' => tools,
+            'authors' => authors,
+            'properties' => properties
+          }
+        }
+      end
 
-      parse!
+      it 'passes them to the report' do
+        expect(properties_parser).to receive(:parse_source).with(properties)
+
+        parse!
+
+        expect(report.metadata).to have_attributes(
+          tools: tools.map(&:with_indifferent_access),
+          authors: authors.map(&:with_indifferent_access),
+          properties: properties.map(&:with_indifferent_access)
+        )
+      end
+    end
+
+    context 'when metadata attributes are not present' do
+      let(:metadata) { { 'metadata' => {} } }
+
+      it 'passes them to the report' do
+        expect(properties_parser).to receive(:parse_source).with(nil)
+
+        parse!
+
+        expect(report.metadata).to have_attributes(
+          tools: [],
+          authors: [],
+          properties: []
+        )
+      end
     end
   end
 end

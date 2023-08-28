@@ -1279,7 +1279,7 @@ Credentials can be:
 
 - Login details like username and password.
 - Private keys.
-- Tokens (PAT, runner tokens, JWT token, CSRF tokens, project access tokens, etc).
+- Tokens (PAT, runner authentication tokens, JWT token, CSRF tokens, project access tokens, etc).
 - Session cookies.
 - Any other piece of information that can be used for authentication or authorization purposes.
 

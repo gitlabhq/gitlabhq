@@ -156,12 +156,12 @@ For the storage-specific form,
 [direct upload may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331)
 because it does not require a shared folder.
 
-For configuring object storage in GitLab 13.1 and earlier, or for storage types not
-supported by consolidated form, refer to the following guides:
+For configuring object storage in GitLab 13.1 and earlier, _or_ for storage types not
+For storage types not supported by the consolidated form, refer to the following guides:
 
 | Object storage type | Supported by consolidated form? |
 |---------------------|------------------------------------------|
-| [Project-level Secure Files](secure_files.md#using-object-storage) | **{dotted-circle}** No |
+| [Secure Files](secure_files.md#using-object-storage) | **{dotted-circle}** No |
 | [Backups](../administration/backup_restore/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
 | [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | **{dotted-circle}** No |
 | [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| **{dotted-circle}** No |

@@ -26,6 +26,10 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter,
 
   subject { described_class.new(pull_request, project, client_double) }
 
+  before do
+    allow(client_double).to receive_message_chain(:octokit, :last_response, :headers).and_return({ etag: nil })
+  end
+
   shared_examples 'adds a note referencing the merger user' do
     it 'adds a note referencing the merger user' do
       expect { subject.execute }

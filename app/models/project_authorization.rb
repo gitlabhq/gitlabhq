@@ -11,6 +11,8 @@ class ProjectAuthorization < ApplicationRecord
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
   validates :user, uniqueness: { scope: :project }, presence: true
 
+  scope :non_guests, -> { where('access_level > ?', ::Gitlab::Access::GUEST) }
+
   def self.select_from_union(relations)
     from_union(relations)
       .select(['project_id', 'MAX(access_level) AS access_level'])

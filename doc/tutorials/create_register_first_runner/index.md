@@ -107,7 +107,7 @@ To create a project runner:
 
 ### Check the runner configuration file
 
-After you register the runner, the configuration and authentication token is saved to your `config.toml`. The runner uses the
+After you register the runner, the configuration and runner authentication token is saved to your `config.toml`. The runner uses the
 token to authenticate with GitLab when picking up jobs from the job queue.
 
 You can use the `config.toml` to

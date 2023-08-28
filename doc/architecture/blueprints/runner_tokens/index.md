@@ -78,7 +78,7 @@ graph TD
 
 <!-- vale gitlab.Spelling = NO -->
 In this proposal, runners created in the GitLab UI are assigned
-[authentication tokens](../../../security/token_overview.md#runner-authentication-tokens-also-called-runner-tokens)
+[authentication tokens](../../../security/token_overview.md#runner-authentication-tokens)
 prefixed with `glrt-` (**G**it**L**ab **R**unner **T**oken).
 <!-- vale gitlab.Spelling = YES -->
 The prefix allows the existing `register` command to use the authentication token _in lieu_
@@ -97,8 +97,8 @@ token in the `--registration-token` argument:
 
 | Token type | Behavior |
 | ---------- | -------- |
-| [Registration token](../../../security/token_overview.md#runner-authentication-tokens-also-called-runner-tokens) | Leverages the `POST /api/v4/runners` REST endpoint to create a new runner, creating a new entry in `config.toml`. |
-| [Authentication token](../../../security/token_overview.md#runner-authentication-tokens-also-called-runner-tokens) | Leverages the `POST /api/v4/runners/verify` REST endpoint to ensure the validity of the authentication token. Creates an entry in `config.toml` file and a `system_id` value in a sidecar file if missing (`.runner_system_id`). |
+| [Registration token](../../../security/token_overview.md#runner-authentication-tokens) | Leverages the `POST /api/v4/runners` REST endpoint to create a new runner, creating a new entry in `config.toml`. |
+| [Runner authentication token](../../../security/token_overview.md#runner-authentication-tokens) | Leverages the `POST /api/v4/runners/verify` REST endpoint to ensure the validity of the authentication token. Creates an entry in `config.toml` file and a `system_id` value in a sidecar file if missing (`.runner_system_id`). |
 
 ### Transition period
 
@@ -427,7 +427,7 @@ scope.
 | GitLab Rails app |   `%16.6` | Disable registration tokens on the instance level by running database migration (except GitLab.com)                                                                      |                                                                                                   |
 | GitLab Rails app |   `%16.8` | Disable registration tokens on the instance level for GitLab.com                                                                                                         |                                                                                                   |
 | GitLab Rails app |   `%16.3` | Implement new `:create_runner` PPGAT scope so that we don't require a full `api` scope.                                                                                  |
-| GitLab Rails app |           | Document gotchas when [automatically rotating runner tokens](../../../ci/runners/configure_runners.md#automatically-rotate-authentication-tokens) with multiple machines. |
+| GitLab Rails app |           | Document gotchas when [automatically rotating runner tokens](../../../ci/runners/configure_runners.md#automatically-rotate-runner-authentication-tokens) with multiple machines. |
 
 ### Stage 7 - Removals
 

@@ -67,10 +67,18 @@ module Gitlab
       end
 
       # Returns the details of a GitHub user.
+      # 304 (Not Modified) status means the user is cached - API won't return user data.
       #
-      # username - The username of the user.
-      def user(username)
-        with_rate_limit { octokit.user(username).to_h }
+      # @param username[String] the username of the user.
+      # @param options[Hash] the optional parameters.
+      def user(username, options = {})
+        with_rate_limit do
+          user = octokit.user(username, options)
+
+          next if octokit.last_response&.status == 304
+
+          user.to_h
+        end
       end
 
       def pull_request_reviews(repo_name, iid)

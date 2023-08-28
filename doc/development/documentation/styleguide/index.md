@@ -984,7 +984,7 @@ To be consistent, use these templates when you write navigation steps in a task 
 To open project settings:
 
 ```markdown
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -992,7 +992,7 @@ To open project settings:
 To open group settings:
 
 ```markdown
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1000,7 +1000,7 @@ To open group settings:
 To open either project or group settings:
 
 ```markdown
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1020,14 +1020,14 @@ To create a group:
 To open the Admin Area:
 
 ```markdown
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 ```
 
 To open the **Your work** menu item:
 
 ```markdown
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
 ```
 
@@ -1049,15 +1049,15 @@ To save the selection in some dropdown lists:
 To view all your projects:
 
 ```markdown
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my projects**.
 ```
 
 To view all your groups:
 
 ```markdown
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your groups**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my groups**.
 ```
 
 ### Optional steps
@@ -1089,7 +1089,7 @@ Use the phrase **Complete the fields**.
 
 For example:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.
