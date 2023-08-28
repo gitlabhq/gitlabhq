@@ -84,7 +84,7 @@ module Gitlab
         end
 
         def allow_lfs(directives)
-          return unless Gitlab.config.lfs.enabled && LfsObjectUploader.direct_download_enabled?
+          return unless Gitlab.config.lfs.enabled && LfsObjectUploader.object_store_enabled? && LfsObjectUploader.direct_download_enabled?
 
           lfs_url = build_lfs_url
           return unless lfs_url.present?
