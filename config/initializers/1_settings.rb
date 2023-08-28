@@ -702,6 +702,9 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker'] ||= {}
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['cron'] ||= '44 * * * *'
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['job_class'] = 'Analytics::CycleAnalytics::ReaggregationWorker'
+  Settings.cron_jobs['analytics_value_stream_dashboard_count_worker'] ||= {}
+  Settings.cron_jobs['analytics_value_stream_dashboard_count_worker']['cron'] ||= '*/7 * * * *'
+  Settings.cron_jobs['analytics_value_stream_dashboard_count_worker']['job_class'] = 'Analytics::ValueStreamDashboard::CountWorker'
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= {}
   Settings.cron_jobs['active_user_count_threshold_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['active_user_count_threshold_worker']['job_class'] = 'ActiveUserCountThresholdWorker'
