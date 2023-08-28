@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User views the Confluence page', feature_category: :integrations do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   let(:project) { create(:project, :public) }
 

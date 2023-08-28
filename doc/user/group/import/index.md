@@ -460,7 +460,7 @@ To solve this, you must change the source group path to include a non-numerical 
 
 - The GitLab UI:
 
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+  1. On the left sidebar, select **Search or go to** and find your group.
   1. Select **Settings > General**.
   1. Expand **Advanced**.
   1. Under **Change group URL**, change the group URL to include non-numeric characters.
@@ -593,7 +593,7 @@ Prerequisite:
 
 To enable import and export for a group:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
@@ -607,7 +607,7 @@ Prerequisites:
 
 To export the contents of a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. In the **Advanced** section, select **Export group**.
 1. After the export is generated, you should receive an email with a link to the [exported contents](#exported-contents)

@@ -6,7 +6,7 @@ RSpec.describe 'User Cluster', :js, feature_category: :deployment_management do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
 
   before do
     project.add_maintainer(user)

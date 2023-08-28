@@ -17,7 +17,7 @@ for example `https://gitlab.example.com/-/users/terms`.
 
 To enforce acceptance of a Terms of Service and Privacy Policy:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Terms of Service and Privacy Policy** section.

@@ -46,7 +46,7 @@ configured by an administrator.
 
 To change the permitted Git access protocols for a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Choose the permitted protocols from **Enabled Git access protocols**.
@@ -71,7 +71,7 @@ Administrators can combine restricted access by IP address with
 
 To restrict group access by IP address:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict access by IP address** text box, enter a list of IPv4 or IPv6
@@ -113,7 +113,7 @@ You can prevent users with email addresses in specific domains from being added 
 
 To restrict group access by domain:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email** field, enter the domain names.
@@ -157,7 +157,7 @@ If you prevent group sharing outside the hierarchy for the **Animals** group:
 
 To prevent sharing outside of the group's hierarchy:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Select **Members cannot invite groups outside of `<group_name>` and its subgroups**.
@@ -173,7 +173,7 @@ which can be confusing and difficult to control.
 To restrict the permission to invite project members to a single source,
 prevent a project from being shared with other groups:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Projects in `<group_name>` cannot be shared with other groups**.
@@ -187,7 +187,7 @@ added to a project lose access when the setting is enabled.
 As a group Owner, you can prevent non-members from requesting access to
 your group.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow users to request access** checkbox.
@@ -207,7 +207,7 @@ If even one is set to `true`, then the group does not allow outside forks.
 
 To prevent projects from being forked outside the group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Check **Prevent project forking outside current group**.
@@ -232,7 +232,7 @@ The setting does not cascade. Projects in subgroups observe the subgroup configu
 
 To prevent members from being added to projects in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Under **Membership**, select **Users cannot be added to projects in this group**.
@@ -284,7 +284,7 @@ To create group links via filter:
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Manage > Members**. If LDAP synchronization
    has granted a user a role with:
    - More permissions than the parent group membership, that user is displayed as having

@@ -11,7 +11,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
   let(:expected_detached_mr_tag) { 'merge request' }
 
   context 'when user is logged in' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :no_super_sidebar) }
 
     before do
       sign_in(user)

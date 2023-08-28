@@ -156,6 +156,18 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      context 'when the job is a bridge' do
+        let!(:downstream_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let(:job) { downstream_pipeline.source_job }
+
+        it 'redirects to the downstream pipeline page' do
+          get_show(id: job.id)
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(namespace_project_pipeline_path(id: downstream_pipeline.id))
+        end
+      end
     end
 
     context 'when requesting JSON' do

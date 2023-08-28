@@ -48,7 +48,7 @@ Selecting an individual job shows you its job log, and allows you to:
 
 To view the full list of jobs that ran in a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Jobs**.
 
 You can filter the list by [job status](#the-order-of-jobs-in-a-pipeline).

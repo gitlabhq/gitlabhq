@@ -83,7 +83,7 @@ Additional prerequisites [beyond the two above](#experiment-ai-features).
 
 To explain your code:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select any file in your project that contains code.
 1. On the file, select the lines that you want to have explained.
 1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
@@ -93,7 +93,7 @@ To explain your code:
 You can also have code explained in the context of a merge request. To explain
 code in a merge request:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Code > Merge requests**, then select your merge request.
 1. On the secondary menu, select **Changes**.
 1. On the file you would like explained, select the three dots (**{ellipsis_v}**) and select **View File @ $SHA**.
@@ -182,7 +182,7 @@ This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.
 
 In CI/CD Analytics, you can view a forecast of deployment frequency:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > CI/CD analytics**.
 1. Select the **Deployment frequency** tab.
 1. Turn on the **Show forecast** toggle.

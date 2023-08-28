@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User visits the profile SSH keys page', feature_category: :user_profile do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
 
   before do
     sign_in(user)

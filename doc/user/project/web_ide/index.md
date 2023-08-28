@@ -23,7 +23,7 @@ To pair the Web IDE with a remote development environment, see [remote developme
 
 To open the Web IDE from the GitLab UI:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Use the <kbd>.</kbd> keyboard shortcut.
 
 You can also open the Web IDE from:

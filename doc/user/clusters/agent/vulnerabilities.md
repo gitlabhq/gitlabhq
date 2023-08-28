@@ -129,7 +129,7 @@ Resource requirements can only be set up using the agent configuration. If you e
 
 To view vulnerability information in GitLab:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the project that contains the agent configuration file.
+1. On the left sidebar, select **Search or go to** and find the project that contains the agent configuration file.
 1. Select **Operate > Kubernetes clusters**.
 1. Select the **Agent** tab.
 1. Select an agent to view the cluster vulnerabilities.

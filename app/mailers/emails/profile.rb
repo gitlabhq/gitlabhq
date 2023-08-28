@@ -155,7 +155,7 @@ module Emails
       @user = user
       @email = email
 
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("New email address added")))
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("New email address added")))
     end
 
     def new_achievement_email(user, achievement)

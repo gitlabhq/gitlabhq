@@ -26,10 +26,10 @@ notifications:
 
 1. To enable integration:
    - At the project or group level:
-     1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+     1. On the left sidebar, select **Search or go to** and find your project or group.
      1. Select **Settings > Integrations**.
    - At the instance level:
-     1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+     1. On the left sidebar, select **Search or go to**.
      1. Select **Admin Area**.
      1. Select **Settings > Integrations**.
 1. Select the **Webex Teams** integration.

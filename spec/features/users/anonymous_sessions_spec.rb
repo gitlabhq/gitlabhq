@@ -18,7 +18,7 @@ RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state, feature_categor
   end
 
   it 'increases the TTL when the login succeeds' do
-    user = create(:user)
+    user = create(:user, :no_super_sidebar)
     gitlab_sign_in(user)
 
     expect(page).to have_content(user.name)

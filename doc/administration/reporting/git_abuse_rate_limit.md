@@ -21,7 +21,7 @@ GitLab team members can view more information in this confidential epic:
 
 ## Configure Git abuse rate limiting
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Reporting**.
 1. Expand **Git abuse rate limit**.
@@ -41,7 +41,7 @@ If automatic banning is enabled, an email notification is sent when a user is ab
 
 ## Unban a user
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
 1. Select the **Banned** tab and search for the account you want to unban.

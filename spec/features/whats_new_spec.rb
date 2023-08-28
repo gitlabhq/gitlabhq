@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe "renders a `whats new` dropdown item", feature_category: :onboarding do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   context 'when not logged in' do
     it 'and on SaaS it renders', :saas do

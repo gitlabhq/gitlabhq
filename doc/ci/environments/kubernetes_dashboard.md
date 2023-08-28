@@ -38,7 +38,7 @@ Prerequisites:
 
 ### The environment already exists
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment to be associated with the Kubernetes.
 1. Select **Edit**.
@@ -49,7 +49,7 @@ Prerequisites:
 
 ### The environment doesn't exist
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select **New environment**.
 1. Complete the **Name** field.
@@ -62,7 +62,7 @@ Prerequisites:
 
 To view a configured dashboard:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Expand the environment associated with GitLab agent for Kubernetes.
 1. Expand **Kubernetes overview**.

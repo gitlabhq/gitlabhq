@@ -21,7 +21,7 @@ On GitLab.com, this feature is available.
 
 To open the command palette:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) or use the <kbd>/</kbd> key to enable.
+1. On the left sidebar, at the top, select **Search or go to** or use the <kbd>/</kbd> key to enable.
 1. Type one of the special characters:
 
    - <kbd>></kbd> - Create a new object or find a menu item.

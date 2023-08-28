@@ -24,7 +24,7 @@ Prerequisites:
 
 - A [personal](../../../../user/profile/personal_access_tokens.md), [project](../../../../user/project/settings/project_access_tokens.md), or [group](../../../../user/group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` permission.
 - The project ID. To find the project ID:
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Settings > General**.
 
 To use MLflow client compatibility from a local environment:

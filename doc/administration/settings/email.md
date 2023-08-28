@@ -21,7 +21,7 @@ address in the body of the email instead.
 
 To include the author's email address in the email body:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Preferences**.
 1. Expand **Email**.
@@ -34,7 +34,7 @@ GitLab can send email in multipart format (HTML and plain text) or plain text on
 
 To enable multipart email:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Preferences**.
 1. Expand **Email**.
@@ -50,7 +50,7 @@ This configuration option sets the email hostname for [private commit emails](..
 
 To change the hostname used in private commit emails:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Preferences**.
 1. Expand **Email**.
@@ -69,7 +69,7 @@ can be used for legal, auditing, or compliance reasons, for example.
 
 To add additional text to emails:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Preferences**.
 1. Expand **Email**.
@@ -82,7 +82,7 @@ GitLab sends email notifications to users when their account has been deactivate
 
 To disable these notifications:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Preferences**.
 1. Expand **Email**.
@@ -105,7 +105,7 @@ setting.
 
 To add additional text to deactivation emails:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Preferences**.
 1. Expand **Email**.

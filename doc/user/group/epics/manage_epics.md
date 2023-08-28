@@ -209,7 +209,7 @@ Prerequisites:
 
 To view epics in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Epics**.
 
 ### Who can view an epic
@@ -254,7 +254,7 @@ You can filter the list of epics by:
 
 To filter:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Epics**.
 1. Select the field **Search or filter results**.
 1. From the dropdown list, select the scope or enter plain text to search by epic title or description.

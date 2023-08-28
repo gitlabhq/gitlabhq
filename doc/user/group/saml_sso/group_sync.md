@@ -155,7 +155,7 @@ To integrate Microsoft Azure AD, you:
 
 To configure for a GitLab.com group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your top-level group.
 1. Select **Settings > SAML SSO**.
 1. Configure [SAML SSO for the group](../../../user/group/saml_sso/index.md).
 1. In the **Microsoft Azure integration** section, select the **Enable Microsoft Azure integration for this group** checkbox.
@@ -167,7 +167,7 @@ To configure for a GitLab.com group:
 To configure for self-managed:
 
 1. Configure [SAML SSO for the instance](../../../integration/saml.md).
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. In the **Microsoft Azure integration** section, select the **Enable Microsoft Azure integration for this group** checkbox.
@@ -198,7 +198,7 @@ When global group memberships lock is enabled:
 To enable global group memberships lock:
 
 1. [Configure SAML](../../../integration/saml.md) for your self-managed GitLab instance.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.

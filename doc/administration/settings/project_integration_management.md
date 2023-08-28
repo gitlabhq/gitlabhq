@@ -22,7 +22,7 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 To manage instance-level default settings for a project integration:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
@@ -60,7 +60,7 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 To remove an instance-level default setting:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
@@ -74,7 +74,7 @@ Resetting an instance-level default setting removes the integration from all pro
 
 To view projects in your instance that [use custom settings](#use-custom-settings-for-a-project-or-group-integration):
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select an integration.
@@ -84,7 +84,7 @@ To view projects in your instance that [use custom settings](#use-custom-setting
 
 To manage group-level default settings for a project integration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Complete the fields.
@@ -121,7 +121,7 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 To remove a group-level default setting:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. Select **Reset** and confirm.
@@ -132,7 +132,7 @@ Resetting a group-level default setting removes integrations that use default se
 
 To use instance-level or group-level default settings for a project integration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use default settings**.
@@ -144,7 +144,7 @@ To use instance-level or group-level default settings for a project integration:
 
 To use custom settings for a project or group integration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use custom settings**.

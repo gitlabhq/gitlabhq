@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User visits the authentication log', feature_category: :user_profile do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
 
   context 'when user signed in' do
     before do

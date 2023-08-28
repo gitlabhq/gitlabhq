@@ -31,7 +31,7 @@ counted as web traffic.
 
 To enable the unauthenticated request rate limit:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.
@@ -46,7 +46,7 @@ To enable the unauthenticated request rate limit:
 
 To enable the unauthenticated request rate limit:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.
@@ -61,7 +61,7 @@ To enable the unauthenticated request rate limit:
 
 To enable the authenticated API request rate limit:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.
@@ -76,7 +76,7 @@ To enable the authenticated API request rate limit:
 
 To enable the unauthenticated request rate limit:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.
@@ -96,7 +96,7 @@ plain-text body, which by default is `Retry later`.
 
 To use a custom response:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.

@@ -130,7 +130,7 @@ If you find that you have to add the same badges to several projects, you may wa
 
 To add a new badge to a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Badges**.
 1. Select **Add badge**.
@@ -152,7 +152,7 @@ A common project badge presents the GitLab CI pipeline status.
 
 To add this badge to a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Badges**.
 1. Under **Name**, enter _Pipeline Status_.
@@ -181,7 +181,7 @@ If you need individual badges for each project, either:
 
 To add a new badge to a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Badges**.
 1. Under "Link", enter the URL that the badges should point to and under
@@ -203,7 +203,7 @@ Badges associated with a group can be edited or deleted only at the [group level
 You can view the exact link for your badges.
 Then you can use the link to embed the badge in your HTML or Markdown pages.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Pipeline status**, **Coverage report**, or **Latest release** sections, view the URLs for the images.
@@ -270,7 +270,7 @@ https://gitlab.example.com/<project_path>/-/raw/<default_branch>/my-image.svg
 
 To add a new badge with a custom image to a group or project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or
+1. On the left sidebar, select **Search or go to** and find your project or
    group.
 1. Select **Settings > General**.
 1. Expand **Badges**.

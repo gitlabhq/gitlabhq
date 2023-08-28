@@ -62,7 +62,7 @@ Then you'll add these new groups as members of the `engineering` group.
 
 First, create the new subgroup:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**)
+1. On the left sidebar, select **Search or go to**
    and search for `engineering`. Select the group named `Engineering`:
 
    ![The engineering group in search results](img/search_engineering_v16_2.png)
@@ -75,7 +75,7 @@ First, create the new subgroup:
 
 Next, add the subgroup as a member of the `engineering` group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**)
+1. On the left sidebar, select **Search or go to**
    and search for `engineering`. Select the group named `Engineering`.
 1. On the left sidebar, select **Manage > Members**.
 1. On the top right, select **Invite a group**.
@@ -105,7 +105,7 @@ for projects owned by `engineering`. As a result:
 
 To add a user to the `frontend` subgroup:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**)
+1. On the left sidebar, select **Search or go to**
    and search for `frontend`. Select the `Frontend` group.
 1. Select **Manage > Members**.
 1. Select **Invite members**.
@@ -127,7 +127,7 @@ smaller subgroups you just created.
 
 To create the new `excelsior` project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and
+1. On the left sidebar, select **Search or go to** and
    search for `engineering`. Select the group named `Engineering`.
 1. On the overview page for the `engineering` group, on the left sidebar, at the top,
    select **Create new...** (**{plus}**) and **In this group > New project/repository**.
@@ -162,7 +162,7 @@ GitLab Premium or Ultimate.
 
 To add a CODEOWNERS file to your `excelsior` project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and
+1. On the left sidebar, select **Search or go to** and
    search for `Excelsior`. Select the project named `Excelsior`.
 1. Next to the branch name, select the plus icon (**{plus}**), then **New file**:
    ![Create a new file in the project](img/new_file_v16_2.png)

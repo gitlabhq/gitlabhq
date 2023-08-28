@@ -12,7 +12,7 @@ You can use **Sign-in restrictions** to customize authentication restrictions fo
 
 To access sign-in restriction settings:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Sign-in restrictions** section.
@@ -76,7 +76,7 @@ Open the [Rails console](../operations/rails_console.md) and run the following:
 
 To enable Admin Mode through the UI:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Sign-in restrictions**.
@@ -86,7 +86,7 @@ To enable Admin Mode through the UI:
 
 To turn on Admin Mode for your current session and access potentially dangerous resources:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Enter Admin Mode**.
 1. Try to access any part of the UI with `/admin` in the URL (which requires administrator access).
 
@@ -104,7 +104,7 @@ authentication are supported by Admin Mode. Admin Mode status is stored in the c
 
 To turn off Admin Mode for your current session:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Leave Admin Mode**.
 
 ### Limitations of Admin Mode
@@ -181,7 +181,7 @@ For example, if you include the following information in the noted text box:
 
 To access this text box:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Sign-in restrictions** section.

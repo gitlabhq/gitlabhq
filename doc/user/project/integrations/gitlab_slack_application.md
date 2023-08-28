@@ -30,7 +30,7 @@ Although functionality has not changed, you should [reinstall the app](#update-t
 
 To install the GitLab for Slack app from project integration settings:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**.
@@ -55,7 +55,7 @@ When GitLab releases new features for the GitLab for Slack app, you might have t
 
 To update your GitLab for Slack app:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find a project for
+1. On the left sidebar, select **Search or go to** and find a project for
    which the GitLab for Slack app is configured.
 1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
@@ -105,7 +105,7 @@ The command returns an error if no matching action is found.
 
 By default, slash commands expect a project full path. To create a shorter project alias in the GitLab for Slack app:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.
 1. The current **Project Alias**, if any, is displayed. To edit this value,
@@ -122,7 +122,7 @@ With Slack notifications, GitLab can send messages to Slack workspace channels f
 
 To configure Slack notifications:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find a project for
+1. On the left sidebar, select **Search or go to** and find a project for
    which the GitLab for Slack app is [installed](#install-the-gitlab-for-slack-app).
 1. Select **Settings > Integrations**.
 1. Select **GitLab for Slack app**.

@@ -6,8 +6,8 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
   include FilteredSearchHelpers
 
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:reporter) { create(:user, :no_super_sidebar) }
+  let_it_be(:developer) { create(:user, :no_super_sidebar) }
 
   let(:user) { reporter }
 

@@ -338,7 +338,8 @@ class Project < ApplicationRecord
     primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project,
     class_name: 'ProjectMember'
 
-  has_many :users, through: :project_members
+  has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405") },
+    through: :project_members
 
   has_many :project_callouts, class_name: 'Users::ProjectCallout', foreign_key: :project_id
 

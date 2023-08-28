@@ -80,7 +80,7 @@ Prerequisites:
 
 You must register an agent before you can install the agent in your cluster. To register an agent:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
    If you have an [agent configuration file](#create-an-agent-configuration-file),
    it must be in this project. Your cluster manifest files should also be in this project.
 1. Select **Operate > Kubernetes clusters**.

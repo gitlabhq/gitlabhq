@@ -6,7 +6,7 @@ RSpec.describe 'Clusters', :js, feature_category: :groups_and_projects do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
 
   before do
     project.add_maintainer(user)

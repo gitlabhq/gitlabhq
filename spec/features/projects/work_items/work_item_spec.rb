@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Work item', :js, feature_category: :team_planning do
-  let_it_be_with_reload(:user) { create(:user) }
-  let_it_be_with_reload(:user2) { create(:user, name: 'John') }
+  let_it_be_with_reload(:user) { create(:user, :no_super_sidebar) }
+  let_it_be_with_reload(:user2) { create(:user, :no_super_sidebar, name: 'John') }
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:work_item) { create(:work_item, project: project) }

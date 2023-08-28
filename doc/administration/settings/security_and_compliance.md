@@ -17,7 +17,7 @@ We are actively working on reducing this data size in [epic 10415](https://gitla
 
 To choose the packages you want to synchronize with the GitLab License Database for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/index.md):
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Security and Compliance**.
 1. Expand **License Compliance**.

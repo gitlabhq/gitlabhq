@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_profile do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
   let(:contributed_project) { create(:project, :public, :repository) }
 
   def push_code_contribution

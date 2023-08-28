@@ -31,7 +31,7 @@ with sibling pages listed in alphabetical order. To view a list of all pages, se
 
 To access a project wiki:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. To display the wiki, either:
    - On the left sidebar, select **Plan > Wiki**.
    - On any page in the project, use the <kbd>g</kbd> + <kbd>w</kbd>
@@ -61,7 +61,7 @@ When a wiki is created, it is empty. On your first visit, you can create the
 home page users see when viewing the wiki. This page requires a specific title
 to be used as your wiki's home page. To create it:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Select **Create your first page**.
 1. GitLab requires this first page be titled `home`. The page with this
@@ -77,7 +77,7 @@ to be used as your wiki's home page. To create it:
 
 Users with at least the Developer role can create new wiki pages:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Select **New page** on this page, or any other wiki page.
 1. Select a content format.
@@ -138,7 +138,7 @@ may not be able to check out the wiki locally afterward.
 
 You need at least the Developer role to edit a wiki page:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to edit, and either:
    - Use the <kbd>e</kbd> wiki [keyboard shortcut](../../shortcuts.md#wiki-pages).
@@ -157,7 +157,7 @@ For an example, read [Table of contents](../../markdown.md#table-of-contents).
 
 You need at least the Developer role to delete a wiki page:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to delete.
 1. Select the edit icon (**{pencil}**).
@@ -168,7 +168,7 @@ You need at least the Developer role to delete a wiki page:
 
 You need at least the Developer role to move a wiki page:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to move.
 1. Select the edit icon (**{pencil}**).
@@ -192,7 +192,7 @@ The history page shows:
 
 To view the changes for a wiki page:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to view history for.
 1. Select **Page history**.
@@ -203,7 +203,7 @@ To view the changes for a wiki page:
 
 You can see the changes made in a version of a wiki page, similar to versioned diff file views:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the wiki page you're interested in.
 1. Select **Page history** to see all page versions.
@@ -234,7 +234,7 @@ You need at least the Developer role to customize the wiki
 navigation sidebar. This process creates a wiki page named `_sidebar` which fully
 replaces the default sidebar navigation:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. In the upper-right corner of the page, select **Edit sidebar**.
 1. When complete, select **Save changes**.
@@ -268,7 +268,7 @@ You can disable group wikis from the [group settings](group.md#configure-group-w
 
 To add a link to an external wiki from a project's left sidebar:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
@@ -284,7 +284,7 @@ To hide the internal wiki from the sidebar, [disable the project's wiki](#disabl
 
 To hide the link to an external wiki:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **External wiki**.
 1. Under **Enable integration**, clear the **Active** checkbox.
@@ -294,7 +294,7 @@ To hide the link to an external wiki:
 
 To disable a project's internal wiki:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to find **Wiki** and toggle it off (in gray).

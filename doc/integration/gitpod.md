@@ -45,7 +45,7 @@ With the Gitpod integration enabled for your GitLab instance, to enable it for y
 For self-managed GitLab instances, a GitLab administrator must:
 
 1. Enable the Gitpod integration in GitLab:
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. On the left sidebar, select **Search or go to**.
    1. Select **Admin Area**.
    1. On the left sidebar, select **Settings > General**.
    1. Expand the **Gitpod** configuration section.
@@ -61,7 +61,7 @@ GitLab users can then [enable the Gitpod integration for themselves](#enable-git
 You can launch Gitpod directly from GitLab in one of these ways:
 
 - **From a project repository:**
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. On the left sidebar, select **Search or go to** and find your project.
   1. In the upper right, select **Edit > Gitpod**.
 
 - **From a merge request:**

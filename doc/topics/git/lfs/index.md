@@ -32,7 +32,7 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Turn on the **Git Large File Storage (LFS)** toggle.

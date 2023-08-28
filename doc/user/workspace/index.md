@@ -43,7 +43,7 @@ The workspace can then interact with the GitLab API based on the permissions gra
 
 To open a workspace from a file or the repository file list:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. In the upper right, select **Edit**.
 1. From the dropdown list, under **Your workspaces**, select the workspace.
 

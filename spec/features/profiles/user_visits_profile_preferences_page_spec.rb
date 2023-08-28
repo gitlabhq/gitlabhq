@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User visits the profile preferences page', :js, feature_category: :user_profile do
   include ListboxHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
 
   before do
     sign_in(user)

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Users > User browses projects on user page', :js, feature_category: :groups_and_projects do
-  let!(:user) { create :user }
+  let!(:user) { create(:user, :no_super_sidebar) }
   let!(:private_project) do
     create :project, :private, name: 'private', namespace: user.namespace do |project|
       project.add_maintainer(user)
@@ -87,7 +87,7 @@ RSpec.describe 'Users > User browses projects on user page', :js, feature_catego
   end
 
   context 'when signed in as another user' do
-    let(:another_user) { create :user }
+    let(:another_user) { create(:user, :no_super_sidebar) }
 
     before do
       sign_in(another_user)

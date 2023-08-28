@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Project Graph', :js, feature_category: :groups_and_projects do
-  let(:user) { create :user }
+  let(:user) { create(:user, :no_super_sidebar) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:branch_name) { 'master' }
 

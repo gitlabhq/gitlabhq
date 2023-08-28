@@ -75,7 +75,7 @@ To create a new application for a group:
 
 To create an application for your GitLab instance:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Applications**.
 1. Select **New application**.

@@ -58,7 +58,7 @@ you can share a project with a group by inviting that group to the project.
 
 To invite a group to a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Members**.
 1. Select **Invite a group**.
 1. **Select a group** you want to add to the project.
@@ -100,7 +100,7 @@ For example, if a group member has the role of Developer, and the group is invit
 
 To view the maximum role assigned to a member:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Manage > Members**.
 1. In the **Max role** column, view the user's maximum assigned role.
 
@@ -110,7 +110,7 @@ In a group, a shared project is a project to which the group members gained acce
 
 To view a group's shared projects:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the group page, select the **Shared projects** tab.
 
 A list of shared projects is displayed.

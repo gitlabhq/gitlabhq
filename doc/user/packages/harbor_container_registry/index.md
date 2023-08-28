@@ -12,7 +12,7 @@ You can integrate the [Harbor container registry](../../../user/project/integrat
 
 You can view the Harbor Registry for a project or group.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Operate > Harbor Registry**.
 
 You can search, sort, and filter images on this page. You can share a filtered view by copying the URL from your browser.
@@ -29,7 +29,7 @@ Default settings for the Harbor integration at the project level are inherited f
 To download and run a Harbor image hosted in the GitLab Harbor Registry:
 
 1. Copy the link to your container image:
-    1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+    1. On the left sidebar, select **Search or go to** and find your project or group.
     1. Select **Operate > Harbor Registry** and find the image you want.
     1. Select the **Copy** icon next to the image name.
 
@@ -39,7 +39,7 @@ To download and run a Harbor image hosted in the GitLab Harbor Registry:
 
 To view the list of tags associated with a specific artifact:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Go to **Operate > Harbor Registry**.
 1. Select the image name to view its artifacts.
 1. Select the artifact you want.
@@ -57,7 +57,7 @@ To build and push to the Harbor Registry:
 
 To view these commands:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Operate > Harbor Registry**.
 1. Select **CLI Commands**.
 
@@ -65,7 +65,7 @@ To view these commands:
 
 To remove the Harbor Registry for a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > Integrations**.
 1. Select **Harbor** under **Active integrations**.
 1. Under **Enable integration**, clear the **Active** checkbox.

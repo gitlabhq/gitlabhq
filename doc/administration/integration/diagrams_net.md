@@ -43,7 +43,7 @@ For more information, see [Run your own diagrams.net server with Docker](https:/
 ## Enable Diagrams.net integration
 
 1. Sign in to GitLab as an [Administrator](../../user/permissions.md) user.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Diagrams.net**.

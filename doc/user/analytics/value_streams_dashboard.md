@@ -81,12 +81,12 @@ To view the value streams dashboard:
 
 - From Analytics Dashboards:
 
-   1. On the group left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+   1. On the group left sidebar, select **Search or go to** and find your group.
    1. Select **Analyze > Analytics Dashboards**.
 
 - From Value Stream Analytics:
 
-   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+   1. On the left sidebar, select **Search or go to** and find your project or group.
    1. Select **Analyze > Value stream analytics**.
    1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
    1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
@@ -118,7 +118,7 @@ Prerequisite:
 
 - You must have at least the Maintainer role for the group.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Analytics**.
 1. Select the project where you would like to store your YAML configuration file.
@@ -126,7 +126,7 @@ Prerequisite:
 
 After you have set up the project, set up the configuration file:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. In the default branch, create the configuration file: `.gitlab/analytics/dashboards/value_streams/value_streams.yaml`.
 1. In the `value_streams.yaml` configuration file, fill in the configuration options:
 

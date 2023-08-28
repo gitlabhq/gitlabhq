@@ -58,7 +58,7 @@ to select, edit, and unlink a security policy project.
 As a project owner, take the following steps to create or edit an association between your current
 project and a project that you would like to designate as the security policy project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
 1. Select **Edit Policy Project**, and search for and select the
    project you would like to link from the dropdown list.
@@ -82,7 +82,7 @@ policies for all available environments. You can check a
 policy's information (for example, description or enforcement
 status), and create and edit deployed policies:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
 
 ![Policies List Page](img/policies_list_v15_1.png)
@@ -93,7 +93,7 @@ status), and create and edit deployed policies:
 
 You can use the policy editor to create, edit, and delete policies:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
    - To create a new policy, select **New policy** which is located in the **Policies** page's header.
      You can then select which type of policy to create.

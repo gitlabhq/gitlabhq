@@ -409,7 +409,7 @@ so other users can discover it.
 
 To mark a project as a catalog resource:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to **CI/CD Catalog resource** and select the toggle to mark the project as a catalog resource.

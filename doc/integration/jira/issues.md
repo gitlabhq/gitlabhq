@@ -52,7 +52,7 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enable this feature:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. In the **Merge checks** section, select **Require an associated issue from Jira**.
 1. Select **Save**.
@@ -76,7 +76,7 @@ When you don't configure custom rules, the [default behavior](https://gitlab.com
 
 To define a regex pattern for Jira issue keys:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Jira**.
 1. Go to the **Jira issue matching** section.
@@ -92,7 +92,7 @@ and you've set a `JIRA#` prefix, GitLab matches `JIRA#ALPHA-1` rather than `ALPH
 
 To define a prefix for Jira issue keys:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Jira**.
 1. Go to the **Jira issue matching** section.
@@ -136,7 +136,7 @@ provided your GitLab administrator [has configured the integration](configure.md
 
 To view Jira issues:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Plan > Jira issues**.
 
 The issues are sorted by **Created date** by default, with the most recently created issues listed at the top.

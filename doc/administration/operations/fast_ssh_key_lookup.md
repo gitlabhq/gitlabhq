@@ -121,7 +121,7 @@ users as long as a large file exists.
 
 To disable writes to the `authorized_keys` file:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Performance optimization**.
@@ -141,7 +141,7 @@ This overview is brief. Refer to the above instructions for more context.
 
 1. [Rebuild the `authorized_keys` file](../raketasks/maintenance.md#rebuild-authorized_keys-file).
 1. Enable writes to the `authorized_keys` file.
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. On the left sidebar, select **Search or go to**.
    1. Select **Admin Area**.
    1. On the left sidebar, select **Settings > Network**.
    1. Expand **Performance optimization**.

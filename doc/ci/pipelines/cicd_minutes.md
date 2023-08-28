@@ -54,7 +54,7 @@ Prerequisite:
 
 To change the default quota that applies to all namespaces:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
@@ -76,7 +76,7 @@ Prerequisite:
 
 To set a compute quota for a namespace:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Groups**.
 1. For the group you want to update, select **Edit**.
@@ -107,7 +107,7 @@ Prerequisite:
 
 To view compute usage for your group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to
+1. On the left sidebar, select **Search or go to** and
    find your group. The group must not be a subgroup.
 1. Select **Settings > Usage Quotas**.
 1. Select the **Pipelines** tab.
@@ -167,7 +167,7 @@ You can purchase additional compute minutes for your group.
 You cannot transfer purchased compute minutes from one group to another,
 so be sure to select the correct group.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
 1. Select **Pipelines**.
 1. Select **Buy additional compute minutes**.

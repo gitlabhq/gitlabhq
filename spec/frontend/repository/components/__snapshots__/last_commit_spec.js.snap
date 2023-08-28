@@ -58,18 +58,13 @@ exports[`Repository last commit component renders commit widget 1`] = `
       <div
         class="ci-status-link"
       >
-        <gl-link-stub
+        <ci-badge-link-stub
+          aria-label="Pipeline: failed"
+          badgesize="lg"
           class="js-commit-pipeline"
-          href="https://test.com/pipeline"
-          title="Pipeline: failed"
-        >
-          <ci-icon-stub
-            aria-label="Pipeline: failed"
-            cssclasses=""
-            size="24"
-            status="[object Object]"
-          />
-        </gl-link-stub>
+          details-path="https://test.com/pipeline"
+          status="[object Object]"
+        />
       </div>
       <gl-button-group-stub
         class="gl-ml-4 js-commit-sha-group"

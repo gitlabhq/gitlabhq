@@ -29,7 +29,7 @@ Prerequisite:
 
 To add a group README:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. In the **Group README** section, select **Add README**. This action creates a new project `gitlab-profile` that contains the `README.md` file.
 1. On the prompt for creating a README, select **Create and add README**. You're redirected to the Web IDE, where a README file is created.
@@ -41,12 +41,12 @@ You can change the owner of a group. Each group must always have at least one
 member with the Owner role.
 
 - As an administrator:
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+  1. On the left sidebar, select **Search or go to** and find your group.
   1. Select **Manage > Members**.
   1. Give a different member the **Owner** role.
   1. Refresh the page. You can now remove the **Owner** role from the original owner.
 - As the current group's owner:
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+  1. On the left sidebar, select **Search or go to** and find your group.
   1. Select **Manage > Members**.
   1. Give a different member the **Owner** role.
   1. Have the new owner sign in and remove the **Owner** role from you.
@@ -72,7 +72,7 @@ create a new group and transfer projects to it instead.
 
 To change your group path (group URL):
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter a new name.
@@ -138,7 +138,7 @@ After sharing the `Frontend` group with the `Engineering` group:
 
 To unshare a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Select the **Groups** tab.
 1. To the right of the account you want to remove, select **Remove group** (**{remove}**).
@@ -175,7 +175,7 @@ When transferring groups, note:
 
 To transfer a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Advanced** section.
 1. In the **Remove group** section, select **Transfer group**.
@@ -190,7 +190,7 @@ You can disable all email notifications related to the group, which includes its
 
 To disable email notifications:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Email notifications are disabled**.
@@ -210,7 +210,7 @@ This is particularly helpful for groups with a large number of users.
 
 To disable group mentions:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Group mentions are disabled**.
@@ -223,7 +223,7 @@ To disable group mentions:
 
 You can export a list of members in a group or subgroup as a CSV.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group or subgroup.
+1. On the left sidebar, select **Search or go to** and find your group or subgroup.
 1. On the left sidebar,  **Manage > Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
@@ -253,7 +253,7 @@ Prerequisite:
 
 To specify a user cap:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
    You can set a cap on the top-level group only.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
@@ -275,7 +275,7 @@ Prerequisite:
 
 To remove the user cap:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. In the **User cap** box, delete the value.
@@ -296,7 +296,7 @@ Prerequisite:
 
 To approve members that are pending because they've exceeded the user cap:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
@@ -337,7 +337,7 @@ For more information, see [group-level project templates](custom_project_templat
 
 To enable group file templates:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Templates** section.
 1. Choose a project to act as the template repository.
@@ -370,7 +370,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**, select **Pipelines must succeed**.
@@ -389,7 +389,7 @@ Prerequisite:
 
 To change this behavior:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**:
@@ -408,7 +408,7 @@ Prerequisite:
 
 To enable this setting:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**, select **All threads must be resolved**.
@@ -426,7 +426,7 @@ that belong to the group.
 
 To view the merge request approval settings for a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Merge request approvals** section.
 1. Select the settings you want.
@@ -456,7 +456,7 @@ You can give all users in a group and its subgroups access to [Code Suggestions]
 
 To enable Code Suggestions for a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Code Suggestions**, select the **Projects in this group can use Code Suggestions** checkbox.
@@ -477,7 +477,7 @@ that belong to the group.
 
 To enable Experiment features for a top-level group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Experiment features**, select the **Use Experiment features** checkbox.
@@ -497,7 +497,7 @@ that belong to the group.
 
 To disable third-party AI features for a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Third-party AI services**, uncheck the **Use third-party AI services** checkbox.
@@ -522,7 +522,7 @@ Changes to [group wikis](../project/wiki/group.md) do not appear in group activi
 
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Manage > Activity**.
 
 To view the activity feed in Atom format, select the

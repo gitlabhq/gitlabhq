@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting, :js, feature_category: :system_access do
   include EmailHelpers
 
-  let_it_be_with_reload(:user) { create(:user) }
-  let_it_be(:another_user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:another_user) { create(:user, :no_super_sidebar) }
   let_it_be(:new_email) { build_stubbed(:user).email }
 
   let(:require_email_verification_enabled) { user }
@@ -220,7 +220,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
 
   shared_examples 'no email verification required when 2fa enabled or ff disabled' do
     context 'when 2FA is enabled' do
-      let_it_be(:user) { create(:user, :two_factor) }
+      let_it_be(:user) { create(:user, :no_super_sidebar, :two_factor) }
 
       it_behaves_like 'no email verification required', two_factor_auth: true
     end

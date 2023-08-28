@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'User searches for users', :js, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
-  let_it_be(:user1) { create(:user, username: 'gob_bluth', name: 'Gob Bluth') }
-  let_it_be(:user2) { create(:user, username: 'michael_bluth', name: 'Michael Bluth') }
-  let_it_be(:user3) { create(:user, username: 'gob_2018', name: 'George Oscar Bluth') }
+  let_it_be(:user1) { create(:user, :no_super_sidebar, username: 'gob_bluth', name: 'Gob Bluth') }
+  let_it_be(:user2) { create(:user, :no_super_sidebar, username: 'michael_bluth', name: 'Michael Bluth') }
+  let_it_be(:user3) { create(:user, :no_super_sidebar, username: 'gob_2018', name: 'George Oscar Bluth') }
 
   before do
     sign_in(user1)

@@ -33,7 +33,7 @@ set values are presented as **Too large** are cannot be expanded in the UI.
 
 To configure these values:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Diff limits**.

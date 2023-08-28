@@ -109,10 +109,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     job = stop_actions.first if stop_actions&.count == 1
 
     action_or_env_url =
-      if job.instance_of?(::Ci::Build)
-        polymorphic_url([project, job])
-      elsif job.instance_of?(::Ci::Bridge)
-        project_pipeline_url(project, job.pipeline_id)
+      if job
+        project_job_url(project, job)
       else
         project_environment_url(project, @environment)
       end

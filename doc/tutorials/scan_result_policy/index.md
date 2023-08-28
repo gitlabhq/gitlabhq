@@ -35,7 +35,7 @@ To set up a scan result policy:
 
 Next, you'll add a scan result policy to your test project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `sast-scan-result-policy` project.
+1. On the left sidebar, select **Search or go to** and find the `sast-scan-result-policy` project.
 1. Select **Secure > Policies**.
 1. Select **New policy**.
 1. In **Scan result policy**, select **Select policy**.
@@ -60,7 +60,7 @@ Next, you'll add a scan result policy to your test project:
    The application creates a new project to store the policies linked to it, and creates a merge request to define the policy.
 
 1. Select **Merge**.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `sast-scan-result-policy` project.
+1. On the left sidebar, select **Search or go to** and find the `sast-scan-result-policy` project.
 1. Select **Secure > Policies**.
 
    You can see the list of policies added in the previous steps.
@@ -69,7 +69,7 @@ Next, you'll add a scan result policy to your test project:
 
 Nice work, you've created a scan result policy. To test it, create some vulnerabilities and check the result:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `sast-scan-result-policy` project.
+1. On the left sidebar, select **Search or go to** and find the `sast-scan-result-policy` project.
 1. Select **Code > Repository**.
 1. From the **Add** (**{plus}**) dropdown list, select **New file**.
 1. In the **Filename** field enter `main.ts`.

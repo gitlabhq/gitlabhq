@@ -3,7 +3,7 @@
 require "spec_helper"
 
 RSpec.describe 'Project wikis', :js, feature_category: :wiki do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   let(:wiki) { create(:project_wiki, user: user, project: project) }
   let(:project) { create(:project, namespace: user.namespace, creator: user) }

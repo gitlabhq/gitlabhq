@@ -49,7 +49,7 @@ which you can customize to meet the specific needs of each project.
   provided that remote development is properly configured for that agent.
 - You must have at least the Developer role in the root group.
 - In each public project you want to use this feature for, create a [devfile](index.md#devfile):
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. On the left sidebar, select **Search or go to** and find your project.
   1. In the root directory of your project, create a file named `.devfile.yaml`.
      You can use one of the [example configurations](index.md#example-configurations).
 - Ensure the container images used in the devfile support [arbitrary user IDs](index.md#arbitrary-user-ids).
@@ -58,7 +58,7 @@ which you can customize to meet the specific needs of each project.
 
 To create a workspace:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Workspaces**.
 1. Select **New workspace**.

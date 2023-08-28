@@ -14,7 +14,7 @@ web interface.
 
 ## System hooks
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **System Hooks**.
 
@@ -33,7 +33,7 @@ encouraged for communications through system hooks.
 
 ## Push rules
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Push Rules**.
 
@@ -48,7 +48,7 @@ The adjustments help limit pushes to established and authorized users.
 
 ## Deploy keys
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Deploy Keys**.
 
@@ -61,7 +61,7 @@ the documentation on [deploy keys](../user/project/deploy_keys/index.md) and
 
 ## General
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 
@@ -180,7 +180,7 @@ For more detailed information, see
 
 ## Integrations
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Integrations**.
 
@@ -192,7 +192,7 @@ process or authenticated user.
 
 ## Metrics and profiling
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 
@@ -210,7 +210,7 @@ help you make an informed decision, see
 
 ## Network
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Network**.
 

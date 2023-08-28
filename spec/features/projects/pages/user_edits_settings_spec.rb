@@ -5,7 +5,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be_with_reload(:project) { create(:project, :pages_published, pages_https_only: false) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)

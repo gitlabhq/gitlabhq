@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_projects do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
   let(:project) { create(:project, :private, public_builds: false, namespace: user.namespace) }
 
   # NOTE: See documented behaviour https://design.gitlab.com/regions/navigation#contextual-navigation
@@ -182,7 +182,7 @@ RSpec.describe 'Projects > User sees sidebar', feature_category: :groups_and_pro
   end
 
   context 'as guest' do
-    let(:guest) { create(:user) }
+    let(:guest) { create(:user, :no_super_sidebar) }
     let!(:issue) { create(:issue, :opened, project: project, author: guest) }
 
     before do

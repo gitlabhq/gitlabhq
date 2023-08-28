@@ -13,7 +13,7 @@ Use the **Settings** page to manage the configuration options in your [project](
 
 You must have at least the Maintainer role to view project settings.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. To display all settings in a section, select **Expand**.
 1. Optional. Use the search box to find a setting.
@@ -23,7 +23,7 @@ You must have at least the Maintainer role to view project settings.
 Use the project general settings to edit your project details.
 
 1. Sign in to GitLab with at least the Maintainer role.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. In the **Project name** text box, enter your project name.
 1. In the **Project description** text box, enter your project description.
@@ -35,7 +35,7 @@ Use topics to categorize projects and find similar new projects.
 
 To assign topics to a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. In the **Topics** text box, enter the project topics. Popular topics are suggested as you type.
 1. Select **Save changes**.
@@ -61,7 +61,7 @@ When you change the repository path, users may experience issues if they push to
 
 To rename a repository:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Change path** text box, edit the path.
@@ -71,7 +71,7 @@ To rename a repository:
 
 To configure features and permissions for a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. To allow users to request access to the project, select the **Users can request access** checkbox.
@@ -126,7 +126,7 @@ In merge requests, you can change the default behavior so that the
 
 To set this default:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. Select **Enable "Delete source branch" option by default**.
 1. Select **Save changes**.
@@ -150,7 +150,7 @@ Prerequisites:
 
 To transfer a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the namespace to transfer the project to.
@@ -178,7 +178,7 @@ other features are read-only. Archived projects are also hidden from project lis
 
 To archive a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Archive project** section, select **Archive project**.
@@ -194,8 +194,8 @@ Prerequisites:
 - To unarchive a project, you must be an administrator or a project Owner.
 
 1. Find the archived project.
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-   1. Select **View all your projects**.
+   1. On the left sidebar, select **Search or go to**.
+   1. Select **View all my projects**.
    1. Select **Explore projects**.
    1. In the **Sort projects** dropdown list, select **Show archived projects**.
    1. In the **Filter by name** field, enter the project name.
@@ -220,7 +220,7 @@ Prerequisite:
 
 To delete a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Delete this project** section, select **Delete project**.
@@ -256,7 +256,7 @@ Prerequisites:
 
 To immediately delete a project marked for deletion:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Delete this project** section, select **Delete project**.
@@ -268,7 +268,7 @@ To immediately delete a project marked for deletion:
 
 To restore a project marked for deletion:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the Restore project section, select **Restore project**.
@@ -304,7 +304,7 @@ In some environments, users can submit a [CVE identifier request](../../applicat
 
 To disable the CVE identifier request option in issues in your project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
@@ -316,7 +316,7 @@ Prerequisites:
 
 - You must be an Owner of the project to disable email notifications related to the project.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Clear the **Disable email notifications** checkbox.

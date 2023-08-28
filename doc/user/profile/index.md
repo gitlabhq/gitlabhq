@@ -353,7 +353,7 @@ A list of **Most Recent Activity** contributions is displayed.
 
 To view your activity:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Activity**.
 1. Optional. To filter your activity by contribution type, in the **Your Activity** tab, select a tab:

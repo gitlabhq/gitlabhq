@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Usage stats consent', feature_category: :service_ping do
   context 'when signed in' do
-    let(:user) { create(:admin, created_at: 8.days.ago) }
+    let(:user) { create(:admin, :no_super_sidebar, created_at: 8.days.ago) }
     let(:message) { 'To help improve GitLab, we would like to periodically collect usage information.' }
 
     before do

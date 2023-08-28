@@ -13,7 +13,7 @@ In these issues, you can also see our friendly neighborhood [Support Bot](config
 
 To check what the Service Desk email address is for your project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Service Desk**.
 
 The email address is available at the top of the issue list.
@@ -65,7 +65,7 @@ Prerequisites:
 
 To view Service Desk issues:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Service Desk**.
 
 ## Email contents and formatting

@@ -17,8 +17,11 @@ RSpec.describe Expirable do
     it 'scopes the query when multiple models are expirable' do
       expired_access_token = create(:personal_access_token, :expired, user: no_expire.user)
 
-      expect(PersonalAccessToken.expired.joins(user: :members)).to match_array([expired_access_token])
-      expect(PersonalAccessToken.joins(user: :members).merge(ProjectMember.expired)).to eq([])
+      ::Gitlab::Database.allow_cross_joins_across_databases(url:
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/422405') do
+        expect(PersonalAccessToken.expired.joins(user: :members)).to match_array([expired_access_token])
+        expect(PersonalAccessToken.joins(user: :members).merge(ProjectMember.expired)).to eq([])
+      end
     end
 
     it 'works with a timestamp expired_at field', time_travel_to: '2022-03-14T11:30:00Z' do

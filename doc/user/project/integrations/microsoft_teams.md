@@ -35,7 +35,7 @@ After you configure Microsoft Teams to receive notifications, you must configure
 GitLab to send the notifications:
 
 1. Sign in to GitLab as an administrator.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Microsoft Teams notifications**.
 1. To enable the integration, select **Active**.

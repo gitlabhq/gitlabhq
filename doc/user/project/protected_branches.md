@@ -95,7 +95,7 @@ Prerequisites:
 
 To protect a branch:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
@@ -133,7 +133,7 @@ Prerequisite:
 
 To protect a branch for all the projects in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
@@ -157,7 +157,7 @@ Prerequisite:
 
 To protect multiple branches at the same time:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
@@ -193,7 +193,7 @@ from the command line or from a Git client application.
 
 To create a new branch through the user interface:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Branches**.
 1. Select **New branch**.
 1. Fill in the branch name and select an existing branch, tag, or commit to
@@ -205,7 +205,7 @@ To create a new branch through the user interface:
 You can force everyone to submit a merge request, rather than allowing them to
 check in directly to a protected branch:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
@@ -218,7 +218,7 @@ check in directly to a protected branch:
 
 You can allow everyone with write access to push to the protected branch.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
@@ -247,7 +247,7 @@ Prerequisites:
 
 To allow a deploy key to push to a protected branch:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
@@ -267,7 +267,7 @@ protected branches.
 
 To protect a new branch and enable force push:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
@@ -280,7 +280,7 @@ To protect a new branch and enable force push:
 
 To enable force pushes on branches that are already protected:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
@@ -322,7 +322,7 @@ the applicable rules have **Required approval from code owners** enabled.
 
 To protect a new branch and enable Code Owner's approval:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
@@ -333,7 +333,7 @@ To protect a new branch and enable Code Owner's approval:
 
 To enable Code Owner's approval on branches that are already protected:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
@@ -366,7 +366,7 @@ for details about the pipelines security model.
 Users with at least the Maintainer role can manually delete protected
 branches by using the GitLab web interface:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Branches**.
 1. Next to the branch you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, enter the branch name and select **Yes, delete protected branch**.

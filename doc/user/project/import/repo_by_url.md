@@ -19,8 +19,8 @@ You can import your existing repositories by providing the Git URL.
 
 ## Import project by URL
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my projects**.
 1. On the right of the page, select **New project**.
 1. Select the **Import project** tab.
 1. Select **Repository by URL**.

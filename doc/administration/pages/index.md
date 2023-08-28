@@ -406,7 +406,7 @@ domain as a custom domain to their project.
 If your user base is private or otherwise trusted, you can disable the
 verification requirement:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
@@ -424,7 +424,7 @@ sites served under a custom domain.
 To enable it:
 
 1. Choose an email address on which you want to receive notifications about expiring domains.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
@@ -478,7 +478,7 @@ pre-existing applications must modify the GitLab Pages OAuth application. Follow
 this:
 
 1. Enable [access control](#access-control).
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Applications**.
 1. Expand **GitLab Pages**.
@@ -498,7 +498,7 @@ This can be helpful to restrict information published with Pages websites to the
 of your instance only.
 To do that:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
@@ -689,7 +689,7 @@ Prerequisite:
 
 To set the global maximum pages size for a project:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Pages**.
@@ -704,7 +704,7 @@ Prerequisite:
 
 To set the maximum size of each GitLab Pages site in a group, overriding the inherited setting:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Pages**.
 1. Enter a value under **Maximum size** in MB.
@@ -718,7 +718,7 @@ Prerequisite:
 
 To set the maximum size of GitLab Pages site in a project, overriding the inherited setting:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Deploy > Pages**.
 1. In **Maximum size of pages**, enter the size in MB.
 1. Select **Save changes**.
@@ -731,7 +731,7 @@ Prerequisite:
 
 To set the maximum number of GitLab Pages custom domains for a project:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**, and expand **Pages**.
 1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.

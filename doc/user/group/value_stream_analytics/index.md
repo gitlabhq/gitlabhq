@@ -212,7 +212,7 @@ Prerequisites:
 
 To view value stream analytics for your group or project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value stream analytics**.
 1. To view metrics for a particular stage, select a stage below the **Filter results** text box.
 1. Optional. Filter the results:
@@ -302,7 +302,7 @@ Prerequisite:
 
 To view lifecycle metrics:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value stream analytics**.
    Lifecycle metrics display below the **Filter results** text box.
 1. Optional. Filter the results:
@@ -316,7 +316,7 @@ To view lifecycle metrics:
 
 To view the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) and [DORA metrics](../../analytics/dora_metrics.md):
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value stream analytics**.
 1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
 1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
@@ -331,7 +331,7 @@ Value stream analytics shows the median time spent by issues or merge requests i
 
 To view the median time spent in each stage by a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value stream analytics**.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
@@ -355,7 +355,7 @@ group and time frame.
 
 To view tasks by type:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > Value stream analytics**.
 1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
 1. To switch between the task type, select the **Settings** (**{settings}**) dropdown list
@@ -372,7 +372,7 @@ To view tasks by type:
 When you create a value stream, you can use GitLab default stages and hide or re-order them. You can also
 create custom stages in addition to those provided in the default template.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value Stream analytics**.
 1. Select **Create new Value Stream**.
 1. Enter a name for the value stream.
@@ -396,7 +396,7 @@ If you have recently upgraded to GitLab Premium, it can take up to 30 minutes fo
 
 When you create a value stream, you can create and add custom stages that align with your own development workflows.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value Stream analytics**.
 1. Select **Create value stream**.
 1. For each stage:
@@ -430,7 +430,7 @@ The first value stream uses standard timestamp-based events for defining the sta
 
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value Stream analytics**.
 1. In the upper-right corner, select the dropdown list, then select a value stream.
 1. Next to the value stream dropdown list, select **Edit**.
@@ -449,7 +449,7 @@ After you create a value stream, you can customize it to suit your purposes. To 
 
 To delete a custom value stream:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. In the upper-right corner, select the dropdown list, then select the value stream you would like to delete.
 1. Select **Delete (name of value stream)**.
 1. To confirm, select **Delete**.
@@ -464,7 +464,7 @@ To delete a custom value stream:
 The **Total time chart** shows the average number of days it takes for development cycles to complete.
 The chart shows data for the last 500 workflow items.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value stream analytics**.
 1. Above the **Filter results** box, select a stage:
    - To view a summary of the cycle time for all stages, select **Overview**.

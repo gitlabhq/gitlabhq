@@ -89,7 +89,7 @@ In this method you manually edit the existing `.gitlab-ci.yml` file. Use this me
 
 To include the DAST template:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
 1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file.
 
@@ -156,7 +156,7 @@ snippet is created that you paste into the `.gitlab-ci.yml` file.
 
 To configure DAST using the UI:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Enable DAST** or
    **Configure DAST**.
@@ -483,7 +483,7 @@ An on-demand scan can be run in active or passive mode:
 
 To view on-demand scans:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > On-demand scans**.
 
 On-demand scans are grouped by their status. The scan library contains all available on-demand
@@ -499,7 +499,7 @@ Prerequisites:
 
 To run an existing on-demand scan:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the scan's row, select **Run scan**.
@@ -522,7 +522,7 @@ Create an on-demand scan to:
 
 To create an on-demand DAST scan:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > On-demand scans**.
 1. Select **New scan**.
 1. Complete the **Scan name** and **Description** fields.
@@ -550,7 +550,7 @@ The on-demand DAST scan runs as specified and the project's dashboard shows the 
 
 To view details of an on-demand scan:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
@@ -559,7 +559,7 @@ To view details of an on-demand scan:
 
 To edit an on-demand scan:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
@@ -570,7 +570,7 @@ To edit an on-demand scan:
 
 To delete an on-demand scan:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Delete**.
@@ -632,7 +632,7 @@ equivalent in functionality, so use whichever is most suitable:
 
 To create a site profile:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select **New > Site profile**.
@@ -651,7 +651,7 @@ When a validated site profile's file, header, or meta tag is edited, the site's
 
 To edit a site profile:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
@@ -666,7 +666,7 @@ See [Scan execution policies](../policies/scan-execution-policies.md) for more i
 
 To delete a site profile:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
@@ -684,7 +684,7 @@ Prerequisites:
 
 To validate a site profile:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
@@ -721,7 +721,7 @@ page.
 
 To retry a site profile's failed validation:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Site Profiles** tab.
@@ -735,7 +735,7 @@ have their validation status revoked.
 
 To revoke a site profile's validation status:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Beside the validated profile, select **Revoke validation**.
@@ -806,7 +806,7 @@ A scanner profile contains:
 
 To create a scanner profile:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select **New > Scanner profile**.
@@ -821,7 +821,7 @@ For more information, see [Scan execution policies](../policies/scan-execution-p
 
 To edit a scanner profile:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Scanner profiles** tab.
@@ -837,7 +837,7 @@ page. For more information, see [Scan execution policies](../policies/scan-execu
 
 To delete a scanner profile:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
 1. Select the **Scanner profiles** tab.

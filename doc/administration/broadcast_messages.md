@@ -57,7 +57,7 @@ To display messages to users on your GitLab instance, add a broadcast message.
 
 To add a broadcast message:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Messages**.
 1. Select **Add new message**.
@@ -86,7 +86,7 @@ If you must make changes to a broadcast message, you can edit it.
 
 To edit a broadcast message:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Messages**.
 1. From the list of broadcast messages, select the edit button for the message.
@@ -101,7 +101,7 @@ You can delete a broadcast message while it's active.
 
 To delete a broadcast message:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Messages**.
 1. From the list of broadcast messages, select the delete button for the message.

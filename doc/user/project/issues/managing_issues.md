@@ -18,7 +18,7 @@ Prerequisites:
 
 To edit an issue:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select the title of your issue to view it.
 1. To the right of the title, select **Edit title and description** (**{pencil}**).
 1. Edit the available fields.
@@ -54,7 +54,7 @@ Prerequisites:
 
 To edit multiple issues at the same time:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
@@ -88,7 +88,7 @@ Prerequisites:
 
 To edit multiple issues at the same time:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Issues**.
 1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to edit.
@@ -117,7 +117,7 @@ Prerequisites:
 
 To move an issue:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. On the right sidebar, select **Move issue**.
 1. Search for a project to move the issue to.
@@ -138,7 +138,7 @@ Prerequisite:
 
 To move multiple issues at the same time:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. Select **Bulk edit**. A sidebar on the right of your screen appears.
 1. Select the checkboxes next to each issue you want to move.
@@ -212,7 +212,7 @@ To close an issue, you can either:
 
 - In an [issue board](../issue_board.md), drag an issue card from its list into the **Closed** list.
 - From any other page in the GitLab UI:
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Plan > Issues**, then select your issue to view it.
   1. At the top of the issue, select **Close issue**.
 
@@ -309,7 +309,7 @@ Prerequisites:
 
 To disable automatic issue closing:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Branch defaults**.
 1. Clear the **Auto-close referenced issues on default branch** checkbox.
@@ -357,7 +357,7 @@ Prerequisites:
 
 To change issue type:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. To the right of the title, select **Edit title and description** (**{pencil}**).
 1. Edit the issue and select an issue type from the **Issue type** dropdown list:
@@ -377,14 +377,14 @@ Prerequisites:
 
 To delete an issue:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. On the top right corner, select **Issue actions** (**{ellipsis_v}**).
 1. Select **Delete issue**.
 
 Alternatively:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select the title of your issue to view it.
 1. Select **Edit title and description** (**{pencil}**).
 1. Select **Delete issue**.
@@ -399,7 +399,7 @@ You can promote an issue to an [epic](../../group/epics/index.md) in the immedia
 
 To promote an issue to an epic:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. On the top right corner, select **Issue actions** (**{ellipsis_v}**).
 1. Select **Promote to epic**.
@@ -422,7 +422,7 @@ You can use the `/promote_to_incident` [quick action](../quick_actions.md) to pr
 
 To add an issue to an [iteration](../../group/iterations/index.md):
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to associate this issue with.
@@ -434,7 +434,7 @@ Alternatively, you can use the `/iteration` [quick action](../quick_actions.md#i
 
 To view all issues assigned to you:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**).
+1. On the left sidebar, select **Search or go to**.
 1. From the dropdown list, select **Issues assigned to me**.
 
 Or:
@@ -453,7 +453,7 @@ Or:
 
 To filter the list of issues:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. Above the list of issues, select **Search or filter results...**.
 1. In the dropdown list that appears, select the attribute you want to filter by.
@@ -491,7 +491,7 @@ when you [filter the list of issues](#filter-the-list-of-issues) by:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
 1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
 
@@ -504,7 +504,7 @@ To refer to an issue elsewhere in GitLab, you can use its full URL or a short re
 
 To copy the issue reference to your clipboard:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. On the right sidebar, next to **Reference**, select **Copy Reference** (**{copy-to-clipboard}**).
 
@@ -528,7 +528,7 @@ For more information about creating comments by sending an email and the necessa
 
 To copy the issue's email address:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. On the right sidebar, next to **Issue email**, select **Copy Reference** (**{copy-to-clipboard}**).
 
@@ -545,7 +545,7 @@ themselves or another project member assigns them.
 
 To change the assignee on an issue:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. On the right sidebar, in the **Assignee** section, select **Edit**.
 1. From the dropdown list, select the user to add as an assignee.
@@ -586,7 +586,7 @@ Prerequisites:
 
 To edit health status of an issue:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. On the right sidebar, in the **Health status** section, select **Edit**.
 1. From the dropdown list, select the status to add to this issue:

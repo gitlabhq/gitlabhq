@@ -32,7 +32,7 @@ You can also [revoke](#revoke-a-users-personal-access-token) and [delete](#delet
 
 To access the Credentials inventory:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Credentials**.
 

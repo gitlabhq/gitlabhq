@@ -64,7 +64,7 @@ Deploy keys work even if the user who created them is removed from the group or 
 
 To view the deploy keys available to a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
 
@@ -82,7 +82,7 @@ Prerequisites:
 - [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
   key on the host that requires access to the repository.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. Select **Add new key**.
@@ -104,7 +104,7 @@ Prerequisites:
 
 To create a public deploy key:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Deploy Keys**.
 1. Select **New deploy key**.
@@ -122,7 +122,7 @@ Prerequisites:
 
 To grant a public deploy key access to a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. Select **Publicly accessible deploy keys**.
@@ -139,7 +139,7 @@ Prerequisites:
 
 To edit the project access permissions of a deploy key:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. In the key's row, select **Edit** (**{pencil}**).
@@ -156,7 +156,7 @@ Prerequisites:
 
 To disable a deploy key:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Deploy keys**.
 1. Select **Disable** (**{cancel}**).

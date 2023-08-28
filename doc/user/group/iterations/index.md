@@ -50,7 +50,7 @@ Prerequisites:
 
 To create an iteration cadence:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations**.
 1. Select **New iteration cadence**.
 1. Enter the title and description of the iteration cadence.
@@ -70,7 +70,7 @@ If you want to manually manage the created cadence, read [Manual Iteration Manag
 
 ### View the iterations list
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations**.
 
 To view all the iterations in a cadence, ordered by descending date, select that iteration cadence.
@@ -91,7 +91,7 @@ Prerequisites:
 
 To edit an iteration cadence:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations**.
 1. Select **Edit iteration cadence**.
 
@@ -105,7 +105,7 @@ doesn't delete the eight existing upcoming iterations.
 
 #### Turn on and off automatic scheduling for an iteration cadence
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations**.
 1. Next to the cadence for which you want to turn on or off automatic scheduling, select the
    three-dot menu (**{ellipsis_v}**) **> Edit cadence**.
@@ -157,7 +157,7 @@ Deleting an iteration cadence also deletes all iterations within that cadence.
 
 To delete an iteration cadence:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations**.
 1. Select the three-dot menu (**{ellipsis_v}**) > **Delete cadence** for the cadence you want to delete.
 1. Select **Delete cadence**.
@@ -178,7 +178,7 @@ Prerequisites:
 
 To create an iteration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Plan > Iterations** and select an iteration cadence.
 1. Select **New iteration**.
 1. Enter the title, a description (optional), a start date, and a due date.
@@ -277,7 +277,7 @@ and get a more accurate understanding of scope attributable to each label.
 
 To group issues by label:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Iterations**.
 1. In the **Group by** dropdown list, select **Label**.
 1. Select the **Filter by label** dropdown list.

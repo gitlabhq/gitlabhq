@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can use [Redmine](https://www.redmine.org/) as an external issue tracker.
 To enable the Redmine integration in a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Redmine**.
 1. Under **Enable integration**, select the **Active** checkbox.

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Several options are available for customizing the appearance of a self-managed instance
 of GitLab. To access these settings:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Appearance**.
 
@@ -83,7 +83,7 @@ description, and icon.
 
 To configure the PWA settings:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Appearance**.
 1. Scroll to the **Progressive Web App (PWA)** section.

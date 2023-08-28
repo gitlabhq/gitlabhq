@@ -23,7 +23,7 @@ For the default setting on GitLab.com, see the [GitLab.com settings page](../use
 
 To configure deletion of inactive projects:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Repository maintenance**.

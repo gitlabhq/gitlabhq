@@ -37,7 +37,7 @@ and pulling from, remote mirrors.
 
 To set up push mirroring for an existing project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter a repository URL.

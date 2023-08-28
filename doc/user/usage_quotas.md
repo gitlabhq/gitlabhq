@@ -23,7 +23,7 @@ Prerequisites:
 - To view storage usage for a project, you must have at least the Maintainer role for the project or Owner role for the namespace.
 - To view storage usage for a namespace, you must have the Owner role for the namespace.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. Select the **Storage** tab.
 
@@ -215,7 +215,7 @@ A cost factor is applied to the storage consumed by project forks so that forks 
 
 To view the amount of namespace storage the fork has used:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. Select the **Storage** tab. The **Total** column displays the amount of namespace storage used by the fork as a portion of the actual size of the fork on disk.
 

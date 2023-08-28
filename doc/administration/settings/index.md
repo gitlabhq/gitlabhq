@@ -19,7 +19,7 @@ read [GitLab.com settings](../../user/gitlab_com/index.md).
 To access the **Admin Area**:
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 
 ## Change the default first day of the week
@@ -27,7 +27,7 @@ To access the **Admin Area**:
 You can change the [Default first day of the week](../../user/profile/preferences.md)
 for the entire GitLab instance:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Preferences**.
 1. Scroll to the **Localization** section, and select your desired first day of the week.
@@ -37,7 +37,7 @@ for the entire GitLab instance:
 You can change the [Default language](../../user/profile/preferences.md)
 for the entire GitLab instance:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Preferences**.
 1. Scroll to the **Localization** section, and select your desired default language.

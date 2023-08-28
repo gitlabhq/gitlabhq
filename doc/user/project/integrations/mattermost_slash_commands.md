@@ -31,7 +31,7 @@ you must have Mattermost [3.4 or later](https://mattermost.com/blog/category/pla
 If Mattermost is installed on the same server as GitLab,
 you can automatically configure Mattermost slash commands:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Mattermost slash commands**.
 1. Under **Enable integration**, ensure the **Active** checkbox is selected.
@@ -67,7 +67,7 @@ To get configuration values from GitLab:
 
 1. In a different browser tab, sign in to
    GitLab as a user with administrator access.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Integrations**.
 1. Select **Mattermost slash commands**. GitLab displays potential values for Mattermost settings.

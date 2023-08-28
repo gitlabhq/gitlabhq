@@ -57,7 +57,7 @@ Before you move your project to a group:
 
 Now you're ready to move your project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the group to transfer the project to.
@@ -78,7 +78,7 @@ your related resources and tools, such as websites and package managers.
 
 You can now view your project in your group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Look for your project under **Subgroups and projects**.
 
 Start enjoying the benefits of a group! For example, as the group Owner, you can

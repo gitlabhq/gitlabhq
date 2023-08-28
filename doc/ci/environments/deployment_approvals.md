@@ -137,7 +137,7 @@ create a new approval rule for each entity allowed to deploy to the environment.
 
 To migrate with the UI:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Environment** list, select your environment.
@@ -171,7 +171,7 @@ require `Administrator` to approve every deployment job in `Production`.
 By default, the user who triggers a deployment pipeline can't also approve the deployment job.
 To allow self-approval of a deployment job:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Approval options**, select the **Allow pipeline triggerer to approve deployment** checkbox.
@@ -196,7 +196,7 @@ Prerequisites:
 
 To approve or reject a deployment to a protected environment using the UI:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment's name.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
@@ -233,7 +233,7 @@ granted.
 
 To view the approval details of a deployment:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment's name.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
@@ -249,7 +249,7 @@ The approval status details are shown:
 
 ### Using the UI
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment being deployed to.
 1. Look for the `blocked` label.

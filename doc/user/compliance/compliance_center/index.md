@@ -32,7 +32,7 @@ Prerequisites:
 
 To view the standards adherence dashboard for a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 
 ### GitLab standard
@@ -100,7 +100,7 @@ Prerequisites:
 
 To view the compliance violations report:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 
 You can sort the compliance report on:
@@ -207,7 +207,7 @@ If the commit has a related merge commit, then the following are also included:
 
 To generate the Chain of Custody report:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. Select **List of all merge commits**.
 
@@ -223,7 +223,7 @@ details for the provided commit SHA.
 
 To generate a commit-specific Chain of Custody report:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. At the top of the compliance report, to the right of **List of all commits**, select the down arrow
    (**{chevron-lg-down}**).
@@ -254,7 +254,7 @@ Prerequisites:
 
 To view the compliance frameworks report:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 
@@ -271,7 +271,7 @@ Prerequisites:
 
 To apply a compliance framework to one project in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Next to the project you want to add the compliance framework to, select **{plus}** **Add framework**.
@@ -279,7 +279,7 @@ To apply a compliance framework to one project in a group:
 
 To apply a compliance framework to multiple projects in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select multiple projects.
@@ -300,14 +300,14 @@ Prerequisites:
 
 To remove a compliance framework from one project in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Next to the compliance framework to remove from the project, select **{close}** on the framework label.
 
 To remove a compliance framework from multiple projects in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select multiple projects.
@@ -329,7 +329,7 @@ Prerequisites:
 
 To export a report of compliance frameworks on projects in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. On the Frameworks tab, select the **Export as CSV** action in the top right corner
@@ -342,7 +342,7 @@ A report is compiled and delivered to your email inbox as an attachment.
 
 To filter the list of compliance frameworks:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. In the search field:

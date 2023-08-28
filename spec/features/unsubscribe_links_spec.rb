@@ -6,8 +6,8 @@ RSpec.describe 'Unsubscribe links', :sidekiq_inline, feature_category: :shared d
   include Warden::Test::Helpers
 
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:author) { create(:user).tap { |u| project.add_reporter(u) } }
-  let_it_be(:recipient) { create(:user) }
+  let_it_be(:author) { create(:user, :no_super_sidebar).tap { |u| project.add_reporter(u) } }
+  let_it_be(:recipient) { create(:user, :no_super_sidebar) }
 
   let(:params) { { title: 'A bug!', description: 'Fix it!', assignee_ids: [recipient.id] } }
   let(:issue) { Issues::CreateService.new(container: project, current_user: author, params: params).execute[:issue] }

@@ -336,7 +336,7 @@ To refer to a task elsewhere in GitLab, you can use its full URL or a short refe
 
 To copy the task reference to your clipboard:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your task to view it.
 1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy Reference**.
 
@@ -356,7 +356,7 @@ For more information about creating comments by sending an email and the necessa
 
 To copy the task's email address:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy task email address**.
 

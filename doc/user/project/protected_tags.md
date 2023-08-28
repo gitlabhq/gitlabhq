@@ -31,7 +31,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected tags**.
 1. Select **Add new**.
@@ -111,7 +111,7 @@ Prerequisites:
 
 To allow a deploy key to create a protected tag:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected tags**.
 1. From the **Tag** dropdown list, select the tag you want to protect.
@@ -129,7 +129,7 @@ Prerequisite:
 
 To do this:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Tags**.
 1. Next to the tag you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, enter the tag name and select **Yes, delete protected tag**.

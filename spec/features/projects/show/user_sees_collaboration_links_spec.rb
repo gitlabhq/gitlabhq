@@ -6,7 +6,7 @@ RSpec.describe 'Projects > Show > Collaboration links', :js, feature_category: :
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project, :repository, :public) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   before do
     sign_in(user)

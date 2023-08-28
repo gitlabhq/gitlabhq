@@ -82,7 +82,7 @@ Prerequisite:
 
 To view a list of dashboards (both built-in and custom) for a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
@@ -97,9 +97,9 @@ This feature will be connected to group-level dashboards as part of [issue #4115
 
 To change the location of a group's dashboards:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the project you want to store your dashboard files in.
+1. On the left sidebar, select **Search or go to** and find the project you want to store your dashboard files in.
    The project must belong to the group for which you create the dashboards.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
@@ -116,10 +116,10 @@ You can share dashboards only between projects that are located in the same grou
 
 To change the location of project dashboards:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project,
+1. On the left sidebar, select **Search or go to** and find your project,
    or select **Create new...** (**{plus}**) and **New project/repository**
    to create the project to store your dashboard files.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) and find the analytics project.
+1. On the left sidebar, select **Search or go to** and find the analytics project.
 1. Select **Settings > General**.
 1. Expand **Analytics**.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
@@ -180,7 +180,7 @@ create a `line_chart.yaml` file with the following required fields:
 
 To create a custom dashboard:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Analytics dashboards**.
 1. Select **New dashboard**.
 1. In the **New dashboard** input, enter the name of the dashboard.
@@ -194,7 +194,7 @@ You can edit your custom dashboard's title and add or resize visualizations in t
 
 To edit an existing custom dashboard:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select a custom dashboard (one without the `By GitLab` label) you want to edit.
 1. Select **Edit**.

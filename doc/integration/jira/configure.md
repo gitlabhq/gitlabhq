@@ -26,7 +26,7 @@ You can configure these settings at the [group level](../../administration/setti
 
 To configure your project settings in GitLab:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Jira**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -89,7 +89,7 @@ To copy the API token, select **Copy**.
 
 To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Jira**.
 1. In **Web URL**, enter the new Jira site URL (for example, `https://myjirasite.atlassian.net`).

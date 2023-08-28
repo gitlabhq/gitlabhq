@@ -6,8 +6,8 @@ RSpec.describe 'Visual tokens', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, name: 'administrator', username: 'root') }
-  let_it_be(:user_rock) { create(:user, name: 'The Rock', username: 'rock') }
+  let_it_be(:user) { create(:user, :no_super_sidebar, name: 'administrator', username: 'root') }
+  let_it_be(:user_rock) { create(:user, :no_super_sidebar, name: 'The Rock', username: 'rock') }
   let_it_be(:milestone_nine) { create(:milestone, title: '9.0', project: project) }
   let_it_be(:milestone_ten) { create(:milestone, title: '10.0', project: project) }
   let_it_be(:label) { create(:label, project: project, title: 'abc') }

@@ -22,7 +22,7 @@ Prerequisites:
 
 To enable Service Desk in your project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Turn on the **Activate Service Desk** toggle.
@@ -126,7 +126,7 @@ Prerequisite:
 
 To use a custom description template with Service Desk:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
@@ -149,7 +149,7 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 To edit the custom email display name:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Below **Email display name**, enter a new name.
@@ -194,7 +194,7 @@ The custom email address you want to use must meet all of the following requirem
 
 Configure and verify a custom email address when you want to send Service Desk emails using your own email address.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Service Desk** and find the **Custom email** settings.
 1. Note the presented Service Desk address of this project, and with your email provider
@@ -237,7 +237,7 @@ After the custom email address has been verified, administrators can enable or d
 
 To **enable** the custom email address:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Turn on the **Enable custom email** toggle.
@@ -245,7 +245,7 @@ To **enable** the custom email address:
 
 To **disable** the custom email address:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Turn off the **Enable custom email** toggle.
@@ -713,7 +713,7 @@ Prerequisites:
 
 - You must have configured a [Service Desk alias email](#configure-service-desk-alias-email).
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Below **Email address suffix**, enter the suffix to use.

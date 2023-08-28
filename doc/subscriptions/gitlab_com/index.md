@@ -48,7 +48,7 @@ Prerequisite:
 
 To see the status of your GitLab SaaS subscription:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
 
 The following information is displayed:
@@ -99,7 +99,7 @@ In this case, they would see only the features available to that subscription.
 
 To view a list of seats being used:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
 1. On the **Seats** tab, view usage information.
 
@@ -113,7 +113,7 @@ The counts for **Max seats used** and **Seats owed** are updated once per day.
 
 To view your subscription information and a summary of seat counts:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
 
 The usage statistics are updated once per day, which may cause
@@ -141,7 +141,7 @@ For example:
 
 To export seat usage data as a CSV file:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
 1. Under **Seats currently in use**, select **See usage**.
 1. Select **Export list**.
@@ -202,7 +202,7 @@ The following is emailed to you:
 
 To remove a billable user from your subscription:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
 1. In the **Seats currently in use** section, select **See usage**.
 1. In the row for the user you want to remove, on the right side, select the ellipsis and **Remove user**.
@@ -430,7 +430,7 @@ main quota. You can find pricing for additional storage on the
 
 To purchase additional storage for your group on GitLab SaaS:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
 1. Select **Storage** tab.
 1. Select **Purchase more storage**.

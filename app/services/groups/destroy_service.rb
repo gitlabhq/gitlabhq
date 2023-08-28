@@ -83,7 +83,10 @@ module Groups
 
     # rubocop:disable CodeReuse/ActiveRecord
     def destroy_group_bots
-      bot_ids = group.members_and_requesters.joins(:user).merge(User.project_bot).pluck(:user_id)
+      bot_ids = group.members_and_requesters.joins(:user)
+        .merge(User.project_bot)
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422405')
+        .pluck(:user_id)
       current_user_id = current_user.id
 
       group.run_after_commit do
