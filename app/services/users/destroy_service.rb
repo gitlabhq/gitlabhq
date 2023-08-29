@@ -59,9 +59,6 @@ module Users
         Groups::DestroyService.new(group, current_user).execute
       end
 
-      namespace = user.namespace
-      namespace.prepare_for_destroy
-
       user.personal_projects.each do |project|
         success = ::Projects::DestroyService.new(project, current_user).execute
         raise DestroyError, "Project #{project.id} can't be deleted" unless success

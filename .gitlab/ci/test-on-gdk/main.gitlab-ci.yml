@@ -125,6 +125,7 @@ download-fast-quarantine-report:
 gdk-qa-smoke:
   extends:
     - .gdk-qa-base
+    - .gitlab-qa-report
   variables:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: gdk-qa-smoke
@@ -152,6 +153,7 @@ gdk-qa-smoke-with-load-balancer:
 gdk-qa-reliable:
   extends:
     - .gdk-qa-base
+    - .gitlab-qa-report
     - .parallel
   variables:
     QA_SCENARIO: Test::Instance::Blocking

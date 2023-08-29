@@ -13,12 +13,13 @@ module Gitlab
           address.include?('@') && address.start_with?(Settings.gitlab_ci['component_fqdn'])
         end
 
-        attr_reader :host
+        attr_reader :host, :project_file_path
 
         def initialize(address:, content_filename:)
           @full_path, @version = address.to_s.split('@', 2)
           @content_filename = content_filename
           @host = Settings.gitlab_ci['component_fqdn']
+          @project_file_path = nil
         end
 
         def fetch_content!(current_user:)
@@ -27,7 +28,7 @@ module Gitlab
 
           raise Gitlab::Access::AccessDeniedError unless Ability.allowed?(current_user, :download_code, project)
 
-          templates_dir_path_content || content(sha, custom_dir_template_file_path)
+          content(simple_template_path) || content(complex_template_path) || content(legacy_template_path)
         end
 
         def project
@@ -43,12 +44,6 @@ module Gitlab
         end
         strong_memoize_attr :sha
 
-        def project_file_path
-          return unless project
-
-          custom_dir_template_file_path
-        end
-
         private
 
         attr_reader :version, :path
@@ -58,7 +53,7 @@ module Gitlab
         end
 
         def component_path
-          instance_path.delete_prefix(project.full_path)
+          instance_path.delete_prefix(project.full_path).delete_prefix('/')
         end
         strong_memoize_attr :component_path
 
@@ -81,31 +76,33 @@ module Gitlab
           project.releases.latest&.sha
         end
 
-        def custom_dir_template_file_path
-          File.join(component_path, @content_filename).delete_prefix('/')
+        # A simple template consists of a single file
+        def simple_template_path
+          # Extract this line and move to fetch_content once we remove legacy fetching
+          return unless templates_dir_exists? && component_path.index('/').nil?
+
+          @project_file_path = File.join(TEMPLATES_DIR, "#{component_path}.yml")
         end
 
-        def templates_dir_file_path
-          File.join(TEMPLATES_DIR, "#{component_path}.yml")
-        end
-
+        # A complex template is directory-based and may consist of multiple files.
         # Given a path like "my-org/sub-group/the-project/templates/component"
-        # returns "templates/component/template.yml"
-        def templates_dir_template_file_path
-          File.join(TEMPLATES_DIR, component_path, @content_filename)
+        # returns the entry point path: "templates/component/template.yml".
+        def complex_template_path
+          # Extract this line and move to fetch_content once we remove legacy fetching
+          return unless templates_dir_exists? && component_path.index('/').nil?
+
+          @project_file_path = File.join(TEMPLATES_DIR, component_path, @content_filename)
+        end
+
+        def legacy_template_path
+          @project_file_path = File.join(component_path, @content_filename).delete_prefix('/')
         end
 
         def templates_dir_exists?
           project.repository.tree.trees.map(&:name).include?(TEMPLATES_DIR)
         end
 
-        def templates_dir_path_content
-          return unless templates_dir_exists?
-
-          content(sha, templates_dir_file_path) || content(sha, templates_dir_template_file_path)
-        end
-
-        def content(sha, path)
+        def content(path)
           project.repository.blob_data_at(sha, path)
         end
       end

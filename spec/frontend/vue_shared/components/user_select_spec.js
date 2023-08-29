@@ -5,17 +5,17 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import searchUsersQuery from '~/graphql_shared/queries/users_search.query.graphql';
-import searchUsersQueryOnMR from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
+import searchUsersQuery from '~/graphql_shared/queries/project_autocomplete_users.query.graphql';
+import searchUsersQueryOnMR from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import getIssueParticipantsQuery from '~/sidebar/queries/get_issue_participants.query.graphql';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import {
-  searchResponse,
-  searchResponseOnMR,
-  projectMembersResponse,
+  projectAutocompleteMembersResponse,
+  searchAutocompleteQueryResponse,
+  searchAutocompleteResponseOnMR,
   participantsQueryResponse,
   mockUser1,
   mockUser2,
@@ -59,7 +59,7 @@ describe('User select dropdown', () => {
   const findUnassignLink = () => wrapper.findByTestId('unassign');
   const findEmptySearchResults = () => wrapper.findAllByTestId('empty-results');
 
-  const searchQueryHandlerSuccess = jest.fn().mockResolvedValue(projectMembersResponse);
+  const searchQueryHandlerSuccess = jest.fn().mockResolvedValue(projectAutocompleteMembersResponse);
   const participantsQueryHandlerSuccess = jest.fn().mockResolvedValue(participantsQueryResponse);
 
   const createComponent = ({
@@ -69,7 +69,7 @@ describe('User select dropdown', () => {
   } = {}) => {
     fakeApollo = createMockApollo([
       [searchUsersQuery, searchQueryHandler],
-      [searchUsersQueryOnMR, jest.fn().mockResolvedValue(searchResponseOnMR)],
+      [searchUsersQueryOnMR, jest.fn().mockResolvedValue(searchAutocompleteResponseOnMR)],
       [getIssueParticipantsQuery, participantsQueryHandler],
     ]);
     wrapper = shallowMountExtended(UserSelect, {
@@ -200,7 +200,7 @@ describe('User select dropdown', () => {
       });
       await waitForPromises();
 
-      expect(findUnselectedParticipantByIndex(0).props('user')).toEqual(mockUser2);
+      expect(findUnselectedParticipantByIndex(0).props('user')).toMatchObject(mockUser2);
     });
 
     it('moves issuable author on top of unassigned list after current user, if author and current user are unassigned project members', async () => {
@@ -372,7 +372,9 @@ describe('User select dropdown', () => {
     });
 
     it('renders a list of found users and external participants matching search term', async () => {
-      createComponent({ searchQueryHandler: jest.fn().mockResolvedValue(searchResponse) });
+      createComponent({
+        searchQueryHandler: jest.fn().mockResolvedValue(searchAutocompleteQueryResponse),
+      });
       await waitForPromises();
 
       findSearchField().vm.$emit('input', 'ro');
@@ -382,7 +384,9 @@ describe('User select dropdown', () => {
     });
 
     it('renders a list of found users only if no external participants match search term', async () => {
-      createComponent({ searchQueryHandler: jest.fn().mockResolvedValue(searchResponse) });
+      createComponent({
+        searchQueryHandler: jest.fn().mockResolvedValue(searchAutocompleteQueryResponse),
+      });
       await waitForPromises();
 
       findSearchField().vm.$emit('input', 'roo');
@@ -392,8 +396,8 @@ describe('User select dropdown', () => {
     });
 
     it('shows a message about no matches if search returned an empty list', async () => {
-      const responseCopy = cloneDeep(searchResponse);
-      responseCopy.data.workspace.users.nodes = [];
+      const responseCopy = cloneDeep(searchAutocompleteQueryResponse);
+      responseCopy.data.workspace.users = [];
 
       createComponent({
         searchQueryHandler: jest.fn().mockResolvedValue(responseCopy),

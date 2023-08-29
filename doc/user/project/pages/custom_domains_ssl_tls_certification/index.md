@@ -113,7 +113,7 @@ Subdomains (`subdomain.example.com`) require:
 
 Whether it's a user or a project website, the DNS record
 should point to your Pages domain (`namespace.gitlab.io`),
-without any path (for example, `/project-slug`).
+without any path.
 
 ![DNS `CNAME` record pointing to GitLab.com project](img/dns_cname_record_example.png)
 

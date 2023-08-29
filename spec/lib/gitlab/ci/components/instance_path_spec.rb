@@ -15,23 +15,24 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
   describe 'FQDN path' do
     let(:version) { 'master' }
+    let(:project_path) { project.full_path }
+    let(:address) { "acme.com/#{project_path}/secret-detection@#{version}" }
 
     context 'when the project repository contains a templates directory' do
-      let_it_be(:existing_project) do
+      let_it_be(:project) do
         create(
           :project, :custom_repo,
           files: {
-            'templates/file.yml' => 'image: alpine_1',
-            'templates/dir/template.yml' => 'image: alpine_2'
+            'templates/secret-detection.yml' => 'image: alpine_1',
+            'templates/dast/template.yml' => 'image: alpine_2',
+            'templates/dast/another-template.yml' => 'image: alpine_3',
+            'templates/dast/another-folder/template.yml' => 'image: alpine_4'
           }
         )
       end
 
-      let(:project_path) { existing_project.full_path }
-      let(:address) { "acme.com/#{project_path}/file@#{version}" }
-
       before do
-        existing_project.add_developer(user)
+        project.add_developer(user)
       end
 
       context 'when user does not have permissions' do
@@ -41,64 +42,50 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         end
       end
 
-      context 'when templates directory is top level' do
-        it 'fetches the content' do
+      context 'when the component is simple (single file template)' do
+        it 'fetches the component content', :aggregate_failures do
           expect(path.fetch_content!(current_user: user)).to eq('image: alpine_1')
-        end
-
-        it 'provides the expected attributes', :aggregate_failures do
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('file/template.yml')
-          expect(path.project).to eq(existing_project)
-          expect(path.sha).to eq(existing_project.commit('master').id)
+          expect(path.project_file_path).to eq('templates/secret-detection.yml')
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(project.commit('master').id)
+        end
+      end
+
+      context 'when the component is complex (directory-based template)' do
+        let(:address) { "acme.com/#{project_path}/dast@#{version}" }
+
+        it 'fetches the component content', :aggregate_failures do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_2')
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('templates/dast/template.yml')
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(project.commit('master').id)
         end
 
-        context 'when file name is `template.yml`' do
-          let(:address) { "acme.com/#{project_path}/dir@#{version}" }
+        context 'when there is an invalid nested component folder' do
+          let(:address) { "acme.com/#{project_path}/dast/another-folder@#{version}" }
 
-          it 'fetches the content' do
-            expect(path.fetch_content!(current_user: user)).to eq('image: alpine_2')
+          it 'returns nil' do
+            expect(path.fetch_content!(current_user: user)).to be_nil
           end
+        end
 
-          it 'provides the expected attributes', :aggregate_failures do
-            expect(path.host).to eq(current_host)
-            expect(path.project_file_path).to eq('dir/template.yml')
-            expect(path.project).to eq(existing_project)
-            expect(path.sha).to eq(existing_project.commit('master').id)
+        context 'when there is an invalid nested component path' do
+          let(:address) { "acme.com/#{project_path}/dast/another-template@#{version}" }
+
+          it 'returns nil' do
+            expect(path.fetch_content!(current_user: user)).to be_nil
           end
         end
       end
 
-      context 'when the project is nested under a subgroup' do
-        let_it_be(:existing_group) { create(:group, :nested) }
-        let_it_be(:existing_project) do
+      context 'when fetching the latest version of a component' do
+        let_it_be(:project) do
           create(
             :project, :custom_repo,
             files: {
-              'templates/file.yml' => 'image: alpine_1'
-            },
-            group: existing_group
-          )
-        end
-
-        it 'fetches the content' do
-          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_1')
-        end
-
-        it 'provides the expected attributes', :aggregate_failures do
-          expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('file/template.yml')
-          expect(path.project).to eq(existing_project)
-          expect(path.sha).to eq(existing_project.commit('master').id)
-        end
-      end
-
-      context 'when fetching the latest version' do
-        let_it_be(:existing_project) do
-          create(
-            :project, :custom_repo,
-            files: {
-              'templates/file.yml' => 'image: alpine_1'
+              'templates/secret-detection.yml' => 'image: alpine_1'
             }
           )
         end
@@ -106,30 +93,27 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         let(:version) { '~latest' }
 
         let(:latest_sha) do
-          existing_project.repository.find_commits_by_message('Updates image').commits.last.sha
+          project.repository.commit('master').id
         end
 
         before do
-          create(:release, project: existing_project, sha: existing_project.repository.root_ref_sha,
+          create(:release, project: project, sha: project.repository.root_ref_sha,
             released_at: Time.zone.now - 1.day)
 
-          existing_project.repository.update_file(
-            user, 'templates/file.yml', 'image: alpine_2',
-            message: 'Updates image', branch_name: existing_project.default_branch
+          project.repository.update_file(
+            user, 'templates/secret-detection.yml', 'image: alpine_2',
+            message: 'Updates image', branch_name: project.default_branch
           )
 
-          create(:release, project: existing_project, sha: latest_sha,
+          create(:release, project: project, sha: latest_sha,
             released_at: Time.zone.now)
         end
 
-        it 'fetches the content' do
+        it 'fetches the component content', :aggregate_failures do
           expect(path.fetch_content!(current_user: user)).to eq('image: alpine_2')
-        end
-
-        it 'provides the expected attributes', :aggregate_failures do
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('file/template.yml')
-          expect(path.project).to eq(existing_project)
+          expect(path.project_file_path).to eq('templates/secret-detection.yml')
+          expect(path.project).to eq(project)
           expect(path.sha).to eq(latest_sha)
         end
       end
@@ -137,31 +121,25 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
       context 'when version does not exist' do
         let(:version) { 'non-existent' }
 
-        it 'returns nil when fetching the content' do
+        it 'returns nil', :aggregate_failures do
           expect(path.fetch_content!(current_user: user)).to be_nil
-        end
-
-        it 'provides the expected attributes', :aggregate_failures do
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('file/template.yml')
-          expect(path.project).to eq(existing_project)
+          expect(path.project_file_path).to be_nil
+          expect(path.project).to eq(project)
           expect(path.sha).to be_nil
         end
       end
 
       context 'when current GitLab instance is installed on a relative URL' do
-        let(:address) { "acme.com/gitlab/#{project_path}/file@#{version}" }
+        let(:address) { "acme.com/gitlab/#{project_path}/secret-detection@#{version}" }
         let(:current_host) { 'acme.com/gitlab/' }
 
-        it 'fetches the content' do
+        it 'fetches the component content', :aggregate_failures do
           expect(path.fetch_content!(current_user: user)).to eq('image: alpine_1')
-        end
-
-        it 'provides the expected attributes', :aggregate_failures do
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('file/template.yml')
-          expect(path.project).to eq(existing_project)
-          expect(path.sha).to eq(existing_project.commit('master').id)
+          expect(path.project_file_path).to eq('templates/secret-detection.yml')
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(project.commit('master').id)
         end
       end
     end
@@ -169,10 +147,10 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
     # All the following tests are for deprecated code and will be removed
     # in https://gitlab.com/gitlab-org/gitlab/-/issues/415855
     context 'when the project does not contain a templates directory' do
-      let(:project_path) { existing_project.full_path }
+      let(:project_path) { project.full_path }
       let(:address) { "acme.com/#{project_path}/component@#{version}" }
 
-      let_it_be(:existing_project) do
+      let_it_be(:project) do
         create(
           :project, :custom_repo,
           files: {
@@ -182,41 +160,35 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
       end
 
       before do
-        existing_project.add_developer(user)
+        project.add_developer(user)
       end
 
-      it 'fetches the content' do
+      it 'fetches the component content', :aggregate_failures do
         expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
-      end
-
-      it 'provides the expected attributes', :aggregate_failures do
         expect(path.host).to eq(current_host)
         expect(path.project_file_path).to eq('component/template.yml')
-        expect(path.project).to eq(existing_project)
-        expect(path.sha).to eq(existing_project.commit('master').id)
+        expect(path.project).to eq(project)
+        expect(path.sha).to eq(project.commit('master').id)
       end
 
       context 'when project path is nested under a subgroup' do
-        let_it_be(:existing_group) { create(:group, :nested) }
-        let_it_be(:existing_project) do
+        let_it_be(:group) { create(:group, :nested) }
+        let_it_be(:project) do
           create(
             :project, :custom_repo,
             files: {
               'component/template.yml' => 'image: alpine'
             },
-            group: existing_group
+            group: group
           )
         end
 
-        it 'fetches the content' do
+        it 'fetches the component content', :aggregate_failures do
           expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
-        end
-
-        it 'provides the expected attributes', :aggregate_failures do
           expect(path.host).to eq(current_host)
           expect(path.project_file_path).to eq('component/template.yml')
-          expect(path.project).to eq(existing_project)
-          expect(path.sha).to eq(existing_project.commit('master').id)
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(project.commit('master').id)
         end
       end
 
@@ -224,29 +196,23 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
         let(:address) { "acme.com/gitlab/#{project_path}/component@#{version}" }
         let(:current_host) { 'acme.com/gitlab/' }
 
-        it 'fetches the content' do
+        it 'fetches the component content', :aggregate_failures do
           expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
-        end
-
-        it 'provides the expected attributes', :aggregate_failures do
           expect(path.host).to eq(current_host)
           expect(path.project_file_path).to eq('component/template.yml')
-          expect(path.project).to eq(existing_project)
-          expect(path.sha).to eq(existing_project.commit('master').id)
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(project.commit('master').id)
         end
       end
 
       context 'when version does not exist' do
         let(:version) { 'non-existent' }
 
-        it 'returns nil when fetching the content' do
+        it 'returns nil', :aggregate_failures do
           expect(path.fetch_content!(current_user: user)).to be_nil
-        end
-
-        it 'provides the expected attributes', :aggregate_failures do
           expect(path.host).to eq(current_host)
-          expect(path.project_file_path).to eq('component/template.yml')
-          expect(path.project).to eq(existing_project)
+          expect(path.project_file_path).to be_nil
+          expect(path.project).to eq(project)
           expect(path.sha).to be_nil
         end
       end

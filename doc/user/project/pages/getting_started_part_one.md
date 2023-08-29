@@ -25,14 +25,13 @@ For GitLab self-managed instances, replace `example.io`
 with your instance's Pages domain. For GitLab.com,
 Pages domains are `*.gitlab.io`.
 
-| Type of GitLab Pages | The path of the project created in GitLab | Website URL |
+| Type of GitLab Pages | Example path of a project in GitLab | Website URL |
 | -------------------- | ------------ | ----------- |
 | User pages  | `username/username.example.io`  | `http(s)://username.example.io`  |
 | Group pages | `acmecorp/acmecorp.example.io` | `http(s)://acmecorp.example.io` |
 | Project pages owned by a user  | `username/my-website` | `http(s)://username.example.io/my-website` |
 | Project pages owned by a group | `acmecorp/webshop` | `http(s)://acmecorp.example.io/webshop`|
 | Project pages owned by a subgroup | `acmecorp/documentation/product-manual` | `http(s)://acmecorp.example.io/documentation/product-manual`|
-| Project pages owned by a subgroup | `group-path/subgroup-slug/project-slug` | `http(s)://group-path.example.io/subgroup-slug/project-slug`|
 
 WARNING:
 There are some known [limitations](introduction.md#subdomains-of-subdomains)

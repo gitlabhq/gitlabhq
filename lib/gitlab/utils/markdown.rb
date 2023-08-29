@@ -4,7 +4,7 @@ module Gitlab
   module Utils
     module Markdown
       PUNCTUATION_REGEXP = /[^\p{Word}\- ]/u.freeze
-      PRODUCT_SUFFIX = /\s*\**\((core|starter|premium|ultimate|free|bronze|silver|gold)(\s+(all|only|self|saas))?\)\**/.freeze
+      PRODUCT_SUFFIX = /\s*\**\((premium|ultimate|free|beta|experiment)(\s+(all|self|saas))?(\s+(beta|experiment))?\)\**/.freeze
 
       def string_to_anchor(string)
         string

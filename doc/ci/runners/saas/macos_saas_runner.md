@@ -56,7 +56,7 @@ GitLab provides `stable` and `latest` macOS images that follow different update 
 By definition, the `latest` images are always Beta.
 A `latest` image is not available.
 
-### Image release process**
+### Image release process
 
 When Apple releases a new macOS version, GitLab releases both `stable` and `latest` images based on the OS in the next release. Both images are Beta.
 

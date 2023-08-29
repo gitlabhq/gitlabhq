@@ -36,6 +36,17 @@ module Gitlab
           Diffy::Diff.new(structure_sql_statement, database_statement)
         end
 
+        def to_h
+          {
+            type: type,
+            object_type: object_type,
+            table_name: table_name,
+            object_name: object_name,
+            structure_sql_statement: structure_sql_statement,
+            database_statement: database_statement
+          }
+        end
+
         def display
           <<~MSG
             #{'-' * 54}

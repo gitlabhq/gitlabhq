@@ -1152,7 +1152,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactiongeneratecommitmessage"></a>`generateCommitMessage` | [`AiGenerateCommitMessageInput`](#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
 | <a id="mutationaiactiongeneratedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
 | <a id="mutationaiactiongeneratetestfile"></a>`generateTestFile` | [`GenerateTestFileInput`](#generatetestfileinput) | Input for generate_test_file AI action. |
-| <a id="mutationaiactionmarkupformat"></a>`markupFormat` | [`MarkupFormat`](#markupformat) | Indicates the response format. |
+| <a id="mutationaiactionmarkupformat"></a>`markupFormat` **{warning-solid}** | [`MarkupFormat`](#markupformat) | **Deprecated:** Moved to contentHtml attribute. Deprecated in 16.4. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 | <a id="mutationaiactionsummarizereview"></a>`summarizeReview` | [`AiSummarizeReviewInput`](#aisummarizereviewinput) | Input for summarize_review AI action. |
 | <a id="mutationaiactiontanukibot"></a>`tanukiBot` | [`AiTanukiBotInput`](#aitanukibotinput) | Input for tanuki_bot AI action. |
@@ -12539,6 +12539,7 @@ Information about a connected Agent.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicachedmessagetypecontent"></a>`content` | [`String`](#string) | Content of the message. Can be null for failed responses. |
+| <a id="aicachedmessagetypecontenthtml"></a>`contentHtml` | [`String`](#string) | HTML content of the message. Can be null for failed responses. |
 | <a id="aicachedmessagetypeerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI (assistant) response. |
 | <a id="aicachedmessagetypeid"></a>`id` | [`ID`](#id) | UUID of the message. |
 | <a id="aicachedmessagetyperequestid"></a>`requestId` | [`ID`](#id) | UUID of the original request message. |
@@ -12566,6 +12567,7 @@ Information about a connected Agent.
 | <a id="airesponseerrors"></a>`errors` | [`[String!]`](#string) | Errors return by AI API as response. |
 | <a id="airesponserequestid"></a>`requestId` | [`String`](#string) | ID of the original request. |
 | <a id="airesponseresponsebody"></a>`responseBody` | [`String`](#string) | Response body from AI API. |
+| <a id="airesponseresponsebodyhtml"></a>`responseBodyHtml` | [`String`](#string) | Response body HTML. |
 | <a id="airesponserole"></a>`role` | [`AiCachedMessageRole!`](#aicachedmessagerole) | Message role. |
 | <a id="airesponsetimestamp"></a>`timestamp` | [`Time!`](#time) | Message timestamp. |
 | <a id="airesponsetype"></a>`type` | [`String`](#string) | Message type. |
@@ -27160,7 +27162,6 @@ List markup formats.
 | Value | Description |
 | ----- | ----------- |
 | <a id="markupformathtml"></a>`HTML` | HTML format. |
-| <a id="markupformatmarkdown"></a>`MARKDOWN` | Markdown format. |
 | <a id="markupformatraw"></a>`RAW` | Raw format. |
 
 ### `MeasurementIdentifier`

@@ -414,6 +414,33 @@ export const searchQueryResponse = {
   },
 };
 
+export const searchAutocompleteQueryResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: '',
+      users: [
+        {
+          id: '1',
+          avatarUrl: '/avatar',
+          name: 'root',
+          username: 'root',
+          webUrl: 'root',
+          status: null,
+        },
+        {
+          id: '2',
+          avatarUrl: '/avatar2',
+          name: 'rookie',
+          username: 'rookie',
+          webUrl: 'rookie',
+          status: null,
+        },
+      ],
+    },
+  },
+};
+
 export const updateIssueAssigneesMutationResponse = {
   data: {
     issuableSetAssignees: {
@@ -545,6 +572,29 @@ export const searchResponseOnMR = {
   },
 };
 
+export const searchAutocompleteResponseOnMR = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: '1',
+      users: [
+        {
+          ...mockUser1,
+          mergeRequestInteraction: {
+            canMerge: true,
+          },
+        },
+        {
+          ...mockUser2,
+          mergeRequestInteraction: {
+            canMerge: false,
+          },
+        },
+      ],
+    },
+  },
+};
+
 export const projectMembersResponse = {
   data: {
     workspace: {
@@ -581,6 +631,36 @@ export const projectMembersResponse = {
           endCursor: null,
         },
       },
+    },
+  },
+};
+
+export const projectAutocompleteMembersResponse = {
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Project',
+      users: [
+        // Remove nulls https://gitlab.com/gitlab-org/gitlab/-/issues/329750
+        null,
+        null,
+        // Remove duplicated entry https://gitlab.com/gitlab-org/gitlab/-/issues/327822
+        mockUser1,
+        mockUser1,
+        mockUser2,
+        {
+          __typename: 'UserCore',
+          id: 'gid://gitlab/User/2',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/a95e5b71488f4b9d69ce5ff58bfd28d6?s=80\u0026d=identicon',
+          name: 'Jacki Kub',
+          username: 'francina.skiles',
+          webUrl: '/franc',
+          status: {
+            availability: 'BUSY',
+          },
+        },
+      ],
     },
   },
 };

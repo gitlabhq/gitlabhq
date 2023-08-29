@@ -1,8 +1,8 @@
 import { invert } from 'lodash';
 import { s__, __, sprintf } from '~/locale';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
-import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
-import userSearchWithMRPermissionsQuery from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
+import userAutocompleteQuery from '~/graphql_shared/queries/project_autocomplete_users.query.graphql';
+import userAutocompleteWithMRPermissionsQuery from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import {
   TYPE_ALERT,
   TYPE_EPIC,
@@ -106,10 +106,10 @@ export const participantsQueries = {
 
 export const userSearchQueries = {
   [TYPE_ISSUE]: {
-    query: userSearchQuery,
+    query: userAutocompleteQuery,
   },
   [TYPE_MERGE_REQUEST]: {
-    query: userSearchWithMRPermissionsQuery,
+    query: userAutocompleteWithMRPermissionsQuery,
   },
 };
 

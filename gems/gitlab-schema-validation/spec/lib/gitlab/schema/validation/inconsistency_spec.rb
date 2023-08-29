@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Schema::Validation::Inconsistency do
+RSpec.describe Gitlab::Schema::Validation::Inconsistency, feature_category: :database do
   let(:validator) { Gitlab::Schema::Validation::Validators::DifferentDefinitionIndexes }
 
   let(:database_statement) { 'CREATE INDEX index_name ON public.achievements USING btree (namespace_id)' }
@@ -41,6 +41,23 @@ RSpec.describe Gitlab::Schema::Validation::Inconsistency do
   describe '#type' do
     it 'returns the type of the validator' do
       expect(inconsistency.type).to eq('Gitlab::Schema::Validation::Validators::DifferentDefinitionIndexes')
+    end
+  end
+
+  describe '#to_h' do
+    let(:result) do
+      {
+        database_statement: inconsistency.database_statement,
+        object_name: inconsistency.object_name,
+        object_type: inconsistency.object_type,
+        structure_sql_statement: inconsistency.structure_sql_statement,
+        table_name: inconsistency.table_name,
+        type: inconsistency.type
+      }
+    end
+
+    it 'returns the to_h of the validator' do
+      expect(inconsistency.to_h).to eq(result)
     end
   end
 

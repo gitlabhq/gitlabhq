@@ -1,0 +1,12 @@
+#import "../fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/user_availability.fragment.graphql"
+
+query projectAutocompleteUsersSearch($search: String!, $fullPath: ID!) {
+  workspace: project(fullPath: $fullPath) {
+    id
+    users: autocompleteUsers(search: $search) {
+      ...User
+      ...UserAvailability
+    }
+  }
+}

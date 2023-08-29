@@ -116,6 +116,17 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
     it_behaves_like 'diff discussions API', 'projects', 'merge_requests', 'iid'
     it_behaves_like 'resolvable discussions API', 'projects', 'merge_requests', 'iid'
 
+    context "when position_type is file" do
+      it "creates a new diff note" do
+        position = diff_note.position.to_h.merge({ position_type: 'file' }).except(:ignore_whitespace_change)
+
+        post api("/projects/#{parent.id}/merge_requests/#{noteable['iid']}/discussions", user),
+          params: { body: 'hi!', position: position }
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
     context "when position is for a previous commit on the merge request" do
       it "returns a 400 bad request error because the line_code is old" do
         # SHA taken from an earlier commit listed in spec/factories/merge_requests.rb

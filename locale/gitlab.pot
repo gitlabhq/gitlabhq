@@ -45791,6 +45791,18 @@ msgstr ""
 msgid "SubscriptionBanner|Upload new license"
 msgstr ""
 
+msgid "SubscriptionMangement|If you'd like to add more seats, upgrade your plan, or purchase additional products, contact your GitLab sales representative."
+msgstr ""
+
+msgid "SubscriptionMangement|This is a custom subscription managed by the GitLab Sales team"
+msgstr ""
+
+msgid "SubscriptionMangement|To make changes to a read-only subscription or purchase additional products, contact your GitLab Partner."
+msgstr ""
+
+msgid "SubscriptionMangement|Your subscription is in read-only mode"
+msgstr ""
+
 msgid "SubscriptionTable|Add seats"
 msgstr ""
 

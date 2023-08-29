@@ -130,11 +130,11 @@ export default {
       },
       update(data) {
         return (
-          data.workspace?.users?.nodes
-            .filter((x) => x?.user)
-            .map((node) => ({
-              ...node.user,
-              canMerge: node.mergeRequestInteraction?.canMerge || false,
+          data.workspace?.users
+            .filter((user) => user)
+            .map((user) => ({
+              ...user,
+              canMerge: user.mergeRequestInteraction?.canMerge || false,
             })) || []
         );
       },

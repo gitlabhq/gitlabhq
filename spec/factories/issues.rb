@@ -71,6 +71,12 @@ FactoryBot.define do
       association :author, factory: :user
     end
 
+    trait :user_namespace_level do
+      project { nil }
+      association :namespace, factory: :user_namespace
+      association :author, factory: :user
+    end
+
     trait :issue do
       association :work_item_type, :default, :issue
     end
