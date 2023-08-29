@@ -75,6 +75,13 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
         update_note({})
       end
 
+      it_behaves_like 'internal event tracking' do
+        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED }
+        let(:namespace) { project.namespace }
+
+        subject(:service_action) { update_note(note: 'new text') }
+      end
+
       it 'tracks issue usage data', :clean_gitlab_redis_shared_state do
         counter = Gitlab::UsageDataCounters::HLLRedisCounter
 
@@ -84,11 +91,6 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
         expect do
           update_note(note: 'new text')
         end.to change { counter.unique_events(event_names: event, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now) }.by(1)
-      end
-
-      it_behaves_like 'issue_edit snowplow tracking' do
-        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED }
-        subject(:service_action) { update_note(note: 'new text') }
       end
     end
 

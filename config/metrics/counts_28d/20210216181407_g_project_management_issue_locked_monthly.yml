@@ -13,6 +13,9 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - g_project_management_issue_locked
+events:
+  - name: g_project_management_issue_locked
+    unique: user.id
 distribution:
 - ce
 - ee

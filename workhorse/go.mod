@@ -22,7 +22,7 @@ require (
 	github.com/mitchellh/copystructure v1.2.0
 	github.com/prometheus/client_golang v1.16.0
 	github.com/rafaeljusto/redigomock/v3 v3.1.2
-	github.com/redis/go-redis/v9 v9.0.5
+	github.com/redis/go-redis/v9 v9.1.0
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/sirupsen/logrus v1.9.3
 	github.com/smartystreets/goconvey v1.7.2

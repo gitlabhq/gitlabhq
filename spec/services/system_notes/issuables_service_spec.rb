@@ -694,9 +694,10 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
           subject
         end
 
-        it_behaves_like 'issue_edit snowplow tracking' do
-          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED }
+        it_behaves_like 'internal event tracking' do
+          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED }
           let(:user) { author }
+          let(:namespace) { project.namespace }
         end
       end
     end

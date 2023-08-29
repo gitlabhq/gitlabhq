@@ -12,7 +12,7 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
 
   subject(:service) { described_class.new(project, user, issue: issue, designs: designs) }
 
-  # Defined as a method so that the reponse is not cached. We also construct
+  # Defined as a method so that the response is not cached. We also construct
   # a new service executor each time to avoid the intermediate cached values
   # it constructs during its execution.
   def run_service(delenda = nil)
@@ -173,8 +173,10 @@ RSpec.describe DesignManagement::DeleteDesignsService, feature_category: :design
           run_service
         end
 
-        it_behaves_like 'issue_edit snowplow tracking' do
-          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_REMOVED }
+        it_behaves_like 'internal event tracking' do
+          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_REMOVED }
+          let(:namespace) { project.namespace }
+
           subject(:service_action) { run_service }
         end
       end

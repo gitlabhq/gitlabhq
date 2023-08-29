@@ -180,8 +180,9 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
           execute_create_service
         end
 
-        it_behaves_like 'issue_edit snowplow tracking' do
-          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_ADDED }
+        it_behaves_like 'internal event tracking' do
+          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_ADDED }
+          let(:namespace) { project.namespace }
           subject(:service_action) { execute_create_service }
         end
       end

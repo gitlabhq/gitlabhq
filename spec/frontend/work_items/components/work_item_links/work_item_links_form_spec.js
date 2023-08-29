@@ -1,11 +1,12 @@
 import Vue from 'vue';
-import { GlForm, GlFormInput, GlFormCheckbox, GlTooltip, GlTokenSelector } from '@gitlab/ui';
+import { GlForm, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { sprintf, s__ } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
+import WorkItemTokenInput from '~/work_items/components/shared/work_item_token_input.vue';
 import {
   FORM_TYPES,
   WORK_ITEM_TYPE_ENUM_TASK,
@@ -70,10 +71,12 @@ describe('WorkItemLinksForm', () => {
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findTokenSelector = () => wrapper.findComponent(GlTokenSelector);
+  const findWorkItemTokenInput = () => wrapper.findComponent(WorkItemTokenInput);
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findConfidentialCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findAddChildButton = () => wrapper.findByTestId('add-child-button');
+  const findValidationElement = () => wrapper.findByTestId('work-items-invalid');
 
   describe('creating a new work item', () => {
     beforeEach(async () => {
@@ -84,7 +87,7 @@ describe('WorkItemLinksForm', () => {
       expect(findForm().exists()).toBe(true);
       expect(findInput().exists()).toBe(true);
       expect(findAddChildButton().text()).toBe('Create task');
-      expect(findTokenSelector().exists()).toBe(false);
+      expect(findWorkItemTokenInput().exists()).toBe(false);
     });
 
     it('creates child task in non confidential parent', async () => {
@@ -137,7 +140,7 @@ describe('WorkItemLinksForm', () => {
         const confidentialCheckbox = findConfidentialCheckbox();
 
         expect(confidentialCheckbox.exists()).toBe(true);
-        expect(wrapper.findComponent(GlTooltip).exists()).toBe(false);
+        expect(findTooltip().exists()).toBe(false);
         expect(confidentialCheckbox.text()).toBe(
           sprintf(I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL, {
             workItemType: WORK_ITEM_TYPE_ENUM_TASK.toLocaleLowerCase(),
@@ -149,12 +152,11 @@ describe('WorkItemLinksForm', () => {
         createComponent({ parentConfidential: true });
 
         const confidentialCheckbox = findConfidentialCheckbox();
-        const confidentialTooltip = wrapper.findComponent(GlTooltip);
 
         expect(confidentialCheckbox.attributes('disabled')).toBeDefined();
         expect(confidentialCheckbox.attributes('checked')).toBe('true');
-        expect(confidentialTooltip.exists()).toBe(true);
-        expect(confidentialTooltip.text()).toBe(
+        expect(findTooltip().exists()).toBe(true);
+        expect(findTooltip().text()).toBe(
           sprintf(I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP, {
             workItemType: WORK_ITEM_TYPE_ENUM_TASK.toLocaleLowerCase(),
             parentWorkItemType: WORK_ITEM_TYPE_VALUE_ISSUE.toLocaleLowerCase(),
@@ -165,14 +167,11 @@ describe('WorkItemLinksForm', () => {
   });
 
   describe('adding an existing work item', () => {
-    const selectAvailableWorkItemTokens = async () => {
-      findTokenSelector().vm.$emit(
+    const selectAvailableWorkItemTokens = () => {
+      findWorkItemTokenInput().vm.$emit(
         'input',
         availableWorkItemsResponse.data.workspace.workItems.nodes,
       );
-      findTokenSelector().vm.$emit('blur', new FocusEvent({ relatedTarget: null }));
-
-      await waitForPromises();
     };
 
     beforeEach(async () => {
@@ -181,24 +180,31 @@ describe('WorkItemLinksForm', () => {
 
     it('renders add form', () => {
       expect(findForm().exists()).toBe(true);
-      expect(findTokenSelector().exists()).toBe(true);
+      expect(findWorkItemTokenInput().exists()).toBe(true);
       expect(findAddChildButton().text()).toBe('Add task');
       expect(findInput().exists()).toBe(false);
       expect(findConfidentialCheckbox().exists()).toBe(false);
     });
 
-    it('searches for available work items as prop when typing in input', async () => {
-      findTokenSelector().vm.$emit('focus');
-      findTokenSelector().vm.$emit('text-input', 'Task');
-      await waitForPromises();
-
-      expect(availableWorkItemsResolver).toHaveBeenCalled();
+    it('renders work item token input with default props', () => {
+      expect(findWorkItemTokenInput().props()).toMatchObject({
+        value: [],
+        fullPath: 'project/path',
+        childrenType: WORK_ITEM_TYPE_ENUM_TASK,
+        childrenIds: [],
+        parentWorkItemId: 'gid://gitlab/WorkItem/1',
+        areWorkItemsToAddValid: true,
+      });
     });
 
     it('selects and adds children', async () => {
       await selectAvailableWorkItemTokens();
 
       expect(findAddChildButton().text()).toBe('Add tasks');
+      expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(true);
+      expect(findWorkItemTokenInput().props('value')).toBe(
+        availableWorkItemsResponse.data.workspace.workItems.nodes,
+      );
       findForm().vm.$emit('submit', {
         preventDefault: jest.fn(),
       });
@@ -211,9 +217,9 @@ describe('WorkItemLinksForm', () => {
 
       await selectAvailableWorkItemTokens();
 
-      const validationEl = wrapper.findByTestId('work-items-invalid');
-      expect(validationEl.exists()).toBe(true);
-      expect(validationEl.text().trim()).toBe(
+      expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(false);
+      expect(findValidationElement().exists()).toBe(true);
+      expect(findValidationElement().text().trim()).toBe(
         sprintf(
           s__(
             'WorkItem|%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again.',

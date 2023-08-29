@@ -1471,6 +1471,27 @@ export const availableWorkItemsResponse = {
   },
 };
 
+export const searchedWorkItemsResponse = {
+  data: {
+    workspace: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/459',
+            title: 'Task 2',
+            state: 'OPEN',
+            createdAt: '2022-08-03T12:41:54Z',
+            confidential: false,
+            __typename: 'WorkItem',
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const projectMembersResponseWithCurrentUser = {
   data: {
     workspace: {

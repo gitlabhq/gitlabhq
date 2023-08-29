@@ -126,9 +126,11 @@ RSpec.describe ResourceEvents::ChangeLabelsService, feature_category: :team_plan
           change_labels
         end
 
-        it_behaves_like 'issue_edit snowplow tracking' do
-          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_LABEL_CHANGED }
+        it_behaves_like 'internal event tracking' do
+          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_LABEL_CHANGED }
           let(:user) { author }
+          let(:namespace) { project.namespace }
+
           subject(:service_action) { change_labels }
         end
       end

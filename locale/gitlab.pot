@@ -7991,9 +7991,6 @@ msgstr ""
 msgid "BoardScope|Select milestone"
 msgstr ""
 
-msgid "BoardScope|Select weight"
-msgstr ""
-
 msgid "BoardScope|Started"
 msgstr ""
 
