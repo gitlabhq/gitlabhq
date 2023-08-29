@@ -566,7 +566,7 @@ When the pipeline runs, GitLab:
   include: 'configs/**/*.yml'
   ```
 
-## Define inputs for configuration added with `include` (Beta)
+## Define inputs for configuration added with `include` **(BETA)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
 

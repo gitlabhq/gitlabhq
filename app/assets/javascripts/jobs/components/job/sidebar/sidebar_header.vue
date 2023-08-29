@@ -90,27 +90,47 @@ export default {
 </script>
 
 <template>
-  <div class="gl-py-5 gl-display-flex gl-align-items-center">
+  <div class="gl-py-4">
     <tooltip-on-truncate :title="job.name" truncate-target="child"
-      ><h4 class="gl-my-0 gl-mr-3 gl-text-truncate" data-testid="job-name">{{ job.name }}</h4>
+      ><h4 class="gl-mt-0 gl-mb-3 gl-text-truncate" data-testid="job-name">{{ job.name }}</h4>
     </tooltip-on-truncate>
-    <div class="gl-flex-grow-1 gl-flex-shrink-0 gl-text-right">
+    <div class="gl-display-flex gl-gap-3">
       <gl-button
         v-if="restJob.erase_path"
-        v-gl-tooltip.left
+        v-gl-tooltip.bottom
         :title="$options.i18n.eraseLogButtonLabel"
         :aria-label="$options.i18n.eraseLogButtonLabel"
         :href="restJob.erase_path"
         :data-confirm="$options.i18n.eraseLogConfirmText"
-        class="gl-mr-2"
         data-testid="job-log-erase-link"
         data-confirm-btn-variant="danger"
         data-method="post"
         icon="remove"
       />
+      <gl-button
+        v-if="restJob.new_issue_path"
+        v-gl-tooltip.bottom
+        :href="restJob.new_issue_path"
+        :title="$options.i18n.newIssue"
+        :aria-label="$options.i18n.newIssue"
+        category="secondary"
+        variant="confirm"
+        data-testid="job-new-issue"
+        icon="issue-new"
+      />
+      <gl-button
+        v-if="restJob.terminal_path"
+        v-gl-tooltip.bottom
+        :href="restJob.terminal_path"
+        :title="$options.i18n.debug"
+        :aria-label="$options.i18n.debug"
+        target="_blank"
+        icon="external-link"
+        data-testid="terminal-link"
+      />
       <job-sidebar-retry-button
         v-if="canShowJobRetryButton"
-        v-gl-tooltip.left
+        v-gl-tooltip.bottom
         :title="buttonTitle"
         :aria-label="buttonTitle"
         :is-manual-job="isManualJob"
@@ -124,7 +144,7 @@ export default {
       />
       <gl-button
         v-if="restJob.cancel_path"
-        v-gl-tooltip.left
+        v-gl-tooltip.bottom
         :title="$options.i18n.cancelJobButtonLabel"
         :aria-label="$options.i18n.cancelJobButtonLabel"
         :href="restJob.cancel_path"

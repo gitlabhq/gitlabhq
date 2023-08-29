@@ -275,24 +275,54 @@ To use relative times on the GitLab UI:
 You can select to include the list of your external identities in the JSON Web Token information that is generated for a CI job.
 For more information and examples, see [Token Payload](../../ci/secrets/id_token_authentication.md#token-payload).
 
-## Integrations
+### Control follower engagement
 
-Configure your preferences with third-party services which provide enhancements to your GitLab experience.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0.
 
-### Sourcegraph
+Turn off the ability to follow or be followed by other GitLab users. By default, your user profile, including your name and profile photo, is public in the **Following** tabs of other users. When you deactivate this setting:
 
-NOTE:
-This setting is only visible if Sourcegraph has been enabled by a GitLab administrator.
+- GitLab deletes all of your followers and followed connections.
+- GitLab automatically removes your user profile from the pages of each connection.
 
-Manage the availability of integrated code intelligence features powered by
-Sourcegraph. View [the Sourcegraph feature documentation](../../integration/sourcegraph.md#enable-sourcegraph-in-user-preferences)
-for more information.
+To remove the ability to be followed by and follow other users:
 
-### Gitpod
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Clear the **Enable follow users** checkbox.
+1. Select **Save changes**.
 
-Enable and disable the [GitLab-Gitpod integration](../../integration/gitpod.md). This is only
-visible after the integration is configured by a GitLab administrator. View
-[the Gitpod feature documentation](../../integration/gitpod.md) for more information.
+To access your **Followers** and **Following** tabs:
+
+- On the left sidebar, select your avatar > select your name or username.
+- Select **Followers** or **Following**.
+
+## Integrate your GitLab instance with third-party services
+
+### Integrate your GitLab instance with Gitpod
+
+Configure your GitLab instance with Gitpod when you want to launch and manage code directly from your GitLab browser. Gitpod automatically prepares and builds development environments for your projects.
+
+To integrate with Gitpod:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Find the **Integrations** section.
+1. Select the **Enable Gitpod integration** checkbox.
+1. Select **Save changes**.
+
+### Integrate your GitLab instance with Sourcegraph
+
+GitLab supports Sourcegraph integration for all public projects on GitLab. 
+
+To integrate with Sourcegraph:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Find the **Integrations** section.
+1. Select the **Enable integrated code intelligence on code views** checkbox.
+1. Select **Save changes**.
+
+You must be the administrator of the GitLab instance to configure GitLab with Sourcegraph.
 
 <!-- ## Troubleshooting
 

@@ -9,8 +9,6 @@ module Gitlab
 
           TimeoutError = Class.new(StandardError)
 
-          TEMP_MAX_INCLUDES = 100 # For logging; to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/396776
-
           include ::Gitlab::Utils::StrongMemoize
 
           attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config

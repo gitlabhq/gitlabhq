@@ -1,4 +1,4 @@
-import * as Sentry from 'sentrybrowser7';
+import * as Sentry from 'sentrybrowser';
 
 import { initSentry } from '~/sentry/init_sentry';
 
@@ -11,7 +11,7 @@ const mockRevision = '00112233';
 const mockFeatureCategory = 'my_feature_category';
 const mockPage = 'index:page';
 
-jest.mock('sentrybrowser7');
+jest.mock('sentrybrowser');
 
 describe('SentryConfig', () => {
   beforeEach(() => {

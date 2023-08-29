@@ -11,10 +11,10 @@ import {
   dropdowni18nText,
   LocalizedIssuableAttributeType,
   IssuableAttributeTypeKeyMap,
-  issuableAttributesQueries,
   IssuableAttributeType,
   Tracking,
 } from 'ee_else_ce/sidebar/constants';
+import { issuableAttributesQueries } from 'ee_else_ce/sidebar/queries/constants';
 import SidebarDropdown from './sidebar_dropdown.vue';
 import SidebarEditableItem from './sidebar_editable_item.vue';
 

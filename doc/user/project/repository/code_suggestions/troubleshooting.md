@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# Troubleshooting Code Suggestions (Beta) **(FREE ALL)**
+# Troubleshooting Code Suggestions **(FREE ALL BETA)**
 
 When working with Code Suggestions, you might encounter the following issues.
 

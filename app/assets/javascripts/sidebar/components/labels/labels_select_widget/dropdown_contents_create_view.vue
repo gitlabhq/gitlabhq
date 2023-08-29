@@ -11,7 +11,7 @@ import produce from 'immer';
 import { createAlert } from '~/alert';
 import { WORKSPACE_GROUP } from '~/issues/constants';
 import { __ } from '~/locale';
-import { workspaceLabelsQueries } from '../../../constants';
+import { workspaceLabelsQueries } from '../../../queries/constants';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
 import { DEFAULT_LABEL_COLOR } from './constants';
 

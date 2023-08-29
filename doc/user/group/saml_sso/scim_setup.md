@@ -166,7 +166,8 @@ To configure Okta for SCIM:
 During the synchronization process, all new users:
 
 - Receive GitLab accounts.
-- Are welcomed to their groups with an invitation email. You may want to warn your employees to expect this email.
+- Are welcomed to their groups with an invitation email.
+  You can [bypass email confirmation with a verified domain](index.md#bypass-user-email-confirmation-with-verified-domains).
 
 The following diagram describes what happens when you add users to your SCIM app:
 

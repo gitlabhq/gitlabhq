@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SaaS runners on macOS (Beta) **(PREMIUM SAAS)**
+# SaaS runners on macOS **(PREMIUM SAAS BETA)**
 
 SaaS runners on macOS are in [Beta](../../../policy/experiment-beta-support.md#beta) for open source programs and customers in Premium and Ultimate plans.
 

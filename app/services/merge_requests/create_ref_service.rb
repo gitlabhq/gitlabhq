@@ -25,7 +25,9 @@ module MergeRequests
       source_sha = initial_source_sha # the SHA to be the merged result of the source (minus the merge commit)
       expected_old_oid = ""           # the SHA we expect target_ref to be at prior to an update (an optimistic lock)
 
-      return ServiceResponse.error(message: 'Invalid merge source') unless first_parent_sha.present?
+      # TODO: Update this message with the removal of FF merge_trains_create_ref_service and update tests
+      # This is for compatibility with MergeToRefService during the rollout.
+      return ServiceResponse.error(message: '3:Invalid merge source') unless first_parent_sha.present?
 
       commit_sha, source_sha, expected_old_oid = maybe_squash!(commit_sha, source_sha, expected_old_oid)
       commit_sha, source_sha, expected_old_oid = maybe_rebase!(commit_sha, source_sha, expected_old_oid)

@@ -6,7 +6,8 @@ import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import Tracking from '~/tracking';
-import { todoQueries, TodoMutationTypes, todoMutations } from '../../constants';
+import { TodoMutationTypes } from '../../constants';
+import { todoQueries, todoMutations } from '../../queries/constants';
 import { todoLabel } from '../../utils';
 import TodoButton from './todo_button.vue';
 

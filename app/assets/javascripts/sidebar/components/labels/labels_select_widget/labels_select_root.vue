@@ -7,7 +7,7 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { TYPE_EPIC, TYPE_ISSUE, TYPE_MERGE_REQUEST, TYPE_TEST_CASE } from '~/issues/constants';
 
 import { __ } from '~/locale';
-import { issuableLabelsQueries } from '../../../constants';
+import { issuableLabelsQueries } from '../../../queries/constants';
 import SidebarEditableItem from '../../sidebar_editable_item.vue';
 import { DEBOUNCE_DROPDOWN_DELAY, VARIANT_SIDEBAR } from './constants';
 import DropdownContents from './dropdown_contents.vue';

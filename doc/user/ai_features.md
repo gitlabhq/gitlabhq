@@ -43,7 +43,7 @@ The following feature is Generally Available:
 The following features are in Beta:
 
 - [Code Suggestions](project/repository/code_suggestions.md)
-- [Explain this vulnerability](application_security/vulnerabilities/index.md#explaining-a-vulnerability-beta)
+- [Explain this vulnerability](application_security/vulnerabilities/index.md#explaining-a-vulnerability)
 
 ## Experiment AI features
 

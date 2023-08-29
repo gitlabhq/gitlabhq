@@ -4,7 +4,7 @@ import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import SidebarConfidentialityForm from '~/sidebar/components/confidential/sidebar_confidentiality_form.vue';
-import { confidentialityQueries } from '~/sidebar/constants';
+import { confidentialityQueries } from '~/sidebar/queries/constants';
 
 jest.mock('~/alert');
 

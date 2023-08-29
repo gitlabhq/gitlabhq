@@ -58,6 +58,7 @@ RSpec.describe Gitlab::GonHelper do
     context 'when sentry is configured' do
       let(:clientside_dsn) { 'https://xxx@sentry.example.com/1' }
       let(:environment) { 'staging' }
+      let(:sentry_clientside_traces_sample_rate) { 0.5 }
 
       context 'with legacy sentry configuration' do
         before do
@@ -77,6 +78,15 @@ RSpec.describe Gitlab::GonHelper do
           stub_application_setting(sentry_enabled: true)
           stub_application_setting(sentry_clientside_dsn: clientside_dsn)
           stub_application_setting(sentry_environment: environment)
+          stub_application_setting(sentry_clientside_traces_sample_rate: sentry_clientside_traces_sample_rate)
+        end
+
+        it 'sets sentry dsn and environment from config' do
+          expect(gon).to receive(:sentry_dsn=).with(clientside_dsn)
+          expect(gon).to receive(:sentry_environment=).with(environment)
+          expect(gon).to receive(:sentry_clientside_traces_sample_rate=).with(sentry_clientside_traces_sample_rate)
+
+          helper.add_gon_variables
         end
 
         context 'when enable_new_sentry_clientside_integration is disabled' do
@@ -87,19 +97,8 @@ RSpec.describe Gitlab::GonHelper do
           it 'does not set sentry dsn and environment from config' do
             expect(gon).not_to receive(:sentry_dsn=).with(clientside_dsn)
             expect(gon).not_to receive(:sentry_environment=).with(environment)
-
-            helper.add_gon_variables
-          end
-        end
-
-        context 'when enable_new_sentry_clientside_integration is enabled' do
-          before do
-            stub_feature_flags(enable_new_sentry_clientside_integration: true)
-          end
-
-          it 'sets sentry dsn and environment from config' do
-            expect(gon).to receive(:sentry_dsn=).with(clientside_dsn)
-            expect(gon).to receive(:sentry_environment=).with(environment)
+            expect(gon).not_to receive(:sentry_clientside_traces_sample_rate=)
+              .with(sentry_clientside_traces_sample_rate)
 
             helper.add_gon_variables
           end

@@ -20,8 +20,6 @@ describe('Sidebar details block', () => {
   const forwardDeploymentFailure = 'forward_deployment_failure';
   const findModal = () => wrapper.findComponent(JobRetryForwardDeploymentModal);
   const findArtifactsBlock = () => wrapper.findComponent(ArtifactsBlock);
-  const findNewIssueButton = () => wrapper.findByTestId('job-new-issue');
-  const findTerminalLink = () => wrapper.findByTestId('terminal-link');
   const findJobStagesDropdown = () => wrapper.findComponent(StagesDropdown);
   const findJobsContainer = () => wrapper.findComponent(JobsContainer);
 
@@ -45,36 +43,6 @@ describe('Sidebar details block', () => {
     mock = new MockAdapter(axios);
     mock.onGet().reply(HTTP_STATUS_OK, {
       name: job.stage,
-    });
-  });
-
-  describe('without terminal path', () => {
-    it('does not render terminal link', async () => {
-      createWrapper();
-      await store.dispatch('receiveJobSuccess', job);
-
-      expect(findTerminalLink().exists()).toBe(false);
-    });
-  });
-
-  describe('with terminal path', () => {
-    it('renders terminal link', async () => {
-      createWrapper();
-      await store.dispatch('receiveJobSuccess', { ...job, terminal_path: 'job/43123/terminal' });
-
-      expect(findTerminalLink().exists()).toBe(true);
-    });
-  });
-
-  describe('actions', () => {
-    beforeEach(() => {
-      createWrapper();
-      return store.dispatch('receiveJobSuccess', job);
-    });
-
-    it('should render link to new issue', () => {
-      expect(findNewIssueButton().attributes('href')).toBe(job.new_issue_path);
-      expect(findNewIssueButton().text()).toBe('New issue');
     });
   });
 

@@ -28,6 +28,7 @@ module Gitlab
                           current_user) && Gitlab::CurrentSettings.sentry_enabled
         gon.sentry_dsn           = Gitlab::CurrentSettings.sentry_clientside_dsn
         gon.sentry_environment   = Gitlab::CurrentSettings.sentry_environment
+        gon.sentry_clientside_traces_sample_rate = Gitlab::CurrentSettings.sentry_clientside_traces_sample_rate
       end
 
       gon.recaptcha_api_server_url = ::Recaptcha.configuration.api_server_url

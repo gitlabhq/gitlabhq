@@ -1,5 +1,4 @@
 <script>
-import { GlButton, GlIcon } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -23,8 +22,6 @@ export default {
   components: {
     ArtifactsBlock,
     CommitBlock,
-    GlButton,
-    GlIcon,
     JobsContainer,
     JobRetryForwardDeploymentModal,
     JobSidebarDetailsContainer,
@@ -83,36 +80,12 @@ export default {
           :job-id="job.id"
           @updateVariables="$emit('updateVariables')"
         />
-        <div
-          v-if="job.terminal_path || job.new_issue_path"
-          class="gl-py-5"
-          :class="$options.borderTopClass"
-        >
-          <gl-button
-            v-if="job.new_issue_path"
-            :href="job.new_issue_path"
-            category="secondary"
-            variant="confirm"
-            data-testid="job-new-issue"
-          >
-            {{ $options.i18n.newIssue }}
-          </gl-button>
-          <gl-button
-            v-if="job.terminal_path"
-            :href="job.terminal_path"
-            target="_blank"
-            data-testid="terminal-link"
-          >
-            {{ $options.i18n.debug }}
-            <gl-icon name="external-link" />
-          </gl-button>
-        </div>
 
-        <job-sidebar-details-container class="gl-py-5" :class="$options.borderTopClass" />
+        <job-sidebar-details-container class="gl-py-4" :class="$options.borderTopClass" />
 
         <artifacts-block
           v-if="hasArtifact"
-          class="gl-py-5"
+          class="gl-py-4"
           :class="$options.borderTopClass"
           :artifact="job.artifact"
           :help-url="artifactHelpUrl"
@@ -120,21 +93,21 @@ export default {
 
         <trigger-block
           v-if="hasTriggers"
-          class="gl-py-5"
+          class="gl-py-4"
           :class="$options.borderTopClass"
           :trigger="job.trigger"
         />
 
         <commit-block
           :commit="commit"
-          class="gl-py-5"
+          class="gl-py-4"
           :class="$options.borderTopClass"
           :merge-request="job.merge_request"
         />
 
         <stages-dropdown
           v-if="job.pipeline"
-          class="gl-py-5"
+          class="gl-py-4"
           :class="$options.borderTopClass"
           :pipeline="job.pipeline"
           :selected-stage="selectedStage"

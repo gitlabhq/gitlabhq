@@ -47,7 +47,7 @@ Migrating groups by direct transfer copies the groups from one place to another.
 Not all group and project resources are copied. See list of copied resources below:
 
 - [Migrated group items](#migrated-group-items).
-- [Migrated project items](#migrated-project-items-beta).
+- [Migrated project items](#migrated-project-items).
 
 WARNING:
 Importing groups with projects is in [Beta](../../../policy/experiment-beta-support.md#beta). This feature is not
@@ -287,7 +287,7 @@ Some group items are excluded from migration because they either:
 - May contain sensitive information: CI/CD variables, webhooks, and deploy tokens.
 - Are not supported: push rules.
 
-### Migrated project items (Beta)
+### Migrated project items **(BETA)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.

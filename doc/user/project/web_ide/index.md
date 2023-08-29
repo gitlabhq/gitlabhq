@@ -203,7 +203,7 @@ To protect your privacy and data:
 - Carefully review the permissions requested by an extension before you install the extension.
 - Keep your extensions up to date to ensure that any security or privacy vulnerabilities are addressed promptly. -->
 
-## Interactive web terminals for the Web IDE (Beta)
+## Interactive web terminals for the Web IDE **(BETA)**
 
 WARNING:
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.

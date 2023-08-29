@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SaaS runners on Windows (Beta) **(FREE SAAS)**
+# SaaS runners on Windows **(FREE SAAS BETA)**
 
 SaaS runner on Windows autoscale by launching virtual machines on
 the Google Cloud Platform. This solution uses an

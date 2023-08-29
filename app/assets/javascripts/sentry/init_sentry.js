@@ -1,4 +1,4 @@
-import * as Sentry from 'sentrybrowser7';
+import * as Sentry from 'sentrybrowser';
 
 const initSentry = function index() {
   if (!gon?.sentry_dsn) {

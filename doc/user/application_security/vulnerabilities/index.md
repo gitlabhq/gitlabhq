@@ -24,7 +24,7 @@ change its status to **Resolved**. This ensures that if it is accidentally reint
 merge, it is reported again as a new record. To change the status of multiple vulnerabilities, use
 the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#activity-filter).
 
-## Explaining a vulnerability (Beta) **(ULTIMATE SAAS)**
+## Explaining a vulnerability **(ULTIMATE SAAS BETA)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - Promoted to [Beta](../../../policy/experiment-beta-support.md#beta) status in 16.2.

@@ -1,6 +1,6 @@
 <script>
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { assigneesQueries } from '../../constants';
+import { assigneesQueries } from '../../queries/constants';
 
 export default {
   subscription: null,
