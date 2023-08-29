@@ -60,7 +60,7 @@ The following features are in Experiment:
 
 The rest of the features described on this page are also in the Experiment phase.
 
-### Explain Selected Code in the Web UI **(ULTIMATE SAAS)**
+### Explain Selected Code in the Web UI **(ULTIMATE SAAS EXPERIMENT)**
 
 > Introduced in GitLab 15.11 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
@@ -109,7 +109,7 @@ code in a merge request:
 
 We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 
-### GitLab Duo Chat **(ULTIMATE SAAS)**
+### GitLab Duo Chat **(ULTIMATE SAAS EXPERIMENT)**
 
 > Introduced in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
@@ -154,7 +154,7 @@ Or, you can add a comment in the [feedback issue](https://gitlab.com/gitlab-org/
 NOTE:
 Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.
 
-### Summarize issue discussions **(ULTIMATE SAAS)**
+### Summarize issue discussions **(ULTIMATE SAAS EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
@@ -174,7 +174,7 @@ Provide feedback on this experimental feature in [issue 407779](https://gitlab.c
 **Data usage**: When you use this feature, the text of public comments on the issue are sent to the large
 language model referenced above.
 
-### Show deployment frequency forecast **(ULTIMATE SAAS)**
+### Show deployment frequency forecast **(ULTIMATE SAAS EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
@@ -193,7 +193,7 @@ For example, if you select a 30-day range, a forecast for the following 15 days 
 
 Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
 
-### Generate issue descriptions **(ULTIMATE SAAS)**
+### Generate issue descriptions **(ULTIMATE SAAS EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 

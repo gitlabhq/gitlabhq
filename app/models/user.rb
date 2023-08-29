@@ -2048,7 +2048,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def user_detail
-    super.presence || (persisted? ? create_user_detail! : build_user_detail)
+    super.presence || build_user_detail
   end
 
   def pending_todo_for(target)

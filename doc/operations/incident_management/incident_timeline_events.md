@@ -83,7 +83,7 @@ of an incident.
 
 ![Incident timeline event for severity change](img/timeline_event_for_severity_change_v15_6.png)
 
-### When labels change (Experiment)
+### When labels change **(EXPERIMENT)**
 
 > [Introduced]([issue-link](https://gitlab.com/gitlab-org/gitlab/-/issues/365489)) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`. Disabled by default.
 

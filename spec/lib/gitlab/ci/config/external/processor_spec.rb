@@ -557,11 +557,11 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
     context 'when rules defined' do
       context 'when a rule is invalid' do
         let(:values) do
-          { include: [{ local: 'builds.yml', rules: [{ changes: ['$MY_VAR'] }] }] }
+          { include: [{ local: 'builds.yml', rules: [{ allow_failure: ['$MY_VAR'] }] }] }
         end
 
         it 'raises IncludeError' do
-          expect { subject }.to raise_error(described_class::IncludeError, /contains unknown keys: changes/)
+          expect { subject }.to raise_error(described_class::IncludeError, /contains unknown keys: allow_failure/)
         end
       end
     end

@@ -501,6 +501,44 @@ In this example, GitLab checks for the existence of `test-file.yml` in `my-group
 not the current project. Follow [issue 386040](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)
 for information about work to improve this behavior.
 
+### `include` with `rules:changes`
+
+> Support for `rules:changes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342209) in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_changes`. Disabled by default.
+
+Use [`rules:changes`](index.md#ruleschanges) to conditionally include other configuration files
+based on changed files. For example:
+
+```yaml
+include:
+  - local: builds1.yml
+    rules:
+      - changes:
+        - Dockerfile
+  - local: builds2.yml
+    rules:
+      - changes:
+          paths:
+            - Dockerfile
+          compare_to: 'refs/heads/branch1'
+        when: always
+  - local: builds3.yml
+    rules:
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+        changes:
+          paths:
+            - Dockerfile
+
+test:
+  stage: test
+  script: exit 0
+```
+
+In this example:
+
+- `builds1.yml` is included when `Dockerfile` has changed.
+- `builds2.yml` is included when `Dockerfile` has changed relative to `refs/heads/branch1`.
+- `builds3.yml` is included when `Dockerfile` has changed and the pipeline source is a merge request event.
+
 ## Use `include:local` with wildcard file paths
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25921) in GitLab 13.11.

@@ -4,10 +4,20 @@ module Organizations
   class OrganizationsController < ApplicationController
     feature_category :cell
 
-    before_action { authorize_action!(:read_organization) }
+    skip_before_action :authenticate_user!, except: [:index, :new]
 
-    def show; end
+    def index; end
 
-    def groups_and_projects; end
+    def new
+      authorize_create_organization!
+    end
+
+    def show
+      authorize_read_organization!
+    end
+
+    def groups_and_projects
+      authorize_read_organization!
+    end
   end
 end

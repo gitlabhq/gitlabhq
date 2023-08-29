@@ -4,122 +4,197 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_composition do
   let(:context) { double(variables_hash: {}) }
-  let(:rule_hashes) { [{ if: '$MY_VAR == "hello"' }] }
+  let(:rule_hashes) {}
+  let(:pipeline) { instance_double(Ci::Pipeline) }
+  let_it_be(:project) { create(:project, :custom_repo, files: { 'file.txt' => 'file' }) }
 
   subject(:rules) { described_class.new(rule_hashes) }
+
+  before do
+    allow(context).to receive(:project).and_return(project)
+    allow(context).to receive(:pipeline).and_return(pipeline)
+  end
 
   describe '#evaluate' do
     subject(:result) { rules.evaluate(context).pass? }
 
     context 'when there is no rule' do
-      let(:rule_hashes) {}
-
       it { is_expected.to eq(true) }
     end
 
-    shared_examples 'when there is a rule with if' do |rule_matched_result = true, rule_not_matched_result = false|
+    shared_examples 'with when: specified' do
+      context 'with when: never' do
+        before do
+          rule_hashes.first[:when] = 'never'
+        end
+
+        it { is_expected.to eq(false) }
+      end
+
+      context 'with when: always' do
+        before do
+          rule_hashes.first[:when] = 'always'
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with when: <invalid string>' do
+        before do
+          rule_hashes.first[:when] = 'on_success'
+        end
+
+        it 'raises an error' do
+          expect { result }.to raise_error(described_class::InvalidIncludeRulesError, /when unknown value: on_success/)
+        end
+      end
+
+      context 'with when: null' do
+        before do
+          rule_hashes.first[:when] = nil
+        end
+
+        it { is_expected.to eq(true) }
+      end
+    end
+
+    context 'when there is a rule with if:' do
+      let(:rule_hashes) { [{ if: '$MY_VAR == "hello"' }] }
+
       context 'when the rule matches' do
         let(:context) { double(variables_hash: { 'MY_VAR' => 'hello' }) }
 
-        it { is_expected.to eq(rule_matched_result) }
+        it { is_expected.to eq(true) }
+
+        it_behaves_like 'with when: specified'
       end
 
       context 'when the rule does not match' do
         let(:context) { double(variables_hash: { 'MY_VAR' => 'invalid' }) }
 
-        it { is_expected.to eq(rule_not_matched_result) }
+        it { is_expected.to eq(false) }
       end
     end
 
-    shared_examples 'when there is a rule with exists' do |file_exists_result = true, file_not_exists_result = false|
-      let(:project) { create(:project, :repository) }
+    context 'when there is a rule with exists:' do
+      let(:rule_hashes) { [{ exists: 'file.txt' }] }
 
       context 'when the file exists' do
-        let(:context) { double(project: project, sha: project.repository.tree.sha, top_level_worktree_paths: ['Dockerfile']) }
+        let(:context) { double(top_level_worktree_paths: ['file.txt']) }
 
-        before do
-          project.repository.create_file(project.first_owner, 'Dockerfile', "commit", message: 'test', branch_name: "master")
-        end
+        it { is_expected.to eq(true) }
 
-        it { is_expected.to eq(file_exists_result) }
+        it_behaves_like 'with when: specified'
       end
 
       context 'when the file does not exist' do
-        let(:context) { double(project: project, sha: project.repository.tree.sha, top_level_worktree_paths: ['test.md']) }
+        let(:context) { double(top_level_worktree_paths: ['README.md']) }
 
-        it { is_expected.to eq(file_not_exists_result) }
+        it { is_expected.to eq(false) }
       end
     end
 
-    it_behaves_like 'when there is a rule with if'
+    context 'when there is a rule with changes:' do
+      let(:rule_hashes) { [{ changes: ['file.txt'] }] }
 
-    context 'when there is a rule with exists' do
-      let(:rule_hashes) { [{ exists: 'Dockerfile' }] }
+      shared_examples 'when the pipeline has modified paths' do
+        let(:modified_paths) { ['file.txt'] }
 
-      it_behaves_like 'when there is a rule with exists'
-    end
+        before do
+          allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
+        end
 
-    context 'when there is a rule with if and when' do
-      context 'with when: never' do
-        let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'never' }] }
+        context 'when the file has changed' do
+          it { is_expected.to eq(true) }
 
-        it_behaves_like 'when there is a rule with if', false, false
-      end
+          it_behaves_like 'with when: specified'
+        end
 
-      context 'with when: always' do
-        let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'always' }] }
+        context 'when the file has not changed' do
+          let(:modified_paths) { ['README.md'] }
 
-        it_behaves_like 'when there is a rule with if'
-      end
+          it { is_expected.to eq(false) }
 
-      context 'with when: <invalid string>' do
-        let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: 'on_success' }] }
+          context 'when FF `ci_support_include_rules_changes` is disabled' do
+            before do
+              stub_feature_flags(ci_support_include_rules_changes: false)
+            end
 
-        it 'raises an error' do
-          expect { result }.to raise_error(described_class::InvalidIncludeRulesError, /when unknown value: on_success/)
+            it { is_expected.to eq(true) }
+          end
         end
       end
 
-      context 'with when: null' do
-        let(:rule_hashes) { [{ if: '$MY_VAR == "hello"', when: nil }] }
+      it_behaves_like 'when the pipeline has modified paths'
 
-        it_behaves_like 'when there is a rule with if'
-      end
-    end
+      context 'with paths: specified' do
+        let(:rule_hashes) { [{ changes: { paths: ['file.txt'] } }] }
 
-    context 'when there is a rule with exists and when' do
-      context 'with when: never' do
-        let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'never' }] }
-
-        it_behaves_like 'when there is a rule with exists', false, false
+        it_behaves_like 'when the pipeline has modified paths'
       end
 
-      context 'with when: always' do
-        let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'always' }] }
+      context 'with paths: and compare_to: specified' do
+        before_all do
+          project.repository.add_branch(project.owner, 'branch1', 'master')
 
-        it_behaves_like 'when there is a rule with exists'
-      end
+          project.repository.update_file(
+            project.owner, 'file.txt', 'file updated', message: 'Update file.txt', branch_name: 'branch1'
+          )
 
-      context 'with when: <invalid string>' do
-        let(:rule_hashes) { [{ exists: 'Dockerfile', when: 'on_success' }] }
+          project.repository.add_branch(project.owner, 'branch2', 'branch1')
+        end
 
-        it 'raises an error' do
-          expect { result }.to raise_error(described_class::InvalidIncludeRulesError, /when unknown value: on_success/)
+        let_it_be(:pipeline) do
+          build(:ci_pipeline, project: project, ref: 'branch2', sha: project.commit('branch2').sha)
+        end
+
+        context 'when the file has changed compared to the given ref' do
+          let(:rule_hashes) { [{ changes: { paths: ['file.txt'], compare_to: 'master' } }] }
+
+          it { is_expected.to eq(true) }
+
+          it_behaves_like 'with when: specified'
+        end
+
+        context 'when the file has not changed compared to the given ref' do
+          let(:rule_hashes) { [{ changes: { paths: ['file.txt'], compare_to: 'branch1' } }] }
+
+          it { is_expected.to eq(false) }
+
+          context 'when FF `ci_support_include_rules_changes` is disabled' do
+            before do
+              stub_feature_flags(ci_support_include_rules_changes: false)
+            end
+
+            it { is_expected.to eq(true) }
+          end
+        end
+
+        context 'when compare_to: is invalid' do
+          let(:rule_hashes) { [{ changes: { paths: ['file.txt'], compare_to: 'invalid' } }] }
+
+          it 'raises an error' do
+            expect { result }.to raise_error(described_class::InvalidIncludeRulesError, /compare_to is not a valid ref/)
+          end
+
+          context 'when FF `ci_support_include_rules_changes` is disabled' do
+            before do
+              stub_feature_flags(ci_support_include_rules_changes: false)
+            end
+
+            it 'does not raise an error' do
+              expect { result }.not_to raise_error
+            end
+          end
         end
       end
-
-      context 'with when: null' do
-        let(:rule_hashes) { [{ exists: 'Dockerfile', when: nil }] }
-
-        it_behaves_like 'when there is a rule with exists'
-      end
     end
 
-    context 'when there is a rule with changes' do
-      let(:rule_hashes) { [{ changes: ['$MY_VAR'] }] }
+    context 'when there is a rule with an invalid key' do
+      let(:rule_hashes) { [{ invalid: ['$MY_VAR'] }] }
 
       it 'raises an error' do
-        expect { result }.to raise_error(described_class::InvalidIncludeRulesError, /contains unknown keys: changes/)
+        expect { result }.to raise_error(described_class::InvalidIncludeRulesError, /contains unknown keys: invalid/)
       end
     end
   end

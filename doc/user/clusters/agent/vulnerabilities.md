@@ -9,9 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/368828) the starboard directive in GitLab 15.4. The starboard directive is scheduled for removal in GitLab 16.0.
 
-To view cluster vulnerabilities, you can view the [vulnerability report](../../application_security/vulnerabilities/index.md).
-You can also configure your agent so the vulnerabilities are displayed with other agent information in GitLab.
-
 ## Enable operational container scanning
 
 You can use operational container scanning to scan container images in your cluster for security vulnerabilities. You
@@ -140,3 +137,7 @@ This information can also be found under [operational vulnerabilities](../../../
 
 NOTE:
 You must have at least the Developer role.
+
+## Scanning private images
+
+To scan private images, the scanner relies on the image pull secrets (direct references and from the service account) to pull the image.

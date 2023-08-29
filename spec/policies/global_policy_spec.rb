@@ -695,4 +695,18 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_disallowed(:create_instance_runner) }
     end
   end
+
+  describe 'create_organization' do
+    context 'with regular user' do
+      let(:current_user) { user }
+
+      it { is_expected.to be_allowed(:create_organization) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:create_organizatinon) }
+    end
+  end
 end

@@ -57,6 +57,12 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:can_create_group) { @user&.can_create_group }
 
+  # TODO: update to check application setting
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/423302
+  desc 'User can create an organization'
+  with_options scope: :user, score: 0
+  condition(:can_create_organization) { true }
+
   desc "The application is restricted from public visibility"
   condition(:restricted_public_level, scope: :global) do
     Gitlab::CurrentSettings.current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)

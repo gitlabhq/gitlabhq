@@ -28,12 +28,18 @@ module Gitlab
             else
               Result.new('never')
             end
+          rescue Build::Rules::Rule::Clause::ParseError => e
+            raise InvalidIncludeRulesError, "include:#{e.message}"
           end
 
           private
 
           def match_rule(context)
-            @rule_list.find { |rule| rule.matches?(nil, context) }
+            if Feature.enabled?(:ci_support_include_rules_changes, context.project)
+              @rule_list.find { |rule| rule.matches?(context.pipeline, context) }
+            else
+              @rule_list.find { |rule| rule.matches?(nil, context) }
+            end
           end
 
           Result = Struct.new(:when) do

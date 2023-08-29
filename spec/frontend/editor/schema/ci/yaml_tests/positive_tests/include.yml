@@ -33,6 +33,17 @@ include:
     rules:
       - exists:
           - file.md
+  - local: builds.yml
+    rules:
+      - if: $INCLUDE_BUILDS == "true"
+        changes:
+          - 'test.yml'
+  - local: builds.yml
+    rules:
+      - changes:
+          paths:
+            - 'test.yml'
+          compare_to: 'master'
 
 # valid trigger:include
 trigger:include accepts project and file properties:

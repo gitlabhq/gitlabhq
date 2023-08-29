@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe SearchController, type: :request, feature_category: :global_search do
-  let_it_be(:user) { create(:user, :with_user_detail) }
+  let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :public, :repository, :wiki_repo, name: 'awesome project', group: group) }
   let_it_be(:projects) { create_list(:project, 5, :public, :repository, :wiki_repo) }
@@ -44,7 +44,7 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
       let(:params) { { search: 'foo', scope: 'issues' } }
       # some N+1 queries still exist
       # each issue runs an extra query for group namespaces
-      let(:threshold) { 3 }
+      let(:threshold) { 1 }
 
       it_behaves_like 'an efficient database result'
     end

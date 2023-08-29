@@ -6327,7 +6327,7 @@ msgstr ""
 msgid "Are you sure you want to retry this migration?"
 msgstr ""
 
-msgid "Are you sure you want to revoke this %{accessTokenType}? This action cannot be undone."
+msgid "Are you sure you want to revoke the %{accessTokenType} \"%{tokenName}\"? This action cannot be undone."
 msgstr ""
 
 msgid "Are you sure you want to revoke this SSH key?"
@@ -24235,7 +24235,7 @@ msgstr ""
 msgid "Import|GitHub import details"
 msgstr ""
 
-msgid "Import|Maximum decompressed size (MiB)"
+msgid "Import|Maximum decompressed file size for archives from imports (MiB)"
 msgstr ""
 
 msgid "Import|Maximum import remote file size (MB)"
@@ -32987,6 +32987,9 @@ msgstr ""
 msgid "Organization|Frequently visited projects"
 msgstr ""
 
+msgid "Organization|New organization"
+msgstr ""
+
 msgid "Organization|Org ID"
 msgstr ""
 
@@ -32994,6 +32997,9 @@ msgid "Organization|Organization navigation"
 msgstr ""
 
 msgid "Organization|Organization overview"
+msgstr ""
+
+msgid "Organization|Organizations"
 msgstr ""
 
 msgid "Organization|Public - The organization can be accessed without any authentication."

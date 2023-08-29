@@ -359,7 +359,7 @@ status in the output of the `sudo gitlab-rake db:migrate:status` command.
    sudo gitlab-ctl restart sidekiq
    ```
 
-## Rebuild database indexes (Experiment)
+## Rebuild database indexes **(EXPERIMENT)**
 
 WARNING:
 This feature is experimental, and isn't enabled by default. Use caution when

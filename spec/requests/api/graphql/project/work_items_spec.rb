@@ -8,7 +8,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, :public, group: group) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:reporter) { create(:user, :with_user_detail).tap { |reporter| project.add_reporter(reporter) } }
+  let_it_be(:reporter) { create(:user).tap { |reporter| project.add_reporter(reporter) } }
   let_it_be(:label1) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
   let_it_be(:milestone1) { create(:milestone, project: project) }
@@ -410,7 +410,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       # TODO: Fix N+1 queries executed for the linked work item widgets
       # https://gitlab.com/gitlab-org/gitlab/-/issues/420605
       expect { post_graphql(query, current_user: current_user) }
-        .not_to exceed_all_query_limit(control).with_threshold(13)
+        .not_to exceed_all_query_limit(control).with_threshold(11)
     end
   end
 

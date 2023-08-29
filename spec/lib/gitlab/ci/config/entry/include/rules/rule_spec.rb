@@ -14,11 +14,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category
     entry.compose!
   end
 
-  shared_examples 'a valid config' do
+  shared_examples 'a valid config' do |expected_value = nil|
     it { is_expected.to be_valid }
 
     it 'returns the expected value' do
-      expect(entry.value).to eq(config.compact)
+      expect(entry.value).to eq(expected_value || config.compact)
     end
   end
 
@@ -89,14 +89,32 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules::Rule, feature_category
 
     it_behaves_like 'a valid config'
 
-    context 'when array' do
+    context 'when exists: clause is an array' do
       let(:config) { { exists: ['./this.md', './that.md'] } }
 
       it_behaves_like 'a valid config'
     end
 
-    context 'when null' do
+    context 'when exists: clause is null' do
       let(:config) { { exists: nil } }
+
+      it_behaves_like 'a valid config'
+    end
+  end
+
+  context 'when specifying a changes: clause' do
+    let(:config) { { changes: %w[Dockerfile lib/* paths/**/*.rb] } }
+
+    it_behaves_like 'a valid config', { changes: { paths: %w[Dockerfile lib/* paths/**/*.rb] } }
+
+    context 'with paths:' do
+      let(:config) { { changes: { paths: %w[Dockerfile lib/* paths/**/*.rb] } } }
+
+      it_behaves_like 'a valid config'
+    end
+
+    context 'with paths: and compare_to:' do
+      let(:config) { { changes: { paths: ['Dockerfile'], compare_to: 'branch1' } } }
 
       it_behaves_like 'a valid config'
     end

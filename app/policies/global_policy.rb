@@ -29,6 +29,7 @@ class GlobalPolicy < BasePolicy
     prevent :receive_notifications
     prevent :use_quick_actions
     prevent :create_group
+    prevent :create_organization
     prevent :execute_graphql_mutation
   end
 
@@ -91,6 +92,10 @@ class GlobalPolicy < BasePolicy
 
   rule { can_create_group }.policy do
     enable :create_group
+  end
+
+  rule { can_create_organization }.policy do
+    enable :create_organization
   end
 
   rule { can?(:create_group) }.policy do

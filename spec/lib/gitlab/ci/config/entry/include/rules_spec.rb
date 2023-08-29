@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pip
           entry.compose!
         end
 
-        it_behaves_like 'an invalid config', /contains unknown keys: changes/
+        it_behaves_like 'a valid config'
       end
     end
 
@@ -80,7 +80,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pip
     let(:config) do
       [
         { if: '$THIS == "that"' },
-        { if: '$SKIP', when: 'never' }
+        { if: '$SKIP', when: 'never' },
+        { changes: ['Dockerfile'] }
       ]
     end
 
@@ -96,7 +97,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pip
         is_expected.to eq(
           [
             { if: '$THIS == "that"' },
-            { if: '$SKIP', when: 'never' }
+            { if: '$SKIP', when: 'never' },
+            { changes: { paths: ['Dockerfile'] } }
           ]
         )
       end

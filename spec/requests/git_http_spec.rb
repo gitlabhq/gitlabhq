@@ -206,7 +206,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
   end
 
   describe "User with no identities" do
-    let(:user) { create(:user, :with_user_detail) }
+    let(:user) { create(:user) }
 
     context "when the project doesn't exist" do
       context "when namespace doesn't exist" do

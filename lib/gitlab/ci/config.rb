@@ -161,6 +161,7 @@ module Gitlab
       def build_context(project:, pipeline:, sha:, user:, parent_pipeline:, pipeline_config:)
         Config::External::Context.new(
           project: project,
+          pipeline: pipeline,
           sha: sha || find_sha(project),
           user: user,
           parent_pipeline: parent_pipeline,
