@@ -50,8 +50,10 @@ module Spam
     attr_accessor :owner_name, :owner_email
 
     def akismet_client
-      @akismet_client ||= ::Akismet::Client.new(Gitlab::CurrentSettings.akismet_api_key,
-                                                Gitlab.config.gitlab.url)
+      @akismet_client ||= ::Akismet::Client.new(
+        Gitlab::CurrentSettings.akismet_api_key,
+        Gitlab.config.gitlab.url
+      )
     end
 
     def akismet_enabled?

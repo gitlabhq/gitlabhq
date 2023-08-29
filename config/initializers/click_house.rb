@@ -22,9 +22,11 @@ ClickHouse::Client.configure do |config|
     options = {
       multipart: true,
       headers: headers,
-      body: body,
       allow_local_requests: Rails.env.development? || Rails.env.test?
     }
+
+    body_key = body.is_a?(IO) ? :body_stream : :body
+    options[body_key] = body
 
     response = Gitlab::HTTP.post(url, options)
     ClickHouse::Client::Response.new(response.body, response.code, response.headers)

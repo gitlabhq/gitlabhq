@@ -3,6 +3,12 @@
 $tabs-holder-z-index: 250;
 $comparison-empty-state-height: 62px;
 
+.apply-suggestions-input-min-width {
+  @include media-breakpoint-up(lg) {
+    width: $gl-dropdown-width-wide;
+  }
+}
+
 .space-children {
   @include clearfix;
 

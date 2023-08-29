@@ -120,4 +120,8 @@ Doorkeeper.configure do
   #
   # We might want to disable this in the future, see https://gitlab.com/gitlab-org/gitlab/-/issues/323615
   skip_client_authentication_for_password_grant true
+
+  # 2 hours in seconds
+  # This is also the database default value
+  access_token_expires_in 7200
 end

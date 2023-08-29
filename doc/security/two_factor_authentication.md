@@ -60,35 +60,44 @@ To enforce 2FA only for certain groups:
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Select **All users in this group must set up two-factor authentication**.
+1. Optional. In **Delay 2FA enforcement (hours)**, enter the number of hours you
+   want the grace period to last for.
+   If there are multiple different grace periods in a top level group and its subgroups
+   and projects, the shortest grace period is used.
 1. Select **Save changes**.
 
-You can also specify a grace period in the **Delay 2FA enforcement** option.
+Access tokens are not required to provide a second factor for authentication because
+they are API-based. Tokens generated before 2FA is enforced remain valid.
 
-If you want to enforce 2FA only for certain groups, you can enable it in the
-group settings and specify a grace period as above.
+### 2FA in subgroups
 
-The following are important notes about 2FA:
+You can enable and enforce 2FA for individual subgroups in the same way as a top
+level group.
 
-- Projects belonging to a 2FA-enabled group that
-  [is shared](../user/project/members/share_project_with_groups.md)
-  with a 2FA-disabled group will *not* require members of the 2FA-disabled group to use
-  2FA for the project. For example, if project *P* belongs to 2FA-enabled group *A* and
-  is shared with 2FA-disabled group *B*, members of group *B* can access project *P*
-  without 2FA. To ensure this scenario doesn't occur,
-  [prevent sharing of projects](../user/group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups)
-  for the 2FA-enabled group.
-- If you add additional members to a project within a group or subgroup that has
-  2FA enabled, 2FA is **not** required for those individually added members.
-- If there are multiple 2FA requirements (for example, group + all users, or multiple
-  groups) the shortest grace period is used.
-- It is possible to prevent subgroups from setting up their own 2FA requirements:
-  1. Go to the top-level group's **Settings > General**.
-  1. Expand the **Permissions and group features** section.
-  1. Uncheck the **Allow subgroups to set up their own two-factor authentication rule** field.
+You can prevent subgroups from setting up their own 2FA requirements:
 
-  This action causes all subgroups with 2FA requirements to stop requiring that from their members.
-- Access tokens are not required to provide a second factor for authentication because they are API-based.
-  Tokens generated before 2FA is enforced remain valid.
+1. Go to the top level group's **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Clear the **Allow subgroups to set up their own two-factor authentication rule** checkbox.
+
+This action causes all subgroups with 2FA requirements to stop requiring 2FA from
+their members.
+
+### 2FA in projects
+
+If a project belonging to a group that enables or enforces 2FA is [shared](../user/project/members/share_project_with_groups.md)
+with a group that does not enable or enforce 2FA, members of the non-2FA group can access that project
+without using 2FA. For example:
+
+- Group *A* has 2FA enabled and enforced. Group *B* does not have 2FA enabled.
+- If a project, *P*, that belongs to group *A* is shared with group *B*, members
+  of group *B* can access project *P* without 2FA.
+
+To ensure this does not occur, [prevent sharing of projects](../user/group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups)
+for the 2FA group.
+
+If you add members to a project in a group or subgroup that has 2FA
+enabled, 2FA is **not** required for those individually added members.
 
 ## Disable 2FA **(FREE SELF)**
 

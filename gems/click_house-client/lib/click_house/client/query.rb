@@ -55,6 +55,12 @@ module ClickHouse
         end
       end
 
+      def self.build(query)
+        return query if query.is_a?(ClickHouse::Client::QueryLike)
+
+        new(raw_query: query)
+      end
+
       private
 
       attr_reader :raw_query

@@ -55,6 +55,24 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
           results = ClickHouse::Client.select('SELECT * FROM events', :main)
           expect(results).to be_empty
         end
+
+        it 'inserts data from CSV' do
+          time = Time.current.utc
+          Tempfile.open(['test', '.csv.gz']) do |f|
+            csv = "id,path,created_at\n10,1/2/,#{time.to_f}\n20,1/,#{time.to_f}"
+            File.binwrite(f.path, ActiveSupport::Gzip.compress(csv))
+
+            ClickHouse::Client.insert_csv('INSERT INTO events (id, path, created_at) FORMAT CSV', File.open(f.path),
+              :main)
+          end
+
+          results = ClickHouse::Client.select('SELECT id, path, created_at FROM events ORDER BY id', :main)
+
+          expect(results).to match([
+            { 'id' => 10, 'path' => '1/2/', 'created_at' => be_within(0.1.seconds).of(time) },
+            { 'id' => 20, 'path' => '1/', 'created_at' => be_within(0.1.seconds).of(time) }
+          ])
+        end
       end
 
       it 'inserts and modifies data' do

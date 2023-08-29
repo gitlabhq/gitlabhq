@@ -1,0 +1,18 @@
+- form = local_assigns.fetch(:form)
+
+= render 'projects/settings/merge_requests/merge_request_merge_method_settings', project: @project, form: form
+
+= render 'projects/settings/merge_requests/merge_request_merge_options_settings', project: @project, form: form
+
+= render 'projects/settings/merge_requests/merge_request_squash_options_settings', form: form
+
+= render 'projects/settings/merge_requests/merge_request_merge_checks_settings', project: @project, form: form
+
+= render 'projects/settings/merge_requests/merge_request_merge_suggestions_settings', project: @project, form: form
+
+= render 'projects/settings/merge_requests/merge_request_merge_commit_template', project: @project, form: form
+
+= render 'projects/settings/merge_requests/merge_request_squash_commit_template', project: @project, form: form
+
+- if @project.forked?
+  = render 'projects/settings/merge_requests/merge_request_target_project_settings', project: @project, form: form

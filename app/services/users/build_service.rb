@@ -5,8 +5,8 @@ module Users
     ALLOWED_USER_TYPES = %i[project_bot security_policy_bot].freeze
 
     delegate :user_default_internal_regex_enabled?,
-             :user_default_internal_regex_instance,
-             to: :'Gitlab::CurrentSettings.current_application_settings'
+      :user_default_internal_regex_instance,
+      to: :'Gitlab::CurrentSettings.current_application_settings'
 
     def initialize(current_user, params = {})
       @current_user = current_user

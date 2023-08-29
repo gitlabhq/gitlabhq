@@ -70,9 +70,11 @@ module Users
       yield(user) if block_given?
 
       hard_delete = options.fetch(:hard_delete, false)
-      Users::GhostUserMigration.create!(user: user,
-                                        initiator_user: current_user,
-                                        hard_delete: hard_delete)
+      Users::GhostUserMigration.create!(
+        user: user,
+        initiator_user: current_user,
+        hard_delete: hard_delete
+      )
 
       update_metrics
     end

@@ -17,11 +17,13 @@ module ClickHouse
       end
 
       def uri
-        @uri ||= begin
-          parsed = Addressable::URI.parse(@url)
-          parsed.query_values = @variables
-          parsed
-        end
+        @uri ||= build_custom_uri
+      end
+
+      def build_custom_uri(extra_variables: {})
+        parsed = Addressable::URI.parse(@url)
+        parsed.query_values = @variables.merge(extra_variables)
+        parsed
       end
 
       def headers

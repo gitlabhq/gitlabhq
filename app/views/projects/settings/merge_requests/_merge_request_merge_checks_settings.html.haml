@@ -1,0 +1,8 @@
+- form = local_assigns.fetch(:form)
+
+.form-group
+  %b= s_('ProjectSettings|Merge checks')
+  %p.text-secondary= s_('ProjectSettings|These checks must pass before merge requests can be merged.')
+  = render 'projects/settings/merge_requests/merge_request_pipelines_and_threads_options', form: form, project: @project
+  = render_if_exists 'projects/settings/merge_requests/merge_request_merge_checks_status_checks', form: form, project: @project
+  = render_if_exists 'projects/settings/merge_requests/merge_request_merge_checks_jira_enforcement', form: form, project: @project

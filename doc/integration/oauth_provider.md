@@ -115,16 +115,27 @@ At any time you can revoke any access by selecting **Revoke**.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21745) in GitLab 14.3, with the ability to opt out.
 > - Ability to opt-out of expiring access token [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0.
+> - Database validation on `expires_in` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112765) in GitLab 15.10. If your GitLab instance has any remaining OAuth Access Tokens without `expires_in` set when you are upgrading to 15.10 or later, the database migration will raise an error. For workaround instructions, see the [GitLab 15.10.0 upgrade documentation](../update/versions/gitlab_15_changes.md#15100).
 
 WARNING:
 The ability to opt out of expiring access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/340848)
 in GitLab 14.3 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in 15.0. All
 existing integrations must be updated to support access token refresh.
 
-Access tokens expire after two hours. Integrations that use access tokens must generate new ones at least every
-two hours.
+Access tokens expire after two hours. Integrations that use access tokens must
+generate new ones using the `refresh_token` attribute. Refresh tokens may be
+used even after the `access_token` itself expires.
+See [OAuth 2.0 token documentation](../api/oauth2.md) for more detailed
+information on how to refresh expired access tokens.
 
-When applications are deleted, all grants and tokens associated with the application are also deleted.
+This expiration setting is set in the GitLab codebase using the
+`access_token_expires_in` configuration from
+[Doorkeeper](https://github.com/doorkeeper-gem/doorkeeper), the library that
+provides GitLab as an OAuth provider functionality. The expiration setting is
+not configurable.
+
+When applications are deleted, all grants and tokens associated with the
+application are also deleted.
 
 ## Hashed OAuth application secrets
 

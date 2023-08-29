@@ -502,7 +502,7 @@ GEM
     escape_utils (1.2.1)
     et-orbi (1.2.7)
       tzinfo
-    ethon (0.15.0)
+    ethon (0.16.0)
       ffi (>= 1.15.0)
     excon (0.99.0)
     execjs (2.8.1)

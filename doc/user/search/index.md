@@ -186,17 +186,16 @@ To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Control</
 
 ## Autocomplete suggestions
 
-In the search box, you can view autocomplete suggestions for:
+As you type in the search box, autocomplete suggestions are displayed for:
 
 - [Projects](#search-for-a-project-by-full-path) and groups
 - Users
-- Various help pages (try and type **API help**)
-- Project feature pages (try and type **milestones**)
-- Various settings pages (try and type **user settings**)
-- Recently viewed issues (try and type some word from the title of a recently viewed issue)
-- Recently viewed merge requests (try and type some word from the title of a recently viewed merge request)
-- Recently viewed epics (try and type some word from the title of a recently viewed epic)
-- [GitLab Flavored Markdown](../markdown.md#gitlab-specific-references) (GLFM) for issues in a project (try and type a GLFM reference for an issue)
+- Help pages
+- Project features (for example, milestones)
+- Settings (for example, user settings)
+- Recently viewed merge requests
+- Recently viewed issues and epics
+- [GitLab Flavored Markdown references](../markdown.md#gitlab-specific-references) for issues in a project
 
 ## Search settings
 

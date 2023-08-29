@@ -44,13 +44,50 @@ module ClickHouse
     # Executes any kinds of database query without returning any data (INSERT, DELETE)
     def self.execute(query, database, configuration = self.configuration)
       instrumented_execute(query, database, configuration) do |response, instrument|
-        if response.headers['x-clickhouse-summary']
-          instrument[:statistics] =
-            Gitlab::Json.parse(response.headers['x-clickhouse-summary']).symbolize_keys
-        end
+        expose_summary(response.headers, instrument)
       end
 
       true
+    end
+
+    # Inserts a gzip-compressed CSV to ClickHouse
+    #
+    # Usage:
+    #
+    # Create a compressed CSV file:
+    # > File.binwrite("my_csv.csv", ActiveSupport::Gzip.compress("id\n10\n20"))
+    #
+    # Invoke the INSERT query:
+    # > ClickHouse::Client.insert_csv('INSERT INTO events (id) FORMAT CSV', File.open("my_csv.csv"), :main)
+    def self.insert_csv(query, io, database, configuration = self.configuration)
+      db = lookup_database(configuration, database)
+
+      headers = db.headers.merge(
+        'Transfer-Encoding' => 'chunked',
+        'Content-Length' => File.size(io).to_s,
+        'Content-Encoding' => 'gzip'
+      )
+
+      query = ClickHouse::Client::Query.build(query)
+      ActiveSupport::Notifications.instrument('sql.click_house', { query: query, database: database }) do |instrument|
+        response = configuration.http_post_proc.call(
+          db.build_custom_uri(extra_variables: { query: query.to_sql }).to_s,
+          headers,
+          io
+        )
+        raise DatabaseError, response.body unless response.success?
+
+        expose_summary(response.headers, instrument)
+      end
+
+      true
+    end
+
+    private_class_method def self.expose_summary(headers, instrument)
+      return unless headers['x-clickhouse-summary']
+
+      instrument[:statistics] =
+        Gitlab::Json.parse(headers['x-clickhouse-summary']).symbolize_keys
     end
 
     private_class_method def self.lookup_database(configuration, database)
@@ -62,7 +99,7 @@ module ClickHouse
     private_class_method def self.instrumented_execute(query, database, configuration)
       db = lookup_database(configuration, database)
 
-      query = ClickHouse::Client::Query.new(raw_query: query) unless query.is_a?(ClickHouse::Client::QueryLike)
+      query = ClickHouse::Client::Query.build(query)
       ActiveSupport::Notifications.instrument('sql.click_house', { query: query, database: database }) do |instrument|
         # Use a multipart POST request where the placeholders are sent with the param_ prefix
         # See: https://github.com/ClickHouse/ClickHouse/issues/8842

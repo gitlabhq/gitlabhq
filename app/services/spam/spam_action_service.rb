@@ -131,12 +131,13 @@ module Spam
         referer: spam_params&.referer
       }
 
-      SpamVerdictService.new(target: target,
-                             user: user,
-                             options: options,
-                             context: context,
-                             extra_features: extra_features
-                            )
+      SpamVerdictService.new(
+        target: target,
+        user: user,
+        options: options,
+        context: context,
+        extra_features: extra_features
+      )
     end
 
     def noteable_type

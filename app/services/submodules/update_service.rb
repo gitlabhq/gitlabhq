@@ -26,11 +26,13 @@ module Submodules
     end
 
     def create_commit!
-      repository.update_submodule(current_user,
-                                  @submodule,
-                                  @commit_sha,
-                                  message: @commit_message,
-                                  branch: @branch_name)
+      repository.update_submodule(
+        current_user,
+        @submodule,
+        @commit_sha,
+        message: @commit_message,
+        branch: @branch_name
+      )
     rescue ArgumentError, TypeError
       raise ValidationError, 'Invalid parameters'
     end

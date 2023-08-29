@@ -1,4 +1,4 @@
-import { GlDropdown, GlFormTextarea, GlButton, GlAlert } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlFormTextarea, GlButton, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ApplySuggestionComponent from '~/vue_shared/components/markdown/apply_suggestion.vue';
 
@@ -10,7 +10,7 @@ describe('Apply Suggestion component', () => {
     wrapper = shallowMount(ApplySuggestionComponent, { propsData: { ...propsData, ...props } });
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findTextArea = () => wrapper.findComponent(GlFormTextarea);
   const findApplyButton = () => wrapper.findComponent(GlButton);
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -22,7 +22,7 @@ describe('Apply Suggestion component', () => {
       const dropdown = findDropdown();
 
       expect(dropdown.exists()).toBe(true);
-      expect(dropdown.props('text')).toBe('Apply suggestion');
+      expect(dropdown.props('toggleText')).toBe('Apply suggestion');
       expect(dropdown.props('disabled')).toBe(false);
     });
 

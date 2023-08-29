@@ -85,15 +85,15 @@ To view the rendered details:
 
 ## Maximum artifacts size
 
-The maximum size of the [job artifacts](../../administration/job_artifacts.md)
-can be set at:
+An administrator can set the maximum size of the
+[job artifacts](../../administration/job_artifacts.md) at:
 
-- The instance level.
-- [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/21688), the project and group level.
+- The instance level
+- The project and group level
 
 For the setting on GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/index.md#gitlab-cicd).
 
-The value is in MB and the default is 100 MB per job. To change it at the:
+The value is in MB, and the default is 100 MB per job. An administrator can change the default value at the:
 
 - Instance level:
 
@@ -114,9 +114,6 @@ The value is in MB and the default is 100 MB per job. To change it at the:
   1. Go to the project's **Settings > CI/CD > General Pipelines**.
   1. Change the value of **maximum artifacts size** (in MB).
   1. Select **Save changes** for the changes to take effect.
-
-NOTE:
-The setting at all levels is only available to GitLab administrators.
 
 ## Default artifacts expiration
 

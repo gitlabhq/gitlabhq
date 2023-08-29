@@ -12,11 +12,7 @@ const BitbucketStatusTableStub = {
 describe('BitbucketServerStatusTable', () => {
   let wrapper;
 
-  const findReconfigureButton = () =>
-    wrapper
-      .findAllComponents(GlButton)
-      .filter((w) => w.props().variant === 'info')
-      .at(0);
+  const findReconfigureButton = () => wrapper.findComponent(GlButton);
 
   function createComponent(bitbucketStatusTableStub = true) {
     wrapper = shallowMount(BitbucketServerStatusTable, {
