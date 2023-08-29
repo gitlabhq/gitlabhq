@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Files > Project owner creates a license file', :js, feature_category: :groups_and_projects do
-  let(:project) { create(:project, :repository) }
-  let(:project_maintainer) { project.first_owner }
+  let_it_be(:project_maintainer) { create(:user, :no_super_sidebar) }
+  let_it_be(:project) { create(:project, :repository, namespace: project_maintainer.namespace) }
 
   before do
     project.repository.delete_file(project_maintainer, 'LICENSE',

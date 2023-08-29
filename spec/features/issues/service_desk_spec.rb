@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_desk do
   let(:project) { create(:project, :private, service_desk_enabled: true) }
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
   let_it_be(:support_bot) { Users::Internal.support_bot }
 
   before do

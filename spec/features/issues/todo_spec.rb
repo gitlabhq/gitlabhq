@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Manually create a todo item from issue', :js, feature_category: :team_planning do
   let!(:project) { create(:project) }
   let!(:issue)   { create(:issue, project: project) }
-  let!(:user)    { create(:user) }
+  let!(:user)    { create(:user, :no_super_sidebar) }
 
   before do
     project.add_maintainer(user)

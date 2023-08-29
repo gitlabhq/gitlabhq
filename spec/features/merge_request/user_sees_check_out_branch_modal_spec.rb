@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Merge request > User sees check out branch modal', :js, feature_category: :code_review_workflow do
   include CookieHelper
 
-  let(:project) { create(:project, :public, :repository) }
-  let(:user) { project.creator }
-  let(:merge_request) { create(:merge_request, source_project: project) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:project) { create(:project, :public, :repository, creator: user) }
+  let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let(:modal_window_title) { 'Check out, review, and resolve locally' }
 
   before do

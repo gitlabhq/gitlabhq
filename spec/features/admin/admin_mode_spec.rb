@@ -7,7 +7,7 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
   include Features::TopNavSpecHelpers
   include StubENV
 
-  let(:admin) { create(:admin) }
+  let(:admin) { create(:admin, :no_super_sidebar) }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')

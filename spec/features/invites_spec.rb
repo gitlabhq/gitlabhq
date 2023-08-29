@@ -70,7 +70,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
       end
 
       context 'when invite is sent before account is created;ldap or service sign in for manual acceptance edge case' do
-        let(:user) { create(:user, email: 'user@example.com') }
+        let(:user) { create(:user, :no_super_sidebar, email: 'user@example.com') }
 
         context 'when invite clicked and not signed in' do
           before do

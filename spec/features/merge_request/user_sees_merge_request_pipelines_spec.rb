@@ -86,7 +86,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       it 'sees branch pipelines and detached merge request pipelines in correct order' do
         page.within('.ci-table') do
-          expect(page).to have_selector('[data-testid="ci-badge-created"]', count: 2)
+          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'created', count: 2)
           expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{detached_merge_request_pipeline.id}")
         end
       end
@@ -122,7 +122,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'sees branch pipelines and detached merge request pipelines in correct order' do
           page.within('.ci-table') do
-            expect(page).to have_selector('[data-testid="ci-badge-pending"]', count: 4)
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'pending', count: 4)
 
             expect(all('[data-testid="pipeline-url-link"]')[0])
               .to have_content("##{detached_merge_request_pipeline_2.id}")
@@ -220,7 +220,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'sees a branch pipeline in pipeline tab' do
           page.within('.ci-table') do
-            expect(page).to have_selector('[data-testid="ci-badge-created"]', count: 1)
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'created', count: 1)
             expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{push_pipeline.id}")
           end
         end
@@ -275,7 +275,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
       it 'sees branch pipelines and detached merge request pipelines in correct order' do
         page.within('.ci-table') do
-          expect(page).to have_selector('[data-testid="ci-badge-pending"]', count: 2)
+          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'pending', count: 2)
           expect(first('[data-testid="pipeline-url-link"]')).to have_content("##{detached_merge_request_pipeline.id}")
         end
       end
@@ -291,7 +291,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       it 'sees pipeline list in forked project' do
         visit project_pipelines_path(forked_project)
 
-        expect(page).to have_selector('[data-testid="ci-badge-pending"]', count: 2)
+        expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'pending', count: 2)
       end
 
       context 'when a user updated a merge request from a forked project to the parent project' do
@@ -317,7 +317,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
 
         it 'sees branch pipelines and detached merge request pipelines in correct order' do
           page.within('.ci-table') do
-            expect(page).to have_selector('[data-testid="ci-badge-pending"]', count: 4)
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'pending', count: 4)
 
             expect(all('[data-testid="pipeline-url-link"]')[0])
               .to have_content("##{detached_merge_request_pipeline_2.id}")
@@ -360,7 +360,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
         it 'sees pipeline list in forked project' do
           visit project_pipelines_path(forked_project)
 
-          expect(page).to have_selector('[data-testid="ci-badge-pending"]', count: 4)
+          expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'pending', count: 4)
         end
       end
 

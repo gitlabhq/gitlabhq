@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_projects do
-  let(:user) { create :user }
+  let(:user) { create(:user, :no_super_sidebar) }
   let(:group) { create(:group) }
   let(:nested_group) { create(:group, :nested) }
   let(:another_group) { create(:group) }

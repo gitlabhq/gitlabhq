@@ -53,7 +53,7 @@ visible even after they have been removed from the repository.
 
 To purge files from a GitLab repository:
 
-1. Install either [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md) or
+1. Install [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md) and optionally
    [`git-sizer`](https://github.com/github/git-sizer#getting-started)
    using a supported package manager or from source.
 

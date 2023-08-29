@@ -6,8 +6,8 @@ require 'spec_helper'
 RSpec.describe 'Admin mode for workers', :request_store, feature_category: :system_access do
   include Features::AdminUsersHelpers
 
-  let(:user) { create(:user) }
-  let(:user_to_delete) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
+  let(:user_to_delete) { create(:user, :no_super_sidebar) }
 
   before do
     sign_in(user)
@@ -22,7 +22,7 @@ RSpec.describe 'Admin mode for workers', :request_store, feature_category: :syst
   end
 
   context 'as an admin user' do
-    let(:user) { create(:admin) }
+    let(:user) { create(:admin, :no_super_sidebar) }
 
     context 'when admin mode disabled' do
       it 'cannot delete user', :js do

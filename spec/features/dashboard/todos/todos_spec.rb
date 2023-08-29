@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
   include DesignManagementTestHelpers
 
-  let_it_be(:user) { create(:user, username: 'john') }
-  let_it_be(:user2) { create(:user, username: 'diane') }
-  let_it_be(:author) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar, username: 'john') }
+  let_it_be(:user2) { create(:user, :no_super_sidebar, username: 'diane') }
+  let_it_be(:author) { create(:user, :no_super_sidebar) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project, due_date: Date.today, title: "Fix bug") }
 

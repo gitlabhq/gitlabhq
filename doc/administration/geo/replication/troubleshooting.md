@@ -287,7 +287,7 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  Ensure you have added the secondary site in the **Main menu > Admin > Geo > Sites** on the web interface for the **primary** site.
+  Ensure you have added the secondary site in the Admin Area under **Geo > Sites** on the web interface for the **primary** site.
   Also ensure you entered the `gitlab_rails['geo_node_name']`
   when adding the secondary site in the Admin Area of the **primary** site.
   In GitLab 12.3 and earlier, edit the secondary site in the Admin Area of the **primary**

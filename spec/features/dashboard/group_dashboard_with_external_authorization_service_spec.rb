@@ -6,7 +6,7 @@ RSpec.describe 'The group dashboard', :js, feature_category: :groups_and_project
   include ExternalAuthorizationServiceHelpers
   include Features::TopNavSpecHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
 
   before do
     sign_in user

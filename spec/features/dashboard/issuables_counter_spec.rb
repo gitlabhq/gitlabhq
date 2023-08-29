@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching, feature_category: :team_planning do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project) }

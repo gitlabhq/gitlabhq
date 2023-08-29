@@ -7,7 +7,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
   include TermsHelper
   include UsageDataHelpers
 
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin, :no_super_sidebar) }
 
   context 'application setting :admin_mode is enabled', :request_store do
     before do

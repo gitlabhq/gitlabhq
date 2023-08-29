@@ -2666,14 +2666,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let(:group) { build(:group) }
 
     context 'the group has owners' do
-      before do
-        group.add_owner(create(:user))
-        group.add_owner(create(:user))
-      end
-
       it 'is the first owner' do
+        user_1 = create(:user)
+        user_2 = create(:user)
+        group.add_owner(user_2)
+        group.add_owner(user_1)
+
+        # The senior-most user (not member) who is an OWNER in the group
+        # is always treated as the first owner
         expect(group.first_owner)
-          .to eq(group.owners.first)
+          .to eq(user_1)
           .and be_a(User)
       end
     end

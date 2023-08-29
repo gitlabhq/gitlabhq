@@ -6,7 +6,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
   include ContentEditorHelpers
 
-  let!(:user) { create(:user) }
+  let!(:user) { create(:user, :no_super_sidebar) }
   let!(:grandparent) { create(:group) }
   let!(:parent) { create(:group, parent: grandparent) }
   let!(:child) { create(:group, parent: parent) }

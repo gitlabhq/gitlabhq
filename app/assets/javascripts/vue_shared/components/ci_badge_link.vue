@@ -125,7 +125,7 @@ export default {
     :href="detailsPath"
     :size="badgeSize"
     :variant="badgeStyles.variant"
-    :data-testid="`ci-badge-${status.text}`"
+    data-testid="ci-badge-link"
     data-qa-selector="status_badge_link"
     @click="$emit('ciStatusBadgeClick')"
   >

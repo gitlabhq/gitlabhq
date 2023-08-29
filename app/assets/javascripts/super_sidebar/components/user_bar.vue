@@ -192,7 +192,7 @@ export default {
         data-track-property="nav_core_menu"
       />
     </div>
-    <div class="gl-px-3 gl-pt-2 gl-pb-3">
+    <div class="gl-px-3 gl-pb-3">
       <button
         id="super-sidebar-search"
         v-gl-tooltip.bottom.hover.noninteractive.ds500.html="searchTooltip"

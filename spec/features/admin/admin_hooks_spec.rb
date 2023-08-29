@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
   include Spec::Support::Helpers::ModalHelpers
 
-  let_it_be(:user) { create(:admin) }
+  let_it_be(:user) { create(:admin, :no_super_sidebar) }
 
   before do
     sign_in(user)

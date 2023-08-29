@@ -751,7 +751,7 @@ For basic guidance on choosing a cluster configuration you may refer to [Elastic
 - A good guideline is to ensure you keep the number of shards per node below 20 per GB heap it has configured. A node with a 30 GB heap should therefore have a maximum of 600 shards, but the further below this limit you can keep it the better. This generally helps the cluster stay in good health.
 - Number of Elasticsearch shards:
   - Small shards result in small segments, which increases overhead. Aim to keep the average shard size between at least a few GB and a few tens of GB.
-  - Another consideration is the number of documents. To determine the number of shards to use, sum the numbers in the **Main menu > Admin > Dashboard > Statistics** pane (the number of documents to be indexed), divide by 5 million, and add 5. For example:
+  - Another consideration is the number of documents. To determine the number of shards to use, sum the numbers in the Admin Area under **Dashboard > Statistics** (the number of documents to be indexed), divide by 5 million, and add 5. For example:
     - If you have fewer than about 2,000,000 documents, use the default of 5 shards
     - 10,000,000 documents: `10000000/5000000 + 5` = 7 shards
     - 100,000,000 documents: `100000000/5000000 + 5` = 25 shards
@@ -828,7 +828,7 @@ Make sure to prepare for this task by having a
    ```
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
-   You can view the jobs in **Main menu > Admin > Monitoring > Background Jobs > Queues Tab**
+   You can view the jobs in the Admin Area under **Monitoring > Background Jobs > Queues Tab**
    and select `elastic_commit_indexer`, or you can query indexing status using a Rake task:
 
    ```shell

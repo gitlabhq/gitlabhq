@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Dashboard > Activity', feature_category: :user_profile do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
 
   before do
     sign_in(user)

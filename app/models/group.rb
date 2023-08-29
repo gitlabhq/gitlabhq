@@ -804,7 +804,9 @@ class Group < Namespace
   end
 
   def first_owner
-    owners.first || parent&.first_owner || owner
+    first_owner_member = all_group_members.all_owners.order(:user_id).first
+
+    first_owner_member&.user || parent&.first_owner || owner
   end
 
   def default_branch_name

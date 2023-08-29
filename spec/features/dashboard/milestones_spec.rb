@@ -14,7 +14,7 @@ RSpec.describe 'Dashboard > Milestones', feature_category: :team_planning do
   end
 
   describe 'as logged-in user' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :no_super_sidebar) }
     let(:group) { create(:group) }
     let(:project) { create(:project, namespace: user.namespace) }
     let!(:milestone) { create(:milestone, project: project) }
@@ -50,7 +50,7 @@ RSpec.describe 'Dashboard > Milestones', feature_category: :team_planning do
   end
 
   describe 'with merge requests disabled' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :no_super_sidebar) }
     let(:group) { create(:group) }
     let(:project) { create(:project, :merge_requests_disabled, namespace: user.namespace) }
     let!(:milestone) { create(:milestone, project: project) }

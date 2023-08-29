@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Global search', :js, feature_category: :global_search do
   include AfterNextHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
 
   before do

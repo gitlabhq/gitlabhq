@@ -8,9 +8,9 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   include ContentEditorHelpers
 
   let_it_be(:project)   { create(:project, :repository) }
-  let_it_be(:user)      { create(:user) }
-  let_it_be(:user2)     { create(:user) }
-  let_it_be(:guest)     { create(:user) }
+  let_it_be(:user)      { create(:user, :no_super_sidebar) }
+  let_it_be(:user2)     { create(:user, :no_super_sidebar) }
+  let_it_be(:guest)     { create(:user, :no_super_sidebar) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:label)     { create(:label, project: project) }
   let_it_be(:label2)    { create(:label, project: project) }

@@ -85,7 +85,7 @@ is passive. `Zombies select the button` is active.
 
 ## Admin Area
 
-Use title case for **Admin Area** to refer to the area of the UI that you access when you select **Main menu > Admin**.
+Use title case for **Admin Area**.
 This area of the UI says **Admin Area** at the top of the page and on the menu.
 
 ## administrator
