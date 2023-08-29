@@ -33846,6 +33846,8 @@ COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-
 
 CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id ON vulnerability_occurrences USING btree (uuid) INCLUDE (vulnerability_id);
 
+CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id_1 ON vulnerability_occurrences USING btree (uuid_convert_string_to_uuid) INCLUDE (vulnerability_id);
+
 CREATE UNIQUE INDEX index_vuln_historical_statistics_on_project_id_and_date ON vulnerability_historical_statistics USING btree (project_id, date);
 
 CREATE INDEX index_vuln_reads_common_query_on_resolved_on_default_branch ON vulnerability_reads USING btree (project_id, state, report_type, vulnerability_id DESC) WHERE (resolved_on_default_branch IS TRUE);
@@ -33963,6 +33965,8 @@ CREATE INDEX index_vulnerability_occurrences_on_project_fingerprint ON vulnerabi
 CREATE INDEX index_vulnerability_occurrences_on_scanner_id ON vulnerability_occurrences USING btree (scanner_id);
 
 CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid ON vulnerability_occurrences USING btree (uuid);
+
+CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid_1 ON vulnerability_occurrences USING btree (uuid_convert_string_to_uuid);
 
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON vulnerability_occurrences USING btree (vulnerability_id);
 

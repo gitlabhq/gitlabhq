@@ -177,6 +177,8 @@
   - 1
 - - cronjob
   - 1
+- - database_lock_tables
+  - 1
 - - default
   - 1
 - - delete_diff_files

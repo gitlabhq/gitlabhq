@@ -2,10 +2,15 @@
 
 module Clusters
   class AgentToken < ApplicationRecord
+    TOKEN_PREFIX = "glagent-"
+
     include RedisCacheable
     include TokenAuthenticatable
 
-    add_authentication_token_field :token, encrypted: :required, token_generator: -> { Devise.friendly_token(50) }
+    add_authentication_token_field :token,
+      encrypted: :required,
+      token_generator: -> { Devise.friendly_token(50) },
+      format_with_prefix: :glagent_prefix
     cached_attr_reader :last_used_at
 
     self.table_name = 'cluster_agent_tokens'
@@ -30,6 +35,10 @@ module Clusters
 
     def to_ability_name
       :cluster
+    end
+
+    def glagent_prefix
+      TOKEN_PREFIX
     end
   end
 end

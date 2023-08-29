@@ -2,15 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::CurrentSettings do
+RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 
   shared_context 'with settings in cache' do
     before do
-      create(:application_setting)
-      described_class.current_application_settings # warm the cache
+      2.times { described_class.current_application_settings } # warm the cache
     end
   end
 
@@ -29,7 +28,7 @@ RSpec.describe Gitlab::CurrentSettings do
 
     context 'when there are allowed domains' do
       before do
-        create(:application_setting, domain_allowlist: ['www.gitlab.com'])
+        stub_application_setting(domain_allowlist: ['www.gitlab.com'])
       end
 
       it { is_expected.to be_truthy }
@@ -37,7 +36,7 @@ RSpec.describe Gitlab::CurrentSettings do
 
     context 'when there are email restrictions' do
       before do
-        create(:application_setting, email_restrictions_enabled: true)
+        stub_application_setting(email_restrictions_enabled: true)
       end
 
       it { is_expected.to be_truthy }
@@ -45,7 +44,7 @@ RSpec.describe Gitlab::CurrentSettings do
 
     context 'when the admin has to approve signups' do
       before do
-        create(:application_setting, require_admin_approval_after_user_signup: true)
+        stub_application_setting(require_admin_approval_after_user_signup: true)
       end
 
       it { is_expected.to be_truthy }
@@ -53,7 +52,7 @@ RSpec.describe Gitlab::CurrentSettings do
 
     context 'when new users are set to external' do
       before do
-        create(:application_setting, user_default_external: true)
+        stub_application_setting(user_default_external: true)
       end
 
       it { is_expected.to be_truthy }
@@ -61,7 +60,7 @@ RSpec.describe Gitlab::CurrentSettings do
 
     context 'when there are no restrictions' do
       before do
-        create(:application_setting, domain_allowlist: [], email_restrictions_enabled: false, require_admin_approval_after_user_signup: false, user_default_external: false)
+        stub_application_setting(domain_allowlist: [], email_restrictions_enabled: false, require_admin_approval_after_user_signup: false, user_default_external: false)
       end
 
       it { is_expected.to be_falsey }
@@ -73,7 +72,7 @@ RSpec.describe Gitlab::CurrentSettings do
 
     context 'when signup is enabled' do
       before do
-        create(:application_setting, signup_enabled: true)
+        stub_application_setting(signup_enabled: true)
       end
 
       it { is_expected.to be_falsey }
@@ -81,7 +80,7 @@ RSpec.describe Gitlab::CurrentSettings do
 
     context 'when signup is disabled' do
       before do
-        create(:application_setting, signup_enabled: false)
+        stub_application_setting(signup_enabled: false)
       end
 
       it { is_expected.to be_truthy }
@@ -90,11 +89,9 @@ RSpec.describe Gitlab::CurrentSettings do
 
   describe '#current_application_settings', :use_clean_rails_memory_store_caching do
     it 'allows keys to be called directly' do
-      db_settings = create(:application_setting,
-        home_page_url: 'http://mydomain.com',
-        signup_enabled: false)
+      described_class.update!(home_page_url: 'http://mydomain.com', signup_enabled: false)
 
-      expect(described_class.home_page_url).to eq(db_settings.home_page_url)
+      expect(described_class.home_page_url).to eq('http://mydomain.com')
       expect(described_class.signup_enabled?).to be_falsey
       expect(described_class.signup_enabled).to be_falsey
       expect(described_class.metrics_sample_interval).to be(15)
@@ -253,12 +250,14 @@ RSpec.describe Gitlab::CurrentSettings do
           end
 
           context 'with an existing ApplicationSetting DB record' do
-            let!(:db_settings) { ApplicationSetting.build_from_defaults(home_page_url: 'http://mydomain.com').save! && ApplicationSetting.last }
+            before do
+              described_class.update!(home_page_url: 'http://mydomain.com')
+            end
 
             it_behaves_like 'a non-persisted ApplicationSetting object'
 
             it 'uses the value from the DB attribute if present and not overridden by an accessor' do
-              expect(current_settings.home_page_url).to eq(db_settings.home_page_url)
+              expect(current_settings.home_page_url).to eq('http://mydomain.com')
             end
           end
         end
@@ -277,10 +276,11 @@ RSpec.describe Gitlab::CurrentSettings do
   describe '#current_application_settings?', :use_clean_rails_memory_store_caching do
     before do
       allow(described_class).to receive(:current_application_settings?).and_call_original
+      ApplicationSetting.delete_all # ensure no settings exist
     end
 
     it 'returns true when settings exist' do
-      create(:application_setting,
+      described_class.update!(
         home_page_url: 'http://mydomain.com',
         signup_enabled: false)
 

@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemLinksMenu from '~/work_items/components/shared/work_item_links_menu.vue';
@@ -10,8 +10,8 @@ describe('WorkItemLinksMenu', () => {
     wrapper = shallowMountExtended(WorkItemLinksMenu);
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findRemoveDropdownItem = () => wrapper.findComponent(GlDropdownItem);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findRemoveDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   beforeEach(() => {
     createComponent();
@@ -23,7 +23,7 @@ describe('WorkItemLinksMenu', () => {
   });
 
   it('emits removeChild event on click Remove', () => {
-    findRemoveDropdownItem().vm.$emit('click');
+    findRemoveDropdownItem().vm.$emit('action');
 
     expect(wrapper.emitted('removeChild')).toHaveLength(1);
   });

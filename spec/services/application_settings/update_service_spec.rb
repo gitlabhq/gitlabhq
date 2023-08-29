@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSettings::UpdateService do
+RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
   include ExternalAuthorizationServiceHelpers
 
-  let(:application_settings) { create(:application_setting) }
+  let(:application_settings) { ::Gitlab::CurrentSettings.current_application_settings }
   let(:admin) { create(:user, :admin) }
   let(:params) { {} }
 

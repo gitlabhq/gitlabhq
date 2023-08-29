@@ -13,13 +13,13 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
     FileUtils.rm(filepath)
   end
 
-  subject { described_class.new(archive_path: filepath, max_bytes: max_bytes) }
+  subject { described_class.new(archive_path: filepath) }
 
   describe '#valid?' do
-    let(:max_bytes) { 1 }
-
     context 'when file does not exceed allowed decompressed size' do
-      let(:max_bytes) { 20 }
+      before do
+        stub_application_setting(max_decompressed_archive_size: 20)
+      end
 
       it 'returns true' do
         expect(subject.valid?).to eq(true)
@@ -35,6 +35,10 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
     end
 
     context 'when file exceeds allowed decompressed size' do
+      before do
+        stub_application_setting(max_decompressed_archive_size: 0.000001)
+      end
+
       it 'logs error message returns false' do
         expect(Gitlab::Import::Logger)
           .to receive(:info)

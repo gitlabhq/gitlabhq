@@ -250,7 +250,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
     end
 
     context 'when user name is invalid' do
-      let(:user_name) { '.' }
+      let(:user_name) { ',' }
       let!(:snippet) { snippets.create!(id: 4, type: 'PersonalSnippet', author_id: user.id, file_name: file_name, content: content) }
       let(:ids) { [4, 4] }
 
@@ -262,7 +262,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSnippetRepositories, :migrat
     end
 
     context 'when both user name and snippet file_name are invalid' do
-      let(:user_name) { '.' }
+      let(:user_name) { ',' }
       let!(:other_user) do
         users.create!(
           id: 2,

@@ -84,6 +84,12 @@ the following sections and tables provide an alternative.
 
 ## Scan result policy schema
 
+> The `approval_settings` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `scan_result_policy_settings`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_policy_settings`.
+On GitLab.com, this feature is not available.
+
 | Field | Type | Required |Possible values | Description |
 |-------|------|----------|----------------|-------------|
 | `name` | `string` | true |  | Name of the policy. Maximum of 255 characters.|
@@ -91,6 +97,7 @@ the following sections and tables provide an alternative.
 | `enabled` | `boolean` | true | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules` | `array` of rules | true |  | List of rules that the policy applies. |
 | `actions` | `array` of actions | true |  | List of actions that the policy enforces. |
+| `approval_settings` | `object` | false | `{prevent_approval_by_author: boolean, prevent_approval_by_commit_author: boolean, remove_approvals_with_new_commit: boolean, require_password_to_approve: boolean}` | Project settings that the policy overrides. |
 
 ## `scan_finding` rule type
 
@@ -130,6 +137,19 @@ This rule enforces the defined actions based on license findings.
 | `match_on_inclusion` | `boolean` | true | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
 | `license_types` | `array` of `string` | true | license types | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`. |
 | `license_states` | `array` of `string` | true | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
+
+## `any_merge_request` rule type
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4.
+
+This rule enforces the defined actions for any merge request based on the commits signature.
+
+| Field         | Type                | Required                                   | Possible values           | Description                                                                                                                                                         |
+|---------------|---------------------|--------------------------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`        | `string`            | true                                       | `any_merge_request`       | The rule's type.                                                                                                                                                    |
+| `branches`    | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
+| `branch_type` | `string`            | true if `branches` field does not exist    | `default` or `protected`  | The types of branches the given policy applies to. Cannot be used with the `branches` field.                                                                        |
+| `commits`     | `string`            | true                                       | `any`, `unsigned`         | Whether the rule matches for any commits, or only if unsigned commits are detected in the merge request.                                                            |
 
 ## `require_approval` action type
 

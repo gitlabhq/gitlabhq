@@ -719,9 +719,67 @@ default:
       alias: docker
 ```
 
+### `Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`
+
+You might get the following error when trying to run a `docker` command
+to access a `dind` service:
+
+```shell
+$ docker ps
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+```
+
+Make sure your job has defined these environment variables:
+
+- `DOCKER_HOST`
+- `DOCKER_TLS_CERTDIR` (optional)
+- `DOCKER_TLS_VERIFY` (optional)
+
+You may also want to update the image that provides the Docker
+client. For example, the [`docker/compose` images are obsolete](https://hub.docker.com/r/docker/compose) and should be
+replaced with [`docker`](https://hub.docker.com/_/docker).
+
+As described in [runner issue 30944](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/30944#note_1514250909),
+this error can happen if your job previously relied on environment variables derived from the deprecated
+[Docker `--link` parameter](https://docs.docker.com/network/links/#environment-variables),
+such as `DOCKER_PORT_2375_TCP`. Your job fails with this error if:
+
+- Your CI/CD image relies on a legacy variable, such as `DOCKER_PORT_2375_TCP`.
+- The [runner feature flag `FF_NETWORK_PER_BUILD`](https://docs.gitlab.com/runner/configuration/feature-flags.html) is set to `true`.
+- `DOCKER_HOST` is not explicitly set.
+
 ### Error: `Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password`
 
 This error appears when you use the deprecated variable, `CI_BUILD_TOKEN`. To prevent users from receiving this error, you should:
 
 - Use [CI_JOB_TOKEN](../jobs/ci_job_token.md) instead.
 - Change from `gitlab-ci-token/CI_BUILD_TOKEN` to `$CI_REGISTRY_USER/$CI_REGISTRY_PASSWORD`.
+
+### Error: `error during connect: Post "https://docker:2376/v1.24/auth": dial tcp: lookup docker on 127.0.0.11:53: no such host`
+
+This error appears when the `dind` service has failed to start. Check
+the job log to see if `mount: permission denied (are you root?)`
+appears. For example:
+
+```plaintext
+Service container logs:
+2023-08-01T16:04:09.541703572Z Certificate request self-signature ok
+2023-08-01T16:04:09.541770852Z subject=CN = docker:dind server
+2023-08-01T16:04:09.556183222Z /certs/server/cert.pem: OK
+2023-08-01T16:04:10.641128729Z Certificate request self-signature ok
+2023-08-01T16:04:10.641173149Z subject=CN = docker:dind client
+2023-08-01T16:04:10.656089908Z /certs/client/cert.pem: OK
+2023-08-01T16:04:10.659571093Z ip: can't find device 'ip_tables'
+2023-08-01T16:04:10.660872131Z modprobe: can't change directory to '/lib/modules': No such file or directory
+2023-08-01T16:04:10.664620455Z mount: permission denied (are you root?)
+2023-08-01T16:04:10.664692175Z Could not mount /sys/kernel/security.
+2023-08-01T16:04:10.664703615Z AppArmor detection and --privileged mode might break.
+2023-08-01T16:04:10.665952353Z mount: permission denied (are you root?)
+```
+
+This indicates the GitLab Runner does not have permission to start the
+`dind` service:
+
+1. Check that `privileged = true` is set in the `config.toml`.
+1. Make sure the CI job has the right Runner tags to use these
+privileged runners.

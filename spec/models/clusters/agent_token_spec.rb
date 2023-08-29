@@ -88,6 +88,13 @@ RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
       agent_token = create(:cluster_agent_token)
       expect(agent_token.token.length).to be >= 50
     end
+
+    it 'has a prefix' do
+      agent_token = build(:cluster_agent_token, token_encrypted: nil)
+      agent_token.save!
+
+      expect(agent_token.token).to start_with described_class::TOKEN_PREFIX
+    end
   end
 
   describe '#to_ability_name' do

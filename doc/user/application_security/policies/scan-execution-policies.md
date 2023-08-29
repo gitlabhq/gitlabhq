@@ -119,7 +119,7 @@ FLAG:
 On self-managed GitLab, security policy bot users are available. To hide the feature, an administrator can [disable the feature flags](../../../administration/feature_flags.md) named `scan_execution_group_bot_users` and `scan_execution_bot_users`.
 On GitLab.com, this feature is available.
 
-This rule enforces the defined actions and schedules a scan on the provided date/time.
+This rule schedules a scan pipeline, enforcing the defined actions on the schedule defined in the `cadence` field. A scheduled pipeline does not run other jobs defined in the project's `.gitlab-ci.yml` file. When a project is linked to a security policy project, a security policy bot is created in the project and will become the author of any scheduled pipelines.
 
 | Field      | Type | Required | Possible values | Description |
 |------------|------|----------|-----------------|-------------|

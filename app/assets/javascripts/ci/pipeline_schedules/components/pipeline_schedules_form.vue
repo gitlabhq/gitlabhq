@@ -1,8 +1,7 @@
 <script>
 import {
   GlButton,
-  GlDropdown,
-  GlDropdownItem,
+  GlCollapsibleListbox,
   GlFormCheckbox,
   GlForm,
   GlFormGroup,
@@ -27,8 +26,7 @@ const scheduleId = queryToObject(window.location.search).id;
 export default {
   components: {
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     GlForm,
     GlFormCheckbox,
     GlFormGroup,
@@ -144,10 +142,6 @@ export default {
     revealText: __('Reveal values'),
     hideText: __('Hide values'),
   },
-  typeOptions: {
-    [VARIABLE_TYPE]: __('Variable'),
-    [FILE_TYPE]: __('File'),
-  },
   formElementClasses: 'gl-md-mr-3 gl-mb-3 gl-flex-basis-quarter gl-flex-shrink-0 gl-flex-grow-0',
   computed: {
     dropdownTranslations() {
@@ -155,7 +149,7 @@ export default {
         dropdownHeader: this.$options.i18n.targetBranchTag,
       };
     },
-    typeOptionsListbox() {
+    typeOptions() {
       return [
         {
           text: __('Variable'),
@@ -232,9 +226,9 @@ export default {
         empty: true,
       });
     },
-    setVariableAttribute(key, attribute, value) {
+    setVariableType(typeValue, key) {
       const variable = this.variables.find((v) => v.key === key);
-      variable[attribute] = value;
+      variable.variableType = typeValue;
     },
     removeVariable(index) {
       this.variables[index].destroy = true;
@@ -387,19 +381,15 @@ export default {
             class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-md-flex-direction-row gl-mb-3 gl-pb-2"
             data-testid="ci-variable-row"
           >
-            <gl-dropdown
-              :text="$options.typeOptions[variable.variableType]"
+            <gl-collapsible-listbox
+              :items="typeOptions"
+              :selected="variable.variableType"
               :class="$options.formElementClasses"
+              block
               data-testid="pipeline-form-ci-variable-type"
-            >
-              <gl-dropdown-item
-                v-for="type in Object.keys($options.typeOptions)"
-                :key="type"
-                @click="setVariableAttribute(variable.key, 'variableType', type)"
-              >
-                {{ $options.typeOptions[type] }}
-              </gl-dropdown-item>
-            </gl-dropdown>
+              @select="setVariableType($event, variable.key)"
+            />
+
             <gl-form-input
               v-model="variable.key"
               :placeholder="s__('CiVariables|Input variable key')"
@@ -414,7 +404,6 @@ export default {
               value="*****************"
               disabled
               class="gl-mb-3 gl-h-7!"
-              :style="$options.textAreaStyle"
               :no-resize="false"
               data-testid="pipeline-form-ci-variable-hidden-value"
             />
@@ -424,7 +413,6 @@ export default {
               v-model="variable.value"
               :placeholder="s__('CiVariables|Input variable value')"
               class="gl-mb-3 gl-h-7!"
-              :style="$options.textAreaStyle"
               :no-resize="false"
               data-testid="pipeline-form-ci-variable-value"
               data-qa-selector="ci_variable_value_field"

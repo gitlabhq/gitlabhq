@@ -18,8 +18,7 @@ Cells is a new architecture for our software as a service platform. This archite
 
 For more information about Cells, see also:
 
-- [Glossary](glossary.md)
-- [Goals](goals.md)
+- [Goals, Glossary and Requirements](goals.md)
 
 ## Work streams
 

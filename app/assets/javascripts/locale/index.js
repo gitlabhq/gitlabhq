@@ -19,22 +19,22 @@ if (hasTranslations) {
 }
 
 /**
-  Translates `text`
-  @param text The text to be translated
-  @returns {String} The translated text
-*/
+ * Translates `text`.
+ * @param {string} text - The text to be translated
+ * @returns {string} The translated text
+ */
 const gettext = (text) => locale.gettext(ensureSingleLine(text));
 
 /**
-  Translate the text with a number
-  if the number is more than 1 it will use the `pluralText` translation.
-  This method allows for contexts, see below re. contexts
-
-  @param text Singular text to translate (eg. '%d day')
-  @param pluralText Plural text to translate (eg. '%d days')
-  @param count Number to decide which translation to use (eg. 2)
-  @returns {String} Translated text with the number replaced (eg. '2 days')
-*/
+ * Translate the text with a number.
+ *
+ * If the number is more than 1 it will use the `pluralText` translation.
+ * This method allows for contexts, see below re. contexts
+ * @param {string} text - Singular text to translate (e.g. '%d day')
+ * @param {string} pluralText - Plural text to translate (e.g. '%d days')
+ * @param {number} count - Number to decide which translation to use (e.g. 2)
+ * @returns {string} Translated text with the number replaced (e.g. '2 days')
+ */
 const ngettext = (text, pluralText, count) => {
   const translated = locale
     .ngettext(ensureSingleLine(text), ensureSingleLine(pluralText), count)
@@ -45,16 +45,16 @@ const ngettext = (text, pluralText, count) => {
 };
 
 /**
-  Translate context based text
-  Either pass in the context translation like `Context|Text to translate`
-  or allow for dynamic text by doing passing in the context first & then the text to translate
-
-  @param keyOrContext Can be either the key to translate including the context
-                      (eg. 'Context|Text') or just the context for the translation
-                      (eg. 'Context')
-  @param key Is the dynamic variable you want to be translated
-  @returns {String} Translated context based text
-*/
+ * Translate context based text.
+ * @example
+ * s__('Context|Text to translate');
+ * @example
+ * s__('Context', 'Text to translate');
+ * @param {string} keyOrContext - Context and a key to translation (e.g. 'Context|Text')
+ * or just a context (e.g. 'Context')
+ * @param {string} [key] - if `keyOrContext` is just a context, this is the key to translation
+ * @returns {string} Translated context based text
+ */
 const pgettext = (keyOrContext, key) => {
   const normalizedKey = ensureSingleLine(key ? `${keyOrContext}|${key}` : keyOrContext);
   const translated = gettext(normalizedKey).split('|');
@@ -102,21 +102,19 @@ export const getPreferredLocales = () => {
 };
 
 /**
-  Creates an instance of Intl.DateTimeFormat for the current locale.
-
-  @param formatOptions for available options, please see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
-  @returns {Intl.DateTimeFormat}
-*/
+ * Creates an instance of Intl.DateTimeFormat for the current locale.
+ * @param {Intl.DateTimeFormatOptions} [formatOptions] - for available options, please see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
+ * @returns {Intl.DateTimeFormat}
+ */
 const createDateTimeFormat = (formatOptions) =>
   Intl.DateTimeFormat(getPreferredLocales(), formatOptions);
 
 /**
  * Formats a number as a string using `toLocaleString`.
- *
- * @param {Number} value - number to be converted
- * @param {options?} options - options to be passed to
- * `toLocaleString` such as `unit` and `style`.
- * @param {langCode?} langCode - If set, forces a different
+ * @param {number} value - number to be converted
+ * @param {Intl.NumberFormatOptions} [options] - options to be passed to
+ * `toLocaleString`.
+ * @param {string|string[]} [langCode] - If set, forces a different
  * language code from the one currently in the document.
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
  *

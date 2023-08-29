@@ -178,6 +178,9 @@ export default {
   },
   methods: {
     ...mapActions(['setError', 'unsetError', 'setBoard']),
+    isFocusMode() {
+      return Boolean(document.querySelector('.content-wrapper > .js-focus-mode-board.is-focused'));
+    },
     cancel() {
       this.$emit('cancel');
     },
@@ -281,6 +284,7 @@ export default {
     modal-class="board-config-modal"
     content-class="gl-absolute gl-top-7"
     visible
+    :static="isFocusMode()"
     :hide-footer="readonly"
     :title="title"
     :action-primary="primaryProps"

@@ -1,0 +1,8 @@
+---
+name: feature_available_check_with_usage_ping
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129723
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422614
+milestone: '16.4'
+type: development
+group: group::pipeline execution
+default_enabled: false

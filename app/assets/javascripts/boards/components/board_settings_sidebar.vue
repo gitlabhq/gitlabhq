@@ -166,7 +166,7 @@ export default {
   <mounting-portal mount-to="#js-right-sidebar-portal" name="board-settings-sidebar" append>
     <gl-drawer
       v-bind="$attrs"
-      class="js-board-settings-sidebar gl-absolute boards-sidebar"
+      class="js-board-settings-sidebar boards-sidebar"
       :open="showSidebar"
       variant="sidebar"
       @close="unsetActiveListId"

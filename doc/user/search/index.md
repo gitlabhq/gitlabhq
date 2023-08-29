@@ -17,23 +17,23 @@ Both types of search are the same, except when you are searching through code.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68640) in GitLab 14.3.
 
-To improve the performance of your instance's global search, a GitLab administrator
-can limit the search scope by disabling the following [`ops` feature flags](../../development/feature_flags/index.md#ops-type).
+To improve the performance of your instance's global search, an administrator can limit the search scope
+by disabling one or more [`ops` feature flags](../../development/feature_flags/index.md#ops-type).
 
-| Scope | Feature flag | Description |
-|--|--|--|
-| Code | `global_search_code_tab` | When enabled, global search includes code. |
-| Commits | `global_search_commits_tab` | When enabled, global search includes commits. |
-| Issues | `global_search_issues_tab` | When enabled, global search includes issues. |
-| Merge requests | `global_search_merge_requests_tab` | When enabled, global search includes merge requests. |
-| Users | `global_search_users_tab` | When enabled, global search includes users. |
-| Wiki | `global_search_wiki_tab` | When enabled, global search includes project and [group wikis](../project/wiki/group.md). |
+| Scope          | Feature flag                       | Description                                                                               |
+|----------------|------------------------------------|-------------------------------------------------------------------------------------------|
+| Code           | `global_search_code_tab`           | When enabled, global search includes code.                                                |
+| Commits        | `global_search_commits_tab`        | When enabled, global search includes commits.                                             |
+| Issues         | `global_search_issues_tab`         | When enabled, global search includes issues.                                              |
+| Merge requests | `global_search_merge_requests_tab` | When enabled, global search includes merge requests.                                      |
+| Users          | `global_search_users_tab`          | When enabled, global search includes users.                                               |
+| Wiki           | `global_search_wiki_tab`           | When enabled, global search includes project and [group wikis](../project/wiki/group.md). |
 
 All global search scopes are enabled by default on self-managed instances.
 
 ## Global search validation
 
-Global search ignores and logs as abusive any search with:
+Global search ignores and logs as abusive any search that includes:
 
 - Fewer than two characters
 - A term longer than 100 characters (URL search terms must not exceed 200 characters)
@@ -46,6 +46,19 @@ Global search only flags with an error any search that includes more than:
 
 - 4096 characters
 - 64 terms
+
+## Autocomplete suggestions
+
+As you type in the search box, autocomplete suggestions are displayed for:
+
+- [Projects](#search-for-a-project-by-full-path) and groups
+- Users
+- Help pages
+- Project features (for example, milestones)
+- Settings (for example, user settings)
+- Recently viewed merge requests
+- Recently viewed issues and epics
+- [GitLab Flavored Markdown references](../markdown.md#gitlab-specific-references) for issues in a project
 
 ## Search in all GitLab
 
@@ -177,28 +190,3 @@ in your browser. To run a search from history:
    - For merge requests, on the left sidebar, select **Code > Merge requests**. Above the list, to the left of the search box, select **Recent searches**.
 
 1. From the dropdown list, select a search.
-
-## Remove search filters
-
-Individual filters can be removed by selecting the filter's (x) button or backspacing. The entire search filter can be cleared by selecting the search box's (x) button or via <kbd>⌘</kbd> (Mac) + <kbd>⌫</kbd>.
-
-To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Control</kbd> + <kbd>⌫</kbd> keyboard combination can be used.
-
-## Autocomplete suggestions
-
-As you type in the search box, autocomplete suggestions are displayed for:
-
-- [Projects](#search-for-a-project-by-full-path) and groups
-- Users
-- Help pages
-- Project features (for example, milestones)
-- Settings (for example, user settings)
-- Recently viewed merge requests
-- Recently viewed issues and epics
-- [GitLab Flavored Markdown references](../markdown.md#gitlab-specific-references) for issues in a project
-
-## Search settings
-
-You can search inside a Project, Group, Administrator, or User's settings by entering
-a search term in the search box located at the top of the page. The search results
-appear highlighted in the sections that match the search term.

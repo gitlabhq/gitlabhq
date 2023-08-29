@@ -170,7 +170,9 @@ As a user, you can request to be a member of a group, if an administrator allows
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my groups**.
 1. At the top right side, select **Explore groups**.
-1. Under the group name, select **Request Access**.
+1. Search for the group by name.
+1. In the search results, select the name of the group.
+1. On the group page, under the group name, select **Request Access**.
 
 As many as ten of the most-recently-active group owners receive an email with your request.
 Any group owner can approve or decline the request.

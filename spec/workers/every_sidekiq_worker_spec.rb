@@ -195,6 +195,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'CreateGithubWebhookWorker' => 3,
         'CreateNoteDiffFileWorker' => 3,
         'CreatePipelineWorker' => 3,
+        'Database::LockTablesWorker' => false,
         'Database::BatchedBackgroundMigration::CiExecutionWorker' => 0,
         'Database::BatchedBackgroundMigration::MainExecutionWorker' => 0,
         'DeleteContainerRepositoryWorker' => 3,

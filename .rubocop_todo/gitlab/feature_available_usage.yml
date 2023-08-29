@@ -133,6 +133,5 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/lib/incident_management/incident_sla.rb'
     - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/models/instance_security_dashboard_spec.rb'
-    - 'ee/spec/models/license_spec.rb'
     - 'lib/api/helpers/related_resources_helpers.rb'
     - 'spec/models/concerns/featurable_spec.rb'

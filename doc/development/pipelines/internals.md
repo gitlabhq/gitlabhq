@@ -164,7 +164,7 @@ that are scoped to a single [configuration keyword](../../ci/yaml/index.md#job-k
 | `.use-pg15-ee` | Same as `.use-pg15` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
 | `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
 | `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` CI/CD variable. |
-| `.use-docker-in-docker` | Allows a job to use Docker in Docker. |
+| `.use-docker-in-docker` | Allows a job to use Docker in Docker. For more details, see the [handbook about CI/CD configuration](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration). |
 
 ## `rules`, `if:` conditions and `changes:` patterns
 
@@ -417,3 +417,25 @@ For this scenario, you have to:
     - `spec/simplecov_env.rb`
 
 Additionally, `scripts/utils.sh` is always downloaded from the API when this pattern is used (this file contains the code for `.fast-no-clone-job`).
+
+#### Runner tags
+
+On GitLab.com, both unprivileged and privileged runners are
+available. For projects in the `gitlab-org` group and forks of those
+projects, only one of the following tags should be added to a job:
+
+- `gitlab-org`: Jobs randomly use privileged and unprivileged runners.
+- `gitlab-org-docker`: Jobs must use a privileged runner. If you need [Docker-in-Docker support](../../ci/docker/using_docker_build.md#use-docker-in-docker),
+use `gitlab-org-docker` instead of `gitlab-org`.
+
+The `gitlab-org-docker` tag is added by the `.use-docker-in-docker` job
+definition above.
+
+To ensure compatibility with forks, avoid using both `gitlab-org` and
+`gitlab-org-docker` simultaneously. No instance runners
+have both `gitlab-org` and `gitlab-org-docker` tags. For forks of
+`gitlab-org` projects, jobs will get stuck if both tags are supplied because
+no matching runners are available.
+
+See [the GitLab Repositories handbook page](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration)
+for more information.
