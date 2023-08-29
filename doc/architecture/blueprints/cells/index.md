@@ -367,6 +367,36 @@ For example, users on GitLab Dedicated don't have to have a different and unique
 Up until iteration 3, Cells communicate with each other only via a shared database that contains common data.
 In iteration 4 we are going to evaluate the option of Cells calling each other via API to provide more isolation and reliability.
 
+### How are Cells provisioned?
+
+The GitLab.com cluster of Cells will use GitLab Dedicated instances.
+Once a GitLab Dedicated instance gets provisioned it could join the GitLab.com cluster and become a Cell.
+One requirement will be that the GitLab Dedicated instance does not contain any prior data.
+
+To reach shared resources, Cells will use [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect).
+
+See also the [design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/396641).
+
+### What is a Cells topology?
+
+See the [design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/396641).
+
+### How are users of an Organization routed to the correct Cell?
+
+TBD
+
+### How do users authenticate with Cells and Organizations?
+
+See the [design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/395736).
+
+### How are Cells rebalanced?
+
+TBD
+
+### How can Cells implement disaster recovery capabilities?
+
+TBD
+
 ## Decision log
 
 - 2022-03-15: Google Cloud as the cloud service. For details, see [issue 396641](https://gitlab.com/gitlab-org/gitlab/-/issues/396641#note_1314932272).

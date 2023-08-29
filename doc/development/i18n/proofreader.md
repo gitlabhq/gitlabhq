@@ -31,7 +31,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
   - Victor Wu - [GitLab](https://gitlab.com/_victorwu_), [Crowdin](https://crowdin.com/profile/victorwu)
   - Xiaogang Wen - [GitLab](https://gitlab.com/xiaogang_cn), [Crowdin](https://crowdin.com/profile/xiaogang_gitlab)
-  - Shuang Zhang - [GitLab](https://gitlab.com/tonygodspeed92), [Crowdin](https://crowdin.com/profile/tonygodspeed92)
+  - Qi Zhao - [GitLab](https://gitlab.com/zhaoqi01), [Crowdin](https://crowdin.com/profile/zhaoqi01)
 - Chinese Traditional 繁體中文
   - Weizhe Ding - [GitLab](https://gitlab.com/d.weizhe), [Crowdin](https://crowdin.com/profile/d.weizhe)
   - Yi-Jyun Pan - [GitLab](https://gitlab.com/pan93412), [Crowdin](https://crowdin.com/profile/pan93412)

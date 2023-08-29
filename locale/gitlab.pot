@@ -11458,9 +11458,6 @@ msgstr ""
 msgid "Code Review Analytics displays a table of open merge requests considered to be in code review. There are currently no merge requests in review for this project and/or filters."
 msgstr ""
 
-msgid "Code Suggestions add-on"
-msgstr ""
-
 msgid "Code Suggestions add-on status"
 msgstr ""
 
@@ -35005,7 +35002,7 @@ msgstr ""
 msgid "Pipeline|Trigger author"
 msgstr ""
 
-msgid "Pipeline|Triggerer"
+msgid "Pipeline|Triggered by"
 msgstr ""
 
 msgid "Pipeline|Variables"

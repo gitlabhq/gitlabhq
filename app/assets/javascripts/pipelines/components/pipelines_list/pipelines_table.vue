@@ -95,10 +95,10 @@ export default {
         },
         {
           key: 'triggerer',
-          label: s__('Pipeline|Triggerer'),
+          label: s__('Pipeline|Triggered by'),
           thClass: DEFAULT_TH_CLASSES,
           tdClass: `${this.tdClasses} ${HIDE_TD_ON_MOBILE}`,
-          columnClass: 'gl-w-10p',
+          columnClass: 'gl-w-15p',
           thAttr: { 'data-testid': 'triggerer-th' },
         },
         {

@@ -34,14 +34,14 @@
     .col-12.input-group
       = text_field_tag :display_name, "GitLab / #{pretty_name}".html_safe, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = deprecated_clipboard_button(target: '#display_name', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#display_name', category: :primary, size: :medium)
 
   .form-group
     = label_tag :description, _('Description'), class: 'col-12 col-form-label  label-bold'
     .col-12.input-group
       = text_field_tag :description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = deprecated_clipboard_button(target: '#description', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#description', category: :primary, size: :medium)
 
   .form-group
     = label_tag nil, s_('MattermostService|Command trigger word'), class: 'col-12 col-form-label label-bold'
@@ -59,7 +59,7 @@
     .col-12.input-group
       = text_field_tag :request_url, service_trigger_url(integration), class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = deprecated_clipboard_button(target: '#request_url', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#request_url', category: :primary, size: :medium)
 
   .form-group
     = label_tag nil, s_('MattermostService|Request method'), class: 'col-12 col-form-label label-bold'
@@ -70,14 +70,14 @@
     .col-12.input-group
       = text_field_tag :response_username, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = deprecated_clipboard_button(target: '#response_username', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#response_username', category: :primary, size: :medium)
 
   .form-group
     = label_tag :response_icon, s_('MattermostService|Response icon'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
       = text_field_tag :response_icon, asset_url('gitlab_logo.png'), class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = deprecated_clipboard_button(target: '#response_icon', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#response_icon', category: :primary, size: :medium)
 
   .form-group
     = label_tag nil, _('Autocomplete'), class: 'col-12 col-form-label label-bold'
@@ -88,11 +88,11 @@
     .col-12.input-group
       = text_field_tag :autocomplete_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = deprecated_clipboard_button(target: '#autocomplete_hint', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#autocomplete_hint', category: :primary, size: :medium)
 
   .form-group
     = label_tag :autocomplete_description, _('Autocomplete description'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
       = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = deprecated_clipboard_button(target: '#autocomplete_description', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#autocomplete_description', category: :primary, size: :medium)
