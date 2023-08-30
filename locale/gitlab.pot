@@ -6437,6 +6437,9 @@ msgstr ""
 msgid "AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user."
 msgstr ""
 
+msgid "Ask a maintainer to check the import status for more details."
+msgstr ""
+
 msgid "Ask again later"
 msgstr ""
 
