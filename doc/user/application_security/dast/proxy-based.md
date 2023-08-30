@@ -684,9 +684,6 @@ If a site profile is linked to a security policy, a user cannot edit the profile
 [Scan execution policies](../policies/scan-execution-policies.md)
 for more information.
 
-NOTE:
-If a site profile's Target URL or Authenticated URL is updated, the request headers and password fields associated with that profile are cleared.
-
 When a validated site profile's file, header, or meta tag is edited, the site's
 [validation status](#site-profile-validation) is revoked.
 

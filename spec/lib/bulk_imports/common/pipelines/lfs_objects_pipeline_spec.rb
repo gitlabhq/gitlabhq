@@ -7,7 +7,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
   let_it_be(:oid) { 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855' }
 
   let(:tmpdir) { Dir.mktmpdir }
-  let(:entity) { create(:bulk_import_entity, :project_entity, project: portable, source_xid: nil) }
+  let(:entity) { create(:bulk_import_entity, :project_entity, project: portable, source_full_path: 'test', source_xid: nil) }
   let(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let(:context) { BulkImports::Pipeline::Context.new(tracker) }
   let(:lfs_dir_path) { tmpdir }
@@ -53,7 +53,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
         .to receive(:new)
         .with(
           configuration: context.configuration,
-          relative_url: "/#{entity.pluralized_name}/#{CGI.escape(entity.source_full_path)}/export_relations/download?relation=lfs_objects",
+          relative_url: "/#{entity.pluralized_name}/test/export_relations/download?relation=lfs_objects",
           tmpdir: tmpdir,
           filename: 'lfs_objects.tar.gz')
         .and_return(download_service)

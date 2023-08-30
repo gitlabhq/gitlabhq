@@ -5,17 +5,17 @@ require 'spec_helper'
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountBulkImportsEntitiesMetric, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:bulk_import_projects) do
-    create_list(:bulk_import_entity, 2, :project_entity, created_at: 3.weeks.ago, status: 2)
-    create(:bulk_import_entity, :project_entity, created_at: 3.weeks.ago, status: 0)
+    create_list(:bulk_import_entity, 2, source_type: 'project_entity', created_at: 3.weeks.ago, status: 2)
+    create(:bulk_import_entity, source_type: 'project_entity', created_at: 3.weeks.ago, status: 0)
   end
 
   let_it_be(:bulk_import_groups) do
-    create_list(:bulk_import_entity, 2, :group_entity, created_at: 3.weeks.ago, status: 2)
-    create(:bulk_import_entity, :group_entity, created_at: 3.weeks.ago, status: 0)
+    create_list(:bulk_import_entity, 2, source_type: 'group_entity', created_at: 3.weeks.ago, status: 2)
+    create(:bulk_import_entity, source_type: 'group_entity', created_at: 3.weeks.ago, status: 0)
   end
 
   let_it_be(:old_bulk_import_project) do
-    create(:bulk_import_entity, :project_entity, created_at: 2.months.ago, status: 2)
+    create(:bulk_import_entity, source_type: 'project_entity', created_at: 2.months.ago, status: 2)
   end
 
   context 'with no source_type' do

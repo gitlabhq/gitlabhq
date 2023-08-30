@@ -561,7 +561,6 @@ class ProjectPolicy < BasePolicy
     enable :destroy_upload
     enable :admin_incident_management_timeline_event_tag
     enable :stop_environment
-    enable :read_import_error
   end
 
   rule { public_project & metrics_dashboard_allowed }.policy do

@@ -248,20 +248,6 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       end
     end
 
-    context 'when the destination_namespace is invalid' do
-      it 'returns invalid error' do
-        params[:entities][0][:destination_namespace] = 'dest?nation-namespace'
-
-        request
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to include('entities[0][destination_namespace] must have a relative path ' \
-                                                  'structure with no HTTP protocol characters, or leading or ' \
-                                                  'trailing forward slashes. Path segments must not start or end ' \
-                                                  'with a special character, and must not contain consecutive ' \
-                                                  'special characters.')
-      end
-    end
-
     context 'when the destination_slug is invalid' do
       it 'returns invalid error when restricting special characters is disabled' do
         Feature.disable(:restrict_special_characters_in_namespace_path)

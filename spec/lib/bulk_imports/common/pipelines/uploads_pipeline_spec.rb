@@ -79,7 +79,7 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
           .to receive(:new)
           .with(
             configuration: context.configuration,
-            relative_url: "/#{entity.pluralized_name}/#{CGI.escape(entity.source_full_path)}/export_relations/download?relation=uploads",
+            relative_url: "/#{entity.pluralized_name}/test/export_relations/download?relation=uploads",
             tmpdir: tmpdir,
             filename: 'uploads.tar.gz')
           .and_return(download_service)
@@ -178,14 +178,14 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
 
   context 'when importing to group' do
     let(:portable) { group }
-    let(:entity) { create(:bulk_import_entity, :group_entity, group: group, source_xid: nil) }
+    let(:entity) { create(:bulk_import_entity, :group_entity, group: group, source_full_path: 'test', source_xid: nil) }
 
     include_examples 'uploads import'
   end
 
   context 'when importing to project' do
     let(:portable) { project }
-    let(:entity) { create(:bulk_import_entity, :project_entity, project: project, source_xid: nil) }
+    let(:entity) { create(:bulk_import_entity, :project_entity, project: project, source_full_path: 'test', source_xid: nil) }
 
     include_examples 'uploads import'
   end

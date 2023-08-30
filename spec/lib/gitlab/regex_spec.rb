@@ -86,6 +86,36 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     }
   end
 
+  describe '.bulk_import_destination_namespace_path_regex' do
+    subject { described_class.bulk_import_destination_namespace_path_regex }
+
+    it { is_expected.not_to match('?gitlab') }
+    it { is_expected.not_to match("Users's something") }
+    it { is_expected.not_to match('/source') }
+    it { is_expected.not_to match('http:') }
+    it { is_expected.not_to match('https:') }
+    it { is_expected.not_to match('example.com/?stuff=true') }
+    it { is_expected.not_to match('example.com:5000/?stuff=true') }
+    it { is_expected.not_to match('http://gitlab.example/gitlab-org/manage/import/gitlab-migration-test') }
+    it { is_expected.not_to match('_good_for_me!') }
+    it { is_expected.not_to match('good_for+you') }
+    it { is_expected.not_to match('source/') }
+    it { is_expected.not_to match('.source/full./path') }
+    it { is_expected.not_to match('.source/.full/.path') }
+    it { is_expected.not_to match('_source') }
+    it { is_expected.not_to match('.source') }
+
+    it { is_expected.to match('source') }
+    it { is_expected.to match('source/full') }
+    it { is_expected.to match('source/full/path') }
+    it { is_expected.to match('sou_rce/fu-ll/pa.th') }
+    it { is_expected.to match('domain_namespace') }
+    it { is_expected.to match('gitlab-migration-test') }
+    it { is_expected.to match('1-project-path') }
+    it { is_expected.to match('e-project-path') }
+    it { is_expected.to match('') } # it is possible to pass an empty string for destination_namespace in bulk_import POST request
+  end
+
   describe '.bulk_import_source_full_path_regex_message' do
     subject { described_class.bulk_import_source_full_path_regex_message }
 
@@ -97,6 +127,44 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
           "end with a special character, and must not contain consecutive special characters."
         )
     }
+  end
+
+  describe '.bulk_import_source_full_path_regex' do
+    subject { described_class.bulk_import_source_full_path_regex }
+
+    it { is_expected.not_to match("Users's something") }
+    it { is_expected.not_to match('/source') }
+    it { is_expected.not_to match('http:') }
+    it { is_expected.not_to match('https:') }
+    it { is_expected.not_to match('example.com/?stuff=true') }
+    it { is_expected.not_to match('example.com:5000/?stuff=true') }
+    it { is_expected.not_to match('http://gitlab.example/gitlab-org/manage/import/gitlab-migration-test') }
+    it { is_expected.not_to match('source/') }
+    it { is_expected.not_to match('') }
+    it { is_expected.not_to match('.source/full./path') }
+    it { is_expected.not_to match('?gitlab') }
+    it { is_expected.not_to match('_good_for_me!') }
+    it { is_expected.not_to match('group/@*%_my_other-project-----') }
+    it { is_expected.not_to match('_foog-for-me!') }
+    it { is_expected.not_to match('.source/full/path.') }
+
+    it { is_expected.to match('good_for+you') }
+    it { is_expected.to match('source') }
+    it { is_expected.to match('.source') }
+    it { is_expected.to match('_source') }
+    it { is_expected.to match('source/full') }
+    it { is_expected.to match('source/full/path') }
+    it { is_expected.to match('domain_namespace') }
+    it { is_expected.to match('gitlab-migration-test') }
+    it { is_expected.to match('source/full/path-') }
+    it { is_expected.to match('.source/full/path') }
+    it { is_expected.to match('.source/.full/.path') }
+    it { is_expected.to match('source/full/.path') }
+    it { is_expected.to match('source/full/..path') }
+    it { is_expected.to match('source/full/---1path') }
+    it { is_expected.to match('source/full/-___path') }
+    it { is_expected.to match('source/full/path---') }
+    it { is_expected.to match('group/__my_other-project-----') }
   end
 
   describe '.group_path_regex' do

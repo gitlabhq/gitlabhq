@@ -24,18 +24,9 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
 
     it { is_expected.to define_enum_for(:source_type).with_values(%i[group_entity project_entity]) }
 
-    context 'when source_type is group_entity' do
-      subject { build(:bulk_import_entity, :group_entity) }
-
+    context 'when formatting with regexes' do
       it { is_expected.to allow_values('source', 'source/path', 'source/full/path').for(:source_full_path) }
       it { is_expected.not_to allow_values('/source', 'http://source/path', 'sou    rce/full/path', '').for(:source_full_path) }
-    end
-
-    context 'when source_type is project_entity' do
-      subject { build(:bulk_import_entity, :project_entity) }
-
-      it { is_expected.to allow_values('source/path', 'source/full/path').for(:source_full_path) }
-      it { is_expected.not_to allow_values('/source', 'source', 'http://source/path', 'sou    rce/full/path', '').for(:source_full_path) }
     end
 
     context 'when associated with a group and project' do

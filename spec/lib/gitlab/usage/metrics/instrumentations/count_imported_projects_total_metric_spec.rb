@@ -15,15 +15,15 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountImportedProjectsTo
   let_it_be(:old_import) { create(:project, import_type: 'gitea', creator_id: user.id, created_at: 2.months.ago) }
 
   let_it_be(:bulk_import_projects) do
-    create_list(:bulk_import_entity, 3, :project_entity, created_at: 3.weeks.ago)
+    create_list(:bulk_import_entity, 3, source_type: 'project_entity', created_at: 3.weeks.ago)
   end
 
   let_it_be(:bulk_import_groups) do
-    create_list(:bulk_import_entity, 3, :group_entity, created_at: 3.weeks.ago)
+    create_list(:bulk_import_entity, 3, source_type: 'group_entity', created_at: 3.weeks.ago)
   end
 
   let_it_be(:old_bulk_import_project) do
-    create(:bulk_import_entity, :project_entity, created_at: 2.months.ago)
+    create(:bulk_import_entity, source_type: 'project_entity', created_at: 2.months.ago)
   end
 
   before do

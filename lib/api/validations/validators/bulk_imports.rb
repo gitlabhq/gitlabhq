@@ -32,7 +32,8 @@ module API
         class DestinationNamespacePath < Grape::Validations::Validators::Base
           def validate_param!(attr_name, params)
             return if params[attr_name].blank?
-            return if NamespacePathValidator.valid_path?(params[attr_name])
+
+            return if params[attr_name] =~ Gitlab::Regex.bulk_import_destination_namespace_path_regex
 
             raise Grape::Exceptions::Validation.new(
               params: [@scope.full_name(attr_name)],
@@ -43,10 +44,7 @@ module API
 
         class SourceFullPath < Grape::Validations::Validators::Base
           def validate_param!(attr_name, params)
-            full_path = params[attr_name]
-
-            return if params['source_type'] == 'group_entity' && NamespacePathValidator.valid_path?(full_path)
-            return if params['source_type'] == 'project_entity' && ProjectPathValidator.valid_path?(full_path)
+            return if params[attr_name] =~ Gitlab::Regex.bulk_import_source_full_path_regex
 
             raise Grape::Exceptions::Validation.new(
               params: [@scope.full_name(attr_name)],

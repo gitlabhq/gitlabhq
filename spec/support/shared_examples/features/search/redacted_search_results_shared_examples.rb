@@ -254,7 +254,7 @@ RSpec.shared_examples 'a redacted search results' do
     end
 
     context 'with :with_api_entity_associations' do
-      it_behaves_like "redaction limits N+1 queries", limit: 15
+      it_behaves_like "redaction limits N+1 queries", limit: 14
     end
   end
 

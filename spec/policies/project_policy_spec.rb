@@ -578,11 +578,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         expect(described_class.new(maintainer, project)).to be_allowed(:admin_incident_management_timeline_event_tag)
         expect(described_class.new(owner, project)).to be_allowed(:admin_incident_management_timeline_event_tag)
       end
-
-      it 'allows to read import error' do
-        expect(described_class.new(maintainer, project)).to be_allowed(:read_import_error)
-        expect(described_class.new(owner, project)).to be_allowed(:read_import_error)
-      end
     end
 
     context 'when user is a developer/guest/reporter' do
@@ -590,12 +585,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         expect(described_class.new(developer, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
         expect(described_class.new(guest, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
         expect(described_class.new(reporter, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
-      end
-
-      it 'disallows reading the import error' do
-        expect(described_class.new(developer, project)).to be_disallowed(:read_import_error)
-        expect(described_class.new(guest, project)).to be_disallowed(:read_import_error)
-        expect(described_class.new(reporter, project)).to be_disallowed(:read_import_error)
       end
     end
 

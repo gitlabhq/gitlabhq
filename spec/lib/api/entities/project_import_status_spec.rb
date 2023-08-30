@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::ProjectImportStatus, :aggregate_failures, feature_category: :importers do
+RSpec.describe API::Entities::ProjectImportStatus, :aggregate_failures do
   describe '#as_json' do
     subject { entity.as_json }
 
@@ -67,36 +67,14 @@ RSpec.describe API::Entities::ProjectImportStatus, :aggregate_failures, feature_
 
     context 'when import has failed' do
       let(:project) { create(:project, :import_failed, import_type: 'import_type', import_correlation_id: correlation_id, import_last_error: 'error') }
-      let(:current_user) { create(:user) }
-      let(:options) { { current_user: current_user } }
-      let(:entity) { described_class.new(project, options) }
+      let(:entity) { described_class.new(project) }
 
-      context 'when user has access to read import status' do
-        before do
-          project.add_maintainer(current_user)
-        end
-
-        it 'includes basic fields with import error' do
-          expect(subject[:import_status]).to eq('failed')
-          expect(subject[:import_type]).to eq('import_type')
-          expect(subject[:correlation_id]).to eq(correlation_id)
-          expect(subject[:import_error]).to eq('error')
-          expect(subject[:failed_relations]).to eq([])
-        end
-      end
-
-      context 'when user does not have access to read import status' do
-        before do
-          project.add_reporter(current_user)
-        end
-
-        it 'includes basic fields with import error' do
-          expect(subject[:import_status]).to eq('failed')
-          expect(subject[:import_type]).to eq('import_type')
-          expect(subject[:correlation_id]).to eq(correlation_id)
-          expect(subject[:import_error]).to eq('Ask a maintainer to check the import status for more details.')
-          expect(subject[:failed_relations]).to eq([])
-        end
+      it 'includes basic fields with import error' do
+        expect(subject[:import_status]).to eq('failed')
+        expect(subject[:import_type]).to eq('import_type')
+        expect(subject[:correlation_id]).to eq(correlation_id)
+        expect(subject[:import_error]).to eq('error')
+        expect(subject[:failed_relations]).to eq([])
       end
     end
 

@@ -9,11 +9,6 @@ module Resolvers
 
     include GroupIssuableResolver
 
-    before_connection_authorization do |nodes, _|
-      projects = nodes.map(&:project)
-      ActiveRecord::Associations::Preloader.new(records: projects, associations: :namespace).call
-    end
-
     def ready?(**args)
       if args.dig(:not, :release_tag).present?
         raise ::Gitlab::Graphql::Errors::ArgumentError, 'releaseTag filter is not allowed when parent is a group.'
