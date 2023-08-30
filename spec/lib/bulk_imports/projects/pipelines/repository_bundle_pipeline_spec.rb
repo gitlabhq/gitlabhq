@@ -9,7 +9,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
   let(:tmpdir) { Dir.mktmpdir }
   let(:bundle_path) { File.join(tmpdir, 'repository.bundle') }
   let(:entity) do
-    create(:bulk_import_entity, :project_entity, project: portable, source_full_path: 'test', source_xid: nil)
+    create(:bulk_import_entity, :project_entity, project: portable, source_xid: nil)
   end
 
   let(:tracker) { create(:bulk_import_tracker, entity: entity) }
@@ -62,7 +62,8 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
         .to receive(:new)
         .with(
           configuration: context.configuration,
-          relative_url: "/#{entity.pluralized_name}/test/export_relations/download?relation=repository",
+          relative_url: "/#{entity.pluralized_name}/#{CGI.escape(entity.source_full_path)}" \
+                        '/export_relations/download?relation=repository',
           tmpdir: tmpdir,
           filename: 'repository.tar.gz')
         .and_return(download_service)

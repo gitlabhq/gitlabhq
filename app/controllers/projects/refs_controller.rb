@@ -15,6 +15,8 @@ class Projects::RefsController < Projects::ApplicationController
   urgency :low, [:switch, :logs_tree]
 
   def switch
+    Gitlab::PathTraversal.check_path_traversal!(@id)
+
     respond_to do |format|
       format.html do
         new_path =
@@ -40,6 +42,8 @@ class Projects::RefsController < Projects::ApplicationController
         redirect_to new_path
       end
     end
+  rescue Gitlab::PathTraversal::PathTraversalAttackError
+    head :bad_request
   end
 
   def logs_tree
