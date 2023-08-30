@@ -135,7 +135,7 @@ The CI/CD variables are:
 
 - `AZURE_CLIENT_ID`: The [application client ID you saved earlier](#create-azure-ad-application-and-service-principal).
 - `AZURE_TENANT_ID`: Your Azure Active Directory. You can
-  [find it by using the Azure CLI or Azure Portal](https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-to-find-tenant).
+  [find it by using the Azure CLI or Azure Portal](https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/how-to-find-tenant).
 - `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../yaml/index.md#id_tokens).
 
 ## Troubleshooting

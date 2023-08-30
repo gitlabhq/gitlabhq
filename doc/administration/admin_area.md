@@ -431,7 +431,7 @@ The following topics document the **Monitoring** section of the Admin Area.
 
 ### System Information
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2, support for relative time. "Uptime" statistic was renamed to "System started".
+> Support for relative time [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2. "Uptime" statistic was renamed to "System started".
 
 The **System Info** page provides the following statistics:
 

@@ -13,7 +13,7 @@ The following sections provide examples of audit event streaming.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.9 [with a flag](../feature_flags.md) named `audit_event_streaming_git_operations`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357211) in GitLab 15.0.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/357211) in GitLab 15.1 by default.
-> - [Added `details.author_class` field](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3.
+> - `details.author_class` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101583) in GitLab 15.6. Feature flag `audit_event_streaming_git_operations` removed.
 
 Streaming audit events can be sent when authenticated users push, pull, or clone a project's remote Git repositories:

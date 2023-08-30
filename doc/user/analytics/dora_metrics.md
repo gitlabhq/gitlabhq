@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # DevOps Research and Assessment (DORA) metrics **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.7.
-> - [Added support](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) for lead time for changes in GitLab 13.10.
+> - Lead time for changes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) in GitLab 13.10.
 
 The [DevOps Research and Assessment (DORA)](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance)
 team has identified four metrics that measure DevOps performance.

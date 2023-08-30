@@ -130,7 +130,7 @@ Pipelines now include an IaC Scanning job.
 
 ## Customize rulesets **(ULTIMATE ALL)**
 
-> [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
+> Support for overriding rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) in GitLab 14.8.
 
 You can customize the default IaC Scanning rules provided with GitLab.
 

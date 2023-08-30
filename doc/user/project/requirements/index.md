@@ -137,7 +137,7 @@ You can also sort the requirements list by:
 ## Allow requirements to be satisfied from a CI job
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2859) in GitLab 13.1.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/215514) ability to specify individual requirements and their statuses in GitLab 13.2.
+> - Ability to specify individual requirements and their statuses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215514) in GitLab 13.2.
 
 GitLab supports [requirements test reports](../../../ci/yaml/artifacts_reports.md#artifactsreportsrequirements) now.
 You can add a job to your CI pipeline that, when triggered, marks all existing

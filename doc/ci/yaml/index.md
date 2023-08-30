@@ -4424,6 +4424,7 @@ trigger-multi-project-pipeline:
   to forward these variables to downstream pipelines.
 - [Job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
   are not available in trigger jobs.
+- Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
 
 **Related topics**:
 

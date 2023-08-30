@@ -338,9 +338,9 @@ To enable full history Secret Detection, set the variable `SECRET_DETECTION_HIST
 ## Custom rulesets **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for passthrough chains.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for passthrough chains.
 >   Expanded to include additional passthrough types of `file`, `git`, and `url` in GitLab 14.6.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in
 >   GitLab 14.8.
 
 You can customize which [secrets are reported in the GitLab UI](#secret-detection).
