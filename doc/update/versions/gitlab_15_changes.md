@@ -57,6 +57,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   - This issue may not manifest immediately as it can take up to a week before the Sidekiq is saturated enough.
   - Elasticsearch does not need to be enabled for this to occur.
   - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
+- A [bug with zero-downtime reindexing](https://gitlab.com/gitlab-org/gitlab/-/issues/422938) can cause a `Couldn't load task status` error when you reindex. You might also get a `sliceId must be greater than 0 but was [-1]` error on the Elasticsearch host. As a workaround, consider [reindexing from scratch](../../integration/advanced_search/elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index) or upgrading to GitLab 16.3.
 - Gitaly configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.10 while backwards compatibility is
   maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](../index.md#gitaly-omnibus-gitlab-configuration-structure-change).
 - You might encounter the following error while upgrading to GitLab 15.10 or later:

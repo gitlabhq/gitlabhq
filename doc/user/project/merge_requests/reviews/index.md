@@ -80,6 +80,35 @@ If you [approve a merge request](../approvals/index.md#approve-a-merge-request) 
 are shown in the reviewer list, a green check mark **{check-circle-filled}**
 displays next to your name.
 
+### Request a review
+
+To assign a reviewer to a merge request, in a text area in
+the merge request, use the `/assign_reviewer @user`
+[quick action](../../quick_actions.md#issues-merge-requests-and-epics). Alternatively:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. On the right sidebar, in the **Reviewers** section, select **Edit**.
+1. Search for the user you want to assign, and select the user.
+
+The merge request is added to the user's review requests.
+
+#### From multiple users **(PREMIUM ALL)**
+
+> Moved to GitLab Premium in 13.9.
+
+To assign multiple reviewers to a merge request, in a text area in
+the merge request, use the `/assign_reviewer @user`
+[quick action](../../quick_actions.md#issues-merge-requests-and-epics). Alternatively:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. On the right sidebar, in the **Reviewers** section, select **Edit**.
+1. From the dropdown list, select all the users you want
+   to assign to the merge request.
+
+To remove a reviewer, clear the user from the same dropdown list.
+
 ### Download merge request changes as a diff
 
 To download the changes included in a merge request as a diff:
