@@ -14964,6 +14964,9 @@ msgstr ""
 msgid "DastProfiles|Minimum = 1 second, Maximum = 3600 seconds"
 msgstr ""
 
+msgid "DastProfiles|Modifying the URL will clear any previously entered values for the additional request headers and password fields."
+msgstr ""
+
 msgid "DastProfiles|Monitors all HTTP requests sent to the target to find potential vulnerabilities."
 msgstr ""
 
