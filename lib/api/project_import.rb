@@ -111,7 +111,7 @@ module API
         ).execute
 
         if response.success?
-          present(response.payload, with: Entities::ProjectImportStatus)
+          present(response.payload, with: Entities::ProjectImportStatus, current_user: current_user)
         else
           render_api_error!(response.message, response.http_status)
         end
@@ -134,7 +134,7 @@ module API
       end
       route_setting :skip_authentication, true
       get ':id/import' do
-        present user_project, with: Entities::ProjectImportStatus
+        present user_project, with: Entities::ProjectImportStatus, current_user: current_user
       end
 
       params do
@@ -182,7 +182,7 @@ module API
         ).execute
 
         if response.success?
-          present(response.payload, with: Entities::ProjectImportStatus)
+          present(response.payload, with: Entities::ProjectImportStatus, current_user: current_user)
         else
           render_api_error!(response.message, response.http_status)
         end
@@ -241,7 +241,7 @@ module API
         ).execute
 
         if response.success?
-          present(response.payload, with: Entities::ProjectImportStatus)
+          present(response.payload, with: Entities::ProjectImportStatus, current_user: current_user)
         else
           render_api_error!(response.message, response.http_status)
         end
