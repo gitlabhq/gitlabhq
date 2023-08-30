@@ -1461,7 +1461,7 @@ On the **primary** site:
 
 #### Authenticating with SAML on the secondary site always lands on the primary site
 
-This [problem is usually encountered when upgrading to GitLab 15.1](version_specific_upgrades.md#upgrading-to-151). To fix this problem, see [configuring instance-wide SAML in Geo with Single Sign-On](single_sign_on.md#configuring-instance-wide-saml).
+This [problem is usually encountered when upgrading to GitLab 15.1](../../../update/versions/gitlab_15_changes.md#1510). To fix this problem, see [configuring instance-wide SAML in Geo with Single Sign-On](single_sign_on.md#configuring-instance-wide-saml).
 
 ## Fixing client errors
 

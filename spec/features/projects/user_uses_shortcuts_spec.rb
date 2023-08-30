@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User uses shortcuts', :js, feature_category: :groups_and_projects do
-  let_it_be(:project) { create(:project, :repository) }
-
-  let(:user) { project.first_owner }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
     sign_in(user)

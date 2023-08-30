@@ -1224,7 +1224,7 @@ class MergeRequest < ApplicationRecord
     }
   end
 
-  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false)
+  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false, skip_rebase_check: false)
     return false unless mergeable_state?(
       skip_ci_check: skip_ci_check,
       skip_discussions_check: skip_discussions_check,
@@ -1233,7 +1233,7 @@ class MergeRequest < ApplicationRecord
 
     check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
 
-    can_be_merged? && !should_be_rebased?
+    can_be_merged? && (!should_be_rebased? || skip_rebase_check)
   end
 
   def mergeability_checks
@@ -2102,6 +2102,10 @@ class MergeRequest < ApplicationRecord
 
   def check_for_spam?(*)
     spammable_attribute_changed? && project.public?
+  end
+
+  def missing_required_squash?
+    !squash && target_project.squash_always?
   end
 
   private

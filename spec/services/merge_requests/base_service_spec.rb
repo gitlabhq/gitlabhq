@@ -141,4 +141,32 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
   describe '#constructor_container_arg' do
     it { expect(described_class.constructor_container_arg("some-value")).to eq({ project: "some-value" }) }
   end
+
+  describe '#inspect' do
+    context 'when #merge_request is defined' do
+      let(:klass) do
+        Class.new(described_class) do
+          def merge_request
+            params[:merge_request]
+          end
+        end
+      end
+
+      let(:params) { {} }
+
+      subject do
+        klass
+          .new(project: nil, current_user: nil, params: params)
+          .inspect
+      end
+
+      it { is_expected.to eq "#<#{klass}>" }
+
+      context 'when merge request is present' do
+        let(:params) { { merge_request: build(:merge_request) } }
+
+        it { is_expected.to eq "#<#{klass} #{params[:merge_request].to_reference(full: true)}>" }
+      end
+    end
+  end
 end

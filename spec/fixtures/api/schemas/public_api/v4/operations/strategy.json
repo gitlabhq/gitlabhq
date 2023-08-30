@@ -8,7 +8,8 @@
     "id": { "type": "integer" },
     "name": { "type": "string" },
     "parameters": { "type": "object" },
-    "scopes": { "type": "array", "items": { "$ref": "scope.json" } }
+    "scopes": { "type": "array", "items": { "$ref": "scope.json" } },
+    "user_list": { "type": ["object", "null"], "$ref": "user_list.json" }
   },
   "additionalProperties": false
 }

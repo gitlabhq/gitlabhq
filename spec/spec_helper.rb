@@ -295,11 +295,6 @@ RSpec.configure do |config|
       stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
       stub_feature_flags(ci_queueing_disaster_recovery_disable_quota: false)
 
-      # Only a few percent of users will be "enrolled" into the new nav with this flag.
-      # Having it enabled globally would make it impossible to test the current nav.
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/420121
-      stub_feature_flags(super_sidebar_nav_enrolled: false)
-
       # The anonymous super-sidebar is under heavy development and enabling the flag
       # globally leads to a lot of errors. This issue is for fixing all test to work with the
       # new nav: https://gitlab.com/gitlab-org/gitlab/-/issues/420119

@@ -894,4 +894,22 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       end
     end
   end
+
+  context 'when downstream pipeline creation fails with unexpected errors', :aggregate_failures do
+    before do
+      downstream_project.add_developer(user)
+
+      allow(::Ci::CreatePipelineService).to receive(:new)
+        .and_raise(RuntimeError, 'undefined failure')
+    end
+
+    it 'drops the bridge without creating a pipeline' do
+      expect { subject }
+        .to raise_error(RuntimeError, /undefined failure/)
+        .and change { Ci::Pipeline.count }.by(0)
+
+      expect(bridge.reload).to be_failed
+      expect(bridge.failure_reason).to eq('data_integrity_failure')
+    end
+  end
 end

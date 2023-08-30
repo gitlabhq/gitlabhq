@@ -52,7 +52,7 @@ module Operations
 
     class << self
       def preload_relations
-        preload(strategies: :scopes)
+        preload(strategies: [:scopes, :user_list])
       end
 
       def for_unleash_client(project, environment)

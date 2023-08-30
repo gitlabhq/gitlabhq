@@ -643,27 +643,6 @@ and pass the `@hashed` storage path to `-relative-path`.
 
 With this information, you can correctly install [server hooks](../administration/server_hooks.md).
 
-### Geo: LFS transfers redirect to primary from secondary site mid-session in GitLab 15.1.0 to 15.3.2
-
-LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests in GitLab 15.1.0 to 15.3.2 when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later.
-
-This issue is resolved in GitLab 15.3.3, so customers with the following configuration should upgrade to 15.3.3 or later:
-
-- LFS is enabled.
-- LFS objects are being replicated across Geo sites.
-- Repositories are being pulled by using a Geo secondary site.
-
-### Geo: Incorrect object storage LFS file deletion on secondary sites in GitLab 15.0.0 to 15.3.2
-
-[Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397)
-can occur in GitLab 15.0.0 to 15.3.2 in the following situations:
-
-- GitLab-managed object storage replication is disabled, and LFS objects are created while importing a project with object storage enabled.
-- GitLab-managed replication to sync object storage is enabled and subsequently disabled.
-
-This issue is resolved in 15.3.3. Customers who have both LFS enabled and LFS objects being replicated across Geo sites
-should upgrade directly to 15.3.3 to reduce the risk of data loss on secondary sites.
-
 ### PostgreSQL segmentation fault issue
 
 If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you upgrade PostgreSQL

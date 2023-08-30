@@ -3275,6 +3275,31 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         subject.mergeable?(check_mergeability_retry_lease: true)
       end
     end
+
+    context 'with skip_rebase_check option' do
+      before do
+        allow(subject).to receive_messages(
+          mergeable_state?: true,
+          check_mergeability: nil,
+          can_be_merged?: true
+        )
+      end
+
+      where(:should_be_rebased, :skip_rebase_check, :expected_mergeable) do
+        false | false | true
+        false | true  | true
+        true  | false | false
+        true  | true  | true
+      end
+
+      with_them do
+        it 'overrides should_be_rebased?' do
+          allow(subject).to receive(:should_be_rebased?) { should_be_rebased }
+
+          expect(subject.mergeable?(skip_rebase_check: skip_rebase_check)).to eq(expected_mergeable)
+        end
+      end
+    end
   end
 
   describe '#skipped_mergeable_checks' do
@@ -5831,6 +5856,32 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         it { is_expected.to eq(false) }
       end
+    end
+  end
+
+  describe '#missing_required_squash?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:squash, :project_requires_squash, :expected) do
+      false | true  | true
+      false | false | false
+      true  | true  | false
+      true  | false | false
+    end
+
+    with_them do
+      let(:merge_request) { build_stubbed(:merge_request, squash: squash) }
+
+      subject { merge_request.missing_required_squash? }
+
+      before do
+        allow(merge_request.target_project).to(
+          receive(:squash_always?)
+            .and_return(project_requires_squash)
+        )
+      end
+
+      it { is_expected.to eq(expected) }
     end
   end
 end

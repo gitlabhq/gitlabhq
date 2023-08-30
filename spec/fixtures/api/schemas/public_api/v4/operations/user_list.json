@@ -1,0 +1,16 @@
+{
+  "type": ["object", "null"],
+  "required": [
+    "id",
+    "iid",
+    "name",
+    "user_xids"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "iid": { "type": "integer" },
+    "name": { "type": "string" },
+    "user_xids": { "type": "string" }
+  },
+  "additionalProperties": false
+}

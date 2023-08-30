@@ -17,12 +17,6 @@ Review this page for upgrade instructions for your version. These steps
 accompany the [general steps](upgrading_the_geo_sites.md#general-upgrade-steps)
 for upgrading Geo sites.
 
-## Upgrading to 15.1
-
-[Geo proxying](../secondary_proxy/index.md) was [enabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in 15.1. This may be a breaking change. If needed, you may [disable Geo proxying](../secondary_proxy/index.md#disable-geo-proxying).
-
-If you are using SAML with different URLs, you must modify your SAML configuration and your Identity Provider configuration. For more information, see the [Geo with Single Sign-On (SSO) documentation](single_sign_on.md).
-
 ## Upgrading to 14.9
 
 **Do not** upgrade to GitLab 14.9.0. Instead, use 14.9.1 or later.
