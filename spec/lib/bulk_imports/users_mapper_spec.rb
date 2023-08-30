@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::UsersMapper do
+RSpec.describe BulkImports::UsersMapper, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:import) { create(:bulk_import, user: user) }
   let_it_be(:entity) { create(:bulk_import_entity, bulk_import: import) }
@@ -30,6 +30,22 @@ RSpec.describe BulkImports::UsersMapper do
     context 'when value for specified key does not exist' do
       it 'returns default value' do
         expect(subject.map[:non_existent_key]).to eq(user.id)
+      end
+    end
+  end
+
+  describe '#map_usernames' do
+    context 'when value for specified key exists' do
+      it 'returns a map of source & destination usernames from redis' do
+        allow(Gitlab::Cache::Import::Caching).to receive(:values_from_hash).and_return({ "source_username" => "destination_username" })
+
+        expect(subject.map_usernames).to eq({ "source_username" => "destination_username" })
+      end
+    end
+
+    context 'when value for specified key does not exist' do
+      it 'returns nil' do
+        expect(subject.map_usernames[:non_existent_key]).to be_nil
       end
     end
   end
@@ -63,6 +79,14 @@ RSpec.describe BulkImports::UsersMapper do
       expect(Gitlab::Cache::Import::Caching).to receive(:hash_add).with("bulk_imports/#{import.id}/#{entity.id}/source_user_ids", 1, 2)
 
       subject.cache_source_user_id(1, 2)
+    end
+  end
+
+  describe '#cache_source_username' do
+    it 'caches provided source & destination usernames in redis' do
+      expect(Gitlab::Cache::Import::Caching).to receive(:hash_add).with("bulk_imports/#{import.id}/#{entity.id}/source_usernames", 'source', 'destination')
+
+      subject.cache_source_username('source', 'destination')
     end
   end
 end

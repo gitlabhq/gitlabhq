@@ -17,6 +17,37 @@ RSpec.describe 'Mail STARTTLS patch', feature_category: :shared do
     end
   end
 
+  # As long as this monkey patch exists and overrides the constructor
+  # we should test that the defaults of Mail::SMTP are not overriden.
+  #
+  # @see issue https://gitlab.com/gitlab-org/gitlab/-/issues/423268
+  # @see incident https://gitlab.com/gitlab-com/gl-infra/production/-/issues/16223
+  it 'does not override default constants values' do
+    expected_settings = Mail::SMTP.new({}).settings.dup
+
+    Mail.new.delivery_method(Mail::SMTP, { user_name: 'user@example.com' })
+
+    expect(Mail::SMTP.new({}).settings).to eq(expected_settings)
+  end
+
+  describe 'enable_starttls_auto setting' do
+    let(:settings) { {} }
+
+    subject(:smtp) { Mail::SMTP.new(settings) }
+
+    it 'uses default for enable_starttls_auto' do
+      expect(smtp.settings).to include(enable_starttls_auto: nil)
+    end
+
+    context 'when set to false' do
+      let(:settings) { { enable_starttls_auto: false } }
+
+      it 'overrides default and sets value' do
+        expect(smtp.settings).to include(enable_starttls_auto: false)
+      end
+    end
+  end
+
   # Taken from https://github.com/mikel/mail/pull/1536#issue-1490438378
   where(:ssl, :tls, :enable_starttls, :enable_starttls_auto, :smtp_tls, :smtp_starttls_mode) do
     true  | nil   | nil     | nil   | true  | false

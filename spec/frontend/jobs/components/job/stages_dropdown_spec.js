@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import StagesDropdown from '~/jobs/components/job/sidebar/stages_dropdown.vue';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import * as copyToClipboard from '~/behaviors/copy_to_clipboard';
 import {
   mockPipelineWithoutRef,
@@ -15,7 +15,8 @@ import {
 describe('Stages Dropdown', () => {
   let wrapper;
 
-  const findStatus = () => wrapper.findComponent(CiIcon);
+  const findStatusBadge = () => wrapper.findComponent(CiBadgeLink);
+  const findStatusText = () => findStatusBadge().props('status').label;
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findSelectedStageText = () => findDropdown().props('toggleText');
 
@@ -46,7 +47,8 @@ describe('Stages Dropdown', () => {
     });
 
     it('renders pipeline status', () => {
-      expect(findStatus().exists()).toBe(true);
+      expect(findStatusBadge().exists()).toBe(true);
+      expect(findStatusText()).toBe('passed');
     });
 
     it('renders dropdown with stages', () => {
@@ -77,7 +79,7 @@ describe('Stages Dropdown', () => {
         'does not have a ref',
         {
           pipeline: mockPipelineWithoutRef,
-          text: `Pipeline #${mockPipelineWithoutRef.id}`,
+          text: `Pipeline: #${mockPipelineWithoutRef.id}`,
           foundElements: [
             { testId: 'pipeline-path', props: [{ href: mockPipelineWithoutRef.path }] },
           ],
@@ -87,7 +89,7 @@ describe('Stages Dropdown', () => {
         'hasRef but not triggered by MR',
         {
           pipeline: mockPipelineWithoutMR,
-          text: `Pipeline #${mockPipelineWithoutMR.id} for ${mockPipelineWithoutMR.ref.name}`,
+          text: `Pipeline: #${mockPipelineWithoutMR.id} for ${mockPipelineWithoutMR.ref.name}`,
           foundElements: [
             { testId: 'pipeline-path', props: [{ href: mockPipelineWithoutMR.path }] },
             { testId: 'source-ref-link', props: [{ href: mockPipelineWithoutMR.ref.path }] },
@@ -99,7 +101,7 @@ describe('Stages Dropdown', () => {
         'hasRef and MR but not MR pipeline',
         {
           pipeline: mockPipelineDetached,
-          text: `Pipeline #${mockPipelineDetached.id} for !${mockPipelineDetached.merge_request.iid} with ${mockPipelineDetached.merge_request.source_branch}`,
+          text: `Pipeline: #${mockPipelineDetached.id} for !${mockPipelineDetached.merge_request.iid} with ${mockPipelineDetached.merge_request.source_branch}`,
           foundElements: [
             { testId: 'pipeline-path', props: [{ href: mockPipelineDetached.path }] },
             { testId: 'mr-link', props: [{ href: mockPipelineDetached.merge_request.path }] },
@@ -118,7 +120,7 @@ describe('Stages Dropdown', () => {
         'hasRef and MR and MR pipeline',
         {
           pipeline: mockPipelineWithAttachedMR,
-          text: `Pipeline #${mockPipelineWithAttachedMR.id} for !${mockPipelineWithAttachedMR.merge_request.iid} with ${mockPipelineWithAttachedMR.merge_request.source_branch} into ${mockPipelineWithAttachedMR.merge_request.target_branch}`,
+          text: `Pipeline: #${mockPipelineWithAttachedMR.id} for !${mockPipelineWithAttachedMR.merge_request.iid} with ${mockPipelineWithAttachedMR.merge_request.source_branch} into ${mockPipelineWithAttachedMR.merge_request.target_branch}`,
           foundElements: [
             { testId: 'pipeline-path', props: [{ href: mockPipelineWithAttachedMR.path }] },
             { testId: 'mr-link', props: [{ href: mockPipelineWithAttachedMR.merge_request.path }] },

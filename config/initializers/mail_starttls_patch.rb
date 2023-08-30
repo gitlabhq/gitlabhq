@@ -9,7 +9,7 @@ require 'mail/network/delivery_methods/smtp'
 module Mail
   class SMTP
     def initialize(values)
-      self.settings = DEFAULTS
+      self.settings = DEFAULTS.dup
       settings[:enable_starttls_auto] = nil
       settings.merge!(values)
     end

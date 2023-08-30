@@ -9,8 +9,10 @@ module Capybara
       include CapybaraHelpers
       include WaitForRequests
 
-      def visit(visit_uri)
+      def visit(visit_uri, &block)
         super
+
+        yield if block
 
         wait_for_all_requests
       end

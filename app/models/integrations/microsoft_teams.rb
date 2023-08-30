@@ -44,10 +44,6 @@ module Integrations
          pipeline wiki_page]
     end
 
-    def fields
-      self.class.fields + build_event_channels
-    end
-
     def sections
       [
         {

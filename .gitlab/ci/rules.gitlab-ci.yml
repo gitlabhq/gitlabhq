@@ -912,17 +912,21 @@
 # It's better to fail early and avoid wasting resources running test jobs that would just fail anyway.
 .build-images:rules:build-gdk-image:
   rules:
+    # Allows to force rebuild base image in case something goes wrong and this had to be disabled
     - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
-      when: never
+      when: manual
+      allow_failure: true
+      variables:
+        BUILD_GDK_BASE: "true"
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-default-branch-schedule-nightly # already executed in the 2-hourly schedule
       when: never
-    - <<: *if-default-branch-refs
     # Rebuild base only when relevant components change
     - <<: *if-default-branch-refs
       changes: *gdk-component-patterns
       variables:
         BUILD_GDK_BASE: "true"
+    - <<: *if-default-branch-refs
     - <<: *if-merge-request
       changes: *gdk-component-patterns
       variables:

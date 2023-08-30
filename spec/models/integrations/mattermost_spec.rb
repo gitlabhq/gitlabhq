@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Mattermost do
+RSpec.describe Integrations::Mattermost, feature_category: :integrations do
   it_behaves_like Integrations::SlackMattermostNotifier, "Mattermost"
 end

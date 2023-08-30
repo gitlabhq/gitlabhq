@@ -58,7 +58,7 @@ project's Container Registry while tagging it with the Git tag:
 build:
   stage: build
   image:
-    name: gcr.io/kaniko-project/executor:v1.9.0-debug
+    name: gcr.io/kaniko-project/executor:v1.14.0-debug
     entrypoint: [""]
   script:
     - /kaniko/executor
@@ -96,7 +96,7 @@ build:
     https_proxy: <your-proxy>
     no_proxy: <your-no-proxy>
   image:
-    name: gcr.io/kaniko-project/executor:v1.9.0-debug
+    name: gcr.io/kaniko-project/executor:v1.14.0-debug
     entrypoint: [""]
   script:
     - /kaniko/executor
@@ -158,3 +158,25 @@ on what other GitLab CI patterns are demonstrated are available at the project p
 If you receive this error, it might be due to an outside proxy. Setting the `http_proxy`
 and `https_proxy` [environment variables](../../administration/packages/container_registry.md#running-the-docker-daemon-with-a-proxy)
 can fix the problem.
+
+### Error: `kaniko should only be run inside of a container, run with the --force flag if you are sure you want to continue`
+
+There is a known incompatibility introduced by Docker Engine 20.10.
+
+When the host uses Docker Engine 20.10 or newer, then the `gcr.io/kaniko-project/executor:debug` image in a version
+older than v1.9.0 does not work as expected.
+
+When you try to build the image, Kaniko fails with:
+
+```plaintext
+kaniko should only be run inside of a container, run with the --force flag if you are sure you want to continue
+```
+
+To resolve this issue, update the `gcr.io/kaniko-project/executor:debug` container to version at least v1.9.0,
+for example `gcr.io/kaniko-project/executor:v1.14.0-debug`.
+
+The opposite configuration (`gcr.io/kaniko-project/executor:v1.14.0-debug` image and Docker Engine
+on the host in version 19.06.x or older) works without problems. For the best strategy, you should
+frequently test and update job environment versions to the newest. This brings new features, improved
+security and - for this specific case - makes the upgrade on underlying Docker Engine on the runner's
+host transparent for the job.

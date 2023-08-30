@@ -105,7 +105,8 @@ module Types
       field :scheduling_type, GraphQL::Types::String, null: true,
                                                       description: 'Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise.'
       field :short_sha, type: GraphQL::Types::String, null: false,
-                        description: 'Short SHA1 ID of the commit.'
+                        description: 'Short SHA1 ID of the commit.',
+                        if_unauthorized: 'Unauthorized'
       field :stuck, GraphQL::Types::Boolean, null: false, method: :stuck?,
                                              description: 'Indicates the job is stuck.'
       field :trace, Types::Ci::JobTraceType, null: true,

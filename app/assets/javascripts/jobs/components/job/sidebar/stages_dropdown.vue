@@ -1,20 +1,20 @@
 <script>
 import { GlLink, GlDisclosureDropdown, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { s__ } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { clickCopyToClipboardButton } from '~/behaviors/copy_to_clipboard';
 import { keysFor, MR_COPY_SOURCE_BRANCH_NAME } from '~/behaviors/shortcuts/keybindings';
 
 export default {
   components: {
-    CiIcon,
     ClipboardButton,
     GlDisclosureDropdown,
     GlLink,
     GlSprintf,
+    CiBadgeLink,
   },
   props: {
     pipeline: {
@@ -51,15 +51,17 @@ export default {
     },
     pipelineInfo() {
       if (!this.hasRef) {
-        return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id}');
+        return s__('Job|%{boldStart}Pipeline:%{boldEnd} %{id} %{status}');
       } else if (!this.isTriggeredByMergeRequest) {
-        return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{ref}');
+        return s__('Job|%{boldStart}Pipeline:%{boldEnd} %{id} %{status} for %{ref}');
       } else if (!this.isMergeRequestPipeline) {
-        return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source}');
+        return s__(
+          'Job|%{boldStart}Pipeline:%{boldEnd} %{id} %{status} for %{mrId} with %{source}',
+        );
       }
 
       return s__(
-        'Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source} into %{target}',
+        'Job|%{boldStart}Pipeline:%{boldEnd} %{id} for %{mrId} with %{source} into %{target}',
       );
     },
   },
@@ -92,7 +94,6 @@ export default {
 <template>
   <div class="dropdown">
     <div class="js-pipeline-info" data-testid="pipeline-info">
-      <ci-icon :status="pipeline.details.status" />
       <gl-sprintf :message="pipelineInfo">
         <template #bold="{ content }">
           <span class="font-weight-bold">{{ content }}</span>
@@ -100,16 +101,19 @@ export default {
         <template #id>
           <gl-link
             :href="pipeline.path"
-            class="js-pipeline-path link-commit"
+            class="js-pipeline-path link-commit gl-text-blue-500!"
             data-testid="pipeline-path"
             data-qa-selector="pipeline_path"
             >#{{ pipeline.id }}</gl-link
           >
         </template>
+        <template #status>
+          <ci-badge-link :status="pipeline.details.status" badge-size="sm" />
+        </template>
         <template #mrId>
           <gl-link
             :href="pipeline.merge_request.path"
-            class="link-commit ref-name"
+            class="link-commit ref-name gl-text-blue-500!"
             data-testid="mr-link"
             >!{{ pipeline.merge_request.iid }}</gl-link
           >

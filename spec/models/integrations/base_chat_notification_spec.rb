@@ -85,7 +85,7 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
 
       context 'when webhook is not required' do
         it 'returns true' do
-          allow(chat_integration).to receive(:requires_webhook?).and_return(false)
+          allow(chat_integration.class).to receive(:requires_webhook?).and_return(false)
 
           expect(chat_integration).to receive(:notify).and_return(true)
           expect(chat_integration.execute(data)).to be true

@@ -40,7 +40,7 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
       request.headers['X-Last-Fetched-At'] = microseconds(last_fetched_at)
     end
 
-    specify { expect(get(:index, params: request_params)).to have_request_urgency(:medium) }
+    specify { expect(get(:index, params: request_params)).to have_request_urgency(:low) }
 
     it 'sets the correct feature category' do
       get :index, params: request_params

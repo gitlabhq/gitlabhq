@@ -193,6 +193,13 @@ Include in the MR description:
   plan _before_ and _after_ the change. This helps spot differences quickly.
 - Include data that shows the performance improvement, preferably in
   the form of a benchmark.
+- When evaluating a query plan, we need the final query to be
+  executed against the database. We don't need to analyze the intermediate
+  queries returned as `ActiveRecord::Relation` from finders and scopes.
+  PostgreSQL query plans are dependent on all the final parameters,
+  including limits and other things that may be added before final execution.
+  One way to be sure of the actual query executed is to check
+  `log/development.log`.
 
 #### Preparation when adding foreign keys to existing tables
 

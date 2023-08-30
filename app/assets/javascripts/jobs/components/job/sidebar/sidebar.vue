@@ -17,7 +17,6 @@ export default {
   i18n: {
     ...JOB_SIDEBAR_COPY,
   },
-  borderTopClass: ['gl-border-t-solid', 'gl-border-t-1', 'gl-border-t-gray-100'],
   forwardDeploymentFailureModalId,
   components: {
     ArtifactsBlock,
@@ -81,34 +80,22 @@ export default {
           @updateVariables="$emit('updateVariables')"
         />
 
-        <job-sidebar-details-container class="gl-py-4" :class="$options.borderTopClass" />
+        <job-sidebar-details-container class="gl-py-4 gl-border-t" />
 
         <artifacts-block
           v-if="hasArtifact"
           class="gl-py-4"
-          :class="$options.borderTopClass"
           :artifact="job.artifact"
           :help-url="artifactHelpUrl"
         />
 
-        <trigger-block
-          v-if="hasTriggers"
-          class="gl-py-4"
-          :class="$options.borderTopClass"
-          :trigger="job.trigger"
-        />
+        <trigger-block v-if="hasTriggers" class="gl-py-4" :trigger="job.trigger" />
 
-        <commit-block
-          :commit="commit"
-          class="gl-py-4"
-          :class="$options.borderTopClass"
-          :merge-request="job.merge_request"
-        />
+        <commit-block :commit="commit" class="gl-py-4" :merge-request="job.merge_request" />
 
         <stages-dropdown
           v-if="job.pipeline"
           class="gl-py-4"
-          :class="$options.borderTopClass"
           :pipeline="job.pipeline"
           :selected-stage="selectedStage"
           :stages="stages"

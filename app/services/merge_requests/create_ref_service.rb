@@ -9,14 +9,13 @@ module MergeRequests
     CreateRefError = Class.new(StandardError)
 
     def initialize(
-      current_user:, merge_request:, target_ref:, first_parent_ref:,
-      source_sha: nil, merge_commit_message: nil)
-
+      current_user:, merge_request:, target_ref:, first_parent_ref:, source_sha: nil
+    )
       @current_user = current_user
       @merge_request = merge_request
       @initial_source_sha = source_sha
       @target_ref = target_ref
-      @merge_commit_message = merge_commit_message
+      @first_parent_ref = first_parent_ref
       @first_parent_sha = target_project.commit(first_parent_ref)&.sha
     end
 
@@ -46,7 +45,7 @@ module MergeRequests
 
     private
 
-    attr_reader :current_user, :merge_request, :target_ref, :first_parent_sha, :initial_source_sha
+    attr_reader :current_user, :merge_request, :target_ref, :first_parent_ref, :first_parent_sha, :initial_source_sha
 
     delegate :target_project, to: :merge_request
     delegate :repository, to: :target_project
@@ -119,12 +118,10 @@ module MergeRequests
     strong_memoize_attr :squash_commit_message
 
     def merge_commit_message
-      return @merge_commit_message if @merge_commit_message.present?
-
-      @merge_commit_message = (
-        merge_request.merge_params['commit_message'].presence ||
+      merge_request.merge_params['commit_message'].presence ||
         merge_request.default_merge_commit_message(user: current_user)
-      )
     end
   end
 end
+
+MergeRequests::CreateRefService.prepend_mod_with('MergeRequests::CreateRefService')

@@ -7425,17 +7425,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#pages_lookup_path' do
-    let(:pages_domain) { build(:pages_domain) }
-    let(:project) { build(:project) }
-
-    it 'returns instance of Pages::LookupPath' do
-      expect(Pages::LookupPath).to receive(:new).with(project, domain: pages_domain, trim_prefix: 'mygroup').and_call_original
-
-      expect(project.pages_lookup_path(domain: pages_domain, trim_prefix: 'mygroup')).to be_a(Pages::LookupPath)
-    end
-  end
-
   describe '.with_pages_deployed' do
     it 'returns only projects that have pages deployed' do
       _project_without_pages = create(:project)

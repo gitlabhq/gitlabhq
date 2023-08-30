@@ -22,8 +22,7 @@ RSpec.describe Types::Ci::JobBaseField, feature_category: :runner_fleet do
         using RSpec::Parameterized::TableSyntax
 
         where(:current_field_name) do
-          %i[allow_failure duration id kind status created_at finished_at queued_at queued_duration updated_at runner
-            short_sha]
+          %i[allow_failure duration id kind status created_at finished_at queued_at queued_duration updated_at runner]
         end
 
         with_them do
@@ -34,7 +33,7 @@ RSpec.describe Types::Ci::JobBaseField, feature_category: :runner_fleet do
       end
 
       context 'with private field' do
-        let(:current_field_name) { 'private_field' }
+        let(:current_field_name) { 'short_sha' }
 
         context 'when permission is not allowed' do
           it 'returns false' do

@@ -147,6 +147,12 @@ class GitlabSchema < GraphQL::Schema
       global_ids.map { |gid| parse_gid(gid, ctx) }
     end
 
+    def unauthorized_field(error)
+      return error.field.if_unauthorized if error.field.respond_to?(:if_unauthorized) && error.field.if_unauthorized
+
+      super
+    end
+
     private
 
     def max_query_complexity(ctx)

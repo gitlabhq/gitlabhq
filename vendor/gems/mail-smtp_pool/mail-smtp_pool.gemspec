@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
 
   # Please maintain alphabetical order for dependencies
   spec.add_runtime_dependency 'connection_pool', '~> 2.0'
-  spec.add_runtime_dependency 'mail', '~> 2.7'
+  spec.add_runtime_dependency 'mail', '~> 2.8'
 
   # Please maintain alphabetical order for dev dependencies
   spec.add_development_dependency 'rspec', '~> 3.10.0'

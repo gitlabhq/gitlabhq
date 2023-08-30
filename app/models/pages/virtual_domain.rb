@@ -18,14 +18,11 @@ module Pages
     end
 
     def lookup_paths
-      paths = projects.map do |project|
-        project.pages_lookup_path(trim_prefix: trim_prefix, domain: domain)
-      end
-
-      # TODO: remove in https://gitlab.com/gitlab-org/gitlab/-/issues/328715
-      paths = paths.select(&:source)
-
-      paths.sort_by(&:prefix).reverse
+      projects
+        .map { |project| lookup_paths_for(project) }
+        .select(&:source) # TODO: remove in https://gitlab.com/gitlab-org/gitlab/-/issues/328715
+        .sort_by(&:prefix)
+        .reverse
     end
 
     # cache_key is required by #present_cached in ::API::Internal::Pages
@@ -36,5 +33,9 @@ module Pages
     private
 
     attr_reader :projects, :trim_prefix, :domain, :cache
+
+    def lookup_paths_for(project)
+      Pages::LookupPath.new(project, trim_prefix: trim_prefix, domain: domain)
+    end
   end
 end

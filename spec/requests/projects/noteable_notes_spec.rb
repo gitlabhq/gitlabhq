@@ -45,7 +45,7 @@ RSpec.describe 'Project noteable notes', feature_category: :team_planning do
       expect(Gitlab::Metrics::RailsSlis.request_apdex).to(
         receive(:increment).with(
           labels: {
-            request_urgency: :medium,
+            request_urgency: :low,
             feature_category: "team_planning",
             endpoint_id: "Projects::NotesController#index"
           },
@@ -59,8 +59,8 @@ RSpec.describe 'Project noteable notes', feature_category: :team_planning do
           'process_action.action_controller',
           a_hash_including(
             {
-              request_urgency: :medium,
-              target_duration_s: 0.5,
+              request_urgency: :low,
+              target_duration_s: 5,
               metadata: a_hash_including({
                 'meta.feature_category' => 'team_planning',
                 'meta.caller_id' => "Projects::NotesController#index"

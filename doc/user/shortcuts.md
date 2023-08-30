@@ -109,18 +109,19 @@ These shortcuts are available when viewing issues:
 
 These shortcuts are available when viewing [merge requests](project/merge_requests/index.md):
 
-| macOS shortcut                    | Windows shortcut    | Description |
-|-----------------------------------|---------------------|-------------|
-| <kbd>]</kbd> or <kbd>j</kbd>      |                     | Move to next file. |
-| <kbd>&#91;</kbd> or <kbd>k</kbd>     |                     | Move to previous file. |
+| macOS shortcut                    | Windows shortcut                  | Description |
+|-----------------------------------|-----------------------------------|-------------|
+| <kbd>]</kbd> or <kbd>j</kbd>      |                                   | Move to next file. |
+| <kbd>&#91;</kbd> or <kbd>k</kbd>  |                                   | Move to previous file. |
 | <kbd>Command</kbd> + <kbd>p</kbd> | <kbd>Control</kbd> + <kbd>p</kbd> | Search for, and then jump to a file for review. |
-| <kbd>n</kbd>                      |                     | Move to next unresolved discussion. |
-| <kbd>p</kbd>                      |                     | Move to previous unresolved discussion. |
-| <kbd>b</kbd>                      |                     |  Copy source branch name. |
-| <kbd>c</kbd> + <kbd>r</kbd>       |                     | Copy merge request reference. |
-| <kbd>r</kbd>                      |                     |  Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
-| <kbd>c</kbd>                      |                     |  Move to next commit. |
-| <kbd>x</kbd>                      |                     |  Move to previous commit. |
+| <kbd>n</kbd>                      |                                   | Move to next unresolved discussion. |
+| <kbd>p</kbd>                      |                                   | Move to previous unresolved discussion. |
+| <kbd>b</kbd>                      |                                   | Copy source branch name. |
+| <kbd>c</kbd> + <kbd>r</kbd>       |                                   | Copy merge request reference. |
+| <kbd>r</kbd>                      |                                   | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
+| <kbd>c</kbd>                      |                                   | Move to next commit. |
+| <kbd>x</kbd>                      |                                   | Move to previous commit. |
+| <kbd>f</kbd>                      |                                   | Toggle file browser. |
 
 ### Project files
 

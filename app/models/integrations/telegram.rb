@@ -51,10 +51,6 @@ module Integrations
       )
     end
 
-    def fields
-      self.class.fields + build_event_channels
-    end
-
     def self.supported_events
       super - ['deployment']
     end

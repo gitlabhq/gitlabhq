@@ -438,6 +438,18 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   end
 
   describe '.service_desk_custom_email_verification_email' do
+    # Use strict definition here because Mail::SMTP.new({}).settings
+    # might have been changed before.
+    let(:expected_delivery_method_defaults) do
+      {
+        address: 'localhost',
+        domain: 'localhost.localdomain',
+        port: 25,
+        password: nil,
+        user_name: nil
+      }
+    end
+
     subject { Notify.service_desk_custom_email_verification_email(service_desk_setting) }
 
     it_behaves_like 'a custom email verification process email'
@@ -448,6 +460,13 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     it 'forcibly uses SMTP delivery method and has correct settings' do
       expect_service_desk_custom_email_delivery_options(service_desk_setting)
+
+      # defaults are unchanged after email overrode settings
+      expect(Mail::SMTP.new({}).settings).to include(expected_delivery_method_defaults)
+
+      # other mailers are unchanged after email overrode settings
+      other_mail = Notify.test_email(email, 'Test subject', 'Test body')
+      expect(other_mail.delivery_method).to be_a(Mail::TestMailer)
     end
 
     it 'uses verification email address as recipient' do

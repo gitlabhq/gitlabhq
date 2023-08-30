@@ -36,7 +36,7 @@ module Integrations
     validates :webhook,
       presence: true,
       public_url: true,
-      if: -> (integration) { integration.activated? && integration.requires_webhook? }
+      if: -> (integration) { integration.activated? && integration.class.requires_webhook? }
     validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_blank: true, if: :activated?
     validate :validate_channel_limit, if: :activated?
 
@@ -72,48 +72,7 @@ module Integrations
     end
 
     def fields
-      default_fields + build_event_channels
-    end
-
-    def default_fields
-      [
-        {
-          type: :checkbox,
-          section: SECTION_TYPE_CONFIGURATION,
-          name: 'notify_only_broken_pipelines',
-          help: 'Do not send notifications for successful pipelines.'
-        }.freeze,
-        {
-          type: :select,
-          section: SECTION_TYPE_CONFIGURATION,
-          name: 'branches_to_be_notified',
-          title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: self.class.branch_choices
-        }.freeze,
-        {
-          type: :text,
-          section: SECTION_TYPE_CONFIGURATION,
-          name: 'labels_to_be_notified',
-          placeholder: '~backend,~frontend',
-          help: 'Send notifications for issue, merge request, and comment events with the listed labels only. Leave blank to receive notifications for all events.'
-        }.freeze,
-        {
-          type: :select,
-          section: SECTION_TYPE_CONFIGURATION,
-          name: 'labels_to_be_notified_behavior',
-          choices: [
-            ['Match any of the labels', MATCH_ANY_LABEL],
-            ['Match all of the labels', MATCH_ALL_LABELS]
-          ]
-        }.freeze
-      ].tap do |fields|
-        next unless requires_webhook?
-
-        fields.unshift(
-          { type: :text, name: 'webhook', help: webhook_help, required: true }.freeze,
-          { type: :text, name: 'username', placeholder: 'GitLab-integration' }.freeze
-        )
-      end.freeze
+      self.class.fields + build_event_channels
     end
 
     def execute(data)
@@ -190,7 +149,7 @@ module Integrations
       self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
     end
 
-    def requires_webhook?
+    def self.requires_webhook?
       true
     end
 
@@ -206,7 +165,7 @@ module Integrations
 
     def should_execute?(object_kind)
       supported_events.include?(object_kind) &&
-        (!requires_webhook? || webhook.present?)
+        (!self.class.requires_webhook? || webhook.present?)
     end
 
     def log_usage(_, _)
@@ -273,7 +232,7 @@ module Integrations
 
     def build_event_channels
       event_channel_names.map do |channel_field|
-        { type: :text, name: channel_field, placeholder: default_channel_placeholder }
+        Field.new(name: channel_field, type: :text, placeholder: default_channel_placeholder, integration_class: self)
       end
     end
 

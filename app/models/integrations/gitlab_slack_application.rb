@@ -20,6 +20,8 @@ module Integrations
     has_one :slack_integration, foreign_key: :integration_id, inverse_of: :integration
     delegate :bot_access_token, :bot_user_id, to: :slack_integration, allow_nil: true
 
+    include SlackMattermostFields
+
     def update_active_status
       update(active: !!slack_integration)
     end
@@ -88,7 +90,7 @@ module Integrations
     end
 
     override :requires_webhook?
-    def requires_webhook?
+    def self.requires_webhook?
       false
     end
 

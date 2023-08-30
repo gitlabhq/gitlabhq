@@ -12564,6 +12564,7 @@ Information about a connected Agent.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="airesponsechunkid"></a>`chunkId` | [`Int`](#int) | Incremental ID for a chunk from a streamed response. Null when it is not a streamed response. |
 | <a id="airesponseerrors"></a>`errors` | [`[String!]`](#string) | Errors return by AI API as response. |
 | <a id="airesponserequestid"></a>`requestId` | [`String`](#string) | ID of the original request. |
 | <a id="airesponseresponsebody"></a>`responseBody` | [`String`](#string) | Response body from AI API. |

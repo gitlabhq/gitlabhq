@@ -29,6 +29,7 @@ module BulkImports
                   user {
                     user_gid: id
                     public_email: publicEmail
+                    username: username
                   }
                 }
               }

@@ -7,7 +7,15 @@ module Types
     # rubocop: disable Graphql/AuthorizeTypes
     class JobBaseField < ::Types::BaseField
       PUBLIC_FIELDS = %i[allow_failure duration id kind status created_at finished_at queued_at queued_duration
-        updated_at runner short_sha].freeze
+        updated_at runner].freeze
+
+      attr_accessor :if_unauthorized
+
+      def initialize(**kwargs, &block)
+        @if_unauthorized = kwargs.delete(:if_unauthorized)
+
+        super
+      end
 
       def authorized?(object, args, ctx)
         current_user = ctx[:current_user]

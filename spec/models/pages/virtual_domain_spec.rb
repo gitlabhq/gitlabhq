@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Pages::VirtualDomain do
+RSpec.describe Pages::VirtualDomain, feature_category: :pages do
   describe '#certificate and #key pair' do
     let(:domain) { nil }
     let(:project) { instance_double(Project) }
@@ -25,6 +25,8 @@ RSpec.describe Pages::VirtualDomain do
   end
 
   describe '#lookup_paths' do
+    let(:domain) { nil }
+    let(:trim_prefix) { nil }
     let(:project_a) { instance_double(Project) }
     let(:project_b) { instance_double(Project) }
     let(:project_c) { instance_double(Project) }
@@ -32,27 +34,41 @@ RSpec.describe Pages::VirtualDomain do
     let(:pages_lookup_path_b) { instance_double(Pages::LookupPath, prefix: 'bbb', source: { type: 'zip', path: 'https://example.com' }) }
     let(:pages_lookup_path_without_source) { instance_double(Pages::LookupPath, prefix: 'ccc', source: nil) }
 
+    subject(:virtual_domain) do
+      described_class.new(projects: project_list, domain: domain, trim_prefix: trim_prefix)
+    end
+
+    before do
+      allow(Pages::LookupPath)
+        .to receive(:new)
+        .with(project_a, domain: domain, trim_prefix: trim_prefix)
+        .and_return(pages_lookup_path_a)
+
+      allow(Pages::LookupPath)
+        .to receive(:new)
+        .with(project_b, domain: domain, trim_prefix: trim_prefix)
+        .and_return(pages_lookup_path_b)
+
+      allow(Pages::LookupPath)
+        .to receive(:new)
+        .with(project_c, domain: domain, trim_prefix: trim_prefix)
+        .and_return(pages_lookup_path_without_source)
+    end
+
     context 'when there is pages domain provided' do
       let(:domain) { instance_double(PagesDomain) }
-
-      subject(:virtual_domain) { described_class.new(projects: [project_a, project_b, project_c], domain: domain) }
+      let(:project_list) { [project_a, project_b, project_c] }
 
       it 'returns collection of projects pages lookup paths sorted by prefix in reverse' do
-        expect(project_a).to receive(:pages_lookup_path).with(domain: domain, trim_prefix: nil).and_return(pages_lookup_path_a)
-        expect(project_b).to receive(:pages_lookup_path).with(domain: domain, trim_prefix: nil).and_return(pages_lookup_path_b)
-        expect(project_c).to receive(:pages_lookup_path).with(domain: domain, trim_prefix: nil).and_return(pages_lookup_path_without_source)
-
         expect(virtual_domain.lookup_paths).to eq([pages_lookup_path_b, pages_lookup_path_a])
       end
     end
 
     context 'when there is trim_prefix provided' do
-      subject(:virtual_domain) { described_class.new(projects: [project_a, project_b], trim_prefix: 'group/') }
+      let(:trim_prefix) { 'group/' }
+      let(:project_list) { [project_a, project_b] }
 
       it 'returns collection of projects pages lookup paths sorted by prefix in reverse' do
-        expect(project_a).to receive(:pages_lookup_path).with(trim_prefix: 'group/', domain: nil).and_return(pages_lookup_path_a)
-        expect(project_b).to receive(:pages_lookup_path).with(trim_prefix: 'group/', domain: nil).and_return(pages_lookup_path_b)
-
         expect(virtual_domain.lookup_paths).to eq([pages_lookup_path_b, pages_lookup_path_a])
       end
     end

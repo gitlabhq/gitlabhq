@@ -2869,10 +2869,6 @@ class Project < ApplicationRecord
     recipients
   end
 
-  def pages_lookup_path(trim_prefix: nil, domain: nil)
-    Pages::LookupPath.new(self, trim_prefix: trim_prefix, domain: domain)
-  end
-
   def closest_setting(name)
     setting = read_attribute(name)
     setting = closest_namespace_setting(name) if setting.nil?

@@ -3,6 +3,7 @@
 module Integrations
   class Mattermost < BaseChatNotification
     include SlackMattermostNotifier
+    include SlackMattermostFields
 
     def title
       _('Mattermost notifications')
@@ -25,7 +26,7 @@ module Integrations
       'my-channel'
     end
 
-    def webhook_help
+    def self.webhook_help
       'http://mattermost.example.com/hooks/'
     end
 

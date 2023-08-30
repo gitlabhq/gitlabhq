@@ -35,10 +35,6 @@ module Integrations
       "discord"
     end
 
-    def fields
-      self.class.fields + build_event_channels
-    end
-
     def help
       docs_link = ActionController::Base.helpers.link_to _('How do I set up this service?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/discord_notifications'), target: '_blank', rel: 'noopener noreferrer'
       s_('Send notifications about project events to a Discord channel. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }

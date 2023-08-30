@@ -120,6 +120,41 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
     end
   end
 
+  describe '#content' do
+    context 'when component is valid' do
+      let(:content) do
+        <<~COMPONENT
+        job:
+        script: echo
+        COMPONENT
+      end
+
+      let(:response) do
+        ServiceResponse.success(payload: {
+          content: content,
+          path: instance_double(::Gitlab::Ci::Components::InstancePath, project: project, sha: '12345')
+        })
+      end
+
+      it 'tracks the event' do
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).with('cicd_component_usage',
+          values: external_resource.context.user.id)
+
+        external_resource.content
+      end
+    end
+
+    context 'when component is invalid' do
+      let(:content) { 'the-content' }
+
+      it 'does not track the event' do
+        expect(::Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+        external_resource.content
+      end
+    end
+  end
+
   describe '#metadata' do
     subject(:metadata) { external_resource.metadata }
 

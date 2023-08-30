@@ -100,7 +100,7 @@ PATH
   specs:
     mail-smtp_pool (0.1.0)
       connection_pool (~> 2.0)
-      mail (~> 2.7)
+      mail (~> 2.8)
 
 PATH
   remote: vendor/gems/microsoft_graph_mailer

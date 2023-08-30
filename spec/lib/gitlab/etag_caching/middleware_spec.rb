@@ -124,8 +124,8 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
         method: 'GET',
         path: enabled_path,
         status: status_code,
-        request_urgency: :medium,
-        target_duration_s: 0.5,
+        request_urgency: :low,
+        target_duration_s: 5,
         metadata: a_hash_including(
           {
             'meta.caller_id' => 'Projects::NotesController#index',

@@ -10,8 +10,6 @@ en:
         pwa_short_name: "PWA short name"
         pwa_description: "PWA description"
         pwa_icon: "Icon"
-      application_setting:
-        ai_access_token: "Personal access token"
       incident_management/timeline_event:
         note: 'Timeline text'
       issue_link:

@@ -178,7 +178,7 @@ POST /projects/:id/feature_flags
 | `version`           | string           | yes        | The version of the feature flag. Must be `new_version_flag`. Omit to create a Legacy feature flag. |
 | `description`       | string           | no         | The description of the feature flag.                                                   |
 | `active`            | boolean          | no         | The active state of the flag. Defaults to true. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
-| `strategies`        | JSON             | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
+| `strategies`        | array of strategy JSON objects | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
 | `strategies:name`   | JSON             | no         | The strategy name. Can be `default`, `gradualRolloutUserId`, `userWithId`, or `gitlabUserList`. In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/36380) and later, can be [`flexibleRollout`](https://docs.getunleash.io/user_guide/activation_strategy/#gradual-rollout). |
 | `strategies:parameters` | JSON         | no         | The strategy parameters.                                                               |
 | `strategies:scopes` | JSON             | no         | The scopes for the strategy.                                                           |
@@ -240,7 +240,7 @@ PUT /projects/:id/feature_flags/:feature_flag_name
 | `description`       | string           | no         | The description of the feature flag.                                                   |
 | `active`            | boolean          | no         | The active state of the flag. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
 | `name`              | string           | no         | The new name of the feature flag. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
-| `strategies`        | JSON             | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
+| `strategies`        | array of strategy JSON objects | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
 | `strategies:id`     | JSON             | no         | The feature flag strategy ID.                                                          |
 | `strategies:name`   | JSON             | no         | The strategy name.                                                                     |
 | `strategies:_destroy` | boolean         | no         | Delete the strategy when true.                                                               |

@@ -411,7 +411,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :runner_fleet
               status: other_build.status.upcase,
               project: nil, tags: nil, web_path: nil,
               runner: a_graphql_entity_for(project_runner),
-              short_sha: other_build.short_sha, finished_at: other_build.finished_at&.iso8601,
+              short_sha: 'Unauthorized', finished_at: other_build.finished_at&.iso8601,
               duration: a_value_within(0.001).of(other_build.duration),
               queued_duration: a_value_within(0.001).of((other_build.started_at - other_build.queued_at).to_f)),
             a_graphql_entity_for(owned_build,

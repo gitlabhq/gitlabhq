@@ -18,9 +18,9 @@ login`:
 
 ```yaml
 default:
-  image: docker:20.10.16
+  image: docker:24.0.5
   services:
-    - docker:20.10.16-dind
+    - docker:24.0.5-dind
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
@@ -42,7 +42,7 @@ empty or remove it.
 If you are an administrator for GitLab Runner, you can mount a file
 with the authentication configuration to `~/.docker/config.json`.
 Then every job that the runner picks up is already authenticated. If you
-are using the official `docker:20.10.16` image, the home directory is
+are using the official `docker:24.0.5` image, the home directory is
 under `/root`.
 
 If you mount the configuration file, any `docker` command
@@ -126,9 +126,9 @@ The same commands apply for any solution you implement.
 
 ```yaml
 default:
-  image: docker:20.10.16
+  image: docker:24.0.5
   services:
-    - docker:20.10.16-dind
+    - docker:24.0.5-dind
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"

@@ -12,7 +12,7 @@ module BulkImports
           return unless user
           return unless valid_access_level?(access_level)
 
-          cache_source_user_id(data, user, context)
+          cache_source_user_data(data, user, context)
 
           {
             user_id: user.id,
@@ -36,14 +36,21 @@ module BulkImports
           Gitlab::Access.options_with_owner.value?(access_level)
         end
 
-        def cache_source_user_id(data, user, context)
+        def cache_source_user_data(data, user, context)
           gid = data&.dig('user', 'user_gid')
 
           return unless gid
 
           source_user_id = GlobalID.parse(gid).model_id
+          source_username = data&.dig('user', 'username')
 
-          ::BulkImports::UsersMapper.new(context: context).cache_source_user_id(source_user_id, user.id)
+          mapper = ::BulkImports::UsersMapper.new(context: context)
+
+          mapper.cache_source_user_id(source_user_id, user.id)
+          return unless source_username
+          return if source_username == user.username
+
+          mapper.cache_source_username(source_username, user.username)
         end
       end
     end

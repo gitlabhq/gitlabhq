@@ -22,8 +22,12 @@ module BulkImports
         def transform(_context, object)
           body = object_body(object).dup
 
+          mapped_usernames.each do |old_username, new_username|
+            body.gsub!(old_username, new_username) if body.include?(old_username)
+          end
+
           matching_urls(object).each do |old_url, new_url|
-            body.gsub!(old_url, new_url)
+            body.gsub!(old_url, new_url) if body.include?(old_url)
           end
 
           object.assign_attributes(body_field(object) => body)
@@ -37,10 +41,14 @@ module BulkImports
 
         private
 
+        def mapped_usernames
+          @mapped_usernames ||= ::BulkImports::UsersMapper.new(context: context).map_usernames
+        end
+
         def add_matching_objects(collection, enum)
           collection.each_batch(of: BATCH_SIZE, column: :iid) do |batch|
             batch.each do |object|
-              enum << object if object_has_reference?(object)
+              enum << object if object_has_reference?(object) || object_has_username?(object)
             end
           end
         end
@@ -51,7 +59,7 @@ module BulkImports
               object.notes.each_batch(of: BATCH_SIZE) do |notes_batch|
                 notes_batch.each do |note|
                   note.refresh_markdown_cache!
-                  enum << note if object_has_reference?(note)
+                  enum << note if object_has_reference?(note) || object_has_username?(object)
                 end
               end
             end
@@ -60,6 +68,12 @@ module BulkImports
 
         def object_has_reference?(object)
           object_body(object)&.include?(source_full_path)
+        end
+
+        def object_has_username?(object)
+          return false unless object_body(object)
+
+          mapped_usernames.keys.any? { |old_username| object_body(object).include?(old_username) }
         end
 
         def object_body(object)
