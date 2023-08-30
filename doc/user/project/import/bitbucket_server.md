@@ -87,6 +87,9 @@ original creator.
 The importer creates any new namespaces (groups) if they don't exist. If the namespace is taken, the
 repository imports under the namespace of the user who started the import process.
 
+The importer attempts to find reviewers by their email address in the GitLab user database. If they don't exist in GitLab, they cannot be added as reviewers to a
+merge request.
+
 ### User assignment by username
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218609) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.

@@ -107,9 +107,19 @@ This is an alternative and more **advanced** setup compared to a standard Refere
 
 ### GitLab Geo (Cross Regional Distribution / Disaster Recovery)
 
-With [GitLab Geo](../geo/index.md) you can have both distributed environments in different regions and a full Disaster Recovery (DR) setup in place. With this setup you would have 2 or more separate environments, with one being a primary that gets replicated to the others. In the rare event the primary site went down completely you could fail over to one of the other environments.
+With [GitLab Geo](../geo/index.md), you can achieve distributed environments in
+different regions with a full Disaster Recovery (DR) setup in place. GitLab Geo
+requires at least two separate environments:
 
-This is an **advanced and complex** setup and should only be undertaken if you have DR as a key requirement. Decisions then on how each environment are configured would also need to be taken, such as if each environment itself would be the full size and / or have HA.
+- One primary site.
+- One or more secondary sites that serve as replicas.
+ 
+If the primary site becomes unavailable, you can fail over to one of the secondary sites.
+
+This **advanced and complex** setup should only be undertaken if DR is
+a key requirement for your environment. You must also make additional decisions
+on how each site is configured, such as if each secondary site would be the
+same architecture as the primary, or if each site is configured for HA.
 
 ### Cloud provider services
 

@@ -412,9 +412,12 @@ Authentication failed because a home page should be displayed after login. Inste
 
 ### Configure the authentication report
 
+WARNING:
+The authentication report can contain sensitive information such as the credentials used to perform the login.
+
 An authentication report can be saved as a CI/CD job artifact to assist with understanding the cause of an authentication failure.
 
-The report contains steps during the login process, HTTP requests and responses, the Document Object Model (DOM) and screenshots.
+The report contains steps performed during the login process, HTTP requests and responses, the Document Object Model (DOM) and screenshots.
 
 ![dast-auth-report](img/dast_auth_report.jpg)
 

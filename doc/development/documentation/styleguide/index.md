@@ -1641,7 +1641,7 @@ The H1 tier badge should be the badge that applies to the lowest tier for the fe
 
 #### Available product tier badges
 
-Tier badges must include two components, in this order: a subscription tier and an offering.
+Tier badges should include two components, in this order: a subscription tier and an offering.
 These components are surrounded by bold and parentheses, for example `**(ULTIMATE SAAS)**`.
 
 Subscription tiers:
@@ -1661,10 +1661,14 @@ You can also add a third component for the feature's status:
 - `EXPERIMENT`
 - `BETA`
 
+For example, `**(FREE ALL EXPERIMENT)**`.
+
+A tier or status can stand alone. An offering should always have a tier.
+
 #### Add a tier badge
 
 To add a tier badge to a topic title, add the two relevant components
-after the title text. You must include the subscription tier first, and then the offering.
+after the title text. You should include the subscription tier first, and then the offering.
 For example:
 
 ```markdown
@@ -1675,6 +1679,12 @@ Optionally, you can add the feature status as the last part of the badge:
 
 ```markdown
 # Topic title **(FREE ALL EXPERIMENT)**
+```
+
+Or add the status by itself:
+
+```markdown
+# Topic title **(EXPERIMENT)**
 ```
 
 ##### Inline tier badges

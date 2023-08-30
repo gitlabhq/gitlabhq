@@ -11,6 +11,31 @@ GitLab, like most large applications, enforces limits in certain features to mai
 minimum quality of performance. Allowing some features to be limitless could affect security,
 performance, data, or could even exhaust the allocated resources for the application.
 
+## Instance configuration
+
+In the instance configuration page, you can find information about some of the
+settings that are used in your current GitLab instance.
+
+Depending on which limits you have configured, you can see:
+
+- SSH host keys information
+- CI/CD limits
+- GitLab Pages limits
+- Package Registry limits
+- Rate limits
+- Size limits
+
+Because this page is visible to everybody, unauthenticated users only see the
+the information that is relevant to them.
+
+To visit the instance configuration page:
+
+1. On the left sidebar, select **Help** (**{question-o}**) > **Help**.
+1. On the Help page, select **Check the current instance configuration**.
+
+The direct URL is `<gitlab_url>/help/instance_configuration`. For GitLab.com,
+you can visit <https://gitlab.com/help/instance_configuration>.
+
 ## Rate limits
 
 Rate limits can be used to improve the security and durability of GitLab.

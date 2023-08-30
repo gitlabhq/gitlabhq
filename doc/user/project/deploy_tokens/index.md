@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Deploy tokens **(FREE ALL)**
 
-> [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) package registry scopes in GitLab 13.0.
-
 You can use a deploy token to enable authentication of deployment tasks, independent of a user
 account. In most cases you use a deploy token from an external host, like a build server or CI/CD
 server.
