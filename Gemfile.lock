@@ -307,7 +307,7 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     colored2 (3.1.2)
-    commonmarker (0.23.9)
+    commonmarker (0.23.10)
     concurrent-ruby (1.2.2)
     connection_pool (2.3.0)
     cork (0.3.0)
@@ -1701,7 +1701,7 @@ DEPENDENCIES
   charlock_holmes (~> 0.7.7)
   circuitbox (= 2.0.0)
   cloud_profiler_agent (~> 0.0.0)!
-  commonmarker (~> 0.23.9)
+  commonmarker (~> 0.23.10)
   concurrent-ruby (~> 1.1)
   connection_pool (~> 2.0)
   countries (~> 4.0.0)

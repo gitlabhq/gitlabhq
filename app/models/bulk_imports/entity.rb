@@ -41,19 +41,15 @@ class BulkImports::Entity < ApplicationRecord
   validates :project, absence: true, if: :group
   validates :group, absence: true, if: :project
   validates :source_type, presence: true
-  validates :source_full_path, presence: true, format: {
-    with: Gitlab::Regex.bulk_import_source_full_path_regex,
-    message: Gitlab::Regex.bulk_import_source_full_path_regex_message
-  }
-
+  validates :source_full_path, presence: true
   validates :destination_name, presence: true, if: -> { group || project }
   validates :destination_namespace, exclusion: [nil], if: :group
   validates :destination_namespace, presence: true, if: :project?
 
   validate :validate_parent_is_a_group, if: :parent
   validate :validate_imported_entity_type
-
   validate :validate_destination_namespace_ascendency, if: :group_entity?
+  validate :validate_source_full_path_format
 
   enum source_type: { group_entity: 0, project_entity: 1 }
 
@@ -220,5 +216,16 @@ class BulkImports::Entity < ApplicationRecord
         s_('BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
       )
     end
+  end
+
+  def validate_source_full_path_format
+    validator = group? ? NamespacePathValidator : ProjectPathValidator
+
+    return if validator.valid_path?(source_full_path)
+
+    errors.add(
+      :source_full_path,
+      Gitlab::Regex.bulk_import_source_full_path_regex_message
+    )
   end
 end
