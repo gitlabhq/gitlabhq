@@ -336,7 +336,7 @@ purpose API endpoint before we make the feature [generally available](../../../p
 for self-managed installations. This makes it easier for us to support
 features long-term even if the landscape of AI providers change.
 
-The [Experimental REST API](../../../development/ai_features.md#experimental-rest-api)
+The [Experimental REST API](../../../development/ai_features/index.md#experimental-rest-api)
 available to GitLab team members should also use this proxy in the
 short term. In the longer term, we should provide developers access to
 a separate proxy that allows them to use GitLab owned authentication

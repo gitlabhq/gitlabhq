@@ -541,13 +541,10 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
 
       describe 'linked items widget' do
-        let_it_be(:related_item1) { create(:work_item, project: project) }
-        let_it_be(:related_item2) { create(:work_item, project: project) }
-        let_it_be(:related_item3) { create(:work_item) }
-        let_it_be(:link1) { create(:work_item_link, source: work_item, target: related_item1, link_type: 'relates_to') }
-        let_it_be(:link2) { create(:work_item_link, source: work_item, target: related_item2, link_type: 'relates_to') }
-        let_it_be(:link3) { create(:work_item_link, source: work_item, target: related_item3, link_type: 'relates_to') }
-
+        let_it_be(:related_item) { create(:work_item, project: project) }
+        let_it_be(:blocked_item) { create(:work_item, project: project) }
+        let_it_be(:link1) { create(:work_item_link, source: work_item, target: related_item, link_type: 'relates_to') }
+        let_it_be(:link2) { create(:work_item_link, source: work_item, target: blocked_item, link_type: 'blocks') }
         let(:work_item_fields) do
           <<~GRAPHQL
             id
@@ -580,18 +577,42 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                     hash_including(
                       'linkId' => link1.to_gid.to_s, 'linkType' => 'relates_to',
                       'linkCreatedAt' => link1.created_at.iso8601, 'linkUpdatedAt' => link1.updated_at.iso8601,
-                      'workItem' => { 'id' => related_item1.to_gid.to_s }
+                      'workItem' => { 'id' => related_item.to_gid.to_s }
                     ),
                     hash_including(
-                      'linkId' => link2.to_gid.to_s, 'linkType' => 'relates_to',
+                      'linkId' => link2.to_gid.to_s, 'linkType' => 'blocks',
                       'linkCreatedAt' => link2.created_at.iso8601, 'linkUpdatedAt' => link2.updated_at.iso8601,
-                      'workItem' => { 'id' => related_item2.to_gid.to_s }
+                      'workItem' => { 'id' => blocked_item.to_gid.to_s }
                     )
                   ]
                 ) }
               )
             )
           )
+        end
+
+        context 'when filtering by link type' do
+          let(:work_item_fields) do
+            <<~GRAPHQL
+              widgets {
+                type
+                ... on WorkItemWidgetLinkedItems {
+                  linkedItems(filter: RELATED) {
+                    nodes {
+                      linkType
+                    }
+                  }
+                }
+              }
+            GRAPHQL
+          end
+
+          it 'returns items with specified type' do
+            widget_data = work_item_data["widgets"].find { |widget| widget.key?("linkedItems") }["linkedItems"]
+
+            expect(widget_data["nodes"].size).to eq(1)
+            expect(widget_data.dig("nodes", 0, "linkType")).to eq('relates_to')
+          end
         end
 
         context 'when `linked_work_items` feature flag is disabled' do

@@ -270,6 +270,11 @@ RSpec.describe Ability do
   end
 
   describe '.issues_readable_by_user' do
+    it 'is aliased to .work_items_readable_by_user' do
+      expect(described_class.method(:issues_readable_by_user))
+        .to eq(described_class.method(:work_items_readable_by_user))
+    end
+
     context 'with an admin when admin mode is enabled', :enable_admin_mode do
       it 'returns all given issues' do
         user = build(:user, admin: true)

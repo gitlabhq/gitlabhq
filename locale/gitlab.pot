@@ -53445,6 +53445,9 @@ msgstr ""
 msgid "Work items are already linked"
 msgstr ""
 
+msgid "WorkItems|This work item would exceed the maximum number of linked items."
+msgstr ""
+
 msgid "WorkItem|%{count} more assignees"
 msgstr ""
 

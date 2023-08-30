@@ -25,7 +25,7 @@ module WorkItems
       end
 
       def previous_related_issuables
-        @related_issues ||= issuable.related_issues(current_user).to_a
+        @related_issues ||= issuable.linked_work_items(authorize: false).to_a
       end
 
       private

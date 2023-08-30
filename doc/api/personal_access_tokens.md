@@ -226,6 +226,23 @@ Non-administrators can rotate their own tokens. Administrators can rotate tokens
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens/<personal_access_token_id>/rotate"
 ```
 
+Example response:
+
+```json
+{
+    "id": 42,
+    "name": "Rotated Token",
+    "revoked": false,
+    "created_at": "2023-08-01T15:00:00.000Z",
+    "scopes": ["api"],
+    "user_id": 1337,
+    "last_used_at": null,
+    "active": true,
+    "expires_at": "2023-08-15",
+    "token": "s3cr3t"
+}
+```
+
 ### Responses
 
 - `200: OK` if the existing token is successfully revoked and the new token successfully created.

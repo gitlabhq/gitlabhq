@@ -146,6 +146,18 @@ class WorkItem < Issue
     { common: common_params, widgets: widget_params }
   end
 
+  def linked_work_items(current_user = nil, authorize: true, preload: nil, link_type: nil)
+    linked_work_items = linked_work_items_query(link_type).preload(preload).reorder('issue_link_id')
+    return linked_work_items unless authorize
+
+    cross_project_filter = ->(work_items) { work_items.where(project: project) }
+    Ability.work_items_readable_by_user(
+      linked_work_items,
+      current_user,
+      filters: { read_cross_project: cross_project_filter }
+    )
+  end
+
   private
 
   override :parent_link_confidentiality
@@ -240,6 +252,21 @@ class WorkItem < Issue
     if max_child_depth + ancestor_depth > restriction.maximum_depth - 1
       errors.add(:work_item_type_id, _('reached maximum depth'))
     end
+  end
+
+  def linked_work_items_query(link_type)
+    type_condition =
+      if link_type == WorkItems::RelatedWorkItemLink::TYPE_RELATES_TO
+        " AND issue_links.link_type = #{WorkItems::RelatedWorkItemLink.link_types[link_type]}"
+      else
+        ""
+      end
+
+    linked_issues_select
+      .joins("INNER JOIN issue_links ON
+         (issue_links.source_id = issues.id AND issue_links.target_id = #{id}#{type_condition})
+         OR
+         (issue_links.target_id = issues.id AND issue_links.source_id = #{id}#{type_condition})")
   end
 end
 

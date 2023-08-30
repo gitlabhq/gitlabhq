@@ -635,4 +635,82 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
     end
   end
+
+  describe '#linked_work_items' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:authorized_project) { create(:project) }
+    let_it_be(:authorized_project2) { create(:project) }
+    let_it_be(:unauthorized_project) { create(:project, :private) }
+
+    let_it_be(:authorized_item_a) { create(:work_item, project: authorized_project) }
+    let_it_be(:authorized_item_b) { create(:work_item, project: authorized_project) }
+    let_it_be(:authorized_item_c) { create(:work_item, project: authorized_project2) }
+    let_it_be(:unauthorized_item) { create(:work_item, project: unauthorized_project) }
+
+    let_it_be(:work_item_link_a) { create(:work_item_link, source: authorized_item_a, target: authorized_item_b) }
+    let_it_be(:work_item_link_b) { create(:work_item_link, source: authorized_item_a, target: unauthorized_item) }
+    let_it_be(:work_item_link_c) { create(:work_item_link, source: authorized_item_a, target: authorized_item_c) }
+
+    before_all do
+      authorized_project.add_guest(user)
+      authorized_project2.add_guest(user)
+    end
+
+    it 'returns only authorized linked work items for given user' do
+      expect(authorized_item_a.linked_work_items(user)).to contain_exactly(authorized_item_b, authorized_item_c)
+    end
+
+    it 'returns work items with valid work_item_link_type' do
+      link_types = authorized_item_a.linked_work_items(user).map(&:issue_link_type)
+
+      expect(link_types).not_to be_empty
+      expect(link_types).not_to include(nil)
+    end
+
+    it 'returns work items including the link creation time' do
+      dates = authorized_item_a.linked_work_items(user).map(&:issue_link_created_at)
+
+      expect(dates).not_to be_empty
+      expect(dates).not_to include(nil)
+    end
+
+    it 'returns work items including the link update time' do
+      dates = authorized_item_a.linked_work_items(user).map(&:issue_link_updated_at)
+
+      expect(dates).not_to be_empty
+      expect(dates).not_to include(nil)
+    end
+
+    context 'when a user cannot read cross project' do
+      it 'only returns work items within the same project' do
+        allow(Ability).to receive(:allowed?).with(user, :read_all_resources, :global).and_call_original
+        expect(Ability).to receive(:allowed?).with(user, :read_cross_project).and_return(false)
+
+        expect(authorized_item_a.linked_work_items(user)).to contain_exactly(authorized_item_b)
+      end
+    end
+
+    context 'when filtering by link type' do
+      before do
+        work_item_link_c.update!(link_type: 'blocks')
+      end
+
+      it 'returns authorized work items with given link type' do
+        expect(authorized_item_a.linked_work_items(user, link_type: 'relates_to')).to contain_exactly(authorized_item_b)
+      end
+    end
+
+    context 'when authorize option is true and current_user is nil' do
+      it 'returns empty result' do
+        expect(authorized_item_a.linked_work_items).to be_empty
+      end
+    end
+
+    context 'when authorize option is false' do
+      it 'returns all work items linked to the work item' do
+        expect(authorized_item_a.linked_work_items(authorize: false))
+          .to contain_exactly(authorized_item_b, authorized_item_c, unauthorized_item)
+      end
+    end
+  end
 end

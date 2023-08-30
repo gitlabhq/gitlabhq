@@ -37,7 +37,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Apply the following two feature flags to any AI feature work:
 
 - A general that applies to all AI features.
-- A flag specific to that feature. The feature flag name [must be different](feature_flags/index.md#feature-flags-for-licensed-features) than the licensed feature name.
+- A flag specific to that feature. The feature flag name [must be different](../feature_flags/index.md#feature-flags-for-licensed-features) than the licensed feature name.
 
 See the [feature flag tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/405161) for the list of all feature flags and how to use them.
 
@@ -64,7 +64,7 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
    Feature.enable(:anthropic_experimentation)
    ```
 
-1. Simulate the GDK to [simulate SaaS](ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
+1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
 1. Enable `Experimental features` and `Third-party AI services`
    1. Go to the group with the Ultimate license
    1. **Group Settings** > **General** -> **Permissions and group features**
@@ -92,120 +92,12 @@ For features that use the embedding database, additional setup is needed.
 1. Run `gdk reconfigure`
 1. Run database migrations to create the embedding database
 
-### Set up GitLab Duo Chat
-
-NOTE:
-Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
-
-1. [Enable Anthropic API features](#configure-anthropic-access).
-1. [Enable OpenAI support](#configure-openai-access).
-1. [Ensure the embedding database is configured](#set-up-the-embedding-database).
-1. Enable feature specific feature flag.
-
-   ```ruby
-   Feature.enable(:gitlab_duo)
-   Feature.enable(:tanuki_bot)
-   Feature.enable(:ai_redis_cache)
-   ```
-
-1. Ensure that your current branch is up-to-date with `master`.
-1. To access the GitLab Duo Chat interface, in the lower-left corner of any page, select **Help** and **Ask GitLab Duo Chat**.
-
-#### Tips for local development
-
-1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
-1. Alternatively, bypass Sidekiq entirely and run the chat service synchronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs.
-
-```diff
-diff --git a/ee/app/services/llm/chat_service.rb b/ee/app/services/llm/chat_service.rb
-index 5fa7ae8a2bc1..5fe996ba0345 100644
---- a/ee/app/services/llm/chat_service.rb
-+++ b/ee/app/services/llm/chat_service.rb
-@@ -5,7 +5,7 @@ class ChatService < BaseService
-     private
-
-     def perform
--      worker_perform(user, resource, :chat, options)
-+      worker_perform(user, resource, :chat, options.merge(sync: true))
-     end
-
-     def valid?
-```
-
-### Working with GitLab Duo Chat
-
-Prompts are the most vital part of GitLab Duo Chat system. Prompts are the instructions sent to the Large Language Model to perform certain tasks.
-
-The state of the prompts is the result of weeks of iteration. If you want to change any prompt in the current tool, you must put it behind a feature flag.
-
-If you have any new or updated prompts, ask members of AI Framework team to review, because they have significant experience with them.
-
 ### Setup for GitLab documentation chat (legacy chat)
 
 To populate the embedding database for GitLab chat:
 
 1. Open a rails console
 1. Run [this script](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/10588#note_1373586079) to populate the embedding database
-
-### Contributing to GitLab Duo Chat
-
-The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb) that includes a system prompt explaining how the large language model should interpret the question and provide an
-answer. The system prompt defines available tools that can be used to gather
-information to answer the user's question.
-
-The zero-shot agent receives the user's question and decides which tools to use to gather information to answer it.
-It then makes a request to the large language model, which decides if it can answer directly or if it needs to use one
-of the defined tools.
-
-The tools each have their own prompt that provides instructions to the large language model on how to use that tool to
-gather information. The tools are designed to be self-sufficient and avoid multiple requests back and forth to
-the large language model.
-
-After the tools have gathered the required information, it is returned to the zero-shot agent, which asks the large language
-model if enough information has been gathered to provide the final answer to the user's question.
-
-#### Adding a new tool
-
-To add a new tool:
-
-1. Create files for the tool in the `ee/lib/gitlab/llm/chain/tools/` folder. Use existing tools like `issue_identifier` or
-`resource_reader` as a template.
-
-1. Write a class for the tool that includes:
-
-   - Name and description of what the tool does
-   - Example questions that would use this tool
-   - Instructions for the large language model on how to use the tool to gather information - so the main prompts that
-   this tool is using.
-
-1. Test and iterate on the prompt using RSpec tests that make real requests to the large language model.
-   - Prompts require trial and error, the non-deterministic nature of working with LLM can be surprising.
-   - Anthropic provides good [guide](https://docs.anthropic.com/claude/docs/introduction-to-prompt-design) on working on prompts.
-
-1. Implement code in the tool to parse the response from the large language model and return it to the zero-shot agent.
-
-1. Add the new tool name to the `tools` array in `ee/lib/gitlab/llm/completions/chat.rb` so the zero-shot agent knows about it.
-
-1. Add tests by adding questions to the test-suite for which the new tool should respond to. Iterate on the prompts as needed.
-
-The key things to keep in mind are properly instructing the large language model through prompts and tool descriptions,
-keeping tools self-sufficient, and returning responses to the zero-shot agent. With some trial and error on prompts,
-adding new tools can expand the capabilities of the chat feature.
-
-There are available short [videos](https://www.youtube.com/playlist?list=PL05JrBw4t0KoOK-bm_bwfHaOv-1cveh8i) covering this topic.
-
-### Debugging
-
-To gather more insights about the full request, use the `Gitlab::Llm::Logger` file to debug logs.
-The default logging level on production is `INFO` and **must not** be used to log any data that could contain personal identifying information.
-
-To follow the debugging messages related to the AI requests on the abstraction layer, you can use:
-
-```shell
-export LLM_DEBUG=1
-gdk start
-tail -f log/llm.log
-```
 
 ### Configure GCP Vertex access
 
@@ -240,19 +132,6 @@ Feature.enable(:anthropic_experimentation)
 Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 ```
 
-### Testing GitLab Duo Chat with predefined questions
-
-Because success of answers to user questions in GitLab Duo Chat heavily depends on toolchain and prompts of each tool, it's common that even a minor change in a prompt or a tool impacts processing of some questions. To make sure that a change in the toolchain doesn't break existing functionality, you can use the following rspecs to validate answers to some predefined questions:
-
-```ruby
-export OPENAI_API_KEY='<key>'
-export ANTHROPIC_API_KEY='<key>'
-REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_spec.rb
-```
-
-When you need to update the test questions that require documentation embeddings,
-make sure a new fixture is generated and committed together with the change.
-
 #### Populating embeddings and using embeddings fixture
 
 To seed your development database with the embeddings for GitLab Documentation,
@@ -285,6 +164,10 @@ context 'when asking about how to use GitLab', :ai_embedding_fixtures do
 end
 ```
 
+### Working with GitLab Duo Chat
+
+View [guidelines](duo_chat.md) for working with GitLab Duo Chat.
+
 ## Experimental REST API
 
 Use the [experimental REST API endpoints](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/ai/experimentation) to quickly experiment and prototype AI features.
@@ -299,7 +182,7 @@ The endpoints are:
 
 These endpoints are only for prototyping, not for rolling features out to customers.
 The experimental endpoint is only available to GitLab team members on production. Use the
-[GitLab API token](../user/profile/personal_access_tokens.md) to authenticate.
+[GitLab API token](../../user/profile/personal_access_tokens.md) to authenticate.
 
 ## Abstraction layer
 
@@ -470,7 +353,7 @@ end
 
 ### Authorization
 
-We recommend to use [policies](policies.md) to deal with authorization for a feature. Currently we need to make sure to cover the following checks:
+We recommend to use [policies](../policies.md) to deal with authorization for a feature. Currently we need to make sure to cover the following checks:
 
 1. General AI feature flag is enabled
 1. Feature specific feature flag is enabled
@@ -656,4 +539,4 @@ TODO
 
 ## Security
 
-Refer to the [secure coding guidelines for Artificial Intelligence (AI) features](secure_coding_guidelines.md#artificial-intelligence-ai-features).
+Refer to the [secure coding guidelines for Artificial Intelligence (AI) features](../secure_coding_guidelines.md#artificial-intelligence-ai-features).

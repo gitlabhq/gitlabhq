@@ -11,7 +11,7 @@ GitLab has created a common set of tools to support our product groups and their
 1. Increase the velocity of feature teams by providing a set of high quality, ready to use tools
 1. Ability to switch underlying technologies quickly and easily
 
-AI is moving very quickly, and we need to be able to keep pace with changes in the area. We have built an [abstraction layer](../../ee/development/ai_features.md) to do this, allowing us to take a more "pluggable" approach to the underlying models, data stores, and other technologies.
+AI is moving very quickly, and we need to be able to keep pace with changes in the area. We have built an [abstraction layer](../../ee/development/ai_features/index.md) to do this, allowing us to take a more "pluggable" approach to the underlying models, data stores, and other technologies.
 
 The following diagram from the [architecture blueprint](../architecture/blueprints/ai_gateway/index.md) shows a simplified view of how the different components in GitLab interact. The abstraction layer helps avoid code duplication within the REST APIs within the `AI API` block.
 

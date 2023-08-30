@@ -46,6 +46,7 @@ class Ability
         issues.select { |issue| issue.visible_to_user?(user) }
       end
     end
+    alias_method :work_items_readable_by_user, :issues_readable_by_user
 
     # Returns an Array of MergeRequests that can be read by the given user.
     #
