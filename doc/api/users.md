@@ -326,6 +326,10 @@ Get a single user.
 
 ### For user
 
+Prerequisites:
+
+- You must be signed in to use this endpoint.
+
 ```plaintext
 GET /users/:id
 ```

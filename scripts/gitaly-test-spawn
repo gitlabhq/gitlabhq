@@ -10,6 +10,8 @@ class GitalyTestSpawn
   include GitalySetup
 
   def run
+    ensure_gitlab_shell_secret!
+
     # Run Praefect migrations
     setup_praefect
 

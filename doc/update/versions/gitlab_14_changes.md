@@ -34,6 +34,17 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
   A workaround exists to [complete the data change and the upgrade manually](../package/index.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
 
+### Linux package installations
+
+- In GitLab 14.10, Gitaly has introduced a new runtime directory. This directory is intended to hold all files and
+  directories Gitaly needs to create at runtime to operate correctly. This includes, for example, internal sockets, the
+  Git execution environment, or the temporary hooks directory.
+
+  This new configuration can be set via `gitaly['runtime_dir']`. It replaces the old `gitaly['internal_socket_dir']`
+  configuration. If the internal socket directory is not explicitly configured, sockets will be created in the runtime directory.
+
+  Support for `gitaly['internal_socket_dir']` will be removed in 15.0.
+
 ## 14.9.0
 
 - Database changes made by the upgrade to GitLab 14.9 can take hours or days to complete on larger GitLab instances.
@@ -144,6 +155,13 @@ that may remain stuck permanently in a **pending** state.
   This issue is fixed in GitLab 14.10 and later when using the [Gitaly runtime directory](https://docs.gitlab.com/omnibus/update/gitlab_14_changes.html#gitaly-runtime-directory)
   to specify a location to store persistent files.
 
+### Linux package installations
+
+- In GitLab 14.8, we are upgrading Redis from 6.0.16 to 6.2.6. This upgrade is expected to be fully backwards compatible.
+
+  If your instance has Redis HA with Sentinel, follow the upgrade steps documented in
+  [Redis HA (using Sentinel)](../zero_downtime.md#redis-ha-using-sentinel).
+
 ## 14.6.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](../index.md#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
@@ -249,6 +267,16 @@ that may remain stuck permanently in a **pending** state when the instance lacks
     puts Gitlab::Database::BackgroundMigrationJob.mark_all_as_succeeded("PopulateTopicsTotalProjectsCountCache", job.arguments)
   end
   ```
+
+### Linux package installations
+
+- In GitLab 14.4, the provided Grafana version is 7.5, this is a downgrade from the Grafana 8.1 version introduced in
+  GitLab 14.3. This was reverted to an Apache-licensed Grafana release to allow time to consider the implications of the
+  newer AGPL-licensed releases.
+
+  Users that have customized their Grafana install with plugins or library panels may experience errors in Grafana after
+  the downgrade. If the errors persist after a Grafana restart you may need to reset the Grafana db and re-add the
+  customizations. The Grafana database can be reset with `sudo gitlab-ctl reset-grafana`.
 
 ## 14.3.0
 
@@ -502,6 +530,54 @@ Other issues:
      ```sql
      update users set password_expires_at = null where username='<USERNAME>';
      ```
+
+### Linux package installations
+
+- In GitLab 13.0, `sidekiq-cluster` was enabled by default and the `sidekiq` service ran `sidekiq-cluster` under the hood.
+  However, users could control this behavior using `sidekiq['cluster']` setting to run Sidekiq directly instead. Users
+  could also run `sidekiq-cluster` separately using the various `sidekiq_cluster[*]` settings available in `gitlab.rb`.
+  However these features were deprecated and are now being removed.
+
+  Starting with GitLab 14.0, `sidekiq-cluster` becomes the only way to run Sidekiq in Linux package installations. As
+  part of this process, support for the following settings in `gitlab.rb` is being removed:
+
+  - `sidekiq['cluster']` setting. Sidekiq can only be run using `sidekiq-cluster` now.
+  - `sidekiq_cluster[*]` settings. They should be set via respective `sidekiq[*]` counterparts.
+  - `sidekiq['concurrency']` setting. The limits should be controlled using the two settings `sidekiq['min_concurrency']`
+    and `sidekiq['max_concurrency']`.
+
+- In GitLab 13.0, Puma became the default web server for GitLab, but users were still able to continue using Unicorn if
+  needed. Starting with GitLab 14.0, Unicorn is no longer supported as a webserver for GitLab and is no longer shipped
+  with the Linux package.
+
+  Users must migrate to Puma following [the documentation](../../administration/operations/puma.md) to upgrade to GitLab
+  14.0.
+- The Consul version has been updated from 1.6.10 to 1.9.6 for Geo and multi-node PostgreSQL installs. Its important
+  that Consul nodes be upgraded and restarted one at a time.
+
+  For more information, see [Upgrade the Consul nodes](../../administration/consul.md#upgrade-the-consul-nodes).
+- Starting with GitLab 14.0, GitLab automatically generates a password for initial administrator user (`root`) and stores
+  this value to `/etc/gitlab/initial_root_password`.
+
+  For more information, see
+  [Set up the initial password](https://docs.gitlab.com/omnibus/installation/index.html#set-up-the-initial-password).
+- The binaries for PostgreSQL 11 and repmgr have been removed. Prior to upgrading, administrators of Linux package
+  installations must:
+  1. Ensure the installation is using [PostgreSQL 12](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
+  1. If using repmgr, [convert to using patroni](../../administration/postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni).
+- Two configuration options for Redis were deprecated in GitLab 13 and removed in GitLab 14:
+
+  - `redis_slave_role` is replaced with `redis_replica_role`.
+  - `redis['client_output_buffer_limit_slave']` is replaced with `redis['client_output_buffer_limit_replica']`.
+
+  Redis Cache nodes being upgraded from GitLab 13.12 to 14.0 that still refer to `redis_slave_role` in `gitlab.rb` will
+  encounter an error in the output of `gitlab-ctl reconfigure`:
+
+  ```plaintext
+  There was an error running gitlab-ctl reconfigure:
+
+  The following invalid roles have been set in 'roles': redis_slave_role
+  ```
 
 ### Upgrading to later 14.Y releases
 

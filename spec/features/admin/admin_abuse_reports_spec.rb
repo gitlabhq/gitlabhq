@@ -27,7 +27,7 @@ RSpec.describe "Admin::AbuseReports", :js, feature_category: :insider_threat do
 
       expect_report_shown(open_report, open_report2)
 
-      within '[data-testid="abuse-reports-filtered-search-bar"]' do
+      within_testid('abuse-reports-filtered-search-bar') do
         expect(page).to have_content 'Status = Open'
       end
     end

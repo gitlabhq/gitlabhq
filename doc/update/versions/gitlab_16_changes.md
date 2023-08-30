@@ -12,10 +12,17 @@ Ensure you review these instructions for:
 - Your installation type.
 - All versions between your current version and your target version.
 
-Some GitLab installations must upgrade to GitLab 16.0 before upgrading to any other version. For more information, see
-[Long-running user type data change](#long-running-user-type-data-change).
-
 For more information about upgrading GitLab Helm Chart, see [the release notes for 7.0](https://docs.gitlab.com/charts/releases/7_0.html).
+
+## Issues to be aware of when upgrading from 15.11
+
+- Some GitLab installations must upgrade to GitLab 16.0 before upgrading to any other version. For more information, see
+  [Long-running user type data change](#long-running-user-type-data-change).
+- Other installations can skip 16.0, 16.1, and 16.2 as the first required stop on the upgrade path is 16.3. Review the notes for those intermediate
+  versions.
+- If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is incorrect.
+  Recommended: perform the workaround before upgrading to 16.x.
+  See [the details and workaround](#undefined-column-error-upgrading-to-162-or-later).
 
 ## 16.3.0
 
@@ -67,6 +74,15 @@ Specific information applies to Linux package installations:
   - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
   - If you deployed an affected version, after upgrading to a fixed GitLab version, follow [these instructions](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data)
     to resync the affected job artifacts.
+- If your GitLab database was created by or upgraded via versions 15.11.0 - 15.11.2 inclusive, upgrading to GitLab 16.2 fails with:
+
+  ```plaintext
+  PG::UndefinedColumn: ERROR:  column "id_convert_to_bigint" of relation "ci_build_needs" does not exist
+  LINE 1: ...db_config_name:main*/ UPDATE "ci_build_needs" SET "id_conver...
+  ```
+
+  See [the details and workaround](#undefined-column-error-upgrading-to-162-or-later).
+
 - You might encounter the following error while upgrading to GitLab 16.2 or later:
 
   ```plaintext
@@ -219,3 +235,127 @@ an unusable state, generating `500` errors. The errors are caused by Sidekiq and
 application code that is incompatible with the database schema.
 
 At the end of the workaround process, Sidekiq and Puma are restarted to resolve that issue.
+
+## Undefined column error upgrading to 16.2 or later
+
+A bug in GitLab 15.11 incorrectly disabled a database change on self-managed instances.
+For more information, see [issue 408835](https://gitlab.com/gitlab-org/gitlab/-/issues/408835).
+
+If your GitLab instance upgraded first to 15.11.0, 15.11.1, or 15.11.2 the database schema is
+incorrect and upgrading to GitLab 16.2 or later fails with an error. A database change
+requires the earlier modification to be in place:
+
+```plaintext
+PG::UndefinedColumn: ERROR:  column "id_convert_to_bigint" of relation "ci_build_needs" does not exist
+LINE 1: ...db_config_name:main*/ UPDATE "ci_build_needs" SET "id_conver...
+```
+
+GitLab 15.11.3 shipped a fix for this bug, but it doesn't correct the problem on
+instances already running the earlier 15.11 releases.
+
+If you're not sure if an instance is affected, check for the column on the
+[database console](../../administration/troubleshooting/postgresql.md#start-a-database-console):
+
+```sql
+select pg_typeof (id_convert_to_bigint) from public.ci_build_needs limit 1;
+```
+
+If you need the workaround, this query fails:
+
+```plaintext
+ERROR:  column "id_convert_to_bigintd" does not exist
+LINE 1: select pg_typeof (id_convert_to_bigintd) from public.ci_buil...
+```
+
+Unaffected instances return:
+
+```plaintext
+ pg_typeof
+-----------
+ bigint
+```
+
+The workaround for this issue differs if your GitLab instance's database schema
+was recently created:
+
+| Installation version | Workaround |
+| -------------------- | ---------- |
+| 15.9 or earlier      | [15.9](#workaround-instance-created-with-159-or-earlier) |
+| 15.10                | [15.10](#workaround-instance-created-with-1510) |
+| 15.11                | [15.11](#workaround-instance-created-with-1511) |
+
+Most instances should use the 15.9 procedure. Only very new instances require the
+the 15.10 or 15.11 procedures. If you've migrated GitLab using backup and restore,
+the database schema comes from the original instance. Select the workaround based
+on the source instance.
+
+The commands in the following sections are for Linux package installations, and
+differ for other installation types:
+
+::Tabs
+
+:::TabTitle Docker
+
+- Omit `sudo`
+- Shell into the GitLab container and run the same commands:
+
+  ```shell
+  docker exec -it <container-id> bash
+  ```
+
+:::TabTitle Self-compiled (source)
+
+- Use `sudo -u git -H bundle exec rake` instead of `sudo gitlab-rake`
+- Run the SQL on [your PostgreSQL database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
+
+:::TabTitle Helm chart (Kubernetes)
+
+- Omit `sudo`.
+- Shell into the `toolbox` pod to run the Rake commands: `gitlab-rake` is in `/usr/local/bin` if not in the `PATH`.
+  - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
+- Run the SQL on [your PostgreSQL database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
+
+::EndTabs
+
+### Workaround: instance created with 15.9 or earlier
+
+```shell
+# Restore schema
+sudo gitlab-psql -c "DELETE FROM schema_migrations WHERE version IN ('20230130175512', '20230130104819');"
+sudo gitlab-rake db:migrate:up VERSION=20230130175512
+sudo gitlab-rake db:migrate:up VERSION=20230130104819
+
+# Re-schedule background migrations
+sudo gitlab-rake db:migrate:down VERSION=20230130202201
+sudo gitlab-rake db:migrate:down VERSION=20230130110855
+sudo gitlab-rake db:migrate:up VERSION=20230130202201
+sudo gitlab-rake db:migrate:up VERSION=20230130110855
+```
+
+### Workaround: instance created with 15.10
+
+```shell
+# Restore schema for sent_notifications
+sudo gitlab-psql -c "DELETE FROM schema_migrations WHERE version = '20230130175512';"
+sudo gitlab-rake db:migrate:up VERSION=20230130175512
+
+# Re-schedule background migration for sent_notifications
+sudo gitlab-rake db:migrate:down VERSION=20230130202201
+sudo gitlab-rake db:migrate:up VERSION=20230130202201
+
+# Restore schema for ci_build_needs
+sudo gitlab-rake db:migrate:down VERSION=20230321163547
+sudo gitlab-psql -c "INSERT INTO schema_migrations (version) VALUES ('20230321163547');"
+```
+
+### Workaround: instance created with 15.11
+
+```shell
+# Restore schema for sent_notifications
+sudo gitlab-rake db:migrate:down VERSION=20230411153310
+sudo gitlab-psql -c "INSERT INTO schema_migrations (version) VALUES ('20230411153310');"
+
+# Restore schema for ci_build_needs
+sudo gitlab-rake db:migrate:down VERSION=20230321163547
+sudo gitlab-psql -c "INSERT INTO schema_migrations (version) VALUES ('20230321163547');"
+```

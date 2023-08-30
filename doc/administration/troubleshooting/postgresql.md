@@ -18,13 +18,69 @@ If you're on a [paid tier](https://about.gitlab.com/pricing/) and aren't sure
 how to use these commands, [contact Support](https://about.gitlab.com/support/)
 for assistance with any issues you're having.
 
+## Start a database console
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Recommended for:
+
+- Single-node instances.
+- Scaled out or hybrid environments, on the Patroni nodes, usually the leader.
+- Scaled out or hybrid environments, on the server running the PostgreSQL service.
+
+```shell
+sudo gitlab-psql
+```
+
+On a single-node instance, or a web or Sidekiq node you can also use the Rails database console, but
+it takes longer to initialize:
+
+- In [GitLab 14.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/341210):
+
+  ```shell
+  sudo gitlab-rails db-console --database main
+  ```
+
+- In GitLab 14.1 and earlier:
+
+  ```shell
+  sudo gitlab-rails db-console
+  ```
+
+:::TabTitle Docker
+
+```shell
+docker exec -it <container-id> gitlab-psql
+```
+
+:::TabTitle Self-compiled (source)
+
+Use the `psql` command that's part of [your PostgreSQL installation](../../install/installation.md#7-database).
+
+```shell
+sudo -u git -H psql -d gitlabhq_production
+```
+
+:::TabTitle Helm chart (Kubernetes)
+
+- If you run a hybrid environment, and PostgreSQL runs on a Linux packaged installation (Omnibus),
+  the recommended approach is to use the database console locally on those servers. Refer to the details
+  for Linux package.
+- Use the console that's part of your external third-party PostgreSQL service.
+- Run `gitlab-rails db-console` in the toolbox pod.
+  - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
+
+::EndTabs
+
+To exit the console, type: `quit`.
+
 ## Other GitLab PostgreSQL documentation
 
 This section is for links to information elsewhere in the GitLab documentation.
 
 ### Procedures
-
-- [Connect to the PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database).
 
 - [Database procedures for Linux package installations](https://docs.gitlab.com/omnibus/settings/database.html) including:
   - SSL: enabling, disabling, and verifying.

@@ -2,13 +2,15 @@
 
 return if helper.stable_branch?
 
-data_testids = /testid|data-testid|find_by_testid|within_testid/
+data_testids = /testid/
 
 deprecated_qa_selectors = /(?=qa_selector|data-qa-selector)|(?!.*\bdata-qa-)(?=class=.*qa-.*|class: .*qa-.*)/
 
 def filter_changed_lines(files, pattern)
   lines = []
   files.each do |file|
+    next if file.start_with?('spec/', 'ee/spec/', 'qa/')
+
     testid_changed_lines = helper.changed_lines(file).select { |line| line =~ pattern }
     next unless testid_changed_lines.any?
 
