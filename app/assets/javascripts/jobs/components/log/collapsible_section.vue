@@ -27,10 +27,23 @@ export default {
     badgeDuration() {
       return this.section.line && this.section.line.section_duration;
     },
+    highlightedLines() {
+      return this.searchResults.map((result) => result.lineNumber);
+    },
+    headerIsHighlighted() {
+      const {
+        line: { lineNumber },
+      } = this.section;
+
+      return this.highlightedLines.includes(lineNumber);
+    },
   },
   methods: {
     handleOnClickCollapsibleLine(section) {
       this.$emit('onClickCollapsibleLine', section);
+    },
+    lineIsHighlighted({ lineNumber }) {
+      return this.highlightedLines.includes(lineNumber);
     },
   },
 };
@@ -42,6 +55,7 @@ export default {
       :duration="badgeDuration"
       :path="jobLogEndpoint"
       :is-closed="section.isClosed"
+      :is-highlighted="headerIsHighlighted"
       @toggleLine="handleOnClickCollapsibleLine(section)"
     />
     <template v-if="!section.isClosed">
@@ -50,7 +64,7 @@ export default {
         :key="line.offset"
         :line="line"
         :path="jobLogEndpoint"
-        :search-results="searchResults"
+        :is-highlighted="lineIsHighlighted(line)"
       />
     </template>
   </div>

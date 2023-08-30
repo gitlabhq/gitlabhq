@@ -5,6 +5,7 @@ import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __, s__, sprintf } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { compactJobLog } from '../../utils';
 
 export default {
   i18n: {
@@ -130,17 +131,7 @@ export default {
 
       if (!this.searchTerm) return;
 
-      const compactedLog = [];
-
-      this.jobLog.forEach((obj) => {
-        if (obj.lines && obj.lines.length > 0) {
-          compactedLog.push(...obj.lines);
-        }
-
-        if (!obj.lines && obj.content.length > 0) {
-          compactedLog.push(obj);
-        }
-      });
+      const compactedLog = compactJobLog(this.jobLog);
 
       compactedLog.forEach((line) => {
         const lineText = line.content[0].text;
@@ -155,7 +146,7 @@ export default {
 
         // BE returns zero based index, we need to add one to match the line numbers in the DOM
         const firstSearchResult = `#L${this.searchResults[0].lineNumber + 1}`;
-        const logLine = document.querySelector(`.js-line ${firstSearchResult}`);
+        const logLine = document.querySelector(`.log-line ${firstSearchResult}`);
 
         if (logLine) {
           setTimeout(() => scrollToElement(logLine));

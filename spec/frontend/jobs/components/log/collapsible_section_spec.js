@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import CollapsibleSection from '~/jobs/components/log/collapsible_section.vue';
+import LogLineHeader from '~/jobs/components/log/line_header.vue';
 import { collapsibleSectionClosed, collapsibleSectionOpened } from './mock_data';
 
 describe('Job Log Collapsible Section', () => {
@@ -10,6 +11,7 @@ describe('Job Log Collapsible Section', () => {
 
   const findCollapsibleLine = () => wrapper.find('.collapsible-line');
   const findCollapsibleLineSvg = () => wrapper.find('.collapsible-line svg');
+  const findLogLineHeader = () => wrapper.findComponent(LogLineHeader);
 
   const createComponent = (props = {}) => {
     wrapper = mount(CollapsibleSection, {
@@ -67,5 +69,27 @@ describe('Job Log Collapsible Section', () => {
 
     await nextTick();
     expect(wrapper.emitted('onClickCollapsibleLine').length).toBe(1);
+  });
+
+  describe('with search results', () => {
+    it('passes isHighlighted prop correctly', () => {
+      const mockSearchResults = [
+        {
+          content: [{ text: 'foo' }],
+          lineNumber: 1,
+          offset: 5,
+          section: 'prepare-script',
+          section_header: true,
+        },
+      ];
+
+      createComponent({
+        section: collapsibleSectionOpened,
+        jobLogEndpoint,
+        searchResults: mockSearchResults,
+      });
+
+      expect(findLogLineHeader().props('isHighlighted')).toBe(true);
+    });
   });
 });

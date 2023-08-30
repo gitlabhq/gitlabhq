@@ -26,6 +26,9 @@ export default {
       'isJobLogComplete',
       'isScrolledToBottomBeforeReceivingJobLog',
     ]),
+    highlightedLines() {
+      return this.searchResults.map((result) => result.lineNumber);
+    },
   },
   updated() {
     this.$nextTick(() => {
@@ -68,6 +71,9 @@ export default {
         }, 0);
       }
     },
+    isHighlighted({ lineNumber }) {
+      return this.highlightedLines.includes(lineNumber);
+    },
   },
 };
 </script>
@@ -87,7 +93,7 @@ export default {
         :key="section.offset"
         :line="section"
         :path="jobLogEndpoint"
-        :search-results="searchResults"
+        :is-highlighted="isHighlighted(section)"
       />
     </template>
 

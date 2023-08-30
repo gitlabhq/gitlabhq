@@ -23,8 +23,11 @@ describe('Job Log', () => {
 
   Vue.use(Vuex);
 
-  const createComponent = () => {
+  const createComponent = (props) => {
     wrapper = mount(Log, {
+      propsData: {
+        ...props,
+      },
       store,
     });
   };
@@ -47,6 +50,7 @@ describe('Job Log', () => {
   });
 
   const findCollapsibleLine = () => wrapper.findComponent(LogLineHeader);
+  const findAllCollapsibleLines = () => wrapper.findAllComponents(LogLineHeader);
 
   describe('line numbers', () => {
     beforeEach(() => {
@@ -129,6 +133,29 @@ describe('Job Log', () => {
         createComponent();
 
         expect(wrapper.find('#L6').exists()).toBe(true);
+      });
+    });
+
+    describe('with search results', () => {
+      it('passes isHighlighted prop correctly', () => {
+        const mockSearchResults = [
+          {
+            offset: 1002,
+            content: [
+              {
+                text: 'Using Docker executor with image dev.gitlab.org3',
+              },
+            ],
+            section: 'prepare-executor',
+            section_header: true,
+            lineNumber: 2,
+          },
+        ];
+
+        createComponent({ searchResults: mockSearchResults });
+
+        expect(findAllCollapsibleLines().at(0).props('isHighlighted')).toBe(true);
+        expect(findAllCollapsibleLines().at(1).props('isHighlighted')).toBe(false);
       });
     });
   });

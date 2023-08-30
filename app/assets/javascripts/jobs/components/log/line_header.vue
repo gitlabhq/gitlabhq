@@ -28,17 +28,29 @@ export default {
       required: false,
       default: '',
     },
+    isHighlighted: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      applyHashHighlight: false,
+    };
   },
   computed: {
     iconName() {
       return this.isClosed ? 'chevron-lg-right' : 'chevron-lg-down';
     },
-    applyHighlight() {
-      const hash = getLocationHash();
-      const lineToMatch = `L${this.line.lineNumber + 1}`;
+  },
+  mounted() {
+    const hash = getLocationHash();
+    const lineToMatch = `L${this.line.lineNumber + 1}`;
 
-      return hash === lineToMatch;
-    },
+    if (hash === lineToMatch) {
+      this.applyHashHighlight = true;
+    }
   },
   methods: {
     handleOnClick() {
@@ -51,7 +63,7 @@ export default {
 <template>
   <div
     class="log-line collapsible-line d-flex justify-content-between ws-normal gl-align-items-flex-start"
-    :class="{ 'gl-bg-gray-700': applyHighlight }"
+    :class="{ 'gl-bg-gray-700': isHighlighted || applyHashHighlight }"
     role="button"
     @click="handleOnClick"
   >

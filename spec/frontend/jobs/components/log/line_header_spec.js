@@ -8,7 +8,7 @@ import LineNumber from '~/jobs/components/log/line_number.vue';
 describe('Job Log Header Line', () => {
   let wrapper;
 
-  const data = {
+  const defaultProps = {
     line: {
       content: [
         {
@@ -22,7 +22,7 @@ describe('Job Log Header Line', () => {
     path: '/jashkenas/underscore/-/jobs/335',
   };
 
-  const createComponent = (props = {}) => {
+  const createComponent = (props = defaultProps) => {
     wrapper = mount(LineHeader, {
       propsData: {
         ...props,
@@ -32,7 +32,7 @@ describe('Job Log Header Line', () => {
 
   describe('line', () => {
     beforeEach(() => {
-      createComponent(data);
+      createComponent();
     });
 
     it('renders the line number component', () => {
@@ -40,17 +40,17 @@ describe('Job Log Header Line', () => {
     });
 
     it('renders a span the provided text', () => {
-      expect(wrapper.find('span').text()).toBe(data.line.content[0].text);
+      expect(wrapper.find('span').text()).toBe(defaultProps.line.content[0].text);
     });
 
     it('renders the provided style as a class attribute', () => {
-      expect(wrapper.find('span').classes()).toContain(data.line.content[0].style);
+      expect(wrapper.find('span').classes()).toContain(defaultProps.line.content[0].style);
     });
   });
 
   describe('when isCloses is true', () => {
     beforeEach(() => {
-      createComponent({ ...data, isClosed: true });
+      createComponent({ ...defaultProps, isClosed: true });
     });
 
     it('sets icon name to be chevron-lg-right', () => {
@@ -60,7 +60,7 @@ describe('Job Log Header Line', () => {
 
   describe('when isCloses is false', () => {
     beforeEach(() => {
-      createComponent({ ...data, isClosed: false });
+      createComponent({ ...defaultProps, isClosed: false });
     });
 
     it('sets icon name to be chevron-lg-down', () => {
@@ -70,7 +70,7 @@ describe('Job Log Header Line', () => {
 
   describe('on click', () => {
     beforeEach(() => {
-      createComponent(data);
+      createComponent();
     });
 
     it('emits toggleLine event', async () => {
@@ -83,7 +83,7 @@ describe('Job Log Header Line', () => {
 
   describe('with duration', () => {
     beforeEach(() => {
-      createComponent({ ...data, duration: '00:10' });
+      createComponent({ ...defaultProps, duration: '00:10' });
     });
 
     it('renders the duration badge', () => {
@@ -96,7 +96,7 @@ describe('Job Log Header Line', () => {
       beforeEach(() => {
         setWindowLocation(`http://foo.com/root/ci-project/-/jobs/6353#L77`);
 
-        createComponent(data);
+        createComponent();
       });
 
       it('highlights line', () => {
@@ -108,10 +108,24 @@ describe('Job Log Header Line', () => {
       beforeEach(() => {
         setWindowLocation(`http://foo.com/root/ci-project/-/jobs/6353`);
 
-        createComponent(data);
+        createComponent();
       });
 
       it('does not highlight line', () => {
+        expect(wrapper.classes()).not.toContain('gl-bg-gray-700');
+      });
+    });
+
+    describe('search results', () => {
+      it('highlights the job log lines', () => {
+        createComponent({ ...defaultProps, isHighlighted: true });
+
+        expect(wrapper.classes()).toContain('gl-bg-gray-700');
+      });
+
+      it('does not highlight the job log lines', () => {
+        createComponent();
+
         expect(wrapper.classes()).not.toContain('gl-bg-gray-700');
       });
     });

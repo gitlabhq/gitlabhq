@@ -24,6 +24,12 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   Recommended: perform the workaround before upgrading to 16.x.
   See [the details and workaround](#undefined-column-error-upgrading-to-162-or-later).
 
+## 16.4.0
+
+- Updating a group path [received a bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/419289) that uses a database index introduced in 16.3.
+
+  If you upgrade to 16.4 from a version lower than 16.3, you must execute `ANALYZE packages_packages;` in the database before you use it.
+
 ## 16.3.0
 
 - For Go applications, [`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)

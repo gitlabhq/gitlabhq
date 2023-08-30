@@ -182,16 +182,6 @@ describe('Job Log Line', () => {
   });
 
   describe('job log search', () => {
-    const mockSearchResults = [
-      {
-        offset: 1533,
-        content: [{ text: '$ echo "82.71"', style: 'term-fg-l-green term-bold' }],
-        section: 'step-script',
-        lineNumber: 20,
-      },
-      { offset: 1560, content: [{ text: '82.71' }], section: 'step-script', lineNumber: 21 },
-    ];
-
     it('applies highlight class to search result elements', () => {
       createComponent({
         line: {
@@ -201,7 +191,7 @@ describe('Job Log Line', () => {
           lineNumber: 21,
         },
         path: '/root/ci-project/-/jobs/1089',
-        searchResults: mockSearchResults,
+        isHighlighted: true,
       });
 
       expect(wrapper.classes()).toContain('gl-bg-gray-700');
@@ -216,7 +206,6 @@ describe('Job Log Line', () => {
           lineNumber: 29,
         },
         path: '/root/ci-project/-/jobs/1089',
-        searchResults: mockSearchResults,
       });
 
       expect(wrapper.classes()).not.toContain('gl-bg-gray-700');

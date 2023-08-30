@@ -45,6 +45,10 @@ module Gitlab
             [purl.namespace, purl.name].compact.join('/')
           end
 
+          def key
+            [name, version, purl&.type]
+          end
+
           private
 
           def supported_component_type?

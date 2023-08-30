@@ -5,7 +5,6 @@ import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
-import { badgeState } from '~/issuable/components/status_box.vue';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import {
@@ -14,6 +13,7 @@ import {
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
+import { badgeState } from '~/merge_requests/components/merge_request_status_badge.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';

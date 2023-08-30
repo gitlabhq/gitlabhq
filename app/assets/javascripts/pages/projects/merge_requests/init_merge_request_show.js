@@ -4,7 +4,7 @@ import { s__ } from '~/locale';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
 import { initPipelineCountListener } from '~/commit/pipelines/utils';
 import { initIssuableSidebar } from '~/issuable';
-import StatusBox from '~/issuable/components/status_box.vue';
+import MergeRequestStatusBadge from '~/merge_requests/components/merge_request_status_badge.vue';
 import createDefaultClient from '~/lib/graphql';
 import initSourcegraph from '~/sourcegraph';
 import ZenMode from '~/zen_mode';
@@ -24,24 +24,24 @@ export default function initMergeRequestShow() {
   initMrExperienceSurvey();
 
   const el = document.querySelector('.js-mr-status-box');
-  const { iid, issuableType, projectPath } = el.dataset;
-  const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
-  });
+  const { iid, issuableType, projectPath, state } = el.dataset;
+
   // eslint-disable-next-line no-new
   new Vue({
     el,
     name: 'IssuableStatusBoxRoot',
-    apolloProvider,
+    apolloProvider: new VueApollo({
+      defaultClient: createDefaultClient(),
+    }),
     provide: {
       query: getStateQuery,
       iid,
       projectPath,
     },
-    render(h) {
-      return h(StatusBox, {
+    render(createElement) {
+      return createElement(MergeRequestStatusBadge, {
         props: {
-          initialState: el.dataset.state,
+          initialState: state,
           issuableType,
         },
       });

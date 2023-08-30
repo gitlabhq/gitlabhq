@@ -17588,6 +17588,23 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouptimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
 | <a id="grouptimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
+##### `Group.valueStreamDashboardUsageOverview`
+
+Aggregated usage counts within the group.
+
+WARNING:
+**Introduced** in 16.4.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`ValueStreamDashboardCount`](#valuestreamdashboardcount).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupvaluestreamdashboardusageoverviewidentifier"></a>`identifier` | [`ValueStreamDashboardMetric!`](#valuestreamdashboardmetric) | Type of counts to retrieve. |
+| <a id="groupvaluestreamdashboardusageoverviewtimeframe"></a>`timeframe` | [`Timeframe!`](#timeframe) | Counts recorded during this time frame, usually from beginning of the month until the end of the month (the system runs monthly aggregations). |
+
 ##### `Group.vulnerabilities`
 
 Vulnerabilities reported on the projects in the group and its subgroups.
@@ -24766,6 +24783,18 @@ fields relate to interactions between the two entities.
 | <a id="valuestreamanalyticsmetricunit"></a>`unit` | [`String`](#string) | Unit of measurement. |
 | <a id="valuestreamanalyticsmetricvalue"></a>`value` | [`Float`](#float) | Value for the metric. |
 
+### `ValueStreamDashboardCount`
+
+Represents a recorded measurement (object count) for the requested group.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="valuestreamdashboardcountcount"></a>`count` | [`Int`](#int) | Object count. |
+| <a id="valuestreamdashboardcountidentifier"></a>`identifier` | [`ValueStreamDashboardMetric!`](#valuestreamdashboardmetric) | Type of object being measured. |
+| <a id="valuestreamdashboardcountrecordedat"></a>`recordedAt` | [`Time`](#time) | Time the measurement was taken. |
+
 ### `ValueStreamMetricLinkType`
 
 #### Fields
@@ -28113,6 +28142,18 @@ Possible states of a user.
 | <a id="userstateactive"></a>`active` | User is active and is able to use the system. |
 | <a id="userstateblocked"></a>`blocked` | User has been blocked and is prevented from using the system. |
 | <a id="userstatedeactivated"></a>`deactivated` | User is no longer active and is unable to use the system. |
+
+### `ValueStreamDashboardMetric`
+
+Possible identifier types for a measurement.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="valuestreamdashboardmetricgroups"></a>`GROUPS` | Group count. |
+| <a id="valuestreamdashboardmetricissues"></a>`ISSUES` | Issue count. |
+| <a id="valuestreamdashboardmetricmerge_requests"></a>`MERGE_REQUESTS` | Merge request count. |
+| <a id="valuestreamdashboardmetricpipelines"></a>`PIPELINES` | Pipeline count. |
+| <a id="valuestreamdashboardmetricprojects"></a>`PROJECTS` | Project count. |
 
 ### `VerificationStateEnum`
 

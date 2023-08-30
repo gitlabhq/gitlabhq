@@ -249,6 +249,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Geo::RepositoryVerification::Secondary::SingleWorker' => false,
         'Geo::ReverificationBatchWorker' => 0,
         'Geo::BulkMarkPendingBatchWorker' => 0,
+        'Geo::BulkMarkVerificationPendingBatchWorker' => 0,
         'Geo::Scheduler::Primary::SchedulerWorker' => false,
         'Geo::Scheduler::SchedulerWorker' => false,
         'Geo::Scheduler::Secondary::SchedulerWorker' => false,

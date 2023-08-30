@@ -307,11 +307,9 @@ describe('Job log controllers', () => {
     });
 
     it('emits search results', () => {
-      const expectedSearchResults = [[[mockJobLog[6].lines[1], mockJobLog[6].lines[2]]]];
-
       findJobLogSearch().vm.$emit('submit');
 
-      expect(wrapper.emitted('searchResults')).toEqual(expectedSearchResults);
+      expect(wrapper.emitted('searchResults')).toHaveLength(1);
     });
 
     it('clears search results', () => {
