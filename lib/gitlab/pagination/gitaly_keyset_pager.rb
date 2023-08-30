@@ -15,7 +15,7 @@ module Gitlab
       # It is expected that the given finder will respond to `execute` method with `gitaly_pagination:` option
       # and supports pagination via gitaly.
       def paginate(finder)
-        return finder.execute(gitaly_pagination: false) if no_pagination?
+        return finder.execute(gitaly_pagination: false) if no_pagination?(finder)
 
         return paginate_via_gitaly(finder) if keyset_pagination_enabled?(finder)
         return paginate_first_page_via_gitaly(finder) if paginate_first_page?(finder)
@@ -28,8 +28,8 @@ module Gitlab
 
       private
 
-      def no_pagination?
-        params[:pagination] == 'none'
+      def no_pagination?(finder)
+        params[:pagination] == 'none' && finder.is_a?(::Repositories::TreeFinder)
       end
 
       def keyset_pagination_enabled?(finder)

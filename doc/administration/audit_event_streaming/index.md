@@ -92,7 +92,7 @@ To add Google Cloud Logging streaming destinations to a top-level group:
 1. Select **Secure > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
-1. Enter the Google Project ID, Google Client Email, Log ID, and Google Private Key to add.
+1. Enter the Google project ID, Google client email, log ID, and Google private key to add.
 1. Select **Add** to add the new streaming destination.
 
 ## List streaming destinations
@@ -200,7 +200,8 @@ To update the streaming destinations for an instance:
 
 ### Google Cloud Logging streaming
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
+> - Button to add private key [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419675) in GitLab 16.3.
 
 Prerequisites:
 
@@ -212,7 +213,8 @@ To update Google Cloud Logging streaming destinations to a top-level group:
 1. Select **Secure > Audit events**.
 1. On the main area, select **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
-1. Enter the Google Project ID, Google Client Email, Log ID, and Google Private Key to update.
+1. Enter the Google project ID, Google client email, and log ID to update.
+1. Select **Add a new private key** and enter a Google private key to update the private key.
 1. Select **Save** to update the streaming destination.
 
 ## Delete streaming destinations

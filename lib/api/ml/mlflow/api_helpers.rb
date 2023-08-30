@@ -4,6 +4,14 @@ module API
   module Ml
     module Mlflow
       module ApiHelpers
+        def check_api_read!
+          not_found! unless can?(current_user, :read_model_experiments, user_project)
+        end
+
+        def check_api_write!
+          unauthorized! unless can?(current_user, :write_model_experiments, user_project)
+        end
+
         def resource_not_found!
           render_structured_api_error!({ error_code: 'RESOURCE_DOES_NOT_EXIST' }, 404)
         end

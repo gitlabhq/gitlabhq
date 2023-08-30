@@ -6575,6 +6575,9 @@ msgstr ""
 msgid "AuditStreams|Active"
 msgstr ""
 
+msgid "AuditStreams|Add a new private key"
+msgstr ""
+
 msgid "AuditStreams|Add an HTTP endpoint to manage audit logs in third-party systems."
 msgstr ""
 
@@ -6687,6 +6690,9 @@ msgid "AuditStreams|This could include sensitive information. Make sure you trus
 msgstr ""
 
 msgid "AuditStreams|This is great for keeping everything one place."
+msgstr ""
+
+msgid "AuditStreams|Use the Google Cloud console to view the private key. To change the private key, replace it with a new private key."
 msgstr ""
 
 msgid "AuditStreams|Value"
