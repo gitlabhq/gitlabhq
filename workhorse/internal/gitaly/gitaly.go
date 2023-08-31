@@ -114,16 +114,6 @@ func NewRepositoryClient(ctx context.Context, server api.GitalyServer) (context.
 	return withOutgoingMetadata(ctx, server), &RepositoryClient{grpcClient}, nil
 }
 
-// NewNamespaceClient is only used by the Gitaly integration tests at present
-func NewNamespaceClient(ctx context.Context, server api.GitalyServer) (context.Context, *NamespaceClient, error) {
-	conn, err := getOrCreateConnection(server)
-	if err != nil {
-		return nil, nil, err
-	}
-	grpcClient := gitalypb.NewNamespaceServiceClient(conn)
-	return withOutgoingMetadata(ctx, server), &NamespaceClient{grpcClient}, nil
-}
-
 func NewDiffClient(ctx context.Context, server api.GitalyServer) (context.Context, *DiffClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {

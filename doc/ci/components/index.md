@@ -2,14 +2,13 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-type: reference
 ---
 
-# CI/CD Components **(EXPERIMENT)**
+# CI/CD Components **(FREE ALL EXPERIMENT)**
 
 > - Introduced as an [experimental feature](../../policy/experiment-beta-support.md) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
-> - [Feature flag `ci_namespace_catalog_experimental` removed.](https://gitlab.com/gitlab-org/gitlab/-/issues/394772) in GitLab 16.3.
+> - [Feature flag `ci_namespace_catalog_experimental` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/394772) in GitLab 16.3.
 
 This feature is an experimental feature and [an epic exists](https://gitlab.com/groups/gitlab-org/-/epics/9897)
 to track future work. Tell us about your use case by leaving comments in the epic.
@@ -392,39 +391,3 @@ which is the standard for communicating bugfixes, minor and major or breaking ch
 We recommend adopting at least the `MAJOR.MINOR` format.
 
 For example: `2.1`, `1.0.0`, `1.0.0-alpha`, `2.1.3`, `3.0.0-rc.1`.
-
-## CI/CD Catalog **(PREMIUM ALL)**
-
-The CI/CD Catalog is a list of [components repositories](#components-repository),
-each containing resources that you can add to your CI/CD pipelines.
-
-### Mark the project as a catalog resource
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) in GitLab 16.1.
-
-After components are added to a components repository, they can immediately be [used](#use-a-component-in-a-cicd-configuration) to build pipelines in other projects.
-
-However, this repository is not discoverable. You must mark this project as a catalog resource to allow it to be visible in the CI Catalog
-so other users can discover it.
-
-To mark a project as a catalog resource:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. Scroll down to **CI/CD Catalog resource** and select the toggle to mark the project as a catalog resource.
-
-NOTE:
-This action is not reversible.
-
-## Convert a CI template to component
-
-Any existing CI template, that you share with other projects via `include:` syntax, can be converted to a CI component.
-
-1. Decide whether you want the component to be part of an existing [components repository](#components-repository),
-   if you want to logically group components together. Create and setup a [components repository](#components-repository) otherwise.
-1. Create a YAML file in the components repository according to the expected [directory structure](#directory-structure).
-1. Copy the content of the template YAML file into the new component YAML file.
-1. Refactor the component YAML to follow the [best practices](#best-practices) for components.
-1. Leverage the `.gitlab-ci.yml` in the components repository to [test changes to the component](#test-a-component).
-1. Tag and [release the component](#release-a-component).

@@ -20,6 +20,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
 	"gitlab.com/gitlab-org/gitaly/v16/streamio"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
@@ -76,27 +78,24 @@ func realGitalyOkBody(t *testing.T, gitalyAddress string) *api.Response {
 }
 
 func ensureGitalyRepository(t *testing.T, apiResponse *api.Response) error {
-	ctx, namespace, err := gitaly.NewNamespaceClient(
-		context.Background(),
-		apiResponse.GitalyServer,
-	)
-
-	if err != nil {
-		return err
-	}
-	ctx, repository, err := gitaly.NewRepositoryClient(ctx, apiResponse.GitalyServer)
+	ctx, repository, err := gitaly.NewRepositoryClient(context.Background(), apiResponse.GitalyServer)
 	if err != nil {
 		return err
 	}
 
 	// Remove the repository if it already exists, for consistency
-	rmNsReq := &gitalypb.RemoveNamespaceRequest{
-		StorageName: apiResponse.Repository.StorageName,
-		Name:        apiResponse.Repository.RelativePath,
-	}
-	_, err = namespace.RemoveNamespace(ctx, rmNsReq)
-	if err != nil {
-		return err
+	if _, err := repository.RepositoryServiceClient.RemoveRepository(ctx, &gitalypb.RemoveRepositoryRequest{
+		Repository: &gitalypb.Repository{
+			StorageName:  apiResponse.Repository.StorageName,
+			RelativePath: apiResponse.Repository.RelativePath,
+		},
+	}); err != nil {
+		status, ok := status.FromError(err)
+		if !ok || !(status.Code() == codes.NotFound && status.Message() == "repository does not exist") {
+			return fmt.Errorf("remove repository: %w", err)
+		}
+
+		// Repository didn't exist.
 	}
 
 	stream, err := repository.CreateRepositoryFromBundle(ctx)
