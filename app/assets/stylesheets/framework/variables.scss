@@ -463,7 +463,7 @@ $browser-scrollbar-size: 10px;
 /*
  * Misc
  */
-$header-height: var(--header-height, 48px);
+$header-height: 48px;
 $content-wrapper-padding: 100px;
 $header-zindex: 1000;
 $zindex-dropdown-menu: 300;
@@ -505,7 +505,7 @@ $pages-group-name-color: #4c4e54;
  * Calculated heights
  */
 $calc-system-headers-height: calc(var(--system-header-height) + var(--performance-bar-height));
-$calc-application-bars-height: calc(#{$header-height} + #{$calc-system-headers-height});
+$calc-application-bars-height: calc(var(--header-height) + #{$calc-system-headers-height});
 $calc-application-header-height: calc(#{$calc-application-bars-height} + var(--top-bar-height));
 $calc-application-footer-height: var(--system-footer-height);
 $calc-application-viewport-height: calc(100vh - #{$calc-application-header-height} - #{$calc-application-footer-height});
@@ -696,14 +696,6 @@ $ci-skipped-color: #888;
 */
 $issue-boards-font-size: 14px;
 $issue-boards-card-shadow: rgba(0, 0, 0, 0.1);
-/*
- The following heights are used in environment_logs.scss and are used for calculation of the log viewer height.
-*/
-$environment-logs-breadcrumbs-height: 63px;
-$environment-logs-breadcrumbs-height-md: $top-bar-height;
-
-$environment-logs-difference-xs-up: calc(#{$header-height} + #{$environment-logs-breadcrumbs-height});
-$environment-logs-difference-md-up: calc(#{$header-height} + #{$environment-logs-breadcrumbs-height-md});
 
 /*
 * Avatar

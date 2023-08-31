@@ -131,7 +131,8 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           k8s_api_proxy_request: 5,
           flux_git_push_notifications_total: 42,
           k8s_api_proxy_requests_via_ci_access: 43,
-          k8s_api_proxy_requests_via_user_access: 44
+          k8s_api_proxy_requests_via_user_access: 44,
+          k8s_api_proxy_requests_via_pat_access: 45
         }
         unique_counters = {
           agent_users_using_ci_tunnel: [10, 999, 777, 10],
@@ -139,6 +140,8 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           k8s_api_proxy_requests_unique_agents_via_ci_access: [10, 999, 777, 10],
           k8s_api_proxy_requests_unique_users_via_user_access: [10, 999, 777, 10],
           k8s_api_proxy_requests_unique_agents_via_user_access: [10, 999, 777, 10],
+          k8s_api_proxy_requests_unique_users_via_pat_access: [10, 999, 777, 10],
+          k8s_api_proxy_requests_unique_agents_via_pat_access: [10, 999, 777, 10],
           flux_git_push_notified_unique_projects: [10, 999, 777, 10]
         }
         expected_counters = {
@@ -146,7 +149,8 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           kubernetes_agent_k8s_api_proxy_request: request_count * counters[:k8s_api_proxy_request],
           kubernetes_agent_flux_git_push_notifications_total: request_count * counters[:flux_git_push_notifications_total],
           kubernetes_agent_k8s_api_proxy_requests_via_ci_access: request_count * counters[:k8s_api_proxy_requests_via_ci_access],
-          kubernetes_agent_k8s_api_proxy_requests_via_user_access: request_count * counters[:k8s_api_proxy_requests_via_user_access]
+          kubernetes_agent_k8s_api_proxy_requests_via_user_access: request_count * counters[:k8s_api_proxy_requests_via_user_access],
+          kubernetes_agent_k8s_api_proxy_requests_via_pat_access: request_count * counters[:k8s_api_proxy_requests_via_pat_access]
         }
 
         request_count.times do

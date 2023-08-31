@@ -15,7 +15,8 @@ RSpec.describe Gitlab::UsageDataCounters::KubernetesAgentCounter do
         'k8s_api_proxy_request' => 2,
         'flux_git_push_notifications_total' => 3,
         'k8s_api_proxy_requests_via_ci_access' => 4,
-        'k8s_api_proxy_requests_via_user_access' => 5
+        'k8s_api_proxy_requests_via_user_access' => 5,
+        'k8s_api_proxy_requests_via_pat_access' => 6
       }
     end
 
@@ -31,7 +32,8 @@ RSpec.describe Gitlab::UsageDataCounters::KubernetesAgentCounter do
         kubernetes_agent_k8s_api_proxy_request: 6,
         kubernetes_agent_flux_git_push_notifications_total: 9,
         kubernetes_agent_k8s_api_proxy_requests_via_ci_access: 12,
-        kubernetes_agent_k8s_api_proxy_requests_via_user_access: 15
+        kubernetes_agent_k8s_api_proxy_requests_via_user_access: 15,
+        kubernetes_agent_k8s_api_proxy_requests_via_pat_access: 18
       )
     end
 

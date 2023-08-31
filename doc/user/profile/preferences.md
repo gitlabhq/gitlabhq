@@ -270,10 +270,13 @@ To use relative times on the GitLab UI:
 
 ## User identities in CI job JSON web tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0. False by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0.
 
-You can select to include the list of your external identities in the JSON Web Token information that is generated for a CI job.
-For more information and examples, see [Token Payload](../../ci/secrets/id_token_authentication.md#token-payload).
+CI/CD jobs generate JSON web tokens, which can include a list of your external identities.
+Instead of making separate API calls to get individual accounts, you can find your user identities in a single authentication token.
+
+External identities are not included by default.
+To enable including external identities, see [Token payload](../../ci/secrets/id_token_authentication.md#token-payload).
 
 ### Control follower engagement
 

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
+import { base64DecodeUnicode } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import { setAttributes } from '~/lib/utils/dom_utils';
 import {
@@ -28,7 +29,7 @@ function disposeDrawioEditor(drawIOEditorState) {
 }
 
 function getSvg(data) {
-  const svgPath = atob(data.substring(data.indexOf(',') + 1));
+  const svgPath = base64DecodeUnicode(data.substring(data.indexOf(',') + 1));
 
   return `<?xml version="1.0" encoding="UTF-8"?>\n\
       <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n\

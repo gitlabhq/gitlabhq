@@ -5,6 +5,7 @@ import {
   DRAWIO_IFRAME_TIMEOUT,
   DIAGRAM_MAX_SIZE,
 } from '~/drawio/constants';
+import { base64EncodeUnicode } from '~/lib/utils/text_utility';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 
 const DRAWIO_EDITOR_URL =
@@ -19,8 +20,8 @@ describe('drawio/drawio_editor', () => {
   let editorFacade;
   let drawioIFrameReceivedMessages;
   const diagramURL = `${window.location.origin}/uploads/diagram.drawio.svg`;
-  const testSvg = '<svg></svg>';
-  const testEncodedSvg = `data:image/svg+xml;base64,${btoa(testSvg)}`;
+  const testSvg = '<svg>😀</svg>';
+  const testEncodedSvg = `data:image/svg+xml;base64,${base64EncodeUnicode(testSvg)}`;
   const filename = 'diagram.drawio.svg';
 
   const findDrawioIframe = () => document.getElementById(DRAWIO_FRAME_ID);

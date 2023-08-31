@@ -218,7 +218,7 @@ export default {
       return this.currentTabCount > DEFAULT_PAGE_SIZE;
     },
     isLoading() {
-      return this.$apollo.queries.serviceDeskIssues.loading;
+      return this.$apollo.loading;
     },
     isOpenTab() {
       return this.state === STATUS_OPEN;

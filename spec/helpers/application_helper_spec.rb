@@ -679,42 +679,74 @@ RSpec.describe ApplicationHelper do
   end
 
   describe '#page_class' do
+    let_it_be(:user) { build(:user) }
+
     subject(:page_class) do
       helper.page_class.flatten
     end
 
-    before do
-      allow(helper).to receive(:current_user).and_return(nil)
-    end
+    describe 'with-header' do
+      using RSpec::Parameterized::TableSyntax
 
-    it { is_expected.not_to include('logged-out-marketing-header') }
-
-    context 'when show_super_sidebar? is true' do
-      context 'when @hide_top_bar_padding is false' do
-        before do
-          allow(helper).to receive(:show_super_sidebar?).and_return(true)
-          helper.instance_variable_set(:@hide_top_bar_padding, false)
-        end
-
-        it { is_expected.to include('with-top-bar') }
+      before do
+        allow(helper).to receive(:show_super_sidebar?).and_return(show_super_sidebar)
+        allow(helper).to receive(:current_user).and_return(current_user)
       end
 
-      context 'when @hide_top_bar_padding is true' do
+      where(:show_super_sidebar, :current_user) do
+        true  | nil
+        false | ref(:user)
+        false | nil
+      end
+
+      with_them do
+        it { is_expected.to include('with-header') }
+      end
+
+      context 'when with-header should not be shown' do
+        let(:show_super_sidebar) { true }
+        let(:current_user) { user }
+
+        it { is_expected.not_to include('with-header') }
+      end
+    end
+
+    describe 'with-top-bar' do
+      context 'when show_super_sidebar? is true' do
+        context 'when @hide_top_bar_padding is false' do
+          before do
+            allow(helper).to receive(:show_super_sidebar?).and_return(true)
+            helper.instance_variable_set(:@hide_top_bar_padding, false)
+          end
+
+          it { is_expected.to include('with-top-bar') }
+        end
+
+        context 'when @hide_top_bar_padding is true' do
+          before do
+            allow(helper).to receive(:show_super_sidebar?).and_return(true)
+            helper.instance_variable_set(:@hide_top_bar_padding, true)
+          end
+
+          it { is_expected.not_to include('with-top-bar') }
+        end
+      end
+
+      context 'when show_super_sidebar? is false' do
         before do
-          allow(helper).to receive(:show_super_sidebar?).and_return(true)
-          helper.instance_variable_set(:@hide_top_bar_padding, true)
+          allow(helper).to receive(:show_super_sidebar?).and_return(false)
         end
 
         it { is_expected.not_to include('with-top-bar') }
       end
     end
 
-    context 'when show_super_sidebar? is false' do
+    describe 'logged-out-marketing-header' do
       before do
-        allow(helper).to receive(:show_super_sidebar?).and_return(false)
+        allow(helper).to receive(:current_user).and_return(nil)
       end
 
-      it { is_expected.not_to include('with-top-bar') }
+      it { is_expected.not_to include('logged-out-marketing-header') }
     end
   end
 

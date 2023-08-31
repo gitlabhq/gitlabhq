@@ -12,13 +12,8 @@
     = render 'peek/bar'
     = header_message
 
-    - if show_super_sidebar? # TODO: Move this CSS to a better place
-      - if current_user
-        :css
-          body {
-            --header-height: 0px;
-          }
-      - else
+    - if show_super_sidebar?
+      - if !current_user
         = render partial: "layouts/header/super_sidebar_logged_out"
     - else
       = render partial: "layouts/header/default", locals: { project: @project, group: @group }

@@ -5,7 +5,7 @@ $search-input-field-x-min-width: 200px;
   padding: 0 16px;
   z-index: $header-zindex;
   margin-bottom: 0;
-  min-height: $header-height;
+  min-height: var(--header-height);
   border: 0;
   position: fixed;
   top: $calc-system-headers-height;
@@ -22,7 +22,7 @@ $search-input-field-x-min-width: 200px;
     display: flex;
     justify-content: space-between;
     position: relative;
-    min-height: $header-height;
+    min-height: var(--header-height);
     padding-left: 0;
 
     .title {
@@ -505,7 +505,7 @@ $search-input-field-x-min-width: 200px;
 
 .navbar-empty {
   justify-content: center;
-  height: $header-height;
+  height: var(--header-height);
   background: $white;
   border-bottom: 1px solid $gray-100;
 

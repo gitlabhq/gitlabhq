@@ -10,6 +10,7 @@ module Gitlab
         flux_git_push_notifications_total
         k8s_api_proxy_requests_via_ci_access
         k8s_api_proxy_requests_via_user_access
+        k8s_api_proxy_requests_via_pat_access
       ].freeze
 
       class << self

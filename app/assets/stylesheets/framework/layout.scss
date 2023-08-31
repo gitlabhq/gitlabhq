@@ -4,6 +4,12 @@ html {
   &.touch .tooltip {
     display: none !important;
   }
+
+  @include media-breakpoint-up(sm) {
+    &.logged-out-marketing-header {
+      --header-height: 72px;
+    }
+  }
 }
 
 body {
@@ -195,11 +201,5 @@ body {
   .gl-drawer-body > * {
     padding-left: 0;
     padding-right: 0;
-  }
-}
-
-@include media-breakpoint-up(sm) {
-  .logged-out-marketing-header {
-    --header-height: 72px;
   }
 }
