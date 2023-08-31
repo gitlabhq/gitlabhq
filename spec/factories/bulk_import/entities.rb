@@ -18,6 +18,7 @@ FactoryBot.define do
 
     trait(:project_entity) do
       source_type { :project_entity }
+      sequence(:source_full_path) { |n| "root/source-path-#{n}" }
     end
 
     trait :created do

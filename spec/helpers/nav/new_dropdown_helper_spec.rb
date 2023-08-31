@@ -22,6 +22,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
       allow(helper).to receive(:can?).and_return(false)
       allow(user).to receive(:can_create_project?) { with_can_create_project }
       allow(user).to receive(:can_create_group?) { with_can_create_group }
+      allow(user).to receive(:can?).and_call_original
       allow(user).to receive(:can?).with(:create_snippet) { with_can_create_snippet }
     end
 

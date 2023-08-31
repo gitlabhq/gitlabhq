@@ -668,6 +668,7 @@ module API
       desc 'Mark this project as forked from another' do
         success code: 201, model: Entities::Project
         failure [
+          { code: 401, message: 'Unauthorized' },
           { code: 403, message: 'Unauthenticated' },
           { code: 404, message: 'Not found' }
         ]
@@ -685,7 +686,11 @@ module API
 
         authorize! :fork_project, fork_from_project
 
-        result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
+        service = ::Projects::ForkService.new(fork_from_project, current_user)
+
+        unauthorized!('Target Namespace') unless service.valid_fork_target?(user_project.namespace)
+
+        result = service.execute(user_project)
 
         if result
           present_project user_project.reset, with: Entities::Project, current_user: current_user

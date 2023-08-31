@@ -6300,6 +6300,9 @@ msgstr ""
 msgid "AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user."
 msgstr ""
 
+msgid "Ask a maintainer to check the import status for more details."
+msgstr ""
+
 msgid "Ask again later"
 msgstr ""
 
@@ -14213,6 +14216,9 @@ msgid "DastProfiles|Minimum = 0 (no timeout enabled), Maximum = 2880 minutes"
 msgstr ""
 
 msgid "DastProfiles|Minimum = 1 second, Maximum = 3600 seconds"
+msgstr ""
+
+msgid "DastProfiles|Modifying the URL will clear any previously entered values for the additional request headers and password fields."
 msgstr ""
 
 msgid "DastProfiles|Monitors all HTTP requests sent to the target to find potential vulnerabilities."
