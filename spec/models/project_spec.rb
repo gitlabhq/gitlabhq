@@ -5099,7 +5099,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { described_class.wrap_with_cte(projects) }
 
     it 'wrapped query matches original' do
-      expect(subject.to_sql).to match(/^WITH "projects_cte" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
+      expect(subject.to_sql).to match(/^WITH "projects_cte" AS MATERIALIZED/)
       expect(subject).to match_array(projects)
     end
   end
@@ -8088,14 +8088,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it { is_expected.to contain_exactly(project_bot) }
     it { is_expected.not_to include(user) }
-  end
-
-  describe "#metrics_setting" do
-    let(:project) { build(:project) }
-
-    it 'creates setting if it does not exist' do
-      expect(project.metrics_setting).to be_an_instance_of(ProjectMetricsSetting)
-    end
   end
 
   describe '#enabled_group_deploy_keys' do

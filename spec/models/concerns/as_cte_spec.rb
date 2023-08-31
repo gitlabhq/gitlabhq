@@ -21,7 +21,7 @@ RSpec.describe AsCte do
     it { expect(subject.query).to eq(query) }
     it { expect(subject.table.name).to eq(name.to_s) }
 
-    context 'with materialized parameter', if: Gitlab::Database::AsWithMaterialized.materialized_supported? do
+    context 'with materialized parameter' do
       subject { query.as_cte(name, materialized: materialized).to_arel.to_sql }
 
       context 'as true' do

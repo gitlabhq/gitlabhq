@@ -130,7 +130,7 @@ RSpec.describe 'User creates snippet', :js, feature_category: :source_code_manag
     expect(page).not_to have_content(files_validation_message)
   end
 
-  it 'previews a snippet with file', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408203' do
+  it 'previews a snippet with file' do
     # Click placeholder first to expand full description field
     snippet_fill_in_description('My Snippet')
     dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
@@ -145,7 +145,11 @@ RSpec.describe 'User creates snippet', :js, feature_category: :source_code_manag
       # Adds a cache buster for checking if the image exists as Selenium is now handling the cached requests
       # not anymore as requests when they come straight from memory cache.
       # accept_confirm is needed because of https://gitlab.com/gitlab-org/gitlab/-/issues/262102
-      reqs = inspect_requests { accept_confirm { visit("#{link}?ran=#{SecureRandom.base64(20)}") } }
+      reqs = inspect_requests do
+        visit("#{link}?ran=#{SecureRandom.base64(20)}") do
+          page.driver.browser.switch_to.alert.accept
+        end
+      end
       expect(reqs.first.status_code).to eq(200)
     end
   end

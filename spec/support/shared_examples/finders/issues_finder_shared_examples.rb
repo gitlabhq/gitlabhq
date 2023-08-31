@@ -1406,7 +1406,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
           expect(finder.execute.to_sql)
-            .to match(/^WITH "issues" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
+            .to match(/^WITH "issues" AS MATERIALIZED/)
         end
       end
 
@@ -1416,7 +1416,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
           expect(finder.execute.to_sql)
-            .to match(/^WITH "issues" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
+            .to match(/^WITH "issues" AS MATERIALIZED/)
         end
       end
 
@@ -1426,7 +1426,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
           expect(finder.execute.to_sql)
-            .to match(/^WITH "issues" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
+            .to match(/^WITH "issues" AS MATERIALIZED/)
         end
       end
 
@@ -1436,7 +1436,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         it 'returns true' do
           expect(finder.use_cte_for_search?).to be_truthy
           expect(finder.execute.to_sql)
-            .to match(/^WITH "issues" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
+            .to match(/^WITH "issues" AS MATERIALIZED/)
         end
       end
     end

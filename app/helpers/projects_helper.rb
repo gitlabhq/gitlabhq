@@ -373,14 +373,6 @@ module ProjectsHelper
     false
   end
 
-  def metrics_external_dashboard_url
-    @project.metrics_setting_external_dashboard_url
-  end
-
-  def metrics_dashboard_timezone
-    @project.metrics_setting_dashboard_timezone
-  end
-
   def grafana_integration_url
     @project.grafana_integration&.grafana_url
   end

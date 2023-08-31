@@ -38,7 +38,6 @@ module Gitlab
                       ci_cd_settings: 'ProjectCiCdSetting',
                       error_tracking_setting: 'ErrorTracking::ProjectErrorTrackingSetting',
                       links: 'Releases::Link',
-                      metrics_setting: 'ProjectMetricsSetting',
                       commit_author: 'MergeRequest::DiffCommitUser',
                       committer: 'MergeRequest::DiffCommitUser',
                       merge_request_diff_commits: 'MergeRequestDiffCommit',

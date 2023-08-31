@@ -90,7 +90,7 @@ module Gitlab
                        .select("namespaces.id, namespaces.tmp_project_id")
 
           ApplicationRecord.connection.execute <<~SQL
-            WITH cte(project_namespace_id, project_id) AS #{::Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
+            WITH cte(project_namespace_id, project_id) AS MATERIALIZED (
               #{projects.to_sql}
             )
             UPDATE projects

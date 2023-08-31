@@ -116,7 +116,6 @@ tree:
     - :project_badges
     - :ci_cd_settings
     - :error_tracking_setting
-    - :metrics_setting
     - boards:
       - lists:
         - label:
@@ -156,10 +155,6 @@ included_attributes:
     - :group_runners_enabled
     - :runner_token_expiration_interval
     - :default_git_depth
-  metrics_setting:
-    - :dashboard_timezone
-    - :external_dashboard_url
-    - :project_id
   project_badges:
     - :created_at
     - :image_url

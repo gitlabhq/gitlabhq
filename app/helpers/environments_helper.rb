@@ -57,11 +57,9 @@ module EnvironmentsHelper
       'default_branch' => project.default_branch,
       'project_path' => project_path(project),
       'tags_path' => project_tags_path(project),
-      'external_dashboard_url' => project.metrics_setting_external_dashboard_url,
       'custom_metrics_path' => project_prometheus_metrics_path(project),
       'validate_query_path' => validate_query_project_prometheus_metrics_path(project),
-      'custom_metrics_available' => custom_metrics_available?(project).to_s,
-      'dashboard_timezone' => project.metrics_setting_dashboard_timezone.to_s.upcase
+      'custom_metrics_available' => custom_metrics_available?(project).to_s
     }
   end
 

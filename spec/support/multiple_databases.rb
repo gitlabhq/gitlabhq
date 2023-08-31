@@ -7,8 +7,6 @@ RSpec.configure do |config|
   # at startup, but that generates its own
   # `Gitlab::Database::Reflection` so the result is not memoized by
   # callers of `ApplicationRecord.database.version`, such as
-  # `Gitlab::Database::AsWithMaterialized.materialized_supported?`.
-  # TODO This can be removed once https://gitlab.com/gitlab-org/gitlab/-/issues/325639 is completed.
   [ApplicationRecord, ::Ci::ApplicationRecord].each { |record| record.database.version }
 
   config.around(:each, :reestablished_active_record_base) do |example|

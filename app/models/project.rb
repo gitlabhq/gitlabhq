@@ -275,7 +275,6 @@ class Project < ApplicationRecord
   has_one :project_repository, inverse_of: :project
   has_one :incident_management_setting, inverse_of: :project, class_name: 'IncidentManagement::ProjectIncidentManagementSetting'
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
-  has_one :metrics_setting, inverse_of: :project, class_name: 'ProjectMetricsSetting'
   has_one :grafana_integration, inverse_of: :project
   has_one :project_setting, inverse_of: :project, autosave: true
   has_one :alerting_setting, inverse_of: :project, class_name: 'Alerting::ProjectAlertingSetting'
@@ -478,7 +477,6 @@ class Project < ApplicationRecord
 
   accepts_nested_attributes_for :incident_management_setting, update_only: true
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
-  accepts_nested_attributes_for :metrics_setting, update_only: true, allow_destroy: true
   accepts_nested_attributes_for :grafana_integration, update_only: true, allow_destroy: true
   accepts_nested_attributes_for :prometheus_integration, update_only: true
   accepts_nested_attributes_for :alerting_setting, update_only: true
@@ -492,11 +490,6 @@ class Project < ApplicationRecord
     delegate :members, prefix: true
     delegate :add_member, :add_members, :member?
     delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role
-  end
-
-  with_options to: :metrics_setting, allow_nil: true, prefix: true do
-    delegate :external_dashboard_url
-    delegate :dashboard_timezone
   end
 
   with_options to: :namespace do
@@ -2946,10 +2939,6 @@ class Project < ApplicationRecord
 
   def latest_jira_import
     jira_imports.last
-  end
-
-  def metrics_setting
-    super || build_metrics_setting
   end
 
   def service_desk_enabled

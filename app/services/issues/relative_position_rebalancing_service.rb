@@ -141,7 +141,7 @@ module Issues
 
     def run_update_query(values, query_name)
       Issue.connection.exec_query(<<~SQL, query_name)
-        WITH cte(cte_id, new_pos) AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
+        WITH cte(cte_id, new_pos) AS MATERIALIZED (
          SELECT *
          FROM (VALUES #{values}) as t (id, pos)
         )

@@ -34,7 +34,6 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
         'project_path' => project_path(project),
         'tags_path' => project_tags_path(project),
         'has_metrics' => environment.has_metrics?.to_s,
-        'external_dashboard_url' => nil,
         'environment_state' => environment.state,
         'custom_metrics_path' => project_prometheus_metrics_path(project),
         'validate_query_path' => validate_query_project_prometheus_metrics_path(project),
@@ -55,16 +54,6 @@ RSpec.describe EnvironmentsHelper, feature_category: :environment_management do
         expect(metrics_data).to include(
           'can_access_operations_settings' => 'false'
         )
-      end
-    end
-
-    context 'with metrics_setting' do
-      before do
-        create(:project_metrics_setting, project: project, external_dashboard_url: 'http://gitlab.com')
-      end
-
-      it 'adds external_dashboard_url' do
-        expect(metrics_data['external_dashboard_url']).to eq('http://gitlab.com')
       end
     end
 

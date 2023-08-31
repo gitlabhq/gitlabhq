@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Database::MultipleDatabasesHelpers' do
   let(:query) do
     <<~SQL
-      WITH cte AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (SELECT 1) SELECT 1;
+      WITH cte AS MATERIALIZED (SELECT 1) SELECT 1;
     SQL
   end
 

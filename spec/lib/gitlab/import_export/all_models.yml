@@ -690,7 +690,6 @@ project:
 - pool_repository
 - kubernetes_namespaces
 - error_tracking_setting
-- metrics_setting
 - gitlab_slack_application_integration
 - github_integration
 - protected_environments
@@ -872,8 +871,6 @@ suggestions:
 - note
 diff_note_positions:
 - note
-metrics_setting:
-- project
 protected_environments:
 - project
 - group

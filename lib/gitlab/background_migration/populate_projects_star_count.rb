@@ -42,7 +42,7 @@ module Gitlab
         ::Gitlab::Database.allow_cross_joins_across_databases(url:
             'https://gitlab.com/gitlab-org/gitlab/-/issues/421843') do
           ApplicationRecord.connection.execute <<~SQL
-            WITH batched_relation AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (#{sub_batch.select(:id).to_sql})
+            WITH batched_relation AS MATERIALIZED (#{sub_batch.select(:id).to_sql})
             UPDATE projects
             SET star_count = (
               SELECT COUNT(*)

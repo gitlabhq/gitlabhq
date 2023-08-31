@@ -14,7 +14,7 @@ module Gitlab
 
           batch_metrics.time_operation(:update_all) do
             ApplicationRecord.connection.execute <<~SQL
-              WITH route_and_ns(route_id, project_namespace_id) AS #{::Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
+              WITH route_and_ns(route_id, project_namespace_id) AS MATERIALIZED (
                 #{sub_batch.to_sql}
               )
               UPDATE routes

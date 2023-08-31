@@ -164,19 +164,16 @@ and gives you the option to return to the search results page.
 > - [Support for partial matches in issue search](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913) removed in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124703) in GitLab 16.2. Feature flag `issues_full_text_search` removed.
 
-You can filter issues and merge requests by specific terms included in titles or descriptions.
+You can search issues and merge requests for specific terms.
+For example, when you search issues for `display bug`, the query returns
+all issues that contain both `display` and `bug` in any order.
+To search for the exact string, use `"display bug"` instead.
 
-- Syntax
-  - Searches look for all the words in a query, in any order. For example: searching
-    issues for `display bug` returns all issues matching both those words, in any order.
-  - To find the exact term, use double quotes: `"display bug"`.
-- Limitation
-  - For performance reasons, terms shorter than three characters are ignored. For example: searching
-    issues for `included in titles` is same as `included titles`
-  - Search is limited to 4096 characters and 64 terms per query.
-  - When searching issues, partial matches are not allowed. For example: searching for `play` will
-    not return issues that have the word `display`. But variations of words match, so searching
-    for `displays` also returns issues that have the word `display`.
+Partial matches are not supported in issue search.
+For example, when you search issues for `play`, the query does not return issues that contain `display`.
+However, the query matches all possible variations of the string (for example, `plays`).
+
+For more information about query validation, see [Global search validation](#global-search-validation).
 
 ## Run a search from history
 
