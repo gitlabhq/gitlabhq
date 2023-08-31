@@ -175,6 +175,7 @@ function generateEntries() {
     sandboxed_swagger: './lib/swagger.js',
     super_sidebar: './entrypoints/super_sidebar.js',
     tracker: './entrypoints/tracker.js',
+    analytics: './entrypoints/analytics.js',
   };
 
   return Object.assign(manualEntries, incrementalCompiler.filterEntryPoints(autoEntries));

@@ -36778,9 +36778,6 @@ ALTER TABLE ONLY deployments
 ALTER TABLE ONLY project_compliance_standards_adherence
     ADD CONSTRAINT fk_baf6f6f878 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY routes
-    ADD CONSTRAINT fk_bb2e5b8968 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE p_ci_runner_machine_builds
     ADD CONSTRAINT fk_bb490f12fe_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 

@@ -4,14 +4,14 @@ module QA
   module Page
     module Group
       class Menu < Page::Base
-        include QA::Page::SubMenus::Common
-        include Page::SubMenus::SuperSidebar::Manage
-        include Page::SubMenus::SuperSidebar::Plan
-        include Page::SubMenus::SuperSidebar::Settings
-        include SubMenus::SuperSidebar::Main
-        include SubMenus::SuperSidebar::Build
-        include SubMenus::SuperSidebar::Operate
-        include SubMenus::SuperSidebar::Deploy
+        include Page::SubMenus::Common
+        include Page::SubMenus::Manage
+        include Page::SubMenus::Plan
+        include Page::SubMenus::Settings
+        include SubMenus::Main
+        include SubMenus::Build
+        include SubMenus::Operate
+        include SubMenus::Deploy
       end
     end
   end

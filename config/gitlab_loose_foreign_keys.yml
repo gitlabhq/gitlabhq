@@ -294,6 +294,10 @@ requirements_management_test_reports:
   - table: p_ci_builds
     column: build_id
     on_delete: async_nullify
+routes:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 sbom_occurrences:
   - table: ci_pipelines
     column: pipeline_id

@@ -17,6 +17,8 @@ module Gitlab
       gon.markdown_surround_selection = current_user&.markdown_surround_selection
       gon.markdown_automatic_lists = current_user&.markdown_automatic_lists
 
+      add_browsersdk_tracking
+
       if Gitlab.config.sentry.enabled
         gon.sentry_dsn         = Gitlab.config.sentry.clientside_dsn
         gon.sentry_environment = Gitlab.config.sentry.environment
@@ -116,6 +118,14 @@ module Gitlab
       # may be an absolute URL.
       URI.join(Gitlab.config.gitlab.url,
                ActionController::Base.helpers.image_path('no_avatar.png')).to_s
+    end
+
+    def add_browsersdk_tracking
+      return unless Gitlab.com? && Feature.enabled?(:browsersdk_tracking)
+      return if ENV['GITLAB_ANALYTICS_URL'].blank? || ENV['GITLAB_ANALYTICS_ID'].blank?
+
+      gon.analytics_url = ENV['GITLAB_ANALYTICS_URL']
+      gon.analytics_id = ENV['GITLAB_ANALYTICS_ID']
     end
   end
 end

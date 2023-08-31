@@ -72,6 +72,15 @@ describe('LineHighlighter', () => {
       expect(utils.scrollToElement).toHaveBeenCalledWith('#L5', expect.anything());
     });
 
+    it('does not scroll to the first highlighted line when disableScroll is `true`', () => {
+      jest.spyOn(utils, 'scrollToElement');
+      const highlighter = new LineHighlighter();
+      const scrollEnabled = false;
+      highlighter.highlightHash('#L5-25', scrollEnabled);
+
+      expect(utils.scrollToElement).not.toHaveBeenCalled();
+    });
+
     it('discards click events', () => {
       const clickSpy = jest.fn();
 

@@ -30,8 +30,19 @@ async function createJsConfig() {
   // eslint-disable-next-line global-require
   const webpackConfig = require('../../config/webpack.config');
 
-  const paths = {}; // aliases
-  const WEBPACK_ALIAS_EXCEPTIONS = ['jquery$', '@gitlab/svgs/dist/icons.svg'];
+  // Aliases
+  const paths = {
+    // NOTE: Sentry is exposed via a wrapper, which has a limited API.
+    '@sentry/browser': [
+      path.relative(PATH_PROJECT_ROOT, 'app/assets/javascripts/sentry/sentry_browser_wrapper.js'),
+    ],
+  };
+  const WEBPACK_ALIAS_EXCEPTIONS = [
+    'jquery$',
+    '@gitlab/svgs/dist/icons.svg',
+    '@apollo/client$',
+    '@sentry/browser$',
+  ];
   Object.entries(webpackConfig.resolve.alias)
     .filter(([key]) => !WEBPACK_ALIAS_EXCEPTIONS.includes(key))
     .forEach(([key, value]) => {

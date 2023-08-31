@@ -58,7 +58,6 @@ export default {
       firstChunk: null,
       chunks: {},
       isLoading: true,
-      isLineSelected: false,
       lineHighlighter: null,
     };
   },
@@ -133,7 +132,7 @@ export default {
       this.generateRemainingChunks();
       this.isLoading = false;
       await this.$nextTick();
-      this.lineHighlighter = new LineHighlighter({ scrollBehavior: 'auto' });
+      this.selectLine();
     });
   },
   methods: {
@@ -239,13 +238,12 @@ export default {
       return languageDefinition;
     },
     async selectLine() {
-      if (this.isLineSelected || !this.lineHighlighter) {
-        return;
+      if (!this.lineHighlighter) {
+        this.lineHighlighter = new LineHighlighter({ scrollBehavior: 'auto' });
       }
-
-      this.isLineSelected = true;
       await this.$nextTick();
-      this.lineHighlighter.highlightHash(this.$route.hash);
+      const scrollEnabled = false;
+      this.lineHighlighter.highlightHash(this.$route.hash, scrollEnabled);
     },
   },
   userColorScheme: window.gon.user_color_scheme,

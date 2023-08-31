@@ -5,6 +5,8 @@
 
 // This module wraps methods used by our production code.
 // Each export is names as we cannot export the entire namespace from *.
+
+/** @type {import('@sentry/core').captureException} */
 export const captureException = (...args) => {
   // eslint-disable-next-line no-underscore-dangle
   const Sentry = window._Sentry;
@@ -12,6 +14,7 @@ export const captureException = (...args) => {
   Sentry?.captureException(...args);
 };
 
+/** @type {import('@sentry/core').captureMessage} */
 export const captureMessage = (...args) => {
   // eslint-disable-next-line no-underscore-dangle
   const Sentry = window._Sentry;
@@ -19,6 +22,7 @@ export const captureMessage = (...args) => {
   Sentry?.captureMessage(...args);
 };
 
+/** @type {import('@sentry/core').withScope} */
 export const withScope = (...args) => {
   // eslint-disable-next-line no-underscore-dangle
   const Sentry = window._Sentry;

@@ -8,7 +8,7 @@ module QA
         # since tablets have the regular top navigation bar
         prepend Mobile::Page::Main::Menu if Runtime::Env.phone_layout?
         include SubMenus::CreateNewMenu
-        include SubMenus::SuperSidebar::ContextSwitcher
+        include SubMenus::ContextSwitcher
 
         view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
           element :navbar, required: true # TODO: rename to sidebar once it's default implementation

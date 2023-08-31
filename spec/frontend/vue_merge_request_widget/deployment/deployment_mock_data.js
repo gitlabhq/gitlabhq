@@ -74,4 +74,9 @@ const retryDetails = {
   },
 };
 
-export { actionButtonMocks, deploymentMockData, playDetails, retryDetails };
+const mockRedeployProps = {
+  retry_url: retryDetails.playable_build.retry_path,
+  environment_available: false,
+};
+
+export { actionButtonMocks, deploymentMockData, playDetails, retryDetails, mockRedeployProps };

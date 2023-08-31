@@ -1,6 +1,6 @@
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
 import { getExperimentData, getAllExperimentContexts } from '~/experimentation/utils';
-import Tracking, { initUserTracking, initDefaultTrackers } from '~/tracking';
+import Tracking, { initUserTracking, initDefaultTrackers, InternalEvents } from '~/tracking';
 import getStandardContext from '~/tracking/get_standard_context';
 
 jest.mock('~/experimentation/utils', () => ({
@@ -15,6 +15,9 @@ describe('Tracking', () => {
   let trackLoadEventsSpy;
   let enableFormTracking;
   let setAnonymousUrlsSpy;
+  let bindInternalEventDocumentSpy;
+  let trackInternalLoadEventsSpy;
+  let initBrowserSDKSpy;
 
   beforeAll(() => {
     window.gl = window.gl || {};
@@ -74,6 +77,15 @@ describe('Tracking', () => {
         .spyOn(Tracking, 'enableFormTracking')
         .mockImplementation(() => null);
       setAnonymousUrlsSpy = jest.spyOn(Tracking, 'setAnonymousUrls').mockImplementation(() => null);
+      bindInternalEventDocumentSpy = jest
+        .spyOn(InternalEvents, 'bindInternalEventDocument')
+        .mockImplementation(() => null);
+      trackInternalLoadEventsSpy = jest
+        .spyOn(InternalEvents, 'trackInternalLoadEvents')
+        .mockImplementation(() => null);
+      initBrowserSDKSpy = jest
+        .spyOn(InternalEvents, 'initBrowserSDK')
+        .mockImplementation(() => null);
     });
 
     it('should activate features based on what has been enabled', () => {
@@ -115,6 +127,21 @@ describe('Tracking', () => {
     it('calls the anonymized URLs method', () => {
       initDefaultTrackers();
       expect(setAnonymousUrlsSpy).toHaveBeenCalled();
+    });
+
+    it('binds the document event handling for intenral events', () => {
+      initDefaultTrackers();
+      expect(bindInternalEventDocumentSpy).toHaveBeenCalled();
+    });
+
+    it('tracks page loaded events for internal events', () => {
+      initDefaultTrackers();
+      expect(trackInternalLoadEventsSpy).toHaveBeenCalled();
+    });
+
+    it('calls initBrowserSDKSpy', () => {
+      initDefaultTrackers();
+      expect(initBrowserSDKSpy).toHaveBeenCalled();
     });
 
     describe('when there are experiment contexts', () => {

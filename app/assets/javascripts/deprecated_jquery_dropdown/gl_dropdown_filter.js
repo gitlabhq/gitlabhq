@@ -17,9 +17,11 @@ export class GitLabDropdownFilter {
     const $inputContainer = this.input.parent();
     const $clearButton = $inputContainer.find('.js-dropdown-input-clear');
     const filterRemoteDebounced = debounce(() => {
+      options.instance.dropdown.trigger('filtering.gl.dropdown');
       $inputContainer.parent().addClass('is-loading');
 
       return this.options.query(this.input.val(), (data) => {
+        options.instance.dropdown.trigger('done.filtering.gl.dropdown');
         $inputContainer.parent().removeClass('is-loading');
         return this.options.callback(data);
       });

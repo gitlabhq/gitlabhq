@@ -1269,7 +1269,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 ```
 
 NOTE:
-This also adds an audit event, as described in [audit instance events](../administration/audit_events.md#instance-events). **(PREMIUM ALL)**
+This also adds an audit event. **(PREMIUM ALL)**
 
 ## Delete SSH key for current user
 

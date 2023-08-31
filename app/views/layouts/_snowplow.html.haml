@@ -2,6 +2,8 @@
 
 - namespace = @group || @project&.namespace || @namespace
 = webpack_bundle_tag 'tracker'
+- if Gitlab.com? && Feature.enabled?(:browsersdk_tracking)
+  = webpack_bundle_tag 'analytics'
 = javascript_tag do
   :plain
     window.snowplowOptions = #{Gitlab::Tracking.options(@group).to_json}

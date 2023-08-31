@@ -85,9 +85,12 @@ assume role:
 - `ROLE_ARN`: The role ARN defined in this [step](#configure-a-role-and-trust).
 - `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../yaml/index.md#id_tokens).
 
-## Working example
+## Working examples
 
-See this [reference project](https://gitlab.com/guided-explorations/aws/configure-openid-connect-in-aws) for provisioning OIDC in AWS using Terraform and a sample script to retrieve temporary credentials.
+- See this [reference project](https://gitlab.com/guided-explorations/aws/configure-openid-connect-in-aws) for provisioning OIDC in AWS using Terraform and a sample script to retrieve temporary credentials.
+- [OIDC and Multi-Account Deployment with GitLab and ECS](https://gitlab.com/guided-explorations/aws/oidc-and-multi-account-deployment-with-ecs).
+- AWS Partner (APN) Blog: [Setting up OpenID Connect with GitLab CI/CD](https://aws.amazon.com/blogs/apn/setting-up-openid-connect-with-gitlab-ci-cd-to-provide-secure-access-to-environments-in-aws-accounts/).
+- [GitLab at AWS re:Inforce 2023: Secure GitLab CD pipelines to AWS w/ OpenID and JWT](https://www.youtube.com/watch?v=xWQGADDVn8g).
 
 ## Troubleshooting
 

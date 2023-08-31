@@ -642,7 +642,7 @@ header.navbar-gitlab.super-sidebar-logged-out {
 
     &:focus,
     &:active {
-      box-shadow: inset 0 0 0 $gl-border-size-1 $white;
+      @include gl-focus;
     }
 
     &:active {

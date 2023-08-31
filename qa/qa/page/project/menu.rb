@@ -6,15 +6,15 @@ module QA
       class Menu < Page::Base
         include SubMenus::Common
         include SubMenus::CreateNewMenu
-        include SubMenus::SuperSidebar::Plan
-        include SubMenus::SuperSidebar::Settings
-        include SubMenus::SuperSidebar::Code
-        include SubMenus::SuperSidebar::Build
-        include SubMenus::SuperSidebar::Operate
-        include SubMenus::SuperSidebar::Monitor
-        include SubMenus::SuperSidebar::Main
-        include Page::SubMenus::SuperSidebar::Manage
-        include Page::SubMenus::SuperSidebar::Deploy
+        include SubMenus::Plan
+        include SubMenus::Settings
+        include SubMenus::Code
+        include SubMenus::Build
+        include SubMenus::Operate
+        include SubMenus::Monitor
+        include SubMenus::Main
+        include Page::SubMenus::Manage
+        include Page::SubMenus::Deploy
       end
     end
   end

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Route do
+  include LooseForeignKeysHelper
+
   let(:group) { create(:group, path: 'git_lab', name: 'git_lab') }
   let(:route) { group.route }
 
@@ -285,6 +287,7 @@ RSpec.describe Route do
 
           expect do
             Group.delete(conflicting_group) # delete group with conflicting route
+            process_loose_foreign_key_deletions(record: conflicting_group)
           end.to change { described_class.count }.by(-1)
 
           # check the conflicting route is gone
@@ -303,6 +306,13 @@ RSpec.describe Route do
       it 'passes validation' do
         expect(route.valid?).to be_truthy
       end
+    end
+  end
+
+  context 'with loose foreign key on routes.namespace_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:namespace) }
+      let!(:model) { parent.route }
     end
   end
 end

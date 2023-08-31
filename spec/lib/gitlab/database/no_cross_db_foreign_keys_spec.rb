@@ -26,7 +26,6 @@ RSpec.describe 'cross-database foreign keys' do
       'project_authorizations.user_id',           # https://gitlab.com/gitlab-org/gitlab/-/issues/422044
       'projects.creator_id',                      # https://gitlab.com/gitlab-org/gitlab/-/issues/421844
       'projects.marked_for_deletion_by_user_id',  # https://gitlab.com/gitlab-org/gitlab/-/issues/421844
-      'routes.namespace_id',                      # https://gitlab.com/gitlab-org/gitlab/-/issues/420869
       'user_group_callouts.user_id'               # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
     ]
   end

@@ -5,7 +5,7 @@ module QA
     module Profile
       class Menu < Page::Base
         include SubMenus::CreateNewMenu
-        include SubMenus::SuperSidebar::ContextSwitcher
+        include SubMenus::ContextSwitcher
 
         def click_ssh_keys
           click_element(:nav_item_link, submenu_item: 'SSH Keys')

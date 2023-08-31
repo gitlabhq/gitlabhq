@@ -20,7 +20,7 @@
 
   // Header
 
-  .navbar-gitlab {
+  .navbar-gitlab:not(.super-sidebar-logged-out) {
     background-color: $navbar-theme-color;
 
     .navbar-collapse {
