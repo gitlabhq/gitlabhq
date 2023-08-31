@@ -23,6 +23,7 @@ module Resolvers
       projects = nodes.map(&:project)
       ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
       ::Preloaders::GroupPolicyPreloader.new(projects.filter_map(&:group), current_user).execute
+      ActiveRecord::Associations::Preloader.new(records: projects, associations: :namespace).call
     end
 
     def ready?(**args)

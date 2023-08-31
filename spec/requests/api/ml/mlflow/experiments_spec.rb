@@ -179,7 +179,7 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
     end
   end
 
@@ -203,7 +203,7 @@ RSpec.describe API::Ml::Mlflow::Experiments, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|Bad Request on missing required', [:key, :value]
     end
   end

@@ -9,7 +9,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
   let(:tmpdir) { Dir.mktmpdir }
   let(:design_bundle_path) {  File.join(tmpdir, 'design.bundle') }
   let(:entity) do
-    create(:bulk_import_entity, :project_entity, project: portable, source_full_path: 'test', source_xid: nil)
+    create(:bulk_import_entity, :project_entity, project: portable, source_xid: nil)
   end
 
   let(:tracker) { create(:bulk_import_tracker, entity: entity) }
@@ -52,7 +52,8 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
         .to receive(:new)
         .with(
           configuration: context.configuration,
-          relative_url: "/#{entity.pluralized_name}/test/export_relations/download?relation=design",
+          relative_url: "/#{entity.pluralized_name}/#{CGI.escape(entity.source_full_path)}" \
+                        '/export_relations/download?relation=design',
           tmpdir: tmpdir,
           filename: 'design.tar.gz')
         .and_return(download_service)

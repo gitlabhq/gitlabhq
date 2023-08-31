@@ -124,7 +124,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
     end
   end
 
@@ -204,7 +204,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|run_id param error cases'
     end
   end
@@ -222,7 +222,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
 
     describe 'Error Cases' do
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|run_id param error cases'
       it_behaves_like 'MLflow|Bad Request on missing required', [:key, :value, :timestamp]
     end
@@ -247,7 +247,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|run_id param error cases'
       it_behaves_like 'MLflow|Bad Request on missing required', [:key, :value]
     end
@@ -272,7 +272,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|run_id param error cases'
       it_behaves_like 'MLflow|Bad Request on missing required', [:key, :value]
     end
@@ -342,7 +342,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|run_id param error cases'
     end
   end

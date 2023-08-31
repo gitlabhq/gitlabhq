@@ -2,6 +2,28 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.2.5 (2023-08-31)
+
+### Fixed (1 change)
+
+- [Geo: Resync direct upload object stored artifacts](gitlab-org/security/gitlab@2b89dcd8d4e238ee081b5a886a43f2d7d390e853) **GitLab Enterprise Edition**
+
+### Security (13 changes)
+
+- [Add authorization checks to import status endpoint](gitlab-org/security/gitlab@4ace6aaeaa836d0545576857080b6a01163d40b6) ([merge request](gitlab-org/security/gitlab!3514))
+- [Update commonmarker to 0.23.10](gitlab-org/security/gitlab@41ae8c446666e478addfff8c2d450103435c1ac1) ([merge request](gitlab-org/security/gitlab!3508))
+- [Remove DAST secret variables when URL is updated](gitlab-org/security/gitlab@ab9b3384bfdf15698285e99d1f31c7d8b3ec7db5) ([merge request](gitlab-org/security/gitlab!3499))
+- [Maintainer can leak sentry token by changing the configured URL](gitlab-org/security/gitlab@8c423fdd1afceedf34a5d7c11f9be96b7d273b95) ([merge request](gitlab-org/security/gitlab!3517))
+- [Service account users are external by default](gitlab-org/security/gitlab@9abbd558d4307c4bcb62a5fea2bffa2e59ded4fa) ([merge request](gitlab-org/security/gitlab!3502))
+- [Additional permission check when editing label](gitlab-org/security/gitlab@416b3a3d448c21b96c4cd6dda42da2e561f8040d) ([merge request](gitlab-org/security/gitlab!3505))
+- [Fix ReDOS in bulk_imports endpoint params](gitlab-org/security/gitlab@90dbac471eff8d1d867db979be5aaf7f8660e64c) ([merge request](gitlab-org/security/gitlab!3511))
+- [Prevent namespace level banned users from accessing API](gitlab-org/security/gitlab@76ce2605f091d7c2d10ed3dd00cf8c7e37e26b5a) ([merge request](gitlab-org/security/gitlab!3484))
+- [Requires write_model_experiments on mlflow api](gitlab-org/security/gitlab@a385fb7b6422e6d41c8197655947fc6d3f0d65c8) ([merge request](gitlab-org/security/gitlab!3480))
+- [Check prohibit_outer_forks in fork relationship api](gitlab-org/security/gitlab@d8ee7ec151440088bb34b5d2c20b490986bba654) ([merge request](gitlab-org/security/gitlab!3477))
+- [Remove GCP private key from streaming audit events UI](gitlab-org/security/gitlab@36b15be1d8643172d4f54063fb6430068d57e6f8) ([merge request](gitlab-org/security/gitlab!3487))
+- [Prevent traversal for `path` parameter in refs/switch endpoint](gitlab-org/security/gitlab@89cd4dae070fcf20df467639934accb41f5c46da) ([merge request](gitlab-org/security/gitlab!3475))
+- [Gitaly keyset pager when pagination none only with tree view](gitlab-org/security/gitlab@498f72aed3d0e70f7af5335ee3fb11f6cfc21986) ([merge request](gitlab-org/security/gitlab!3481))
+
 ## 16.2.4 (2023-08-11)
 
 ### Fixed (2 changes)

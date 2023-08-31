@@ -3270,16 +3270,41 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           project_fork_target.add_maintainer(user)
         end
 
-        it 'allows project to be forked from an existing project' do
-          expect(project_fork_target).not_to be_forked
+        context 'and user is a reporter of target group' do
+          let_it_be_with_reload(:target_group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+          let_it_be_with_reload(:project_fork_target) { create(:project, namespace: target_group) }
 
-          post api(path, user)
-          project_fork_target.reload
+          before do
+            target_group.add_reporter(user)
+          end
 
-          expect(response).to have_gitlab_http_status(:created)
-          expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
-          expect(project_fork_target.fork_network_member).to be_present
-          expect(project_fork_target).to be_forked
+          it 'fails as target namespace is unauthorized' do
+            post api(path, user)
+
+            expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(json_response['message']).to eq "401 Unauthorized - Target Namespace"
+          end
+        end
+
+        context 'and user is a developer of target group' do
+          let_it_be_with_reload(:target_group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+          let_it_be_with_reload(:project_fork_target) { create(:project, namespace: target_group) }
+
+          before do
+            target_group.add_developer(user)
+          end
+
+          it 'allows project to be forked from an existing project' do
+            expect(project_fork_target).not_to be_forked
+
+            post api(path, user)
+            project_fork_target.reload
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
+            expect(project_fork_target.fork_network_member).to be_present
+            expect(project_fork_target).to be_forked
+          end
         end
 
         it 'fails without permission from forked_from project' do
