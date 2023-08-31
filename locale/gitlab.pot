@@ -11792,9 +11792,6 @@ msgstr ""
 msgid "Commit statistics for %{ref} %{start_time} - %{end_time}"
 msgstr ""
 
-msgid "Commit:"
-msgstr ""
-
 msgid "CommitBoxTitle|Commit"
 msgstr ""
 
@@ -14498,9 +14495,6 @@ msgid "CycleAnalytics|Time to Restore Service"
 msgstr ""
 
 msgid "CycleAnalytics|Total time"
-msgstr ""
-
-msgid "CycleAnalytics|group dropdown filter"
 msgstr ""
 
 msgid "CycleAnalytics|not allowed for the given start event"
@@ -27132,16 +27126,16 @@ msgstr ""
 msgid "Jobs|You're about to retry a job that failed because it attempted to deploy code that is older than the latest deployment. Retrying this job could result in overwriting the environment with the older source code."
 msgstr ""
 
-msgid "Job|%{boldStart}Pipeline:%{boldEnd} %{id} %{status}"
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id}"
 msgstr ""
 
-msgid "Job|%{boldStart}Pipeline:%{boldEnd} %{id} %{status} for %{mrId} with %{source}"
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source}"
 msgstr ""
 
-msgid "Job|%{boldStart}Pipeline:%{boldEnd} %{id} %{status} for %{ref}"
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source} into %{target}"
 msgstr ""
 
-msgid "Job|%{boldStart}Pipeline:%{boldEnd} %{id} for %{mrId} with %{source} into %{target}"
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{ref}"
 msgstr ""
 
 msgid "Job|%{searchLength} results found for %{searchTerm}"
@@ -50680,6 +50674,9 @@ msgid "UsageQuota|Buy additional compute minutes"
 msgstr ""
 
 msgid "UsageQuota|Buy storage"
+msgstr ""
+
+msgid "UsageQuota|Code Suggestions"
 msgstr ""
 
 msgid "UsageQuota|Code packages and container images."

@@ -33,7 +33,7 @@ This enables teams and managers to understand all aspects of productivity, quali
 
 ## Deployment frequency
 
-> [Fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) the frequency calculation formula for the `all` and `monthly` intervals in GitLab 16.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) fix for the frequency calculation formula for `all` and `monthly` intervals in GitLab 16.0.
 
 Deployment frequency is the frequency of successful deployments to production over the given date range (hourly, daily, weekly, monthly, or yearly).
 

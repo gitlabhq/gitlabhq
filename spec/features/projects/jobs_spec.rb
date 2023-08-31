@@ -93,7 +93,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
 
         within '.js-pipeline-info' do
-          expect(page).to have_content("Pipeline: ##{pipeline.id} #{pipeline.status} for #{pipeline.ref}")
+          expect(page).to have_content("Pipeline ##{pipeline.id} for #{pipeline.ref}")
         end
       end
 

@@ -65,7 +65,6 @@ export default {
     icon="retry"
     category="primary"
     placement="right"
-    positioning-strategy="fixed"
     variant="confirm"
     :items="dropdownItems"
   />

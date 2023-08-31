@@ -40,6 +40,8 @@ describe QA::Tools::ReliableReport do
       "status" => "failed",
       "file_path" => "some/spec.rb",
       "stage" => "create",
+      "failure_exception" => "failure message",
+      "job_url" => "https://job/url",
       "_time" => time
     }
     [
@@ -61,19 +63,29 @@ describe QA::Tools::ReliableReport do
         |> filter(fn: (r) => r._measurement == "test-stats")
         |> filter(fn: (r) => r.run_type == "staging-full" or
           r.run_type == "staging-sanity" or
-          r.run_type == "staging-sanity-no-admin" or
           r.run_type == "production-full" or
           r.run_type == "production-sanity" or
           r.run_type == "package-and-qa" or
           r.run_type == "nightly"
         )
+        |> filter(fn: (r) => r.job_name != "ce:airgapped" and
+          r.job_name != "ee:airgapped" and
+          r.job_name != "ce:instance-image-slow-network" and
+          r.job_name != "ee:instance-image-slow-network" and
+          r.job_name != "ce:nplus1-instance-image" and
+          r.job_name != "ee:nplus1-instance-image"
+        )
         |> filter(fn: (r) => r.status != "pending" and
           r.merge_request == "false" and
           r.quarantined == "false" and
           r.smoke == "false" and
-          r.reliable == "#{reliable}" and
-          r._field == "id"
+          r.reliable == "#{reliable}"
         )
+        |> filter(fn: (r) => r["_field"] == "job_url" or
+          r["_field"] == "failure_exception" or
+          r["_field"] == "id"
+        )
+        |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
         |> group(columns: ["name"])
     QUERY
   end
@@ -106,8 +118,12 @@ describe QA::Tools::ReliableReport do
     )
   end
 
-  def name_column(spec_name)
-    "**name**: #{spec_name}<br>**file**: spec.rb"
+  def name_column(spec_name, exceptions_and_job_urls = {})
+    "**name**: #{spec_name}<br>**file**: spec.rb#{exceptions_markdown(exceptions_and_job_urls)}"
+  end
+
+  def exceptions_markdown(exceptions_and_job_urls)
+    exceptions_and_job_urls.empty? ? '' : "<br>**Exceptions**:<br>- [`failure message`](https://job/url)"
   end
 
   before do
@@ -184,7 +200,7 @@ describe QA::Tools::ReliableReport do
 
         Total amount: **1**
 
-        #{markdown_section([['create', 1]], [[name_column('unstable spec'), 3, 2, '66.67%']], 'create', 'unstable')}
+        #{markdown_section([['create', 1]], [[name_column('unstable spec', { 'failure message' => 'https://job/url' }), 3, 2, '66.67%']], 'create', 'unstable')}
       TXT
     end
 

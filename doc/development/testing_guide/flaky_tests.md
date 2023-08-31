@@ -181,10 +181,12 @@ it 'succeeds', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345'
 end
 ```
 
-This means it is skipped unless run with `--tag quarantine`:
+This means it is skipped in CI. By default, the quarantined tests will run locally.
+
+We can skip them in local development as well by running with `--tag ~quarantine`:
 
 ```shell
-bin/rspec --tag quarantine
+bin/rspec --tag ~quarantine
 ```
 
 After the long-term quarantining MR has reached production, you should revert the fast-quarantine MR you created earlier.

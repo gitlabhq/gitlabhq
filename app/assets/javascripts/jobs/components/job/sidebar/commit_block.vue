@@ -22,13 +22,9 @@ export default {
 </script>
 <template>
   <div>
-    <span class="gl-font-weight-bold">{{ __('Commit:') }}</span>
+    <span class="gl-font-weight-bold">{{ __('Commit') }}</span>
 
-    <gl-link
-      :href="commit.commit_path"
-      class="gl-text-blue-600! gl-font-monospace"
-      data-testid="commit-sha"
-    >
+    <gl-link :href="commit.commit_path" class="gl-text-blue-600!" data-testid="commit-sha">
       {{ commit.short_id }}
     </gl-link>
 
@@ -46,6 +42,6 @@ export default {
       >
     </span>
 
-    <p class="gl-mb-0 gl-font-sm">{{ commit.title }}</p>
+    <p class="gl-mb-0">{{ commit.title }}</p>
   </div>
 </template>

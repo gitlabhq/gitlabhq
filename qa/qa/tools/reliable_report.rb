@@ -91,13 +91,13 @@ module QA
         issues
           .reject { |issue| issue[:iid] == report_iid }
           .each do |issue|
-            issue_iid = issue[:iid]
-            issue_endpoint = "projects/#{PROJECT_ID}/issues/#{issue_iid}"
+          issue_iid = issue[:iid]
+          issue_endpoint = "projects/#{PROJECT_ID}/issues/#{issue_iid}"
 
-            puts "Closing previous report '#{issue[:web_url]}'"
-            api_update(:put, issue_endpoint, state_event: "close")
-            api_update(:post, "#{issue_endpoint}/notes", body: "Closed issue in favor of ##{report_iid}")
-          end
+          puts "Closing previous report '#{issue[:web_url]}'"
+          api_update(:put, issue_endpoint, state_event: "close")
+          api_update(:post, "#{issue_endpoint}/notes", body: "Closed issue in favor of ##{report_iid}")
+        end
       end
 
       # Notify failure
@@ -244,7 +244,10 @@ module QA
             headings: headings.map(&:upcase),
             markdown: markdown,
             rows: specs.map do |k, v|
-              [name_column(name: k, file: v[:file], markdown: markdown), *table_params(v.values)]
+              [
+                name_column(name: k, file: v[:file], exceptions_and_job_urls: v[:exceptions_and_job_urls],
+                  markdown: markdown), *table_params(v.values)
+              ]
             end
           )]
         end
@@ -312,13 +315,26 @@ module QA
       # @param [String] file
       # @param [Boolean] markdown
       # @return [String]
-      def name_column(name:, file:, markdown: false)
-        return "**name**: #{name}<br>**file**: #{file}" if markdown
+      def name_column(name:, file:, exceptions_and_job_urls:, markdown: false)
+        return "**name**: #{name}<br>**file**: #{file}#{exceptions_markdown(exceptions_and_job_urls)}" if markdown
 
         wrapped_name = name.length > 150 ? "#{name} ".scan(/.{1,150} /).map(&:strip).join("\n") : name
         "name: '#{wrapped_name}'\nfile: #{file.ljust(160)}"
       end
 
+      # Formatted expection with link to job url
+      #
+      # @param [Hash] exceptions_and_job_urls
+      # @return [String]
+      def exceptions_markdown(exceptions_and_job_urls)
+        return '' if exceptions_and_job_urls.empty?
+
+        "<br>**Exceptions**:#{exceptions_and_job_urls.keys.map do |e|
+                                "<br>- [`#{e.truncate(250).tr('`', "'")}`](#{exceptions_and_job_urls[e]})"
+                              end.join('')}"
+      end
+
+      # rubocop:disable Metrics/AbcSize
       # Test executions grouped by name
       #
       # @param [Boolean] reliable
@@ -329,6 +345,7 @@ module QA
         all_runs = query_api.query(query: query(reliable))
         all_runs.each_with_object(Hash.new { |hsh, key| hsh[key] = {} }) do |table, result|
           records = table.records.sort_by { |record| record.values["_time"] }
+
           # skip specs that executed less time than defined by range or stopped executing before report date
           # offset 1 day due to how schedulers are configured and first run can be 1 day later
           next if (Date.today - Date.parse(records.first.values["_time"])).to_i < (range - 1)
@@ -341,16 +358,26 @@ module QA
 
           runs = records.count
           failed = records.count { |r| r.values["status"] == "failed" }
+
           failure_rate = (failed.to_f / runs) * 100
+
+          records_with_exception = records.reject { |r| !r.values["failure_exception"] }
+
+          # Since exception is the key in the below hash, only one instance of an occurrence is kept
+          exceptions_and_job_urls = Hash[*records_with_exception.flat_map do |r|
+                                           [r.values["failure_exception"], r.values["job_url"]]
+                                         end]
 
           result[stage][name] = {
             file: file,
             runs: runs,
             failed: failed,
+            exceptions_and_job_urls: exceptions_and_job_urls,
             failure_rate: failure_rate == 0 ? failure_rate.round(0) : failure_rate.round(2)
           }
         end
       end
+      # rubocop:enable Metrics/AbcSize
 
       # Flux query
       #
@@ -363,19 +390,29 @@ module QA
             |> filter(fn: (r) => r._measurement == "test-stats")
             |> filter(fn: (r) => r.run_type == "staging-full" or
               r.run_type == "staging-sanity" or
-              r.run_type == "staging-sanity-no-admin" or
               r.run_type == "production-full" or
               r.run_type == "production-sanity" or
               r.run_type == "package-and-qa" or
               r.run_type == "nightly"
             )
+            |> filter(fn: (r) => r.job_name != "ce:airgapped" and
+              r.job_name != "ee:airgapped" and
+              r.job_name != "ce:instance-image-slow-network" and
+              r.job_name != "ee:instance-image-slow-network" and
+              r.job_name != "ce:nplus1-instance-image" and
+              r.job_name != "ee:nplus1-instance-image"
+            )
             |> filter(fn: (r) => r.status != "pending" and
               r.merge_request == "false" and
               r.quarantined == "false" and
               r.smoke == "false" and
-              r.reliable == "#{reliable}" and
-              r._field == "id"
+              r.reliable == "#{reliable}"
             )
+            |> filter(fn: (r) => r["_field"] == "job_url" or
+              r["_field"] == "failure_exception" or
+              r["_field"] == "id"
+            )
+            |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
             |> group(columns: ["name"])
         QUERY
       end

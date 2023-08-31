@@ -345,6 +345,8 @@ RSpec.configure do |config|
       # Postgres is the primary data source, and ClickHouse only when enabled in certain cases.
       stub_feature_flags(clickhouse_data_collection: false)
 
+      stub_feature_flags(vite: false)
+
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
       unstub_all_feature_flags
@@ -394,8 +396,8 @@ RSpec.configure do |config|
   end
 
   config.around(:example, :quarantine) do |example|
-    # Skip tests in quarantine unless we explicitly focus on them.
-    example.run if config.inclusion_filter[:quarantine]
+    # Skip tests in quarantine unless we explicitly focus on them or not in CI
+    example.run if config.inclusion_filter[:quarantine] || !ENV['CI']
   end
 
   config.around(:example, :request_store) do |example|

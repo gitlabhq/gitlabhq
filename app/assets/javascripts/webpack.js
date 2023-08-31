@@ -7,6 +7,7 @@
  * e.g. the `window` scope, because it needs to be executed in the scope of webpack.
  */
 
-if (gon && gon.webpack_public_path) {
+// eslint-disable-next-line camelcase
+if (gon && gon.webpack_public_path && typeof __webpack_public_path__ !== 'undefined') {
   __webpack_public_path__ = gon.webpack_public_path; // eslint-disable-line camelcase
 }
