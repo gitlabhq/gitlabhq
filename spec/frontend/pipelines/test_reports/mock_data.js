@@ -1,4 +1,4 @@
-import { TestStatus } from '~/pipelines/constants';
+import { TestStatus } from '~/ci/pipeline_details/constants';
 
 export default [
   {

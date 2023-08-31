@@ -1,7 +1,7 @@
 import { GlModal, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import TestCaseDetails from '~/pipelines/components/test_reports/test_case_details.vue';
+import TestCaseDetails from '~/ci/pipeline_details/components/test_reports/test_case_details.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 

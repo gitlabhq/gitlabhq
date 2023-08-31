@@ -3,8 +3,8 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
-import SummaryTable from '~/pipelines/components/test_reports/test_summary_table.vue';
-import * as getters from '~/pipelines/stores/test_reports/getters';
+import SummaryTable from '~/ci/pipeline_details/components/test_reports/test_summary_table.vue';
+import * as getters from '~/ci/pipeline_details/stores/test_reports/getters';
 
 Vue.use(Vuex);
 

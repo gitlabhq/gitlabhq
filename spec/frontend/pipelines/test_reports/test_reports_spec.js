@@ -5,11 +5,11 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import EmptyState from '~/pipelines/components/test_reports/empty_state.vue';
-import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
-import TestSummary from '~/pipelines/components/test_reports/test_summary.vue';
-import TestSummaryTable from '~/pipelines/components/test_reports/test_summary_table.vue';
-import * as getters from '~/pipelines/stores/test_reports/getters';
+import EmptyState from '~/ci/pipeline_details/components/test_reports/empty_state.vue';
+import TestReports from '~/ci/pipeline_details/components/test_reports/test_reports.vue';
+import TestSummary from '~/ci/pipeline_details/components/test_reports/test_summary.vue';
+import TestSummaryTable from '~/ci/pipeline_details/components/test_reports/test_summary_table.vue';
+import * as getters from '~/ci/pipeline_details/stores/test_reports/getters';
 
 Vue.use(Vuex);
 

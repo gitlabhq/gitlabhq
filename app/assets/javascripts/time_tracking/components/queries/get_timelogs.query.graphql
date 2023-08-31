@@ -1,8 +1,8 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 
 query timeTrackingReport(
-  $startDate: Time
-  $endDate: Time
+  $startTime: Time
+  $endTime: Time
   $projectId: ProjectID
   $groupId: GroupID
   $username: String
@@ -12,8 +12,8 @@ query timeTrackingReport(
   $after: String
 ) {
   timelogs(
-    startDate: $startDate
-    endDate: $endDate
+    startTime: $startTime
+    endTime: $endTime
     projectId: $projectId
     groupId: $groupId
     username: $username

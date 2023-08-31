@@ -12,7 +12,7 @@ RSpec.describe "GraphQL Pipeline Header", '(JavaScript fixtures)', type: :reques
   let_it_be(:user) { project.first_owner }
   let_it_be(:commit) { create(:commit, project: project) }
 
-  let(:query_path) { 'pipelines/graphql/queries/get_pipeline_header_data.query.graphql' }
+  let(:query_path) { 'ci/pipeline_details/graphql/queries/get_pipeline_header_data.query.graphql' }
 
   context 'with successful pipeline' do
     let_it_be(:pipeline) do

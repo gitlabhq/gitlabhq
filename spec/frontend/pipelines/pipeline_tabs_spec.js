@@ -1,4 +1,4 @@
-import { createAppOptions } from '~/pipelines/pipeline_tabs';
+import { createAppOptions } from '~/ci/pipeline_details/pipeline_tabs';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   removeParams: () => 'gitlab.com',
@@ -6,11 +6,11 @@ jest.mock('~/lib/utils/url_utility', () => ({
   setUrlFragment: () => {},
 }));
 
-jest.mock('~/pipelines/utils', () => ({
+jest.mock('~/ci/pipeline_details/utils', () => ({
   getPipelineDefaultTab: () => '',
 }));
 
-describe('~/pipelines/pipeline_tabs.js', () => {
+describe('~/ci/pipeline_details/pipeline_tabs.js', () => {
   describe('createAppOptions', () => {
     const SELECTOR = 'SELECTOR';
 

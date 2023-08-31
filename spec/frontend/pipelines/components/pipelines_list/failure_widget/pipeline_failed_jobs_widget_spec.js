@@ -1,7 +1,7 @@
 import { GlButton, GlCard, GlIcon, GlPopover } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import PipelineFailedJobsWidget from '~/pipelines/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
-import FailedJobsList from '~/pipelines/components/pipelines_list/failure_widget/failed_jobs_list.vue';
+import PipelineFailedJobsWidget from '~/ci/pipeline_details/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
+import FailedJobsList from '~/ci/pipeline_details/components/pipelines_list/failure_widget/failed_jobs_list.vue';
 
 jest.mock('~/alert');
 

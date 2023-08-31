@@ -1,9 +1,13 @@
 import { shallowMount } from '@vue/test-utils';
-import { IS_HIGHLIGHTED, LINK_SELECTOR, NODE_SELECTOR } from '~/pipelines/components/dag/constants';
-import DagGraph from '~/pipelines/components/dag/dag_graph.vue';
-import { createSankey } from '~/pipelines/components/dag/drawing_utils';
-import { highlightIn, highlightOut } from '~/pipelines/components/dag/interactions';
-import { removeOrphanNodes } from '~/pipelines/components/parsing_utils';
+import {
+  IS_HIGHLIGHTED,
+  LINK_SELECTOR,
+  NODE_SELECTOR,
+} from '~/ci/pipeline_details/components/dag/constants';
+import DagGraph from '~/ci/pipeline_details/components/dag/dag_graph.vue';
+import { createSankey } from '~/ci/pipeline_details/components/dag/drawing_utils';
+import { highlightIn, highlightOut } from '~/ci/pipeline_details/components/dag/interactions';
+import { removeOrphanNodes } from '~/ci/pipeline_details/components/parsing_utils';
 import { parsedData } from './mock_data';
 
 describe('The DAG graph', () => {

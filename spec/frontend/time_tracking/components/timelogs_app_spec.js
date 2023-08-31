@@ -95,12 +95,12 @@ describe('Timelogs app', () => {
       mountComponent();
 
       const username = 'johnsmith';
-      const fromDate = new Date('2023-02-28');
-      const toDate = new Date('2023-03-28');
+      const fromDateTime = new Date('2023-02-28');
+      const toDateTime = new Date('2023-03-28');
 
       findUsernameInput().vm.$emit('input', username);
-      findFromDatepicker().vm.$emit('input', fromDate);
-      findToDatepicker().vm.$emit('input', toDate);
+      findFromDatepicker().vm.$emit('input', fromDateTime);
+      findToDatepicker().vm.$emit('input', toDateTime);
 
       resolvedEmptyListMock.mockClear();
 
@@ -110,8 +110,8 @@ describe('Timelogs app', () => {
 
       expect(resolvedEmptyListMock).toHaveBeenCalledWith({
         username,
-        startDate: fromDate,
-        endDate: toDate,
+        startTime: fromDateTime,
+        endTime: toDateTime,
         groupId: null,
         projectId: null,
         first: 20,
@@ -119,6 +119,15 @@ describe('Timelogs app', () => {
         after: null,
         before: null,
       });
+
+      expect(`${wrapper.vm.queryVariables.startTime}`).toEqual(
+        'Tue Feb 28 2023 00:00:00 GMT+0000 (Greenwich Mean Time)',
+      );
+      // should be 1 day ahead of the initial To Date value
+      expect(`${wrapper.vm.queryVariables.endTime}`).toEqual(
+        'Wed Mar 29 2023 00:00:00 GMT+0000 (Greenwich Mean Time)',
+      );
+
       expect(createAlert).not.toHaveBeenCalled();
       expect(Sentry.captureException).not.toHaveBeenCalled();
     });
@@ -140,8 +149,8 @@ describe('Timelogs app', () => {
 
       expect(resolvedEmptyListMock).toHaveBeenCalledWith({
         username,
-        startDate: null,
-        endDate: null,
+        startTime: null,
+        endTime: null,
         groupId: null,
         projectId: null,
         first: 20,

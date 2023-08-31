@@ -5,7 +5,7 @@ import { __, s__, sprintf } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { BRIDGE_KIND } from '~/pipelines/components/graph/constants';
+import { BRIDGE_KIND } from '~/ci/pipeline_details/components/graph/constants';
 import RetryMrFailedJobMutation from '../../../graphql/mutations/retry_mr_failed_job.mutation.graphql';
 
 export default {

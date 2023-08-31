@@ -7,9 +7,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
-import FailedJobsTable from '~/pipelines/components/jobs/failed_jobs_table.vue';
-import RetryFailedJobMutation from '~/pipelines/graphql/mutations/retry_failed_job.mutation.graphql';
-import { TRACKING_CATEGORIES } from '~/pipelines/constants';
+import FailedJobsTable from '~/ci/pipeline_details/components/jobs/failed_jobs_table.vue';
+import RetryFailedJobMutation from '~/ci/pipeline_details/graphql/mutations/retry_failed_job.mutation.graphql';
+import { TRACKING_CATEGORIES } from '~/ci/pipeline_details/constants';
 import {
   successRetryMutationResponse,
   failedRetryMutationResponse,

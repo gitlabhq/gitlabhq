@@ -1,5 +1,5 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import JobGroupDropdown from '~/pipelines/components/graph/job_group_dropdown.vue';
+import JobGroupDropdown from '~/ci/pipeline_details/components/graph/job_group_dropdown.vue';
 
 describe('job group dropdown component', () => {
   const group = {

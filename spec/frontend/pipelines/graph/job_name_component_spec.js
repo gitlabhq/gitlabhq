@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import jobNameComponent from '~/pipelines/components/jobs_shared/job_name_component.vue';
+import jobNameComponent from '~/ci/pipeline_details/components/jobs_shared/job_name_component.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 
 describe('job name component', () => {

@@ -8,10 +8,10 @@ import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipelin
 import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,
-} from '~/pipelines/components/graph/utils';
+} from '~/ci/pipeline_details/components/graph/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/ci/pipeline_details/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from './pipeline_editor_mini_graph.vue';
 
 const POLL_INTERVAL = 10000;

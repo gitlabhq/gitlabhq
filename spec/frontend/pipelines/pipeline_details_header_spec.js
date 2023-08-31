@@ -5,13 +5,13 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import PipelineDetailsHeader from '~/pipelines/components/pipeline_details_header.vue';
-import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/pipelines/constants';
+import PipelineDetailsHeader from '~/ci/pipeline_details/components/pipeline_details_header.vue';
+import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/ci/pipeline_details/constants';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
-import cancelPipelineMutation from '~/pipelines/graphql/mutations/cancel_pipeline.mutation.graphql';
-import deletePipelineMutation from '~/pipelines/graphql/mutations/delete_pipeline.mutation.graphql';
-import retryPipelineMutation from '~/pipelines/graphql/mutations/retry_pipeline.mutation.graphql';
-import getPipelineDetailsQuery from '~/pipelines/graphql/queries/get_pipeline_header_data.query.graphql';
+import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
+import deletePipelineMutation from '~/ci/pipeline_details/graphql/mutations/delete_pipeline.mutation.graphql';
+import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
+import getPipelineDetailsQuery from '~/ci/pipeline_details/graphql/queries/get_pipeline_header_data.query.graphql';
 import {
   pipelineHeaderSuccess,
   pipelineHeaderRunning,

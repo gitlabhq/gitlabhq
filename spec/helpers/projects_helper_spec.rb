@@ -1154,6 +1154,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         current_user = user if has_user
 
         allow(helper).to receive(:current_user).and_return(current_user)
+        allow(user).to receive(:can?).and_call_original
         allow(user).to receive(:can?).with(:fork_project, project).and_return(true)
         allow(user).to receive(:can?).with(:create_fork).and_return(true)
         allow(user).to receive(:can?).with(:create_projects, anything).and_return(true)

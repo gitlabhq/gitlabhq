@@ -10,8 +10,8 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PipelineMultiActions, {
   i18n,
-} from '~/pipelines/components/pipelines_list/pipeline_multi_actions.vue';
-import { TRACKING_CATEGORIES } from '~/pipelines/constants';
+} from '~/ci/pipeline_details/components/pipelines_list/pipeline_multi_actions.vue';
+import { TRACKING_CATEGORIES } from '~/ci/pipeline_details/constants';
 
 describe('Pipeline Multi Actions Dropdown', () => {
   let wrapper;

@@ -1,59 +1,25 @@
-# Multi-stage Dockerfile for packaging gdk as executable docker image
-# Each stage can be executed in parallel and cached separately based on changes for respective component
-# Caches are cleaned for each stage to reduce the footprint of exported cache layers
-
 ARG BASE_TAG=master
 
-FROM registry.gitlab.com/gitlab-org/gitlab-build-images/debian-bullseye-slim-ruby-3.1-golang-1.19-rust-1.65-node-16.14-postgresql-13:rubygems-3.4-git-2.36-lfs-2.9-yarn-1.22 as gdk-base
+FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify:main@sha256:d2e6d3ad2e8a8682a7b908d2107ebb8539462036b3b28ba6a240ec9ab4d74654 as gdk-base
 
-RUN set -eux; \
-    groupadd gdk -g 1000; \
-    useradd gdk -m -s /bin/bash -u 1000 -g 1000
+# Allow passwordless /etc/hosts update by gdk user
+USER root
+RUN echo "gdk ALL=(ALL) NOPASSWD: /usr/bin/tee -a /etc/hosts" >> /etc/sudoers
 
-ENV GEM_HOME=/home/gdk/.gem \
-    GEM_PATH=/home/gdk/.gem \
-    PATH=$PATH:/home/gdk/.gem/bin
+USER gdk
 
-WORKDIR /home/gdk
-
-# Reinstall libpcre2 and install postgresql
-# See: https://gitlab.com/gitlab-org/gitaly/-/issues/4085
-RUN set -eux; \
-    rm -f /usr/lib/libpcre2*; \
-    apt-get update && apt-get install -y --reinstall --no-install-recommends \
-    libpcre2-16-0 \
-    libpcre2-32-0 \
-    libpcre2-8-0 \
-    libpcre2-dev \
-    libpcre2-posix2 \
-    && apt-get install -y --no-install-recommends postgresql-13; \
-    apt-get autoclean -y
-
-# Clone GDK and install system dependencies, purge system git
-ARG GDK_SHA
-ENV GDK_SHA=${GDK_SHA:-main}
+# Clone GDK and save gem cache location
+ENV GEM_CACHE_LOCATION=/home/gdk/.gem_cache
+ARG GDK_SHA=main
 RUN set -eux; \
     git -c advice.detachedHead=false clone --depth 1 https://gitlab.com/gitlab-org/gitlab-development-kit.git; \
     git -C gitlab-development-kit fetch --depth 1 origin ${GDK_SHA}; \
     git -C gitlab-development-kit -c advice.detachedHead=false checkout ${GDK_SHA}; \
-    mkdir -p gitlab-development-kit/gitlab && chown -R gdk:gdk gitlab-development-kit; \
-    apt-get update && apt-get install -y --no-install-recommends $(grep -o '^[^#]*' gitlab-development-kit/packages_debian.txt); \
-    apt-get remove -y git git-lfs; \
-    apt-get autoclean -y && apt-get autoremove -y
+    mkdir -p gitlab-development-kit/gitlab; \
+    cd gitlab-development-kit && make bootstrap; \
+    echo "$(gem env | awk '/- GEM PATHS:/ {flag=1; next} flag && /^[[:space:]]*- / {print $2; exit}')/cache" > ${GEM_CACHE_LOCATION}
 
-# Allow passwordless /etc/hosts update by gdk user
-RUN echo "gdk ALL=(ALL) NOPASSWD: /usr/bin/tee -a /etc/hosts" >> /etc/sudoers
-
-USER gdk
 WORKDIR /home/gdk/gitlab-development-kit
-
-# Install GDK and gem dependencies
-ARG GDK_VERSION
-ENV GDK_VERSION=${GDK_VERSION:-0.2.16}
-RUN set -eux; \
-    gem install gitlab-development-kit -v ${GDK_VERSION} && touch .gitlab-gdk-gem; \
-    bundle install; \
-    rm -rf ${GEM_HOME}/cache
 
 COPY --chown=gdk:gdk qa/gdk/gdk.yml ./
 
@@ -67,7 +33,7 @@ RUN set -eux; \
            gitaly/_build/deps/libgit2/source \
            gitaly/_build/deps \
            gitaly/_build/intermediate \
-           ${GEM_HOME}/cache \
+           $(cat $GEM_CACHE_LOCATION) \
     && go clean -cache
 
 # Build gitlab-shell
@@ -75,7 +41,7 @@ RUN set -eux; \
 COPY --chown=gdk:gdk GITLAB_SHELL_VERSION ./gitlab/
 RUN set -eux; \
     make gitlab-shell-setup; \
-    rm -rf ${GEM_HOME}/cache \
+    rm -rf $(cat $GEM_CACHE_LOCATION) \
     && go clean -cache
 
 # Build gitlab-workhorse
@@ -85,7 +51,7 @@ COPY --chown=gdk:gdk workhorse ./gitlab/workhorse
 RUN set -eux; \
     make gitlab-workhorse-setup \
     && mv gitlab/workhorse ./; \
-    rm -rf ${GEM_HOME}/cache \
+    rm -rf $(cat $GEM_CACHE_LOCATION) \
     && go clean -cache
 
 # Install gitlab gem dependencies
@@ -93,7 +59,7 @@ RUN set -eux; \
 COPY --chown=gdk:gdk Gemfile Gemfile.lock ./gitlab/
 COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
 COPY --chown=gdk:gdk gems/ ./gitlab/gems/
-RUN make .gitlab-bundle && rm -rf ${GEM_HOME}/cache
+RUN make .gitlab-bundle && rm -rf $(cat $GEM_CACHE_LOCATION)
 
 # Install gitlab npm dependencies
 #
@@ -121,7 +87,7 @@ RUN make \
     redis/redis.conf \
     all \
     && gdk kill \
-    && rm -rf ${GEM_HOME}/cache \
+    && rm -rf $(cat $GEM_CACHE_LOCATION) \
            gitaly/_build/cache \
            gitaly/_build/deps/git/source \
            gitaly/_build/deps/libgit2/source \

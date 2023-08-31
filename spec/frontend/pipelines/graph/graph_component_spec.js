@@ -1,13 +1,13 @@
 import { shallowMount } from '@vue/test-utils';
 import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { LAYER_VIEW, STAGE_VIEW } from '~/pipelines/components/graph/constants';
-import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
-import JobItem from '~/pipelines/components/graph/job_item.vue';
-import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
-import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
-import { calculatePipelineLayersInfo } from '~/pipelines/components/graph/utils';
-import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
+import { LAYER_VIEW, STAGE_VIEW } from '~/ci/pipeline_details/components/graph/constants';
+import PipelineGraph from '~/ci/pipeline_details/components/graph/graph_component.vue';
+import JobItem from '~/ci/pipeline_details/components/graph/job_item.vue';
+import LinkedPipelinesColumn from '~/ci/pipeline_details/components/graph/linked_pipelines_column.vue';
+import StageColumnComponent from '~/ci/pipeline_details/components/graph/stage_column_component.vue';
+import { calculatePipelineLayersInfo } from '~/ci/pipeline_details/components/graph/utils';
+import LinksLayer from '~/ci/pipeline_details/components/graph_shared/links_layer.vue';
 
 import { generateResponse, pipelineWithUpstreamDownstream } from './mock_data';
 

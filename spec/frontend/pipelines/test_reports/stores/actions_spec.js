@@ -5,8 +5,8 @@ import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import * as actions from '~/pipelines/stores/test_reports/actions';
-import * as types from '~/pipelines/stores/test_reports/mutation_types';
+import * as actions from '~/ci/pipeline_details/stores/test_reports/actions';
+import * as types from '~/ci/pipeline_details/stores/test_reports/mutation_types';
 
 jest.mock('~/alert');
 

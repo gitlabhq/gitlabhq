@@ -2,7 +2,7 @@ import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from
 import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import Api from '~/api';
-import PipelineTriggerAuthorToken from '~/pipelines/components/pipelines_list/tokens/pipeline_trigger_author_token.vue';
+import PipelineTriggerAuthorToken from '~/ci/pipeline_details/components/pipelines_list/tokens/pipeline_trigger_author_token.vue';
 import { users } from '../mock_data';
 
 describe('Pipeline Trigger Author Token', () => {

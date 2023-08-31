@@ -2,8 +2,8 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, sprintf } from '~/locale';
-import { getQueryHeaders } from '~/pipelines/components/graph/utils';
-import { graphqlEtagPipelinePath } from '~/pipelines/utils';
+import { getQueryHeaders } from '~/ci/pipeline_details/components/graph/utils';
+import { graphqlEtagPipelinePath } from '~/ci/pipeline_details/utils';
 import getPipelineFailedJobs from '../../../graphql/queries/get_pipeline_failed_jobs.query.graphql';
 import { sortJobsByStatus } from './utils';
 import FailedJobDetails from './failed_job_details.vue';

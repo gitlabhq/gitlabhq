@@ -1,6 +1,6 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import EmptyState, { i18n } from '~/pipelines/components/test_reports/empty_state.vue';
+import EmptyState, { i18n } from '~/ci/pipeline_details/components/test_reports/empty_state.vue';
 
 describe('Test report empty state', () => {
   let wrapper;

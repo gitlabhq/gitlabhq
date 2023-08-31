@@ -4,7 +4,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { mergeUrlParams, queryToObject, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __, s__ } from '~/locale';
 
-import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
+import { unwrapStagesWithNeeds } from '~/ci/pipeline_details/components/unwrapping_utils';
 
 import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes_dialog.vue';
 import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_state.vue';

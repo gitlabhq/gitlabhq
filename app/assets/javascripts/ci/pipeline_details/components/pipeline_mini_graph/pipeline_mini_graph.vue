@@ -2,14 +2,14 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
-import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
+import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/components/parsing_utils';
 import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,
-} from '~/pipelines/components/graph/utils';
-import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/pipelines/constants';
-import getLinkedPipelinesQuery from '~/pipelines/graphql/queries/get_linked_pipelines.query.graphql';
-import getPipelineStagesQuery from '~/pipelines/graphql/queries/get_pipeline_stages.query.graphql';
+} from '~/ci/pipeline_details/components/graph/utils';
+import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
+import getLinkedPipelinesQuery from '~/ci/pipeline_details/graphql/queries/get_linked_pipelines.query.graphql';
+import getPipelineStagesQuery from '~/ci/pipeline_details/graphql/queries/get_pipeline_stages.query.graphql';
 import LegacyPipelineMiniGraph from './legacy_pipeline_mini_graph.vue';
 
 export default {

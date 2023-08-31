@@ -39,7 +39,7 @@ module QA
             element :validation_message_content
           end
 
-          view 'app/assets/javascripts/pipelines/components/pipeline_graph/pipeline_graph.vue' do
+          view 'app/assets/javascripts/ci/pipeline_details/components/pipeline_graph/pipeline_graph.vue' do
             element :stage_container
             element :job_container
           end

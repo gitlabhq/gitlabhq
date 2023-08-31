@@ -5,7 +5,7 @@ import { createAlert } from '~/alert';
 import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,
-} from '~/pipelines/components/graph/utils';
+} from '~/ci/pipeline_details/components/graph/utils';
 import getLatestPipelineStatusQuery from '../graphql/queries/get_latest_pipeline_status.query.graphql';
 import { COMMIT_BOX_POLL_INTERVAL, PIPELINE_STATUS_FETCH_ERROR } from '../constants';
 

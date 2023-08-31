@@ -1,8 +1,8 @@
 <script>
 import { __ } from '~/locale';
-import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
-import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
-import getLinkedPipelinesQuery from '~/pipelines/graphql/queries/get_linked_pipelines.query.graphql';
+import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/components/parsing_utils';
+import LegacyPipelineMiniGraph from '~/ci/pipeline_details/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
+import getLinkedPipelinesQuery from '~/ci/pipeline_details/graphql/queries/get_linked_pipelines.query.graphql';
 import { PIPELINE_FAILURE } from '../../constants';
 
 export default {

@@ -1,7 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import JobItem from '~/pipelines/components/graph/job_item.vue';
-import StageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
-import ActionComponent from '~/pipelines/components/jobs_shared/action_component.vue';
+import JobItem from '~/ci/pipeline_details/components/graph/job_item.vue';
+import StageColumnComponent from '~/ci/pipeline_details/components/graph/stage_column_component.vue';
+import ActionComponent from '~/ci/pipeline_details/components/jobs_shared/action_component.vue';
 
 const mockJob = {
   id: 4250,

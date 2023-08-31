@@ -1,4 +1,4 @@
-import { formatFilePath, formattedTime } from '~/pipelines/stores/test_reports/utils';
+import { formatFilePath, formattedTime } from '~/ci/pipeline_details/stores/test_reports/utils';
 
 describe('Test reports utils', () => {
   describe('formatFilePath', () => {

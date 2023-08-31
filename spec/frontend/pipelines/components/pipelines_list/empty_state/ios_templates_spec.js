@@ -3,8 +3,8 @@ import { nextTick } from 'vue';
 import { GlPopover, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
-import IosTemplates from '~/pipelines/components/pipelines_list/empty_state/ios_templates.vue';
-import CiTemplates from '~/pipelines/components/pipelines_list/empty_state/ci_templates.vue';
+import IosTemplates from '~/ci/pipeline_details/components/pipelines_list/empty_state/ios_templates.vue';
+import CiTemplates from '~/ci/pipeline_details/components/pipelines_list/empty_state/ci_templates.vue';
 
 const pipelineEditorPath = '/-/ci/editor';
 const registrationToken = 'SECRET_TOKEN';

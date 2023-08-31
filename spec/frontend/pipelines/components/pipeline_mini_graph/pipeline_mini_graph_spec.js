@@ -7,10 +7,10 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
-import getLinkedPipelinesQuery from '~/pipelines/graphql/queries/get_linked_pipelines.query.graphql';
-import getPipelineStagesQuery from '~/pipelines/graphql/queries/get_pipeline_stages.query.graphql';
-import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import getLinkedPipelinesQuery from '~/ci/pipeline_details/graphql/queries/get_linked_pipelines.query.graphql';
+import getPipelineStagesQuery from '~/ci/pipeline_details/graphql/queries/get_pipeline_stages.query.graphql';
+import LegacyPipelineMiniGraph from '~/ci/pipeline_details/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/ci/pipeline_details/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import * as sharedGraphQlUtils from '~/graphql_shared/utils';
 
 import {

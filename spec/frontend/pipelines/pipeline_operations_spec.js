@@ -1,8 +1,8 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import PipelinesManualActions from '~/pipelines/components/pipelines_list/pipelines_manual_actions.vue';
-import PipelineMultiActions from '~/pipelines/components/pipelines_list/pipeline_multi_actions.vue';
-import PipelineOperations from '~/pipelines/components/pipelines_list/pipeline_operations.vue';
-import eventHub from '~/pipelines/event_hub';
+import PipelinesManualActions from '~/ci/pipeline_details/components/pipelines_list/pipelines_manual_actions.vue';
+import PipelineMultiActions from '~/ci/pipeline_details/components/pipelines_list/pipeline_multi_actions.vue';
+import PipelineOperations from '~/ci/pipeline_details/components/pipelines_list/pipeline_operations.vue';
+import eventHub from '~/ci/pipeline_details/event_hub';
 
 describe('Pipeline operations', () => {
   let wrapper;

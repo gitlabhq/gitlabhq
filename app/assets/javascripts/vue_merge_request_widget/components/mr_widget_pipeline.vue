@@ -11,9 +11,9 @@ import {
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import { keepLatestDownstreamPipelines } from '~/pipelines/components/parsing_utils';
-import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
-import LegacyPipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
+import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/components/parsing_utils';
+import PipelineArtifacts from '~/ci/pipeline_details/components/pipelines_list/pipelines_artifacts.vue';
+import LegacyPipelineMiniGraph from '~/ci/pipeline_details/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { MT_MERGE_STRATEGY } from '../constants';

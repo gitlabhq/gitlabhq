@@ -6472,6 +6472,9 @@ msgstr ""
 msgid "AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user."
 msgstr ""
 
+msgid "Ask a maintainer to check the import status for more details."
+msgstr ""
+
 msgid "Ask again later"
 msgstr ""
 
@@ -6682,6 +6685,9 @@ msgstr ""
 msgid "AuditStreams|Active"
 msgstr ""
 
+msgid "AuditStreams|Add a new private key"
+msgstr ""
+
 msgid "AuditStreams|Add an HTTP endpoint to manage audit logs in third-party systems."
 msgstr ""
 
@@ -6797,6 +6803,9 @@ msgid "AuditStreams|This could include sensitive information. Make sure you trus
 msgstr ""
 
 msgid "AuditStreams|This is great for keeping everything one place."
+msgstr ""
+
+msgid "AuditStreams|Use the Google Cloud console to view the private key. To change the private key, replace it with a new private key."
 msgstr ""
 
 msgid "AuditStreams|Value"
@@ -14988,6 +14997,9 @@ msgid "DastProfiles|Minimum = 0 (no timeout enabled), Maximum = 2880 minutes"
 msgstr ""
 
 msgid "DastProfiles|Minimum = 1 second, Maximum = 3600 seconds"
+msgstr ""
+
+msgid "DastProfiles|Modifying the URL will clear any previously entered values for the additional request headers and password fields."
 msgstr ""
 
 msgid "DastProfiles|Monitors all HTTP requests sent to the target to find potential vulnerabilities."
@@ -48827,7 +48839,7 @@ msgstr ""
 msgid "TimeTrackingEstimated|Est"
 msgstr ""
 
-msgid "TimeTrackingReport|From"
+msgid "TimeTrackingReport|From the start of"
 msgstr ""
 
 msgid "TimeTrackingReport|Run report"
@@ -48848,7 +48860,7 @@ msgstr ""
 msgid "TimeTrackingReport|Time spent"
 msgstr ""
 
-msgid "TimeTrackingReport|To"
+msgid "TimeTrackingReport|To the end of"
 msgstr ""
 
 msgid "TimeTrackingReport|Total time spent: "
@@ -50197,6 +50209,9 @@ msgid "Unable to load the merge request widget. Try reloading the page."
 msgstr ""
 
 msgid "Unable to load the page"
+msgstr ""
+
+msgid "Unable to load user list. Reload the page and try again."
 msgstr ""
 
 msgid "Unable to parse JSON"

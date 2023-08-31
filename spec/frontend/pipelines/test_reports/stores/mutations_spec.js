@@ -1,6 +1,6 @@
 import testReports from 'test_fixtures/pipelines/test_report.json';
-import * as types from '~/pipelines/stores/test_reports/mutation_types';
-import mutations from '~/pipelines/stores/test_reports/mutations';
+import * as types from '~/ci/pipeline_details/stores/test_reports/mutation_types';
+import mutations from '~/ci/pipeline_details/stores/test_reports/mutations';
 import { createAlert } from '~/alert';
 
 jest.mock('~/alert');

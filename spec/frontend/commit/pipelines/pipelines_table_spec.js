@@ -15,7 +15,7 @@ import {
   HTTP_STATUS_UNAUTHORIZED,
 } from '~/lib/utils/http_status';
 import { createAlert } from '~/alert';
-import { TOAST_MESSAGE } from '~/pipelines/constants';
+import { TOAST_MESSAGE } from '~/ci/pipeline_details/constants';
 import axios from '~/lib/utils/axios_utils';
 
 const $toast = {

@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
-import PipelineBranchNameToken from '~/pipelines/components/pipelines_list/tokens/pipeline_branch_name_token.vue';
+import PipelineBranchNameToken from '~/ci/pipeline_details/components/pipelines_list/tokens/pipeline_branch_name_token.vue';
 import { branches, mockBranchesAfterMap } from '../mock_data';
 
 describe('Pipeline Branch Name Token', () => {

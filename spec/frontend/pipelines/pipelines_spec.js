@@ -24,12 +24,12 @@ import { createAlert, VARIANT_WARNING } from '~/alert';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import NavigationControls from '~/pipelines/components/pipelines_list/nav_controls.vue';
-import PipelinesComponent from '~/pipelines/components/pipelines_list/pipelines.vue';
-import PipelinesCiTemplates from '~/pipelines/components/pipelines_list/empty_state/pipelines_ci_templates.vue';
-import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
-import { RAW_TEXT_WARNING, TRACKING_CATEGORIES } from '~/pipelines/constants';
-import Store from '~/pipelines/stores/pipelines_store';
+import NavigationControls from '~/ci/pipeline_details/components/pipelines_list/nav_controls.vue';
+import PipelinesComponent from '~/ci/pipeline_details/components/pipelines_list/pipelines.vue';
+import PipelinesCiTemplates from '~/ci/pipeline_details/components/pipelines_list/empty_state/pipelines_ci_templates.vue';
+import PipelinesTableComponent from '~/ci/pipeline_details/components/pipelines_list/pipelines_table.vue';
+import { RAW_TEXT_WARNING, TRACKING_CATEGORIES } from '~/ci/pipeline_details/constants';
+import Store from '~/ci/pipeline_details/stores/pipelines_store';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import {

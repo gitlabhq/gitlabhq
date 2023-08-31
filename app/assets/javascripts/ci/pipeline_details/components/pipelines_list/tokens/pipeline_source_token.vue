@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
-import { PIPELINE_SOURCES } from 'ee_else_ce/pipelines/components/pipelines_list/tokens/constants';
+import { PIPELINE_SOURCES } from 'ee_else_ce/ci/pipeline_details/components/pipelines_list/tokens/constants';
 
 export default {
   PIPELINE_SOURCES,

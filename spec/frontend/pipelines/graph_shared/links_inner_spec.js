@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import LinksInner from '~/pipelines/components/graph_shared/links_inner.vue';
-import { parseData } from '~/pipelines/components/parsing_utils';
-import { createJobsHash } from '~/pipelines/utils';
+import LinksInner from '~/ci/pipeline_details/components/graph_shared/links_inner.vue';
+import { parseData } from '~/ci/pipeline_details/components/parsing_utils';
+import { createJobsHash } from '~/ci/pipeline_details/utils';
 import {
   jobRect,
   largePipelineData,

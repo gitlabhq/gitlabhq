@@ -5,7 +5,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
+import PipelineArtifacts from '~/ci/pipeline_details/components/pipelines_list/pipelines_artifacts.vue';
 
 describe('Pipelines Artifacts dropdown', () => {
   let wrapper;

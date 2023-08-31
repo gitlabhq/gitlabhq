@@ -38,7 +38,7 @@ gem 'responders', '~> 3.0'
 
 gem 'sprockets', '~> 3.7.0'
 
-gem 'view_component', '~> 3.2.0'
+gem 'view_component', '~> 3.5.0'
 
 # Supported DBs
 gem 'pg', '~> 1.5.3'
@@ -199,7 +199,7 @@ gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive 
 gem 'html-pipeline', '~> 2.14.3'
 gem 'deckar01-task_list', '2.3.2'
 gem 'gitlab-markup', '~> 1.9.0', require: 'github/markup'
-gem 'commonmarker', '~> 0.23.9'
+gem 'commonmarker', '~> 0.23.10'
 gem 'kramdown', '~> 2.3.1'
 gem 'RedCloth', '~> 4.3.2'
 gem 'rdoc', '~> 6.3.2'

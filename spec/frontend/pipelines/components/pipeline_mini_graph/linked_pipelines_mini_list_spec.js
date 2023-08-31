@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import LinkedPipelinesMiniList from '~/pipelines/components/pipeline_mini_graph/linked_pipelines_mini_list.vue';
+import LinkedPipelinesMiniList from '~/ci/pipeline_details/components/pipeline_mini_graph/linked_pipelines_mini_list.vue';
 import mockData from './linked_pipelines_mock_data';
 
 describe('Linked pipeline mini list', () => {

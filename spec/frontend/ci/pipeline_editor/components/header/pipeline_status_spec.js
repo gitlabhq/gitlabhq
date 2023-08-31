@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PipelineStatus, { i18n } from '~/ci/pipeline_editor/components/header/pipeline_status.vue';
 import getPipelineQuery from '~/ci/pipeline_editor/graphql/queries/pipeline.query.graphql';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/ci/pipeline_details/components/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from '~/ci/pipeline_editor/components/header/pipeline_editor_mini_graph.vue';
 import { mockCommitSha, mockProjectPipeline, mockProjectFullPath } from '../../mock_data';
 

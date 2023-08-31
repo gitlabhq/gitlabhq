@@ -1,12 +1,12 @@
 <script>
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
-import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/pipelines/constants';
+import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
 import {
   getQueryHeaders,
   toggleQueryPollingByVisibility,
-} from '~/pipelines/components/graph/utils';
-import getPipelineStageQuery from '~/pipelines/graphql/queries/get_pipeline_stage.query.graphql';
+} from '~/ci/pipeline_details/components/graph/utils';
+import getPipelineStageQuery from '~/ci/pipeline_details/graphql/queries/get_pipeline_stage.query.graphql';
 import JobItem from './job_item.vue';
 
 export default {

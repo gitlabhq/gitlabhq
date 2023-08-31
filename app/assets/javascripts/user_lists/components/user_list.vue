@@ -39,7 +39,7 @@ export default {
     ),
     userIdLabel: s__('UserLists|User IDs'),
     userIdColumnHeader: s__('UserLists|User ID'),
-    errorMessage: __('Something went wrong on our end. Please try again!'),
+    errorMessage: __('Unable to load user list. Reload the page and try again.'),
     editButtonLabel: s__('UserLists|Edit'),
   },
   classes: {

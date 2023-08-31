@@ -1,10 +1,10 @@
 import testReports from 'test_fixtures/pipelines/test_report.json';
-import * as getters from '~/pipelines/stores/test_reports/getters';
+import * as getters from '~/ci/pipeline_details/stores/test_reports/getters';
 import {
   iconForTestStatus,
   formatFilePath,
   formattedTime,
-} from '~/pipelines/stores/test_reports/utils';
+} from '~/ci/pipeline_details/stores/test_reports/utils';
 
 describe('Getters TestReports Store', () => {
   let state;

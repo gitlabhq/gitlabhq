@@ -1,4 +1,4 @@
-import PipelineStore from '~/pipelines/stores/pipelines_store';
+import PipelineStore from '~/ci/pipeline_details/stores/pipelines_store';
 
 describe('Pipelines Store', () => {
   let store;

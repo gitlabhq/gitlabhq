@@ -1,7 +1,7 @@
 import { GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import TimeAgo from '~/pipelines/components/pipelines_list/time_ago.vue';
+import TimeAgo from '~/ci/pipeline_details/components/pipelines_list/time_ago.vue';
 
 describe('Timeago component', () => {
   let wrapper;

@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import CiTemplates from '~/pipelines/components/pipelines_list/empty_state/ci_templates.vue';
+import CiTemplates from '~/ci/pipeline_details/components/pipelines_list/empty_state/ci_templates.vue';
 
 const pipelineEditorPath = '/-/ci/editor';
 const suggestedCiTemplates = [

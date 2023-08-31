@@ -4,7 +4,7 @@ import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { mergeUrlParams, DOCS_URL } from '~/lib/utils/url_utility';
 import RunnerInstructionsModal from '~/vue_shared/components/runner_instructions/runner_instructions_modal.vue';
-import apolloProvider from '~/pipelines/graphql/provider';
+import apolloProvider from '~/ci/pipeline_details/graphql/provider';
 import CiTemplates from './ci_templates.vue';
 
 export default {

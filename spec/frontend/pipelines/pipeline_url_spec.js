@@ -1,9 +1,9 @@
 import { merge } from 'lodash';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import PipelineUrlComponent from '~/pipelines/components/pipelines_list/pipeline_url.vue';
+import PipelineUrlComponent from '~/ci/pipeline_details/components/pipelines_list/pipeline_url.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import { TRACKING_CATEGORIES } from '~/pipelines/constants';
+import { TRACKING_CATEGORIES } from '~/ci/pipeline_details/constants';
 import { mockPipeline, mockPipelineBranch, mockPipelineTag } from './mock_data';
 
 const projectPath = 'test/test';

@@ -6,10 +6,10 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import FailedJobsList from '~/pipelines/components/pipelines_list/failure_widget/failed_jobs_list.vue';
-import FailedJobDetails from '~/pipelines/components/pipelines_list/failure_widget/failed_job_details.vue';
-import * as utils from '~/pipelines/components/pipelines_list/failure_widget/utils';
-import getPipelineFailedJobs from '~/pipelines/graphql/queries/get_pipeline_failed_jobs.query.graphql';
+import FailedJobsList from '~/ci/pipeline_details/components/pipelines_list/failure_widget/failed_jobs_list.vue';
+import FailedJobDetails from '~/ci/pipeline_details/components/pipelines_list/failure_widget/failed_job_details.vue';
+import * as utils from '~/ci/pipeline_details/components/pipelines_list/failure_widget/utils';
+import getPipelineFailedJobs from '~/ci/pipeline_details/graphql/queries/get_pipeline_failed_jobs.query.graphql';
 import { failedJobsMock, failedJobsMock2, failedJobsMockEmpty, activeFailedJobsMock } from './mock';
 
 Vue.use(VueApollo);

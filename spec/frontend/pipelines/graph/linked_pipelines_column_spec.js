@@ -10,12 +10,12 @@ import {
   UPSTREAM,
   LAYER_VIEW,
   STAGE_VIEW,
-} from '~/pipelines/components/graph/constants';
-import PipelineGraph from '~/pipelines/components/graph/graph_component.vue';
-import LinkedPipeline from '~/pipelines/components/graph/linked_pipeline.vue';
-import LinkedPipelinesColumn from '~/pipelines/components/graph/linked_pipelines_column.vue';
-import * as parsingUtils from '~/pipelines/components/parsing_utils';
-import { LOAD_FAILURE } from '~/pipelines/constants';
+} from '~/ci/pipeline_details/components/graph/constants';
+import PipelineGraph from '~/ci/pipeline_details/components/graph/graph_component.vue';
+import LinkedPipeline from '~/ci/pipeline_details/components/graph/linked_pipeline.vue';
+import LinkedPipelinesColumn from '~/ci/pipeline_details/components/graph/linked_pipelines_column.vue';
+import * as parsingUtils from '~/ci/pipeline_details/components/parsing_utils';
+import { LOAD_FAILURE } from '~/ci/pipeline_details/constants';
 
 import { pipelineWithUpstreamDownstream, wrappedPipelineReturn } from './mock_data';
 

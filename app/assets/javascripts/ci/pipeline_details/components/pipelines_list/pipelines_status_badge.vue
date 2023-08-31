@@ -1,5 +1,5 @@
 <script>
-import { CHILD_VIEW, TRACKING_CATEGORIES } from '~/pipelines/constants';
+import { CHILD_VIEW, TRACKING_CATEGORIES } from '~/ci/pipeline_details/constants';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import Tracking from '~/tracking';
 import PipelinesTimeago from './time_ago.vue';

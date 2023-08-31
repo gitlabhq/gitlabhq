@@ -2,12 +2,12 @@
 import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getParameterByName } from '~/lib/utils/url_utility';
-import PipelinesTableComponent from '~/pipelines/components/pipelines_list/pipelines_table.vue';
-import { PipelineKeyOptions } from '~/pipelines/constants';
-import eventHub from '~/pipelines/event_hub';
-import PipelinesMixin from '~/pipelines/mixins/pipelines_mixin';
-import PipelinesService from '~/pipelines/services/pipelines_service';
-import PipelineStore from '~/pipelines/stores/pipelines_store';
+import PipelinesTableComponent from '~/ci/pipeline_details/components/pipelines_list/pipelines_table.vue';
+import { PipelineKeyOptions } from '~/ci/pipeline_details/constants';
+import eventHub from '~/ci/pipeline_details/event_hub';
+import PipelinesMixin from '~/ci/pipeline_details/mixins/pipelines_mixin';
+import PipelinesService from '~/ci/pipeline_details/services/pipelines_service';
+import PipelineStore from '~/ci/pipeline_details/stores/pipelines_store';
 import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, __ } from '~/locale';

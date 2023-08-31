@@ -1,10 +1,10 @@
 import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
-import { unwrapPipelineData } from '~/pipelines/components/graph/utils';
+import { unwrapPipelineData } from '~/ci/pipeline_details/components/graph/utils';
 import {
   BUILD_KIND,
   BRIDGE_KIND,
   RETRY_ACTION_TITLE,
-} from '~/pipelines/components/graph/constants';
+} from '~/ci/pipeline_details/components/graph/constants';
 
 // We mock this instead of using fixtures for performance reason.
 const mockPipelineResponseCopy = JSON.parse(JSON.stringify(mockPipelineResponse));

@@ -6,6 +6,7 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
   let_it_be(:root_group) { create(:group) }
   let_it_be(:group) { create(:group, parent: root_group) }
   let_it_be(:user)  { create(:user) }
+  let_it_be(:another_user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: group) }
 
   before do
@@ -67,6 +68,46 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
     end
   end
 
+  shared_examples 'when current_user does not have ability to modify the label' do
+    before do
+      sign_in(another_user)
+    end
+
+    it 'responds with status 404' do
+      group_request
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    # No matter what permissions you have in a sub-group, you need the proper
+    # permissions in the group in order to modify a group label
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/387531
+    context 'when trying to edit a parent group label from inside a subgroup' do
+      it 'responds with status 404' do
+        sub_group.add_owner(another_user)
+        sub_group_request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'GET #edit' do
+    let_it_be(:label) { create(:group_label, group: group) }
+
+    it 'shows the edit page' do
+      get :edit, params: { group_id: group.to_param, id: label.to_param }
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it_behaves_like 'when current_user does not have ability to modify the label' do
+      let_it_be(:sub_group) { create(:group, parent: group) }
+      let(:group_request) { get :edit, params: { group_id: group.to_param, id: label.to_param } }
+      let(:sub_group_request) { get :edit, params: { group_id: sub_group.to_param, id: label.to_param } }
+    end
+  end
+
   describe 'POST #toggle_subscription' do
     it 'allows user to toggle subscription on group labels' do
       label = create(:group_label, group: group)
@@ -107,23 +148,22 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
       end
     end
 
-    context 'when current_user does not have ability to destroy the label' do
-      let(:another_user) { create(:user) }
-
-      before do
-        sign_in(another_user)
-      end
-
-      it 'responds with status 404' do
-        label = create(:group_label, group: group)
-        delete :destroy, params: { group_id: group.to_param, id: label.to_param }
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+    it_behaves_like 'when current_user does not have ability to modify the label' do
+      let_it_be(:label) { create(:group_label, group: group) }
+      let_it_be(:sub_group) { create(:group, parent: group) }
+      let(:group_request) { delete :destroy, params: { group_id: group.to_param, id: label.to_param } }
+      let(:sub_group_request) { delete :destroy, params: { group_id: sub_group.to_param, id: label.to_param } }
     end
   end
 
   describe 'PUT #update' do
+    it_behaves_like 'when current_user does not have ability to modify the label' do
+      let_it_be(:label) { create(:group_label, group: group) }
+      let_it_be(:sub_group) { create(:group, parent: group) }
+      let(:group_request) { put :update, params: { group_id: group.to_param, id: label.to_param, label: { title: 'Test' } } }
+      let(:sub_group_request) { put :update, params: { group_id: sub_group.to_param, id: label.to_param, label: { title: 'Test' } } }
+    end
+
     context 'when updating lock_on_merge' do
       let_it_be(:params) { { lock_on_merge: true } }
       let_it_be_with_reload(:label) { create(:group_label, group: group) }

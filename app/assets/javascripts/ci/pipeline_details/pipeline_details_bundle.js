@@ -33,9 +33,9 @@ export default async function initPipelineDetailsBundle() {
 
   if (tabsEl) {
     const { dataset } = tabsEl;
-    const { createAppOptions } = await import('ee_else_ce/pipelines/pipeline_tabs');
+    const { createAppOptions } = await import('ee_else_ce/ci/pipeline_details/pipeline_tabs');
     const { createPipelineTabs } = await import('./pipeline_tabs');
-    const { routes } = await import('ee_else_ce/pipelines/routes');
+    const { routes } = await import('ee_else_ce/ci/pipeline_details/routes');
 
     const router = new VueRouter({
       mode: 'history',

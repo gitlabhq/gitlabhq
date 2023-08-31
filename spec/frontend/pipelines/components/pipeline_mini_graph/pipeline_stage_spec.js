@@ -4,8 +4,8 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
-import getPipelineStageQuery from '~/pipelines/graphql/queries/get_pipeline_stage.query.graphql';
-import PipelineStage from '~/pipelines/components/pipeline_mini_graph/pipeline_stage.vue';
+import getPipelineStageQuery from '~/ci/pipeline_details/graphql/queries/get_pipeline_stage.query.graphql';
+import PipelineStage from '~/ci/pipeline_details/components/pipeline_mini_graph/pipeline_stage.vue';
 
 Vue.use(VueApollo);
 

@@ -1,5 +1,9 @@
-import { createJobsHash, generateJobNeedsDict, getPipelineDefaultTab } from '~/pipelines/utils';
-import { validPipelineTabNames, pipelineTabName } from '~/pipelines/constants';
+import {
+  createJobsHash,
+  generateJobNeedsDict,
+  getPipelineDefaultTab,
+} from '~/ci/pipeline_details/utils';
+import { validPipelineTabNames, pipelineTabName } from '~/ci/pipeline_details/constants';
 
 describe('utils functions', () => {
   const jobName1 = 'build_1';

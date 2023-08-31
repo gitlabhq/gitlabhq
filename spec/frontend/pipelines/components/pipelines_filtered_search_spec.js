@@ -5,12 +5,12 @@ import { nextTick } from 'vue';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import PipelinesFilteredSearch from '~/pipelines/components/pipelines_list/pipelines_filtered_search.vue';
+import PipelinesFilteredSearch from '~/ci/pipeline_details/components/pipelines_list/pipelines_filtered_search.vue';
 import {
   FILTERED_SEARCH_TERM,
   OPERATORS_IS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import { TRACKING_CATEGORIES } from '~/pipelines/constants';
+import { TRACKING_CATEGORIES } from '~/ci/pipeline_details/constants';
 import { users, mockSearch, branches, tags } from '../mock_data';
 
 describe('Pipelines filtered search', () => {
