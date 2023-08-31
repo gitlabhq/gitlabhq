@@ -149,6 +149,14 @@ module QA
               end
             end
           end
+
+          def has_no_skipped_job_in_group?
+            within_element(:jobs_dropdown_menu) do
+              all_elements(:job_item_container, minimum: 1).all? do
+                has_no_selector?('.ci-status-icon-skipped')
+              end
+            end
+          end
         end
       end
     end

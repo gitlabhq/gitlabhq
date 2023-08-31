@@ -164,6 +164,24 @@ You can also use personal, project, or group access tokens with OAuth-compliant 
 curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/projects"
 ```
 
+### Job tokens
+
+You can use job tokens to authenticate with [specific API endpoints](../../ci/jobs/ci_job_token.md)
+by passing the token in the `job_token` parameter or the `JOB-TOKEN` header.
+To pass the token in GitLab CI/CD jobs, use the `CI_JOB_TOKEN` variable.
+
+Example of using the job token in a parameter:
+
+```shell
+curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts?job_token=$CI_JOB_TOKEN"
+```
+
+Example of using the job token in a header:
+
+```shell
+curl --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/releases"
+```
+
 ### Session cookie
 
 Signing in to the main GitLab application sets a `_gitlab_session` cookie. The

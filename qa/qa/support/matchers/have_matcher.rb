@@ -31,6 +31,7 @@ module QA
           incident
           framework
           delete_issue_button
+          skipped_job_in_group
         ].each do |predicate|
           RSpec::Matchers.define "have_#{predicate}" do |*args, **kwargs|
             match do |page_object|

@@ -81,7 +81,6 @@
 - insider_threat
 - instance_resiliency
 - integrations
-- intel_code_security
 - interactive_application_security_testing
 - internationalization
 - logging
@@ -112,7 +111,6 @@
 - remote_development
 - requirements_management
 - review_apps
-- runbooks
 - runner
 - runner_fleet
 - runner_saas
@@ -142,4 +140,3 @@
 - web_ide
 - webhooks
 - wiki
-- workflow_automation

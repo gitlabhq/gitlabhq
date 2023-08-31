@@ -3255,6 +3255,10 @@ class Project < ApplicationRecord
     group.crm_enabled?
   end
 
+  def supports_lock_on_merge?
+    group&.supports_lock_on_merge? || ::Feature.enabled?(:enforce_locked_labels_on_merge, self, type: :ops)
+  end
+
   def path_availability
     base, _, host = path.partition('.')
 

@@ -5,6 +5,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
+import CodeownersValidation from 'ee_component/blob/components/codeowners_validation.vue';
 import { registerPlugins } from '~/vue_shared/components/source_viewer/plugins/index';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
 import {
@@ -55,11 +56,13 @@ describe('Source Viewer component', () => {
   const fileType = 'javascript';
   const DEFAULT_BLOB_DATA = { language, rawTextBlob: content, path, blamePath, fileType };
   const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
+  const currentRef = 'main';
+  const projectPath = 'test/project';
 
   const createComponent = async (blob = {}) => {
     wrapper = shallowMountExtended(SourceViewer, {
       router,
-      propsData: { blob: { ...DEFAULT_BLOB_DATA, ...blob } },
+      propsData: { blob: { ...DEFAULT_BLOB_DATA, ...blob }, currentRef, projectPath },
     });
     await waitForPromises();
   };
@@ -267,6 +270,20 @@ describe('Source Viewer component', () => {
   describe('LineHighlighter', () => {
     it('instantiates the lineHighlighter class', () => {
       expect(LineHighlighter).toHaveBeenCalledWith({ scrollBehavior: 'auto' });
+    });
+  });
+
+  describe('Codeowners validation', () => {
+    const findCodeownersValidation = () => wrapper.findComponent(CodeownersValidation);
+
+    it('does not render codeowners validation when file is not CODEOWNERS', async () => {
+      await createComponent();
+      expect(findCodeownersValidation().exists()).toBe(false);
+    });
+
+    it('renders codeowners validation when file is CODEOWNERS', async () => {
+      await createComponent({ name: CODEOWNERS_FILE_NAME });
+      expect(findCodeownersValidation().exists()).toBe(true);
     });
   });
 });

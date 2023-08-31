@@ -58,7 +58,7 @@ When a PAT is revoked from the credentials inventory, the instance notifies the 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243833) in GitLab 14.8.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Credentials**.
 1. Select the **Project Access Tokens** tab.
@@ -72,7 +72,7 @@ The project access token is revoked and a background worker is queued to delete 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225248) in GitLab 13.5.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Credentials**.
 1. Select the **SSH Keys** tab.

@@ -19,8 +19,12 @@ module Gitlab
       end
 
       class MethodMissingError < StandardError
+        def initialize(cmd)
+          @cmd = cmd
+        end
+
         def message
-          'Method missing. Falling back to execute method on the redis default store in Rails.env.production.'
+          "Method missing #{@cmd}. Falling back to execute method on the redis default store in Rails.env.production."
         end
       end
 
@@ -37,6 +41,17 @@ module Gitlab
       FAILED_TO_RUN_PIPELINE = 'Failed to execute pipeline on the redis non_default_store.'
 
       SKIP_LOG_METHOD_MISSING_FOR_COMMANDS = %i[info].freeze
+
+      # _client and without_reconnect are Redis::Client methods which may be called through multistore
+      REDIS_CLIENT_COMMANDS = %i[
+        _client
+        without_reconnect
+      ].freeze
+
+      PUBSUB_SUBSCRIBE_COMMANDS = %i[
+        subscribe
+        unsubscribe
+      ].freeze
 
       READ_COMMANDS = %i[
         exists
@@ -71,6 +86,7 @@ module Gitlab
         incr
         incrby
         mapped_hmset
+        publish
         rpush
         sadd
         sadd?
@@ -126,7 +142,7 @@ module Gitlab
       end
 
       # rubocop:disable GitlabSecurity/PublicSend
-      READ_COMMANDS.each do |name|
+      (READ_COMMANDS + REDIS_CLIENT_COMMANDS + PUBSUB_SUBSCRIBE_COMMANDS).each do |name|
         define_method(name) do |*args, **kwargs, &block|
           if use_primary_and_secondary_stores?
             read_command(name, *args, **kwargs, &block)
@@ -246,9 +262,9 @@ module Gitlab
       def log_method_missing(command_name, *_args)
         return if SKIP_LOG_METHOD_MISSING_FOR_COMMANDS.include?(command_name)
 
-        raise MethodMissingError if Rails.env.test? || Rails.env.development?
+        raise MethodMissingError, command_name if Rails.env.test? || Rails.env.development?
 
-        log_error(MethodMissingError.new, command_name)
+        log_error(MethodMissingError.new(command_name), command_name)
         increment_method_missing_count(command_name)
       end
 

@@ -13,9 +13,7 @@ module Labels
       project_or_group = target_params[:project] || target_params[:group]
 
       if project_or_group.present?
-        if Feature.disabled?(:enforce_locked_labels_on_merge, project_or_group, type: :ops)
-          params.delete(:lock_on_merge)
-        end
+        params.delete(:lock_on_merge) unless project_or_group.supports_lock_on_merge?
 
         project_or_group.labels.create(params)
       elsif target_params[:template]

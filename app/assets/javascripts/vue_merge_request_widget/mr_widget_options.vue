@@ -56,7 +56,6 @@ import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variab
 import getStateQuery from './queries/get_state.query.graphql';
 import getStateSubscription from './queries/get_state.subscription.graphql';
 import accessibilityExtension from './extensions/accessibility';
-import testReportExtension from './extensions/test_report';
 import ReportWidgetContainer from './components/report_widget_container.vue';
 import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
 
@@ -225,9 +224,6 @@ export default {
         this.mr.mergePipelinesEnabled && this.mr.sourceProjectId !== this.mr.targetProjectId,
       );
     },
-    shouldRenderTestReport() {
-      return Boolean(this.mr?.testResultsPath);
-    },
     mergeError() {
       let { mergeError } = this.mr;
 
@@ -279,11 +275,6 @@ export default {
     shouldShowAccessibilityReport(newVal) {
       if (newVal) {
         this.registerAccessibilityExtension();
-      }
-    },
-    shouldRenderTestReport(newVal) {
-      if (newVal) {
-        this.registerTestReportExtension();
       }
     },
   },
@@ -523,11 +514,6 @@ export default {
     registerAccessibilityExtension() {
       if (this.shouldShowAccessibilityReport) {
         registerExtension(accessibilityExtension);
-      }
-    },
-    registerTestReportExtension() {
-      if (this.shouldRenderTestReport) {
-        registerExtension(testReportExtension);
       }
     },
   },

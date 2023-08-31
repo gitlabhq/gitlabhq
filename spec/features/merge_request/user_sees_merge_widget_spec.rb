@@ -646,7 +646,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'addTest'
+                click_button 'View details'
               end
             end
 
@@ -693,7 +693,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'Test#sum when a is 1 and b is 3 returns summary'
+                click_button 'View details'
               end
             end
 
@@ -741,7 +741,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'addTest'
+                click_button 'View details'
               end
             end
 
@@ -788,7 +788,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'addTest'
+                click_button 'View details'
               end
             end
 
@@ -834,7 +834,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'Test#sum when a is 4 and b is 4 returns summary'
+                click_button 'View details'
               end
             end
 
@@ -881,7 +881,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'addTest'
+                click_button 'View details'
               end
             end
 

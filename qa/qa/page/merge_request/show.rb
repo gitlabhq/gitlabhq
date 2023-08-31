@@ -138,6 +138,10 @@ module QA
           element :close_button
         end
 
+        view 'app/assets/javascripts/jobs/components/table/cells/job_cell.vue' do
+          element 'fork-icon'
+        end
+
         def start_review
           click_element(:start_review_button)
 
@@ -475,6 +479,10 @@ module QA
 
         def mr_widget_text
           find_element(:mr_widget_content).text
+        end
+
+        def has_fork_icon?
+          has_element?('fork-icon', skip_finished_loading_check: true)
         end
       end
     end

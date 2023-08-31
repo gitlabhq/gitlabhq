@@ -1,13 +1,11 @@
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import testReportExtension from '~/vue_merge_request_widget/extensions/test_report';
+import testReportExtension from '~/vue_merge_request_widget/extensions/test_report/index.vue';
 import { i18n } from '~/vue_merge_request_widget/extensions/test_report/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
-import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
-import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
   HTTP_STATUS_NO_CONTENT,
@@ -34,12 +32,10 @@ describe('Test report extension', () => {
   let wrapper;
   let mock;
 
-  registerExtension(testReportExtension);
-
   const endpoint = '/root/repo/-/merge_requests/4/test_reports.json';
 
   const mockApi = (statusCode, data = mixedResultsTestReports) => {
-    mock.onGet(endpoint).reply(statusCode, data);
+    mock.onGet(endpoint).reply(statusCode, data, {});
   };
 
   const findToggleCollapsedButton = () => wrapper.findByTestId('toggle-button');
@@ -49,7 +45,7 @@ describe('Test report extension', () => {
   const findModal = () => wrapper.findComponent(TestCaseDetails);
 
   const createComponent = () => {
-    wrapper = mountExtended(extensionsContainer, {
+    wrapper = mountExtended(testReportExtension, {
       propsData: {
         mr: {
           testResultsPath: endpoint,
@@ -84,7 +80,7 @@ describe('Test report extension', () => {
       expect(wrapper.text()).toContain(i18n.loading);
     });
 
-    it('with a 204 response, continues to display loading state', async () => {
+    it('with a "no content" response, continues to display loading state', async () => {
       mockApi(HTTP_STATUS_NO_CONTENT, '');
       createComponent();
 
@@ -269,7 +265,7 @@ describe('Test report extension', () => {
     beforeEach(async () => {
       await createExpandedWidgetWithData();
 
-      wrapper.findByTestId('modal-link').trigger('click');
+      wrapper.findByTestId('extension-actions-button').trigger('click');
     });
 
     it('opens a modal to display test case details', () => {

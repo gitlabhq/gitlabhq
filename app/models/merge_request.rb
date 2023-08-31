@@ -737,7 +737,7 @@ class MergeRequest < ApplicationRecord
   def supports_lock_on_merge?
     return false unless merged?
 
-    Feature.enabled?(:enforce_locked_labels_on_merge, project, type: :ops)
+    project.supports_lock_on_merge?
   end
 
   # Calls `MergeWorker` to proceed with the merge process and

@@ -904,6 +904,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:linked_work_items)
   end
 
+  def supports_lock_on_merge?
+    feature_flag_enabled_for_self_or_ancestor?(:enforce_locked_labels_on_merge, type: :ops)
+  end
+
   def usage_quotas_enabled?
     ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
   end
@@ -945,12 +949,12 @@ class Group < Namespace
 
   private
 
-  def feature_flag_enabled_for_self_or_ancestor?(feature_flag)
+  def feature_flag_enabled_for_self_or_ancestor?(feature_flag, type: :development)
     actors = [root_ancestor]
     actors << self if root_ancestor != self
 
     actors.any? do |actor|
-      ::Feature.enabled?(feature_flag, actor)
+      ::Feature.enabled?(feature_flag, actor, type: type)
     end
   end
 

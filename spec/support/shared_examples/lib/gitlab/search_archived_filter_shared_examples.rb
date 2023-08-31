@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'search results filtered by archived' do |feature_flag_name|
+RSpec.shared_examples 'search results filtered by archived' do |feature_flag_name, migration_name|
   context 'when filter not provided (all behavior)' do
     let(:filters) { {} }
 
@@ -34,6 +34,21 @@ RSpec.shared_examples 'search results filtered by archived' do |feature_flag_nam
 
       before do
         stub_feature_flags("#{feature_flag_name}": false)
+      end
+
+      it 'returns archived and unarchived results' do
+        expect(results.objects(scope)).to include unarchived_result
+        expect(results.objects(scope)).to include archived_result
+      end
+    end
+  end
+
+  if migration_name.present?
+    context "when the #{migration_name} is not completed" do
+      let(:filters) { {} }
+
+      before do
+        set_elasticsearch_migration_to(migration_name.to_s, including: false)
       end
 
       it 'returns archived and unarchived results' do

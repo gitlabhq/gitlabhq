@@ -1,9 +1,17 @@
-- @content_class = "limit-container-width" unless fluid_layout
 - add_to_breadcrumbs _("Incidents"), project_incidents_path(@project)
 - breadcrumb_title @issue.to_reference
+
 - page_title "#{@issue.title} (#{@issue.to_reference})", _("Incidents")
+- page_description @issue.description_html
+- page_card_attributes @issue.card_attributes
+- if @issue.relocation_target
+  - page_canonical_link @issue.relocation_target.present(current_user: current_user).web_url
+
 - add_page_specific_style 'page_bundles/design_management'
 - add_page_specific_style 'page_bundles/incidents'
+- add_page_specific_style 'page_bundles/issuable'
 - add_page_specific_style 'page_bundles/issues_show'
 
-= render 'projects/issuable/show', issuable: @issue
+- @content_class = "limit-container-width" unless fluid_layout
+
+= render 'projects/issues/details_content', issuable: @issue

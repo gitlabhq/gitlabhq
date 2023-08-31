@@ -94,7 +94,7 @@ class Groups::LabelsController < Groups::ApplicationController
 
   def label_params
     allowed = [:title, :description, :color]
-    allowed << :lock_on_merge if Feature.enabled?(:enforce_locked_labels_on_merge, @project, type: :ops)
+    allowed << :lock_on_merge if @group.supports_lock_on_merge?
 
     params.require(:label).permit(allowed)
   end

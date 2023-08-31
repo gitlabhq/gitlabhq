@@ -29,6 +29,11 @@ export default {
         return {};
       },
     },
+    visible: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     failureHistoryMessage() {
@@ -77,6 +82,8 @@ export default {
     :modal-id="modalId"
     :title="testCase.classname"
     :action-primary="$options.modalCloseButton"
+    :visible="visible"
+    @hidden="$emit('hidden')"
   >
     <div class="gl-display-flex gl-flex-wrap gl-mx-n4 gl-my-3">
       <strong class="gl-text-right col-sm-3">{{ $options.text.name }}</strong>

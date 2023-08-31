@@ -3,7 +3,7 @@ table_name: merge_request_predictions
 classes:
 - MergeRequest::Predictions
 feature_categories:
-- workflow_automation
+- code_review_workflow
 description: Includes machine learning model predictions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97622
 milestone: '15.4'

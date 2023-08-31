@@ -9164,6 +9164,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#supports_lock_on_merge?' do
+    it_behaves_like 'checks self (project) and root ancestor feature flag' do
+      let(:feature_flag) { :enforce_locked_labels_on_merge }
+      let(:feature_flag_method) { :supports_lock_on_merge? }
+    end
+  end
+
   private
 
   def finish_job(export_job)

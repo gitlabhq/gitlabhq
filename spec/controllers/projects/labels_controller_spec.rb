@@ -317,13 +317,29 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
         end
       end
 
-      context 'when feature flag is enabled' do
-        it 'allows setting lock_on_merge' do
+      shared_examples 'allows setting lock_on_merge' do
+        it do
           update_request
 
           expect(response).to redirect_to(namespace_project_labels_path)
           expect(label.reload.lock_on_merge).to be_truthy
         end
+      end
+
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: project)
+        end
+
+        it_behaves_like 'allows setting lock_on_merge'
+      end
+
+      context 'when feature flag for ancestor group is enabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: group)
+        end
+
+        it_behaves_like 'allows setting lock_on_merge'
       end
     end
   end

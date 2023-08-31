@@ -14675,6 +14675,9 @@ msgstr ""
 msgid "DORA4Metrics|Merge request throughput"
 msgstr ""
 
+msgid "DORA4Metrics|Metrics comparison for %{name}"
+msgstr ""
+
 msgid "DORA4Metrics|Metrics comparison for %{name} group"
 msgstr ""
 

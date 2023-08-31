@@ -1,4 +1,4 @@
-import { GlDropdownDivider, GlModal, GlToggle } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDropdownDivider, GlModal, GlToggle } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
@@ -55,7 +55,7 @@ describe('WorkItemActions component', () => {
   const findCopyReferenceButton = () => wrapper.findByTestId(TEST_ID_COPY_REFERENCE_ACTION);
   const findCopyCreateNoteEmailButton = () =>
     wrapper.findByTestId(TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION);
-  const findDropdownItems = () => wrapper.findAll('[data-testid="work-item-actions-dropdown"] > *');
+  const findDropdownItems = () => wrapper.findAll('[data-testid="disclosure-content"] > *');
   const findDropdownItemsActual = () =>
     findDropdownItems().wrappers.map((x) => {
       if (x.is(GlDropdownDivider)) {
@@ -143,6 +143,7 @@ describe('WorkItemActions component', () => {
             show: modalShowSpy,
           },
         }),
+        GlDisclosureDropdown,
       },
     });
   };
@@ -208,7 +209,7 @@ describe('WorkItemActions component', () => {
     it('emits `toggleWorkItemConfidentiality` event when clicked', () => {
       createComponent();
 
-      findConfidentialityToggleButton().vm.$emit('click');
+      findConfidentialityToggleButton().vm.$emit('action');
 
       expect(wrapper.emitted('toggleWorkItemConfidentiality')[0]).toEqual([true]);
     });
@@ -228,7 +229,7 @@ describe('WorkItemActions component', () => {
     it('shows confirm modal when clicked', () => {
       createComponent();
 
-      findDeleteButton().vm.$emit('click');
+      findDeleteButton().vm.$emit('action');
 
       expect(modalShowSpy).toHaveBeenCalled();
     });
@@ -359,7 +360,7 @@ describe('WorkItemActions component', () => {
       await waitForPromises();
 
       expect(findPromoteButton().exists()).toBe(true);
-      findPromoteButton().vm.$emit('click');
+      findPromoteButton().vm.$emit('action');
 
       await waitForPromises();
 
@@ -378,7 +379,7 @@ describe('WorkItemActions component', () => {
       await waitForPromises();
 
       expect(findPromoteButton().exists()).toBe(true);
-      findPromoteButton().vm.$emit('click');
+      findPromoteButton().vm.$emit('action');
 
       await waitForPromises();
 
@@ -394,7 +395,7 @@ describe('WorkItemActions component', () => {
       createComponent();
 
       expect(findCopyReferenceButton().exists()).toBe(true);
-      findCopyReferenceButton().vm.$emit('click');
+      findCopyReferenceButton().vm.$emit('action');
 
       expect(toast).toHaveBeenCalledWith('Reference copied');
     });
@@ -416,7 +417,7 @@ describe('WorkItemActions component', () => {
       createComponent();
 
       expect(findCopyCreateNoteEmailButton().exists()).toBe(true);
-      findCopyCreateNoteEmailButton().vm.$emit('click');
+      findCopyCreateNoteEmailButton().vm.$emit('action');
 
       expect(toast).toHaveBeenCalledWith('Email address copied');
     });

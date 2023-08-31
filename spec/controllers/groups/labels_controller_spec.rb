@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Groups::LabelsController, feature_category: :team_planning do
-  let_it_be(:group) { create(:group) }
+  let_it_be(:root_group) { create(:group) }
+  let_it_be(:group) { create(:group, parent: root_group) }
   let_it_be(:user)  { create(:user) }
   let_it_be(:project) { create(:project, namespace: group) }
 
@@ -142,13 +143,29 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
         end
       end
 
-      context 'when feature flag is enabled' do
-        it 'allows setting lock_on_merge' do
+      shared_examples 'allows setting lock_on_merge' do
+        it do
           update_request
 
           expect(response).to redirect_to(group_labels_path)
           expect(label.reload.lock_on_merge).to be_truthy
         end
+      end
+
+      context 'when feature flag for group is enabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: group)
+        end
+
+        it_behaves_like 'allows setting lock_on_merge'
+      end
+
+      context 'when feature flag for ancestor group is enabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: root_group)
+        end
+
+        it_behaves_like 'allows setting lock_on_merge'
       end
     end
   end

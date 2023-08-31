@@ -718,14 +718,14 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
       end
 
       describe 'when user has made changes' do
-        it 'shows a warning and can leave page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/410497' do
+        it 'shows a warning and can leave page' do
           content = 'new issue content'
           find('body').send_keys('e')
           fill_in 'issue-description', with: content
 
-          click_link 'Boards'
-
-          page.driver.browser.switch_to.alert.accept
+          click_link 'Boards' do
+            page.driver.browser.switch_to.alert.accept
+          end
 
           expect(page).not_to have_content(content)
         end

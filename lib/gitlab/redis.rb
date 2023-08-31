@@ -13,6 +13,7 @@ module Gitlab
       Gitlab::Redis::DbLoadBalancing,
       Gitlab::Redis::FeatureFlag,
       Gitlab::Redis::Queues,
+      Gitlab::Redis::Pubsub,
       Gitlab::Redis::RateLimiting,
       Gitlab::Redis::RepositoryCache,
       Gitlab::Redis::Sessions,

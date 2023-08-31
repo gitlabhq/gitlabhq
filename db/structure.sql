@@ -18974,9 +18974,7 @@ CREATE TABLE namespace_details (
     updated_at timestamp with time zone,
     cached_markdown_version integer,
     description text,
-    description_html text,
-    dashboard_notification_at timestamp with time zone,
-    dashboard_enforcement_at timestamp with time zone
+    description_html text
 );
 
 CREATE TABLE namespace_ldap_settings (

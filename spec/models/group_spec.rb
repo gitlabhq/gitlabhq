@@ -3309,6 +3309,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#supports_lock_on_merge?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :enforce_locked_labels_on_merge }
+      let(:feature_flag_method) { :supports_lock_on_merge? }
+    end
+  end
+
   describe 'group shares' do
     let!(:sub_group) { create(:group, parent: group) }
     let!(:sub_sub_group) { create(:group, parent: sub_group) }

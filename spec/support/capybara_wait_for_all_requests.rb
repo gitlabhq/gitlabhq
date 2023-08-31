@@ -35,8 +35,10 @@ module Capybara
       end
 
       module WaitForAllRequestsAfterClickLink
-        def click_link(locator = nil, **options)
+        def click_link(locator = nil, **options, &block)
           super
+
+          yield if block
 
           wait_for_all_requests
         end
