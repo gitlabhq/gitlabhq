@@ -6,7 +6,7 @@ RSpec.describe ErrorTracking::ListProjectsService, feature_category: :integratio
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project) }
 
-  let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }
+  let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/org/proj/' }
   let(:token) { 'test-token' }
   let(:new_api_host) { 'https://gitlab.com/' }
   let(:new_token) { 'new-token' }
@@ -63,6 +63,20 @@ RSpec.describe ErrorTracking::ListProjectsService, feature_category: :integratio
 
           it 'uses database token' do
             expect { subject.execute }.not_to change { error_tracking_setting.token }
+          end
+        end
+
+        context 'with the similar api host' do
+          let(:api_host) { 'https://sentrytest.gitlab.co' }
+
+          it 'returns an error' do
+            expect(result[:message]).to start_with('Token is a required field')
+            expect(error_tracking_setting).not_to be_valid
+            expect(error_tracking_setting).not_to receive(:list_sentry_projects)
+          end
+
+          it 'resets the token' do
+            expect { subject.execute }.to change { error_tracking_setting.token }.from(token).to(nil)
           end
         end
 
