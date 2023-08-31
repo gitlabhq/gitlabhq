@@ -9548,6 +9548,9 @@ msgstr ""
 msgid "Changes:"
 msgstr ""
 
+msgid "Changing any setting bellow doesn't require an application restart"
+msgstr ""
+
 msgid "Changing any setting here requires an application restart"
 msgstr ""
 
@@ -10413,6 +10416,9 @@ msgid "Clients"
 msgstr ""
 
 msgid "Clientside DSN"
+msgstr ""
+
+msgid "Clientside traces sample rate"
 msgstr ""
 
 msgid "Clone"
@@ -11964,9 +11970,6 @@ msgid "CompareRevisions|There was an error while loading the branch/tag list. Pl
 msgstr ""
 
 msgid "CompareRevisions|There was an error while searching the branch/tag list. Please try again."
-msgstr ""
-
-msgid "CompareRevisions|There was an error while updating the branch/tag list. Please try again."
 msgstr ""
 
 msgid "CompareRevisions|View open merge request"
@@ -22229,6 +22232,9 @@ msgid "Group avatar"
 msgstr ""
 
 msgid "Group by"
+msgstr ""
+
+msgid "Group by:"
 msgstr ""
 
 msgid "Group description (optional)"
@@ -53550,9 +53556,6 @@ msgid "WorkItem|Due date"
 msgstr ""
 
 msgid "WorkItem|Existing task"
-msgstr ""
-
-msgid "WorkItem|Health status"
 msgstr ""
 
 msgid "WorkItem|History only"

@@ -114,32 +114,43 @@ module SidebarsHelper
     nav: nil, project: nil, user: nil, group: nil, current_ref: nil, ref_type: nil,
     viewed_user: nil, organization: nil)
     context_adds = { route_is_active: method(:active_nav_link?), is_super_sidebar: true }
-    case nav
-    when 'project'
-      context = project_sidebar_context(project, user, current_ref, ref_type: ref_type, **context_adds)
-      Sidebars::Projects::SuperSidebarPanel.new(context)
-    when 'group'
-      context = group_sidebar_context(group, user, **context_adds)
-      Sidebars::Groups::SuperSidebarPanel.new(context)
-    when 'profile'
-      context = Sidebars::Context.new(current_user: user, container: user, **context_adds)
-      Sidebars::UserSettings::Panel.new(context)
-    when 'user_profile'
-      context = Sidebars::Context.new(current_user: user, container: viewed_user, **context_adds)
-      Sidebars::UserProfile::Panel.new(context)
-    when 'explore'
-      Sidebars::Explore::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
-    when 'search'
-      context = Sidebars::Context.new(current_user: user, container: nil, **context_adds)
-      Sidebars::Search::Panel.new(context)
-    when 'admin'
-      Sidebars::Admin::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
-    when 'organization'
-      context = organization_sidebar_context(organization, user, **context_adds)
-      Sidebars::Organizations::SuperSidebarPanel.new(context)
-    else
+    panel = case nav
+            when 'project'
+              context = project_sidebar_context(project, user, current_ref, ref_type: ref_type, **context_adds)
+              Sidebars::Projects::SuperSidebarPanel.new(context)
+            when 'group'
+              context = group_sidebar_context(group, user, **context_adds)
+              Sidebars::Groups::SuperSidebarPanel.new(context)
+            when 'profile'
+              context = Sidebars::Context.new(current_user: user, container: user, **context_adds)
+              Sidebars::UserSettings::Panel.new(context)
+            when 'user_profile'
+              context = Sidebars::Context.new(current_user: user, container: viewed_user, **context_adds)
+              Sidebars::UserProfile::Panel.new(context)
+            when 'explore'
+              Sidebars::Explore::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+            when 'search'
+              context = Sidebars::Context.new(current_user: user, container: nil, **context_adds)
+              Sidebars::Search::Panel.new(context)
+            when 'admin'
+              Sidebars::Admin::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+            when 'organization'
+              context = organization_sidebar_context(organization, user, **context_adds)
+              Sidebars::Organizations::SuperSidebarPanel.new(context)
+            when 'your_work'
+              context = your_work_sidebar_context(user, **context_adds)
+              Sidebars::YourWork::Panel.new(context)
+            end
+
+    # We only return the panel if any menu item is rendered, otherwise fallback
+    return panel if panel&.render?
+
+    # Fallback menu "Your work" for logged-in users, "Explore" for logged-out
+    if user
       context = your_work_sidebar_context(user, **context_adds)
       Sidebars::YourWork::Panel.new(context)
+    else
+      Sidebars::Explore::Panel.new(Sidebars::Context.new(current_user: nil, container: nil, **context_adds))
     end
   end
 

@@ -17,4 +17,12 @@
       = f.label :sentry_environment, _('Environment'), class: 'label-light'
       = f.text_field :sentry_environment, class: 'form-control gl-form-input', placeholder: Rails.env
 
+  %p.text-muted
+    = _("Changing any setting bellow doesn't require an application restart")
+
+  %fieldset
+    .form-group
+      = f.label :sentry_clientside_traces_sample_rate, _('Clientside traces sample rate'), class: 'label-light'
+      = f.number_field :sentry_clientside_traces_sample_rate, class: 'form-control gl-form-input', placeholder: '0.5', min: 0, max: 1, step: 0.001
+
   = f.submit _('Save changes'), pajamas_button: true

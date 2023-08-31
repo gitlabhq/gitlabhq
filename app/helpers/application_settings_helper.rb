@@ -479,6 +479,7 @@ module ApplicationSettingsHelper
       :sentry_dsn,
       :sentry_clientside_dsn,
       :sentry_environment,
+      :sentry_clientside_traces_sample_rate,
       :sidekiq_job_limiter_mode,
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,

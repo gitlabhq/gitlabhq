@@ -62,6 +62,12 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      isMouseIn: false,
+      canClickPinButton: false,
+    };
+  },
   computed: {
     pillData() {
       return this.item.pill_count;
@@ -119,11 +125,20 @@ export default {
       return this.item.to ? NavItemRouterLink : NavItemLink;
     },
   },
+  methods: {
+    togglePointerEvents() {
+      if (this.isMouseIn) {
+        this.canClickPinButton = true;
+      } else {
+        this.canClickPinButton = false;
+      }
+    },
+  },
 };
 </script>
 
 <template>
-  <li>
+  <li @mouseenter="isMouseIn = true" @mouseleave="isMouseIn = false">
     <component
       :is="navItemLinkComponent"
       #default="{ isActive }"
@@ -174,8 +189,10 @@ export default {
           category="tertiary"
           icon="thumbtack"
           class="show-on-focus-or-hover--target"
+          :class="{ 'gl-pointer-events-none': !canClickPinButton }"
           :aria-label="$options.i18n.pinItem"
           @click.prevent="$emit('pin-add', item.id)"
+          @transitionend="togglePointerEvents"
         />
         <gl-button
           v-else-if="isPinnable && isPinned"
@@ -185,7 +202,9 @@ export default {
           :aria-label="$options.i18n.unpinItem"
           icon="thumbtack-solid"
           class="show-on-focus-or-hover--target"
+          :class="{ 'gl-pointer-events-none': !canClickPinButton }"
           @click.prevent="$emit('pin-remove', item.id)"
+          @transitionend="togglePointerEvents"
         />
       </span>
     </component>

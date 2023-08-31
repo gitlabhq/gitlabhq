@@ -53,4 +53,5 @@ RSpec.describe Sidebars::Groups::SuperSidebarPanel, feature_category: :navigatio
 
   it_behaves_like 'a panel with uniquely identifiable menu items'
   it_behaves_like 'a panel with all menu_items categorized'
+  it_behaves_like 'a panel instantiable by the anonymous user'
 end

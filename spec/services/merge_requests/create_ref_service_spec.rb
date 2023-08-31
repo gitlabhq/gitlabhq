@@ -89,7 +89,7 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
         it 'merges with a merge commit', :aggregate_failures do
           expect(result[:status]).to eq :success
           expect(result[:commit_sha]).to eq(project.repository.commit(target_ref).sha)
-          expect(result[:source_sha]).to eq(project.repository.commit(target_ref).parents[1].sha)
+          expect(result[:source_sha]).to eq(project.repository.commit(source_branch).sha)
           expect(result[:target_sha]).to eq(project.repository.commit(first_parent_ref).sha)
           expect(project.repository.commits(target_ref, limit: 10, order: 'topo').map(&:message)).to(
             match(
@@ -109,7 +109,7 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
         it 'writes the squashed result', :aggregate_failures do
           expect(result[:status]).to eq :success
           expect(result[:commit_sha]).to eq(project.repository.commit(target_ref).sha)
-          expect(result[:source_sha]).to eq(project.repository.commit(target_ref).parents[1].sha)
+          expect(result[:source_sha]).to eq(project.repository.commit(source_branch).sha)
           expect(result[:target_sha]).to eq(project.repository.commit(first_parent_ref).sha)
           expect(project.repository.commits(target_ref, limit: 10, order: 'topo').map(&:message)).to(
             match(
@@ -128,7 +128,7 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
         it 'writes the squashed result without a merge commit', :aggregate_failures do
           expect(result[:status]).to eq :success
           expect(result[:commit_sha]).to eq(project.repository.commit(target_ref).sha)
-          expect(result[:source_sha]).to eq(project.repository.commit(target_ref).sha)
+          expect(result[:source_sha]).to eq(project.repository.commit(source_branch).sha)
           expect(result[:target_sha]).to eq(project.repository.commit(first_parent_ref).sha)
           expect(project.repository.commits(target_ref, limit: 10, order: 'topo').map(&:message)).to(
             match(
@@ -146,7 +146,7 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
         it 'writes the rebased merged result', :aggregate_failures do
           expect(result[:status]).to eq :success
           expect(result[:commit_sha]).to eq(project.repository.commit(target_ref).sha)
-          expect(result[:source_sha]).to eq(project.repository.commit(target_ref).sha)
+          expect(result[:source_sha]).to eq(project.repository.commit(source_branch).sha)
           expect(result[:target_sha]).to eq(project.repository.commit(first_parent_ref).sha)
           expect(project.repository.commits(target_ref, limit: 10, order: 'topo').map(&:message)).to(
             eq(

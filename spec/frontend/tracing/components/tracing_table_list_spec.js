@@ -49,7 +49,7 @@ describe('TracingTableList', () => {
 
     mockTraces.forEach((trace, i) => {
       expect(getCells(i).length).toBe(4);
-      expect(getCell(i, 0).text()).toBe(trace.timestamp);
+      expect(getCell(i, 0).text()).toBe('Jul 10, 2023 3:02pm UTC');
       expect(getCell(i, 1).text()).toBe(trace.service_name);
       expect(getCell(i, 2).text()).toBe(trace.operation);
       expect(getCell(i, 3).text()).toBe(`${trace.duration_nano / 1000} ms`);

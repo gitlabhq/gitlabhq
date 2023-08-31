@@ -8,6 +8,14 @@ module Sidebars
         _('Search results')
       end
 
+      # The Search Panel is a special candidate and renderable,
+      # even though it has no backend-defined menus.
+      # It will receive it's menu items in the frontend
+      override :render?
+      def render?
+        true
+      end
+
       override :super_sidebar_context_header
       def super_sidebar_context_header
         @super_sidebar_context_header ||= {

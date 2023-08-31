@@ -28,6 +28,9 @@ class IssuePresenter < Gitlab::View::Presenter::Delegated
     Gitlab::Utils::Email.obfuscated_email(super, deform: true)
   end
 
+  delegator_override :external_author
+  alias_method :external_author, :service_desk_reply_to
+
   delegator_override :issue_email_participants
   def issue_email_participants
     issue.issue_email_participants.present(current_user: current_user)

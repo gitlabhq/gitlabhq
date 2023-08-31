@@ -86,7 +86,7 @@ export default {
     <gl-loading-icon size="lg" />
   </div>
 
-  <div v-else-if="trace" data-testid="trace-details">
+  <div v-else-if="trace" data-testid="trace-details" class="gl-mx-7">
     <tracing-details-header :trace="trace" />
     <tracing-details-chart :trace="trace" />
   </div>

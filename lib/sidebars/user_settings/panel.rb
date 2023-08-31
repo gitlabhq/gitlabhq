@@ -29,6 +29,8 @@ module Sidebars
       private
 
       def add_menus
+        return unless context.current_user
+
         add_menu(Sidebars::UserSettings::Menus::ProfileMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::AccountMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::ApplicationsMenu.new(context))

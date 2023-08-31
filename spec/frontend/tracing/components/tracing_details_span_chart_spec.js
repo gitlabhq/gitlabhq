@@ -1,4 +1,4 @@
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TracingDetailsSpansChart from '~/tracing/components/tracing_details_spans_chart.vue';
 
@@ -111,7 +111,9 @@ describe('TracingDetailsSpansChart', () => {
     });
 
     it('renders span operation and service name', () => {
-      expect(getSpanDetails(0).text()).toBe('operation-1 service-1');
+      const textContents = getSpanDetails(0).findAllComponents(GlTruncate);
+      expect(textContents.at(0).props('text')).toBe('operation-1');
+      expect(textContents.at(1).props('text')).toBe('service-1');
     });
 
     it('renders the expanded button', () => {

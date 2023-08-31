@@ -854,7 +854,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
           sentry_enabled: true,
           sentry_dsn: 'http://sentry.example.com',
           sentry_clientside_dsn: 'http://sentry.example.com',
-          sentry_environment: 'production'
+          sentry_environment: 'production',
+          sentry_clientside_traces_sample_rate: 0.25
         }
       end
 

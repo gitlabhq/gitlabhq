@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTruncate } from '@gitlab/ui';
 import { clamp } from 'lodash';
 import { formatDurationMs } from './trace_utils';
 
@@ -7,6 +7,7 @@ export default {
   name: 'TracingDetailsSpansChart',
   components: {
     GlButton,
+    GlTruncate,
   },
   props: {
     spans: {
@@ -46,7 +47,7 @@ export default {
   },
   methods: {
     expandedState(spans) {
-      return spans.map(() => true);
+      return spans.map((x) => x.children.length > 0);
     },
     hasChildrenSpans(index) {
       return this.spans[index].children.length > 0;
@@ -90,21 +91,27 @@ export default {
       <div class="gl-display-flex gl-border-b gl-hover-bg-t-gray-a-08">
         <div
           data-testid="span-details"
-          class="gl-w-40p gl-min-w-20 gl-display-flex gl-flex-direction-row gl-p-3 gl-border-r"
+          class="gl-w-30p gl-min-w-20 gl-display-flex gl-flex-direction-row gl-p-3 gl-border-r"
           :style="spanDetailsStyle"
         >
-          <gl-button
-            class="gl-mr-1"
-            :class="{ invisible: !hasChildrenSpans(index) }"
-            :icon="`chevron-${isExpanded(index) ? 'down' : 'up'}`"
-            category="tertiary"
-            size="small"
-            @click="toggleExpand(index)"
-          />
+          <div>
+            <gl-button
+              class="gl-mr-1"
+              :class="{ invisible: !hasChildrenSpans(index) }"
+              :icon="`chevron-${isExpanded(index) ? 'down' : 'up'}`"
+              category="tertiary"
+              size="small"
+              @click="toggleExpand(index)"
+            />
+          </div>
 
           <div class="gl-display-flex gl-flex-direction-column gl-text-truncate">
-            <span class="gl-font-weight-bold gl-text-primary"> {{ span.operation }}</span>
-            <span class="gl-text-secondary">{{ span.service }}</span>
+            <gl-truncate
+              class="gl-font-weight-bold gl-text-primary"
+              :text="span.operation"
+              with-tooltip
+            />
+            <gl-truncate class="gl-text-secondary" :text="span.service" with-tooltip />
           </div>
         </div>
 
@@ -123,7 +130,7 @@ export default {
       </div>
 
       <tracing-details-spans-chart
-        v-if="isExpanded(index) && span.children.length > 0"
+        v-if="isExpanded(index)"
         :spans="span.children"
         :depth="depth + 1"
         :trace-duration-ms="traceDurationMs"

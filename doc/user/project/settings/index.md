@@ -11,7 +11,9 @@ Use the **Settings** page to manage the configuration options in your [project](
 
 ## View project settings
 
-You must have at least the Maintainer role to view project settings.
+Prerequisite:
+
+- You must have at least the Maintainer role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
@@ -31,7 +33,7 @@ Use the project general settings to edit your project details.
 
 ## Assign topics to a project
 
-Use topics to categorize projects and find similar new projects.
+Use [topics](../working_with_projects.md#organizing-projects-with-topics) to categorize projects and find similar new projects.
 
 To assign topics to a project:
 
@@ -51,9 +53,9 @@ The assigned topics are visible only to users with access to the project, but ev
 A project's repository name defines its URL and its place on the file disk
 where GitLab is installed.
 
-Prerequisites:
+Prerequisite:
 
-You must be a project maintainer, owner, or administrator to rename a repository.
+- You must be an administrator or have the Maintainer or Owner role for the project.
 
 NOTE:
 When you change the repository path, users may experience issues if they push to, or pull from, the old URL. For more information, see
@@ -99,7 +101,7 @@ When you disable a feature, the following additional features are also disabled:
   - **Git Large File Storage**
   - **Packages**
 
-- Metrics dashboard access requires reading project environments and deployments.
+- The metrics dashboard requires read access to project environments and deployments.
   Users with access to the metrics dashboard can also access environments and deployments.
 
 ## Configure merge request settings for a project
@@ -108,16 +110,18 @@ Configure your project's merge request settings:
 
 - Set up the [merge request method](../merge_requests/methods/index.md) (merge commit, fast-forward merge).
 - Add merge request [description templates](../description_templates.md).
-- Enable [merge request approvals](../merge_requests/approvals/index.md).
-- Enable [status checks](../merge_requests/status_checks.md).
-- Enable [merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
-- Enable [merge only when all threads are resolved](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved).
-- Enable [require an associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
-- Enable [**Delete source branch when merge request is accepted** option by default](#delete-the-source-branch-on-merge-by-default).
-- Configure [suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
-- Configure [merge and squash commit message templates](../merge_requests/commit_templates.md).
-- Configure [the default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
-- Enable [Suggested Reviewers](../merge_requests/reviews/index.md#suggested-reviewers).
+- Enable:
+  - [Merge request approvals](../merge_requests/approvals/index.md).
+  - [Status checks](../merge_requests/status_checks.md).
+  - [Merge only if pipeline succeeds](../merge_requests/merge_when_pipeline_succeeds.md).
+  - [Merge only when all threads are resolved](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved).
+  - [Required associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
+  - [Suggested Reviewers](../merge_requests/reviews/index.md#suggested-reviewers)
+  - [**Delete source branch when merge request is accepted** option by default](#delete-the-source-branch-on-merge-by-default).
+- Configure:
+  - [Suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
+  - [Merge and squash commit message templates](../merge_requests/commit_templates.md).
+  - [Default target project](../merge_requests/creating_merge_requests.md#set-the-default-target-project) for merge requests coming from forks.
 
 ### Delete the source branch on merge by default
 
@@ -141,12 +145,18 @@ When you transfer a project to another namespace, you move the project to a diff
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the [group](../../group/index.md#create-a-group) to which you are transferring.
+- You must have at least the Maintainer role for the [group](../../group/index.md#create-a-group) you are transferring to.
 - You must be the Owner of the project you transfer.
 - The group must allow creation of new projects.
 - The project must not contain any [container images](../../packages/container_registry/index.md#move-or-rename-container-registry-repositories).
-- Remove any npm packages. If you transfer a project to a different root namespace, the project must not contain any npm packages. When you update the path of a user or group, or transfer a subgroup or project, you must remove any npm packages first. You cannot update the root namespace of a project with npm packages. Make sure you update your .npmrc files to follow the naming convention and run npm publish if necessary.
-- If a security policy is assigned to the project, it is automatically unassigned during the transfer.
+- The project must not have a security policy.
+  If a security policy is assigned to the project, it is automatically unassigned during the transfer.
+- If the root namespace changes, you must remove npm packages that follow the [naming convention](../../../user/packages/npm_registry/index.md#naming-convention) from the project.
+  After you transfer the project you can either:
+
+  - Update the package scope with the new root namespace path, and publish it again to the project.
+  - Republish the package to the project without updating the root namespace path, which causes the package to no longer follow the naming convention.
+    If you republish the package without updating the root namespace path, it will not be available at the [instance level endpoint](../../../user/packages/npm_registry/index.md#install-from-the-instance-level).
 
 To transfer a project:
 
@@ -174,7 +184,7 @@ When you transfer a project from a namespace licensed for GitLab SaaS Premium or
 ## Archive a project
 
 When you archive a project, the repository, packages, issues, merge requests, and all
-other features are read-only. Archived projects are also hidden from project listings.
+other features become read-only. Archived projects are also hidden from project lists.
 
 To archive a project:
 
@@ -186,12 +196,12 @@ To archive a project:
 
 ## Unarchive a project
 
-When you unarchive a project, you remove the read-only restriction and make it
-available in project lists.
+When you unarchive a project, the read-only restriction is removed,
+and the project becomes available in project lists.
 
-Prerequisites:
+Prerequisite:
 
-- To unarchive a project, you must be an administrator or a project Owner.
+- You must be an administrator or have the Owner role for the project.
 
 1. Find the archived project.
    1. On the left sidebar, select **Search or go to**.
@@ -273,7 +283,7 @@ To restore a project marked for deletion:
 1. Expand **Advanced**.
 1. In the Restore project section, select **Restore project**.
 
-## Add a compliance framework to a project **(PREMIUM)**
+## Add a compliance framework to a project **(PREMIUM ALL)**
 
 You can
 [add compliance frameworks to projects](../../group/compliance_frameworks.md#add-a-compliance-framework-to-a-project)
@@ -283,8 +293,7 @@ in a group that has a compliance framework.
 
 You can [use LDAP to manage group membership](../../group/access_and_permissions.md#manage-group-memberships-via-ldap).
 
-You cannot use LDAP groups to manage project access, but you can use the following
-workaround.
+You cannot use LDAP groups to manage project access, but you can use the following workaround.
 
 Prerequisites:
 
@@ -293,8 +302,8 @@ Prerequisites:
 
 1. [Create a group](../../group/index.md#create-a-group) to track membership of your project.
 1. [Set up LDAP synchronization](../../../administration/auth/ldap/ldap_synchronization.md) for that group.
-1. To use LDAP groups to manage access to a project, [add the LDAP-synchronized group as a member](../members/index.md#add-groups-to-a-project)
-   to the project.
+1. To use LDAP groups to manage access to a project,
+[add the LDAP-synchronized group as a member](../members/index.md#add-groups-to-a-project) to the project.
 
 ## Disable CVE identifier request in issues **(FREE SAAS)**
 
@@ -312,9 +321,9 @@ To disable the CVE identifier request option in issues in your project:
 
 ## Disable project email notifications
 
-Prerequisites:
+Prerequisite:
 
-- You must be an Owner of the project to disable email notifications related to the project.
+- You must have the Owner role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.

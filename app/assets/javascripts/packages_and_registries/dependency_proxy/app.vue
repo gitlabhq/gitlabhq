@@ -2,8 +2,8 @@
 import {
   GlAlert,
   GlButton,
-  GlDropdown,
-  GlDropdownItem,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
   GlFormGroup,
   GlFormInputGroup,
   GlSkeletonLoader,
@@ -27,8 +27,8 @@ export default {
   components: {
     GlAlert,
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     GlSkeletonLoader,
     GlFormGroup,
     GlFormInputGroup,
@@ -156,20 +156,23 @@ export default {
     </gl-alert>
     <title-area :title="$options.i18n.pageTitle">
       <template #right-actions>
-        <gl-dropdown
+        <gl-disclosure-dropdown
           v-if="showDeleteDropdown"
           icon="ellipsis_v"
-          text="More actions"
+          :toggle-text="__('More actions')"
           :text-sr-only="true"
           category="tertiary"
+          placement="right"
           no-caret
         >
-          <gl-dropdown-item
-            v-gl-modal-directive="$options.confirmClearCacheModal"
-            variant="danger"
-            >{{ $options.i18n.clearCache }}</gl-dropdown-item
-          >
-        </gl-dropdown>
+          <gl-disclosure-dropdown-item v-gl-modal-directive="$options.confirmClearCacheModal">
+            <template #list-item>
+              <span class="gl-text-red-500">
+                {{ $options.i18n.clearCache }}
+              </span>
+            </template>
+          </gl-disclosure-dropdown-item>
+        </gl-disclosure-dropdown>
         <gl-button
           v-if="canClearCache"
           v-gl-tooltip="$options.i18n.settingsText"

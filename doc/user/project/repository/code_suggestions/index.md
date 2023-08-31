@@ -20,7 +20,7 @@ Code Suggestions are available:
 
 - On [self-managed](self_managed.md) and [SaaS](saas.md).
 - In VS Code, Microsoft Visual Studio, JetBrains IDEs, and Neovim. You must have the corresponding GitLab extension installed.
-- In the GitLab WebIDE.
+- In the GitLab WebIDE (GitLab SaaS only).
 
 <div class="video-fallback">
   <a href="https://www.youtube.com/watch?v=WnxBYxN2-p4">View an end-to-end demo of Code Suggestions in VS Code</a>.
@@ -90,7 +90,7 @@ Editor support for languages is documented in the following table.
 Code Suggestions supports a variety of popular editors including:
 
 - VS Code, using [the VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-- [GitLab WebIDE (VS Code in the Cloud)](../../../project/web_ide/index.md), with no additional configuration.
+- [GitLab WebIDE (VS Code in the Cloud)](../../../project/web_ide/index.md), with no additional configuration (GitLab SaaS only).
 - Microsoft Visual Studio, using the [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
 - JetBrains IDEs, using the [GitLab plugin](https://plugins.jetbrains.com/plugin/22325-gitlab).
 - Neovim, using the [`gitlab.vim` plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim).

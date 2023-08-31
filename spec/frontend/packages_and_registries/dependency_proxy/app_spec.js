@@ -1,12 +1,12 @@
 import {
   GlAlert,
-  GlDropdown,
-  GlDropdownItem,
   GlFormInputGroup,
   GlFormGroup,
   GlModal,
   GlSprintf,
   GlSkeletonLoader,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
 } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -63,8 +63,6 @@ describe('DependencyProxyApp', () => {
       router,
       stubs: {
         GlAlert,
-        GlDropdown,
-        GlDropdownItem,
         GlFormGroup,
         GlModal,
         GlSprintf,
@@ -82,7 +80,7 @@ describe('DependencyProxyApp', () => {
   const findProxyCountText = () => wrapper.findByTestId('proxy-count');
   const findManifestList = () => wrapper.findComponent(ManifestsList);
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findClearCacheDropdownList = () => wrapper.findComponent(GlDropdown);
+  const findClearCacheDropdownList = () => wrapper.findComponent(GlDisclosureDropdown);
   const findClearCacheModal = () => wrapper.findComponent(GlModal);
   const findClearCacheAlert = () => wrapper.findComponent(GlAlert);
   const findSettingsLink = () => wrapper.findByTestId('settings-link');
@@ -283,7 +281,7 @@ describe('DependencyProxyApp', () => {
               expect(findClearCacheDropdownList().exists()).toBe(true);
 
               const clearCacheDropdownItem = findClearCacheDropdownList().findComponent(
-                GlDropdownItem,
+                GlDisclosureDropdownItem,
               );
 
               expect(clearCacheDropdownItem.text()).toBe('Clear cache');

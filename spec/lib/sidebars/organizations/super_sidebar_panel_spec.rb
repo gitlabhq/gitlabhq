@@ -36,4 +36,5 @@ RSpec.describe Sidebars::Organizations::SuperSidebarPanel, feature_category: :na
   end
 
   it_behaves_like 'a panel with uniquely identifiable menu items'
+  it_behaves_like 'a panel instantiable by the anonymous user'
 end

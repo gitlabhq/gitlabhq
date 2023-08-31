@@ -62,6 +62,13 @@ RSpec.shared_examples_for 'not serializable as super_sidebar_menu_args' do
   end
 end
 
+RSpec.shared_examples_for 'a panel instantiable by the anonymous user' do
+  it do
+    context.instance_variable_set(:@current_user, nil)
+    expect(described_class.new(context)).to be_a(described_class)
+  end
+end
+
 RSpec.shared_examples_for 'a panel with uniquely identifiable menu items' do
   let(:menu_items) do
     subject.instance_variable_get(:@menus)

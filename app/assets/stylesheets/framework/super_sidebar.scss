@@ -159,10 +159,18 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   }
 
   .nav-item-link {
+    button.show-on-focus-or-hover--target {
+      transition: opacity $gl-transition-duration-fast;
+    }
+
     &:hover,
     &:focus-within {
       .nav-item-badge {
         opacity: 0;
+      }
+
+      button.show-on-focus-or-hover--target {
+        transition-delay: $gl-transition-duration-slow;
       }
     }
   }

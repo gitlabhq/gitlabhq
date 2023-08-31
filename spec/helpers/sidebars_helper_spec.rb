@@ -488,7 +488,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   end
 
   describe '#super_sidebar_nav_panel' do
-    let(:user) { build(:user) }
     let(:group) { build(:group) }
     let(:project) { build(:project) }
     let(:organization) { build(:organization) }
@@ -500,48 +499,84 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         { current_user: nil, container: group, show_discover_group_security: false })
 
       allow(group).to receive(:to_global_id).and_return(5)
-      Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)
-      Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 4)
-      Rails.cache.write(['users', user.id, 'review_requested_open_merge_requests_count'], 0)
-      Rails.cache.write(['users', user.id, 'todos_pending_count'], 3)
     end
 
-    it 'returns Project Panel for project nav' do
-      expect(helper.super_sidebar_nav_panel(nav: 'project')).to be_a(Sidebars::Projects::SuperSidebarPanel)
+    shared_examples 'nav panels available to logged-out users' do
+      it 'returns Project Panel for project nav' do
+        expect(helper.super_sidebar_nav_panel(nav: 'project',
+          user: user)).to be_a(Sidebars::Projects::SuperSidebarPanel)
+      end
+
+      it 'returns Group Panel for group nav' do
+        expect(helper.super_sidebar_nav_panel(nav: 'group', user: user)).to be_a(Sidebars::Groups::SuperSidebarPanel)
+      end
+
+      it 'returns User profile Panel for user profile nav' do
+        viewed_user = build(:user)
+        expect(helper.super_sidebar_nav_panel(nav: 'user_profile', user: user,
+          viewed_user: viewed_user)).to be_a(Sidebars::UserProfile::Panel)
+      end
+
+      it 'returns Explore Panel for explore nav' do
+        expect(helper.super_sidebar_nav_panel(nav: 'explore', user: user)).to be_a(Sidebars::Explore::Panel)
+      end
+
+      it 'returns Organization Panel for organization nav' do
+        expect(
+          helper.super_sidebar_nav_panel(nav: 'organization', organization: organization, user: user)
+        ).to be_a(Sidebars::Organizations::SuperSidebarPanel)
+      end
+
+      it 'returns Search Panel for search nav' do
+        expect(helper.super_sidebar_nav_panel(nav: 'search', user: user)).to be_a(Sidebars::Search::Panel)
+      end
     end
 
-    it 'returns Group Panel for group nav' do
-      expect(helper.super_sidebar_nav_panel(nav: 'group')).to be_a(Sidebars::Groups::SuperSidebarPanel)
+    describe 'when logged-in' do
+      let(:user) { build(:user) }
+
+      before do
+        Rails.cache.write(['users', user.id, 'assigned_open_issues_count'], 1)
+        Rails.cache.write(['users', user.id, 'assigned_open_merge_requests_count'], 4)
+        Rails.cache.write(['users', user.id, 'review_requested_open_merge_requests_count'], 0)
+        Rails.cache.write(['users', user.id, 'todos_pending_count'], 3)
+      end
+
+      it 'returns User Settings Panel for profile nav' do
+        expect(helper.super_sidebar_nav_panel(nav: 'profile', user: user)).to be_a(Sidebars::UserSettings::Panel)
+      end
+
+      describe 'admin user' do
+        it 'returns Admin Panel for admin nav', :aggregate_failures do
+          allow(user).to receive(:can_admin_all_resources?).and_return(true)
+
+          expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user)).to be_a(Sidebars::Admin::Panel)
+        end
+      end
+
+      it 'returns Your Work Panel for admin nav' do
+        expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user)).to be_a(Sidebars::YourWork::Panel)
+      end
+
+      it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
+        expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user)).to be_a(Sidebars::YourWork::Panel)
+      end
+
+      it 'returns "Your Work" Panel as a fallback', :use_clean_rails_memory_store_caching do
+        expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::YourWork::Panel)
+      end
+
+      it_behaves_like 'nav panels available to logged-out users'
     end
 
-    it 'returns User Settings Panel for profile nav' do
-      expect(helper.super_sidebar_nav_panel(nav: 'profile')).to be_a(Sidebars::UserSettings::Panel)
-    end
+    describe 'when logged-out' do
+      let(:user) { nil }
 
-    it 'returns User profile Panel for user profile nav' do
-      expect(helper.super_sidebar_nav_panel(nav: 'user_profile')).to be_a(Sidebars::UserProfile::Panel)
-    end
+      it_behaves_like 'nav panels available to logged-out users'
 
-    it 'returns Admin Panel for admin nav' do
-      expect(helper.super_sidebar_nav_panel(nav: 'admin')).to be_a(Sidebars::Admin::Panel)
-    end
-
-    it 'returns Organization Panel for organization nav' do
-      expect(
-        helper.super_sidebar_nav_panel(nav: 'organization', organization: organization)
-      ).to be_a(Sidebars::Organizations::SuperSidebarPanel)
-    end
-
-    it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
-      expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user)).to be_a(Sidebars::YourWork::Panel)
-    end
-
-    it 'returns Search Panel for search nav' do
-      expect(helper.super_sidebar_nav_panel(nav: 'search', user: user)).to be_a(Sidebars::Search::Panel)
-    end
-
-    it 'returns "Your Work" Panel as a fallback', :use_clean_rails_memory_store_caching do
-      expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::YourWork::Panel)
+      it 'returns "Explore" Panel as a fallback' do
+        expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::Explore::Panel)
+      end
     end
   end
 

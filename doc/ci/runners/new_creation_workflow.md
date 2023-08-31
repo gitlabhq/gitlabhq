@@ -44,17 +44,17 @@ multiple runners. For more information, see [Reusing a GitLab Runner configurati
 ## Estimated time frame for planned changes
 
 - In GitLab 15.10 and later, you can use the new runner registration workflow.
-- In GitLab 16.6, we plan to disable registration tokens.
-- In GitLab 17.0, we plan to completely remove support for runner registration tokens.
+- In GitLab 17.0, we plan to disable runner registration tokens.
+- In GitLab 18.0, we plan to completely remove support for runner registration tokens.
 
 ## Prevent your runner registration workflow from breaking
 
-Until GitLab 16.6, you can still use the legacy runner registration workflow.
+Until GitLab 17.0, you can still use the legacy runner registration workflow.
 
-In GitLab 16.6, the legacy runner registration workflow will be disabled automatically. You will be able to manually re-enable the legacy runner registration workflow for a limited time. For more information, see
-[Using registration tokens after GitLab 16.6](#using-registration-tokens-after-gitlab-166).
+In GitLab 17.0, the legacy runner registration workflow will be disabled automatically. You will be able to manually re-enable the legacy runner registration workflow for a limited time. For more information, see
+[Using registration tokens after GitLab 17.0](#using-registration-tokens-after-gitlab-170).
 
-If no action is taken before your GitLab instance is upgraded to GitLab 16.6, then your runner registration
+If no action is taken before your GitLab instance is upgraded to GitLab 17.0, then your runner registration
 workflow will break.
 
 To avoid a broken workflow, you must:
@@ -63,14 +63,18 @@ To avoid a broken workflow, you must:
 1. Replace the registration token in your runner registration workflow with the
 authentication token.
 
-## Using registration tokens after GitLab 16.6
+## Using registration tokens after GitLab 17.0
 
-To continue using registration tokens after GitLab 16.6:
+To continue using registration tokens after GitLab 17.0:
 
-- On GitLab.com, you can manually re-enable the legacy runner registration process in the top-level group settings until GitLab 16.8.
-- On GitLab self-managed, you can manually re-enable the legacy runner registration process in the Admin Area settings until GitLab 17.0.
+- On GitLab.com, you can manually re-enable the legacy runner registration process in the top-level group settings until GitLab 18.0.
+- On GitLab self-managed, you can manually re-enable the legacy runner registration process in the Admin Area settings until GitLab 18.0.
 
 Plans to implement a UI setting to re-enable registration tokens are proposed in [issue 411923](https://gitlab.com/gitlab-org/gitlab/-/issues/411923)
+
+## Runners registered with a registration token will continue to work after 18.0
+
+Existing runners will not be affected by these changes, they will still work even after the legacy registration method is removed.
 
 ## Changes to the `gitlab-runner register` command syntax
 

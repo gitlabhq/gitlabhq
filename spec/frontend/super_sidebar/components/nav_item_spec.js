@@ -1,5 +1,6 @@
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlButton } from '@gitlab/ui';
 import { RouterLinkStub } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import NavItemRouterLink from '~/super_sidebar/components/nav_item_router_link.vue';
@@ -15,6 +16,7 @@ describe('NavItem component', () => {
 
   const findLink = () => wrapper.findByTestId('nav-item-link');
   const findPill = () => wrapper.findComponent(GlBadge);
+  const findPinButton = () => wrapper.findComponent(GlButton);
   const findNavItemRouterLink = () => extendedWrapper(wrapper.findComponent(NavItemRouterLink));
   const findNavItemLink = () => extendedWrapper(wrapper.findComponent(NavItemLink));
 
@@ -57,6 +59,62 @@ describe('NavItem component', () => {
         expect(findPill().exists()).toEqual(false);
       },
     );
+  });
+
+  describe('pins', () => {
+    describe('when pins are not supported', () => {
+      it('does not render pin button', () => {
+        createWrapper({
+          item: { title: 'Foo' },
+          provide: {
+            panelSupportsPins: false,
+          },
+        });
+
+        expect(findPinButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when pins are supported', () => {
+      beforeEach(() => {
+        createWrapper({
+          item: { title: 'Foo' },
+          provide: {
+            panelSupportsPins: true,
+          },
+        });
+      });
+
+      it('renders pin button', () => {
+        expect(findPinButton().exists()).toBe(true);
+      });
+
+      it('toggles pointer events on after CSS fade-in', async () => {
+        const pinButton = findPinButton();
+
+        expect(pinButton.classes()).toContain('gl-pointer-events-none');
+
+        wrapper.trigger('mouseenter');
+        pinButton.vm.$emit('transitionend');
+        await nextTick();
+
+        expect(pinButton.classes()).not.toContain('gl-pointer-events-none');
+      });
+
+      it('does not toggle pointer events if mouse leaves before CSS fade-in ends', async () => {
+        const pinButton = findPinButton();
+
+        expect(pinButton.classes()).toContain('gl-pointer-events-none');
+
+        wrapper.trigger('mouseenter');
+        wrapper.trigger('mousemove');
+        wrapper.trigger('mouseleave');
+        pinButton.vm.$emit('transitionend');
+        await nextTick();
+
+        expect(pinButton.classes()).toContain('gl-pointer-events-none');
+      });
+    });
   });
 
   it('applies custom link classes', () => {

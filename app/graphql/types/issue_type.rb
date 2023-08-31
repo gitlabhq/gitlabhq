@@ -171,6 +171,8 @@ module Types
     field :escalation_status, Types::IncidentManagement::EscalationStatusEnum, null: true,
                                                                                description: 'Escalation status of the issue.'
 
+    field :external_author, GraphQL::Types::String, null: true, description: 'Email address of non-GitLab user reporting the issue. For guests, the email address is obfuscated.'
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 

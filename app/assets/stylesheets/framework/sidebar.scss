@@ -231,18 +231,6 @@
   }
 }
 
-.health-status {
-  .dropdown-body {
-    .health-divider {
-      border-top-color: $gray-100;
-    }
-
-    .dropdown-item:not(.health-dropdown-item) {
-      padding: 0;
-    }
-  }
-}
-
 .toggle-right-sidebar-button {
   @include side-panel-toggle;
   border-bottom: 1px solid $border-color;

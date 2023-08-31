@@ -1,6 +1,7 @@
 <script>
-import { GlTable, GlLink } from '@gitlab/ui';
+import { GlTable, GlLink, GlTruncate } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 import { formatTraceDuration } from './trace_utils';
 
 export const tableDataClass = 'gl-display-flex gl-md-display-table-cell gl-align-items-center';
@@ -41,6 +42,7 @@ export default {
   components: {
     GlTable,
     GlLink,
+    GlTruncate,
   },
   props: {
     traces: {
@@ -52,6 +54,7 @@ export default {
     formattedTraces() {
       return this.traces.map((x) => ({
         ...x,
+        timestamp: formatDate(x.timestamp),
         duration: formatTraceDuration(x.duration_nano),
       }));
     },
@@ -84,6 +87,14 @@ export default {
       selected-variant=""
       @row-selected="onSelect"
     >
+      <template #cell(service_name)="{ item }">
+        <gl-truncate :text="item.service_name" with-tooltip />
+      </template>
+
+      <template #cell(operation)="{ item }">
+        <gl-truncate :text="item.operation" with-tooltip />
+      </template>
+
       <template #empty>
         {{ $options.i18n.emptyText }}
         <gl-link @click="$emit('reload')">{{ $options.i18n.emptyLinkText }}</gl-link>

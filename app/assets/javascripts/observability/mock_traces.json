@@ -4,8 +4,8 @@
     {
       "timestamp": "2023-08-07T15:03:32.199806Z",
       "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
-      "service_name": "tracegen",
-      "operation": "lets-go",
+      "service_name": "tracegentracegentracegenttracegentracegentracegent",
+      "operation": "lets-golets-golets-goletslets-golets-golets-golets",
       "statusCode": "STATUS_CODE_UNSET",
       "duration_nano": 100120000,
       "spans": [
@@ -13,8 +13,8 @@
           "timestamp": "2023-08-07T15:03:32.199806Z",
           "span_id": "A1FB81EB031B09E8",
           "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
-          "service_name": "tracegen",
-          "operation": "lets-go",
+          "service_name": "tracegentracegentracegentracegentracegentracegentracegentracegentracegentracegentracegentracegentracegen",
+          "operation": "lets-golets-golets-golets-golets-golets-golets-golets-golets-golets-golets-golets-go",
           "duration_nano": 100120000,
           "parent_span_id": "",
           "statusCode": "STATUS_CODE_UNSET"

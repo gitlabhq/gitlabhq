@@ -518,6 +518,39 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
   end
 
+  context 'when fetching external participants' do
+    before_all do
+      issue_a.update!(external_author: 'user@example.com')
+    end
+
+    let(:fields) do
+      <<~QUERY
+        nodes {
+          id
+          externalAuthor
+        }
+      QUERY
+    end
+
+    it 'returns the email address' do
+      post_query
+
+      emails = issues_data.pluck('externalAuthor').compact
+      expect(emails).to contain_exactly('user@example.com')
+    end
+
+    context 'when user does not have access to view emails' do
+      let(:current_user) { external_user }
+
+      it 'obfuscates the email address' do
+        post_query
+
+        emails = issues_data.pluck('externalAuthor').compact
+        expect(emails).to contain_exactly("us*****@e*****.c**")
+      end
+    end
+  end
+
   context 'when fetching escalation status' do
     let_it_be(:escalation_status) { create(:incident_management_issuable_escalation_status, issue: issue_a) }
     let_it_be(:incident_type) { WorkItems::Type.default_by_type(:incident) }
