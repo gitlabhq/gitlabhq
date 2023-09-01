@@ -30,8 +30,8 @@ GET /projects/:id/templates/:type
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `id`      | integer or string | **{check-circle}** Yes       | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `type`     | string | **{check-circle}** Yes  | The type of the template. Accepted values are: `dockerfiles`, `gitignores`, `gitlab_ci_ymls`, `licenses`, `issues`, or `merge_requests`. |
+| `id`      | integer or string | Yes       | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `type`     | string | Yes  | The type of the template. Accepted values are: `dockerfiles`, `gitignores`, `gitlab_ci_ymls`, `licenses`, `issues`, or `merge_requests`. |
 
 Example response (licenses):
 
@@ -96,12 +96,12 @@ GET /projects/:id/templates/:type/:name
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `id`      | integer or string | **{check-circle}** Yes       | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `name`     | string | **{check-circle}** Yes       | The key of the template, as obtained from the collection endpoint. |
-| `type`     | string | **{check-circle}** Yes | The type of the template. One of: `dockerfiles`, `gitignores`, `gitlab_ci_ymls`, `licenses`, `issues`, or `merge_requests`. |
-| `fullname` | string | **{dotted-circle}** No        | The full name of the copyright holder to use when expanding placeholders in the template. Affects only licenses. |
-| `project`  | string | **{dotted-circle}** No        | The project name to use when expanding placeholders in the template. Affects only licenses. |
-| `source_template_project_id`   | integer | **{dotted-circle}** No       | The project ID where a given template is being stored. Helpful when multiple templates from different projects have the same name. If multiple templates have the same name, the match from `closest ancestor` is returned if `source_template_project_id` is not specified, |
+| `id`      | integer or string | Yes       | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `name`     | string | Yes       | The key of the template, as obtained from the collection endpoint. |
+| `type`     | string | Yes | The type of the template. One of: `dockerfiles`, `gitignores`, `gitlab_ci_ymls`, `licenses`, `issues`, or `merge_requests`. |
+| `fullname` | string | No        | The full name of the copyright holder to use when expanding placeholders in the template. Affects only licenses. |
+| `project`  | string | No        | The project name to use when expanding placeholders in the template. Affects only licenses. |
+| `source_template_project_id`   | integer | No       | The project ID where a given template is being stored. Helpful when multiple templates from different projects have the same name. If multiple templates have the same name, the match from `closest ancestor` is returned if `source_template_project_id` is not specified, |
 
 Example response (Dockerfile):
 

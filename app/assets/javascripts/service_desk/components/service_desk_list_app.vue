@@ -177,7 +177,6 @@ export default {
       return {
         fullPath: this.fullPath,
         iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
-        isProject: this.isProject,
         isSignedIn: this.isSignedIn,
         authorUsername: SERVICE_DESK_BOT_USERNAME,
         sort: this.sortKey,

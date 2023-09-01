@@ -1,7 +1,10 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import createDefaultClient from '~/lib/graphql';
 import { ORGANIZATION_ROOT_ROUTE_NAME } from '../constants';
+import resolvers from '../shared/graphql/resolvers';
 import App from './components/app.vue';
 
 export const createRouter = () => {
@@ -30,13 +33,19 @@ export const initOrganizationsShow = () => {
 
   Vue.use(VueRouter);
   const router = createRouter();
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(resolvers),
+  });
 
   return new Vue({
     el,
     name: 'OrganizationShowRoot',
+    apolloProvider,
     router,
     render(createElement) {
-      return createElement(App, { props: { organization, groupsAndProjectsOrganizationPath } });
+      return createElement(App, {
+        props: { organization, groupsAndProjectsOrganizationPath },
+      });
     },
   });
 };

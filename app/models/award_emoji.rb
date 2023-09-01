@@ -78,7 +78,7 @@ class AwardEmoji < ApplicationRecord
   end
 
   def broadcast_note_update
-    awardable.expire_etag_cache
+    awardable.broadcast_noteable_notes_changed
     awardable.trigger_note_subscription_update
   end
 

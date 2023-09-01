@@ -130,7 +130,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/lib/gitlab/ci/project_config/compliance.rb'
     - 'ee/lib/gitlab/code_owners.rb'
     - 'ee/lib/gitlab/path_locks_finder.rb'
-    - 'ee/lib/incident_management/incident_sla.rb'
     - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/models/instance_security_dashboard_spec.rb'
     - 'lib/api/helpers/related_resources_helpers.rb'

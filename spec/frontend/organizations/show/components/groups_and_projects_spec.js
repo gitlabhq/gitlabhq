@@ -2,6 +2,8 @@ import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import GroupsAndProjects from '~/organizations/show/components/groups_and_projects.vue';
 import { createRouter } from '~/organizations/show';
+import GroupsView from '~/organizations/shared/components/groups_view.vue';
+import ProjectsView from '~/organizations/shared/components/projects_view.vue';
 
 describe('OrganizationShowGroupsAndProjects', () => {
   const router = createRouter();
@@ -43,22 +45,37 @@ describe('OrganizationShowGroupsAndProjects', () => {
   });
 
   describe.each`
-    displayQueryParam                | expectedHref
-    ${'frequently_visited_projects'} | ${`${defaultPropsData.groupsAndProjectsOrganizationPath}?display=projects`}
-    ${'frequently_visited_groups'}   | ${`${defaultPropsData.groupsAndProjectsOrganizationPath}?display=groups`}
-  `('when display query param is $displayQueryParam', ({ displayQueryParam, expectedHref }) => {
-    beforeEach(() => {
-      createComponent({ routeQuery: { display: displayQueryParam } });
-    });
+    displayQueryParam                | expectedViewAllLinkQuery | expectedViewComponent | expectedDisplayListboxSelectedProp
+    ${'frequently_visited_projects'} | ${'?display=projects'}   | ${ProjectsView}       | ${'frequently_visited_projects'}
+    ${'frequently_visited_groups'}   | ${'?display=groups'}     | ${GroupsView}         | ${'frequently_visited_groups'}
+    ${'unsupported'}                 | ${'?display=projects'}   | ${ProjectsView}       | ${'frequently_visited_projects'}
+  `(
+    'when display query param is $displayQueryParam',
+    ({
+      displayQueryParam,
+      expectedViewAllLinkQuery,
+      expectedViewComponent,
+      expectedDisplayListboxSelectedProp,
+    }) => {
+      beforeEach(() => {
+        createComponent({ routeQuery: { display: displayQueryParam } });
+      });
 
-    it('sets listbox `selected` prop correctly', () => {
-      expect(findCollapsibleListbox().props('selected')).toBe(displayQueryParam);
-    });
+      it('sets listbox `selected` prop correctly', () => {
+        expect(findCollapsibleListbox().props('selected')).toBe(expectedDisplayListboxSelectedProp);
+      });
 
-    it('renders "View all" link with correct href', () => {
-      expect(wrapper.findComponent(GlLink).attributes('href')).toBe(expectedHref);
-    });
-  });
+      it('renders "View all" link with correct href', () => {
+        expect(wrapper.findComponent(GlLink).attributes('href')).toBe(
+          `${defaultPropsData.groupsAndProjectsOrganizationPath}${expectedViewAllLinkQuery}`,
+        );
+      });
+
+      it('renders expected view', () => {
+        expect(wrapper.findComponent(expectedViewComponent).exists()).toBe(true);
+      });
+    },
+  );
 
   it('renders label and associates listbox with it', () => {
     createComponent();

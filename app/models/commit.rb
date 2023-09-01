@@ -554,10 +554,10 @@ class Commit
     "commit:#{sha}"
   end
 
-  def expire_note_etag_cache
+  def broadcast_notes_changed
     super
 
-    expire_note_etag_cache_for_related_mrs
+    broadcast_notes_changed_for_related_mrs
   end
 
   def readable_by?(user)
@@ -614,8 +614,8 @@ class Commit
     end
   end
 
-  def expire_note_etag_cache_for_related_mrs
-    MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each(&:expire_note_etag_cache)
+  def broadcast_notes_changed_for_related_mrs
+    MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each(&:broadcast_notes_changed)
   end
 
   def commit_reference(from, referable_commit_id, full: false)

@@ -293,7 +293,7 @@ RSpec.describe SnippetRepository do
       it_behaves_like 'snippet repository with git errors', 'README', described_class::CommitError
 
       context 'when user name is invalid' do
-        let(:user) { create(:user, name: '.') }
+        let(:user) { create(:user, name: ',') }
 
         it_behaves_like 'snippet repository with git errors', 'non_existing_file', described_class::InvalidSignatureError
       end

@@ -45,14 +45,14 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description         |
 |---------------------|----------------|----------|---------------------|
-| `created_after`     | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs created after specified time. |
-| `created_before`    | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs created before specified time. |
-| `last_used_after`   | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs last used after specified time. |
-| `last_used_before`  | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs last used before specified time. |
-| `revoked`           | boolean             | **{dotted-circle}** No | Limit results to PATs with specified revoked state. Valid values are `true` and `false`. |
-| `search`            | string              | **{dotted-circle}** No | Limit results to PATs with name containing search string. |
-| `state`             | string              | **{dotted-circle}** No | Limit results to PATs with specified state. Valid values are `active` and `inactive`. |
-| `user_id`           | integer or string   | **{dotted-circle}** No | Limit results to PATs owned by specified user. |
+| `created_after`     | datetime (ISO 8601) | No | Limit results to PATs created after specified time. |
+| `created_before`    | datetime (ISO 8601) | No | Limit results to PATs created before specified time. |
+| `last_used_after`   | datetime (ISO 8601) | No | Limit results to PATs last used after specified time. |
+| `last_used_before`  | datetime (ISO 8601) | No | Limit results to PATs last used before specified time. |
+| `revoked`           | boolean             | No | Limit results to PATs with specified revoked state. Valid values are `true` and `false`. |
+| `search`            | string              | No | Limit results to PATs with name containing search string. |
+| `state`             | string              | No | Limit results to PATs with specified state. Valid values are `active` and `inactive`. |
+| `user_id`           | integer or string   | No | Limit results to PATs owned by specified user. |
 
 Example request:
 

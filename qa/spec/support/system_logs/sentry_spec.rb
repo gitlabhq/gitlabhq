@@ -9,19 +9,19 @@ RSpec.describe QA::Support::SystemLogs::Sentry do
     subject { described_class.new(env, correlation_id).url }
 
     let(:staging_url) do
-      "https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg&query=correlation_id%3A%22#{correlation_id}%22"
+      "https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=gstg&project=3&query=correlation_id%3A%22#{correlation_id}%22"
     end
 
     let(:staging_ref_url) do
-      "https://sentry.gitlab.net/gitlab/staging-ref/?environment=all&query=correlation_id%3A%22#{correlation_id}%22"
+      "https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=gstg-ref&project=3&query=correlation_id%3A%22#{correlation_id}%22"
     end
 
     let(:pre_url) do
-      "https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=all&query=correlation_id%3A%22#{correlation_id}%22"
+      "https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=pre&project=3&query=correlation_id%3A%22#{correlation_id}%22"
     end
 
     let(:production_url) do
-      "https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd&query=correlation_id%3A%22#{correlation_id}%22"
+      "https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=gprd&project=3&query=correlation_id%3A%22#{correlation_id}%22"
     end
 
     where(:env, :expected_url) do

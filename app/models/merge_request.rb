@@ -2003,7 +2003,7 @@ class MergeRequest < ApplicationRecord
     all_pipelines.for_sha_or_source_sha(diff_head_sha).first
   end
 
-  def etag_caching_enabled?
+  def real_time_notes_enabled?
     true
   end
 

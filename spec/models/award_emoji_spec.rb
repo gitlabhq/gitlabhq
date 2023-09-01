@@ -147,14 +147,14 @@ RSpec.describe AwardEmoji do
       let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: note) }
 
       it 'broadcasts updates on the note when saved' do
-        expect(note).to receive(:expire_etag_cache)
+        expect(note).to receive(:broadcast_noteable_notes_changed)
         expect(note).to receive(:trigger_note_subscription_update)
 
         award_emoji.save!
       end
 
       it 'broadcasts updates on the note when destroyed' do
-        expect(note).to receive(:expire_etag_cache)
+        expect(note).to receive(:broadcast_noteable_notes_changed)
         expect(note).to receive(:trigger_note_subscription_update)
 
         award_emoji.destroy!
@@ -164,7 +164,7 @@ RSpec.describe AwardEmoji do
         let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: note, importing: true) }
 
         it 'does not broadcast updates on the note when saved' do
-          expect(note).not_to receive(:expire_etag_cache)
+          expect(note).not_to receive(:broadcast_noteable_notes_changed)
           expect(note).not_to receive(:trigger_note_subscription_update)
 
           award_emoji.save!
@@ -177,14 +177,14 @@ RSpec.describe AwardEmoji do
       let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: issue) }
 
       it 'does not broadcast updates on the issue when saved' do
-        expect(issue).not_to receive(:expire_etag_cache)
+        expect(issue).not_to receive(:broadcast_noteable_notes_changed)
         expect(issue).not_to receive(:trigger_note_subscription_update)
 
         award_emoji.save!
       end
 
       it 'does not broadcast updates on the issue when destroyed' do
-        expect(issue).not_to receive(:expire_etag_cache)
+        expect(issue).not_to receive(:broadcast_noteable_notes_changed)
         expect(issue).not_to receive(:trigger_note_subscription_update)
 
         award_emoji.destroy!

@@ -89,6 +89,17 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   [check you have a PostgreSQL bug fix](../index.md#postgresql-segmentation-fault-issue)
   to avoid the database crashing.
 
+### Geo installations **(PREMIUM SELF)**
+
+- **Do not** upgrade to GitLab 14.9.0. Instead, use 14.9.1 or later.
+
+  We've discovered an issue with Geo's CI verification feature that may
+  [cause job traces to be lost](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6664). This issue was fixed
+  in [the GitLab 14.9.1 patch release](https://about.gitlab.com/releases/2022/03/23/gitlab-14-9-1-released/).
+
+  If you have already upgraded to GitLab 14.9.0, you can disable the feature causing the issue by
+  [disabling the `geo_job_artifact_replication` feature flag](../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags).
+
 ## 14.8.0
 
 - If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
@@ -162,11 +173,39 @@ that may remain stuck permanently in a **pending** state.
   If your instance has Redis HA with Sentinel, follow the upgrade steps documented in
   [Redis HA (using Sentinel)](../zero_downtime.md#redis-ha-using-sentinel).
 
+### Geo installations **(PREMIUM SELF)**
+
+- There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
+  that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
+
+  Since GitLab 14.2, verification failures result in synchronization failures and cause a resynchronization of these objects.
+
+  As verification is not yet implemented for files stored in object storage (see
+  [issue 13845](https://gitlab.com/gitlab-org/gitlab/-/issues/13845) for more details), this
+  results in a loop that consistently fails for all objects stored in object storage.
+
+  For information on how to fix this, see
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+
 ## 14.6.0
 
 - See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](../index.md#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
 - If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
   Updating to 14.6.5 or later resets runner registration tokens for your groups and projects.
+
+### Geo installations **(PREMIUM SELF)**
+
+- There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
+  that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
+
+  Since GitLab 14.2, verification failures result in synchronization failures and cause a resynchronization of these objects.
+
+  As verification is not yet implemented for files stored in object storage (see
+  [issue 13845](https://gitlab.com/gitlab-org/gitlab/-/issues/13845) for more details), this
+  results in a loop that consistently fails for all objects stored in object storage.
+
+  For information on how to fix this, see
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
 
 ## 14.5.0
 
@@ -233,6 +272,20 @@ or [init scripts](../upgrading_from_source.md#configure-sysv-init-script) by [fo
   sudo -u git -H editor config/cable.yml
   ```
 
+### Geo installations **(PREMIUM SELF)**
+
+- There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
+  that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
+
+  Since GitLab 14.2, verification failures result in synchronization failures and cause a resynchronization of these objects.
+
+  As verification is not yet implemented for files stored in object storage (see
+  [issue 13845](https://gitlab.com/gitlab-org/gitlab/-/issues/13845) for more details), this
+  results in a loop that consistently fails for all objects stored in object storage.
+
+  For information on how to fix this, see
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+
 ## 14.4.4
 
 - For [zero-downtime upgrades](../zero_downtime.md) on a GitLab cluster with separate Web and API nodes, you must enable the `paginated_tree_graphql_query` [feature flag](../../administration/feature_flags.md#enable-or-disable-the-feature) _before_ upgrading GitLab Web nodes to 14.4.
@@ -241,6 +294,13 @@ or [init scripts](../upgrading_from_source.md#configure-sysv-init-script) by [fo
   ```shell
   bundle.esm.js:63 Uncaught (in promise) Error: GraphQL error: Field 'paginatedTree' doesn't exist on type 'Repository'
   ```
+
+## 14.4.1 and 14.4.2
+
+### Geo installations **(PREMIUM SELF)**
+
+- There is [an issue in GitLab 14.4.0 through 14.4.2](#1440) that can affect
+  Geo and other features that rely on cronjobs. We recommend upgrading to GitLab 14.4.3 or later.
 
 ## 14.4.0
 
@@ -277,6 +337,23 @@ that may remain stuck permanently in a **pending** state when the instance lacks
   Users that have customized their Grafana install with plugins or library panels may experience errors in Grafana after
   the downgrade. If the errors persist after a Grafana restart you may need to reset the Grafana db and re-add the
   customizations. The Grafana database can be reset with `sudo gitlab-ctl reset-grafana`.
+
+### Geo installations **(PREMIUM SELF)**
+
+- There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
+  that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
+
+  Since GitLab 14.2, verification failures result in synchronization failures and cause a resynchronization of these objects.
+
+  As verification is not yet implemented for files stored in object storage (see
+  [issue 13845](https://gitlab.com/gitlab-org/gitlab/-/issues/13845) for more details), this
+  results in a loop that consistently fails for all objects stored in object storage.
+
+  For information on how to fix this, see
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+
+- There is [an issue in GitLab 14.4.0 through 14.4.2](#1440) that can affect
+  Geo and other features that rely on cronjobs. We recommend upgrading to GitLab 14.4.3 or later.
 
 ## 14.3.0
 
@@ -415,6 +492,56 @@ for how to proceed.
 
 - If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [122978](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122978) as the `mr_iid`.
 
+### Geo installations **(PREMIUM SELF)**
+
+- There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
+  that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
+
+  Since GitLab 14.2, verification failures result in synchronization failures and cause a resynchronization of these objects.
+
+  As verification is not yet implemented for files stored in object storage (see
+  [issue 13845](https://gitlab.com/gitlab-org/gitlab/-/issues/13845) for more details), this
+  results in a loop that consistently fails for all objects stored in object storage.
+
+  For information on how to fix this, see
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+
+- We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the Container Registry replication
+  wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture
+  (for example `amd64`) would be replicated to the secondary site. This has been [fixed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624) and was backported to 14.2 and 14.1, but manual steps are required to force a re-sync.
+
+  You can check if you are affected by running:
+
+  ```shell
+  docker manifest inspect <SECONDARY_IMAGE_LOCATION> | jq '.mediaType'
+  ```
+
+  Where `<SECONDARY_IMAGE_LOCATION>` is a container image on your secondary site.
+  If the output matches `application/vnd.docker.distribution.manifest.list.v2+json`
+  (there can be a `mediaType` entry at several levels, we only care about the top level entry),
+  then you don't need to do anything.
+
+  Otherwise, for each **secondary** site, on a Rails application node, open a [Rails console](../../administration/operations/rails_console.md), and run the following:
+
+   ```ruby
+   list_type = 'application/vnd.docker.distribution.manifest.list.v2+json'
+
+   Geo::ContainerRepositoryRegistry.synced.each do |gcr|
+     cr = gcr.container_repository
+     primary = Geo::ContainerRepositorySync.new(cr)
+     cr.tags.each do |tag|
+       primary_manifest = JSON.parse(primary.send(:client).repository_raw_manifest(cr.path, tag.name))
+       next unless primary_manifest['mediaType'].eql?(list_type)
+
+       cr.delete_tag_by_name(tag.name)
+     end
+     primary.execute
+   end
+   ```
+
+  If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry,
+  we recommend [upgrading](../../administration/geo/replication/upgrading_the_geo_sites.md) to at least GitLab 14.1.
+
 ## 14.2.0
 
 - [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases).
@@ -456,6 +583,56 @@ for how to proceed.
 
 - If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [123476](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123476) as the `mr_iid`.
 
+### Geo installations **(PREMIUM SELF)**
+
+- There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
+  that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
+
+  Since GitLab 14.2, verification failures result in synchronization failures and cause a resynchronization of these objects.
+
+  As verification is not yet implemented for files stored in object storage (see
+  [issue 13845](https://gitlab.com/gitlab-org/gitlab/-/issues/13845) for more details), this
+  results in a loop that consistently fails for all objects stored in object storage.
+
+  For information on how to fix this, see
+  [Troubleshooting - Failed syncs with GitLab-managed object storage replication](../../administration/geo/replication/troubleshooting.md#failed-syncs-with-gitlab-managed-object-storage-replication).
+
+- We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the Container Registry replication
+  wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture
+  (for example `amd64`) would be replicated to the secondary site. This has been [fixed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624) and was backported to 14.2 and 14.1, but manual steps are required to force a re-sync.
+
+  You can check if you are affected by running:
+
+  ```shell
+  docker manifest inspect <SECONDARY_IMAGE_LOCATION> | jq '.mediaType'
+  ```
+
+  Where `<SECONDARY_IMAGE_LOCATION>` is a container image on your secondary site.
+  If the output matches `application/vnd.docker.distribution.manifest.list.v2+json`
+  (there can be a `mediaType` entry at several levels, we only care about the top level entry),
+  then you don't need to do anything.
+
+  Otherwise, for each **secondary** site, on a Rails application node, open a [Rails console](../../administration/operations/rails_console.md), and run the following:
+
+   ```ruby
+   list_type = 'application/vnd.docker.distribution.manifest.list.v2+json'
+
+   Geo::ContainerRepositoryRegistry.synced.each do |gcr|
+     cr = gcr.container_repository
+     primary = Geo::ContainerRepositorySync.new(cr)
+     cr.tags.each do |tag|
+       primary_manifest = JSON.parse(primary.send(:client).repository_raw_manifest(cr.path, tag.name))
+       next unless primary_manifest['mediaType'].eql?(list_type)
+
+       cr.delete_tag_by_name(tag.name)
+     end
+     primary.execute
+   end
+   ```
+
+  If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry,
+  we recommend [upgrading](../../administration/geo/replication/upgrading_the_geo_sites.md) to at least GitLab 14.1.
+
 ## 14.1.0
 
 - [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases)
@@ -474,6 +651,50 @@ for how to proceed.
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](../index.md#maintenance-mode-issue-in-gitlab-139-to-144).
 
 - If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [123475](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123475) as the `mr_iid`.
+
+### Geo installations **(PREMIUM SELF)**
+
+- We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the Container Registry replication
+  wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture
+  (for example `amd64`) would be replicated to the secondary site. This has been [fixed in GitLab 14.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67624) and was backported to 14.2 and 14.1, but manual steps are required to force a re-sync.
+
+  You can check if you are affected by running:
+
+  ```shell
+  docker manifest inspect <SECONDARY_IMAGE_LOCATION> | jq '.mediaType'
+  ```
+
+  Where `<SECONDARY_IMAGE_LOCATION>` is a container image on your secondary site.
+  If the output matches `application/vnd.docker.distribution.manifest.list.v2+json`
+  (there can be a `mediaType` entry at several levels, we only care about the top level entry),
+  then you don't need to do anything.
+
+  Otherwise, for each **secondary** site, on a Rails application node, open a [Rails console](../../administration/operations/rails_console.md), and run the following:
+
+   ```ruby
+   list_type = 'application/vnd.docker.distribution.manifest.list.v2+json'
+
+   Geo::ContainerRepositoryRegistry.synced.each do |gcr|
+     cr = gcr.container_repository
+     primary = Geo::ContainerRepositorySync.new(cr)
+     cr.tags.each do |tag|
+       primary_manifest = JSON.parse(primary.send(:client).repository_raw_manifest(cr.path, tag.name))
+       next unless primary_manifest['mediaType'].eql?(list_type)
+
+       cr.delete_tag_by_name(tag.name)
+     end
+     primary.execute
+   end
+   ```
+
+  If you are running a version prior to 14.1 and are using Geo and multi-arch containers in your Container Registry,
+  we recommend [upgrading](../../administration/geo/replication/upgrading_the_geo_sites.md) to at least GitLab 14.1.
+- We found an issue where [Primary sites cannot be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
+
+  This bug only exists in the UI and does not block the removal of Primary sites using any other method.
+
+  If you are running an affected version and need to remove your Primary site, you can manually remove the Primary site
+  by using the [Geo Sites API](../../api/geo_nodes.md#delete-a-geo-node).
 
 ## 14.0.0
 
@@ -578,6 +799,15 @@ Other issues:
 
   The following invalid roles have been set in 'roles': redis_slave_role
   ```
+
+### Geo installations **(PREMIUM SELF)**
+
+- We found an issue where [Primary sites cannot be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
+
+  This bug only exists in the UI and does not block the removal of Primary sites using any other method.
+
+  If you are running an affected version and need to remove your Primary site, you can manually remove the Primary site
+  by using the [Geo Sites API](../../api/geo_nodes.md#delete-a-geo-node).
 
 ### Upgrading to later 14.Y releases
 

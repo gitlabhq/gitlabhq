@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 import { ORGANIZATION_ROOT_ROUTE_NAME } from '../constants';
-import resolvers from './graphql/resolvers';
+import resolvers from '../shared/graphql/resolvers';
 import App from './components/app.vue';
 
 export const createRouter = () => {

@@ -17,7 +17,7 @@ import {
   EMPTY_LIST_HELP_URL,
   PACKAGE_HELP_URL,
 } from '~/packages_and_registries/package_registry/constants';
-
+import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
 import { packagesListQuery, packageData, pagination } from '../mock_data';
@@ -53,6 +53,7 @@ describe('PackagesListApp', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findDeletePackages = () => wrapper.findComponent(DeletePackages);
   const findSettingsLink = () => wrapper.findComponent(GlButton);
+  const findPagination = () => wrapper.findComponent(PersistedPagination);
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(packagesListQuery()),
@@ -97,6 +98,15 @@ describe('PackagesListApp', () => {
     mountComponent({ resolver });
 
     expect(resolver).not.toHaveBeenCalled();
+  });
+
+  it('has persisted pagination', async () => {
+    const resolver = jest.fn().mockResolvedValue(packagesListQuery());
+
+    mountComponent({ resolver });
+    await waitForFirstRequest();
+
+    expect(findPagination().props('pagination')).toEqual(pagination());
   });
 
   it('has a package title', async () => {
@@ -194,7 +204,6 @@ describe('PackagesListApp', () => {
       expect(findListComponent().props()).toMatchObject({
         list: expect.arrayContaining([expect.objectContaining({ id: packageData().id })]),
         isLoading: false,
-        pageInfo: expect.objectContaining({ endCursor: pagination().endCursor }),
         groupSettings: expect.objectContaining({
           mavenPackageRequestsForwarding: true,
           npmPackageRequestsForwarding: true,
@@ -203,9 +212,9 @@ describe('PackagesListApp', () => {
       });
     });
 
-    it('when list emits next-page fetches the next set of records', async () => {
+    it('when pagination emits next event fetches the next set of records', async () => {
       await waitForFirstRequest();
-      findListComponent().vm.$emit('next-page');
+      findPagination().vm.$emit('next');
       await waitForPromises();
 
       expect(resolver).toHaveBeenCalledWith(
@@ -213,9 +222,9 @@ describe('PackagesListApp', () => {
       );
     });
 
-    it('when list emits prev-page fetches the prev set of records', async () => {
+    it('when pagination emits prev event fetches the prev set of records', async () => {
       await waitForFirstRequest();
-      findListComponent().vm.$emit('prev-page');
+      findPagination().vm.$emit('prev');
       await waitForPromises();
 
       expect(resolver).toHaveBeenCalledWith(

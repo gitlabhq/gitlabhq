@@ -205,7 +205,7 @@ class Note < ApplicationRecord
   after_commit :trigger_note_subscription_create, on: :create
   after_commit :trigger_note_subscription_update, on: :update
   after_commit :trigger_note_subscription_destroy, on: :destroy
-  after_commit :expire_etag_cache, unless: :importing?
+  after_commit :broadcast_noteable_notes_changed, unless: :importing?
 
   def trigger_note_subscription_create
     return unless trigger_note_subscription?
@@ -589,8 +589,8 @@ class Note < ApplicationRecord
     update_columns(attributes_to_update)
   end
 
-  def expire_etag_cache
-    noteable&.expire_note_etag_cache
+  def broadcast_noteable_notes_changed
+    noteable&.broadcast_notes_changed
   end
 
   def touch(*args, **kwargs)

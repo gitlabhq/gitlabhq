@@ -48,7 +48,7 @@ GET /project_aliases/:name
 
 | Attribute | Type   | Required | Description           |
 |-----------|--------|----------|-----------------------|
-| `name`    | string | **{check-circle}** Yes      | The name of the alias. |
+| `name`    | string | Yes      | The name of the alias. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases/gitlab"
@@ -75,8 +75,8 @@ POST /project_aliases
 
 | Attribute    | Type           | Required | Description                            |
 |--------------|----------------|----------|----------------------------------------|
-| `name`       | string         | **{check-circle}** Yes | The name of the alias. Must be unique. |
-| `project_id` | integer or string | **{check-circle}** Yes | The ID or path of the project.         |
+| `name`       | string         | Yes | The name of the alias. Must be unique. |
+| `project_id` | integer or string | Yes | The ID or path of the project.         |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -111,7 +111,7 @@ DELETE /project_aliases/:name
 
 | Attribute | Type   | Required | Description           |
 |-----------|--------|----------|-----------------------|
-| `name`    | string | **{check-circle}** Yes | The name of the alias. |
+| `name`    | string | Yes | The name of the alias. |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases/gitlab"

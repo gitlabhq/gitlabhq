@@ -7,8 +7,8 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
   let(:middleware) { described_class.new(app) }
   let(:app_status_code) { 200 }
   let(:if_none_match) { nil }
-  let(:enabled_path) { '/gitlab-org/gitlab-foss/noteable/issue/1/notes' }
-  let(:endpoint) { 'issue_notes' }
+  let(:enabled_path) { '/gitlab-org/gitlab-foss/commit/aaaaaaaa/pipelines.json' }
+  let(:endpoint) { 'commit_pipelines' }
 
   describe '.skip!' do
     it 'sets the skip header on the response' do
@@ -128,8 +128,8 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
         target_duration_s: 5,
         metadata: a_hash_including(
           {
-            'meta.caller_id' => 'Projects::NotesController#index',
-            'meta.feature_category' => 'team_planning'
+            'meta.caller_id' => 'Projects::CommitController#pipelines',
+            'meta.feature_category' => 'source_code_management'
           }
         )
       }
@@ -185,8 +185,8 @@ RSpec.describe Gitlab::EtagCaching::Middleware, :clean_gitlab_redis_shared_state
 
     it "pushes expected information in to the context" do
       expect(Gitlab::ApplicationContext).to receive(:push).with(
-        feature_category: 'team_planning',
-        caller_id: 'Projects::NotesController#index',
+        feature_category: 'source_code_management',
+        caller_id: 'Projects::CommitController#pipelines',
         remote_ip: '127.0.0.1'
       )
 

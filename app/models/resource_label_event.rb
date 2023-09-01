@@ -13,8 +13,7 @@ class ResourceLabelEvent < ResourceEvent
   validates :label, presence: { unless: :importing? }, on: :create
   validate :exactly_one_issuable, unless: :importing?
 
-  after_destroy :expire_etag_cache
-  after_save :expire_etag_cache
+  after_commit :broadcast_notes_changed, unless: :importing?
 
   enum action: {
     add: 1,
@@ -97,8 +96,8 @@ class ResourceLabelEvent < ResourceEvent
     issuable.is_a?(MergeRequest) ? :project_merge_requests_url : :project_issues_url
   end
 
-  def expire_etag_cache
-    issuable.expire_note_etag_cache
+  def broadcast_notes_changed
+    issuable.broadcast_notes_changed
   end
 
   def local_label?

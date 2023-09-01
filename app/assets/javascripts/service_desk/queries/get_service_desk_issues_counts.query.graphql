@@ -1,5 +1,4 @@
 query getServiceDeskIssuesCount(
-  $isProject: Boolean = false
   $fullPath: ID!
   $iid: String
   $search: String
@@ -14,12 +13,10 @@ query getServiceDeskIssuesCount(
   $releaseTag: [String!]
   $releaseTagWildcardId: ReleaseTagWildcardId
   $types: [IssueType!]
-  $crmContactId: String
-  $crmOrganizationId: String
   $not: NegatedIssueFilterInput
   $or: UnionedIssueFilterInput
 ) {
-  project(fullPath: $fullPath) @include(if: $isProject) {
+  project(fullPath: $fullPath) {
     id
     openedIssues: issues(
       state: opened
@@ -36,8 +33,6 @@ query getServiceDeskIssuesCount(
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
       types: $types
-      crmContactId: $crmContactId
-      crmOrganizationId: $crmOrganizationId
       not: $not
       or: $or
     ) {
@@ -58,8 +53,6 @@ query getServiceDeskIssuesCount(
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
       types: $types
-      crmContactId: $crmContactId
-      crmOrganizationId: $crmOrganizationId
       not: $not
       or: $or
     ) {
@@ -80,8 +73,6 @@ query getServiceDeskIssuesCount(
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
       types: $types
-      crmContactId: $crmContactId
-      crmOrganizationId: $crmOrganizationId
       not: $not
       or: $or
     ) {

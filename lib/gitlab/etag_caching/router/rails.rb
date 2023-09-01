@@ -10,9 +10,8 @@ module Gitlab
         # To match a regex the path needs to match the following:
         #   - Don't contain a reserved word (expect for the words used in the
         #     regex itself)
-        #   - Ending in `noteable/issue/<id>/notes` for the `issue_notes` route
         #   - Ending in `issues/id`/realtime_changes` for the `issue_title` route
-        USED_IN_ROUTES = %w[noteable issue notes issues realtime_changes
+        USED_IN_ROUTES = %w[noteable issue issues realtime_changes
                             commit pipelines merge_requests builds
                             new environments].freeze
         RESERVED_WORDS = Gitlab::PathRegex::ILLEGAL_PROJECT_PATH_WORDS - USED_IN_ROUTES
@@ -20,18 +19,6 @@ module Gitlab
         RESERVED_WORDS_PREFIX = %(^(?!.*\/(#{RESERVED_WORDS_REGEX})\/).*)
 
         ROUTES = [
-          [
-            %r(#{RESERVED_WORDS_PREFIX}/noteable/issue/\d+/notes\z),
-            'issue_notes',
-            ::Projects::NotesController,
-            :index
-          ],
-          [
-            %r(#{RESERVED_WORDS_PREFIX}/noteable/merge_request/\d+/notes\z),
-            'merge_request_notes',
-            ::Projects::NotesController,
-            :index
-          ],
           [
             %r(#{RESERVED_WORDS_PREFIX}/issues/\d+/realtime_changes\z),
             'issue_title',

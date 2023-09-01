@@ -2,6 +2,8 @@
 import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import { s__, __ } from '~/locale';
+import GroupsView from '../../shared/components/groups_view.vue';
+import ProjectsView from '../../shared/components/projects_view.vue';
 import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '../../constants';
 import { FILTER_FREQUENTLY_VISITED } from '../constants';
 import { buildDisplayListboxItem } from '../utils';
@@ -47,6 +49,18 @@ export default {
         this.displayListboxSelected.endsWith(resourceType),
       );
     },
+    routerView() {
+      switch (this.resourceTypeSelected) {
+        case RESOURCE_TYPE_GROUPS:
+          return GroupsView;
+
+        case RESOURCE_TYPE_PROJECTS:
+          return ProjectsView;
+
+        default:
+          return ProjectsView;
+      }
+    },
     groupsAndProjectsOrganizationPathWithQueryParam() {
       return `${this.groupsAndProjectsOrganizationPath}?display=${this.resourceTypeSelected}`;
     },
@@ -91,5 +105,6 @@ export default {
         $options.i18n.viewAll
       }}</gl-link>
     </div>
+    <component :is="routerView" class="gl-mt-5" />
   </div>
 </template>

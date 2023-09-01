@@ -1595,16 +1595,10 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
-  describe 'expiring ETag cache' do
+  describe 'broadcasting note changes' do
     let_it_be(:issue) { create(:issue) }
 
     let(:note) { build(:note, project: issue.project, noteable: issue) }
-
-    def expect_expiration(noteable)
-      expect_any_instance_of(Gitlab::EtagCaching::Store)
-        .to receive(:touch)
-        .with("/#{noteable.project.namespace.to_param}/#{noteable.project.to_param}/noteable/#{noteable.class.name.underscore}/#{noteable.id}/notes")
-    end
 
     it 'broadcasts an Action Cable event for the noteable' do
       expect(Noteable::NotesChannel).to receive(:broadcast_to).with(note.noteable, event: 'updated')
@@ -1612,24 +1606,19 @@ RSpec.describe Note, feature_category: :team_planning do
       note.save!
     end
 
-    it "expires cache for note's issue when note is saved" do
-      expect_expiration(note.noteable)
-
+    it 'broadcast an Action Cable event for the noteable when note is destroyed' do
       note.save!
-    end
 
-    it "expires cache for note's issue when note is destroyed" do
-      note.save!
-      expect_expiration(note.noteable)
+      expect(Noteable::NotesChannel).to receive(:broadcast_to).with(note.noteable, event: 'updated')
 
       note.destroy!
     end
 
-    context 'when issuable etag caching is disabled' do
-      it 'does not store cache key' do
-        allow(note.noteable).to receive(:etag_caching_enabled?).and_return(false)
+    context 'when issuable real_time_notes is disabled' do
+      it 'does not broadcast an Action Cable event' do
+        allow(note.noteable).to receive(:real_time_notes_enabled?).and_return(false)
 
-        expect_any_instance_of(Gitlab::EtagCaching::Store).not_to receive(:touch)
+        expect(Noteable::NotesChannel).not_to receive(:broadcast_to)
 
         note.save!
       end
@@ -1641,8 +1630,8 @@ RSpec.describe Note, feature_category: :team_planning do
       context 'when adding a note to the MR' do
         let(:note) { build(:note, noteable: merge_request, project: merge_request.project) }
 
-        it 'expires the MR note etag cache' do
-          expect_expiration(merge_request)
+        it 'broadcasts an Action Cable event for the MR' do
+          expect(Noteable::NotesChannel).to receive(:broadcast_to).with(merge_request, event: 'updated')
 
           note.save!
         end
@@ -1651,8 +1640,8 @@ RSpec.describe Note, feature_category: :team_planning do
       context 'when adding a note to a commit on the MR' do
         let(:note) { build(:note_on_commit, commit_id: merge_request.commits.first.id, project: merge_request.project) }
 
-        it 'expires the MR note etag cache' do
-          expect_expiration(merge_request)
+        it 'broadcasts an Action Cable event for the MR' do
+          expect(Noteable::NotesChannel).to receive(:broadcast_to).with(merge_request, event: 'updated')
 
           note.save!
         end

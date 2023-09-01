@@ -48,10 +48,6 @@ export default {
       required: false,
       default: false,
     },
-    pageInfo: {
-      type: Object,
-      required: true,
-    },
     groupSettings: {
       type: Object,
       required: false,
@@ -179,11 +175,8 @@ export default {
         :hidden-delete="!canDeletePackages"
         :is-loading="isLoading"
         :items="list"
-        :pagination="pageInfo"
         :title="listTitle"
         @delete="setItemsToBeDeleted"
-        @prev-page="$emit('prev-page')"
-        @next-page="$emit('next-page')"
       >
         <template #default="{ selectItem, isSelected, item, first }">
           <packages-list-row

@@ -23,7 +23,7 @@ module ResourceEvents
         created_at: resource.system_note_timestamp
       )
 
-      resource.expire_note_etag_cache
+      resource.broadcast_notes_changed
     end
 
     private

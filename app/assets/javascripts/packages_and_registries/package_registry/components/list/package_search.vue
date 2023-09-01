@@ -6,9 +6,7 @@ import {
   TOKEN_TITLE_TYPE,
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
-import UrlSync from '~/vue_shared/components/url_sync.vue';
-import { getQueryParams, extractFilterAndSorting } from '~/packages_and_registries/shared/utils';
+import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import { LIST_KEY_CREATED_AT } from '~/packages_and_registries/package_registry/constants';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PackageTypeToken from './tokens/package_type_token.vue';
@@ -24,7 +22,10 @@ export default {
       operators: OPERATORS_IS,
     },
   ],
-  components: { RegistrySearch, UrlSync, LocalStorageSync },
+  components: {
+    LocalStorageSync,
+    PersistedSearch,
+  },
   inject: ['isGroupPage'],
   data() {
     return {
@@ -40,17 +41,25 @@ export default {
     sortableFields() {
       return sortableFields(this.isGroupPage);
     },
-    parsedSorting() {
-      const cleanOrderBy = this.sorting?.orderBy.replace('_at', '');
-      return `${cleanOrderBy}_${this.sorting?.sort}`.toUpperCase();
-    },
-    parsedFilters() {
+  },
+  mounted() {
+    // local-storage-sync does not emit `input`
+    // event when key is not found, so set the
+    // flag if it hasn't been updated
+    this.$nextTick(() => {
+      if (!this.mountRegistrySearch) {
+        this.mountRegistrySearch = true;
+      }
+    });
+  },
+  methods: {
+    formatFilters(filters) {
       const parsed = {
         packageName: '',
         packageType: undefined,
       };
 
-      return this.filters.reduce((acc, filter) => {
+      return filters.reduce((acc, filter) => {
         if (filter.type === TOKEN_TYPE_TYPE && filter.value?.data) {
           return {
             ...acc,
@@ -68,28 +77,17 @@ export default {
         return acc;
       }, parsed);
     },
-  },
-  mounted() {
-    const queryParams = getQueryParams(window.document.location.search);
-    const { sorting, filters } = extractFilterAndSorting(queryParams);
-    this.updateSorting(sorting);
-    this.updateFilters(filters);
-    this.mountRegistrySearch = true;
-    this.emitUpdate();
-  },
-  methods: {
-    updateFilters(newValue) {
-      this.filters = newValue;
-    },
     updateSorting(newValue) {
       this.sorting = { ...this.sorting, ...newValue };
     },
-    updateSortingAndEmitUpdate(newValue) {
+    updateSortingFromLocalStorage(newValue) {
       this.updateSorting(newValue);
-      this.emitUpdate();
+      this.mountRegistrySearch = true;
     },
-    emitUpdate() {
-      this.$emit('update', { sort: this.parsedSorting, filters: this.parsedFilters });
+    emitUpdate(values) {
+      const { filters, sorting } = values;
+      this.updateSorting(sorting);
+      this.$emit('update', { ...values, filters: this.formatFilters(filters) });
     },
   },
 };
@@ -99,22 +97,15 @@ export default {
   <local-storage-sync
     storage-key="package_registry_list_sorting"
     :value="sorting"
-    @input="updateSorting"
+    @input="updateSortingFromLocalStorage"
   >
-    <url-sync>
-      <template #default="{ updateQuery }">
-        <registry-search
-          v-if="mountRegistrySearch"
-          :filters="filters"
-          :sorting="sorting"
-          :tokens="$options.tokens"
-          :sortable-fields="sortableFields"
-          @sorting:changed="updateSortingAndEmitUpdate"
-          @filter:changed="updateFilters"
-          @filter:submit="emitUpdate"
-          @query:changed="updateQuery"
-        />
-      </template>
-    </url-sync>
+    <persisted-search
+      v-if="mountRegistrySearch"
+      :sortable-fields="sortableFields"
+      :default-order="sorting.orderBy"
+      :default-sort="sorting.sort"
+      :tokens="$options.tokens"
+      @update="emitUpdate"
+    />
   </local-storage-sync>
 </template>

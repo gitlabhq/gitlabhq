@@ -22,10 +22,10 @@ Supported attributes:
 
 | Attribute          | Type    | Required               | Description |
 | ------------------ | ------- | ---------------------- | ----------- |
-| `page`             | integer | **{dotted-circle}** No | Page to retrieve. Defaults to `1`.                      |
-| `per_page`         | integer | **{dotted-circle}** No | Number of records to return per page. Defaults to `20`. |
-| `search`           | string  | **{dotted-circle}** No | Search topics against their `name`.                     |
-| `without_projects` | boolean | **{dotted-circle}** No | Limit results to topics without assigned projects.      |
+| `page`             | integer | No | Page to retrieve. Defaults to `1`.                      |
+| `per_page`         | integer | No | Number of records to return per page. Defaults to `20`. |
+| `search`           | string  | No | Search topics against their `name`.                     |
+| `without_projects` | boolean | No | Limit results to topics without assigned projects.      |
 
 Example request:
 
@@ -76,7 +76,7 @@ Supported attributes:
 
 | Attribute | Type    | Required               | Description         |
 | --------- | ------- | ---------------------- | ------------------- |
-| `id`      | integer | **{check-circle}** Yes | ID of project topic |
+| `id`      | integer | Yes | ID of project topic |
 
 Example request:
 
@@ -117,10 +117,10 @@ Supported attributes:
 
 | Attribute     | Type    | Required               | Description |
 | ------------- | ------- | ---------------------- | ----------- |
-| `name`        | string  | **{check-circle}** Yes | Slug (name) |
-| `title`       | string  | **{check-circle}** Yes | Title       |
-| `avatar`      | file    | **{dotted-circle}** No | Avatar      |
-| `description` | string  | **{dotted-circle}** No | Description |
+| `name`        | string  | Yes | Slug (name) |
+| `title`       | string  | Yes | Title       |
+| `avatar`      | file    | No | Avatar      |
+| `description` | string  | No | Description |
 
 Example request:
 
@@ -156,11 +156,11 @@ Supported attributes:
 
 | Attribute     | Type    | Required               | Description         |
 | ------------- | ------- | ---------------------- | ------------------- |
-| `id`          | integer | **{check-circle}** Yes | ID of project topic |
-| `avatar`      | file    | **{dotted-circle}** No | Avatar              |
-| `description` | string  | **{dotted-circle}** No | Description         |
-| `name`        | string  | **{dotted-circle}** No | Slug (name)         |
-| `title`       | string  | **{dotted-circle}** No | Title               |
+| `id`          | integer | Yes | ID of project topic |
+| `avatar`      | file    | No | Avatar              |
+| `description` | string  | No | Description         |
+| `name`        | string  | No | Slug (name)         |
+| `title`       | string  | No | Title               |
 
 Example request:
 
@@ -228,7 +228,7 @@ Supported attributes:
 
 | Attribute     | Type    | Required               | Description         |
 | ------------- | ------- | ---------------------- | ------------------- |
-| `id`          | integer | **{check-circle}** Yes | ID of project topic |
+| `id`          | integer | Yes | ID of project topic |
 
 Example request:
 
@@ -253,8 +253,8 @@ Supported attributes:
 
 | Attribute         | Type    | Required               | Description                |
 | ----------------- | ------- | ---------------------- | -------------------------- |
-| `source_topic_id` | integer | **{check-circle}** Yes | ID of source project topic |
-| `target_topic_id` | integer | **{check-circle}** Yes | ID of target project topic |
+| `source_topic_id` | integer | Yes | ID of source project topic |
+| `target_topic_id` | integer | Yes | ID of target project topic |
 
 Example request:
 

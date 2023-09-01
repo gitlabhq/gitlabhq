@@ -603,7 +603,7 @@ class Issue < ApplicationRecord
     end
   end
 
-  def etag_caching_enabled?
+  def real_time_notes_enabled?
     true
   end
 

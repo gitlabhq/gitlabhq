@@ -141,7 +141,7 @@ Specific information applies to Linux package installations:
   [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118645). For more information, see the
   [`puma.rb.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/16-0-stable-ee/config/puma.rb.example) file.
 
-### Geo installations
+### Geo installations **(PREMIUM SELF)**
 
 Specific information applies to installations using Geo:
 
@@ -197,7 +197,7 @@ Specific information applies to Linux package installations:
 
   Workaround is to make use of a different key type, or upgrade the client OpenSSH to a version >= 8.7.
 
-### Geo installations
+### Geo installations **(PREMIUM SELF)**
 
 Specific information applies to installations using Geo:
 

@@ -31118,6 +31118,8 @@ CREATE UNIQUE INDEX index_ci_pipeline_chat_data_on_pipeline_id_convert_to_bigint
 
 CREATE INDEX index_ci_pipeline_messages_on_pipeline_id ON ci_pipeline_messages USING btree (pipeline_id);
 
+CREATE INDEX index_ci_pipeline_messages_on_pipeline_id_convert_to_bigint ON ci_pipeline_messages USING btree (pipeline_id_convert_to_bigint);
+
 CREATE INDEX index_ci_pipeline_metadata_on_project_id ON ci_pipeline_metadata USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_pipeline_schedule_variables_on_schedule_id_and_key ON ci_pipeline_schedule_variables USING btree (pipeline_schedule_id, key);
@@ -38889,7 +38891,7 @@ ALTER TABLE product_analytics_events_experimental
     ADD CONSTRAINT product_analytics_events_experimental_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_pipeline_variables
-    ADD CONSTRAINT temp_fk_rails_8d3b04e3e1 FOREIGN KEY (pipeline_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT temp_fk_rails_8d3b04e3e1 FOREIGN KEY (pipeline_id_convert_to_bigint) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_follow_users
     ADD CONSTRAINT user_follow_users_followee_id_fkey FOREIGN KEY (followee_id) REFERENCES users(id) ON DELETE CASCADE;

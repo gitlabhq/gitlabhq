@@ -14,6 +14,8 @@ import {
   TOKEN_EMPTY_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '../../constants';
+import GroupsView from '../../shared/components/groups_view.vue';
+import ProjectsView from '../../shared/components/projects_view.vue';
 import {
   DISPLAY_LISTBOX_ITEMS,
   SORT_DIRECTION_ASC,
@@ -22,8 +24,6 @@ import {
   SORT_ITEM_CREATED,
   FILTERED_SEARCH_TERM_KEY,
 } from '../constants';
-import GroupsPage from './groups_page.vue';
-import ProjectsPage from './projects_page.vue';
 
 export default {
   i18n: {
@@ -45,13 +45,13 @@ export default {
 
       switch (display) {
         case RESOURCE_TYPE_GROUPS:
-          return GroupsPage;
+          return GroupsView;
 
         case RESOURCE_TYPE_PROJECTS:
-          return ProjectsPage;
+          return ProjectsView;
 
         default:
-          return GroupsPage;
+          return GroupsView;
       }
     },
     activeSortItem() {

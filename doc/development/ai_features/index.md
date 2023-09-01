@@ -60,7 +60,6 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
    ```ruby
    Feature.enable(:ai_related_settings)
    Feature.enable(:openai_experimentation)
-   Feature.enable(:tofa_experimentation_main_flag)
    Feature.enable(:anthropic_experimentation)
    ```
 
@@ -178,7 +177,7 @@ The endpoints are:
 - `https://gitlab.example.com/api/v4/ai/experimentation/openai/embeddings`
 - `https://gitlab.example.com/api/v4/ai/experimentation/openai/chat/completions`
 - `https://gitlab.example.com/api/v4/ai/experimentation/anthropic/complete`
-- `https://gitlab.example.com/api/v4/ai/experimentation/tofa/chat`
+- `https://gitlab.example.com/api/v4/ai/experimentation/vertex/chat`
 
 These endpoints are only for prototyping, not for rolling features out to customers.
 The experimental endpoint is only available to GitLab team members on production. Use the

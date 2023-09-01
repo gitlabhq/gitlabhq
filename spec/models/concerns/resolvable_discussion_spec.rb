@@ -446,8 +446,8 @@ RSpec.describe Discussion, ResolvableDiscussion, feature_category: :code_review_
           expect(subject.resolved?).to be true
         end
 
-        it "expires the etag cache of the noteable" do
-          expect(subject.noteable).to receive(:expire_note_etag_cache)
+        it "broadcasts note change of the noteable" do
+          expect(subject.noteable).to receive(:broadcast_notes_changed)
 
           subject.resolve!(current_user)
         end
@@ -532,8 +532,8 @@ RSpec.describe Discussion, ResolvableDiscussion, feature_category: :code_review_
           expect(subject.resolved?).to be false
         end
 
-        it "expires the etag cache of the noteable" do
-          expect(subject.noteable).to receive(:expire_note_etag_cache)
+        it "broadcasts note change of the noteable" do
+          expect(subject.noteable).to receive(:broadcast_notes_changed)
 
           subject.unresolve!
         end

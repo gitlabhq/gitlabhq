@@ -3,7 +3,6 @@
 
 query getServiceDeskIssues(
   $hideUsers: Boolean = false
-  $isProject: Boolean = false
   $isSignedIn: Boolean = false
   $fullPath: ID!
   $iid: String
@@ -22,8 +21,6 @@ query getServiceDeskIssues(
   $releaseTag: [String!]
   $releaseTagWildcardId: ReleaseTagWildcardId
   $types: [IssueType!]
-  $crmContactId: String
-  $crmOrganizationId: String
   $not: NegatedIssueFilterInput
   $or: UnionedIssueFilterInput
   $beforeCursor: String
@@ -31,7 +28,7 @@ query getServiceDeskIssues(
   $firstPageSize: Int
   $lastPageSize: Int
 ) {
-  project(fullPath: $fullPath) @include(if: $isProject) @persist {
+  project(fullPath: $fullPath) @persist {
     id
     issues(
       iid: $iid
@@ -50,8 +47,6 @@ query getServiceDeskIssues(
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
       types: $types
-      crmContactId: $crmContactId
-      crmOrganizationId: $crmOrganizationId
       not: $not
       or: $or
       before: $beforeCursor

@@ -1515,10 +1515,10 @@ POST /projects/:id/issues/:issue_iid/clone
 
 | Attribute       | Type           | Required               | Description                       |
 | --------------- | -------------- | ---------------------- | --------------------------------- |
-| `id`            | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `issue_iid`     | integer        | **{check-circle}** Yes | Internal ID of a project's issue. |
-| `to_project_id` | integer        | **{check-circle}** Yes | ID of the new project.            |
-| `with_notes`    | boolean        | **{dotted-circle}** No | Clone the issue with [notes](notes.md). Default is `false`. |
+| `id`            | integer/string | Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `issue_iid`     | integer        | Yes | Internal ID of a project's issue. |
+| `to_project_id` | integer        | Yes | ID of the new project.            |
+| `with_notes`    | boolean        | No | Clone the issue with [notes](notes.md). Default is `false`. |
 
 ```shell
 curl --request POST \

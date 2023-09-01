@@ -77,9 +77,9 @@ Supported attributes:
 
 | Attribute       | Type           | Required               | Description                                                                 |
 |-----------------|----------------|------------------------|-----------------------------------------------------------------------------|
-| `id`            | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `issue_iid`     | integer        | **{check-circle}** Yes | Internal ID of a project's issue.                                           |
-| `issue_link_id` | integer/string | **{check-circle}** Yes | ID of an issue relationship.                                                |
+| `id`            | integer/string | Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `issue_iid`     | integer        | Yes | Internal ID of a project's issue.                                           |
+| `issue_link_id` | integer/string | Yes | ID of an issue relationship.                                                |
 
 Response body attributes:
 

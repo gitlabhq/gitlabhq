@@ -86,6 +86,7 @@ describe('Persisted Search', () => {
           after: '123',
           before: null,
         },
+        sorting: defaultQueryParamsMock.sorting,
       },
     ]);
   });
@@ -109,6 +110,7 @@ describe('Persisted Search', () => {
       {
         filters: [],
         sort: 'TEST_DESC',
+        sorting: defaultQueryParamsMock.sorting,
         pageInfo: {
           before: '456',
           after: null,
@@ -136,6 +138,7 @@ describe('Persisted Search', () => {
         filters: ['foo'],
         sort: 'TEST_DESC',
         pageInfo: {},
+        sorting: payload,
       },
     ]);
   });
@@ -169,6 +172,7 @@ describe('Persisted Search', () => {
           after: '123',
           before: null,
         },
+        sorting: defaultQueryParamsMock.sorting,
       },
     ]);
   });

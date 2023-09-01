@@ -1,4 +1,4 @@
-import { formatProjects, formatGroups } from '~/organizations/groups_and_projects/utils';
+import { formatProjects, formatGroups } from '~/organizations/shared/utils';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { organizationProjects, organizationGroups } from '~/organizations/mock_data';

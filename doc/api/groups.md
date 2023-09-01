@@ -893,8 +893,8 @@ GET /groups/:id/transfer_locations
 
 | Attribute   | Type           | Required               | Description |
 |-------------|----------------|------------------------|-------------|
-| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the group to be transferred](rest/index.md#namespaced-path-encoding). |
-| `search` | string | **{dotted-circle}** No  | The group names to search for. |
+| `id`        | integer or string | Yes | The ID or [URL-encoded path of the group to be transferred](rest/index.md#namespaced-path-encoding). |
+| `search` | string | No  | The group names to search for. |
 
 Example request:
 
