@@ -73,14 +73,14 @@ RSpec.describe Profiles::PersonalAccessTokensController do
       get :index
     end
 
-    it "only includes details of the active personal access token" do
+    it "only includes details of active personal access tokens" do
       active_personal_access_tokens_detail =
         ::PersonalAccessTokenSerializer.new.represent([active_personal_access_token])
 
       expect(assigns(:active_access_tokens).to_json).to eq(active_personal_access_tokens_detail.to_json)
     end
 
-    it "sets PAT name and scopes" do
+    it "builds a PAT with name and scopes from params" do
       name = 'My PAT'
       scopes = 'api,read_user'
 
@@ -104,6 +104,58 @@ RSpec.describe Profiles::PersonalAccessTokensController do
       get :index, params: { format: :json }
 
       expect(json_response.count).to eq(1)
+    end
+
+    it 'sets available scopes' do
+      expect(assigns(:scopes)).to eq(Gitlab::Auth.available_scopes_for(access_token_user))
+    end
+
+    context 'with feature flag k8s_proxy_pat disabled' do
+      before do
+        stub_feature_flags(k8s_proxy_pat: false)
+        # Impersonation and inactive personal tokens are ignored
+        create(:personal_access_token, :impersonation, user: access_token_user)
+        create(:personal_access_token, :revoked, user: access_token_user)
+        get :index
+      end
+
+      it "only includes details of active personal access tokens" do
+        active_personal_access_tokens_detail =
+          ::PersonalAccessTokenSerializer.new.represent([active_personal_access_token])
+
+        expect(assigns(:active_access_tokens).to_json).to eq(active_personal_access_tokens_detail.to_json)
+      end
+
+      it "builds a PAT with name and scopes from params" do
+        name = 'My PAT'
+        scopes = 'api,read_user'
+
+        get :index, params: { name: name, scopes: scopes }
+
+        expect(assigns(:personal_access_token)).to have_attributes(
+          name: eq(name),
+          scopes: contain_exactly(:api, :read_user)
+        )
+      end
+
+      it 'returns 404 when personal access tokens are disabled' do
+        allow(::Gitlab::CurrentSettings).to receive_messages(personal_access_tokens_disabled?: true)
+
+        get :index
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns tokens for json format' do
+        get :index, params: { format: :json }
+
+        expect(json_response.count).to eq(1)
+      end
+
+      it 'sets available scopes' do
+        expect(assigns(:scopes))
+          .to eq(Gitlab::Auth.available_scopes_for(access_token_user) - [Gitlab::Auth::K8S_PROXY_SCOPE])
+      end
     end
   end
 end

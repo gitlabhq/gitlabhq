@@ -61,6 +61,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
   def set_index_vars
     @scopes = Gitlab::Auth.available_scopes_for(current_user)
+    @scopes.delete(Gitlab::Auth::K8S_PROXY_SCOPE) unless Feature.enabled?(:k8s_proxy_pat, current_user)
     @active_access_tokens = active_access_tokens
   end
 

@@ -13,6 +13,7 @@ You can use the open standard System for Cross-domain Identity Management (SCIM)
 
 - Create users.
 - Block users.
+- Re-add users (reactivate SCIM identity).
 
 The [internal GitLab SCIM API](../../development/internal_api/index.md#instance-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 
@@ -41,3 +42,14 @@ the GitLab instance, while the SCIM identity remains linked to the GitLab user.
 
 To update the user SCIM identity, use the
 [internal GitLab SCIM API](../../development/internal_api/index.md#update-a-single-scim-provisioned-user-1).
+
+### Reactivate access
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a flag](../feature_flags.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121226) in GitLab 16.4. Feature flag `skip_saml_identity_destroy_during_scim_deprovision` removed.
+
+After a user is removed or deactivated through SCIM, you can reactivate that user by
+adding them to the SCIM identity provider.
+
+After the identity provider performs a sync based on its configured schedule,
+the user's SCIM identity is reactivated and their GitLab instance access is restored.

@@ -10,6 +10,7 @@ You can use the open standard System for Cross-domain Identity Management (SCIM)
 
 - Create users.
 - Remove users (deactivate SCIM identity).
+- Re-add users (reactivate SCIM identity).
 
 GitLab SAML SSO SCIM doesn't support updating users.
 
@@ -218,10 +219,11 @@ Remove or deactivate a user on the identity provider to remove their access to:
 - The top-level group.
 - All subgroups and projects.
 
-After the identity provider performs a sync based on its configured schedule, the user's membership is revoked and they
-lose access.
+After the identity provider performs a sync based on its configured schedule,
+the user's membership is revoked and they lose access.
 
-When you enable SCIM, this does not automatically remove existing users who do not have a SAML identity.
+When you enable SCIM, this does not automatically remove existing users who do
+not have a SAML identity.
 
 NOTE:
 Deprovisioning does not delete the GitLab user account.
@@ -232,3 +234,14 @@ graph TD
   B -->|No| C[Nothing to do]
   B -->|Yes| D[GitLab removes user from GitLab group]
 ```
+
+### Reactivate access
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a flag](../../feature_flags.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121226) in GitLab 16.4. Feature flag `skip_saml_identity_destroy_during_scim_deprovision` removed.
+
+After a user is removed or deactivated through SCIM, you can reactivate that user by
+adding them to the SCIM identity provider.
+
+After the identity provider performs a sync based on its configured schedule,
+the user's SCIM identity is reactivated and their group memberships are restored.

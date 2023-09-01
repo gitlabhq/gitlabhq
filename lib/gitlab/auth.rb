@@ -5,12 +5,15 @@ module Gitlab
     MissingPersonalAccessTokenError = Class.new(StandardError)
     IpBlocked = Class.new(StandardError)
 
+    # Scopes used for GitLab internal API (Kubernetes cluster access)
+    K8S_PROXY_SCOPE = :k8s_proxy
+
     # Scopes used for GitLab API access
     API_SCOPE = :api
     READ_API_SCOPE = :read_api
     READ_USER_SCOPE = :read_user
     CREATE_RUNNER_SCOPE = :create_runner
-    API_SCOPES = [API_SCOPE, READ_API_SCOPE, READ_USER_SCOPE, CREATE_RUNNER_SCOPE].freeze
+    API_SCOPES = [API_SCOPE, READ_API_SCOPE, READ_USER_SCOPE, CREATE_RUNNER_SCOPE, K8S_PROXY_SCOPE].freeze
 
     PROFILE_SCOPE = :profile
     EMAIL_SCOPE = :email
