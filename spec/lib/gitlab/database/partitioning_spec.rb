@@ -8,6 +8,10 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
   let(:main_connection) { ApplicationRecord.connection }
 
+  before do
+    stub_feature_flags(disallow_database_ddl_feature_flags: false)
+  end
+
   around do |example|
     previously_registered_models = described_class.registered_models.dup
     described_class.instance_variable_set(:@registered_models, Set.new)
@@ -165,11 +169,11 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
           execute_on_each_database("DROP TABLE IF EXISTS #{table_name}")
 
           execute_on_each_database(<<~SQL)
-          CREATE TABLE #{table_name} (
-            id serial not null,
-            created_at timestamptz not null,
-            PRIMARY KEY (id, created_at))
-          PARTITION BY RANGE (created_at);
+            CREATE TABLE #{table_name} (
+              id serial not null,
+              created_at timestamptz not null,
+              PRIMARY KEY (id, created_at))
+            PARTITION BY RANGE (created_at);
           SQL
         end
       end
@@ -200,6 +204,20 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
         expect(described_class::PartitionManager).not_to receive(:new)
         expect(described_class).to receive(:sync_partitions)
           .and_call_original
+
+        described_class.sync_partitions(models)
+      end
+    end
+
+    context 'when disallow_database_ddl_feature_flags feature flag is enabled' do
+      before do
+        described_class.register_models(models)
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
+      end
+
+      it 'skips sync_partitions' do
+        expect(described_class::PartitionManager).not_to receive(:new)
+        expect(described_class).to receive(:sync_partitions).and_call_original
 
         described_class.sync_partitions(models)
       end
@@ -268,6 +286,18 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
     context 'when the feature flag is disabled' do
       before do
         stub_feature_flags(partition_manager_sync_partitions: false)
+      end
+
+      it 'does not call the DetachedPartitionDropper' do
+        expect(Gitlab::Database::Partitioning::DetachedPartitionDropper).not_to receive(:new)
+
+        described_class.drop_detached_partitions
+      end
+    end
+
+    context 'when the feature disallow DDL feature flags is enabled' do
+      before do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
       end
 
       it 'does not call the DetachedPartitionDropper' do

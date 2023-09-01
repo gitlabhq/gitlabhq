@@ -756,10 +756,6 @@ class NotificationService
     end
   end
 
-  def in_product_marketing(user_id, group_id, track, series)
-    mailer.in_product_marketing_email(user_id, group_id, track, series).deliver_later
-  end
-
   def approve_mr(merge_request, current_user)
     approve_mr_email(merge_request, merge_request.target_project, current_user)
   end

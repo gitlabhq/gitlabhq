@@ -45,7 +45,10 @@ module BackgroundMigration
     #   lease on the class before giving up. See MR for more discussion.
     #   https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45298#note_434304956
     def perform(class_name, arguments = [], lease_attempts = MAX_LEASE_ATTEMPTS)
-      unless Feature.enabled?(:execute_background_migrations, type: :ops)
+      should_skip = Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops) ||
+        Feature.disabled?(:execute_background_migrations, type: :ops)
+
+      if should_skip
         # Delay execution of background migrations
         self.class.perform_in(BACKGROUND_MIGRATIONS_DELAY, class_name, arguments, lease_attempts)
 

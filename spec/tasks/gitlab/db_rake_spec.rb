@@ -18,6 +18,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     allow(Rake::Task['db:migrate']).to receive(:invoke).and_return(true)
     allow(Rake::Task['db:schema:load']).to receive(:invoke).and_return(true)
     allow(Rake::Task['db:seed_fu']).to receive(:invoke).and_return(true)
+    stub_feature_flags(disallow_database_ddl_feature_flags: false)
   end
 
   describe 'mark_migration_complete' do
@@ -882,6 +883,16 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
       end
     end
 
+    context 'when database ddl feature flag is enabled' do
+      it 'is a no-op' do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
+
+        expect(Gitlab::Database::AsyncIndexes).not_to receive(:execute_pending_actions!)
+
+        expect { run_rake_task('gitlab:db:execute_async_index_operations:main') }.to raise_error(SystemExit)
+      end
+    end
+
     context 'with geo configured' do
       before do
         skip_unless_geo_configured
@@ -949,6 +960,16 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     context 'when feature is not enabled' do
       it 'is a no-op' do
         stub_feature_flags(database_async_foreign_key_validation: false)
+
+        expect(Gitlab::Database::AsyncConstraints).not_to receive(:validate_pending_entries!)
+
+        expect { run_rake_task('gitlab:db:validate_async_constraints:main') }.to raise_error(SystemExit)
+      end
+    end
+
+    context 'when database ddl feature flag is enabled' do
+      it 'is a no-op' do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
 
         expect(Gitlab::Database::AsyncConstraints).not_to receive(:validate_pending_entries!)
 

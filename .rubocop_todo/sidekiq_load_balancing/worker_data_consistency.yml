@@ -181,7 +181,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/metrics/dashboard/schedule_annotations_prune_worker.rb'
     - 'app/workers/metrics/dashboard/sync_dashboards_worker.rb'
     - 'app/workers/migrate_external_diffs_worker.rb'
-    - 'app/workers/namespaces/in_product_marketing_emails_worker.rb'
     - 'app/workers/namespaces/process_sync_events_worker.rb'
     - 'app/workers/namespaces/prune_aggregation_schedules_worker.rb'
     - 'app/workers/namespaces/schedule_aggregation_worker.rb'

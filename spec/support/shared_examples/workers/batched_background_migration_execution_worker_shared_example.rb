@@ -3,6 +3,10 @@
 RSpec.shared_examples 'batched background migrations execution worker' do
   include ExclusiveLeaseHelpers
 
+  before do
+    stub_feature_flags(disallow_database_ddl_feature_flags: false)
+  end
+
   it 'is a limited capacity worker' do
     expect(described_class.new).to be_a(LimitedCapacity::Worker)
   end
@@ -90,6 +94,23 @@ RSpec.shared_examples 'batched background migrations execution worker' do
 
       before do
         stub_feature_flags(execute_batched_migrations_on_schedule: false)
+      end
+
+      it 'does nothing' do
+        expect(Gitlab::Database::BackgroundMigration::BatchedMigration).not_to receive(:find_executable)
+        expect(worker).not_to receive(:run_migration_job)
+
+        worker.perform_work(database_name, migration.id)
+      end
+    end
+
+    context 'when disable ddl flag is enabled' do
+      let(:migration) do
+        create(:batched_background_migration, :active, interval: job_interval, table_name: table_name)
+      end
+
+      before do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
       end
 
       it 'does nothing' do

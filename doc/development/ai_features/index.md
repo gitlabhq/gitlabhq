@@ -106,6 +106,11 @@ In order to obtain a GCP service key for local development, please follow the st
 - In the GCP console, go to `IAM & Admin` > `Service Accounts` and click on the "Create new service account" button
 - Name the service account something specific to what you're using it for. Select Create and Continue. Under `Grant this service account access to project`, select the role `Vertex AI User`. Select `Continue` then `Done`
 - Select your new service account and `Manage keys` > `Add Key` > `Create new key`. This will download the **private** JSON credentials for your service account.
+- If you are using your own project, you may also need to enable the Vertex AI API:
+    1. Go to **APIs & Services > Enabled APIs & services**.
+    1. Select **+ Enable APIs and Services**.
+    1. Search for `Vertex AI API`.
+    1. Select **Vertex AI API**, then select **Enable**.
 - Open the Rails console. Update the settings to:
 
 ```ruby

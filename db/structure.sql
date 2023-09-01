@@ -24404,7 +24404,8 @@ CREATE TABLE vulnerabilities (
     dismissed_by_id bigint,
     resolved_on_default_branch boolean DEFAULT false NOT NULL,
     present_on_default_branch boolean DEFAULT true NOT NULL,
-    detected_at timestamp with time zone DEFAULT now()
+    detected_at timestamp with time zone DEFAULT now(),
+    finding_id bigint
 );
 
 CREATE SEQUENCE vulnerabilities_id_seq
@@ -36331,6 +36332,9 @@ ALTER TABLE ONLY sbom_occurrences
 
 ALTER TABLE ONLY namespace_commit_emails
     ADD CONSTRAINT fk_4d6ba63ba5 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerabilities
+    ADD CONSTRAINT fk_4e64972902 FOREIGN KEY (finding_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ml_model_versions
     ADD CONSTRAINT fk_4e8b59e7a8 FOREIGN KEY (model_id) REFERENCES ml_models(id) ON DELETE CASCADE;

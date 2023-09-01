@@ -1505,7 +1505,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/metrics/dashboard/system_dashboard_service_spec.rb'
     - 'spec/services/metrics/dashboard/transient_embed_service_spec.rb'
     - 'spec/services/metrics/dashboard/update_dashboard_service_spec.rb'
-    - 'spec/services/namespaces/in_product_marketing_emails_service_spec.rb'
     - 'spec/services/notes/build_service_spec.rb'
     - 'spec/services/notes/create_service_spec.rb'
     - 'spec/services/notes/quick_actions_service_spec.rb'

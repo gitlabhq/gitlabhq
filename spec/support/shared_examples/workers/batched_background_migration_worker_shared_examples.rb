@@ -3,6 +3,10 @@
 RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_database, table_name|
   include ExclusiveLeaseHelpers
 
+  before do
+    stub_feature_flags(disallow_database_ddl_feature_flags: false)
+  end
+
   describe 'defining the job attributes' do
     it 'defines the data_consistency as always' do
       expect(described_class.get_data_consistency).to eq(:always)
@@ -48,6 +52,12 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
     it 'returns false when execute_batched_migrations_on_schedule feature flag is disabled' do
       stub_feature_flags(execute_batched_migrations_on_schedule: false)
+
+      expect(described_class.enabled?).to be_falsey
+    end
+
+    it 'returns false when disallow_database_ddl_feature_flags feature flag is enabled' do
+      stub_feature_flags(disallow_database_ddl_feature_flags: true)
 
       expect(described_class.enabled?).to be_falsey
     end
@@ -107,6 +117,18 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
         context 'when the execute_batched_migrations_on_schedule feature flag is disabled' do
           before do
             stub_feature_flags(execute_batched_migrations_on_schedule: false)
+          end
+
+          it 'does nothing' do
+            expect(worker).not_to receive(:queue_migrations_for_execution)
+
+            worker.perform
+          end
+        end
+
+        context 'when the disallow_database_ddl_feature_flags feature flag is enabled' do
+          before do
+            stub_feature_flags(disallow_database_ddl_feature_flags: true)
           end
 
           it 'does nothing' do

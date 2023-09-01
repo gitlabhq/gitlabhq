@@ -27,6 +27,8 @@ module Gitlab
         end
 
         def sync_partitions(models_to_sync = registered_for_sync, only_on: nil)
+          return if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
+
           return unless Feature.enabled?(:partition_manager_sync_partitions, type: :ops)
 
           Gitlab::AppLogger.info(message: 'Syncing dynamic postgres partitions')
@@ -60,6 +62,8 @@ module Gitlab
         end
 
         def drop_detached_partitions
+          return if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
+
           return unless Feature.enabled?(:partition_manager_sync_partitions, type: :ops)
 
           Gitlab::AppLogger.info(message: 'Dropping detached postgres partitions')

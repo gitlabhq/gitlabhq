@@ -276,6 +276,8 @@ use the information in the failure error logs or the database:
    sudo gitlab-rake gitlab:background_migrations:finalize[<job_class_name>,<table_name>,<column_name>,'<job_arguments>']
    ```
 
+   When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
+   comma between each argument with a backslash <code>&#92;</code> to prevent an invalid character error.
    For example, to finish the migration from the previous step:
 
    ```shell
@@ -300,11 +302,13 @@ use the information in the failure error logs or the database:
      - `column_name`: `id`
      - `job_arguments`: `[["id"], ["id_convert_to_bigint"]]`
 
-     The command should be:
+   When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
+   comma between each argument with a backslash <code>&#92;</code> to prevent an invalid character error.
+   The command should be:
 
-     ```shell
-     sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[["id"]\, ["id_convert_to_bigint"]]']
-     ```
+   ```shell
+   sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[["id"]\, ["id_convert_to_bigint"]]']
+   ```
 
 ::EndTabs
 

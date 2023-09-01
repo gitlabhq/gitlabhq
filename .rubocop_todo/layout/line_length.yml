@@ -4724,7 +4724,6 @@ Layout/LineLength:
     - 'spec/services/metrics/users_starred_dashboards/delete_service_spec.rb'
     - 'spec/services/milestones/transfer_service_spec.rb'
     - 'spec/services/namespace_settings/update_service_spec.rb'
-    - 'spec/services/namespaces/in_product_marketing_emails_service_spec.rb'
     - 'spec/services/notes/build_service_spec.rb'
     - 'spec/services/notes/copy_service_spec.rb'
     - 'spec/services/notes/create_service_spec.rb'
