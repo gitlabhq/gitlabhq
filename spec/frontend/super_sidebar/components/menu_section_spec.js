@@ -79,39 +79,55 @@ describe('MenuSection component', () => {
     });
 
     describe('when hasFlyout is true', () => {
-      it('is rendered', () => {
+      it('is not yet rendered', () => {
         createWrapper({ title: 'Asdf' }, { 'has-flyout': true });
-        expect(findFlyout().exists()).toBe(true);
+        expect(findFlyout().exists()).toBe(false);
       });
 
       describe('on mouse hover', () => {
         describe('when section is expanded', () => {
-          it('is not shown', async () => {
+          it('is not rendered', async () => {
             createWrapper({ title: 'Asdf' }, { 'has-flyout': true, expanded: true });
             await findButton().trigger('pointerover', { pointerType: 'mouse' });
-            expect(findFlyout().isVisible()).toBe(false);
+            expect(findFlyout().exists()).toBe(false);
           });
         });
 
         describe('when section is not expanded', () => {
-          it('is shown', async () => {
-            createWrapper({ title: 'Asdf' }, { 'has-flyout': true, expanded: false });
-            await findButton().trigger('pointerover', { pointerType: 'mouse' });
-            expect(findFlyout().isVisible()).toBe(true);
+          describe('when section has no items', () => {
+            it('is not rendered', async () => {
+              createWrapper({ title: 'Asdf' }, { 'has-flyout': true, expanded: false });
+              await findButton().trigger('pointerover', { pointerType: 'mouse' });
+              expect(findFlyout().exists()).toBe(false);
+            });
+          });
+
+          describe('when section has items', () => {
+            it('is rendered and shown', async () => {
+              createWrapper(
+                { title: 'Asdf', items: [{ title: 'Item1', href: '/item1' }] },
+                { 'has-flyout': true, expanded: false },
+              );
+              await findButton().trigger('pointerover', { pointerType: 'mouse' });
+              expect(findFlyout().isVisible()).toBe(true);
+            });
           });
         });
       });
 
       describe('when section gets closed', () => {
         beforeEach(async () => {
-          createWrapper({ title: 'Asdf' }, { expanded: true, 'has-flyout': true });
+          createWrapper(
+            { title: 'Asdf', items: [{ title: 'Item1', href: '/item1' }] },
+            { expanded: true, 'has-flyout': true },
+          );
           await findButton().trigger('click');
           await findButton().trigger('pointerover', { pointerType: 'mouse' });
         });
 
         it('shows the flyout only after section title gets hovered out and in again', async () => {
           expect(findCollapse().props('visible')).toBe(false);
-          expect(findFlyout().isVisible()).toBe(false);
+          expect(findFlyout().exists()).toBe(false);
 
           await findButton().trigger('pointerleave');
           await findButton().trigger('pointerover', { pointerType: 'mouse' });

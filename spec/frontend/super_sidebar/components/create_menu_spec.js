@@ -1,7 +1,6 @@
 import { nextTick } from 'vue';
 import {
   GlDisclosureDropdown,
-  GlTooltip,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
@@ -9,6 +8,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import { __ } from '~/locale';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createNewMenuGroups } from '../mock_data';
 
 describe('CreateMenu component', () => {
@@ -18,7 +18,6 @@ describe('CreateMenu component', () => {
   const findGlDisclosureDropdownGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
   const findGlDisclosureDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
-  const findGlTooltip = () => wrapper.findComponent(GlTooltip);
 
   const createWrapper = ({ provide = {} } = {}) => {
     wrapper = shallowMountExtended(CreateMenu, {
@@ -32,6 +31,9 @@ describe('CreateMenu component', () => {
       stubs: {
         InviteMembersTrigger,
         GlDisclosureDropdown,
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -74,16 +76,12 @@ describe('CreateMenu component', () => {
       expect(findInviteMembersTrigger().exists()).toBe(true);
     });
 
-    it("sets the toggle ID and tooltip's target", () => {
-      expect(findGlDisclosureDropdown().props('toggleId')).toBe(wrapper.vm.$options.toggleId);
-      expect(findGlTooltip().props('target')).toBe(`#${wrapper.vm.$options.toggleId}`);
-    });
-
     it('hides the tooltip when the dropdown is opened', async () => {
       findGlDisclosureDropdown().vm.$emit('shown');
       await nextTick();
 
-      expect(findGlTooltip().exists()).toBe(false);
+      const tooltip = getBinding(findGlDisclosureDropdown().element, 'gl-tooltip');
+      expect(tooltip.value).toBe('');
     });
 
     it('shows the tooltip when the dropdown is closed', async () => {
@@ -91,7 +89,8 @@ describe('CreateMenu component', () => {
       findGlDisclosureDropdown().vm.$emit('hidden');
       await nextTick();
 
-      expect(findGlTooltip().exists()).toBe(true);
+      const tooltip = getBinding(findGlDisclosureDropdown().element, 'gl-tooltip');
+      expect(tooltip.value).toBe('Create new...');
     });
   });
 

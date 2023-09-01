@@ -473,6 +473,21 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
         get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
       end
     end
+
+    context 'when request exceeds the rate limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
+      before do
+        stub_application_setting(search_rate_limit: 1)
+      end
+
+      it 'allows user whose username is in the allowlist' do
+        stub_application_setting(search_rate_limit_allowlist: [user.username])
+
+        get api(endpoint, user), params: { scope: 'users', search: 'foo@bar.com' }
+        get api(endpoint, user), params: { scope: 'users', search: 'foo@bar.com' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
   end
 
   describe "GET /groups/:id/search" do
@@ -656,6 +671,21 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
         def request
           get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
+        end
+      end
+
+      context 'when request exceeds the rate limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
+        before do
+          stub_application_setting(search_rate_limit: 1)
+        end
+
+        it 'allows user whose username is in the allowlist' do
+          stub_application_setting(search_rate_limit_allowlist: [user.username])
+
+          get api(endpoint, user), params: { scope: 'users', search: 'foo@bar.com' }
+          get api(endpoint, user), params: { scope: 'users', search: 'foo@bar.com' }
+
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -1055,6 +1085,21 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
         def request
           get api(endpoint, current_user), params: { scope: 'users', search: 'foo@bar.com' }
+        end
+      end
+
+      context 'when request exceeds the rate limit', :freeze_time, :clean_gitlab_redis_rate_limiting do
+        before do
+          stub_application_setting(search_rate_limit: 1)
+        end
+
+        it 'allows user whose username is in the allowlist' do
+          stub_application_setting(search_rate_limit_allowlist: [user.username])
+
+          get api(endpoint, user), params: { scope: 'users', search: 'foo@bar.com' }
+          get api(endpoint, user), params: { scope: 'users', search: 'foo@bar.com' }
+
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end

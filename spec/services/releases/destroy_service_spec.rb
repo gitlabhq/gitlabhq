@@ -28,6 +28,26 @@ RSpec.describe Releases::DestroyService, feature_category: :release_orchestratio
       it 'returns the destroyed object' do
         is_expected.to include(status: :success, release: release)
       end
+
+      context 'when the release is for a catalog resource' do
+        let!(:catalog_resource) { create(:catalog_resource, project: project, state: 'published') }
+        let!(:version) { create(:catalog_resource_version, catalog_resource: catalog_resource, release: release) }
+
+        it 'does not update the catalog resources if there are still releases' do
+          second_release = create(:release, project: project, tag: 'v1.2.0')
+          create(:catalog_resource_version, catalog_resource: catalog_resource, release: second_release)
+
+          subject
+
+          expect(catalog_resource.reload.state).to eq('published')
+        end
+
+        it 'updates the catalog resource if there are no more releases' do
+          subject
+
+          expect(catalog_resource.reload.state).to eq('draft')
+        end
+      end
     end
 
     context 'when tag does not exist in the repository' do

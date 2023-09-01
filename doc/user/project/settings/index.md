@@ -283,7 +283,18 @@ To restore a project marked for deletion:
 1. Expand **Advanced**.
 1. In the Restore project section, select **Restore project**.
 
-## Add a compliance framework to a project **(PREMIUM ALL)**
+## Remove project analytics from the left sidebar
+
+By default, [analytics for a project](../../analytics/index.md#project-level-analytics) are displayed under the **Analyze** item in the left sidebar.
+To remove this item:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Visibility, project features, permissions**.
+1. Turn off the **Analytics** toggle.
+1. Select **Save changes**.
+
+## Add a compliance framework to a project **(PREMIUM)**
 
 You can
 [add compliance frameworks to projects](../../group/compliance_frameworks.md#add-a-compliance-framework-to-a-project)

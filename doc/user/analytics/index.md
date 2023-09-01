@@ -46,16 +46,6 @@ You can use GitLab to review analytics at the project level. Some of these featu
 - [Repository](repository_analytics.md)
 - [Value Stream Management Analytics](../group/value_stream_analytics/index.md), and [Value Stream Management Dashboard](value_streams_dashboard.md)
 
-### Remove project analytics from the left sidebar
-
-By default, analytics for a project are displayed under the **Analyze** item in the left sidebar. To remove this item:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Visibility, project features, permissions**.
-1. Turn off the **Analytics** toggle.
-1. Select **Save changes**.
-
 ## User-configurable analytics
 
 The following analytics features are available for users to create personalized views:
@@ -73,17 +63,10 @@ You can use the following analytics features to analyze and visualize the perfor
 
 ## Glossary
 
-We use the following terms to describe GitLab analytics:
-
-- **Mean Time to Change (MTTC):** The average duration between idea and delivery. GitLab measures
-MTTC from issue creation to the issue's latest related merge request's deployment to production.
-- **Mean Time to Detect (MTTD):** The average duration that a bug goes undetected in production.
-GitLab measures MTTD from deployment of bug to issue creation.
-- **Mean Time To Merge (MTTM):** The average lifespan of a merge request. GitLab measures MTTM from
-merge request creation to merge request merge (and closed/un-merged merge requests are excluded).
-For more information, see [Merge Request Analytics](merge_request_analytics.md).
-- **Mean Time to Recover/Repair/Resolution/Resolve/Restore (MTTR):** The average duration that a bug
-is not fixed in production. GitLab measures MTTR from deployment of bug to deployment of fix.
-- **Velocity:** The total issue burden completed in some period of time. The burden is usually measured
-in points or weight, often per sprint. For example, your velocity may be "30 points per sprint". GitLab
-measures velocity as the total points or weight of issues closed in a given period of time.
+| Metric | Definition | Measurement in GitLab |
+| ------ | ---------- | --------------------- |
+| Mean Time to Change (MTTC) | The average duration between idea and delivery. | From issue creation to the issue's latest related merge request's deployment to production. |
+| Mean Time to Detect (MTTD) | The average duration that a bug goes undetected in production. | From deployment of bug to issue creation. |
+| Mean Time To Merge (MTTM) | The average lifespan of a merge request. | From merge request creation to merge request merge (excluding closed and unmerged merge requests). For more information, see [Merge Request Analytics](merge_request_analytics.md). |
+| Mean Time to Recover/Repair/Resolution/Resolve/Restore (MTTR) | The average duration that a bug is not fixed in production. | From deployment of bug to deployment of fix. |
+| Velocity | The total issue burden completed in some period of time. The burden is usually measured in points or weight, often per sprint. | Total points or weight of issues closed in a given period of time. Expressed as, for example, "30 points per sprint". |

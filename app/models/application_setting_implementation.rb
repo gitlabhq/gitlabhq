@@ -255,6 +255,7 @@ module ApplicationSettingImplementation
         user_deactivation_emails_enabled: true,
         search_rate_limit: 30,
         search_rate_limit_unauthenticated: 10,
+        search_rate_limit_allowlist: [],
         users_get_by_id_limit: 300,
         users_get_by_id_limit_allowlist: [],
         can_create_group: true,
@@ -395,6 +396,14 @@ module ApplicationSettingImplementation
 
   def users_get_by_id_limit_allowlist_raw=(values)
     self.users_get_by_id_limit_allowlist = strings_to_array(values).map(&:downcase)
+  end
+
+  def search_rate_limit_allowlist_raw
+    array_to_string(search_rate_limit_allowlist)
+  end
+
+  def search_rate_limit_allowlist_raw=(values)
+    self.search_rate_limit_allowlist = strings_to_array(values).map(&:downcase)
   end
 
   def asset_proxy_whitelist=(values)

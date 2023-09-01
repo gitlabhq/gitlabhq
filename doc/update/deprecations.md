@@ -381,6 +381,20 @@ Use `totalIssueWeight` instead, introduced in GitLab 16.2.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### GraphQL networkPolicies resource deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">14.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/421440).
+</div>
+
+The `networkPolicies` [GraphQL resource](https://docs.gitlab.com/ee/api/graphql/reference/#projectnetworkpolicies) has been deprecated and will be removed in GitLab 17.0. Since GitLab 15.0 this field has returned no data.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### GraphQL type, `RunnerMembershipFilter` renamed to `CiRunnerMembershipFilter`
 
 <div class="deprecation-notes">

@@ -127,7 +127,10 @@ export default {
         tooltip-container="super-sidebar"
         data-testid="super-sidebar-collapse-button"
       />
-      <create-menu v-if="sidebarData.is_logged_in" :groups="sidebarData.create_new_menu_groups" />
+      <create-menu
+        v-if="sidebarData.is_logged_in && sidebarData.create_new_menu_groups.length > 0"
+        :groups="sidebarData.create_new_menu_groups"
+      />
 
       <user-menu v-if="sidebarData.is_logged_in" :data="sidebarData" />
 

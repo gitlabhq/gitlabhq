@@ -141,7 +141,8 @@ module Gitlab
             :health_status,
             :notifications,
             :current_user_todos,
-            :award_emoji
+            :award_emoji,
+            :linked_items
           ]
         }.freeze
 

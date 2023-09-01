@@ -14,8 +14,7 @@ requiring downtime.
 
 ## Dropping columns
 
-Removing columns is tricky because running GitLab processes may still be using
-the columns. To work around this safely, you need three steps in three releases:
+Removing columns is tricky because running GitLab processes expects these columns to exist, as ActiveRecord caches the tables schema, even if the columns are not referenced. This happens if the columns are not explicitly marked as ignored. To work around this safely, you need three steps in three releases:
 
 1. [Ignoring the column](#ignoring-the-column-release-m) (release M)
 1. [Dropping the column](#dropping-the-column-release-m1) (release M+1)

@@ -1,7 +1,7 @@
 <script>
 import {
   GlDisclosureDropdown,
-  GlTooltip,
+  GlTooltipDirective,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
@@ -22,8 +22,10 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
-    GlTooltip,
     InviteMembersTrigger,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   i18n: {
     createNew: __('Create new...'),
@@ -59,45 +61,37 @@ export default {
 </script>
 
 <template>
-  <div>
-    <gl-disclosure-dropdown
-      category="tertiary"
-      icon="plus"
-      no-caret
-      text-sr-only
-      :toggle-text="$options.i18n.createNew"
-      :toggle-id="$options.toggleId"
-      :dropdown-offset="dropdownOffset"
-      data-qa-selector="new_menu_toggle"
-      data-testid="new-menu-toggle"
-      @shown="dropdownOpen = true"
-      @hidden="dropdownOpen = false"
+  <gl-disclosure-dropdown
+    v-gl-tooltip:super-sidebar.hover.noninteractive.ds500.bottom="
+      dropdownOpen ? '' : $options.i18n.createNew
+    "
+    category="tertiary"
+    icon="plus"
+    no-caret
+    text-sr-only
+    :toggle-text="$options.i18n.createNew"
+    :toggle-id="$options.toggleId"
+    :dropdown-offset="dropdownOffset"
+    data-qa-selector="new_menu_toggle"
+    data-testid="new-menu-toggle"
+    @shown="dropdownOpen = true"
+    @hidden="dropdownOpen = false"
+  >
+    <gl-disclosure-dropdown-group
+      v-for="(group, index) in groups"
+      :key="group.name"
+      :bordered="index !== 0"
+      :group="group"
     >
-      <gl-disclosure-dropdown-group
-        v-for="(group, index) in groups"
-        :key="group.name"
-        :bordered="index !== 0"
-        :group="group"
-      >
-        <template v-for="groupItem in group.items">
-          <invite-members-trigger
-            v-if="isInvitedMembers(groupItem)"
-            :key="`${groupItem.text}-trigger`"
-            trigger-source="top_nav"
-            :trigger-element="$options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN"
-          />
-          <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
-        </template>
-      </gl-disclosure-dropdown-group>
-    </gl-disclosure-dropdown>
-    <gl-tooltip
-      v-if="!dropdownOpen"
-      :target="`#${$options.toggleId}`"
-      placement="bottom"
-      container="#super-sidebar"
-      noninteractive
-    >
-      {{ $options.i18n.createNew }}
-    </gl-tooltip>
-  </div>
+      <template v-for="groupItem in group.items">
+        <invite-members-trigger
+          v-if="isInvitedMembers(groupItem)"
+          :key="`${groupItem.text}-trigger`"
+          trigger-source="top_nav"
+          :trigger-element="$options.TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN"
+        />
+        <gl-disclosure-dropdown-item v-else :key="groupItem.text" :item="groupItem" />
+      </template>
+    </gl-disclosure-dropdown-group>
+  </gl-disclosure-dropdown>
 </template>

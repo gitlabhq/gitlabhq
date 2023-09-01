@@ -79,15 +79,26 @@ export default {
     isExpanded(newIsExpanded) {
       this.$emit('collapse-toggle', newIsExpanded);
       this.keepFlyoutClosed = !this.newIsExpanded;
+      if (!newIsExpanded) {
+        this.isMouseOverFlyout = false;
+      }
     },
   },
   methods: {
     handlePointerover(e) {
+      if (!this.hasFlyout) return;
+
       this.isMouseOverSection = e.pointerType === 'mouse';
     },
     handlePointerleave() {
-      this.isMouseOverSection = false;
+      if (!this.hasFlyout) return;
+
       this.keepFlyoutClosed = false;
+      // delay state change. otherwise the flyout menu gets removed before it
+      // has a chance to emit its mouseover event.
+      setTimeout(() => {
+        this.isMouseOverSection = false;
+      }, 5);
     },
   },
 };
@@ -129,8 +140,7 @@ export default {
     </button>
 
     <flyout-menu
-      v-if="hasFlyout"
-      v-show="isMouseOver && !isExpanded && !keepFlyoutClosed"
+      v-if="hasFlyout && isMouseOver && !isExpanded && !keepFlyoutClosed && item.items.length > 0"
       :target-id="`menu-section-button-${itemId}`"
       :items="item.items"
       @mouseover="isMouseOverFlyout = true"

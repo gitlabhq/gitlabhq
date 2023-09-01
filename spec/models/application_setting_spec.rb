@@ -241,6 +241,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(nil).for(:users_get_by_id_limit_allowlist) }
     it { is_expected.to allow_value([]).for(:users_get_by_id_limit_allowlist) }
 
+    it { is_expected.to allow_value(many_usernames(100)).for(:search_rate_limit_allowlist) }
+    it { is_expected.not_to allow_value(many_usernames(101)).for(:search_rate_limit_allowlist) }
+    it { is_expected.not_to allow_value(nil).for(:search_rate_limit_allowlist) }
+    it { is_expected.to allow_value([]).for(:search_rate_limit_allowlist) }
+
     it { is_expected.to allow_value('all_tiers').for(:whats_new_variant) }
     it { is_expected.to allow_value('current_tier').for(:whats_new_variant) }
     it { is_expected.to allow_value('disabled').for(:whats_new_variant) }

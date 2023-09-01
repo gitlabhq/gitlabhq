@@ -486,6 +486,7 @@ module ApplicationSettingsHelper
       :suggest_pipeline_enabled,
       :search_rate_limit,
       :search_rate_limit_unauthenticated,
+      :search_rate_limit_allowlist_raw,
       :users_get_by_id_limit,
       :users_get_by_id_limit_allowlist_raw,
       :runner_token_expiration_interval,

@@ -646,6 +646,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     validates :gitlab_shell_operation_limit
   end
 
+  validates :search_rate_limit_allowlist,
+    length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
+    allow_nil: false
+
   validates :notes_create_limit_allowlist,
     length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
     allow_nil: false

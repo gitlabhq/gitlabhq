@@ -65,8 +65,20 @@ describe('UserBar component', () => {
       createWrapper();
     });
 
-    it('passes the "Create new..." menu groups to the create-menu component', () => {
-      expect(findCreateMenu().props('groups')).toBe(mockSidebarData.create_new_menu_groups);
+    describe('"Create new..." menu', () => {
+      describe('when there are no menu items for it', () => {
+        // This scenario usually happens for an "External" user.
+        it('does not render it', () => {
+          createWrapper({ sidebarData: { ...mockSidebarData, create_new_menu_groups: [] } });
+          expect(findCreateMenu().exists()).toBe(false);
+        });
+      });
+
+      describe('when there are menu items for it', () => {
+        it('passes the "Create new..." menu groups to the create-menu component', () => {
+          expect(findCreateMenu().props('groups')).toBe(mockSidebarData.create_new_menu_groups);
+        });
+      });
     });
 
     it('passes the "Merge request" menu groups to the merge_request_menu component', () => {

@@ -33,6 +33,9 @@ All global search scopes are enabled by default on self-managed instances.
 
 ## Global search validation
 
+> - Support for partial matches in issue search [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124703) in GitLab 16.2. Feature flag `issues_full_text_search` removed.
+
 Global search ignores and logs as abusive any search that includes:
 
 - Fewer than two characters
@@ -46,6 +49,10 @@ Global search only flags with an error any search that includes more than:
 
 - 4096 characters
 - 64 terms
+
+Partial matches are not supported in issue search.
+For example, when you search issues for `play`, the query does not return issues that contain `display`.
+However, the query matches all possible variations of the string (for example, `plays`).
 
 ## Autocomplete suggestions
 
@@ -158,22 +165,6 @@ To search for a commit SHA:
 
 If a single result is returned, GitLab redirects to the commit result
 and gives you the option to return to the search results page.
-
-## Search for specific terms
-
-> - [Support for partial matches in issue search](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913) removed in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124703) in GitLab 16.2. Feature flag `issues_full_text_search` removed.
-
-You can search issues and merge requests for specific terms.
-For example, when you search issues for `display bug`, the query returns
-all issues that contain both `display` and `bug` in any order.
-To search for the exact string, use `"display bug"` instead.
-
-Partial matches are not supported in issue search.
-For example, when you search issues for `play`, the query does not return issues that contain `display`.
-However, the query matches all possible variations of the string (for example, `plays`).
-
-For more information about query validation, see [Global search validation](#global-search-validation).
 
 ## Run a search from history
 

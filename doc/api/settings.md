@@ -17,6 +17,9 @@ For information on how to control the application settings cache for an instance
 
 ## Get current application settings
 
+> - `always_perform_delayed_deletion` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332) in GitLab 15.11.
+> - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
+
 List the current [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)
 of the GitLab instance.
 
@@ -127,17 +130,12 @@ these parameters:
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
-- `delayed_project_deletion`
-- `delayed_group_deletion`
 - `default_project_deletion_protection`
 - `deletion_adjourned_period`
 - `disable_personal_access_tokens`
 - `security_policy_global_group_approvers_enabled`
 - `delete_unconfirmed_users`
 - `unconfirmed_users_delete_after_days`
-
-From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled,
-the `delayed_project_deletion` and `delayed_group_deletion` attributes will not be exposed. These attributes will be removed in GitLab 16.0.
 
 ```json
 {
@@ -146,8 +144,6 @@ the `delayed_project_deletion` and `delayed_group_deletion` attributes will not 
   "group_owners_can_manage_default_branch_protection": true,
   "file_template_project_id": 1,
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
-  "delayed_project_deletion": false,
-  "delayed_group_deletion": false,
   "default_project_deletion_protection": false,
   "deletion_adjourned_period": 7,
   "disable_personal_access_tokens": false,
@@ -156,6 +152,9 @@ the `delayed_project_deletion` and `delayed_group_deletion` attributes will not 
 ```
 
 ## Change application settings
+
+> - `always_perform_delayed_deletion` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332) in GitLab 15.11.
+> - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
 
 Use an API call to modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls).
@@ -273,17 +272,12 @@ these parameters:
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
-- `delayed_project_deletion`
-- `delayed_group_deletion`
 - `default_project_deletion_protection`
 - `deletion_adjourned_period`
 - `disable_personal_access_tokens`
 - `security_policy_global_group_approvers_enabled`
 - `delete_unconfirmed_users`
 - `unconfirmed_users_delete_after_days`
-
-From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled,
-the `delayed_project_deletion` and `delayed_group_deletion` attributes will not be exposed. These attributes will be removed in GitLab 16.0.
 
 Example responses: **(PREMIUM SELF)**
 
@@ -359,12 +353,10 @@ listed in the descriptions of the relevant settings.
 | `default_project_visibility`             | string           | no                                   | What visibility level new projects receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
 | `default_snippet_visibility`             | string           | no                                   | What visibility level new snippets receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
-| `default_syntax_highlighting_theme`      | integer          | no                                   | Default syntax highlighting theme for new users and users who are not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16).
-| `delayed_project_deletion` **(PREMIUM SELF)**  | boolean    | no                                   | Enable delayed project deletion by default in new groups. Default is `false`. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), can only be enabled when `delayed_group_deletion` is true. From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled, this attribute has been removed. This attribute will be completely removed in GitLab 16.0. |
-| `delayed_group_deletion` **(PREMIUM SELF)**    | boolean    | no                                   | Enable delayed group deletion. Default is `true`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352959) in GitLab 15.0. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), disables and locks the group-level setting for delayed protect deletion when set to `false`. From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332), with the `always_perform_delayed_deletion` feature flag enabled, this attribute has been removed. This attribute will be completely removed in GitLab 16.0. |
+| `default_syntax_highlighting_theme`      | integer          | no                                   | Default syntax highlighting theme for users who are new or not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16). |
 | `default_project_deletion_protection` **(PREMIUM SELF)** | boolean | no                            | Enable default project deletion protection so only administrators can delete projects. Default is `false`. |
 | `delete_unconfirmed_users` **(PREMIUM SELF)**            | boolean | no                            | Specifies whether users who have not confirmed their email should be deleted. Default is `false`. When set to `true`, unconfirmed users are deleted after `unconfirmed_users_delete_after_days` days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1. |
-| `deletion_adjourned_period` **(PREMIUM SELF)** | integer    | no                                   | The number of days to wait before deleting a project or group that is marked for deletion. Value must be between `1` and `90`. Defaults to `7`. [From GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/352960), a hook on `deletion_adjourned_period` sets the period to `1` on every update, and sets both `delayed_project_deletion` and `delayed_group_deletion` to `false` if the period is `0`. |
+| `deletion_adjourned_period` **(PREMIUM SELF)** | integer    | no                                   | Number of days to wait before deleting a project or group that is marked for deletion. Value must be between `1` and `90`. Defaults to `7`. |
 | `diagramsnet_enabled`                    | boolean          | no                                   | (If enabled, requires `diagramsnet_url`) Enable [Diagrams.net integration](../administration/integration/diagrams_net.md). Default is `true`. |
 | `diagramsnet_url`                        | string           | required by: `diagramsnet_enabled`   | The Diagrams.net instance URL for integration. |
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum [diff patch size](../administration/diff_limits.md), in bytes. |
