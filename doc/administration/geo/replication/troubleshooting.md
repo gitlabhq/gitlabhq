@@ -174,8 +174,7 @@ http://secondary.example.com/
                          Health Status: Healthy
                           Repositories: succeeded 12345 / total 12345 (100%)
                  Verified Repositories: succeeded 12345 / total 12345 (100%)
-                                 Wikis: succeeded 6789 / total 6789 (100%)
-                        Verified Wikis: succeeded 6789 / total 6789 (100%)
+             Project Wiki Repositories: succeeded 6789 / total 6789 (100%)
                            Attachments: succeeded 4 / total 4 (100%)
                       CI job artifacts: succeeded 0 / total 0 (0%)
                    Design repositories: succeeded 1 / total 1 (100%)
@@ -192,6 +191,7 @@ http://secondary.example.com/
      Terraform State Versions Verified: succeeded 0 / total 10 (0%)
          Snippet Repositories Verified: succeeded 99 / total 100 (99%)
            Pipeline Artifacts Verified: succeeded 0 / total 10 (0%)
+    Project Wiki Repositories Verified: succeeded 6789 / total 6789 (100%)
                          Sync Settings: Full
               Database replication lag: 0 seconds
        Last event ID seen from primary: 12345 (about 2 minutes ago)

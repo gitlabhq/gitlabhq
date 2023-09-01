@@ -2750,7 +2750,6 @@
 - './ee/spec/services/geo/wiki_sync_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/activate_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/check_future_renewal_service_spec.rb'
-- './ee/spec/services/gitlab_subscriptions/create_hand_raise_lead_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/create_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/create_trial_or_lead_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/fetch_purchase_eligible_namespaces_service_spec.rb'

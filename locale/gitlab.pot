@@ -11551,7 +11551,13 @@ msgstr ""
 msgid "CodeSuggestions|Enable Code Suggestions"
 msgstr ""
 
+msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing. Not available for users with the Guest role."
+msgstr ""
+
 msgid "CodeSuggestions|Get code suggestions as you write code in your IDE. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "CodeSuggestions|Introducing the Code Suggestions add-on"
 msgstr ""
 
 msgid "CodeSuggestions|Projects in this group can use Code Suggestions"
@@ -18018,9 +18024,6 @@ msgid "Enforce two-factor authentication for all user sign-ins."
 msgstr ""
 
 msgid "Enhance security by storing service account keys in secret managers - learn more about %{docLinkStart}secret management with GitLab%{docLinkEnd}"
-msgstr ""
-
-msgid "Enhance your coding experience with intelligent recommendations. %{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing. Not available for users with the Guest role."
 msgstr ""
 
 msgid "Ensure your %{linkStart}environment is part of the deploy stage%{linkEnd} of your CI pipeline to track deployments to your cluster."
@@ -40707,6 +40710,9 @@ msgstr ""
 msgid "Runners|Minor version upgrades are available."
 msgstr ""
 
+msgid "Runners|Most recent failures"
+msgstr ""
+
 msgid "Runners|Multiple tags must be separated by a comma. For example, %{example}."
 msgstr ""
 
@@ -41074,6 +41080,9 @@ msgid "Runners|The time it takes for an instance runner to pick up a job. Jobs w
 msgstr ""
 
 msgid "Runners|The unique ID for each runner that uses this configuration."
+msgstr ""
+
+msgid "Runners|There are no recent runner failures for your instance runners. Error messages will populate here if runners fail."
 msgstr ""
 
 msgid "Runners|There are no runners running jobs right now. Active runners will populate here as they pick up jobs."
@@ -49757,6 +49766,18 @@ msgid "Tracing|Period"
 msgstr ""
 
 msgid "Tracing|Service"
+msgstr ""
+
+msgid "Tracing|Span Details"
+msgstr ""
+
+msgid "Tracing|Span ID"
+msgstr ""
+
+msgid "Tracing|Status Code"
+msgstr ""
+
+msgid "Tracing|Toggle children spans"
 msgstr ""
 
 msgid "Tracing|Trace ID"

@@ -625,6 +625,7 @@ export default {
               <template #default="{ item, index, active }">
                 <dynamic-scroller-item :item="item" :active="active" :class="{ active }">
                   <diff-file
+                    v-if="active"
                     :file="item"
                     :reviewed="fileReviews[item.id]"
                     :is-first-file="index === 0"

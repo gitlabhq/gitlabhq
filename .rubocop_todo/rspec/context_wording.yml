@@ -737,7 +737,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/geo/repository_sync_service_spec.rb'
     - 'ee/spec/services/geo/repository_verification_reset_spec.rb'
     - 'ee/spec/services/geo/wiki_sync_service_spec.rb'
-    - 'ee/spec/services/gitlab_subscriptions/create_hand_raise_lead_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/create_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/preview_billable_user_change_service_spec.rb'
     - 'ee/spec/services/group_saml/group_managed_accounts/transfer_membership_service_spec.rb'

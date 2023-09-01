@@ -146,7 +146,7 @@ export default {
         const items = this.items
         const field = this.sizeField
         const minItemSize = this.minItemSize
-        let computedMinSize = 10000
+        let computedMinSize = this.buffer
         let accumulator = 0
         let current
         for (let i = 0, l = items.length; i < l; i++) {

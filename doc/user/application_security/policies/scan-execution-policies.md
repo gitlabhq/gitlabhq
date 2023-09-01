@@ -113,11 +113,6 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 > - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
 > - The `branch_type` field was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/413062) in GitLab 16.2.
-> - The security policy bot users were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394958) in GitLab 16.3 [with flag](../../../administration/feature_flags.md) named `scan_execution_group_bot_users`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, security policy bot users are available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_execution_group_bot_users`.
-On GitLab.com, this feature is available.
 
 This rule schedules a scan pipeline, enforcing the defined actions on the schedule defined in the `cadence` field. A scheduled pipeline does not run other jobs defined in the project's `.gitlab-ci.yml` file. When a project is linked to a security policy project, a security policy bot is created in the project and will become the author of any scheduled pipelines.
 

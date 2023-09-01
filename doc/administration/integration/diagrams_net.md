@@ -7,6 +7,9 @@ type: reference, howto
 
 # Diagrams.net **(FREE SELF)**
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86206) in GitLab 15.10.
+> - Offline environment support [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116281) in GitLab 16.1.
+
 With the [diagrams.net](https://www.diagrams.net/) integration, you can create and embed SVG diagrams in wikis.
 The diagram editor is available in both the plain text editor and the rich text editor.
 

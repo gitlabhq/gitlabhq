@@ -9,10 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343879) in GitLab 15.7 [with a flag](../../../../administration/feature_flags.md) named `ssh_commit_signatures`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384202) in GitLab 15.8. Feature flag `ssh_commit_signatures` removed.
 
-Use SSH keys to sign Git commits in the same manner as
-[GPG signed commits](../gpg_signed_commits/index.md). When you sign commits
-with SSH keys, GitLab uses the SSH public keys associated with your
-GitLab account to cryptographically verify the commit signature.
+When you sign commits with SSH keys, GitLab uses the SSH public keys associated
+with your GitLab account to cryptographically verify the commit signature.
 If successful, GitLab displays a **Verified** label on the commit.
 
 You may use the same SSH keys for `git+ssh` authentication to GitLab
@@ -89,23 +87,11 @@ To sign a commit:
 
 ## Verify commits
 
-You can review commits for a merge request, or for an entire project, to confirm
-they are signed:
+You can verify all types of signed commits
+[in the GitLab UI](../signed_commits/index.md#verify-commits). Commits signed
+with an SSH key can also be verified locally.
 
-1. To review commits for a project:
-   1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Code > Commits**.
-1. To review commits for a merge request:
-   1. On the left sidebar, select **Search or go to** and find your project.
-   1. On the left sidebar, select **Merge requests**, then select your merge request.
-   1. Select **Commits**.
-1. Identify the commit you want to review. Signed commits show either a **Verified**
-   or **Unverified** badge, depending on the verification status of the signature.
-   Unsigned commits do not display a badge.
-1. To display the signature details for a commit, select **Verified**. GitLab shows
-   the SSH key's fingerprint.
-
-## Verify commits locally
+### Verify commits locally
 
 To verify commits locally, create an
 [allowed signers file](https://man7.org/linux/man-pages/man1/ssh-keygen.1.html#ALLOWED_SIGNERS)

@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Sign commits and tags with X.509 certificates **(FREE ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17773) in GitLab 12.8.
-
 [X.509](https://en.wikipedia.org/wiki/X.509) is a standard format for public key
 certificates issued by a public or private Public Key Infrastructure (PKI).
 Personal X.509 certificates are used for authentication or signing purposes
@@ -160,13 +158,11 @@ can start signing your tags:
 ## Related topics
 
 - [Rake task for X.509 signatures](../../../../raketasks/x509_signatures.md)
-- [Sign commits with GPG](../gpg_signed_commits/index.md)
-- [Sign commits with SSH keys](../ssh_signed_commits/index.md)
 
 ## Troubleshooting
 
 For committers without administrator access, review the list of
-[verification problems with signed commits](../gpg_signed_commits/index.md#fix-verification-problems-with-signed-commits)
+[verification problems with signed commits](../signed_commits/index.md#fix-verification-problems-with-signed-commits)
 for possible fixes. The other troubleshooting suggestions on this page require
 administrator access.
 

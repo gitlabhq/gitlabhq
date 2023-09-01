@@ -87,32 +87,16 @@ export default {
         return queryVariables;
       },
       result({ data }) {
-        const blob = data.project?.repository?.blobs?.nodes[0] || {};
-        this.initHighlightWorker(blob);
+        const repository = data.project?.repository || {};
+        this.blobInfo = repository.blobs?.nodes[0] || {};
+        this.isEmptyRepository = repository.empty;
 
-        const urlHash = getLocationHash();
-        const plain = this.$route?.query?.plain;
+        const usePlain = this.$route?.query?.plain === '1'; // When the 'plain' URL param is present, its value determines which viewer to render
+        const urlHash = getLocationHash(); // If there is a code line hash in the URL we render with the simple viewer
+        const useSimpleViewer = usePlain || urlHash?.startsWith('L') || !this.hasRichViewer;
 
-        // When the 'plain' URL param is present, its value determines which viewer to render:
-        // - when 0 and the rich viewer is available we render with it
-        // - otherwise we render the simple viewer
-        if (plain !== undefined) {
-          if (plain === '0' && this.hasRichViewer) {
-            this.switchViewer(RICH_BLOB_VIEWER);
-          } else {
-            this.switchViewer(SIMPLE_BLOB_VIEWER);
-          }
-          return;
-        }
-
-        // If there is a code line hash in the URL we render with the simple viewer
-        if (urlHash && urlHash.startsWith('L')) {
-          this.switchViewer(SIMPLE_BLOB_VIEWER);
-          return;
-        }
-
-        // By default, if present, use the rich viewer to render
-        this.switchViewer(this.hasRichViewer ? RICH_BLOB_VIEWER : SIMPLE_BLOB_VIEWER);
+        this.initHighlightWorker(this.blobInfo);
+        this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER); // By default, if present, use the rich viewer to render
       },
       error() {
         this.displayError();
@@ -120,9 +104,7 @@ export default {
     },
   },
   provide() {
-    return {
-      blobHash: uniqueId(),
-    };
+    return { blobHash: uniqueId() };
   },
   props: {
     path: {
@@ -154,6 +136,8 @@ export default {
       useFallback: false,
       pathLocks: DEFAULT_BLOB_INFO.pathLocks,
       userPermissions: DEFAULT_BLOB_INFO.userPermissions,
+      blobInfo: {},
+      isEmptyRepository: false,
     };
   },
   computed: {
@@ -165,11 +149,6 @@ export default {
     },
     isBinaryFileType() {
       return this.isBinary || this.blobInfo.simpleViewer?.fileType !== TEXT_FILE_TYPE;
-    },
-    blobInfo() {
-      const nodes = this.project?.repository?.blobs?.nodes || [];
-
-      return nodes[0] || {};
     },
     currentRef() {
       return this.originalBranch || this.ref;
@@ -245,16 +224,11 @@ export default {
   },
   watch: {
     // Watch the URL 'plain' query value to know if the viewer needs changing.
-    // This is the case when the user switches the viewer and then goes back
-    // through the hystory.
+    // This is the case when the user switches the viewer and then goes back through the history
     '$route.query.plain': {
       handler(plainValue) {
-        this.switchViewer(
-          this.hasRichViewer && (plainValue === undefined || plainValue === '0')
-            ? RICH_BLOB_VIEWER
-            : SIMPLE_BLOB_VIEWER,
-          plainValue !== undefined,
-        );
+        const useSimpleViewer = plainValue === '1' || !this.hasRichViewer;
+        this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER);
       },
     },
   },
@@ -313,21 +287,11 @@ export default {
         this.loadLegacyViewer();
       }
     },
-    updateRouteQuery() {
-      const plain = this.activeViewerType === SIMPLE_BLOB_VIEWER ? '1' : '0';
-
-      if (this.$route?.query?.plain === plain) {
-        return;
-      }
-
-      this.$router.push({
-        path: this.$route.path,
-        query: { ...this.$route.query, plain },
-      });
-    },
     handleViewerChanged(newViewer) {
       this.switchViewer(newViewer);
-      this.updateRouteQuery();
+      const plain = newViewer === SIMPLE_BLOB_VIEWER ? '1' : '0';
+      if (this.$route?.query?.plain === plain) return;
+      this.$router.push({ path: this.$route.path, query: { ...this.$route.query, plain } });
     },
     editBlob(target) {
       if (this.showForkSuggestion) {
@@ -393,7 +357,7 @@ export default {
             :delete-path="blobInfo.webPath"
             :can-push-code="userPermissions.pushCode"
             :can-push-to-branch="blobInfo.canCurrentUserPushToBranch"
-            :empty-repo="project.repository.empty"
+            :empty-repo="isEmptyRepository"
             :project-path="projectPath"
             :is-locked="Boolean(pathLockedByUser)"
             :can-lock="canLock"

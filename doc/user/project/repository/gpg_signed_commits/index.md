@@ -7,13 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Sign commits with GPG **(FREE ALL)**
 
 You can sign the commits you make in a GitLab repository with a
-GPG ([GNU Privacy Guard](https://gnupg.org/)) key. When you add a cryptographic
-signature to your commit, you provide extra assurance that a commit
-originated from you, rather than an impersonator. If GitLab can verify a commit
-author's identity with a public GPG key, the commit is marked **Verified** in the
-GitLab UI. You can then configure [push rules](../push_rules.md)
-for your project to reject individual commits not signed with GPG, or reject all
-commits from unverified users.
+GPG ([GNU Privacy Guard](https://gnupg.org/)) key.
 
 NOTE:
 GitLab uses the term GPG for all OpenPGP, PGP, and GPG-related material and
@@ -174,7 +168,7 @@ you can sign individual commits manually, or configure Git to default to signed 
      ```
 
   1. Enter the passphrase of your GPG key when asked.
-  1. Push to GitLab and check that your commits [are verified](#verify-commits).
+  1. Push to GitLab and check that your commits [are verified](../signed_commits/index.md#verify-commits).
 - Sign all Git commits by default by running this command:
 
   ```shell
@@ -222,29 +216,6 @@ Prerequisites:
    gpgsign = true
    ```
 
-## Verify commits
-
-You can review commits for a merge request, or for an entire project:
-
-1. To review commits for a project:
-   1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Code > Commits**.
-1. To review commits for a merge request:
-   1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Code > Merge requests**, then select your merge request.
-   1. Select **Commits**.
-1. Identify the commit you want to review. Signed commits show either a **Verified**
-   or **Unverified** badge, depending on the verification status of the GPG
-   signature. Unsigned commits do not display a badge:
-
-   ![Signed and unsigned commits](img/project_signed_and_unsigned_commits.png)
-
-1. To display the signature details for a commit, select the GPG badge:
-
-   ![Signed commit with verified signature](img/project_signed_commit_verified_signature.png)
-
-   ![Signed commit with unverified signature](img/project_signed_commit_unverified_signature.png)
-
 ## Revoke a GPG key
 
 If a GPG key becomes compromised, revoke it. Revoking a key changes both future and past commits:
@@ -279,9 +250,6 @@ If you must unverify both future and past commits,
 
 ## Related topics
 
-- [Sign commits and tags with X.509 certificates](../x509_signed_commits/index.md)
-- [Sign commits with SSH keys](../ssh_signed_commits/index.md)
-- [Commits API](../../../../api/commits.md)
 - GPG resources:
   - [Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
   - [Managing OpenPGP Keys](https://riseup.net/en/security/message-security/openpgp/gpg-keys)
@@ -290,20 +258,6 @@ If you must unverify both future and past commits,
   - [Review existing GPG keys in your instance](../../../../administration/credentials_inventory.md#review-existing-gpg-keys)
 
 ## Troubleshooting
-
-### Fix verification problems with signed commits
-
-Commits can be signed with [X.509 certificates](../x509_signed_commits/index.md)
-or a GPG key. The verification process for both methods can fail for multiple reasons:
-
-| Value                       | Description | Possible Fixes |
-|-----------------------------|-------------|----------------|
-| `UNVERIFIED`                | The commit signature is not valid. | Sign the commit with a valid signature. |
-| `SAME_USER_DIFFERENT_EMAIL` | The GPG key used to sign the commit does not contain the committer email, but does contain a different valid email for the committer. | Amend the commit to use an email address that matches the GPG key, or update the GPG key [to include the email address](https://security.stackexchange.com/a/261468). |
-| `OTHER_USER`                | The signature and GPG key are valid, but the key belongs to a different user than the committer. | Amend the commit to use the correct email address, or amend the commit to use a GPG key associated with your user. |
-| `UNVERIFIED_KEY`            | The key associated with the GPG signature has no verified email address associated with the committer. | Add and verify the email to your GitLab profile, [update the GPG key to include the email address](https://security.stackexchange.com/a/261468), or amend the commit to use a different committer email address. |
-| `UNKNOWN_KEY`               | The GPG key associated with the GPG signature for this commit is unknown to GitLab. | [Add the GPG key](#add-a-gpg-key-to-your-account) to your GitLab profile. |
-| `MULTIPLE_SIGNATURES`       | Multiple GPG or X.509 signatures have been found for the commit. | Amend the commit to use only one GPG or X.509 signature. |
 
 ### Secret key not available
 
