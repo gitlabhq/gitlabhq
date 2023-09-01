@@ -483,7 +483,7 @@ group :test do
 
   gem 'shoulda-matchers', '~> 5.1.0', require: false
   gem 'email_spec', '~> 2.2.0'
-  gem 'webmock', '~> 3.19.0'
+  gem 'webmock', '~> 3.19.1'
   gem 'rails-controller-testing'
   gem 'concurrent-ruby', '~> 1.1'
   gem 'test-prof', '~> 1.2.2'

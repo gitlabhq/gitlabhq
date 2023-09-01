@@ -276,11 +276,11 @@ Configure Gitaly server in one of two ways:
       storage: [
          {
             name: 'default',
-            path: '/var/opt/gitlab/git-data',
+            path: '/var/opt/gitlab/git-data/repositories',
          },
          {
             name: 'storage1',
-            path: '/mnt/gitlab/git-data',
+            path: '/mnt/gitlab/git-data/repositories',
          },
       ],
    }
@@ -294,7 +294,7 @@ Configure Gitaly server in one of two ways:
       storage: [
          {
             name: 'storage2',
-            path: '/srv/gitlab/git-data',
+            path: '/srv/gitlab/git-data/repositories',
          },
       ],
    }
@@ -517,7 +517,7 @@ gitaly['configuration'] = {
   storage: [
     {
       name: 'storage1',
-      path: '/mnt/gitlab/git-data',
+      path: '/mnt/gitlab/git-data/repositories',
     },
   ],
 }

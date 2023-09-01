@@ -1133,15 +1133,15 @@ For more information on Gitaly server configuration, see our
       storage: [
         {
           name: 'gitaly-1',
-          path: '/var/opt/gitlab/git-data',
+          path: '/var/opt/gitlab/git-data/repositories',
         },
         {
           name: 'gitaly-2',
-          path: '/var/opt/gitlab/git-data',
+          path: '/var/opt/gitlab/git-data/repositories',
         },
         {
           name: 'gitaly-3',
-          path: '/var/opt/gitlab/git-data',
+          path: '/var/opt/gitlab/git-data/repositories',
         },
       ],
    }

@@ -9708,7 +9708,7 @@ msgid_plural "Checkout|%{quantity} storage packs"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Checkout|%{selectedPlanText} plan"
+msgid "Checkout|%{selectedPlanText}"
 msgstr ""
 
 msgid "Checkout|%{startDate} - %{endDate}"
