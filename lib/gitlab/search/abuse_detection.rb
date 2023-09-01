@@ -7,7 +7,7 @@ module Gitlab
       include AbuseValidators
 
       ABUSIVE_TERM_SIZE = 100
-      ALLOWED_CHARS_REGEX = %r{\A[[:alnum:]_\-\/\.!]+\z}.freeze
+      ALLOWED_CHARS_REGEX = %r{\A[[:alnum:]_\-\/\.!]+\z}
 
       ALLOWED_SCOPES = %w(
         blobs

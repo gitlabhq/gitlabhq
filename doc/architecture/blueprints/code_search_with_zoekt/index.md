@@ -273,6 +273,57 @@ progress and reassess if it turns out to add too much complexity to GitLab.
 This is already implemented as the `::Zoekt::IndexedNamespace`
 implements a many-to-many relationship between namespaces and shards.
 
+#### Sharding proposal with self-registering Zoekt nodes
+
+This proposal is mostly inspired by GitLab Runner's architecture with the main difference
+that the communication is bidirectional. We've arrived to this after discussions in [Zoekt Sharding and Replication](https://gitlab.com/gitlab-org/gitlab/-/issues/419900).
+
+##### Alternatives we've considered
+
+We've considered different options for where to manage the Zoekt cluster state including Raft and Zoekt's own database. We decided that there are many benefits to having the whole cluster state managed by GitLab instead of Zoekt so we're opting to keep Zoekt nodes as naive as possible.
+
+The main benefits are:
+
+1. The deployment cycle for GitLab is faster than Zoekt which requires many version bumps across many projects
+1. GitLab already has lots tooling that can be used for managing the state that we are already familiar with including Postgres, Redis, Sidekiq and others
+1. The engineers mainly working on this project have much more experience with Rails than Go and spend more time writing Rails code than Go code as the other search features are mostly in Rails
+
+Some of those benefits could also be seen as downsides and maybe not the right choice for different projects owned by different teams.
+
+##### High level proposal
+
+<img src="diagrams/sharding_proposal_2023-08.drawio.png" height="600">
+
+1. Zoekt nodes are started with 3 additional arguments: its own address, shard name, and GitLab URL.
+1. We'd like to keep shard name separate so that one will be able to migrate a shard to a different address.
+1. When Zoekt is running in k8s, we can pass `hostname --fqdn` (for example, `gitlab-zoekt-1.gitlab-zoekt.default.svc.cluster.local`) as an argument for the address. Customers running Zoekt on bare-metal will need to configure it separately.
+1. Zoekt most likely will use [Internal API](../../../development/internal_api/index.md) to connect to GitLab. We might also want to use a separate GitLab URL to keep the traffic internal and to avoid extra traffic cost.
+1. GitLab will maintain a lookup table with `last_seen_at` and shard's name (we could expand `::Zoekt::Shard`). We'll also need to introduce the concept of replicas and primaries.
+1. Zoekt nodes (indexers in this case) will send periodic requests to get new jobs with its address and name to the configured GitLab URL. GitLab will either register a new node or update the existing record in the lookup table.
+1. After the job is completed, `zoekt-indexer` will send a callback to GitLab to indicate that the job has been completed.
+1. If after a specified time GitLab doesn't receive a request, it can reassign namespaces to different shards and mark the missing shard as unavailable.
+1. When executing searches, we can round-robin requests to primaries and replicas. We might even want to implement retries. For example, if a request to primary fails, we send another request to replica right away or vice versa. Here is a related issue: [Consider circuit breaker for Zoekt code search](https://gitlab.com/gitlab-org/gitlab/-/issues/393445).
+1. Initially, we might want to skip replication until we implement efficiently moving and copying index files between shards (rsync for example).
+1. Rebalancing most likely will happen in a cron Sidekiq worker, which will consider if an indexed namespace has enough replicas as well as available storage.
+
+An example of command we might consider running in k8s:
+
+```shell
+./gitlab-zoekt-indexer -index_dir=/data/index -shard_name=`hostname` -address=`hostname --fqdn`
+```
+
+When we add more replicas to the stateful set, it should automatically handle addresses and shard names. For example:
+
+- `gitlab-zoekt-0` / `gitlab-zoekt-0.gitlab-zoekt.default.svc.cluster.local`
+- `gitlab-zoekt-1` / `gitlab-zoekt-1.gitlab-zoekt.default.svc.cluster.local`
+- ..
+
+Possible jobs indexer can receive:
+
+- `index_repositories(ids: [1,2,3,4])`
+- `delete_repositories(ids: [5,6])`
+- `copy_index(from: 'gitlab-zoekt-0', to: 'gitlab-zoekt-1', repo_id: 4)`
+
 #### Replication and service discovery using Consul
 
 If we plan to replicate at the Zoekt node level as described above we need to

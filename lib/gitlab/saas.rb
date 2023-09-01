@@ -18,7 +18,7 @@ module Gitlab
     end
 
     def self.subdomain_regex
-      %r{\Ahttps://[a-z0-9-]+\.gitlab\.com\z}.freeze
+      %r{\Ahttps://[a-z0-9-]+\.gitlab\.com\z}
     end
 
     def self.dev_url

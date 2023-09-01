@@ -699,6 +699,13 @@ If you are running GitLab 14.5 and later:
    kubectl --namespace gitlab exec -ti gitlab-geo-toolbox-XXX -- gitlab-rake geo:set_secondary_as_primary
    ```
 
+   Environment variables can be provided to modify the behavior of the task. The
+   available variables are:
+
+   | Name | Default value | Description |
+   | ---- | ------------- | ------- |
+   | `ENABLE_SILENT_MODE` | `false`  | If `true`, enables [Silent Mode](../../silent_mode/index.md) before promotion (GitLab 16.4 and later) |
+
 If you are running GitLab 14.4 and earlier:
 
 1. SSH in to the database node in the **secondary** site and trigger PostgreSQL to

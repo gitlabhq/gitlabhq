@@ -15,7 +15,7 @@ module Gitlab
         update: ::Spamcheck::Action::UPDATE
       }.freeze
 
-      URL_SCHEME_REGEX = %r{^grpc://|^tls://}.freeze
+      URL_SCHEME_REGEX = %r{^grpc://|^tls://}
 
       def initialize
         @endpoint_url = Gitlab::CurrentSettings.current_application_settings.spam_check_endpoint_url

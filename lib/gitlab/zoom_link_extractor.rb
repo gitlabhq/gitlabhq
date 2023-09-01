@@ -8,7 +8,7 @@
 
 module Gitlab
   class ZoomLinkExtractor
-    ZOOM_REGEXP = %r{https://(?:[\w-]+\.)?zoom\.us/(?:s|j|my)/\S+}.freeze
+    ZOOM_REGEXP = %r{https://(?:[\w-]+\.)?zoom\.us/(?:s|j|my)/\S+}
 
     def initialize(text)
       @text = text.to_s

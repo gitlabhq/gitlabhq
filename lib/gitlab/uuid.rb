@@ -9,7 +9,7 @@ module Gitlab
       production: "58dc0f06-936c-43b3-93bb-71693f1b6570"
     }.freeze
 
-    UUID_V5_PATTERN = /\h{8}-\h{4}-5\h{3}-\h{4}-\h{12}/.freeze
+    UUID_V5_PATTERN = /\h{8}-\h{4}-5\h{3}-\h{4}-\h{12}/
 
     class << self
       def v5(name, namespace_id: default_namespace_id)

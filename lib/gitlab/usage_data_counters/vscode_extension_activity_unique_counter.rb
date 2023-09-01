@@ -4,7 +4,7 @@ module Gitlab
   module UsageDataCounters
     module VSCodeExtensionActivityUniqueCounter
       VS_CODE_API_REQUEST_ACTION = 'i_code_review_user_vs_code_api_request'
-      VS_CODE_USER_AGENT_REGEX = /\Avs-code-gitlab-workflow/.freeze
+      VS_CODE_USER_AGENT_REGEX = /\Avs-code-gitlab-workflow/
 
       class << self
         def track_api_request_when_trackable(user_agent:, user:)

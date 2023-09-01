@@ -13,6 +13,7 @@ class RegistrationsController < Devise::RegistrationsController
   include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
   include SkipsAlreadySignedInMessage
   include Gitlab::RackLoadBalancingHelpers
+  include ::Gitlab::Utils::StrongMemoize
 
   layout 'devise'
 
@@ -247,6 +248,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     sign_up_params[:email] == invite_email
   end
+  strong_memoize_attr :registered_with_invite_email?
 
   def load_recaptcha
     Gitlab::Recaptcha.load_configurations!

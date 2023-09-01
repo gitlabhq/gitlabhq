@@ -6,7 +6,7 @@ module Gitlab
       GITLAB_CLI_API_REQUEST_ACTION = 'i_code_review_user_gitlab_cli_api_request'
 
       # This regex will match to user agents ending with GitLab CLI or starting with glab/v"
-      GITLAB_CLI_USER_AGENT_REGEX = %r{(GitLab\sCLI$|^glab/v)}.freeze
+      GITLAB_CLI_USER_AGENT_REGEX = %r{(GitLab\sCLI$|^glab/v)}
 
       class << self
         def track_api_request_when_trackable(user_agent:, user:)

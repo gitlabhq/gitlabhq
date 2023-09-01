@@ -16919,7 +16919,8 @@ CREATE TABLE group_merge_request_approval_settings (
     allow_committer_approval boolean DEFAULT false NOT NULL,
     allow_overrides_to_approver_list_per_merge_request boolean DEFAULT false NOT NULL,
     retain_approvals_on_push boolean DEFAULT false NOT NULL,
-    require_password_to_approve boolean DEFAULT false NOT NULL
+    require_password_to_approve boolean DEFAULT false NOT NULL,
+    require_saml_auth_to_approve boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE group_repository_storage_moves (

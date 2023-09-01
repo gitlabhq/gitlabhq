@@ -3,6 +3,7 @@ package goredis
 import (
 	"context"
 	"net"
+	"sync/atomic"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -11,9 +12,8 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
-func mockRedisServer(t *testing.T, connectReceived *bool) string {
-	// go-redis does not deal with port 0
-	ln, err := net.Listen("tcp", "127.0.0.1:6389")
+func mockRedisServer(t *testing.T, connectReceived *atomic.Value) string {
+	ln, err := net.Listen("tcp", "127.0.0.1:0")
 
 	require.Nil(t, err)
 
@@ -21,7 +21,7 @@ func mockRedisServer(t *testing.T, connectReceived *bool) string {
 		defer ln.Close()
 		conn, err := ln.Accept()
 		require.Nil(t, err)
-		*connectReceived = true
+		connectReceived.Store(true)
 		conn.Write([]byte("OK\n"))
 	}()
 
@@ -48,7 +48,7 @@ func TestConfigureValidConfigX(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.scheme, func(t *testing.T) {
-			connectReceived := false
+			connectReceived := atomic.Value{}
 			a := mockRedisServer(t, &connectReceived)
 
 			parsedURL := helper.URLMustParse(tc.scheme + "://" + a)
@@ -60,7 +60,7 @@ func TestConfigureValidConfigX(t *testing.T) {
 
 			// goredis initialise connections lazily
 			rdb.Ping(context.Background())
-			require.True(t, connectReceived)
+			require.True(t, connectReceived.Load().(bool))
 
 			rdb = nil
 		})
@@ -81,7 +81,7 @@ func TestConnectToSentinel(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.scheme, func(t *testing.T) {
-			connectReceived := false
+			connectReceived := atomic.Value{}
 			a := mockRedisServer(t, &connectReceived)
 
 			addrs := []string{tc.scheme + "://" + a}
@@ -99,7 +99,7 @@ func TestConnectToSentinel(t *testing.T) {
 
 			// goredis initialise connections lazily
 			rdb.Ping(context.Background())
-			require.True(t, connectReceived)
+			require.True(t, connectReceived.Load().(bool))
 
 			rdb = nil
 		})

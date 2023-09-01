@@ -6,6 +6,10 @@ module Gitlab
       Gitlab::CurrentSettings.silent_mode_enabled?
     end
 
+    def self.enable!
+      Gitlab::CurrentSettings.update!(silent_mode_enabled: true)
+    end
+
     def self.log_info(data)
       Gitlab::AppJsonLogger.info(**add_silent_mode_log_data(data))
     end

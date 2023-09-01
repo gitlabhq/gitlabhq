@@ -6,7 +6,7 @@ module Gitlab
     # and converts that to RE2 representation:
     # /<regexp>/<flags>
     class RubySyntax
-      PATTERN = %r{^/(?<regexp>.*)/(?<flags>[ismU]*)$}.freeze
+      PATTERN = %r{^/(?<regexp>.*)/(?<flags>[ismU]*)$}
 
       # Checks if pattern matches a regexp pattern
       # but does not enforce it's validity

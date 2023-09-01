@@ -75,11 +75,6 @@ Specific information applies to Linux package installations:
   in the `tls_options` hash, or use the legacy `gitlab_rails['ldap_host']` option.
   See the [configuration workarounds](https://gitlab.com/gitlab-org/gitlab/-/issues/419485#workarounds)
   for more details.
-- New job artifacts are not replicated if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
-  16.2.3, 16.3.0, and later.
-  - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
-  - If you deployed an affected version, after upgrading to a fixed GitLab version, follow [these instructions](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data)
-    to resync the affected job artifacts.
 - If your GitLab database was created by or upgraded via versions 15.11.0 - 15.11.2 inclusive, upgrading to GitLab 16.2 fails with:
 
   ```plaintext
@@ -100,6 +95,17 @@ Specific information applies to Linux package installations:
   ```
 
   For more information, see [issue 421629](https://gitlab.com/gitlab-org/gitlab/-/issues/421629).
+
+### Geo installations
+
+Specific information applies to installations using Geo:
+
+- New job artifacts are not replicated by Geo if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
+  16.2.3, 16.3.0, and later.
+  - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
+  - While running an affected version, artifacts which appeared to become synced may actually be missing on the secondary site.
+    Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
+    You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
 
 ### Linux package installations
 
@@ -128,11 +134,6 @@ Specific information applies to Linux package installations:
   [backfill `prepared_at` values on the `merge_requests` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865). This
   migration may take multiple days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 16.1.0.
-- New job artifacts are not replicated if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
-  16.2.3, 16.3.0, and later.
-  - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
-  - If you deployed an affected version, after upgrading to a fixed GitLab version, follow [these instructions](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data)
-    to resync the affected job artifacts.
 
 ### Self-compiled installations
 
@@ -157,6 +158,12 @@ Specific information applies to installations using Geo:
   these design repositories. You could be impacted by this issue even if you have not imported projects.
   - Impacted versions: GitLab versions 16.1.0 - 16.1.2
   - Versions containing fix: GitLab 16.1.3 and later.
+- New job artifacts are not replicated by Geo if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
+  16.2.3, 16.3.0, and later.
+  - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
+  - While running an affected version, artifacts which appeared to become synced may actually be missing on the secondary site.
+    Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
+    You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
 
 ## 16.0.0
 

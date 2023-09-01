@@ -5,7 +5,7 @@ module Gitlab
     module ExceptionMessage
       FILTERED_STRING = '[FILTERED]'
       EXCEPTION_NAMES = %w(URI::InvalidURIError Addressable::URI::InvalidURIError).freeze
-      MESSAGE_REGEX = %r{(\A[^:]+:\s).*\Z}.freeze
+      MESSAGE_REGEX = %r{(\A[^:]+:\s).*\Z}
 
       class << self
         def clean(exception_name, message)

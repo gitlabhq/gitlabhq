@@ -10,6 +10,7 @@ import './behaviors';
 // lib/utils
 import applyGitLabUIConfig from '@gitlab/ui/dist/config';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { __ } from '~/locale';
 import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
@@ -44,7 +45,13 @@ import 'jh_else_ce/main_jh';
 
 logHelloDeferred();
 
-applyGitLabUIConfig();
+applyGitLabUIConfig({
+  translations: {
+    'SearchBoxByType.input.placeholder': __('Search'),
+    'SearchBoxByType.clearButtonTitle': __('Clear'),
+    'ClearIconButton.title': __('Clear'),
+  },
+});
 
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;
