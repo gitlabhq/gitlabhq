@@ -1,0 +1,8 @@
+---
+migration_job_name: SyncScanResultPolicies
+description: Security policies are stored as YAML files in the security policy project. This migration
+  syncs existing policies to a DB table scan_result_policies by kicking off Sidekiq sync job
+  for all security policy configurations.
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128378
+milestone: 16.4

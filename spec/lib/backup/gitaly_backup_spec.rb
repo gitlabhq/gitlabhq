@@ -45,9 +45,9 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
   context 'create' do
     RSpec.shared_examples 'creates a repository backup' do
       it 'creates repository bundles', :aggregate_failures do
-        # Add data to the wiki, design repositories, and snippets, so they will be included in the dump.
+        # Add data to the wiki, and snippets, so they will be included in the dump.
+        # Design repositories already have data through the factory :project_with_design
         create(:wiki_page, container: project)
-        create(:design, :with_file, issue: create(:issue, project: project))
         project_snippet = create(:project_snippet, :repository, project: project)
         personal_snippet = create(:personal_snippet, :repository, author: project.first_owner)
 
@@ -56,7 +56,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         subject.start(:create, destination, backup_id: backup_id)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
         subject.enqueue(project, Gitlab::GlRepository::WIKI)
-        subject.enqueue(project, Gitlab::GlRepository::DESIGN)
+        subject.enqueue(project.design_management_repository, Gitlab::GlRepository::DESIGN)
         subject.enqueue(personal_snippet, Gitlab::GlRepository::SNIPPET)
         subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
         subject.finish!
@@ -126,13 +126,13 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
     end
 
     context 'hashed storage' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project_with_design, :repository) }
 
       it_behaves_like 'creates a repository backup'
     end
 
     context 'legacy storage' do
-      let_it_be(:project) { create(:project, :repository, :legacy_storage) }
+      let_it_be(:project) { create(:project_with_design, :repository, :legacy_storage) }
 
       it_behaves_like 'creates a repository backup'
     end
@@ -162,7 +162,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
   end
 
   context 'restore' do
-    let_it_be(:project) { create(:project, :repository, :design_repo) }
+    let_it_be(:project) { create(:project_with_design, :repository) }
     let_it_be(:personal_snippet) { create(:personal_snippet, author: project.first_owner) }
     let_it_be(:project_snippet) { create(:project_snippet, project: project, author: project.first_owner) }
 
@@ -189,7 +189,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
       subject.start(:restore, destination, backup_id: backup_id)
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
       subject.enqueue(project, Gitlab::GlRepository::WIKI)
-      subject.enqueue(project, Gitlab::GlRepository::DESIGN)
+      subject.enqueue(project.design_management_repository, Gitlab::GlRepository::DESIGN)
       subject.enqueue(personal_snippet, Gitlab::GlRepository::SNIPPET)
       subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
       subject.finish!

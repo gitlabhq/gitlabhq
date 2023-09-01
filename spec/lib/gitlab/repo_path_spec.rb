@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe ::Gitlab::RepoPath do
   include Gitlab::Routing
 
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project_with_design, :repository) }
   let_it_be(:personal_snippet) { create(:personal_snippet) }
   let_it_be(:project_snippet) { create(:project_snippet, project: project) }
   let_it_be(:redirect_route) { 'foo/bar/baz' }
@@ -28,6 +28,10 @@ RSpec.describe ::Gitlab::RepoPath do
       it 'parses a project snippet repository path' do
         expect(described_class.parse("#{project.full_path}/snippets/#{project_snippet.id}")).to eq([project_snippet, project, Gitlab::GlRepository::SNIPPET, nil])
       end
+
+      it 'parses a full project design repository path' do
+        expect(described_class.parse(project.design_repository.full_path)).to match_array([project.design_management_repository, project, Gitlab::GlRepository::DESIGN, nil])
+      end
     end
 
     context 'a relative path' do
@@ -43,6 +47,10 @@ RSpec.describe ::Gitlab::RepoPath do
         expect(described_class.parse('/' + project.full_path + '.git')).to eq([project, project, Gitlab::GlRepository::PROJECT, nil])
       end
 
+      it 'parses a relative design repository path' do
+        expect(described_class.parse(project.full_path + '.design.git')).to match_array([project.design_management_repository, project, Gitlab::GlRepository::DESIGN, nil])
+      end
+
       context 'of a redirected project' do
         it 'parses a relative repository path' do
           expect(described_class.parse(redirect.path + '.git')).to eq([project, project, Gitlab::GlRepository::PROJECT, redirect_route])
@@ -50,6 +58,10 @@ RSpec.describe ::Gitlab::RepoPath do
 
         it 'parses a relative wiki path' do
           expect(described_class.parse(redirect.path + '.wiki.git')).to eq([project.wiki, project, Gitlab::GlRepository::WIKI, "#{redirect_route}.wiki"])
+        end
+
+        it 'parses a relative design repository path' do
+          expect(described_class.parse(redirect.path + '.design.git')).to match_array([project.design_management_repository, project, Gitlab::GlRepository::DESIGN, "#{redirect_route}.design"])
         end
 
         it 'parses a relative path starting with /' do

@@ -77,7 +77,9 @@ all matching tags:
 A tag and a branch with identical names can contain different commits. If your
 tags and branches use the same names, users running `git checkout`
 commands might check out the _tag_ `qa` when they instead meant to check out
-the _branch_ `qa`.
+the _branch_ `qa`. As an added security measure, avoid creating tags with the
+same name as branches. Confusing the two could lead to potential
+security or operational issues.
 
 To prevent this problem:
 

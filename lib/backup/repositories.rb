@@ -73,7 +73,10 @@ module Backup
     def enqueue_project(project)
       strategy.enqueue(project, Gitlab::GlRepository::PROJECT)
       strategy.enqueue(project, Gitlab::GlRepository::WIKI)
-      strategy.enqueue(project, Gitlab::GlRepository::DESIGN)
+
+      return unless project.design_management_repository
+
+      strategy.enqueue(project.design_management_repository, Gitlab::GlRepository::DESIGN)
     end
 
     def enqueue_snippet(snippet)

@@ -14,6 +14,10 @@ module Integrations
       placeholder: 'https://example.atlassian.net/wiki',
       required: true
 
+    def avatar_url
+      ActionController::Base.helpers.image_path('confluence.svg')
+    end
+
     def self.to_param
       'confluence'
     end

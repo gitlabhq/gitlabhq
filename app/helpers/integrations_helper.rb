@@ -323,12 +323,14 @@ module IntegrationsHelper
 
   def serialize_integration(integration, group: nil, project: nil)
     {
+      id: integration.id,
       active: integration.operating?,
       title: integration.title,
       description: integration.description,
       updated_at: integration.updated_at,
       edit_path: scoped_edit_integration_path(integration, group: group, project: project),
-      name: integration.to_param
+      name: integration.to_param,
+      icon: integration.try(:avatar_url)
     }
   end
 end

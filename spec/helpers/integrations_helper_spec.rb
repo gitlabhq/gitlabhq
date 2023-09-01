@@ -172,6 +172,25 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     it { is_expected.to include(*fields) }
   end
 
+  describe '#serialize_integration' do
+    subject { helper.send(:serialize_integration, integration) }
+
+    let(:integration) { build(:jenkins_integration) }
+
+    it 'serializes the integration' do
+      is_expected.to match(a_hash_including(
+        id: nil,
+        active: false,
+        title: 'Jenkins',
+        description: _('Run CI/CD pipelines with Jenkins.'),
+        updated_at: nil,
+        edit_path: '/admin/application_settings/integrations/jenkins/edit',
+        name: 'jenkins',
+        icon: nil
+      ))
+    end
+  end
+
   describe '#scoped_reset_integration_path' do
     let(:integration) { build_stubbed(:jira_integration) }
     let(:group) { nil }

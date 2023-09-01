@@ -43,13 +43,13 @@ variables:
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/*_spec.rb"
   before_script:
     - echo "SUITE_RAN=true" > suite_status.env
-    - echo -e "\e[0Ksection_start:`date +%s`:pull_image\r\e[0KPull GDK QA image"
+    - echo -e "\e[0Ksection_start:`date +%s`:pull_image[collapsed=true]\r\e[0KPull GDK QA image"
     - docker pull ${GDK_IMAGE}
     - echo -e "\e[0Ksection_end:`date +%s`:pull_image\r\e[0K"
     # Despite `incremental: false` and `static: true`, GDK sometimes fails to start without increasing max user watches
     # This is why we're not running the GDK container as a service
     - sysctl -n -w fs.inotify.max_user_watches=524288
-    - echo -e "\e[0Ksection_start:`date +%s`:launch_gdk\r\e[0KLaunch GDK"
+    - echo -e "\e[0Ksection_start:`date +%s`:launch_gdk[collapsed=true]\r\e[0KLaunch GDK"
     - mkdir -p $CI_PROJECT_DIR/log/gdk $CI_PROJECT_DIR/log/gitlab
     # This command matches the permissions of the user that runs GDK inside the container.
     - chown -R 1000:1000 $CI_PROJECT_DIR/log
@@ -61,11 +61,15 @@ variables:
     # With `FF_NETWORK_PER_BUILD=1` and `--network host` the IP of the gdk container should be 172.18.0.2, but we get it
     # dynamically just in case
     - echo "$(docker exec gdk bash -c "getent hosts \$HOSTNAME" | awk '{print $1}') gdk.test" >> /etc/hosts
+    - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
+    - echo -e "\e[0Ksection_start:`date +%s`:install_gems[collapsed=true]\r\e[0KInstall gems"
     - source scripts/utils.sh
     - cd qa && bundle install
+    - echo -e "\e[0Ksection_end:`date +%s`:install_gems\r\e[0K"
   script:
-    - retry_exponential test_url $GDK_URL/users/sign_in
-    - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
+    - echo -e "\e[0Ksection_start:`date +%s`:healthcheck[collapsed=true]\r\e[0KWait for gdk to start"
+    - retry_times_sleep 100 3 test_url $GDK_URL/users/sign_in
+    - echo -e "\e[0Ksection_end:`date +%s`:healthcheck\r\e[0K"
     - echo -e "\e[0Ksection_start:`date +%s`:run_tests\r\e[0KRun E2E tests"
     - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
     - echo "Running - '$QA_COMMAND'"
@@ -80,7 +84,8 @@ variables:
   artifacts:
     paths:
       - qa/tmp
-      - log
+      - log/gitlab
+      - log/gdk/*/current
     reports:
       junit: qa/tmp/rspec-*.xml
       dotenv: suite_status.env

@@ -2,6 +2,18 @@
 
 module Gitlab
   class GlRepository
+    class ContainerClassMismatchError < StandardError
+      def initialize(container_class, repo_type)
+        @container_class = container_class
+        @repo_type = repo_type
+      end
+
+      def message
+        "Expected container class to be #{@repo_type.container_class} for " \
+          "repo type #{@repo_type.name}, but found #{@container_class} instead."
+      end
+    end
+
     class RepoType
       attr_reader :name,
                   :access_checker_class,
@@ -53,13 +65,14 @@ module Gitlab
       end
 
       def repository_for(container)
+        check_container(container)
         return unless container
 
-        repository_resolver.call(select_container(container))
+        repository_resolver.call(container)
       end
 
       def project_for(container)
-        return select_container(container) unless project_resolver
+        return container unless project_resolver
 
         project_resolver.call(container)
       end
@@ -74,12 +87,19 @@ module Gitlab
 
       private
 
-      def select_container(container)
-        container.is_a?(::DesignManagement::Repository) ? container.project : container
-      end
-
       def default_container_class
         Project
+      end
+
+      def check_container(container)
+        # Don't check container for wiki or project because these repo types
+        # accept several container types.
+        return if wiki? || project?
+
+        return unless container.present? && container_class.present?
+        return if container.is_a?(container_class)
+
+        raise ContainerClassMismatchError.new(container.class.name, self)
       end
     end
   end

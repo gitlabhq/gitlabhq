@@ -10,6 +10,8 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors do
     end.new
   end
 
+  let_it_be(:group) { create(:group) }
+
   describe '#user_actor' do
     context 'when user is not available in ApplicationContext' do
       it 'returns nil' do
@@ -40,7 +42,7 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors do
 
   describe '#repository, #project_actor, #group_actor' do
     context 'when normal project repository' do
-      let_it_be(:project) { create(:project, group: create(:group)) }
+      let_it_be(:project) { create(:project, group: group) }
       let(:expected_project) { project }
       let(:expected_group) { Feature::Gitaly::ActorWrapper.new(::Group, project.group.id) }
 
@@ -58,7 +60,7 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors do
     end
 
     context 'when project wiki repository' do
-      let_it_be(:project) { create(:project, :wiki_repo, group: create(:group)) }
+      let_it_be(:project) { create(:project, :wiki_repo, group: group) }
       let(:expected_project) { nil }
       let(:expected_group) { nil }
 
@@ -112,7 +114,7 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors do
     end
 
     context 'when project snippet' do
-      let_it_be(:project) { create(:project, group: create(:group)) }
+      let_it_be(:project) { create(:project, group: group) }
       let(:snippet) { create(:project_snippet, project: project) }
       let(:expected_project) { nil }
       let(:expected_group) { nil }
@@ -131,23 +133,20 @@ RSpec.describe Gitlab::GitalyClient::WithFeatureFlagActors do
     end
 
     context 'when project design' do
-      let_it_be(:design_repo) do
-        create(:design_management_repository, project: create(:project, group: create(:group)))
-      end
-
-      let(:expected_project) { design_repo.project }
-      let(:expected_group) { design_repo.project.group }
+      let_it_be(:project) { create(:project_with_design, group: group) }
+      let(:expected_project) { project }
+      let(:expected_group) { group }
 
       it_behaves_like 'Gitaly feature flag actors are inferred from repository' do
-        let(:repository) { design_repo.repository }
+        let(:repository) { project.design_repository }
       end
 
       it_behaves_like 'Gitaly feature flag actors are inferred from repository' do
-        let(:repository) { design_repo.repository.raw }
+        let(:repository) { project.design_repository.raw }
       end
 
       it_behaves_like 'Gitaly feature flag actors are inferred from repository' do
-        let(:repository) { raw_repo_without_container(design_repo.repository) }
+        let(:repository) { raw_repo_without_container(project.design_repository) }
       end
     end
   end

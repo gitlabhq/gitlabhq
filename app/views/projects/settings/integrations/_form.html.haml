@@ -15,6 +15,7 @@
   = render 'shared/integrations/slack_notifications_deprecation_alert'
 
 %h2.gl-mb-0.gl-display-flex.gl-align-items-center.gl-gap-3
+  = render Pajamas::AvatarComponent.new(integration, size: 64, alt: '')
   = integration.title
   - if integration.operating?
     = render Pajamas::BadgeComponent.new(s_('FeatureFlags|Active'), variant: 'success')

@@ -1277,7 +1277,7 @@ class Project < ApplicationRecord
 
   def design_repository
     strong_memoize(:design_repository) do
-      Gitlab::GlRepository::DESIGN.repository_for(self)
+      find_or_create_design_management_repository.repository
     end
   end
 

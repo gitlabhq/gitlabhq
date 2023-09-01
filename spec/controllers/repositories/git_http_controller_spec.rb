@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Repositories::GitHttpController, feature_category: :source_code_management do
-  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:project) { create(:project_with_design, :public, :repository) }
   let_it_be(:personal_snippet) { create(:personal_snippet, :public, :repository) }
   let_it_be(:project_snippet) { create(:project_snippet, :public, :repository, project: project) }
 
@@ -175,6 +175,29 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       it_behaves_like 'handles unavailable Gitaly'
       it_behaves_like 'handles logging git upload pack operation'
       it_behaves_like 'handles logging git receive pack operation'
+    end
+  end
+
+  context 'when repository container is a design_management_repository' do
+    let(:container) { project.design_management_repository }
+    let(:access_checker_class) { Gitlab::GitAccessDesign }
+    let(:repository_path) { "#{container.full_path}.git" }
+    let(:params) { { repository_path: repository_path, service: 'git-upload-pack' } }
+
+    describe 'GET #info_refs' do
+      it 'calls the right access checker class with the right object' do
+        allow(controller).to receive(:verify_workhorse_api!).and_return(true)
+
+        access_double = double
+
+        expect(access_checker_class).to receive(:new)
+          .with(nil, container, 'http', hash_including({ repository_path: repository_path }))
+          .and_return(access_double)
+
+        allow(access_double).to receive(:check).and_return(false)
+
+        get :info_refs, params: params
+      end
     end
   end
 end

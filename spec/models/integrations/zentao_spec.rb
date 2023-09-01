@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Zentao do
+RSpec.describe Integrations::Zentao, feature_category: :integrations do
   let(:url) { 'https://jihudemo.zentao.net' }
   let(:api_url) { 'https://jihudemo.zentao.net' }
   let(:api_token) { 'ZENTAO_TOKEN' }
@@ -77,6 +77,12 @@ RSpec.describe Integrations::Zentao do
   describe '#help' do
     it 'renders prompt information' do
       expect(zentao_integration.help).not_to be_empty
+    end
+  end
+
+  describe '#avatar_url' do
+    it 'returns the avatar image path' do
+      expect(subject.avatar_url).to eq(ActionController::Base.helpers.image_path('logos/zentao.svg'))
     end
   end
 

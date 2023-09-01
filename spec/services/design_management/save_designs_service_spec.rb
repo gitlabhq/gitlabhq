@@ -11,9 +11,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
   let(:project) { issue.project }
   let(:user) { developer }
   let(:files) { [rails_sample] }
-  let(:design_repository) do
-    ::Gitlab::GlRepository::DESIGN.repository_resolver.call(project)
-  end
+  let(:design_repository) { project.find_or_create_design_management_repository.repository }
 
   let(:rails_sample_name) { 'rails_sample.jpg' }
   let(:rails_sample) { sample_image(rails_sample_name) }

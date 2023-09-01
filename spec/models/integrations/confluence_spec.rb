@@ -63,6 +63,12 @@ RSpec.describe Integrations::Confluence, feature_category: :integrations do
     end
   end
 
+  describe '#avatar_url' do
+    it 'returns the avatar image path' do
+      expect(subject.avatar_url).to eq(ActionController::Base.helpers.image_path('confluence.svg'))
+    end
+  end
+
   describe 'Caching has_confluence on project_settings' do
     subject { project.project_setting.has_confluence? }
 

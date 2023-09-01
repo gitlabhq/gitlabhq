@@ -1,13 +1,14 @@
 <script>
-import { GlIcon, GlLink, GlTable, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatarLabeled, GlAvatarLink, GlIcon, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
+    GlAvatarLabeled,
+    GlAvatarLink,
     GlIcon,
-    GlLink,
     GlTable,
     TimeAgoTooltip,
   },
@@ -49,6 +50,7 @@ export default {
           key: 'active',
           label: '',
           thClass: 'gl-w-7',
+          tdClass: 'gl-vertical-align-middle!',
         },
         {
           key: 'title',
@@ -104,13 +106,21 @@ export default {
     </template>
 
     <template #cell(title)="{ item }">
-      <gl-link
+      <gl-avatar-link
         :href="item.edit_path"
-        class="gl-font-weight-bold"
+        :title="item.title"
         :data-qa-selector="`${item.name}_link`"
       >
-        {{ item.title }}
-      </gl-link>
+        <gl-avatar-labeled
+          :label="item.title"
+          :entity-id="item.id"
+          :entity-name="item.title"
+          :src="item.icon"
+          :size="32"
+          shape="rect"
+          :label-link="item.edit_path"
+        />
+      </gl-avatar-link>
     </template>
 
     <template #cell(updated_at)="{ item }">

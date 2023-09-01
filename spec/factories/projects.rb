@@ -535,7 +535,7 @@ FactoryBot.define do
   factory :project_with_design, parent: :project do
     after(:create) do |project|
       issue = create(:issue, project: project)
-      create(:design, project: project, issue: issue)
+      create(:design, :with_file, project: project, issue: issue)
     end
   end
 

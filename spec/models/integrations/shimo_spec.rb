@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Integrations::Shimo do
+RSpec.describe ::Integrations::Shimo, feature_category: :integrations do
   describe '#fields' do
     let(:shimo_integration) { build(:shimo_integration) }
 
@@ -58,6 +58,12 @@ RSpec.describe ::Integrations::Shimo do
 
     it 'creates a project_setting record if one was not already created' do
       expect { create(:shimo_integration) }.to change(ProjectSetting, :count).by(1)
+    end
+  end
+
+  describe '#avatar_url' do
+    it 'returns the avatar image path' do
+      expect(subject.avatar_url).to eq(ActionController::Base.helpers.image_path('logos/shimo.svg'))
     end
   end
 end
