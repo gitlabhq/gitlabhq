@@ -228,7 +228,7 @@ module Gitlab
       end
 
       def set_key_and_notify(key, value, expire: nil, overwrite: true)
-        Gitlab::Redis::SharedState.with do |redis|
+        with_redis do |redis|
           result = redis.set(key, value, ex: expire, nx: !overwrite)
           if result
             redis.publish(NOTIFICATION_PREFIX + key, value)
@@ -248,6 +248,15 @@ module Gitlab
       end
 
       protected
+
+      def with_redis(&blk)
+        if Feature.enabled?(:use_primary_and_secondary_stores_for_workhorse) ||
+            Feature.enabled?(:use_primary_store_as_default_for_workhorse)
+          Gitlab::Redis::Workhorse.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
+        else
+          Gitlab::Redis::SharedState.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
+        end
+      end
 
       # This is the outermost encoding of a senddata: header. It is safe for
       # inclusion in HTTP response headers

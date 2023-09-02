@@ -24,8 +24,8 @@ RSpec.describe Gitlab::SetupHelper::Workhorse do
   end
 
   describe '.redis_url' do
-    it 'matches the SharedState URL' do
-      expect(Gitlab::Redis::SharedState).to receive(:url).and_return('foo')
+    it 'matches the Workhorse URL' do
+      expect(Gitlab::Redis::Workhorse).to receive(:url).and_return('foo')
 
       expect(described_class.redis_url).to eq('foo')
     end
@@ -34,14 +34,14 @@ RSpec.describe Gitlab::SetupHelper::Workhorse do
   describe '.redis_db' do
     subject { described_class.redis_db }
 
-    it 'matches the SharedState DB' do
-      expect(Gitlab::Redis::SharedState).to receive(:params).and_return(db: 1)
+    it 'matches the Workhorse DB' do
+      expect(Gitlab::Redis::Workhorse).to receive(:params).and_return(db: 1)
 
       is_expected.to eq(1)
     end
 
     it 'defaults to 0 if unspecified' do
-      expect(Gitlab::Redis::SharedState).to receive(:params).and_return({})
+      expect(Gitlab::Redis::Workhorse).to receive(:params).and_return({})
 
       is_expected.to eq(0)
     end
