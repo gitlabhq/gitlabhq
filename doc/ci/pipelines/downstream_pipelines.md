@@ -720,6 +720,80 @@ Use the [`trigger:forward` keyword](../yaml/index.md#triggerforward) to specify
 what type of variables to forward to the downstream pipeline. Forwarded variables
 are considered trigger variables, which have the [highest precedence](../variables/index.md#cicd-variable-precedence).
 
+## Downstream pipelines for deployments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369061) in GitLab 16.4.
+
+You can use the [`environment`](../yaml/index.md#environment) keyword with [`trigger`](../yaml/index.md#trigger).
+You might want to use `environment` from a trigger job if your deployment and application projects are separately managed.
+
+```yaml
+deploy:
+  trigger:
+    project: project-group/my-downstream-project
+  environment: production
+```
+
+A downstream pipeline can provision infrastructure, deploy to a designated environment, and return the deployment status
+to the upstream project.
+
+You can [view the environment and deployment](../environments/index.md#view-environments-and-deployments)
+from the upstream project.
+
+### Advanced example
+
+This example configuration has the following behaviors:
+
+- The upstream project dynamically composes an environment name based on a branch name.
+- The upstream project passes the context of the deployment to the downstream project with `UPSTREAM_*` variables.
+
+The `.gitlab-ci.yml` in an upstream project:
+
+```yaml
+stages:
+  - deploy
+  - cleanup
+
+.downstream-deployment-pipeline:
+  variables:
+    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID
+    UPSTREAM_ENVIRONMENT_NAME: $CI_ENVIRONMENT_NAME
+    UPSTREAM_ENVIRONMENT_ACTION: $CI_ENVIRONMENT_ACTION
+  trigger:
+    project: project-group/deployment-project
+    branch: main
+    strategy: depend
+
+deploy-review:
+  stage: deploy
+  extends: .downstream-deployment-pipeline
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    on_stop: stop-review
+
+stop-review:
+  stage: cleanup
+  extends: .downstream-deployment-pipeline
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    action: stop
+  when: manual
+```
+
+The `.gitlab-ci.yml` in a downstream project:
+
+```yaml
+deploy:
+  script: echo "Deploy to ${CI_ENVIRONMENT_NAME} for ${CI_PROJECT_ID}"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "pipeline" && $UPSTREAM_ENVIRONMENT_ACTION == "start"
+
+stop:
+  script: echo "Stop ${CI_ENVIRONMENT_NAME} for ${CI_PROJECT_ID}"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "pipeline" && $UPSTREAM_ENVIRONMENT_ACTION == "stop"
+```
+
 ## Troubleshooting
 
 ### Trigger job fails and does not create multi-project pipeline

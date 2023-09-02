@@ -14,6 +14,26 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
     project.add_developer(developer)
   end
 
+  it_behaves_like 'creating a pipeline with environment keyword' do
+    let!(:project) { create(:project, :repository) }
+    let(:execute_service) { service.execute(:push) }
+    let(:expected_deployable_class) { Ci::Build }
+    let(:expected_deployment_status) { 'created' }
+    let(:expected_job_status) { 'pending' }
+    let(:expected_tag_names) { %w[hello] }
+    let(:base_config) do
+      {
+        script: 'deploy',
+        tags: ['hello']
+      }
+    end
+
+    before do
+      project.add_developer(developer) # rubocop:disable RSpec/BeforeAllRoleAssignment
+      project.repository.create_file(developer, '.gitlab-ci.yml', config, branch_name: 'master', message: 'test')
+    end
+  end
+
   describe '#execute' do
     subject { service.execute(:push).payload }
 

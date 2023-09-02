@@ -21,6 +21,23 @@ RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_fl
     create_gitlab_ci_yml(downstream_project, downstream_config)
   end
 
+  it_behaves_like 'creating a pipeline with environment keyword' do
+    let(:execute_service) { service.execute(:push) }
+    let(:upstream_config) { config }
+    let(:expected_deployable_class) { Ci::Bridge }
+    let(:expected_deployment_status) { 'running' }
+    let(:expected_job_status) { 'running' }
+    let(:downstream_config) { YAML.dump({ deploy: { script: 'deploy' } }) }
+    let(:base_config) do
+      {
+        trigger: {
+          project: downstream_project.full_path,
+          strategy: 'depend'
+        }
+      }
+    end
+  end
+
   context 'with resource group', :aggregate_failures do
     let(:upstream_config) do
       <<~YAML

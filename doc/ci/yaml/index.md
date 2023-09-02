@@ -4375,6 +4375,9 @@ test:
 
 ### `trigger`
 
+> - Support for `resource_group` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39057) support for `resource_group` in GitLab 13.9.
+> - Support for `environment` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369061) in GitLab 16.4.
+
 Use `trigger` to declare that a job is a "trigger job" which starts a
 [downstream pipeline](../pipelines/downstream_pipelines.md) that is either:
 
@@ -4393,6 +4396,8 @@ The keywords available for use in trigger jobs are:
 - [`trigger`](#trigger).
 - [`variables`](#variables).
 - [`when`](#when) (only with a value of `on_success`, `on_failure`, or `always`).
+- [`resource_group`](#resource_group).
+- [`environment`](#environment).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 

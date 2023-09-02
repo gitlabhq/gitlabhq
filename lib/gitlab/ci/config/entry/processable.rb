@@ -15,7 +15,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Inheritable
 
           PROCESSABLE_ALLOWED_KEYS = %i[extends stage only except rules variables
-                                        inherit allow_failure when needs resource_group].freeze
+                                        inherit allow_failure when needs resource_group environment].freeze
           MAX_NESTING_LEVEL = 10
 
           included do
@@ -67,6 +67,10 @@ module Gitlab
               description: 'Indicates whether to inherit defaults or not.',
               inherit: false,
               default: {}
+
+            entry :environment, Entry::Environment,
+              description: 'Environment configuration for this job.',
+              inherit: false
 
             attributes :extends, :rules, :resource_group
           end
@@ -125,6 +129,8 @@ module Gitlab
               root_variables_inheritance: root_variables_inheritance,
               only: only_value,
               except: except_value,
+              environment: environment_defined? ? environment_value : nil,
+              environment_name: environment_defined? ? environment_value[:name] : nil,
               resource_group: resource_group }.compact
           end
 
