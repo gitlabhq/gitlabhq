@@ -31,12 +31,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarPanel, feature_category: :navigat
   end
 
   it 'implements #super_sidebar_context_header' do
-    expect(subject.super_sidebar_context_header).to eq(
-      {
-        title: project.name,
-        avatar: project.avatar_url,
-        id: project.id
-      })
+    expect(subject.super_sidebar_context_header).to eq(_('Project'))
   end
 
   describe '#renderable_menus' do

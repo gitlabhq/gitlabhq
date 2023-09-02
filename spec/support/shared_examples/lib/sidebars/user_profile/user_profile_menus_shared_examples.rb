@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'User profile menu' do |title:, icon:, active_route:|
+RSpec.shared_examples 'User profile menu' do |
+  icon:, active_route:, avatar_shape: 'rect', expect_avatar: false, entity_id: nil,
+  # A nil title will fall back to user.name.
+  title: nil
+|
   let_it_be(:current_user) { build(:user) }
   let_it_be(:user) { build(:user) }
 
@@ -17,11 +21,17 @@ RSpec.shared_examples 'User profile menu' do |title:, icon:, active_route:|
   end
 
   it 'renders the correct title' do
-    expect(subject.title).to eq title
+    expect(subject.title).to eq(title || user.name)
   end
 
   it 'renders the correct icon' do
     expect(subject.sprite_icon).to eq icon
+  end
+
+  it 'renders the correct avatar' do
+    expect(subject.avatar).to eq(expect_avatar ? user.avatar_url : nil)
+    expect(subject.avatar_shape).to eq(avatar_shape)
+    expect(subject.entity_id).to eq(entity_id)
   end
 
   it 'defines correct active route' do

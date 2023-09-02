@@ -8,6 +8,7 @@ module Sidebars
     include Gitlab::Allowable
     include ::Sidebars::Concerns::HasPill
     include ::Sidebars::Concerns::HasIcon
+    include ::Sidebars::Concerns::HasAvatar
     include ::Sidebars::Concerns::PositionableList
     include ::Sidebars::Concerns::Renderable
     include ::Sidebars::Concerns::ContainerWithHtmlOptions
@@ -81,6 +82,9 @@ module Sidebars
       {
         title: title,
         icon: sprite_icon,
+        avatar: avatar,
+        avatar_shape: avatar_shape,
+        entity_id: entity_id,
         link: link,
         is_active: is_active,
         pill_count: has_pill? ? pill_count : nil,

@@ -72,6 +72,8 @@ describe('GlobalSearchDefaultPlaces', () => {
             'data-track-extra': '{"title":"Explore"}',
             'data-track-label': 'item_without_id',
             'data-track-property': 'nav_panel_unknown',
+            'data-testid': 'places-item-link',
+            'data-qa-places-item': 'Explore',
           },
         },
         {
@@ -82,6 +84,8 @@ describe('GlobalSearchDefaultPlaces', () => {
             'data-track-extra': '{"title":"Admin area"}',
             'data-track-label': 'item_without_id',
             'data-track-property': 'nav_panel_unknown',
+            'data-testid': 'places-item-link',
+            'data-qa-places-item': 'Admin area',
           },
         },
       ]);

@@ -22321,9 +22321,6 @@ msgstr ""
 msgid "Group navigation"
 msgstr ""
 
-msgid "Group overview"
-msgstr ""
-
 msgid "Group overview content"
 msgstr ""
 
@@ -36590,9 +36587,6 @@ msgid "Project or Group"
 msgstr ""
 
 msgid "Project order will not be saved as local storage is not available."
-msgstr ""
-
-msgid "Project overview"
 msgstr ""
 
 msgid "Project path"

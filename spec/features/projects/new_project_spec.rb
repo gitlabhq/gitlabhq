@@ -616,14 +616,14 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       context 'for a new top-level project' do
         it 'shows the "Your work" navigation' do
           visit new_project_path
-          expect(page).to have_selector(".super-sidebar .context-switcher-toggle", text: "Your work")
+          expect(page).to have_selector(".super-sidebar", text: "Your work")
         end
       end
 
       context 'for a new group project' do
         it 'shows the group sidebar of the parent group' do
           visit new_project_path(namespace_id: parent_group.id)
-          expect(page).to have_selector(".super-sidebar .context-switcher-toggle", text: parent_group.name)
+          expect(page).to have_selector(".super-sidebar", text: parent_group.name)
         end
       end
     end

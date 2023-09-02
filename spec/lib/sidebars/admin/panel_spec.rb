@@ -18,12 +18,7 @@ RSpec.describe Sidebars::Admin::Panel, feature_category: :navigation do
 
   describe '#super_sidebar_context_header' do
     it 'returns a hash with the correct title and icon' do
-      expected_header = {
-        title: panel.aria_label,
-        icon: 'admin'
-      }
-
-      expect(panel.super_sidebar_context_header).to eq(expected_header)
+      expect(panel.super_sidebar_context_header).to eq(_('Admin Area'))
     end
   end
 

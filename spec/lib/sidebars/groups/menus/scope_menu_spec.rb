@@ -17,9 +17,10 @@ RSpec.describe Sidebars::Groups::Menus::ScopeMenu, feature_category: :navigation
   it_behaves_like 'serializable as super_sidebar_menu_args' do
     let(:extra_attrs) do
       {
-        sprite_icon: 'group',
         super_sidebar_parent: ::Sidebars::StaticMenu,
-        title: _('Group overview'),
+        title: group.name,
+        avatar: group.avatar_url,
+        entity_id: group.id,
         item_id: :group_overview
       }
     end

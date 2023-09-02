@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import {
   CLICK_MENU_ITEM_ACTION,
@@ -17,6 +17,7 @@ export default {
   },
   name: 'NavItem',
   components: {
+    GlAvatar,
     GlButton,
     GlIcon,
     GlBadge,
@@ -102,12 +103,27 @@ export default {
         ...extraData,
       };
     },
+    /**
+     * Some QA specs rely on a stable "Project overview"/"Group overview" nav
+     * item data-qa-submenu-item attribute value.
+     *
+     * This computed ensures that those particular nav items use the `id` of
+     * the item rather than its title for that QA attribute.
+     *
+     * In future, probably all nav items should do this, for consistency.
+     * See https://gitlab.com/gitlab-org/gitlab/-/issues/422925.
+     */
+    qaSubMenuItem() {
+      const { id } = this.item;
+      if (id === 'project_overview' || id === 'group_overview') return id.replace(/_/g, '-');
+      return this.item.title;
+    },
     linkProps() {
       return {
         ...this.$attrs,
         ...this.trackingProps,
         item: this.item,
-        'data-qa-submenu-item': this.item.title,
+        'data-qa-submenu-item': this.qaSubMenuItem,
         'data-method': this.item.data_method ?? null,
       };
     },
@@ -123,6 +139,9 @@ export default {
     },
     navItemLinkComponent() {
       return this.item.to ? NavItemRouterLink : NavItemLink;
+    },
+    avatarShape() {
+      return this.item.avatar_shape || 'rect';
     },
   },
   methods: {
@@ -162,6 +181,14 @@ export default {
             v-else-if="isInPinnedSection"
             name="grip"
             class="gl-m-auto gl-text-gray-400 js-draggable-icon gl-cursor-grab show-on-focus-or-hover--target"
+          />
+          <gl-avatar
+            v-else-if="item.entity_id"
+            :size="24"
+            :shape="avatarShape"
+            :entity-name="item.title"
+            :entity-id="item.entity_id"
+            :src="item.avatar"
           />
         </slot>
       </div>

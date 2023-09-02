@@ -170,7 +170,6 @@ export default {
     </ul>
     <pinned-section
       v-if="supportsPins"
-      separated
       :items="pinnedItems"
       :has-flyout="showFlyoutMenus"
       @pin-remove="destroyPin"

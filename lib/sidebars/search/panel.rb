@@ -18,10 +18,7 @@ module Sidebars
 
       override :super_sidebar_context_header
       def super_sidebar_context_header
-        @super_sidebar_context_header ||= {
-          title: aria_label,
-          icon: 'search-results'
-        }
+        aria_label
       end
     end
   end

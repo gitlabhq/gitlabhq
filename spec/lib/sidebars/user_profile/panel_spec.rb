@@ -18,10 +18,6 @@ RSpec.describe Sidebars::UserProfile::Panel, feature_category: :navigation do
   end
 
   it 'implements #super_sidebar_context_header' do
-    expect(subject.super_sidebar_context_header).to eq({
-      title: user.name,
-      avatar: user.avatar_url,
-      avatar_shape: 'circle'
-    })
+    expect(subject.super_sidebar_context_header).to eq(_('Profile'))
   end
 end

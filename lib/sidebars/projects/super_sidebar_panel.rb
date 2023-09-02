@@ -37,11 +37,7 @@ module Sidebars
 
       override :super_sidebar_context_header
       def super_sidebar_context_header
-        {
-          title: context.project.name,
-          avatar: context.project.avatar_url,
-          id: context.project.id
-        }
+        _('Project')
       end
     end
   end

@@ -71,6 +71,36 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     let(:project) { nil }
     let(:current_user_mode) { Gitlab::Auth::CurrentUserMode.new(user) }
 
+    let(:global_shortcut_links) do
+      [
+        {
+          title: _('Milestones'),
+          href: dashboard_milestones_path,
+          css_class: 'dashboard-shortcuts-milestones'
+        },
+        {
+          title: _('Snippets'),
+          href: dashboard_snippets_path,
+          css_class: 'dashboard-shortcuts-snippets'
+        },
+        {
+          title: _('Activity'),
+          href: activity_dashboard_path,
+          css_class: 'dashboard-shortcuts-activity'
+        },
+        {
+          title: _('Groups'),
+          href: dashboard_groups_path,
+          css_class: 'dashboard-shortcuts-groups'
+        },
+        {
+          title: _('Projects'),
+          href: dashboard_projects_path,
+          css_class: 'dashboard-shortcuts-projects'
+        }
+      ]
+    end
+
     subject do
       helper.super_sidebar_context(user, group: group, project: project, panel: panel, panel_type: panel_type)
     end
@@ -139,65 +169,64 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
         pinned_items: %w[foo bar],
         update_pins_url: pins_path,
-        shortcut_links: [
-          {
-            title: _('Milestones'),
-            href: dashboard_milestones_path,
-            css_class: 'dashboard-shortcuts-milestones'
-          },
-          {
-            title: _('Snippets'),
-            href: dashboard_snippets_path,
-            css_class: 'dashboard-shortcuts-snippets'
-          },
-          {
-            title: _('Activity'),
-            href: activity_dashboard_path,
-            css_class: 'dashboard-shortcuts-activity'
-          }
-        ]
+        shortcut_links: global_shortcut_links
       })
     end
 
     describe "shortcut links" do
-      let(:global_shortcut_links) do
-        [
-          {
-            title: _('Milestones'),
-            href: dashboard_milestones_path,
-            css_class: 'dashboard-shortcuts-milestones'
-          },
-          {
-            title: _('Snippets'),
-            href: dashboard_snippets_path,
-            css_class: 'dashboard-shortcuts-snippets'
-          },
-          {
-            title: _('Activity'),
-            href: activity_dashboard_path,
-            css_class: 'dashboard-shortcuts-activity'
-          }
-        ]
-      end
-
-      it 'returns global shortcut links' do
-        expect(subject[:shortcut_links]).to eq(global_shortcut_links)
-      end
-
-      context 'in a project' do
-        # rubocop: disable RSpec/FactoryBot/AvoidCreate
-        let_it_be(:project) { create(:project) }
-        # rubocop: enable RSpec/FactoryBot/AvoidCreate
-
-        it 'returns project-specific shortcut links' do
-          expect(subject[:shortcut_links]).to eq([
-            *global_shortcut_links,
+      describe "as the anonymous user" do
+        let_it_be(:user) { nil }
+        let(:global_shortcut_links) do
+          [
             {
-              title: _('Create a new issue'),
-              href: new_project_issue_path(project),
-              css_class: 'shortcuts-new-issue'
+              title: _('Snippets'),
+              href: explore_snippets_path,
+              css_class: 'dashboard-shortcuts-snippets'
+            },
+            {
+              title: _('Groups'),
+              href: explore_groups_path,
+              css_class: 'dashboard-shortcuts-groups'
+            },
+            {
+              title: _('Projects'),
+              href: explore_projects_path,
+              css_class: 'dashboard-shortcuts-projects'
             }
-          ])
+          ]
+        end
+
+        it 'returns global shortcut links' do
+          expect(subject[:shortcut_links]).to eq(global_shortcut_links)
+        end
+
+        context 'in a project' do
+          let_it_be(:project) { build_stubbed(:project) }
+
+          it 'returns project-specific shortcut links' do
+            expect(subject[:shortcut_links]).to eq(global_shortcut_links)
+          end
+        end
+      end
+
+      describe "as logged-in user" do
+        it 'returns global shortcut links' do
+          expect(subject[:shortcut_links]).to eq(global_shortcut_links)
+        end
+
+        context 'in a project' do
+          let_it_be(:project) { build_stubbed(:project) }
+
+          it 'returns project-specific shortcut links' do
+            expect(subject[:shortcut_links]).to eq([
+              *global_shortcut_links,
+              {
+                title: _('Create a new issue'),
+                href: new_project_issue_path(project),
+                css_class: 'shortcuts-new-issue'
+              }
+            ])
+          end
         end
       end
     end

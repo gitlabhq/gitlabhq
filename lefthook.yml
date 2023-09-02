@@ -135,26 +135,26 @@ auto-fix:
   commands:
     frontend:
       tags: frontend style
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '*.{js,vue}'
       run: 'yarn run lint:eslint:fix {files} && yarn run prettier --write --list-different {files}'
     jsonlint:
       tags: style
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '*.{json}'
       run: scripts/lint-json --format --verbose {files}
     prettier-graphql:
       tags: frontend style
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '*.{graphql}'
       run: yarn run prettier --write --list-different {files}
     rubocop:
       tags: backend style
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '*.{rb,rake}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --autocorrect --force-exclusion {files}
     gettext:
       tags: backend frontend view haml
-      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD --cached | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD)..HEAD $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
       run: tooling/bin/gettext_extractor locale/gitlab.pot

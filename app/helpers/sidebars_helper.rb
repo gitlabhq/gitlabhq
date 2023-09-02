@@ -64,7 +64,8 @@ module SidebarsHelper
       gitlab_version: Gitlab.version_info,
       gitlab_version_check: gitlab_version_check,
       search: search_data,
-      panel_type: panel_type
+      panel_type: panel_type,
+      shortcut_links: shortcut_links
     }
   end
 
@@ -106,7 +107,7 @@ module SidebarsHelper
       update_pins_url: pins_path,
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
-      shortcut_links: shortcut_links(user, project: project)
+      shortcut_links: shortcut_links(user: user, project: project)
     })
   end
 
@@ -398,7 +399,29 @@ module SidebarsHelper
     !!session[:impersonator_id]
   end
 
-  def shortcut_links(user, project: nil)
+  def shortcut_links_anonymous
+    [
+      {
+        title: _('Snippets'),
+        href: explore_snippets_path,
+        css_class: 'dashboard-shortcuts-snippets'
+      },
+      {
+        title: _('Groups'),
+        href: explore_groups_path,
+        css_class: 'dashboard-shortcuts-groups'
+      },
+      {
+        title: _('Projects'),
+        href: explore_projects_path,
+        css_class: 'dashboard-shortcuts-projects'
+      }
+    ]
+  end
+
+  def shortcut_links(user: nil, project: nil)
+    return shortcut_links_anonymous unless user
+
     shortcut_links = [
       {
         title: _('Milestones'),
@@ -414,6 +437,16 @@ module SidebarsHelper
         title: _('Activity'),
         href: activity_dashboard_path,
         css_class: 'dashboard-shortcuts-activity'
+      },
+      {
+        title: _('Groups'),
+        href: dashboard_groups_path,
+        css_class: 'dashboard-shortcuts-groups'
+      },
+      {
+        title: _('Projects'),
+        href: dashboard_projects_path,
+        css_class: 'dashboard-shortcuts-projects'
       }
     ]
 

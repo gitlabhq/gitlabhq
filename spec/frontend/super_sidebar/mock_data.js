@@ -79,10 +79,8 @@ export const contextSwitcherLinks = [
 export const sidebarData = {
   is_logged_in: true,
   current_menu_items: [],
-  current_context_header: {
-    title: 'Your Work',
-    icon: 'work',
-  },
+  current_context: {},
+  current_context_header: 'Your work',
   name: 'Administrator',
   username: 'root',
   avatar_url: 'path/to/img_administrator',
@@ -129,10 +127,8 @@ export const sidebarData = {
 export const loggedOutSidebarData = {
   is_logged_in: false,
   current_menu_items: [],
-  current_context_header: {
-    title: 'Your Work',
-    icon: 'work',
-  },
+  current_context: {},
+  current_context_header: 'Your work',
   support_path: '/support',
   display_whats_new: true,
   whats_new_most_recent_release_items_count: 5,

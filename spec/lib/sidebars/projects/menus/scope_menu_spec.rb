@@ -11,8 +11,9 @@ RSpec.describe Sidebars::Projects::Menus::ScopeMenu, feature_category: :navigati
     let(:menu) { described_class.new(context) }
     let(:extra_attrs) do
       {
-        title: _('Project overview'),
-        sprite_icon: 'project',
+        title: project.name,
+        avatar: project.avatar_url,
+        entity_id: project.id,
         super_sidebar_parent: ::Sidebars::StaticMenu,
         item_id: :project_overview
       }

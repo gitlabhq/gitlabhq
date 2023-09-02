@@ -43,8 +43,8 @@ module Sidebars
         override :serialize_as_menu_item_args
         def serialize_as_menu_item_args
           super.merge({
-            title: _('Project overview'),
-            sprite_icon: 'project',
+            avatar: context.project.avatar_url,
+            entity_id: context.project.id,
             super_sidebar_parent: ::Sidebars::StaticMenu,
             item_id: :project_overview
           })

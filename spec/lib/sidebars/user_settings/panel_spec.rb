@@ -13,6 +13,6 @@ RSpec.describe Sidebars::UserSettings::Panel, feature_category: :navigation do
   it_behaves_like 'a panel instantiable by the anonymous user'
 
   it 'implements #super_sidebar_context_header' do
-    expect(subject.super_sidebar_context_header).to eq({ title: _('User settings'), avatar: user.avatar_url })
+    expect(subject.super_sidebar_context_header).to eq(_('User settings'))
   end
 end

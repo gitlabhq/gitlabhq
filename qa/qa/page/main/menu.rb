@@ -9,6 +9,7 @@ module QA
         prepend Mobile::Page::Main::Menu if Runtime::Env.phone_layout?
         include SubMenus::CreateNewMenu
         include SubMenus::ContextSwitcher
+        include SubMenus::SuperSidebar::GlobalSearchModal
 
         view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
           element :navbar, required: true # TODO: rename to sidebar once it's default implementation
@@ -26,7 +27,6 @@ module QA
         end
 
         view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
-          element 'super-sidebar-search-button'
           element 'stop-impersonation-btn'
           element 'issues-shortcut-button', required: !Runtime::Env.phone_layout?
           element 'merge-requests-shortcut-button', required: !Runtime::Env.phone_layout?
@@ -129,6 +129,8 @@ module QA
         end
 
         def sign_out
+          close_global_search_modal_if_shown
+
           retry_until do
             wait_if_retry_later
 
@@ -160,11 +162,6 @@ module QA
           within_user_menu do
             click_element(:user_profile_link)
           end
-        end
-
-        def search_for(term)
-          click_element('super-sidebar-search-button')
-          fill_element('global-search-input', "#{term}\n")
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)

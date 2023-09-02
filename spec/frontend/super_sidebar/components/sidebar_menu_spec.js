@@ -185,14 +185,6 @@ describe('Sidebar Menu', () => {
   });
 
   describe('Separators', () => {
-    it('should add the separator above pinned section', () => {
-      createWrapper({
-        items: menuItems,
-        panelType: 'project',
-      });
-      expect(findPinnedSection().props('separated')).toBe(true);
-    });
-
     it('should add the separator above main menu items when there is a pinned section', () => {
       createWrapper({
         items: menuItems,

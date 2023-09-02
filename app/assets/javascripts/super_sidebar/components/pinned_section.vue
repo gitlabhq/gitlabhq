@@ -23,11 +23,6 @@ export default {
       required: false,
       default: () => [],
     },
-    separated: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     hasFlyout: {
       type: Boolean,
       required: false,
@@ -84,7 +79,6 @@ export default {
   <menu-section
     :item="sectionItem"
     :expanded="expanded"
-    :separated="separated"
     :has-flyout="hasFlyout"
     @collapse-toggle="expanded = !expanded"
     @pin-remove="(itemId) => $emit('pin-remove', itemId)"

@@ -1,4 +1,4 @@
-import { GlBadge, GlButton } from '@gitlab/ui';
+import { GlBadge, GlButton, GlAvatar } from '@gitlab/ui';
 import { RouterLinkStub } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -14,6 +14,7 @@ import {
 describe('NavItem component', () => {
   let wrapper;
 
+  const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findLink = () => wrapper.findByTestId('nav-item-link');
   const findPill = () => wrapper.findComponent(GlBadge);
   const findPinButton = () => wrapper.findComponent(GlButton);
@@ -208,6 +209,20 @@ describe('NavItem component', () => {
         expect(findNavItemLink().findByTestId('active-indicator').classes()).toContain(
           'gl-opacity-10',
         );
+      });
+    });
+  });
+
+  describe('when `item` prop has `entity_id` attribute', () => {
+    it('renders an avatar', () => {
+      createWrapper({
+        item: { title: 'Foo', entity_id: 123, avatar: '/avatar.png', avatar_shape: 'circle' },
+      });
+
+      expect(findAvatar().props()).toMatchObject({
+        entityId: 123,
+        shape: 'circle',
+        src: '/avatar.png',
       });
     });
   });

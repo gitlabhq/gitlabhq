@@ -31,6 +31,10 @@ export default {
             'data-track-label': TRACKING_UNKNOWN_ID,
             'data-track-property': TRACKING_UNKNOWN_PANEL,
             'data-track-extra': JSON.stringify({ title }),
+
+            // QA attributes
+            'data-testid': 'places-item-link',
+            'data-qa-places-item': title,
           },
         })),
       };
