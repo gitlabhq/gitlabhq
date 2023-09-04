@@ -24,6 +24,8 @@ You can use the [personal access tokens API](../api/personal_access_tokens.md) t
 programmatically take action, such as
 [rotating a personal access token](../api/personal_access_tokens.md#rotate-a-personal-access-token).
 
+You will receive an email when personal access tokens are 7 days or less from expiration.
+
 ## OAuth2 tokens
 
 GitLab can serve as an [OAuth2 provider](../api/oauth2.md) to allow other services to access the GitLab API on a user's behalf.
@@ -55,6 +57,8 @@ You can use the [project access tokens API](../api/project_access_tokens.md) to
 programmatically take action, such as
 [rotating a project access token](../api/project_access_tokens.md#rotate-a-project-access-token).
 
+All project maintainers receive an email when project access tokens are 7 days or less from expiration.
+
 ## Group access tokens
 
 [Group access tokens](../user/group/settings/group_access_tokens.md#group-access-tokens)
@@ -71,6 +75,8 @@ Bot users for groups are service accounts and do not count as licensed seats.
 You can use the [group access tokens API](../api/group_access_tokens.md) to
 programmatically take action, such as
 [rotating a group access token](../api/group_access_tokens.md#rotate-a-group-access-token).
+
+All group owners receive an email when group access tokens are 7 days or less from expiration.
 
 ## Deploy tokens
 

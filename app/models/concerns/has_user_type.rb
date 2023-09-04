@@ -74,4 +74,21 @@ module HasUserType
     # https://gitlab.com/gitlab-org/gitlab/-/issues/346058
     '****'
   end
+
+  def resource_bot_resource
+    return unless project_bot?
+
+    projects&.first || groups&.first
+  end
+
+  def resource_bot_owners
+    return [] unless project_bot?
+
+    resource = resource_bot_resource
+    return [] unless resource
+
+    return resource.maintainers if resource.is_a?(Project)
+
+    resource.owners
+  end
 end

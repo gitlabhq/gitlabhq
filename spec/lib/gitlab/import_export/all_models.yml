@@ -621,6 +621,7 @@ project:
 - project_members
 - project_repository
 - users
+- maintainers
 - requesters
 - namespace_members
 - namespace_requesters

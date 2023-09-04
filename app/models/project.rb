@@ -339,6 +339,13 @@ class Project < ApplicationRecord
 
   has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405") },
     through: :project_members
+  has_many :maintainers,
+    -> do
+      allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
+        .where(members: { access_level: Gitlab::Access::MAINTAINER })
+    end,
+    through: :project_members,
+    source: :user
 
   has_many :project_callouts, class_name: 'Users::ProjectCallout', foreign_key: :project_id
 

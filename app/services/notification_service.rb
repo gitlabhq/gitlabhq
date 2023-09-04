@@ -75,6 +75,19 @@ class NotificationService
     end
   end
 
+  def resource_access_tokens_about_to_expire(bot_user, token_names)
+    recipients = bot_user.resource_bot_owners.select { |owner| owner.can?(:receive_notifications) }
+    resource = bot_user.resource_bot_resource
+
+    recipients.each do |recipient|
+      mailer.resource_access_tokens_about_to_expire_email(
+        recipient,
+        resource,
+        token_names
+      ).deliver_later
+    end
+  end
+
   # Notify the owner of the account when a new personal access token is created
   def access_token_created(user, token_name)
     return unless user.can?(:receive_notifications)

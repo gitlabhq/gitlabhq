@@ -376,6 +376,74 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
     end
 
+    describe '#resource_access_token_about_to_expire' do
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+
+      let_it_be(:owner1) { create(:user) }
+      let_it_be(:owner2) { create(:user) }
+
+      subject(:notification_service) do
+        notification.resource_access_tokens_about_to_expire(project_bot, [expiring_token.name])
+      end
+
+      context 'when the resource is a group' do
+        let(:group) { create(:group) }
+
+        before do
+          group.add_owner(owner1)
+          group.add_owner(owner2)
+          group.add_reporter(project_bot)
+        end
+
+        it 'sends emails to the group owners' do
+          expect { notification_service }.to(
+            have_enqueued_email(
+              owner1,
+              project_bot.resource_bot_resource,
+              [expiring_token.name],
+              mail: "resource_access_tokens_about_to_expire_email"
+            ).and(
+              have_enqueued_email(
+                owner2,
+                project_bot.resource_bot_resource,
+                [expiring_token.name],
+                mail: "resource_access_tokens_about_to_expire_email"
+              )
+            )
+          )
+        end
+      end
+
+      context 'when the resource is a project' do
+        let(:project) { create(:project) }
+
+        before do
+          project.add_maintainer(owner1)
+          project.add_maintainer(owner2)
+          project.add_reporter(project_bot)
+        end
+
+        it 'sends emails to the group owners' do
+          expect { notification_service }.to(
+            have_enqueued_email(
+              owner1,
+              project_bot.resource_bot_resource,
+              [expiring_token.name],
+              mail: "resource_access_tokens_about_to_expire_email"
+            ).and(
+              have_enqueued_email(
+                owner2,
+                project_bot.resource_bot_resource,
+                [expiring_token.name],
+                mail: "resource_access_tokens_about_to_expire_email"
+              )
+            )
+          )
+        end
+      end
+    end
+
     describe '#access_token_about_to_expire' do
       let_it_be(:user) { create(:user) }
       let_it_be(:pat) { create(:personal_access_token, user: user, expires_at: 5.days.from_now) }

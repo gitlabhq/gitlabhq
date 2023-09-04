@@ -23,6 +23,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
+    it { is_expected.to have_many(:maintainers).through(:project_members).source(:user).conditions(members: { access_level: Gitlab::Access::MAINTAINER }) }
     it { is_expected.to have_many(:events) }
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
@@ -221,6 +222,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.lfs_objects_projects.size).to eq(2)
       expect(project.lfs_objects.size).to eq(1)
       expect(project.lfs_objects.to_a).to eql([lfs_object])
+    end
+
+    describe 'maintainers association' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:maintainer1) { create(:user) }
+      let_it_be(:maintainer2) { create(:user) }
+      let_it_be(:reporter) { create(:user) }
+
+      before do
+        project.add_maintainer(maintainer1)
+        project.add_maintainer(maintainer2)
+        project.add_reporter(reporter)
+      end
+
+      it 'returns only maintainers' do
+        expect(project.maintainers).to match_array([maintainer1, maintainer2])
+      end
     end
 
     context 'after initialized' do

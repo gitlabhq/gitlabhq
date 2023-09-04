@@ -157,42 +157,67 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
     end
   end
 
-  describe 'user personal access token is about to expire' do
+  describe 'resource access token is about to expire' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:expiring_token) { create(:personal_access_token, user: user, expires_at: 5.days.from_now) }
 
-    subject { Notify.access_token_about_to_expire_email(user, [expiring_token.name]) }
+    shared_examples 'resource about to expire email' do
+      it 'is sent to the owners' do
+        is_expected.to deliver_to user
+      end
 
-    it_behaves_like 'an email sent from GitLab'
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user cannot unsubscribe through footer link'
+      it 'has the correct subject' do
+        is_expected.to have_subject /^Your resource access tokens will expire in 7 days or less$/i
+      end
 
-    it 'is sent to the user' do
-      is_expected.to deliver_to user.email
+      it 'includes a link to access tokens page' do
+        is_expected.to have_body_text /#{resource_access_tokens_path}/
+      end
+
+      it 'provides the names of expiring tokens' do
+        is_expected.to have_body_text /#{expiring_token.name}/
+      end
+
+      it 'includes the email reason' do
+        is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
+      end
     end
 
-    it 'has the correct subject' do
-      is_expected.to have_subject /^Your personal access tokens will expire in 7 days or less$/i
+    context 'when access token belongs to a group' do
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+      let_it_be(:resource) { create(:group) }
+      let_it_be(:resource_access_tokens_path) { group_settings_access_tokens_path(resource) }
+
+      before_all do
+        resource.add_owner(user)
+        resource.add_developer(project_bot)
+      end
+
+      subject { Notify.resource_access_tokens_about_to_expire_email(user, resource, [expiring_token.name]) }
+
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+      it_behaves_like 'resource about to expire email'
     end
 
-    it 'mentions the access tokens will expire' do
-      is_expected.to have_body_text /One or more of your personal access tokens will expire in 7 days or less/
-    end
+    context 'when access token belongs to a project' do
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+      let_it_be(:resource) { create(:project) }
+      let_it_be(:resource_access_tokens_path) { project_settings_access_tokens_path(resource) }
 
-    it 'provides the names of expiring tokens' do
-      is_expected.to have_body_text /#{expiring_token.name}/
-    end
+      before_all do
+        resource.add_maintainer(user)
+        resource.add_reporter(project_bot)
+      end
 
-    it 'includes a link to personal access tokens page' do
-      is_expected.to have_body_text /#{profile_personal_access_tokens_path}/
-    end
+      subject { Notify.resource_access_tokens_about_to_expire_email(user, resource, [expiring_token.name]) }
 
-    it 'includes the email reason' do
-      is_expected.to have_body_text %r{You're receiving this email because of your account on <a .*>localhost</a>}
-    end
-
-    context 'with User does not exist' do
-      it { expect { Notify.access_token_about_to_expire_email('foo') }.not_to raise_error }
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like 'a user cannot unsubscribe through footer link'
+      it_behaves_like 'resource about to expire email'
     end
   end
 

@@ -32792,6 +32792,9 @@ msgstr ""
 msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less:"
 msgstr ""
 
+msgid "One or more of your resource access tokens will expire in %{days_to_expire} or less:"
+msgstr ""
+
 msgid "Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}."
 msgstr ""
 
@@ -54142,6 +54145,9 @@ msgstr ""
 msgid "You can create a new SSH key by visiting %{link}"
 msgstr ""
 
+msgid "You can create a new one or check them in your %{link_start}access tokens%{link_end} settings."
+msgstr ""
+
 msgid "You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr ""
 
@@ -54149,6 +54155,9 @@ msgid "You can create a new one or check them in your %{ssh_key_link_start}SSH k
 msgstr ""
 
 msgid "You can create a new one or check them in your SSH keys settings %{ssh_key_link}."
+msgstr ""
+
+msgid "You can create a new one or check them in your access token settings: %{target_url}"
 msgstr ""
 
 msgid "You can create a new one or check them in your personal access tokens settings %{pat_link}."
@@ -54986,6 +54995,9 @@ msgid "Your requirements are being imported. Once finished, you'll receive a con
 msgstr ""
 
 msgid "Your requirements will be imported in the background. After it's finished, you'll get a confirmation email."
+msgstr ""
+
+msgid "Your resource access tokens will expire in %{days_to_expire} or less"
 msgstr ""
 
 msgid "Your search didn't match any commits."
