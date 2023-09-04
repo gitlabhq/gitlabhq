@@ -989,8 +989,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/serializers/epic_note_serializer.rb'
     - 'ee/app/serializers/epic_serializer.rb'
     - 'ee/app/serializers/file_lock_entity.rb'
-    - 'ee/app/serializers/geo_design_registry_entity.rb'
-    - 'ee/app/serializers/geo_design_registry_serializer.rb'
     - 'ee/app/serializers/geo_node_serializer.rb'
     - 'ee/app/serializers/geo_node_status_serializer.rb'
     - 'ee/app/serializers/geo_project_registry_entity.rb'

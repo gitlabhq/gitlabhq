@@ -85,24 +85,6 @@ module Resolvers
           tag_list: [:tags]
         })
       end
-
-      def nested_preloads
-        {
-          created_by: {
-            creator: {
-              full_path: [:route],
-              web_path: [:route],
-              web_url: [:route]
-            }
-          },
-          owner_project: {
-            owner_project: {
-              full_path: [:route, { namespace: [:route] }],
-              web_url: [:route, { namespace: [:route] }]
-            }
-          }
-        }
-      end
     end
   end
 end

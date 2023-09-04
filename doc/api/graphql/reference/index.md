@@ -16471,7 +16471,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `GeoNode.designManagementRepositoryRegistries`
 
-Find Design Repository registries on this Geo node. Ignored if `geo_design_management_repository_replication` feature flag is disabled.
+Find Design Management Repository registries on this Geo node.
 
 WARNING:
 **Introduced** in 16.1.

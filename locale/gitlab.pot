@@ -16502,12 +16502,6 @@ msgstr ""
 msgid "Design Management files and data"
 msgstr ""
 
-msgid "Design repositories"
-msgstr ""
-
-msgid "Design repository"
-msgstr ""
-
 msgid "DesignManagement|%{current_design} of %{designs_count}"
 msgstr ""
 

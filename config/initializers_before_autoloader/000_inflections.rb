@@ -18,7 +18,6 @@ ActiveSupport::Inflector.inflections do |inflect|
     ci_secure_file_registry
     container_repository_registry
     dependency_proxy_blob_registry
-    design_registry
     design_management_repository_registry
     dependency_proxy_manifest_registry
     event_log

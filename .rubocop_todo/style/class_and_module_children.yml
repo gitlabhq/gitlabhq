@@ -459,7 +459,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/models/geo/base_registry.rb'
     - 'ee/app/models/geo/container_repository_registry.rb'
     - 'ee/app/models/geo/deleted_project.rb'
-    - 'ee/app/models/geo/design_registry.rb'
     - 'ee/app/models/geo/event_log_state.rb'
     - 'ee/app/models/geo/group_wiki_repository_registry.rb'
     - 'ee/app/models/geo/job_artifact_registry.rb'

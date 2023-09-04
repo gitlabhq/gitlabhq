@@ -205,7 +205,6 @@ Style/RedundantSelf:
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/epic/metrics.rb'
     - 'ee/app/models/geo/base_registry.rb'
-    - 'ee/app/models/geo/design_registry.rb'
     - 'ee/app/models/geo/project_registry.rb'
     - 'ee/app/models/geo/upload_registry.rb'
     - 'ee/app/models/geo_node.rb'

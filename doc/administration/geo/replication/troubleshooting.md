@@ -177,7 +177,7 @@ http://secondary.example.com/
              Project Wiki Repositories: succeeded 6789 / total 6789 (100%)
                            Attachments: succeeded 4 / total 4 (100%)
                       CI job artifacts: succeeded 0 / total 0 (0%)
-                   Design repositories: succeeded 1 / total 1 (100%)
+        Design management repositories: succeeded 1 / total 1 (100%)
                            LFS Objects: failed 1 / succeeded 2 / total 3 (67%)
                    Merge Request Diffs: succeeded 0 / total 0 (0%)
                          Package Files: failed 1 / succeeded 2 / total 3 (67%)

@@ -460,7 +460,6 @@ RSpec/ContextWording:
     - 'ee/spec/models/epic_issue_spec.rb'
     - 'ee/spec/models/epic_spec.rb'
     - 'ee/spec/models/geo/container_repository_registry_spec.rb'
-    - 'ee/spec/models/geo/design_registry_spec.rb'
     - 'ee/spec/models/geo/project_registry_spec.rb'
     - 'ee/spec/models/geo/secondary_usage_data_spec.rb'
     - 'ee/spec/models/geo_node_spec.rb'
