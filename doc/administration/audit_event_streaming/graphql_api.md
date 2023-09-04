@@ -331,7 +331,6 @@ mutation {
       id
       googleProjectIdName
       logIdName
-      privateKey
       clientEmail
     }
     errors
@@ -364,7 +363,6 @@ query {
         id
         logIdName
         googleProjectIdName
-        privateKey
         clientEmail
       }
     }
@@ -397,7 +395,6 @@ mutation {
     googleCloudLoggingConfiguration {
       id
       logIdName
-      privateKey
       googleProjectIdName
       clientEmail
     }

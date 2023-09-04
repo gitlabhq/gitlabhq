@@ -41,7 +41,6 @@ module Gitlab
     config.active_support.executor_around_test_case = nil # New default is true
     config.active_support.isolation_level = nil # New default is thread
     config.active_support.key_generator_hash_digest_class = nil # New default is OpenSSL::Digest::SHA256
-    config.active_support.remove_deprecated_time_with_zone_name = nil # New default is true
     config.active_support.use_rfc4122_namespaced_uuids = nil # New default is true
 
     # Rails 6.1
