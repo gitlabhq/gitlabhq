@@ -17,6 +17,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   it_behaves_like 'ensures runners_token is prefixed', :project
 
   describe 'associations' do
+    it { is_expected.to belong_to(:organization) }
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id').inverse_of(:project) }
@@ -9186,6 +9187,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it_behaves_like 'checks self (project) and root ancestor feature flag' do
       let(:feature_flag) { :enforce_locked_labels_on_merge }
       let(:feature_flag_method) { :supports_lock_on_merge? }
+    end
+  end
+
+  context 'with loose foreign key on organization_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:organization) }
+      let_it_be(:model) { create(:project, organization: parent) }
     end
   end
 

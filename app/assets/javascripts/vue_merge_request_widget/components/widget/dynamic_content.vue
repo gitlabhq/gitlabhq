@@ -92,7 +92,6 @@ export default {
           </div>
           <actions
             v-if="hasActionButtons"
-            :widget="widgetName"
             :tertiary-buttons="data.actions"
             class="gl-ml-auto gl-pl-3"
             @clickedAction="onClickedAction"

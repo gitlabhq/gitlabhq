@@ -108,7 +108,6 @@ export default {
             </gl-badge>
           </div>
           <actions
-            :widget="widgetLabel"
             :tertiary-buttons="data.actions"
             class="gl-ml-auto gl-pl-3"
             @clickedAction="onClickedAction"

@@ -44,6 +44,7 @@ itself: # project
     - storage_version
     - topic_list
     - verification_checksum
+    - organization_id
   remapped_attributes:
     avatar: avatar_url
     build_allow_git_fetch: build_git_strategy

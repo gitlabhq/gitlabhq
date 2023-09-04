@@ -44,7 +44,7 @@ Your Work will be scoped to an Organization, giving the user an overview of all 
 
 - Issue, Merge request and To-Do list counts will refer to the selected Organization.
 - The URL will reference the Organization with the following URL structure `/-/organizations/<organization>/dashboard`.
-- The default URL `/dashboard` will refer to the default Organization.
+- The default URL `/dashboard` will refer to the [Home Organization](../impacted_features/user-profile.md#3-proposal).
 
 ## 4. Evaluation
 

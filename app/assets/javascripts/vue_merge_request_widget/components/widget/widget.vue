@@ -368,7 +368,6 @@ export default {
           <slot name="action-buttons">
             <action-buttons
               v-if="actionButtons.length > 0"
-              :widget="widgetName"
               :tertiary-buttons="actionButtons"
               @clickedAction="onActionClick"
             />

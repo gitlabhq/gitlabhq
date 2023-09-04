@@ -16,6 +16,7 @@ Review apps are enabled for the following projects:
 - [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab)
 - [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner)
 - [GitLab Charts](https://gitlab.com/gitlab-org/charts/gitlab)
+- [GitLab Operator](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator)
 
 Alternatively, check the [`gitlab-docs` development guide](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/README.md#development-when-contributing-to-gitlab-documentation)
 or [the GDK documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/gitlab_docs.md)

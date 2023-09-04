@@ -113,10 +113,10 @@ Set up the Jenkins project you intend to run your build on.
 
 Configure the GitLab integration with Jenkins in one of the following ways.
 
-### Configure a Jenkins integration (recommended)
+### Configure a Jenkins integration
 
-GitLab recommends this approach for Jenkins integrations because it is easier to configure
-than the [webhook integration](#configure-a-webhook).
+You should use this approach for Jenkins integrations if you can provide GitLab
+with your Jenkins server URL and authentication information.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
@@ -129,25 +129,24 @@ than the [webhook integration](#configure-a-webhook).
 1. Enter the **Jenkins server URL**.
 1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](../user/project/integrations/index.md#manage-ssl-verification).
 1. Enter the **Project name**.
-
    The project name should be URL-friendly, where spaces are replaced with underscores. To ensure
    the project name is valid, copy it from your browser's address bar while viewing the Jenkins
    project.
-1. If your Jenkins server requires
-   authentication, enter the **Username** and **Password**.
+1. If your Jenkins server requires authentication, enter the **Username** and **Password**.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
 ### Configure a webhook
 
-If you are unable to provide GitLab with your Jenkins server login, you can use this option
-to integrate GitLab and Jenkins.
+If you cannot [provide GitLab with your Jenkins server URL and authentication information](#configure-a-jenkins-integration), you can configure a webhook to integrate GitLab and Jenkins.
 
 1. In the configuration of your Jenkins job, in the GitLab configuration section, select **Advanced**.
 1. Under **Secret Token**, select **Generate**.
 1. Copy the token, and save the job configuration.
-1. In GitLab, create a webhook for your project, enter the trigger URL
-   (such as `https://JENKINS_URL/project/YOUR_JOB`) and paste the token in **Secret Token**.
+1. In GitLab:
+   - [Create a webhook for your project](../user/project/integrations/webhooks.md#configure-a-webhook-in-gitlab).
+   - Enter the trigger URL (such as `https://JENKINS_URL/project/YOUR_JOB`).
+   - Paste the token in **Secret Token**.
 1. To test the webhook, select **Test**.
 
 ## Related topics

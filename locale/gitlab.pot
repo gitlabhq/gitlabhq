@@ -30823,10 +30823,10 @@ msgstr ""
 msgid "NamespaceStorage|You have used %{used_storage_percentage} of the storage quota for %{name_with_link} (%{current_size} of %{limit})."
 msgstr ""
 
-msgid "NamespaceStorage|You have used %{used_storage_percentage} of the storage quota for %{name} (%{current_size} of %{limit})."
+msgid "NamespaceStorage|You have used %{used_storage_percentage} of the storage quota for %{namespace_name}"
 msgstr ""
 
-msgid "NamespaceStorage|You have used %{used_storage_percentage}%% of the storage quota for %{namespace_name}"
+msgid "NamespaceStorage|You have used %{used_storage_percentage} of the storage quota for %{name} (%{current_size} of %{limit})."
 msgstr ""
 
 msgid "NamespaceUserCap|Pending users must be reviewed and approved by a group owner. Learn more about %{user_caps_link_start}user caps%{link_end} and %{users_pending_approval_link_start}users pending approval%{link_end}."

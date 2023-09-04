@@ -21,6 +21,18 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 - **Upgrade to patch release 15.11.3 or later**. This avoids [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) when upgrading from 15.5.0 and earlier.
 
+### Linux package installations
+
+In GitLab 15.11, PostgreSQL will automatically be upgraded to 13.x except for the following cases:
+
+- You are running the database in high availability using Patroni.
+- Your database nodes are part of a GitLab Geo configuration.
+- You have specifically [opted out](https://docs.gitlab.com/omnibus/settings/database.html#opt-out-of-automatic-postgresql-upgrades) from automatically upgrading PostgreSQL.
+- You have `postgresql['version'] = 12` in your `/etc/gitlab/gitlab.rb`.
+
+Fault-tolerant and Geo installations support manual upgrades to PostgreSQL 13,
+see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/omnibus/settings/database.html#packaged-postgresql-deployed-in-an-hageo-cluster).
+
 ### Geo installations **(PREMIUM SELF)**
 
 - Some project imports do not initialize wiki repositories on project creation. See
@@ -385,6 +397,14 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   to GitLab 15.6.2. The issue can also be worked around:
   [read about how to create these indexes](https://gitlab.com/gitlab-org/gitlab/-/issues/378343#note_1199863087).
 
+### Linux package installations
+
+In GitLab 15.6, the [PostgreSQL versions shipped with `omnibus-gitlab` packages](../../administration/package_information/postgresql_versions.md)
+have been upgraded to 12.12 and 13.8. Unless
+[explicitly opted out](https://docs.gitlab.com/omnibus/settings/database.html#automatic-restart-when-the-postgresql-version-changes),
+this can cause an automatic restart of the PostgreSQL service, and can
+potentially cause downtime.
+
 ### Geo installations **(PREMIUM SELF)**
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
@@ -682,8 +702,6 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 - The [certificate-based Kubernetes integration (DEPRECATED)](../../user/infrastructure/clusters/index.md#certificate-based-kubernetes-integration-deprecated) is disabled by default, but you can be re-enable it through the [`certificate_based_clusters` feature flag](../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) until GitLab 16.0.
 - When you use the GitLab Helm Chart project with a custom `serviceAccount`, ensure it has `get` and `list` permissions for the `serviceAccount` and `secret` resources.
 - The `FF_GITLAB_REGISTRY_HELPER_IMAGE` [feature flag](../../administration/feature_flags.md#enable-or-disable-the-feature) is removed and helper images are always pulled from GitLab Registry.
-- The `AES256-GCM-SHA384` SSL cipher is no longer allowed by NGINX.
-  See how you can [add the cipher back](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html#aes256-gcm-sha384-ssl-cipher-no-longer-allowed-by-default-by-nginx) to the allow list.
 
 ### Linux package installations
 
@@ -693,6 +711,102 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   than `<custom_hooks_dir>/<hook_name>`.
   - Use `gitaly['custom_hooks_dir']` in `gitlab.rb` ([introduced in 14.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4208))
     for Omnibus GitLab. This replaces `gitlab_shell['custom_hooks_dir']`.
+- PostgreSQL 13.6 is being shipped as the default version for fresh installs and
+  12.10 for upgrades. You can manually upgrade to PostgreSQL 13.6 following the
+  [upgrade docs](https://docs.gitlab.com/omnibus/settings/database.html#gitlab-150-and-later).
+  Because of underlying structural changes, the running PostgreSQL process
+  **_must_** be restarted when it is upgraded before running database
+  migrations. If automatic restart is skipped, you must run the following
+  command before migrations are run:
+
+  ```shell
+  # If using PostgreSQL
+  sudo gitlab-ctl restart postgresql
+
+  # If using Patroni for Database replication
+  sudo gitlab-ctl restart patroni
+  ```
+
+  If PostgreSQL is not restarted, you might face
+  [errors related to loading libraries](https://docs.gitlab.com/omnibus/settings/database.html#could-not-load-library-plpgsqlso).
+
+- Starting with GitLab 15.0, `postgresql` and `geo-postgresql` services are
+  automatically restarted when the PostgreSQL version changes. Restarting
+  PostgreSQL services causes downtime due to the temporary unavailability of the
+  database for operations. While this restart is mandatory for proper functioning
+  of the Database services, you might want more control over when the PostgreSQL
+  is restarted. For that purpose, you can choose to skip the automatic restarts as
+  part of `gitlab-ctl reconfigure` and manually restart the services.
+
+  To skip automatic restarts as part of GitLab 15.0 upgrade, perform the following
+  steps before the upgrade:
+
+  1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
+
+     ```ruby
+     # For PostgreSQL/Patroni
+     postgresql['auto_restart_on_version_change'] = false
+
+     # For Geo PostgreSQL
+     geo_postgresql['auto_restart_on_version_change'] = false
+     ```
+
+  1. Reconfigure GitLab:
+
+     ```shell
+     sudo gitlab-ctl reconfigure
+     ```
+
+  NOTE:
+  It is mandatory to restart PostgreSQL when underlying version changes, to avoid
+  errors like the [one related to loading necessary libraries](https://docs.gitlab.com/omnibus/settings/database.html#could-not-load-library-plpgsqlso)
+  that can cause downtime. So, if you skip the automatic restarts using the above
+  method, ensure that you restart the services manually before upgrading to GitLab
+  15.0.
+
+- Starting with GitLab 15.0, the `AES256-GCM-SHA384` SSL cipher will not be allowed by
+  NGINX by default. If you require this cipher (for example, if you use
+  [AWS's Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers)),
+  you can add the cipher back to the allow list by following the steps below:
+
+  1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
+
+     ```ruby
+     nginx['ssl_ciphers'] = "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:AES256-GCM-SHA384"
+     ```
+
+  1. Reconfigure GitLab:
+
+     ```shell
+     sudo gitlab-ctl reconfigure
+     ```
+
+- Support for Gitaly's internal socket path is removed.
+  In GitLab 14.10, Gitaly introduced a new directory that holds all runtime
+  data Gitaly requires to operate correctly. This new directory replaces the
+  old internal socket directory, and consequentially the usage of
+  `gitaly['internal_socket_dir']` was deprecated in favor of
+  `gitaly['runtime_dir']`.
+
+  The old `gitaly['internal_socket_dir']` configuration was removed in this release.
+
+- Background uploads settings for object storage are removed.
+  Object storage now preferentially uses direct uploads.
+
+  The following keys are no longer supported in `/etc/gitlab/gitlab.rb`:
+
+  - `gitlab_rails['artifacts_object_store_direct_upload']`
+  - `gitlab_rails['artifacts_object_store_background_upload']`
+  - `gitlab_rails['external_diffs_object_store_direct_upload']`
+  - `gitlab_rails['external_diffs_object_store_background_upload']`
+  - `gitlab_rails['lfs_object_store_direct_upload']`
+  - `gitlab_rails['lfs_object_store_background_upload']`
+  - `gitlab_rails['uploads_object_store_direct_upload']`
+  - `gitlab_rails['uploads_object_store_background_upload']`
+  - `gitlab_rails['packages_object_store_direct_upload']`
+  - `gitlab_rails['packages_object_store_background_upload']`
+  - `gitlab_rails['dependency_proxy_object_store_direct_upload']`
+  - `gitlab_rails['dependency_proxy_object_store_background_upload']`
 
 ### Self-compiled installations
 

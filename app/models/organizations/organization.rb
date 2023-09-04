@@ -10,6 +10,7 @@ module Organizations
 
     has_many :namespaces
     has_many :groups
+    has_many :projects
 
     has_one :settings, class_name: "OrganizationSetting"
 

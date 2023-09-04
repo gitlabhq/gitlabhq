@@ -23,37 +23,37 @@ RSpec.describe 'capybara_wait_for_all_requests', feature_category: :tooling do #
     end
   end
 
-  context 'for Capybara::Node::Actions::WaitForAllRequestsAfterClickButton' do
+  context 'for Capybara::Node::Actions::WaitForRequestsAfterClickButton' do
     let(:node) do
       Class.new do
         def click_button(locator = nil, **_options)
           locator
         end
 
-        prepend Capybara::Node::Actions::WaitForAllRequestsAfterClickButton
+        prepend Capybara::Node::Actions::WaitForRequestsAfterClickButton
       end.new
     end
 
-    it 'waits for all requests after a click button' do
-      expect(node).to receive(:wait_for_all_requests)
+    it 'waits for requests after a click button' do
+      expect(node).to receive(:wait_for_requests)
 
       node.click_button
     end
   end
 
-  context 'for Capybara::Node::Actions::WaitForAllRequestsAfterClickLink' do
+  context 'for Capybara::Node::Actions::WaitForRequestsAfterClickLink' do
     let(:node) do
       Class.new do
         def click_link(locator = nil, **_options)
           locator
         end
 
-        prepend Capybara::Node::Actions::WaitForAllRequestsAfterClickLink
+        prepend Capybara::Node::Actions::WaitForRequestsAfterClickLink
       end.new
     end
 
-    it 'waits for all requests after a click link' do
-      expect(node).to receive(:wait_for_all_requests)
+    it 'waits for requests after a click link' do
+      expect(node).to receive(:wait_for_requests)
 
       node.click_link
     end

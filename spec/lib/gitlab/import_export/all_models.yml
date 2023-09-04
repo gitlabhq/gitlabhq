@@ -823,6 +823,7 @@ project:
 - project_state
 - security_policy_bots
 - target_branch_rules
+- organization
 award_emoji:
 - awardable
 - user

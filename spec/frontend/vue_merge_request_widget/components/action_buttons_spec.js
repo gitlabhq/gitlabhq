@@ -1,4 +1,4 @@
-import { GlButton, GlDropdownItem } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Actions from '~/vue_merge_request_widget/components/action_buttons.vue';
 
@@ -6,7 +6,7 @@ let wrapper;
 
 function factory(propsData = {}) {
   wrapper = shallowMount(Actions, {
-    propsData: { ...propsData, widget: 'test' },
+    propsData,
   });
 }
 
@@ -33,11 +33,29 @@ describe('MR widget extension actions', () => {
     });
 
     it('renders tertiary actions in dropdown', () => {
+      const action = { text: 'hello world', href: 'https://gitlab.com', target: '_blank' };
       factory({
-        tertiaryButtons: [{ text: 'hello world', href: 'https://gitlab.com', target: '_blank' }],
+        tertiaryButtons: [action, action],
       });
 
-      expect(wrapper.findAllComponents(GlDropdownItem)).toHaveLength(1);
+      const component = wrapper.findComponent(GlDisclosureDropdown);
+      expect(component.exists()).toBe(true);
+      expect(component.props('items')).toMatchObject([
+        {
+          text: action.text,
+          href: action.href,
+          extraAttrs: {
+            target: action.target,
+          },
+        },
+        {
+          text: action.text,
+          href: action.href,
+          extraAttrs: {
+            target: action.target,
+          },
+        },
+      ]);
     });
   });
 });

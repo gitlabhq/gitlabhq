@@ -346,11 +346,7 @@ export default {
             </template>
           </template>
         </div>
-        <actions
-          :widget="$options.label || $options.name"
-          :tertiary-buttons="tertiaryActionsButtons"
-          @clickedAction="onClickedAction"
-        />
+        <actions :tertiary-buttons="tertiaryActionsButtons" @clickedAction="onClickedAction" />
         <div
           v-if="isCollapsible"
           class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"

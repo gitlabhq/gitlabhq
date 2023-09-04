@@ -26,26 +26,26 @@ module Capybara
       include CapybaraHelpers
       include WaitForRequests
 
-      module WaitForAllRequestsAfterClickButton
+      module WaitForRequestsAfterClickButton
         def click_button(locator = nil, **options)
           super
 
-          wait_for_all_requests
+          wait_for_requests
         end
       end
 
-      module WaitForAllRequestsAfterClickLink
+      module WaitForRequestsAfterClickLink
         def click_link(locator = nil, **options, &block)
           super
 
           yield if block
 
-          wait_for_all_requests
+          wait_for_requests
         end
       end
 
-      prepend WaitForAllRequestsAfterClickButton
-      prepend WaitForAllRequestsAfterClickLink
+      prepend WaitForRequestsAfterClickButton
+      prepend WaitForRequestsAfterClickLink
     end
   end
 end

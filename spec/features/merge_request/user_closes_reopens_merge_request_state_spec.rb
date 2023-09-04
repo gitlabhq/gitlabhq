@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User closes/reopens a merge request', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/297500',
-  feature_category: :code_review_workflow do
+RSpec.describe 'User closes/reopens a merge request', :js, feature_category: :code_review_workflow do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -13,89 +12,67 @@ RSpec.describe 'User closes/reopens a merge request', :js, quarantine: 'https://
   end
 
   describe 'when open' do
-    context 'when clicking the top `Close merge request` link', :aggregate_failures do
-      let(:open_merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let(:open_merge_request) { create(:merge_request, source_project: project, target_project: project) }
 
-      before do
-        visit merge_request_path(open_merge_request)
-      end
+    before do
+      visit merge_request_path(open_merge_request)
+    end
 
-      it 'can close a merge request' do
-        expect(find('.status-box')).to have_content 'Open'
+    context 'when clicking the top `Close merge request` button', :aggregate_failures do
+      it 'closes the merge request' do
+        expect(page).to have_css('.gl-badge', text: 'Open')
 
         within '.detail-page-header' do
-          click_button 'Toggle dropdown'
-          click_link 'Close merge request'
+          click_button 'Merge request actions'
+          click_button 'Close merge request'
         end
 
-        wait_for_requests
-
-        expect(find('.status-box')).to have_content 'Closed'
+        expect(page).to have_css('.gl-badge', text: 'Closed')
       end
     end
 
     context 'when clicking the bottom `Close merge request` button', :aggregate_failures do
-      let(:open_merge_request) { create(:merge_request, source_project: project, target_project: project) }
-
-      before do
-        visit merge_request_path(open_merge_request)
-      end
-
-      it 'can close a merge request' do
-        expect(find('.status-box')).to have_content 'Open'
+      it 'closes the merge request' do
+        expect(page).to have_css('.gl-badge', text: 'Open')
 
         within '.timeline-content-form' do
           click_button 'Close merge request'
-
-          # Clicking the bottom `Close merge request` button does not yet update
-          # the header status so for now we'll check that the button text changes
-          expect(page).not_to have_button 'Close merge request'
-          expect(page).to have_button 'Reopen merge request'
         end
+
+        expect(page).to have_css('.gl-badge', text: 'Closed')
       end
     end
   end
 
   describe 'when closed' do
-    context 'when clicking the top `Reopen merge request` link', :aggregate_failures do
-      let(:closed_merge_request) { create(:merge_request, source_project: project, target_project: project, state: 'closed') }
+    let(:closed_merge_request) { create(:merge_request, source_project: project, target_project: project, state: 'closed') }
 
-      before do
-        visit merge_request_path(closed_merge_request)
-      end
+    before do
+      visit merge_request_path(closed_merge_request)
+    end
 
-      it 'can reopen a merge request' do
-        expect(find('.status-box')).to have_content 'Closed'
+    context 'when clicking the top `Reopen merge request` button', :aggregate_failures do
+      it 'reopens the merge request' do
+        expect(page).to have_css('.gl-badge', text: 'Closed')
 
         within '.detail-page-header' do
-          click_button 'Toggle dropdown'
-          click_link 'Reopen merge request'
+          click_button 'Merge request actions'
+          click_button 'Reopen merge request'
         end
 
-        wait_for_requests
-
-        expect(find('.status-box')).to have_content 'Open'
+        expect(page).to have_css('.gl-badge', text: 'Open')
       end
     end
 
     context 'when clicking the bottom `Reopen merge request` button', :aggregate_failures do
-      let(:closed_merge_request) { create(:merge_request, source_project: project, target_project: project, state: 'closed') }
-
-      before do
-        visit merge_request_path(closed_merge_request)
-      end
-
-      it 'can reopen a merge request' do
-        expect(find('.status-box')).to have_content 'Closed'
+      it 'reopens the merge request' do
+        expect(page).to have_css('.gl-badge', text: 'Closed')
 
         within '.timeline-content-form' do
           click_button 'Reopen merge request'
-
-          # Clicking the bottom `Reopen merge request` button does not yet update
-          # the header status so for now we'll check that the button text changes
-          expect(page).not_to have_button 'Reopen merge request'
-          expect(page).to have_button 'Close merge request'
         end
+
+        expect(page).to have_css('.gl-badge', text: 'Open')
       end
     end
   end

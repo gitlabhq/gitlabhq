@@ -165,6 +165,7 @@ class Project < ApplicationRecord
   # Relations
   belongs_to :pool_repository
   belongs_to :creator, class_name: 'User'
+  belongs_to :organization, class_name: 'Organizations::Organization'
   belongs_to :group, -> { where(type: Group.sti_name) }, foreign_key: 'namespace_id'
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have

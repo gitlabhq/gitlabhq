@@ -287,6 +287,10 @@ pages_deployments:
   - table: p_ci_builds
     column: ci_build_id
     on_delete: async_nullify
+projects:
+  - table: organizations
+    column: organization_id
+    on_delete: async_nullify
 requirements_management_test_reports:
   - table: ci_builds
     column: build_id
