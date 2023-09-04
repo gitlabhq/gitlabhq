@@ -74,6 +74,7 @@ export const getServiceDeskIssuesQueryResponse = {
               username: 'support-bot',
               webUrl: 'url/hsimpson',
             },
+            externalAuthor: 'client@client.com',
             labels: {
               nodes: [
                 {

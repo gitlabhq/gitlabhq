@@ -229,8 +229,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
 
         describe 'parsing finding.details' do
           context 'when details are provided' do
+            let(:finding) { report.findings[4] }
+
             it 'sets details from the report' do
-              finding = report.findings.find { |x| x.compare_key == 'CVE-1020' }
               expected_details = Gitlab::Json.parse(finding.raw_metadata)['details']
 
               expect(finding.details).to eq(expected_details)
@@ -238,8 +239,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
           end
 
           context 'when details are not provided' do
+            let(:finding) { report.findings[5] }
+
             it 'sets empty hash' do
-              finding = report.findings.find { |x| x.compare_key == 'CVE-1030' }
               expect(finding.details).to eq({})
             end
           end

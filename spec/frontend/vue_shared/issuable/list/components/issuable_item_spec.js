@@ -64,6 +64,14 @@ describe('IssuableItem', () => {
       });
     });
 
+    describe('externalAuthor', () => {
+      it('returns `externalAuthor` reference', () => {
+        wrapper = createComponent();
+
+        expect(wrapper.vm.externalAuthor).toEqual(mockIssuable.externalAuthor);
+      });
+    });
+
     describe('authorId', () => {
       it.each`
         authorId                 | returnValue
@@ -449,6 +457,15 @@ describe('IssuableItem', () => {
 
       expect(authorEl.exists()).toBe(true);
       expect(authorEl.text()).toBe(mockAuthor.name);
+    });
+
+    it('renders issuable external author info via author slot', () => {
+      wrapper = createComponent({
+        issuableSymbol: '#',
+        issuable: { ...mockIssuable, externalAuthor: 'client@example.com' },
+      });
+
+      expect(wrapper.findByTestId('external-author').text()).toBe('client@example.com via');
     });
 
     it('renders timeframe via slot', () => {

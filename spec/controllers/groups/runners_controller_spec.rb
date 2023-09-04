@@ -77,20 +77,6 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
       end
     end
 
-    context 'with maintainers_allowed_to_read_group_runners disabled' do
-      before do
-        stub_feature_flags(maintainers_allowed_to_read_group_runners: false)
-      end
-
-      context 'when the user is a maintainer' do
-        before do
-          group.add_maintainer(user)
-        end
-
-        include_examples 'cannot access the page'
-      end
-    end
-
     context 'when user is not maintainer' do
       before do
         group.add_developer(user)
@@ -380,14 +366,6 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
         let(:runner) { project_runner }
 
         it_behaves_like 'updates the runner'
-
-        context 'when maintainers_allowed_to_read_group_runners is disabled' do
-          before do
-            stub_feature_flags(maintainers_allowed_to_read_group_runners: false)
-          end
-
-          it_behaves_like 'rejects the update'
-        end
       end
     end
 

@@ -384,7 +384,7 @@ The following table lists group permissions available for each role:
 | Delete [group wiki](project/wiki/group.md) pages                                        |       |          | ✓         | ✓          | ✓     |
 | Edit [epic](group/epics/index.md) comments (posted by any user)                         |       |          |           | ✓          | ✓     |
 | List group deploy tokens                                                                |       |          |           | ✓          | ✓     |
-| Manage [group push rules](group/access_and_permissions.md#group-push-rules)                              |       |          |           | ✓          | ✓     |
+| Manage [group push rules](group/access_and_permissions.md#group-push-rules)             |       |          |           | ✓          | ✓     |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |
 | Create and manage compliance frameworks                                                 |       |          |           |            | ✓     |
 | Create/Delete group deploy tokens                                                       |       |          |           |            | ✓     |
@@ -401,6 +401,7 @@ The following table lists group permissions available for each role:
 | View 2FA status of members                                                              |       |          |           |            | ✓     |
 | View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓ (3) |
 | View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (3) |
+| View group runners                                                                      |       |          |           | ✓          | ✓     |
 | Manage group runners                                                                    |       |          |           |            | ✓     |
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
 | Manage [subscriptions, and purchase storage and compute minutes](../subscriptions/gitlab_com/index.md) |    |    |    |            | ✓     |

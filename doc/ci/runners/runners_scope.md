@@ -275,9 +275,11 @@ how to [register a runner](https://docs.gitlab.com/runner/register/).
 
 ### View and manage group runners
 
+> Ability for users with the Maintainer role to view group runners [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384179) in GitLab 16.4.
+
 You can view and manage all runners for a group, its subgroups, and projects.
 You can do this for your self-managed GitLab instance or for GitLab.com.
-You must have the Owner role for the group.
+You must have the Maintainer role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.

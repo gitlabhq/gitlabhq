@@ -82,6 +82,9 @@ export default {
     author() {
       return this.issuable.author || {};
     },
+    externalAuthor() {
+      return this.issuable.externalAuthor;
+    },
     webUrl() {
       return this.issuable.gitlabWebUrl || this.issuable.webUrl;
     },
@@ -318,6 +321,9 @@ export default {
                 </span>
               </template>
               <template #author>
+                <span v-if="externalAuthor" data-testid="external-author"
+                  >{{ externalAuthor }} {{ __('via') }}</span
+                >
                 <slot v-if="hasSlotContents('author')" name="author"></slot>
                 <gl-link
                   v-else

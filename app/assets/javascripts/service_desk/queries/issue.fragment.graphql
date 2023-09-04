@@ -36,6 +36,7 @@ fragment IssueFragment on Issue {
     username
     webUrl
   }
+  externalAuthor
   labels {
     nodes {
       __persist

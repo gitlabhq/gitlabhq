@@ -76,10 +76,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.enabled?(:observability_group_tab, @subject)
   end
 
-  condition(:maintainers_allowed_to_read_group_runners, scope: :subject) do
-    Feature.enabled?(:maintainers_allowed_to_read_group_runners, @subject)
-  end
-
   desc "Deploy token with read_package_registry scope"
   condition(:read_package_registry_deploy_token) do
     @user.is_a?(DeployToken) && @user.groups.include?(@subject) && @user.read_package_registry
@@ -221,6 +217,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :update_cluster
     enable :admin_cluster
     enable :read_deploy_token
+    enable :read_group_runners
     enable :create_jira_connect_subscription
     enable :maintainer_access
     enable :read_upload
@@ -360,10 +357,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { ~admin & ~group_runner_registration_allowed }.policy do
     prevent :register_group_runners
     prevent :create_runner
-  end
-
-  rule { maintainer & maintainers_allowed_to_read_group_runners }.policy do
-    enable :read_group_runners
   end
 
   rule { migration_bot }.policy do

@@ -252,7 +252,7 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
           end
 
           it 'shows service_desk_reply_to in issues list' do
-            expect(page).to have_text('by GitLab Support Bot')
+            expect(page).to have_text('by service.desk@example.com via GitLab Support Bot')
           end
         end
       end

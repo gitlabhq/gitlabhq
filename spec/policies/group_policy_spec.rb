@@ -189,17 +189,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { maintainer.id }
     end
-
-    context 'with maintainers_allowed_to_read_group_runners disabled' do
-      before do
-        stub_feature_flags(maintainers_allowed_to_read_group_runners: false)
-      end
-
-      it 'allows every maintainer permission plus creating subgroups minus reading group runners' do
-        expect_allowed(*(maintainer_permissions - [:read_group_runners]))
-        expect_disallowed(:read_group_runners)
-      end
-    end
   end
 
   context 'owner' do
@@ -367,17 +356,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       it 'allows every maintainer permission plus creating subgroups' do
         expect_allowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
-      end
-
-      context 'with maintainers_allowed_to_read_group_runners disabled' do
-        before do
-          stub_feature_flags(maintainers_allowed_to_read_group_runners: false)
-        end
-
-        it 'allows every maintainer permission plus creating subgroups' do
-          expect_allowed(*(maintainer_permissions - [:read_group_runners]))
-          expect_disallowed(:read_group_runners, *owner_permissions)
-        end
       end
     end
 

@@ -161,28 +161,32 @@ If you cannot [provide GitLab with your Jenkins server URL and authentication in
 
 ### Error during GitLab configuration - "Connection failed. Please check your settings"
 
-If you get this error message while configuring GitLab, the following are possible causes:
+While configuring GitLab, you might get an error that states "Connection failed. Please check your settings".
 
-- GitLab is unable to reach your Jenkins instance at the address. If your GitLab instance is self-managed, try pinging the
-  Jenkins instance at the domain provided on the GitLab instance.
-- The Jenkins instance is at a local address and is not included in the
-  [GitLab installation's allowlist](../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
-- The credentials for the Jenkins instance do not have sufficient access or are invalid.
-- The **Enable authentication for `/project` end-point** checkbox is not selected in your [Jenkins plugin configuration](#configure-the-jenkins-server).
+This issue has multiple possible causes and solutions:
+
+| Cause                                                            | Workaround  |
+|------------------------------------------------------------------|-------------|
+| GitLab is unable to reach your Jenkins instance at the address.  | If your GitLab instance is self-managed, ping the Jenkins instance at the domain provided on the GitLab instance.  |
+| The Jenkins instance is at a local address and is not included in the [GitLab installation's allowlist](../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).| Add the instance to the GitLab installation's allowlist.  |
+| The credentials for the Jenkins instance do not have sufficient access or are invalid.| Grant the credentials sufficient access or create valid credentials.  |
+|The **Enable authentication for `/project` end-point** checkbox is not selected in your [Jenkins plugin configuration](#configure-the-jenkins-server)| Select the checkbox.  |
 
 ### Error in merge requests - "Could not connect to the CI server"
 
-You might get the `Could not connect to the CI server` error if GitLab did not
-receive a build status update from Jenkins via the [Commit Status API](../api/commits.md#commit-status).
+You might get an error that states `Could not connect to the CI server` in a merge
+request if GitLab did not receive a build status update from Jenkins through the
+[Commit Status API](../api/commits.md#commit-status).
 
-This issue occurs when Jenkins is not properly
-configured or there is an error reporting the status via the API.
+This issue occurs when Jenkins is not properly configured or there is an error
+reporting the status through the API.
 
-To fix this issue, ensure you:
+To fix this issue:
 
 1. [Configure the Jenkins server](#configure-the-jenkins-server) for GitLab API access.
-1. [Configure the Jenkins project](#configure-the-jenkins-project), including the
-   'Publish build status to GitLab' post-build action.
+1. [Configure the Jenkins project](#configure-the-jenkins-project), and make sure
+   that, if you create a freestyle project, you choose the "Publish build status to GitLab"
+   post-build action.
 
 ### Merge request event does not trigger a Jenkins pipeline
 
