@@ -11,6 +11,10 @@ RSpec.describe Sidebars::YourWork::Menus::OrganizationsMenu, feature_category: :
   describe '#render?' do
     context 'when `ui_for_organizations` feature flag is enabled' do
       context 'when `current_user` is available' do
+        before do
+          stub_feature_flags(ui_for_organizations: [user])
+        end
+
         it 'returns true' do
           expect(subject.render?).to eq true
         end

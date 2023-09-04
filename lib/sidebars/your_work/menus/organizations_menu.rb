@@ -21,7 +21,7 @@ module Sidebars
 
         override :render?
         def render?
-          Feature.enabled?(:ui_for_organizations) && !!context.current_user
+          !!context.current_user && Feature.enabled?(:ui_for_organizations, context.current_user)
         end
 
         override :active_routes

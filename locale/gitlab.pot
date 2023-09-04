@@ -41594,9 +41594,6 @@ msgstr ""
 msgid "ScanResultPolicy|New attribute"
 msgstr ""
 
-msgid "ScanResultPolicy|New severity"
-msgstr ""
-
 msgid "ScanResultPolicy|New status"
 msgstr ""
 
@@ -41604,9 +41601,6 @@ msgid "ScanResultPolicy|Newly Detected"
 msgstr ""
 
 msgid "ScanResultPolicy|Only 1 age criteria is allowed"
-msgstr ""
-
-msgid "ScanResultPolicy|Only 1 severity is allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Only 2 attribute criteria are allowed"

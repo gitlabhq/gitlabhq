@@ -5,21 +5,33 @@ import ReportHeader from '~/admin/abuse_report/components/report_header.vue';
 import UserDetails from '~/admin/abuse_report/components/user_details.vue';
 import ReportDetails from '~/admin/abuse_report/components/report_details.vue';
 import ReportedContent from '~/admin/abuse_report/components/reported_content.vue';
-import HistoryItems from '~/admin/abuse_report/components/history_items.vue';
+import ActivityEventsList from '~/admin/abuse_report/components/activity_events_list.vue';
+import ActivityHistoryItem from '~/admin/abuse_report/components/activity_history_item.vue';
 import { SUCCESS_ALERT } from '~/admin/abuse_report/constants';
 import { mockAbuseReport } from '../mock_data';
 
 describe('AbuseReportApp', () => {
   let wrapper;
 
+  const { similarOpenReports } = mockAbuseReport.user;
+
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findReportHeader = () => wrapper.findComponent(ReportHeader);
   const findUserDetails = () => wrapper.findComponent(UserDetails);
+
   const findReportedContent = () => wrapper.findByTestId('reported-content');
-  const findSimilarOpenReports = () => wrapper.findAllByTestId('similar-open-reports');
-  const findSimilarReportedContent = () =>
-    findSimilarOpenReports().at(0).findComponent(ReportedContent);
-  const findHistoryItems = () => wrapper.findComponent(HistoryItems);
+  const findReportedContentForSimilarReports = () =>
+    wrapper.findAllByTestId('reported-content-similar-open-reports');
+  const firstReportedContentForSimilarReports = () =>
+    findReportedContentForSimilarReports().at(0).findComponent(ReportedContent);
+
+  const findActivityList = () => wrapper.findComponent(ActivityEventsList);
+  const findActivityItem = () => wrapper.findByTestId('activity');
+  const findActivityForSimilarReports = () =>
+    wrapper.findAllByTestId('activity-similar-open-reports');
+  const firstActivityForSimilarReports = () =>
+    findActivityForSimilarReports().at(0).findComponent(ActivityHistoryItem);
+
   const findReportDetails = () => wrapper.findComponent(ReportDetails);
 
   const createComponent = (props = {}, provide = {}) => {
@@ -70,7 +82,7 @@ describe('AbuseReportApp', () => {
     });
   });
 
-  describe('ReportHeader', () => {
+  describe('Report header', () => {
     it('renders ReportHeader', () => {
       expect(findReportHeader().props('user')).toBe(mockAbuseReport.user);
       expect(findReportHeader().props('report')).toBe(mockAbuseReport.report);
@@ -89,7 +101,7 @@ describe('AbuseReportApp', () => {
     });
   });
 
-  describe('UserDetails', () => {
+  describe('User Details', () => {
     it('renders UserDetails', () => {
       expect(findUserDetails().props('user')).toBe(mockAbuseReport.user);
     });
@@ -104,6 +116,17 @@ describe('AbuseReportApp', () => {
       it('does not render the UserDetails', () => {
         expect(findUserDetails().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('Reported Content', () => {
+    it('renders ReportedContent', () => {
+      expect(findReportedContent().props('report')).toBe(mockAbuseReport.report);
+    });
+
+    it('renders similar abuse reports', () => {
+      expect(findReportedContentForSimilarReports()).toHaveLength(similarOpenReports.length);
+      expect(firstReportedContentForSimilarReports().props('report')).toBe(similarOpenReports[0]);
     });
   });
 
@@ -125,18 +148,18 @@ describe('AbuseReportApp', () => {
     });
   });
 
-  it('renders ReportedContent', () => {
-    expect(findReportedContent().props('report')).toBe(mockAbuseReport.report);
-  });
+  describe('Activity', () => {
+    it('renders the activity events list', () => {
+      expect(findActivityList().exists()).toBe(true);
+    });
 
-  it('renders similar abuse reports', () => {
-    const { similarOpenReports } = mockAbuseReport.user;
+    it('renders activity item for abuse report', () => {
+      expect(findActivityItem().props('report')).toBe(mockAbuseReport.report);
+    });
 
-    expect(findSimilarOpenReports()).toHaveLength(similarOpenReports.length);
-    expect(findSimilarReportedContent().props('report')).toBe(similarOpenReports[0]);
-  });
-
-  it('renders HistoryItems', () => {
-    expect(findHistoryItems().props('report')).toBe(mockAbuseReport.report);
+    it('renders activity items for similar abuse reports', () => {
+      expect(findActivityForSimilarReports()).toHaveLength(similarOpenReports.length);
+      expect(firstActivityForSimilarReports().props('report')).toBe(similarOpenReports[0]);
+    });
   });
 });

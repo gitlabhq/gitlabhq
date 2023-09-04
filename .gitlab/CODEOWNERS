@@ -738,7 +738,7 @@ lib/gitlab/checks/**
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/ci/testing/code_quality.md @rdickenson
 /doc/development/advanced_search.md @ashrafkhamis
-/doc/development/ai_features.md @sselhorn
+/doc/development/ai_features/ @sselhorn
 /doc/development/application_limits.md @axil
 /doc/development/audit_event_guide/ @eread
 /doc/development/auto_devops.md @phillipwells
@@ -935,6 +935,7 @@ lib/gitlab/checks/**
 /doc/user/profile/index.md @jglassman1
 /doc/user/profile/notifications.md @msedlakjakubowski
 /doc/user/profile/personal_access_tokens.md @jglassman1
+/doc/user/profile/service_accounts.md @jglassman1
 /doc/user/profile/user_passwords.md @jglassman1
 /doc/user/project/autocomplete_characters.md @aqualls
 /doc/user/project/badges.md @lciutacu
@@ -973,7 +974,7 @@ lib/gitlab/checks/**
 /doc/user/project/releases/release_evidence.md @eread
 /doc/user/project/remote_development/ @ashrafkhamis
 /doc/user/project/repository/ @aqualls
-/doc/user/project/repository/code_suggestions.md @sselhorn
+/doc/user/project/repository/code_suggestions/ @sselhorn
 /doc/user/project/repository/file_finder.md @ashrafkhamis
 /doc/user/project/repository/managing_large_repositories.md @axil
 /doc/user/project/repository/web_editor.md @ashrafkhamis

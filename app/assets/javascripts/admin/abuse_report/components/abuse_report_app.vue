@@ -5,7 +5,8 @@ import ReportHeader from './report_header.vue';
 import UserDetails from './user_details.vue';
 import ReportDetails from './report_details.vue';
 import ReportedContent from './reported_content.vue';
-import HistoryItems from './history_items.vue';
+import ActivityEventsList from './activity_events_list.vue';
+import ActivityHistoryItem from './activity_history_item.vue';
 
 const alertDefaults = {
   visible: false,
@@ -21,7 +22,8 @@ export default {
     UserDetails,
     ReportDetails,
     ReportedContent,
-    HistoryItems,
+    ActivityEventsList,
+    ActivityHistoryItem,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -75,10 +77,24 @@ export default {
 
     <reported-content :report="abuseReport.report" data-testid="reported-content" />
 
-    <div v-for="report in similarOpenReports" :key="report.id" data-testid="similar-open-reports">
+    <div
+      v-for="report in similarOpenReports"
+      :key="report.id"
+      data-testid="reported-content-similar-open-reports"
+    >
       <reported-content :report="report" />
     </div>
 
-    <history-items :report="abuseReport.report" />
+    <activity-events-list>
+      <template #history-items>
+        <activity-history-item :report="abuseReport.report" data-testid="activity" />
+        <activity-history-item
+          v-for="report in similarOpenReports"
+          :key="report.id"
+          :report="report"
+          data-testid="activity-similar-open-reports"
+        />
+      </template>
+    </activity-events-list>
   </section>
 </template>

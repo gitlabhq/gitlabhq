@@ -1,6 +1,6 @@
 ARG BASE_TAG=master
 
-FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify:main@sha256:d2e6d3ad2e8a8682a7b908d2107ebb8539462036b3b28ba6a240ec9ab4d74654 as gdk-base
+FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify:main@sha256:934d8caa0a91c2bb9c68fe7bce42ca89fd04c580deea351a21820b45fa74413f as gdk-base
 
 # Allow passwordless /etc/hosts update by gdk user
 USER root

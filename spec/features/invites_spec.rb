@@ -31,6 +31,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
     wait_for_all_requests
 
+    expect(page).to have_selector('.gl-field-success-outline')
+
     click_button submit_button_text
   end
 
@@ -195,8 +197,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         context 'when the user sign-up using a different email address' do
           let(:invite_email) { build_stubbed(:user).email }
 
-          it 'signs up and redirects to the activity page',
-            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414971' do
+          it 'signs up and redirects to the activity page' do
             fill_in_sign_up_form(new_user)
             fill_in_welcome_form
 
@@ -266,8 +267,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
               allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
             end
 
-            it 'signs up and redirects to the group activity page',
-              quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414971' do
+            it 'signs up and redirects to the group activity page' do
               fill_in_sign_up_form(new_user)
               fill_in_welcome_form
 

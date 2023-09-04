@@ -1,13 +1,12 @@
 import { GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { sprintf } from '~/locale';
-import HistoryItems from '~/admin/abuse_report/components/history_items.vue';
+import AcitivityHistoryItem from '~/admin/abuse_report/components/activity_history_item.vue';
 import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { HISTORY_ITEMS_I18N } from '~/admin/abuse_report/constants';
 import { mockAbuseReport } from '../mock_data';
 
-describe('HistoryItems', () => {
+describe('AcitivityHistoryItem', () => {
   let wrapper;
 
   const { report } = mockAbuseReport;
@@ -16,7 +15,7 @@ describe('HistoryItems', () => {
   const findTimeAgo = () => wrapper.findComponent(TimeAgoTooltip);
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(HistoryItems, {
+    wrapper = shallowMount(AcitivityHistoryItem, {
       propsData: {
         report,
         ...props,
@@ -37,7 +36,7 @@ describe('HistoryItems', () => {
 
   describe('rendering the title', () => {
     it('renders the reporters name and the category', () => {
-      const title = sprintf(HISTORY_ITEMS_I18N.reportedByForCategory, {
+      const title = sprintf('Reported by %{name} for %{category}.', {
         name: report.reporter.name,
         category: report.category,
       });
@@ -50,8 +49,8 @@ describe('HistoryItems', () => {
       });
 
       it('renders the `No user found` as the reporters name and the category', () => {
-        const title = sprintf(HISTORY_ITEMS_I18N.reportedByForCategory, {
-          name: HISTORY_ITEMS_I18N.deletedReporter,
+        const title = sprintf('Reported by %{name} for %{category}.', {
+          name: 'No user found',
           category: report.category,
         });
         expect(findHistoryItem().text()).toContain(title);
