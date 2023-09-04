@@ -1,12 +1,11 @@
-import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DropdownFooter from '~/sidebar/components/labels/labels_select_widget/dropdown_footer.vue';
 
 describe('DropdownFooter', () => {
   let wrapper;
 
   const createComponent = ({ props = {}, injected = {} } = {}) => {
-    wrapper = shallowMount(DropdownFooter, {
+    wrapper = shallowMountExtended(DropdownFooter, {
       propsData: {
         footerCreateLabelTitle: 'create',
         footerManageLabelTitle: 'manage',
@@ -20,7 +19,8 @@ describe('DropdownFooter', () => {
     });
   };
 
-  const findCreateLabelButton = () => wrapper.find('[data-testid="create-label-button"]');
+  const findCreateLabelButton = () => wrapper.findByTestId('create-label-button');
+  const findManageLabelsButton = () => wrapper.findByTestId('manage-labels-button');
 
   describe('Labels view', () => {
     beforeEach(() => {
@@ -42,11 +42,36 @@ describe('DropdownFooter', () => {
         expect(findCreateLabelButton().exists()).toBe(true);
       });
 
-      it('emits `toggleDropdownContentsCreateView` event on create label button click', async () => {
+      it('emits `toggleDropdownContentsCreateView` event on create label button click', () => {
         findCreateLabelButton().trigger('click');
 
-        await nextTick();
         expect(wrapper.emitted('toggleDropdownContentsCreateView')).toEqual([[]]);
+      });
+    });
+
+    describe('manage labels button', () => {
+      it('is rendered', () => {
+        expect(findManageLabelsButton().exists()).toBe(true);
+      });
+
+      describe('when footerManageLabelTitle is not given', () => {
+        beforeEach(() => {
+          createComponent({ props: { footerManageLabelTitle: undefined } });
+        });
+
+        it('does not render manage labels button', () => {
+          expect(findManageLabelsButton().exists()).toBe(false);
+        });
+      });
+
+      describe('when labelsManagePath is not provided', () => {
+        beforeEach(() => {
+          createComponent({ injected: { labelsManagePath: '' } });
+        });
+
+        it('does not render manage labels button', () => {
+          expect(findManageLabelsButton().exists()).toBe(false);
+        });
       });
     });
   });

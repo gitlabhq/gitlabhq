@@ -74,10 +74,7 @@ module QA
         'does not expose file variable content with echo',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791'
       ) do
-        job = Resource::Job.fabricate_via_api! do |job|
-          job.project = project
-          job.id = project.job_by_name('job_echo')[:id]
-        end
+        job = create(:job, project: project, id: project.job_by_name('job_echo')[:id])
 
         aggregate_failures do
           trace = job.trace
@@ -92,10 +89,7 @@ module QA
         'can read file variable content with cat',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386409'
       ) do
-        job = Resource::Job.fabricate_via_api! do |job|
-          job.project = project
-          job.id = project.job_by_name('job_cat')[:id]
-        end
+        job = job = create(:job, project: project, id: project.job_by_name('job_cat')[:id])
 
         aggregate_failures do
           trace = job.trace
@@ -116,9 +110,7 @@ module QA
       end
 
       def trigger_pipeline
-        Resource::Pipeline.fabricate_via_api! do |pipeline|
-          pipeline.project = project
-        end
+        create(:pipeline, project: project)
       end
 
       def wait_for_pipeline

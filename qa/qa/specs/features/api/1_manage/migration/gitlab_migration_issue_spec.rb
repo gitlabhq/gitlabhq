@@ -19,11 +19,7 @@ module QA
 
       let(:imported_issue) do
         issue = imported_issues.first
-        Resource::Issue.init do |resource|
-          resource.api_client = api_client
-          resource.project = imported_projects.first
-          resource.iid = issue[:iid]
-        end
+        build(:issue, api_client: api_client, project: imported_projects.first, iid: issue[:iid])
       end
 
       let(:imported_issue_comments) do

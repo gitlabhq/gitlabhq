@@ -523,11 +523,7 @@ module QA
 
           logger.debug("= Fetching issue comments =")
           Parallel.map(imported_issues, in_threads: Etc.nprocessors) do |issue|
-            resource = Resource::Issue.init do |issue_resource|
-              issue_resource.project = imported_project
-              issue_resource.iid = issue[:iid]
-              issue_resource.api_client = api_client
-            end
+            resource = build(:issue, project: imported_project, iid: issue[:iid], api_client: api_client)
 
             logger.debug("Fetching events and comments for issue '!#{issue[:iid]}'")
             comments = resource.comments(**api_request_params)

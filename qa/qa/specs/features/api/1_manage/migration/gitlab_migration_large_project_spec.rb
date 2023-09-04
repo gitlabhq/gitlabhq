@@ -331,11 +331,7 @@ module QA
         imported_issues = project.issues(auto_paginate: true, attempts: 2)
 
         Parallel.map(imported_issues, in_threads: 6) do |issue|
-          resource = Resource::Issue.init do |issue_resource|
-            issue_resource.project = project
-            issue_resource.iid = issue[:iid]
-            issue_resource.api_client = client
-          end
+          resource = build(:issue, project: project, iid: issue[:iid], api_client: client)
 
           [issue[:iid], {
             url: issue[:web_url],

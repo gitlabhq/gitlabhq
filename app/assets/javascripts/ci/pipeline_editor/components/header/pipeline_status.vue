@@ -160,9 +160,7 @@ export default {
         <span class="gl-font-weight-bold">
           <gl-sprintf :message="$options.i18n.pipelineInfo">
             <template #id="{ content }">
-              <span data-testid="pipeline-id" data-qa-selector="pipeline_id_content">
-                {{ content }}{{ pipelineId }}
-              </span>
+              <span data-testid="pipeline-id"> {{ content }}{{ pipelineId }} </span>
             </template>
             <template #status>{{ status.text }}</template>
             <template #commit>

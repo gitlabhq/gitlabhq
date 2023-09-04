@@ -130,13 +130,12 @@ export default {
           v-model="sourceBranch"
           class="gl-font-monospace!"
           required
-          data-qa-selector="source_branch_field"
+          data-testid="source-branch-field"
         />
         <gl-form-checkbox
           v-if="!isCurrentBranchSourceBranch"
           v-model="openMergeRequest"
           data-testid="new-mr-checkbox"
-          data-qa-selector="new_mr_checkbox"
           class="gl-mt-3"
         >
           <gl-sprintf :message="$options.i18n.startMergeRequest">
@@ -152,7 +151,7 @@ export default {
           class="js-no-auto-disable gl-mr-3"
           category="primary"
           variant="confirm"
-          data-qa-selector="commit_changes_button"
+          data-testid="commit-changes-button"
           :disabled="isSubmitDisabled"
           :loading="isSaving"
         >

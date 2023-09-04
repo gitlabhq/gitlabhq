@@ -42,7 +42,6 @@ export default {
     target="file-tree-toggle"
     triggers="manual"
     placement="right"
-    data-qa-selector="file_tree_popover"
     @close-button-clicked="dismissPermanently"
   >
     <div v-outside="dismissPermanently" class="gl-font-base gl-mb-3">

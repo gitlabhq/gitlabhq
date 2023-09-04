@@ -17,7 +17,7 @@ export const initAbuseReportApp = () => {
     return null;
   }
 
-  const { abuseReportData } = el.dataset;
+  const { abuseReportData, abuseReportsListPath } = el.dataset;
   const abuseReport = convertObjectPropsToCamelCase(JSON.parse(abuseReportData), {
     deep: true,
   });
@@ -29,6 +29,9 @@ export const initAbuseReportApp = () => {
     provide: {
       allowScopedLabels: false,
       updatePath: abuseReport.report.updatePath,
+      listPath: abuseReportsListPath,
+      labelsManagePath: '',
+      allowLabelCreate: true,
     },
     render: (createElement) =>
       createElement(AbuseReportApp, {

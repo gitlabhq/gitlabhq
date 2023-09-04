@@ -217,6 +217,18 @@ to [reset their password](https://gitlab.com/users/password/new) if both:
 - The account was provisioned by SCIM.
 - They are signing in with username and password for the first time.
 
+### Message: "SAML Name ID and email address do not match your user account" **(PREMIUM SAAS)**
+
+Users might get an error that states "SAML Name ID and email address do not match your user account. Contact an administrator."
+This means:
+
+- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value.
+- Either the SAML response did not include an email address or the email address did not match the user's GitLab email address.
+
+The workaround is that a GitLab group Owner uses the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.
+The `extern_uid` value must match the Name ID value sent by the SAML identity provider (IdP). Depending on the IdP configuration
+this may be a generated unique ID, an email address, or other value.
+
 ## Other user sign in issues
 
 ### Verify `NameID`
@@ -254,12 +266,24 @@ If all users are receiving a `404` after signing in to the identity provider (Id
   - In the GitLab configuration by [matching it to the HTTPS endpoint of GitLab](../../../integration/saml.md#configure-saml-support-in-gitlab).
   - As the `Assertion Consumer Service URL` or equivalent when setting up the SAML app on your IdP.
 
-- Verify if the `404` is related to [the user having too many groups assigned to them in their Azure IdP](group_sync.md#user-that-belongs-to-many-saml-groups-automatically-removed-from-gitlab-group) by checking:
+- Verify if the `404` is related to [the user having too many groups assigned to them in their Azure IdP](group_sync.md#user-that-belongs-to-many-saml-groups-automatically-removed-from-gitlab-group).
 
-  - If the user has group links configured.
-  - Audit events if the user gets added to the group and then immediately removed.
+If a subset of users are receiving a `404` after signing in to the IdP, first verify audit events if the user gets added to the group and then immediately removed. Alternatively, if the user can successfully sign in, but they do not show as [a member of the top-level group](../index.md#search-a-group):
 
-For configuration examples for some of the common providers, see the [example group SAML and SCIM configurations](example_saml_config.md).
+- Ensure the user has been [added to the SAML identity provider](index.md#user-access-and-management), and [SCIM](scim_setup.md) if configured.
+- Ensure the user's SCIM identity's `active` attribute is `true` using the [SCIM API](../../../api/scim.md).
+  If the `active` attribute is `false`, you can do one of the following to possibly resolve the issue:
+
+  - Trigger a sync for the user in the SCIM identity provider. For example, Azure has a "Provision on demand" option.
+  - Remove and re-add the user in the SCIM identity provider.
+  - Have the user [unlink their account](index.md#unlink-accounts) if possible, then [link their account](index.md#link-saml-to-your-existing-gitlabcom-account).
+  - Use the [internal SCIM API](../../../development/internal_api/index.md#update-a-single-scim-provisioned-user) to update the user's SCIM identity using your group's SCIM token.
+    If you do not know your group's SCIM token, reset the token and update the SCIM identity provider app with the new token.
+    Example request:
+
+    ```plaintext
+    curl --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" --header "Authorization: Bearer <SCIM_TOKEN>" --data '{ "Operations": [{"op":"Replace","path":"active","value":"true"}] }'
+    ```
 
 ### 500 error after login **(FREE SELF)**
 
@@ -298,18 +322,6 @@ Pay particular attention to the following 403 errors:
 - `app_not_configured`
 - `app_not_configured_for_user`
 
-## SAML Name ID and email address do not match your user account **(PREMIUM SAAS)**
-
-If users encounter the error `SAML Name ID and email address do not match your user account. Contact an administrator.`
-this means:
-
-- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value.
-- Either the SAML response did not include an email address or the email address did not match the user's GitLab email address.
-
-A GitLab group Owner can use the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.
-The `extern_uid` value must match the Name ID value sent by the SAML identity provider (IdP). Depending on the IdP configuration
-this may be a generated unique ID, an email address, or other value.
-
 ## Message: "The member's email address is not linked to a SAML account" **(PREMIUM SAAS)**
 
 This error appears when you try to invite a user to a GitLab.com group (or subgroup or project within a group) that has [SAML SSO enforcement](index.md#sso-enforcement) enabled.
@@ -318,4 +330,6 @@ If you see this message after trying to invite a user to a group:
 
 1. Ensure the user has been [added to the SAML identity provider](index.md#user-access-and-management).
 1. Ask the user to [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account), if they have one. Otherwise, ask the user to create a GitLab.com account by [accessing GitLab.com through the identity provider's dashboard](index.md#user-access-and-management), or by [signing up manually](https://gitlab.com/users/sign_up) and linking SAML to their new account.
-1. If the user has a SCIM identity, ensure that the `active` attribute is `true`.
+1. Ensure the user is a [member of the top-level group](../index.md#search-a-group).
+
+Additionally, see [troubleshooting users receiving a 404 after sign in](#users-receive-a-404).

@@ -181,13 +181,8 @@ export default {
     namespaceDropdownToggleText() {
       return this.selectedNamespace || this.$options.i18n.namespaceHelpText;
     },
-    isKasFluxResourceAvailable() {
-      return this.glFeatures?.fluxResourceForEnvironment;
-    },
     showFluxResourceSelector() {
-      return Boolean(
-        this.isKasFluxResourceAvailable && this.selectedNamespace && this.selectedAgentId,
-      );
+      return Boolean(this.selectedNamespace && this.selectedAgentId);
     },
     k8sAccessConfiguration() {
       if (!this.showNamespaceSelector) {

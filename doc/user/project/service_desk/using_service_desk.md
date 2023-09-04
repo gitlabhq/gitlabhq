@@ -68,6 +68,58 @@ To view Service Desk issues:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Service Desk**.
 
+#### Redesigned issue list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413092) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `service_desk_vue_list`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `service_desk_vue_list`.
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+When this feature is enabled, the Service Desk issue list more closely matches the regular issue list.
+Available features include:
+
+- The same sorting and ordering options [as on the issue list](../issues/sorting_issue_lists.md).
+- The same filters, including [the OR operator](#filter-with-the-or-operator) and [filtering by issue ID](#filter-issues-by-id).
+
+There is no longer an option to create a new issue from the Service Desk issue list.
+This decision better reflects the nature of Service Desk, where new issues are created by emailing
+a dedicated email address.
+
+##### Filter the list of issues
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Monitor > Service Desk**.
+1. Above the list of issues, select **Search or filter results...**.
+1. In the dropdown list that appears, select the attribute you want to filter by.
+1. Select or type the operator to use for filtering the attribute. The following operators are
+   available:
+   - `=`: Is
+   - `!=`: Is not one of
+1. Enter the text to filter the attribute by.
+   You can filter some attributes by **None** or **Any**.
+1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
+   `AND`.
+
+##### Filter with the OR operator
+
+When [filtering with the OR operator](../issues/managing_issues.md#filter-with-the-or-operator) is enabled,
+you can use **is one of: `||`**
+when you [filter the list of issues](#filter-the-list-of-issues) by:
+
+- Assignees
+- Labels
+
+`is one of` represents an inclusive OR. For example, if you filter by `Assignee is one of Sidney Jones` and
+`Assignee is one of Zhang Wei`, GitLab shows issues where either `Sidney`, `Zhang`, or both of them are assignees.
+
+##### Filter issues by ID
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Monitor > Service Desk**.
+1. In the **Search** box, type the issue ID. For example, enter filter `#10` to return only issue 10.
+
 ## Email contents and formatting
 
 ### Special HTML formatting in HTML emails

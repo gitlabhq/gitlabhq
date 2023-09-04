@@ -62,13 +62,7 @@ module QA
           Support::Waiter.wait_until { show.passed? }
         end
 
-        job = Resource::Job.fabricate_via_api! do |job|
-          job.id = project.job_by_name(pipeline_job_name)[:id]
-          job.name = pipeline_job_name
-          job.project = project
-        end
-
-        job.visit!
+        create(:job, id: project.job_by_name(pipeline_job_name)[:id], name: pipeline_job_name, project: project).visit!
 
         Page::Project::Job::Show.perform do |show|
           expect(show.output).to have_content(variable_custom_value)

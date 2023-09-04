@@ -1,17 +1,20 @@
 import MockAdapter from 'axios-mock-adapter';
 import { GlButton, GlDropdown, GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import LabelsSelect from '~/admin/abuse_report/components/labels_select.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { stubComponent } from 'helpers/stub_component';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import labelsQuery from '~/admin/abuse_report/components/graphql/abuse_report_labels.query.graphql';
-import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
 import DropdownWidget from '~/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue';
+import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
+import DropdownHeader from '~/sidebar/components/labels/labels_select_widget/dropdown_header.vue';
+import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
+import DropdownFooter from '~/sidebar/components/labels/labels_select_widget/dropdown_footer.vue';
 import { createAlert } from '~/alert';
 import { mockLabelsQueryResponse, mockLabel1, mockLabel2 } from '../mock_data';
 
@@ -24,16 +27,20 @@ describe('Labels select component', () => {
   let wrapper;
   let fakeApollo;
 
-  const selectedText = () => wrapper.find('[data-testid="selected-labels"]').text();
+  const selectedText = () => wrapper.findByTestId('selected-labels').text();
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findEditButton = () => wrapper.findComponent(GlButton);
   const findDropdown = () => wrapper.findComponent(DropdownWidget);
+  const findDropdownHeader = () => wrapper.findComponent(DropdownHeader);
   const findDropdownValue = () => wrapper.findComponent(DropdownValue);
+  const findCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
+  const findDropdownFooter = () => wrapper.findComponent(DropdownFooter);
 
   const labelsQueryHandlerSuccess = jest.fn().mockResolvedValue(mockLabelsQueryResponse);
   const labelsQueryHandlerFailure = jest.fn().mockRejectedValue(new Error());
 
   const updatePath = '/admin/abuse_reports/1';
+  const listPath = '/admin/abuse_reports';
 
   async function openLabelsDropdown() {
     findEditButton().vm.$emit('click');
@@ -47,7 +54,7 @@ describe('Labels select component', () => {
 
   const createComponent = ({ props = {}, labelsQueryHandler = labelsQueryHandlerSuccess } = {}) => {
     fakeApollo = createMockApollo([[labelsQuery, labelsQueryHandler]]);
-    wrapper = shallowMount(LabelsSelect, {
+    wrapper = shallowMountExtended(LabelsSelect, {
       apolloProvider: fakeApollo,
       propsData: {
         report: { labels: [] },
@@ -56,11 +63,13 @@ describe('Labels select component', () => {
       },
       provide: {
         updatePath,
+        listPath,
       },
       stubs: {
         GlDropdown,
         GlDropdownItem,
         DropdownWidget: stubComponent(DropdownWidget, {
+          template: RENDER_ALL_SLOTS_TEMPLATE,
           methods: { showDropdown: jest.fn() },
         }),
       },
@@ -102,9 +111,11 @@ describe('Labels select component', () => {
         expect(findEditButton().props('disabled')).toEqual(false);
       });
 
-      it('renders fetched labels in DropdownValue', () => {
-        expect(findDropdownValue().isVisible()).toBe(true);
-        expect(findDropdownValue().props('selectedLabels')).toEqual([mockLabel1]);
+      it('renders fetched DropdownValue with the correct props', () => {
+        const component = findDropdownValue();
+        expect(component.isVisible()).toBe(true);
+        expect(component.props('selectedLabels')).toEqual([mockLabel1]);
+        expect(component.props('labelsFilterBasePath')).toBe(listPath);
       });
     });
   });
@@ -186,6 +197,53 @@ describe('Labels select component', () => {
 
       expect(labelsQueryHandlerSuccess).toHaveBeenCalledTimes(2);
       expect(labelsQueryHandlerSuccess).toHaveBeenCalledWith({ searchTerm: 'Dos' });
+    });
+
+    it('does not render DropdownContentsCreateView', () => {
+      expect(findCreateView().exists()).toBe(false);
+    });
+
+    it('renders DropdownFooter', () => {
+      expect(findDropdownFooter().props('footerCreateLabelTitle')).toEqual('Create label');
+      expect(findDropdownFooter().props('footerManageLabelTitle')).toEqual('');
+    });
+
+    describe('when DropdownHeader emits `toggleDropdownContentsCreateView` event', () => {
+      beforeEach(() => {
+        findDropdownHeader().vm.$emit('toggleDropdownContentsCreateView');
+      });
+
+      it('renders DropdownContentsCreateView and removes DropdownFooter', () => {
+        expect(findCreateView().props('workspaceType')).toEqual('abuseReport');
+        expect(findDropdownFooter().exists()).toBe(false);
+      });
+
+      describe('when DropdownContentsCreateView emits `hideCreateView` event', () => {
+        it('removes itself', async () => {
+          findCreateView().vm.$emit('hideCreateView');
+          await nextTick();
+
+          expect(findCreateView().exists()).toBe(false);
+        });
+      });
+
+      describe('when DropdownContentsCreateView emits `labelCreated` event', () => {
+        it('selects created label', async () => {
+          findCreateView().vm.$emit('labelCreated', mockLabel1);
+          await nextTick();
+
+          expect(findDropdownValue().props('selectedLabels')).toEqual([mockLabel1]);
+        });
+      });
+    });
+
+    describe('when DropdownFooter emits `toggleDropdownContentsCreateView` event', () => {
+      it('renders DropdownContentsCreateView', async () => {
+        findDropdownFooter().vm.$emit('toggleDropdownContentsCreateView');
+        await nextTick();
+
+        expect(findCreateView().props('workspaceType')).toEqual('abuseReport');
+      });
     });
   });
 

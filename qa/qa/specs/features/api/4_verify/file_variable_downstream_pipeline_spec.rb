@@ -121,24 +121,16 @@ module QA
         end
       end
 
-      let(:upstream_pipeline) do
-        Resource::Pipeline.fabricate_via_api! do |pipeline|
-          pipeline.project = project
-        end
-      end
+      let(:upstream_pipeline) { create(:pipeline, project: project) }
 
       def child_pipeline
-        Resource::Pipeline.fabricate_via_api! do |pipeline|
-          pipeline.project = project
-          pipeline.id = upstream_pipeline.downstream_pipeline_id(bridge_name: 'trigger_child')
-        end
+        create(:pipeline, project: project, id: upstream_pipeline.downstream_pipeline_id(bridge_name: 'trigger_child'))
       end
 
       def downstream_project_pipeline
-        Resource::Pipeline.fabricate_via_api! do |pipeline|
-          pipeline.project = downstream_project
-          pipeline.id = upstream_pipeline.downstream_pipeline_id(bridge_name: 'trigger_downstream_project')
-        end
+        create(:pipeline,
+          project: downstream_project,
+          id: upstream_pipeline.downstream_pipeline_id(bridge_name: 'trigger_downstream_project'))
       end
 
       around do |example|
@@ -164,25 +156,17 @@ module QA
         'creates variable with file path in downstream pipelines and can read file variable content',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/416337'
       ) do
-        child_echo_job = Resource::Job.fabricate_via_api! do |job|
-          job.project = project
-          job.id = project.job_by_name('child_job_echo')[:id]
-        end
+        child_echo_job = create(:job, project: project, id: project.job_by_name('child_job_echo')[:id])
 
-        child_cat_job = Resource::Job.fabricate_via_api! do |job|
-          job.project = project
-          job.id = project.job_by_name('child_job_cat')[:id]
-        end
+        child_cat_job = create(:job, project: project, id: project.job_by_name('child_job_cat')[:id])
 
-        downstream_project_echo_job = Resource::Job.fabricate_via_api! do |job|
-          job.project = downstream_project
-          job.id = downstream_project.job_by_name('downstream_job_echo')[:id]
-        end
+        downstream_project_echo_job = create(:job,
+          project: downstream_project,
+          id: downstream_project.job_by_name('downstream_job_echo')[:id])
 
-        downstream_project_cat_job = Resource::Job.fabricate_via_api! do |job|
-          job.project = downstream_project
-          job.id = downstream_project.job_by_name('downstream_job_cat')[:id]
-        end
+        downstream_project_cat_job = create(:job,
+          project: downstream_project,
+          id: downstream_project.job_by_name('downstream_job_cat')[:id])
 
         aggregate_failures do
           trace = child_echo_job.trace

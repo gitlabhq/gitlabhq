@@ -25,10 +25,14 @@ RSpec.describe Admin::AbuseReportsHelper, feature_category: :insider_threat do
   describe '#abuse_report_data' do
     let(:report) { build_stubbed(:abuse_report) }
 
-    subject(:data) { helper.abuse_report_data(report)[:abuse_report_data] }
+    subject(:data) { helper.abuse_report_data(report) }
 
     it 'has the expected attributes' do
-      expect(data).to include('user', 'reporter', 'report')
+      expect(data[:abuse_report_data]).to include('user', 'reporter', 'report')
+    end
+
+    it 'includes path to abuse reports list page' do
+      expect(data[:abuse_reports_list_path]).to eq admin_abuse_reports_path
     end
   end
 end

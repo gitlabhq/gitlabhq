@@ -1,6 +1,6 @@
 %span.gl-display-flex.gl-align-items-center
-  %h4
-    POST
+  %h5
+    = gl_badge_tag "POST", { size: :sm }, { variant: :info }
     = hook_log.url
   = gl_badge_tag hook_log.trigger.singularize.titleize, { size: :sm }, { class: 'gl-ml-3' }
 
@@ -16,19 +16,28 @@
     - c.with_body do
       = _('Error: %{error}') % { error: hook_log.internal_error_message }
 
-%h4= _('Response')
-= render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }
+%span.gl-display-flex.gl-align-items-center
+  %h3
+    = _('Response')
+    = render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }
+
 %pre.gl-mt-3
-  :escaped
-    #{hook_log.response_body}
+  - if hook_log.response_body.blank?
+    = s_('Webhooks|Response body is empty')
+  - else
+    :escaped
+      #{hook_log.response_body}
 
-%h5= _('Headers')
+%h4= _('Headers')
 %pre
-  - hook_log.response_headers.each do |k, v|
-    <span class="gl-font-weight-bold">#{k}:</span> #{v}
-    %br
+  - if hook_log.response_headers.blank?
+    = s_('Webhooks|Response headers data is empty')
+  - else
+    - hook_log.response_headers.each do |k, v|
+      <span class="gl-font-weight-bold">#{k}:</span> #{v}
+      %br
 
-%h4.gl-mt-6= _('Request')
+%h3.gl-mt-6= _('Request')
 %pre
   - if hook_log.oversize?
     = _('Request data is too large')
@@ -36,7 +45,7 @@
     :escaped
       #{Gitlab::Json.pretty_generate(hook_log.request_data)}
 
-%h5= _('Headers')
+%h4= _('Headers')
 %pre
   - hook_log.request_headers.each do |k, v|
     <span class="gl-font-weight-bold">#{k}:</span> #{v}

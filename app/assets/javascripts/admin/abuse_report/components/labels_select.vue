@@ -7,7 +7,9 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
 import LabelItem from '~/sidebar/components/labels/labels_select_widget/label_item.vue';
 import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
+import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import DropdownHeader from '~/sidebar/components/labels/labels_select_widget/dropdown_header.vue';
+import DropdownFooter from '~/sidebar/components/labels/labels_select_widget/dropdown_footer.vue';
 import DropdownWidget from '~/vue_shared/components/dropdown/dropdown_widget/dropdown_widget.vue';
 import abuseReportLabelsQuery from './graphql/abuse_report_labels.query.graphql';
 
@@ -18,9 +20,11 @@ export default {
     GlLoadingIcon,
     LabelItem,
     DropdownValue,
+    DropdownContentsCreateView,
     DropdownHeader,
+    DropdownFooter,
   },
-  inject: ['updatePath'],
+  inject: ['updatePath', 'listPath'],
   props: {
     report: {
       type: Object,
@@ -35,6 +39,7 @@ export default {
       initialLoading: true,
       isEditing: false,
       isUpdating: false,
+      showCreateView: false,
     };
   },
   apollo: {
@@ -49,7 +54,7 @@ export default {
         return !this.isEditing;
       },
       update(data) {
-        return data.abuseReportLabels?.nodes;
+        return data.labels?.nodes;
       },
       error() {
         createAlert({ message: this.$options.i18n.searchError });
@@ -133,6 +138,13 @@ export default {
       this.selected = this.filterSelected(labelId);
       this.saveSelectedLabels();
     },
+    toggleCreateView() {
+      this.showCreateView = !this.showCreateView;
+    },
+    onLabelCreated(label) {
+      this.toggleLabelSelection(label);
+      this.toggleCreateView();
+    },
   },
   i18n: {
     label: __('Labels'),
@@ -165,7 +177,7 @@ export default {
         :disable-labels="isLoading"
         :selected-labels="selected"
         :allow-label-remove="!isUpdating"
-        :labels-filter-base-path="''"
+        :labels-filter-base-path="listPath"
         :labels-filter-param="'label_name'"
         @onLabelRemove="removeLabel"
       />
@@ -180,6 +192,7 @@ export default {
       :selected="selected"
       :search-term="search"
       :allow-multiselect="true"
+      :no-options-text="__('No labels found')"
       @hide="hideDropdown"
       @set-option="toggleLabelSelection"
       @set-search="debouncedSetSearch"
@@ -190,13 +203,31 @@ export default {
           :search-key="search"
           labels-create-title=""
           :labels-list-title="$options.i18n.labelsListTitle"
-          :show-dropdown-contents-create-view="false"
+          :show-dropdown-contents-create-view="showCreateView"
+          @toggleDropdownContentsCreateView="toggleCreateView"
           @closeDropdown="hideDropdown"
           @input="debouncedSetSearch"
         />
       </template>
       <template #item="{ item }">
-        <label-item :label="item" />
+        <label-item v-if="item" :label="item" />
+      </template>
+      <template v-if="showCreateView" #default>
+        <dropdown-contents-create-view
+          attr-workspace-path=""
+          full-path=""
+          label-create-type=""
+          workspace-type="abuseReport"
+          @hideCreateView="toggleCreateView"
+          @labelCreated="onLabelCreated"
+        />
+      </template>
+      <template #footer>
+        <dropdown-footer
+          v-if="!showCreateView"
+          :footer-create-label-title="__('Create label')"
+          @toggleDropdownContentsCreateView="toggleCreateView"
+        />
       </template>
     </dropdown-widget>
   </div>

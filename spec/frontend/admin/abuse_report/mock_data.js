@@ -76,7 +76,7 @@ export const mockAbuseReport = {
 };
 
 export const mockLabel1 = {
-  id: 'gid://gitlab/AbuseReportLabel/1',
+  id: 'gid://gitlab/Admin::AbuseReportLabel/1',
   title: 'Uno',
   color: '#F0AD4E',
   textColor: '#FFFFFF',
@@ -84,7 +84,7 @@ export const mockLabel1 = {
 };
 
 export const mockLabel2 = {
-  id: 'gid://gitlab/AbuseReportLabel/2',
+  id: 'gid://gitlab/Admin::AbuseReportLabel/2',
   title: 'Dos',
   color: '#F0AD4E',
   textColor: '#FFFFFF',
@@ -93,7 +93,7 @@ export const mockLabel2 = {
 
 export const mockLabelsQueryResponse = {
   data: {
-    abuseReportLabels: {
+    labels: {
       nodes: [mockLabel1, mockLabel2],
       __typename: 'LabelConnection',
     },
@@ -108,6 +108,23 @@ export const mockReportQueryResponse = {
         __typename: 'LabelConnection',
       },
       __typename: 'AbuseReport',
+    },
+  },
+};
+
+export const mockCreateLabelResponse = {
+  data: {
+    labelCreate: {
+      label: {
+        id: 'gid://gitlab/Admin::AbuseReportLabel/1',
+        color: '#ed9121',
+        description: null,
+        title: 'abuse report label',
+        textColor: '#FFFFFF',
+        __typename: 'Label',
+      },
+      errors: [],
+      __typename: 'AbuseReportLabelCreatePayload',
     },
   },
 };

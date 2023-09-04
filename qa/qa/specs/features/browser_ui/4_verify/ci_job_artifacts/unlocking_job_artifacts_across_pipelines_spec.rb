@@ -202,10 +202,7 @@ module QA
       end
 
       def find_job(job_name)
-        Resource::Job.fabricate_via_api! do |job|
-          job.project = project
-          job.id = project.job_by_name(job_name)[:id]
-        end
+        create(:job, project: project, id: project.job_by_name(job_name)[:id])
       end
 
       def pipeline_count

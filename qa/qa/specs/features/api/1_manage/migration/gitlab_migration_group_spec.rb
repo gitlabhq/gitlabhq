@@ -13,13 +13,7 @@ module QA
             api_client: source_admin_api_client)
         end
 
-        let(:imported_subgroup) do
-          Resource::Group.init do |group|
-            group.api_client = api_client
-            group.sandbox = imported_group
-            group.path = subgroup.path
-          end
-        end
+        let(:imported_subgroup) { build(:group, api_client: api_client, sandbox: imported_group, path: subgroup.path) }
 
         before do
           Resource::GroupLabel.fabricate_via_api! do |label|

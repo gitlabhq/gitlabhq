@@ -1,4 +1,5 @@
 <script>
+import { get } from 'lodash';
 import {
   GlAlert,
   GlTooltipDirective,
@@ -11,8 +12,7 @@ import produce from 'immer';
 import { createAlert } from '~/alert';
 import { WORKSPACE_GROUP } from '~/issues/constants';
 import { __ } from '~/locale';
-import { workspaceLabelsQueries } from '../../../queries/constants';
-import createLabelMutation from './graphql/create_label.mutation.graphql';
+import { workspaceLabelsQueries, workspaceCreateLabelMutation } from '../../../queries/constants';
 import { DEFAULT_LABEL_COLOR } from './constants';
 
 const errorMessage = __('Error creating label.');
@@ -68,13 +68,19 @@ export default {
       return Object.keys(colorsMap).map((color) => ({ [color]: colorsMap[color] }));
     },
     mutationVariables() {
-      const attributePath = this.labelCreateType === WORKSPACE_GROUP ? 'groupPath' : 'projectPath';
-
-      return {
+      const variables = {
         title: this.labelTitle,
         color: this.selectedColor,
-        [attributePath]: this.attrWorkspacePath,
       };
+
+      if (this.labelCreateType) {
+        const attributePath =
+          this.labelCreateType === WORKSPACE_GROUP ? 'groupPath' : 'projectPath';
+
+        return { ...variables, [attributePath]: this.attrWorkspacePath };
+      }
+
+      return variables;
     },
   },
   methods: {
@@ -88,7 +94,7 @@ export default {
       this.selectedColor = this.getColorCode(color);
     },
     updateLabelsInCache(store, label) {
-      const { query } = workspaceLabelsQueries[this.workspaceType];
+      const { query, dataPath } = workspaceLabelsQueries[this.workspaceType];
 
       const sourceData = store.readQuery({
         query,
@@ -97,7 +103,7 @@ export default {
 
       const collator = new Intl.Collator('en');
       const data = produce(sourceData, (draftData) => {
-        const { nodes } = draftData.workspace.labels;
+        const { nodes } = get(draftData, dataPath);
         nodes.push(label);
         nodes.sort((a, b) => collator.compare(a.title, b.title));
       });
@@ -114,7 +120,7 @@ export default {
         const {
           data: { labelCreate },
         } = await this.$apollo.mutate({
-          mutation: createLabelMutation,
+          mutation: workspaceCreateLabelMutation[this.workspaceType],
           variables: this.mutationVariables,
           update: (
             store,

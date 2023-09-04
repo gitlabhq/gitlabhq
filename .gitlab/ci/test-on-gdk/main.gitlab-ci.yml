@@ -41,8 +41,9 @@ variables:
     FF_NETWORK_PER_BUILD: 1
     GDK_URL: http://gdk.test:3000
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/*_spec.rb"
+    QA_SUITE_STATUS_ENV_FILE: "$CI_PROJECT_DIR/suite_status.env"
   before_script:
-    - echo "SUITE_RAN=true" > suite_status.env
+    - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     - echo -e "\e[0Ksection_start:`date +%s`:pull_image[collapsed=true]\r\e[0KPull GDK QA image"
     - docker pull ${GDK_IMAGE}
     - echo -e "\e[0Ksection_end:`date +%s`:pull_image\r\e[0K"
@@ -75,12 +76,6 @@ variables:
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
     - echo -e "\e[0Ksection_end:`date +%s`:run_tests\r\e[0K"
-  after_script:
-    - |
-      if [ "$CI_JOB_STATUS" == "failed" ]; then
-        echo "SUITE_FAILED=true" >> suite_status.env
-      fi
-    - docker stop gdk
   artifacts:
     paths:
       - qa/tmp
@@ -88,7 +83,7 @@ variables:
       - log/gdk/*/current
     reports:
       junit: qa/tmp/rspec-*.xml
-      dotenv: suite_status.env
+      dotenv: "$QA_SUITE_STATUS_ENV_FILE"
     expire_in: 7 days
     when: always
 

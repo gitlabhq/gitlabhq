@@ -103,11 +103,11 @@ module QA
 
         def verify_issues_import
           issues = imported_project.issues
-          issue = Resource::Issue.init do |resource|
-            resource.project = imported_project
-            resource.iid = issues.first[:iid]
-            resource.api_client = user_api_client
-          end.reload!
+          issue = build(:issue,
+            project: imported_project,
+            iid: issues.first[:iid],
+            api_client: user_api_client).reload!
+
           comments, events = fetch_events_and_comments(issue)
 
           expect(issues.length).to eq(1)

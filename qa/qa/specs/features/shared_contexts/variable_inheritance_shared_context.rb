@@ -91,17 +91,11 @@ module QA
     end
 
     def upstream_pipeline
-      Resource::Pipeline.fabricate_via_api! do |pipeline|
-        pipeline.project = upstream_project
-        pipeline.id = upstream_project.pipelines.first[:id]
-      end
+      create(:pipeline, project: upstream_project, id: upstream_project.pipelines.first[:id])
     end
 
     def downstream_pipeline(project, bridge_name)
-      Resource::Pipeline.fabricate_via_api! do |pipeline|
-        pipeline.project = project
-        pipeline.id = upstream_pipeline.downstream_pipeline_id(bridge_name: bridge_name)
-      end
+      create(:pipeline, project: project, id: upstream_pipeline.downstream_pipeline_id(bridge_name: bridge_name))
     end
 
     def upstream_child1_ci_file

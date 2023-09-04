@@ -10,10 +10,7 @@ module QA
 
       it 'pulls an image from an existing repository',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412799' do
-        project = Resource::Project.init do |project|
-          project.path_with_namespace = 'gitlab-qa/container-registry-sanity'
-        end.reload!
-
+        project = build(:project, path_with_namespace: 'gitlab-qa/container-registry-sanity').reload!
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_pipelines)

@@ -132,7 +132,6 @@ export default {
       :ref="$options.CONTAINER_REF"
       class="gl-bg-gray-10 gl-overflow-auto"
       data-testid="graph-container"
-      data-qa-selector="pipeline_graph_container"
     >
       <links-layer
         :pipeline-data="pipelineStages"
@@ -148,10 +147,7 @@ export default {
           :key="`${stage.name}-${index}`"
           class="gl-flex-direction-column"
         >
-          <div
-            class="gl-display-flex gl-align-items-center gl-w-full gl-px-9 gl-py-4 gl-mb-5"
-            data-qa-selector="stage_container"
-          >
+          <div class="gl-display-flex gl-align-items-center gl-w-full gl-px-9 gl-py-4 gl-mb-5">
             <stage-name :stage-name="stage.name" />
           </div>
           <div :class="$options.jobWrapperClasses">
@@ -162,7 +158,6 @@ export default {
               :pipeline-id="$options.PIPELINE_ID"
               :is-hovered="highlightedJob === group.name"
               :is-faded-out="isFadedOut(group.name)"
-              data-qa-selector="job_container"
               @on-mouse-enter="setHoveredJob"
               @on-mouse-leave="removeHoveredJob"
             />

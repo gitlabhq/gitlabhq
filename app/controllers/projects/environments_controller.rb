@@ -8,10 +8,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   layout 'project'
 
-  before_action only: [:index, :edit, :new] do
-    push_frontend_feature_flag(:flux_resource_for_environment)
-  end
-
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]

@@ -121,9 +121,7 @@ module QA
 
       def trigger_new_pipeline
         original_count = project.pipelines.length
-        Resource::Pipeline.fabricate_via_api! do |pipeline|
-          pipeline.project = project
-        end
+        create(:pipeline, project: project)
 
         Support::Waiter.wait_until(sleep_interval: 1) { project.pipelines.length > original_count }
       end
@@ -133,10 +131,7 @@ module QA
       # If pipeline is held up, likely because there are some jobs that
       # doesn't have either "skipped" or "manual" status
       def problematic_jobs
-        pipeline = Resource::Pipeline.fabricate_via_api! do |pipeline|
-          pipeline.project = project
-          pipeline.id = project.latest_pipeline[:id]
-        end
+        pipeline = create(:pipeline, project: project, id: project.latest_pipeline[:id])
 
         acceptable_statuses = %w[skipped manual]
         pipeline.jobs.select { |job| !(acceptable_statuses.include? job[:status]) }
