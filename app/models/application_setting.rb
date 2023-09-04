@@ -21,6 +21,15 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     dashboard_limit_new_namespace_creation_enforcement_date
   ], remove_with: '16.5', remove_after: '2023-08-22'
   ignore_column :relay_state_domain_allowlist, remove_with: '16.6', remove_after: '2023-10-22'
+  ignore_columns %i[
+    encrypted_product_analytics_clickhouse_connection_string
+    encrypted_product_analytics_clickhouse_connection_string_iv
+    encrypted_jitsu_administrator_password
+    encrypted_jitsu_administrator_password_iv
+    jitsu_host
+    jitsu_project_xid
+    jitsu_administrator_email
+  ], remove_with: '16.5', remove_after: '2023-09-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

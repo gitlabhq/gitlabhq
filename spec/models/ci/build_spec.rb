@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_default: :keep do
+  using RSpec::Parameterized::TableSyntax
   include Ci::TemplateHelpers
   include AfterNextHelpers
 
@@ -1493,8 +1494,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe 'state transition metrics' do
-    using RSpec::Parameterized::TableSyntax
-
     subject { build.send(event) }
 
     where(:state, :report_count, :trait) do
@@ -2129,8 +2128,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#ref_slug' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:ref, :slug) do
       'master'             | 'master'
       '1-foo'              | '1-foo'
@@ -4025,73 +4022,61 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe 'pages deployments' do
-    let_it_be(:build, reload: true) { create(:ci_build, pipeline: pipeline, user: user) }
+  describe '#pages_generator?', feature_category: :pages do
+    where(:name, :enabled, :result) do
+      'foo' | false | false
+      'pages' | false | false
+      'pages:preview' | true | false
+      'pages' | true | true
+    end
 
-    context 'when job is "pages"' do
+    with_them do
       before do
-        build.name = 'pages'
+        stub_pages_setting(enabled: enabled)
+        build.update!(name: name)
       end
 
-      context 'when pages are enabled' do
-        before do
-          allow(Gitlab.config.pages).to receive_messages(enabled: true)
-        end
+      subject { build.pages_generator? }
 
-        it 'is marked as pages generator' do
-          expect(build).to be_pages_generator
-        end
+      it { is_expected.to eq(result) }
+    end
+  end
 
-        context 'job succeeds' do
-          it "calls pages worker" do
-            expect(PagesWorker).to receive(:perform_async).with(:deploy, build.id)
+  describe 'pages deployments', feature_category: :pages do
+    let_it_be(:build, reload: true) { create(:ci_build, name: 'pages', pipeline: pipeline, user: user) }
 
-            build.success!
-          end
-        end
+    context 'when pages are enabled' do
+      before do
+        stub_pages_setting(enabled: true)
+      end
 
-        context 'job fails' do
-          it "does not call pages worker" do
-            expect(PagesWorker).not_to receive(:perform_async)
+      context 'and job succeeds' do
+        it "calls pages worker" do
+          expect(PagesWorker).to receive(:perform_async).with(:deploy, build.id)
 
-            build.drop!
-          end
+          build.success!
         end
       end
 
-      context 'when pages are disabled' do
-        before do
-          allow(Gitlab.config.pages).to receive_messages(enabled: false)
-        end
+      context 'and job fails' do
+        it "does not call pages worker" do
+          expect(PagesWorker).not_to receive(:perform_async)
 
-        it 'is not marked as pages generator' do
-          expect(build).not_to be_pages_generator
-        end
-
-        context 'job succeeds' do
-          it "does not call pages worker" do
-            expect(PagesWorker).not_to receive(:perform_async)
-
-            build.success!
-          end
+          build.drop!
         end
       end
     end
 
-    context 'when job is not "pages"' do
+    context 'when pages are disabled' do
       before do
-        build.name = 'other-job'
+        stub_pages_setting(enabled: false)
       end
 
-      it 'is not marked as pages generator' do
-        expect(build).not_to be_pages_generator
-      end
-
-      context 'job succeeds' do
+      context 'and job succeeds' do
         it "does not call pages worker" do
           expect(PagesWorker).not_to receive(:perform_async)
 
-          build.success
+          build.success!
         end
       end
     end

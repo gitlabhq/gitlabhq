@@ -391,6 +391,9 @@ module Ci
         name == 'pages'
     end
 
+    # overridden on EE
+    def pages_path_prefix; end
+
     def runnable?
       true
     end

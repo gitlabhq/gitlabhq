@@ -23,6 +23,14 @@ module Gitlab
         ::Gitlab.config.pages.access_control &&
           ::Gitlab::CurrentSettings.current_application_settings.force_pages_access_control
       end
+
+      def multiple_versions_enabled_for?(project)
+        return false if project.blank?
+
+        ::Feature.enabled?(:pages_multiple_versions_setting, project) &&
+          project.licensed_feature_available?(:pages_multiple_versions) &&
+          project.project_setting.pages_multiple_versions_enabled
+      end
     end
   end
 end
