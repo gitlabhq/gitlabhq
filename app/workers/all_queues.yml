@@ -2541,6 +2541,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_initialize_pipelines_iid_sequence
+  :worker_name: Ci::InitializePipelinesIidSequenceWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_job_artifacts_expire_project_build_artifacts
   :worker_name: Ci::JobArtifacts::ExpireProjectBuildArtifactsWorker
   :feature_category: :build_artifacts
