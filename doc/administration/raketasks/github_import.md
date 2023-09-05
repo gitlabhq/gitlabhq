@@ -18,6 +18,9 @@ Bear in mind that the syntax is very specific. Remove any spaces in the argument
 before/after the brackets. Also, some shells (for example, Zsh) can interpret the open/close brackets
 (`[]`) separately. You may want to either escape the brackets or use double quotes.
 
+You can only import repositories that are in the namespace of the owner of the GitHub personal access token being used to import. For more information, see
+[issue 424105](https://gitlab.com/gitlab-org/gitlab/-/issues/424105).
+
 Prerequisite:
 
 - At least the Maintainer role on the destination group to import to.

@@ -139,11 +139,23 @@ module Emails
       return mail if !service_desk_custom_email_enabled? && !force
       return mail unless @service_desk_setting.custom_email_credential.present?
 
+      # Only set custom email reply address if it's enabled, not when we force it.
+      inject_service_desk_custom_email_reply_address unless force
+
       mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_credential.delivery_options)
     end
 
     def service_desk_custom_email_enabled?
       Feature.enabled?(:service_desk_custom_email, @project) && @service_desk_setting&.custom_email_enabled?
+    end
+
+    def inject_service_desk_custom_email_reply_address
+      return unless Feature.enabled?(:service_desk_custom_email_reply, @project)
+
+      reply_address = Gitlab::Email::ServiceDesk::CustomEmail.reply_address(@issue, reply_key)
+      headers['Reply-To'] = Mail::Address.new(reply_address).tap do |address|
+        address.display_name = reply_display_name(@issue)
+      end
     end
 
     def service_desk_sender_email_address
