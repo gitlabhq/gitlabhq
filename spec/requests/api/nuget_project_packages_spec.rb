@@ -34,6 +34,37 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     it_behaves_like 'returning response status', :ok
   end
 
+  shared_examples 'nuget serialize odata package endpoint' do
+    subject { get api(url), params: params }
+
+    it { is_expected.to have_request_urgency(:low) }
+
+    it_behaves_like 'returning response status', :success
+
+    it 'returns a valid xml response and invokes OdataPackageEntryService' do
+      expect(Packages::Nuget::OdataPackageEntryService).to receive(:new).with(target, service_params).and_call_original
+
+      subject
+
+      expect(response.media_type).to eq('application/xml')
+    end
+
+    [nil, '', '%20', '..%2F..', '../..'].each do |value|
+      context "with invalid package name #{value}" do
+        let(:package_name) { value }
+
+        it_behaves_like 'returning response status', :bad_request
+      end
+    end
+
+    context 'with missing required params' do
+      let(:params) { {} }
+      let(:package_version) { nil }
+
+      it_behaves_like 'returning response status', :bad_request
+    end
+  end
+
   describe 'GET /api/v4/projects/:id/packages/nuget' do
     let(:url) { "/projects/#{target.id}/packages/nuget/index.json" }
 
@@ -226,6 +257,43 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
     it_behaves_like 'rejects nuget access with unknown target id'
 
     it_behaves_like 'rejects nuget access with invalid target id'
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/nuget/v2/FindPackagesById()' do
+    it_behaves_like 'nuget serialize odata package endpoint' do
+      let(:url) { "/projects/#{target.id}/packages/nuget/v2/FindPackagesById()" }
+      let(:params) { { id: "'#{package_name}'" } }
+      let(:service_params) { { package_name: package_name } }
+    end
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/nuget/v2/Packages()' do
+    it_behaves_like 'nuget serialize odata package endpoint' do
+      let(:url) { "/projects/#{target.id}/packages/nuget/v2/Packages()" }
+      let(:params) { { '$filter' => "(tolower(Id) eq '#{package_name&.downcase}')" } }
+      let(:service_params) { { package_name: package_name&.downcase } }
+    end
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/nuget/v2/Packages(Id=\'*\',Version=\'*\')' do
+    let(:package_version) { '1.0.0' }
+    let(:url) { "/projects/#{target.id}/packages/nuget/v2/Packages(Id='#{package_name}',Version='#{package_version}')" }
+    let(:params) { {} }
+    let(:service_params) { { package_name: package_name, package_version: package_version } }
+
+    it_behaves_like 'nuget serialize odata package endpoint'
+
+    context 'with invalid package version' do
+      subject { get api(url) }
+
+      ['', '1', '1./2.3', '%20', '..%2F..', '../..'].each do |value|
+        context "with invalid package version #{value}" do
+          let(:package_version) { value }
+
+          it_behaves_like 'returning response status', :bad_request
+        end
+      end
+    end
   end
 
   describe 'PUT /api/v4/projects/:id/packages/nuget/authorize' do

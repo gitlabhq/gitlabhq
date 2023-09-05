@@ -324,7 +324,7 @@ gem 'fast_blank', '~> 1.0.1'
 
 # Parse time & duration
 gem 'gitlab-chronic', '~> 0.10.5'
-gem 'gitlab_chronic_duration', '~> 0.10.6.2'
+gem 'gitlab_chronic_duration', '~> 0.11'
 
 gem 'rack-proxy', '~> 0.7.6'
 

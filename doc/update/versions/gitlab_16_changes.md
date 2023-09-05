@@ -197,6 +197,321 @@ Specific information applies to Linux package installations:
 
   Workaround is to make use of a different key type, or upgrade the client OpenSSH to a version >= 8.7.
 
+- The Gitaly configuration structure in the Linux package
+  [changes](https://gitlab.com/gitlab-org/gitaly/-/issues/4467) in GitLab 16.0
+  to be consistent with the Gitaly configuration structure used in
+  self-compiled installations.
+
+  As a result of this change, a single hash under `gitaly['configuration']` holds most Gitaly
+  configuration. Some `gitaly['..']` configuration options will continue to be used by GitLab 16.0 and later:
+
+  - `enable`
+  - `dir`
+  - `bin_path`
+  - `env_directory`
+  - `env`
+  - `open_files_ulimit`
+  - `consul_service_name`
+  - `consul_service_meta`
+
+  Migrate by moving your existing configuration under the new structure. The new structure is supported from GitLab 15.10.
+
+  The new structure is documented below with the old keys described in a comment above the new keys. When applying the new structure to your configuration:
+
+  1. Replace the `...` with the value from the old key.
+  1. Skip any keys you haven't configured a value for previously.
+  1. Remove the old keys from the configuration once migrated.
+  1. Optional but recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
+  1. When configuring `storage` to replace `git_data_dirs`, you must append `repositories` to the path as documented below. If you omit this step, your Git repositories are
+     inaccessible until the configuration is fixed.
+
+     ```ruby
+     gitaly['configuration'] = {
+       # gitaly['socket_path']
+       socket_path: ...,
+       # gitaly['runtime_dir']
+       runtime_dir: ...,
+       # gitaly['listen_addr']
+       listen_addr: ...,
+       # gitaly['prometheus_listen_addr']
+       prometheus_listen_addr: ...,
+       # gitaly['tls_listen_addr']
+       tls_listen_addr: ...,
+       tls: {
+         # gitaly['certificate_path']
+         certificate_path: ...,
+         # gitaly['key_path']
+         key_path: ...,
+       },
+       # gitaly['graceful_restart_timeout']
+       graceful_restart_timeout: ...,
+       logging: {
+         # gitaly['logging_level']
+         level: ...,
+         # gitaly['logging_format']
+         format: ...,
+         # gitaly['logging_sentry_dsn']
+         sentry_dsn: ...,
+         # gitaly['logging_ruby_sentry_dsn']
+         ruby_sentry_dsn: ...,
+         # gitaly['logging_sentry_environment']
+         sentry_environment: ...,
+         # gitaly['log_directory']
+         dir: ...,
+       },
+       prometheus: {
+         # gitaly['prometheus_grpc_latency_buckets']. The old value was configured as a string
+         # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+         grpc_latency_buckets: ...,
+       },
+       auth: {
+         # gitaly['auth_token']
+         token: ...,
+         # gitaly['auth_transitioning']
+         transitioning: ...,
+       },
+       git: {
+         # gitaly['git_catfile_cache_size']
+         catfile_cache_size: ...,
+         # gitaly['git_bin_path']
+         bin_path: ...,
+         # gitaly['use_bundled_git']
+         use_bundled_binaries: ...,
+         # gitaly['gpg_signing_key_path']
+         signing_key: ...,
+         # gitaly['gitconfig']. This is still an array but the type of the elements have changed.
+         config: [
+           {
+             # Previously the elements contained 'section', and 'subsection' in addition to 'key'. Now
+             # these all should be concatenated into just 'key', separated by dots. For example,
+             # {section: 'first', subsection: 'middle', key: 'last', value: 'value'}, should become
+             # {key: 'first.middle.last', value: 'value'}.
+             key: ...,
+             value: ...,
+           },
+         ],
+       },
+       # Storage could previously be configured through either gitaly['storage'] or 'git_data_dirs'. Migrate
+       # the relevant configuration according to the instructions below.
+       # For 'git_data_dirs', migrate only the 'path' to the gitaly['configuration'] and leave the rest of it untouched.
+       storage: [
+         {
+           # gitaly['storage'][<index>]['name']
+           #
+           # git_data_dirs[<name>]. The storage name was configured as a key in the map.
+           name: ...,
+           # gitaly['storage'][<index>]['path']
+           #
+           # git_data_dirs[<name>]['path']. Use the value from git_data_dirs[<name>]['path'] and append '/repositories' to it.
+           #
+           # For example, if the path in 'git_data_dirs' was '/var/opt/gitlab/git-data', use
+           # '/var/opt/gitlab/git-data/repositories'. The '/repositories' extension was automatically
+           # appended to the path configured in `git_data_dirs`.
+           path: ...,
+         },
+       ],
+       hooks: {
+         # gitaly['custom_hooks_dir']
+         custom_hooks_dir: ...,
+       },
+       daily_maintenance: {
+         # gitaly['daily_maintenance_disabled']
+         disabled: ...,
+         # gitaly['daily_maintenance_start_hour']
+         start_hour: ...,
+         # gitaly['daily_maintenance_start_minute']
+         start_minute: ...,
+         # gitaly['daily_maintenance_duration']
+         duration: ...,
+         # gitaly['daily_maintenance_storages']
+         storages: ...,
+       },
+       cgroups: {
+         # gitaly['cgroups_mountpoint']
+         mountpoint: ...,
+         # gitaly['cgroups_hierarchy_root']
+         hierarchy_root: ...,
+         # gitaly['cgroups_memory_bytes']
+         memory_bytes: ...,
+         # gitaly['cgroups_cpu_shares']
+         cpu_shares: ...,
+         repositories: {
+           # gitaly['cgroups_repositories_count']
+           count: ...,
+           # gitaly['cgroups_repositories_memory_bytes']
+           memory_bytes: ...,
+           # gitaly['cgroups_repositories_cpu_shares']
+           cpu_shares: ...,
+         }
+       },
+       # gitaly['concurrency']. While the structure is the same, the string keys in the array elements
+       # should be replaced by symbols as elsewhere. {'key' => 'value'}, should become {key: 'value'}.
+       concurrency: ...,
+       # gitaly['rate_limiting']. While the structure is the same, the string keys in the array elements
+       # should be replaced by symbols as elsewhere. {'key' => 'value'}, should become {key: 'value'}.
+       rate_limiting: ...,
+       pack_objects_cache: {
+         # gitaly['pack_objects_cache_enabled']
+         enabled: ...,
+         # gitaly['pack_objects_cache_dir']
+         dir: ...,
+         # gitaly['pack_objects_cache_max_age']
+         max_age: ...,
+       }
+     }
+     ```
+
+- The Praefect configuration structure in the Linux package
+  [changes](https://gitlab.com/gitlab-org/gitaly/-/issues/4467) in GitLab 16.0
+  to be consistent with the Praefect configuration structure used in
+  self-compiled installations.
+
+  As a result of this change, a single hash under `praefect['configuration']` holds most Praefect
+  configuration. Some `praefect['..']` configuration options will continue to be used by GitLab 16.0 and later:
+
+  - `enable`
+  - `dir`
+  - `log_directory`
+  - `env_directory`
+  - `env`
+  - `wrapper_path`
+  - `auto_migrate`
+  - `consul_service_name`
+
+  Migrate by moving your existing configuration under the new structure. The new structure is supported from GitLab 15.9.
+
+  The new structure is documented below with the old keys described in a comment above the new keys. When applying the new structure to your configuration:
+
+  1. Replace the `...` with the value from the old key.
+  1. Skip any keys you haven't configured a value for previously.
+  1. Remove the old keys from the configuration once migrated.
+  1. Optional but recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
+
+     ```ruby
+     praefect['configuration'] = {
+       # praefect['listen_addr']
+       listen_addr: ...,
+       # praefect['socket_path']
+       socket_path: ...,
+       # praefect['prometheus_listen_addr']
+       prometheus_listen_addr: ...,
+       # praefect['tls_listen_addr']
+       tls_listen_addr: ...,
+       # praefect['separate_database_metrics']
+       prometheus_exclude_database_from_default_metrics: ...,
+       auth: {
+         # praefect['auth_token']
+         token: ...,
+         # praefect['auth_transitioning']
+         transitioning: ...,
+       },
+       logging: {
+         # praefect['logging_format']
+         format: ...,
+         # praefect['logging_level']
+         level: ...,
+       },
+       failover: {
+         # praefect['failover_enabled']
+         enabled: ...,
+       },
+       background_verification: {
+         # praefect['background_verification_delete_invalid_records']
+         delete_invalid_records: ...,
+         # praefect['background_verification_verification_interval']
+         verification_interval: ...,
+       },
+       reconciliation: {
+         # praefect['reconciliation_scheduling_interval']
+         scheduling_interval: ...,
+         # praefect['reconciliation_histogram_buckets']. The old value was configured as a string
+         # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+         histogram_buckets: ...,
+       },
+       tls: {
+         # praefect['certificate_path']
+         certificate_path: ...,
+        # praefect['key_path']
+         key_path: ...,
+       },
+       database: {
+         # praefect['database_host']
+         host: ...,
+         # praefect['database_port']
+         port: ...,
+         # praefect['database_user']
+         user: ...,
+         # praefect['database_password']
+         password: ...,
+         # praefect['database_dbname']
+         dbname: ...,
+         # praefect['database_sslmode']
+         sslmode: ...,
+         # praefect['database_sslcert']
+         sslcert: ...,
+         # praefect['database_sslkey']
+         sslkey: ...,
+         # praefect['database_sslrootcert']
+         sslrootcert: ...,
+         session_pooled: {
+           # praefect['database_direct_host']
+           host: ...,
+           # praefect['database_direct_port']
+           port: ...,
+           # praefect['database_direct_user']
+           user: ...,
+           # praefect['database_direct_password']
+           password: ...,
+           # praefect['database_direct_dbname']
+           dbname: ...,
+           # praefect['database_direct_sslmode']
+           sslmode: ...,
+           # praefect['database_direct_sslcert']
+           sslcert: ...,
+           # praefect['database_direct_sslkey']
+           sslkey: ...,
+           # praefect['database_direct_sslrootcert']
+           sslrootcert: ...,
+         }
+       },
+       sentry: {
+         # praefect['sentry_dsn']
+         sentry_dsn: ...,
+         # praefect['sentry_environment']
+         sentry_environment: ...,
+       },
+       prometheus: {
+         # praefect['prometheus_grpc_latency_buckets']. The old value was configured as a string
+         # such as '[0, 1, 2]'. The new value must be an array like [0, 1, 2].
+         grpc_latency_buckets: ...,
+       },
+       # praefect['graceful_stop_timeout']
+       graceful_stop_timeout: ...,
+       
+       # praefect['virtual_storages']. The old value was a hash map but the new value is an array.
+       virtual_storage: [
+         {
+           # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]. The name was previously the key in
+           # the 'virtual_storages' hash.
+           name: ...,
+           # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]. The old value was a hash map
+           # but the new value is an array.
+           node: [
+             {
+               # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]. Use NODE_NAME key as the
+               # storage.
+               storage: ...,
+               # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]['address'].
+               address: ...,
+               # praefect['virtual_storages'][VIRTUAL_STORAGE_NAME]['nodes'][NODE_NAME]['token'].
+               token: ...,
+             },
+           ],
+         }
+       ]
+     }
+     ```
+
 ### Geo installations **(PREMIUM SELF)**
 
 Specific information applies to installations using Geo:

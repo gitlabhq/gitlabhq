@@ -205,7 +205,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
     context 'when the project is a catalog resource' do
       before do
-        create(:catalog_resource, project: project)
+        create(:ci_catalog_resource, project: project)
       end
 
       it 'is true' do

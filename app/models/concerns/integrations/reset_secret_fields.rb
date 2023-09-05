@@ -12,9 +12,7 @@ module Integrations
     end
 
     def exposing_secrets_fields
-      # TODO: Once all integrations use `Integrations::Field` we can remove the `.try` here.
-      # See: https://gitlab.com/groups/gitlab-org/-/epics/7652
-      fields.select { _1.try(:exposes_secrets) }.pluck(:name)
+      fields.select(&:exposes_secrets).pluck(:name)
     end
 
     private

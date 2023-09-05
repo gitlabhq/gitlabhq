@@ -17,7 +17,14 @@ module ChronicDurationAttribute
         chronic_duration_attributes[virtual_attribute] = value.presence || parameters[:default].presence.to_s
 
         begin
-          new_value = value.present? ? ChronicDuration.parse(value).to_i : parameters[:default].presence
+          new_value = if value.present?
+                        ChronicDuration.parse(
+                          value, use_complete_matcher: Feature.enabled?(:update_chronic_duration)
+                        ).to_i
+                      else
+                        parameters[:default].presence
+                      end
+
           assign_attributes(source_attribute => new_value)
         rescue ChronicDuration::DurationParseError
           # ignore error as it will be caught by validation

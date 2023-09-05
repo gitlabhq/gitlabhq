@@ -160,7 +160,7 @@ module Gitlab
               retry: retry_defined? ? retry_value : nil,
               parallel: has_parallel? ? parallel_value : nil,
               interruptible: interruptible_defined? ? interruptible_value : nil,
-              timeout: has_timeout? ? ChronicDuration.parse(timeout.to_s) : nil,
+              timeout: parsed_timeout,
               artifacts: artifacts_value,
               release: release_value,
               after_script: after_script_value,
@@ -172,6 +172,12 @@ module Gitlab
               id_tokens: id_tokens_value,
               publish: publish
             ).compact
+          end
+
+          def parsed_timeout
+            return unless has_timeout?
+
+            ChronicDuration.parse(timeout.to_s, use_complete_matcher: Feature.enabled?(:update_chronic_duration))
           end
 
           def ignored?

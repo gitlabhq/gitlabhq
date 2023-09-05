@@ -469,11 +469,8 @@ class Integration < ApplicationRecord
     []
   end
 
-  # TODO: Once all integrations use `Integrations::Field` we can
-  # use `#secret?` here.
-  # See: https://gitlab.com/groups/gitlab-org/-/epics/7652
   def secret_fields
-    fields.select { |f| f[:type] == :password }.pluck(:name)
+    fields.select(&:secret?).pluck(:name)
   end
 
   # Expose a list of fields in the JSON endpoint.

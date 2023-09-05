@@ -64,7 +64,7 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
   - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
 - A [bug with zero-downtime reindexing](https://gitlab.com/gitlab-org/gitlab/-/issues/422938) can cause a `Couldn't load task status` error when you reindex. You might also get a `sliceId must be greater than 0 but was [-1]` error on the Elasticsearch host. As a workaround, consider [reindexing from scratch](../../integration/advanced_search/elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index) or upgrading to GitLab 16.3.
 - Gitaly configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.10 while backwards compatibility is
-  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](../index.md#gitaly-omnibus-gitlab-configuration-structure-change).
+  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](gitlab_16_changes.md#1600).
 - You might encounter the following error while upgrading to GitLab 15.10 or later:
 
   ```shell
@@ -124,7 +124,10 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
   - Elasticsearch does not need to be enabled for this to occur.
   - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
 - **Upgrade to patch release 15.9.3 or later**. This provides fixes for two database migration bugs:
-  - Patch releases 15.9.0, 15.9.1, 15.9.2 have [a bug that can cause data loss](../index.md#user-profile-data-loss-bug-in-159x) from the user profile fields.
+  - Patch releases 15.9.0, 15.9.1, 15.9.2 have a bug that can cause data loss
+    from the user profile fields `linkedin`, `twitter`, `skype`, `website_url`,
+    `location`, and `organization`. For more information, see
+    [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216).
   - The second [bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/394760) ensures it is possible to upgrade directly from 15.4.x.
 - As part of the [CI Partitioning effort](../../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual.
 - Praefect's metadata verifier's [invalid metadata deletion behavior](../../administration/gitaly/praefect.md#enable-deletions) is now enabled by default.
@@ -140,7 +143,7 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
 
   You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. [Read more about repository verification, and to see an example log entry](../../administration/gitaly/praefect.md#repository-verification).
 - Praefect configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.9 while backwards compatibility is
-  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](../index.md#praefect-omnibus-gitlab-configuration-structure-change).
+  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](gitlab_16_changes.md#1600).
 
 ### Self-compiled installations
 
@@ -526,8 +529,6 @@ potentially cause downtime.
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
-- New Git repositories created in Gitaly cluster [no longer use the `@hashed` storage path](../index.md#change-to-praefect-generated-replica-paths-in-gitlab-153). Server
-  hooks for new repositories must be copied into a different location.
 - The structure of `/etc/gitlab/gitlab-secrets.json` was modified in [GitLab 15.4](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6310),
   and new configuration was added to `gitlab_pages`, `grafana`, and `mattermost` sections.
   In a highly available or GitLab Geo environment, secrets need to be the same on all nodes.
@@ -594,8 +595,19 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
 ## 15.3.0
 
-- New Git repositories created in Gitaly cluster [no longer use the `@hashed` storage path](../index.md#change-to-praefect-generated-replica-paths-in-gitlab-153). Server
-  hooks for new repositories must be copied into a different location.
+- New Git repositories created in Gitaly cluster no longer use the `@hashed`
+  storage path. Server hooks for new repositories must be copied into a
+  different location. Praefect now generates replica paths for use by Gitaly
+  cluster. This change is a pre-requisite for Gitaly cluster atomically
+  creating, deleting, and renaming Git repositories.
+
+  To identify the replica path,
+  [query the Praefect repository metadata](../../administration/gitaly/troubleshooting.md#view-repository-metadata)
+  and pass the `@hashed` storage path to `-relative-path`.
+
+  With this information, you can correctly install
+  [server hooks](../../administration/server_hooks.md).
+
 - A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
 
   - Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.

@@ -467,6 +467,9 @@ The DAST job does not require the project's repository to be present when runnin
 > - Runner tags selection [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345430) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md)  named `on_demand_scans_runner_tags. Disabled by default.
 > - Runner tags selection [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
 
+WARNING:
+On-demand scans are not available when GitLab is running in FIPS mode.
+
 An on-demand DAST scan runs outside the DevOps life cycle. Changes in your repository don't trigger
 the scan. You must either start it manually, or schedule it to run. For on-demand DAST scans,
 a [site profile](#site-profile) defines **what** is to be scanned, and a

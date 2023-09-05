@@ -57,7 +57,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
 
     context 'when project is a catalog resource' do
       let(:ref) { 'master' }
-      let!(:catalog_resource) { create(:catalog_resource, project: project) }
+      let!(:ci_catalog_resource) { create(:ci_catalog_resource, project: project) }
 
       context 'and it is valid' do
         let_it_be(:project) { create(:project, :repository, description: 'our components') }

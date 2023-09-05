@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::FileDownloads::Validations do
+RSpec.describe BulkImports::FileDownloads::Validations, feature_category: :importers do
   let(:dummy_instance) { dummy_class.new }
   let(:dummy_class) do
     Class.new do

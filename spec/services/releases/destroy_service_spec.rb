@@ -30,12 +30,12 @@ RSpec.describe Releases::DestroyService, feature_category: :release_orchestratio
       end
 
       context 'when the release is for a catalog resource' do
-        let!(:catalog_resource) { create(:catalog_resource, project: project, state: 'published') }
-        let!(:version) { create(:catalog_resource_version, catalog_resource: catalog_resource, release: release) }
+        let!(:catalog_resource) { create(:ci_catalog_resource, project: project, state: 'published') }
+        let!(:version) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource, release: release) }
 
         it 'does not update the catalog resources if there are still releases' do
           second_release = create(:release, project: project, tag: 'v1.2.0')
-          create(:catalog_resource_version, catalog_resource: catalog_resource, release: second_release)
+          create(:ci_catalog_resource_version, catalog_resource: catalog_resource, release: second_release)
 
           subject
 

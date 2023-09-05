@@ -31,6 +31,8 @@ module Gitlab
           observation
         rescue StandardError => error
           observation.error_message = error.message
+
+          raise
         ensure
           observation.walltime = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
 

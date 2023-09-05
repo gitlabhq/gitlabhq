@@ -107,6 +107,8 @@ RSpec.describe Gitlab::Database::Migrations::Instrumentation do
 
           before do
             observe
+          rescue Exception # rubocop:disable Lint/RescueException
+            # ignore (we expect this exception)
           end
 
           it 'records a valid observation', :aggregate_failures do

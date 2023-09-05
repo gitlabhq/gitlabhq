@@ -83,6 +83,8 @@ module BulkImports
     end
 
     def raise_error(message)
+      logger.warn(message: message, response_headers: response_headers, importer: 'gitlab_migration')
+
       raise ServiceError, message
     end
 
@@ -107,6 +109,10 @@ module BulkImports
 
     def filename
       @filename.presence || remote_filename
+    end
+
+    def logger
+      @logger ||= Gitlab::Import::Logger.build
     end
 
     def validate_url

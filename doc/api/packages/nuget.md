@@ -425,9 +425,11 @@ Example response:
 }
 ```
 
-## V2 Feed Metadata Endpoint
+## V2 Feed Metadata Endpoints
 
 > Introduced in GitLab 16.3.
+
+### $metadata endpoint
 
 Authentication is not required. Returns metadata for a V2 feed available endpoints:
 
@@ -436,7 +438,7 @@ GET <route-prefix>/v2/$metadata
 ```
 
 ```shell
-  curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/$metadata"
+curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/$metadata"
 ```
 
 Example response:
@@ -474,4 +476,37 @@ Example response:
     </Schema>
   </edmx:DataServices>
 </edmx:Edmx>
+```
+
+### OData package entry endpoints
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127667) in GitLab 16.4.
+
+| Endpoint | Description |
+| -------- | ----------- |
+| `GET projects/:id/packages/nuget/v2/Packages()?$filter=(tolower(Id) eq '<package_name>')` | Returns an OData XML document containing information about the package with the given name. |
+| `GET projects/:id/packages/nuget/v2/FindPackagesById()?id='<package_name>'` | Returns an OData XML document containing information about the package with the given name. |
+| `GET projects/:id/packages/nuget/v2/Packages(Id='<package_name>',Version='<package_version>')` | Returns an OData XML document containing information about the package with the given name and version. |
+
+NOTE:
+GitLab doesn't receive an authentication token for the `Packages()` and `FindPackagesByID()` endpoints.
+To not reveal the package version to unauthenticated users, the actual latest package version is not returned. Instead, a placeholder version is returned.
+The latest version is obtained in the subsequent download request where the authentication token is sent.
+
+```shell
+curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages()?$filter=(tolower(Id) eq 'mynugetpkg')"
+```
+
+Example response:
+
+```xml
+<entry xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xml:base="https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2">
+    <id>https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages(Id='mynugetpkg',Version='0.0.0-latest-version')</id>
+    <category term="V2FeedPackage" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
+    <title type="text">mynugetpkg</title>
+    <content type="application/zip" src="https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/download/mynugetpkg/latest"/>
+    <m:properties>
+      <d:Version>0.0.0-latest-version</d:Version>
+    </m:properties>
+ </entry>
 ```

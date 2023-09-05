@@ -414,7 +414,9 @@ module Ci
     end
 
     def options_scheduled_at
-      ChronicDuration.parse(options[:start_in])&.seconds&.from_now
+      ChronicDuration.parse(
+        options[:start_in], use_complete_matcher: Feature.enabled?(:update_chronic_duration)
+      )&.seconds&.from_now
     end
 
     def action?
@@ -745,7 +747,9 @@ module Ci
     def artifacts_expire_in=(value)
       self.artifacts_expire_at =
         if value
-          ChronicDuration.parse(value)&.seconds&.from_now
+          ChronicDuration.parse(
+            value, use_complete_matcher: Feature.enabled?(:update_chronic_duration)
+          )&.seconds&.from_now
         end
     end
 

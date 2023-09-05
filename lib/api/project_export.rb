@@ -154,7 +154,7 @@ module API
             { code: 503, message: 'Service unavailable' }
           ]
           tags ['project_export']
-          produces %w[application/octet-stream application/json]
+          produces %w[application/octet-stream application/gzip application/json]
         end
         params do
           requires :relation, type: String, project_portable: true, desc: 'Project relation name'

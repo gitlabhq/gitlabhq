@@ -735,6 +735,18 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           is_expected.to eq(1.day.since)
         end
       end
+
+      context 'when update_chronic_duration is disabled' do
+        before do
+          stub_feature_flags(update_chronic_duration: false)
+        end
+
+        it 'returns date after 1 day' do
+          freeze_time do
+            is_expected.to eq(1.day.since)
+          end
+        end
+      end
     end
 
     context 'when start_in is 1 week' do
@@ -743,6 +755,18 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it 'returns date after 1 week' do
         freeze_time do
           is_expected.to eq(1.week.since)
+        end
+      end
+
+      context 'when update_chronic_duration is disabled' do
+        before do
+          stub_feature_flags(update_chronic_duration: false)
+        end
+
+        it 'returns date after 1 week' do
+          freeze_time do
+            is_expected.to eq(1.week.since)
+          end
         end
       end
     end
@@ -1074,6 +1098,18 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.artifacts_expire_in = '0'
 
       is_expected.to be_nil
+    end
+
+    context 'when update_chronic_duration is disabled' do
+      before do
+        stub_feature_flags(update_chronic_duration: false)
+      end
+
+      it 'assigns a valid duration' do
+        build.artifacts_expire_in = '7 days'
+
+        is_expected.to be_within(10).of(7.days.to_i)
+      end
     end
   end
 

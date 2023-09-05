@@ -12,12 +12,28 @@ RSpec.describe Gitlab::TimeTrackingFormatter, feature_category: :team_planning d
       let(:duration_string) { '3h 20m' }
 
       it { expect(subject).to eq(12_000) }
+
+      context 'when update_chronic_duration is false' do
+        before do
+          stub_feature_flags(update_chronic_duration: false)
+        end
+
+        it { expect(subject).to eq(12_000) }
+      end
     end
 
     context 'negative durations' do
       let(:duration_string) { '-3h 20m' }
 
       it { expect(subject).to eq(-12_000) }
+
+      context 'when update_chronic_duration is false' do
+        before do
+          stub_feature_flags(update_chronic_duration: false)
+        end
+
+        it { expect(subject).to eq(-12_000) }
+      end
     end
 
     context 'durations with months' do
@@ -25,6 +41,16 @@ RSpec.describe Gitlab::TimeTrackingFormatter, feature_category: :team_planning d
 
       it 'uses our custom conversions' do
         expect(subject).to eq(576_000)
+      end
+
+      context 'when update_chronic_duration is false' do
+        before do
+          stub_feature_flags(update_chronic_duration: false)
+        end
+
+        it 'uses our custom conversions' do
+          expect(subject).to eq(576_000)
+        end
       end
     end
 
@@ -35,6 +61,16 @@ RSpec.describe Gitlab::TimeTrackingFormatter, feature_category: :team_planning d
         it 'returns nil' do
           expect(subject).to be_nil
         end
+
+        context 'when update_chronic_duration is false' do
+          before do
+            stub_feature_flags(update_chronic_duration: false)
+          end
+
+          it 'returns nil' do
+            expect(subject).to be_nil
+          end
+        end
       end
 
       context 'when keep_zero is true' do
@@ -42,6 +78,16 @@ RSpec.describe Gitlab::TimeTrackingFormatter, feature_category: :team_planning d
 
         it 'returns zero' do
           expect(subject).to eq(0)
+        end
+
+        context 'when update_chronic_duration is false' do
+          before do
+            stub_feature_flags(update_chronic_duration: false)
+          end
+
+          it 'returns zero' do
+            expect(subject).to eq(0)
+          end
         end
       end
     end
