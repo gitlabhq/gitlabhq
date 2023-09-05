@@ -60,7 +60,6 @@ Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for 
    ```ruby
    Feature.enable(:ai_related_settings)
    Feature.enable(:openai_experimentation)
-   Feature.enable(:anthropic_experimentation)
    ```
 
 1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
@@ -132,7 +131,6 @@ Gitlab::CurrentSettings.update(openai_api_key: "<open-ai-key>")
 ### Configure Anthropic access
 
 ```ruby
-Feature.enable(:anthropic_experimentation)
 Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 ```
 
@@ -185,7 +183,14 @@ The endpoints are:
 - `https://gitlab.example.com/api/v4/ai/experimentation/vertex/chat`
 
 These endpoints are only for prototyping, not for rolling features out to customers.
-The experimental endpoint is only available to GitLab team members on production. Use the
+
+In your local dev environment, you can experiment with these endpoints locally with the feature flag enabled:
+
+```ruby
+Feature.enable(:ai_experimentation_api)
+```
+
+On production, the experimental endpoints are only available to GitLab team members. Use a
 [GitLab API token](../../user/profile/personal_access_tokens.md) to authenticate.
 
 ## Abstraction layer

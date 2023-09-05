@@ -15,7 +15,8 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
       load_balancer,
       nameserver: 'localhost',
       port: 8600,
-      record: 'foo'
+      record: 'foo',
+      disconnect_timeout: 1 # Short disconnect timeout to keep tests fast
     )
   end
 
@@ -192,6 +193,13 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
   end
 
   describe '#replace_hosts' do
+    before do
+      stub_env('LOAD_BALANCER_PARALLEL_DISCONNECT', 'true')
+      allow(service)
+              .to receive(:load_balancer)
+              .and_return(load_balancer)
+    end
+
     let(:address_foo) { described_class::Address.new('foo') }
     let(:address_bar) { described_class::Address.new('bar') }
 
@@ -202,19 +210,13 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
       )
     end
 
-    before do
-      allow(service)
-        .to receive(:load_balancer)
-        .and_return(load_balancer)
-    end
-
     it 'replaces the hosts of the load balancer' do
       service.replace_hosts([address_bar])
 
       expect(load_balancer.host_list.host_names_and_ports).to eq([['bar', nil]])
     end
 
-    it 'disconnects the old connections' do
+    it 'disconnects the old connections gracefully if possible' do
       host = load_balancer.host_list.hosts.first
 
       allow(service)
@@ -222,10 +224,46 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
         .and_return(2)
 
       expect(host)
-        .to receive(:disconnect!)
-        .with(timeout: 2)
+        .to receive(:try_disconnect).and_return(true)
+
+      expect(host).not_to receive(:force_disconnect!)
 
       service.replace_hosts([address_bar])
+    end
+
+    it 'disconnects the old connections forcefully if necessary' do
+      host = load_balancer.host_list.hosts.first
+
+      allow(service)
+        .to receive(:disconnect_timeout)
+              .and_return(2)
+
+      expect(host)
+        .to receive(:try_disconnect).and_return(false)
+
+      expect(host).to receive(:force_disconnect!)
+
+      service.replace_hosts([address_bar])
+    end
+
+    context 'when LOAD_BALANCER_PARALLEL_DISCONNECT is false' do
+      before do
+        stub_env('LOAD_BALANCER_PARALLEL_DISCONNECT', 'false')
+      end
+
+      it 'disconnects them sequentially' do
+        host = load_balancer.host_list.hosts.first
+
+        allow(service)
+          .to receive(:disconnect_timeout)
+          .and_return(2)
+
+        expect(host)
+          .to receive(:disconnect!)
+          .with(timeout: 2)
+
+        service.replace_hosts([address_bar])
+      end
     end
   end
 
@@ -473,6 +511,63 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
           expect(service.refresh_thread_interruption_logged).to be_truthy
         end
       end
+    end
+  end
+
+  context 'with service discovery connected to a real load balancer' do
+    let(:database_address) do
+      host, port = ApplicationRecord.connection_pool.db_config.configuration_hash.fetch(:host, :port)
+      described_class::Address.new(host, port)
+    end
+
+    before do
+      # set up the load balancer to point to the test postgres instance with three seperate conections
+      allow(service).to receive(:addresses_from_dns)
+                          .and_return([Gitlab::Database::LoadBalancing::Resolver::FAR_FUTURE_TTL,
+                            [database_address, database_address, database_address]])
+                          .once
+
+      service.perform_service_discovery
+    end
+
+    it 'configures service discovery with three replicas' do
+      expect(service.load_balancer.host_list.hosts.count).to eq(3)
+    end
+
+    it 'swaps the hosts out gracefully when not contended' do
+      expect(service.load_balancer.host_list.hosts.count).to eq(3)
+
+      host = service.load_balancer.host_list.next
+
+      # Check out and use a connection from a host so that there is something to clean up
+      host.pool.with_connection do |connection|
+        expect { connection.execute('select 1') }.not_to raise_error
+      end
+
+      allow(service).to receive(:addresses_from_dns).and_return([Gitlab::Database::LoadBalancing::Resolver::FAR_FUTURE_TTL, []])
+
+      service.load_balancer.host_list.hosts.each do |h|
+        # Expect that the host gets gracefully disconnected
+        expect(h).not_to receive(:force_disconnect!)
+      end
+
+      expect { service.perform_service_discovery }.to change { host.pool.stat[:connections] }.from(1).to(0)
+    end
+
+    it 'swaps the hosts out forcefully when contended' do
+      host = service.load_balancer.host_list.next
+
+      # Check out a connection and leave it checked out (simulate a web request)
+      connection = host.pool.checkout
+      connection.execute('select 1')
+
+      # Expect that the connection is forcefully checked in
+      expect(host).to receive(:force_disconnect!).and_call_original
+      expect(connection).to receive(:steal!).and_call_original
+
+      allow(service).to receive(:addresses_from_dns).and_return([Gitlab::Database::LoadBalancing::Resolver::FAR_FUTURE_TTL, []])
+
+      service.perform_service_discovery
     end
   end
 end

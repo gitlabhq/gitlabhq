@@ -28812,6 +28812,12 @@ msgstr ""
 msgid "Mattermost notifications"
 msgstr ""
 
+msgid "MattermostService|%{link_start}Add a slash command %{icon}%{link_end} in your Mattermost team with the options listed below."
+msgstr ""
+
+msgid "MattermostService|%{link_start}Enable custom slash commands %{icon}%{link_end} on your Mattermost installation."
+msgstr ""
+
 msgid "MattermostService|Add to Mattermost"
 msgstr ""
 
@@ -28827,6 +28833,9 @@ msgstr ""
 msgid "MattermostService|Install"
 msgstr ""
 
+msgid "MattermostService|Paste the token into the %{strong_start}Token%{strong_end} field."
+msgstr ""
+
 msgid "MattermostService|Request URL"
 msgstr ""
 
@@ -28837,6 +28846,9 @@ msgid "MattermostService|Response icon"
 msgstr ""
 
 msgid "MattermostService|Response username"
+msgstr ""
+
+msgid "MattermostService|Select the %{strong_start}Active%{strong_end} check box, then select %{strong_start}Save changes%{strong_end} to start using GitLab inside Mattermost!"
 msgstr ""
 
 msgid "MattermostService|Suggestions:"

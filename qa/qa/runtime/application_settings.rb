@@ -45,6 +45,20 @@ module QA
           set_application_settings(**@original_application_settings.slice(...))
         end
 
+        # Enable the application setting that allows requests from local services to the GitLab instance
+        #
+        # @return [Void]
+        def enable_local_requests
+          set_application_settings(allow_local_requests_from_web_hooks_and_services: true)
+        end
+
+        # Disables the application setting that allows local requests
+        #
+        # @return [Void]
+        def disable_local_requests
+          set_application_settings(allow_local_requests_from_web_hooks_and_services: false)
+        end
+
         private
 
         def admin_api_client

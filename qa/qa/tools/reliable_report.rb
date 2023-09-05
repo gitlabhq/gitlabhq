@@ -395,12 +395,9 @@ module QA
               r.run_type == "package-and-qa" or
               r.run_type == "nightly"
             )
-            |> filter(fn: (r) => r.job_name != "ce:airgapped" and
-              r.job_name != "ee:airgapped" and
-              r.job_name != "ce:instance-image-slow-network" and
-              r.job_name != "ee:instance-image-slow-network" and
-              r.job_name != "ce:nplus1-instance-image" and
-              r.job_name != "ee:nplus1-instance-image"
+            |> filter(fn: (r) => r.job_name != "airgapped" and
+              r.job_name != "instance-image-slow-network" and
+              r.job_name != "nplus1-instance-image"
             )
             |> filter(fn: (r) => r.status != "pending" and
               r.merge_request == "false" and

@@ -80,11 +80,26 @@ module Gitlab
           start_time = ::Gitlab::Metrics::System.monotonic_time
 
           while (::Gitlab::Metrics::System.monotonic_time - start_time) <= timeout
-            break if pool.connections.none?(&:in_use?)
+            return if try_disconnect
 
             sleep(2)
           end
 
+          force_disconnect!
+        end
+
+        # Attempt to disconnect the pool if all connections are no longer in use.
+        # Returns true if the pool was disconnected, false if not.
+        def try_disconnect
+          if pool.connections.none?(&:in_use?)
+            pool.disconnect!
+            return true
+          end
+
+          false
+        end
+
+        def force_disconnect!
           pool.disconnect!
         end
 

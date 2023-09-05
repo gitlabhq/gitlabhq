@@ -23936,9 +23936,17 @@ CREATE TABLE user_credit_card_validations (
     last_digits smallint,
     holder_name text,
     network text,
+    last_digits_hash text,
+    holder_name_hash text,
+    expiration_date_hash text,
+    network_hash text,
     CONSTRAINT check_1765e2b30f CHECK ((char_length(network) <= 32)),
     CONSTRAINT check_3eea080c91 CHECK (((last_digits >= 0) AND (last_digits <= 9999))),
-    CONSTRAINT check_cc0c8dc0fe CHECK ((char_length(holder_name) <= 50))
+    CONSTRAINT check_7721e1961a CHECK ((char_length(network_hash) <= 44)),
+    CONSTRAINT check_83f1e2ace3 CHECK ((char_length(expiration_date_hash) <= 44)),
+    CONSTRAINT check_aca7c2607c CHECK ((char_length(holder_name_hash) <= 44)),
+    CONSTRAINT check_cc0c8dc0fe CHECK ((char_length(holder_name) <= 50)),
+    CONSTRAINT check_f5c35b1a6e CHECK ((char_length(last_digits_hash) <= 44))
 );
 
 CREATE TABLE user_custom_attributes (

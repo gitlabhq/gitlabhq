@@ -4,12 +4,12 @@ module QA
   module Service
     module DockerRun
       class Smocker < Base
-        def initialize
+        def initialize(name: 'smocker-server')
           @image = 'thiht/smocker:0.17.1'
-          @name = 'smocker-server'
+          @name = name
           @public_port = 8080
           @admin_port = 8081
-          super
+          super()
           @network_cache = network
         end
 
