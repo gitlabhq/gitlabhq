@@ -39,8 +39,17 @@ params: { scope: statuses, runner_type: runner_types }).execute
           browse_artifacts_path: [{ project: { namespace: [:route] } }],
           play_path: [{ project: { namespace: [:route] } }],
           web_path: [{ project: { namespace: [:route] } }],
-          tags: [:tags]
+          tags: [:tags],
+          trace: [{ project: [:namespace] }, :job_artifacts_trace]
         }
+      end
+
+      def nested_preloads
+        super.merge({
+          trace: {
+            html_summary: [:trace_chunks]
+          }
+        })
       end
     end
   end

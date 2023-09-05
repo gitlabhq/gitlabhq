@@ -9,7 +9,7 @@
     .gl-display-flex.gl-align-items-center
       = link_to project_tree_path(@project, branch.name, ref_type: 'heads'), class: 'item-title str-truncated-100 ref-name', data: { qa_selector: 'branch_link' } do
         = branch.name
-      = deprecated_clipboard_button(text: branch.name, title: _("Copy branch name"))
+      = clipboard_button(text: branch.name, title: _("Copy branch name"))
       - if is_default_branch
         = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :neutral, size: :sm }, { class: 'gl-ml-2' }
       - if protected_branch?(@project, branch)

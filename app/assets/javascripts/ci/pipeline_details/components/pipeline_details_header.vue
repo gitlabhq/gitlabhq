@@ -63,7 +63,7 @@ export default {
   },
   i18n: {
     scheduleBadgeText: s__('Pipelines|Scheduled'),
-    scheduleBadgeTooltip: __('This pipeline was triggered by a schedule'),
+    scheduleBadgeTooltip: __('This pipeline was created by a schedule'),
     childBadgeText: s__('Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})'),
     childBadgeTooltip: __('This is a child pipeline within the parent pipeline'),
     latestBadgeText: s__('Pipelines|latest'),
@@ -272,7 +272,7 @@ export default {
       });
     },
     triggeredText() {
-      return sprintf(__('triggered pipeline for commit %{linkStart}%{shortId}%{linkEnd}'), {
+      return sprintf(__('created pipeline for commit %{linkStart}%{shortId}%{linkEnd}'), {
         shortId: this.shortId,
       });
     },

@@ -17,7 +17,7 @@
           - if can?(current_user, :read_group, @group)
             %span.gl-display-inline-block.gl-vertical-align-middle
               = s_("GroupPage|Group ID: %{group_id}") % { group_id: @group.id }
-              = deprecated_clipboard_button(title: s_('GroupPage|Copy group ID'), text: @group.id)
+              = clipboard_button(title: s_('GroupPage|Copy group ID'), text: @group.id)
           - if current_user
             %span.gl-ml-3.gl-mb-3
               = render 'shared/members/access_request_links', source: @group

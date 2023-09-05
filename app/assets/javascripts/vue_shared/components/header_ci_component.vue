@@ -120,7 +120,7 @@ export default {
 
       <strong data-testid="ci-header-item-text">{{ item }}</strong>
 
-      <template v-if="shouldRenderTriggeredLabel">{{ __('triggered') }}</template>
+      <template v-if="shouldRenderTriggeredLabel">{{ __('started') }}</template>
       <template v-else>{{ __('created') }}</template>
 
       <timeago-tooltip :time="time" />

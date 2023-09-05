@@ -31,7 +31,7 @@ Prerequisites:
   1.21.18` from Debian 12 Bookworm or `dpkg >= 1.19.0.5ubuntu2` from Ubuntu
   18.04 Bionic Beaver.
 
-## Enable the Debian API **(FREE SELF)**
+## Enable the Debian API
 
 Debian repository support is still a work in progress. It's gated behind a feature flag that's
 **disabled by default**.
@@ -53,7 +53,7 @@ To disable it:
 Feature.disable(:debian_packages)
 ```
 
-## Enable the Debian group API **(FREE SELF)**
+## Enable the Debian group API
 
 The Debian group repository is also behind a second feature flag that is disabled by default.
 

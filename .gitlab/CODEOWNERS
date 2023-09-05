@@ -96,12 +96,13 @@ Dangerfile
 /lefthook.yml
 /tests.yml
 
-^[Backend Static Code Analysis] @gl-quality/eng-prod @dstull @splattael
+^[Backend Static Code Analysis] @gl-quality/eng-prod @dstull
 .rubocop*.yml
 .rubocop_todo/
 /gems/config/rubocop.yml
 /rubocop/
 /spec/rubocop/
+/spec/rubocop*
 
 ^[End-to-end] @gl-quality
 /qa/

@@ -159,7 +159,7 @@ describe('Header CI Component', () => {
       createComponent({ shouldRenderTriggeredLabel: false, itemName: 'Job build_job' });
 
       expect(wrapper.text()).toContain('created');
-      expect(wrapper.text()).not.toContain('triggered');
+      expect(wrapper.text()).not.toContain('started');
     });
   });
 });

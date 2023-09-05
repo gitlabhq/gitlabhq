@@ -95,7 +95,7 @@ export default {
         },
         {
           key: 'triggerer',
-          label: s__('Pipeline|Triggered by'),
+          label: s__('Pipeline|Created by'),
           thClass: DEFAULT_TH_CLASSES,
           tdClass: `${this.tdClasses} ${HIDE_TD_ON_MOBILE}`,
           columnClass: 'gl-w-15p',

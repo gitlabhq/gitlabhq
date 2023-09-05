@@ -44,8 +44,17 @@ module Resolvers
           play_path: [{ project: { namespace: [:route] } }],
           web_path: [{ project: { namespace: [:route] } }],
           short_sha: [:pipeline],
-          tags: [:tags]
+          tags: [:tags],
+          trace: [{ project: [:namespace] }, :job_artifacts_trace]
         }
+      end
+
+      def nested_preloads
+        super.merge({
+          trace: {
+            html_summary: [:trace_chunks]
+          }
+        })
       end
     end
   end

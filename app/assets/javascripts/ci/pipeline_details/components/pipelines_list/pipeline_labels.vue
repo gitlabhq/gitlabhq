@@ -54,7 +54,7 @@ export default {
       v-gl-tooltip
       :href="pipelineScheduleUrl"
       target="__blank"
-      :title="__('This pipeline was triggered by a schedule.')"
+      :title="__('This pipeline was created by a schedule.')"
       variant="info"
       size="sm"
       data-testid="pipeline-url-scheduled"

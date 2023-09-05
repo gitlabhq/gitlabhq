@@ -13868,11 +13868,23 @@ CI/CD variables for a GitLab instance.
 
 ### `CiJobTrace`
 
-#### Fields
+#### Fields with arguments
+
+##### `CiJobTrace.htmlSummary`
+
+HTML summary that contains the tail lines of the trace.
+
+WARNING:
+**Introduced** in 15.11.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`String!`](#string).
+
+###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobtracehtmlsummary"></a>`htmlSummary` **{warning-solid}** | [`String!`](#string) | **Introduced** in 15.11. This feature is an Experiment. It can be changed or removed at any time. HTML summary containing the last 10 lines of the trace. |
+| <a id="cijobtracehtmlsummarylastlines"></a>`lastLines` | [`Int`](#int) | Number of tail lines to return, up to a maximum of 100 lines. |
 
 ### `CiJobsDurationStatistics`
 

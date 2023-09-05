@@ -34912,6 +34912,9 @@ msgstr ""
 msgid "Pipeline|Created"
 msgstr ""
 
+msgid "Pipeline|Created by"
+msgstr ""
+
 msgid "Pipeline|Creating pipeline."
 msgstr ""
 
@@ -35033,9 +35036,6 @@ msgid "Pipeline|To see the remaining jobs, go to the %{boldStart}Jobs%{boldEnd} 
 msgstr ""
 
 msgid "Pipeline|Trigger author"
-msgstr ""
-
-msgid "Pipeline|Triggered by"
 msgstr ""
 
 msgid "Pipeline|Variables"
@@ -48566,10 +48566,10 @@ msgstr ""
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by Auto DevOps."
 msgstr ""
 
-msgid "This pipeline was triggered by a schedule"
+msgid "This pipeline was created by a schedule"
 msgstr ""
 
-msgid "This pipeline was triggered by a schedule."
+msgid "This pipeline was created by a schedule."
 msgstr ""
 
 msgid "This process deletes the project repository and all related resources."
@@ -55811,6 +55811,9 @@ msgstr ""
 msgid "created by"
 msgstr ""
 
+msgid "created pipeline for commit %{linkStart}%{shortId}%{linkEnd}"
+msgstr ""
+
 msgid "daily"
 msgstr ""
 
@@ -57111,6 +57114,9 @@ msgstr ""
 msgid "ssh:"
 msgstr ""
 
+msgid "started"
+msgstr ""
+
 msgid "started a discussion on %{design_link}"
 msgstr ""
 
@@ -57202,9 +57208,6 @@ msgid "total must be less than or equal to %{size}"
 msgstr ""
 
 msgid "triggered"
-msgstr ""
-
-msgid "triggered pipeline for commit %{linkStart}%{shortId}%{linkEnd}"
 msgstr ""
 
 msgid "two-factor authentication settings"
