@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.3.2 (2023-09-05)
+
+### Fixed (2 changes)
+
+- [Drop bridge jobs on unknown failures](gitlab-org/gitlab@d6fa408c6ecd9283430d6e9d6f46132d6726a8d3) ([merge request](gitlab-org/gitlab!130833))
+- [Fix Code Suggestions in Web IDE on GitLab 16.3](gitlab-org/gitlab@6e4cb467dd8c73e9034ba1b3c51a51c2eb02dd38) ([merge request](gitlab-org/gitlab!130755))
+
 ## 16.3.1 (2023-08-31)
 
 ### Fixed (1 change)
