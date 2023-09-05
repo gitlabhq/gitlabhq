@@ -130,8 +130,12 @@ module MergeRequests
       if source_branch_default? && !target_branch_specified?
         merge_request.target_branch = nil
       else
-        merge_request.target_branch ||= target_project.default_branch
+        merge_request.target_branch ||= get_target_branch
       end
+    end
+
+    def get_target_branch
+      target_project.default_branch
     end
 
     def source_branch_specified?

@@ -1,3 +1,4 @@
+import { joinPaths } from '~/lib/utils/url_utility';
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_HEALTH_STATUS,
@@ -42,3 +43,7 @@ export const markdownPreviewPath = (fullPath, iid) =>
   `${
     gon.relative_url_root || ''
   }/${fullPath}/preview_markdown?target_type=WorkItem&target_id=${iid}`;
+
+export const workItemPath = (fullPath, workItemIid) => {
+  return joinPaths(gon?.relative_url_root || '/', fullPath, '-', 'work_items', workItemIid);
+};

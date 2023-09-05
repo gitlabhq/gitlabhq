@@ -31,6 +31,7 @@ import {
   WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WIDGET_TYPE_NOTES,
+  WIDGET_TYPE_LINKED_ITEMS,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -50,6 +51,7 @@ import WorkItemNotes from './work_item_notes.vue';
 import WorkItemDetailModal from './work_item_detail_modal.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemStateToggleButton from './work_item_state_toggle_button.vue';
+import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
 
 export default {
   i18n,
@@ -79,6 +81,7 @@ export default {
     AbuseCategorySelector,
     GlIntersectionObserver,
     ConfidentialityBadge,
+    WorkItemRelationships,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'reportAbusePath'],
@@ -258,6 +261,15 @@ export default {
     },
     showIntersectionObserver() {
       return !this.isModal && this.workItemsMvc2Enabled;
+    },
+    hasLinkedWorkItems() {
+      return this.glFeatures.linkedWorkItems;
+    },
+    workItemLinkedItems() {
+      return this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS);
+    },
+    showWorkItemLinkedItems() {
+      return this.hasLinkedWorkItems && this.workItemLinkedItems;
     },
   },
   mounted() {
@@ -590,6 +602,11 @@ export default {
               :confidential="workItem.confidential"
               @show-modal="openInModal"
               @addChild="$emit('addChild')"
+            />
+            <work-item-relationships
+              v-if="showWorkItemLinkedItems"
+              :work-item-iid="workItemIid"
+              :work-item-fullpath="workItem.project.fullPath"
             />
             <work-item-notes
               v-if="workItemNotes"

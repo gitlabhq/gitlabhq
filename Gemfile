@@ -41,7 +41,7 @@ gem 'sprockets', '~> 3.7.0'
 gem 'view_component', '~> 3.5.0'
 
 # Supported DBs
-gem 'pg', '~> 1.5.3'
+gem 'pg', '~> 1.5.4'
 
 gem 'neighbor', '~> 0.2.3'
 

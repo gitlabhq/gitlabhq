@@ -784,12 +784,12 @@ The `.gitlab-ci.yml` in a downstream project:
 
 ```yaml
 deploy:
-  script: echo "Deploy to ${CI_ENVIRONMENT_NAME} for ${CI_PROJECT_ID}"
+  script: echo "Deploy to ${UPSTREAM_ENVIRONMENT_NAME} for ${UPSTREAM_PROJECT_ID}"
   rules:
     - if: $CI_PIPELINE_SOURCE == "pipeline" && $UPSTREAM_ENVIRONMENT_ACTION == "start"
 
 stop:
-  script: echo "Stop ${CI_ENVIRONMENT_NAME} for ${CI_PROJECT_ID}"
+  script: echo "Stop ${UPSTREAM_ENVIRONMENT_NAME} for ${UPSTREAM_PROJECT_ID}"
   rules:
     - if: $CI_PIPELINE_SOURCE == "pipeline" && $UPSTREAM_ENVIRONMENT_ACTION == "stop"
 ```

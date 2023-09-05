@@ -19,7 +19,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
 
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
-  let(:issue) { create(:issue, project: project, description: 'https://my.gitlab.com/source/full/path/-/issues/1 @old_username') }
+  let(:issue) { create(:issue, project: project, description: 'https://my.gitlab.com/source/full/path/-/issues/1') }
   let(:mr) do
     create(
       :merge_request,
@@ -58,14 +58,37 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
     )
   end
 
+  let(:username_system_note) do
+    create(
+      :note,
+      project: project,
+      system: true,
+      noteable: issue,
+      note: "mentioned in merge request created by @source_username",
+      note_html: 'empty'
+    )
+  end
+
   subject(:pipeline) { described_class.new(context) }
 
   before do
     project.add_owner(user)
+
+    allow(Gitlab::Cache::Import::Caching)
+      .to receive(:values_from_hash)
+      .and_return({
+        'old_username' => 'new_username',
+        'older_username' => 'newer_username',
+        'source_username' => 'destination_username'
+      })
   end
 
   def create_project_data
-    [issue, mr, issue_note, mr_note, system_note]
+    [issue, mr, issue_note, mr_note, system_note, username_system_note]
+  end
+
+  def create_username_project_data
+    [username_system_note]
   end
 
   describe '#extract' do
@@ -75,12 +98,14 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       extracted_data = subject.extract(context)
 
       expect(extracted_data).to be_instance_of(BulkImports::Pipeline::ExtractedData)
-      expect(extracted_data.data).to contain_exactly(issue_note, mr, issue, mr_note)
+      expect(extracted_data.data).to contain_exactly(issue, mr, issue_note, system_note, username_system_note, mr_note)
       expect(system_note.note_html).not_to eq(old_note_html)
       expect(system_note.note_html)
         .to include("class=\"gfm gfm-merge_request\">!#{mr.iid}</a>")
         .and include(project.full_path.to_s)
         .and include("@old_username")
+      expect(username_system_note.note_html)
+        .to include("@source_username")
     end
 
     context 'when object body is nil' do
@@ -95,22 +120,13 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
   end
 
   describe '#transform' do
-    before do
-      allow(Gitlab::Cache::Import::Caching)
-        .to receive(:values_from_hash)
-        .and_return({
-          'old_username' => 'new_username',
-          'older_username' => 'newer_username',
-          'source_username' => 'destination_username'
-        })
-    end
-
     it 'updates matching urls and usernames with new ones' do
       transformed_mr = subject.transform(context, mr)
       transformed_note = subject.transform(context, mr_note)
       transformed_issue = subject.transform(context, issue)
       transformed_issue_note = subject.transform(context, issue_note)
       transformed_system_note = subject.transform(context, system_note)
+      transformed_username_system_note = subject.transform(context, username_system_note)
 
       expected_url = URI('')
       expected_url.scheme = ::Gitlab.config.gitlab.https ? 'https' : 'http'
@@ -118,16 +134,17 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       expected_url.port = ::Gitlab.config.gitlab.port
       expected_url.path = "/#{project.full_path}/-/merge_requests/#{mr.iid}"
 
-      expect(transformed_issue.description).not_to include("@old_username")
       expect(transformed_issue_note.note).not_to include("@older_username")
       expect(transformed_mr.description).not_to include("@source_username")
       expect(transformed_system_note.note).not_to include("@old_username")
+      expect(transformed_username_system_note.note).not_to include("@source_username")
 
+      expect(transformed_issue.description).to eq('http://localhost:80/namespace1/project-1/-/issues/1')
       expect(transformed_mr.description).to eq("#{expected_url} @destination_username")
       expect(transformed_note.note).to eq("#{expected_url} @same_username")
-      expect(transformed_issue.description).to include("@new_username")
       expect(transformed_issue_note.note).to include("@newer_username and not_a@username")
       expect(transformed_system_note.note).to eq("mentioned in merge request !#{mr.iid} created by @new_username")
+      expect(transformed_username_system_note.note).to include("@destination_username")
     end
 
     context 'when object does not have reference or username' do
@@ -176,16 +193,6 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
   end
 
   describe '#load' do
-    before do
-      allow(Gitlab::Cache::Import::Caching)
-        .to receive(:values_from_hash)
-        .and_return({
-          'old_username' => 'new_username',
-          'older_username' => 'newer_username',
-          'source_username' => 'destination_username'
-        })
-    end
-
     it 'saves the object when object body changed' do
       transformed_issue = subject.transform(context, issue)
       transformed_note = subject.transform(context, mr_note)

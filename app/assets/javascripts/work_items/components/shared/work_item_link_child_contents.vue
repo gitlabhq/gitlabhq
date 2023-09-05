@@ -43,15 +43,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    parentWorkItemId: {
-      type: String,
-      required: true,
-    },
-    workItemType: {
-      type: String,
-      required: false,
-      default: '',
-    },
     childPath: {
       type: String,
       required: true,

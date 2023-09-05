@@ -53609,6 +53609,12 @@ msgstr ""
 msgid "WorkItem|Key result"
 msgstr ""
 
+msgid "WorkItem|Link work items together to show that they're related or that one is blocking others."
+msgstr ""
+
+msgid "WorkItem|Linked Items"
+msgstr ""
+
 msgid "WorkItem|Mark as done"
 msgstr ""
 

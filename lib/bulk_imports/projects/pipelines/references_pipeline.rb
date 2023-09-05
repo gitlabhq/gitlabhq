@@ -59,7 +59,7 @@ module BulkImports
               object.notes.each_batch(of: BATCH_SIZE) do |notes_batch|
                 notes_batch.each do |note|
                   note.refresh_markdown_cache!
-                  enum << note if object_has_reference?(note) || object_has_username?(object)
+                  enum << note if object_has_reference?(note) || object_has_username?(note)
                 end
               end
             end

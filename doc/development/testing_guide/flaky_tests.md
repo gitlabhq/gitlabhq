@@ -47,6 +47,9 @@ it's reset to a pristine test after each test.
   in turn causes tests that rely on the transactions on these connections to
   in turn causes tests that rely on the transactions on these connections to
   fail. The issue was fixed in this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128567).
+- [Example 7](https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/3389#note_1534827164):
+  A TCP socket used in a test was not closed before the next test, which also used
+  the same port with another TCP socket.
 
 ### Dataset-specific
 
