@@ -42,6 +42,9 @@ module Ci
 
       log_downstream_pipeline_creation(downstream_pipeline)
       update_bridge_status!(@bridge, downstream_pipeline)
+    rescue StandardError => e
+      @bridge.reset.drop!(:data_integrity_failure)
+      raise e
     end
 
     private
