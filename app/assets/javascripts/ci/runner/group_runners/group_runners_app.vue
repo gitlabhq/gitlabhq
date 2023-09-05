@@ -227,7 +227,12 @@ export default {
       />
 
       <div class="gl-w-full gl-md-w-auto gl-display-flex">
-        <gl-button v-if="newRunnerPath" :href="newRunnerPath" variant="confirm">
+        <gl-button
+          v-if="newRunnerPath"
+          :href="newRunnerPath"
+          variant="confirm"
+          data-testid="new-group-runner-button"
+        >
           {{ s__('Runners|New group runner') }}
         </gl-button>
         <registration-dropdown
