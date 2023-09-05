@@ -272,9 +272,9 @@ module TodosHelper
   def show_todo_state?(todo)
     case todo.target
     when MergeRequest, Issue
-      %w(closed merged).include?(todo.target.state)
+      %w[closed merged].include?(todo.target.state)
     when AlertManagement::Alert
-      %i(resolved).include?(todo.target.state)
+      %i[resolved].include?(todo.target.state)
     else
       false
     end

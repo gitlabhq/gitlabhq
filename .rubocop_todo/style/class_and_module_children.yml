@@ -70,7 +70,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/groups/dependency_proxy_auth_controller.rb'
     - 'app/controllers/groups/dependency_proxy_for_containers_controller.rb'
     - 'app/controllers/groups/deploy_tokens_controller.rb'
-    - 'app/controllers/groups/email_campaigns_controller.rb'
     - 'app/controllers/groups/group_links_controller.rb'
     - 'app/controllers/groups/group_members_controller.rb'
     - 'app/controllers/groups/imports_controller.rb'

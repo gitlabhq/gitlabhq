@@ -192,71 +192,6 @@ module IssuablesHelper
     data
   end
 
-  def issue_only_initial_data(issuable)
-    return {} unless issuable.is_a?(Issue)
-
-    data = {
-      authorId: issuable.author.id,
-      authorName: issuable.author.name,
-      authorUsername: issuable.author.username,
-      authorWebUrl: url_for(user_path(issuable.author)),
-      createdAt: issuable.created_at.to_time.iso8601,
-      hasClosingMergeRequest: issuable.merge_requests_count(current_user) != 0,
-      isFirstContribution: issuable.first_contribution?,
-      issueType: issuable.issue_type,
-      serviceDeskReplyTo: issuable.present(current_user: current_user).service_desk_reply_to,
-      zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
-      sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
-      iid: issuable.iid.to_s,
-      isHidden: issue_hidden?(issuable),
-      canCreateIncident: create_issue_type_allowed?(issuable.project, :incident),
-      **incident_only_initial_data(issuable)
-    }
-
-    data.tap do |d|
-      if issuable.duplicated? && can?(current_user, :read_issue, issuable.duplicated_to)
-        d[:duplicatedToIssueUrl] = url_for([issuable.duplicated_to.project, issuable.duplicated_to, { only_path: false }])
-      end
-
-      if issuable.moved? && can?(current_user, :read_issue, issuable.moved_to)
-        d[:movedToIssueUrl] = url_for([issuable.moved_to.project, issuable.moved_to, { only_path: false }])
-      end
-    end
-  end
-
-  def incident_only_initial_data(issue)
-    return {} unless issue.incident_type_issue?
-
-    {
-      hasLinkedAlerts: issue.alert_management_alerts.any?,
-      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issue),
-      currentPath: url_for(safe_params),
-      currentTab: safe_params[:incident_tab]
-    }
-  end
-
-  def path_data(parent)
-    return { groupPath: parent.path } if parent.is_a?(Group)
-
-    {
-      projectPath: ref_project.path,
-      projectId: ref_project.id,
-      projectNamespace: ref_project.namespace.full_path
-    }
-  end
-
-  def updated_at_by(issuable)
-    return {} unless issuable.edited?
-
-    {
-      updatedAt: issuable.last_edited_at.to_time.iso8601,
-      updatedBy: {
-        name: issuable.last_edited_by.name,
-        path: user_path(issuable.last_edited_by)
-      }
-    }
-  end
-
   def issuables_count_for_state(issuable_type, state)
     Gitlab::IssuablesCountForState.new(finder, fast_fail: true, store_in_redis_cache: true)[state]
   end
@@ -275,15 +210,6 @@ module IssuablesHelper
 
   def issuable_author_is_current_user(issuable)
     issuable.author == current_user
-  end
-
-  def issuable_display_type(issuable)
-    case issuable
-    when Issue
-      issuable.issue_type.downcase
-    when MergeRequest
-      issuable.model_name.human.downcase
-    end
   end
 
   def has_filter_bar_param?
@@ -436,6 +362,86 @@ module IssuablesHelper
     else
       number_with_delimiter(count)
     end
+  end
+
+  def issue_only_initial_data(issuable)
+    return {} unless issuable.is_a?(Issue)
+
+    {
+      canCreateIncident: create_issue_type_allowed?(issuable.project, :incident),
+      fullPath: issuable.project.full_path,
+      iid: issuable.iid,
+      issuableId: issuable.id,
+      issueType: issuable.issue_type,
+      isHidden: issue_hidden?(issuable),
+      sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
+      zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
+      **incident_only_initial_data(issuable),
+      **issue_header_data(issuable),
+      **work_items_data
+    }
+  end
+
+  def incident_only_initial_data(issue)
+    return {} unless issue.incident_type_issue?
+
+    {
+      hasLinkedAlerts: issue.alert_management_alerts.any?,
+      canUpdateTimelineEvent: can?(current_user, :admin_incident_management_timeline_event, issue),
+      currentPath: url_for(safe_params),
+      currentTab: safe_params[:incident_tab]
+    }
+  end
+
+  def issue_header_data(issuable)
+    data = {
+      authorId: issuable.author.id,
+      authorName: issuable.author.name,
+      authorUsername: issuable.author.username,
+      authorWebUrl: url_for(user_path(issuable.author)),
+      createdAt: issuable.created_at.to_time.iso8601,
+      isFirstContribution: issuable.first_contribution?,
+      serviceDeskReplyTo: issuable.present(current_user: current_user).service_desk_reply_to
+    }
+
+    data.tap do |d|
+      if issuable.duplicated? && can?(current_user, :read_issue, issuable.duplicated_to)
+        d[:duplicatedToIssueUrl] = url_for([issuable.duplicated_to.project, issuable.duplicated_to, { only_path: false }])
+      end
+
+      if issuable.moved? && can?(current_user, :read_issue, issuable.moved_to)
+        d[:movedToIssueUrl] = url_for([issuable.moved_to.project, issuable.moved_to, { only_path: false }])
+      end
+    end
+  end
+
+  def work_items_data
+    {
+      registerPath: new_user_registration_path(redirect_to_referer: 'yes'),
+      signInPath: new_session_path(:user, redirect_to_referer: 'yes')
+    }
+  end
+
+  def path_data(parent)
+    return { groupPath: parent.path } if parent.is_a?(Group)
+
+    {
+      projectPath: ref_project.path,
+      projectId: ref_project.id,
+      projectNamespace: ref_project.namespace.full_path
+    }
+  end
+
+  def updated_at_by(issuable)
+    return {} unless issuable.edited?
+
+    {
+      updatedAt: issuable.last_edited_at.to_time.iso8601,
+      updatedBy: {
+        name: issuable.last_edited_by.name,
+        path: user_path(issuable.last_edited_by)
+      }
+    }
   end
 end
 

@@ -50,6 +50,7 @@ module Gitlab
           plan: plan_name,
           extra: extra,
           user_id: user_id,
+          is_gitlab_team_member: gitlab_team_member?(user_id),
           namespace_id: namespace_id,
           project_id: project_id,
           context_generated_at: Time.current
@@ -63,6 +64,13 @@ module Gitlab
           " Should be one of #{allowed_classes.map(&:to_s)}"
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ArgumentError.new(exception))
       end
+
+      # Overridden in EE
+      def gitlab_team_member?(_user_id)
+        nil
+      end
     end
   end
 end
+
+Gitlab::Tracking::StandardContext.prepend_mod

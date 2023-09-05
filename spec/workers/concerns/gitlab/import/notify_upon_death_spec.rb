@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::NotifyUponDeath, feature_category: :shared do
+RSpec.describe Gitlab::Import::NotifyUponDeath, feature_category: :importers do
   let(:worker_class) do
     Class.new do
       include Sidekiq::Worker
-      include Gitlab::NotifyUponDeath
+      include Gitlab::Import::NotifyUponDeath
     end
   end
 
@@ -16,13 +16,13 @@ RSpec.describe Gitlab::NotifyUponDeath, feature_category: :shared do
 
       expect(Gitlab::JobWaiter)
         .to receive(:notify)
-        .with('123abc', '123')
+        .with('123abc', '123', ttl: Gitlab::Import::JOB_WAITER_TTL)
 
       worker_class.sidekiq_retries_exhausted_block.call(job)
     end
 
     it 'does not notify the JobWaiter when only 2 arguments are given' do
-      job = { 'args' => [12, {}], 'jid' => '123' }
+      job = { 'args' => [12, '123abc'], 'jid' => '123' }
 
       expect(Gitlab::JobWaiter)
         .not_to receive(:notify)
@@ -31,7 +31,7 @@ RSpec.describe Gitlab::NotifyUponDeath, feature_category: :shared do
     end
 
     it 'does not notify the JobWaiter when only 1 argument is given' do
-      job = { 'args' => [12], 'jid' => '123' }
+      job = { 'args' => ['123abc'], 'jid' => '123' }
 
       expect(Gitlab::JobWaiter)
         .not_to receive(:notify)

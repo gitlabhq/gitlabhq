@@ -109,7 +109,6 @@ class Issue < ApplicationRecord
   has_one :sentry_issue
   has_one :alert_management_alert, class_name: 'AlertManagement::Alert'
   has_one :incident_management_issuable_escalation_status, class_name: 'IncidentManagement::IssuableEscalationStatus'
-  has_and_belongs_to_many :self_managed_prometheus_alert_events, join_table: :issues_self_managed_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :issue, validate: false
   has_many :prometheus_alerts, through: :prometheus_alert_events
@@ -187,7 +186,6 @@ class Issue < ApplicationRecord
   scope :preload_awardable, -> { preload(:award_emoji) }
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
-  scope :with_self_managed_prometheus_alert_events, -> { joins(:issues_self_managed_prometheus_alert_events) }
   scope :with_api_entity_associations, -> {
     preload(:work_item_type, :timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
       namespace: [{ parent: :route }, :route], milestone: { project: [:route, { namespace: :route }] },

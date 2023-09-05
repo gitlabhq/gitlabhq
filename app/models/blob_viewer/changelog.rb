@@ -6,7 +6,7 @@ module BlobViewer
     include Static
 
     self.partial_name = 'changelog'
-    self.file_types = %i(changelog)
+    self.file_types = %i[changelog]
     self.binary = false
 
     def render_error

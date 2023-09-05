@@ -4,7 +4,7 @@ module BlobViewer
   class Gemspec < DependencyManager
     include ServerSide
 
-    self.file_types = %i(gemspec)
+    self.file_types = %i[gemspec]
 
     def manager_name
       'RubyGems'

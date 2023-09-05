@@ -6,7 +6,7 @@ module BlobViewer
     include Static
 
     self.partial_name = 'contributing'
-    self.file_types = %i(contributing)
+    self.file_types = %i[contributing]
     self.binary = false
   end
 end

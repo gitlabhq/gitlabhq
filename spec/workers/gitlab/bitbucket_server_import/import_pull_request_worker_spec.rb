@@ -26,7 +26,7 @@ RSpec.describe Gitlab::BitbucketServerImport::ImportPullRequestWorker, feature_c
       end
 
       it 'notifies job waiter' do
-        expect(Gitlab::JobWaiter).to receive(:notify).with(job_waiter_key, 'jid')
+        expect(Gitlab::JobWaiter).to receive(:notify).with(job_waiter_key, 'jid', ttl: Gitlab::Import::JOB_WAITER_TTL)
 
         worker.perform(project.id, {}, job_waiter_key)
       end
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::BitbucketServerImport::ImportPullRequestWorker, feature_c
     context 'when project does not exists' do
       it 'does not call importer and notifies job waiter' do
         expect(importer_class).not_to receive(:new)
-        expect(Gitlab::JobWaiter).to receive(:notify).with(job_waiter_key, 'jid')
+        expect(Gitlab::JobWaiter).to receive(:notify).with(job_waiter_key, 'jid', ttl: Gitlab::Import::JOB_WAITER_TTL)
 
         worker.perform(-1, {}, job_waiter_key)
       end
@@ -55,7 +55,7 @@ RSpec.describe Gitlab::BitbucketServerImport::ImportPullRequestWorker, feature_c
         project = create(:project, :import_canceled)
 
         expect(importer_class).not_to receive(:new)
-        expect(Gitlab::JobWaiter).to receive(:notify).with(job_waiter_key, 'jid')
+        expect(Gitlab::JobWaiter).to receive(:notify).with(job_waiter_key, 'jid', ttl: Gitlab::Import::JOB_WAITER_TTL)
 
         worker.perform(project.id, {}, job_waiter_key)
       end

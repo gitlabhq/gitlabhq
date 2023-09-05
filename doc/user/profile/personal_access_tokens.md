@@ -126,7 +126,7 @@ If you enabled [external authorization](../admin_area/settings/external_authoriz
 
 ## When personal access tokens expire
 
-Personal access tokens expire on the date you define, at midnight UTC.
+Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC.
 
 - GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that expire in the next seven days. The owners of these tokens are notified by email.
 - GitLab runs a check at 02:00 AM UTC every day to identify personal access tokens that expire on the current date. The owners of these tokens are notified by email.

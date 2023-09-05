@@ -6,7 +6,7 @@ module BlobViewer
     include ClientSide
 
     self.partial_name = 'pdf'
-    self.extensions = %w(pdf)
+    self.extensions = %w[pdf]
     self.binary = true
     self.switcher_icon = 'document'
     self.switcher_title = 'PDF'

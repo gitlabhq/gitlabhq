@@ -49,10 +49,10 @@ export function initShow({ notesParams } = {}) {
     return;
   }
 
-  const { issueType, ...issuableData } = parseIssuableData(el);
+  const issuableData = parseIssuableData(el);
 
-  if (issueType === TYPE_INCIDENT) {
-    initIncidentApp({ ...issuableData, issuableId: el.dataset.issuableId }, store);
+  if (issuableData.issueType === TYPE_INCIDENT) {
+    initIncidentApp(issuableData, store);
     initLinkedResources();
     initRelatedIssues(TYPE_INCIDENT);
   } else {

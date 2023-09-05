@@ -40,13 +40,9 @@ module Gitlab
         "#{KEY_PREFIX}:{#{user.id}}:#{field}"
       end
 
-      def key_for(field)
-        "#{KEY_PREFIX}:#{user.id}:#{field}"
-      end
-
       def redis_get(field)
         Gitlab::Redis::SharedState.with do |redis|
-          redis.get(hashtag_key_for(field)) || redis.get(key_for(field))
+          redis.get(hashtag_key_for(field))
         end
       end
     end

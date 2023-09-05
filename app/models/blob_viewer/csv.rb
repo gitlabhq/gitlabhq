@@ -6,7 +6,7 @@ module BlobViewer
     include ClientSide
 
     self.binary = false
-    self.extensions = %w(csv)
+    self.extensions = %w[csv]
     self.partial_name = 'csv'
     self.switcher_icon = 'table'
   end

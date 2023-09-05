@@ -99,6 +99,10 @@ The first 2-3 quarters are required to define a general split of data and build 
 
     The purpose is to perform a targeted decomposition of `users` and `projects`, because `projects` will be stored locally in the Cell.
 
+1. **User can create Organization on Cell 2.**
+
+    The purpose is to create Organizations that are isolated from each other.
+
 1. **User can change profile avatar that is shared in cluster.**
 
     The purpose is to fix global uploads that are shared in cluster.
@@ -163,6 +167,11 @@ For example:
 1. **Cell discovery.**
 
     The routing service needs to be able to discover and monitor the health of all Cells.
+
+1. **User can use single domain to interact with many Cells.**
+
+    The routing service will intelligently route all requests to Cells based on the resource being
+    accessed versus the Cell containing the data.
 
 1. **Router endpoints classification.**
 
@@ -256,28 +265,30 @@ One iteration describes one quarter's worth of work.
     - Data access layer: Initial Admin Area settings are shared across cluster.
     - Essential workflows: Allow to share cluster-wide data with database-level data access layer
 
-1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - FY24Q2 - In progress
+1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - Expected delivery: 16.2 FY24Q2 | Actual delivery: 16.4 FY24Q3 - In progress
 
     - Essential workflows: User accounts are shared across cluster.
     - Essential workflows: User can create Group.
 
-1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - FY24Q3 - Planned
+1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - Expected delivery: 16.7 FY24Q4 - Planned
 
     - Essential workflows: User can create Project.
     - Routing: Technology.
-    - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer
+    - Routing: Cell discovery.
+    - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer.
+    - Data access layer: Data access layer.
 
-1. [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) - FY24Q4
+1. [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) - Expected delivery: 16.10 FY25Q1 - Planned
+
+    - Essential workflows: User can create organization on Cell 2.
+    - Data access layer: Cluster-unique identifiers.
+    - Routing: User can use single domain to interact with many Cells.
+    - Cell deployment: Extend GitLab Dedicated to support GCP.
+
+1. Iteration 5..N - starting FY25Q1
 
     - Essential workflows: User can push to Git repository.
     - Essential workflows: User can create issue, merge request, and merge it after it is green.
-    - Data access layer: Cluster-unique identifiers.
-    - Routing: Cell discovery.
-    - Routing: Router endpoints classification.
-    - Cell deployment: Extend GitLab Dedicated to support GCP
-
-1. Iteration 5 - FY25Q1
-
     - Essential workflows: User can run CI pipeline.
     - Essential workflows: Instance-wide settings are shared across cluster.
     - Essential workflows: User can change profile avatar that is shared in cluster.
@@ -285,20 +296,11 @@ One iteration describes one quarter's worth of work.
     - Essential workflows: User can manage Group and Project members.
     - Essential workflows: User can manage instance-wide runners.
     - Essential workflows: User is part of Organization and can only see information from the Organization.
+    - Routing: Router endpoints classification.
     - Routing: GraphQL and other ambiguous endpoints.
     - Data access layer: Allow to share cluster-wide data with database-level data access layer.
     - Data access layer: Cluster-wide deletions.
-    - Data access layer: Data access layer.
     - Data access layer: Database migrations.
-
-1. Iteration 6 - FY25Q2
-    - TBD
-
-1. Iteration 7 - FY25Q3
-    - TBD
-
-1. Iteration 8 - FY25Q4
-    - TBD
 
 ## Technical proposals
 
@@ -325,6 +327,7 @@ Below is a list of known affected features with preliminary proposed solutions.
 - [Cells: Global Search](impacted_features/global-search.md)
 - [Cells: GraphQL](impacted_features/graphql.md)
 - [Cells: Organizations](impacted_features/organizations.md)
+- [Cells: Personal Namespaces](impacted_features/personal-namespaces.md)
 - [Cells: Secrets](impacted_features/secrets.md)
 - [Cells: Snippets](impacted_features/snippets.md)
 - [Cells: User Profile](impacted_features/user-profile.md)
@@ -335,13 +338,12 @@ Below is a list of known affected features with preliminary proposed solutions.
 The following list of impacted features only represents placeholders that still require work to estimate the impact of Cells and develop solution proposals.
 
 - [Cells: Agent for Kubernetes](impacted_features/agent-for-kubernetes.md)
+- [Cells: Data pipeline ingestion](impacted_features/data-pipeline-ingestion.md)
 - [Cells: GitLab Pages](impacted_features/gitlab-pages.md)
 - [Cells: Personal Access Tokens](impacted_features/personal-access-tokens.md)
-- [Cells: Personal Namespaces](impacted_features/personal-namespaces.md)
 - [Cells: Router Endpoints Classification](impacted_features/router-endpoints-classification.md)
 - [Cells: Schema changes (Postgres and Elasticsearch migrations)](impacted_features/schema-changes.md)
 - [Cells: Uploads](impacted_features/uploads.md)
-- [Cells: Data pipeline ingestion](impacted_features/data-pipeline-ingestion.md)
 - ...
 
 ## Frequently Asked Questions

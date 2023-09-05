@@ -55,14 +55,6 @@ RSpec.describe Gitlab::Email::Message::InProductMarketing::Base do
     end
   end
 
-  describe '#cta_link' do
-    subject(:cta_link) { test_class.new(group: group, user: user, series: series).cta_link }
-
-    it 'renders link' do
-      expect(CGI.unescapeHTML(cta_link)).to include(Gitlab::Routing.url_helpers.group_email_campaigns_url(group, track: :create, series: series))
-    end
-  end
-
   describe '#progress' do
     subject { test_class.new(group: group, user: user, series: series).progress }
 

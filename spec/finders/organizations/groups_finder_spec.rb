@@ -3,12 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::GroupsFinder, feature_category: :cell do
-  include AdminModeHelper
-
-  let(:current_user) { user }
-  let(:params) { {} }
-  let(:finder) { described_class.new(organization: organization, current_user: current_user, params: params) }
-
   let_it_be(:organization_user) { create(:organization_user) }
   let_it_be(:organization) { organization_user.organization }
   let_it_be(:user) { organization_user.user }
@@ -22,6 +16,10 @@ RSpec.describe Organizations::GroupsFinder, feature_category: :cell do
   let_it_be(:no_access_group_in_org) do
     create(:group, :private, name: 'no-access', organization: organization)
   end
+
+  let(:current_user) { user }
+  let(:params) { {} }
+  let(:finder) { described_class.new(organization: organization, current_user: current_user, params: params) }
 
   before_all do
     private_group.add_developer(user)
@@ -40,7 +38,7 @@ RSpec.describe Organizations::GroupsFinder, feature_category: :cell do
     end
 
     context 'when organization is nil' do
-      let(:finder) { described_class.new(organization: nil, current_user: current_user, params: params) }
+      let(:organization) { nil }
 
       it { is_expected.to be_empty }
     end

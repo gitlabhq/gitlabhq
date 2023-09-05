@@ -35,6 +35,17 @@ RSpec.describe Gitlab::GithubImport::AdvanceStageWorker, :clean_gitlab_redis_sha
 
         worker.perform(project.id, { '123' => 2 }, :finish)
       end
+
+      context 'when import state is nil' do
+        let(:import_state) { nil }
+
+        it 'clears the JobWaiter cache and does not perform any work' do
+          expect(Gitlab::JobWaiter).to receive(:delete_key).with('123')
+          expect(worker).not_to receive(:wait_for_jobs)
+
+          worker.perform(project.id, { '123' => 2 }, :finish)
+        end
+      end
     end
 
     context 'when there are no remaining jobs' do

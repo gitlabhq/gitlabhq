@@ -377,7 +377,10 @@ export default {
                 @input="onInput"
               />
             </comment-field-layout>
-            <div class="note-form-actions">
+            <div
+              class="note-form-actions gl-font-size-0"
+              :class="{ 'gl-display-flex gl-gap-3': hasDrafts }"
+            >
               <template v-if="hasDrafts">
                 <gl-button
                   :disabled="disableSubmitButton"
@@ -400,7 +403,7 @@ export default {
                 <gl-form-checkbox
                   v-if="canSetInternalNote"
                   v-model="noteIsInternal"
-                  class="gl-mb-2"
+                  class="gl-mb-2 gl-flex-basis-full"
                   data-testid="internal-note-checkbox"
                 >
                   {{ $options.i18n.internal }}

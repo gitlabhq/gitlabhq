@@ -23,6 +23,11 @@ module Types
         null: false,
         description: 'Name of the organization.',
         alpha: { milestone: '16.4' }
+      field :organization_users,
+        null: false,
+        description: 'Users with access to the organization.',
+        alpha: { milestone: '16.4' },
+        resolver: ::Resolvers::Organizations::OrganizationUsersResolver
       field :path,
         GraphQL::Types::String,
         null: false,

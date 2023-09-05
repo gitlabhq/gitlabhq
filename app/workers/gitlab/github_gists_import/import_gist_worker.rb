@@ -25,7 +25,7 @@ module Gitlab
         # Gitlab::GithubGistsImport::FinishImportWorker to prevent
         # the entire import from getting stuck
         if args.length == 3 && (key = args.last) && key.is_a?(String)
-          JobWaiter.notify(key, jid)
+          JobWaiter.notify(key, jid, ttl: Gitlab::Import::JOB_WAITER_TTL)
         end
       end
 
@@ -48,7 +48,7 @@ module Gitlab
             )
           end
 
-          JobWaiter.notify(notify_key, jid)
+          JobWaiter.notify(notify_key, jid, ttl: Gitlab::Import::JOB_WAITER_TTL)
         end
       rescue StandardError => e
         log_and_track_error(user_id, e, github_identifiers)

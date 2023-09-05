@@ -88,7 +88,6 @@ Lint/AssignmentInCondition:
     - 'app/workers/concerns/gitlab/bitbucket_server_import/stage_methods.rb'
     - 'app/workers/concerns/gitlab/github_import/object_importer.rb'
     - 'app/workers/concerns/gitlab/github_import/stage_methods.rb'
-    - 'app/workers/concerns/gitlab/notify_upon_death.rb'
     - 'app/workers/deployments/hooks_worker.rb'
     - 'app/workers/deployments/link_merge_request_worker.rb'
     - 'app/workers/gitlab/github_gists_import/import_gist_worker.rb'

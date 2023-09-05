@@ -48,14 +48,19 @@ module Gitlab
             raise NotImplementedError
           end
 
+          # rubocop:disable Gitlab/NoCodeCoverageComment
+          # :nocov: Not used, will be removed with next MR, no need to cover
           def cta_link
+            # Switching to root_url, will be removed with next MR
             case format
             when :html
-              ActionController::Base.helpers.link_to cta_text, group_email_campaigns_url(group, track: track, series: series), target: '_blank', rel: 'noopener noreferrer'
+              ActionController::Base.helpers.link_to cta_text, root_url, target: '_blank', rel: 'noopener noreferrer'
             else
-              [cta_text, group_email_campaigns_url(group, track: track, series: series)].join(' >> ')
+              [cta_text, root_url].join(' >> ')
             end
           end
+          # :nocov:
+          # rubocop:enable Gitlab/NoCodeCoverageComment
 
           def invite_members?
             false

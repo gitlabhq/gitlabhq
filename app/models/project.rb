@@ -380,7 +380,6 @@ class Project < ApplicationRecord
   has_many :prometheus_metrics
   has_many :prometheus_alerts, inverse_of: :project
   has_many :prometheus_alert_events, inverse_of: :project
-  has_many :self_managed_prometheus_alert_events, inverse_of: :project
 
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :project
   has_many :alert_management_http_integrations, class_name: 'AlertManagement::HttpIntegration', inverse_of: :project

@@ -264,6 +264,7 @@ InitializerConnections.raise_if_new_database_connection do
 
     draw :git_http
     draw :api
+    draw :activity_pub
     draw :customers_dot
     draw :sidekiq
     draw :help

@@ -36,7 +36,7 @@ module SafeFormatHelper
   # Returns an empty Hash if +tag+ is not a valid paired tag (e.g. <p>foo</p>).
   # an empty Hash is returned.
   #
-  # @param [String] tag is a HTML-safe output from tag helper
+  # @param [String] html_tag is a HTML-safe output from tag helper
   # @param [Symbol,Object] open_name name of opening tag
   # @param [Symbol,Object] close_name name of closing tag
   # @raise [ArgumentError] if +tag+ is not HTML-safe

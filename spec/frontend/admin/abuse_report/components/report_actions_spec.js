@@ -191,31 +191,4 @@ describe('ReportActions', () => {
       );
     });
   });
-
-  describe('when moderateUserPath is not present', () => {
-    it('sends the request to updatePath', async () => {
-      jest.spyOn(axios, 'put');
-      axiosMock.onPut(report.updatePath).replyOnce(HTTP_STATUS_OK, {});
-
-      const reportWithoutModerateUserPath = { ...report };
-      delete reportWithoutModerateUserPath.moderateUserPath;
-
-      createComponent({ report: reportWithoutModerateUserPath });
-
-      clickActionsButton();
-
-      await nextTick();
-
-      selectAction(params.user_action);
-      selectReason(params.reason);
-
-      await nextTick();
-
-      submitForm();
-
-      await waitForPromises();
-
-      expect(axios.put).toHaveBeenCalledWith(report.updatePath, expect.any(Object));
-    });
-  });
 });

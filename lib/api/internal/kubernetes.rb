@@ -4,14 +4,14 @@ module API
   # Kubernetes Internal API
   module Internal
     class Kubernetes < ::API::Base
-      include Gitlab::Utils::StrongMemoize
-
       before do
         check_feature_enabled
         authenticate_gitlab_kas_request!
       end
 
       helpers do
+        include Gitlab::Utils::StrongMemoize
+
         def authenticate_gitlab_kas_request!
           render_api_error!('KAS JWT authentication invalid', 401) unless Gitlab::Kas.verify_api_request(headers)
         end
@@ -104,6 +104,23 @@ module API
           unauthorized!('Invalid user in session') unless user
           user
         end
+
+        def retrieve_user_from_personal_access_token
+          return unless access_token.present?
+
+          validate_access_token!(scopes: [Gitlab::Auth::K8S_PROXY_SCOPE])
+
+          ::PersonalAccessTokens::LastUsedService.new(access_token).execute
+
+          access_token.user || raise(UnauthorizedError)
+        end
+
+        def access_token
+          return unless params[:access_key].present?
+
+          PersonalAccessToken.find_by_token(params[:access_key])
+        end
+        strong_memoize_attr :access_token
       end
 
       namespace 'internal' do
@@ -181,7 +198,7 @@ module API
           desc 'Authorize a proxy user request'
           params do
             requires :agent_id, type: Integer, desc: 'ID of the agent accessed'
-            requires :access_type, type: String, values: ['session_cookie'], desc: 'The type of the access key being verified.'
+            requires :access_type, type: String, values: %w[session_cookie personal_access_token], desc: 'The type of access key being verified.'
             requires :access_key, type: String, desc: 'The authentication secret for the given access type.'
             given access_type: ->(val) { val == 'session_cookie' } do
               requires :csrf_token, type: String, allow_blank: false, desc: 'CSRF token that must be checked when access_type is "session_cookie", to ensure the request originates from a GitLab browsing session.'
@@ -189,8 +206,15 @@ module API
           end
           post '/', feature_category: :deployment_management do
             # Load user
-            user = (retrieve_user_from_session_cookie if params[:access_type] == 'session_cookie')
-            bad_request!('Unable to get user from request data') unless user
+            user = if params[:access_type] == 'session_cookie'
+                     retrieve_user_from_session_cookie
+                   elsif params[:access_type] == 'personal_access_token'
+                     u = retrieve_user_from_personal_access_token
+                     bad_request!('PAT authentication is not enabled') unless Feature.enabled?(:k8s_proxy_pat, u)
+                     u
+                   end
+
+            bad_request!('Unable to get user from request data') if user.nil?
 
             # Load agent
             agent = ::Clusters::Agent.find(params[:agent_id])

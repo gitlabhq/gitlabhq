@@ -6,7 +6,7 @@ module BlobViewer
     include ClientSide
 
     self.partial_name = 'openapi'
-    self.file_types = %i(openapi)
+    self.file_types = %i[openapi]
     self.binary = false
     self.switcher_icon = 'api'
   end

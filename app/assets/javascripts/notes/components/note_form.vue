@@ -381,8 +381,8 @@ export default {
           @handleSuggestDismissed="() => $emit('handleSuggestDismissed')"
         />
       </comment-field-layout>
-      <div class="note-form-actions">
-        <p v-if="showResolveDiscussionToggle">
+      <div class="note-form-actions gl-font-size-0">
+        <template v-if="showResolveDiscussionToggle">
           <label>
             <template v-if="discussionResolved">
               <gl-form-checkbox v-model="isUnresolving" class="js-unresolve-checkbox">
@@ -395,7 +395,7 @@ export default {
               </gl-form-checkbox>
             </template>
           </label>
-        </p>
+        </template>
 
         <template v-if="showBatchCommentsActions">
           <div class="gl-display-flex gl-flex-wrap gl-mb-n3">
@@ -432,7 +432,7 @@ export default {
           </div>
         </template>
         <template v-else>
-          <div class="gl-display-sm-flex gl-flex-wrap">
+          <div class="gl-display-sm-flex gl-flex-wrap gl-font-size-0">
             <gl-button
               :disabled="isDisabled"
               category="primary"

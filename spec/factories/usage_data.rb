@@ -62,7 +62,6 @@ FactoryBot.define do
       # Alert Issues
       create(:alert_management_alert, issue: issues[0], project: projects[0])
       create(:alert_management_alert, issue: alert_bot_issues[0], project: projects[0])
-      create(:self_managed_prometheus_alert_event, related_issues: [issues[1]], project: projects[0])
 
       # Kubernetes agents
       create(:cluster_agent, project: projects[0])

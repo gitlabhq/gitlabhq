@@ -22,14 +22,18 @@ module Gitlab
     STARTED_METRIC = :gitlab_job_waiter_started_total
     TIMEOUTS_METRIC = :gitlab_job_waiter_timeouts_total
 
-    def self.notify(key, jid)
+    # This TTL needs to be long enough to allow whichever Sidekiq job calls
+    # JobWaiter#wait to reach BLPOP.
+    DEFAULT_TTL = 6.hours.to_i
+
+    def self.notify(key, jid, ttl: DEFAULT_TTL)
+      ttl = DEFAULT_TTL if Feature.disabled?(:custom_job_waiter_ttl)
+
       Gitlab::Redis::SharedState.with do |redis|
         # Use a Redis MULTI transaction to ensure we always set an expiry
         redis.multi do |multi|
           multi.lpush(key, jid)
-          # This TTL needs to be long enough to allow whichever Sidekiq job calls
-          # JobWaiter#wait to reach BLPOP.
-          multi.expire(key, 6.hours.to_i)
+          multi.expire(key, ttl)
         end
       end
     end
@@ -40,6 +44,10 @@ module Gitlab
 
     def self.generate_key
       "#{KEY_PREFIX}:#{SecureRandom.uuid}"
+    end
+
+    def self.delete_key(key)
+      Gitlab::Redis::SharedState.with { |redis| redis.del(key) } if key?(key)
     end
 
     attr_reader :key, :finished, :worker_label

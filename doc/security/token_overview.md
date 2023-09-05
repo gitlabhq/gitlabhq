@@ -92,11 +92,40 @@ This is useful, for example, for cloning repositories to your Continuous Integra
 
 Project maintainers and owners can add or enable a deploy key for a project repository
 
+## Runner authentication tokens
+
+In GitLab 16.0 and later, you can use a runner authentication token to register
+runners instead of a runner registration token. Runner registration tokens have
+been [deprecated](../update/deprecations.md#registration-tokens-and-server-side-runner-arguments-in-gitlab-runner-register-command).
+
+After you create a runner and its configuration, you receive a runner authentication token
+that you use to register the runner. The runner authentication token is stored locally in the
+[`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html) file, which
+you use to configure the runner.
+
+The runner uses the runner authentication token to authenticate with GitLab when
+it picks up jobs from the job queue. After the runner authenticates with GitLab,
+the runner receives a [job token](../ci/jobs/ci_job_token.md), which it uses to
+execute the job.
+
+The runner authentication token stays on the runner machine. The execution environments
+for the following executors only have access to the job token and not the runner authentication token:
+
+- Docker Machine
+- Kubernetes
+- VirtualBox
+- Parallels
+- SSH
+
+Malicious access to a runner's file system may expose the `config.toml` file and the
+runner authentication token. The attacker could use the runner authentication
+to [clone the runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
+
 ## Runner registration tokens (deprecated)
 
 WARNING:
 The ability to pass a runner registration token has been [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) and is
-planned for removal in 17.0, along with support for certain configuration arguments. This change is a breaking change. GitLab has implemented a new
+planned for removal in GitLab 18.0, along with support for certain configuration arguments. This change is a breaking change. GitLab has implemented a new
 [GitLab Runner token architecture](../ci/runners/new_creation_workflow.md), which introduces
 a new method for registering runners and eliminates the
 runner registration token.
@@ -104,27 +133,6 @@ runner registration token.
 Runner registration tokens are used to [register](https://docs.gitlab.com/runner/register/) a [runner](https://docs.gitlab.com/runner/) with GitLab. Group or project owners or instance administrators can obtain them through the GitLab user interface. The registration token is limited to runner registration and has no further scope.
 
 You can use the runner registration token to add runners that execute jobs in a project or group. The runner has access to the project's code, so be careful when assigning project and group-level permissions.
-
-## Runner authentication tokens
-
-Once created, the runner receives a runner authentication token, which it uses to authenticate with GitLab when picking up jobs from the job queue. The runner authentication token is stored locally in the runner's [`config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html) file.
-
-After authentication with GitLab, the runner receives a [job token](../ci/jobs/ci_job_token.md), which it uses to execute the job.
-
-In case of Docker Machine/Kubernetes/VirtualBox/Parallels/SSH executors, the execution environment has no access to the runner authentication token, because it stays on the runner machine. They have access to the job token only, which is needed to execute the job.
-
-Malicious access to a runner's file system may expose the `config.toml` file and thus the runner authentication token, allowing an attacker to [clone the runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
-
-In GitLab 16.0 and later, you can use an authentication token to register runners instead of a
-registration token. Runner registration tokens have been [deprecated](../update/deprecations.md#registration-tokens-and-server-side-runner-arguments-in-gitlab-runner-register-command).
-
-To generate a runner authentication token, you create a runner in the GitLab UI and use the authentication token
-instead of the registration token.
-
-| Process            | Registration command  |
-| ------------------ | --------------------- |
-| Registration token (deprecated) | `gitlab-runner register --registration-token $RUNNER_REGISTRATION_TOKEN <runner configuration arguments>` |
-| Authentication token | `gitlab-runner register --token $RUNNER_AUTHENTICATION_TOKEN` |
 
 ## CI/CD job tokens
 

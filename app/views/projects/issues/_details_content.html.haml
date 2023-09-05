@@ -6,11 +6,7 @@
 .issue-details.issuable-details.js-issue-details
   .detail-page-description.content-block.js-detail-page-description.gl-pt-3.gl-pb-0.gl-border-none
     #js-issuable-app{ data: { initial: issuable_initial_data(issuable).to_json,
-      header_actions_data: issue_header_actions_data(@project, issuable, current_user, @issuable_sidebar).to_json,
-      issuable_id: issuable.id,
-      full_path: @project.full_path,
-      register_path: new_user_registration_path(redirect_to_referer: 'yes'),
-      sign_in_path: new_session_path(:user, redirect_to_referer: 'yes') } }
+      header_actions_data: issue_header_actions_data(@project, issuable, current_user, @issuable_sidebar).to_json } }
       .title-container
         %h1.title.page-title.gl-font-size-h-display= markdown_field(issuable, :title)
       - if issuable.description.present?
@@ -31,7 +27,10 @@
     = render_if_exists 'projects/issues/linked_resources'
     = render 'projects/issues/related_issues'
 
-    #js-related-merge-requests{ data: { endpoint: expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: issuable.iid)), project_namespace: @project.namespace.path, project_path: @project.path } }
+    #js-related-merge-requests{ data: { endpoint: expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: issuable.iid)),
+      has_closing_merge_request: (issuable.merge_requests_count(current_user) != 0).to_s,
+      project_namespace: @project.namespace.path,
+      project_path: @project.path } }
 
     - if can?(current_user, :read_code, @project)
       - add_page_startup_api_call related_branches_path

@@ -8573,7 +8573,6 @@
 - './spec/requests/groups/crm/contacts_controller_spec.rb'
 - './spec/requests/groups/crm/organizations_controller_spec.rb'
 - './spec/requests/groups/deploy_tokens_controller_spec.rb'
-- './spec/requests/groups/email_campaigns_controller_spec.rb'
 - './spec/requests/groups/harbor/artifacts_controller_spec.rb'
 - './spec/requests/groups/harbor/repositories_controller_spec.rb'
 - './spec/requests/groups/harbor/tags_controller_spec.rb'

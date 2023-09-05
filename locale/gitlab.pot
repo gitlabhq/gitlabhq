@@ -17882,9 +17882,6 @@ msgstr ""
 msgid "Enable header and footer in emails"
 msgstr ""
 
-msgid "Enable in-product marketing emails"
-msgstr ""
-
 msgid "Enable incident management inbound alert limit"
 msgstr ""
 
@@ -43421,9 +43418,6 @@ msgid "Send email in multipart format (HTML and plain text). Uncheck to send ema
 msgstr ""
 
 msgid "Send email notification"
-msgstr ""
-
-msgid "Send emails to help guide new users through the onboarding process."
 msgstr ""
 
 msgid "Send emails to users upon account deactivation."

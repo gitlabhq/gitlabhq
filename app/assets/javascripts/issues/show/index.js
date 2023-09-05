@@ -3,7 +3,7 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import errorTrackingStore from '~/error_tracking/store';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_INCIDENT } from '~/issues/constants';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import IssueApp from './components/app.vue';
@@ -29,30 +29,31 @@ export function initIncidentApp(issueData = {}, store) {
     return undefined;
   }
 
-  bootstrapApollo({ ...issueState, issueType: TYPE_INCIDENT });
-
   const {
     authorId,
     authorName,
     authorUsername,
     authorWebUrl,
     canCreateIncident,
+    hasIterationsFeature,
     canUpdate,
     canUpdateTimelineEvent,
     iid,
     issuableId,
+    issueType,
+    fullPath,
     currentPath,
     currentTab,
-    projectNamespace,
-    projectPath,
     projectId,
     hasLinkedAlerts,
     slaFeatureAvailable,
     uploadMetricsFeatureAvailable,
   } = issueData;
+
   const headerActionsData = convertObjectPropsToCamelCase(JSON.parse(el.dataset.headerActionsData));
 
-  const fullPath = `${projectNamespace}/${projectPath}`;
+  bootstrapApollo({ ...issueState, issueType });
+
   const router = createRouter(currentPath, currentTab);
 
   return new Vue({
@@ -62,7 +63,7 @@ export function initIncidentApp(issueData = {}, store) {
     store,
     router,
     provide: {
-      issueType: TYPE_INCIDENT,
+      issueType,
       canCreateIncident,
       canUpdateTimelineEvent,
       canUpdate,
@@ -70,6 +71,7 @@ export function initIncidentApp(issueData = {}, store) {
       iid,
       issuableId,
       projectId,
+      hasIterationsFeature,
       hasLinkedAlerts: parseBoolean(hasLinkedAlerts),
       slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
       uploadMetricsFeatureAvailable: parseBoolean(uploadMetricsFeatureAvailable),
@@ -123,23 +125,26 @@ export function initIssueApp(issueData, store) {
     return undefined;
   }
 
-  const { fullPath, registerPath, signInPath } = el.dataset;
-  const headerActionsData = convertObjectPropsToCamelCase(JSON.parse(el.dataset.headerActionsData));
-
-  scrollToTargetOnResize();
-
-  bootstrapApollo({ ...issueState, issueType: TYPE_ISSUE });
-
   const {
     authorId,
     authorName,
     authorUsername,
     authorWebUrl,
     canCreateIncident,
-    hasIssueWeightsFeature,
     hasIterationsFeature,
-    ...issueProps
+    iid,
+    issuableId,
+    issueType,
+    fullPath,
+    registerPath,
+    signInPath,
   } = issueData;
+
+  const headerActionsData = convertObjectPropsToCamelCase(JSON.parse(el.dataset.headerActionsData));
+
+  bootstrapApollo({ ...issueState, issueType });
+
+  scrollToTargetOnResize();
 
   return new Vue({
     el,
@@ -149,9 +154,11 @@ export function initIssueApp(issueData, store) {
     provide: {
       canCreateIncident,
       fullPath,
+      iid,
+      issuableId,
+      issueType,
       registerPath,
       signInPath,
-      hasIssueWeightsFeature,
       hasIterationsFeature,
       // for HeaderActions component
       canCreateIssue: parseBoolean(headerActionsData.canCreateIssue),
@@ -160,14 +167,10 @@ export function initIssueApp(issueData, store) {
       canReopenIssue: parseBoolean(headerActionsData.canReopenIssue),
       canReportSpam: parseBoolean(headerActionsData.canReportSpam),
       canUpdateIssue: parseBoolean(headerActionsData.canUpdateIssue),
-      iid: headerActionsData.iid,
-      issuableId: headerActionsData.issuableId,
       isIssueAuthor: parseBoolean(headerActionsData.isIssueAuthor),
       issuePath: headerActionsData.issuePath,
-      issueType: headerActionsData.issueType,
       newIssuePath: headerActionsData.newIssuePath,
       projectPath: headerActionsData.projectPath,
-      projectId: headerActionsData.projectId,
       reportAbusePath: headerActionsData.reportAbusePath,
       reportedUserId: headerActionsData.reportedUserId,
       reportedFromUrl: headerActionsData.reportedFromUrl,
@@ -180,7 +183,7 @@ export function initIssueApp(issueData, store) {
     render(createElement) {
       return createElement(IssueApp, {
         props: {
-          ...issueProps,
+          ...issueData,
           author: {
             id: authorId,
             name: authorName,

@@ -92,7 +92,7 @@ module ClustersHelper
   end
 
   def cluster_created?(cluster)
-    !cluster.status_name.in?(%i/scheduled creating/)
+    !cluster.status_name.in?(%i[scheduled creating])
   end
 
   def can_admin_cluster?(user, cluster)

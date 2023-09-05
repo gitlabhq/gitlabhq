@@ -110,7 +110,7 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, feature_category: :imp
 
       expect(Gitlab::JobWaiter)
         .to receive(:notify)
-        .with('123', 'abc123')
+        .with('123', 'abc123', ttl: Gitlab::Import::JOB_WAITER_TTL)
 
       worker.notify_waiter('123')
     end

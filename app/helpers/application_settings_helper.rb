@@ -307,7 +307,6 @@ module ApplicationSettingsHelper
       :housekeeping_optimize_repository_period,
       :html_emails_enabled,
       :import_sources,
-      :in_product_marketing_emails_enabled,
       :inactive_projects_delete_after_months,
       :inactive_projects_min_size_mb,
       :inactive_projects_send_warning_email_after_months,

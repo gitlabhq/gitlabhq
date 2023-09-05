@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssuesHelper do
+RSpec.describe IssuesHelper, feature_category: :team_planning do
   include Features::MergeRequestHelpers
 
   let_it_be(:project) { create(:project) }
@@ -174,14 +174,13 @@ RSpec.describe IssuesHelper do
     it 'returns expected result' do
       expected = {
         can_create_issue: 'true',
+        can_create_incident: 'true',
         can_destroy_issue: 'true',
         can_reopen_issue: 'true',
         can_report_spam: 'false',
         can_update_issue: 'true',
-        iid: issue.iid,
         is_issue_author: 'false',
         issue_path: issue_path(issue),
-        issue_type: 'issue',
         new_issue_path: new_project_issue_path(project, { add_related_issue: issue.iid }),
         project_path: project.full_path,
         report_abuse_path: add_category_abuse_reports_path,

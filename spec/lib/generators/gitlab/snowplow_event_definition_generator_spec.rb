@@ -6,7 +6,10 @@ RSpec.describe Gitlab::SnowplowEventDefinitionGenerator, :silence_stdout, featur
   let(:ce_temp_dir) { Dir.mktmpdir }
   let(:ee_temp_dir) { Dir.mktmpdir }
   let(:timestamp) { Time.now.utc.strftime('%Y%m%d%H%M%S') }
-  let(:generator_options) { { 'category' => 'Groups::EmailCampaignsController', 'action' => 'click' } }
+
+  let(:generator_options) do
+    { 'category' => 'Projects::Pipelines::EmailCampaignsController', 'action' => 'click' }
+  end
 
   before do
     stub_const("#{described_class}::CE_DIR", ce_temp_dir)

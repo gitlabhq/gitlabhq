@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import RelatedMergeRequests from './components/related_merge_requests.vue';
 import createStore from './store';
 
@@ -9,7 +10,7 @@ export function initRelatedMergeRequests() {
     return undefined;
   }
 
-  const { endpoint, projectPath, projectNamespace } = el.dataset;
+  const { endpoint, hasClosingMergeRequest, projectPath, projectNamespace } = el.dataset;
 
   return new Vue({
     el,
@@ -17,7 +18,12 @@ export function initRelatedMergeRequests() {
     store: createStore(),
     render: (createElement) =>
       createElement(RelatedMergeRequests, {
-        props: { endpoint, projectNamespace, projectPath },
+        props: {
+          endpoint,
+          hasClosingMergeRequest: parseBoolean(hasClosingMergeRequest),
+          projectNamespace,
+          projectPath,
+        },
       }),
   });
 }

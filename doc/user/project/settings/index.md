@@ -300,7 +300,7 @@ You can
 [add compliance frameworks to projects](../../group/compliance_frameworks.md#add-a-compliance-framework-to-a-project)
 in a group that has a compliance framework.
 
-### Manage project access through LDAP groups
+## Manage project access through LDAP groups
 
 You can [use LDAP to manage group membership](../../group/access_and_permissions.md#manage-group-memberships-via-ldap).
 

@@ -1380,7 +1380,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/requests/api/wikis_spec.rb'
     - 'spec/requests/concerns/planning_hierarchy_spec.rb'
     - 'spec/requests/groups/deploy_tokens_controller_spec.rb'
-    - 'spec/requests/groups/email_campaigns_controller_spec.rb'
     - 'spec/requests/groups/settings/access_tokens_controller_spec.rb'
     - 'spec/requests/groups/settings/applications_controller_spec.rb'
     - 'spec/requests/groups/usage_quotas_controller_spec.rb'

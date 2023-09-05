@@ -229,7 +229,6 @@ Layout/FirstHashElementIndentation:
     - 'spec/requests/api/ml/mlflow_spec.rb'
     - 'spec/requests/api/releases_spec.rb'
     - 'spec/requests/api/task_completion_status_spec.rb'
-    - 'spec/requests/groups/email_campaigns_controller_spec.rb'
     - 'spec/requests/pwa_controller_spec.rb'
     - 'spec/rubocop/cop/usage_data/distinct_count_by_large_foreign_key_spec.rb'
     - 'spec/rubocop/cop/usage_data/histogram_with_large_table_spec.rb'

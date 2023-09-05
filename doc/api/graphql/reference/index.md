@@ -10641,6 +10641,29 @@ The edge type for [`OncallParticipantType`](#oncallparticipanttype).
 | <a id="oncallparticipanttypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="oncallparticipanttypeedgenode"></a>`node` | [`OncallParticipantType`](#oncallparticipanttype) | The item at the end of the edge. |
 
+#### `OrganizationUserConnection`
+
+The connection type for [`OrganizationUser`](#organizationuser).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationuserconnectionedges"></a>`edges` | [`[OrganizationUserEdge]`](#organizationuseredge) | A list of edges. |
+| <a id="organizationuserconnectionnodes"></a>`nodes` | [`[OrganizationUser]`](#organizationuser) | A list of nodes. |
+| <a id="organizationuserconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `OrganizationUserEdge`
+
+The edge type for [`OrganizationUser`](#organizationuser).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationuseredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="organizationuseredgenode"></a>`node` | [`OrganizationUser`](#organizationuser) | The item at the end of the edge. |
+
 #### `PackageBaseConnection`
 
 The connection type for [`PackageBase`](#packagebase).
@@ -12847,7 +12870,7 @@ Represents a HTTP header key/value that belongs to an instance level audit strea
 
 ### `AutocompletedUser`
 
-Core represention of a GitLab user.
+Core representation of a GitLab user.
 
 #### Fields
 
@@ -20411,6 +20434,7 @@ Active period time range for on-call rotation.
 | ---- | ---- | ----------- |
 | <a id="organizationid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. ID of the organization. |
 | <a id="organizationname"></a>`name` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Name of the organization. |
+| <a id="organizationorganizationusers"></a>`organizationUsers` **{warning-solid}** | [`OrganizationUserConnection!`](#organizationuserconnection) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Users with access to the organization. |
 | <a id="organizationpath"></a>`path` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Path of the organization. |
 
 #### Fields with arguments
@@ -20447,6 +20471,18 @@ Represents the total number of organizations for the represented states.
 | <a id="organizationstatecountsactive"></a>`active` | [`Int`](#int) | Number of organizations with state `ACTIVE`. |
 | <a id="organizationstatecountsall"></a>`all` | [`Int`](#int) | Number of organizations with state `ALL`. |
 | <a id="organizationstatecountsinactive"></a>`inactive` | [`Int`](#int) | Number of organizations with state `INACTIVE`. |
+
+### `OrganizationUser`
+
+A user with access to the organization.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationuserbadges"></a>`badges` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Badges describing the user within the organization. |
+| <a id="organizationuserid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. ID of the organization user. |
+| <a id="organizationuseruser"></a>`user` **{warning-solid}** | [`UserCore!`](#usercore) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. User that is associated with the organization. |
 
 ### `Package`
 
@@ -24472,7 +24508,7 @@ Represents a recorded measurement (object count) for the Admins.
 
 ### `UserCore`
 
-Core represention of a GitLab user.
+Core representation of a GitLab user.
 
 #### Fields
 

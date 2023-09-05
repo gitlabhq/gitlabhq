@@ -46,16 +46,6 @@ RSpec.describe Gitlab::ManifestImport::Metadata, :clean_gitlab_redis_shared_stat
 
       expect(status.repositories).to eq(repositories)
     end
-
-    it 'reads non-hash-tagged keys if hash-tag keys are missing' do
-      status = described_class.new(user)
-
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.set(repositories_key, Gitlab::Json.dump(repositories))
-      end
-
-      expect(status.repositories).to eq(repositories)
-    end
   end
 
   describe '#group_id' do
@@ -72,14 +62,6 @@ RSpec.describe Gitlab::ManifestImport::Metadata, :clean_gitlab_redis_shared_stat
       status = described_class.new(user, fallback: fallback)
 
       expect(status.group_id).to eq(3)
-    end
-
-    it 'reads non-hash-tagged keys if hash-tag keys are missing' do
-      status = described_class.new(user)
-
-      Gitlab::Redis::SharedState.with { |redis| redis.set(group_id_key, 2) }
-
-      expect(status.group_id).to eq(2)
     end
   end
 end

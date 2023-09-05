@@ -1076,4 +1076,47 @@ RSpec.describe API::Helpers, feature_category: :shared do
       it_behaves_like 'authorized'
     end
   end
+
+  describe "attributes_for_keys" do
+    let(:hash) do
+      {
+        existing_key_with_present_value: 'actual value',
+        existing_key_with_nil_value: nil,
+        existing_key_with_false_value: false
+      }
+    end
+
+    let(:parameters) { ::ActionController::Parameters.new(hash) }
+    let(:symbol_keys) do
+      %i[
+        existing_key_with_present_value
+        existing_key_with_nil_value
+        existing_key_with_false_value
+        non_existing_key
+      ]
+    end
+
+    let(:string_keys) { symbol_keys.map(&:to_s) }
+    let(:filtered_attrs) do
+      {
+        'existing_key_with_present_value' => 'actual value',
+        'existing_key_with_false_value' => false
+      }
+    end
+
+    let(:empty_attrs) { {} }
+
+    where(:params, :keys, :attrs_result) do
+      ref(:hash) | ref(:symbol_keys) | ref(:filtered_attrs)
+      ref(:hash) | ref(:string_keys) | ref(:empty_attrs)
+      ref(:parameters) | ref(:symbol_keys) | ref(:filtered_attrs)
+      ref(:parameters) | ref(:string_keys) | ref(:filtered_attrs)
+    end
+
+    with_them do
+      it 'returns the values for given keys' do
+        expect(helper.attributes_for_keys(keys, params)).to eq(attrs_result)
+      end
+    end
+  end
 end

@@ -23,7 +23,7 @@ module Gitlab
           # If a job is being exhausted we still want to notify the
           # Gitlab::Import::AdvanceStageWorker to prevent the entire import from getting stuck
           if args.length == 3 && (key = args.last) && key.is_a?(String)
-            JobWaiter.notify(key, jid)
+            JobWaiter.notify(key, jid, ttl: Gitlab::Import::JOB_WAITER_TTL)
           end
         end
       end
@@ -61,7 +61,7 @@ module Gitlab
       end
 
       def notify_waiter(key)
-        JobWaiter.notify(key, jid)
+        JobWaiter.notify(key, jid, ttl: Gitlab::Import::JOB_WAITER_TTL)
       end
 
       # Returns the class to use for importing the object.
