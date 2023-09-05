@@ -65,19 +65,23 @@ This error occurs when you use an activation code to activate your instance, but
 
 You may have connectivity issues due to the following reasons:
 
-- **You have an offline environment**:
-  - Configure your setup to allow connection to GitLab servers. If connection to GitLab servers is not possible, contact your Sales Representative to request a license key. You can also contact [GitLab support](https://about.gitlab.com/support/#contact-support) if you need help finding your Sales Representative.
-- **Customers Portal is not operational**:
-  - To check for performance or service disruptions, check the Customers Portal [status](https://status.gitlab.com/).
 - **Firewall settings**:
-  - Check if your GitLab instance has an encrypted connection to `customers.gitlab.com` (with IP addresses 172.64.146.11 and 104.18.41.245) on port 443:
+  - Confirm that GitLab instance can establish an encrypted connection to `https://customers.gitlab.com` on port 443.
+    Note: IP addresses for `https://customers.gitlab.com` are 172.64.146.11 and 104.18.41.245)
 
    ```shell
    curl --verbose "https://customers.gitlab.com/"
-   ```
+  ```
 
-  - If the curl command returns a failure, either:
+  - If the curl command returns an error, either:
     - [Configure a proxy](https://docs.gitlab.com/omnibus/settings/environment-variables.html) in `gitlab.rb` to point to your server.
-    - Contact your network administrator to make changes to the proxy.
-  - If an SSL inspection appliance is used, you must add the appliance's root CA certificate to `/etc/gitlab/trusted-certs` on the server, then run `gitlab-ctl reconfigure`.
-  
+    - Contact your network administrator to make changes to an existing proxy or firewall.
+  - If an SSL inspection appliance is used, you must add the appliance's root CA certificate to `/etc/gitlab/trusted-certs` on your instance, then run `gitlab-ctl reconfigure`.
+
+- **Customers Portal is not operational**:
+  - Check for any active disruptions to the Customers Portal on [status](https://status.gitlab.com/).
+
+- **You have an offline environment**:
+  - If you are unable to configure your setup to allow connection to GitLab servers, contact your Sales Representative to request an [Offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license).
+
+    For assistance finding your sales representative you can contact [GitLab support](https://about.gitlab.com/support/#contact-support).

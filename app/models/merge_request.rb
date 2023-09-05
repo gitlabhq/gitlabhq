@@ -66,7 +66,7 @@ class MergeRequest < ApplicationRecord
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request
 
-  # method overriden in EE
+  # method overridden in EE
   def suggested_reviewer_users
     User.none
   end
@@ -162,7 +162,7 @@ class MergeRequest < ApplicationRecord
 
   # Keep states definition to be evaluated before the state_machine block to
   #   avoid spec failures. If this gets evaluated after, the `merged` and `locked`
-  #   states (which are overriden) can be nil.
+  #   states (which are overridden) can be nil.
   #
   def self.available_state_names
     super + [:merged, :locked]

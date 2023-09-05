@@ -575,7 +575,7 @@ gem 'mail-smtp_pool', '~> 0.1.0', path: 'vendor/gems/mail-smtp_pool', require: f
 gem 'microsoft_graph_mailer', '~> 0.1.0', path: 'vendor/gems/microsoft_graph_mailer'
 
 # File encryption
-gem 'lockbox', '~> 1.1.1'
+gem 'lockbox', '~> 1.3.0'
 
 # Email validation
 gem 'valid_email', '~> 0.1'

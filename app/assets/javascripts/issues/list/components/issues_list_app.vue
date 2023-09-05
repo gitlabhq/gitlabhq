@@ -100,7 +100,6 @@ import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
-import searchUsersQuery from '../queries/search_users.query.graphql';
 import setSortPreferenceMutation from '../queries/set_sort_preference.mutation.graphql';
 import {
   convertToApiParams,
@@ -649,23 +648,12 @@ export default {
         .then(({ data }) => data[this.namespace]?.milestones.nodes);
     },
     fetchUsers(search) {
-      if (gon.features?.newGraphqlUsersAutocomplete) {
-        return this.$apollo
-          .query({
-            query: usersAutocompleteQuery,
-            variables: { fullPath: this.fullPath, search, isProject: this.isProject },
-          })
-          .then(({ data }) => data[this.namespace]?.autocompleteUsers);
-      }
-
       return this.$apollo
         .query({
-          query: searchUsersQuery,
+          query: usersAutocompleteQuery,
           variables: { fullPath: this.fullPath, search, isProject: this.isProject },
         })
-        .then(({ data }) =>
-          data[this.namespace]?.[`${this.namespace}Members`].nodes.map((member) => member.user),
-        );
+        .then(({ data }) => data[this.namespace]?.autocompleteUsers);
     },
     getExportCsvPathWithQuery() {
       return `${this.exportCsvPath}${window.location.search}`;

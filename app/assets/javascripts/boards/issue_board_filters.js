@@ -1,6 +1,4 @@
 import { BoardType } from 'ee_else_ce/boards/constants';
-import groupBoardMembers from '~/boards/graphql/group_board_members.query.graphql';
-import projectBoardMembers from '~/boards/graphql/project_board_members.query.graphql';
 import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
 import groupBoardMilestonesQuery from './graphql/group_board_milestones.query.graphql';
 import projectBoardMilestonesQuery from './graphql/project_board_milestones.query.graphql';
@@ -11,31 +9,15 @@ export default function issueBoardFilters(apollo, fullPath, isGroupBoard) {
     return isGroupBoard ? data.group?.labels.nodes || [] : data.project?.labels.nodes || [];
   };
 
-  const boardAssigneesQuery = () => {
-    return isGroupBoard ? groupBoardMembers : projectBoardMembers;
-  };
-
   const fetchUsers = (usersSearchTerm) => {
-    if (gon.features?.newGraphqlUsersAutocomplete) {
-      const namespace = isGroupBoard ? BoardType.group : BoardType.project;
-
-      return apollo
-        .query({
-          query: usersAutocompleteQuery,
-          variables: { fullPath, search: usersSearchTerm, isProject: !isGroupBoard },
-        })
-        .then(({ data }) => data[namespace]?.autocompleteUsers);
-    }
+    const namespace = isGroupBoard ? BoardType.group : BoardType.project;
 
     return apollo
       .query({
-        query: boardAssigneesQuery(),
-        variables: {
-          fullPath,
-          search: usersSearchTerm,
-        },
+        query: usersAutocompleteQuery,
+        variables: { fullPath, search: usersSearchTerm, isProject: !isGroupBoard },
       })
-      .then(({ data }) => data.workspace?.assignees.nodes.map(({ user }) => user));
+      .then(({ data }) => data[namespace]?.autocompleteUsers);
   };
 
   const fetchLabels = (labelSearchTerm) => {

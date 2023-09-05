@@ -210,21 +210,6 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
 
         expect(page).to have_css('.gl-filtered-search-suggestion', text: child_project_member.name)
       end
-
-      context 'when new_graphql_users_autocomplete is disabled' do
-        before do
-          stub_feature_flags(new_graphql_users_autocomplete: false)
-        end
-
-        it 'does not include descendant project members in autocomplete' do
-          visit group_board_path(group, board)
-          wait_for_requests
-
-          set_filter('assignee')
-
-          expect(page).not_to have_css('.gl-filtered-search-suggestion', text: child_project_member.name)
-        end
-      end
     end
   end
 
