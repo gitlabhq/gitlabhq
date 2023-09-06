@@ -3397,6 +3397,8 @@ only one of the jobs starts. The other jobs wait until the `resource_group` is f
 
 Resource groups behave similar to semaphores in other programming languages.
 
+You can choose a [process mode](../resource_groups/index.md#process-modes) to strategically control the job concurrency for your deployment preferences. The default process mode is `unordered`. To change the process mode of a resource group, use the [API](../../api/resource_groups.md#edit-an-existing-resource-group) to send a request to edit an existing resource group.
+
 You can define multiple resource groups per environment. For example,
 when deploying to physical devices, you might have multiple physical devices. Each device
 can be deployed to, but only one deployment can occur per device at any given time.

@@ -5,30 +5,6 @@ module Gitlab
     module Group
       module Settings
         module UsageQuotas
-          # @note Defined as +link :seats_tab+
-          # Clicks +seats_tab+
-          def seats_tab
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.seats_tab_element).to exist
-          #   end
-          # @return [Watir::Link] The raw +Link+ element
-          def seats_tab_element
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_seats_tab
-          #   end
-          # @return [Boolean] true if the +seats_tab+ element is present on the page
-          def seats_tab?
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
           # @note Defined as +div :seats_in_use+
           # @return [String] The text content or value of +seats_in_use+
           def seats_in_use
@@ -122,30 +98,6 @@ module Gitlab
           #   end
           # @return [Boolean] true if the +subscription_users+ element is present on the page
           def subscription_users?
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @note Defined as +button :remove_user+
-          # Clicks +remove_user+
-          def remove_user
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.remove_user_element).to exist
-          #   end
-          # @return [Watir::Button] The raw +Button+ element
-          def remove_user_element
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_remove_user
-          #   end
-          # @return [Boolean] true if the +remove_user+ element is present on the page
-          def remove_user?
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
@@ -365,30 +317,6 @@ module Gitlab
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
-          # @note Defined as +div :dependency_proxy_usage+
-          # @return [String] The text content or value of +dependency_proxy_usage+
-          def dependency_proxy_usage
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.dependency_proxy_usage_element).to exist
-          #   end
-          # @return [Watir::Div] The raw +Div+ element
-          def dependency_proxy_usage_element
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_dependency_proxy_usage
-          #   end
-          # @return [Boolean] true if the +dependency_proxy_usage+ element is present on the page
-          def dependency_proxy_usage?
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
           # @note Defined as +span :dependency_proxy_size+
           # @return [String] The text content or value of +dependency_proxy_size+
           def dependency_proxy_size
@@ -410,30 +338,6 @@ module Gitlab
           #   end
           # @return [Boolean] true if the +dependency_proxy_size+ element is present on the page
           def dependency_proxy_size?
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @note Defined as +div :container_registry_usage+
-          # @return [String] The text content or value of +container_registry_usage+
-          def container_registry_usage
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.container_registry_usage_element).to exist
-          #   end
-          # @return [Watir::Div] The raw +Div+ element
-          def container_registry_usage_element
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_container_registry_usage
-          #   end
-          # @return [Boolean] true if the +container_registry_usage+ element is present on the page
-          def container_registry_usage?
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 
@@ -482,54 +386,6 @@ module Gitlab
           #   end
           # @return [Boolean] true if the +project+ element is present on the page
           def project?
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @note Defined as +div :storage_type_legend+
-          # @return [String] The text content or value of +storage_type_legend+
-          def storage_type_legend
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.storage_type_legend_element).to exist
-          #   end
-          # @return [Watir::Div] The raw +Div+ element
-          def storage_type_legend_element
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_storage_type_legend
-          #   end
-          # @return [Boolean] true if the +storage_type_legend+ element is present on the page
-          def storage_type_legend?
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @note Defined as +span :container_registry_size+
-          # @return [String] The text content or value of +container_registry_size+
-          def container_registry_size
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas.container_registry_size_element).to exist
-          #   end
-          # @return [Watir::Span] The raw +Span+ element
-          def container_registry_size_element
-            # This is a stub, used for indexing. The method is dynamically generated.
-          end
-
-          # @example
-          #   Gitlab::Page::Group::Settings::UsageQuotas.perform do |usage_quotas|
-          #     expect(usage_quotas).to be_container_registry_size
-          #   end
-          # @return [Boolean] true if the +container_registry_size+ element is present on the page
-          def container_registry_size?
             # This is a stub, used for indexing. The method is dynamically generated.
           end
 

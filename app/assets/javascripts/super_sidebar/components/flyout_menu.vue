@@ -117,7 +117,7 @@ export default {
     },
     onMouseMove(e) {
       // add some wiggle room to the left of mouse cursor
-      this.currentMouseX = Math.max(0, e.clientX - 20);
+      this.currentMouseX = Math.max(0, e.clientX - 5);
     },
   },
 };

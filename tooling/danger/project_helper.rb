@@ -106,6 +106,10 @@ module Tooling
         %r{\A((ee|jh)/)?app/finders/} => [:database, :backend],
         %r{\Arubocop/cop/migration(/|\.rb)} => :database,
 
+        %r{\A(ee/)?db/click_house/} => :clickhouse,
+        %r{\Agems/click_house-client/} => :clickhouse,
+        %r{click(-)?house} => :clickhouse,
+
         %r{\Alib/gitlab/ci/templates} => :ci_template,
 
         %r{\A((ee|jh)/)?spec/features/} => :test,

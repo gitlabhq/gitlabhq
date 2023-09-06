@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LoadBalancing::Host do
+RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :database do
   let(:load_balancer) do
     Gitlab::Database::LoadBalancing::LoadBalancer
       .new(Gitlab::Database::LoadBalancing::Configuration.new(ActiveRecord::Base))
@@ -124,11 +124,34 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host do
       end
 
       it 'refreshes the status' do
-        expect(Gitlab::Database::LoadBalancing::Logger).to receive(:info)
-          .with(hash_including(event: :host_online))
-          .and_call_original
-
         expect(host).to be_online
+      end
+
+      context 'and the host was previously online' do
+        # Hosts are online by default
+
+        it 'does not log the online event' do
+          expect(Gitlab::Database::LoadBalancing::Logger)
+            .not_to receive(:info)
+            .with(hash_including(event: :host_online))
+
+          expect(host).to be_online
+        end
+      end
+
+      context 'and the host was previously offline' do
+        before do
+          host.offline!
+        end
+
+        it 'logs the online event' do
+          expect(Gitlab::Database::LoadBalancing::Logger)
+            .to receive(:info)
+            .with(hash_including(event: :host_online))
+            .and_call_original
+
+          expect(host).to be_online
+        end
       end
 
       context 'and replica is not up to date' do

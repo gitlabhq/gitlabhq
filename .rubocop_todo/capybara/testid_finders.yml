@@ -45,7 +45,6 @@ Capybara/TestidFinders:
     - 'ee/spec/features/groups/show_spec.rb'
     - 'ee/spec/features/groups/usage_quotas/pipelines_tab_spec.rb'
     - 'ee/spec/features/groups/usage_quotas/seats_tab_spec.rb'
-    - 'ee/spec/features/groups/usage_quotas/usage_quotas_spec.rb'
     - 'ee/spec/features/incidents/incident_details_spec.rb'
     - 'ee/spec/features/incidents/user_uploads_metric_images_spec.rb'
     - 'ee/spec/features/issues/blocking_issues_spec.rb'

@@ -121,7 +121,6 @@ export default {
         :key="storageType.name"
         class="col-md-auto gl-display-flex gl-align-items-center"
         data-testid="storage-type-legend"
-        data-qa-selector="storage_type_legend"
       >
         <div class="gl-h-2 gl-w-5 gl-mr-2 gl-display-inline-block" :class="storageType.class"></div>
         <span class="gl-mr-2 gl-font-weight-bold gl-font-sm">

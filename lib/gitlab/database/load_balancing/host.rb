@@ -119,16 +119,19 @@ module Gitlab
         def online?
           return @online unless check_replica_status?
 
+          was_online = @online
           refresh_status
 
-          if @online
+          # Log that the host came back online if it was previously offline
+          if @online && !was_online
             ::Gitlab::Database::LoadBalancing::Logger.info(
               event: :host_online,
               message: 'Host is online after replica status check',
               db_host: @host,
               db_port: @port
             )
-          else
+          # Always log if the host goes offline
+          elsif !@online
             ::Gitlab::Database::LoadBalancing::Logger.warn(
               event: :host_offline,
               message: 'Host is offline after replica status check',
