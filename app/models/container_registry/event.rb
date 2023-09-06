@@ -4,25 +4,25 @@ module ContainerRegistry
   class Event
     include Gitlab::Utils::StrongMemoize
 
-    ALLOWED_ACTIONS = %w(push delete).freeze
+    ALLOWED_ACTIONS = %w[push delete].freeze
     PUSH_ACTION = 'push'
     DELETE_ACTION = 'delete'
     EVENT_TRACKING_CATEGORY = 'container_registry:notification'
     EVENT_PREFIX = 'i_container_registry'
 
-    ALLOWED_ACTOR_TYPES = %w(
+    ALLOWED_ACTOR_TYPES = %w[
       personal_access_token
       build
       gitlab_or_ldap
-    ).freeze
+    ].freeze
 
-    TRACKABLE_ACTOR_EVENTS = %w(
+    TRACKABLE_ACTOR_EVENTS = %w[
       push_tag
       delete_tag
       push_repository
       delete_repository
       create_repository
-    ).freeze
+    ].freeze
 
     attr_reader :event
 

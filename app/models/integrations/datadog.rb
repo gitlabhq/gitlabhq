@@ -40,7 +40,7 @@ module Integrations
         ERB::Util.html_escape(
           s_('DatadogIntegration|%{linkOpen}API key%{linkClose} used for authentication with Datadog.')
         ) % {
-          linkOpen: %{<a href="#{URL_API_KEYS_DOCS}" target="_blank" rel="noopener noreferrer">}.html_safe,
+          linkOpen: %(<a href="#{URL_API_KEYS_DOCS}" target="_blank" rel="noopener noreferrer">).html_safe,
           linkClose: '</a>'.html_safe
         }
       end,

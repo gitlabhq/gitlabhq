@@ -6,6 +6,13 @@ import { SIDEBAR_PINS_EXPANDED_COOKIE, SIDEBAR_COOKIE_EXPIRATION } from '../cons
 import MenuSection from './menu_section.vue';
 import NavItem from './nav_item.vue';
 
+const AMBIGUOUS_SETTINGS = {
+  ci_cd: s__('Navigation|CI/CD settings'),
+  merge_request_settings: s__('Navigation|Merge requests settings'),
+  monitor: s__('Navigation|Monitor settings'),
+  repository: s__('Navigation|Repository settings'),
+};
+
 export default {
   i18n: {
     pinned: s__('Navigation|Pinned'),
@@ -32,7 +39,7 @@ export default {
   data() {
     return {
       expanded: getCookie(SIDEBAR_PINS_EXPANDED_COOKIE) !== 'false',
-      draggableItems: this.items,
+      draggableItems: this.renameSettings(this.items),
     };
   },
   computed: {
@@ -58,7 +65,7 @@ export default {
       });
     },
     items(newItems) {
-      this.draggableItems = newItems;
+      this.draggableItems = this.renameSettings(newItems);
     },
   },
   methods: {
@@ -70,6 +77,12 @@ export default {
         this.items[event.newIndex].id,
         event.oldIndex < event.newIndex,
       );
+    },
+    renameSettings(items) {
+      return items.map((i) => {
+        const title = AMBIGUOUS_SETTINGS[i.id] || i.title;
+        return { ...i, title };
+      });
     },
   },
 };

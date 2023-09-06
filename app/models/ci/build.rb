@@ -165,7 +165,7 @@ module Ci
     scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where("#{quoted_table_name}.id = #{Ci::BuildTraceChunk.quoted_table_name}.build_id").select(1)) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, -> (date) { finished.where('finished_at < ?', date) }
-    scope :license_management_jobs, -> { where(name: %i(license_management license_scanning)) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
+    scope :license_management_jobs, -> { where(name: %i[license_management license_scanning]) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
     # WARNING: This scope could lead to performance implications for large size of tables `ci_builds` and ci_runners`.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123131
     scope :with_runner_type, -> (runner_type) { joins(:runner).where(runner: { runner_type: runner_type }) }
@@ -495,14 +495,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless persisted? && persisted_environment.present?
 
-        if ::Feature.enabled?(:support_ci_environment_variables_in_job_rules, project)
-          variables.append(key: 'CI_ENVIRONMENT_SLUG', value: environment_slug)
-        else
-          variables.concat(persisted_environment.predefined_variables)
-
-          variables.append(key: 'CI_ENVIRONMENT_ACTION', value: environment_action)
-          variables.append(key: 'CI_ENVIRONMENT_TIER', value: environment_tier)
-        end
+        variables.append(key: 'CI_ENVIRONMENT_SLUG', value: environment_slug)
 
         # Here we're passing unexpanded environment_url for runner to expand,
         # and we need to make sure that CI_ENVIRONMENT_NAME and

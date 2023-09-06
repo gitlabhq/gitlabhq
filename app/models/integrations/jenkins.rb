@@ -66,7 +66,7 @@ module Integrations
     end
 
     def self.supported_events
-      %w(push merge_request tag_push)
+      %w[push merge_request tag_push]
     end
 
     def title

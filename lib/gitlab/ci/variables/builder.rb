@@ -137,16 +137,11 @@ module Gitlab
             variables.append(key: 'CI_NODE_INDEX', value: job.options[:instance].to_s) if job.options&.include?(:instance)
             variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job).to_s)
 
-            if ::Feature.enabled?(:support_ci_environment_variables_in_job_rules, project)
-              if environment.present?
-                variables.append(key: 'CI_ENVIRONMENT_NAME', value: environment)
-                variables.append(key: 'CI_ENVIRONMENT_ACTION', value: job.environment_action)
-                variables.append(key: 'CI_ENVIRONMENT_TIER', value: job.environment_tier)
-                variables.append(key: 'CI_ENVIRONMENT_URL', value: job.environment_url) if job.environment_url
-              end
-            else
-              # Set environment name here so we can access it when evaluating the job's rules
-              variables.append(key: 'CI_ENVIRONMENT_NAME', value: job.environment) if job.environment # rubocop:disable Style/IfInsideElse
+            if environment.present?
+              variables.append(key: 'CI_ENVIRONMENT_NAME', value: environment)
+              variables.append(key: 'CI_ENVIRONMENT_ACTION', value: job.environment_action)
+              variables.append(key: 'CI_ENVIRONMENT_TIER', value: job.environment_tier)
+              variables.append(key: 'CI_ENVIRONMENT_URL', value: job.environment_url) if job.environment_url
             end
           end
         end

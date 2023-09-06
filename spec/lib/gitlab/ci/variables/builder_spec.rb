@@ -171,20 +171,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
     it { expect(subject.to_runner_variables).to eq(predefined_variables) }
 
-    context 'when support_ci_environment_variables_in_job_rules feature flag is disabled' do
-      before do
-        stub_feature_flags(support_ci_environment_variables_in_job_rules: false)
-
-        # This is a bug. `CI_ENVIRONMENT_NAME` should be expanded.
-        predefined_variables.find { |var| var[:key] == 'CI_ENVIRONMENT_NAME' }[:value] = 'review/$CI_COMMIT_REF_NAME'
-        predefined_variables.delete_if do |var|
-          %w[CI_ENVIRONMENT_ACTION CI_ENVIRONMENT_TIER CI_ENVIRONMENT_URL].include?(var[:key])
-        end
-      end
-
-      it { expect(subject.to_runner_variables).to eq(predefined_variables) }
-    end
-
     context 'variables ordering' do
       def var(name, value)
         { key: name, value: value.to_s, public: true, masked: false }

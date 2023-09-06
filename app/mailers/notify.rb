@@ -208,6 +208,7 @@ class Notify < ApplicationMailer
 
     headers["#{prefix}-ID"] = object.id
     headers["#{prefix}-IID"] = object.iid if object.respond_to?(:iid)
+    headers["#{prefix}-State"] = object.state if object.respond_to?(:state)
   end
 
   def add_project_headers

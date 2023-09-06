@@ -2670,14 +2670,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it_behaves_like 'containing environment variables'
-
-        context 'when support_ci_environment_variables_in_job_rules feature flag is disabled' do
-          before do
-            stub_feature_flags(support_ci_environment_variables_in_job_rules: false)
-          end
-
-          it_behaves_like 'containing environment variables'
-        end
       end
 
       context 'when an URL was set' do

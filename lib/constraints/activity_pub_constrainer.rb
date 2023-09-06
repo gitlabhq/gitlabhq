@@ -3,7 +3,7 @@
 module Constraints
   class ActivityPubConstrainer
     def matches?(request)
-      mime_types.any? { |m| request.headers['Accept'].include?(m) }
+      mime_types.any? { |m| request.headers.fetch('Accept', '').include?(m) }
     end
 
     private

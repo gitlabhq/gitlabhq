@@ -86,7 +86,7 @@ module Integrations
     end
 
     def self.supported_events
-      %w()
+      %w[]
     end
 
     private

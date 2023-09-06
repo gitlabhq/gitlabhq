@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DesignManagement
-  DESIGN_IMAGE_SIZES = %w(v432x230).freeze
+  DESIGN_IMAGE_SIZES = %w[v432x230].freeze
 
   def self.designs_directory
     'designs'

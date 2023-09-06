@@ -8,7 +8,7 @@ module Clusters
       include ReactiveCaching
       include NullifyIfBlank
 
-      RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
+      RESERVED_NAMESPACES = %w[gitlab-managed-apps].freeze
       REQUIRED_K8S_MIN_VERSION = 23
 
       IGNORED_CONNECTION_EXCEPTIONS = [

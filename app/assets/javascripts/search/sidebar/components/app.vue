@@ -5,7 +5,13 @@ import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navi
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { SCOPE_ISSUES, SCOPE_MERGE_REQUESTS, SCOPE_BLOB, SCOPE_PROJECTS } from '../constants';
+import {
+  SCOPE_ISSUES,
+  SCOPE_MERGE_REQUESTS,
+  SCOPE_BLOB,
+  SCOPE_PROJECTS,
+  SEARCH_TYPE_ADVANCED,
+} from '../constants';
 import IssuesFilters from './issues_filters.vue';
 import MergeRequestsFilters from './merge_requests_filters.vue';
 import BlobsFilters from './blobs_filters.vue';
@@ -25,7 +31,7 @@ export default {
   mixins: [glFeatureFlagsMixin()],
   computed: {
     // useSidebarNavigation refers to whether the new left sidebar navigation is enabled
-    ...mapState(['useSidebarNavigation']),
+    ...mapState(['useSidebarNavigation', 'searchType']),
     ...mapGetters(['currentScope']),
     showIssuesFilters() {
       return this.currentScope === SCOPE_ISSUES;
@@ -34,7 +40,7 @@ export default {
       return this.currentScope === SCOPE_MERGE_REQUESTS;
     },
     showBlobFilters() {
-      return this.currentScope === SCOPE_BLOB;
+      return this.currentScope === SCOPE_BLOB && this.searchType === SEARCH_TYPE_ADVANCED;
     },
     showProjectsFilters() {
       // for now the feature flag is here. Since we have only one filter in projects scope

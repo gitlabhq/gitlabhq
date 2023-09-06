@@ -67,6 +67,10 @@ export default {
     :tabs="$options.issuableListTabs"
     @dismiss-alert="error = undefined"
   >
+    <template #nav-actions>
+      <slot name="nav-actions"></slot>
+    </template>
+
     <template #timeframe="{ issuable = {} }">
       <issue-card-time-info :issue="issuable" />
     </template>
@@ -77,6 +81,10 @@ export default {
 
     <template #statistics="{ issuable = {} }">
       <issue-card-statistics :issue="issuable" />
+    </template>
+
+    <template #list-body>
+      <slot name="list-body"></slot>
     </template>
   </issuable-list>
 </template>

@@ -22,7 +22,7 @@ module WithUploads
   # Currently there is no simple way how to select only not-mounted
   # uploads, it should be all FileUploaders so we select them by
   # `uploader` class
-  FILE_UPLOADERS = %w(PersonalFileUploader NamespaceFileUploader FileUploader).freeze
+  FILE_UPLOADERS = %w[PersonalFileUploader NamespaceFileUploader FileUploader].freeze
 
   included do
     around_destroy :ignore_uploads_table_in_transaction

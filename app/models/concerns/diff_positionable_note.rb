@@ -14,7 +14,7 @@ module DiffPositionableNote
     validates :position, json_schema: { filename: "position", hash_conversion: true }
   end
 
-  %i(original_position position change_position).each do |meth|
+  %i[original_position position change_position].each do |meth|
     define_method "#{meth}=" do |new_position|
       if new_position.is_a?(String)
         new_position = begin

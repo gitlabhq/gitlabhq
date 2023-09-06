@@ -3,10 +3,10 @@
 module BulkImports
   module FileTransfer
     class ProjectConfig < BaseConfig
-      SKIPPED_RELATIONS = %w(
+      SKIPPED_RELATIONS = %w[
         project_members
         group_members
-      ).freeze
+      ].freeze
 
       LFS_OBJECTS_RELATION = 'lfs_objects'
       REPOSITORY_BUNDLE_RELATION = 'repository'

@@ -8,9 +8,11 @@ export const sidebarInitState = () => {
   const el = document.getElementById('js-search-sidebar');
   if (!el) return {};
 
-  const { navigationJson } = el.dataset;
+  const { navigationJson, searchType } = el.dataset;
+
   const navigationJsonParsed = JSON.parse(navigationJson);
-  return { navigationJsonParsed };
+
+  return { navigationJsonParsed, searchType };
 };
 
 export const initSidebar = (store) => {

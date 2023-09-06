@@ -69,7 +69,7 @@ class Event < ApplicationRecord
     # If the association for "target" defines an "author" association we want to
     # eager-load this so Banzai & friends don't end up performing N+1 queries to
     # get the authors of notes, issues, etc. (likewise for "noteable").
-    incs = %i(author noteable work_item_type).select do |a|
+    incs = %i[author noteable work_item_type].select do |a|
       reflections['events'].active_record.reflect_on_association(a)
     end
 
@@ -137,7 +137,7 @@ class Event < ApplicationRecord
       where(
         'action IN (?) OR (target_type IN (?) AND action IN (?))',
         [actions[:pushed], actions[:commented]],
-        %w(MergeRequest Issue WorkItem), [actions[:created], actions[:closed], actions[:merged]]
+        %w[MergeRequest Issue WorkItem], [actions[:created], actions[:closed], actions[:merged]]
       )
     end
 

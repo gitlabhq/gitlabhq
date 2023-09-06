@@ -101,7 +101,7 @@ gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 3.2.4', path: 'vendor/gems/attr_encrypted'
 
 # GitLab Pages
-gem 'validates_hostname', '~> 1.0.11'
+gem 'validates_hostname', '~> 1.0.13'
 gem 'rubyzip', '~> 2.3.2', require: 'zip'
 # GitLab Pages letsencrypt support
 gem 'acme-client', '~> 2.0'
@@ -334,7 +334,7 @@ gem 'terser', '1.0.2'
 
 gem 'click_house-client', path: 'gems/click_house-client', require: 'click_house/client'
 gem 'addressable', '~> 2.8'
-gem 'tanuki_emoji', '~> 0.6'
+gem 'tanuki_emoji', '~> 0.7'
 gem 'gon', '~> 6.4.0'
 gem 'request_store', '~> 1.5.1'
 gem 'base32', '~> 0.3.0'

@@ -365,6 +365,10 @@ To delete a single or multiple group runners:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
 
+Prerequisite:
+
+- You must have the Owner role for the group.
+
 You can clean up group runners that have been inactive for more than three months.
 
 Group runners are those that were created at the group level.

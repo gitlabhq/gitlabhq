@@ -107,11 +107,11 @@ class Environment < ApplicationRecord
 
   scope :deployed_and_updated_before, -> (project_id, before) do
     # this query joins deployments and filters out any environment that has recent deployments
-    joins = %{
+    joins = %(
     LEFT JOIN "deployments" on "deployments".environment_id = "environments".id
         AND "deployments".project_id = #{project_id}
         AND "deployments".updated_at >= #{connection.quote(before)}
-    }
+    )
     Environment.joins(joins)
                .where(project_id: project_id, updated_at: ...before)
                .group('id', 'deployments.id')
@@ -192,7 +192,7 @@ class Environment < ApplicationRecord
     end
 
     event :stop_complete do
-      transition %i(available stopping) => :stopped
+      transition %i[available stopping] => :stopped
     end
 
     state :available

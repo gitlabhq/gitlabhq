@@ -5,8 +5,8 @@ class DraftNote < ApplicationRecord
   include Sortable
   include ShaAttribute
 
-  PUBLISH_ATTRS = %i(noteable_id noteable_type type note).freeze
-  DIFF_ATTRS = %i(position original_position change_position commit_id).freeze
+  PUBLISH_ATTRS = %i[noteable_id noteable_type type note].freeze
+  DIFF_ATTRS = %i[position original_position change_position commit_id].freeze
 
   sha_attribute :commit_id
 

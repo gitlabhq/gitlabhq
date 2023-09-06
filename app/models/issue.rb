@@ -47,10 +47,10 @@ class Issue < ApplicationRecord
   #
   # This should be kept consistent with the enums used for the GraphQL issue list query in
   # https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/assets/javascripts/issues/list/constants.js#L154-158
-  TYPES_FOR_LIST = %w(issue incident test_case task objective key_result).freeze
+  TYPES_FOR_LIST = %w[issue incident test_case task objective key_result].freeze
 
   # Types of issues that should be displayed on issue board lists
-  TYPES_FOR_BOARD_LIST = %w(issue incident).freeze
+  TYPES_FOR_BOARD_LIST = %w[issue incident].freeze
 
   # This default came from the enum `issue_type` column. Defined as default in the DB
   DEFAULT_ISSUE_TYPE = :issue
@@ -783,7 +783,7 @@ class Issue < ApplicationRecord
     # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/393126
     return unless project
 
-    Issues::SearchData.upsert({ namespace_id: namespace_id, project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
+    Issues::SearchData.upsert({ namespace_id: namespace_id, project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i[project_id issue_id])
   end
 
   def ensure_metrics!

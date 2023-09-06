@@ -30916,6 +30916,9 @@ msgstr ""
 msgid "Navigation|Build"
 msgstr ""
 
+msgid "Navigation|CI/CD settings"
+msgstr ""
+
 msgid "Navigation|Code"
 msgstr ""
 
@@ -30952,7 +30955,13 @@ msgstr ""
 msgid "Navigation|Manage"
 msgstr ""
 
+msgid "Navigation|Merge requests settings"
+msgstr ""
+
 msgid "Navigation|Monitor"
+msgstr ""
+
+msgid "Navigation|Monitor settings"
 msgstr ""
 
 msgid "Navigation|No group matches found"
@@ -30977,6 +30986,9 @@ msgid "Navigation|Projects"
 msgstr ""
 
 msgid "Navigation|Projects you visit often will appear here."
+msgstr ""
+
+msgid "Navigation|Repository settings"
 msgstr ""
 
 msgid "Navigation|Retrieving search results"

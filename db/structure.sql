@@ -11913,7 +11913,7 @@ CREATE TABLE application_settings (
     encrypted_product_analytics_configurator_connection_string bytea,
     encrypted_product_analytics_configurator_connection_string_iv bytea,
     silent_mode_enabled boolean DEFAULT false NOT NULL,
-    package_metadata_purl_types smallint[] DEFAULT '{}'::smallint[],
+    package_metadata_purl_types smallint[] DEFAULT '{1,2,3,4,5,6,7,8,9,10,11,12}'::smallint[],
     ci_max_includes integer DEFAULT 150 NOT NULL,
     remember_me_enabled boolean DEFAULT true NOT NULL,
     encrypted_anthropic_api_key bytea,
@@ -22188,7 +22188,14 @@ CREATE TABLE push_rules (
     regexp_uses_re2 boolean DEFAULT true,
     commit_message_negative_regex character varying,
     reject_non_dco_commits boolean,
-    commit_committer_name_check boolean DEFAULT false NOT NULL
+    commit_committer_name_check boolean DEFAULT false NOT NULL,
+    CONSTRAINT author_email_regex_size_constraint CHECK ((char_length((author_email_regex)::text) <= 511)),
+    CONSTRAINT branch_name_regex_size_constraint CHECK ((char_length((branch_name_regex)::text) <= 511)),
+    CONSTRAINT commit_message_negative_regex_size_constraint CHECK ((char_length((commit_message_negative_regex)::text) <= 2047)),
+    CONSTRAINT commit_message_regex_size_constraint CHECK ((char_length((commit_message_regex)::text) <= 511)),
+    CONSTRAINT delete_branch_regex_size_constraint CHECK ((char_length((delete_branch_regex)::text) <= 511)),
+    CONSTRAINT file_name_regex_size_constraint CHECK ((char_length((file_name_regex)::text) <= 511)),
+    CONSTRAINT force_push_regex_size_constraint CHECK ((char_length((force_push_regex)::text) <= 511))
 );
 
 CREATE SEQUENCE push_rules_id_seq

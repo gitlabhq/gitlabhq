@@ -9,7 +9,7 @@ module Integrations
     after_commit :cache_project_has_integration
 
     def self.supported_events
-      %w()
+      %w[]
     end
 
     private

@@ -357,7 +357,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/controllers/admin/geo/application_controller.rb'
     - 'ee/app/controllers/admin/geo/designs_controller.rb'
     - 'ee/app/controllers/admin/geo/nodes_controller.rb'
-    - 'ee/app/controllers/admin/geo/projects_controller.rb'
     - 'ee/app/controllers/admin/geo/replicables_controller.rb'
     - 'ee/app/controllers/admin/geo/settings_controller.rb'
     - 'ee/app/controllers/admin/licenses_controller.rb'

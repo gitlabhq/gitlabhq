@@ -43,7 +43,7 @@ module Integrations
       end
 
       def supported_events
-        %w(push merge_request)
+        %w[push merge_request]
       end
     end
 

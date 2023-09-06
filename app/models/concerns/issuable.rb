@@ -33,7 +33,7 @@ module Issuable
   TITLE_HTML_LENGTH_MAX = 800
   DESCRIPTION_LENGTH_MAX = 1.megabyte
   DESCRIPTION_HTML_LENGTH_MAX = 5.megabytes
-  SEARCHABLE_FIELDS = %w(title description).freeze
+  SEARCHABLE_FIELDS = %w[title description].freeze
   MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS = 200
 
   STATE_ID_MAP = {
@@ -412,14 +412,14 @@ module Issuable
       sort = sort.to_s
       grouping_columns = [arel_table[:id]]
 
-      if %w(milestone_due_desc milestone_due_asc milestone).include?(sort)
+      if %w[milestone_due_desc milestone_due_asc milestone].include?(sort)
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]
-      elsif %w(merged_at_desc merged_at_asc merged_at).include?(sort)
+      elsif %w[merged_at_desc merged_at_asc merged_at].include?(sort)
         grouping_columns << MergeRequest::Metrics.arel_table[:id]
         grouping_columns << MergeRequest::Metrics.arel_table[:merged_at]
-      elsif %w(closed_at_desc closed_at_asc closed_at).include?(sort)
+      elsif %w[closed_at_desc closed_at_asc closed_at].include?(sort)
         grouping_columns << MergeRequest::Metrics.arel_table[:id]
         grouping_columns << MergeRequest::Metrics.arel_table[:latest_closed_at]
       end

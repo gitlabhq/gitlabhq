@@ -17,7 +17,7 @@ module Clusters
 
           class_methods do
             def available_ci_access_fields(_project)
-              %w(agent)
+              %w[agent]
             end
           end
         end

@@ -19,3 +19,7 @@ export const ONLY_SHOW_MD = ['gl-display-none', 'gl-md-display-block'];
 export const TRACKING_ACTION_CLICK = 'search:filters:click';
 export const TRACKING_LABEL_APPLY = 'Apply Filters';
 export const TRACKING_LABEL_RESET = 'Reset Filters';
+
+export const SEARCH_TYPE_BASIC = 'basic';
+export const SEARCH_TYPE_ADVANCED = 'advanced';
+export const SEARCH_TYPE_ZOEKT = 'zoekt';

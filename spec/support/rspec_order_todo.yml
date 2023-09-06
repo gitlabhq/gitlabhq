@@ -19,7 +19,6 @@
 - './ee/spec/controllers/admin/elasticsearch_controller_spec.rb'
 - './ee/spec/controllers/admin/emails_controller_spec.rb'
 - './ee/spec/controllers/admin/geo/nodes_controller_spec.rb'
-- './ee/spec/controllers/admin/geo/projects_controller_spec.rb'
 - './ee/spec/controllers/admin/geo/settings_controller_spec.rb'
 - './ee/spec/controllers/admin/groups_controller_spec.rb'
 - './ee/spec/controllers/admin/impersonations_controller_spec.rb'

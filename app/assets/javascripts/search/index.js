@@ -10,12 +10,13 @@ import { initBlobRefSwitcher } from './under_topbar';
 export const initSearchApp = () => {
   syntaxHighlight(document.querySelectorAll('.js-search-results'));
   const query = queryToObject(window.location.search, { gatherArrays: true });
-  const { navigationJsonParsed: navigation } = sidebarInitState() || {};
+  const { navigationJsonParsed: navigation, searchType } = sidebarInitState() || {};
 
   const store = createStore({
     query,
     navigation,
     useSidebarNavigation: gon.use_new_navigation,
+    searchType,
   });
 
   initTopbar(store);

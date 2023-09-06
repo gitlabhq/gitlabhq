@@ -9,7 +9,7 @@ module Integrations
     attribute :category, default: 'monitoring'
 
     def self.supported_events
-      %w()
+      %w[]
     end
 
     def can_query?

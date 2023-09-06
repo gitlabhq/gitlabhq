@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { SEARCH_TYPE_ZOEKT, SEARCH_TYPE_ADVANCED } from '~/search/sidebar/constants';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
 import IssuesFilters from '~/search/sidebar/components/issues_filters.vue';
@@ -60,7 +61,7 @@ describe('GlobalSearchSidebar', () => {
     `('with sidebar $scope scope:', ({ scope, filter }) => {
       beforeEach(() => {
         getterSpies.currentScope = jest.fn(() => scope);
-        createComponent({ urlQuery: { scope } });
+        createComponent({ urlQuery: { scope }, searchType: SEARCH_TYPE_ADVANCED });
       });
 
       it(`shows filter ${filter.name.replace('find', '')}`, () => {
@@ -68,13 +69,23 @@ describe('GlobalSearchSidebar', () => {
       });
     });
 
-    describe('with sidebar $scope scope:', () => {
+    describe('filters for blobs will not load if zoekt is enabled', () => {
+      beforeEach(() => {
+        createComponent({ urlQuery: { scope: 'blobs' }, searchType: SEARCH_TYPE_ZOEKT });
+      });
+
+      it("doesn't render blobs filters", () => {
+        expect(findBlobsFilters().exists()).toBe(false);
+      });
+    });
+
+    describe('with sidebar scope: projects', () => {
       beforeEach(() => {
         getterSpies.currentScope = jest.fn(() => 'projects');
         createComponent({ urlQuery: { scope: 'projects' } });
       });
 
-      it(`shows filter ProjectsFilters}`, () => {
+      it(`shows filter ProjectsFilters`, () => {
         expect(findProjectsFilters().exists()).toBe(true);
       });
     });

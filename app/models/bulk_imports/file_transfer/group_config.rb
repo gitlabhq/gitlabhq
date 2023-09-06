@@ -3,7 +3,7 @@
 module BulkImports
   module FileTransfer
     class GroupConfig < BaseConfig
-      SKIPPED_RELATIONS = %w(members).freeze
+      SKIPPED_RELATIONS = %w[members].freeze
 
       def import_export_yaml
         ::Gitlab::ImportExport.group_config_file

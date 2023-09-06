@@ -338,6 +338,7 @@ Below is a list of known affected features with preliminary proposed solutions.
 The following list of impacted features only represents placeholders that still require work to estimate the impact of Cells and develop solution proposals.
 
 - [Cells: Agent for Kubernetes](impacted_features/agent-for-kubernetes.md)
+- [Cells: CI/CD Catalog](impacted_features/ci-cd-catalog.md)
 - [Cells: Data pipeline ingestion](impacted_features/data-pipeline-ingestion.md)
 - [Cells: GitLab Pages](impacted_features/gitlab-pages.md)
 - [Cells: Personal Access Tokens](impacted_features/personal-access-tokens.md)

@@ -12,17 +12,17 @@ module Noteable
   class_methods do
     # `Noteable` class names that support replying to individual notes.
     def replyable_types
-      %w(Issue MergeRequest)
+      %w[Issue MergeRequest]
     end
 
     # `Noteable` class names that support resolvable notes.
     def resolvable_types
-      %w(Issue MergeRequest DesignManagement::Design)
+      %w[Issue MergeRequest DesignManagement::Design]
     end
 
     # `Noteable` class names that support creating/forwarding individual notes.
     def email_creatable_types
-      %w(Issue)
+      %w[Issue]
     end
   end
 

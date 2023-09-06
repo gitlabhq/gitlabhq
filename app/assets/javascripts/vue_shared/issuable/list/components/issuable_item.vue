@@ -95,7 +95,7 @@ export default {
       return Boolean(this.issuable.externalTracker);
     },
     isIssuableUrlExternal() {
-      return isExternal(this.webUrl);
+      return isExternal(this.webUrl ?? '');
     },
     reference() {
       return this.issuable.reference || `${this.issuableSymbol}${this.issuable.iid}`;

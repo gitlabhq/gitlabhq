@@ -87,4 +87,33 @@ describe('PinnedSection component', () => {
       });
     });
   });
+
+  describe('ambiguous settings names', () => {
+    it('get renamed to be unambiguous', () => {
+      createWrapper({
+        items: [
+          { title: 'CI/CD', id: 'ci_cd' },
+          { title: 'Merge requests', id: 'merge_request_settings' },
+          { title: 'Monitor', id: 'monitor' },
+          { title: 'Repository', id: 'repository' },
+          { title: 'Repository', id: 'code' },
+          { title: 'Something else', id: 'not_a_setting' },
+        ],
+      });
+
+      expect(
+        wrapper
+          .findComponent(MenuSection)
+          .props('item')
+          .items.map((i) => i.title),
+      ).toEqual([
+        'CI/CD settings',
+        'Merge requests settings',
+        'Monitor settings',
+        'Repository settings',
+        'Repository',
+        'Something else',
+      ]);
+    });
+  });
 });
