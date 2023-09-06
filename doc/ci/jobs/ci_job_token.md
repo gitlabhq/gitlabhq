@@ -255,7 +255,7 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
 - A [GraphQL example mutation](../../api/graphql/getting_started.md#update-project-settings)
   is available to toggle the scope settings per project.
 - [This comment](https://gitlab.com/gitlab-org/gitlab/-/issues/351740#note_1335673157)
-  demonstrates how to use graphQL with Bash and cURL to:
+  demonstrates how to use GraphQL with Bash and cURL to:
   - Enable the inbound token access scope.
   - Give access to project B from project A, or add B to A's allowlist.
   - To remove project access.

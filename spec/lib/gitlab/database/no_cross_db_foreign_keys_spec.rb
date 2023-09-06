@@ -18,7 +18,6 @@ RSpec.describe 'cross-database foreign keys' do
       'issues.closed_by_id',                      # https://gitlab.com/gitlab-org/gitlab/-/issues/422154
       'issues.updated_by_id',                     # https://gitlab.com/gitlab-org/gitlab/-/issues/422154
       'issue_assignees.user_id',                  # https://gitlab.com/gitlab-org/gitlab/-/issues/422154
-      'members.user_id',                          # https://gitlab.com/gitlab-org/gitlab/-/issues/422404
       'merge_requests.assignee_id',               # https://gitlab.com/gitlab-org/gitlab/-/issues/422080
       'merge_requests.updated_by_id',             # https://gitlab.com/gitlab-org/gitlab/-/issues/422080
       'merge_requests.merge_user_id',             # https://gitlab.com/gitlab-org/gitlab/-/issues/422080

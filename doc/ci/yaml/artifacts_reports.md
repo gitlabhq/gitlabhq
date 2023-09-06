@@ -374,6 +374,6 @@ The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing re
 The collected Terraform plan report uploads to GitLab as an artifact.
 
 GitLab can display the results of one or more reports in the merge request
-[terraform widget](../../user/infrastructure/iac/mr_integration.md#output-terraform-plan-information-into-a-merge-request).
+[Terraform widget](../../user/infrastructure/iac/mr_integration.md#output-terraform-plan-information-into-a-merge-request).
 
 For more information, see [Output `terraform plan` information into a merge request](../../user/infrastructure/iac/mr_integration.md).

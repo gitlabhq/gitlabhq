@@ -15,6 +15,9 @@
 
   .top-bar {
     @include build-log-top-bar(50px);
+    z-index: 2;
+    border-radius: $border-radius-default $border-radius-default 0 0;
+    box-shadow: 0 -2px 0 0 var(--white);
 
     &.has-archived-block {
       top: calc(#{$calc-application-header-height} + 28px);

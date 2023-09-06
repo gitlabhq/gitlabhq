@@ -6,7 +6,7 @@
   word-break: break-all;
   word-wrap: break-word;
   color: color-yiq($builds-log-bg);
-  border-radius: $border-radius-small;
+  border-radius: 0 0 $border-radius-default $border-radius-default;
   min-height: 42px;
   background-color: $builds-log-bg;
 }

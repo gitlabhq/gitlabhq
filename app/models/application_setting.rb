@@ -801,8 +801,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
+  # Restricting the validation to `on: :update` only to avoid cyclical dependencies with
+  # License <--> ApplicationSetting. This method calls a license check when we create
+  # ApplicationSetting from defaults which in turn depends on ApplicationSetting record.
+  # The currect default is defined in the `defaults` method so we don't need to validate
+  # it here.
   validates :disable_feed_token,
-    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }, on: :update
 
   validates :disable_admin_oauth_scopes,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }

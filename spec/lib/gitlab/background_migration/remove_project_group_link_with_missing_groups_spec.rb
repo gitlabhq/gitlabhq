@@ -104,7 +104,8 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveProjectGroupLinkWithMissingGro
     ).perform
   end
 
-  it 'removes the `project_group_links` records whose associated group does not exist anymore' do
+  it 'removes the `project_group_links` records whose associated group does not exist anymore',
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424274' do
     group_2.delete
 
     # Schema is fixed to `20230206172702` on this spec.

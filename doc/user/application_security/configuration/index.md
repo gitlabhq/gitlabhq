@@ -1,5 +1,4 @@
 ---
-type: reference, howto
 stage: Secure
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
@@ -7,11 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Security configuration **(FREE ALL)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20711) in GitLab 12.6.
-> - SAST configuration was [enabled](https://gitlab.com/groups/gitlab-org/-/epics/3659) in 13.3 and [improved](https://gitlab.com/gitlab-org/gitlab/-/issues/232862) in 13.4.
-> - DAST Profiles feature was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40474) in 13.4.
-> - A simplified version was made [available in all tiers](https://gitlab.com/gitlab-org/gitlab/-/issues/294076) in GitLab 13.10.
-> - [Redesigned](https://gitlab.com/gitlab-org/gitlab/-/issues/326926) in 14.2.
+> Security configuration page was [redesigned](https://gitlab.com/gitlab-org/gitlab/-/issues/326926) in GitLab 14.2.
 
 The **Security configuration** page lists the following for the security testing and compliance tools:
 

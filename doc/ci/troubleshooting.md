@@ -210,6 +210,42 @@ To illustrate its life cycle:
 1. The runner fetches the persistent pipeline ref and gets source code from the checkout-SHA.
 1. When the pipeline finishes, its persistent ref is cleaned up in a background process.
 
+### `get_sources` job section fails because of an HTTP/2 problem
+
+Sometimes, jobs fail with the following cURL error:
+
+```plaintext
+++ git -c 'http.userAgent=gitlab-runner <version>' fetch origin +refs/pipelines/<id>:refs/pipelines/<id> ...
+error: RPC failed; curl 16 HTTP/2 send again with decreased length
+fatal: ...
+```
+
+You can work around this problem by configuring Git and `libcurl` to
+[use HTTP/1.1](https://git-scm.com/docs/git-config#Documentation/git-config.txt-httpversion).
+The configuration can be added to:
+
+- A job's [`pre_get_sources_script`](yaml/index.md#hookspre_get_sources_script):
+
+  ```yaml
+  job_name:
+    hooks:
+      pre_get_sources_script:
+        - git config --local http.version "HTTP/1.1"
+  ```
+
+- The [runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html)
+  with [Git configuration environment variables](https://git-scm.com/docs/git-config#ENVIRONMENT):
+
+  ```toml
+  [[runners]]
+  ...
+  environment = [
+    "GIT_CONFIG_COUNT=1",
+    "GIT_CONFIG_KEY_1=http.version",
+    "GIT_CONFIG_VALUE_1=HTTP/1.1"
+  ]
+  ```
+
 ### Merge request pipeline messages
 
 The merge request pipeline widget shows information about the pipeline status in
@@ -440,9 +476,9 @@ This flag reduces system resource usage on the `jobs/request` endpoint.
 When enabled, jobs created in the last hour can run in projects which are out of quota.
 Earlier jobs are already canceled by a periodic background worker (`StuckCiJobsWorker`).
 
-## CI/CD troubleshooting rails console commands
+## CI/CD troubleshooting Rails console commands
 
-The following commands are run in the [rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
+The following commands are run in the [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
 
 WARNING:
 Any command that changes data directly could be damaging if not run correctly, or under the right conditions.

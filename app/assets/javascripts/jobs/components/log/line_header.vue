@@ -62,12 +62,12 @@ export default {
 
 <template>
   <div
-    class="log-line collapsible-line d-flex justify-content-between ws-normal gl-align-items-flex-start"
+    class="log-line collapsible-line d-flex justify-content-between ws-normal gl-align-items-flex-start gl-relative"
     :class="{ 'gl-bg-gray-700': isHighlighted || applyHashHighlight }"
     role="button"
     @click="handleOnClick"
   >
-    <gl-icon :name="iconName" class="arrow position-absolute" />
+    <gl-icon :name="iconName" class="arrow gl-absolute gl-top-2" />
     <line-number :line-number="line.lineNumber" :path="path" />
     <span
       v-for="(content, i) in line.content"

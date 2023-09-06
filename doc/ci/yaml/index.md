@@ -2004,12 +2004,19 @@ at certain stages of job execution, like before retrieving the Git repository.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
 
 Use `hooks:pre_get_sources_script` to specify a list of commands to execute on the runner
-before retrieving the Git repository and any submodules. You can use it
-to adjust the Git client configuration first, for example.
+before cloning the Git repository and any submodules.
+You can use it for example to:
 
-**Related topics**:
+- Adjust the [Git configuration](../troubleshooting.md#get_sources-job-section-fails-because-of-an-http2-problem).
+- Export [tracing variables](../../topics/git/useful_git_commands.md).
 
-- [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+**Possible inputs**: An array including:
+
+- Single line commands.
+- Long commands [split over multiple lines](script.md#split-long-commands).
+- [YAML anchors](yaml_optimization.md#yaml-anchors-for-scripts).
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `hooks:pre_get_sources_script`**:
 
@@ -2020,6 +2027,10 @@ job1:
       - echo 'hello job1 pre_get_sources_script'
   script: echo 'hello job1 script'
 ```
+
+**Related topics**:
+
+- [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 
 ### `id_tokens`
 

@@ -396,7 +396,6 @@ For this scenario, you have to:
     - `GITALY_SERVER_VERSION`
     - `GITLAB_ELASTICSEARCH_INDEXER_VERSION`
     - `GITLAB_KAS_VERSION`
-    - `GITLAB_METRICS_EXPORTER_VERSION`
     - `GITLAB_PAGES_VERSION`
     - `GITLAB_SHELL_VERSION`
     - `scripts/trigger-build.rb`

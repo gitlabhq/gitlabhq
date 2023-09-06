@@ -71,11 +71,35 @@ For example, if a project has a high score for Deployment Frequency (Velocity), 
 
 These scoring are based on Google's classifications in the [DORA 2022 Accelerate State of DevOps Report](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out).
 
+## Enable or disable overview background aggregation **(ULTIMATE SELF)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `modify_value_stream_dashboard_settings`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130704) in GitLab 16.4.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `modify_value_stream_dashboard_settings`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Prerequisite:
+
+- You must have administrator access to the instance.
+
+To enable or disable the overview count aggregation for the Value Streams Dashboard:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand **Analytics**.
+1. In **Value Streams Dashboard**, select or clear the **Enable overview background aggregation for Value Streams Dashboard** checkbox.
+
+To retrieve aggregated usage counts in the group, use the [GraphQL API](../../api/graphql/reference/index.md#groupvaluestreamdashboardusageoverview).
+
 ## View the value streams dashboard
 
 Prerequisite:
 
 - You must have at least the Reporter role for the group.
+- Overview background aggregation for Value Streams Dashboards must be enabled.
 
 To view the value streams dashboard:
 

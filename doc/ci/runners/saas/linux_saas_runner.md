@@ -29,7 +29,7 @@ The `small` machine type is set as default. If no [tag](../../yaml/index.md#tags
 the jobs will run on this default runner.
 
 All SaaS runners on Linux currently run on
-[`n2d-standard`](https://cloud.google.com/compute/docs/general-purpose-machines#n2d_machines) gerneral-purpose compute from GCP.
+[`n2d-standard`](https://cloud.google.com/compute/docs/general-purpose-machines#n2d_machines) general-purpose compute from GCP.
 The machine type and underlying processor type can change. Jobs optimized for a specific processor design could behave inconsistently.
 
 ## Container images

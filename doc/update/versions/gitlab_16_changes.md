@@ -96,17 +96,6 @@ Specific information applies to Linux package installations:
 
   For more information, see [issue 421629](https://gitlab.com/gitlab-org/gitlab/-/issues/421629).
 
-### Geo installations
-
-Specific information applies to installations using Geo:
-
-- New job artifacts are not replicated by Geo if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
-  16.2.3, 16.3.0, and later.
-  - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
-  - While running an affected version, artifacts which appeared to become synced may actually be missing on the secondary site.
-    Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
-    You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
-
 ### Linux package installations
 
 Specific information applies to Linux package installations:
@@ -125,6 +114,17 @@ Specific information applies to Linux package installations:
 ### Self-compiled installations
 
 - Git 2.41.0 and later is required by Gitaly. You should use the [Git version provided by Gitaly](../../install/installation.md#git).
+
+### Geo installations
+
+Specific information applies to installations using Geo:
+
+- New job artifacts are not replicated by Geo if job artifacts are configured to be stored in object storage and `direct_upload` is enabled. This bug is fixed in GitLab versions 16.1.4,
+  16.2.3, 16.3.0, and later.
+  - Impacted versions: GitLab versions 16.1.0 - 16.1.3 and 16.2.0 - 16.2.2.
+  - While running an affected version, artifacts which appeared to become synced may actually be missing on the secondary site.
+    Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
+    You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
 
 ## 16.1.0
 
