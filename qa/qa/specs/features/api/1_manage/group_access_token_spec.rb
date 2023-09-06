@@ -30,7 +30,11 @@ module QA
 
       it(
         'can be used to commit via the API',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367067'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367067',
+        quarantine: {
+          type: :flaky,
+          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/396615"
+        }
       ) do
         expect do
           Resource::Repository::Commit.fabricate_via_api! do |commit|

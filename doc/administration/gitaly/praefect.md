@@ -1498,9 +1498,12 @@ For a replication factor:
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
 
 Praefect stores metadata about the repositories in a database. If the repositories are modified on disk
-without going through Praefect, the metadata can become inaccurate. Because the metadata is used for replication
-and routing decisions, any inaccuracies may cause problems. Praefect contains a background worker that
-periodically verifies the metadata against the actual state on the disks. The worker:
+without going through Praefect, the metadata can become inaccurate. For example if a Gitaly node is
+rebuilt, rather than being replaced with a new node, repository verification ensures this is detected.
+
+The metadata is used for replication and routing decisions, so any inaccuracies may cause problems.
+Praefect contains a background worker that periodically verifies the metadata against the actual state on the disks.
+The worker:
 
 1. Picks up a batch of replicas to verify on healthy storages. The replicas are either unverified or have exceeded
    the configured verification interval. Replicas that have never been verified are prioritized, followed by
@@ -1512,8 +1515,8 @@ periodically verifies the metadata against the actual state on the disks. The wo
 
 The worker acquires an exclusive verification lease on each of the replicas it is about to verify. This avoids multiple
 workers from verifying the same replica concurrently. The worker releases the leases when it has completed its check.
-Praefect contains a background goroutine that releases stale leases every 10 seconds when workers are terminated for
-some reason without releasing the lease.
+If workers are terminated for some reason without releasing the lease, Praefect contains a background goroutine
+that releases stale leases every 10 seconds.
 
 The worker logs each of the metadata removals prior to executing them. The `perform_deletions` key
 indicates whether the invalid metadata records are actually deleted or not. For example:

@@ -47,8 +47,8 @@ logHelloDeferred();
 
 applyGitLabUIConfig({
   translations: {
-    'SearchBoxByType.input.placeholder': __('Search'),
-    'SearchBoxByType.clearButtonTitle': __('Clear'),
+    'GlSearchBoxByType.input.placeholder': __('Search'),
+    'GlSearchBoxByType.clearButtonTitle': __('Clear'),
     'ClearIconButton.title': __('Clear'),
   },
 });

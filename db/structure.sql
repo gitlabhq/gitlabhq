@@ -18594,6 +18594,7 @@ CREATE TABLE merge_requests (
     merge_ref_sha bytea,
     draft boolean DEFAULT false NOT NULL,
     prepared_at timestamp with time zone,
+    merged_commit_sha bytea,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 

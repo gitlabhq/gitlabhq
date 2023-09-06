@@ -10,7 +10,7 @@ module Gitlab
         text_field :first_name, 'data-qa-selector': 'new_user_first_name_field'
         text_field :last_name, 'data-qa-selector': 'new_user_last_name_field'
 
-        text_field :username, 'data-qa-selector': 'new_user_username_field'
+        text_field :username, 'data-testid': 'new_user_username_field'
 
         text_field :email, 'data-qa-selector': 'new_user_email_field'
         text_field :password, 'data-qa-selector': 'new_user_password_field'

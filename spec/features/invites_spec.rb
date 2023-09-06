@@ -31,9 +31,13 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
     wait_for_all_requests
 
-    expect(page).to have_selector('.gl-field-success-outline')
+    expect_username_to_be_validated
 
     click_button submit_button_text
+  end
+
+  def expect_username_to_be_validated
+    expect(page).to have_selector('[data-testid="new_user_username_field"].gl-field-success-outline')
   end
 
   def fill_in_welcome_form
