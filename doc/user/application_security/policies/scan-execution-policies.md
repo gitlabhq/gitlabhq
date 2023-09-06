@@ -214,6 +214,7 @@ Note the following:
   mode when executed as part of a scheduled scan.
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
+- Variables defined in a Scan Execution Policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
 
 ## Example security policies project
 
