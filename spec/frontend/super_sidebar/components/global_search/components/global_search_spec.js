@@ -23,7 +23,6 @@ import {
   ICON_SUBGROUP,
   SCOPE_TOKEN_MAX_LENGTH,
 } from '~/super_sidebar/components/global_search/constants';
-import { SEARCH_GITLAB } from '~/vue_shared/global_search/constants';
 import { truncate } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { ENTER_KEY } from '~/lib/utils/keys';
@@ -52,7 +51,7 @@ describe('GlobalSearchModal', () => {
     clearAutocomplete: jest.fn(),
   };
 
-  const deafaultMockState = {
+  const defaultMockState = {
     searchContext: {
       project: MOCK_PROJECT,
       group: MOCK_GROUP,
@@ -66,15 +65,14 @@ describe('GlobalSearchModal', () => {
   };
 
   const createComponent = ({
-    initialState = deafaultMockState,
+    initialState = defaultMockState,
     mockGetters = defaultMockGetters,
     stubs,
-    glFeatures = { commandPalette: false },
     ...mountOptions
   } = {}) => {
     const store = new Vuex.Store({
       state: {
-        ...deafaultMockState,
+        ...defaultMockState,
         ...initialState,
       },
       actions: actionSpies,
@@ -89,7 +87,6 @@ describe('GlobalSearchModal', () => {
     wrapper = shallowMountExtended(GlobalSearchModal, {
       store,
       stubs,
-      provide: { glFeatures },
       ...mountOptions,
     });
   };
@@ -271,49 +268,28 @@ describe('GlobalSearchModal', () => {
     });
 
     describe('Command palette', () => {
-      describe('when FF `command_palette` is disabled', () => {
+      describe.each([...COMMON_HANDLES, PATH_HANDLE])('when search handle is %s', (handle) => {
         beforeEach(() => {
-          createComponent();
+          createComponent({
+            initialState: { search: handle },
+          });
         });
 
-        it('should not render command mode components', () => {
-          expect(findCommandPaletteItems().exists()).toBe(false);
-          expect(findFakeSearchInput().exists()).toBe(false);
+        it('should render command mode components', () => {
+          expect(findCommandPaletteItems().exists()).toBe(true);
+          expect(findFakeSearchInput().exists()).toBe(true);
         });
 
-        it('should provide default placeholder to the search input', () => {
-          expect(findGlobalSearchInput().attributes('placeholder')).toBe(SEARCH_GITLAB);
+        it('should provide an alternative placeholder to the search input', () => {
+          expect(findGlobalSearchInput().attributes('placeholder')).toBe(
+            SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
+          );
+        });
+
+        it('should not render the scope token', () => {
+          expect(findScopeToken().exists()).toBe(false);
         });
       });
-
-      describe.each([...COMMON_HANDLES, PATH_HANDLE])(
-        'when FF `command_palette` is enabled and search handle is %s',
-        (handle) => {
-          beforeEach(() => {
-            createComponent({
-              initialState: { search: handle },
-              glFeatures: {
-                commandPalette: true,
-              },
-            });
-          });
-
-          it('should render command mode components', () => {
-            expect(findCommandPaletteItems().exists()).toBe(true);
-            expect(findFakeSearchInput().exists()).toBe(true);
-          });
-
-          it('should provide an alternative placeholder to the search input', () => {
-            expect(findGlobalSearchInput().attributes('placeholder')).toBe(
-              SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
-            );
-          });
-
-          it('should not render the scope token', () => {
-            expect(findScopeToken().exists()).toBe(false);
-          });
-        },
-      );
     });
   });
 
@@ -373,9 +349,6 @@ describe('GlobalSearchModal', () => {
           beforeEach(() => {
             createComponent({
               initialState: { search: '>' },
-              glFeatures: {
-                commandPalette: true,
-              },
             });
             submitSearch();
           });

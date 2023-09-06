@@ -40,6 +40,7 @@ params: { scope: statuses, runner_type: runner_types }).execute
           play_path: [{ project: { namespace: [:route] } }],
           web_path: [{ project: { namespace: [:route] } }],
           tags: [:tags],
+          ai_failure_analysis: [{ project: [:project_feature, :namespace] }],
           trace: [{ project: [:namespace] }, :job_artifacts_trace]
         }
       end

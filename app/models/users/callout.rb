@@ -73,7 +73,8 @@ module Users
       new_navigation_callout: 71,
       # 72 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129022
       namespace_over_storage_users_combined_alert: 73, # EE-only
-      rich_text_editor: 74
+      rich_text_editor: 74,
+      vsd_feedback_banner: 75 # EE-only
     }
 
     validates :feature_name,

@@ -35,7 +35,7 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
   let_it_be(:other_work_item) { create(:work_item) }
 
   let(:work_items_data) { graphql_data['group']['workItems']['nodes'] }
-  let(:work_item_filter_params) { {} }
+  let(:item_filter_params) { {} }
   let(:current_user) { user }
   let(:query_group) { group }
 
@@ -45,6 +45,28 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
         #{all_graphql_fields_for('workItems'.classify, max_depth: 2)}
       }
     QUERY
+  end
+
+  it_behaves_like 'graphql work item list request spec' do
+    let_it_be(:container_build_params) { { namespace: group } }
+    let(:work_item_node_path) { %w[group workItems nodes] }
+
+    def post_query(request_user = current_user)
+      post_graphql(query, current_user: request_user)
+    end
+  end
+
+  context 'when filtering by search' do
+    let(:item_filter_params) { { search: 'search_term', in: [:DESCRIPTION] } }
+
+    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/393126
+    it 'returns an error since search is not implemented at the group level yet' do
+      post_graphql(query, current_user: current_user)
+
+      expect(graphql_errors).to contain_exactly(
+        hash_including('message' => 'Searching is not available for work items at the namespace level yet')
+      )
+    end
   end
 
   context 'when the user can not see confidential work_items' do
@@ -65,12 +87,6 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
 
   context 'when the user can see confidential work_items' do
     let(:current_user) { reporter }
-
-    it_behaves_like 'a working graphql query' do
-      before do
-        post_graphql(query, current_user: current_user)
-      end
-    end
 
     it 'returns also confidential work_items' do
       post_graphql(query, current_user: current_user)
@@ -96,7 +112,7 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
     graphql_dig_at(work_items_data, :id)
   end
 
-  def query(params = work_item_filter_params)
+  def query(params = item_filter_params)
     graphql_query_for(
       'group',
       { 'fullPath' => query_group.full_path },

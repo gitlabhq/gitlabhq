@@ -118,7 +118,7 @@ module Gitlab
         # The return value is the amount of time (in seconds) to wait before
         # checking the DNS record for any changes.
         def refresh_if_necessary
-          interval, from_dns = addresses_from_dns
+          wait_time, from_dns = addresses_from_dns
 
           current = addresses_from_load_balancer
 
@@ -132,7 +132,7 @@ module Gitlab
             replace_hosts(from_dns)
           end
 
-          interval
+          wait_time
         end
 
         # Replaces all the hosts in the load balancer with the new ones,

@@ -2,17 +2,12 @@
 
 module WorkItems
   class NamespaceWorkItemsFinder < WorkItemsFinder
+    FilterNotAvailableError = Class.new(ArgumentError)
+
     def initialize(...)
       super
 
       self.parent_param = namespace
-    end
-
-    def execute
-      items = init_collection
-      items = by_namespace(items)
-
-      sort(items)
     end
 
     override :with_confidentiality_access_check
@@ -31,6 +26,12 @@ module WorkItems
 
     private
 
+    def filter_items(items)
+      items = super(items)
+
+      by_namespace(items)
+    end
+
     def by_namespace(items)
       if namespace.blank? || !Ability.allowed?(current_user, "read_#{namespace.to_ability_name}".to_sym, namespace)
         return klass.none
@@ -39,11 +40,23 @@ module WorkItems
       items.in_namespaces(namespace)
     end
 
+    override :by_search
+    def by_search(items)
+      return items unless search
+
+      raise FilterNotAvailableError, 'Searching is not available for work items at the namespace level yet'
+    end
+
     def namespace
       return if params[:namespace_id].blank?
 
       params[:namespace_id].is_a?(Namespace) ? params[:namespace_id] : Namespace.find_by_id(params[:namespace_id])
     end
     strong_memoize_attr :namespace
+
+    override :by_project
+    def by_project(items)
+      items
+    end
   end
 end

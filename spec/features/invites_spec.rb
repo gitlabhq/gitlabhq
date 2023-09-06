@@ -64,10 +64,10 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
           expect(page).to have_content('To accept this invitation, create an account or sign in')
         end
 
-        it 'pre-fills the "Username or email" field on the sign in box with the invite_email from the invite' do
+        it 'pre-fills the "Username or primary email" field on the sign in box with the invite_email from the invite' do
           click_link 'Sign in'
 
-          expect(find_field('Username or email').value).to eq(group_invite.invite_email)
+          expect(find_field('Username or primary email').value).to eq(group_invite.invite_email)
         end
 
         it 'pre-fills the Email field on the sign up box with the invite_email from the invite' do

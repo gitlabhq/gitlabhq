@@ -215,7 +215,7 @@ export default {
         :aria-label="$options.i18n.showRawButtonLabel"
         :href="rawPath"
         data-testid="job-raw-link-controller"
-        icon="doc-text"
+        icon="doc-code"
       />
       <!-- eo links -->
 

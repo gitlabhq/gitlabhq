@@ -76,3 +76,10 @@ you can also [set an issue to close automatically](managing_issues.md#closing-is
 as soon as the merge request is merged.
 
 ![issue mentioned in MR](img/mention_in_merge_request.png)
+
+## From branch names
+
+When you create a branch in the same project as an issue and start the branch name with the issue
+number, followed by a hyphen, the issue and MR you create are linked.
+For more information, see
+[Prefix branch names with issue numbers](../repository/branches/index.md#prefix-branch-names-with-issue-numbers).

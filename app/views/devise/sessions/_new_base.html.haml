@@ -1,6 +1,6 @@
 = gitlab_ui_form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'gl-p-5 gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
   .form-group
-    = f.label :login, _('Username or email')
+    = f.label :login, _('Username or primary email')
     = f.text_field :login, value: @invite_email, class: 'form-control gl-form-input js-username-field', autocomplete: 'username', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('This field is required.'), data: { qa_selector: 'login_field', testid: 'username-field' }
   .form-group
     = f.label :password, _('Password')

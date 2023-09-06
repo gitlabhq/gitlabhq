@@ -12379,6 +12379,31 @@ CREATE SEQUENCE audit_events_instance_external_audit_event_destinations_id_seq
 
 ALTER SEQUENCE audit_events_instance_external_audit_event_destinations_id_seq OWNED BY audit_events_instance_external_audit_event_destinations.id;
 
+CREATE TABLE audit_events_instance_google_cloud_logging_configurations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    google_project_id_name text NOT NULL,
+    client_email text NOT NULL,
+    log_id_name text DEFAULT 'audit_events'::text,
+    name text NOT NULL,
+    encrypted_private_key bytea NOT NULL,
+    encrypted_private_key_iv bytea NOT NULL,
+    CONSTRAINT check_0da5c76c49 CHECK ((char_length(client_email) <= 254)),
+    CONSTRAINT check_74fd943192 CHECK ((char_length(log_id_name) <= 511)),
+    CONSTRAINT check_ab65f57721 CHECK ((char_length(google_project_id_name) <= 30)),
+    CONSTRAINT check_ac42ad3ca2 CHECK ((char_length(name) <= 72))
+);
+
+CREATE SEQUENCE audit_events_instance_google_cloud_logging_configuration_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_instance_google_cloud_logging_configuration_id_seq OWNED BY audit_events_instance_google_cloud_logging_configurations.id;
+
 CREATE TABLE audit_events_streaming_event_type_filters (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25422,6 +25447,8 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations ALTER COLUMN i
 
 ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_external_audit_event_destinations_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_google_cloud_logging_configuration_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_event_type_filters_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_streaming_headers ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_headers_id_seq'::regclass);
@@ -27214,6 +27241,9 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
 
 ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations
     ADD CONSTRAINT audit_events_instance_external_audit_event_destinations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations
+    ADD CONSTRAINT audit_events_instance_google_cloud_logging_configurations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events
     ADD CONSTRAINT audit_events_pkey PRIMARY KEY (id, created_at);
@@ -34327,6 +34357,10 @@ CREATE UNIQUE INDEX unique_index_on_system_note_metadata_id ON resource_link_eve
 CREATE UNIQUE INDEX unique_index_sysaccess_ms_access_tokens_on_sysaccess_ms_app_id ON system_access_microsoft_graph_access_tokens USING btree (system_access_microsoft_application_id);
 
 CREATE UNIQUE INDEX unique_instance_audit_event_destination_name ON audit_events_instance_external_audit_event_destinations USING btree (name);
+
+CREATE UNIQUE INDEX unique_instance_google_cloud_logging_configurations ON audit_events_instance_google_cloud_logging_configurations USING btree (google_project_id_name, log_id_name);
+
+CREATE UNIQUE INDEX unique_instance_google_cloud_logging_configurations_name ON audit_events_instance_google_cloud_logging_configurations USING btree (name);
 
 CREATE UNIQUE INDEX unique_merge_request_diff_llm_summaries_on_mr_diff_id ON merge_request_diff_llm_summaries USING btree (merge_request_diff_id);
 

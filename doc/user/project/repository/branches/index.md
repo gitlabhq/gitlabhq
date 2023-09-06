@@ -219,8 +219,13 @@ To change the default pattern for branches created from issues:
 
 ### Prefix branch names with issue numbers
 
-To streamline the creation of merge requests, start your branch name with an
-issue number. GitLab uses the issue number to import data into the merge request:
+To streamline the creation of merge requests, start your Git branch name with the
+issue number, followed by a hyphen.
+For example, to link a branch to issue `#123`, start the branch name with `123-`.
+
+The issue and the branch must be in the same project.
+
+GitLab uses the issue number to import data into the merge request:
 
 - The issue is marked as related to the merge request. The issue and merge request
   display links to each other.

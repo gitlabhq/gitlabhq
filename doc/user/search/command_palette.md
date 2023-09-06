@@ -7,15 +7,11 @@ type: reference
 
 # Command palette **(FREE ALL)**
 
-> Introduced in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `command_palette`. Enabled by default.
+> - Introduced in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `command_palette`. Enabled by default.
+> - Feature flag `command_palette` removed in GitLab 16.4.
 
 You can use command palette to narrow down the scope of your search or to
 find an object more quickly.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `command_palette`.
-On GitLab.com, this feature is available.
 
 ## Open the command palette
 

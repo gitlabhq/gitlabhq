@@ -77,6 +77,14 @@ all others are ignored:
 
 For more information, see [Code Owners syntax and error handling](reference.md).
 
+#### When user or group change names
+
+When a user or group change their names, the `CODEOWNERS` isn't automatically updated with the new names.
+To enter the new names, you must edit the file.
+
+Organizations using SAML SSO can [set usernames](../../../integration/saml.md#set-a-username) to
+prevent users from being able to change their usernames.
+
 ### Add a group as a Code Owner
 
 To set the members of a group or subgroup as a Code Owner:

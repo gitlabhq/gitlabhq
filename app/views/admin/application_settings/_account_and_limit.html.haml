@@ -25,7 +25,7 @@
     .form-group
       = f.label :max_import_size, _('Maximum import size (MiB)'), class: 'label-light'
       = f.number_field :max_import_size, class: 'form-control gl-form-input', title: _('Maximum size of import files.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted= _('Only effective when remote storage is enabled. Set to 0 for no size limit.')
+      %span.form-text.text-muted= _('Set to 0 for no size limit.')
     .form-group
       = f.label :max_import_remote_file_size, s_('Import|Maximum import remote file size (MB)'), class: 'label-light'
       = f.number_field :max_import_remote_file_size, class: 'form-control gl-form-input', title: s_('Import|Maximum remote file size for imports from external object storages. For example, AWS S3.'), data: { toggle: 'tooltip', container: 'body' }

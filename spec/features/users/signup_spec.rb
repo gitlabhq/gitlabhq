@@ -234,7 +234,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
 
             confirm_email
 
-            expect(find_field('Username or email').value).to eq(new_user.email)
+            expect(find_field('Username or primary email').value).to eq(new_user.email)
           end
         end
 

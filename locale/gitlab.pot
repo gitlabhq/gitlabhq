@@ -2968,6 +2968,9 @@ msgstr ""
 msgid "Add tag"
 msgstr ""
 
+msgid "Add target branch rule"
+msgstr ""
+
 msgid "Add text to the sign-in page. Markdown enabled."
 msgstr ""
 
@@ -13799,6 +13802,9 @@ msgstr ""
 msgid "Create requirement"
 msgstr ""
 
+msgid "Create rules for target branches in merge requests."
+msgstr ""
+
 msgid "Create service account"
 msgstr ""
 
@@ -14781,6 +14787,9 @@ msgid "DORA4Metrics|Time to restore service (median days)"
 msgstr ""
 
 msgid "DORA4Metrics|To help us improve the Show forecast feature, please share feedback about your experience in %{linkStart}this issue%{linkEnd}."
+msgstr ""
+
+msgid "DORA4Metrics|To help us improve the Value Stream Management Dashboard, please share feedback about your experience in this %{linkStart}survey%{linkEnd}."
 msgstr ""
 
 msgid "DORA4Metrics|Took 1 day or less to restore service when a service incident or a defect that impacts users occurs."
@@ -32831,9 +32840,6 @@ msgstr ""
 msgid "Only active projects show up in the search and on the dashboard."
 msgstr ""
 
-msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
-msgstr ""
-
 msgid "Only include features new to your current subscription tier."
 msgstr ""
 
@@ -40286,6 +40292,9 @@ msgstr ""
 msgid "Ruby"
 msgstr ""
 
+msgid "Rule name"
+msgstr ""
+
 msgid "Rule name is already taken."
 msgstr ""
 
@@ -41651,7 +41660,16 @@ msgstr ""
 msgid "ScanResultPolicy|When %{scanType} in an open merge request targeting %{branches} %{branchExceptions} and the licenses match all of the following criteria:"
 msgstr ""
 
+msgid "ScanResultPolicy|When %{scanType} in an open that targets %{branches} with %{commitType}"
+msgstr ""
+
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} %{branchExceptions} and match %{boldDescription} of the following criteria"
+msgstr ""
+
+msgid "ScanResultPolicy|any commits"
+msgstr ""
+
+msgid "ScanResultPolicy|any unsigned commits"
 msgstr ""
 
 msgid "ScanResultPolicy|license status"
@@ -42295,6 +42313,9 @@ msgid "SecurityOrchestration|An error occurred while fetching the scan result po
 msgstr ""
 
 msgid "SecurityOrchestration|And scans to be performed:"
+msgstr ""
+
+msgid "SecurityOrchestration|Any merge request"
 msgstr ""
 
 msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
@@ -46662,6 +46683,9 @@ msgstr ""
 msgid "TanukiBot|What is a fork?"
 msgstr ""
 
+msgid "Targe branch"
+msgstr ""
+
 msgid "Target"
 msgstr ""
 
@@ -46672,6 +46696,12 @@ msgid "Target Path"
 msgstr ""
 
 msgid "Target branch"
+msgstr ""
+
+msgid "Target branch rule"
+msgstr ""
+
+msgid "Target branch rules"
 msgstr ""
 
 msgid "Target branch: %{target_branch}"
@@ -47676,6 +47706,9 @@ msgid "The vulnerability is no longer detected. Verify the vulnerability has bee
 msgstr ""
 
 msgid "There are currently no mirrored repositories."
+msgstr ""
+
+msgid "There are currently no target branch rules"
 msgstr ""
 
 msgid "There are merge conflicts"
@@ -51542,6 +51575,9 @@ msgstr ""
 msgid "Username or email"
 msgstr ""
 
+msgid "Username or primary email"
+msgstr ""
+
 msgid "Username:"
 msgstr ""
 
@@ -53795,7 +53831,7 @@ msgstr ""
 msgid "Workspaces"
 msgstr ""
 
-msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab. You can create a workspace for a public project."
+msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."
 msgstr ""
 
 msgid "Workspaces|Cancel"
@@ -53892,9 +53928,6 @@ msgid "Workspaces|Unknown state"
 msgstr ""
 
 msgid "Workspaces|Workspaces"
-msgstr ""
-
-msgid "Workspaces|You can create a workspace for public projects only."
 msgstr ""
 
 msgid "Workspaces|You can't create a workspace for this project"
@@ -55881,6 +55914,9 @@ msgstr ""
 msgid "eg party_tanuki"
 msgstr ""
 
+msgid "eg. dev/*"
+msgstr ""
+
 msgid "element is not a hierarchy"
 msgstr ""
 
@@ -55965,9 +56001,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "finding is not found or is already attached to a vulnerability"
-msgstr ""
-
-msgid "for Workspace is required to be public"
 msgstr ""
 
 msgid "for Workspace must have an associated RemoteDevelopmentAgentConfig"
@@ -56751,6 +56784,9 @@ msgid "must not be an owner of the namespace"
 msgstr ""
 
 msgid "must not contain commonly used combinations of words and letters"
+msgstr ""
+
+msgid "must only contain letters, digits, forward-slash, underscore, hyphen or period"
 msgstr ""
 
 msgid "my-awesome-group"

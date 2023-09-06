@@ -180,7 +180,18 @@ class IssuableBaseService < ::BaseContainerService
     new_label_ids |= add_label_ids if add_label_ids
     new_label_ids -= remove_label_ids if remove_label_ids
 
-    new_label_ids.uniq
+    filter_locked_labels(issuable, new_label_ids.uniq, existing_label_ids)
+  end
+
+  # Filter out any locked labels that are attempting to be removed
+  def filter_locked_labels(issuable, ids, existing_label_ids)
+    return ids unless issuable.supports_lock_on_merge?
+    return ids unless existing_label_ids.present?
+
+    removed_label_ids = existing_label_ids - ids
+    removed_locked_label_ids = labels_service.filter_locked_label_ids(removed_label_ids)
+
+    ids + removed_locked_label_ids
   end
 
   def process_assignee_ids(attributes, existing_assignee_ids: nil, extra_assignee_ids: [])

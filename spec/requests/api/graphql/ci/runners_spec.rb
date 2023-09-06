@@ -72,9 +72,15 @@ RSpec.describe 'Query.runners', feature_category: :runner_fleet do
           args = { current_user: admin2, token: { personal_access_token: personal_access_token } }
           control = ActiveRecord::QueryRecorder.new { post_graphql(query, **args) }
 
-          create(:ci_runner, :instance, version: '14.0.0', tag_list: %w[tag5 tag6], creator: admin2)
-          create(:ci_runner, :project, version: '14.0.1', projects: [project], tag_list: %w[tag3 tag8],
+          runner2 = create(:ci_runner, :instance, version: '14.0.0', tag_list: %w[tag5 tag6], creator: admin2)
+          runner3 = create(:ci_runner, :project, version: '14.0.1', projects: [project], tag_list: %w[tag3 tag8],
             creator: current_user)
+
+          create(:ci_build, :failed, runner: runner2)
+          create(:ci_runner_machine, runner: runner2, version: '16.4.1')
+
+          create(:ci_build, :failed, runner: runner3)
+          create(:ci_runner_machine, runner: runner3, version: '16.4.0')
 
           expect { post_graphql(query, **args) }.not_to exceed_query_limit(control)
         end

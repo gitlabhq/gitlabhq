@@ -38,7 +38,7 @@ RSpec.describe 'devise/shared/_signin_box' do
     it 'renders user_login label' do
       render
 
-      expect(rendered).to have_content(_('Username or email'))
+      expect(rendered).to have_content(_('Username or primary email'))
     end
   end
 

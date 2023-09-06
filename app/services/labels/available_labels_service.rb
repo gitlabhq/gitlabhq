@@ -40,19 +40,8 @@ module Labels
       ids.map(&:to_i) & existing_ids
     end
 
-    def filter_locked_labels_ids_in_param(key)
-      ids = Array.wrap(params[key])
-      return [] if ids.empty?
-
-      params = finder_params
-      params[:locked_labels] = true
-      existing_labels = LabelsFinder.new(current_user, params).execute
-
-      # rubocop:disable CodeReuse/ActiveRecord
-      existing_ids = existing_labels.id_in(ids).pluck(:id)
-      # rubocop:enable CodeReuse/ActiveRecord
-
-      ids.map(&:to_i) & existing_ids
+    def filter_locked_label_ids(ids)
+      available_labels.with_lock_on_merge.id_in(ids).pluck(:id) # rubocop:disable CodeReuse/ActiveRecord
     end
 
     def available_labels

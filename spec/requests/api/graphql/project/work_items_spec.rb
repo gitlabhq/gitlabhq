@@ -30,16 +30,14 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   let_it_be(:confidential_item) { create(:work_item, confidential: true, project: project, title: 'item3') }
   let_it_be(:other_item) { create(:work_item) }
 
-  let(:items_data) { graphql_data['project']['workItems']['edges'] }
+  let(:items_data) { graphql_data['project']['workItems']['nodes'] }
   let(:item_filter_params) { {} }
 
   let(:fields) do
     <<~QUERY
-    edges {
-      node {
+      nodes {
         #{all_graphql_fields_for('workItems'.classify, max_depth: 2)}
       }
-    }
     QUERY
   end
 
@@ -66,6 +64,15 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
 
       expect { post_graphql(query, current_user: current_user) }.not_to exceed_all_query_limit(control)
       expect_graphql_errors_to_be_empty
+    end
+  end
+
+  it_behaves_like 'graphql work item list request spec' do
+    let_it_be(:container_build_params) { { project: project } }
+    let(:work_item_node_path) { %w[project workItems nodes] }
+
+    def post_query(request_user = current_user)
+      post_graphql(query, current_user: request_user)
     end
   end
 
@@ -199,12 +206,6 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
-  it_behaves_like 'a working graphql query' do
-    before do
-      post_graphql(query, current_user: current_user)
-    end
-  end
-
   context 'when the user does not have access to the item' do
     before do
       project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
@@ -237,22 +238,9 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
 
   context 'when filtering by search' do
     it_behaves_like 'query with a search term' do
-      let(:issuable_data) { items_data }
+      let(:ids) { item_ids }
       let(:user) { current_user }
       let_it_be(:issuable) { create(:work_item, project: project, description: 'bar') }
-    end
-  end
-
-  context 'when filtering by author username' do
-    let_it_be(:author) { create(:author) }
-    let_it_be(:item_3) { create(:work_item, project: project, author: author) }
-
-    let(:item_filter_params) { { author_username: item_3.author.username } }
-
-    it 'returns correct results' do
-      post_graphql(query, current_user: current_user)
-
-      expect(item_ids).to match_array([item_3.to_global_id.to_s])
     end
   end
 
@@ -415,7 +403,7 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   end
 
   def item_ids
-    graphql_dig_at(items_data, :node, :id)
+    graphql_dig_at(items_data, :id)
   end
 
   def query(params = item_filter_params)

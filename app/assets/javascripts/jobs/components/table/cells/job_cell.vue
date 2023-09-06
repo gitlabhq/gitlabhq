@@ -71,7 +71,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-text-truncate gl-mb-2">
+    <div class="gl-text-truncate gl-p-3 gl-mt-n3 gl-mx-n3 gl-mb-n2">
       <gl-link
         v-if="canReadJob"
         class="gl-text-blue-600!"
@@ -96,7 +96,7 @@ export default {
       >
         <div
           v-if="jobRef"
-          class="gl-px-2 gl-rounded-base gl-bg-gray-50 gl-max-w-15 gl-text-truncate"
+          class="gl-p-2 gl-rounded-base gl-bg-gray-50 gl-max-w-15 gl-text-truncate"
         >
           <gl-icon
             v-if="createdByTag"
@@ -114,7 +114,7 @@ export default {
         </div>
 
         <span v-else>{{ __('none') }}</span>
-        <div class="gl-ml-2 gl-rounded-base gl-px-2 gl-bg-gray-50">
+        <div class="gl-ml-2 gl-p-2 gl-rounded-base gl-bg-gray-50">
           <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" />
           <gl-link
             class="gl-font-sm gl-font-monospace gl-text-gray-700 gl-hover-text-gray-900"
