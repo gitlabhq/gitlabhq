@@ -6,17 +6,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Code Owners **(PREMIUM ALL)**
 
-> Moved to GitLab Premium in 13.9.
-
 Use the Code Owners feature to define who has expertise for specific parts of your project's codebase.
 Define the owners of files and directories in a repository to:
 
 - **Require owners to approve changes.** Combine protected branches with Code Owners to require
   experts to approve merge requests before they merge into a protected branch.
 - **Identify owners.** Code Owner names are displayed on the files and directories they own:
+
   ![Code Owners displayed in UI](../img/codeowners_in_UI_v15_10.png)
 
-Use Code Owners in combination with merge request
+Combine Code Owners with merge request
 [approval rules](../merge_requests/approvals/rules.md) (either optional or required)
 to build a flexible approval workflow:
 
@@ -42,8 +41,6 @@ For example:
   <iframe src="https://www.youtube-nocookie.com/embed/RoyBySTUSB0" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-
 ## View Code Owners of a file or directory
 
 To view the Code Owners of a file or directory:
@@ -57,14 +54,14 @@ GitLab shows the Code Owners at the top of the page.
 
 ## Set up Code Owners
 
-1. Create a `CODEOWNERS` file in your [preferred location](#code-owners-file).
+1. Create a `CODEOWNERS` file in your [preferred location](#codeowners-file).
 1. Define some rules in the file following the [Code Owners syntax reference](reference.md).
    Some suggestions:
    - Configure [All eligible approvers](../merge_requests/approvals/rules.md#code-owners-as-eligible-approvers) approval rule.
    - [Require Code Owner approval](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) on a protected branch.
 1. Commit your changes, and push them up to GitLab.
 
-### Code Owners file
+### `CODEOWNERS` file
 
 A `CODEOWNERS` file (with no extension) specifies the users or
 [shared groups](../members/share_project_with_groups.md) responsible for
@@ -78,9 +75,9 @@ all others are ignored:
 1. In the `docs` directory: `./docs/CODEOWNERS`.
 1. In the `.gitlab` directory: `./.gitlab/CODEOWNERS`.
 
-### Add a group as a Code Owner
+For more information, see [Code Owners syntax and error handling](reference.md).
 
-> Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in GitLab 13.0.
+### Add a group as a Code Owner
 
 To set the members of a group or subgroup as a Code Owner:
 
@@ -98,8 +95,6 @@ file.md @group-x @group-x/subgroup-y
 ```
 
 #### Group inheritance and eligibility
-
-> Group and subgroup hierarchy support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32432) in GitLab 13.0.
 
 ```mermaid
 graph TD
@@ -188,9 +183,6 @@ Only one CODEOWNERS pattern per section is matched to a file path.
 
 ### Organize Code Owners by putting them into sections
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12137) in GitLab 13.2 [with a flag](../../../administration/feature_flags.md) named `sectional_codeowners`. Disabled by default.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42389) in GitLab 13.4. Feature flag `sectional_codeowners` removed.
-
 You can organize Code Owners by putting them into named sections.
 
 You can use sections for shared directories, so that multiple
@@ -215,9 +207,10 @@ The following image shows a **Groups** and **Documentation** section:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371711) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `codeowners_default_owners`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115888) in GitLab 15.11. Feature flag `codeowners_default_owners` removed.
 
-If multiple file paths inside a section share the same ownership, define a default
-Code Owner for the section. All paths in that section inherit this default, unless
-you override the section default on a specific line.
+If multiple file paths inside a section share the same ownership, define default
+Code Owners for the section.
+All paths in that section inherit this default, unless you override the section
+default on a specific line.
 
 Default owners are applied when specific owners are not specified for file paths.
 Specific owners defined beside the file path override default owners:
@@ -227,7 +220,7 @@ Specific owners defined beside the file path override default owners:
 docs/
 README.md
 
-[Database] @database-team
+[Database] @database-team @agarcia
 model/db/
 config/db/database-setup.md @docs-team
 ```
@@ -235,8 +228,13 @@ config/db/database-setup.md @docs-team
 In this example:
 
 - `@docs-team` owns all items in the `Documentation` section.
-- `@database-team` owns all items in the `Database` section except
+- `@database-team` and `@agarcia` own all items in the `Database` section except
   `config/db/database-setup.md`, which has an override assigning it to `@docs-team`.
+
+Compare this behavior by using [regular entries and sections together](#use-regular-entries-and-sections-together),
+when entries in sections don't override entries without sections.
+
+#### Use default owners and optional sections together
 
 To combine the syntax for default owners with [optional sections](#make-a-code-owners-section-optional)
 and required approvals, place default owners at the end:
@@ -250,6 +248,38 @@ README.md
 model/db/
 config/db/database-setup.md @docs-team
 ```
+
+#### Use regular entries and sections together
+
+If you set a default Code Owner for a path outside a section, their approval is always required, and
+the entry isn't overridden.
+Entries without sections are treated as if they were another, unnamed section:
+
+```plaintext
+# Required for all files
+* @general-approvers
+
+[Documentation] @docs-team
+docs/
+README.md
+*.txt
+
+[Database] @database-team
+model/db/
+config/db/database-setup.md @docs-team
+```
+
+In this example:
+
+- `@general-approvers` owns all items everywhere, without overrides.
+- `@docs-team` owns all items in the `Documentation` section.
+- `@database-team` owns all items in the `Database` section except
+  `config/db/database-setup.md`, which has an override assigning it to `@docs-team`.
+- A merge request that modifies `model/db/CHANGELOG.txt` would require three approvals: one from each
+  of the `@general-approvers`,`@docs-team`, and `@database-team` groups.
+
+Compare this behavior by using only [default owners for sections](#set-default-owner-for-a-section),
+when specific entries within a section override the section default.
 
 #### Sections with duplicate names
 
@@ -274,8 +304,6 @@ entries under **Database**. The entries defined under the sections **Documentati
 **DOCUMENTATION** are combined, using the case of the first section.
 
 #### Make a Code Owners section optional
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232995) in GitLab 13.8.
 
 You can designate optional sections in your Code Owners file. Prepend the
 section name with the caret `^` character to treat the entire section as optional.
@@ -314,14 +342,14 @@ section is marked as optional.
 
 You can require multiple approvals for the Code Owners sections under the Approval Rules area in merge requests.
 Append the section name with a number `n` in brackets. This requires `n` approvals from the Code Owners in this section.
-Please note valid entries for `n` are integers `≥ 1`. `[1]` is optional as it is the default. Invalid values for `n` are treated as `1`.
+Valid entries for `n` are integers `≥ 1`. `[1]` is optional because it is the default. Invalid values for `n` are treated as `1`.
 
 WARNING:
 [Issue #384881](https://gitlab.com/gitlab-org/gitlab/-/issues/385881) proposes changes
 to the behavior of this setting. Do not intentionally set invalid values. They may
 become valid in the future, and cause unexpected behavior.
 
-Please confirm you enabled `Require approval from code owners` in `Settings > Repository > Protected branches`, otherwise the Code Owner approvals will be optional.
+Make sure you enabled `Require approval from code owners` in `Settings > Repository > Protected branches`, otherwise the Code Owner approvals are optional.
 
 In this example, the `[Documentation]` section requires 2 approvals:
 
@@ -337,7 +365,7 @@ The `Documentation` Code Owners section under the **Approval Rules** area displa
 
 ![MR widget - Multiple Approval Code Owners sections](../img/multi_approvals_code_owners_sections_v15_9.png)
 
-### Allowed to Push
+### Allowed to push
 
 Users who are **Allowed to push** can choose to create a merge request
 for their changes, or push the changes directly to a branch. If the user
@@ -350,11 +378,14 @@ and release tooling.
 
 All changes from users _without_ the **Allowed to push** permission must be routed through a merge request.
 
-## Technical Resources
+## Related topics
 
-[Code Owners development guidelines](../../../development/code_owners/index.md)
+- [Syntax reference](reference.md)
+- [Development guidelines](../../../development/code_owners/index.md)
 
 ## Troubleshooting
+
+When working with Code Owners, you might encounter the following issues.
 
 For more information about how the Code Owners feature handles errors, see the
 [Code Owners reference](reference.md).
@@ -363,7 +394,8 @@ For more information about how the Code Owners feature handles errors, see the
 
 A Code Owner approval rule is optional if any of these conditions are true:
 
-- The user or group are not a member of the project. Code Owners [cannot inherit from parent groups](https://gitlab.com/gitlab-org/gitlab/-/issues/288851/).
+- The user or group is not a member of the project.
+  Code Owners [cannot inherit members from parent groups](https://gitlab.com/gitlab-org/gitlab/-/issues/288851/).
 - [Code Owner approval on a protected branch](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) has not been set up.
 - The section is [marked as optional](#make-a-code-owners-section-optional).
 
@@ -383,7 +415,15 @@ if any of these conditions are true:
   member of the Code Owner group.
 - Current user is an external user who does not have permission to the internal Code Owner group.
 
-### Approval rule is invalid. GitLab has approved this rule automatically to unblock the merge request
+### Approval rule is invalid
 
-This message may appear if an approval rule uses a Code Owner that is not a direct member of the project.
-Check that the group or user has been invited to the project.
+You might get an error that states:
+
+```plaintext
+Approval rule is invalid.
+GitLab has approved this rule automatically to unblock the merge request.
+```
+
+This issue occurs when an approval rule uses a Code Owner that is not a direct member of the project.
+
+The workaround is to check that the group or user has been invited to the project.

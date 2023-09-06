@@ -80,6 +80,9 @@ Every user is included in seat usage, with the following exceptions:
 
 - Users who are pending approval.
 - Members with the [Guest role on an Ultimate subscription](#free-guest-users).
+- Members with the [minimal access role](../../user/permissions.md#users-with-minimal-access).
+- [Banned members](../../user/group/moderate_users.md#ban-a-user).
+- [Blocked users](../../administration/moderate_users.md#block-a-user).
 - GitLab-created service accounts:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
   - Bots such as:

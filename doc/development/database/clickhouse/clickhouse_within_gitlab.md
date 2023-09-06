@@ -149,6 +149,45 @@ query = builder
 rows = ClickHouse::Client.select(query, :main)
 ```
 
+## Inserting data
+
+The ClickHouse client supports inserting data through the standard query interface:
+
+```ruby
+raw_query = 'INSERT INTO events (id, target_type) VALUES ({id:UInt64}, {target_type:String})'
+placeholders = { id: 1, target_type: 'Issue' }
+
+query = ClickHouse::Client::Query.new(raw_query: raw_query, placeholders: placeholders)
+rows = ClickHouse::Client.execute(query, :main)
+```
+
+Inserting data this way is acceptable if:
+
+- The table contains settings or configuration data where we need to add one row.
+- For testing, test data has to be prepared in the database.
+
+When inserting data, we should always try to use batch processing where multiple rows are inserted at once. Building large `INSERT` queries in memory is discouraged because of the increased memory usage. Additionally, values specified within such queries cannot be redacted automatically by the client.
+
+To compress data and reduce memory usage, insert CSV data. You can do this with the internal [`CsvBuilder`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/csv_builder) gem:
+
+```ruby
+iterator = Event.find_each
+
+# insert from events table using only the id and the target_type columns
+column_mapping = {
+  id: :id,
+  target_type: :target_type
+}
+
+CsvBuilder::Gzip.new(iterator, column_mapping).render do |tempfile|
+  query = 'INSERT INTO events (id, target_type) FORMAT CSV'
+  ClickHouse::Client.insert_csv(query, File.open(tempfile.path), :main)
+end
+```
+
+NOTE:
+It's important to test and verify efficient batching of database records from PostgreSQL. Consider using the techniques described in the [Iterating tables in batches](../iterating_tables_in_batches.md).
+
 ## Testing
 
 ClickHouse is enabled on CI/CD but to avoid significantly affecting the pipeline runtime we've decided to run the ClickHouse server for test cases tagged with `:click_house` only.

@@ -123,6 +123,7 @@ import { pageViewsOverTime } from './visualizations';
 export const dashboard = {
   slug: 'my_dashboard', // Used to set the URL path for the dashboard.
   title: 'My dashboard title', // The title to display.
+  description: 'This is a description of the dashboard', // A description of the dashboard
   // Each dashboard consists of an array of panels to display.
   panels: [
     {

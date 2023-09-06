@@ -15,7 +15,7 @@ The development, release, and timing of any products, features, or functionality
 sole discretion of GitLab Inc.
 
 In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register
-runners. The legacy workflow that uses registration tokens is deprecated and will be removed in GitLab 17.0.
+runners. The legacy workflow that uses registration tokens is deprecated and will be removed in GitLab 18.0.
 
 For information about the current development status of the new workflow, see [epic 7663](https://gitlab.com/groups/gitlab-org/-/epics/7663).
 
