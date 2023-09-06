@@ -281,6 +281,11 @@ module QA
         end
 
         def mark_to_squash
+          # Refresh page if commit arrived after loading the MR page
+          wait_until(reload: true, message: 'Wait for MR to be unblocked') do
+            has_no_element?(:head_mismatch_content, wait: 1)
+          end
+
           # The squash checkbox is enabled via JS
           wait_until(reload: false) do
             !find_element(:squash_checkbox, visible: false).disabled?

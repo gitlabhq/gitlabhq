@@ -27,7 +27,7 @@ You can run scans and view [Secret Detection JSON report artifacts](../../../ci/
 
 With GitLab Ultimate, Secret Detection results are also processed so you can:
 
-- See them in the [merge request widget](../index.md#view-security-scan-information-in-merge-requests), [pipeline security report](../vulnerability_report/pipeline.md), and [Vulnerability Report](../vulnerability_report/index.md) UIs.
+- See them in the [merge request widget](../index.md#merge-request), [pipeline security report](../vulnerability_report/pipeline.md), and [vulnerability report](../vulnerability_report/index.md) UIs.
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](automatic_response.md) to leaks in public repositories.

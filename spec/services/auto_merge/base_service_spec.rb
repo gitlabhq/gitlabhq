@@ -296,4 +296,9 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
       end
     end
   end
+
+  describe '#process' do
+    specify { expect(service).to respond_to :process }
+    specify { expect { service.process(nil) }.to raise_error NotImplementedError }
+  end
 end

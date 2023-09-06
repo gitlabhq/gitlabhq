@@ -43,8 +43,7 @@
     }
   }
 
-  &:last-child,
-  &.create-timeline-event {
+  &:last-child {
     &::before {
       top: - #{$gl-spacing-scale-5} !important; // Override default positioning
       @include gl-h-8;

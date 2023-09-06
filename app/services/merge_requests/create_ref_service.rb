@@ -35,9 +35,9 @@ module MergeRequests
       result = maybe_rebase!(**result)
       result = maybe_merge!(**result)
 
-      ServiceResponse.success(
-        payload: result
-      )
+      update_merge_request!(merge_request, result)
+
+      ServiceResponse.success(payload: result)
     rescue CreateRefError => error
       ServiceResponse.error(message: error.message)
     end
@@ -60,27 +60,37 @@ module MergeRequests
         raise CreateRefError, squash_result[:message] if squash_result[:status] == :error
 
         commit_sha = squash_result[:squash_sha]
+        squash_commit_sha = commit_sha
       end
 
       # squash does not overwrite target_ref, so expected_old_oid remains the same
-      rest.merge(commit_sha: commit_sha)
+      rest.merge(
+        commit_sha: commit_sha,
+        squash_commit_sha: squash_commit_sha
+      ).compact
     end
 
-    def maybe_rebase!(commit_sha:, expected_old_oid:, **rest)
+    def maybe_rebase!(commit_sha:, expected_old_oid:, squash_commit_sha: nil, **rest)
       if target_project.ff_merge_must_be_possible?
         commit_sha = safe_gitaly_operation do
           repository.rebase_to_ref(
             current_user,
             source_sha: commit_sha,
             target_ref: target_ref,
-            first_parent_ref: first_parent_sha
+            first_parent_ref: first_parent_sha,
+            expected_old_oid: expected_old_oid || ""
           )
         end
 
+        squash_commit_sha = commit_sha if squash_commit_sha # rebase rewrites commit SHAs after first_parent_sha
         expected_old_oid = commit_sha
       end
 
-      rest.merge(commit_sha: commit_sha, expected_old_oid: expected_old_oid)
+      rest.merge(
+        commit_sha: commit_sha,
+        squash_commit_sha: squash_commit_sha,
+        expected_old_oid: expected_old_oid
+      ).compact
     end
 
     def maybe_merge!(commit_sha:, expected_old_oid:, **rest)
@@ -93,14 +103,28 @@ module MergeRequests
             message: merge_commit_message,
             first_parent_ref: first_parent_sha,
             branch: nil,
-            expected_old_oid: expected_old_oid
+            expected_old_oid: expected_old_oid || ""
           )
         end
 
         expected_old_oid = commit_sha
+        merge_commit_sha = commit_sha
       end
 
-      rest.merge(commit_sha: commit_sha, expected_old_oid: expected_old_oid)
+      rest.merge(
+        commit_sha: commit_sha,
+        merge_commit_sha: merge_commit_sha,
+        expected_old_oid: expected_old_oid
+      ).compact
+    end
+
+    def update_merge_request!(merge_request, result)
+      merge_request.merge_params['train_ref'] =
+        result.slice(:commit_sha, :merge_commit_sha, :squash_commit_sha).stringify_keys
+      merge_request.save!
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_exception(e)
+      raise CreateRefError, "Failed to update merge params"
     end
 
     def safe_gitaly_operation

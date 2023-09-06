@@ -20,6 +20,10 @@ module AutoMerge
       :failed
     end
 
+    def process(_)
+      raise NotImplementedError
+    end
+
     def update(merge_request)
       assign_allowed_merge_params(merge_request, params.merge(auto_merge_strategy: strategy))
 
@@ -87,14 +91,19 @@ module AutoMerge
       merge_request.auto_merge_enabled = false
       merge_request.merge_user = nil
 
-      merge_request.merge_params&.except!(
-        'should_remove_source_branch',
-        'commit_message',
-        'squash_commit_message',
-        'auto_merge_strategy'
-      )
+      merge_request.merge_params&.except!(*clearable_auto_merge_parameters)
 
       merge_request.save!
+    end
+
+    # Overridden in EE child classes
+    def clearable_auto_merge_parameters
+      %w[
+        should_remove_source_branch
+        commit_message
+        squash_commit_message
+        auto_merge_strategy
+      ]
     end
 
     def track_exception(error, merge_request)
