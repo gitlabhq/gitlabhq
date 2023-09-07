@@ -164,7 +164,8 @@ export default class ProtectedBranchEdit {
           username: currentSelectedItem.username,
           avatar_url: currentSelectedItem.avatar_url,
         };
-      } else if (currentItem.group_id) {
+      }
+      if (currentItem.group_id) {
         return {
           id: currentItem.id,
           group_id: currentItem.group_id,

@@ -84,9 +84,11 @@ export function numberToHumanSizeSplit(size, digits = 2) {
 
   if (abs < BYTES_IN_KIB) {
     return [size.toString(), BYTES_FORMAT_BYTES];
-  } else if (abs < BYTES_IN_KIB ** 2) {
+  }
+  if (abs < BYTES_IN_KIB ** 2) {
     return [bytesToKiB(size).toFixed(digits), BYTES_FORMAT_KIB];
-  } else if (abs < BYTES_IN_KIB ** 3) {
+  }
+  if (abs < BYTES_IN_KIB ** 3) {
     return [bytesToMiB(size).toFixed(digits), BYTES_FORMAT_MIB];
   }
   return [bytesToGiB(size).toFixed(digits), BYTES_FORMAT_GIB];

@@ -35,7 +35,8 @@ export const decorateFiles = ({
   const insertParent = (path) => {
     if (!path) {
       return null;
-    } else if (entries[path]) {
+    }
+    if (entries[path]) {
       return entries[path];
     }
 

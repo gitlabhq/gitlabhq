@@ -339,6 +339,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/profile_two_factor_auth.css"
     config.assets.precompile << "page_bundles/profiles/preferences.css"
     config.assets.precompile << "page_bundles/project.css"
+    config.assets.precompile << "page_bundles/projects.css"
     config.assets.precompile << "page_bundles/projects_edit.css"
     config.assets.precompile << "page_bundles/projects_usage_quotas.css"
     config.assets.precompile << "page_bundles/promotions.css"

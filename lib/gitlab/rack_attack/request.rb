@@ -71,6 +71,10 @@ module Gitlab
         matches?(protected_paths_regex)
       end
 
+      def get_request_protected_path?
+        matches?(protected_paths_for_get_request_regex)
+      end
+
       def throttle?(throttle, authenticated:)
         fragment = Gitlab::Throttle.throttle_fragment!(throttle, authenticated: authenticated)
 
@@ -130,6 +134,28 @@ module Gitlab
         post? &&
           web_request? &&
           protected_path? &&
+          Gitlab::Throttle.protected_paths_enabled?
+      end
+
+      def throttle_unauthenticated_get_protected_paths?
+        get? &&
+          !should_be_skipped? &&
+          get_request_protected_path? &&
+          Gitlab::Throttle.protected_paths_enabled? &&
+          unauthenticated?
+      end
+
+      def throttle_authenticated_get_protected_paths_api?
+        get? &&
+          api_request? &&
+          get_request_protected_path? &&
+          Gitlab::Throttle.protected_paths_enabled?
+      end
+
+      def throttle_authenticated_get_protected_paths_web?
+        get? &&
+          web_request? &&
+          get_request_protected_path? &&
           Gitlab::Throttle.protected_paths_enabled?
       end
 
@@ -197,6 +223,14 @@ module Gitlab
 
       def protected_paths_regex
         Regexp.union(protected_paths.map { |path| /\A#{Regexp.escape(path)}/ })
+      end
+
+      def protected_paths_for_get_request
+        Gitlab::CurrentSettings.current_application_settings.protected_paths_for_get_request
+      end
+
+      def protected_paths_for_get_request_regex
+        Regexp.union(protected_paths_for_get_request.map { |path| /\A#{Regexp.escape(path)}/ })
       end
 
       def packages_api_path?

@@ -69,7 +69,8 @@ export default {
     selectedProjectsLabel() {
       if (this.selectedProjects.length === 1) {
         return this.selectedProjects[0].name;
-      } else if (this.selectedProjects.length > 1) {
+      }
+      if (this.selectedProjects.length > 1) {
         return n__(
           'CycleAnalytics|Project selected',
           'CycleAnalytics|%d projects selected',

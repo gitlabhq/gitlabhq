@@ -58,7 +58,8 @@ export default {
         return s__(
           'mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} increased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB',
         );
-      } else if (memoryTo < memoryFrom) {
+      }
+      if (memoryTo < memoryFrom) {
         return s__(
           'mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage %{emphasisStart} decreased %{emphasisEnd} from %{memoryFrom}MB to %{memoryTo}MB',
         );

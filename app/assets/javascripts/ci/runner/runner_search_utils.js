@@ -97,7 +97,8 @@ const outdatedStatusParams = (status) => {
       [PARAM_KEY_PAUSED]: ['false'],
       [PARAM_KEY_STATUS]: [], // Important! clear PARAM_KEY_STATUS to avoid a redirection loop!
     };
-  } else if (status === STATUS_PAUSED) {
+  }
+  if (status === STATUS_PAUSED) {
     return {
       [PARAM_KEY_PAUSED]: ['true'],
       [PARAM_KEY_STATUS]: [], // Important! clear PARAM_KEY_STATUS to avoid a redirection loop!

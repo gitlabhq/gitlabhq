@@ -19,7 +19,8 @@ export const dropdownButtonText = (state, getters) => {
 
   if (!selectedLabels.length) {
     return state.dropdownButtonText || __('Label');
-  } else if (selectedLabels.length > 1) {
+  }
+  if (selectedLabels.length > 1) {
     return sprintf(s__('LabelSelect|%{firstLabelName} +%{remainingLabelCount} more'), {
       firstLabelName: selectedLabels[0].title,
       remainingLabelCount: selectedLabels.length - 1,

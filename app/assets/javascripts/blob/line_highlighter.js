@@ -96,7 +96,8 @@ LineHighlighter.prototype.clickHandler = function (event) {
       // treat this like a single-line selection.
       this.setHash(lineNumber);
       return this.highlightLine(lineNumber);
-    } else if (event.shiftKey) {
+    }
+    if (event.shiftKey) {
       if (lineNumber < current[0]) {
         range = [lineNumber, current[0]];
       } else {

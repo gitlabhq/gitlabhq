@@ -138,7 +138,8 @@ export default {
         return sprintf(__('closed %{timeago}'), {
           timeago: this.timeFormatted(this.issuable.closedAt),
         });
-      } else if (this.issuable.updatedAt !== this.issuable.createdAt) {
+      }
+      if (this.issuable.updatedAt !== this.issuable.createdAt) {
         return sprintf(__('updated %{timeAgo}'), {
           timeAgo: this.timeFormatted(this.issuable.updatedAt),
         });

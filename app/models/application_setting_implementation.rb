@@ -381,6 +381,14 @@ module ApplicationSettingImplementation
     self.protected_paths = strings_to_array(values)
   end
 
+  def protected_paths_for_get_request_raw
+    array_to_string(protected_paths_for_get_request)
+  end
+
+  def protected_paths_for_get_request_raw=(values)
+    self.protected_paths_for_get_request = strings_to_array(values)
+  end
+
   def notes_create_limit_allowlist_raw
     array_to_string(notes_create_limit_allowlist)
   end

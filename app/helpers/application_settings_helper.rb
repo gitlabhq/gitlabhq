@@ -413,6 +413,7 @@ module ApplicationSettingsHelper
       :throttle_protected_paths_period_in_seconds,
       :throttle_protected_paths_requests_per_period,
       :protected_paths_raw,
+      :protected_paths_for_get_request_raw,
       :time_tracking_limit_to_hours,
       :two_factor_grace_period,
       :update_runner_versions_enabled,

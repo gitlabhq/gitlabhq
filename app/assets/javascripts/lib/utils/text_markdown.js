@@ -202,7 +202,8 @@ function moveCursor({
       const startPosition = textArea.selectionStart - (tag.length - tag.indexOf(select));
       const endPosition = startPosition + select.length;
       return textArea.setSelectionRange(startPosition, endPosition);
-    } else if (editor) {
+    }
+    if (editor) {
       editor.selectWithinSelection(select, tag);
       return;
     }

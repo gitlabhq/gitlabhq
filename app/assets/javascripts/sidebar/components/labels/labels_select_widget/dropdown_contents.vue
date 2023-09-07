@@ -101,7 +101,8 @@ export default {
     buttonText() {
       if (!this.localSelectedLabels.length) {
         return this.dropdownButtonText || __('Label');
-      } else if (this.localSelectedLabels.length > 1) {
+      }
+      if (this.localSelectedLabels.length > 1) {
         return sprintf(s__('LabelSelect|%{firstLabelName} +%{remainingLabelCount} more'), {
           firstLabelName: this.localSelectedLabels[0].title,
           remainingLabelCount: this.localSelectedLabels.length - 1,

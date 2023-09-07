@@ -30,7 +30,8 @@ export default {
     dropdownText() {
       if (this.isRegistering) {
         return this.$options.i18n.registeringAgent;
-      } else if (this.selectedAgent === null) {
+      }
+      if (this.selectedAgent === null) {
         return this.$options.i18n.selectAgent;
       }
 

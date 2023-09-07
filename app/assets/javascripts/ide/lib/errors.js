@@ -55,9 +55,11 @@ export const parseCommitError = (e) => {
 
   if (CODEOWNERS_REGEX.test(message)) {
     return createCodeownersCommitError(message);
-  } else if (BRANCH_CHANGED_REGEX.test(message)) {
+  }
+  if (BRANCH_CHANGED_REGEX.test(message)) {
     return createBranchChangedCommitError(message);
-  } else if (BRANCH_ALREADY_EXISTS.test(message)) {
+  }
+  if (BRANCH_ALREADY_EXISTS.test(message)) {
     return branchAlreadyExistsCommitError(message);
   }
 

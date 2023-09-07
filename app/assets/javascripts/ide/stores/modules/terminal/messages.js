@@ -39,7 +39,8 @@ export const configCheckError = (status, helpUrl) => {
       },
       false,
     );
-  } else if (status === HTTP_STATUS_FORBIDDEN) {
+  }
+  if (status === HTTP_STATUS_FORBIDDEN) {
     return ERROR_PERMISSION;
   }
 

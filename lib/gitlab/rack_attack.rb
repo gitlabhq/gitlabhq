@@ -81,6 +81,55 @@ module Gitlab
       user_allowlist
     end
 
+    ThrottleDefinition = Struct.new(:options, :request_identifier)
+    def self.throttle_definitions
+      {
+        'throttle_unauthenticated_web' => ThrottleDefinition.new(
+          Gitlab::Throttle.unauthenticated_web_options,
+          ->(req) { req.ip if req.throttle_unauthenticated_web? }
+        ),
+        # Product analytics feature is in experimental stage.
+        # At this point we want to limit amount of events registered
+        # per application (aid stands for application id).
+        'throttle_product_analytics_collector' => ThrottleDefinition.new(
+          { limit: 100, period: 60 },
+          ->(req) { req.params['aid'] if req.product_analytics_collector_request? }
+        ),
+        'throttle_authenticated_web' => ThrottleDefinition.new(
+          Gitlab::Throttle.authenticated_web_options,
+          ->(req) { req.throttled_identifer([:api, :rss, :ics]) if req.throttle_authenticated_web? }
+        ),
+        'throttle_unauthenticated_protected_paths' => ThrottleDefinition.new(
+          Gitlab::Throttle.protected_paths_options,
+          ->(req) { req.ip if req.throttle_unauthenticated_protected_paths? }
+        ),
+        'throttle_authenticated_protected_paths_api' => ThrottleDefinition.new(
+          Gitlab::Throttle.protected_paths_options,
+          ->(req) { req.throttled_identifer([:api]) if req.throttle_authenticated_protected_paths_api? }
+        ),
+        'throttle_authenticated_protected_paths_web' => ThrottleDefinition.new(
+          Gitlab::Throttle.protected_paths_options,
+          ->(req) { req.throttled_identifer([:api, :rss, :ics]) if req.throttle_authenticated_protected_paths_web? }
+        ),
+        'throttle_unauthenticated_get_protected_paths' => ThrottleDefinition.new(
+          Gitlab::Throttle.protected_paths_options,
+          ->(req) { req.ip if req.throttle_unauthenticated_get_protected_paths? }
+        ),
+        'throttle_authenticated_get_protected_paths_api' => ThrottleDefinition.new(
+          Gitlab::Throttle.protected_paths_options,
+          ->(req) { req.throttled_identifer([:api]) if req.throttle_authenticated_get_protected_paths_api? }
+        ),
+        'throttle_authenticated_get_protected_paths_web' => ThrottleDefinition.new(
+          Gitlab::Throttle.protected_paths_options,
+          ->(req) { req.throttled_identifer([:api, :rss, :ics]) if req.throttle_authenticated_get_protected_paths_web? }
+        ),
+        'throttle_authenticated_git_lfs' => ThrottleDefinition.new(
+          Gitlab::Throttle.throttle_authenticated_git_lfs_options,
+          ->(req) { req.throttled_identifer([:api]) if req.throttle_authenticated_git_lfs? }
+        )
+      }
+    end
+
     def self.configure_throttles(rack_attack)
       # Each of these settings follows the same pattern of specifying separate
       # authenticated and unauthenticated rates via settings
@@ -100,49 +149,8 @@ module Gitlab
         end
       end
 
-      throttle_or_track(rack_attack, 'throttle_unauthenticated_web', Gitlab::Throttle.unauthenticated_web_options) do |req|
-        if req.throttle_unauthenticated_web?
-          req.ip
-        end
-      end
-
-      # Product analytics feature is in experimental stage.
-      # At this point we want to limit amount of events registered
-      # per application (aid stands for application id).
-      throttle_or_track(rack_attack, 'throttle_product_analytics_collector', limit: 100, period: 60) do |req|
-        if req.product_analytics_collector_request?
-          req.params['aid']
-        end
-      end
-
-      throttle_or_track(rack_attack, 'throttle_authenticated_web', Gitlab::Throttle.authenticated_web_options) do |req|
-        if req.throttle_authenticated_web?
-          req.throttled_identifer([:api, :rss, :ics])
-        end
-      end
-
-      throttle_or_track(rack_attack, 'throttle_unauthenticated_protected_paths', Gitlab::Throttle.protected_paths_options) do |req|
-        if req.throttle_unauthenticated_protected_paths?
-          req.ip
-        end
-      end
-
-      throttle_or_track(rack_attack, 'throttle_authenticated_protected_paths_api', Gitlab::Throttle.protected_paths_options) do |req|
-        if req.throttle_authenticated_protected_paths_api?
-          req.throttled_identifer([:api])
-        end
-      end
-
-      throttle_or_track(rack_attack, 'throttle_authenticated_protected_paths_web', Gitlab::Throttle.protected_paths_options) do |req|
-        if req.throttle_authenticated_protected_paths_web?
-          req.throttled_identifer([:api, :rss, :ics])
-        end
-      end
-
-      throttle_or_track(rack_attack, 'throttle_authenticated_git_lfs', Gitlab::Throttle.throttle_authenticated_git_lfs_options) do |req|
-        if req.throttle_authenticated_git_lfs?
-          req.throttled_identifer([:api])
-        end
+      throttle_definitions.each do |name, definition|
+        throttle_or_track(rack_attack, name, definition.options, &definition.request_identifier)
       end
 
       rack_attack.safelist('throttle_bypass_header') do |req|

@@ -110,6 +110,16 @@ module Gitlab
           @request_counter.increment({ storage: storage_key }, amount)
         end
 
+        def instance_count_pipelined_request(size)
+          @pipeline_size_histogram ||= Gitlab::Metrics.histogram(
+            :gitlab_redis_client_requests_pipelined_commands,
+            'Client side Redis request pipeline size, per Redis server',
+            {},
+            [10, 100, 1000, 10_000]
+          )
+          @pipeline_size_histogram.observe({ storage: storage_key }, size)
+        end
+
         def instance_count_exception(ex)
           # This metric is meant to give a client side view of how the Redis
           # server is doing. Redis itself does not expose error counts. This

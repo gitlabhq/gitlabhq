@@ -72,7 +72,8 @@ export default {
             method: this.cancelPipeline,
             ariaLabel: __('Cancel downstream pipeline'),
           };
-        } else if (this.isRetryable) {
+        }
+        if (this.isRetryable) {
           return {
             icon: 'retry',
             method: this.retryPipeline,
@@ -141,7 +142,8 @@ export default {
     label() {
       if (this.parentPipeline) {
         return __('Parent');
-      } else if (this.childPipeline) {
+      }
+      if (this.childPipeline) {
         return __('Child');
       }
       return __('Multi-project');

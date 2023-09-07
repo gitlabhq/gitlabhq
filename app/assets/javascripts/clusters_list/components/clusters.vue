@@ -125,9 +125,11 @@ export default {
     k8sQuantityToGb(quantity) {
       if (!quantity) {
         return 0;
-      } else if (quantity.endsWith(__('Ki'))) {
+      }
+      if (quantity.endsWith(__('Ki'))) {
         return parseInt(quantity.substr(0, quantity.length - 2), 10) * 0.000001024;
-      } else if (quantity.endsWith(__('Mi'))) {
+      }
+      if (quantity.endsWith(__('Mi'))) {
         return parseInt(quantity.substr(0, quantity.length - 2), 10) * 0.001048576;
       }
 
@@ -138,9 +140,11 @@ export default {
     k8sQuantityToCpu(quantity) {
       if (!quantity) {
         return 0;
-      } else if (quantity.endsWith('m')) {
+      }
+      if (quantity.endsWith('m')) {
         return parseInt(quantity.substr(0, quantity.length - 1), 10) / 1000.0;
-      } else if (quantity.endsWith('n')) {
+      }
+      if (quantity.endsWith('n')) {
         return parseInt(quantity.substr(0, quantity.length - 1), 10) / 1000000000.0;
       }
 

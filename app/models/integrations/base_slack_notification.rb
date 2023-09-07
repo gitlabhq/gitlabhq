@@ -26,10 +26,7 @@ module Integrations
     override :supported_events
     def supported_events
       additional = %w[alert]
-
-      if group_level? && Feature.enabled?(:group_mentions, group)
-        additional += %w[group_mention group_confidential_mention]
-      end
+      additional += %w[group_mention group_confidential_mention] if group_level?
 
       (super + additional).freeze
     end

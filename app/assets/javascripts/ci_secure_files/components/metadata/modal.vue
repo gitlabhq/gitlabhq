@@ -101,10 +101,12 @@ export default {
         if (this.fileExtension === 'cer') {
           this.track('load_secure_file_metadata_cer');
           return this.cerItems();
-        } else if (this.fileExtension === 'p12') {
+        }
+        if (this.fileExtension === 'p12') {
           this.track('load_secure_file_metadata_p12');
           return this.p12Items();
-        } else if (this.fileExtension === 'mobileprovision') {
+        }
+        if (this.fileExtension === 'mobileprovision') {
           this.track('load_secure_file_metadata_mobileprovision');
           return this.mobileprovisionItems(this.metadata);
         }

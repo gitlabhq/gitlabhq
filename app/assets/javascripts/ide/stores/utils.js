@@ -81,9 +81,11 @@ export const setPageTitleForFile = (state, file) => {
 export const commitActionForFile = (file) => {
   if (file.prevPath) {
     return commitActionTypes.move;
-  } else if (file.deleted) {
+  }
+  if (file.deleted) {
     return commitActionTypes.delete;
-  } else if (file.tempFile) {
+  }
+  if (file.tempFile) {
     return commitActionTypes.create;
   }
 
@@ -131,7 +133,8 @@ export const createNewMergeRequestUrl = (projectUrl, source, target) =>
 const sortTreesByTypeAndName = (a, b) => {
   if (a.type === 'tree' && b.type === 'blob') {
     return -1;
-  } else if (a.type === 'blob' && b.type === 'tree') {
+  }
+  if (a.type === 'blob' && b.type === 'tree') {
     return 1;
   }
   if (a.name < b.name) return -1;

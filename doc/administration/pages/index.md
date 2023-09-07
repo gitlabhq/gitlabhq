@@ -141,8 +141,8 @@ The Pages daemon doesn't listen to the outside world.
 1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   external_url "http://gitlab.example.com" # external_url here is only for reference
-   pages_external_url "http://pages.example.com" # not a subdomain of external_url
+   external_url "http://example.com" # external_url here is only for reference
+   pages_external_url 'http://example.io' # Important: not a subdomain of external_url, so cannot be http://pages.example.com
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
@@ -163,12 +163,12 @@ URL scheme: `https://<namespace>.example.io/<project_slug>`
 NGINX proxies all requests to the daemon. Pages daemon doesn't listen to the
 outside world.
 
-1. Place the `example.io` certificate and key inside `/etc/gitlab/ssl`.
+1. Place the wildcard LTS certificate for `*.example.io` and the key inside `/etc/gitlab/ssl`.
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
    ```ruby
-   external_url "https://gitlab.example.com" # external_url here is only for reference
-   pages_external_url "https://pages.example.com" # not a subdomain of external_url
+   external_url "https://example.com" # external_url here is only for reference
+   pages_external_url 'https://example.io' # Important: not a subdomain of external_url, so cannot be https://pages.example.com
 
    pages_nginx['redirect_http_to_https'] = true
    ```
@@ -211,8 +211,8 @@ This setup is primarily intended to be used when [installing a GitLab POC on Ama
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
    ```ruby
-   external_url "https://gitlab.example.com" # external_url here is only for reference
-   pages_external_url "https://pages.example.com" # not a subdomain of external_url
+   external_url "https://example.com" # external_url here is only for reference
+   pages_external_url 'https://example.io' # Important: not a subdomain of external_url, so cannot be https://pages.example.com
 
    pages_nginx['enable'] = true
    pages_nginx['listen_port'] = 80
@@ -334,8 +334,8 @@ world. Custom domains are supported, but no TLS.
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
    ```ruby
-   external_url "http://gitlab.example.com" # external_url here is only for reference
-   pages_external_url "http://pages.example.com" # not a subdomain of external_url
+   external_url "http://example.com" # external_url here is only for reference
+   pages_external_url 'http://example.io' # Important: not a subdomain of external_url, so cannot be http://pages.example.com
    nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
    pages_nginx['enable'] = false
    gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
@@ -361,12 +361,12 @@ In that case, the Pages daemon is running, NGINX still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
 world. Custom domains and TLS are supported.
 
-1. Place the `example.io` certificate and key inside `/etc/gitlab/ssl`.
+1. Place the wildcard LTS certificate for `*.example.io` and the key inside `/etc/gitlab/ssl`.
 1. In `/etc/gitlab/gitlab.rb` specify the following configuration:
 
    ```ruby
-   external_url "https://gitlab.example.com" # external_url here is only for reference
-   pages_external_url "https://pages.example.com" # not a subdomain of external_url
+   external_url "https://example.com" # external_url here is only for reference
+   pages_external_url 'https://example.io' # Important: not a subdomain of external_url, so cannot be https://pages.example.com
    nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
    pages_nginx['enable'] = false
    gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon

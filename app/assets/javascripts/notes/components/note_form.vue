@@ -160,12 +160,14 @@ export default {
           filePath: this.diffFile.file_path,
           refs: this.diffFile.diff_refs,
         };
-      } else if (this.note && this.note.position) {
+      }
+      if (this.note && this.note.position) {
         return {
           filePath: this.note.position.new_path,
           refs: this.note.position,
         };
-      } else if (this.discussion && this.discussion.diff_file) {
+      }
+      if (this.discussion && this.discussion.diff_file) {
         return {
           filePath: this.discussion.diff_file.file_path,
           refs: this.discussion.diff_file.diff_refs,

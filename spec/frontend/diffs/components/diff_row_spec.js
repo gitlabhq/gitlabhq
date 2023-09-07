@@ -71,7 +71,8 @@ describe('DiffRow', () => {
         const hits = coverageFileData[file]?.[line];
         if (hits) {
           return { text: `Test coverage: ${hits} hits`, class: 'coverage' };
-        } else if (hits === 0) {
+        }
+        if (hits === 0) {
           return { text: 'No test coverage', class: 'no-coverage' };
         }
 

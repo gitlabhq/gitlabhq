@@ -351,11 +351,14 @@ export default class MergeRequestStore {
 
     if (availableAutoMergeStrategies.includes(MTWPS_MERGE_STRATEGY)) {
       return MTWPS_MERGE_STRATEGY;
-    } else if (availableAutoMergeStrategies.includes(MT_MERGE_STRATEGY)) {
+    }
+    if (availableAutoMergeStrategies.includes(MT_MERGE_STRATEGY)) {
       return MT_MERGE_STRATEGY;
-    } else if (availableAutoMergeStrategies.includes(MWCP_MERGE_STRATEGY)) {
+    }
+    if (availableAutoMergeStrategies.includes(MWCP_MERGE_STRATEGY)) {
       return MWCP_MERGE_STRATEGY;
-    } else if (availableAutoMergeStrategies.includes(MWPS_MERGE_STRATEGY)) {
+    }
+    if (availableAutoMergeStrategies.includes(MWPS_MERGE_STRATEGY)) {
       return MWPS_MERGE_STRATEGY;
     }
 

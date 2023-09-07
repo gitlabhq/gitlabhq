@@ -123,7 +123,8 @@ export default {
           path: joinPaths('/-/blob', this.escapedRef, this.path),
           refType: this.refType,
         });
-      } else if (this.isFolder) {
+      }
+      if (this.isFolder) {
         return buildURLwithRefType({
           path: joinPaths('/-/tree', this.escapedRef, this.path),
           refType: this.refType,

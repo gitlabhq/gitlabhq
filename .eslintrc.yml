@@ -33,10 +33,6 @@ rules:
         # consider. See
         # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89831.
         - '^(ee|jh)_component/'
-  # Disabled for now, to make the airbnb-base 12.1.0 -> 13.1.0 update smoother
-  no-else-return:
-    - error
-    - allowElseIf: true
   lines-between-class-members: off
   # all offenses of no-jquery/no-animate-toggle are false positives ( $toast.show() )
   no-jquery/no-animate-toggle: off

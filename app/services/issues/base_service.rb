@@ -111,9 +111,6 @@ module Issues
       issue.namespace.execute_integrations(issue_data, hooks_scope)
 
       execute_incident_hooks(issue, issue_data) if issue.work_item_type&.incident?
-
-      return unless Feature.enabled?(:group_mentions, issue.project)
-
       execute_group_mention_hooks(issue, issue_data) if action == 'open'
     end
 

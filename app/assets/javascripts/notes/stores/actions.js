@@ -376,7 +376,8 @@ export const resolveDiscussion = ({ state, dispatch, getters }, { discussionId }
 
   if (!discussion) {
     return Promise.reject();
-  } else if (isResolved) {
+  }
+  if (isResolved) {
     return Promise.resolve();
   }
 

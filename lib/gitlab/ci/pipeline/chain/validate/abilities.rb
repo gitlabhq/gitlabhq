@@ -18,6 +18,10 @@ module Gitlab
                 return error('Pipelines are disabled!')
               end
 
+              if project.import_in_progress?
+                return error('Import in progress')
+              end
+
               unless allowed_to_create_pipeline?
                 return error('Insufficient permissions to create a new pipeline')
               end

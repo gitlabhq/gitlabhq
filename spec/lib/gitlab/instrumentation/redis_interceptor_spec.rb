@@ -62,6 +62,7 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :request_store, featur
 
     it 'counts successful pipelined requests' do
       expect(instrumentation_class).to receive(:instance_count_request).with(2).and_call_original
+      expect(instrumentation_class).to receive(:instance_count_pipelined_request).with(2).and_call_original
 
       redis_store_class.with do |redis|
         redis.pipelined do |pipeline|

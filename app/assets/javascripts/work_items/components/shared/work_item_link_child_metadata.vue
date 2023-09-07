@@ -42,7 +42,8 @@ export default {
     assigneesContainerClass() {
       if (this.assignees.length === 2) {
         return 'fixed-width-avatars-2';
-      } else if (this.assignees.length > 2) {
+      }
+      if (this.assignees.length > 2) {
         return 'fixed-width-avatars-3';
       }
       return '';

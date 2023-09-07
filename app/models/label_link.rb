@@ -24,3 +24,5 @@ class LabelLink < ApplicationRecord
     relation
   end
 end
+
+LabelLink.prepend_mod_with('LabelLink')

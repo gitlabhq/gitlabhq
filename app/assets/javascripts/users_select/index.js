@@ -171,9 +171,11 @@ function UsersSelect(currentUser, els, options = {}) {
 
         if (selectedUsers.length === 0) {
           return s__('UsersSelect|Unassigned');
-        } else if (selectedUsers.length === 1) {
+        }
+        if (selectedUsers.length === 1) {
           return firstUser.name;
-        } else if (isSelected) {
+        }
+        if (isSelected) {
           const otherSelected = selectedUsers.filter((s) => s !== selectedUser.id);
           return sprintf(s__('UsersSelect|%{name} + %{length} more'), {
             name: selectedUser.name,

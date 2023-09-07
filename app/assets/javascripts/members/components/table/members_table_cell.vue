@@ -32,9 +32,11 @@ export default {
     memberType() {
       if (this.isGroup) {
         return MEMBER_TYPES.group;
-      } else if (this.isInvite) {
+      }
+      if (this.isInvite) {
         return MEMBER_TYPES.invite;
-      } else if (this.isAccessRequest) {
+      }
+      if (this.isAccessRequest) {
         return MEMBER_TYPES.accessRequest;
       }
 

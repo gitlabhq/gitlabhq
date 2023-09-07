@@ -786,8 +786,6 @@ class Group < Namespace
   end
 
   def execute_integrations(data, hooks_scope)
-    return unless Feature.enabled?(:group_mentions, self)
-
     integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
       integration.async_execute(data)
     end

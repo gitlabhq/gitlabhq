@@ -36,10 +36,7 @@ module MergeRequests
       merge_request.project.execute_integrations(merge_data, :merge_request_hooks)
 
       execute_external_hooks(merge_request, merge_data)
-
-      if action == 'open' && Feature.enabled?(:group_mentions, merge_request.project)
-        execute_group_mention_hooks(merge_request, merge_data)
-      end
+      execute_group_mention_hooks(merge_request, merge_data) if action == 'open'
 
       enqueue_jira_connect_messages_for(merge_request)
     end

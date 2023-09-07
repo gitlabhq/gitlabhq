@@ -42,7 +42,8 @@ export default {
     milestoneDatesAbsolute() {
       if (this.milestoneDue) {
         return `(${dateInWords(this.milestoneDue)})`;
-      } else if (this.milestoneStart) {
+      }
+      if (this.milestoneStart) {
         return `(${dateInWords(this.milestoneStart)})`;
       }
       return '';

@@ -65,7 +65,8 @@ export default {
     viewer() {
       if (this.diffViewerMode === diffViewerModes.renamed) {
         return RenamedFile;
-      } else if (this.diffMode === diffModes.mode_changed) {
+      }
+      if (this.diffMode === diffModes.mode_changed) {
         return ModeChanged;
       }
 

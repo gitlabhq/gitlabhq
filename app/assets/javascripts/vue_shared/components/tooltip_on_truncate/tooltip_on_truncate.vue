@@ -70,7 +70,8 @@ export default {
     selectTarget() {
       if (isFunction(this.truncateTarget)) {
         return this.truncateTarget(this.$el);
-      } else if (this.truncateTarget === 'child') {
+      }
+      if (this.truncateTarget === 'child') {
         return this.$el.childNodes[0];
       }
       return this.$el;

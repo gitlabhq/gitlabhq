@@ -33,19 +33,26 @@ export default {
     outputType(output) {
       if (output.text) {
         return 'text/plain';
-      } else if (output.output_type === ERROR_OUTPUT_TYPE) {
+      }
+      if (output.output_type === ERROR_OUTPUT_TYPE) {
         return 'error';
-      } else if (output.data['image/png']) {
+      }
+      if (output.data['image/png']) {
         return 'image/png';
-      } else if (output.data['image/jpeg']) {
+      }
+      if (output.data['image/jpeg']) {
         return 'image/jpeg';
-      } else if (output.data['text/html']) {
+      }
+      if (output.data['text/html']) {
         return 'text/html';
-      } else if (output.data['text/latex']) {
+      }
+      if (output.data['text/latex']) {
         return 'text/latex';
-      } else if (output.data['image/svg+xml']) {
+      }
+      if (output.data['image/svg+xml']) {
         return 'image/svg+xml';
-      } else if (output.data[TEXT_MARKDOWN]) {
+      }
+      if (output.data[TEXT_MARKDOWN]) {
         return TEXT_MARKDOWN;
       }
 
@@ -63,21 +70,29 @@ export default {
     getComponent(output) {
       if (output.text) {
         return CodeOutput;
-      } else if (output.output_type === ERROR_OUTPUT_TYPE) {
+      }
+      if (output.output_type === ERROR_OUTPUT_TYPE) {
         return ErrorOutput;
-      } else if (output.data['image/png']) {
+      }
+      if (output.data['image/png']) {
         return ImageOutput;
-      } else if (output.data['image/jpeg']) {
+      }
+      if (output.data['image/jpeg']) {
         return ImageOutput;
-      } else if (isDataframe(output)) {
+      }
+      if (isDataframe(output)) {
         return DataframeOutput;
-      } else if (output.data['text/html']) {
+      }
+      if (output.data['text/html']) {
         return HtmlOutput;
-      } else if (output.data['text/latex']) {
+      }
+      if (output.data['text/latex']) {
         return LatexOutput;
-      } else if (output.data['image/svg+xml']) {
+      }
+      if (output.data['image/svg+xml']) {
         return HtmlOutput;
-      } else if (output.data[TEXT_MARKDOWN]) {
+      }
+      if (output.data[TEXT_MARKDOWN]) {
         return MarkdownOutput;
       }
 

@@ -70,7 +70,8 @@ export default {
     message() {
       if (this.state === STATUS_CLOSED) {
         return s__('mrWidgetCommitsAdded|The changes were not merged into %{targetBranch}.');
-      } else if (this.isMerged) {
+      }
+      if (this.isMerged) {
         return s__(
           'mrWidgetCommitsAdded|Changes merged into %{targetBranch} with %{mergeCommitSha}%{squashedCommits}.',
         );

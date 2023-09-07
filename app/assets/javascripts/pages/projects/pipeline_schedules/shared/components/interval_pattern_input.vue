@@ -69,7 +69,8 @@ export default {
     formattedTime() {
       if (this.randomHour > 12) {
         return `${this.randomHour - 12}:00pm`;
-      } else if (this.randomHour === 12) {
+      }
+      if (this.randomHour === 12) {
         return `12:00pm`;
       }
       return `${this.randomHour}:00am`;

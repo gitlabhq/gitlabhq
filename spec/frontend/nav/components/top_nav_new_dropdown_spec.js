@@ -57,7 +57,8 @@ describe('~/nav/components/top_nav_menu_sections.vue', () => {
 
         if (type === 'divider') {
           return { type };
-        } else if (type === 'header') {
+        }
+        if (type === 'header') {
           return { type, text: child.text() };
         }
 

@@ -145,15 +145,20 @@ export default {
     syncStatusBadge() {
       if (!this.fluxCRD.length && this.fluxApiError) {
         return { ...SYNC_STATUS_BADGES.unavailable, popoverText: this.fluxApiError };
-      } else if (!this.fluxCRD.length) {
+      }
+      if (!this.fluxCRD.length) {
         return SYNC_STATUS_BADGES.unavailable;
-      } else if (this.fluxAnyFailed) {
+      }
+      if (this.fluxAnyFailed) {
         return { ...SYNC_STATUS_BADGES.failed, popoverText: this.fluxAnyFailed.message };
-      } else if (this.fluxAnyStalled) {
+      }
+      if (this.fluxAnyStalled) {
         return { ...SYNC_STATUS_BADGES.stalled, popoverText: this.fluxAnyStalled.message };
-      } else if (this.fluxAnyReconciling) {
+      }
+      if (this.fluxAnyReconciling) {
         return SYNC_STATUS_BADGES.reconciling;
-      } else if (this.fluxAnyReconciled) {
+      }
+      if (this.fluxAnyReconciled) {
         return SYNC_STATUS_BADGES.reconciled;
       }
       return SYNC_STATUS_BADGES.unknown;

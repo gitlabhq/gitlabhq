@@ -20,7 +20,8 @@ export const mapComputed = (list, defaultUpdateFn, root) => {
       get() {
         if (getter) {
           return this.$store.getters[getter];
-        } else if (root) {
+        }
+        if (root) {
           if (typeof root === 'function') {
             return root(this.$store.state)[key];
           }

@@ -84,7 +84,8 @@ export default {
 
       if (mergeLength === this.users.length) {
         return '';
-      } else if (mergeLength > 0) {
+      }
+      if (mergeLength > 0) {
         return sprintf(__('%{mergeLength}/%{usersLength} can merge'), {
           mergeLength,
           usersLength: this.users.length,

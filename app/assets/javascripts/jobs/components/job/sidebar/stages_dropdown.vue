@@ -52,9 +52,11 @@ export default {
     pipelineInfo() {
       if (!this.hasRef) {
         return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id}');
-      } else if (!this.isTriggeredByMergeRequest) {
+      }
+      if (!this.isTriggeredByMergeRequest) {
         return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{ref}');
-      } else if (!this.isMergeRequestPipeline) {
+      }
+      if (!this.isMergeRequestPipeline) {
         return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source}');
       }
 
@@ -78,7 +80,8 @@ export default {
 
       if (!this.hasRef) {
         return;
-      } else if (!this.isTriggeredByMergeRequest) {
+      }
+      if (!this.isTriggeredByMergeRequest) {
         button = this.$refs['copy-source-ref-link'];
       } else {
         button = this.$refs['copy-source-branch-link'];

@@ -22,7 +22,8 @@ export default {
     iconName() {
       if (this.isStatusFailed) {
         return 'status_failed_borderless';
-      } else if (this.isStatusSuccess) {
+      }
+      if (this.isStatusSuccess) {
         return 'status_success_borderless';
       }
 

@@ -36,7 +36,8 @@ export default {
 
       if (length === MR_FILTER_OPTIONS.length) {
         return __('All activity');
-      } else if (length > 1) {
+      }
+      if (length > 1) {
         return `%{strongStart}${firstSelected.text}%{strongEnd} +${length - 1} more`;
       }
 

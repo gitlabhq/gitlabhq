@@ -89,7 +89,8 @@ function checkSelected(data, options) {
 
   if (!options.parent) {
     return !data.id;
-  } else if (value) {
+  }
+  if (value) {
     return (
       options.parent.querySelector(`input[name='${options.fieldName}'][value='${value}']`) != null
     );

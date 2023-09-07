@@ -37,7 +37,8 @@ export default {
 
       if (!this.displayClusterAgents) {
         return connectClusterDeprecated;
-      } else if (!this.certificateBasedClustersEnabled) {
+      }
+      if (!this.certificateBasedClustersEnabled) {
         return connectCluster;
       }
       return connectWithAgent;

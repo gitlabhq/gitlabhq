@@ -145,7 +145,8 @@ export default {
         el.classList.contains('inputarea')
       ) {
         return true;
-      } else if (combo === 'mod+p') {
+      }
+      if (combo === 'mod+p') {
         return false;
       }
 

@@ -133,9 +133,11 @@ export default {
 
       if (fetched === imported) {
         return { name: 'status-success', class: 'gl-text-green-400' };
-      } else if (imported === 0) {
+      }
+      if (imported === 0) {
         return { name: 'status-scheduled', class: 'gl-text-gray-400' };
-      } else if (this.status === STATUSES.FINISHED) {
+      }
+      if (this.status === STATUSES.FINISHED) {
         return { name: 'status-alert', class: 'gl-text-orange-400' };
       }
 

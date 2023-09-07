@@ -38,7 +38,8 @@ export default {
           description: noSearchResultsDescription,
           svgHeight: 150,
         };
-      } else if (this.isOpenTab) {
+      }
+      if (this.isOpenTab) {
         return { title: noOpenIssuesTitle, description: infoBannerUserNote };
       }
 

@@ -151,7 +151,8 @@ export default {
     addOrCreateButtonLabel() {
       if (this.isCreateForm) {
         return sprintfWorkItem(I18N_WORK_ITEM_CREATE_BUTTON_LABEL, this.childrenTypeName);
-      } else if (this.workItemsToAdd.length > 1) {
+      }
+      if (this.workItemsToAdd.length > 1) {
         return sprintfWorkItem(I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL, this.childrenTypeName);
       }
       return sprintfWorkItem(I18N_WORK_ITEM_ADD_BUTTON_LABEL, this.childrenTypeName);

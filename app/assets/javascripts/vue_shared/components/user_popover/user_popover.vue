@@ -83,9 +83,11 @@ export default {
 
       if (this.user.status.emoji && this.user.status.message_html) {
         return `${glEmojiTag(this.user.status.emoji)} ${this.user.status.message_html}`;
-      } else if (this.user.status.message_html) {
+      }
+      if (this.user.status.message_html) {
         return this.user.status.message_html;
-      } else if (this.user.status.emoji) {
+      }
+      if (this.user.status.emoji) {
         return glEmojiTag(this.user.status.emoji);
       }
 

@@ -74,7 +74,8 @@ export default {
     selectText() {
       if (!this.selected.length) {
         return this.$options.i18n.labelsListTitle;
-      } else if (this.selected.length > 1) {
+      }
+      if (this.selected.length > 1) {
         return sprintf(s__('LabelSelect|%{firstLabelName} +%{remainingLabelCount} more'), {
           firstLabelName: this.selected[0].title,
           remainingLabelCount: this.selected.length - 1,

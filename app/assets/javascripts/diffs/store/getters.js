@@ -139,7 +139,8 @@ export const fileLineCoverage = (state) => (file, line) => {
 
   if (lineCoverage === 0) {
     return { text: __('No test coverage'), class: 'no-coverage' };
-  } else if (lineCoverage >= 0) {
+  }
+  if (lineCoverage >= 0) {
     return {
       text: n__('Test coverage: %d hit', 'Test coverage: %d hits', lineCoverage),
       class: 'coverage',

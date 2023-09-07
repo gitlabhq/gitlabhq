@@ -529,9 +529,11 @@ export const humanizeBranchValidationErrors = (invalidChars = []) => {
 
   if (chars.length && !chars.includes(' ')) {
     return sprintf(__("Can't contain %{chars}"), { chars: chars.join(', ') });
-  } else if (chars.includes(' ') && chars.length <= 1) {
+  }
+  if (chars.includes(' ') && chars.length <= 1) {
     return __("Can't contain spaces");
-  } else if (chars.includes(' ') && chars.length > 1) {
+  }
+  if (chars.includes(' ') && chars.length > 1) {
     return sprintf(__("Can't contain spaces, %{chars}"), {
       chars: chars.filter((c) => c !== ' ').join(', '),
     });

@@ -43,7 +43,8 @@ export default {
           dataTestId: 'job-stuck-with-tags',
           showTags: true,
         };
-      } else if (this.hasOfflineRunnersForProject) {
+      }
+      if (this.hasOfflineRunnersForProject) {
         return {
           text: s__(`Job|This job is stuck because the project
                 doesn't have any runners online assigned to it.`),

@@ -46,6 +46,7 @@ eslint-report.html
 /config/unicorn.rb
 /config/puma.rb
 /config/secrets.yml
+/config/session_store.yml
 /config/sidekiq.yml
 /config/click_house.yml
 /config/registry.key

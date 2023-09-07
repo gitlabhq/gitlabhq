@@ -123,9 +123,11 @@ export default {
         // 3. issuableIid and fullPath are not provided
         if (!this.issuableType || !timeTrackingQueries[this.issuableType]) {
           return true;
-        } else if (this.initialTimeTracking) {
+        }
+        if (this.initialTimeTracking) {
           return true;
-        } else if (!this.issuableIid || !this.fullPath) {
+        }
+        if (!this.issuableIid || !this.fullPath) {
           return true;
         }
         return false;

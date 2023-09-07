@@ -42,8 +42,6 @@ module Notes
       note.project.execute_hooks(note_data, hooks_scope)
       note.project.execute_integrations(note_data, hooks_scope)
 
-      return unless Feature.enabled?(:group_mentions, note.project)
-
       execute_group_mention_hooks(note, note_data, is_confidential)
     end
 

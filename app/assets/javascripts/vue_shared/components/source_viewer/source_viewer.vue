@@ -74,7 +74,8 @@ export default {
       if (this.blob.name && this.blob.name.endsWith(`.${SVELTE_LANGUAGE}`)) {
         // override for svelte files until https://github.com/rouge-ruby/rouge/issues/1717 is resolved
         return SVELTE_LANGUAGE;
-      } else if (this.isCodeownersFile) {
+      }
+      if (this.isCodeownersFile) {
         // override for codeowners files
         return this.$options.codeownersLanguage;
       }

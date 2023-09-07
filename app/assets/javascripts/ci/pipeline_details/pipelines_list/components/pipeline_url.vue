@@ -151,7 +151,10 @@ export default {
 
     <div v-if="!pipelineName" class="commit-title gl-mb-2" data-testid="commit-title-container">
       <span v-if="commitTitle" class="gl-display-flex">
-        <tooltip-on-truncate :title="commitTitle" class="gl-flex-grow-1 gl-text-truncate">
+        <tooltip-on-truncate
+          :title="commitTitle"
+          class="gl-flex-grow-1 gl-text-truncate gl-p-3 gl-ml-n3 gl-mr-n3 gl-mt-n3 gl-mb-n3"
+        >
           <gl-link
             :href="commitUrl"
             class="commit-row-message gl-text-blue-600!"

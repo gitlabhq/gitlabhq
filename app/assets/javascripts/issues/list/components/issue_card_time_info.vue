@@ -66,11 +66,14 @@ export default {
 
       if (dueDate && isInPast(due)) {
         return __('Past due');
-      } else if (dueDate && isToday(due)) {
+      }
+      if (dueDate && isToday(due)) {
         return __('Today');
-      } else if (startDate && isInFuture(start)) {
+      }
+      if (startDate && isInFuture(start)) {
         return __('Upcoming');
-      } else if (dueDate) {
+      }
+      if (dueDate) {
         return getTimeRemainingInWords(due);
       }
       return '';

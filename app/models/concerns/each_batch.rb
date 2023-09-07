@@ -54,7 +54,7 @@ module EachBatch
           'the column: argument must be set to a column name to use for ordering rows'
       end
 
-      start = except(:select)
+      start = except(:select, :includes, :preload)
         .select(column)
         .reorder(column => order)
 
@@ -69,7 +69,7 @@ module EachBatch
       1.step do |index|
         start_cond = arel_table[column].gteq(start_id)
         start_cond = arel_table[column].lteq(start_id) if order == :desc
-        stop = except(:select)
+        stop = except(:select, :includes, :preload)
           .select(column)
           .where(start_cond)
           .reorder(column => order)

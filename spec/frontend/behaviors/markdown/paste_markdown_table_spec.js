@@ -77,7 +77,8 @@ describe('PasteMarkdownTable', () => {
       data.getData = jest.fn().mockImplementation((type) => {
         if (type === 'text/html') {
           return '<table><tr><td>First</td><td>Last</td><tr><td>John</td><td>Doe</td><tr><td>Jane</td><td>Doe</td></table>';
-        } else if (type === 'text/plain') {
+        }
+        if (type === 'text/plain') {
           return 'First\tLast\nJohn\tDoe\nJane\tDoe';
         }
 
@@ -102,7 +103,8 @@ describe('PasteMarkdownTable', () => {
       data.getData = jest.fn().mockImplementation((type) => {
         if (type === 'text/html') {
           return '<table><tr><td>First</td><td>Last</td><tr><td>John</td><td>Doe</td><tr><td>Jane</td><td>/td></table>';
-        } else if (type === 'text/plain') {
+        }
+        if (type === 'text/plain') {
           return 'First\tLast\nJohn\tDoe\nJane';
         }
 

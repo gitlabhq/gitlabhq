@@ -20,7 +20,8 @@ export default () => ({
           const checkbox = el.querySelector('input[type=checkbox].task-list-item-checkbox');
           if (checkbox?.matches('[data-inapplicable]')) {
             return { state: 'inapplicable' };
-          } else if (checkbox?.checked) {
+          }
+          if (checkbox?.checked) {
             return { state: 'done' };
           }
 

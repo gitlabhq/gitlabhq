@@ -37,7 +37,8 @@ export default {
     loadingText() {
       if (isStartingStatus(this.status)) {
         return __('Starting...');
-      } else if (this.status === STOPPING) {
+      }
+      if (this.status === STOPPING) {
         return __('Stopping...');
       }
 

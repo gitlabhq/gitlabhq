@@ -50,11 +50,14 @@ export default {
     tooltipTitle() {
       if (!this.showTooltip) {
         return undefined;
-      } else if (this.file.deleted) {
+      }
+      if (this.file.deleted) {
         return __('Deleted');
-      } else if (this.file.tempFile) {
+      }
+      if (this.file.tempFile) {
         return __('Added');
-      } else if (this.file.changed) {
+      }
+      if (this.file.changed) {
         return __('Modified');
       }
 

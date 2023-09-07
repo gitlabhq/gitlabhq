@@ -7,9 +7,11 @@ import DirtyDiffWorker from './diff_worker?worker';
 export const getDiffChangeType = (change) => {
   if (change.modified) {
     return 'modified';
-  } else if (change.added) {
+  }
+  if (change.added) {
     return 'added';
-  } else if (change.removed) {
+  }
+  if (change.removed) {
     return 'removed';
   }
 

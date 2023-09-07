@@ -234,7 +234,8 @@ export default {
     initialTarget() {
       if (this.targetAccessLevels.length > 0) {
         return TARGET_ROLES;
-      } else if (this.targetPath !== '') {
+      }
+      if (this.targetPath !== '') {
         return TARGET_ALL_MATCHING_PATH;
       }
       return TARGET_ALL;
