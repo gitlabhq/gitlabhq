@@ -41222,9 +41222,6 @@ msgstr ""
 msgid "ScanResultPolicy|Attributes are automatically applied by the scanners"
 msgstr ""
 
-msgid "ScanResultPolicy|Block users from modifying protected branches"
-msgstr ""
-
 msgid "ScanResultPolicy|Choose criteria type"
 msgstr ""
 
@@ -41244,6 +41241,9 @@ msgid "ScanResultPolicy|Fix available"
 msgstr ""
 
 msgid "ScanResultPolicy|Fix available is only applicable to container and dependency scanning"
+msgstr ""
+
+msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} but only affect the branches selected in the policy."
 msgstr ""
 
 msgid "ScanResultPolicy|Is"
@@ -41286,6 +41286,12 @@ msgid "ScanResultPolicy|Override project approval settings"
 msgstr ""
 
 msgid "ScanResultPolicy|Pre-existing"
+msgstr ""
+
+msgid "ScanResultPolicy|Prevent branch protection modification"
+msgstr ""
+
+msgid "ScanResultPolicy|Protected branch settings"
 msgstr ""
 
 msgid "ScanResultPolicy|Select a scan type before adding criteria"

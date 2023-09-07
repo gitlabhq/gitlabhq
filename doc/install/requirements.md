@@ -50,11 +50,13 @@ The following is the recommended minimum Memory hardware guidance for a handful 
 - 8 GB RAM supports up to 1000 users
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
-In addition to the above, we generally recommend having at least 2 GB of swap on your server,
-even if you currently have enough available RAM. Having swap helps to reduce the chance of errors occurring
-if your available memory changes. We also recommend configuring the kernel's swappiness setting
-to a low value like `10` to make the most of your RAM while still having the swap
-available when needed.
+For smaller installations, you should:
+
+- Have at least 2 GB of swap on your server, even if you have enough available RAM. Having swap helps to reduce the chance of
+  errors occurring if your available memory changes.
+- Configure the kernel's swappiness setting to a low value like `10` to make the most of your RAM while still having the swap available when needed.
+
+For larger installations that follow our reference architectures, you [shouldn't configure swap](../administration/reference_architectures/index.md#no-swap).
 
 NOTE:
 Although excessive swapping is undesired and degrades performance, it is an

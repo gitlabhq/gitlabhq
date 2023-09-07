@@ -536,14 +536,14 @@ gem 'kas-grpc', '~> 0.2.0'
 
 gem 'grpc', '~> 1.55.0'
 
-gem 'google-protobuf', '~> 3.24', '>= 3.24.2'
+gem 'google-protobuf', '~> 3.24', '>= 3.24.3'
 
 gem 'toml-rb', '~> 2.2.0'
 
 # Feature toggles
-gem 'flipper', '~> 0.25.0'
-gem 'flipper-active_record', '~> 0.25.0'
-gem 'flipper-active_support_cache_store', '~> 0.25.0'
+gem 'flipper', '~> 0.26.2'
+gem 'flipper-active_record', '~> 0.26.2'
+gem 'flipper-active_support_cache_store', '~> 0.26.2'
 gem 'unleash', '~> 3.2.2'
 gem 'gitlab-experiment', '~> 0.7.1'
 

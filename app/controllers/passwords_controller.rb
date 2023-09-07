@@ -43,12 +43,16 @@ class PasswordsController < Devise::PasswordsController
         resource.password_expires_at = nil
         resource.save(validate: false) if resource.changed?
       else
+        log_audit_reset_failure(@user)
         track_weak_password_error(@user, self.class.name, 'create')
       end
     end
   end
 
   protected
+
+  # overriden in EE
+  def log_audit_reset_failure(_user); end
 
   def resource_from_email
     email = resource_params[:email]

@@ -247,6 +247,165 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
   end
 
+  describe '#find_pipeline' do
+    let(:pipeline) { create(:ci_pipeline) }
+
+    shared_examples 'pipeline finder' do
+      context 'when pipeline exists' do
+        it 'returns requested pipeline' do
+          expect(helper.find_pipeline(existing_id)).to eq(pipeline)
+        end
+      end
+
+      context 'when pipeline does not exists' do
+        it 'returns nil' do
+          expect(helper.find_pipeline(non_existing_id)).to be_nil
+        end
+      end
+
+      context 'when pipeline id is not provided' do
+        it 'returns nil' do
+          expect(helper.find_pipeline(nil)).to be_nil
+        end
+      end
+    end
+
+    context 'when ID is used as an argument' do
+      let(:existing_id) { pipeline.id }
+      let(:non_existing_id) { non_existing_record_id }
+
+      it_behaves_like 'pipeline finder'
+    end
+
+    context 'when string ID is used as an argument' do
+      let(:existing_id) { pipeline.id.to_s }
+      let(:non_existing_id) { non_existing_record_id }
+
+      it_behaves_like 'pipeline finder'
+    end
+
+    context 'when ID is a negative number' do
+      let(:existing_id) { pipeline.id }
+      let(:non_existing_id) { -1 }
+
+      it_behaves_like 'pipeline finder'
+    end
+  end
+
+  describe '#find_pipeline!' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:user) { create(:user) }
+
+    shared_examples 'private project without access' do
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
+      end
+
+      it 'returns not found' do
+        expect(helper).to receive(:not_found!)
+
+        helper.find_pipeline!(pipeline.id)
+      end
+    end
+
+    context 'when user is authenticated' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
+      end
+
+      context 'public project' do
+        it 'returns requested pipeline' do
+          expect(helper.find_pipeline!(pipeline.id)).to eq(pipeline)
+        end
+      end
+
+      context 'private project' do
+        it_behaves_like 'private project without access'
+
+        context 'without read pipeline permission' do
+          before do
+            allow(helper).to receive(:can?).with(user, :read_pipeline, pipeline).and_return(false)
+          end
+
+          it_behaves_like 'private project without access'
+        end
+      end
+
+      context 'with read pipeline permission' do
+        before do
+          allow(helper).to receive(:can?).with(user, :read_pipeline, pipeline).and_return(true)
+        end
+
+        it 'returns requested pipeline' do
+          expect(helper.find_pipeline!(pipeline.id)).to eq(pipeline)
+        end
+      end
+    end
+
+    context 'when user is not authenticated' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+        allow(helper).to receive(:initial_current_user).and_return(nil)
+      end
+
+      context 'public project' do
+        it 'returns requested pipeline' do
+          expect(helper.find_pipeline!(pipeline.id)).to eq(pipeline)
+        end
+      end
+
+      context 'private project' do
+        it_behaves_like 'private project without access'
+      end
+    end
+
+    context 'support for IDs and paths as argument' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+      let(:user) { project.first_owner }
+
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:authorized_project_scope?).and_return(true)
+        allow(helper).to receive(:job_token_authentication?).and_return(false)
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
+      end
+
+      shared_examples 'pipeline finder' do
+        context 'when pipeline exists' do
+          it 'returns requested pipeline' do
+            expect(helper.find_pipeline!(existing_id)).to eq(pipeline)
+          end
+
+          it 'returns nil' do
+            expect(helper).to receive(:render_api_error!).with('404 Pipeline Not Found', 404)
+            expect(helper.find_pipeline!(non_existing_id)).to be_nil
+          end
+        end
+      end
+
+      context 'when ID is used as an argument' do
+        context 'when pipeline id is an integer' do
+          let(:existing_id) { pipeline.id }
+          let(:non_existing_id) { non_existing_record_id }
+
+          it_behaves_like 'pipeline finder'
+        end
+
+        context 'when pipeline id is a string' do
+          let(:existing_id) { pipeline.id.to_s }
+          let(:non_existing_id) { "non_existing_record_id" }
+
+          it_behaves_like 'pipeline finder'
+        end
+      end
+    end
+  end
+
   describe '#find_group!' do
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:user) { create(:user) }

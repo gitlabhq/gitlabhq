@@ -30,6 +30,12 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
   If you upgrade to 16.4 from a version lower than 16.3, you must execute `ANALYZE packages_packages;` in the database before you use it.
 
+- A new method of configuring paths for the GitLab secret and custom hooks is preferred in GitLab 16.4 and later:
+  1. Update your configuration `[gitlab] secret_file` to [configure the path](../../administration/gitaly/reference.md#gitlab) to the GitLab secret token.
+  1. If you have custom hooks, update your configuration `[hooks] custom_hooks_dir` to [configure the path](../../administration/gitaly/reference.md#custom-hooks) to
+     server-side custom hooks.
+  1. Remove the `[gitlab-shell] dir` configuration.
+
 ## 16.3.0
 
 - For Go applications, [`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)

@@ -155,24 +155,42 @@ Prometheus query to see the hit rate:
 sum(rate(gitaly_catfile_cache_total{type="hit"}[5m])) / sum(rate(gitaly_catfile_cache_total{type=~"(hit)|(miss)"}[5m]))
 ```
 
-### GitLab Shell
+#### Custom Hooks
 
-For historical reasons
-[GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) contains
-the Git hooks that allow GitLab to validate and react to Git pushes.
-Because Gitaly "owns" Git pushes, GitLab Shell must therefore be
-installed alongside Gitaly.
+> Method of configuring custom hooks directory documented here is preferred from GitLab 16.4. `[gitlab-shell] dir` configuration is no longer required.
+
+Gitaly supports [custom Git hooks](../server_hooks.md) that are
+used to perform tasks based on changes performed in any repository. The custom
+hooks directory is configured in the `[hooks]` section:
 
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
-| `dir` | string | yes | The directory where GitLab Shell is installed.|
+| `custom_hooks_dir` | string | no | The directory where custom Git hooks are installed. |
 
 Example:
 
 ```toml
-[gitlab-shell]
-dir = "/home/git/gitlab-shell"
+[hooks]
+custom_hooks_dir = "/home/git/custom-hooks"
 ```
+
+If left unset, no custom hooks are used.
+
+### GitLab
+
+> Method of configuring custom hooks directory documented here is preferred from GitLab 16.4. `[gitlab-shell] dir` configuration is no longer required.
+
+Gitaly must connect to the GitLab application to perform access
+checks when a user performs a change. The parameters to connect to GitLab must
+be configured in the `[gitlab]` section.
+
+| Name | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| `url` | string | yes | The URL of the GitLab server.
+| `secret` | string | no | The secret token used to authenticate with GitLab. |
+| `secret_file` | string | no | The path of the file containing the secret token used to authenticate with GitLab. |
+
+Only one of `secret` or `secret_file` can be configured.
 
 ### Prometheus
 

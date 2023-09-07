@@ -184,6 +184,30 @@ module API
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
+    def find_pipeline(id)
+      return unless id
+
+      if id.to_s =~ INTEGER_ID_REGEX
+        ::Ci::Pipeline.find_by(id: id)
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    def find_pipeline!(id)
+      pipeline = find_pipeline(id)
+      check_pipeline_access(pipeline)
+    end
+
+    def check_pipeline_access(pipeline)
+      return forbidden! unless authorized_project_scope?(pipeline&.project)
+
+      return pipeline if can?(current_user, :read_pipeline, pipeline)
+      return unauthorized! if authenticate_non_public?
+
+      not_found!('Pipeline')
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id)
       if id.to_s =~ INTEGER_ID_REGEX
         Group.find_by(id: id)
