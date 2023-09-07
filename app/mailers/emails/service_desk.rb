@@ -4,6 +4,7 @@ module Emails
   module ServiceDesk
     extend ActiveSupport::Concern
     include MarkupHelper
+    include ::ServiceDesk::CustomEmails::Logger
 
     EMAIL_ATTACHMENTS_SIZE_LIMIT = 10.megabytes.freeze
 
@@ -61,6 +62,7 @@ module Emails
 
     def service_desk_custom_email_verification_email(service_desk_setting)
       @service_desk_setting = service_desk_setting
+      @project = @service_desk_setting.project
 
       email_sender = sender(
         Users::Internal.support_bot.id,
@@ -73,7 +75,7 @@ module Emails
 
       subject = format(s_("Notify|Verify custom email address %{email} for %{project_name}"),
         email: @service_desk_setting.custom_email,
-        project_name: @service_desk_setting.project.name
+        project_name: @project.name
       )
 
       options = {
@@ -141,6 +143,8 @@ module Emails
 
       # Only set custom email reply address if it's enabled, not when we force it.
       inject_service_desk_custom_email_reply_address unless force
+
+      log_info(project: @project)
 
       mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_credential.delivery_options)
     end

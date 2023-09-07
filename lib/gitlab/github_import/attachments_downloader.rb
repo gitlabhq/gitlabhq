@@ -12,11 +12,13 @@ module Gitlab
       FILENAME_SIZE_LIMIT = 255 # chars before the extension
       DEFAULT_FILE_SIZE_LIMIT = 25.megabytes
       TMP_DIR = File.join(Dir.tmpdir, 'github_attachments').freeze
+      GITHUB_ASSETS_URL_REGEX = %r{#{Regexp.escape(::Gitlab::GithubImport::MarkdownText.github_url)}/.*/assets/}
 
-      attr_reader :file_url, :filename, :file_size_limit
+      attr_reader :file_url, :filename, :file_size_limit, :options
 
-      def initialize(file_url, file_size_limit: DEFAULT_FILE_SIZE_LIMIT)
+      def initialize(file_url, options: {}, file_size_limit: DEFAULT_FILE_SIZE_LIMIT)
         @file_url = file_url
+        @options = options
         @file_size_limit = file_size_limit
 
         filename = URI(file_url).path.split('/').last
@@ -27,7 +29,9 @@ module Gitlab
         validate_content_length
         validate_filepath
 
-        file = download
+        redirection_url = get_download_redirection_url
+        file = download_from(redirection_url)
+
         validate_symlink
         file
       end
@@ -47,9 +51,23 @@ module Gitlab
           Gitlab::HTTP.perform_request(Net::HTTP::Head, file_url, {}).headers
       end
 
-      def download
+      # Github /assets redirection link will redirect to aws which has its own authorization.
+      # Keeping our bearer token will cause request rejection
+      # eg. Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter,
+      # Signature query string parameter or the Authorization header should be specified.
+      def get_download_redirection_url
+        return file_url unless file_url.starts_with?(GITHUB_ASSETS_URL_REGEX)
+
+        options[:follow_redirects] = false
+        response = Gitlab::HTTP.perform_request(Net::HTTP::Get, file_url, options)
+        raise_error("expected a redirect response, got #{response.code}") unless response.redirection?
+
+        response.headers[:location]
+      end
+
+      def download_from(url)
         file = File.open(filepath, 'wb')
-        Gitlab::HTTP.perform_request(Net::HTTP::Get, file_url, stream_body: true) { |batch| file.write(batch) }
+        Gitlab::HTTP.perform_request(Net::HTTP::Get, url, stream_body: true) { |batch| file.write(batch) }
         file
       end
 

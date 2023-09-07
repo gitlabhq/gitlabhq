@@ -649,7 +649,7 @@ Returns [`RunnerSetup`](#runnersetup).
 
 ### `Query.runners`
 
-Find runners visible to the current user.
+Get all runners in the GitLab instance (project and shared). Access is restricted to users with administrator access.
 
 Returns [`CiRunnerConnection`](#cirunnerconnection).
 

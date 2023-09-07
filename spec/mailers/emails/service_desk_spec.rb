@@ -172,10 +172,14 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       project.reset
 
       service_desk_setting.update!(custom_email_enabled: true) unless service_desk_setting.custom_email_enabled?
+
+      allow(Gitlab::AppLogger).to receive(:info)
     end
 
     it 'uses SMTP delivery method and custom email settings' do
       expect_service_desk_custom_email_delivery_options(service_desk_setting)
+
+      expect(Gitlab::AppLogger).to have_received(:info).with({ category: 'custom_email' })
     end
 
     it 'generates Reply-To address from custom email' do

@@ -2,7 +2,7 @@
 
 module Integrations
   class Campfire < Integration
-    SUBDOMAIN_REGEXP = %r{\A[a-z](?:[a-z0-9-]*[a-z0-9])?\z}i.freeze
+    SUBDOMAIN_REGEXP = %r{\A[a-z](?:[a-z0-9-]*[a-z0-9])?\z}i
 
     validates :token, presence: true, if: :activated?
     validates :room,
@@ -26,12 +26,9 @@ module Integrations
       placeholder: '',
       exposes_secrets: true,
       help: -> do
-        ERB::Util.html_escape(
+        format(ERB::Util.html_escape(
           s_('CampfireService|The %{code_open}.campfirenow.com%{code_close} subdomain.')
-        ) % {
-          code_open: '<code>'.html_safe,
-          code_close: '</code>'.html_safe
-        }
+        ), code_open: '<code>'.html_safe, code_close: '</code>'.html_safe)
       end
 
     field :room,
@@ -48,13 +45,16 @@ module Integrations
     end
 
     def help
-      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('api/services', anchor: 'campfire'), target: '_blank', rel: 'noopener noreferrer'
+      docs_link = ActionController::Base.helpers.link_to(
+        _('Learn more.'),
+        Rails.application.routes.url_helpers.help_page_url('api/integrations', anchor: 'campfire'),
+        target: '_blank',
+        rel: 'noopener noreferrer'
+      )
 
-      ERB::Util.html_escape(
+      format(ERB::Util.html_escape(
         s_('CampfireService|Send notifications about push events to Campfire chat rooms. %{docs_link}')
-      ) % {
-        docs_link: docs_link.html_safe
-      }
+      ), docs_link: docs_link.html_safe)
     end
 
     def self.to_param
@@ -69,7 +69,7 @@ module Integrations
       return unless supported_events.include?(data[:object_kind])
 
       message = create_message(data)
-      speak(self.room, message, auth)
+      speak(room, message, auth)
     end
 
     private
@@ -96,7 +96,7 @@ module Integrations
       room = rooms(auth).find { |r| r["name"] == room_name }
       return unless room
 
-      path = "/room/#{room["id"]}/speak.json"
+      path = "/room/#{room['id']}/speak.json"
       body = {
         body: {
           message: {

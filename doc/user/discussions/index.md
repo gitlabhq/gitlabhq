@@ -13,7 +13,7 @@ type: reference, howto
 > - Paginated merge request discussions [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370075) in GitLab 15.8. Feature flag `paginated_mr_discussions` removed.
 
 GitLab encourages communication through comments, threads, and
-[code suggestions](../project/merge_requests/reviews/suggestions.md).
+[Code Suggestions](../project/merge_requests/reviews/suggestions.md).
 
 Two types of comments are available:
 

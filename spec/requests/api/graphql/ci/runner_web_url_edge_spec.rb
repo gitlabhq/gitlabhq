@@ -25,16 +25,22 @@ RSpec.describe 'RunnerWebUrlEdge', feature_category: :runner_fleet do
       GQL
     end
 
-    before do
+    subject(:request) do
       post_graphql(query, current_user: user, variables: { path: group.full_path })
     end
 
     context 'with an authorized user' do
       let(:user) { create_default(:user, :admin) }
 
-      it_behaves_like 'a working graphql query'
+      it_behaves_like 'a working graphql query' do
+        before do
+          request
+        end
+      end
 
       it 'returns correct URLs' do
+        request
+
         expect(edges_graphql_data).to match_array [
           {
             'editUrl' => Gitlab::Routing.url_helpers.edit_group_runner_url(group, group_runner),
@@ -47,10 +53,14 @@ RSpec.describe 'RunnerWebUrlEdge', feature_category: :runner_fleet do
     context 'with an unauthorized user' do
       let(:user) { create(:user) }
 
-      it_behaves_like 'a working graphql query'
+      it 'returns nil runners and an error' do
+        request
 
-      it 'returns no edges' do
-        expect(edges_graphql_data).to be_empty
+        expect(graphql_data.dig('group', 'runners')).to be_nil
+        expect(graphql_errors).to contain_exactly(a_hash_including(
+          'message' => a_string_including("you don't have permission to perform this action"),
+          'path' => %w[group runners]
+        ))
       end
     end
   end

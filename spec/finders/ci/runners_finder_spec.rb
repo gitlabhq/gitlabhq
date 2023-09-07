@@ -222,12 +222,14 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
       end
 
       shared_examples 'executes as normal user' do
-        it 'returns no runners' do
+        it 'raises Gitlab::Access::AccessDeniedError' do
           user = create :user
           create :ci_runner, active: true
           create :ci_runner, active: false
 
-          expect(described_class.new(current_user: user, params: {}).execute).to be_empty
+          expect do
+            described_class.new(current_user: user, params: {}).execute
+          end.to raise_error(Gitlab::Access::AccessDeniedError)
         end
       end
 
@@ -250,12 +252,14 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
       end
 
       context 'when user is nil' do
-        it 'returns no runners' do
+        it 'raises Gitlab::Access::AccessDeniedError' do
           user = nil
           create :ci_runner, active: true
           create :ci_runner, active: false
 
-          expect(described_class.new(current_user: user, params: {}).execute).to be_empty
+          expect do
+            described_class.new(current_user: user, params: {}).execute
+          end.to raise_error(Gitlab::Access::AccessDeniedError)
         end
       end
     end
@@ -306,10 +310,11 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
 
       shared_examples 'membership equal to :descendants' do
         it 'returns all descendant runners' do
-          expect(subject).to eq([runner_project_7, runner_project_6, runner_project_5,
-                                 runner_project_4, runner_project_3, runner_project_2,
-                                 runner_project_1, runner_sub_group_4, runner_sub_group_3,
-                                 runner_sub_group_2, runner_sub_group_1, runner_group])
+          is_expected.to contain_exactly(
+            runner_project_7, runner_project_6, runner_project_5,
+            runner_project_4, runner_project_3, runner_project_2,
+            runner_project_1, runner_sub_group_4, runner_sub_group_3,
+            runner_sub_group_2, runner_sub_group_1, runner_group)
         end
       end
 
@@ -340,7 +345,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
               let(:membership) { :direct }
 
               it 'returns runners belonging to group' do
-                expect(subject).to eq([runner_group])
+                is_expected.to contain_exactly(runner_group)
               end
             end
 
@@ -348,10 +353,11 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
               let(:membership) { :all_available }
 
               it 'returns runners available to group' do
-                expect(subject).to match_array([runner_project_7, runner_project_6, runner_project_5,
-                                                runner_project_4, runner_project_3, runner_project_2,
-                                                runner_project_1, runner_sub_group_4, runner_sub_group_3,
-                                                runner_sub_group_2, runner_sub_group_1, runner_group, runner_instance])
+                is_expected.to contain_exactly(
+                  runner_project_7, runner_project_6, runner_project_5,
+                  runner_project_4, runner_project_3, runner_project_2,
+                  runner_project_1, runner_sub_group_4, runner_sub_group_3,
+                  runner_sub_group_2, runner_sub_group_1, runner_group, runner_instance)
               end
             end
 
@@ -366,9 +372,9 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
             context 'with nil group' do
               let(:target_group) { nil }
 
-              it 'returns no runners' do
-                # Query should run against all runners, however since user is not admin, query returns no results
-                expect(subject).to eq([])
+              it 'raises Gitlab::Access::AccessDeniedError' do
+                # Query should run against all runners, however since user is not admin, we raise an error
+                expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
               end
             end
 
@@ -443,23 +449,23 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
           context 'with :sub_group_1 as target group' do
             let(:target_group) { sub_group_1 }
 
-            it 'returns no runners' do
-              is_expected.to be_empty
+            it 'raises Gitlab::Access::AccessDeniedError' do
+              expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
             end
           end
 
           context 'with :group as target group' do
             let(:target_group) { group }
 
-            it 'returns no runners' do
-              is_expected.to be_empty
+            it 'raises Gitlab::Access::AccessDeniedError' do
+              expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
             end
 
             context 'with :all_available membership' do
               let(:membership) { :all_available }
 
-              it 'returns no runners' do
-                expect(subject).to be_empty
+              it 'raises Gitlab::Access::AccessDeniedError' do
+                expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
               end
             end
           end
@@ -467,35 +473,31 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
       end
 
       context 'when user has no access' do
-        it 'returns no runners' do
-          expect(subject).to be_empty
+        it 'raises Gitlab::Access::AccessDeniedError' do
+          expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
         end
       end
 
       context 'when user is nil' do
-        let_it_be(:user) { nil }
+        let(:user) { nil }
 
-        it 'returns no runners' do
-          expect(subject).to be_empty
+        it 'raises Gitlab::Access::AccessDeniedError' do
+          expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
         end
       end
     end
 
     describe '#sort_key' do
-      subject { described_class.new(current_user: user, params: params.merge(group: group)).sort_key }
+      subject(:sort_key) { described_class.new(current_user: user, params: params.merge(group: group)).sort_key }
 
       context 'without params' do
-        it 'returns created_at_desc' do
-          expect(subject).to eq('created_at_desc')
-        end
+        it { is_expected.to eq('created_at_desc') }
       end
 
       context 'with params' do
         let(:extra_params) { { sort: 'contacted_asc' } }
 
-        it 'returns contacted_asc' do
-          expect(subject).to eq('contacted_asc')
-        end
+        it { is_expected.to eq('contacted_asc') }
       end
     end
   end
@@ -510,7 +512,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
     let(:params) { { project: project }.merge(extra_params).reject { |_, v| v.nil? } }
 
     describe '#execute' do
-      subject { described_class.new(current_user: user, params: params).execute }
+      subject(:execute) { described_class.new(current_user: user, params: params).execute }
 
       context 'with user as project admin' do
         before do
@@ -521,7 +523,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
           let_it_be(:runner_project) { create(:ci_runner, :project, contacted_at: 7.minutes.ago, projects: [project]) }
 
           it 'returns runners available to project' do
-            expect(subject).to match_array([runner_project])
+            is_expected.to match_array([runner_project])
           end
         end
 
@@ -530,7 +532,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
           let_it_be(:runner_group) { create(:ci_runner, :group, contacted_at: 12.minutes.ago, groups: [group]) }
 
           it 'returns runners available to project' do
-            expect(subject).to match_array([runner_instance, runner_group])
+            is_expected.to match_array([runner_instance, runner_group])
           end
         end
 
@@ -616,24 +618,24 @@ RSpec.describe Ci::RunnersFinder, feature_category: :runner_fleet do
           project.add_developer(user)
         end
 
-        it 'returns no runners' do
-          expect(subject).to be_empty
+        it 'raises Gitlab::Access::AccessDeniedError' do
+          expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
         end
       end
 
       context 'when user is nil' do
         let_it_be(:user) { nil }
 
-        it 'returns no runners' do
-          expect(subject).to be_empty
+        it 'raises Gitlab::Access::AccessDeniedError' do
+          expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
         end
       end
 
       context 'with nil project_full_path' do
         let(:project_full_path) { nil }
 
-        it 'returns no runners' do
-          expect(subject).to be_empty
+        it 'raises Gitlab::Access::AccessDeniedError' do
+          expect { execute }.to raise_error(Gitlab::Access::AccessDeniedError)
         end
       end
     end

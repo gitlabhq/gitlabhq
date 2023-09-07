@@ -156,7 +156,7 @@ The following API resources are available outside of project and group contexts 
 | [Avatar](avatar.md)                                                                          | `/avatar`                                                                                        |
 | [Broadcast messages](broadcast_messages.md)                                                  | `/broadcast_messages`                                                                            |
 | [Code snippets](snippets.md)                                                                 | `/snippets`                                                                                      |
-| [Code suggestions](code_suggestions.md)                                                      | `/code_suggestions`                                                                              |
+| [Code Suggestions](code_suggestions.md)                                                      | `/code_suggestions`                                                                              |
 | [Custom attributes](custom_attributes.md)                                                    | `/users/:id/custom_attributes` (also available for groups and projects)                          |
 | [Deploy keys](deploy_keys.md)                                                                | `/deploy_keys` (also available for projects)                                                     |
 | [Deploy tokens](deploy_tokens.md)                                                            | `/deploy_tokens` (also available for projects and groups)                                        |

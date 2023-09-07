@@ -579,10 +579,12 @@ export default class MergeRequestTabs {
 
   expandViewContainer() {
     this.contentWrapper.classList.remove('container-limited');
+    this.contentWrapper.classList.add('diffs-container-limited');
   }
 
   resetViewContainer() {
     this.contentWrapper.classList.toggle('container-limited', this.isFixedLayoutPreferred);
+    this.contentWrapper.classList.remove('diffs-container-limited');
   }
 
   // Expand the issuable sidebar unless the user explicitly collapsed it

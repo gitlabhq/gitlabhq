@@ -985,6 +985,14 @@ $tabs-holder-z-index: 250;
   }
 }
 
+.container-fluid.diffs-container-limited {
+  .flash-container {
+    @include gl-mx-auto;
+    @include gl-max-w-container-xl;
+    @include gl-px-5;
+  }
+}
+
 .submit-review-dropdown {
   &.show .dropdown-menu {
     width: calc(100vw - 20px);

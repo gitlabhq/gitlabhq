@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Model Validation
+stage: Create
+group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, reference
 ---
@@ -66,4 +66,4 @@ specifically the token system. To resolve the issue:
 
 1. Remove the existing personal access token from your GitLab account settings.
 1. Reauthorize your GitLab account in VS Code using OAuth.
-1. Test the code suggestions feature with different file extensions to verify if the issue is resolved.
+1. Test the Code Suggestions feature with different file extensions to verify if the issue is resolved.

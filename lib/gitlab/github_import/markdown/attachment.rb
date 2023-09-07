@@ -57,7 +57,8 @@ module Gitlab
 
           def github_url?(url, docs: false, media: false)
             if media
-              url.start_with?(::Gitlab::GithubImport::MarkdownText::GITHUB_MEDIA_CDN)
+              url.start_with?(::Gitlab::GithubImport::MarkdownText.github_url,
+                ::Gitlab::GithubImport::MarkdownText::GITHUB_MEDIA_CDN)
             elsif docs
               url.start_with?(::Gitlab::GithubImport::MarkdownText.github_url)
             end
@@ -65,6 +66,9 @@ module Gitlab
 
           def whitelisted_type?(url, docs: false, media: false)
             if media
+              # We do not know the file extension type from the /assets markdown
+              return true if url.start_with?(::Gitlab::GithubImport::MarkdownText.github_url)
+
               MEDIA_TYPES.any? { |type| url.end_with?(type) }
             elsif docs
               DOC_TYPES.any? { |type| url.end_with?(type) }
@@ -91,8 +95,11 @@ module Gitlab
           )
         end
 
-        def media?
-          url.start_with?(::Gitlab::GithubImport::MarkdownText::GITHUB_MEDIA_CDN)
+        def media?(import_source)
+          url.start_with?(
+            "#{::Gitlab::GithubImport::MarkdownText.github_url}/#{import_source}/assets",
+            ::Gitlab::GithubImport::MarkdownText::GITHUB_MEDIA_CDN
+          )
         end
 
         def inspect

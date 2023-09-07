@@ -93,6 +93,43 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         expect(File.basename(file)).to eq('av.png')
       end
     end
+
+    context 'when attachment is behind a redirect' do
+      let_it_be(:file_url) { "https://github.com/test/project/assets/142635249/4b9f9c90-f060-4845-97cf-b24c558bcb11" }
+      let(:redirect_url) { "https://https://github-production-user-asset-6210df.s3.amazonaws.com/142635249/740edb05293e.jpg" }
+      let(:sample_response) do
+        instance_double(HTTParty::Response, redirection?: true, headers: { location: redirect_url })
+      end
+
+      it 'gets redirection url' do
+        expect(Gitlab::HTTP).to receive(:perform_request)
+          .with(Net::HTTP::Get, file_url, { follow_redirects: false })
+          .and_return sample_response
+
+        expect(Gitlab::HTTP).to receive(:perform_request)
+          .with(Net::HTTP::Get, redirect_url, stream_body: true).and_yield(chunk_double)
+
+        file = downloader.perform
+
+        expect(File.exist?(file.path)).to eq(true)
+      end
+
+      context 'when url is not a redirection' do
+        let(:sample_response) do
+          instance_double(HTTParty::Response, code: 200, redirection?: false)
+        end
+
+        before do
+          allow(Gitlab::HTTP).to receive(:perform_request)
+            .with(Net::HTTP::Get, file_url, { follow_redirects: false })
+            .and_return sample_response
+        end
+
+        it 'raises upon unsuccessful redirection' do
+          expect { downloader.perform }.to raise_error("expected a redirect response, got #{sample_response.code}")
+        end
+      end
+    end
   end
 
   describe '#delete' do

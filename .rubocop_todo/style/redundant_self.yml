@@ -87,7 +87,6 @@ Style/RedundantSelf:
     - 'app/models/integrations/base_ci.rb'
     - 'app/models/integrations/base_issue_tracker.rb'
     - 'app/models/integrations/base_slash_commands.rb'
-    - 'app/models/integrations/campfire.rb'
     - 'app/models/integrations/emails_on_push.rb'
     - 'app/models/integrations/jira.rb'
     - 'app/models/integrations/pipelines_email.rb'

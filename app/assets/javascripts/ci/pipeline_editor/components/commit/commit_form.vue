@@ -108,7 +108,6 @@ export default {
       <gl-form-group
         id="commit-group"
         :label="$options.i18n.commitMessage"
-        label-cols-sm="2"
         label-for="commit-message"
       >
         <gl-form-textarea
@@ -122,7 +121,6 @@ export default {
       <gl-form-group
         id="source-branch-group"
         :label="$options.i18n.sourceBranch"
-        label-cols-sm="2"
         label-for="source-branch-field"
       >
         <gl-form-input

@@ -4,11 +4,11 @@ group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Code suggestions development guidelines
+# Code Suggestions development guidelines
 
-## Code suggestions development setup
+## Code Suggestions development setup
 
-The recommended setup for locally developing and debugging code suggestions is to have all 3 different components running: 
+The recommended setup for locally developing and debugging Code Suggestions is to have all 3 different components running: 
 
 - IDE Extension (e.g. VSCode Extension)
 - Main application configured correctly
@@ -19,7 +19,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
 ### Setup instructions
 
 1. Install and run locally the [VSCode Extension](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/CONTRIBUTING.md#configuring-development-environment)
-   1. Add the ```"gitlab.debug": true,``` info to the code suggestions development config
+   1. Add the ```"gitlab.debug": true,``` info to the Code Suggestions development config
       1. In VSCode navigate to the Extensions page and find "GitLab Workflow" in the list
       1. Open the extension settings by clicking a small cog icon and select "Extension Settings" option
       1. Check a "GitLab: Debug" checkbox.

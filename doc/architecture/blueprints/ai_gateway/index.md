@@ -46,7 +46,7 @@ connect to 3rd party providers.
 ## Language: Python
 
 The AI-Gateway was originally started as the "model-gateway" that
-handled requests from IDEs to provide code suggestions. It was written
+handled requests from IDEs to provide Code Suggestions. It was written
 in Python.
 
 Python is an object oriented language that is familiar enough for
@@ -96,7 +96,7 @@ GitLab instances, they differ on these items:
 | + Strict protocol definition that is easier to evolve versionless                                                                                                       | - No strict schema, so the implementation needs to take good care of supporting multiple versions |
 | + A new Ruby-gRPC server for vscode: likely faster because we can limit dependencies to load ([modular monolith](https://gitlab.com/gitlab-org/gitlab/-/issues/365293)) | - Existing Grape API for vscode: meaning slow boot time and unneeded resources loaded             |
 | + Bi-directional streaming                                                                                                                                              | - Straight forward way to stream requests and responses (could still be added)                    |
-| - A new Python-gRPC server: we don't have experience running gRPC-Python servers                                                                                        | + Existing Python fastapi server, already running for code suggestions to extend                  |
+| - A new Python-gRPC server: we don't have experience running gRPC-Python servers                                                                                        | + Existing Python fastapi server, already running for Code Suggestions to extend                  |
 | - Hard to pass on unknown messages from vscode through GitLab to ai-gateway                                                                                             | + Easier support for newer vscode + newer ai-gatway, through old GitLab instance                  |
 | - Unknown support for gRPC in other clients (vscode, jetbrains, other editors)                                                                                          | + Support in all external clients                                                                 |
 | - Possible protocol mismatch (VSCode --REST--> Rails --gRPC--> AI gateway)                                                                                              | + Same protocol across the stack                                                                  |
@@ -116,7 +116,7 @@ with a stable API over the [provider API we expose](#exposing-ai-providers)
 as a direct proxy.
 
 Some features will have specific endpoints, while others can share
-endpoints. For example, code suggestions or chat could have their own
+endpoints. For example, Code Suggestions or chat could have their own
 endpoint, while several features that summarize issues or merge
 requests could use the same endpoint but make the distinction on what
 information is provided in the payload.
@@ -215,9 +215,9 @@ what is in the payload.
 To document and validate the content of `payload` we can specify their
 format using [JSON-schema](https://json-schema.org/).
 
-#### Example feature: code suggestions
+#### Example feature: Code Suggestions
 
-For example, a rough code suggestions service could look like this:
+For example, a rough Code Suggestions service could look like this:
 
 ```plaintext
 POST /internal/code-suggestions/completions
@@ -281,7 +281,7 @@ The `metadata` field contains information that could be used in a
 telemetry endpoint on the AI-gateway where we could count
 suggestion-acceptance rates among other things.
 
-The way we will receive telemetry for code suggestions is being
+The way we will receive telemetry for Code Suggestions is being
 discussed in [#415745](https://gitlab.com/gitlab-org/gitlab/-/issues/415745).
 We will try to come up with an architecture for all AI-related features.
 

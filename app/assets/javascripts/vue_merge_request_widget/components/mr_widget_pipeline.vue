@@ -183,7 +183,7 @@ export default {
           v-gl-tooltip
           :href="ciTroubleshootingDocsPath"
           target="_blank"
-          :title="__('About this feature')"
+          :title="__('Get more information about troubleshooting pipelines')"
           class="gl-display-flex gl-align-items-center gl-ml-2"
         >
           <gl-icon

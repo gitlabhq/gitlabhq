@@ -33459,7 +33459,7 @@ CREATE UNIQUE INDEX index_sbom_components_on_component_type_name_and_purl_type O
 
 CREATE INDEX index_sbom_occurrences_for_input_file_path_search ON sbom_occurrences USING btree (project_id, component_id, input_file_path);
 
-CREATE INDEX index_sbom_occurrences_on_component_id ON sbom_occurrences USING btree (component_id);
+CREATE INDEX index_sbom_occurrences_on_component_id_and_id ON sbom_occurrences USING btree (component_id, id);
 
 CREATE INDEX index_sbom_occurrences_on_component_version_id ON sbom_occurrences USING btree (component_version_id);
 

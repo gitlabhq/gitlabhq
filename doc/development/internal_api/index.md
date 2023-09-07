@@ -822,7 +822,7 @@ Example response:
 
 ## Subscription add-on purchases (excluding storage and compute packs)
 
-The subscription add-on purchase endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to apply subscription add-on purchases like code suggestions for personal namespaces, or top-level groups within GitLab.com. It is not used to apply storage and compute pack purchases.
+The subscription add-on purchase endpoint is used by [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (`customers.gitlab.com`) to apply subscription add-on purchases like Code Suggestions for personal namespaces, or top-level groups within GitLab.com. It is not used to apply storage and compute pack purchases.
 
 ### Create a subscription add-on purchase
 
@@ -834,9 +834,9 @@ POST /namespaces/:id/subscription_add_on_purchase/:add_on_name
 
 | Attribute   | Type    | Required | Description |
 |:------------|:--------|:---------|:------------|
-| `quantity` | integer | yes | Amount of units in the subscription add-on purchase (Example: Number of seats for a code suggestions add-on) |
+| `quantity` | integer | yes | Amount of units in the subscription add-on purchase (Example: Number of seats for a Code Suggestions add-on) |
 | `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
-| `purchase_xid` | string | yes | Identifier for the subscription add-on purchase (Example: Subscription name for a code suggestions add-on) |
+| `purchase_xid` | string | yes | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
 
 Example request:
 
@@ -867,9 +867,9 @@ PUT /namespaces/:id/subscription_add_on_purchase/:add_on_name
 
 | Attribute   | Type    | Required | Description |
 |:------------|:--------|:---------|:------------|
-| `quantity` | integer | no | Amount of units in the subscription add-on purchase (Example: Number of seats for a code suggestions add-on) |
+| `quantity` | integer | no | Amount of units in the subscription add-on purchase (Example: Number of seats for a Code Suggestions add-on) |
 | `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
-| `purchase_xid` | string | no | Identifier for the subscription add-on purchase (Example: Subscription name for a code suggestions add-on) |
+| `purchase_xid` | string | no | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
 
 Example request:
 

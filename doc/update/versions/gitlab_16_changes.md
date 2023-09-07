@@ -36,6 +36,44 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
      server-side custom hooks.
   1. Remove the `[gitlab-shell] dir` configuration.
 
+- You might encounter the following error while upgrading to GitLab 16.4 or later:
+
+  ```plaintext
+  main: == 20230830084959 ValidatePushRulesConstraints: migrating =====================
+  main: -- execute("SET statement_timeout TO 0")
+  main:    -> 0.0002s
+  main: -- execute("ALTER TABLE push_rules VALIDATE CONSTRAINT force_push_regex_size_constraint;")
+  main:    -> 0.0004s
+  main: -- execute("RESET statement_timeout")
+  main:    -> 0.0003s
+  main: -- execute("ALTER TABLE push_rules VALIDATE CONSTRAINT delete_branch_regex_size_constraint;")
+  rails aborted!
+  StandardError: An error has occurred, all later migrations canceled:
+
+  PG::CheckViolation: ERROR:  check constraint "delete_branch_regex_size_constraint" of relation "push_rules" is violated by some row
+  ```
+
+  These constraints might return an error:
+
+  - `author_email_regex_size_constraint`
+  - `branch_name_regex_size_constraint`
+  - `commit_message_negative_regex_size_constraint`
+  - `commit_message_regex_size_constraint`
+  - `delete_branch_regex_size_constraint`
+  - `file_name_regex_size_constraint`
+  - `force_push_regex_size_constraint`
+
+  To fix the error, find the records in the `push_rules` table that exceed the 511
+  character limit.
+
+  ```sql
+  ;; replace `delete_branch_regex` with a name of the field used in constraint
+  SELECT id FROM push_rules WHERE LENGTH(delete_branch_regex) > 511;
+  ```
+
+  Reduce the value length of the regex field for affected push rules records, then
+  retry the migration.
+
 ## 16.3.0
 
 - For Go applications, [`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)

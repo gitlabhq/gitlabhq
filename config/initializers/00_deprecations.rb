@@ -45,10 +45,12 @@ else
     /Merging .* no longer maintain both conditions, and will be replaced by the latter in Rails 7\.0/,
     # https://gitlab.com/gitlab-org/gitlab/-/issues/415890
     /(Date|Time|TimeWithZone)#to_s.+ is deprecated/,
+    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129686
     /Sum of non-numeric elements requires an initial argument/
   ]
 
   view_component_3_warnings = [
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/408988
     /Setting a slot with `#\w+` is deprecated and will be removed from ViewComponent 3.0.0/
   ]
   ActiveSupport::Deprecation.disallowed_warnings = rails7_deprecation_warnings + view_component_3_warnings

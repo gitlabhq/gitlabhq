@@ -1,6 +1,6 @@
 ---
-stage: AI-powered
-group: AI Model Validation
+stage: Create
+group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: index, reference
 ---
@@ -56,7 +56,7 @@ To enable Code Suggestions for your self-managed GitLab instance:
 This setting is visible only in self-managed GitLab instances.
 
 WARNING:
-In GitLab 16.2 and earlier, if you clear the **Turn on code suggestions for this instance** checkbox, the users in your instance can still use Code Suggestions for up to one hour, until the issued JSON web token (JWT) expires.
+In GitLab 16.2 and earlier, if you clear the **Turn on Code Suggestions for this instance** checkbox, the users in your instance can still use Code Suggestions for up to one hour, until the issued JSON web token (JWT) expires.
 
 To make sure Code Suggestions works immediately, you must [manually synchronize your subscription](#manually-synchronize-your-subscription).
 
@@ -101,7 +101,7 @@ To enable Code Suggestions for your self-managed GitLab instance:
 This setting is visible only in self-managed GitLab instances.
 
 WARNING:
-If you clear the **Turn on code suggestions for this instance** checkbox, the users in your instance can still use Code Suggestions for up to one hour, until the issued JSON web token (JWT) expires.
+If you clear the **Turn on Code Suggestions for this instance** checkbox, the users in your instance can still use Code Suggestions for up to one hour, until the issued JSON web token (JWT) expires.
 
 #### Request access to Code Suggestions
 

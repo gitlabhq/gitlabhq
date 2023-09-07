@@ -1,30 +1,11 @@
 <script>
+import { GlCard } from '@gitlab/ui';
 import PipelineStatus from './pipeline_status.vue';
 import ValidationSegment from './validation_segment.vue';
 
-const baseClasses = ['gl-p-5', 'gl-bg-gray-10', 'gl-border-solid', 'gl-border-gray-100'];
-
-const pipelineStatusClasses = [
-  ...baseClasses,
-  'gl-border-1',
-  'gl-border-b-0!',
-  'gl-rounded-top-base',
-];
-
-const validationSegmentClasses = [...baseClasses, 'gl-border-1', 'gl-rounded-base'];
-
-const validationSegmentWithPipelineStatusClasses = [
-  ...baseClasses,
-  'gl-border-1',
-  'gl-rounded-bottom-left-base',
-  'gl-rounded-bottom-right-base',
-];
-
 export default {
-  pipelineStatusClasses,
-  validationSegmentClasses,
-  validationSegmentWithPipelineStatusClasses,
   components: {
+    GlCard,
     PipelineStatus,
     ValidationSegment,
   },
@@ -47,24 +28,19 @@ export default {
     showPipelineStatus() {
       return !this.isNewCiConfigFile;
     },
-    // make sure corners are rounded correctly depending on if
-    // pipeline status is rendered
-    validationStyling() {
-      return this.showPipelineStatus
-        ? this.$options.validationSegmentWithPipelineStatusClasses
-        : this.$options.validationSegmentClasses;
-    },
   },
 };
 </script>
 <template>
-  <div class="gl-mb-5">
-    <pipeline-status
-      v-if="showPipelineStatus"
-      :commit-sha="commitSha"
-      :class="$options.pipelineStatusClasses"
-      v-on="$listeners"
-    />
-    <validation-segment :class="validationStyling" :ci-config="ciConfigData" />
-  </div>
+  <gl-card
+    class="gl-new-card gl-mb-3"
+    header-class="gl-new-card-header"
+    body-class="gl-new-card-body gl-py-4 gl-px-5"
+  >
+    <template v-if="showPipelineStatus" #header>
+      <pipeline-status :commit-sha="commitSha" v-on="$listeners" />
+    </template>
+
+    <validation-segment :ci-config="ciConfigData" />
+  </gl-card>
 </template>

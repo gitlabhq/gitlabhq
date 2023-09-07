@@ -42,6 +42,8 @@ class Groups::RunnersController < Groups::ApplicationController
     @runner ||= Ci::RunnersFinder.new(current_user: current_user, params: group_params).execute
       .except(:limit, :offset)
       .find(params[:id])
+  rescue Gitlab::Access::AccessDeniedError
+    nil
   end
 
   def runner_params

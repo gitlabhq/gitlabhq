@@ -261,12 +261,9 @@ For more information, see [Coverage check approval rule](../../../../ci/testing/
 
 ## Security Approvals **(ULTIMATE ALL)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
+> - Security approvals moved to merge request approvals settings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
 > - Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`. Enabled by default.
-
-FLAG:
-On self-managed GitLab, by default the bot comment for approvals is available. To hide the feature, an administrator can [disable the feature flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`.
-On GitLab.com, the bot comment for approvals is available.
+> - Bot comment for approvals [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130827) in GitLab 16.3. Feature flag `security_policy_approval_notification` removed.
 
 You can use [scan result policies](../../../application_security/policies/scan-result-policies.md#scan-result-policy-editor) to define security approvals based on the status of vulnerabilities in the merge request and the default branch.
 Details for each security policy is shown in the Security Approvals section of your Merge Request configuration.

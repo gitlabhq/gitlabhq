@@ -6,119 +6,97 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Push options **(FREE ALL)**
 
-GitLab supports using client-side [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt)
-to perform various actions at the same time as pushing changes. Additionally, [Push Rules](repository/push_rules.md) offer server-side control and enforcement options.
+When you push changes to a branch, you can use client-side
+[Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt).
+In Git 2.10 and later, use Git push options to:
 
-Currently, there are push options available for:
+- [Skip CI jobs](#push-options-for-gitlab-cicd)
+- [Push to merge requests](#push-options-for-merge-requests)
 
-- [Skipping CI jobs](#push-options-for-gitlab-cicd)
-- [Merge requests](#push-options-for-merge-requests)
-
-NOTE:
-Git push options are only available with Git 2.10 or newer.
-
-For Git versions 2.10 to 2.17 use `--push-option`:
-
-```shell
-git push --push-option=<push_option>
-```
-
-For version 2.18 and later, you can use the above format, or the shorter `-o`:
+In Git 2.18 and later, you can use either the long format (`--push-option`) or the shorter `-o`:
 
 ```shell
 git push -o <push_option>
 ```
 
+In Git 2.10 to 2.17, you must use the long format:
+
+```shell
+git push --push-option=<push_option>
+```
+
+For server-side controls and enforcement of best practices, see
+[push rules](repository/push_rules.md) and [server hooks](../../administration/server_hooks.md).
+
 ## Push options for GitLab CI/CD
 
 You can use push options to skip a CI/CD pipeline, or pass CI/CD variables.
 
-| Push option                    | Description                                                                                 | Introduced in version |
-| ------------------------------ | ------------------------------------------------------------------------------------------- |---------------------- |
-| `ci.skip`                      | Do not create a CI pipeline for the latest push. Only skips branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). This does not skip pipelines for CI integrations, such as Jenkins. | [11.7](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15643) |
-| `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/index.md) to be used in a CI pipeline, if one is created due to the push. Only passes variables to branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | [12.6](https://gitlab.com/gitlab-org/gitlab/-/issues/27983) |
-| `integrations.skip_ci`         | Skip push events for CI integrations, such as Atlassian Bamboo, Buildkite, Drone, Jenkins, and JetBrains TeamCity. | [16.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123837) |
-
-An example of using `ci.skip`:
-
-```shell
-git push -o ci.skip
-```
-
-An example of passing some CI/CD variables for a pipeline:
-
-```shell
-git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"
-```
-
-An example of using `integrations.skip_ci`:
-
-```shell
-git push -o integrations.skip_ci
-```
+| Push option                    | Description | Example |
+|--------------------------------|-------------|---------|
+| `ci.skip`                      | Do not create a CI/CD pipeline for the latest push. Skips only branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). This does not skip pipelines for CI/CD integrations, such as Jenkins. | `git push -o ci.skip` |
+| `ci.variable="<name>=<value>"` | Provide [CI/CD variables](../../ci/variables/index.md) to the CI/CD pipeline, if one is created due to the push. Passes variables only to branch pipelines and not [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md). | `git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"` |
+| `integrations.skip_ci`         | Skip push events for CI/CD integrations, such as Atlassian Bamboo, Buildkite, Drone, Jenkins, and JetBrains TeamCity. Introduced in [GitLab 16.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123837). | `git push -o integrations.skip_ci` |
 
 ## Push options for merge requests
 
-You can use Git push options to perform certain actions for merge requests at the same
-time as pushing changes:
+Git push options can perform actions for merge requests while pushing changes:
 
-| Push option                                  | Description                                                                                                     | Introduced in version |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------- |
-| `merge_request.create`                       | Create a new merge request for the pushed branch.                                                               | [11.10](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26752) |
-| `merge_request.target=<branch_name>`         | Set the target of the merge request to a particular branch or upstream project, such as: `git push -o merge_request.target=project_path/branch`                                                     | [11.10](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26752) |
-| `merge_request.merge_when_pipeline_succeeds` | Set the merge request to [merge when its pipeline succeeds](merge_requests/merge_when_pipeline_succeeds.md).    | [11.10](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26752) |
-| `merge_request.remove_source_branch`         | Set the merge request to remove the source branch when it's merged.                                             | [12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64320)          |
-| `merge_request.title="<title>"`              | Set the title of the merge request. For example: `git push -o merge_request.title="The title I want"`.                   | [12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64320)          |
-| `merge_request.description="<description>"`  | Set the description of the merge request. For example: `git push -o merge_request.description="The description I want"`. | [12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/64320)          |
-| `merge_request.draft`                        | Mark the merge request as a draft. For example: `git push -o merge_request.draft`.                                      | [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/296673)          |
-| `merge_request.milestone="<milestone>"`      | Set the milestone of the merge request. For example: `git push -o merge_request.milestone="3.0"`.                        | [14.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63960)       |
-| `merge_request.label="<label>"`              | Add labels to the merge request. If the label does not exist, it is created. For example, for two labels: `git push -o merge_request.label="label1" -o merge_request.label="label2"`. | [12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31831) |
-| `merge_request.unlabel="<label>"`            | Remove labels from the merge request. For example, for two labels: `git push -o merge_request.unlabel="label1" -o merge_request.unlabel="label2"`. | [12.3](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31831) |
-| `merge_request.assign="<user>"`              | Assign users to the merge request. Accepts username or user ID. For example, for two users: `git push -o merge_request.assign="user1" -o merge_request.assign="user2"`. | [13.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25904), support for usernames added in [15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/344276) |
-| `merge_request.unassign="<user>"`            | Remove assigned users from the merge request. Accepts username or user ID.For example, for two users: `git push -o merge_request.unassign="user1" -o merge_request.unassign="user2"`. | [13.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25904), support for usernames added in [15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/344276) |
+| Push option                                  | Description |
+|----------------------------------------------|-------------|
+| `merge_request.create`                       | Create a new merge request for the pushed branch. |
+| `merge_request.target=<branch_name>`         | Set the target of the merge request to a particular branch or upstream project, such as: `git push -o merge_request.target=project_path/branch`. |
+| `merge_request.merge_when_pipeline_succeeds` | Set the merge request to [merge when its pipeline succeeds](merge_requests/merge_when_pipeline_succeeds.md). |
+| `merge_request.remove_source_branch`         | Set the merge request to remove the source branch when it's merged. |
+| `merge_request.title="<title>"`              | Set the title of the merge request. For example: `git push -o merge_request.title="The title I want"`. |
+| `merge_request.description="<description>"`  | Set the description of the merge request. For example: `git push -o merge_request.description="The description I want"`. |
+| `merge_request.draft`                        | Mark the merge request as a draft. For example: `git push -o merge_request.draft`. Introduced in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/296673). |
+| `merge_request.milestone="<milestone>"`      | Set the milestone of the merge request. For example: `git push -o merge_request.milestone="3.0"`. Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63960). |
+| `merge_request.label="<label>"`              | Add labels to the merge request. If the label does not exist, it is created. For example, for two labels: `git push -o merge_request.label="label1" -o merge_request.label="label2"`. |
+| `merge_request.unlabel="<label>"`            | Remove labels from the merge request. For example, for two labels: `git push -o merge_request.unlabel="label1" -o merge_request.unlabel="label2"`. |
+| `merge_request.assign="<user>"`              | Assign users to the merge request. Accepts username or user ID. For example, for two users: `git push -o merge_request.assign="user1" -o merge_request.assign="user2"`. Support for usernames added in [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/344276). |
+| `merge_request.unassign="<user>"`            | Remove assigned users from the merge request. Accepts username or user ID. For example, for two users: `git push -o merge_request.unassign="user1" -o merge_request.unassign="user2"`. Support for usernames added in [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/344276). |
 
-If you use a push option that requires text with spaces in it, you need to enclose it
-in quotes (`"`). You can omit the quotes if there are no spaces. Some examples:
+## Formats for push options
+
+If your push option requires text containing spaces, enclose the text in
+double quotes (`"`). You can omit the quotes if there are no spaces. Some examples:
 
 ```shell
 git push -o merge_request.label="Label with spaces"
 git push -o merge_request.label=Label-with-no-spaces
 ```
 
-You can combine push options to accomplish multiple tasks at once, by using
-multiple `-o` (or `--push-option`) flags. For example, if you want to create a new
-merge request, and target a branch named `my-target-branch`:
-
-```shell
-git push -o merge_request.create -o merge_request.target=my-target-branch
-```
-
-Additionally if you want the merge request to merge as soon as the pipeline succeeds you can do:
+To combine push options to accomplish multiple tasks at once, use
+multiple `-o` (or `--push-option`) flags. This command creates a
+new merge request, targets a branch (`my-target-branch`), and sets auto-merge:
 
 ```shell
 git push -o merge_request.create -o merge_request.target=my-target-branch -o merge_request.merge_when_pipeline_succeeds
 ```
 
-## Useful Git aliases
+## Create Git aliases for common commands
 
-As shown above, Git push options can cause Git commands to grow very long. If
-you use the same push options frequently, it's useful to create
-[Git aliases](https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases). Git aliases
-are command line shortcuts for Git which can significantly simplify the use of
-long Git commands.
+Adding push options to Git commands can create very long commands. If
+you use the same push options frequently, create Git aliases for them.
+Git aliases are command-line shortcuts for longer Git commands.
 
-### Merge when pipeline succeeds alias
-
-To set up a Git alias for the
+To create and use a Git alias for the
 [merge when pipeline succeeds Git push option](#push-options-for-merge-requests):
 
-```shell
-git config --global alias.mwps "push -o merge_request.create -o merge_request.target=master -o merge_request.merge_when_pipeline_succeeds"
-```
+1. In your terminal window, run this command:
 
-Then to quickly push a local branch that targets the default branch and merges when the
-pipeline succeeds:
+   ```shell
+   git config --global alias.mwps "push -o merge_request.create -o merge_request.target=main -o merge_request.merge_when_pipeline_succeeds"
+   ```
 
-```shell
-git mwps origin <local-branch-name>
-```
+1. To use the alias to push a local branch that targets the default branch (`main`)
+   and auto-merges, run this command:
+
+   ```shell
+   git mwps origin <local-branch-name>
+   ```
+
+## Related topics
+
+- [Git aliases](https://git-scm.com/book/en/v2/Git-Basics-Git-Aliases) in the Git documentation

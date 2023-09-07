@@ -230,20 +230,41 @@ Remember that other clients are available and you should not use OpenAI.
 
 #### How to receive a response
 
-As the OpenAI API requests are handled in a background job, we do not keep the request alive and
-the response is sent through the `aiCompletionResponse` subscription:
+The API requests to AI providers are handled in a background job. We therefore do not keep the request alive and the Frontend needs to match the request to the response from the subscription.
 
-```mutation
-subscription aiCompletionResponse($userId: UserID, $resourceId: AiModelID!) {
-  aiCompletionResponse(userId: $userId, resourceId: $resourceId) {
+WARNING:
+Determining the right response to a request can cause problems when only `userId` and `resourceId` are used. For example, when two AI features use the same `userId` and `resourceId` both subscriptions will receive the response from each other. To prevent this intereference, we introduced the `clientSubscriptionId`.
+
+To match a response on the `aiCompletionResponse` subscription, you can provide a `clientSubscriptionId` to the `aiAction` mutation.
+
+- The `clientSubscriptionId` should be unique per feature and within a page to not interfere with other AI features. We recommend to use a `UUID`.
+- Only when the `clientSubscriptionId` is provided as part of the `aiAction` mutation, it will be used for broadcasting the `aiCompletionResponse`.
+- If the `clientSubscriptionId` is not provided, only `userId` and `resourceId` are used for the `aiCompletionResponse`.
+
+As an example mutation for summarizing comments, we provide a `randomId` as part of the mutation:
+
+```graphql
+mutation {
+  aiAction(input: {summarizeComments: {resourceId: "gid://gitlab/Issue/52"}, clientSubscriptionId: "randomId"}) {
+    clientMutationId
+  }
+}
+```
+
+In our component, we then listen on the `aiCompletionResponse` using the `userId`, `resourceId` and `clientSubscriptionId` (`"randomId"`):
+
+```graphql
+subscription aiCompletionResponse($userId: UserID, $resourceId: AiModelID, $clientSubscriptionId: String) {
+  aiCompletionResponse(userId: $userId, resourceId: $resourceId, clientSubscriptionId: $clientSubscriptionId) {
     responseBody
     errors
   }
 }
 ```
 
-WARNING:
-You should only subscribe to the subscription once the mutation is sent. If multiple subscriptions are active on the same page, they currently all receive updates as our identifier is the user and the resource. To mitigate this, you should only subscribe when the mutation is sent. You can use [`skip()`](You can use [`skip()`](https://apollo.vuejs.org/guide/apollo/subscriptions.html#skipping-the-subscription)) for this case. To prevent this problem in the future, we implement a [request identifier](https://gitlab.com/gitlab-org/gitlab/-/issues/408196).
+Note that the [subscription for chat](duo_chat.md#graphql-subscription) behaves differently.
+
+To not have many concurrent subscriptions, you should also only subscribe to the subscription once the mutation is sent by using [`skip()`](https://apollo.vuejs.org/guide/apollo/subscriptions.html#skipping-the-subscription).
 
 #### Current abstraction layer flow
 

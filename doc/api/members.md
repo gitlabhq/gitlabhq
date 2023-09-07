@@ -519,7 +519,7 @@ POST /projects/:id/members
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer/string | yes | The user ID of the new member or multiple IDs separated by commas |
-| `access_level` | integer | yes | A valid access level |
+| `access_level` | integer | yes | [A valid access level](access_requests.md#valid-access-levels) |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
 | `invite_source` | string | no | The source of the invitation that starts the member creation process. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/327120>`. |
 | `tasks_to_be_done` | array of strings | no | Tasks the inviter wants the member to focus on. The tasks are added as issues to a specified project. The possible values are: `ci`, `code` and `issues`. If specified, requires `tasks_project_id`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69299) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `invite_members_for_task`. Disabled by default. |
@@ -571,7 +571,7 @@ PUT /projects/:id/members/:user_id
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `user_id` | integer | yes   | The user ID of the member |
-| `access_level` | integer | yes | A valid access level |
+| `access_level` | integer | yes | A [valid access level](access_requests.md#valid-access-levels) |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
 | `member_role_id` | integer | no | The ID of a member role **(ULTIMATE ALL)** |
 

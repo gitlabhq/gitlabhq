@@ -281,6 +281,14 @@ describe('MergeRequestTabs', () => {
       testContext.class.expandViewContainer();
       expect($('.content-wrapper .container-limited')).toHaveLength(0);
     });
+
+    it('adds the diff-specific width-limiter', () => {
+      testContext.class.expandViewContainer();
+
+      expect(testContext.class.contentWrapper.classList.contains('diffs-container-limited')).toBe(
+        true,
+      );
+    });
   });
 
   describe('resetViewContainer', () => {
@@ -301,6 +309,14 @@ describe('MergeRequestTabs', () => {
       testContext.class.resetViewContainer();
 
       expect($('.content-wrapper .container-limited')).toHaveLength(1);
+    });
+
+    it('removes the diff-specific width-limiter', () => {
+      testContext.class.resetViewContainer();
+
+      expect(testContext.class.contentWrapper.classList.contains('diffs-container-limited')).toBe(
+        false,
+      );
     });
   });
 

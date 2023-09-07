@@ -38,7 +38,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
-1. Select the environment to be associated with the Kubernetes.
+1. Select the environment to be associated with the agent for Kubernetes.
 1. Select **Edit**.
 1. Select a GitLab agent for Kubernetes.
 1. Optional. From the **Kubernetes namespace** dropdown list, select a namespace.
@@ -62,7 +62,7 @@ To view a configured dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
-1. Expand the environment associated with GitLab agent for Kubernetes.
+1. Expand the environment associated with the agent for Kubernetes.
 1. Expand **Kubernetes overview**.
 
 ### Flux sync status

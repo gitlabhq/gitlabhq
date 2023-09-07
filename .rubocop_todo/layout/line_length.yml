@@ -345,7 +345,6 @@ Layout/LineLength:
     - 'app/models/integrations/base_chat_notification.rb'
     - 'app/models/integrations/base_issue_tracker.rb'
     - 'app/models/integrations/bugzilla.rb'
-    - 'app/models/integrations/campfire.rb'
     - 'app/models/integrations/chat_message/deployment_message.rb'
     - 'app/models/integrations/chat_message/merge_message.rb'
     - 'app/models/integrations/chat_message/note_message.rb'

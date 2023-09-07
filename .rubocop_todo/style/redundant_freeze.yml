@@ -24,7 +24,6 @@ Style/RedundantFreeze:
     - 'app/models/error_tracking/project_error_tracking_setting.rb'
     - 'app/models/hooks/web_hook.rb'
     - 'app/models/integrations/apple_app_store.rb'
-    - 'app/models/integrations/campfire.rb'
     - 'app/models/integrations/chat_message/base_message.rb'
     - 'app/models/integrations/confluence.rb'
     - 'app/models/integrations/datadog.rb'

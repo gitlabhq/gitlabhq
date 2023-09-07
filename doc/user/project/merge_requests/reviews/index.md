@@ -10,7 +10,7 @@ type: index, reference
 [Merge requests](../index.md) are the primary method of making changes to files in a
 GitLab project. [Create and submit a merge request](../creating_merge_requests.md)
 to propose changes. Your team leaves [comments](../../../discussions/index.md) on
-your merge request, and makes [code suggestions](suggestions.md) you can accept
+your merge request, and makes [Code Suggestions](suggestions.md) you can accept
 from the user interface. When your work is reviewed, your team members can choose
 to accept or reject it.
 

@@ -128,7 +128,8 @@ module Types
     field :runners, Types::Ci::RunnerType.connection_type,
           null: true,
           resolver: Resolvers::Ci::RunnersResolver,
-          description: "Find runners visible to the current user."
+          description: "Get all runners in the GitLab instance (project and shared). " \
+                       "Access is restricted to users with administrator access."
     field :snippets,
           Types::SnippetType.connection_type,
           null: true,

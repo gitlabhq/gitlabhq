@@ -127,3 +127,13 @@ REAL_AI_REQUEST=1 rspec ee/spec/lib/gitlab/llm/chain/agents/zero_shot/executor_s
 
 When you need to update the test questions that require documentation embeddings,
 make sure a new fixture is generated and committed together with the change.
+
+## GraphQL Subscription
+
+The GraphQL Subscription for chat behaves slightly different because it's user-centric. A user could have the chat open on multiple browser tabs, or also on their IDE.
+We therefore need to broadcast messages to multiple clients to keep them in sync. The `aiAction` mutation with the `chat` action behaves the following:
+
+1. All complete chat messages (including messages from the user) are broadcasted with the `userId` and the `resourceId` from the mutation as identifier, ignoring the `clientSubscriptionId`.
+1. Chunks from streamed chat messages are broadcasted with the `userId`, `resourceId`, and `clientSubscriptionId` as identifier.
+
+To truly sync messages between all clients of a user, we need to remove the `resourceId` as well, which will be fixed by [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).

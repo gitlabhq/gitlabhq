@@ -11,17 +11,17 @@ module ServiceDesk
         end
       end
 
-      def log_info(error_message: nil)
-        with_context do
+      def log_info(error_message: nil, project: nil)
+        with_context(project: project) do
           Gitlab::AppLogger.info(build_log_message(error_message: error_message))
         end
       end
 
-      def with_context(&block)
+      def with_context(project: nil, &block)
         Gitlab::ApplicationContext.with_context(
           related_class: self.class.to_s,
           user: current_user,
-          project: project,
+          project: project || self.project,
           &block
         )
       end

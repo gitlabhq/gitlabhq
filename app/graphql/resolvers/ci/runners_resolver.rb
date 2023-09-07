@@ -46,9 +46,15 @@ module Resolvers
           ::Ci::RunnersFinder
             .new(current_user: current_user, params: runners_finder_params(args))
             .execute)
+      rescue Gitlab::Access::AccessDeniedError
+        handle_access_denied_error!
       end
 
       protected
+
+      def handle_access_denied_error!
+        raise_resource_not_available_error!
+      end
 
       def runners_finder_params(params)
         # Give preference to paused argument over the deprecated 'active' argument

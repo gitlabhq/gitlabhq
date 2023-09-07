@@ -12,7 +12,7 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
   let(:fields) do
     <<~FIELDS
       nodes {
-        #{all_graphql_fields_for('Group')}
+        #{all_graphql_fields_for('Group', excluded: %w[runners])}
       }
     FIELDS
   end

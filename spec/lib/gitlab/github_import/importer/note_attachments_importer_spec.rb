@@ -53,6 +53,19 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
       record.reload
       expect(record.description).to include("[link to other project blob file](#{other_project_blob_url})")
     end
+
+    context 'with new github image format' do
+      let(:image_url) { 'https://github.com/nickname/public-test-repo/assets/142635249/4b9f9c90-f060-4845-97cf-b24c558bcb11' }
+      let(:image_tag_url) { 'https://github.com/nickname/public-test-repo/assets/142635249/4b9f9c90-f060-4845-97cf-b24c558bcb11' }
+
+      it 'changes image attachment links' do
+        importer.execute
+
+        record.reload
+        expect(record.description).to include('![image.jpeg](/uploads/')
+        expect(record.description).to include('<img width="248" alt="tag-image" src="/uploads')
+      end
+    end
   end
 
   describe '#execute' do
@@ -60,16 +73,19 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
     let(:tmp_stub_doc) { Tempfile.create('attachment_download_test.txt') }
     let(:tmp_stub_image) { Tempfile.create('image.jpeg') }
     let(:tmp_stub_image_tag) { Tempfile.create('image-tag.jpeg') }
+    let(:access_token) { 'exampleGitHubToken' }
+    let(:options) { { headers: { 'Authorization' => "Bearer #{access_token}" } } }
 
     before do
-      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(doc_url)
+      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(doc_url, options: options)
         .and_return(downloader_stub)
-      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(image_url)
+      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(image_url, options: options)
         .and_return(downloader_stub)
-      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(image_tag_url)
+      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(image_tag_url, options: options)
         .and_return(downloader_stub)
       allow(downloader_stub).to receive(:perform).and_return(tmp_stub_doc, tmp_stub_image, tmp_stub_image_tag)
       allow(downloader_stub).to receive(:delete).exactly(3).times
+      allow(client).to receive_message_chain(:octokit, :access_token).and_return(access_token)
     end
 
     context 'when importing release attachments' do

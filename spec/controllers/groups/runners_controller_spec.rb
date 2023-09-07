@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
-  let_it_be(:user)   { create(:user) }
-  let_it_be(:group)  { create(:group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:namespace_settings) { create(:namespace_settings, runner_registration_enabled: true) }
+  let_it_be(:group) { create(:group, namespace_settings: namespace_settings) }
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:runner) { create(:ci_runner, :group, groups: [group]) }
 
@@ -224,6 +225,12 @@ RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:edit)
+      end
+
+      it 'renders 404 for non-existing runner' do
+        get :edit, params: { group_id: group, id: non_existing_record_id }
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'renders 404 for instance runner' do
