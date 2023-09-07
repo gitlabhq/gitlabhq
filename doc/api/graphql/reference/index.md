@@ -1742,7 +1742,7 @@ Input type: `CiAiGenerateConfigInput`
 | ---- | ---- | ----------- |
 | <a id="mutationciaigenerateconfigclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationciaigenerateconfigerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationciaigenerateconfigusermessage"></a>`userMessage` | [`AiMessageType`](#aimessagetype) | User chat message. |
+| <a id="mutationciaigenerateconfigusermessage"></a>`userMessage` | [`AiMessage`](#aimessage) | User chat message. |
 
 ### `Mutation.ciJobTokenScopeAddProject`
 
@@ -7798,28 +7798,28 @@ The edge type for [`AiChatMessage`](#aichatmessage).
 | <a id="aichatmessageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aichatmessageedgenode"></a>`node` | [`AiChatMessage`](#aichatmessage) | The item at the end of the edge. |
 
-#### `AiMessageTypeConnection`
+#### `AiMessageConnection`
 
-The connection type for [`AiMessageType`](#aimessagetype).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aimessagetypeconnectionedges"></a>`edges` | [`[AiMessageTypeEdge]`](#aimessagetypeedge) | A list of edges. |
-| <a id="aimessagetypeconnectionnodes"></a>`nodes` | [`[AiMessageType]`](#aimessagetype) | A list of nodes. |
-| <a id="aimessagetypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `AiMessageTypeEdge`
-
-The edge type for [`AiMessageType`](#aimessagetype).
+The connection type for [`AiMessage`](#aimessage).
 
 ##### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aimessagetypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="aimessagetypeedgenode"></a>`node` | [`AiMessageType`](#aimessagetype) | The item at the end of the edge. |
+| <a id="aimessageconnectionedges"></a>`edges` | [`[AiMessageEdge]`](#aimessageedge) | A list of edges. |
+| <a id="aimessageconnectionnodes"></a>`nodes` | [`[AiMessage]`](#aimessage) | A list of nodes. |
+| <a id="aimessageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiMessageEdge`
+
+The edge type for [`AiMessage`](#aimessage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimessageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aimessageedgenode"></a>`node` | [`AiMessage`](#aimessage) | The item at the end of the edge. |
 
 #### `AlertManagementAlertConnection`
 
@@ -12595,6 +12595,18 @@ Duo Chat message.
 | <a id="aichatmessagerole"></a>`role` | [`AiChatMessageRole!`](#aichatmessagerole) | Message role. |
 | <a id="aichatmessagetimestamp"></a>`timestamp` | [`Time!`](#time) | Message timestamp. |
 
+### `AiMessage`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimessagecontent"></a>`content` | [`String`](#string) | Content of the message or null if loading. |
+| <a id="aimessageerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI(assistant) response. |
+| <a id="aimessageid"></a>`id` | [`ID`](#id) | Global ID of the message. |
+| <a id="aimessageisfetching"></a>`isFetching` | [`Boolean`](#boolean) | Whether the content is still being fetched, for a message with the assistant role. |
+| <a id="aimessagerole"></a>`role` | [`String!`](#string) | Role of the message (system, user, assistant). |
+
 ### `AiMessageExtras`
 
 Extra metadata for AI message.
@@ -12605,18 +12617,6 @@ Extra metadata for AI message.
 | ---- | ---- | ----------- |
 | <a id="aimessageextrassources"></a>`sources` | [`[JSON!]`](#json) | Sources used to form the message. |
 
-### `AiMessageType`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aimessagetypecontent"></a>`content` | [`String`](#string) | Content of the message or null if loading. |
-| <a id="aimessagetypeerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI(assistant) response. |
-| <a id="aimessagetypeid"></a>`id` | [`ID`](#id) | Global ID of the message. |
-| <a id="aimessagetypeisfetching"></a>`isFetching` | [`Boolean`](#boolean) | Whether the content is still being fetched, for a message with the assistant role. |
-| <a id="aimessagetyperole"></a>`role` | [`String!`](#string) | Role of the message (system, user, assistant). |
-
 ### `AiResponse`
 
 #### Fields
@@ -12624,14 +12624,17 @@ Extra metadata for AI message.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="airesponsechunkid"></a>`chunkId` | [`Int`](#int) | Incremental ID for a chunk from a streamed response. Null when it is not a streamed response. |
+| <a id="airesponsecontent"></a>`content` | [`String`](#string) | Raw response content. |
+| <a id="airesponsecontenthtml"></a>`contentHtml` | [`String`](#string) | Response content as HTML. |
 | <a id="airesponseerrors"></a>`errors` | [`[String!]`](#string) | Errors return by AI API as response. |
 | <a id="airesponseextras"></a>`extras` | [`AiMessageExtras`](#aimessageextras) | Extra message metadata. |
+| <a id="airesponseid"></a>`id` | [`ID`](#id) | UUID of the message. |
 | <a id="airesponserequestid"></a>`requestId` | [`String`](#string) | ID of the original request. |
-| <a id="airesponseresponsebody"></a>`responseBody` | [`String`](#string) | Response body from AI API. |
-| <a id="airesponseresponsebodyhtml"></a>`responseBodyHtml` | [`String`](#string) | Response body HTML. |
+| <a id="airesponseresponsebody"></a>`responseBody` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.4. Moved to content attribute. |
+| <a id="airesponseresponsebodyhtml"></a>`responseBodyHtml` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.4. Moved to contentHtml attribute. |
 | <a id="airesponserole"></a>`role` | [`AiChatMessageRole!`](#aichatmessagerole) | Message role. |
 | <a id="airesponsetimestamp"></a>`timestamp` | [`Time!`](#time) | Message timestamp. |
-| <a id="airesponsetype"></a>`type` | [`String`](#string) | Message type. |
+| <a id="airesponsetype"></a>`type` | [`AiMessageType`](#aimessagetype) | Message type. |
 
 ### `AlertManagementAlert`
 
@@ -22756,7 +22759,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectconversationsciconfigmessages"></a>`ciConfigMessages` **{warning-solid}** | [`AiMessageTypeConnection`](#aimessagetypeconnection) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Messages generated by open ai and the user. |
+| <a id="projectconversationsciconfigmessages"></a>`ciConfigMessages` **{warning-solid}** | [`AiMessageConnection`](#aimessageconnection) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Messages generated by open ai and the user. |
 
 ### `ProjectDataTransfer`
 
@@ -26039,6 +26042,14 @@ Roles to filter in chat message.
 | <a id="aichatmessageroleassistant"></a>`ASSISTANT` | Filter only assistant messages. |
 | <a id="aichatmessagerolesystem"></a>`SYSTEM` | Filter only system messages. |
 | <a id="aichatmessageroleuser"></a>`USER` | Filter only user messages. |
+
+### `AiMessageType`
+
+Types of messages returned from AI features.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aimessagetypetool"></a>`TOOL` | Tool selection message. |
 
 ### `AlertManagementAlertSort`
 

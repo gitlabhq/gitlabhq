@@ -224,7 +224,7 @@
     "vuex-vue3": "npm:vuex@4.0.0",
     "web-streams-polyfill": "^3.2.1",
     "web-vitals": "^0.2.4",
-    "webpack": "^4.46.0",
+    "webpack": "^4.47.0",
     "webpack-bundle-analyzer": "^4.9.1",
     "webpack-cli": "^4.10.0",
     "webpack-stats-plugin": "^0.3.1",

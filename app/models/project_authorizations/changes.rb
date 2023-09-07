@@ -89,7 +89,11 @@ module ProjectAuthorizations
       add_delay = add_delay_between_batches?(entire_size: attributes.size, batch_size: BATCH_SIZE)
       log_details(entire_size: attributes.size, batch_size: BATCH_SIZE) if add_delay
 
+      write_is_unique = Feature.enabled?(:write_project_authorizations_is_unique)
+
       attributes.each_slice(BATCH_SIZE) do |attributes_batch|
+        attributes_batch.each { |attrs| attrs[:is_unique] = true } if write_is_unique
+
         ProjectAuthorization.insert_all(attributes_batch)
         perform_delay if add_delay
       end

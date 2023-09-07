@@ -35,11 +35,7 @@ module Gitlab
           private
 
           def match_rule(context)
-            if Feature.enabled?(:ci_support_include_rules_changes, context.project)
-              @rule_list.find { |rule| rule.matches?(context.pipeline, context) }
-            else
-              @rule_list.find { |rule| rule.matches?(nil, context) }
-            end
+            @rule_list.find { |rule| rule.matches?(context.pipeline, context) }
           end
 
           Result = Struct.new(:when) do

@@ -11646,6 +11646,9 @@ msgstr ""
 msgid "Collapse"
 msgstr ""
 
+msgid "Collapse AI-generated summary"
+msgstr ""
+
 msgid "Collapse all threads"
 msgstr ""
 
@@ -19259,6 +19262,9 @@ msgid "Existing sign in methods may be removed"
 msgstr ""
 
 msgid "Expand"
+msgstr ""
+
+msgid "Expand AI-generated summary"
 msgstr ""
 
 msgid "Expand all"
@@ -27344,6 +27350,9 @@ msgid "LastPushEvent|You pushed to"
 msgstr ""
 
 msgid "LastPushEvent|at"
+msgstr ""
+
+msgid "Latest AI-generated summary"
 msgstr ""
 
 msgid "Latest changes"

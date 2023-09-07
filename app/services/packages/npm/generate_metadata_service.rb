@@ -4,6 +4,7 @@ module Packages
   module Npm
     class GenerateMetadataService
       include API::Helpers::RelatedResourcesHelpers
+      include Gitlab::Utils::StrongMemoize
 
       # Allowed fields are those defined in the abbreviated form
       # defined here: https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md#abbreviated-version-object
@@ -13,6 +14,8 @@ module Packages
       def initialize(name, packages)
         @name = name
         @packages = packages
+        @dependencies = {}
+        @dependency_ids = Hash.new { |h, key| h[key] = {} }
       end
 
       def execute(only_dist_tags: false)
@@ -21,7 +24,7 @@ module Packages
 
       private
 
-      attr_reader :name, :packages
+      attr_reader :name, :packages, :dependencies, :dependency_ids
 
       def metadata(only_dist_tags)
         result = { dist_tags: dist_tags }
@@ -38,9 +41,17 @@ module Packages
         package_versions = {}
 
         packages.each_batch do |relation|
-          batched_packages = relation.including_dependency_links
-                                     .preload_files
-                                     .preload_npm_metadatum
+          batched_packages = if optimization_enabled?
+                               load_dependencies(relation)
+                               load_dependency_ids(relation)
+
+                               relation.preload_files
+                                       .preload_npm_metadatum
+                             else
+                               relation.including_dependency_links
+                                       .preload_files
+                                       .preload_npm_metadatum
+                             end
 
           batched_packages.each do |package|
             package_file = package.installable_package_files.last
@@ -82,14 +93,23 @@ module Packages
       end
 
       def build_package_dependencies(package)
-        dependencies = Hash.new { |h, key| h[key] = {} }
+        if optimization_enabled?
+          inverted_dependency_types = Packages::DependencyLink.dependency_types.invert.stringify_keys
+          dependency_ids[package.id].each_with_object(Hash.new { |h, key| h[key] = {} }) do |(type, ids), memo|
+            ids.each do |id|
+              memo[inverted_dependency_types[type]].merge!(dependencies[id])
+            end
+          end
+        else
+          dependencies = Hash.new { |h, key| h[key] = {} }
 
-        package.dependency_links.each do |dependency_link|
-          dependency = dependency_link.dependency
-          dependencies[dependency_link.dependency_type][dependency.name] = dependency.version_pattern
+          package.dependency_links.each do |dependency_link|
+            dependency = dependency_link.dependency
+            dependencies[dependency_link.dependency_type][dependency.name] = dependency.version_pattern
+          end
+
+          dependencies
         end
-
-        dependencies
       end
 
       def sorted_versions
@@ -106,6 +126,36 @@ module Packages
         json = package.npm_metadatum&.package_json || {}
         json.slice(*PACKAGE_JSON_ALLOWED_FIELDS)
       end
+
+      def load_dependencies(packages)
+        Packages::Dependency
+          .id_in(
+            Packages::DependencyLink
+              .for_packages(packages)
+              .select_dependency_id
+          )
+          .id_not_in(dependencies.keys)
+          .each_batch do |relation|
+            relation.each do |dependency|
+              dependencies[dependency.id] = { dependency.name => dependency.version_pattern }
+            end
+          end
+      end
+
+      def load_dependency_ids(packages)
+        Packages::DependencyLink
+          .dependency_ids_grouped_by_type(packages)
+          .each_batch(column: :package_id) do |relation|
+            relation.each do |dependency_link|
+              dependency_ids[dependency_link.package_id] = dependency_link.dependency_ids_by_type
+            end
+          end
+      end
+
+      def optimization_enabled?
+        Feature.enabled?(:npm_optimize_metadata_generation)
+      end
+      strong_memoize_attr :optimization_enabled?
     end
   end
 end

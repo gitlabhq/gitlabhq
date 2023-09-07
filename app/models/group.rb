@@ -35,7 +35,8 @@ class Group < Namespace
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
 
-  has_many :users, through: :group_members
+  has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405") },
+    through: :group_members
   has_many :owners, -> {
     where(members: { access_level: Gitlab::Access::OWNER })
     .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
@@ -339,10 +340,6 @@ class Group < Namespace
         .where(authorized_groups[:id].eq(groups_table[:id]))
         .exists
     end
-  end
-
-  def users
-    super.loaded? ? super : super.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
   end
 
   # Overrides notification_settings has_many association

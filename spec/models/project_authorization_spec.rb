@@ -3,6 +3,33 @@
 require 'spec_helper'
 
 RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
+  describe 'create' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project_1) { create(:project) }
+
+    let(:project_auth) do
+      build(
+        :project_authorization,
+        user: user,
+        project: project_1
+      )
+    end
+
+    it 'sets is_unique' do
+      expect { project_auth.save! }.to change { project_auth.is_unique }.to(true)
+    end
+
+    context 'with feature disabled' do
+      before do
+        stub_feature_flags(write_project_authorizations_is_unique: false)
+      end
+
+      it 'does not set is_unique' do
+        expect { project_auth.save! }.not_to change { project_auth.is_unique }.from(nil)
+      end
+    end
+  end
+
   describe 'unique user, project authorizations' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project_1) { create(:project) }

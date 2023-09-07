@@ -503,7 +503,7 @@ for information about work to improve this behavior.
 
 ### `include` with `rules:changes`
 
-> Support for `rules:changes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342209) in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `ci_support_include_rules_changes`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342209) in GitLab 16.4.
 
 Use [`rules:changes`](index.md#ruleschanges) to conditionally include other configuration files
 based on changed files. For example:

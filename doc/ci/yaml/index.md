@@ -9,9 +9,11 @@ type: reference
 
 This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
 
-- For a quick introduction to GitLab CI/CD, follow the [quick start guide](../quick_start/index.md).
-- For a collection of examples, see [GitLab CI/CD Examples](../examples/index.md).
-- To view a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
+- For a collection of examples, see [GitLab CI/CD examples](../examples/index.md).
+- To view a large `.gitlab-ci.yml` file used in an enterprise, see the
+  [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
+- To create your own `.gitlab-ci.yml` file, try a tutorial that demonstrates a
+  [simple](../quick_start/index.md) or [complex](../quick_start/tutorial.md) pipeline.
 
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](../lint.md) tool.

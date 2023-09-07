@@ -61,6 +61,7 @@
       = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
         %div{ class: "#{'merge-request-overview' if moved_mr_sidebar_enabled?}" }
           %section
+            = render_if_exists "projects/merge_requests/diff_summary"
             .issuable-discussion.js-vue-notes-event
               - if @merge_request.description.present?
                 .detail-page-description.gl-pb-0

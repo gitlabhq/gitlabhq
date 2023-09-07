@@ -13,6 +13,9 @@ class ProjectAuthorization < ApplicationRecord
 
   scope :non_guests, -> { where('access_level > ?', ::Gitlab::Access::GUEST) }
 
+  # TODO: To be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/418205
+  before_create :assign_is_unique
+
   def self.select_from_union(relations)
     from_union(relations)
       .select(['project_id', 'MAX(access_level) AS access_level'])
@@ -26,6 +29,12 @@ class ProjectAuthorization < ApplicationRecord
   # https://gitlab.com/gitlab-org/gitlab/-/issues/331264
   def self.insert_all(attributes)
     super(attributes, unique_by: connection.schema_cache.primary_keys(table_name))
+  end
+
+  private
+
+  def assign_is_unique
+    self.is_unique = true if Feature.enabled?(:write_project_authorizations_is_unique)
   end
 end
 

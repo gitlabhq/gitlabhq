@@ -116,7 +116,7 @@ Set up the Jenkins project you intend to run your build on.
 
 Configure the GitLab integration with Jenkins in one of the following ways.
 
-### Configure a Jenkins integration
+### With a Jenkins server URL
 
 You should use this approach for Jenkins integrations if you can provide GitLab
 with your Jenkins server URL and authentication information.
@@ -139,9 +139,9 @@ with your Jenkins server URL and authentication information.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
-### Configure a webhook
+### With a webhook
 
-If you cannot [provide GitLab with your Jenkins server URL and authentication information](#configure-a-jenkins-integration), you can configure a webhook to integrate GitLab and Jenkins.
+If you cannot [provide GitLab with your Jenkins server URL and authentication information](#with-a-jenkins-server-url), you can configure a webhook to integrate GitLab and Jenkins.
 
 1. In the configuration of your Jenkins job, in the GitLab configuration section, select **Advanced**.
 1. Under **Secret Token**, select **Generate**.

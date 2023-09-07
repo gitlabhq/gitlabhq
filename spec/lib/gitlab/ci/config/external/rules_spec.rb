@@ -114,14 +114,6 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
           let(:modified_paths) { ['README.md'] }
 
           it { is_expected.to eq(false) }
-
-          context 'when FF `ci_support_include_rules_changes` is disabled' do
-            before do
-              stub_feature_flags(ci_support_include_rules_changes: false)
-            end
-
-            it { is_expected.to eq(true) }
-          end
         end
       end
 
@@ -160,14 +152,6 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
           let(:rule_hashes) { [{ changes: { paths: ['file.txt'], compare_to: 'branch1' } }] }
 
           it { is_expected.to eq(false) }
-
-          context 'when FF `ci_support_include_rules_changes` is disabled' do
-            before do
-              stub_feature_flags(ci_support_include_rules_changes: false)
-            end
-
-            it { is_expected.to eq(true) }
-          end
         end
 
         context 'when compare_to: is invalid' do
@@ -175,16 +159,6 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
 
           it 'raises an error' do
             expect { result }.to raise_error(described_class::InvalidIncludeRulesError, /compare_to is not a valid ref/)
-          end
-
-          context 'when FF `ci_support_include_rules_changes` is disabled' do
-            before do
-              stub_feature_flags(ci_support_include_rules_changes: false)
-            end
-
-            it 'does not raise an error' do
-              expect { result }.not_to raise_error
-            end
           end
         end
       end

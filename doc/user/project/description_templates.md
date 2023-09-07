@@ -110,7 +110,7 @@ You can set a description template at the **instance level** for issues
 and merge requests by using an [instance template repository](../admin_area/settings/instance_template_repository.md).
 You can also use the instance template repository for file templates.
 
-You might also be interested [project templates](../admin_area/custom_project_templates.md)
+You might also be interested in [project templates](../admin_area/custom_project_templates.md)
 that you can use when creating a new project in the instance.
 
 ### Set group-level description templates **(PREMIUM ALL)**

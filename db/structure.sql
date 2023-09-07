@@ -31357,6 +31357,14 @@ CREATE UNIQUE INDEX index_ci_stages_on_pipeline_id_and_name ON ci_stages USING b
 
 CREATE INDEX index_ci_stages_on_pipeline_id_and_position ON ci_stages USING btree (pipeline_id, "position");
 
+CREATE INDEX index_ci_stages_on_pipeline_id_convert_to_bigint ON ci_stages USING btree (pipeline_id_convert_to_bigint);
+
+CREATE INDEX index_ci_stages_on_pipeline_id_convert_to_bigint_and_id ON ci_stages USING btree (pipeline_id_convert_to_bigint, id) WHERE (status = ANY (ARRAY[0, 1, 2, 8, 9, 10]));
+
+CREATE UNIQUE INDEX index_ci_stages_on_pipeline_id_convert_to_bigint_and_name ON ci_stages USING btree (pipeline_id_convert_to_bigint, name);
+
+CREATE INDEX index_ci_stages_on_pipeline_id_convert_to_bigint_and_position ON ci_stages USING btree (pipeline_id_convert_to_bigint, "position");
+
 CREATE INDEX index_ci_stages_on_project_id ON ci_stages USING btree (project_id);
 
 CREATE INDEX index_ci_subscriptions_projects_author_id ON ci_subscriptions_projects USING btree (author_id);

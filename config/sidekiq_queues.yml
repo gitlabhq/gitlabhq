@@ -79,6 +79,12 @@
   - 1
 - - batched_git_ref_updates_project_cleanup
   - 1
+- - bitbucket_import_advance_stage
+  - 1
+- - bitbucket_import_stage_finish_import
+  - 1
+- - bitbucket_import_stage_import_repository
+  - 1
 - - bitbucket_server_import_advance_stage
   - 1
 - - bitbucket_server_import_import_lfs_object
