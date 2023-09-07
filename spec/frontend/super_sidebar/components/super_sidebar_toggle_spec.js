@@ -53,7 +53,7 @@ describe('SuperSidebarToggle component', () => {
 
     it('has aria-label attribute', () => {
       createWrapper();
-      expect(findButton().attributes('aria-label')).toBe(__('Navigation sidebar'));
+      expect(findButton().attributes('aria-label')).toBe(__('Primary navigation sidebar'));
     });
 
     it('is disabled when isPeek is true', () => {

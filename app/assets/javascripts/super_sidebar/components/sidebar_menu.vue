@@ -2,7 +2,6 @@
 import * as Sentry from '@sentry/browser';
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
 import axios from '~/lib/utils/axios_utils';
-import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { PANELS_WITH_PINS } from '../constants';
 import NavItem from './nav_item.vue';
@@ -49,10 +48,6 @@ export default {
       required: false,
       default: '',
     },
-  },
-
-  i18n: {
-    mainNavigation: s__('Navigation|Main navigation'),
   },
 
   data() {
@@ -164,7 +159,7 @@ export default {
 </script>
 
 <template>
-  <nav :aria-label="$options.i18n.mainNavigation" class="gl-p-2 gl-relative">
+  <div class="gl-p-2 gl-relative">
     <ul v-if="hasStaticItems" class="gl-p-0 gl-m-0" data-testid="static-items-section">
       <nav-item v-for="item in staticItems" :key="item.id" :item="item" is-static />
     </ul>
@@ -202,5 +197,5 @@ export default {
         />
       </template>
     </ul>
-  </nav>
+  </div>
 </template>

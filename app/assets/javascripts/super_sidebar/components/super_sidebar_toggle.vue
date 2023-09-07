@@ -28,7 +28,7 @@ export default {
   i18n: {
     collapseSidebar: __('Hide sidebar'),
     expandSidebar: __('Show sidebar'),
-    navigationSidebar: __('Navigation sidebar'),
+    primaryNavigationSidebar: __('Primary navigation sidebar'),
   },
   data() {
     return sidebarState;
@@ -77,7 +77,7 @@ export default {
     v-gl-tooltip.hover.noninteractive.ds500="tooltip"
     aria-controls="super-sidebar"
     :aria-expanded="ariaExpanded"
-    :aria-label="$options.i18n.navigationSidebar"
+    :aria-label="$options.i18n.primaryNavigationSidebar"
     icon="sidebar"
     category="tertiary"
     :disabled="isPeek"

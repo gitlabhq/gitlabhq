@@ -2,7 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { sidebarState } from '../constants';
 import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
@@ -29,6 +29,7 @@ export default {
   mixins: [Tracking.mixin()],
   i18n: {
     skipToMainContent: __('Skip to main content'),
+    primary: s__('Navigation|Primary'),
   },
   inject: ['showTrialStatusWidget'],
   props: {
@@ -111,8 +112,9 @@ export default {
     >
       {{ $options.i18n.skipToMainContent }}
     </gl-button>
-    <aside
+    <nav
       id="super-sidebar"
+      :aria-label="$options.i18n.primary"
       class="super-sidebar"
       :class="peekClasses"
       data-testid="super-sidebar"
@@ -150,7 +152,7 @@ export default {
           <help-center :sidebar-data="sidebarData" />
         </div>
       </div>
-    </aside>
+    </nav>
     <a
       v-for="shortcutLink in sidebarData.shortcut_links"
       :key="shortcutLink.href"

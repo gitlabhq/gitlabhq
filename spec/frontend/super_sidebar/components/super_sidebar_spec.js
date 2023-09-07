@@ -274,4 +274,11 @@ describe('SuperSidebar component', () => {
       expect(findTrialStatusPopover().exists()).toBe(true);
     });
   });
+
+  describe('ARIA attributes', () => {
+    it('adds aria-label attribute to nav element', () => {
+      createWrapper();
+      expect(wrapper.find('nav').attributes('aria-label')).toBe('Primary');
+    });
+  });
 });

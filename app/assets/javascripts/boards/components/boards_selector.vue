@@ -70,6 +70,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    isCurrentBoardLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -91,6 +96,9 @@ export default {
     ...mapState(['board', 'isBoardLoading']),
     boardToUse() {
       return this.isApolloBoard ? this.boardApollo : this.board;
+    },
+    isBoardToUseLoading() {
+      return this.isApolloBoard ? this.isCurrentBoardLoading : this.isBoardLoading;
     },
     parentType() {
       return this.boardType;
@@ -301,7 +309,7 @@ export default {
         data-qa-selector="boards_dropdown"
         toggle-class="dropdown-menu-toggle"
         menu-class="flex-column dropdown-extended-height"
-        :loading="isBoardLoading"
+        :loading="isBoardToUseLoading"
         :text="boardToUse.name"
         @show="loadBoards"
       >

@@ -13,13 +13,79 @@ RSpec.describe PreferredLanguageSwitcher, type: :controller do
     end
   end
 
+  subject { cookies[:preferred_language] }
+
   context 'when first visit' do
+    let(:glm_source) { 'about.gitlab.com' }
+    let(:accept_language_header) { nil }
+
     before do
-      get :new
+      request.env['HTTP_ACCEPT_LANGUAGE'] = accept_language_header
+
+      get :new, params: { glm_source: glm_source }
     end
 
     it 'sets preferred_language to default' do
-      expect(cookies[:preferred_language]).to eq Gitlab::CurrentSettings.default_preferred_language
+      expect(subject).to eq Gitlab::CurrentSettings.default_preferred_language
+    end
+
+    context 'when language param is valid' do
+      let(:glm_source) { 'about.gitlab.com/fr-fr/' }
+
+      it 'sets preferred_language accordingly' do
+        expect(subject).to eq 'fr'
+      end
+
+      context 'when language param is invalid' do
+        let(:glm_source) { 'about.gitlab.com/ko-ko/' }
+
+        it 'sets preferred_language to default' do
+          expect(subject).to eq Gitlab::CurrentSettings.default_preferred_language
+        end
+      end
+    end
+
+    context 'when browser preferred language is not english' do
+      context 'with selectable language' do
+        let(:accept_language_header) { 'zh-CN,zh;q=0.8,zh-TW;q=0.7' }
+
+        it 'sets preferred_language accordingly' do
+          expect(subject).to eq 'zh_CN'
+        end
+      end
+
+      context 'with unselectable language' do
+        let(:accept_language_header) { 'nl-NL;q=0.8' }
+
+        it 'sets preferred_language to default' do
+          expect(subject).to eq Gitlab::CurrentSettings.default_preferred_language
+        end
+      end
+
+      context 'with empty string in language header' do
+        let(:accept_language_header) { '' }
+
+        it 'sets preferred_language to default' do
+          expect(subject).to eq Gitlab::CurrentSettings.default_preferred_language
+        end
+      end
+
+      context 'with language header without dashes' do
+        let(:accept_language_header) { 'fr;q=8' }
+
+        it 'sets preferred_language accordingly' do
+          expect(subject).to eq 'fr'
+        end
+      end
+    end
+
+    context 'when language params and language header are both valid' do
+      let(:accept_language_header) { 'zh-CN,zh;q=0.8,zh-TW;q=0.7' }
+      let(:glm_source) { 'about.gitlab.com/fr-fr/' }
+
+      it 'sets preferred_language according to language params' do
+        expect(subject).to eq 'fr'
+      end
     end
   end
 
@@ -36,7 +102,7 @@ RSpec.describe PreferredLanguageSwitcher, type: :controller do
       let(:user_preferred_language) { 'zh_CN' }
 
       it 'keeps preferred language unchanged' do
-        expect(cookies[:preferred_language]).to eq user_preferred_language
+        expect(subject).to eq user_preferred_language
       end
     end
 
@@ -44,7 +110,7 @@ RSpec.describe PreferredLanguageSwitcher, type: :controller do
       let(:user_preferred_language) { 'xxx' }
 
       it 'sets preferred_language to default' do
-        expect(cookies[:preferred_language]).to eq Gitlab::CurrentSettings.default_preferred_language
+        expect(subject).to eq Gitlab::CurrentSettings.default_preferred_language
       end
     end
   end

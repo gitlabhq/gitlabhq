@@ -201,11 +201,4 @@ describe('Sidebar Menu', () => {
       expect(findMainMenuSeparator().exists()).toBe(false);
     });
   });
-
-  describe('ARIA attributes', () => {
-    it('adds aria-label attribute to nav element', () => {
-      createWrapper();
-      expect(wrapper.find('nav').attributes('aria-label')).toBe('Main navigation');
-    });
-  });
 });

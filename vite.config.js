@@ -73,7 +73,13 @@ export default defineConfig({
   },
   plugins: [
     fixedRubyPlugin,
-    vue(),
+    vue({
+      template: {
+        compilerOptions: {
+          whitespace: 'preserve',
+        },
+      },
+    }),
     graphql(),
     svgLoader({
       defaultImport: 'raw',

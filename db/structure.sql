@@ -33667,8 +33667,6 @@ CREATE UNIQUE INDEX index_subscriptions_on_subscribable_and_user_id_and_project_
 
 CREATE INDEX index_successful_authentication_events_for_metrics ON authentication_events USING btree (user_id, provider, created_at) WHERE (result = 1);
 
-CREATE INDEX index_successful_deployments_on_cluster_id_and_environment_id ON deployments USING btree (cluster_id, environment_id) WHERE (status = 2);
-
 CREATE UNIQUE INDEX index_suggestions_on_note_id_and_relative_order ON suggestions USING btree (note_id, relative_order);
 
 CREATE UNIQUE INDEX index_system_access_microsoft_applications_on_namespace_id ON system_access_microsoft_applications USING btree (namespace_id);

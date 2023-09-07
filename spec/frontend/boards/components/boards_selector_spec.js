@@ -87,6 +87,7 @@ describe('BoardsSelector', () => {
     isGroupBoard = false,
     isProjectBoard = false,
     provide = {},
+    props = {},
   } = {}) => {
     fakeApollo = createMockApollo([
       [projectBoardsQuery, projectBoardsQueryHandler],
@@ -100,6 +101,7 @@ describe('BoardsSelector', () => {
       apolloProvider: fakeApollo,
       propsData: {
         throttleDuration,
+        ...props,
       },
       attachTo: document.body,
       provide: {
@@ -305,6 +307,16 @@ describe('BoardsSelector', () => {
         });
         expect(findDropdown().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('Apollo boards', () => {
+    it('displays loading state of dropdown while current board is being fetched', () => {
+      createComponent({
+        props: { isCurrentBoardLoading: true },
+        provide: { isApolloBoard: true },
+      });
+      expect(findDropdown().props('loading')).toBe(true);
     });
   });
 });
