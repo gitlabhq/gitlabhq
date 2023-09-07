@@ -44,7 +44,7 @@ module Sidebars
 
         override :active_routes
         def active_routes
-          { controller: 'projects/issues' }
+          { path: %w[projects/issues#index projects/issues#show projects/issues#new] }
         end
 
         override :has_pill?

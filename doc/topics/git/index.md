@@ -52,7 +52,7 @@ A typical Git user encounters these concepts soon after starting to use Git:
   [Git history](../../user/project/repository/git_history.md).
 - View a line-by-line editing history of a file with
   [`git blame`](../../user/project/repository/git_blame.md).
-- [Sign commits](../../user/project/repository/gpg_signed_commits/index.md)
+- [Sign commits](../../user/project/repository/signed_commits/gpg.md)
   for increased accountability and trust.
 
 ## Learn more complex commands
@@ -97,7 +97,7 @@ Git and GitLab, combined together, provide advanced features for repository mana
 - When working with extremely large repositories, you can use a [partial clone](partial_clone.md)
   of a repository instead of a complete clone.
 - GitLab APIs for [`.gitignore` files](../../api/templates/gitignores.md),
-  [commits](../../api/commits.md), [tags](../../api/tags.md), 
+  [commits](../../api/commits.md), [tags](../../api/tags.md),
   and [repositories](../../api/repositories.md).
 
 ### Git Large File Storage (LFS)

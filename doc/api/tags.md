@@ -181,7 +181,7 @@ Parameters:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106578) in GitLab 15.7.
 
-Get the [X.509 signature from a tag](../user/project/repository/x509_signed_commits/index.md),
+Get the [X.509 signature from a tag](../user/project/repository/signed_commits/x509.md),
 if it is signed. Unsigned tags return a `404 Not Found` response.
 
 ```plaintext

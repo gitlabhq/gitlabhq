@@ -80,7 +80,7 @@ module QA
         end
       rescue Repeater::WaitExceededError
         # If there is a failure this will output the logs from the smocker container (at the debug log level)
-        Service::DockerRun::Smocker.logs
+        logs
 
         raise
       end
@@ -91,22 +91,7 @@ module QA
       #
       # @return [String]
       def mocks
-        <<~YAML
-          - request:
-              path: /logs
-              method: POST
-              body:
-                event_type:
-                  matcher: ShouldMatch
-                  value: .*
-              headers:
-                Content-Type: application/x-www-form-urlencoded
-                X-Gitlab-Audit-Event-Type:
-                  matcher: ShouldMatch
-                  value: .*
-            response:
-              status: 200
-        YAML
+        @mocks ||= File.read(EE::Runtime::Path.fixture('audit_event_streaming', 'mocks.yml'))
       end
     end
   end

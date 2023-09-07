@@ -72,48 +72,10 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
         expect(described_class.importer(name)).to eq(klass)
       end
     end
-
-    context 'when flag is disabled' do
-      before do
-        stub_feature_flags(bitbucket_server_parallel_importer: false)
-      end
-
-      it 'returns Gitlab::BitbucketServerImport::Importer when given bitbucket_server' do
-        expect(described_class.importer('bitbucket_server')).to eq(Gitlab::BitbucketServerImport::Importer)
-      end
-    end
   end
 
   describe '.import_table' do
     subject { described_class.import_table }
-
-    describe 'Bitbucket server' do
-      it 'returns the ParallelImporter' do
-        is_expected.to include(
-          described_class::ImportSource.new(
-            'bitbucket_server',
-            'Bitbucket Server',
-            Gitlab::BitbucketServerImport::ParallelImporter
-          )
-        )
-      end
-
-      context 'when flag is disabled' do
-        before do
-          stub_feature_flags(bitbucket_server_parallel_importer: false)
-        end
-
-        it 'returns the legacy Importer' do
-          is_expected.to include(
-            described_class::ImportSource.new(
-              'bitbucket_server',
-              'Bitbucket Server',
-              Gitlab::BitbucketServerImport::Importer
-            )
-          )
-        end
-      end
-    end
 
     describe 'Bitbucket cloud' do
       it 'returns the ParallelImporter' do

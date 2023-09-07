@@ -830,7 +830,7 @@ Example response:
 
 ## Get GPG signature of a commit
 
-Get the [GPG signature from a commit](../user/project/repository/gpg_signed_commits/index.md),
+Get the [GPG signature from a commit](../user/project/repository/signed_commits/gpg.md),
 if it is signed. For unsigned commits, it results in a 404 response.
 
 ```plaintext

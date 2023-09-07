@@ -108,12 +108,6 @@ module Gitlab
 
       private
 
-      def known_event_entry
-        <<~YML
-        - name: #{event}
-        YML
-      end
-
       def event_identifiers
         return unless include_default_event_properties?
 

@@ -988,6 +988,7 @@ module API
               type: String,
               desc: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)'
             },
+            chat_notification_flags,
             chat_notification_events
           ].flatten,
           'unify-circuit' => [

@@ -38,10 +38,6 @@ module QA
           @api = nil
         end
 
-        def self.logs
-          @container&.logs
-        end
-
         attr_reader :public_port, :admin_port
 
         def host_name

@@ -375,6 +375,25 @@ To avoid any disruptions, you should replace `filepath` with `direct_asset_path`
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Geo: Legacy replication details routes for designs and projects deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424002).
+</div>
+
+As part of the migration of legacy data types to the [Geo self-service framework](https://docs.gitlab.com/ee/development/geo/framework.html), the following replication details routes are deprecated:
+
+- Designs `/admin/geo/replication/designs` replaced by `/admin/geo/sites/<Geo Node/Site ID>/replication/design_management_repositories`
+- Projects `/admin/geo/replication/projects` replaced by `/admin/geo/sites/<Geo Node/Site ID>/replication/projects`
+
+From GitLab 16.4 to 17.0, lookups for the legacy routes will automatically be redirected to the new routes. We will remove the redirections in 17.0. Please update any bookmarks or scripts that may use the legacy routes.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### GitLab Helm chart values `gitlab.kas.privateApi.*` are deprecated
 
 <div class="deprecation-notes">

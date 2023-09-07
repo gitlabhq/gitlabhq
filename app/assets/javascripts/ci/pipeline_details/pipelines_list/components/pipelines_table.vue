@@ -113,7 +113,7 @@ export default {
           key: 'actions',
           thClass: DEFAULT_TH_CLASSES,
           tdClass: this.tdClasses,
-          columnClass: 'gl-w-15p',
+          columnClass: 'gl-w-20p',
           thAttr: { 'data-testid': 'actions-th' },
         },
       ];

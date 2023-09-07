@@ -92,6 +92,6 @@ credentials inventory GPG Keys tab, as well as the following properties:
 
 - Who the GPG key belongs to.
 - The ID of the GPG key.
-- Whether the GPG key is [verified or unverified](../user/project/repository/gpg_signed_commits/index.md).
+- Whether the GPG key is [verified or unverified](../user/project/repository/signed_commits/gpg.md).
 
 ![Credentials inventory page - GPG keys](img/credentials_inventory_gpg_keys_v14_9.png)

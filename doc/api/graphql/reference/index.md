@@ -12869,6 +12869,7 @@ Represents a HTTP header key/value that belongs to an audit streaming destinatio
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="auditeventstreamingheaderactive"></a>`active` | [`Boolean!`](#boolean) | Header is active or not. |
 | <a id="auditeventstreamingheaderid"></a>`id` | [`ID!`](#id) | ID of the header. |
 | <a id="auditeventstreamingheaderkey"></a>`key` | [`String!`](#string) | Key of the header. |
 | <a id="auditeventstreamingheadervalue"></a>`value` | [`String!`](#string) | Value of the header. |
@@ -12881,6 +12882,7 @@ Represents a HTTP header key/value that belongs to an instance level audit strea
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="auditeventsstreaminginstanceheaderactive"></a>`active` | [`Boolean!`](#boolean) | Header is active or not. |
 | <a id="auditeventsstreaminginstanceheaderid"></a>`id` | [`ID!`](#id) | ID of the header. |
 | <a id="auditeventsstreaminginstanceheaderkey"></a>`key` | [`String!`](#string) | Key of the header. |
 | <a id="auditeventsstreaminginstanceheadervalue"></a>`value` | [`String!`](#string) | Value of the header. |
@@ -15032,6 +15034,7 @@ A software dependency used by a project.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dependencyid"></a>`id` | [`GlobalID!`](#globalid) | ID of the dependency. |
+| <a id="dependencylicenses"></a>`licenses` | [`[License!]`](#license) | Licenses associated to the dependency. |
 | <a id="dependencylocation"></a>`location` | [`Location`](#location) | Information about where the dependency is located. |
 | <a id="dependencyname"></a>`name` | [`String!`](#string) | Name of the dependency. |
 | <a id="dependencypackager"></a>`packager` | [`PackageManager`](#packagemanager) | Description of the tool used to manage the dependency. |
@@ -18627,6 +18630,15 @@ Represents the Geo sync and verification state of an LFS object.
 | <a id="lfsobjectregistryverificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification started of LfsObjectRegistry. |
 | <a id="lfsobjectregistryverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the LfsObjectRegistry. |
 | <a id="lfsobjectregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the LfsObjectRegistry. |
+
+### `License`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="licensename"></a>`name` | [`String!`](#string) | Name of the license. |
+| <a id="licenseurl"></a>`url` | [`String!`](#string) | License URL in relation to SPDX. |
 
 ### `LicenseHistoryEntry`
 
@@ -29468,6 +29480,7 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="baseheaderinterfaceactive"></a>`active` | [`Boolean!`](#boolean) | Header is active or not. |
 | <a id="baseheaderinterfaceid"></a>`id` | [`ID!`](#id) | ID of the header. |
 | <a id="baseheaderinterfacekey"></a>`key` | [`String!`](#string) | Key of the header. |
 | <a id="baseheaderinterfacevalue"></a>`value` | [`String!`](#string) | Value of the header. |

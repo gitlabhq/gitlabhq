@@ -12,7 +12,7 @@ module Gitlab
     IMPORT_TABLE = [
       ImportSource.new('github',           'GitHub',            Gitlab::GithubImport::ParallelImporter),
       ImportSource.new('bitbucket',        'Bitbucket Cloud',   Gitlab::BitbucketImport::Importer),
-      ImportSource.new('bitbucket_server', 'Bitbucket Server',  Gitlab::BitbucketServerImport::Importer),
+      ImportSource.new('bitbucket_server', 'Bitbucket Server',  Gitlab::BitbucketServerImport::ParallelImporter),
       ImportSource.new('fogbugz',          'FogBugz',           Gitlab::FogbugzImport::Importer),
       ImportSource.new('git',              'Repository by URL', nil),
       ImportSource.new('gitlab_project',   'GitLab export',     Gitlab::ImportExport::Importer),
@@ -45,14 +45,12 @@ module Gitlab
 
       def import_table
         bitbucket_parallel_enabled = Feature.enabled?(:bitbucket_parallel_importer)
-        bitbucket_server_parallel_enabled = Feature.enabled?(:bitbucket_server_parallel_importer)
 
-        return IMPORT_TABLE unless bitbucket_parallel_enabled || bitbucket_server_parallel_enabled
+        return IMPORT_TABLE unless bitbucket_parallel_enabled
 
         import_table = IMPORT_TABLE.deep_dup
 
         import_table[1].importer = Gitlab::BitbucketImport::ParallelImporter if bitbucket_parallel_enabled
-        import_table[2].importer = Gitlab::BitbucketServerImport::ParallelImporter if bitbucket_server_parallel_enabled
 
         import_table
       end

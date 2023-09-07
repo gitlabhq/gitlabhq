@@ -15,9 +15,9 @@ commits from unverified users.
 
 Sign commits with your:
 
-- [SSH key](../ssh_signed_commits/index.md).
-- [GPG key](../gpg_signed_commits/index.md).
-- [Personal x.509 certificate](../x509_signed_commits/index.md).
+- [SSH key](ssh.md).
+- [GPG key](gpg.md).
+- [Personal x.509 certificate](x509.md).
 
 ## Verify commits
 
@@ -35,14 +35,14 @@ they are signed:
    or **Unverified** badge, depending on the verification status of the signature.
    Unsigned commits do not display a badge:
 
-   ![Signed and unsigned commits](../gpg_signed_commits/img/project_signed_and_unsigned_commits.png)
+   ![Signed and unsigned commits](img/project_signed_and_unsigned_commits.png)
 
 1. To display the signature details for a commit, select **Verified** to see
    the fingerprint or key ID:
 
-   ![Signed commit with verified signature](../gpg_signed_commits/img/project_signed_commit_verified_signature.png)
+   ![Signed commit with verified signature](img/project_signed_commit_verified_signature.png)
 
-   ![Signed commit with unverified signature](../gpg_signed_commits/img/project_signed_commit_unverified_signature.png)
+   ![Signed commit with unverified signature](img/project_signed_commit_unverified_signature.png)
 
 You can also [use the Commits API](../../../../api/commits.md#get-gpg-signature-of-a-commit)
 to check a commit's signature.
@@ -60,5 +60,5 @@ can fail for multiple reasons:
 | `SAME_USER_DIFFERENT_EMAIL` | The GPG key used to sign the commit does not contain the committer email, but does contain a different valid email for the committer. | Amend the commit to use an email address that matches the GPG key, or update the GPG key [to include the email address](https://security.stackexchange.com/a/261468). |
 | `OTHER_USER`                | The signature and GPG key are valid, but the key belongs to a different user than the committer. | Amend the commit to use the correct email address, or amend the commit to use a GPG key associated with your user. |
 | `UNVERIFIED_KEY`            | The key associated with the GPG signature has no verified email address associated with the committer. | Add and verify the email to your GitLab profile, [update the GPG key to include the email address](https://security.stackexchange.com/a/261468), or amend the commit to use a different committer email address. |
-| `UNKNOWN_KEY`               | The GPG key associated with the GPG signature for this commit is unknown to GitLab. | [Add the GPG key](../gpg_signed_commits/index.md#add-a-gpg-key-to-your-account) to your GitLab profile. |
+| `UNKNOWN_KEY`               | The GPG key associated with the GPG signature for this commit is unknown to GitLab. | [Add the GPG key](gpg.md#add-a-gpg-key-to-your-account) to your GitLab profile. |
 | `MULTIPLE_SIGNATURES`       | Multiple GPG or X.509 signatures have been found for the commit. | Amend the commit to use only one GPG or X.509 signature. |

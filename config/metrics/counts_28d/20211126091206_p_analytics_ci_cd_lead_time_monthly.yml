@@ -13,6 +13,9 @@ data_source: redis_hll
 data_category: operational
 instrumentation_class: RedisHLLMetric
 performance_indicator_type: []
+events:
+  - name: p_analytics_ci_cd_lead_time
+    unique: user.id
 distribution:
   - ce
   - ee

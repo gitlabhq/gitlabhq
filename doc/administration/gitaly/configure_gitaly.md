@@ -1552,7 +1552,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
 :::TabTitle Linux package (Omnibus)
 
-1. [Create a GPG key](../../user/project/repository/gpg_signed_commits/index.md#create-a-gpg-key)
+1. [Create a GPG key](../../user/project/repository/signed_commits/gpg.md#create-a-gpg-key)
    and export it, or [create an SSH key](../../user/ssh.md#generate-an-ssh-key-pair). For optimal performance, use an EdDSA key.
 
    Export GPG key:
@@ -1584,7 +1584,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
 :::TabTitle Self-compiled (source)
 
-1. [Create a GPG key](../../user/project/repository/gpg_signed_commits/index.md#create-a-gpg-key)
+1. [Create a GPG key](../../user/project/repository/signed_commits/gpg.md#create-a-gpg-key)
    and export it, or [create an SSH key](../../user/ssh.md#generate-an-ssh-key-pair). For optimal performance, use an EdDSA key.
 
    Export GPG key:

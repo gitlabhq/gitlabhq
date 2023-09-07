@@ -4,7 +4,7 @@ import { uniqueId } from 'lodash';
 import { getMaxNodes, removeOrphanNodes } from '~/ci/pipeline_details/utils/parsing_utils';
 import { PARSE_FAILURE } from '../../constants';
 import { LINK_SELECTOR, NODE_SELECTOR, ADD_NOTE, REMOVE_NOTE, REPLACE_NOTES } from '../constants';
-import { calculateClip, createLinkPath, createSankey, labelPosition } from '../drawing_utils';
+import { calculateClip, createLinkPath, createSankey, labelPosition } from '../utils/drawing_utils';
 import {
   currentIsLive,
   getLiveLinksAsDict,
@@ -12,7 +12,7 @@ import {
   restoreLinks,
   toggleLinkHighlight,
   togglePathHighlights,
-} from '../interactions';
+} from '../utils/interactions';
 
 export default {
   viewOptions: {

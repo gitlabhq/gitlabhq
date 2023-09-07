@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # X.509 signatures Rake task **(FREE SELF)**
 
-When [signing commits with X.509](../user/project/repository/x509_signed_commits/index.md),
+When [signing commits with X.509](../user/project/repository/signed_commits/x509.md),
 the trust anchor might change and the signatures stored within the database must be updated.
 
 ## Update all X.509 signatures

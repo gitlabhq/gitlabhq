@@ -1,6 +1,6 @@
 import { memoize } from 'lodash';
 import { EXPLICIT_NEEDS_PROPERTY, NEEDS_PROPERTY } from '../constants';
-import { createSankey } from '../dag/drawing_utils';
+import { createSankey } from '../dag/utils/drawing_utils';
 import { createNodeDict } from './index';
 
 /*

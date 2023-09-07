@@ -80,14 +80,14 @@ export const typeConfig = {
     keyNamespace: 'gpgKeyPrimaryKeyid',
     helpLink: {
       label: __('Learn about signing commits'),
-      path: 'user/project/repository/gpg_signed_commits/index.md',
+      path: 'user/project/repository/signed_commits/index.md',
     },
   },
   [signatureTypes.X509]: {
     keyLabel: '',
     helpLink: {
       label: __('Learn more about X.509 signed commits'),
-      path: '/user/project/repository/x509_signed_commits/index.md',
+      path: '/user/project/repository/signed_commits/x509.md',
     },
     subjectTitle: __('Certificate Subject'),
     issuerTitle: __('Certificate Issuer'),
@@ -98,7 +98,7 @@ export const typeConfig = {
     keyNamespace: 'keyFingerprintSha256',
     helpLink: {
       label: __('Learn about signing commits with SSH keys.'),
-      path: '/user/project/repository/ssh_signed_commits/index.md',
+      path: '/user/project/repository/signed_commits/ssh.md',
     },
   },
 };

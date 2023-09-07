@@ -13,6 +13,9 @@ data_source: redis_hll
 data_category: optional
 instrumentation_class: RedisHLLMetric
 performance_indicator_type: []
+events:
+  - name: p_analytics_ci_cd_deployment_frequency
+    unique: user.id
 distribution:
   - ce
   - ee

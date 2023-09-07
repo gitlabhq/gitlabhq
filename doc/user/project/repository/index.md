@@ -55,7 +55,7 @@ to a branch in the repository. When you use the command line, you can commit mul
   [Revert a commit](../merge_requests/revert_changes.md#revert-a-commit)
   from the UI to a selected branch.
 - **Sign a commit:**
-  Use GPG to [sign your commits](gpg_signed_commits/index.md).
+  Add extra security by [signing your commits](signed_commits/index.md).
 
 ## Clone a repository
 

@@ -2,6 +2,8 @@
 
 module Integrations
   class Telegram < BaseChatNotification
+    undef :notify_only_broken_pipelines
+
     TELEGRAM_HOSTNAME = "https://api.telegram.org/bot%{token}/sendMessage"
 
     field :token,
@@ -20,6 +22,11 @@ module Integrations
       help: "Unique identifier for the target chat or the username of the target channel (format: @channelusername)",
       placeholder: '@channelusername',
       required: true
+
+    field :notify_only_broken_pipelines,
+      type: :checkbox,
+      section: SECTION_TYPE_CONFIGURATION,
+      help: 'If selected, successful pipelines do not trigger a notification event.'
 
     with_options if: :activated? do
       validates :token, :room, presence: true
