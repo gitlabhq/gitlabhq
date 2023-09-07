@@ -43,6 +43,10 @@
 .not-canonical-project: &not-canonical-project
   if: '$CI_PROJECT_PATH != "gitlab-org/gitlab" && $CI_PROJECT_PATH != "gitlab-cn/gitlab"'
 
+# If Schedule pipeline
+.if-schedule-pipeline: &if-schedule-pipeline
+  if: '$CI_PIPELINE_SOURCE == "schedule"'
+
 # Selective test execution against omnibus instance have following execution scenarios:
 #   * only e2e spec files changed - runs only changed specs
 #   * qa framework changes - runs full test suite
@@ -148,6 +152,17 @@
     - if: $QA_SUPER_SIDEBAR_ENABLED
       when: never
     - !reference [.rules:test:qa, rules]
+
+.rules:test:never-schedule-pipeline:
+  rules:
+    - <<: *if-schedule-pipeline
+      when: never
+
+.rules:test:gdk-load-balancer-changes:
+  rules:
+    - changes:
+        - ".gitlab/ci/test-on-gdk/**"
+        - "lib/gitlab/database/load_balancing/**/*"
 
 .rules:test:qa-default-branch:
   rules:

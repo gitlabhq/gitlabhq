@@ -1,7 +1,7 @@
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Api from '~/api';
-import PipelineTagNameToken from '~/ci/pipeline_details/components/pipelines_list/tokens/pipeline_tag_name_token.vue';
+import PipelineTagNameToken from '~/ci/pipeline_details/pipelines_list/tokens/pipeline_tag_name_token.vue';
 import { tags, mockTagsAfterMap } from '../mock_data';
 
 describe('Pipeline Branch Name Token', () => {

@@ -6,9 +6,9 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import FailedJobDetails from '~/ci/pipeline_details/components/pipelines_list/failure_widget/failed_job_details.vue';
-import RetryMrFailedJobMutation from '~/ci/pipeline_details/graphql/mutations/retry_mr_failed_job.mutation.graphql';
-import { BRIDGE_KIND } from '~/ci/pipeline_details/components/graph/constants';
+import FailedJobDetails from '~/ci/pipeline_details/pipelines_list/failure_widget/failed_job_details.vue';
+import RetryMrFailedJobMutation from '~/ci/merge_requests/graphql/mutations/retry_mr_failed_job.mutation.graphql';
+import { BRIDGE_KIND } from '~/ci/pipeline_details/graph/constants';
 import { job } from './mock';
 
 Vue.use(VueApollo);

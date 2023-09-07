@@ -5,7 +5,7 @@ import { nextTick } from 'vue';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import PipelinesFilteredSearch from '~/ci/pipeline_details/components/pipelines_list/pipelines_filtered_search.vue';
+import PipelinesFilteredSearch from '~/ci/pipeline_details/pipelines_list/components/pipelines_filtered_search.vue';
 import {
   FILTERED_SEARCH_TERM,
   OPERATORS_IS,

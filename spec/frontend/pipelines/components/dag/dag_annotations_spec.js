@@ -1,7 +1,7 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import DagAnnotations from '~/ci/pipeline_details/components/dag/dag_annotations.vue';
+import DagAnnotations from '~/ci/pipeline_details/dag/components/dag_annotations.vue';
 import { singleNote, multiNote } from './mock_data';
 
 describe('The DAG annotations', () => {

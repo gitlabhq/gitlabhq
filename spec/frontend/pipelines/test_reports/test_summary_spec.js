@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import testReports from 'test_fixtures/pipelines/test_report.json';
-import Summary from '~/ci/pipeline_details/components/test_reports/test_summary.vue';
+import Summary from '~/ci/pipeline_details/test_reports/test_summary.vue';
 import { formattedTime } from '~/ci/pipeline_details/stores/test_reports/utils';
 
 describe('Test reports summary', () => {

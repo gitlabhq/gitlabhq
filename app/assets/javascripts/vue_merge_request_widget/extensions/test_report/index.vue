@@ -3,7 +3,7 @@ import { uniqueId, uniq } from 'lodash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
-import TestCaseDetails from '~/ci/pipeline_details/components/test_reports/test_case_details.vue';
+import TestCaseDetails from '~/ci/pipeline_details/test_reports/test_case_details.vue';
 import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import MrWidgetRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';

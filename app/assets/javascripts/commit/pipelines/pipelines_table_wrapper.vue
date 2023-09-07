@@ -1,9 +1,9 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import getMergeRequestPipelines from '~/ci/pipeline_details/graphql/queries/get_merge_request_pipelines.query.graphql';
+import getMergeRequestPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
-import { getQueryHeaders } from '~/ci/pipeline_details/components/graph/utils';
+import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import { graphqlEtagMergeRequestPipelines } from '~/ci/pipeline_details/utils';
 
 export default {

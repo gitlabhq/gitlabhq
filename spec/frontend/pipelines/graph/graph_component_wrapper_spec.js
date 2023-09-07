@@ -23,15 +23,15 @@ import {
   LAYER_VIEW,
   STAGE_VIEW,
   VIEW_TYPE_KEY,
-} from '~/ci/pipeline_details/components/graph/constants';
-import PipelineGraph from '~/ci/pipeline_details/components/graph/graph_component.vue';
-import PipelineGraphWrapper from '~/ci/pipeline_details/components/graph/graph_component_wrapper.vue';
-import GraphViewSelector from '~/ci/pipeline_details/components/graph/graph_view_selector.vue';
-import * as Api from '~/ci/pipeline_details/components/graph_shared/api';
-import LinksLayer from '~/ci/pipeline_details/components/graph_shared/links_layer.vue';
-import * as parsingUtils from '~/ci/pipeline_details/components/parsing_utils';
-import getPipelineHeaderData from '~/ci/pipeline_details/graphql/queries/get_pipeline_header_data.query.graphql';
-import * as sentryUtils from '~/ci/pipeline_details/utils';
+} from '~/ci/pipeline_details/graph/constants';
+import PipelineGraph from '~/ci/pipeline_details/graph/components/graph_component.vue';
+import PipelineGraphWrapper from '~/ci/pipeline_details/graph/graph_component_wrapper.vue';
+import GraphViewSelector from '~/ci/pipeline_details/graph/components/graph_view_selector.vue';
+import * as Api from '~/ci/pipeline_details/graph/api_utils';
+import LinksLayer from '~/ci/common/private/job_links_layer.vue';
+import * as parsingUtils from '~/ci/pipeline_details/utils/parsing_utils';
+import getPipelineHeaderData from '~/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql';
+import * as sentryUtils from '~/ci/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { mockRunningPipelineHeaderData } from '../mock_data';
 import {

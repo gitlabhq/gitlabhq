@@ -1,5 +1,5 @@
 import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
-import { unwrapStagesWithNeeds } from '~/ci/pipeline_details/components/unwrapping_utils';
+import { unwrapStagesWithNeeds } from '~/ci/pipeline_details/utils/unwrapping_utils';
 import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 
 export const commonOptions = {

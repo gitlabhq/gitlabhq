@@ -146,9 +146,8 @@ gdk-qa-smoke-with-load-balancer:
     reports:
       dotenv: ""
   rules:
-    - changes:
-        - ".gitlab/ci/test-on-gdk/**"
-        - "lib/gitlab/database/load_balancing/**/*"
+    - !reference [".rules:test:never-schedule-pipeline", rules]
+    - !reference [".rules:test:gdk-load-balancer-changes", rules]
   allow_failure: true
 
 gdk-qa-reliable:
@@ -177,9 +176,8 @@ gdk-qa-reliable-with-load-balancer:
     reports:
       dotenv: ""
   rules:
-    - changes:
-        - ".gitlab/ci/test-on-gdk/**"
-        - "lib/gitlab/database/load_balancing/**/*"
+    - !reference [".rules:test:never-schedule-pipeline", rules]
+    - !reference [".rules:test:gdk-load-balancer-changes", rules]
   allow_failure: true
 
 gdk-qa-non-blocking:

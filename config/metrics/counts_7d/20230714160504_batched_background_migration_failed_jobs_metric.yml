@@ -5,7 +5,7 @@ product_section: enablement
 product_stage: data_stores
 product_group: database
 value_type: number
-status: active
+status: removed
 milestone: "16.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126165
 time_frame: 7d
@@ -20,4 +20,5 @@ tier:
 - free
 - premium
 - ultimate
-value_json_schema: "config/metrics/objects_schemas/batched_background_migration_failed_jobs_metric.json"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130760
+milestone_removed: "16.4"

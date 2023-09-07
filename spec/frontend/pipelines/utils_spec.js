@@ -1,5 +1,5 @@
 import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
-import { createSankey } from '~/ci/pipeline_details/components/dag/drawing_utils';
+import { createSankey } from '~/ci/pipeline_details/dag/drawing_utils';
 import {
   makeLinksFromNodes,
   filterByAncestors,
@@ -9,7 +9,7 @@ import {
   parseData,
   removeOrphanNodes,
   getMaxNodes,
-} from '~/ci/pipeline_details/components/parsing_utils';
+} from '~/ci/pipeline_details/utils/parsing_utils';
 import { createNodeDict } from '~/ci/pipeline_details/utils';
 
 import { mockDownstreamPipelinesRest } from '../vue_merge_request_widget/mock_data';

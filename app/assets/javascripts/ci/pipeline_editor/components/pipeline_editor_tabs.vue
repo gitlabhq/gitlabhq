@@ -2,7 +2,7 @@
 import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import CiEditorHeader from 'ee_else_ce/ci/pipeline_editor/components/editor/ci_editor_header.vue';
 import { s__, __ } from '~/locale';
-import PipelineGraph from '~/ci/pipeline_details/components/pipeline_graph/pipeline_graph.vue';
+import PipelineGraph from '~/ci/pipeline_editor/components/graph/pipeline_graph.vue';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import {
   CREATE_TAB,

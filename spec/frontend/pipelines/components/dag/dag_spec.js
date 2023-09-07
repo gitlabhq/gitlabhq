@@ -1,14 +1,10 @@
 import { GlAlert, GlEmptyState } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import {
-  ADD_NOTE,
-  REMOVE_NOTE,
-  REPLACE_NOTES,
-} from '~/ci/pipeline_details/components/dag/constants';
-import Dag from '~/ci/pipeline_details/components/dag/dag.vue';
-import DagAnnotations from '~/ci/pipeline_details/components/dag/dag_annotations.vue';
-import DagGraph from '~/ci/pipeline_details/components/dag/dag_graph.vue';
+import { ADD_NOTE, REMOVE_NOTE, REPLACE_NOTES } from '~/ci/pipeline_details/dag/constants';
+import Dag from '~/ci/pipeline_details/dag/dag.vue';
+import DagAnnotations from '~/ci/pipeline_details/dag/components/dag_annotations.vue';
+import DagGraph from '~/ci/pipeline_details/dag/components/dag_graph.vue';
 
 import { PARSE_FAILURE, UNSUPPORTED_DATA } from '~/ci/pipeline_details/constants';
 import {

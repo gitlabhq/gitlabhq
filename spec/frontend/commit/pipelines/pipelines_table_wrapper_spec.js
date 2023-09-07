@@ -8,7 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import { createAlert } from '~/alert';
 import PipelinesTableWrapper from '~/commit/pipelines/pipelines_table_wrapper.vue';
-import getMergeRequestsPipelines from '~/ci/pipeline_details/graphql/queries/get_merge_request_pipelines.query.graphql';
+import getMergeRequestsPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 
 import { mergeRequestPipelinesResponse } from '../mock_data';
 

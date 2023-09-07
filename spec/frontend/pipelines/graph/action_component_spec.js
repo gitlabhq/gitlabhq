@@ -5,7 +5,7 @@ import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import ActionComponent from '~/ci/pipeline_details/components/jobs_shared/action_component.vue';
+import ActionComponent from '~/ci/common/private/job_action_component.vue';
 
 describe('pipeline graph action component', () => {
   let wrapper;

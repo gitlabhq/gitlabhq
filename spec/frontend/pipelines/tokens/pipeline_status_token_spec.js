@@ -1,7 +1,7 @@
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
-import PipelineStatusToken from '~/ci/pipeline_details/components/pipelines_list/tokens/pipeline_status_token.vue';
+import PipelineStatusToken from '~/ci/pipeline_details/pipelines_list/tokens/pipeline_status_token.vue';
 import {
   TOKEN_TITLE_STATUS,
   TOKEN_TYPE_STATUS,

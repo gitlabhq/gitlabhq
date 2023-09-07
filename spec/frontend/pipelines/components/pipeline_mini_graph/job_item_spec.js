@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import JobItem from '~/ci/pipeline_details/components/pipeline_mini_graph/job_item.vue';
+import JobItem from '~/ci/pipeline_mini_graph/job_item.vue';
 
 describe('JobItem', () => {
   let wrapper;

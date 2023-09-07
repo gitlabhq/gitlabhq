@@ -5,7 +5,7 @@ import { extractGraphQLQuery } from '../../helpers/graphql_query_extractor';
 export async function getPipelineHeaderDataRequest(endpoint) {
   const { url } = endpoint;
   const query = await extractGraphQLQuery(
-    'app/assets/javascripts/ci/pipeline_details/graphql/queries/get_pipeline_header_data.query.graphql',
+    'app/assets/javascripts/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql',
   );
   const graphqlQuery = {
     query,

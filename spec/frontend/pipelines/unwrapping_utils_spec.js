@@ -2,7 +2,7 @@ import {
   unwrapGroups,
   unwrapNodesWithName,
   unwrapStagesWithNeeds,
-} from '~/ci/pipeline_details/components/unwrapping_utils';
+} from '~/ci/pipeline_details/utils/unwrapping_utils';
 
 const groupsArray = [
   {

@@ -11,7 +11,7 @@ import {
   HTTP_STATUS_NO_CONTENT,
   HTTP_STATUS_OK,
 } from '~/lib/utils/http_status';
-import TestCaseDetails from '~/ci/pipeline_details/components/test_reports/test_case_details.vue';
+import TestCaseDetails from '~/ci/pipeline_details/test_reports/test_case_details.vue';
 
 import { failedReport } from 'jest/ci/reports/mock_data/mock_data';
 import mixedResultsTestReports from 'jest/ci/reports/mock_data/new_and_fixed_failures_report.json';

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import PipelineDetailsHeader from './components/pipeline_details_header.vue';
+import PipelineDetailsHeader from './header/pipeline_details_header.vue';
 
 Vue.use(VueApollo);
 

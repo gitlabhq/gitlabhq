@@ -1,4 +1,8 @@
 .bundle/
+.gitlab/
+.lefthook/
+.rubocop_todo/
+.vscode/
 builds/
 changelogs/
 danger/
@@ -9,6 +13,19 @@ storybook/
 log/*.log
 node_modules/
 tmp/*
+
+.eslint*
+.gitlab-ci.yml
+.haml-lint*
+.prettier*
+.rubocop*
+.stylelintrc
+.yamllint
+docker-compose.yml
+Dockerfile.assets
+jest*
+lefthook.yml
+tests.yml
 
 *.md
 

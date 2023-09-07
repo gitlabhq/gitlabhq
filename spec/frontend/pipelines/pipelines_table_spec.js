@@ -4,13 +4,13 @@ import { mount } from '@vue/test-utils';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import LegacyPipelineMiniGraph from '~/ci/pipeline_details/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
-import PipelineFailedJobsWidget from '~/ci/pipeline_details/components/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
-import PipelineOperations from '~/ci/pipeline_details/components/pipelines_list/pipeline_operations.vue';
-import PipelineTriggerer from '~/ci/pipeline_details/components/pipelines_list/pipeline_triggerer.vue';
-import PipelineUrl from '~/ci/pipeline_details/components/pipelines_list/pipeline_url.vue';
-import PipelinesTable from '~/ci/pipeline_details/components/pipelines_list/pipelines_table.vue';
-import PipelinesTimeago from '~/ci/pipeline_details/components/pipelines_list/time_ago.vue';
+import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
+import PipelineFailedJobsWidget from '~/ci/pipeline_details/pipelines_list/failure_widget/pipeline_failed_jobs_widget.vue';
+import PipelineOperations from '~/ci/pipeline_details/pipelines_list/components/pipeline_operations.vue';
+import PipelineTriggerer from '~/ci/pipeline_details/pipelines_list/components/pipeline_triggerer.vue';
+import PipelineUrl from '~/ci/pipeline_details/pipelines_list/components/pipeline_url.vue';
+import PipelinesTable from '~/ci/pipeline_details/pipelines_list/components/pipelines_table.vue';
+import PipelinesTimeago from '~/ci/pipeline_details/pipelines_list/components/time_ago.vue';
 import {
   PipelineKeyOptions,
   BUTTON_TOOLTIP_RETRY,

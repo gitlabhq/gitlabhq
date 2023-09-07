@@ -6,12 +6,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
-import {
-  ACTION_FAILURE,
-  UPSTREAM,
-  DOWNSTREAM,
-} from '~/ci/pipeline_details/components/graph/constants';
-import LinkedPipelineComponent from '~/ci/pipeline_details/components/graph/linked_pipeline.vue';
+import { ACTION_FAILURE, UPSTREAM, DOWNSTREAM } from '~/ci/pipeline_details/graph/constants';
+import LinkedPipelineComponent from '~/ci/pipeline_details/graph/components/linked_pipeline.vue';
 import CancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
 import RetryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';

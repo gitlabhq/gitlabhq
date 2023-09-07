@@ -24322,52 +24322,10 @@ msgstr ""
 msgid "InProductMarketing|%{organization_name} logo"
 msgstr ""
 
-msgid "InProductMarketing|%{strong_start}Advanced application security%{strong_end} — including SAST, DAST scanning, FUZZ testing, dependency scanning, license compliance, secrete detection"
-msgstr ""
-
-msgid "InProductMarketing|%{strong_start}Company wide portfolio management%{strong_end} — including multi-level epics, scoped labels"
-msgstr ""
-
-msgid "InProductMarketing|%{strong_start}Executive level insights%{strong_end} — including reporting on productivity, tasks by type, days to completion, value stream"
-msgstr ""
-
 msgid "InProductMarketing|%{strong_start}GitLab Inc.%{strong_end} 268 Bush Street, #350, San Francisco, CA 94104, USA"
 msgstr ""
 
-msgid "InProductMarketing|%{strong_start}Multiple approval roles%{strong_end} — including code owners and required merge approvals"
-msgstr ""
-
-msgid "InProductMarketing|*GitLab*, noun: a synonym for efficient teams"
-msgstr ""
-
-msgid "InProductMarketing|...and you can get a free trial of GitLab Ultimate"
-msgstr ""
-
-msgid "InProductMarketing|3 ways to dive into GitLab CI/CD"
-msgstr ""
-
-msgid "InProductMarketing|Actually, GitLab makes the team work (better)"
-msgstr ""
-
 msgid "InProductMarketing|Advanced security testing"
-msgstr ""
-
-msgid "InProductMarketing|And finally %{deploy_link} a Python application."
-msgstr ""
-
-msgid "InProductMarketing|Are your runners ready?"
-msgstr ""
-
-msgid "InProductMarketing|Automated security scans directly within GitLab"
-msgstr ""
-
-msgid "InProductMarketing|Be a DevOps hero"
-msgstr ""
-
-msgid "InProductMarketing|Beef up your security"
-msgstr ""
-
-msgid "InProductMarketing|Better code in less time"
 msgstr ""
 
 msgid "InProductMarketing|Blog"
@@ -24376,58 +24334,10 @@ msgstr ""
 msgid "InProductMarketing|Building for iOS? We've got you covered."
 msgstr ""
 
-msgid "InProductMarketing|By enabling code owners and required merge approvals the right person will review the right MR. This is a win-win: cleaner code and a more efficient review process."
-msgstr ""
-
-msgid "InProductMarketing|Code owners and required merge approvals are part of the paid tiers of GitLab. You can start a free 30-day trial of GitLab Ultimate and enable these features in less than 5 minutes with no credit card required."
-msgstr ""
-
-msgid "InProductMarketing|Create a custom CI runner with just a few clicks"
-msgstr ""
-
-msgid "InProductMarketing|Create a custom runner"
-msgstr ""
-
-msgid "InProductMarketing|Create a project in GitLab in 5 minutes"
-msgstr ""
-
-msgid "InProductMarketing|Create your first project!"
-msgstr ""
-
 msgid "InProductMarketing|Deliver Better Products Faster"
 msgstr ""
 
-msgid "InProductMarketing|Did you know teams that use GitLab are far more efficient?"
-msgstr ""
-
-msgid "InProductMarketing|Dig in and create a project and a repo"
-msgstr ""
-
-msgid "InProductMarketing|Do you have a teammate who would be perfect for this task?"
-msgstr ""
-
-msgid "InProductMarketing|Expand your DevOps journey with a free GitLab trial"
-msgstr ""
-
-msgid "InProductMarketing|Explore GitLab CI/CD"
-msgstr ""
-
-msgid "InProductMarketing|Explore the options"
-msgstr ""
-
-msgid "InProductMarketing|Explore the power of GitLab CI/CD"
-msgstr ""
-
 msgid "InProductMarketing|Facebook"
-msgstr ""
-
-msgid "InProductMarketing|Feel the need for speed?"
-msgstr ""
-
-msgid "InProductMarketing|Find out how your teams are really doing"
-msgstr ""
-
-msgid "InProductMarketing|Follow our steps"
 msgstr ""
 
 msgid "InProductMarketing|Free 30-day trial"
@@ -24436,70 +24346,7 @@ msgstr ""
 msgid "InProductMarketing|Free guest users"
 msgstr ""
 
-msgid "InProductMarketing|Get going with CI/CD quickly using our %{quick_start_link}. Start with an available runner and then create a CI .yml file – it's really that easy."
-msgstr ""
-
-msgid "InProductMarketing|Get our import guides"
-msgstr ""
-
 msgid "InProductMarketing|Get set up to build for iOS"
-msgstr ""
-
-msgid "InProductMarketing|Get started today"
-msgstr ""
-
-msgid "InProductMarketing|Get started today with a 30-day GitLab Ultimate trial, no credit card required."
-msgstr ""
-
-msgid "InProductMarketing|Get started with GitLab CI/CD"
-msgstr ""
-
-msgid "InProductMarketing|Get to know GitLab CI/CD"
-msgstr ""
-
-msgid "InProductMarketing|Get your team set up on GitLab"
-msgstr ""
-
-msgid "InProductMarketing|Git basics"
-msgstr ""
-
-msgid "InProductMarketing|GitHub Enterprise projects to GitLab"
-msgstr ""
-
-msgid "InProductMarketing|GitLab provides static application security testing (SAST), dynamic application security testing (DAST), container scanning, and dependency scanning to help you deliver secure applications along with license compliance."
-msgstr ""
-
-msgid "InProductMarketing|GitLab's CI/CD makes software development easier. Don't believe us? Here are three ways you can take it for a fast (and satisfying) test drive:"
-msgstr ""
-
-msgid "InProductMarketing|GitLab's premium tiers are designed to make you, your team and your application more efficient and more secure with features including but not limited to:"
-msgstr ""
-
-msgid "InProductMarketing|Give us one minute..."
-msgstr ""
-
-msgid "InProductMarketing|Go farther with GitLab"
-msgstr ""
-
-msgid "InProductMarketing|Goldman Sachs went from 1 build every two weeks to thousands of builds a day"
-msgstr ""
-
-msgid "InProductMarketing|Have a different instance you'd like to import? Here's our %{import_link}."
-msgstr ""
-
-msgid "InProductMarketing|Here's what you need to know"
-msgstr ""
-
-msgid "InProductMarketing|How (and why) mirroring makes sense"
-msgstr ""
-
-msgid "InProductMarketing|How long does it take us to close issues/MRs by types like feature requests, bugs, tech debt, security?"
-msgstr ""
-
-msgid "InProductMarketing|How many days does it take our team to complete various tasks?"
-msgstr ""
-
-msgid "InProductMarketing|How to build and test faster"
 msgstr ""
 
 msgid "InProductMarketing|If you don't want to receive marketing emails directly from GitLab, %{marketing_preference_link}."
@@ -24508,79 +24355,19 @@ msgstr ""
 msgid "InProductMarketing|If you no longer wish to receive marketing emails from us,"
 msgstr ""
 
-msgid "InProductMarketing|Import your project and code from GitHub, Bitbucket and others"
-msgstr ""
-
-msgid "InProductMarketing|Improve app security with a 30-day trial"
-msgstr ""
-
-msgid "InProductMarketing|Improve code quality and streamline reviews"
-msgstr ""
-
 msgid "InProductMarketing|Increase Operational Efficiencies"
-msgstr ""
-
-msgid "InProductMarketing|Invite them to help out."
 msgstr ""
 
 msgid "InProductMarketing|Invite unlimited colleagues"
 msgstr ""
 
-msgid "InProductMarketing|Invite your colleagues and start shipping code faster."
-msgstr ""
-
-msgid "InProductMarketing|Invite your colleagues to join in less than one minute"
-msgstr ""
-
-msgid "InProductMarketing|Invite your colleagues today"
-msgstr ""
-
-msgid "InProductMarketing|Invite your team in less than 60 seconds"
-msgstr ""
-
-msgid "InProductMarketing|Invite your team now"
-msgstr ""
-
-msgid "InProductMarketing|Invite your team today to build better code (and processes) together"
-msgstr ""
-
-msgid "InProductMarketing|It's all in the stats"
-msgstr ""
-
-msgid "InProductMarketing|It's also possible to simply %{external_repo_link} in order to take advantage of GitLab's CI/CD."
-msgstr ""
-
-msgid "InProductMarketing|Launch GitLab CI/CD in 20 minutes or less"
-msgstr ""
-
 msgid "InProductMarketing|Learn how to build for iOS"
-msgstr ""
-
-msgid "InProductMarketing|Making the switch? It's easier than you think to import your projects into GitLab. Move %{github_link}, or import something %{bitbucket_link}."
-msgstr ""
-
-msgid "InProductMarketing|Master the art of importing!"
-msgstr ""
-
-msgid "InProductMarketing|Move on to easily creating a Pages website %{ci_template_link}"
-msgstr ""
-
-msgid "InProductMarketing|Multiple owners, confusing workstreams? We've got you covered"
-msgstr ""
-
-msgid "InProductMarketing|Need an alternative to importing?"
 msgstr ""
 
 msgid "InProductMarketing|No credit card required."
 msgstr ""
 
-msgid "InProductMarketing|Our tool brings all the things together"
-msgstr ""
-
 msgid "InProductMarketing|Portfolio management"
-msgstr ""
-
-msgid "InProductMarketing|Rapid development, simplified"
 msgstr ""
 
 msgid "InProductMarketing|Reduce Security and Compliance Risk"
@@ -24589,112 +24376,16 @@ msgstr ""
 msgid "InProductMarketing|Security risk mitigation"
 msgstr ""
 
-msgid "InProductMarketing|Security that's integrated into your development lifecycle"
-msgstr ""
-
-msgid "InProductMarketing|Sometimes you're not ready to make a full transition to a new tool. If you're not ready to fully commit, %{mirroring_link} gives you a safe way to try out GitLab in parallel with your current tool."
-msgstr ""
-
-msgid "InProductMarketing|Spin up an autoscaling runner in GitLab"
-msgstr ""
-
-msgid "InProductMarketing|Start a GitLab Ultimate trial today in less than one minute, no credit card required."
-msgstr ""
-
 msgid "InProductMarketing|Start a Self-Managed trial"
-msgstr ""
-
-msgid "InProductMarketing|Start a free trial of GitLab Ultimate – no credit card required"
-msgstr ""
-
-msgid "InProductMarketing|Start a trial"
-msgstr ""
-
-msgid "InProductMarketing|Start by %{performance_link}"
-msgstr ""
-
-msgid "InProductMarketing|Start by importing your projects"
-msgstr ""
-
-msgid "InProductMarketing|Start with a GitLab Ultimate free trial"
-msgstr ""
-
-msgid "InProductMarketing|Start your trial now!"
-msgstr ""
-
-msgid "InProductMarketing|Start your trial today to experience single application success and discover all the features of GitLab Ultimate for free!"
-msgstr ""
-
-msgid "InProductMarketing|Stop wondering and use GitLab to answer questions like:"
-msgstr ""
-
-msgid "InProductMarketing|Streamline code review, know at a glance who's unavailable, communicate in comments or in email and integrate with Slack so everyone's on the same page."
-msgstr ""
-
-msgid "InProductMarketing|Take your first steps with GitLab"
-msgstr ""
-
-msgid "InProductMarketing|Take your source code management to the next level"
 msgstr ""
 
 msgid "InProductMarketing|Team members collaborating"
 msgstr ""
 
-msgid "InProductMarketing|Team up in GitLab for greater efficiency"
-msgstr ""
-
-msgid "InProductMarketing|Team work makes the dream work"
-msgstr ""
-
-msgid "InProductMarketing|Test, create, deploy"
-msgstr ""
-
-msgid "InProductMarketing|That's all it takes to get going with GitLab, but if you're new to working with Git, check out our %{basics_link} for helpful tips and tricks for getting started."
-msgstr ""
-
-msgid "InProductMarketing|This is email %{current_series} of %{total_series} in the %{track} series."
-msgstr ""
-
-msgid "InProductMarketing|This is email %{current_series} of %{total_series} in the %{track} series. To disable notification emails sent by your local GitLab instance, either contact your administrator or %{unsubscribe_link}."
-msgstr ""
-
-msgid "InProductMarketing|Ticketmaster decreased their CI build time by 15X"
-msgstr ""
-
-msgid "InProductMarketing|Tired of wrestling with disparate tool chains, information silos and inefficient processes? GitLab's CI/CD is built on a DevOps platform with source code management, planning, monitoring and more ready to go. Find out %{ci_link}."
-msgstr ""
-
 msgid "InProductMarketing|To opt out of these onboarding emails, %{unsubscribe_link}."
 msgstr ""
 
-msgid "InProductMarketing|To understand and get the most out of GitLab, start at the beginning and %{project_link}. In GitLab, repositories are part of a project, so after you've created your project you can go ahead and %{repo_link}."
-msgstr ""
-
-msgid "InProductMarketing|Try GitLab Ultimate for free"
-msgstr ""
-
-msgid "InProductMarketing|Try it out"
-msgstr ""
-
-msgid "InProductMarketing|Try it yourself"
-msgstr ""
-
-msgid "InProductMarketing|Turn coworkers into collaborators"
-msgstr ""
-
 msgid "InProductMarketing|Twitter"
-msgstr ""
-
-msgid "InProductMarketing|Understand repository mirroring"
-msgstr ""
-
-msgid "InProductMarketing|Understand your project options"
-msgstr ""
-
-msgid "InProductMarketing|Use GitLab CI/CD"
-msgstr ""
-
-msgid "InProductMarketing|Use our AWS cloudformation template to spin up your runners in just a few clicks!"
 msgstr ""
 
 msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe:"
@@ -24712,64 +24403,13 @@ msgstr ""
 msgid "InProductMarketing|Watch iOS building in action."
 msgstr ""
 
-msgid "InProductMarketing|We know a thing or two about efficiency and we don't want to keep that to ourselves. Sign up for a free trial of GitLab Ultimate and your teams will be on it from day one."
-msgstr ""
-
-msgid "InProductMarketing|What does our value stream timeline look like from product to development to review and production?"
-msgstr ""
-
-msgid "InProductMarketing|When your team is on GitLab these answers are a click away."
-msgstr ""
-
-msgid "InProductMarketing|Working in GitLab = more efficient"
-msgstr ""
-
 msgid "InProductMarketing|YouTube"
-msgstr ""
-
-msgid "InProductMarketing|Your teams can be more efficient"
-msgstr ""
-
-msgid "InProductMarketing|comprehensive guide"
-msgstr ""
-
-msgid "InProductMarketing|connect an external repository"
-msgstr ""
-
-msgid "InProductMarketing|create a project"
-msgstr ""
-
-msgid "InProductMarketing|from Bitbucket"
 msgstr ""
 
 msgid "InProductMarketing|go to about.gitlab.com"
 msgstr ""
 
-msgid "InProductMarketing|how easy it is to get started"
-msgstr ""
-
-msgid "InProductMarketing|quick start guide"
-msgstr ""
-
-msgid "InProductMarketing|repository mirroring"
-msgstr ""
-
-msgid "InProductMarketing|set up a repo"
-msgstr ""
-
-msgid "InProductMarketing|test and deploy"
-msgstr ""
-
-msgid "InProductMarketing|testing browser performance"
-msgstr ""
-
 msgid "InProductMarketing|unsubscribe"
-msgstr ""
-
-msgid "InProductMarketing|update your preferences"
-msgstr ""
-
-msgid "InProductMarketing|using a CI/CD template"
 msgstr ""
 
 msgid "InProductMarketing|you may %{unsubscribe_link} at any time."

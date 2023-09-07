@@ -1,8 +1,8 @@
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { PIPELINE_SOURCES } from 'ee_else_ce/ci/pipeline_details/components/pipelines_list/tokens/constants';
+import { PIPELINE_SOURCES } from 'ee_else_ce/ci/pipeline_details/pipelines_list/tokens/constants';
 import { stubComponent } from 'helpers/stub_component';
-import PipelineSourceToken from '~/ci/pipeline_details/components/pipelines_list/tokens/pipeline_source_token.vue';
+import PipelineSourceToken from '~/ci/pipeline_details/pipelines_list/tokens/pipeline_source_token.vue';
 
 describe('Pipeline Source Token', () => {
   let wrapper;

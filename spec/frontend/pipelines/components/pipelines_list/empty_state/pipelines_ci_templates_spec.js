@@ -1,8 +1,8 @@
 import '~/commons';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import PipelinesCiTemplates from '~/ci/pipeline_details/components/pipelines_list/empty_state/pipelines_ci_templates.vue';
-import CiTemplates from '~/ci/pipeline_details/components/pipelines_list/empty_state/ci_templates.vue';
+import PipelinesCiTemplates from '~/ci/pipeline_details/pipelines_list/empty_state/pipelines_ci_templates.vue';
+import CiTemplates from '~/ci/pipeline_details/pipelines_list/empty_state/ci_templates.vue';
 
 const pipelineEditorPath = '/-/ci/editor';
 

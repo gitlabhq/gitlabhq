@@ -5,13 +5,10 @@ import { truncateSha } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import getPipelineQuery from '~/ci/pipeline_editor/graphql/queries/pipeline.query.graphql';
 import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
-import {
-  getQueryHeaders,
-  toggleQueryPollingByVisibility,
-} from '~/ci/pipeline_details/components/graph/utils';
+import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import PipelineMiniGraph from '~/ci/pipeline_details/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from './pipeline_editor_mini_graph.vue';
 
 const POLL_INTERVAL = 10000;

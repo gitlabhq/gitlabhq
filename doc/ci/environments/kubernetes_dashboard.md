@@ -71,7 +71,14 @@ To view a configured dashboard:
 > - Customizing the name of the Flux resource [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128857) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `flux_resource_for_environment`.
 > - Customizing the name of the Flux resource [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130648) in GitLab 16.4. Feature flag `flux_resource_for_environment` removed.
 
-A dashboard displays the sync status of your Flux deployments.
+You can review the sync status of your Flux deployments from a dashboard.
+To display the deployment status, your dashboard must be able to retrieve the `Kustomization` and `HelmRelease` resources,
+which requires a namespace to be configured for the environment.
+
+By default, GitLab searches the `Kustomization` and `HelmRelease` resources for the name of the project slug.
+You can specify the resource names with the **Flux resource** dropdown list in the environment settings.
+
+A dashboard displays one of the following status badges:
 
 | Status | Description |
 |---------|-------------|
@@ -81,11 +88,6 @@ A dashboard displays the sync status of your Flux deployments.
 | **Failed** | The deployment couldn't reconcile because of an unrecoverable error. |
 | **Unknown** | The sync status of the deployment couldn't be retrieved. |
 | **Unavailable** | The `Kustomization` or `HelmRelease` resource couldn't be retrieved. |
-
-Deployments rely on Flux `Kustomization` and `HelmRelease` resources to gather
-the status of a given environment, which requires a namespace to be configured for the environment.
-By default, GitLab searches the `Kustomization` and `HelmRelease` resources for the name of the project slug.
-You can customize the name GitLab looks for in the environment settings.
 
 ## Troubleshooting
 

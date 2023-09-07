@@ -1,5 +1,5 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import NavControls from '~/ci/pipeline_details/components/pipelines_list/nav_controls.vue';
+import NavControls from '~/ci/pipeline_details/pipelines_list/components/nav_controls.vue';
 
 describe('Pipelines Nav Controls', () => {
   let wrapper;

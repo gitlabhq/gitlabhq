@@ -7,21 +7,21 @@ module QA
         class Show < QA::Page::Base
           include Component::CiBadgeLink
 
-          view 'app/assets/javascripts/ci/pipeline_details/components/pipeline_details_header.vue' do
+          view 'app/assets/javascripts/ci/pipeline_details/header/pipeline_details_header.vue' do
             element :pipeline_details_header, required: true
           end
 
-          view 'app/assets/javascripts/ci/pipeline_details/components/graph/graph_component.vue' do
+          view 'app/assets/javascripts/ci/pipeline_details/graph/components/graph_component.vue' do
             element :pipeline_graph, /class.*pipeline-graph.*/ # rubocop:disable QA/ElementWithPattern
           end
 
-          view 'app/assets/javascripts/ci/pipeline_details/components/graph/job_item.vue' do
+          view 'app/assets/javascripts/ci/pipeline_details/graph/components/job_item.vue' do
             element :job_item_container, required: true
             element :job_link, required: true
             element :job_action_button
           end
 
-          view 'app/assets/javascripts/ci/pipeline_details/components/graph/linked_pipeline.vue' do
+          view 'app/assets/javascripts/ci/pipeline_details/graph/components/linked_pipeline.vue' do
             element :expand_linked_pipeline_button
             element :linked_pipeline_container
             element :downstream_title_content
@@ -35,7 +35,7 @@ module QA
             element :status_icon, 'ci-status-icon-${status}' # rubocop:disable QA/ElementWithPattern
           end
 
-          view 'app/assets/javascripts/ci/pipeline_details/components/graph/job_group_dropdown.vue' do
+          view 'app/assets/javascripts/ci/pipeline_details/graph/components/job_group_dropdown.vue' do
             element :job_dropdown_container
             element :jobs_dropdown_menu
           end

@@ -2,7 +2,7 @@
 import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getParameterByName } from '~/lib/utils/url_utility';
-import PipelinesTableComponent from '~/ci/pipeline_details/components/pipelines_list/pipelines_table.vue';
+import PipelinesTableComponent from '~/ci/pipeline_details/pipelines_list/components/pipelines_table.vue';
 import { PipelineKeyOptions } from '~/ci/pipeline_details/constants';
 import eventHub from '~/ci/pipeline_details/event_hub';
 import PipelinesMixin from '~/ci/pipeline_details/mixins/pipelines_mixin';

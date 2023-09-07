@@ -1,10 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import { GlBadge, GlModal, GlToast } from '@gitlab/ui';
-import JobItem from '~/ci/pipeline_details/components/graph/job_item.vue';
+import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
 import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import ActionComponent from '~/ci/pipeline_details/components/jobs_shared/action_component.vue';
+import ActionComponent from '~/ci/common/private/job_action_component.vue';
 
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {

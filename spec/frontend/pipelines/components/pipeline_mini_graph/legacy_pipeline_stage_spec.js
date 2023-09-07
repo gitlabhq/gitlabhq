@@ -5,7 +5,7 @@ import MockAdapter from 'axios-mock-adapter';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import LegacyPipelineStage from '~/ci/pipeline_details/components/pipeline_mini_graph/legacy_pipeline_stage.vue';
+import LegacyPipelineStage from '~/ci/pipeline_mini_graph/legacy_pipeline_stage.vue';
 import eventHub from '~/ci/pipeline_details/event_hub';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stageReply } from '../../mock_data';

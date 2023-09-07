@@ -1,6 +1,6 @@
 import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import pipelineTriggerer from '~/ci/pipeline_details/components/pipelines_list/pipeline_triggerer.vue';
+import pipelineTriggerer from '~/ci/pipeline_details/pipelines_list/components/pipeline_triggerer.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 describe('Pipelines Triggerer', () => {

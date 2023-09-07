@@ -2,10 +2,10 @@ import '~/commons';
 import { shallowMount } from '@vue/test-utils';
 import { GlEmptyState } from '@gitlab/ui';
 import { stubExperiments } from 'helpers/experimentation_helper';
-import EmptyState from '~/ci/pipeline_details/components/pipelines_list/empty_state.vue';
+import EmptyState from '~/ci/pipeline_details/pipelines_list/empty_state/no_ci_empty_state.vue';
 import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
-import PipelinesCiTemplates from '~/ci/pipeline_details/components/pipelines_list/empty_state/pipelines_ci_templates.vue';
-import IosTemplates from '~/ci/pipeline_details/components/pipelines_list/empty_state/ios_templates.vue';
+import PipelinesCiTemplates from '~/ci/pipeline_details/pipelines_list/empty_state/pipelines_ci_templates.vue';
+import IosTemplates from '~/ci/pipeline_details/pipelines_list/empty_state/ios_templates.vue';
 
 describe('Pipelines Empty State', () => {
   let wrapper;

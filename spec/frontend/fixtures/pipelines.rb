@@ -71,7 +71,7 @@ RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :co
     end
 
     let_it_be(:query) do
-      get_graphql_query_as_string("ci/pipeline_details/graphql/queries/#{get_pipeline_actions_query}")
+      get_graphql_query_as_string("ci/pipeline_details/pipelines_list/graphql/queries/#{get_pipeline_actions_query}")
     end
 
     it "#{fixtures_path}#{get_pipeline_actions_query}.json" do

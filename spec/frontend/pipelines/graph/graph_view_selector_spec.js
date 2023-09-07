@@ -1,7 +1,7 @@
 import { GlAlert, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import { LAYER_VIEW, STAGE_VIEW } from '~/ci/pipeline_details/components/graph/constants';
-import GraphViewSelector from '~/ci/pipeline_details/components/graph/graph_view_selector.vue';
+import { LAYER_VIEW, STAGE_VIEW } from '~/ci/pipeline_details/graph/constants';
+import GraphViewSelector from '~/ci/pipeline_details/graph/components/graph_view_selector.vue';
 
 describe('the graph view selector component', () => {
   let wrapper;

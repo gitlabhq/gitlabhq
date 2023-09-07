@@ -4,9 +4,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import testReports from 'test_fixtures/pipelines/test_report.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import SuiteTable, {
-  i18n,
-} from '~/ci/pipeline_details/components/test_reports/test_suite_table.vue';
+import SuiteTable, { i18n } from '~/ci/pipeline_details/test_reports/test_suite_table.vue';
 import { TestStatus } from '~/ci/pipeline_details/constants';
 import * as getters from '~/ci/pipeline_details/stores/test_reports/getters';
 import { formatFilePath } from '~/ci/pipeline_details/stores/test_reports/utils';

@@ -5,9 +5,9 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import FailedJobsApp from '~/ci/pipeline_details/components/jobs/failed_jobs_app.vue';
-import FailedJobsTable from '~/ci/pipeline_details/components/jobs/failed_jobs_table.vue';
-import GetFailedJobsQuery from '~/ci/pipeline_details/graphql/queries/get_failed_jobs.query.graphql';
+import FailedJobsApp from '~/ci/pipeline_details/jobs/failed_jobs_app.vue';
+import FailedJobsTable from '~/ci/pipeline_details/jobs/components/failed_jobs_table.vue';
+import GetFailedJobsQuery from '~/ci/pipeline_details/jobs/graphql/queries/get_failed_jobs.query.graphql';
 import { mockFailedJobsQueryResponse } from '../../mock_data';
 
 Vue.use(VueApollo);

@@ -8,9 +8,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
 import getLinkedPipelinesQuery from '~/ci/pipeline_details/graphql/queries/get_linked_pipelines.query.graphql';
-import getPipelineStagesQuery from '~/ci/pipeline_details/graphql/queries/get_pipeline_stages.query.graphql';
-import LegacyPipelineMiniGraph from '~/ci/pipeline_details/components/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
-import PipelineMiniGraph from '~/ci/pipeline_details/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import getPipelineStagesQuery from '~/ci/pipeline_mini_graph/graphql/queries/get_pipeline_stages.query.graphql';
+import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import * as sharedGraphQlUtils from '~/graphql_shared/utils';
 
 import {

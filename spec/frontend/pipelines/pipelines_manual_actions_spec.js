@@ -11,8 +11,8 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import PipelinesManualActions from '~/ci/pipeline_details/components/pipelines_list/pipelines_manual_actions.vue';
-import getPipelineActionsQuery from '~/ci/pipeline_details/graphql/queries/get_pipeline_actions.query.graphql';
+import PipelinesManualActions from '~/ci/pipeline_details/pipelines_list/components/pipelines_manual_actions.vue';
+import getPipelineActionsQuery from '~/ci/pipeline_details/pipelines_list/graphql/queries/get_pipeline_actions.query.graphql';
 import { TRACKING_CATEGORIES } from '~/ci/pipeline_details/constants';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 

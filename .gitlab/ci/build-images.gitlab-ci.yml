@@ -34,7 +34,7 @@ build-gdk-image:
     - .base-image-build-buildx
     - .build-images:rules:build-gdk-image
   tags:
-    - high-cpu
+    - saas-linux-xlarge-amd64
   stage: build-images
   needs: []
   script:

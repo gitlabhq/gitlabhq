@@ -1,7 +1,7 @@
 import {
   isFailedJob,
   sortJobsByStatus,
-} from '~/ci/pipeline_details/components/pipelines_list/failure_widget/utils';
+} from '~/ci/pipeline_details/pipelines_list/failure_widget/utils';
 
 describe('isFailedJob', () => {
   describe('when the job argument is undefined', () => {

@@ -38,6 +38,7 @@
     "markdownlint": "markdownlint --config .markdownlint.yml",
     "markdownlint:no-trailing-spaces": "markdownlint --config doc/.markdownlint/markdownlint-no-trailing-spaces.yml",
     "markdownlint:no-trailing-spaces:fix": "yarn run markdownlint:no-trailing-spaces --fix",
+    "preinstall": "node ./scripts/frontend/preinstall.mjs",
     "postinstall": "node ./scripts/frontend/postinstall.js",
     "storybook:install": "yarn --cwd ./storybook install",
     "storybook:build": "yarn --cwd ./storybook build --quiet",

@@ -30,17 +30,15 @@ if (STATIC_MODE) {
 
 // run webpack through webpack-dev-server, optionally compiling a DLL to reduce memory
 else {
-  const watch = ['config/webpack.config.js'];
+  const watch = [
+    'config/webpack.config.js',
+    // ensure we refresh when running yarn install
+    'node_modules/.yarn-integrity',
+  ];
 
   // if utilizing the vendor DLL, we need to restart the process when dependency changes occur
   if (DLL_MODE) {
-    watch.push(
-      'config/webpack.vendor.config.js',
-      // ensure we refresh when running yarn install
-      'node_modules/.yarn-integrity',
-      'package.json',
-      'yarn.lock',
-    );
+    watch.push('config/webpack.vendor.config.js', 'package.json', 'yarn.lock');
   }
   nodemon({
     exec: 'webpack-dev-server --config config/webpack.config.js',

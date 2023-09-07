@@ -2,11 +2,11 @@ import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
-import LinksInner from '~/ci/pipeline_details/components/graph_shared/links_inner.vue';
-import LinksLayer from '~/ci/pipeline_details/components/graph_shared/links_layer.vue';
-import JobPill from '~/ci/pipeline_details/components/pipeline_graph/job_pill.vue';
-import PipelineGraph from '~/ci/pipeline_details/components/pipeline_graph/pipeline_graph.vue';
-import StageName from '~/ci/pipeline_details/components/pipeline_graph/stage_name.vue';
+import LinksInner from '~/ci/pipeline_details/graph/components/links_inner.vue';
+import LinksLayer from '~/ci/common/private/job_links_layer.vue';
+import JobPill from '~/ci/pipeline_editor/components/graph/job_pill.vue';
+import PipelineGraph from '~/ci/pipeline_editor/components/graph/pipeline_graph.vue';
+import StageName from '~/ci/pipeline_editor/components/graph/stage_name.vue';
 import { pipelineData, singleStageData } from './mock_data';
 
 describe('pipeline graph component', () => {

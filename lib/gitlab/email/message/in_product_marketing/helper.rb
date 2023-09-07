@@ -64,15 +64,6 @@ module Gitlab
             ]
           end
 
-          def list(array)
-            case format
-            when :html
-              tag.ul { array.map { |item| tag.li item } }
-            else
-              '- ' + array.join("\n- ")
-            end
-          end
-
           def strong_options
             case format
             when :html
