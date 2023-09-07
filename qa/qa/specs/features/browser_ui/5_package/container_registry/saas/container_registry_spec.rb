@@ -70,7 +70,7 @@ module QA
         Page::Project::Job::Show.perform do |job|
           expect(job).to be_successful(timeout: 200)
 
-          job.click_element(:pipeline_path)
+          job.go_to_pipeline
         end
 
         Page::Project::Pipeline::Show.perform do |pipeline|

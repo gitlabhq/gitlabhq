@@ -37,7 +37,6 @@ module ApplicationSettingImplementation
       {
         admin_mode: false,
         after_sign_up_text: nil,
-        ai_access_token: nil,
         akismet_enabled: false,
         akismet_api_key: nil,
         allow_local_requests_from_system_hooks: true,

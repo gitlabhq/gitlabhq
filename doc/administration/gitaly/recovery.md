@@ -372,7 +372,7 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
   In this example, the virtual storage to specify is `default` or `storage-1`.
 
-- `-repository` is the repository's relative path in the storage [beginning with `@hashed`](../repository_storage_types.md#hashed-storage).
+- `-repository` is the repository's relative path in the storage [beginning with `@hashed`](../repository_storage_paths.md#hashed-storage).
   For example:
 
   ```plaintext
@@ -463,14 +463,14 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 
   In this example, the virtual storage to specify is `default` or `storage-1`.
 
-- `-relative-path` is the relative path in the virtual storage. Usually [beginning with `@hashed`](../repository_storage_types.md#hashed-storage).
+- `-relative-path` is the relative path in the virtual storage. Usually [beginning with `@hashed`](../repository_storage_paths.md#hashed-storage).
   For example:
 
   ```plaintext
   @hashed/f5/ca/f5ca38f748a1d6eaf726b8a42fb575c3c71f1864a8143301782de13da2d9202b.git
   ```
 
-- `-replica-path` is the relative path on physical storage. Can start with [`@cluster` or match `relative_path`](../repository_storage_types.md#gitaly-cluster-storage).
+- `-replica-path` is the relative path on physical storage. Can start with [`@cluster` or match `relative_path`](../repository_storage_paths.md#gitaly-cluster-storage).
 - `-authoritative-storage` is the storage we want Praefect to treat as the primary. Required if
   [per-repository replication](praefect.md#configure-replication-factor) is set as the replication strategy.
 - `-replicate-immediately`, available in GitLab 14.6 and later, causes the command to replicate the repository to its secondaries immediately.

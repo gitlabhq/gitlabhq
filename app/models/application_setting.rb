@@ -36,6 +36,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     jitsu_project_xid
     jitsu_administrator_email
   ], remove_with: '16.5', remove_after: '2023-09-22'
+  ignore_columns %i[ai_access_token ai_access_token_iv], remove_with: '16.6', remove_after: '2023-10-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -798,7 +799,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :product_analytics_configurator_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   # Restricting the validation to `on: :update` only to avoid cyclical dependencies with

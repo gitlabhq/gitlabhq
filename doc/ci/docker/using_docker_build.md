@@ -639,32 +639,43 @@ To build Docker images without enabling privileged mode on the runner, you can
 use one of these alternatives:
 
 - [`kaniko`](using_kaniko.md).
-- [`buildah`](https://github.com/containers/buildah). There is a [known issue](https://github.com/containers/buildah/issues/4049)
-  with running as non-root, you might need this [workaround](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#configure-setfcap)
-  if you are using OpenShift Runner.
+- [`buildah`](#buildah-example).
 
-For example, with `buildah`:
+### Buildah example
+
+To use Buildah with GitLab CI/CD, you need [a runner](https://docs.gitlab.com/runner/) with one
+of the following executors:
+
+- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html).
+- [Docker](https://docs.gitlab.com/runner/executors/docker.html).
+- [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
+
+In this example, you use Buildah to:
+
+1. Build a Docker image.
+1. Push it to [GitLab Container Registry](../../user/packages/container_registry/index.md).
+
+In the last step, Buildah uses the `Dockerfile` under the
+root directory of the project to build the Docker image. Finally, it pushes the image to the
+project's Container Registry:
 
 ```yaml
-# Some details from https://major.io/2019/05/24/build-containers-in-gitlab-ci-with-buildah/
-
 build:
   stage: build
-  image: quay.io/buildah/stable:v1.31.0
+  image: quay.io/buildah/stable
   variables:
-    # Use vfs with buildah. Docker offers overlayfs as a default, but buildah
+    # Use vfs with buildah. Docker offers overlayfs as a default, but Buildah
     # cannot stack overlayfs on top of another overlayfs filesystem.
     STORAGE_DRIVER: vfs
     # Write all image metadata in the docker format, not the standard OCI format.
     # Newer versions of docker can handle the OCI format, but older versions, like
     # the one shipped with Fedora 30, cannot handle the format.
     BUILDAH_FORMAT: docker
-    # You may need this workaround for some errors: https://stackoverflow.com/a/70438141/1233435
-    BUILDAH_ISOLATION: chroot
     FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/test"
   before_script:
-    # Log in to the GitLab container registry
-    - export REGISTRY_AUTH_FILE=$HOME/auth.json
+    # GitLab Container Registry credentials taken from the
+    # [predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
+    # to authenticate to the registry.
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
     - buildah images
@@ -672,6 +683,9 @@ build:
     - buildah images
     - buildah push $FQ_IMAGE_NAME
 ```
+
+If you are using GitLab Runner Operator deployed to an OpenShift cluster, try the
+[tutorial for using Buildah to build images in rootless container](buildah_rootless_tutorial.md).
 
 ## Use the GitLab Container Registry
 

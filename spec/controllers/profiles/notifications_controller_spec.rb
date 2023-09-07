@@ -149,11 +149,10 @@ RSpec.describe Profiles::NotificationsController do
     it 'updates only permitted attributes' do
       sign_in(user)
 
-      put :update, params: { user: { notification_email: 'new@example.com', email_opted_in: true, notified_of_own_activity: true, admin: true } }
+      put :update, params: { user: { notification_email: 'new@example.com', notified_of_own_activity: true, admin: true } }
 
       user.reload
       expect(user.notification_email).to eq('new@example.com')
-      expect(user.email_opted_in).to eq(true)
       expect(user.notified_of_own_activity).to eq(true)
       expect(user.admin).to eq(false)
       expect(controller).to set_flash[:notice].to('Notification settings saved')

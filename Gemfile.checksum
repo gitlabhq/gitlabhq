@@ -553,7 +553,7 @@
 {"name":"rugged","version":"1.6.3","platform":"ruby","checksum":"362631de8dc6f1074242f21e01148ac70b7fe8cdb17f85eee91d4ea83457cb04"},
 {"name":"safe_yaml","version":"1.0.4","platform":"ruby","checksum":"248193992ef1730a0c9ec579999ef2256a2b3a32a9bd9d708a1e12544a489ec2"},
 {"name":"safety_net_attestation","version":"0.4.0","platform":"ruby","checksum":"96be2d74e7ed26453a51894913449bea0e072f44490021545ac2d1c38b0718ce"},
-{"name":"sanitize","version":"6.0.0","platform":"ruby","checksum":"81795f985873f3bacee2eaaededeaafc3a29aafeaa9aff51e04b85a66bbf08ff"},
+{"name":"sanitize","version":"6.0.2","platform":"ruby","checksum":"48c4eb8e92bb1699056b6000986ac50fc9df82f458a941abf2c4d6759bccd5cf"},
 {"name":"sass","version":"3.5.5","platform":"ruby","checksum":"1bb5431bc620ce29076728a4c8f7b4acb55066ed9df8cf5d57db6cda450d8080"},
 {"name":"sass-listen","version":"4.0.0","platform":"ruby","checksum":"ae9dcb76dd3e234329e5ba6e213f48e532c5a3e7b0b4d8a87f13aaca0cc18377"},
 {"name":"sassc","version":"2.4.0","platform":"ruby","checksum":"4c60a2b0a3b36685c83b80d5789401c2f678c1652e3288315a1551d811d9f83e"},

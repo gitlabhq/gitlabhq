@@ -16,10 +16,10 @@ describe('Artifacts block', () => {
     });
 
   const findArtifactRemoveElt = () => wrapper.findByTestId('artifacts-remove-timeline');
-  const findJobLockedElt = () => wrapper.findByTestId('job-locked-message');
+  const findJobLockedElt = () => wrapper.findByTestId('artifacts-locked-message-content');
   const findKeepBtn = () => wrapper.findByTestId('keep-artifacts');
   const findDownloadBtn = () => wrapper.findByTestId('download-artifacts');
-  const findBrowseBtn = () => wrapper.findByTestId('browse-artifacts');
+  const findBrowseBtn = () => wrapper.findByTestId('browse-artifacts-button');
   const findArtifactsHelpLink = () => wrapper.findByTestId('artifacts-help-link');
   const findPopover = () => wrapper.findComponent(GlPopover);
 

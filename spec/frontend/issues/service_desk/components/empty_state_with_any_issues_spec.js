@@ -1,13 +1,13 @@
 import { GlEmptyState } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import EmptyStateWithAnyIssues from '~/service_desk/components/empty_state_with_any_issues.vue';
+import EmptyStateWithAnyIssues from '~/issues/service_desk/components/empty_state_with_any_issues.vue';
 import {
   noSearchResultsTitle,
   noSearchResultsDescription,
   infoBannerUserNote,
   noOpenIssuesTitle,
   noClosedIssuesTitle,
-} from '~/service_desk/constants';
+} from '~/issues/service_desk/constants';
 
 describe('EmptyStateWithAnyIssues component', () => {
   let wrapper;

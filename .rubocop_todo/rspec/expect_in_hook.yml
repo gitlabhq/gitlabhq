@@ -28,7 +28,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/lib/ee/api/helpers/members_helpers_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'
     - 'ee/spec/lib/ee/gitlab/gon_helper_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/hook_data/user_builder_spec.rb'
     - 'ee/spec/lib/gitlab/auth/smartcard/certificate_spec.rb'
     - 'ee/spec/lib/gitlab/checks/diff_check_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cost_factor_spec.rb'

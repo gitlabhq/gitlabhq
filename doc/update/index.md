@@ -299,34 +299,6 @@ Before upgrading to GitLab 15, see [GitLab 15 changes](versions/gitlab_15_change
 
 Before upgrading to GitLab 14, see [GitLab 14 changes](versions/gitlab_14_changes.md).
 
-### PostgreSQL segmentation fault issue
-
-If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you upgrade PostgreSQL
-to patch levels to a minimum of 12.7 or 13.3 before upgrading to GitLab 14.8 or later.
-
-[In 14.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75511)
-for GitLab Enterprise Edition and [in 15.1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87983)
-for GitLab Community Edition a GitLab feature called Loose Foreign Keys was enabled.
-
-After it was enabled, we have had reports of unplanned PostgreSQL restarts caused
-by a database engine bug that causes a segmentation fault.
-
-Read more [in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
-
-### LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2
-
-When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
-
-[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/352368) was fixed in GitLab 14.8.0 and backported into 14.7.3.
-
-### Maintenance mode issue in GitLab 13.9 to 14.4
-
-When [Maintenance mode](../administration/maintenance_mode/index.md) is enabled, users cannot sign in with SSO, SAML, or LDAP.
-
-Users who were signed in before Maintenance mode was enabled, continue to be signed in. If the administrator who enabled Maintenance mode loses their session, then they can't disable Maintenance mode via the UI. In that case, you can [disable Maintenance mode via the API or Rails console](../administration/maintenance_mode/index.md#disable-maintenance-mode).
-
-[This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
-
 ## Miscellaneous
 
 - [Managing PostgreSQL extensions](../install/postgresql_extensions.md)

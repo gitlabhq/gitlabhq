@@ -30,6 +30,14 @@ class User < MainClusterwide::ApplicationRecord
   include RestrictedSignup
   include StripAttribute
   include EachBatch
+  include IgnorableColumns
+
+  ignore_column %i[
+    email_opted_in
+    email_opted_in_ip
+    email_opted_in_source_id
+    email_opted_in_at
+  ], remove_with: '16.6', remove_after: '2023-10-22'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 

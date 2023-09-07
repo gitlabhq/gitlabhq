@@ -125,7 +125,6 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
     shared_examples 'does not render the form' do
       it 'does not render the form' do
         expect(rendered).not_to have_field('application_setting_instance_level_code_suggestions_enabled')
-        expect(rendered).not_to have_field('application_setting_ai_access_token')
       end
     end
 

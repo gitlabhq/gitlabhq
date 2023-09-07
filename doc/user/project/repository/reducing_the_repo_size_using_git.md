@@ -26,7 +26,7 @@ you begin. The best way to back up a repository is to
 
 The size of a repository is determined by computing the accumulated size of all files in the repository.
 It is similar to executing `du --summarize --bytes` on your repository's
-[hashed storage path](../../../administration/repository_storage_types.md).
+[hashed storage path](../../../administration/repository_storage_paths.md).
 
 ## Purge files from repository history
 

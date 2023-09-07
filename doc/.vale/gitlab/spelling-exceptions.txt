@@ -109,6 +109,7 @@ bugfixed
 bugfixes
 bugfixing
 Bugzilla
+Buildah
 Buildkite
 buildpack
 buildpacks
@@ -644,6 +645,7 @@ OmniAuth
 onboarding
 OpenID
 OpenShift
+OpenTelemetry
 Opsgenie
 Opstrace
 ORMs

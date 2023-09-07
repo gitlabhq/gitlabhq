@@ -138,7 +138,6 @@ export default {
         :href="restJob.retry_path"
         :modal-id="$options.forwardDeploymentFailureModalId"
         variant="confirm"
-        data-qa-selector="retry_button"
         data-testid="retry-button"
         @updateVariablesClicked="$emit('updateVariables')"
       />

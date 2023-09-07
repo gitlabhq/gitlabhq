@@ -33,7 +33,6 @@
             = render_if_exists "registrations/welcome/jobs_to_be_done", f: f
             = render_if_exists "registrations/welcome/setup_for_company", f: f
             = render_if_exists "registrations/welcome/joining_project"
-            = render 'devise/shared/email_opted_in', f: f
             .row
               .form-group.col-sm-12.gl-mb-0
                 - if partial_exists? "registrations/welcome/button"

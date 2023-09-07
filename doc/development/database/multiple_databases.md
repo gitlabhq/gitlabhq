@@ -494,6 +494,30 @@ def find_actual_head_pipeline
 end
 ```
 
+In model associations or scopes, this can be used as in the following example:
+
+```ruby
+class Group < Namespace
+ has_many :users, -> {
+    allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
+  }, through: :group_members
+end
+```
+
+WARNING:
+Overriding an association can have unintended consequences and may even lead to data loss, as we noticed in [issue 424307](https://gitlab.com/gitlab-org/gitlab/-/issues/424307). Do not override existing ActiveRecord associations to mark a cross-join as allowed, as in the example below.
+
+```ruby
+class Group < Namespace
+  has_many :users, through: :group_members
+
+  # DO NOT override an association like this.
+  def users
+    super.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
+  end
+end
+```
+
 The `url` parameter should point to an issue with a milestone for when we intend
 to fix the cross-join. If the cross-join is being used in a migration, we do not
 need to fix the code. See <https://gitlab.com/gitlab-org/gitlab/-/issues/340017>

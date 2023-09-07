@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import ServiceDeskListApp from 'ee_else_ce/service_desk/components/service_desk_list_app.vue';
+import ServiceDeskListApp from 'ee_else_ce/issues/service_desk/components/service_desk_list_app.vue';
 import { gqlClient } from './graphql';
 
 export async function mountServiceDeskListApp() {

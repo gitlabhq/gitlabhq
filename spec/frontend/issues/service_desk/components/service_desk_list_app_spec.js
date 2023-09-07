@@ -18,14 +18,14 @@ import { issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { getSortKey, getSortOptions } from '~/issues/list/utils';
-import { STATUS_CLOSED, STATUS_OPEN, STATUS_ALL } from '~/service_desk/constants';
-import getServiceDeskIssuesQuery from 'ee_else_ce/service_desk/queries/get_service_desk_issues.query.graphql';
-import getServiceDeskIssuesCountsQuery from 'ee_else_ce/service_desk/queries/get_service_desk_issues_counts.query.graphql';
-import setSortingPreferenceMutation from '~/service_desk/queries/set_sorting_preference.mutation.graphql';
-import ServiceDeskListApp from '~/service_desk/components/service_desk_list_app.vue';
-import InfoBanner from '~/service_desk/components/info_banner.vue';
-import EmptyStateWithAnyIssues from '~/service_desk/components/empty_state_with_any_issues.vue';
-import EmptyStateWithoutAnyIssues from '~/service_desk/components/empty_state_without_any_issues.vue';
+import { STATUS_CLOSED, STATUS_OPEN, STATUS_ALL } from '~/issues/service_desk/constants';
+import getServiceDeskIssuesQuery from 'ee_else_ce/issues/service_desk/queries/get_service_desk_issues.query.graphql';
+import getServiceDeskIssuesCountsQuery from 'ee_else_ce/issues/service_desk/queries/get_service_desk_issues_counts.query.graphql';
+import setSortingPreferenceMutation from '~/issues/service_desk/queries/set_sorting_preference.mutation.graphql';
+import ServiceDeskListApp from '~/issues/service_desk/components/service_desk_list_app.vue';
+import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
+import EmptyStateWithAnyIssues from '~/issues/service_desk/components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyIssues from '~/issues/service_desk/components/empty_state_without_any_issues.vue';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import {
   TOKEN_TYPE_ASSIGNEE,

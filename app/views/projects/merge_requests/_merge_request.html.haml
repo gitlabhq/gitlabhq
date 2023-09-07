@@ -45,8 +45,10 @@
     .issuable-meta
       %ul.controls.d-flex.align-items-end
         - if merge_request.merged?
+          - merged_at = merge_request.merged_at ? l(merge_request.merged_at.to_time) : _("Merge date & time could not be determined")
           %li.d-none.d-sm-flex
-            = render Pajamas::BadgeComponent.new(_('Merged'), size: 'sm', variant: 'info')
+            %a.has-tooltip{ href: "#{merge_request_path(merge_request)}#widget-state", title: merged_at }
+              = render Pajamas::BadgeComponent.new(_('Merged'), size: 'sm', variant: 'info')
         - elsif merge_request.closed?
           %li.d-none.d-sm-flex
             = render Pajamas::BadgeComponent.new(_('Closed'), size: 'sm', variant: 'danger')

@@ -15,17 +15,24 @@ const InternalEvents = {
   /**
    *
    * @param {string} event
+   * @param {object} data
    */
-  track_event(event) {
+  track_event(event, data = {}) {
+    const { context, ...rest } = data;
+
+    const defaultContext = {
+      schema: SERVICE_PING_SCHEMA,
+      data: {
+        event_name: event,
+        data_source: 'redis_hll',
+      },
+    };
+    const mergedContext = context ? [defaultContext, context] : defaultContext;
+
     API.trackInternalEvent(event);
     Tracking.event(GITLAB_INTERNAL_EVENT_CATEGORY, event, {
-      context: {
-        schema: SERVICE_PING_SCHEMA,
-        data: {
-          event_name: event,
-          data_source: 'redis_hll',
-        },
-      },
+      context: mergedContext,
+      ...rest,
     });
   },
   /**
@@ -35,8 +42,8 @@ const InternalEvents = {
   mixin() {
     return {
       methods: {
-        track_event(event) {
-          InternalEvents.track_event(event);
+        track_event(event, data = {}) {
+          InternalEvents.track_event(event, data);
         },
       },
     };

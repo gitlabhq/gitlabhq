@@ -18,9 +18,18 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   entries from the `ci_job_artifacts` database table. This could potentially run for multiple minutes, especially if the table has a lot of
   traffic and the migration is unable to acquire a lock. It is advised to let this process finish as restarting may result in data loss.
 
-- If you run external PostgreSQL, particularly AWS RDS,
-  [check you have a PostgreSQL bug fix](../index.md#postgresql-segmentation-fault-issue)
-  to avoid the database crashing.
+- If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you
+  upgrade PostgreSQL to patch levels to a minimum of 12.7 or 13.3 before
+  upgrading to GitLab 14.8 or later.
+
+  [In 14.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75511)
+  for GitLab Enterprise Edition and [in 15.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87983)
+  for GitLab Community Edition a GitLab feature called Loose Foreign Keys was enabled.
+
+  After it was enabled, we have had reports of unplanned PostgreSQL restarts caused
+  by a database engine bug that causes a segmentation fault.
+
+  For more information, see [issue 364763](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
 
 - Upgrading to patch level 14.10.3 or later might encounter a one-hour timeout due to a long running database data change,
   if it was not completed while running GitLab 14.9.
@@ -85,9 +94,18 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   end
   ```
 
-- If you run external PostgreSQL, particularly AWS RDS,
-  [check you have a PostgreSQL bug fix](../index.md#postgresql-segmentation-fault-issue)
-  to avoid the database crashing.
+- If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you
+  upgrade PostgreSQL to patch levels to a minimum of 12.7 or 13.3 before
+  upgrading to GitLab 14.8 or later.
+
+  [In 14.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75511)
+  for GitLab Enterprise Edition and [in 15.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87983)
+  for GitLab Community Edition a GitLab feature called Loose Foreign Keys was enabled.
+
+  After it was enabled, we have had reports of unplanned PostgreSQL restarts caused
+  by a database engine bug that causes a segmentation fault.
+
+  For more information, see [issue 364763](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
 
 ### Geo installations **(PREMIUM SELF)**
 
@@ -142,13 +160,21 @@ that may remain stuck permanently in a **pending** state.
   [batched migration](../background_migrations.md#batched-background-migrations) named
   `BackfillNamespaceIdForNamespaceRoute`. You can [ignore](https://gitlab.com/gitlab-org/gitlab/-/issues/357822)
   this. Retry it after you upgrade to version 14.9.x.
-- If you run external PostgreSQL, particularly AWS RDS,
-  [check you have a PostgreSQL bug fix](../index.md#postgresql-segmentation-fault-issue)
-  to avoid the database crashing.
+- If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you
+  upgrade PostgreSQL to patch levels to a minimum of 12.7 or 13.3 before
+  upgrading to GitLab 14.8 or later.
+
+  [In 14.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75511)
+  for GitLab Enterprise Edition and [in 15.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87983)
+  for GitLab Community Edition a GitLab feature called Loose Foreign Keys was enabled.
+
+  After it was enabled, we have had reports of unplanned PostgreSQL restarts caused
+  by a database engine bug that causes a segmentation fault.
+
+  For more information, see [issue 364763](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
 
 ## 14.7.0
 
-- See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](../index.md#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
 - If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
   Updating to 14.7.4 or later resets runner registration tokens for your groups and projects.
 - GitLab 14.7 introduced a change where Gitaly expects persistent files in the `/tmp` directory.
@@ -175,6 +201,9 @@ that may remain stuck permanently in a **pending** state.
 
 ### Geo installations **(PREMIUM SELF)**
 
+- LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2.
+  When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
+  [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/352368) was fixed in GitLab 14.8.0 and backported into 14.7.3.
 - There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
   that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
 
@@ -189,12 +218,14 @@ that may remain stuck permanently in a **pending** state.
 
 ## 14.6.0
 
-- See [LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2](../index.md#lfs-objects-import-and-mirror-issue-in-gitlab-1460-to-1472).
 - If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
   Updating to 14.6.5 or later resets runner registration tokens for your groups and projects.
 
 ### Geo installations **(PREMIUM SELF)**
 
+- LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2.
+  When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
+  [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/352368) was fixed in GitLab 14.8.0 and backported into 14.7.3.
 - There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
   that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
 
@@ -306,7 +337,17 @@ or [init scripts](../upgrading_from_source.md#configure-sysv-init-script) by [fo
 
 - Git 2.33.x and later is required. We recommend you use the
   [Git version provided by Gitaly](../../install/installation.md#git).
-- See [Maintenance mode issue in GitLab 13.9 to 14.4](../index.md#maintenance-mode-issue-in-gitlab-139-to-144).
+- When [Maintenance mode](../../administration/maintenance_mode/index.md) is
+  enabled, users cannot sign in with SSO, SAML, or LDAP.
+
+  Users who were signed in before Maintenance mode was enabled, continue to be
+  signed in. If the administrator who enabled Maintenance mode loses their
+  session, then they can't disable Maintenance mode via the UI. In that case,
+  you can
+  [disable Maintenance mode via the API or Rails console](../../administration/maintenance_mode/index.md#disable-maintenance-mode).
+
+  [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in
+  GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 - After enabling database load balancing by default in 14.4.0, we found an issue where
   [cron jobs would not work if the connection to PostgreSQL was severed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73716),
   as Sidekiq would continue using a bad connection. Geo and other features that rely on
@@ -467,7 +508,17 @@ for how to proceed.
     NOTE:
     When using Rails to execute these background migrations synchronously, make sure that the machine running the process has sufficient resources to handle the task. If the process gets terminated, it's likely due to insufficient memory available. If your SSH session times out after a while, it might be necessary to run the previous code by using a terminal multiplexer like `screen` or `tmux`.
 
-- See [Maintenance mode issue in GitLab 13.9 to 14.4](../index.md#maintenance-mode-issue-in-gitlab-139-to-144).
+- When [Maintenance mode](../../administration/maintenance_mode/index.md) is
+  enabled, users cannot sign in with SSO, SAML, or LDAP.
+
+  Users who were signed in before Maintenance mode was enabled, continue to be
+  signed in. If the administrator who enabled Maintenance mode loses their
+  session, then they can't disable Maintenance mode via the UI. In that case,
+  you can
+  [disable Maintenance mode via the API or Rails console](../../administration/maintenance_mode/index.md#disable-maintenance-mode).
+
+  [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in
+  GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 
 - You may see the following error when setting up two factor authentication (2FA) for accounts
   that authenticate using an LDAP password:
@@ -568,7 +619,17 @@ for how to proceed.
   sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
   ```
 
-- See [Maintenance mode issue in GitLab 13.9 to 14.4](../index.md#maintenance-mode-issue-in-gitlab-139-to-144).
+- When [Maintenance mode](../../administration/maintenance_mode/index.md) is
+  enabled, users cannot sign in with SSO, SAML, or LDAP.
+
+  Users who were signed in before Maintenance mode was enabled, continue to be
+  signed in. If the administrator who enabled Maintenance mode loses their
+  session, then they can't disable Maintenance mode via the UI. In that case,
+  you can
+  [disable Maintenance mode via the API or Rails console](../../administration/maintenance_mode/index.md#disable-maintenance-mode).
+
+  [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in
+  GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 - GitLab 14.2.0 includes a
   [background migration `BackfillDraftStatusOnMergeRequests`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67687)
   that may remain stuck permanently in a **pending** state when the instance lacks records that match the migration's target.
@@ -648,7 +709,17 @@ for how to proceed.
   background while GitLab is in use. GitLab instances upgraded directly from 14.0 to 14.5 or later must
   run the migration in the foreground and therefore take a lot longer to complete.
 
-- See [Maintenance mode issue in GitLab 13.9 to 14.4](../index.md#maintenance-mode-issue-in-gitlab-139-to-144).
+- When [Maintenance mode](../../administration/maintenance_mode/index.md) is
+  enabled, users cannot sign in with SSO, SAML, or LDAP.
+
+  Users who were signed in before Maintenance mode was enabled, continue to be
+  signed in. If the administrator who enabled Maintenance mode loses their
+  session, then they can't disable Maintenance mode via the UI. In that case,
+  you can
+  [disable Maintenance mode via the API or Rails console](../../administration/maintenance_mode/index.md#disable-maintenance-mode).
+
+  [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in
+  GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 
 - If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [123475](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123475) as the `mr_iid`.
 
@@ -734,7 +805,17 @@ Other issues:
   and this code was completely removed in GitLab 14.0. If you plan to upgrade from
   **GitLab 13.2 or older** directly to 14.0, this is [unsupported](../index.md#upgrading-to-a-new-major-version).
   You should instead follow a [supported upgrade path](../index.md#upgrade-paths).
-- See [Maintenance mode issue in GitLab 13.9 to 14.4](../index.md#maintenance-mode-issue-in-gitlab-139-to-144).
+- When [Maintenance mode](../../administration/maintenance_mode/index.md) is
+  enabled, users cannot sign in with SSO, SAML, or LDAP.
+
+  Users who were signed in before Maintenance mode was enabled, continue to be
+  signed in. If the administrator who enabled Maintenance mode loses their
+  session, then they can't disable Maintenance mode via the UI. In that case,
+  you can
+  [disable Maintenance mode via the API or Rails console](../../administration/maintenance_mode/index.md#disable-maintenance-mode).
+
+  [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in
+  GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 - **In GitLab 13.12.2 and later**, users with expired passwords can no longer authenticate with API and Git using tokens because of
   the [Insufficient Expired Password Validation](https://about.gitlab.com/releases/2021/06/01/security-release-gitlab-13-12-2-released/#insufficient-expired-password-validation)
   security fix. If your users get authentication issues following the upgrade, check that their password is not expired:

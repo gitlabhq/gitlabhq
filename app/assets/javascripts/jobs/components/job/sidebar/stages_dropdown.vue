@@ -102,7 +102,6 @@ export default {
             :href="pipeline.path"
             class="js-pipeline-path link-commit"
             data-testid="pipeline-path"
-            data-qa-selector="pipeline_path"
             >#{{ pipeline.id }}</gl-link
           >
         </template>

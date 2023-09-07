@@ -75,7 +75,7 @@ export default {
       data-testid="artifacts-remove-timeline"
     >
       <span v-if="isExpired">{{ $options.i18n.expiredText }}</span>
-      <span v-if="willExpire" data-qa-selector="artifacts_unlocked_message_content">
+      <span v-if="willExpire" data-testid="artifacts-unlocked-message-content">
         {{ $options.i18n.willExpireText }}
       </span>
       <timeago-tooltip v-if="artifact.expire_at" :time="artifact.expire_at" />
@@ -89,7 +89,7 @@ export default {
       </gl-link>
     </p>
     <p v-else-if="isLocked" class="build-detail-row">
-      <span data-testid="job-locked-message" data-qa-selector="artifacts_locked_message_content">
+      <span data-testid="artifacts-locked-message-content">
         {{ $options.i18n.lockedText }}
       </span>
     </p>
@@ -112,8 +112,7 @@ export default {
       <gl-button
         v-if="artifact.browse_path"
         :href="artifact.browse_path"
-        data-testid="browse-artifacts"
-        data-qa-selector="browse_artifacts_button"
+        data-testid="browse-artifacts-button"
         >{{ $options.i18n.browseText }}</gl-button
       >
     </gl-button-group>

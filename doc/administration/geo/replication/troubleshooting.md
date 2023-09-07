@@ -757,7 +757,7 @@ To solve this:
 
 1. Sign in on the web interface for the secondary Geo site.
 
-1. Back up [the `.git` folder](../../repository_storage_types.md#translate-hashed-storage-paths).
+1. Back up [the `.git` folder](../../repository_storage_paths.md#translate-hashed-storage-paths).
 
 1. Optional. [Spot-check](../../logs/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem)
    a few of those IDs whether they indeed correspond

@@ -1,7 +1,11 @@
 import { GlEmptyState, GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import EmptyStateWithoutAnyIssues from '~/service_desk/components/empty_state_without_any_issues.vue';
-import { infoBannerTitle, noIssuesSignedOutButtonText, learnMore } from '~/service_desk/constants';
+import EmptyStateWithoutAnyIssues from '~/issues/service_desk/components/empty_state_without_any_issues.vue';
+import {
+  infoBannerTitle,
+  noIssuesSignedOutButtonText,
+  learnMore,
+} from '~/issues/service_desk/constants';
 
 describe('EmptyStateWithoutAnyIssues component', () => {
   let wrapper;

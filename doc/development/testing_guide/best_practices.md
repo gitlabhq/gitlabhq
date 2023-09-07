@@ -1225,7 +1225,7 @@ specs, so created repositories accumulate in this directory over the
 lifetime of the process. Deleting them is expensive, but this could lead to
 pollution unless carefully managed.
 
-To avoid this, [hashed storage](../../administration/repository_storage_types.md)
+To avoid this, [hashed storage](../../administration/repository_storage_paths.md)
 is enabled in the test suite. This means that repositories are given a unique
 path that depends on their project's ID. Because the project IDs are not reset
 between specs, each spec gets its own repository on disk,

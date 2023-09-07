@@ -16,7 +16,7 @@ _Describe in detail what merge request is being backported and why_
 This checklist encourages us to confirm any changes have been analyzed to reduce risks in quality, performance, reliability, security, and maintainability.
 
 * [ ] This MR is backporting a bug fix, documentation update, or spec fix, previously merged in the default branch.
-* [ ] The original MR has been deployed to GitLab.com (not applicable for documentation or spec changes).
+* [ ] The MR that fixed the bug on the default branch has been deployed to GitLab.com (not applicable for documentation or spec changes).
 * [ ] This MR has a [severity label] assigned (if applicable).
 * [ ] This MR has been approved by a maintainer (only one approval is required).
 * [ ] Ensure the `e2e:package-and-test-ee` job has either succeeded or been approved by a Software Engineer in Test.

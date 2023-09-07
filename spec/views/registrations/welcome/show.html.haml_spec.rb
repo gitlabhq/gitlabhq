@@ -17,5 +17,4 @@ RSpec.describe 'registrations/welcome/show', feature_category: :onboarding do
 
   it { is_expected.not_to have_selector('label[for="user_setup_for_company"]') }
   it { is_expected.to have_button('Get started!') }
-  it { is_expected.not_to have_selector('input[name="user[email_opted_in]"]') }
 end

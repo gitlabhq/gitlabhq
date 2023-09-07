@@ -65,7 +65,7 @@ You can run [`git fsck`](https://git-scm.com/docs/git-fsck) using the command li
      by default.
    - For GitLab Helm chart installations, repositories are stored in the `/home/git/repositories` directory inside the
      Gitaly pod by default.
-1. [Identify the subdirectory that contains the repository](repository_storage_types.md#from-project-name-to-hashed-path)
+1. [Identify the subdirectory that contains the repository](repository_storage_paths.md#from-project-name-to-hashed-path)
    that you need to check.
 1. Run the check. For example:
 

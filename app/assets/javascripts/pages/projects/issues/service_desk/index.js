@@ -1,5 +1,5 @@
 import { initFilteredSearchServiceDesk } from '~/issues';
-import { mountServiceDeskListApp } from '~/service_desk';
+import { mountServiceDeskListApp } from '~/issues/service_desk';
 
 initFilteredSearchServiceDesk();
 

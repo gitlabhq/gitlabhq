@@ -326,7 +326,7 @@ conflicts that could occur due to partially applied operations.
 
 Repositories are stored in the storages at the relative path determined by the [Gitaly client](#gitaly-architecture). These paths can be
 identified by them not beginning with the `@cluster` prefix. The relative paths
-follow the [hashed storage](../repository_storage_types.md#hashed-storage) schema.
+follow the [hashed storage](../repository_storage_paths.md#hashed-storage) schema.
 
 #### Praefect-generated replica paths (GitLab 15.0 and later)
 
@@ -377,7 +377,7 @@ Use the [`praefect metadata`](troubleshooting.md#view-repository-metadata) subco
 
 The repository on disk also contains the project path in the Git configuration file. The configuration
 file can be used to determine the project path even if the repository's metadata has been deleted.
-Follow the [instructions in hashed storage's documentation](../repository_storage_types.md#from-hashed-path-to-project-name).
+Follow the [instructions in hashed storage's documentation](../repository_storage_paths.md#from-hashed-path-to-project-name).
 
 #### Atomicity of operations
 

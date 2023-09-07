@@ -5336,6 +5336,9 @@ msgstr ""
 msgid "Analytics|A visualization with that name already exists."
 msgstr ""
 
+msgid "Analytics|Add a visualization"
+msgstr ""
+
 msgid "Analytics|Add visualizations"
 msgstr ""
 
@@ -5381,13 +5384,16 @@ msgstr ""
 msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr ""
 
+msgid "Analytics|Create your dashboard"
+msgstr ""
+
 msgid "Analytics|Custom dashboards"
 msgstr ""
 
-msgid "Analytics|Dashboard Title"
+msgid "Analytics|Dashboard not found"
 msgstr ""
 
-msgid "Analytics|Dashboard not found"
+msgid "Analytics|Dashboard title"
 msgstr ""
 
 msgid "Analytics|Dashboard was saved successfully"
@@ -5409,6 +5415,12 @@ msgid "Analytics|Dates and times are displayed in the UTC timezone"
 msgstr ""
 
 msgid "Analytics|Edit"
+msgstr ""
+
+msgid "Analytics|Edit your dashboard"
+msgstr ""
+
+msgid "Analytics|Enter a dashboard title"
 msgstr ""
 
 msgid "Analytics|Enter a visualization name"
@@ -5471,16 +5483,19 @@ msgstr ""
 msgid "Analytics|Resulting Data"
 msgstr ""
 
-msgid "Analytics|Save"
-msgstr ""
-
 msgid "Analytics|Save and add to Dashboard"
 msgstr ""
 
 msgid "Analytics|Save new visualization"
 msgstr ""
 
+msgid "Analytics|Save your dashboard"
+msgstr ""
+
 msgid "Analytics|Select a measurement"
+msgstr ""
+
+msgid "Analytics|Select a visualization from the sidebar to get started."
 msgstr ""
 
 msgid "Analytics|Select a visualization type"
@@ -17705,9 +17720,6 @@ msgstr ""
 msgid "Email the pipeline status to a list of recipients."
 msgstr ""
 
-msgid "Email updates (optional)"
-msgstr ""
-
 msgid "Email:"
 msgstr ""
 
@@ -23599,9 +23611,6 @@ msgstr ""
 msgid "I want to use GitLab CI with my existing repository"
 msgstr ""
 
-msgid "I'd like to receive updates about GitLab via email"
-msgstr ""
-
 msgid "I'm signing up for GitLab because:"
 msgstr ""
 
@@ -29059,6 +29068,9 @@ msgid "Merge commit message"
 msgstr ""
 
 msgid "Merge conflicts"
+msgstr ""
+
+msgid "Merge date & time could not be determined"
 msgstr ""
 
 msgid "Merge details"
@@ -35506,9 +35518,6 @@ msgstr ""
 msgid "ProductAnalytics|For the product analytics dashboard to start showing you some data, you need to add the analytics tracking code to your project."
 msgstr ""
 
-msgid "ProductAnalytics|Go back"
-msgstr ""
-
 msgid "ProductAnalytics|How many sessions a user has"
 msgstr ""
 
@@ -38445,9 +38454,6 @@ msgid "Receive notification of abuse reports by email."
 msgstr ""
 
 msgid "Receive notifications about your own activity"
-msgstr ""
-
-msgid "Receive product marketing emails"
 msgstr ""
 
 msgid "Recent"

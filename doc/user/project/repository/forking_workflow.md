@@ -187,7 +187,7 @@ To remove a fork relationship:
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.
 1. To confirm, enter the project path and select **Confirm**.
 
-When you unlink a fork that uses a [hashed storage pool](../../../administration/repository_storage_types.md#hashed-object-pools)
+When you unlink a fork that uses a [hashed storage pool](../../../administration/repository_storage_paths.md#hashed-object-pools)
 to share objects with another repository:
 
 - All objects are copied from the pool into your fork.

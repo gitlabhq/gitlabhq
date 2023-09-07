@@ -311,7 +311,6 @@ RSpec/ContextWording:
     - 'ee/spec/lib/ee/gitlab/gon_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/group_search_results_spec.rb'
     - 'ee/spec/lib/ee/gitlab/hook_data/group_member_builder_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/hook_data/user_builder_spec.rb'
     - 'ee/spec/lib/ee/gitlab/import_export/group/tree_restorer_spec.rb'
     - 'ee/spec/lib/ee/gitlab/import_export/group/tree_saver_spec.rb'
     - 'ee/spec/lib/ee/gitlab/import_export/project/tree_saver_spec.rb'

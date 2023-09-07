@@ -307,6 +307,21 @@ Make sure the ACS URL points to `https://gitlab.example.com/users/auth/saml/call
 If the ACS URL is correct, and you still have errors, review the other
 Troubleshooting sections.
 
+#### 422 error with non-allowed email
+
+You might get an 422 error that states "Email is not allowed for sign-up. Please use your regular email address."
+
+This message might indicate that you must add or remove a domain from your domain allowlist or denylist settings.
+
+To implement this workaround:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Settings** > **General**.
+1. Expand **Sign-up restrictions**.
+1. Add or remove a domain as appropriate to **Allowed domains for sign-ups** and **Denied domains for sign-ups**.
+1. Select **Save changes**.
+
 ### User is blocked when signing in through SAML **(FREE SELF)**
 
 The following are the most likely reasons that a user is blocked when signing in through SAML:

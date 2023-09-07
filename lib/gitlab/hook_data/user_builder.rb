@@ -49,5 +49,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::HookData::UserBuilder.prepend_mod_with('Gitlab::HookData::UserBuilder')

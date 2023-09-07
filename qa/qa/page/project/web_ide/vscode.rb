@@ -174,7 +174,7 @@ module QA
               has_upload_menu_item?
 
               # Use for stability, WebIDE inside an iframe is finnicky, webdriver sometimes moves too fast
-              Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
+              Support::Waiter.wait_until(max_duration: 60, retry_on_exception: true) do
                 click_upload_menu_item
                 enter_file_input(file_path)
               end

@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlLink, GlButton } from '@gitlab/ui';
-import InfoBanner from '~/service_desk/components/info_banner.vue';
-import { infoBannerAdminNote, enableServiceDesk } from '~/service_desk/constants';
+import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
+import { infoBannerAdminNote, enableServiceDesk } from '~/issues/service_desk/constants';
 
 describe('InfoBanner', () => {
   let wrapper;

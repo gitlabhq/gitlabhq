@@ -12589,10 +12589,21 @@ Duo Chat message.
 | <a id="aichatmessagecontent"></a>`content` | [`String`](#string) | Content of the message. Can be null for failed responses. |
 | <a id="aichatmessagecontenthtml"></a>`contentHtml` | [`String`](#string) | Content of the message in HTML format. Can be null for failed responses. |
 | <a id="aichatmessageerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI (assistant) response. |
+| <a id="aichatmessageextras"></a>`extras` | [`AiMessageExtras`](#aimessageextras) | Extra message metadata. |
 | <a id="aichatmessageid"></a>`id` | [`ID`](#id) | UUID of the message. |
 | <a id="aichatmessagerequestid"></a>`requestId` | [`ID`](#id) | UUID of the original request message. Shared between chat prompt and response. |
 | <a id="aichatmessagerole"></a>`role` | [`AiChatMessageRole!`](#aichatmessagerole) | Message role. |
 | <a id="aichatmessagetimestamp"></a>`timestamp` | [`Time!`](#time) | Message timestamp. |
+
+### `AiMessageExtras`
+
+Extra metadata for AI message.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimessageextrassources"></a>`sources` | [`[JSON!]`](#json) | Sources used to form the message. |
 
 ### `AiMessageType`
 
@@ -12614,6 +12625,7 @@ Duo Chat message.
 | ---- | ---- | ----------- |
 | <a id="airesponsechunkid"></a>`chunkId` | [`Int`](#int) | Incremental ID for a chunk from a streamed response. Null when it is not a streamed response. |
 | <a id="airesponseerrors"></a>`errors` | [`[String!]`](#string) | Errors return by AI API as response. |
+| <a id="airesponseextras"></a>`extras` | [`AiMessageExtras`](#aimessageextras) | Extra message metadata. |
 | <a id="airesponserequestid"></a>`requestId` | [`String`](#string) | ID of the original request. |
 | <a id="airesponseresponsebody"></a>`responseBody` | [`String`](#string) | Response body from AI API. |
 | <a id="airesponseresponsebodyhtml"></a>`responseBodyHtml` | [`String`](#string) | Response body HTML. |

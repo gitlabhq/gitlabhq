@@ -665,9 +665,6 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
 ## 15.1.0
 
-- If you run external PostgreSQL, particularly AWS RDS,
-  [check you have a PostgreSQL bug fix](../index.md#postgresql-segmentation-fault-issue)
-  to avoid the database crashing.
 - In GitLab 15.1.0, we are switching Rails `ActiveSupport::Digest` to use SHA256 instead of MD5.
   This affects ETag key generation for resources such as raw Snippet file
   downloads. To ensure consistent ETag key generation across multiple
@@ -707,9 +704,19 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 ## 15.0.0
 
 - Elasticsearch 6.8 [is no longer supported](../../integration/advanced_search/elasticsearch.md#version-requirements). Before you upgrade to GitLab 15.0, [update Elasticsearch to any 7.x version](../../integration/advanced_search/elasticsearch.md#upgrade-to-a-new-elasticsearch-major-version).
-- If you run external PostgreSQL, particularly AWS RDS,
-  [check you have a PostgreSQL bug fix](../index.md#postgresql-segmentation-fault-issue)
-  to avoid the database crashing.
+- If you run GitLab with external PostgreSQL, particularly AWS RDS, ensure you
+  upgrade PostgreSQL to patch levels to a minimum of 12.7 or 13.3 before
+  upgrading to GitLab 14.8 or later.
+
+  [In 14.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75511)
+  for GitLab Enterprise Edition and [in 15.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87983)
+  for GitLab Community Edition a GitLab feature called Loose Foreign Keys was enabled.
+
+  After it was enabled, we have had reports of unplanned PostgreSQL restarts caused
+  by a database engine bug that causes a segmentation fault.
+
+  For more information, see [issue 364763](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
+
 - The use of encrypted S3 buckets with storage-specific configuration is no longer supported after [removing support for using `background_upload`](../deprecations.md#background-upload-for-object-storage).
 - The [certificate-based Kubernetes integration (DEPRECATED)](../../user/infrastructure/clusters/index.md#certificate-based-kubernetes-integration-deprecated) is disabled by default, but you can be re-enable it through the [`certificate_based_clusters` feature flag](../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) until GitLab 16.0.
 - When you use the GitLab Helm Chart project with a custom `serviceAccount`, ensure it has `get` and `list` permissions for the `serviceAccount` and `secret` resources.
