@@ -732,7 +732,6 @@ lib/gitlab/checks/**
 /doc/ci/examples/deployment/ @phillipwells
 /doc/ci/examples/semantic-release.md @phillipwells
 /doc/ci/interactive_web_terminal/ @fneill
-/doc/ci/large_repositories/ @fneill
 /doc/ci/resource_groups/ @phillipwells
 /doc/ci/runners/ @fneill
 /doc/ci/services/ @fneill
@@ -977,7 +976,7 @@ lib/gitlab/checks/**
 /doc/user/project/repository/ @aqualls
 /doc/user/project/repository/code_suggestions/ @sselhorn
 /doc/user/project/repository/file_finder.md @ashrafkhamis
-/doc/user/project/repository/managing_large_repositories.md @axil
+/doc/user/project/repository/managing_large_repositories.md @eread
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski

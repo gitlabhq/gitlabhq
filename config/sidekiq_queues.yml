@@ -281,6 +281,8 @@
   - 1
 - - gitlab_shell
   - 2
+- - gitlab_subscriptions_add_on_purchases_cleanup_user_add_on_assignment
+  - 1
 - - gitlab_subscriptions_refresh_seats
   - 1
 - - gitlab_subscriptions_trials_apply_trial

@@ -113,7 +113,7 @@ requires at least two separate environments:
 
 - One primary site.
 - One or more secondary sites that serve as replicas.
- 
+
 If the primary site becomes unavailable, you can fail over to one of the secondary sites.
 
 This **advanced and complex** setup should only be undertaken if DR is
@@ -204,7 +204,7 @@ However, additional workloads can multiply the impact of operations by triggerin
 You may need to adjust the suggested specifications to compensate if you use, for example:
 
 - Security software on the nodes.
-- Hundreds of concurrent CI jobs for [large repositories](../../ci/large_repositories/index.md).
+- Hundreds of concurrent CI jobs for [large repositories](../../user/project/repository/managing_large_repositories.md).
 - Custom scripts that [run at high frequency](../logs/log_parsing.md#print-top-api-user-agents).
 - [Integrations](../../integration/index.md) in many large projects.
 - [Server hooks](../server_hooks.md).

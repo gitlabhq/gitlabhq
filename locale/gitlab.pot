@@ -42515,9 +42515,6 @@ msgstr ""
 msgid "SecurityReports|Add a comment or reason for dismissal"
 msgstr ""
 
-msgid "SecurityReports|Add comment & dismiss"
-msgstr ""
-
 msgid "SecurityReports|Add or remove projects to monitor in the security area. Projects included in this list will have their results displayed in the security dashboard and vulnerability report."
 msgstr ""
 
@@ -42572,6 +42569,9 @@ msgstr ""
 msgid "SecurityReports|Configure security testing"
 msgstr ""
 
+msgid "SecurityReports|Confirm dismissal"
+msgstr ""
+
 msgid "SecurityReports|Create Issue"
 msgstr ""
 
@@ -42587,7 +42587,13 @@ msgstr ""
 msgid "SecurityReports|Development vulnerabilities"
 msgstr ""
 
+msgid "SecurityReports|Dismiss as"
+msgstr ""
+
 msgid "SecurityReports|Dismiss vulnerability"
+msgstr ""
+
+msgid "SecurityReports|Dismissal comment"
 msgstr ""
 
 msgid "SecurityReports|Dismissed '%{vulnerabilityName}'"
@@ -42618,6 +42624,9 @@ msgid "SecurityReports|Download scanned URLs"
 msgstr ""
 
 msgid "SecurityReports|Download the patch to apply it manually"
+msgstr ""
+
+msgid "SecurityReports|Edit dismissal"
 msgstr ""
 
 msgid "SecurityReports|Either you don't have permission to view this dashboard or the dashboard has not been setup. Please check your permission settings with your administrator or check your dashboard configurations to proceed."
@@ -42735,9 +42744,6 @@ msgid "SecurityReports|Report has expired"
 msgstr ""
 
 msgid "SecurityReports|Results show vulnerabilities introduced by the merge request, in addition to existing vulnerabilities from the latest successful pipeline in your project's default branch."
-msgstr ""
-
-msgid "SecurityReports|Save comment"
 msgstr ""
 
 msgid "SecurityReports|Scan details"

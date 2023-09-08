@@ -25,12 +25,9 @@ has additional information about upgrading, including:
 Depending on the installation method and your GitLab version, there are multiple
 official ways to upgrade GitLab:
 
-- [Linux packages (Omnibus)](#linux-packages-omnibus)
-- [Self-compiled installations](#self-compiled-installation)
-- [Docker installations](#installation-using-docker)
-- [Kubernetes (Helm) installations](#installation-using-helm)
+::Tabs
 
-### Linux packages (Omnibus)
+:::TabTitle Linux packages (Omnibus)
 
 The [package upgrade guide](package/index.md)
 contains the steps needed to upgrade a package installed by official GitLab
@@ -39,12 +36,27 @@ repositories.
 There are also instructions when you want to
 [upgrade to a specific version](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
-### Self-compiled installation
+:::TabTitle Helm chart (Kubernetes)
+
+GitLab can be deployed into a Kubernetes cluster using Helm.
+Instructions on how to upgrade a cloud-native deployment are in
+[a separate document](https://docs.gitlab.com/charts/installation/upgrade.html).
+
+Use the [version mapping](https://docs.gitlab.com/charts/installation/version_mappings.html)
+from the chart version to GitLab version to determine the [upgrade path](#upgrade-paths).
+
+:::TabTitle Docker
+
+GitLab provides official Docker images for both Community and Enterprise
+editions, and they are based on the Omnibus package. See how to
+[install GitLab using Docker](../install/docker.md).
+
+:::TabTitle Self-compiled (source)
 
 - [Upgrading Community Edition and Enterprise Edition from source](upgrading_from_source.md) -
   The guidelines for upgrading Community Edition and Enterprise Edition from source.
 - [Patch versions](patch_versions.md) guide includes the steps needed for a
-  patch version, such as 13.2.0 to 13.2.1, and apply to both Community and Enterprise
+  patch version, such as 15.2.0 to 15.2.1, and apply to both Community and Enterprise
   Editions.
 
 In the past we used separate documents for the upgrading instructions, but we
@@ -54,20 +66,7 @@ can still be found in the Git repository:
 - [Old upgrading guidelines for Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/tree/11-8-stable/doc/update)
 - [Old upgrading guidelines for Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/-/tree/11-8-stable-ee/doc/update)
 
-### Installation using Docker
-
-GitLab provides official Docker images for both Community and Enterprise
-editions, and they are based on the Omnibus package. See how to
-[install GitLab using Docker](../install/docker.md).
-
-### Installation using Helm
-
-GitLab can be deployed into a Kubernetes cluster using Helm.
-Instructions on how to upgrade a cloud-native deployment are in
-[a separate document](https://docs.gitlab.com/charts/installation/upgrade.html).
-
-Use the [version mapping](https://docs.gitlab.com/charts/installation/version_mappings.html)
-from the chart version to GitLab version to determine the [upgrade path](#upgrade-paths).
+::EndTabs
 
 ## Plan your upgrade
 
