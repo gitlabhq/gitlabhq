@@ -116,6 +116,6 @@ export default class CreateItemDropdown {
   }
 
   close() {
-    this.$dropdown.data('deprecatedJQueryDropdown').close();
+    this.$dropdown.data('deprecatedJQueryDropdown')?.close();
   }
 }

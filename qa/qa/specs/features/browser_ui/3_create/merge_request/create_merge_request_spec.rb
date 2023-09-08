@@ -35,14 +35,9 @@ module QA
       ) do
         gitlab_account_user_name = Resource::User.default.reload!.name
 
-        milestone = Resource::ProjectMilestone.fabricate_via_api! do |milestone|
-          milestone.project = project
-        end
+        milestone = create(:project_milestone, project: project)
 
-        label = Resource::ProjectLabel.fabricate_via_api! do |label|
-          label.project = project
-          label.title = 'foo::label'
-        end
+        label = create(:project_label, project: project, title: 'foo::label')
 
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|
           merge_request.title = merge_request_title

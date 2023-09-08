@@ -135,10 +135,22 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }
 
-    let_it_be(:merge_request1) { create(:merge_request, :unique_branches, reviewers: [user1]) }
-    let_it_be(:merge_request2) { create(:merge_request, :unique_branches, reviewers: [user2]) }
-    let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: []) }
-    let_it_be(:merge_request4) { create(:merge_request, :draft_merge_request) }
+    let_it_be(:merge_request1) do
+      create(:merge_request, :prepared, :unique_branches, reviewers: [user1], created_at:
+             2.days.ago)
+    end
+
+    let_it_be(:merge_request2) do
+      create(:merge_request, :unprepared, :unique_branches, reviewers: [user2], created_at:
+             3.hours.ago)
+    end
+
+    let_it_be(:merge_request3) do
+      create(:merge_request, :unprepared, :unique_branches, reviewers: [], created_at:
+                                        Time.current)
+    end
+
+    let_it_be(:merge_request4) { create(:merge_request, :prepared, :draft_merge_request) }
 
     describe '.preload_target_project_with_namespace' do
       subject(:mr) { described_class.preload_target_project_with_namespace.first }
@@ -177,6 +189,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     describe '.drafts' do
       it 'returns MRs where draft == true' do
         expect(described_class.drafts).to eq([merge_request4])
+      end
+    end
+
+    describe '.recently_unprepared' do
+      it 'only returns the recently unprepared mrs' do
+        merge_request5 = create(:merge_request, :unprepared, :unique_branches, created_at: merge_request3.created_at)
+
+        expect(described_class.recently_unprepared).to eq([merge_request3, merge_request5])
       end
     end
 

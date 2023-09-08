@@ -262,6 +262,12 @@ To change the custom email configuration you must reset and remove it and config
 To reset the configuration at any step in the process, select **Reset custom email**.
 The credentials are then removed from the database.
 
+### Custom email reply address
+
+External participants can [reply by email](../../../administration/reply_by_email.md) to Service Desk tickets.
+GitLab uses an email reply address with a 32-character reply key that corresponds to the ticket.
+When a custom email is configured, GitLab generates the reply address from that email.
+
 ### Known issues
 
 - Some service providers don't allow SMTP connections any more.

@@ -7,11 +7,9 @@ import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constant
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import { redirectTo, getLocationHash } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import WebIdeLink from 'ee_else_ce/vue_shared/components/web_ide_link.vue';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
@@ -19,8 +17,6 @@ import { addBlameLink } from '~/blob/blob_blame_link';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import projectInfoQuery from '../queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
-import userInfoQuery from '../queries/user_info.query.graphql';
-import applicationInfoQuery from '../queries/application_info.query.graphql';
 import { DEFAULT_BLOB_INFO, TEXT_FILE_TYPE, LFS_STORAGE, LEGACY_FILE_TYPES } from '../constants';
 import BlobButtonGroup from './blob_button_group.vue';
 import ForkSuggestion from './fork_suggestion.vue';
@@ -34,7 +30,6 @@ export default {
     GlLoadingIcon,
     GlButton,
     ForkSuggestion,
-    WebIdeLink,
     CodeIntelligence,
     AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
   },
@@ -61,18 +56,6 @@ export default {
         this.userPermissions = project.userPermissions;
       },
     },
-    gitpodEnabled: {
-      query: applicationInfoQuery,
-      error() {
-        this.displayError();
-      },
-    },
-    currentUser: {
-      query: userInfoQuery,
-      error() {
-        this.displayError();
-      },
-    },
     project: {
       query: blobInfoQuery,
       variables() {
@@ -90,6 +73,7 @@ export default {
         const repository = data.project?.repository || {};
         this.blobInfo = repository.blobs?.nodes[0] || {};
         this.isEmptyRepository = repository.empty;
+        this.projectId = data.project?.id;
 
         const usePlain = this.$route?.query?.plain === '1'; // When the 'plain' URL param is present, its value determines which viewer to render
         const urlHash = getLocationHash(); // If there is a code line hash in the URL we render with the simple viewer
@@ -131,13 +115,13 @@ export default {
       isRenderingLegacyTextViewer: false,
       activeViewerType: SIMPLE_BLOB_VIEWER,
       project: DEFAULT_BLOB_INFO.project,
-      gitpodEnabled: DEFAULT_BLOB_INFO.gitpodEnabled,
       currentUser: DEFAULT_BLOB_INFO.currentUser,
       useFallback: false,
       pathLocks: DEFAULT_BLOB_INFO.pathLocks,
       userPermissions: DEFAULT_BLOB_INFO.userPermissions,
       blobInfo: {},
       isEmptyRepository: false,
+      projectId: null,
     };
   },
   computed: {
@@ -217,9 +201,6 @@ export default {
     },
     isUsingLfs() {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
-    },
-    projectIdAsNumber() {
-      return getIdFromGraphQLId(this.project?.id);
     },
   },
   watch: {
@@ -324,31 +305,15 @@ export default {
         :has-render-error="hasRenderError"
         :show-path="false"
         :override-copy="true"
+        :show-fork-suggestion="showForkSuggestion"
+        :project-path="projectPath"
+        :project-id="projectId"
         @viewer-changed="handleViewerChanged"
         @copy="onCopy"
+        @edit="editBlob"
+        @error="displayError"
       >
         <template #actions>
-          <web-ide-link
-            v-if="!blobInfo.archived"
-            :show-edit-button="!isBinaryFileType"
-            class="gl-mr-3"
-            :edit-url="blobInfo.editBlobPath"
-            :web-ide-url="blobInfo.ideEditPath"
-            :needs-to-fork="showForkSuggestion"
-            :show-pipeline-editor-button="Boolean(blobInfo.pipelineEditorPath)"
-            :pipeline-editor-url="blobInfo.pipelineEditorPath"
-            :gitpod-url="blobInfo.gitpodBlobUrl"
-            :show-gitpod-button="gitpodEnabled"
-            :gitpod-enabled="currentUser && currentUser.gitpodEnabled"
-            :project-path="projectPath"
-            :project-id="projectIdAsNumber"
-            :user-preferences-gitpod-path="currentUser && currentUser.preferencesGitpodPath"
-            :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
-            is-blob
-            disable-fork-modal
-            @edit="editBlob"
-          />
-
           <blob-button-group
             v-if="isLoggedIn && !blobInfo.archived"
             :path="path"

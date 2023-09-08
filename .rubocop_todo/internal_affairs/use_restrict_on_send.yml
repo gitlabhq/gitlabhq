@@ -1,6 +1,5 @@
 ---
 InternalAffairs/UseRestrictOnSend:
-  Details: grace period
   Exclude:
     - 'rubocop/cop/gitlab/feature_available_usage.rb'
     - 'rubocop/cop/migration/add_concurrent_foreign_key.rb'

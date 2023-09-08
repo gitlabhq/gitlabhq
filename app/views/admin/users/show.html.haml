@@ -71,7 +71,7 @@
           = render_if_exists 'admin/users/provisioned_by', user: @user
 
           %li
-            %span.light= _('Can create groups:')
+            %span.light= _('Can create top level groups:')
             %strong
               = @user.can_create_group ? _('Yes') : _('No')
           %li

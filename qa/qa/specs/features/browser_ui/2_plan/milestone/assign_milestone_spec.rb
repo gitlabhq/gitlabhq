@@ -44,26 +44,14 @@ module QA
       end
 
       context 'Group milestone' do
-        let(:milestone) do
-          Resource::GroupMilestone.fabricate_via_api! do |milestone|
-            milestone.group = group
-            milestone.start_date = start_date
-            milestone.due_date = due_date
-          end
-        end
+        let(:milestone) { create(:group_milestone, group: group, start_date: start_date, due_date: due_date) }
 
         it_behaves_like 'milestone assigned to existing issue', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347964'
         it_behaves_like 'milestone assigned to new issue', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347965'
       end
 
       context 'Project milestone' do
-        let(:milestone) do
-          Resource::ProjectMilestone.fabricate_via_api! do |milestone|
-            milestone.project = project
-            milestone.start_date = start_date
-            milestone.due_date = due_date
-          end
-        end
+        let(:milestone) { create(:project_milestone, project: project, start_date: start_date, due_date: due_date) }
 
         it_behaves_like 'milestone assigned to existing issue', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347962'
         it_behaves_like 'milestone assigned to new issue', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347963'

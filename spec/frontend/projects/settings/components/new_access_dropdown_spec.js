@@ -394,4 +394,20 @@ describe('Access Level Dropdown', () => {
       expect(wrapper.emitted('hidden')[0][0]).toStrictEqual([{ access_level: 2 }]);
     });
   });
+
+  describe('when no license and accessLevel is MERGE', () => {
+    beforeEach(async () => {
+      createComponent({ hasLicense: false, accessLevel: ACCESS_LEVELS.MERGE });
+      await waitForPromises();
+    });
+
+    it('dropdown is single-select', () => {
+      const dropdownItems = findAllDropdownItems();
+
+      findDropdownItemWithText(dropdownItems, mockAccessLevelsData[0].text).trigger('click');
+      findDropdownItemWithText(dropdownItems, mockAccessLevelsData[1].text).trigger('click');
+
+      expect(wrapper.emitted('select')[1]).toHaveLength(1);
+    });
+  });
 });

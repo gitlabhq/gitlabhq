@@ -1,6 +1,5 @@
 ---
 Rails/OutputSafety:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/confirm_email_warning.rb'
     - 'app/controllers/concerns/web_hooks/hook_actions.rb'

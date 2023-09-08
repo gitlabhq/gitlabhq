@@ -1,6 +1,5 @@
 ---
 Capybara/TestidFinders:
-  Details: grace period
   Exclude:
     - 'ee/spec/features/admin/admin_dev_ops_reports_spec.rb'
     - 'ee/spec/features/admin/admin_merge_requests_approvals_spec.rb'

@@ -59,7 +59,7 @@ A cop is in a _grace period_ if it is enabled and has `Details: grace period` de
 
 On the default branch, offenses from cops in the [grace period](rake_tasks.md#run-rubocop-in-graceful-mode) do not fail the RuboCop CI job. Instead, the job notifies the `#f_rubocop` Slack channel. However, on other branches, the RuboCop job fails.
 
-A grace period can safely be lifted as soon as there are no warnings for 2 weeks in the `#f_rubocop` channel on Slack.
+A grace period can safely be lifted as soon as there are no warnings for 1 week in the `#f_rubocop` channel on Slack.
 
 ## Enabling a new cop
 
@@ -67,7 +67,7 @@ A grace period can safely be lifted as soon as there are no warnings for 2 weeks
 1. [Generate TODOs for the new cop](rake_tasks.md#generate-initial-rubocop-todo-list).
 1. [Set the new cop to `grace period`](#cop-grace-period).
 1. Create an issue to fix TODOs and encourage community contributions (via ~"quick win" and/or ~"Seeking community contributions"). [See some examples](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=quick%20wins&label_name%5B%5D=static%20code%20analysis&first_page_size=20).
-1. Create an issue to remove `grace period` after 2 weeks of silence in the `#f_rubocop` Slack channel. [See an example](https://gitlab.com/gitlab-org/gitlab/-/issues/374903).
+1. Create an issue to remove `grace period` after 1 week of silence in the `#f_rubocop` Slack channel. [See an example](https://gitlab.com/gitlab-org/gitlab/-/issues/374903).
 
 ## Silenced offenses
 

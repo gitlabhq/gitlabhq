@@ -79,9 +79,18 @@ The following triggers are available for Slack notifications:
 | **Wiki page**                                                            | A wiki page is created or updated.                   |
 | **Deployment**                                                           | A deployment starts or finishes.                     |
 | **Alert**                                                                | A new, unique alert is recorded.                     |
-| **Group mention in public**                                              | A group is mentioned in a public context.            |
-| **Group mention in private**                                             | A group is mentioned in a confidential context.      |
+| **[Group mention](#trigger-notifications-for-group-mentions) in public**                                              | A group is mentioned in a public context.            |
+| **[Group mention](#trigger-notifications-for-group-mentions) in private**                                             | A group is mentioned in a confidential context.      |
 | [**Vulnerability**](../../application_security/vulnerabilities/index.md) | A new, unique vulnerability is recorded.             |
+
+## Trigger notifications for group mentions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417751) in GitLab 16.4.
+
+To trigger a [notification event](#triggers-for-slack-notifications) for a group mention, use `@<group_name>` in:
+
+- Issue and merge request descriptions
+- Comments on issues, merge requests, and commits
 
 ## Troubleshooting
 

@@ -198,16 +198,16 @@ You must be an administrator to manually add emails to users:
 
 The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and their activities over time.
 
-## Prevent a user from creating groups
+## Prevent a user from creating top level groups
 
-By default, users can create groups. To prevent a user from creating a top level group:
+By default, users can create top level groups. To prevent a user from creating a top level group:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
 1. Locate the user and select them.
 1. Select **Edit**.
-1. Clear the **Can create group** checkbox.
+1. Clear the **Can create top level group** checkbox.
 1. Select **Save changes**.
 
 It is also possible to [limit which roles can create a subgroup within a group](../user/group/subgroups/index.md#change-who-can-create-subgroups).

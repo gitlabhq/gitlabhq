@@ -88,6 +88,11 @@ export default {
       required: false,
       default: undefined,
     },
+    showUsers: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -151,6 +156,9 @@ export default {
       }
 
       return labelPieces.join(', ') || this.label;
+    },
+    fossWithMergeAccess() {
+      return !this.hasLicense && this.accessLevel === ACCESS_LEVELS.MERGE;
     },
     dropdownToggleClass() {
       return {
@@ -247,13 +255,18 @@ export default {
 
       if (this.hasLicense) {
         this.groups = groupsResponse.map((group) => ({ ...group, type: LEVEL_TYPES.GROUP }));
-        this.users = usersResponse.map(({ id, name, username, avatar_url }) => ({
-          id,
-          name,
-          username,
-          avatar_url,
-          type: LEVEL_TYPES.USER,
-        }));
+
+        // Has to be checked against server response
+        // because the selected item can be in filter results
+        if (this.showUsers) {
+          this.users = usersResponse.map(({ id, name, username, avatar_url }) => ({
+            id,
+            name,
+            username,
+            avatar_url,
+            type: LEVEL_TYPES.USER,
+          }));
+        }
       }
 
       this.deployKeys = deployKeysResponse.map((response) => {
@@ -351,23 +364,38 @@ export default {
       return [...added, ...removed, ...preserved];
     },
     onItemClick(item) {
-      this.toggleSelection(this.selected[item.type], item);
+      this.toggleSelection(item);
       this.emitUpdate();
     },
-    toggleSelection(arr, item) {
+    toggleSelection(item) {
       if (item.id === ACCESS_LEVEL_NONE) {
-        arr.splice(0, arr.length, item);
+        this.selected[LEVEL_TYPES.ROLE] = [item];
         return;
       }
-      const itemIndex = arr.findIndex(({ id }) => id === item.id);
-      if (itemIndex === -1) {
-        arr.push(item);
-        this.unselectNone(arr);
-      } else arr.splice(itemIndex, 1);
+
+      const itemSelected = this.isSelected(item);
+      if (itemSelected) {
+        this.selected[item.type] = this.selected[item.type].filter(({ id }) => id !== item.id);
+        return;
+      }
+
+      // We're not multiselecting quite yet in "Merge" access dropdown, on FOSS:
+      // remove all preselected items before selecting this item
+      // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37499
+      if (this.fossWithMergeAccess) this.clearSelection();
+      else if (item.type === LEVEL_TYPES.ROLE) this.unselectNone();
+
+      this.selected[item.type].push(item);
     },
-    unselectNone(arr) {
-      const noneIndex = arr.findIndex(({ id }) => id === ACCESS_LEVEL_NONE);
-      if (noneIndex > -1) arr.splice(noneIndex, 1);
+    unselectNone() {
+      this.selected[LEVEL_TYPES.ROLE] = this.selected[LEVEL_TYPES.ROLE].filter(
+        ({ id }) => id !== ACCESS_LEVEL_NONE,
+      );
+    },
+    clearSelection() {
+      Object.values(LEVEL_TYPES).forEach((level) => {
+        this.selected[level] = [];
+      });
     },
     isSelected(item) {
       return this.selected[item.type].some((selected) => selected.id === item.id);

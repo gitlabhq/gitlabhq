@@ -371,6 +371,7 @@ class MergeRequest < ApplicationRecord
 
   scope :with_csv_entity_associations, -> { preload(:assignees, :approved_by_users, :author, :milestone, metrics: [:merged_by]) }
   scope :with_jira_integration_associations, -> { preload_routables.preload(:metrics, :assignees, :author) }
+  scope :recently_unprepared, -> { where(prepared_at: nil).where(created_at: 2.hours.ago..).order(:created_at, :id) } # id is the tie-breaker
 
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))

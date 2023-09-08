@@ -1,6 +1,5 @@
 ---
 Cop/IgnoredColumns:
-  Details: grace period
   Exclude:
     - 'app/models/loose_foreign_keys/deleted_record.rb'
     - 'ee/lib/ee/gitlab/background_migration/create_vulnerability_links.rb'

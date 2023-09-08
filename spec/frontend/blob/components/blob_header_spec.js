@@ -1,4 +1,6 @@
+import Vue from 'vue';
 import { shallowMount, mount } from '@vue/test-utils';
+import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import DefaultActions from '~/blob/components/blob_header_default_actions.vue';
@@ -10,8 +12,14 @@ import {
   SIMPLE_BLOB_VIEWER_TITLE,
 } from '~/blob/components/constants';
 import TableContents from '~/blob/components/table_contents.vue';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import WebIdeLink from 'ee_else_ce/vue_shared/components/web_ide_link.vue';
+import userInfoQuery from '~/blob/queries/user_info.query.graphql';
+import applicationInfoQuery from '~/blob/queries/application_info.query.graphql';
+import { Blob, userInfoMock, applicationInfoMock } from './mock_data';
 
-import { Blob } from './mock_data';
+Vue.use(VueApollo);
 
 describe('Blob Header Default Actions', () => {
   let wrapper;
@@ -26,14 +34,29 @@ describe('Blob Header Default Actions', () => {
   const findBlobFilePath = () => wrapper.findComponent(BlobFilepath);
   const findRichTextEditorBtn = () => wrapper.findByLabelText(RICH_BLOB_VIEWER_TITLE);
   const findSimpleTextEditorBtn = () => wrapper.findByLabelText(SIMPLE_BLOB_VIEWER_TITLE);
+  const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
 
-  function createComponent({
+  async function createComponent({
     blobProps = {},
     options = {},
     propsData = {},
     mountFn = shallowMount,
   } = {}) {
+    const userInfoMockResolver = jest.fn().mockResolvedValue({
+      data: { ...userInfoMock },
+    });
+
+    const applicationInfoMockResolver = jest.fn().mockResolvedValue({
+      data: { ...applicationInfoMock },
+    });
+
+    const fakeApollo = createMockApollo([
+      [userInfoQuery, userInfoMockResolver],
+      [applicationInfoQuery, applicationInfoMockResolver],
+    ]);
+
     wrapper = mountFn(BlobHeader, {
+      apolloProvider: fakeApollo,
       provide: {
         ...defaultProvide,
       },
@@ -43,12 +66,40 @@ describe('Blob Header Default Actions', () => {
       },
       ...options,
     });
+
+    await waitForPromises();
   }
 
   describe('rendering', () => {
-    it('matches the snapshot', () => {
-      createComponent();
-      expect(wrapper.element).toMatchSnapshot();
+    describe('WebIdeLink component', () => {
+      it('renders the WebIdeLink component with the correct props', async () => {
+        const { ideEditPath, editBlobPath, gitpodBlobUrl, pipelineEditorPath } = Blob;
+        const showForkSuggestion = false;
+        await createComponent({ propsData: { showForkSuggestion } });
+
+        expect(findWebIdeLink().props()).toMatchObject({
+          showEditButton: true,
+          editUrl: editBlobPath,
+          webIdeUrl: ideEditPath,
+          needsToFork: showForkSuggestion,
+          showPipelineEditorButton: Boolean(pipelineEditorPath),
+          pipelineEditorUrl: pipelineEditorPath,
+          gitpodUrl: gitpodBlobUrl,
+          showGitpodButton: applicationInfoMock.gitpodEnabled,
+          gitpodEnabled: userInfoMock.currentUser.gitpodEnabled,
+          userPreferencesGitpodPath: userInfoMock.currentUser.preferencesGitpodPath,
+          userProfileEnableGitpodPath: userInfoMock.currentUser.profileEnableGitpodPath,
+        });
+      });
+
+      it.each([[{ archived: true }], [{ editBlobPath: null }]])(
+        'does not render the WebIdeLink component when blob is archived or does not have an edit path',
+        (blobProps) => {
+          createComponent({ blobProps });
+
+          expect(findWebIdeLink().exists()).toBe(false);
+        },
+      );
     });
 
     describe('default render', () => {

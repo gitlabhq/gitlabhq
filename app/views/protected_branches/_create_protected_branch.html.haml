@@ -1,14 +1,9 @@
 - content_for :merge_access_levels do
   .merge_access_levels-container
-    = dropdown_tag(_('Select'),
-                    options: { toggle_class: 'js-allowed-to-merge wide',
-                    dropdown_class: 'dropdown-menu-selectable capitalize-header', dropdown_qa_selector: 'allowed_to_merge_dropdown_content', dropdown_testid: 'allowed-to-merge-dropdown',
-                    data: { field_name: 'protected_branch[merge_access_levels_attributes][0][access_level]', input_id: 'merge_access_levels_attributes', qa_selector: 'select_allowed_to_merge_dropdown' }})
+    .js-allowed-to-merge
+
 - content_for :push_access_levels do
   .push_access_levels-container
-    = dropdown_tag(_('Select'),
-                    options: { toggle_class: "js-allowed-to-push js-multiselect wide",
-                    dropdown_class: 'dropdown-menu-selectable capitalize-header', dropdown_qa_selector: 'allowed_to_push_dropdown_content' , dropdown_testid: 'allowed-to-push-dropdown',
-                    data: { field_name: 'protected_branch[push_access_levels_attributes][0][access_level]', input_id: 'push_access_levels_attributes', qa_selector: 'select_allowed_to_push_dropdown' }})
+    .js-allowed-to-push
 
 = render 'protected_branches/shared/create_protected_branch', protected_branch_entity: protected_branch_entity

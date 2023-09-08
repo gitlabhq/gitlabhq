@@ -73,17 +73,6 @@ export const projectMock = {
   },
 };
 
-export const userInfoMock = {
-  currentUser: {
-    id: '123',
-    gitpodEnabled: true,
-    preferencesGitpodPath: '/-/profile/preferences#user_gitpod_enabled',
-    profileEnableGitpodPath: '/-/profile?user%5Bgitpod_enabled%5D=true',
-  },
-};
-
-export const applicationInfoMock = { gitpodEnabled: true };
-
 export const propsMock = { path: 'some_file.js', projectPath: 'some/path' };
 
 export const refMock = 'default-ref';

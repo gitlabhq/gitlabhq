@@ -8,10 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This tutorial walks you through configuring a progressively more complex CI/CD pipeline
 through small, iterative steps. The pipeline is always fully functional,
-but it gains more functionality with each step.
+but it gains more functionality with each step. The goal is to build, test, and deploy
+a documentation site.
 
-When you finish this tutorial, you will have a new project on GitLab.com and a working documentation site on
-[Docusaurus](https://docusaurus.io/).
+When you finish this tutorial, you will have a new project on GitLab.com and a working documentation site
+using [Docusaurus](https://docusaurus.io/).
 
 To complete this tutorial, you will:
 

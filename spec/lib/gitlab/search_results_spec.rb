@@ -236,9 +236,14 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
         let_it_be(:closed_result) { create(:issue, :closed, project: project, title: 'foo closed') }
         let_it_be(:opened_result) { create(:issue, :opened, project: project, title: 'foo open') }
         let_it_be(:confidential_result) { create(:issue, :confidential, project: project, title: 'foo confidential') }
+        let_it_be(:unarchived_project) { project }
+        let_it_be(:archived_project) { create(:project, :public, :archived) }
+        let_it_be(:unarchived_result) { create(:issue, project: unarchived_project, title: 'foo unarchived') }
+        let_it_be(:archived_result) { create(:issue, project: archived_project, title: 'foo archived') }
 
         include_examples 'search results filtered by state'
         include_examples 'search results filtered by confidential'
+        include_examples 'search results filtered by archived', 'search_issues_hide_archived_projects'
       end
 
       context 'ordering' do

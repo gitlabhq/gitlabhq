@@ -3868,7 +3868,7 @@ msgstr ""
 msgid "AdminUsers|Bot"
 msgstr ""
 
-msgid "AdminUsers|Can create group"
+msgid "AdminUsers|Can create top level group"
 msgstr ""
 
 msgid "AdminUsers|Cannot sign in or access instance information"
@@ -9197,7 +9197,7 @@ msgstr ""
 msgid "Can be manually deployed to"
 msgstr ""
 
-msgid "Can create groups:"
+msgid "Can create top level groups:"
 msgstr ""
 
 msgid "Can not delete primary training"
@@ -54944,6 +54944,9 @@ msgid "all protected branches"
 msgstr ""
 
 msgid "allowed to fail"
+msgstr ""
+
+msgid "already assigned to an epic"
 msgstr ""
 
 msgid "already banned from namespace"

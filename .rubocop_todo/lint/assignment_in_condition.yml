@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/AssignmentInCondition:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/uploads_actions.rb'
     - 'app/controllers/concerns/verifies_with_email.rb'

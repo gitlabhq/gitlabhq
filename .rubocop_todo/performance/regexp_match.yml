@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Performance/RegexpMatch:
-  Details: grace period
   Exclude:
     - 'config/initializers/wikicloth_redos_patch.rb'
     - 'ee/app/controllers/concerns/audit_events/enforces_valid_date_params.rb'

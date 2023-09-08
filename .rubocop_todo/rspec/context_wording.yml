@@ -1,6 +1,5 @@
 ---
 RSpec/ContextWording:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/controllers/admin/audit_logs_controller_spec.rb'

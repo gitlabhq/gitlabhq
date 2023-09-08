@@ -190,8 +190,13 @@ module Gitlab
       issues = IssuesFinder.new(current_user, issuable_params.merge(finder_params)).execute
 
       unless default_project_filter
-        issues = issues.in_projects(project_ids_relation)
-          .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
+        project_ids = project_ids_relation
+        if Feature.enabled?(:search_issues_hide_archived_projects, current_user) && !filters[:include_archived]
+          project_ids = project_ids.non_archived
+        end
+
+        issues = issues.in_projects(project_ids)
+                       .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/420046')
       end
 
       apply_sort(issues, scope: 'issues')

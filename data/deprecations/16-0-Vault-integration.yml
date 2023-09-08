@@ -19,7 +19,7 @@
 #
 - title: "HashiCorp Vault integration will no longer use CI_JOB_JWT by default"
   announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
-  removal_milestone: "16.5"  # (required) The milestone when this feature is planned to be removed
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) Change to false if this is not a breaking change.
   reporter: dhershkovitch  # (required) GitLab username of the person reporting the change
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
@@ -40,7 +40,7 @@
     - CI/CD jobs that use the `id_tokens` keyword can use ID tokens with `secrets:vault`,
       and will not have any `CI_JOB_JWT*` tokens available.
     - Jobs that do not use the `id_tokens` keyword will continue to have the `CI_JOB_JWT*`
-      tokens available until GitLab 16.5.
+      tokens available until GitLab 17.0.
 # If an End of Support period applies, the announcement should be shared with GitLab Support
 # in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
 #

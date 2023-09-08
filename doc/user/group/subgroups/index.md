@@ -77,7 +77,7 @@ Prerequisites:
   - At least the Maintainer role for a group to create subgroups for it.
   - The [role determined by a setting](#change-who-can-create-subgroups). These users can create
     subgroups even if group creation is
-    [disabled by an Administrator](../../../administration/admin_area.md#prevent-a-user-from-creating-groups) in the user's settings.
+    [disabled by an Administrator](../../../administration/admin_area.md#prevent-a-user-from-creating-top-level-groups) in the user's settings.
 
 NOTE:
 You cannot host a GitLab Pages subgroup website with a top-level domain name. For example, `subgroupname.example.io`.

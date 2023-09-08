@@ -1,6 +1,5 @@
 ---
 RSpec/BeforeAllRoleAssignment:
-  Details: grace period
   Exclude:
     - 'ee/spec/components/namespaces/free_user_cap/non_owner_notification_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/free_user_cap/notification_alert_component_spec.rb'
