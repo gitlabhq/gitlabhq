@@ -226,4 +226,22 @@ describe('NavItem component', () => {
       });
     });
   });
+
+  describe('when `item.is_active` is true', () => {
+    it('scrolls into view', () => {
+      createWrapper({
+        item: { is_active: true },
+      });
+      expect(wrapper.element.scrollIntoView).toHaveBeenNthCalledWith(1, false);
+    });
+  });
+
+  describe('when `item.is_active` is false', () => {
+    it('scrolls not into view', () => {
+      createWrapper({
+        item: { is_active: false },
+      });
+      expect(wrapper.element.scrollIntoView).not.toHaveBeenCalled();
+    });
+  });
 });

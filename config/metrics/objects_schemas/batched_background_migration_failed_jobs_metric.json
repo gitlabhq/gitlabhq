@@ -1,0 +1,21 @@
+{
+  "type": "array",
+  "items": {
+    "type": [
+      {
+        "type": "object",
+        "properties": {
+          "job_class_name": {
+            "type": "string"
+          },
+          "table_name": {
+            "type": "string"
+          },
+          "failed_jobs": {
+            "type": "integer"
+          }
+        }
+      }
+    ]
+  }
+}

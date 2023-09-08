@@ -144,6 +144,11 @@ export default {
       return this.item.avatar_shape || 'rect';
     },
   },
+  mounted() {
+    if (this.item.is_active) {
+      this.$el.scrollIntoView(false);
+    }
+  },
   methods: {
     togglePointerEvents() {
       if (this.isMouseIn) {

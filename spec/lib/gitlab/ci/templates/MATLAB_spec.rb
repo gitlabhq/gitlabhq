@@ -20,7 +20,7 @@ RSpec.describe 'MATLAB.gitlab-ci.yml' do
     end
 
     it 'creates all jobs' do
-      expect(build_names).to include('command', 'test', 'test_artifacts')
+      expect(build_names).to include('command', 'test', 'test_artifacts', 'build')
     end
   end
 end

@@ -25950,10 +25950,19 @@ msgstr ""
 msgid "IssuesAnalytics|Avg/Month:"
 msgstr ""
 
+msgid "IssuesAnalytics|Closed"
+msgstr ""
+
 msgid "IssuesAnalytics|Create issues for projects in your group to track and see metrics for them."
 msgstr ""
 
+msgid "IssuesAnalytics|Failed to load chart. Please try again."
+msgstr ""
+
 msgid "IssuesAnalytics|Get started with issue analytics"
+msgstr ""
+
+msgid "IssuesAnalytics|Issues Opened vs Closed"
 msgstr ""
 
 msgid "IssuesAnalytics|Issues created"
@@ -25965,8 +25974,19 @@ msgstr ""
 msgid "IssuesAnalytics|Last 12 months (%{chartDateRange})"
 msgstr ""
 
+msgid "IssuesAnalytics|Opened"
+msgstr ""
+
+msgid "IssuesAnalytics|Overview"
+msgstr ""
+
 msgid "IssuesAnalytics|Sorry, your filter produced no results"
 msgstr ""
+
+msgid "IssuesAnalytics|This month (%{chartDateRange})"
+msgid_plural "IssuesAnalytics|Last %{monthsCount} months (%{chartDateRange})"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "IssuesAnalytics|To widen your search, change or remove filters in the filter bar above."
 msgstr ""

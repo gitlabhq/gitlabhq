@@ -22,9 +22,7 @@ module BulkImports
         def transform(_context, object)
           body = object_body(object).dup
 
-          mapped_usernames.each do |old_username, new_username|
-            body.gsub!(old_username, new_username) if body.include?(old_username)
-          end
+          body.gsub!(username_regex(mapped_usernames), mapped_usernames)
 
           matching_urls(object).each do |old_url, new_url|
             body.gsub!(old_url, new_url) if body.include?(old_url)
@@ -43,6 +41,10 @@ module BulkImports
 
         def mapped_usernames
           @mapped_usernames ||= ::BulkImports::UsersMapper.new(context: context).map_usernames
+        end
+
+        def username_regex(mapped_usernames)
+          @username_regex ||= Regexp.new(mapped_usernames.keys.map { |x| Regexp.escape(x) }.join('|'))
         end
 
         def add_matching_objects(collection, enum)

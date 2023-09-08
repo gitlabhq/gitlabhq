@@ -452,3 +452,169 @@ export const mockStore = {
   hasCI: true,
   exposedArtifactsPath: 'exposed_artifacts.json',
 };
+
+export const mockMergePipeline = {
+  id: 127,
+  user: {
+    id: 1,
+    name: 'Administrator',
+    username: 'root',
+    state: 'active',
+    avatar_url: null,
+    web_url: 'http://localhost:3000/root',
+    status_tooltip_html: null,
+    path: '/root',
+  },
+  active: true,
+  coverage: null,
+  source: 'push',
+  created_at: '2018-10-22T11:41:35.186Z',
+  updated_at: '2018-10-22T11:41:35.433Z',
+  path: '/root/ci-web-terminal/pipelines/127',
+  flags: {
+    latest: true,
+    stuck: true,
+    auto_devops: false,
+    yaml_errors: false,
+    retryable: false,
+    cancelable: true,
+    failure_reason: false,
+  },
+  details: {
+    status: {
+      icon: 'status_pending',
+      text: 'pending',
+      label: 'pending',
+      group: 'pending',
+      tooltip: 'pending',
+      has_details: true,
+      details_path: '/root/ci-web-terminal/pipelines/127',
+      illustration: null,
+      favicon:
+        '/assets/ci_favicons/favicon_status_pending-5bdf338420e5221ca24353b6bff1c9367189588750632e9a871b7af09ff6a2ae.png',
+    },
+    duration: null,
+    finished_at: null,
+    stages: [
+      {
+        name: 'test',
+        title: 'test: pending',
+        status: {
+          icon: 'status_pending',
+          text: 'pending',
+          label: 'pending',
+          group: 'pending',
+          tooltip: 'pending',
+          has_details: true,
+          details_path: '/root/ci-web-terminal/pipelines/127#test',
+          illustration: null,
+          favicon:
+            '/assets/ci_favicons/favicon_status_pending-5bdf338420e5221ca24353b6bff1c9367189588750632e9a871b7af09ff6a2ae.png',
+        },
+        path: '/root/ci-web-terminal/pipelines/127#test',
+        dropdown_path: '/root/ci-web-terminal/pipelines/127/stage.json?stage=test',
+      },
+    ],
+    artifacts: [],
+    manual_actions: [],
+    scheduled_actions: [],
+  },
+  ref: {
+    name: 'main',
+    path: '/root/ci-web-terminal/commits/main',
+    tag: false,
+    branch: true,
+  },
+  commit: {
+    id: 'aa1939133d373c94879becb79d91828a892ee319',
+    short_id: 'aa193913',
+    title: "Merge branch 'main-test' into 'main'",
+    created_at: '2018-10-22T11:41:33.000Z',
+    parent_ids: [
+      '4622f4dd792468993003caf2e3be978798cbe096',
+      '76598df914cdfe87132d0c3c40f80db9fa9396a4',
+    ],
+    message:
+      "Merge branch 'main-test' into 'main'\n\nUpdate .gitlab-ci.yml\n\nSee merge request root/ci-web-terminal!1",
+    author_name: 'Administrator',
+    author_email: 'admin@example.com',
+    authored_date: '2018-10-22T11:41:33.000Z',
+    committer_name: 'Administrator',
+    committer_email: 'admin@example.com',
+    committed_date: '2018-10-22T11:41:33.000Z',
+    author: {
+      id: 1,
+      name: 'Administrator',
+      username: 'root',
+      state: 'active',
+      avatar_url: null,
+      web_url: 'http://localhost:3000/root',
+      status_tooltip_html: null,
+      path: '/root',
+    },
+    author_gravatar_url: null,
+    commit_url:
+      'http://localhost:3000/root/ci-web-terminal/commit/aa1939133d373c94879becb79d91828a892ee319',
+    commit_path: '/root/ci-web-terminal/commit/aa1939133d373c94879becb79d91828a892ee319',
+  },
+  cancel_path: '/root/ci-web-terminal/pipelines/127/cancel',
+};
+
+export const mockPostMergeDeployments = [
+  {
+    id: 15,
+    name: 'review/diplo',
+    url: '/root/acets-review-apps/environments/15',
+    stop_url: '/root/acets-review-apps/environments/15/stop',
+    metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
+    metrics_monitoring_url: '/root/acets-review-apps/environments/15/metrics',
+    external_url: 'http://diplo.',
+    external_url_formatted: 'diplo.',
+    deployed_at: '2017-03-22T22:44:42.258Z',
+    deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+    changes: [
+      {
+        path: 'index.html',
+        external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/index.html',
+      },
+      {
+        path: 'imgs/gallery.html',
+        external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+      },
+      {
+        path: 'about/',
+        external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/about/',
+      },
+    ],
+    status: 'success',
+  },
+];
+
+export const mockDeployment = {
+  id: 15,
+  name: 'review/diplo',
+  url: '/root/acets-review-apps/environments/15',
+  stop_url: '/root/acets-review-apps/environments/15/stop',
+  metrics_url: '/root/acets-review-apps/environments/15/deployments/1/metrics',
+  metrics_monitoring_url: '/root/acets-review-apps/environments/15/metrics',
+  external_url: 'http://diplo.',
+  external_url_formatted: 'diplo.',
+  deployed_at: '2017-03-22T22:44:42.258Z',
+  deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+  changes: [
+    {
+      path: 'index.html',
+      external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/index.html',
+    },
+    {
+      path: 'imgs/gallery.html',
+      external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+    },
+    {
+      path: 'about/',
+      external_url: 'http://root-main-patch-91341.volatile-watch.surge.sh/about/',
+    },
+  ],
+  status: SUCCESS,
+  environment_available: true,
+};

@@ -260,10 +260,7 @@ To delete Google Cloud Logging streaming destinations to a top-level group:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
-
-FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
-`ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
+> - Instance streaming destinations [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) in GitLab 16.4. [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed.
 
 Manage HTTP streaming destinations for an entire instance.
 
@@ -370,10 +367,7 @@ To delete only the custom HTTP headers for a streaming destination:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
-
-FLAG:
-On self-managed GitLab, by default this feature is enabled. To disable it, an administrator can [disable the feature flag](../feature_flags.md) named
-`ff_external_audit_events`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. The feature is ready for production use.
+> - Instance streaming destinations [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) in GitLab 16.4. [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/417708) removed.
 
 Each streaming destination has a unique verification token (`verificationToken`) that can be used to verify the authenticity of the event. This
 token is either specified by the Owner or generated automatically when the event destination is created and cannot be changed.

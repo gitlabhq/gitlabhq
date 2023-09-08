@@ -3620,10 +3620,10 @@ to specific files.
 WARNING:
 You should use `rules: changes` only with **branch pipelines** or **merge request pipelines**.
 You can use `rules: changes` with other pipeline types, but `rules: changes` always
-evaluates to true when there is no Git `push` event. Tag pipelines, scheduled pipelines, manual pipelines,
-and so on do **not** have a Git `push` event associated with them. A `rules: changes` job
-is **always** added to those pipelines if there is no `if` that limits the job to
-branch or merge request pipelines.
+evaluates to true for new branch pipelines or when there is no Git `push` event. Pipelines like tag pipelines,
+scheduled pipelines, and manual pipelines, all do **not**
+have a Git `push` event associated with them. In these cases, use [`rules: changes: compare_to`](#ruleschangescompare_to)
+to specify the branch to compare against.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 

@@ -24,7 +24,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
     create(
       :merge_request,
       source_project: project,
-      description: 'https://my.gitlab.com/source/full/path/-/merge_requests/1 @source_username'
+      description: 'https://my.gitlab.com/source/full/path/-/merge_requests/1 @source_username? @bob, @alice!'
     )
   end
 
@@ -33,7 +33,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       :note,
       project: project,
       noteable: issue,
-      note: 'https://my.gitlab.com/source/full/path/-/issues/1 @older_username and not_a@username'
+      note: 'https://my.gitlab.com/source/full/path/-/issues/1 @older_username, not_a@username, and @old_username.'
     )
   end
 
@@ -43,6 +43,15 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       project: project,
       noteable: mr,
       note: 'https://my.gitlab.com/source/full/path/-/merge_requests/1 @same_username'
+    )
+  end
+
+  let(:interchanged_usernames) do
+    create(
+      :note,
+      project: project,
+      noteable: mr,
+      note: '@manuelgrabowski-admin'
     )
   end
 
@@ -64,7 +73,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       project: project,
       system: true,
       noteable: issue,
-      note: "mentioned in merge request created by @source_username",
+      note: "mentioned in merge request created by @source_username.",
       note_html: 'empty'
     )
   end
@@ -79,7 +88,11 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       .and_return({
         'old_username' => 'new_username',
         'older_username' => 'newer_username',
-        'source_username' => 'destination_username'
+        'source_username' => 'destination_username',
+        'bob' => 'alice-gdk',
+        'alice' => 'bob-gdk',
+        'manuelgrabowski-admin' => 'manuelgrabowski',
+        'manuelgrabowski' => 'manuelgrabowski-admin'
       })
   end
 
@@ -140,11 +153,33 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       expect(transformed_username_system_note.note).not_to include("@source_username")
 
       expect(transformed_issue.description).to eq('http://localhost:80/namespace1/project-1/-/issues/1')
-      expect(transformed_mr.description).to eq("#{expected_url} @destination_username")
+      expect(transformed_mr.description).to eq("#{expected_url} @destination_username? @alice-gdk, @bob-gdk!")
       expect(transformed_note.note).to eq("#{expected_url} @same_username")
-      expect(transformed_issue_note.note).to include("@newer_username and not_a@username")
+      expect(transformed_issue_note.note).to include("@newer_username, not_a@username, and @new_username.")
       expect(transformed_system_note.note).to eq("mentioned in merge request !#{mr.iid} created by @new_username")
-      expect(transformed_username_system_note.note).to include("@destination_username")
+      expect(transformed_username_system_note.note).to include("@destination_username.")
+    end
+
+    it 'handles situations where old usernames are substrings of new usernames' do
+      transformed_mr = subject.transform(context, mr)
+
+      expect(transformed_mr.description).to include("@alice-gdk")
+      expect(transformed_mr.description).not_to include("@bob-gdk-gdk")
+    end
+
+    it 'handles situations where old and new usernames are interchanged' do
+      # e.g
+      # |------------------------|-------------------------|
+      # | old_username           | new_username            |
+      # |------------------------|-------------------------|
+      # | @manuelgrabowski-admin | @manuelgrabowski        |
+      # | @manuelgrabowski       | @manuelgrabowski-admin  |
+      # |------------------------|-------------------------|
+
+      transformed_interchanged_usernames = subject.transform(context, interchanged_usernames)
+
+      expect(transformed_interchanged_usernames.note).to include("@manuelgrabowski")
+      expect(transformed_interchanged_usernames.note).not_to include("@manuelgrabowski-admin")
     end
 
     context 'when object does not have reference or username' do
