@@ -66,7 +66,7 @@ Prerequisite:
    This service account is associated with the entire instance, not a specific group
    or project in the instance.
 
-1. [Create a personal access token](../../api/users.md#create-service-account-user)
+1. [Create a personal access token](../../api/groups.md#create-personal-access-token-for-service-account-user)
    for the service account user.
 
    You define the scopes for the service account by [setting the scopes for the personal access token](personal_access_tokens.md#personal-access-token-scopes).

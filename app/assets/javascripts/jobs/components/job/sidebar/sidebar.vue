@@ -17,7 +17,6 @@ export default {
   i18n: {
     ...JOB_SIDEBAR_COPY,
   },
-  borderTopClass: ['gl-border-t-solid', 'gl-border-t-1', 'gl-border-t-gray-100'],
   forwardDeploymentFailureModalId,
   components: {
     ArtifactsBlock,
@@ -74,49 +73,38 @@ export default {
 <template>
   <aside class="right-sidebar build-sidebar" data-offset-top="101" data-spy="affix">
     <div class="sidebar-container">
-      <div class="blocks-container">
+      <div class="blocks-container gl-p-4">
         <sidebar-header
+          class="block gl-pb-4! gl-mb-2"
           :rest-job="job"
           :job-id="job.id"
           @updateVariables="$emit('updateVariables')"
         />
 
-        <job-sidebar-details-container class="gl-py-4" :class="$options.borderTopClass" />
+        <job-sidebar-details-container class="block gl-mb-2" />
 
         <artifacts-block
           v-if="hasArtifact"
-          class="gl-py-4"
-          :class="$options.borderTopClass"
+          class="block gl-mb-2"
           :artifact="job.artifact"
           :help-url="artifactHelpUrl"
         />
 
-        <trigger-block
-          v-if="hasTriggers"
-          class="gl-py-4"
-          :class="$options.borderTopClass"
-          :trigger="job.trigger"
-        />
+        <trigger-block v-if="hasTriggers" class="block gl-mb-2" :trigger="job.trigger" />
 
-        <commit-block
-          :commit="commit"
-          class="gl-py-4"
-          :class="$options.borderTopClass"
-          :merge-request="job.merge_request"
-        />
+        <commit-block class="block gl-mb-2" :commit="commit" :merge-request="job.merge_request" />
 
         <stages-dropdown
           v-if="job.pipeline"
-          class="gl-py-4"
-          :class="$options.borderTopClass"
+          class="block gl-mb-2"
           :pipeline="job.pipeline"
           :selected-stage="selectedStage"
           :stages="stages"
           @requestSidebarStageDropdown="fetchJobsForStage"
         />
-      </div>
 
-      <jobs-container v-if="jobs.length" :job-id="job.id" :jobs="jobs" />
+        <jobs-container v-if="jobs.length" :job-id="job.id" :jobs="jobs" />
+      </div>
     </div>
     <job-retry-forward-deployment-modal
       v-if="shouldShowJobRetryForwardDeploymentModal"

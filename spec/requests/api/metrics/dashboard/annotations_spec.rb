@@ -10,13 +10,12 @@ RSpec.describe API::Metrics::Dashboard::Annotations, feature_category: :metrics 
   let(:dashboard) { 'config/prometheus/common_metrics.yml' }
   let(:starting_at) { Time.now.iso8601 }
   let(:ending_at) { 1.hour.from_now.iso8601 }
-  let(:params) { attributes_for(:metrics_dashboard_annotation, environment: environment, starting_at: starting_at, ending_at: ending_at, dashboard_path: dashboard) }
+  let(:params) { { environment: environment, starting_at: starting_at, ending_at: ending_at, dashboard_path: dashboard, description: 'desc' } }
 
   shared_examples 'POST /:source_type/:id/metrics_dashboard/annotations' do |source_type|
     let(:url) { "/#{source_type.pluralize}/#{source.id}/metrics_dashboard/annotations" }
 
     before do
-      stub_feature_flags(remove_monitor_metrics: false)
       project.add_developer(user)
     end
 

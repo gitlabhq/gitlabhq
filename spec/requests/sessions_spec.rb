@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe 'Sessions', feature_category: :system_access do
   include SessionHelpers
 
-  context 'authentication', :allow_forgery_protection do
-    let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
+  context 'for authentication', :allow_forgery_protection do
     it 'logout does not require a csrf token' do
       login_as(user)
 
@@ -17,16 +17,11 @@ RSpec.describe 'Sessions', feature_category: :system_access do
     end
   end
 
-  describe 'about_gitlab_active_user' do
-    before do
-      allow(::Gitlab).to receive(:com?).and_return(true)
-    end
-
-    let(:user) { create(:user) }
-
+  describe 'about_gitlab_active_user', :saas do
     context 'when user signs in' do
       it 'sets marketing cookie' do
         post user_session_path(user: { login: user.username, password: user.password })
+
         expect(response.cookies['about_gitlab_active_user']).to be_present
       end
     end
@@ -34,12 +29,24 @@ RSpec.describe 'Sessions', feature_category: :system_access do
     context 'when user uses remember_me' do
       it 'sets marketing cookie' do
         post user_session_path(user: { login: user.username, password: user.password, remember_me: true })
+
         expect(response.cookies['about_gitlab_active_user']).to be_present
       end
     end
 
+    context 'when user has pending invitations' do
+      it 'accepts the invitations and stores a user location' do
+        create(:group_member, :invited, invite_email: user.email)
+        member = create(:group_member, :invited, invite_email: user.email)
+
+        post user_session_path(user: { login: user.username, password: user.password })
+
+        expect(response).to redirect_to(activity_group_path(member.source))
+      end
+    end
+
     context 'when using two-factor authentication via OTP' do
-      let(:user) { create(:user, :two_factor, :invalid) }
+      let_it_be(:user) { create(:user, :two_factor, :invalid) }
       let(:user_params) { { login: user.username, password: user.password } }
 
       def authenticate_2fa(otp_attempt:)
@@ -74,6 +81,7 @@ RSpec.describe 'Sessions', feature_category: :system_access do
 
       it 'deletes marketing cookie' do
         post(destroy_user_session_path)
+
         expect(response.cookies['about_gitlab_active_user']).to be_nil
       end
     end
@@ -85,6 +93,7 @@ RSpec.describe 'Sessions', feature_category: :system_access do
 
       it 'does not set marketing cookie' do
         post user_session_path(user: { login: user.username, password: user.password })
+
         expect(response.cookies['about_gitlab_active_user']).to be_nil
       end
     end

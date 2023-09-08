@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Geo with external PostgreSQL instances **(PREMIUM SELF)**
 
 This document is relevant if you are using a PostgreSQL instance that is not
-managed by the Linux package. This includes cloud-managed instances like Amazon RDS, or
+managed by the Linux package. This includes cloud-managed instances like Amazon RDS (Aurora is not supported), or
 manually installed and configured PostgreSQL instances.
 
 Ensure that you are using one of the PostgreSQL versions that

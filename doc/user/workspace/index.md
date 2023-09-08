@@ -128,13 +128,15 @@ The Web IDE is the only code editor available for workspaces.
 The Web IDE is powered by the [GitLab VS Code fork](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork).
 For more information, see [Web IDE](../project/web_ide/index.md).
 
-## Private repositories
+## Personal access token
 
-You cannot [create a workspace](configuration.md#set-up-a-workspace) for a private repository
-because GitLab does not inject any credentials into the workspace.
-You can only create a workspace for public repositories that have a devfile.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129715) in GitLab 16.4.
 
-From a workspace, you can clone any repository manually.
+When you [create a workspace](configuration.md#set-up-a-workspace), you get a personal access token with `write_repository` permission.
+This token is used to initially clone the project while starting the workspace.
+
+Any Git operation you perform in the workspace uses this token for authentication and authorization.
+When you terminate the workspace, the token is revoked.
 
 ## Pod interaction in a cluster
 

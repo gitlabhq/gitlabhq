@@ -71,7 +71,7 @@ The search index updates after you:
 > - Elasticsearch 6.8 support is removed with GitLab 15.0.
 > - Upgrading from GitLab 14.10 to 15.0 requires that you are using any version of Elasticsearch 7.x.
 
-You are not required to change the GitLab configuration when you upgrade Elasticsearch.
+You don't have to change the GitLab configuration when you upgrade Elasticsearch. You should pause indexing during an Elasticsearch upgrade so changes can still be tracked. When the Elasticsearch cluster is fully upgraded and active, [resume indexing](#unpause-indexing).
 
 ## Elasticsearch repository indexer
 

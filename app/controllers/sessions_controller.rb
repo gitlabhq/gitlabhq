@@ -16,6 +16,8 @@ class SessionsController < Devise::SessionsController
   include GoogleSyndicationCSP
   include PreferredLanguageSwitcher
   include SkipsAlreadySignedInMessage
+  include AcceptsPendingInvitations
+  extend ::Gitlab::Utils::Override
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
   skip_before_action :check_password_expiration, only: [:destroy]
@@ -78,6 +80,8 @@ class SessionsController < Devise::SessionsController
         flash[:notice] = nil
       end
 
+      accept_pending_invitations
+
       log_audit_event(current_user, resource, with: authentication_method)
       log_user_activity(current_user)
     end
@@ -93,6 +97,13 @@ class SessionsController < Devise::SessionsController
   end
 
   private
+
+  override :after_pending_invitations_hook
+  def after_pending_invitations_hook
+    member = resource.members.last
+
+    store_location_for(:user, member.source.activity_path) if member
+  end
 
   def captcha_enabled?
     request.headers[CAPTCHA_HEADER] && helpers.recaptcha_enabled?

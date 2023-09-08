@@ -48,13 +48,15 @@ which you can customize to meet the specific needs of each project.
   You can use any agent defined under the root group of your project,
   provided that remote development is properly configured for that agent.
 - You must have at least the Developer role in the root group.
-- In each public project you want to use this feature for, create a [devfile](index.md#devfile):
+- In each project you want to use this feature for, create a [devfile](index.md#devfile):
   1. On the left sidebar, select **Search or go to** and find your project.
   1. In the root directory of your project, create a file named `.devfile.yaml`.
      You can use one of the [example configurations](index.md#example-configurations).
 - Ensure the container images used in the devfile support [arbitrary user IDs](index.md#arbitrary-user-ids).
 
 ### Create a workspace
+
+> Support for private projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124273) in GitLab 16.4.
 
 To create a workspace:
 
@@ -63,7 +65,6 @@ To create a workspace:
 1. Select **Workspaces**.
 1. Select **New workspace**.
 1. From the **Select project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites).
-   You can only create workspaces for public projects.
 1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates.
    This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.

@@ -2859,7 +2859,7 @@ Input type: `DeleteAnnotationInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdeleteannotationclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdeleteannotationid"></a>`id` | [`MetricsDashboardAnnotationID!`](#metricsdashboardannotationid) | Global ID of the annotation to delete. |
+| <a id="mutationdeleteannotationid"></a>`id` | [`String!`](#string) | Global ID of the annotation to delete. |
 
 #### Fields
 
@@ -3732,6 +3732,32 @@ Input type: `ExternalAuditEventDestinationUpdateInput`
 | <a id="mutationexternalauditeventdestinationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationexternalauditeventdestinationupdateexternalauditeventdestination"></a>`externalAuditEventDestination` | [`ExternalAuditEventDestination`](#externalauditeventdestination) | Updated destination. |
 
+### `Mutation.geoRegistriesBulkUpdate`
+
+Mutates multiple Geo registries for a given registry class. Does not mutate the registries if `geo_registries_update_mutation` feature flag is disabled.
+
+WARNING:
+**Introduced** in 16.4.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `GeoRegistriesBulkUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgeoregistriesbulkupdateaction"></a>`action` | [`GeoRegistriesBulkAction!`](#georegistriesbulkaction) | Action to be executed on Geo registries. |
+| <a id="mutationgeoregistriesbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgeoregistriesbulkupdateregistryclass"></a>`registryClass` | [`GeoRegistryClass!`](#georegistryclass) | Class of the Geo registries to be updated. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationgeoregistriesbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgeoregistriesbulkupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationgeoregistriesbulkupdateregistryclass"></a>`registryClass` | [`GeoRegistryClass`](#georegistryclass) | Updated Geo registry class. |
+
 ### `Mutation.geoRegistriesUpdate`
 
 Mutates a Geo registry. Does not mutate the registry entry if `geo_registries_update_mutation` feature flag is disabled.
@@ -3748,7 +3774,7 @@ Input type: `GeoRegistriesUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationgeoregistriesupdateaction"></a>`action` | [`GeoRegistryAction!`](#georegistryaction) | Action to be executed on a Geo registry. |
 | <a id="mutationgeoregistriesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationgeoregistriesupdateregistryclass"></a>`registryClass` | [`GeoRegistryClass!`](#georegistryclass) | Class of the Geo registry to be updated. |
+| <a id="mutationgeoregistriesupdateregistryclass"></a>`registryClass` | [`GeoRegistryClass`](#georegistryclass) | Class of the Geo registry to be updated. |
 | <a id="mutationgeoregistriesupdateregistryid"></a>`registryId` | [`GeoBaseRegistryID!`](#geobaseregistryid) | ID of the Geo registry entry to be updated. |
 
 #### Fields
@@ -27012,9 +27038,18 @@ List of statuses for forecasting model.
 | <a id="forecaststatusready"></a>`READY` | Forecast is ready. |
 | <a id="forecaststatusunavailable"></a>`UNAVAILABLE` | Forecast is unavailable. |
 
+### `GeoRegistriesBulkAction`
+
+Action to trigger on multiple Geo registries.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="georegistriesbulkactionresync_all"></a>`RESYNC_ALL` | Resync multiple registries. |
+| <a id="georegistriesbulkactionreverify_all"></a>`REVERIFY_ALL` | Reverify multiple registries. |
+
 ### `GeoRegistryAction`
 
-Action to trigger on one or more Geo registries.
+Action to trigger on an individual Geo registry.
 
 | Value | Description |
 | ----- | ----------- |
@@ -29063,12 +29098,6 @@ An example `ListID` is: `"gid://gitlab/List/1"`.
 A `MergeRequestID` is a global ID. It is encoded as a string.
 
 An example `MergeRequestID` is: `"gid://gitlab/MergeRequest/1"`.
-
-### `MetricsDashboardAnnotationID`
-
-A `MetricsDashboardAnnotationID` is a global ID. It is encoded as a string.
-
-An example `MetricsDashboardAnnotationID` is: `"gid://gitlab/Metrics::Dashboard::Annotation/1"`.
 
 ### `MilestoneID`
 

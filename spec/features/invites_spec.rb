@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_category: :experimentation_expansion do
   let_it_be(:owner) { create(:user, name: 'John Doe') }
-  let_it_be(:group) { create(:group, name: 'Owned') }
+  # private will ensure we really have access to the group when we land on the activity page
+  let_it_be(:group) { create(:group, :private, name: 'Owned') }
   let_it_be(:project) { create(:project, :repository, namespace: group) }
 
   let(:group_invite) { group.group_members.invite.last }
@@ -80,7 +81,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
         context 'when invite clicked and not signed in' do
           before do
-            visit invite_path(group_invite.raw_invite_token)
+            visit invite_path(group_invite.raw_invite_token, invite_type: Emails::Members::INITIAL_INVITE)
           end
 
           it 'sign in, grants access and redirects to group activity page' do
@@ -88,7 +89,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
             gitlab_sign_in(user, remember: true, visit: false)
 
-            expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+            expect_to_be_on_group_activity_page(group)
           end
         end
 
@@ -149,6 +150,10 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
             end
           end
         end
+
+        def expect_to_be_on_group_activity_page(group)
+          expect(page).to have_current_path(activity_group_path(group))
+        end
       end
     end
   end
@@ -201,11 +206,11 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         context 'when the user sign-up using a different email address' do
           let(:invite_email) { build_stubbed(:user).email }
 
-          it 'signs up and redirects to the activity page' do
+          it 'signs up and redirects to the projects dashboard' do
             fill_in_sign_up_form(new_user)
             fill_in_welcome_form
 
-            expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+            expect_to_be_on_projects_dashboard_with_zero_authorized_projects
           end
         end
       end
@@ -255,13 +260,13 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
               stub_feature_flags(identity_verification: false)
             end
 
-            it 'signs up and redirects to the group activity page' do
+            it 'signs up and redirects to the projects dashboard' do
               fill_in_sign_up_form(new_user)
               confirm_email(new_user)
               gitlab_sign_in(new_user, remember: true, visit: false)
               fill_in_welcome_form
 
-              expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+              expect_to_be_on_projects_dashboard_with_zero_authorized_projects
             end
           end
 
@@ -271,14 +276,21 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
               allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
             end
 
-            it 'signs up and redirects to the group activity page' do
+            it 'signs up and redirects to the projects dashboard' do
               fill_in_sign_up_form(new_user)
               fill_in_welcome_form
 
-              expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+              expect_to_be_on_projects_dashboard_with_zero_authorized_projects
             end
           end
         end
+      end
+
+      def expect_to_be_on_projects_dashboard_with_zero_authorized_projects
+        expect(page).to have_current_path(dashboard_projects_path)
+
+        expect(page).to have_content _('Welcome to GitLab')
+        expect(page).to have_content _('Faster releases. Better code. Less pain.')
       end
     end
 

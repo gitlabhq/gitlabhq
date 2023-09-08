@@ -192,26 +192,6 @@ RSpec.describe InvitesController do
               expect(session[:invite_email]).to eq(member.invite_email)
             end
 
-            context 'with stored location for user' do
-              it 'stores the correct path for user' do
-                request
-
-                expect(controller.stored_location_for(:user)).to eq(activity_project_path(member.source))
-              end
-
-              context 'with relative root' do
-                before do
-                  stub_default_url_options(script_name: '/gitlab')
-                end
-
-                it 'stores the correct path for user' do
-                  request
-
-                  expect(controller.stored_location_for(:user)).to eq(activity_project_path(member.source))
-                end
-              end
-            end
-
             context 'when it is part of our invite email experiment' do
               let(:extra_params) { { invite_type: 'initial_email' } }
 

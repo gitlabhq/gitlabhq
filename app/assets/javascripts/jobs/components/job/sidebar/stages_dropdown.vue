@@ -1,20 +1,20 @@
 <script>
 import { GlLink, GlDisclosureDropdown, GlSprintf } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { s__ } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { clickCopyToClipboardButton } from '~/behaviors/copy_to_clipboard';
 import { keysFor, MR_COPY_SOURCE_BRANCH_NAME } from '~/behaviors/shortcuts/keybindings';
 
 export default {
   components: {
-    CiIcon,
     ClipboardButton,
     GlDisclosureDropdown,
     GlLink,
     GlSprintf,
+    CiBadgeLink,
   },
   props: {
     pipeline: {
@@ -51,13 +51,13 @@ export default {
     },
     pipelineInfo() {
       if (!this.hasRef) {
-        return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id}');
+        return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id} %{status}');
       }
       if (!this.isTriggeredByMergeRequest) {
-        return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{ref}');
+        return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id} %{status} for %{ref}');
       }
       if (!this.isMergeRequestPipeline) {
-        return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source}');
+        return s__('Job|%{boldStart}Pipeline%{boldEnd} %{id} %{status} for %{mrId} with %{source}');
       }
 
       return s__(
@@ -94,24 +94,26 @@ export default {
 </script>
 <template>
   <div class="dropdown">
-    <div class="js-pipeline-info" data-testid="pipeline-info">
-      <ci-icon :status="pipeline.details.status" />
+    <div class="gl-display-flex gl-flex-wrap gl-gap-2 js-pipeline-info" data-testid="pipeline-info">
       <gl-sprintf :message="pipelineInfo">
         <template #bold="{ content }">
-          <span class="font-weight-bold">{{ content }}</span>
+          <span class="gl-display-flex gl-font-weight-bold">{{ content }}</span>
         </template>
         <template #id>
           <gl-link
             :href="pipeline.path"
-            class="js-pipeline-path link-commit"
+            class="js-pipeline-path link-commit gl-text-blue-500!"
             data-testid="pipeline-path"
             >#{{ pipeline.id }}</gl-link
           >
         </template>
+        <template #status>
+          <ci-badge-link :status="pipeline.details.status" badge-size="sm" />
+        </template>
         <template #mrId>
           <gl-link
             :href="pipeline.merge_request.path"
-            class="link-commit ref-name"
+            class="link-commit ref-name gl-text-blue-500!"
             data-testid="mr-link"
             >!{{ pipeline.merge_request.iid }}</gl-link
           >
@@ -119,7 +121,7 @@ export default {
         <template #ref>
           <gl-link
             :href="pipeline.ref.path"
-            class="link-commit ref-name"
+            class="link-commit ref-name gl-mt-1"
             data-testid="source-ref-link"
             >{{ pipeline.ref.name }}</gl-link
           ><clipboard-button
@@ -134,7 +136,7 @@ export default {
         <template #source>
           <gl-link
             :href="pipeline.merge_request.source_branch_path"
-            class="link-commit ref-name"
+            class="link-commit ref-name gl-mt-1"
             data-testid="source-branch-link"
             >{{ pipeline.merge_request.source_branch }}</gl-link
           ><clipboard-button
@@ -149,7 +151,7 @@ export default {
         <template #target>
           <gl-link
             :href="pipeline.merge_request.target_branch_path"
-            class="link-commit ref-name"
+            class="link-commit ref-name gl-mt-1"
             data-testid="target-branch-link"
             >{{ pipeline.merge_request.target_branch }}</gl-link
           ><clipboard-button
@@ -167,7 +169,7 @@ export default {
       :toggle-text="selectedStage"
       :items="dropdownItems"
       block
-      class="gl-mt-3"
+      class="gl-mt-2"
     />
   </div>
 </template>

@@ -40,6 +40,37 @@ module API
           @candidate ||= find_candidate!(params[:run_id])
         end
 
+        def candidates_order_params(params)
+          find_params = {
+            order_by: nil,
+            order_by_type: nil,
+            sort: nil
+          }
+
+          return find_params if params[:order_by].blank?
+
+          order_by_split = params[:order_by].split(' ')
+          order_by_column_split = order_by_split[0].split('.')
+          if order_by_column_split.size == 1
+            order_by_column = order_by_column_split[0]
+            order_by_column_type = 'column'
+          elsif order_by_column_split[0] == 'metrics'
+            order_by_column = order_by_column_split[1]
+            order_by_column_type = 'metric'
+          else
+            order_by_column = nil
+            order_by_column_type = nil
+          end
+
+          order_by_sort = order_by_split[1]
+
+          {
+            order_by: order_by_column,
+            order_by_type: order_by_column_type,
+            sort: order_by_sort
+          }
+        end
+
         def find_experiment!(iid, name)
           experiment_repository.by_iid_or_name(iid: iid, name: name) || resource_not_found!
         end
