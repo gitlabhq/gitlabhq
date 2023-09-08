@@ -107,6 +107,7 @@ describe('IssuableHeader component', () => {
       expect(findConfidentialityBadge().props()).toEqual({
         issuableType: 'issue',
         workspaceType: 'project',
+        hideTextInSmallScreens: false,
       });
     });
 

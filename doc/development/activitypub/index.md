@@ -15,12 +15,21 @@ named `activity_pub` and `activity_pub_project`.
 On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 
+Usage of ActivityPub in GitLab is governed by the
+[GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+
 The goal of those documents is to provide an implementation path for adding
 Fediverse capabilities to GitLab.
 
 This page describes the conceptual and high level point of view, while
 sub-pages discuss implementation in more technical depth (as in, how to
 implement this in the actual rails codebase of GitLab).
+
+This feature requires two feature flags:
+
+- `activity_pub`: Enables or disables all ActivityPub-related features.
+- `activity_pub_project`: Enables and disable ActivityPub features specific to
+  projects. Requires the `activity_pub` flag to also be enabled.
 
 ## What
 
@@ -204,4 +213,4 @@ brings something immediately.
 1. **Implement ActivityPub to submit cross-instance merge requests** to enable
    submitting merge requests to other instances.
 
-For now, see [how to implement an ActivityPub actor](actor.md).
+For now, see [how to implement an ActivityPub actor](actors/index.md).

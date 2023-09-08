@@ -6,6 +6,7 @@ if (appId && host) {
   window.glClient = glClientSDK({
     appId,
     host,
+    hasCookieConsent: true,
     plugins: {
       clientHints: false,
       linkTracking: false,

@@ -1,15 +1,20 @@
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlIcon } from '@gitlab/ui';
 
 import { shallowMount } from '@vue/test-utils';
 import { TYPE_ISSUE, TYPE_EPIC, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
-const createComponent = ({ workspaceType = WORKSPACE_PROJECT, issuableType = TYPE_ISSUE } = {}) =>
+const createComponent = ({
+  workspaceType = WORKSPACE_PROJECT,
+  issuableType = TYPE_ISSUE,
+  hideTextInSmallScreens = false,
+} = {}) =>
   shallowMount(ConfidentialityBadge, {
     propsData: {
       workspaceType,
       issuableType,
+      hideTextInSmallScreens,
     },
   });
 
@@ -19,6 +24,11 @@ describe('ConfidentialityBadge', () => {
   beforeEach(() => {
     wrapper = createComponent();
   });
+
+  const findConfidentialityBadgeText = () =>
+    wrapper.find('[data-testid="confidential-badge-text"]');
+  const findBadge = () => wrapper.findComponent(GlBadge);
+  const findBadgeIcon = () => wrapper.findComponent(GlIcon);
 
   it.each`
     workspaceType        | issuableType  | expectedTooltip
@@ -32,14 +42,30 @@ describe('ConfidentialityBadge', () => {
         issuableType,
       });
 
-      const badgeEl = wrapper.findComponent(GlBadge);
-
-      expect(badgeEl.props()).toMatchObject({
-        icon: 'eye-slash',
+      expect(findBadgeIcon().props('name')).toBe('eye-slash');
+      expect(findBadge().props()).toMatchObject({
         variant: 'warning',
       });
-      expect(badgeEl.attributes('title')).toBe(expectedTooltip);
-      expect(badgeEl.text()).toBe('Confidential');
+      expect(findBadge().attributes('title')).toBe(expectedTooltip);
+      expect(findBadge().text()).toBe('Confidential');
     },
   );
+
+  it('does not have `gl-sm-display-block` and `gl-display-none` when `hideTextInSmallScreens` is false', () => {
+    wrapper = createComponent({ hideTextInSmallScreens: false });
+
+    expect(findConfidentialityBadgeText().classes()).not.toContain(
+      'gl-display-none',
+      'gl-sm-display-block',
+    );
+  });
+
+  it('has `gl-sm-display-block` and `gl-display-none` when `hideTextInSmallScreens` is true', () => {
+    wrapper = createComponent({ hideTextInSmallScreens: true });
+
+    expect(findConfidentialityBadgeText().classes()).toContain(
+      'gl-display-none',
+      'gl-sm-display-block',
+    );
+  });
 });

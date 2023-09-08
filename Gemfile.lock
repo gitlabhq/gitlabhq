@@ -882,8 +882,8 @@ GEM
     ice_nine (0.11.2)
     imagen (0.1.8)
       parser (>= 2.5, != 2.5.1.1)
-    invisible_captcha (2.0.0)
-      rails (>= 5.0)
+    invisible_captcha (2.1.0)
+      rails (>= 5.2)
     ipaddr (1.2.5)
     ipaddress (0.8.3)
     jaeger-client (1.1.0)
@@ -1873,7 +1873,7 @@ DEPENDENCIES
   html2text
   httparty (~> 0.21.0)
   icalendar
-  invisible_captcha (~> 2.0.0)
+  invisible_captcha (~> 2.1.0)
   ipaddr (~> 1.2.5)
   ipaddress (~> 0.8.3)
   ipynbdiff!
