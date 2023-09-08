@@ -48,7 +48,8 @@ RSpec.describe 'Content Security Policy', feature_category: :application_instrum
       it_behaves_like 'snowplow is not in the CSP'
     end
 
-    context 'when vite enabled during development' do
+    context 'when vite enabled during development',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424334' do
       before do
         stub_rails_env('development')
         stub_feature_flags(vite: true)

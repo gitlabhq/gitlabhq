@@ -41342,7 +41342,7 @@ msgstr ""
 msgid "ScanResultPolicy|When %{scanType} in an open merge request targeting %{branches} %{branchExceptions} and the licenses match all of the following criteria:"
 msgstr ""
 
-msgid "ScanResultPolicy|When %{scanType} in an open that targets %{branches} with %{commitType}"
+msgid "ScanResultPolicy|When %{scanType} in an open that targets %{branches} %{branchExceptions} with %{commitType}"
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} %{branchExceptions} and match %{boldDescription} of the following criteria"
@@ -41925,6 +41925,12 @@ msgstr ""
 msgid "SecurityOrchestration| and all the following apply:"
 msgstr ""
 
+msgid "SecurityOrchestration| for any commits"
+msgstr ""
+
+msgid "SecurityOrchestration| for unsigned commits"
+msgstr ""
+
 msgid "SecurityOrchestration| or "
 msgstr ""
 
@@ -42082,6 +42088,9 @@ msgid "SecurityOrchestration|Failed to load cluster agents."
 msgstr ""
 
 msgid "SecurityOrchestration|Failed to load images."
+msgstr ""
+
+msgid "SecurityOrchestration|For any merge request on %{branches}%{commitType}%{branchExceptionsString}"
 msgstr ""
 
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."

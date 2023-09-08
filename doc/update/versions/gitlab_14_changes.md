@@ -240,10 +240,6 @@ that may remain stuck permanently in a **pending** state.
 
 ## 14.5.0
 
-- When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you
-are using a self-compiled installation, update paths to these binaries in your [systemd unit files](../upgrading_from_source.md#configure-systemd-units)
-or [init scripts](../upgrading_from_source.md#configure-sysv-init-script) by [following the documentation](../upgrading_from_source.md).
-
 - Connections between Workhorse and Gitaly use the Gitaly `backchannel` protocol by default. If you deployed a gRPC proxy between Workhorse and Gitaly,
   Workhorse can no longer connect. As a workaround, [disable the temporary `workhorse_use_sidechannel`](../../administration/feature_flags.md#enable-or-disable-the-feature)
   feature flag. If you need a proxy between Workhorse and Gitaly, use a TCP proxy. If you have feedback about this change, go to [this issue](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1301).
@@ -302,6 +298,12 @@ or [init scripts](../upgrading_from_source.md#configure-sysv-init-script) by [fo
   # Change the Redis socket path if you are not using the default Debian / Ubuntu configuration
   sudo -u git -H editor config/cable.yml
   ```
+
+### Self-compiled installations
+
+- When `make` is run, Gitaly builds are now created in `_build/bin` and no longer in the root directory of the source directory. If you
+are using a self-compiled installation, update paths to these binaries in your [systemd unit files](../upgrading_from_source.md#configure-systemd-units)
+or [init scripts](../upgrading_from_source.md#configure-sysv-init-script) by [following the documentation](../upgrading_from_source.md).
 
 ### Geo installations **(PREMIUM SELF)**
 
@@ -401,8 +403,6 @@ that may remain stuck permanently in a **pending** state when the instance lacks
 - [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases).
 - Ensure [batched background migrations finish](../background_migrations.md#batched-background-migrations) before upgrading
   to 14.3.Z from earlier GitLab 14 releases.
-- Ruby 2.7.4 is required. Refer to [the Ruby installation instructions](../../install/installation.md#2-ruby)
-for how to proceed.
 - GitLab 14.3.0 contains post-deployment migrations to [address Primary Key overflow risk for tables with an integer PK](https://gitlab.com/groups/gitlab-org/-/epics/4785) for the tables listed below:
 
   - [`ci_builds.id`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/70245)
@@ -542,6 +542,11 @@ for how to proceed.
       ```
 
 - If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [122978](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122978) as the `mr_iid`.
+
+### Self-compiled installations
+
+- Ruby 2.7.4 is required. Refer to [the Ruby installation instructions](../../install/installation.md#2-ruby)
+  for how to proceed.
 
 ### Geo installations **(PREMIUM SELF)**
 
