@@ -507,7 +507,21 @@ To configure markdownlint in your editor, install one of the following as approp
 
 To configure Vale in your editor, install one of the following as appropriate:
 
-- Sublime Text [`SublimeLinter-vale` package](https://packagecontrol.io/packages/SublimeLinter-vale).
+- Sublime Text [`SublimeLinter-vale` package](https://packagecontrol.io/packages/SublimeLinter-vale). To have Vale
+  suggestions appears as blue instead of red (which is how errors appear), add `vale` configuration to your
+  [SublimeLinter](http://sublimelinter.readthedocs.org) configuration:
+
+  ```json
+  "vale": {
+    "styles": [{
+      "mark_style": "outline",
+      "scope": "region.bluish",
+      "types": ["suggestion"]
+    }]
+  }
+  ```
+
+- [LSP for Sublime Text](https://lsp.sublimetext.io) package [`LSP-vale-ls`](https://packagecontrol.io/packages/LSP-vale-ls).
 - Visual Studio Code [`ChrisChinchilla.vale-vscode` extension](https://marketplace.visualstudio.com/items?itemName=ChrisChinchilla.vale-vscode).
   You can configure the plugin to [display only a subset of alerts](#show-subset-of-vale-alerts).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).

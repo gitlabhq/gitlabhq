@@ -1,3 +1,5 @@
+import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+
 export const groups = [
   {
     id: 1,
@@ -14,6 +16,8 @@ export const groups = [
     accessLevel: {
       integerValue: 10,
     },
+    editPath: 'http://127.0.0.1:3000/groups/gitlab-org/-/edit',
+    availableActions: [ACTION_EDIT, ACTION_DELETE],
   },
   {
     id: 2,
@@ -31,5 +35,7 @@ export const groups = [
     accessLevel: {
       integerValue: 20,
     },
+    editPath: 'http://127.0.0.1:3000/groups/gitlab-org/test-subgroup/-/edit',
+    availableActions: [ACTION_EDIT, ACTION_DELETE],
   },
 ];

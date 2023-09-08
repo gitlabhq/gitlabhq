@@ -115,4 +115,23 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
       end
     end
   end
+
+  describe 'logging' do
+    let(:query_string) { "SELECT * FROM events WHERE id IN (4, 5, 6)" }
+
+    context 'on dev and test environments' do
+      it 'logs the un-redacted query' do
+        expect(ClickHouse::Client.configuration.logger).to receive(:info).with({
+          query: query_string,
+          correlation_id: a_kind_of(String)
+        })
+
+        ClickHouse::Client.select(query_string, :main)
+      end
+
+      it 'has a ClickHouse logger' do
+        expect(ClickHouse::Client.configuration.logger).to be_a(ClickHouse::Logger)
+      end
+    end
+  end
 end

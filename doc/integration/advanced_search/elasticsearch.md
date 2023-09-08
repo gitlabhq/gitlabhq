@@ -547,10 +547,7 @@ Sometimes, you might want to abandon the unfinished reindex job and resume the i
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112369) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `search_index_integrity`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/392981) in GitLab 16.0.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/392981) in GitLab 16.3.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `search_index_integrity`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392981) in GitLab 16.4. Feature flag `search_index_integrity` removed.
 
 Index integrity detects and fixes missing repository data.
 This feature is automatically used when code searches

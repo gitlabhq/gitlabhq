@@ -14,6 +14,7 @@ describe('Apply Suggestion component', () => {
   const findTextArea = () => wrapper.findComponent(GlFormTextarea);
   const findApplyButton = () => wrapper.findComponent(GlButton);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findHelpText = () => wrapper.find('span');
 
   beforeEach(() => createWrapper());
 
@@ -38,6 +39,22 @@ describe('Apply Suggestion component', () => {
 
       expect(applyButton.exists()).toBe(true);
       expect(applyButton.text()).toBe('Apply');
+    });
+  });
+
+  describe('help text', () => {
+    describe('when applying a single suggestion', () => {
+      it('renders the correct help text', () => {
+        expect(findHelpText().text()).toEqual('This also resolves this thread');
+      });
+    });
+
+    describe('when applying in batch', () => {
+      it('renders the correct help text', () => {
+        createWrapper({ batchSuggestionsCount: 3 });
+
+        expect(findHelpText().text()).toEqual('This also resolves all related threads');
+      });
     });
   });
 

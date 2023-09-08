@@ -98,6 +98,11 @@ the following sections and tables provide an alternative.
 
 > - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
 > - Generally available in GitLab 16.2. Feature flag `security_policies_branch_type` removed.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On GitLab.com, this feature is not available.
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
 
@@ -106,6 +111,7 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 | `type` | `string` | true | `pipeline` | The rule's type. |
 | `branches` <sup>1</sup> | `array` of `string` | true if `branch_type` field does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `branch_type` <sup>1</sup> | `string` | true if `branches` field does not exist |  `default`, `protected` or `all` | The types of branches the given policy applies to. |
+| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 
 1. You must specify only one of `branches` or `branch_type`.
 
@@ -113,6 +119,11 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 > - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
 > - Generally available in GitLab 16.2. Feature flag `security_policies_branch_type` removed.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On GitLab.com, this feature is not available.
 
 This rule schedules a scan pipeline, enforcing the defined actions on the schedule defined in the `cadence` field. A scheduled pipeline does not run other jobs defined in the project's `.gitlab-ci.yml` file. When a project is linked to a security policy project, a security policy bot is created in the project and will become the author of any scheduled pipelines.
 
@@ -121,6 +132,7 @@ This rule schedules a scan pipeline, enforcing the defined actions on the schedu
 | `type`     | `string` | true | `schedule` | The rule's type. |
 | `branches` <sup>1</sup> | `array` of `string` | true if either `branch_type` or `agents` fields does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `branch_type` <sup>1</sup> | `string` | true if either `branches` or `agents` fields does not exist | `default`, `protected` or `all` | The types of branches the given policy applies to. |
+| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 | `cadence`  | `string` | true | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. Minimum of 15 minute intervals when used together with the `branches` field. |
 | `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
 | `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |

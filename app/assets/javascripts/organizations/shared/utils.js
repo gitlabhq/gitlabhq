@@ -17,7 +17,10 @@ export const formatProjects = (projects) =>
   }));
 
 export const formatGroups = (groups) =>
-  groups.map(({ id, ...group }) => ({
+  groups.map(({ id, webUrl, ...group }) => ({
     ...group,
     id: getIdFromGraphQLId(id),
+    webUrl,
+    editPath: `${webUrl}/-/edit`,
+    availableActions: [ACTION_EDIT, ACTION_DELETE],
   }));

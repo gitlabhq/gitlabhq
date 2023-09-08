@@ -39,6 +39,13 @@ export default {
 
       return n__('Apply %d suggestion', 'Apply %d suggestions', this.batchSuggestionsCount);
     },
+    helperText() {
+      if (this.batchSuggestionsCount <= 1) {
+        return __('This also resolves this thread');
+      }
+
+      return __('This also resolves all related threads');
+    },
   },
   methods: {
     onApply() {
@@ -77,6 +84,10 @@ export default {
         data-qa-selector="commit_message_field"
         @submit="onApply"
       />
+
+      <span class="gl-mt-2 gl-text-secondary">
+        {{ helperText }}
+      </span>
 
       <gl-button
         class="gl-w-auto! gl-mt-3 gl-align-self-end"

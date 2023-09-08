@@ -30,6 +30,9 @@ RSpec.describe ClickHouse::Client do
 
     let(:configuration) do
       ClickHouse::Client::Configuration.new.tap do |config|
+        config.log_proc = ->(query) do
+          { query_string: query.to_sql }
+        end
         config.register_database(:test_db, **database_config)
         config.http_post_proc = ->(_url, _headers, _query) {
           body = File.read(query_result_fixture)
@@ -92,6 +95,35 @@ RSpec.describe ClickHouse::Client do
         expect do
           described_class.select('SELECT * FROM issues', :test_db, configuration)
         end.to raise_error(ClickHouse::Client::DatabaseError, 'some error')
+      end
+    end
+
+    describe 'default logging' do
+      let(:fake_logger) { instance_double("Logger", info: 'logged!') }
+      let(:query_string) { 'SELECT * FROM issues' }
+
+      before do
+        configuration.logger = fake_logger
+      end
+
+      shared_examples 'proper logging' do
+        it 'calls the custom logger and log_proc' do
+          expect(fake_logger).to receive(:info).at_least(:once).with({ query_string: query_string })
+
+          described_class.select(query_object, :test_db, configuration)
+        end
+      end
+
+      context 'when query is a string' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+        let(:query_object) { query_string }
+
+        it_behaves_like 'proper logging'
+      end
+
+      context 'when query is a Query object' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+        let(:query_object) { ClickHouse::Client::Query.new(raw_query: query_string) }
+
+        it_behaves_like 'proper logging'
       end
     end
   end

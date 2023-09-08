@@ -17,6 +17,18 @@ ClickHouse::Client.configure do |config|
     )
   end
 
+  if Rails.env.development? || Rails.env.test?
+    config.logger = ::ClickHouse::Logger.build
+    config.log_proc = ->(query) do
+      structured_log(query.to_sql)
+    end
+  else
+    config.logger = Logger.new('/dev/null')
+    config.log_proc = ->(query) do
+      structured_log(query.to_redacted_sql)
+    end
+  end
+
   config.json_parser = Gitlab::Json
   config.http_post_proc = ->(url, headers, body) do
     options = {
@@ -31,4 +43,8 @@ ClickHouse::Client.configure do |config|
     response = Gitlab::HTTP.post(url, options)
     ClickHouse::Client::Response.new(response.body, response.code, response.headers)
   end
+end
+
+def structured_log(query_string)
+  { query: query_string, correlation_id: Labkit::Correlation::CorrelationId.current_id.to_s }
 end

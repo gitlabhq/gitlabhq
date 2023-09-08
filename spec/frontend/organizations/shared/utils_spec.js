@@ -29,7 +29,11 @@ describe('formatGroups', () => {
     const formattedGroups = formatGroups(organizationGroups.nodes);
     const [firstFormattedGroup] = formattedGroups;
 
-    expect(firstFormattedGroup.id).toBe(getIdFromGraphQLId(firstMockGroup.id));
+    expect(firstFormattedGroup).toMatchObject({
+      id: getIdFromGraphQLId(firstMockGroup.id),
+      editPath: `${firstFormattedGroup.webUrl}/-/edit`,
+      availableActions: [ACTION_EDIT, ACTION_DELETE],
+    });
     expect(formattedGroups.length).toBe(organizationGroups.nodes.length);
   });
 });

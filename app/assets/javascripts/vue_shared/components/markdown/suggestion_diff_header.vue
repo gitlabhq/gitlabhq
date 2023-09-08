@@ -77,9 +77,7 @@ export default {
         return this.inapplicableReason;
       }
 
-      return this.batchSuggestionsCount > 1
-        ? __('This also resolves all related threads')
-        : __('This also resolves this thread');
+      return false;
     },
     isDisableButton() {
       return this.isApplying || !this.canApply;

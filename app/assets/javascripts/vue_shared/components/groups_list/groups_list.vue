@@ -24,6 +24,7 @@ export default {
       :key="group.id"
       :group="group"
       :show-group-icon="showGroupIcon"
+      @delete="$emit('delete', $event)"
     />
   </ul>
 </template>

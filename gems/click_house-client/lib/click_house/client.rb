@@ -100,6 +100,10 @@ module ClickHouse
       db = lookup_database(configuration, database)
 
       query = ClickHouse::Client::Query.build(query)
+
+      log_contents = configuration.log_proc.call(query)
+      configuration.logger.info(log_contents)
+
       ActiveSupport::Notifications.instrument('sql.click_house', { query: query, database: database }) do |instrument|
         # Use a multipart POST request where the placeholders are sent with the param_ prefix
         # See: https://github.com/ClickHouse/ClickHouse/issues/8842
