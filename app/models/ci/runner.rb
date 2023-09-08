@@ -532,7 +532,9 @@ module Ci
       'virtualbox' => :virtualbox,
       'docker+machine' => :docker_machine,
       'docker-ssh+machine' => :docker_ssh_machine,
-      'kubernetes' => :kubernetes
+      'kubernetes' => :kubernetes,
+      'docker-autoscaler' => :docker_autoscaler,
+      'instance' => :instance
     }.freeze
 
     EXECUTOR_TYPE_TO_NAMES = EXECUTOR_NAME_TO_TYPES.invert.freeze

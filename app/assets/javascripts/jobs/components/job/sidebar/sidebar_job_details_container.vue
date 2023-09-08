@@ -44,13 +44,9 @@ export default {
           this.job.finished_at ||
           this.job.erased_at ||
           this.job.queued_duration ||
-          this.job.id ||
           this.job.runner ||
           this.job.coverage,
       );
-    },
-    jobId() {
-      return this.job?.id ? `#${this.job.id}` : '';
     },
     runnerId() {
       const { id, short_sha: token, description } = this.job.runner;
@@ -85,9 +81,8 @@ export default {
     ERASED: __('Erased'),
     QUEUED: __('Queued'),
     RUNNER: __('Runner'),
-    TAGS: __('Tags'),
+    TAGS: __('Tags:'),
     TIMEOUT: __('Timeout'),
-    ID: __('Job ID'),
   },
   TIMEOUT_HELP_URL: helpPagePath('/ci/pipelines/settings.md', {
     anchor: 'set-a-limit-for-how-long-jobs-can-run',
@@ -113,7 +108,6 @@ export default {
       data-testid="job-timeout"
       :title="$options.i18n.TIMEOUT"
     />
-    <detail-row v-if="job.id" :value="jobId" :title="$options.i18n.ID" />
     <detail-row
       v-if="job.runner"
       :value="runnerId"
@@ -123,8 +117,8 @@ export default {
     <detail-row v-if="job.coverage" :value="coverage" :title="$options.i18n.COVERAGE" />
 
     <p v-if="hasTags" class="build-detail-row" data-testid="job-tags">
-      <span class="font-weight-bold">{{ $options.i18n.TAGS }}:</span>
-      <gl-badge v-for="(tag, i) in job.tags" :key="i" variant="info" size="sm">{{ tag }}</gl-badge>
+      <span class="font-weight-bold">{{ $options.i18n.TAGS }}</span>
+      <gl-badge v-for="(tag, i) in job.tags" :key="i" variant="info">{{ tag }}</gl-badge>
     </p>
   </div>
 </template>

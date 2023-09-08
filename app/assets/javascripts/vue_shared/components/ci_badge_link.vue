@@ -120,12 +120,13 @@ export default {
 <template>
   <gl-badge
     v-gl-tooltip
-    :class="{ 'gl-pl-2': isSmallBadgeSize }"
+    :class="{ 'gl-pl-0!': isSmallBadgeSize }"
     :title="title"
     :href="detailsPath"
     :size="badgeSize"
     :variant="badgeStyles.variant"
     data-testid="ci-badge-link"
+    data-qa-selector="status_badge_link"
     @click="$emit('ciStatusBadgeClick')"
   >
     <ci-icon :status="status" />

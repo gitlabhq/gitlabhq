@@ -8,6 +8,32 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
   it_behaves_like 'metrics sampler', 'DATABASE_SAMPLER'
 
   describe '#sample' do
+    let(:main_load_balancer) do
+      double(:main_load_balancer, host_list: main_host_list, configuration: main_configuration, primary_only?: false)
+    end
+
+    let(:main_configuration) { double(:configuration, connection_specification_name: 'ActiveRecord::Base') }
+    let(:main_host_list) { double(:host_list, hosts: [main_replica_host]) }
+    let(:main_replica_host) { double(:host, pool: main_replica_pool, host: 'main-replica-host', port: 2345) }
+    let(:main_replica_pool) do
+      double(:main_replica_pool, db_config: double(:main_replica_db_config, name: 'main_replica'), stat: stats)
+    end
+
+    let(:stats) do
+      { size: 123, connections: 100, busy: 10, dead: 5, idle: 85, waiting: 1 }
+    end
+
+    let(:ci_load_balancer) do
+      double(:ci_load_balancer, host_list: ci_host_list, configuration: ci_configuration, primary_only?: false)
+    end
+
+    let(:ci_configuration) { double(:configuration, connection_specification_name: 'Ci::ApplicationRecord') }
+    let(:ci_host_list) { double(:host_list, hosts: [ci_replica_host]) }
+    let(:ci_replica_host) { double(:host, pool: ci_replica_pool, host: 'ci-replica-host', port: 3456) }
+    let(:ci_replica_pool) do
+      double(:ci_replica_pool, db_config: double(:ci_replica_db_config, name: 'ci_replica'), stat: stats)
+    end
+
     let(:main_labels) do
       {
         class: 'ActiveRecord::Base',
@@ -62,35 +88,9 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
       end
 
       context 'when replica hosts are configured' do
-        let(:main_load_balancer) { ApplicationRecord.load_balancer }
-        let(:main_replica_host) { main_load_balancer.host }
-
-        let(:ci_load_balancer) { double(:load_balancer, host_list: ci_host_list, configuration: configuration) }
-        let(:configuration) { double(:configuration, connection_specification_name: 'Ci::ApplicationRecord') }
-        let(:ci_host_list) { double(:host_list, hosts: [ci_replica_host]) }
-        let(:ci_replica_host) { double(:host, connection: ci_connection) }
-        let(:ci_connection) { double(:connection, pool: Ci::ApplicationRecord.connection_pool) }
-
         before do
           allow(Gitlab::Database::LoadBalancing).to receive(:each_load_balancer)
             .and_return([main_load_balancer, ci_load_balancer].to_enum)
-
-          allow(main_load_balancer).to receive(:primary_only?).and_return(false)
-          allow(ci_load_balancer).to receive(:primary_only?).and_return(false)
-
-          allow(main_replica_host).to receive(:host).and_return('main-replica-host')
-          allow(ci_replica_host).to receive(:host).and_return('ci-replica-host')
-
-          allow(main_replica_host).to receive(:port).and_return(2345)
-          allow(ci_replica_host).to receive(:port).and_return(3456)
-
-          allow(Gitlab::Database).to receive(:db_config_name)
-            .with(main_replica_host.connection)
-            .and_return('main_replica')
-
-          allow(Gitlab::Database).to receive(:db_config_name)
-            .with(ci_replica_host.connection)
-            .and_return('ci_replica')
         end
 
         it 'samples connection pool statistics for primaries and replicas' do
@@ -117,35 +117,9 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
       end
 
       context 'when the base model has replica connections' do
-        let(:main_load_balancer) { ApplicationRecord.load_balancer }
-        let(:main_replica_host) { main_load_balancer.host }
-
-        let(:ci_load_balancer) { double(:load_balancer, host_list: ci_host_list, configuration: configuration) }
-        let(:configuration) { double(:configuration, connection_specification_name: 'Ci::ApplicationRecord') }
-        let(:ci_host_list) { double(:host_list, hosts: [ci_replica_host]) }
-        let(:ci_replica_host) { double(:host, connection: ci_connection) }
-        let(:ci_connection) { double(:connection, pool: Ci::ApplicationRecord.connection_pool) }
-
         before do
           allow(Gitlab::Database::LoadBalancing).to receive(:each_load_balancer)
             .and_return([main_load_balancer, ci_load_balancer].to_enum)
-
-          allow(main_load_balancer).to receive(:primary_only?).and_return(false)
-          allow(ci_load_balancer).to receive(:primary_only?).and_return(false)
-
-          allow(main_replica_host).to receive(:host).and_return('main-replica-host')
-          allow(ci_replica_host).to receive(:host).and_return('ci-replica-host')
-
-          allow(main_replica_host).to receive(:port).and_return(2345)
-          allow(ci_replica_host).to receive(:port).and_return(3456)
-
-          allow(Gitlab::Database).to receive(:db_config_name)
-            .with(main_replica_host.connection)
-            .and_return('main_replica')
-
-          allow(Gitlab::Database).to receive(:db_config_name)
-            .with(ci_replica_host.connection)
-            .and_return('ci_replica')
         end
 
         it 'still records the replica metrics' do

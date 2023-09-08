@@ -32,12 +32,12 @@ module QA
           super
 
           base.view 'app/assets/javascripts/vue_shared/components/ci_badge_link.vue' do
-            element 'ci-badge-link'
+            element :status_badge_link
           end
         end
 
         def status_badge
-          find_element('ci-badge-link').text
+          find_element(:status_badge_link).text
         end
 
         def completed?(timeout: 60)

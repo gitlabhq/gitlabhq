@@ -25,6 +25,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_one(:rubygems_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:rpm_metadatum).inverse_of(:package) }
+    it { is_expected.to have_many(:nuget_symbols).inverse_of(:package) }
   end
 
   describe '.with_debian_codename' do

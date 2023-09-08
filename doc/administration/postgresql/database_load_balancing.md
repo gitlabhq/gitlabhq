@@ -182,9 +182,9 @@ To configure these options with a hosts list, use the following example:
 
 ```ruby
 gitlab_rails['db_load_balancing'] = {
-  'hosts' => ['primary.example.com', 'secondary1.example.com', 'secondary2.example.com']
-  'max_replication_difference' => 16777216 # 16 MB
-  'max_replication_lag_time' => 30
+  'hosts' => ['primary.example.com', 'secondary1.example.com', 'secondary2.example.com'],
+  'max_replication_difference' => 16777216, # 16 MB
+  'max_replication_lag_time' => 30,
   'replica_check_interval' => 30
 }
 ```

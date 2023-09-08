@@ -78,6 +78,8 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def retry
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/424184')
+
     response = Ci::RetryJobService.new(project, current_user).execute(@build)
 
     if response.success?

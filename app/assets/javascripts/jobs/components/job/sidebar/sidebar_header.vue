@@ -90,7 +90,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-py-4">
     <tooltip-on-truncate :title="job.name" truncate-target="child"
       ><h4 class="gl-mt-0 gl-mb-3 gl-text-truncate" data-testid="job-name">{{ job.name }}</h4>
     </tooltip-on-truncate>
@@ -138,7 +138,6 @@ export default {
         :href="restJob.retry_path"
         :modal-id="$options.forwardDeploymentFailureModalId"
         variant="confirm"
-        data-qa-selector="retry_button"
         data-testid="retry-button"
         @updateVariablesClicked="$emit('updateVariables')"
       />
@@ -156,7 +155,7 @@ export default {
       />
       <gl-button
         :aria-label="$options.i18n.toggleSidebar"
-        category="secondary"
+        category="tertiary"
         class="gl-md-display-none gl-ml-2"
         icon="chevron-double-lg-right"
         @click="toggleSidebar"

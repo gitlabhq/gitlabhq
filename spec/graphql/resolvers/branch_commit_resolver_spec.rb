@@ -32,7 +32,7 @@ RSpec.describe Resolvers::BranchCommitResolver do
       commit_a = repository.commits('master', limit: 1).last
       commit_b = repository.commits('spooky-stuff', limit: 1).last
 
-      commits = batch_sync(max_queries: 1) do
+      commits = batch_sync(max_queries: 2) do
         [
           resolve(described_class, obj: branch),
           resolve(described_class, obj: repository.find_branch('spooky-stuff'))
