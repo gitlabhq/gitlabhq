@@ -7,11 +7,12 @@ source "$(dirname "$0")/utils.sh"
 REGISTRY="${CI_REGISTRY}/${CI_PROJECT_PATH}"
 SHA_TAG="${CI_COMMIT_SHA}"
 BRANCH_TAG="${CI_COMMIT_REF_SLUG}"
-BASE_TAG=$([ "${BUILD_GDK_BASE}" == "true" ] && echo "${SHA_TAG}" || echo "master")
 
-if [[ -z "${GDK_SHA}" ]]; then
-  GDK_SHA=$(git ls-remote https://gitlab.com/gitlab-org/gitlab-development-kit.git main | cut -f 1)
-fi
+# Fetch ruby version based on contents of .ruby-version
+RUBY_VERSION=$(cat .ruby-version)
+RUBY_VERSION_MINOR=$(echo "$RUBY_VERSION" | awk -F. '{$3=0; OFS="."; print $1,$2,$3}')
+
+IMAGE="${REGISTRY}/gitlab-qa-gdk"
 
 if [[ -n "${CI}" ]]; then
   OUTPUT_OPTION="--push"
@@ -19,34 +20,18 @@ else
   OUTPUT_OPTION="--load"
 fi
 
-function build_image() {
-  local image=$1
-  local target=$2
+echoinfo "Building GDK image with GDK sha: '${GDK_SHA}'" "yes"
 
-  echoinfo "Using GDK at SHA ${GDK_SHA}"
-
-  docker buildx build \
-    --cache-to="type=inline" \
-    --cache-from="${image}:${BRANCH_TAG}" \
-    --cache-from="${image}:master" \
-    --file="qa/gdk/Dockerfile.gdk" \
-    --target="${target}" \
-    --platform=${ARCH:-amd64} \
-    --tag="${image}:${SHA_TAG}" \
-    --tag="${image}:${BRANCH_TAG}" \
-    --build-arg="BASE_TAG=${BASE_TAG}" \
-    --build-arg="GDK_SHA=${GDK_SHA:-main}" \
-    ${OUTPUT_OPTION} \
-    .
-}
-
-# Rebuild base image when BUILD_GDK_BASE is set to true
-if [[ "${BUILD_GDK_BASE}" == "true" ]]; then
-  echoinfo "Building GDK base image", "yes"
-  build_image "${REGISTRY}/gitlab-qa-gdk-base" "gdk-base"
-fi
-
-echoinfo "Building GDK image", "yes"
-build_image "${REGISTRY}/gitlab-qa-gdk" "gdk"
+docker buildx build \
+  --cache-to="type=inline" \
+  --cache-from="${IMAGE}:${BRANCH_TAG}" \
+  --cache-from="${IMAGE}:master" \
+  --file="qa/gdk/Dockerfile.gdk" \
+  --platform=${ARCH:-amd64} \
+  --tag="${IMAGE}:${SHA_TAG}" \
+  --tag="${IMAGE}:${BRANCH_TAG}" \
+  --build-arg="GEM_CACHE=/home/gdk/.asdf/installs/ruby/${RUBY_VERSION}/lib/ruby/gems/${RUBY_VERSION_MINOR}/cache" \
+  ${OUTPUT_OPTION} \
+  .
 
 echosuccess "Built image '${REGISTRY}/gitlab-qa-gdk:${SHA_TAG}'"

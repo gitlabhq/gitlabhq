@@ -906,17 +906,13 @@
 .build-images:rules:build-gdk-image:
   rules:
     - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
-      when: never
+      when: manual
+      allow_failure: true
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-default-branch-schedule-nightly # already executed in the 2-hourly schedule
       when: never
-    - <<: *if-default-branch-refs # Includes scheduled pipelines
-      variables:
-        BUILD_GDK_BASE: "true"
-    # We want to also rebuild the base image if MRs change certain components.
+    - <<: *if-default-branch-refs
     - <<: *if-merge-request
-      variables:
-        BUILD_GDK_BASE: "true"
       changes: *gdk-component-patterns
     # The rest are included to be consistent with .qa:rules:e2e:test-on-gdk
     - <<: *if-merge-request-targeting-stable-branch
