@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Scan result policy project_approval_settings",
+  "type": "object",
+  "properties": {
+    "prevent_approval_by_author": {
+      "type": "boolean"
+    },
+    "prevent_approval_by_commit_author": {
+      "type": "boolean"
+    },
+    "remove_approvals_with_new_commit": {
+      "type": "boolean"
+    },
+    "require_password_to_approve": {
+      "type": "boolean"
+    },
+    "block_unprotecting_branches": {
+      "type": "boolean"
+    }
+  }
+}
