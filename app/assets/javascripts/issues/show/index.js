@@ -3,15 +3,18 @@ import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import errorTrackingStore from '~/error_tracking/store';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { TYPE_INCIDENT } from '~/issues/constants';
+import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
+import initLinkedResources from '~/linked_resources';
 import IssueApp from './components/app.vue';
+import DescriptionComponent from './components/description.vue';
 import IncidentTabs from './components/incidents/incident_tabs.vue';
 import SentryErrorStackTrace from './components/sentry_error_stack_trace.vue';
 import { issueState } from './constants';
 import getIssueStateQuery from './queries/get_issue_state.query.graphql';
 import createRouter from './components/incidents/router';
+import { parseIssuableData } from './utils/parse_data';
 
 const bootstrapApollo = (state = {}) => {
   return apolloProvider.clients.defaultClient.cache.writeQuery({
@@ -22,146 +25,79 @@ const bootstrapApollo = (state = {}) => {
   });
 };
 
-export function initIncidentApp(issueData = {}, store) {
+export function initIssuableApp(store) {
   const el = document.getElementById('js-issuable-app');
 
   if (!el) {
     return undefined;
   }
 
-  const {
-    authorId,
-    authorName,
-    authorUsername,
-    authorWebUrl,
-    canCreateIncident,
-    hasIterationsFeature,
-    canUpdate,
-    canUpdateTimelineEvent,
-    iid,
-    issuableId,
-    issueType,
-    fullPath,
-    currentPath,
-    currentTab,
-    projectId,
-    hasLinkedAlerts,
-    slaFeatureAvailable,
-    uploadMetricsFeatureAvailable,
-  } = issueData;
-
+  const issuableData = parseIssuableData(el);
   const headerActionsData = convertObjectPropsToCamelCase(JSON.parse(el.dataset.headerActionsData));
 
-  bootstrapApollo({ ...issueState, issueType });
-
-  const router = createRouter(currentPath, currentTab);
-
-  return new Vue({
-    el,
-    name: 'DescriptionRoot',
-    apolloProvider,
-    store,
-    router,
-    provide: {
-      issueType,
-      canCreateIncident,
-      canUpdateTimelineEvent,
-      canUpdate,
-      fullPath,
-      iid,
-      issuableId,
-      projectId,
-      hasIterationsFeature,
-      hasLinkedAlerts: parseBoolean(hasLinkedAlerts),
-      slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
-      uploadMetricsFeatureAvailable: parseBoolean(uploadMetricsFeatureAvailable),
-      contentEditorOnIssues: gon.features.contentEditorOnIssues,
-      // for HeaderActions component
-      canCreateIssue: parseBoolean(headerActionsData.canCreateIncident),
-      canDestroyIssue: parseBoolean(headerActionsData.canDestroyIssue),
-      canPromoteToEpic: parseBoolean(headerActionsData.canPromoteToEpic),
-      canReopenIssue: parseBoolean(headerActionsData.canReopenIssue),
-      canReportSpam: parseBoolean(headerActionsData.canReportSpam),
-      canUpdateIssue: parseBoolean(headerActionsData.canUpdateIssue),
-      isIssueAuthor: parseBoolean(headerActionsData.isIssueAuthor),
-      issuePath: headerActionsData.issuePath,
-      newIssuePath: headerActionsData.newIssuePath,
-      projectPath: headerActionsData.projectPath,
-      reportAbusePath: headerActionsData.reportAbusePath,
-      reportedUserId: headerActionsData.reportedUserId,
-      reportedFromUrl: headerActionsData.reportedFromUrl,
-      submitAsSpamPath: headerActionsData.submitAsSpamPath,
-      issuableEmailAddress: headerActionsData.issuableEmailAddress,
-    },
-    computed: {
-      ...mapGetters(['getNoteableData']),
-    },
-    render(createElement) {
-      return createElement(IssueApp, {
-        props: {
-          ...issueData,
-          author: {
-            id: authorId,
-            name: authorName,
-            username: authorUsername,
-            webUrl: authorWebUrl,
-          },
-          issueId: Number(issuableId),
-          issuableStatus: this.getNoteableData?.state,
-          issuableType: TYPE_INCIDENT,
-          descriptionComponent: IncidentTabs,
-          showTitleBorder: false,
-          isConfidential: this.getNoteableData?.confidential,
-        },
-      });
-    },
-  });
-}
-
-export function initIssueApp(issueData, store) {
-  const el = document.getElementById('js-issuable-app');
-
-  if (!el) {
-    return undefined;
-  }
-
   const {
     authorId,
     authorName,
     authorUsername,
     authorWebUrl,
     canCreateIncident,
-    hasIterationsFeature,
+    fullPath,
     iid,
     issuableId,
     issueType,
-    fullPath,
+    hasIterationsFeature,
+    // for issue
     registerPath,
     signInPath,
-  } = issueData;
+    // for incident
+    canUpdate,
+    canUpdateTimelineEvent,
+    currentPath,
+    currentTab,
+    hasLinkedAlerts,
+    projectId,
+    slaFeatureAvailable,
+    uploadMetricsFeatureAvailable,
+  } = issuableData;
 
-  const headerActionsData = convertObjectPropsToCamelCase(JSON.parse(el.dataset.headerActionsData));
+  const issueProvideData = { registerPath, signInPath };
+  const incidentProvideData = {
+    canUpdate,
+    canUpdateTimelineEvent,
+    hasLinkedAlerts: parseBoolean(hasLinkedAlerts),
+    projectId,
+    slaFeatureAvailable: parseBoolean(slaFeatureAvailable),
+    uploadMetricsFeatureAvailable: parseBoolean(uploadMetricsFeatureAvailable),
+  };
 
   bootstrapApollo({ ...issueState, issueType });
 
   scrollToTargetOnResize();
 
+  if (issueType === TYPE_INCIDENT) {
+    initLinkedResources();
+  }
+
   return new Vue({
     el,
     name: 'DescriptionRoot',
     apolloProvider,
     store,
+    router: issueType === TYPE_INCIDENT ? createRouter(currentPath, currentTab) : undefined,
     provide: {
       canCreateIncident,
       fullPath,
       iid,
       issuableId,
       issueType,
-      registerPath,
-      signInPath,
       hasIterationsFeature,
+      ...(issueType === TYPE_ISSUE && issueProvideData),
+      ...(issueType === TYPE_INCIDENT && incidentProvideData),
       // for HeaderActions component
-      canCreateIssue: parseBoolean(headerActionsData.canCreateIssue),
+      canCreateIssue:
+        issueType === TYPE_INCIDENT
+          ? parseBoolean(headerActionsData.canCreateIncident)
+          : parseBoolean(headerActionsData.canCreateIssue),
       canDestroyIssue: parseBoolean(headerActionsData.canDestroyIssue),
       canPromoteToEpic: parseBoolean(headerActionsData.canPromoteToEpic),
       canReopenIssue: parseBoolean(headerActionsData.canReopenIssue),
@@ -183,18 +119,21 @@ export function initIssueApp(issueData, store) {
     render(createElement) {
       return createElement(IssueApp, {
         props: {
-          ...issueData,
+          ...issuableData,
           author: {
             id: authorId,
             name: authorName,
             username: authorUsername,
             webUrl: authorWebUrl,
           },
+          descriptionComponent: issueType === TYPE_INCIDENT ? IncidentTabs : DescriptionComponent,
           isConfidential: this.getNoteableData?.confidential,
           isLocked: this.getNoteableData?.discussion_locked,
           issuableStatus: this.getNoteableData?.state,
+          issuableType: issueType,
           issueId: this.getNoteableData?.id,
           issueIid: this.getNoteableData?.iid,
+          showTitleBorder: issueType !== TYPE_INCIDENT,
         },
       });
     },
