@@ -109,7 +109,7 @@ prometheus['scrape_configs'] = [
 
 ### Standalone Prometheus using the Linux package
 
-The Linux package can be used to configure a standalone Monitoring node running Prometheus and [Grafana](../performance/grafana_configuration.md).
+The Linux package can be used to configure a standalone Monitoring node running Prometheus and [Grafana](../performance/grafana_configuration.md). A standalone Monitoring node is recommended for [GitLab deployments with multiple nodes](../../reference_architectures/index.md).
 
 The steps below are the minimum necessary to configure a Monitoring node running Prometheus and Grafana with the Linux
 package:
@@ -169,7 +169,7 @@ ensure that `prometheus['scrape_configs']` is not set in `/etc/gitlab/gitlab.rb`
 WARNING:
 Prometheus and most exporters don't support authentication. We don't recommend exposing them outside the local network.
 
-A few configuration changes are required to allow GitLab to be monitored by an external Prometheus server. External servers are recommended for [GitLab deployments with multiple nodes](../../reference_architectures/index.md).
+A few configuration changes are required to allow GitLab to be monitored by an external Prometheus server.
 
 To use an external Prometheus server:
 

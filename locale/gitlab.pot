@@ -28853,6 +28853,99 @@ msgstr ""
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr ""
 
+msgid "MemberRoles|Actions"
+msgstr ""
+
+msgid "MemberRoles|Add new role"
+msgstr ""
+
+msgid "MemberRoles|Admin vulnerability"
+msgstr ""
+
+msgid "MemberRoles|Allows admin access to the vulnerability reports. 'Read vulnerability' must be selected in order to take effect."
+msgstr ""
+
+msgid "MemberRoles|Allows read-only access to the source code."
+msgstr ""
+
+msgid "MemberRoles|Allows read-only access to the vulnerability reports."
+msgstr ""
+
+msgid "MemberRoles|Are you sure you want to delete this role?"
+msgstr ""
+
+msgid "MemberRoles|Base role"
+msgstr ""
+
+msgid "MemberRoles|Base role to use as template"
+msgstr ""
+
+msgid "MemberRoles|Create new role"
+msgstr ""
+
+msgid "MemberRoles|Custom roles"
+msgstr ""
+
+msgid "MemberRoles|Delete role"
+msgstr ""
+
+msgid "MemberRoles|Description"
+msgstr ""
+
+msgid "MemberRoles|Enter a short name."
+msgstr ""
+
+msgid "MemberRoles|Failed to create role."
+msgstr ""
+
+msgid "MemberRoles|Failed to delete the role."
+msgstr ""
+
+msgid "MemberRoles|Failed to fetch roles."
+msgstr ""
+
+msgid "MemberRoles|ID"
+msgstr ""
+
+msgid "MemberRoles|Incident manager"
+msgstr ""
+
+msgid "MemberRoles|Make sure the group has an Ultimate license."
+msgstr ""
+
+msgid "MemberRoles|Name"
+msgstr ""
+
+msgid "MemberRoles|No custom roles for this group"
+msgstr ""
+
+msgid "MemberRoles|Permissions"
+msgstr ""
+
+msgid "MemberRoles|Read code"
+msgstr ""
+
+msgid "MemberRoles|Read vulnerability"
+msgstr ""
+
+msgid "MemberRoles|Removing a custom role also removes all members with this custom role from the group. If you decide to delete a custom role, you must re-add these users to the group."
+msgstr ""
+
+msgid "MemberRoles|Role name"
+msgstr ""
+
+msgid "MemberRoles|Role successfully created."
+msgstr ""
+
+msgid "MemberRoles|Role successfully deleted."
+msgstr ""
+
+msgid "MemberRoles|Select a standard role to add permissions."
+msgstr ""
+
+msgid "MemberRoles|To add a new role select a group and then 'Add new role'."
+msgstr ""
+
 msgid "MemberRole|%{requirement} has to be enabled in order to enable %{permission}."
 msgstr ""
 

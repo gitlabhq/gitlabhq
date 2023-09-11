@@ -112,7 +112,7 @@ On GitLab.com, this feature is available.
 
 FLAG:
 On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 This rule enforces the defined actions based on security scan findings.
 
@@ -137,7 +137,7 @@ This rule enforces the defined actions based on security scan findings.
 
 FLAG:
 On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 This rule enforces the defined actions based on license findings.
 
@@ -158,7 +158,7 @@ This rule enforces the defined actions based on license findings.
 
 FLAG:
 On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 This rule enforces the defined actions for any merge request based on the commits signature.
 

@@ -102,7 +102,7 @@ the following sections and tables provide an alternative.
 
 FLAG:
 On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
 
@@ -123,7 +123,7 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 FLAG:
 On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 This rule schedules a scan pipeline, enforcing the defined actions on the schedule defined in the `cadence` field. A scheduled pipeline does not run other jobs defined in the project's `.gitlab-ci.yml` file. When a project is linked to a security policy project, a security policy bot is created in the project and will become the author of any scheduled pipelines.
 
