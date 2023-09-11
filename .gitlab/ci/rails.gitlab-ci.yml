@@ -309,35 +309,6 @@ gitlab:setup:
     paths:
       - log/*.log
 
-rspec:deprecations:
-  extends:
-    - .default-retry
-    - .default-before_script
-    - .static-analysis-cache
-    - .rails:rules:deprecations
-  stage: post-test
-  allow_failure: true
-  needs:
-    - job: rspec:artifact-collector unit
-      optional: true
-    - job: rspec:artifact-collector system
-      optional: true
-    - job: rspec:artifact-collector remainder
-      optional: true
-    - job: rspec:artifact-collector ee
-      optional: true
-  variables:
-    SETUP_DB: "false"
-  script:
-    - grep -h -R "keyword" deprecations/ | awk '{$1=$1};1' | sort | uniq -c | sort
-    - grep -R "keyword" deprecations/ | wc
-    - run_timed_command "fail_on_warnings bundle exec rubocop --only Lint/LastKeywordArgument --parallel"
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - deprecations/
-
 # The jobs built upon `.artifact-collector` are to work around the
 # needs: [] limit of a maximum of 50 dependencies.
 # These intermediate jobs allow us to collect the artifacts of

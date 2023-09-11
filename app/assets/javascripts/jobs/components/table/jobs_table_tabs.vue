@@ -63,7 +63,7 @@ export default {
 
 <template>
   <div class="gl-display-flex align-items-lg-center">
-    <gl-tabs content-class="gl-py-0">
+    <gl-tabs content-class="gl-py-0" class="gl-w-full">
       <gl-tab
         v-for="tab in tabs"
         :key="tab.text"

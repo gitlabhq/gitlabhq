@@ -7,5 +7,9 @@ module Groups
     def index
       not_found unless Feature.enabled?(:namespace_level_work_items, group)
     end
+
+    def show
+      not_found unless Feature.enabled?(:namespace_level_work_items, group)
+    end
   end
 end

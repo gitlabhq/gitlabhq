@@ -392,7 +392,7 @@ In this case, the result is similar to calling `Resource::Shirt.fabricate!`.
 
 ### Factories
 
-You may also use [FactoryBot](https://github.com/thoughtbot/factory_bot/) invocations to create resources within your tests.
+You may also use [FactoryBot](https://github.com/thoughtbot/factory_bot/) invocations to create, build, and fetch resources within your tests.
 
 ```ruby
 # create a project via the API to use in the test
@@ -403,6 +403,22 @@ let(:issue) { create(:issue, project: project) }
 
 # create a private project via the API with a specific name
 let(:project) { create(:project, :private, name: 'my-project-name', add_name_uuid: false) }
+
+###
+
+# instantiate an Issue but don't create it via API yet
+let(:issue) { build(:issue) }
+
+# instantiate a Project and perform some actions before creating
+let(:project) do
+  build(:project) do |p|
+    p.name = 'Test'
+    p.add_name_uuid = false
+  end
+end
+
+# fetch an existing issue via the API with attributes
+let(:existing_issue) { build(:issue, project: project, iid: issue.iid).reload! }
 ```
 
 All factories are defined in [`qa/qa/factories`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/factories/) and are representative of

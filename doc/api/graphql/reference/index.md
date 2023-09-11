@@ -7165,7 +7165,7 @@ Input type: `VulnerabilitiesDismissInput`
 | <a id="mutationvulnerabilitiesdismissclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationvulnerabilitiesdismisscomment"></a>`comment` | [`String`](#string) | Comment why vulnerability was dismissed (maximum 50,000 characters). |
 | <a id="mutationvulnerabilitiesdismissdismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason why vulnerability should be dismissed. |
-| <a id="mutationvulnerabilitiesdismissvulnerabilityids"></a>`vulnerabilityIds` | [`[VulnerabilityID!]!`](#vulnerabilityid) | IDs of the vulnerabilities to be dismissed. |
+| <a id="mutationvulnerabilitiesdismissvulnerabilityids"></a>`vulnerabilityIds` | [`[VulnerabilityID!]!`](#vulnerabilityid) | IDs of the vulnerabilities to be dismissed (maximum 100 entries). |
 
 #### Fields
 

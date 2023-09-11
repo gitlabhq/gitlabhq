@@ -116,6 +116,9 @@ namespace named `my-username`:
   └── .gitlab-ci.yml
   ```
 
+  The `.gitlab-ci.yml` file is not required for a CI/CD component to work, but [testing the component](#test-a-component)
+  in a pipeline in the project is recommended.
+
   This component is referenced with the path `gitlab.com/my-username/my-component@<version>`.
 
 - Containing one default component and multiple sub-components, then the file structure
@@ -153,9 +156,9 @@ Nesting of components is not possible. For example:
 
 ### Test a component
 
-Testing components as part of the development workflow to ensure that quality maintains high standards is strongly recommended.
+Testing CI/CD components as part of the development workflow is strongly recommended and helps ensure consistent behavior.
 
-Testing changes in a CI/CD pipeline can be done, like any other project, by creating a `.gitlab-ci.yml` in the root directory.
+Test changes in a CI/CD pipeline like any other project, by creating a `.gitlab-ci.yml` file in the root directory of the component repository.
 
 For example:
 
@@ -199,11 +202,16 @@ After committing and pushing changes, the pipeline tests the component then rele
 
 ### Release a component
 
-Component repositories are released using the [`release`](../yaml/index.md#release) keyword within a CI pipeline.
+To create a release for a CI/CD component, you can use:
+
+- The [`release`](../yaml/index.md#release) keyword in a CI/CD pipeline.
+- The [UI for creating a release](../../user/project/releases/index.md#create-a-release).
 
 Like in the [example above](#test-a-component), after all tests pass in a pipeline running for a tag ref, we can release a new version of the components repository.
 
 All released versions of the components repository are displayed in the Components Catalog page for the given resource, providing users with information about official releases.
+
+Components [can be used](#use-a-component-in-a-cicd-configuration) without being released, but only with a commit SHA or a branch name. To enable the use of tags or the `~latest` version keyword, you must create a release.
 
 ### Use a component in a CI/CD configuration
 
@@ -313,7 +321,7 @@ include:
 stages: [verify, deploy]
 
 ##
-# inside the component YAML:
+# inside the component's template.yml file:
 spec:
   inputs:
     stage:

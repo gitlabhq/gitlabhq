@@ -13,12 +13,6 @@ inherit_from:
     <% end %>
   - '.rubocop_todo.yml'
   <% end %>
-  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '2.7' %>
-  - ./rubocop/rubocop-ruby27.yml
-  <% end %>
-  <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.0' %>
-  - ./rubocop/rubocop-ruby30.yml
-  <% end %>
   <% if RUBY_VERSION[/^\d+\.\d+/, 0] == '3.1' %>
   - ./rubocop/rubocop-ruby31.yml
   <% end %>
@@ -36,7 +30,7 @@ inherit_mode:
     - AllowedPatterns
 
 AllCops:
-  # Target the current Ruby version. For example, "2.7" or "3.0".
+  # Target the current Ruby version. For example, "3.0" or "3.1".
   TargetRubyVersion: <%= RUBY_VERSION[/^\d+\.\d+/, 0] %>
   TargetRailsVersion: 7.0
   Exclude:
@@ -111,9 +105,6 @@ Layout/LineLength:
   Exclude:
     - 'ee/spec/controllers/concerns/routable_actions_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/sso_enforcer_spec.rb'
-
-Lint/LastKeywordArgument:
-  Safe: false
 
 Lint/Debugger:
   DebuggerMethods:

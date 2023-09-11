@@ -2206,16 +2206,6 @@
       changes: *code-backstage-patterns
       when: on_failure
 
-.rails:rules:deprecations:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-default-branch-schedule-nightly
-    - <<: *if-ruby3_1-branch-schedule-nightly
-    - <<: *if-merge-request-labels-run-all-rspec
-
 .rails:rules:rspec-coverage:
   rules:
     - <<: *if-not-ee

@@ -129,7 +129,7 @@ gem 'grape-swagger', '~> 1.6.1', group: [:development, :test]
 gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test]
 
 # GraphQL API
-gem 'graphql', '~> 1.13.12'
+gem 'graphql', '~> 1.13.19'
 gem 'graphiql-rails', '~> 1.8.0'
 gem 'apollo_upload_server', '~> 2.1.0'
 gem 'graphql-docs', '~> 2.1.0', group: [:development, :test]
@@ -256,7 +256,7 @@ gem 'rainbow', '~> 3.0'
 gem 'ruby-progressbar', '~> 1.10'
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '~> 1.7.0'
+gem 're2', '2.0.0.beta2'
 
 # Misc
 
