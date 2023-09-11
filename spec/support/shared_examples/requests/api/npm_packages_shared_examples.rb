@@ -876,3 +876,67 @@ RSpec.shared_examples 'rejects invalid package names' do
     expect(Gitlab::Json.parse(response.body)).to eq({ 'error' => 'package_name should be a valid file path' })
   end
 end
+
+RSpec.shared_examples 'handling get metadata requests for packages in multiple projects' do
+  let_it_be(:project2) { create(:project, namespace: namespace) }
+  let_it_be(:package2) do
+    create(:npm_package,
+      project: project2,
+      name: "@#{group.path}/scoped_package",
+      version: '1.2.0')
+  end
+
+  let(:headers) { build_token_auth_header(personal_access_token.token) }
+
+  subject { get(url, headers: headers) }
+
+  before_all do
+    project.update!(visibility: 'private')
+
+    group.add_guest(user)
+    project.add_reporter(user)
+    project2.add_reporter(user)
+  end
+
+  it 'includes all matching package versions in the response' do
+    subject
+
+    expect(json_response['versions'].keys).to match_array([package.version, package2.version])
+  end
+
+  context 'with the feature flag disabled' do
+    before do
+      stub_feature_flags(npm_allow_packages_in_multiple_projects: false)
+    end
+
+    it 'returns matching package versions from only one project' do
+      subject
+
+      expect(json_response['versions'].keys).to match_array([package2.version])
+    end
+  end
+
+  context 'with limited access to the project with the last package version' do
+    before_all do
+      project2.add_guest(user)
+    end
+
+    it 'includes matching package versions from authorized projects in the response' do
+      subject
+
+      expect(json_response['versions'].keys).to contain_exactly(package.version)
+    end
+  end
+
+  context 'with limited access to the project with the first package version' do
+    before do
+      project.add_guest(user)
+    end
+
+    it 'includes matching package versions from authorized projects in the response' do
+      subject
+
+      expect(json_response['versions'].keys).to contain_exactly(package2.version)
+    end
+  end
+end

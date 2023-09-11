@@ -1079,15 +1079,28 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     it 'defaults use_minimum_char_limit to true' do
-      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: true).once
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: true, exact_matches_first: false).once
 
       described_class.search('my namespace')
     end
 
     it 'passes use_minimum_char_limit if it is set' do
-      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: false).once
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: false, exact_matches_first: false).once
 
       described_class.search('my namespace', use_minimum_char_limit: false)
+    end
+
+    context 'with multiple matching namespaces' do
+      let_it_be(:first_group) { create(:group, name: 'some name', path: 'z-path') }
+      let_it_be(:second_group) { create(:group, name: 'some name too', path: 'a-path') }
+
+      it 'returns exact matches first' do
+        expect(described_class.search('some name', exact_matches_first: true).to_a).to eq([first_group, second_group])
+      end
+
+      it 'returns exact matches first when parents are included' do
+        expect(described_class.search('some name', include_parents: true, exact_matches_first: true).to_a).to eq([first_group, second_group])
+      end
     end
 
     context 'with project namespaces' do

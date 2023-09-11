@@ -1,5 +1,12 @@
 <script>
-import { GlAvatarLabeled, GlAvatarLink, GlIcon, GlTable, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlAvatarLabeled,
+  GlAvatarLink,
+  GlButton,
+  GlIcon,
+  GlTable,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { sprintf, s__, __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -8,6 +15,7 @@ export default {
   components: {
     GlAvatarLabeled,
     GlAvatarLink,
+    GlButton,
     GlIcon,
     GlTable,
     TimeAgoTooltip,
@@ -55,13 +63,7 @@ export default {
         {
           key: 'title',
           label: __('Integration'),
-          thClass: 'gl-w-quarter gl-xs-w-full',
-        },
-        {
-          key: 'description',
-          label: __('Description'),
-          thClass: 'gl-display-none d-sm-table-cell',
-          tdClass: 'gl-display-none d-sm-table-cell',
+          thClass: 'd-sm-table-cell',
         },
       );
 
@@ -69,10 +71,16 @@ export default {
         fields.push({
           key: 'updated_at',
           label: this.showUpdatedAt ? __('Last updated') : '',
-          thClass: 'gl-w-20 gl-text-right',
-          tdClass: 'gl-text-right',
+          thClass: 'gl-display-none d-sm-table-cell gl-text-right',
+          tdClass: 'gl-text-right gl-display-none d-sm-table-cell gl-vertical-align-middle!',
         });
       }
+
+      fields.push({
+        key: 'edit_path',
+        label: '',
+        thClass: 'gl-w-15',
+      });
 
       return fields;
     },
@@ -113,6 +121,7 @@ export default {
       >
         <gl-avatar-labeled
           :label="item.title"
+          :sub-label="item.description"
           :entity-id="item.id"
           :entity-name="item.title"
           :src="item.icon"
@@ -125,6 +134,12 @@ export default {
 
     <template #cell(updated_at)="{ item }">
       <time-ago-tooltip v-if="showUpdatedAt && item.updated_at" :time="item.updated_at" />
+    </template>
+
+    <template #cell(edit_path)="{ item }">
+      <gl-button :href="item.edit_path">
+        {{ __('Configure') }}
+      </gl-button>
     </template>
   </gl-table>
 </template>

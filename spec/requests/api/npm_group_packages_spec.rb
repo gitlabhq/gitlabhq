@@ -11,42 +11,11 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
     let(:url) { api("/groups/#{group.id}/-/packages/npm/#{package_name}") }
 
     it_behaves_like 'handling get metadata requests', scope: :group
-
-    context 'with a duplicate package name in another project' do
+    it_behaves_like 'rejects invalid package names' do
       subject { get(url) }
-
-      before do
-        group.add_developer(user)
-      end
-
-      let_it_be(:project2) { create(:project, :public, namespace: namespace) }
-      let_it_be(:package2) do
-        create(:npm_package,
-          project: project2,
-          name: "@#{group.path}/scoped_package",
-          version: '1.2.0')
-      end
-
-      it_behaves_like 'rejects invalid package names'
-
-      it 'includes all matching package versions in the response' do
-        subject
-
-        expect(json_response['versions'].keys).to match_array([package.version, package2.version])
-      end
-
-      context 'with the feature flag disabled' do
-        before do
-          stub_feature_flags(npm_allow_packages_in_multiple_projects: false)
-        end
-
-        it 'returns matching package versions from only one project' do
-          subject
-
-          expect(json_response['versions'].keys).to match_array([package2.version])
-        end
-      end
     end
+
+    it_behaves_like 'handling get metadata requests for packages in multiple projects'
 
     context 'with mixed group and project visibilities' do
       subject { get(url, headers: headers) }

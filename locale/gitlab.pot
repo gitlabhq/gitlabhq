@@ -12341,6 +12341,9 @@ msgstr ""
 msgid "Configuration help"
 msgstr ""
 
+msgid "Configure"
+msgstr ""
+
 msgid "Configure %{italic_start}What's new%{italic_end} drawer and content."
 msgstr ""
 
@@ -21269,6 +21272,9 @@ msgid "Get a free instance review"
 msgstr ""
 
 msgid "Get a support subscription"
+msgstr ""
+
+msgid "Get free trial"
 msgstr ""
 
 msgid "Get more information about troubleshooting pipelines"

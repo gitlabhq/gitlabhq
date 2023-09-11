@@ -9,12 +9,28 @@ module Gitlab
       REGEX_QUOTED_TERM = /(?<=\A| )"[^"]+"(?= |\z)/
 
       class_methods do
-        def fuzzy_search(query, columns, use_minimum_char_limit: true)
+        def fuzzy_search(query, columns, use_minimum_char_limit: true, exact_matches_first: false)
           matches = columns.map do |col|
             fuzzy_arel_match(col, query, use_minimum_char_limit: use_minimum_char_limit)
           end.compact.reduce(:or)
 
-          where(matches)
+          matches = where(matches)
+
+          return matches unless exact_matches_first
+
+          matches.order(exact_matches_first_sql(query, columns))
+        end
+
+        def exact_matches_first_sql(query, columns)
+          cases_sql = columns.map do |column|
+            arel_column = column.is_a?(Arel::Attributes::Attribute) ? column : arel_table[column]
+            match_sql = arel_column.matches(sanitize_sql_like(query)).to_sql
+            "WHEN #{match_sql} THEN 1"
+          end
+
+          cases_sql << "ELSE 2"
+
+          Arel.sql("CASE\n#{cases_sql.join("\n")}\nEND")
         end
 
         def to_pattern(query, use_minimum_char_limit: true)

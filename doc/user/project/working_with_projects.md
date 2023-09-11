@@ -420,6 +420,12 @@ download starts, the `insteadOf` configuration sends the traffic to the secondar
 
 When working with projects, you might encounter the following issues, or require alternate methods to complete specific tasks.
 
+### `An error occurred while fetching commit data`
+
+When you visit a project, the message `An error occurred while fetching commit data` might be displayed
+if you use an ad blocker in your browser. The solution is to disable your ad blocker
+for the GitLab instance you are trying to access.
+
 ### Find projects using an SQL query
 
 While in [a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session), you can find and store an array of projects based on a SQL query:

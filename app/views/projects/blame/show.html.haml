@@ -1,6 +1,5 @@
 - page_title _("Blame"), @blob.path, @ref
 - add_page_specific_style 'page_bundles/tree'
-- add_page_specific_style 'page_bundles/projects'
 - blame_streaming_url = blame_pages_streaming_url(@id, @project)
 
 - if @blame_mode.streaming? && @blame_pagination.total_extra_pages > 0

@@ -233,16 +233,26 @@ class Namespace < ApplicationRecord
     # query - The search query as a String.
     #
     # Returns an ActiveRecord::Relation.
-    def search(query, include_parents: false, use_minimum_char_limit: true)
+    def search(query, include_parents: false, use_minimum_char_limit: true, exact_matches_first: false)
       if include_parents
-        without_project_namespaces
+        route_columns = [Route.arel_table[:path], Route.arel_table[:name]]
+        namespaces = without_project_namespaces
           .where(id: Route.for_routable_type(Namespace.name)
           .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
-            .fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]],
+            .fuzzy_search(query, route_columns,
               use_minimum_char_limit: use_minimum_char_limit)
             .select(:source_id))
+
+        if exact_matches_first
+          namespaces = namespaces
+            .joins(:route)
+            .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
+            .order(exact_matches_first_sql(query, route_columns))
+        end
+
+        namespaces
       else
-        without_project_namespaces.fuzzy_search(query, [:path, :name], use_minimum_char_limit: use_minimum_char_limit)
+        without_project_namespaces.fuzzy_search(query, [:path, :name], use_minimum_char_limit: use_minimum_char_limit, exact_matches_first: exact_matches_first)
       end
     end
 

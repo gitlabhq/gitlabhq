@@ -462,6 +462,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryjobsfailurereason"></a>`failureReason` **{warning-solid}** | [`CiJobFailureReason`](#cijobfailurereason) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Filter jobs by failure reason. Currently only `RUNNER_SYSTEM_FAILURE` together with `runnerTypes: INSTANCE_TYPE` is supported. |
 | <a id="queryjobsrunnertypes"></a>`runnerTypes` **{warning-solid}** | [`[CiRunnerType!]`](#cirunnertype) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. Filter jobs by runner type if feature flag `:admin_jobs_filter_runner_type` is enabled. |
 | <a id="queryjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 
@@ -26307,6 +26308,47 @@ Values for sorting inherited variables.
 | <a id="cigroupvariablessortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
 | <a id="cigroupvariablessortkey_asc"></a>`KEY_ASC` | Key by ascending order. |
 | <a id="cigroupvariablessortkey_desc"></a>`KEY_DESC` | Key by descending order. |
+
+### `CiJobFailureReason`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobfailurereasonapi_failure"></a>`API_FAILURE` | A job that failed due to api failure. |
+| <a id="cijobfailurereasonarchived_failure"></a>`ARCHIVED_FAILURE` | A job that failed due to archived failure. |
+| <a id="cijobfailurereasonbridge_pipeline_is_child_pipeline"></a>`BRIDGE_PIPELINE_IS_CHILD_PIPELINE` | A job that failed due to bridge pipeline is child pipeline. |
+| <a id="cijobfailurereasonbuilds_disabled"></a>`BUILDS_DISABLED` | A job that failed due to builds disabled. |
+| <a id="cijobfailurereasonci_quota_exceeded"></a>`CI_QUOTA_EXCEEDED` | A job that failed due to ci quota exceeded. |
+| <a id="cijobfailurereasondata_integrity_failure"></a>`DATA_INTEGRITY_FAILURE` | A job that failed due to data integrity failure. |
+| <a id="cijobfailurereasondeployment_rejected"></a>`DEPLOYMENT_REJECTED` | A job that failed due to deployment rejected. |
+| <a id="cijobfailurereasondownstream_bridge_project_not_found"></a>`DOWNSTREAM_BRIDGE_PROJECT_NOT_FOUND` | A job that failed due to downstream bridge project not found. |
+| <a id="cijobfailurereasondownstream_pipeline_creation_failed"></a>`DOWNSTREAM_PIPELINE_CREATION_FAILED` | A job that failed due to downstream pipeline creation failed. |
+| <a id="cijobfailurereasonenvironment_creation_failure"></a>`ENVIRONMENT_CREATION_FAILURE` | A job that failed due to environment creation failure. |
+| <a id="cijobfailurereasonfailed_outdated_deployment_job"></a>`FAILED_OUTDATED_DEPLOYMENT_JOB` | A job that failed due to failed outdated deployment job. |
+| <a id="cijobfailurereasonforward_deployment_failure"></a>`FORWARD_DEPLOYMENT_FAILURE` | A job that failed due to forward deployment failure. |
+| <a id="cijobfailurereasoninsufficient_bridge_permissions"></a>`INSUFFICIENT_BRIDGE_PERMISSIONS` | A job that failed due to insufficient bridge permissions. |
+| <a id="cijobfailurereasoninsufficient_upstream_permissions"></a>`INSUFFICIENT_UPSTREAM_PERMISSIONS` | A job that failed due to insufficient upstream permissions. |
+| <a id="cijobfailurereasoninvalid_bridge_trigger"></a>`INVALID_BRIDGE_TRIGGER` | A job that failed due to invalid bridge trigger. |
+| <a id="cijobfailurereasonip_restriction_failure"></a>`IP_RESTRICTION_FAILURE` | A job that failed due to ip restriction failure. |
+| <a id="cijobfailurereasonjob_execution_timeout"></a>`JOB_EXECUTION_TIMEOUT` | A job that failed due to job execution timeout. |
+| <a id="cijobfailurereasonmissing_dependency_failure"></a>`MISSING_DEPENDENCY_FAILURE` | A job that failed due to missing dependency failure. |
+| <a id="cijobfailurereasonno_matching_runner"></a>`NO_MATCHING_RUNNER` | A job that failed due to no matching runner. |
+| <a id="cijobfailurereasonpipeline_loop_detected"></a>`PIPELINE_LOOP_DETECTED` | A job that failed due to pipeline loop detected. |
+| <a id="cijobfailurereasonproject_deleted"></a>`PROJECT_DELETED` | A job that failed due to project deleted. |
+| <a id="cijobfailurereasonprotected_environment_failure"></a>`PROTECTED_ENVIRONMENT_FAILURE` | A job that failed due to protected environment failure. |
+| <a id="cijobfailurereasonreached_max_descendant_pipelines_depth"></a>`REACHED_MAX_DESCENDANT_PIPELINES_DEPTH` | A job that failed due to reached max descendant pipelines depth. |
+| <a id="cijobfailurereasonreached_max_pipeline_hierarchy_size"></a>`REACHED_MAX_PIPELINE_HIERARCHY_SIZE` | A job that failed due to reached max pipeline hierarchy size. |
+| <a id="cijobfailurereasonrunner_system_failure"></a>`RUNNER_SYSTEM_FAILURE` | A job that failed due to runner system failure. |
+| <a id="cijobfailurereasonrunner_unsupported"></a>`RUNNER_UNSUPPORTED` | A job that failed due to runner unsupported. |
+| <a id="cijobfailurereasonscheduler_failure"></a>`SCHEDULER_FAILURE` | A job that failed due to scheduler failure. |
+| <a id="cijobfailurereasonscript_failure"></a>`SCRIPT_FAILURE` | A job that failed due to script failure. |
+| <a id="cijobfailurereasonsecrets_provider_not_found"></a>`SECRETS_PROVIDER_NOT_FOUND` | A job that failed due to secrets provider not found. |
+| <a id="cijobfailurereasonstale_schedule"></a>`STALE_SCHEDULE` | A job that failed due to stale schedule. |
+| <a id="cijobfailurereasonstuck_or_timeout_failure"></a>`STUCK_OR_TIMEOUT_FAILURE` | A job that failed due to stuck or timeout failure. |
+| <a id="cijobfailurereasontrace_size_exceeded"></a>`TRACE_SIZE_EXCEEDED` | A job that failed due to trace size exceeded. |
+| <a id="cijobfailurereasonunknown_failure"></a>`UNKNOWN_FAILURE` | A job that failed due to unknown failure. |
+| <a id="cijobfailurereasonunmet_prerequisites"></a>`UNMET_PREREQUISITES` | A job that failed due to unmet prerequisites. |
+| <a id="cijobfailurereasonupstream_bridge_project_not_found"></a>`UPSTREAM_BRIDGE_PROJECT_NOT_FOUND` | A job that failed due to upstream bridge project not found. |
+| <a id="cijobfailurereasonuser_blocked"></a>`USER_BLOCKED` | A job that failed due to user blocked. |
 
 ### `CiJobKind`
 

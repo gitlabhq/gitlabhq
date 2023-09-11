@@ -17,14 +17,17 @@ module Resolvers
               description: 'Filter jobs by runner type if ' \
                            'feature flag `:admin_jobs_filter_runner_type` is enabled.'
 
-      def resolve_with_lookahead(statuses: nil, runner_types: nil)
-        jobs = ::Ci::JobsFinder.new(current_user: current_user,
-params: { scope: statuses, runner_type: runner_types }).execute
+      def resolve_with_lookahead(**args)
+        jobs = ::Ci::JobsFinder.new(current_user: current_user, params: params_data(args)).execute
 
         apply_lookahead(jobs)
       end
 
       private
+
+      def params_data(args)
+        { scope: args[:statuses], runner_type: args[:runner_types] }
+      end
 
       def preloads
         {
@@ -55,3 +58,5 @@ params: { scope: statuses, runner_type: runner_types }).execute
     end
   end
 end
+
+Resolvers::Ci::AllJobsResolver.prepend_mod

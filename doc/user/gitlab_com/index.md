@@ -225,7 +225,7 @@ or [purchase additional storage](https://about.gitlab.com/pricing/licensing-faq/
 
 NOTE:
 `git push` and GitLab project imports are limited to 5 GB per request through
-Cloudflare. Git LFS and imports other than a file upload are not affected by
+Cloudflare. Imports other than a file upload are not affected by
 this limit. Repository limits apply to both public and private projects.
 
 ## Default import sources

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobsFinder, '#execute', feature_category: :runner_fleet do
+RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integration do
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:project) { create(:project, :private, public_builds: false) }
@@ -13,8 +13,8 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :runner_fleet do
 
   let(:params) { {} }
 
-  context 'when project, pipeline or runner are blank' do
-    subject { described_class.new(current_user: current_user, params: params).execute }
+  context 'when project, pipeline, and runner are blank' do
+    subject(:finder_execute) { described_class.new(current_user: current_user, params: params).execute }
 
     context 'with admin' do
       let(:current_user) { admin }
@@ -278,28 +278,30 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :runner_fleet do
     let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
     let_it_be(:job_4) { create(:ci_build, :success, runner: runner) }
 
-    subject { described_class.new(current_user: user, runner: runner, params: params).execute }
+    subject(:execute) { described_class.new(current_user: user, runner: runner, params: params).execute }
 
-    context 'with admin and admin mode enabled', :enable_admin_mode do
+    context 'when current user is an admin' do
       let(:user) { admin }
 
-      it 'returns jobs for the specified project' do
-        expect(subject).to match_array([job_4])
-      end
-
-      context "with params" do
-        using RSpec::Parameterized::TableSyntax
-
-        where(:param_runner_type, :param_scope, :expected_jobs) do
-          'project_type'  | 'success' | lazy { [job_4] }
-          'instance_type' | nil       | lazy { [] }
-          nil             | 'pending' | lazy { [] }
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'returns jobs for the specified project' do
+          expect(subject).to contain_exactly job_4
         end
 
-        with_them do
-          let(:params) { { runner_type: param_runner_type, scope: param_scope } }
+        context 'with params' do
+          using RSpec::Parameterized::TableSyntax
 
-          it { is_expected.to match_array(expected_jobs) }
+          where(:param_runner_type, :param_scope, :expected_jobs) do
+            'project_type'  | 'success' | lazy { [job_4] }
+            'instance_type' | nil       | lazy { [] }
+            nil             | 'pending' | lazy { [] }
+          end
+
+          with_them do
+            let(:params) { { runner_type: param_runner_type, scope: param_scope } }
+
+            it { is_expected.to match_array(expected_jobs) }
+          end
         end
       end
     end

@@ -9,36 +9,44 @@ RSpec.describe Gitlab::SQL::Pattern do
     let_it_be(:issue1) { create(:issue, title: 'noise foo noise', description: 'noise bar noise') }
     let_it_be(:issue2) { create(:issue, title: 'noise baz noise', description: 'noise foo noise') }
     let_it_be(:issue3) { create(:issue, title: 'Oh', description: 'Ah') }
+    let_it_be(:issue4) { create(:issue, title: 'beep beep', description: 'beep beep') }
+    let_it_be(:issue5) { create(:issue, title: 'beep', description: 'beep') }
 
-    subject(:fuzzy_search) { Issue.fuzzy_search(query, columns) }
+    subject(:fuzzy_search) { Issue.fuzzy_search(query, columns, exact_matches_first: exact_matches_first) }
 
-    where(:query, :columns, :expected) do
-      'foo' | [Issue.arel_table[:title]] | %i[issue1]
+    where(:query, :columns, :exact_matches_first, :expected) do
+      'foo' | [Issue.arel_table[:title]] | false | %i[issue1]
 
-      'foo' | %i[title]             | %i[issue1]
-      'foo' | %w[title]             | %i[issue1]
-      'foo' | %i[description]       | %i[issue2]
-      'foo' | %i[title description] | %i[issue1 issue2]
-      'bar' | %i[title description] | %i[issue1]
-      'baz' | %i[title description] | %i[issue2]
-      'qux' | %i[title description] | []
+      'foo' | %i[title]             | false | %i[issue1]
+      'foo' | %w[title]             | false | %i[issue1]
+      'foo' | %i[description]       | false | %i[issue2]
+      'foo' | %i[title description] | false | %i[issue1 issue2]
+      'bar' | %i[title description] | false | %i[issue1]
+      'baz' | %i[title description] | false | %i[issue2]
+      'qux' | %i[title description] | false | []
 
-      'oh' | %i[title description] | %i[issue3]
-      'OH' | %i[title description] | %i[issue3]
-      'ah' | %i[title description] | %i[issue3]
-      'AH' | %i[title description] | %i[issue3]
-      'oh' | %i[title]             | %i[issue3]
-      'ah' | %i[description]       | %i[issue3]
+      'oh' | %i[title description] | false | %i[issue3]
+      'OH' | %i[title description] | false | %i[issue3]
+      'ah' | %i[title description] | false | %i[issue3]
+      'AH' | %i[title description] | false | %i[issue3]
+      'oh' | %i[title]             | false | %i[issue3]
+      'ah' | %i[description]       | false | %i[issue3]
 
-      ''      | %i[title]          | %i[issue1 issue2 issue3]
-      %w[a b] | %i[title]          | %i[issue1 issue2 issue3]
+      ''      | %i[title]          | false | %i[issue1 issue2 issue3 issue4 issue5]
+      %w[a b] | %i[title]          | false | %i[issue1 issue2 issue3 issue4 issue5]
+
+      'beep'  | %i[title]          | true  | %i[issue5 issue4]
     end
 
     with_them do
       let(:expected_issues) { expected.map { |sym| send(sym) } }
 
       it 'finds the expected issues' do
-        expect(fuzzy_search).to match_array(expected_issues)
+        if exact_matches_first
+          expect(fuzzy_search).to eq(expected_issues)
+        else
+          expect(fuzzy_search).to match_array(expected_issues)
+        end
       end
     end
   end

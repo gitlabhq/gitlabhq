@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Resolvers::Ci::AllJobsResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
+  let_it_be(:instance_runner) { create(:ci_runner, :instance) }
   let_it_be(:successful_job) { create(:ci_build, :success, name: 'successful_job') }
   let_it_be(:successful_job_two) { create(:ci_build, :success, name: 'successful_job_two') }
   let_it_be(:failed_job) { create(:ci_build, :failed, name: 'failed_job') }
@@ -12,11 +13,11 @@ RSpec.describe Resolvers::Ci::AllJobsResolver, feature_category: :continuous_int
 
   let(:args) { {} }
 
-  subject { resolve_jobs(args) }
-
   describe '#resolve' do
-    context 'with admin' do
-      let(:current_user) { create(:admin) }
+    subject(:request) { resolve_jobs(args) }
+
+    context 'when current user is an admin' do
+      let_it_be(:current_user) { create(:admin) }
 
       shared_examples 'executes as admin' do
         context "with argument `statuses`" do
@@ -40,8 +41,7 @@ RSpec.describe Resolvers::Ci::AllJobsResolver, feature_category: :continuous_int
 
         context "with argument `runner_types`" do
           let_it_be(:successful_job_with_instance_runner) do
-            create(:ci_build, :success, name: 'successful_job_with_instance_runner',
-              runner: create(:ci_runner, :instance))
+            create(:ci_build, :success, name: 'successful_job_with_instance_runner', runner: instance_runner)
           end
 
           context 'with feature flag :admin_jobs_filter_runner_type enabled' do
@@ -80,7 +80,7 @@ RSpec.describe Resolvers::Ci::AllJobsResolver, feature_category: :continuous_int
               :ci_build,
               :success,
               name: 'successful_job_with_instance_runner',
-              runner: create(:ci_runner, :instance)
+              runner: instance_runner
             )
           end
 
@@ -132,7 +132,9 @@ RSpec.describe Resolvers::Ci::AllJobsResolver, feature_category: :continuous_int
     end
 
     context 'with unauthorized user' do
-      let(:current_user) { nil }
+      let_it_be(:unauth_user) { create(:user) }
+
+      let(:current_user) { unauth_user }
 
       it { is_expected.to be_empty }
     end

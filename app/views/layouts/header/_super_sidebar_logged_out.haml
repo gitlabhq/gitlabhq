@@ -44,4 +44,4 @@
           - if allow_signup?
             %li
               = render Pajamas::ButtonComponent.new(href: new_user_registration_path, variant: :confirm) do
-                = _('Register')
+                = Gitlab.com? ? _('Get free trial') : _('Register')

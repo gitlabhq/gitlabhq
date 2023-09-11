@@ -197,7 +197,7 @@ module API
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
           get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
             package_name = params[:package_name]
-            packages =
+            available_packages =
               if Feature.enabled?(:npm_allow_packages_in_multiple_projects)
                 finder_for_endpoint_scope(package_name).execute
               else
@@ -205,7 +205,8 @@ module API
                                               .execute
               end
 
-            redirect_request = project_or_nil.blank? || packages.empty?
+            # In order to redirect a request, packages should not exist (without taking the user into account).
+            redirect_request = project_or_nil.blank? || available_packages.empty?
 
             redirect_registry_request(
               forward_to_registry: redirect_request,
@@ -213,9 +214,25 @@ module API
               target: project_or_nil,
               package_name: package_name
             ) do
-              authorize_read_package!(project)
+              if endpoint_scope == :project || Feature.disabled?(:npm_allow_packages_in_multiple_projects)
+                authorize_read_package!(project)
+              elsif Feature.enabled?(:npm_allow_packages_in_multiple_projects)
+                available_packages_to_user = ::Packages::Npm::PackagesForUserFinder.new(
+                  current_user,
+                  group_or_namespace,
+                  package_name: params[:package_name]
+                ).execute
 
-              not_found!('Packages') if packages.empty?
+                if available_packages.any? && available_packages_to_user.empty?
+                  forbidden! if current_user
+
+                  not_found!('Packages')
+                end
+
+                available_packages = available_packages_to_user
+              end
+
+              not_found!('Packages') if available_packages.empty?
 
               if endpoint_scope == :project && Feature.enabled?(:npm_metadata_cache, project)
                 if metadata_cache&.file&.exists?
@@ -228,7 +245,7 @@ module API
                 enqueue_sync_metadata_cache_worker(project, package_name)
               end
 
-              metadata = generate_metadata_service(packages).execute.payload
+              metadata = generate_metadata_service(available_packages).execute.payload
               present metadata, with: ::API::Entities::NpmPackage
             end
           end
