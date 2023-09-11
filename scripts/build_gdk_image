@@ -8,10 +8,6 @@ REGISTRY="${CI_REGISTRY}/${CI_PROJECT_PATH}"
 SHA_TAG="${CI_COMMIT_SHA}"
 BRANCH_TAG="${CI_COMMIT_REF_SLUG}"
 
-# Fetch ruby version based on contents of .ruby-version
-RUBY_VERSION=$(cat .ruby-version)
-RUBY_VERSION_MINOR=$(echo "$RUBY_VERSION" | awk -F. '{$3=0; OFS="."; print $1,$2,$3}')
-
 IMAGE="${REGISTRY}/gitlab-qa-gdk"
 
 if [[ -n "${CI}" ]]; then
@@ -20,17 +16,16 @@ else
   OUTPUT_OPTION="--load"
 fi
 
-echoinfo "Building GDK image with GDK sha: '${GDK_SHA}'" "yes"
+echoinfo "Building GDK image" "yes"
 
 docker buildx build \
-  --cache-to="type=inline" \
-  --cache-from="${IMAGE}:${BRANCH_TAG}" \
-  --cache-from="${IMAGE}:master" \
+  --cache-to="type=registry,mode=max,image-manifest=true,ref=${IMAGE}/cache:${BRANCH_TAG}" \
+  --cache-from="${IMAGE}/cache:${BRANCH_TAG}" \
+  --cache-from="${IMAGE}/cache:master" \
   --file="qa/gdk/Dockerfile.gdk" \
   --platform=${ARCH:-amd64} \
   --tag="${IMAGE}:${SHA_TAG}" \
   --tag="${IMAGE}:${BRANCH_TAG}" \
-  --build-arg="GEM_CACHE=/home/gdk/.asdf/installs/ruby/${RUBY_VERSION}/lib/ruby/gems/${RUBY_VERSION_MINOR}/cache" \
   ${OUTPUT_OPTION} \
   .
 

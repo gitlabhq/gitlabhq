@@ -4,6 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Admin::AbuseReports::ModerateUserService, feature_category: :instance_resiliency do
   let_it_be_with_reload(:abuse_report) { create(:abuse_report) }
+  let_it_be_with_reload(:similar_abuse_report) do
+    create(:abuse_report, user: abuse_report.user, category: abuse_report.category)
+  end
+
   let(:action) { 'ban_user' }
   let(:close) { true }
   let(:reason) { 'spam' }
@@ -26,12 +30,25 @@ RSpec.describe Admin::AbuseReports::ModerateUserService, feature_category: :inst
       it 'closes the report' do
         expect { subject }.to change { abuse_report.closed? }.from(false).to(true)
       end
+
+      context 'when similar open reports for the user exist' do
+        it 'closes the similar report' do
+          expect { subject }.to change { similar_abuse_report.reload.closed? }.from(false).to(true)
+        end
+      end
     end
 
     shared_examples 'does not close the report' do
       it 'does not close the report' do
         subject
         expect(abuse_report.closed?).to be(false)
+      end
+
+      context 'when similar open reports for the user exist' do
+        it 'does not close the similar report' do
+          subject
+          expect(similar_abuse_report.reload.closed?).to be(false)
+        end
       end
     end
 

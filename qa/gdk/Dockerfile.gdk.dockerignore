@@ -1,3 +1,5 @@
+.go/
+.git/
 .bundle/
 .gitlab/
 .lefthook/
@@ -10,9 +12,8 @@ data/
 doc/
 rubocop/
 storybook/
-log/*.log
 node_modules/
-tmp/*
+log/*.log
 
 .eslint*
 .gitlab-ci.yml
@@ -28,6 +29,12 @@ lefthook.yml
 tests.yml
 
 *.md
+
+tmp/*
+!tmp/feature_flags
+!tmp/pids
+!tmp/prometheus_multiproc_dir
+!tmp/sockets
 
 db/fixtures/
 !db/fixtures/development/01_admin.rb

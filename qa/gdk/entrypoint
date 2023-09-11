@@ -8,14 +8,6 @@ set -e
 # from outside the container
 echo "$(hostname -i) gdk.test" | sudo tee -a /etc/hosts > /dev/null
 
-# make sure we don't override existing BUNDLE_PATH which happens on CI where all job variables are also passed in to service
-unset BUNDLE_PATH
-
 gdk start
 
-# /builds folder is present when running as a service on CI
-if [ -d /builds ]; then
-  exec "$@" | tee -a /builds/gdk.log
-else
-  exec "$@" | tee -a ${HOME}/gitlab-development-kit/gitlab/log/gdk.log
-fi
+exec "$@" | tee -a ${HOME}/gitlab-development-kit/gitlab/log/gdk.log

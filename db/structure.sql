@@ -25149,7 +25149,8 @@ CREATE TABLE work_item_progresses (
     start_value double precision DEFAULT 0.0 NOT NULL,
     end_value double precision DEFAULT 100.0 NOT NULL,
     current_value double precision DEFAULT 0.0 NOT NULL,
-    rollup_progress boolean DEFAULT true NOT NULL
+    rollup_progress boolean DEFAULT true NOT NULL,
+    reminder_frequency smallint DEFAULT 0 NOT NULL
 );
 
 CREATE TABLE work_item_types (

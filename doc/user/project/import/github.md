@@ -58,9 +58,8 @@ To import projects from GitHub:
   When issues and pull requests are being imported, the importer attempts to find their GitHub authors and assignees in
   the database of the GitLab instance. Pull requests are called _merge requests_ in GitLab. For the importer to succeed,
   matching email addresses are required.
-- GitHub accounts must have a GitHub public-facing email address is populated. This means all comments and contributions
-  are properly mapped to the same user in GitLab. GitHub Enterprise does not require this field to be populated so you
-  may have to add it on existing accounts.
+- GitHub accounts must have a GitHub public-facing email address so that all comments and contributions can be properly mapped to
+  the same user in GitLab. GitHub Enterprise does not require this field to be populated so you might have to add it on existing accounts.
 
 ### Importing from GitHub Enterprise to self-managed GitLab
 

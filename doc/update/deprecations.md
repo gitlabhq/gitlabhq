@@ -291,6 +291,20 @@ The GitLab Runner Kubernetes executor setting, `terminationGracePeriodSeconds`, 
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Deprecate change vulnerability status from the Developer role
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424133).
+</div>
+
+The ability for Developers to change the status of vulnerabilities is now deprecated.  We plan to make a breaking change in the upcoming GitLab 17.0 release to remove this ability from the Developer role.  Users who wish to continue to grant this permission to developers can [create a custom role](https://docs.gitlab.com/ee/user/permissions.html#custom-roles) for their developers and add in the `admin_vulnerability` permission to give them this access.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Deprecate field `hasSolutions` from GraphQL VulnerabilityType
 
 <div class="deprecation-notes">

@@ -9677,6 +9677,9 @@ msgstr ""
 msgid "Check your sign-up restrictions"
 msgstr ""
 
+msgid "Checkin reminder has been enabled."
+msgstr ""
+
 msgid "Checking %{text} availability…"
 msgstr ""
 
@@ -12408,6 +12411,9 @@ msgid "Configure advanced permissions, Large File Storage, two-factor authentica
 msgstr ""
 
 msgid "Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings."
+msgstr ""
+
+msgid "Configure checkin reminder frequency"
 msgstr ""
 
 msgid "Configure custom rules for Jira issue key matching"
@@ -43783,6 +43789,9 @@ msgid "SetStatusModal|Your status resets on %{date}."
 msgstr ""
 
 msgid "Sets %{epic_ref} as parent epic."
+msgstr ""
+
+msgid "Sets checkin reminder frequency to %{frequency}."
 msgstr ""
 
 msgid "Sets health status to %{health_status}."
