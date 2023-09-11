@@ -39,6 +39,7 @@ module Gitlab
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
 
           return unless async_index_creation_available?
+          raise "Table #{table_name} does not exist" unless table_exists?(table_name)
 
           index_name = options[:name] || index_name(table_name, column_name)
 

@@ -141,6 +141,14 @@ RSpec.describe Gitlab::Database::AsyncIndexes::MigrationHelpers, feature_categor
         expect { migration.prepare_async_index(table_name, 'id') }.not_to raise_error
       end
     end
+
+    context 'when the target table does not exist' do
+      it 'raises an error' do
+        expect { migration.prepare_async_index(:non_existent_table, 'id') }.to(
+          raise_error("Table non_existent_table does not exist")
+        )
+      end
+    end
   end
 
   describe '#prepare_async_index_from_sql' do

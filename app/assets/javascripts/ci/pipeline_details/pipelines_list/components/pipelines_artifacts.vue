@@ -60,7 +60,7 @@ export default {
   <gl-disclosure-dropdown
     v-if="shouldShowDropdown"
     v-gl-tooltip
-    class="build-artifacts js-pipeline-dropdown-download"
+    class="gl-text-left"
     :title="$options.i18n.artifacts"
     :toggle-text="$options.i18n.artifacts"
     :aria-label="$options.i18n.artifacts"

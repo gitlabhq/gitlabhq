@@ -1,8 +1,7 @@
 <script>
 import {
   GlAlert,
-  GlDropdown,
-  GlDropdownItem,
+  GlDisclosureDropdown,
   GlSearchBoxByType,
   GlLoadingIcon,
   GlTooltipDirective,
@@ -14,6 +13,7 @@ import Tracking from '~/tracking';
 import { TRACKING_CATEGORIES } from '../../constants';
 
 export const i18n = {
+  searchPlaceholder: __('Search artifacts'),
   downloadArtifacts: __('Download artifacts'),
   artifactsFetchErrorMessage: s__('Pipelines|Could not load artifacts.'),
   artifactsFetchWarningMessage: s__(
@@ -29,8 +29,7 @@ export default {
   },
   components: {
     GlAlert,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
     GlSearchBoxByType,
     GlLoadingIcon,
   },
@@ -66,6 +65,17 @@ export default {
       return this.searchQuery.length > 0
         ? fuzzaldrinPlus.filter(this.artifacts, this.searchQuery, { key: 'name' })
         : this.artifacts;
+    },
+    items() {
+      return this.filteredArtifacts.map(({ name, path }) => ({
+        text: name,
+        href: path,
+        extraAttrs: {
+          download: '',
+          rel: 'nofollow',
+          'data-testid': 'artifact-item',
+        },
+      }));
     },
   },
   watch: {
@@ -107,66 +117,73 @@ export default {
           this.isLoading = false;
         });
     },
-    handleDropdownShown() {
-      if (this.hasArtifacts) {
-        this.$refs.searchInput.focusInput();
-      }
+    onDisclosureDropdownShown() {
+      this.fetchArtifacts();
+    },
+    onDisclosureDropdownHidden() {
+      this.searchQuery = '';
     },
   },
 };
 </script>
 <template>
-  <gl-dropdown
+  <gl-disclosure-dropdown
     v-gl-tooltip
+    class="gl-text-left"
     :title="$options.i18n.downloadArtifacts"
-    :text="$options.i18n.downloadArtifacts"
+    :toggle-text="$options.i18n.downloadArtifacts"
     :aria-label="$options.i18n.downloadArtifacts"
-    :header-text="$options.i18n.downloadArtifacts"
+    :items="items"
     icon="download"
-    data-testid="pipeline-multi-actions-dropdown"
-    right
-    lazy
+    placement="right"
     text-sr-only
-    @show="fetchArtifacts"
-    @shown="handleDropdownShown"
+    data-testid="pipeline-multi-actions-dropdown"
+    @shown="onDisclosureDropdownShown"
+    @hidden="onDisclosureDropdownHidden"
   >
-    <gl-alert v-if="hasError && !hasArtifacts" variant="danger" :dismissible="false">
-      {{ $options.i18n.artifactsFetchErrorMessage }}
-    </gl-alert>
-
-    <gl-loading-icon v-else-if="isLoading" size="sm" />
-
-    <gl-dropdown-item v-else-if="!hasArtifacts" data-testid="artifacts-empty-message">
-      {{ $options.i18n.emptyArtifactsMessage }}
-    </gl-dropdown-item>
-
     <template #header>
-      <gl-search-box-by-type v-if="hasArtifacts" ref="searchInput" v-model.trim="searchQuery" />
+      <div
+        aria-hidden="true"
+        class="gl-display-flex gl-align-items-center gl-p-4! gl-min-h-8 gl-font-sm gl-font-weight-bold gl-text-gray-900 gl-border-b-1 gl-border-b-solid gl-border-b-gray-200"
+      >
+        {{ $options.i18n.downloadArtifacts }}
+      </div>
+      <div v-if="hasArtifacts" class="gl-border-b-1 gl-border-b-solid gl-border-b-gray-200">
+        <gl-search-box-by-type
+          ref="searchInput"
+          v-model.trim="searchQuery"
+          :placeholder="$options.i18n.searchPlaceholder"
+          borderless
+          autofocus
+        />
+      </div>
+      <gl-alert
+        v-if="hasError && !hasArtifacts"
+        variant="danger"
+        :dismissible="false"
+        data-testid="artifacts-fetch-error"
+      >
+        {{ $options.i18n.artifactsFetchErrorMessage }}
+      </gl-alert>
     </template>
 
-    <gl-dropdown-item
-      v-for="(artifact, i) in filteredArtifacts"
-      :key="i"
-      :href="artifact.path"
-      rel="nofollow"
-      download
-      class="gl-word-break-word"
-      data-testid="artifact-item"
+    <gl-loading-icon v-if="isLoading" class="gl-m-3" size="sm" />
+    <p
+      v-else-if="filteredArtifacts.length === 0"
+      class="gl-px-4 gl-py-3 gl-m-0 gl-text-gray-600"
+      data-testid="artifacts-empty-message"
     >
-      {{ artifact.name }}
-    </gl-dropdown-item>
+      {{ $options.i18n.emptyArtifactsMessage }}
+    </p>
 
     <template #footer>
-      <gl-dropdown-item
+      <p
         v-if="hasError && hasArtifacts"
-        class="gl-list-style-none"
-        disabled
+        class="gl-font-sm gl-text-secondary gl-py-4 gl-px-5 gl-mb-0 gl-border-t"
         data-testid="artifacts-fetch-warning"
       >
-        <span class="gl-font-sm">
-          {{ $options.i18n.artifactsFetchWarningMessage }}
-        </span>
-      </gl-dropdown-item>
+        {{ $options.i18n.artifactsFetchWarningMessage }}
+      </p>
     </template>
-  </gl-dropdown>
+  </gl-disclosure-dropdown>
 </template>

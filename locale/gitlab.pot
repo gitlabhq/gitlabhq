@@ -41596,6 +41596,9 @@ msgstr ""
 msgid "Search an environment spec"
 msgstr ""
 
+msgid "Search artifacts"
+msgstr ""
+
 msgid "Search assignees"
 msgstr ""
 

@@ -1,5 +1,12 @@
 import { nextTick } from 'vue';
-import { GlAlert, GlDropdown, GlSprintf, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlSprintf,
+  GlLoadingIcon,
+  GlSearchBoxByType,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -16,7 +23,6 @@ import { TRACKING_CATEGORIES } from '~/ci/pipeline_details/constants';
 describe('Pipeline Multi Actions Dropdown', () => {
   let wrapper;
   let mockAxios;
-  const focusInputMock = jest.fn();
 
   const artifacts = [
     {
@@ -58,26 +64,27 @@ describe('Pipeline Multi Actions Dropdown', () => {
           pipelineId,
         },
         stubs: {
+          GlAlert,
           GlSprintf,
-          GlDropdown,
-          GlSearchBoxByType: stubComponent(GlSearchBoxByType, {
-            methods: { focusInput: focusInputMock },
-          }),
+          GlDisclosureDropdown,
+          GlDisclosureDropdownItem,
+          GlSearchBoxByType: stubComponent(GlSearchBoxByType),
         },
       }),
     );
   };
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findAlert = () => wrapper.findByTestId('artifacts-fetch-error');
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAllArtifactItems = () => wrapper.findAllByTestId(artifactItemTestId);
   const findFirstArtifactItem = () => wrapper.findByTestId(artifactItemTestId);
   const findAllArtifactItemsData = () =>
-    wrapper.findAllByTestId(artifactItemTestId).wrappers.map((x) => ({
-      path: x.attributes('href'),
-      name: x.text(),
-    }));
+    findDropdown()
+      .props('items')
+      .map(({ text, href }) => ({
+        name: text,
+        path: href,
+      }));
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findEmptyMessage = () => wrapper.findByTestId('artifacts-empty-message');
   const findWarning = () => wrapper.findByTestId('artifacts-fetch-warning');
@@ -108,7 +115,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
       it('should render a loading spinner and no empty message', async () => {
         createComponent();
 
-        findDropdown().vm.$emit('show');
+        findDropdown().vm.$emit('shown');
         await nextTick();
 
         expect(findLoadingIcon().exists()).toBe(true);
@@ -123,7 +130,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
 
           createComponent();
 
-          findDropdown().vm.$emit('show');
+          findDropdown().vm.$emit('shown');
           await waitForPromises();
         });
 
@@ -135,13 +142,29 @@ describe('Pipeline Multi Actions Dropdown', () => {
         it('should focus the search box when opened with artifacts', () => {
           findDropdown().vm.$emit('shown');
 
-          expect(focusInputMock).toHaveBeenCalled();
+          expect(findSearchBox().attributes('autofocus')).not.toBe(undefined);
         });
 
-        it('should render all the provided artifacts when search query is empty', () => {
-          findSearchBox().vm.$emit('input', '');
+        it('should clear searchQuery when dropdown is closed', async () => {
+          findDropdown().vm.$emit('shown');
+          findSearchBox().vm.$emit('input', 'job-2');
+          await waitForPromises();
 
-          expect(findAllArtifactItems()).toHaveLength(artifacts.length);
+          expect(findSearchBox().vm.value).toBe('job-2');
+
+          findDropdown().vm.$emit('hidden');
+          await waitForPromises();
+
+          expect(findSearchBox().vm.value).toBe('');
+        });
+
+        it('should render all the provided artifacts when search query is empty', async () => {
+          findSearchBox().vm.$emit('input', '');
+          await waitForPromises();
+
+          expect(findAllArtifactItemsData()).toEqual(
+            artifacts.map(({ name, path }) => ({ name, path })),
+          );
           expect(findEmptyMessage().exists()).toBe(false);
         });
 
@@ -149,7 +172,12 @@ describe('Pipeline Multi Actions Dropdown', () => {
           findSearchBox().vm.$emit('input', 'job-2');
           await waitForPromises();
 
-          expect(findAllArtifactItems()).toHaveLength(1);
+          expect(findAllArtifactItemsData()).toEqual([
+            {
+              name: 'job-2 my-artifact-2',
+              path: '/download/path-two',
+            },
+          ]);
           expect(findEmptyMessage().exists()).toBe(false);
         });
 
@@ -164,12 +192,12 @@ describe('Pipeline Multi Actions Dropdown', () => {
               mockAxios.resetHistory();
               mockAxios.onGet(endpoint).replyOnce(HTTP_STATUS_OK, { artifacts: newArtifacts });
 
-              findDropdown().vm.$emit('show');
+              findDropdown().vm.$emit('shown');
               await nextTick();
             });
 
             it('should hide list and render a loading spinner on dropdown click', () => {
-              expect(findAllArtifactItems()).toHaveLength(0);
+              expect(findAllArtifactItemsData()).toHaveLength(0);
               expect(findLoadingIcon().exists()).toBe(true);
             });
 
@@ -189,7 +217,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
             beforeEach(async () => {
               mockAxios.onGet(endpoint).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-              findDropdown().vm.$emit('show');
+              findDropdown().vm.$emit('shown');
               await waitForPromises();
             });
 
@@ -217,7 +245,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
             beforeEach(async () => {
               mockAxios.onGet(newEndpoint).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-              findDropdown().vm.$emit('show');
+              findDropdown().vm.$emit('shown');
               await waitForPromises();
             });
 
@@ -227,7 +255,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
             });
 
             it('should clear list', () => {
-              expect(findAllArtifactItems()).toHaveLength(0);
+              expect(findAllArtifactItemsData()).toHaveLength(0);
             });
           });
         });
@@ -241,7 +269,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
         it('should render empty message and no search box when no artifacts are found', async () => {
           createComponent();
 
-          findDropdown().vm.$emit('show');
+          findDropdown().vm.$emit('shown');
           await waitForPromises();
 
           expect(findEmptyMessage().exists()).toBe(true);
@@ -258,7 +286,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
 
       it('should render an error message', async () => {
         createComponent();
-        findDropdown().vm.$emit('show');
+        findDropdown().vm.$emit('shown');
         await waitForPromises();
 
         const error = findAlert();
@@ -278,7 +306,7 @@ describe('Pipeline Multi Actions Dropdown', () => {
 
       createComponent();
 
-      findDropdown().vm.$emit('show');
+      findDropdown().vm.$emit('shown');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_artifacts_dropdown', {
         label: TRACKING_CATEGORIES.table,
