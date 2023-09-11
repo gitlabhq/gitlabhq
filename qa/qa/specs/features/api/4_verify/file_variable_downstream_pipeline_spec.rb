@@ -8,12 +8,12 @@ module QA
     describe 'Pipeline with file variables and downstream pipelines' do
       let(:random_string) { Faker::Alphanumeric.alphanumeric(number: 8) }
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
-      let!(:project) { create(:project, name: 'upstream-project-with-file-variables') }
+      let!(:upstream_project) { create(:project, name: 'upstream-project-with-file-variables') }
       let!(:downstream_project) { create(:project, name: 'downstream-project') }
 
-      let!(:project_runner) do
+      let!(:upstream_project_runner) do
         Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = project
+          runner.project = upstream_project
           runner.name = executor
           runner.tags = [executor]
         end
@@ -27,15 +27,11 @@ module QA
         end
       end
 
-      let(:add_ci_file) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = project
-          commit.commit_message = 'Add .gitlab-ci.yml and child.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
+      let(:upstream_project_files) do
+        [
+          {
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
                   default:
                     tags: [#{executor}]
 
@@ -56,11 +52,11 @@ module QA
                       strategy: depend
                       project: #{downstream_project.path_with_namespace}
 
-                YAML
-              },
-              {
-                file_path: 'child.yml',
-                content: <<~YAML
+            YAML
+          },
+          {
+            file_path: 'child.yml',
+            content: <<~YAML
                   default:
                     tags: [#{executor}]
 
@@ -75,22 +71,16 @@ module QA
                     script:
                       - cat "$MY_FILE_VAR"
                       - cat "$DOCKER_CA_CERT"
-                YAML
-              }
-            ]
-          )
-        end
+            YAML
+          }
+        ]
       end
 
-      let(:add_downstream_project_ci_file) do
-        Resource::Repository::Commit.fabricate_via_api! do |commit|
-          commit.project = downstream_project
-          commit.commit_message = 'Add .gitlab-ci.yml'
-          commit.add_files(
-            [
-              {
-                file_path: '.gitlab-ci.yml',
-                content: <<~YAML
+      let(:downstream_project_file) do
+        [
+          {
+            file_path: '.gitlab-ci.yml',
+            content: <<~YAML
                   default:
                     tags: [#{executor}]
 
@@ -105,60 +95,38 @@ module QA
                     script:
                       - cat "$MY_FILE_VAR"
                       - cat "$DOCKER_CA_CERT"
-                YAML
-              }
-            ]
-          )
-        end
-      end
-
-      let(:add_project_file_variables) do
-        {
-          'TEST_PROJECT_FILE' => "hello, this is test\n",
-          'DOCKER_CA_CERT' => "This is secret\n"
-        }.each do |file_name, content|
-          add_file_variable_to_project(project, file_name, content)
-        end
-      end
-
-      let(:upstream_pipeline) { create(:pipeline, project: project) }
-
-      def child_pipeline
-        create(:pipeline, project: project, id: upstream_pipeline.downstream_pipeline_id(bridge_name: 'trigger_child'))
-      end
-
-      def downstream_project_pipeline
-        create(:pipeline,
-          project: downstream_project,
-          id: upstream_pipeline.downstream_pipeline_id(bridge_name: 'trigger_downstream_project'))
+            YAML
+          }
+        ]
       end
 
       around do |example|
-        Runtime::Feature.enable(:ci_prevent_file_var_expansion_downstream_pipeline, project: project)
+        Runtime::Feature.enable(:ci_prevent_file_var_expansion_downstream_pipeline, project: upstream_project)
         example.run
-        Runtime::Feature.disable(:ci_prevent_file_var_expansion_downstream_pipeline, project: project)
+        Runtime::Feature.disable(:ci_prevent_file_var_expansion_downstream_pipeline, project: upstream_project)
       end
 
       before do
-        add_project_file_variables
-        add_downstream_project_ci_file
-        add_ci_file
-        upstream_pipeline
-        wait_for_pipelines
+        add_file_variables_to_upstream_project
+        add_ci_file(downstream_project, downstream_project_file)
+        add_ci_file(upstream_project, upstream_project_files)
+        Support::Waiter.wait_until(message: 'Wait for first pipeline creation') { upstream_project.pipelines.present? }
+
+        wait_for_pipelines_to_finish
       end
 
       after do
-        project_runner.remove_via_api!
-        downstream_project_runner.remove_via_api!
+        [upstream_project_runner, downstream_project_runner].each(&:remove_via_api!)
       end
 
       it(
         'creates variable with file path in downstream pipelines and can read file variable content',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/416337'
       ) do
-        child_echo_job = create(:job, project: project, id: project.job_by_name('child_job_echo')[:id])
+        child_echo_job = create(:job, project: upstream_project,
+          id: upstream_project.job_by_name('child_job_echo')[:id])
 
-        child_cat_job = create(:job, project: project, id: project.job_by_name('child_job_cat')[:id])
+        child_cat_job = create(:job, project: upstream_project, id: upstream_project.job_by_name('child_job_cat')[:id])
 
         downstream_project_echo_job = create(:job,
           project: downstream_project,
@@ -170,10 +138,10 @@ module QA
 
         aggregate_failures do
           trace = child_echo_job.trace
-          expect(trace).to include('run something -f', "#{project.name}.tmp/TEST_PROJECT_FILE")
-          expect(trace).to include('docker run --tlscacert=', "#{project.name}.tmp/DOCKER_CA_CERT")
-          expect(trace).to include('run --output=', "#{project.name}.tmp/DOCKER_CA_CERT.crt")
-          expect(trace).to include('Will read private key from', "#{project.name}.tmp/TEST_PROJECT_FILE")
+          expect(trace).to include('run something -f', "#{upstream_project.name}.tmp/TEST_PROJECT_FILE")
+          expect(trace).to include('docker run --tlscacert=', "#{upstream_project.name}.tmp/DOCKER_CA_CERT")
+          expect(trace).to include('run --output=', "#{upstream_project.name}.tmp/DOCKER_CA_CERT.crt")
+          expect(trace).to include('Will read private key from', "#{upstream_project.name}.tmp/TEST_PROJECT_FILE")
 
           trace = child_cat_job.trace
           expect(trace).to have_content('hello, this is test')
@@ -193,22 +161,53 @@ module QA
 
       private
 
-      def add_file_variable_to_project(project, key, value)
-        Resource::CiVariable.fabricate_via_api! do |ci_variable|
-          ci_variable.project = project
-          ci_variable.key = key
-          ci_variable.value = value
-          ci_variable.variable_type = 'file'
+      def add_file_variables_to_upstream_project
+        {
+          'TEST_PROJECT_FILE' => "hello, this is test\n",
+          'DOCKER_CA_CERT' => "This is secret\n"
+        }.each do |file_name, content|
+          Resource::CiVariable.fabricate_via_api! do |ci_variable|
+            ci_variable.project = upstream_project
+            ci_variable.key = file_name
+            ci_variable.value = content
+            ci_variable.variable_type = 'file'
+          end
         end
       end
 
-      def wait_for_pipelines
+      def add_ci_file(project, files)
+        Resource::Repository::Commit.fabricate_via_api! do |commit|
+          commit.project = project
+          commit.commit_message = 'Add CI files to project'
+          commit.add_files(files)
+        end
+      end
+
+      def wait_for_pipelines_to_finish
         Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10) do
-          upstream_pipeline.reload!
           upstream_pipeline.status == 'success' &&
             child_pipeline.status == 'success' &&
             downstream_project_pipeline.status == 'success'
         end
+      end
+
+      # Fetch upstream project's parent pipeline
+      def upstream_pipeline
+        create(:pipeline, project: upstream_project, id: upstream_project.latest_pipeline[:id])
+      end
+
+      # Fetch upstream project's child pipeline
+      def child_pipeline
+        create(:pipeline,
+          project: upstream_project,
+          id: upstream_pipeline.downstream_pipeline_id(bridge_name: 'trigger_child'))
+      end
+
+      # Fetch downstream project's pipeline
+      def downstream_project_pipeline
+        create(:pipeline,
+          project: downstream_project,
+          id: upstream_pipeline.downstream_pipeline_id(bridge_name: 'trigger_downstream_project'))
       end
     end
   end

@@ -25,6 +25,8 @@ which you can customize to meet the specific needs of each project.
 
 ## Set up a workspace
 
+> Support for private projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124273) in GitLab 16.4.
+
 ### Prerequisites
 
 - Set up a Kubernetes cluster that the GitLab agent for Kubernetes supports.
@@ -56,8 +58,6 @@ which you can customize to meet the specific needs of each project.
 
 ### Create a workspace
 
-> Support for private projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124273) in GitLab 16.4.
-
 To create a workspace:
 
 1. On the left sidebar, select **Search or go to**.
@@ -75,6 +75,8 @@ To open the workspace, under **Preview**, select the workspace.
 You also have access to the terminal and can install any necessary dependencies.
 
 ## Connect to a workspace with SSH
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10478) in GitLab 16.3.
 
 Prerequisites:
 

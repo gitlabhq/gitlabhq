@@ -156,7 +156,7 @@ Commands that change data can cause damage if not run correctly or under the rig
 
 ```ruby
 # Grab all projects that have the Slack notifications enabled
-p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN integrations s ON p.id = s.project_id WHERE s.type_new = 'Slack' AND s.active = true")
+p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN integrations s ON p.id = s.project_id WHERE s.type_new = 'Integrations::Slack' AND s.active = true")
 
 # Disable the integration on each of the projects that were found.
 p.each do |project|
