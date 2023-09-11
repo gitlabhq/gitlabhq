@@ -426,6 +426,7 @@ export default {
       <gl-empty-state
         v-else-if="stateToRender === $options.stateMap.emptyTab"
         :svg-path="noPipelinesSvgPath"
+        :svg-height="150"
         :title="emptyTabMessage"
       />
 

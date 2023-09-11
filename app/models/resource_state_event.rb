@@ -14,7 +14,7 @@ class ResourceStateEvent < ResourceEvent
   after_create :issue_usage_metrics
 
   def self.issuable_attrs
-    %i(issue merge_request).freeze
+    %i[issue merge_request].freeze
   end
 
   def issuable

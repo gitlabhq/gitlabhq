@@ -753,7 +753,7 @@ class Namespace < ApplicationRecord
   end
 
   def reload_namespace_details
-    return unless !project_namespace? && (previous_changes.keys & %w(description description_html cached_markdown_version)).any? && namespace_details.present?
+    return unless !project_namespace? && (previous_changes.keys & %w[description description_html cached_markdown_version]).any? && namespace_details.present?
 
     namespace_details.reset
   end

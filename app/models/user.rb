@@ -61,7 +61,7 @@ class User < MainClusterwide::ApplicationRecord
     :public_email
   ].freeze
 
-  FORBIDDEN_SEARCH_STATES = %w(blocked banned ldap_blocked).freeze
+  FORBIDDEN_SEARCH_STATES = %w[blocked banned ldap_blocked].freeze
 
   INCOMING_MAIL_TOKEN_PREFIX = 'glimt-'
   FEED_TOKEN_PREFIX = 'glft-'
@@ -1925,7 +1925,7 @@ class User < MainClusterwide::ApplicationRecord
 
   def access_level=(new_level)
     new_level = new_level.to_s
-    return unless %w(admin regular).include?(new_level)
+    return unless %w[admin regular].include?(new_level)
 
     self.admin = (new_level == 'admin')
   end
@@ -2425,7 +2425,7 @@ class User < MainClusterwide::ApplicationRecord
   def update_highest_role?
     return false unless persisted?
 
-    (previous_changes.keys & %w(state user_type)).any?
+    (previous_changes.keys & %w[state user_type]).any?
   end
 
   def update_highest_role_attribute

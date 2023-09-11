@@ -169,7 +169,7 @@ class Note < ApplicationRecord
     end
   end
 
-  scope :diff_notes, -> { where(type: %w(LegacyDiffNote DiffNote)) }
+  scope :diff_notes, -> { where(type: %w[LegacyDiffNote DiffNote]) }
   scope :new_diff_notes, -> { where(type: 'DiffNote') }
   scope :non_diff_notes, -> { where(type: NON_DIFF_NOTE_TYPES) }
 

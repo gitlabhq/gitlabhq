@@ -30,17 +30,6 @@ RSpec.describe PerformanceMonitoring::PrometheusPanel do
   end
 
   describe '.from_json' do
-    subject { described_class.from_json(json_content) }
-
-    it 'creates a PrometheusPanelGroup object' do
-      expect(subject).to be_a described_class
-      expect(subject.type).to eq(json_content['type'])
-      expect(subject.title).to eq(json_content['title'])
-      expect(subject.y_label).to eq(json_content['y_label'])
-      expect(subject.weight).to eq(json_content['weight'])
-      expect(subject.metrics).to all(be_a PerformanceMonitoring::PrometheusMetric)
-    end
-
     describe 'validations' do
       context 'json_content is not a hash' do
         let(:json_content) { nil }

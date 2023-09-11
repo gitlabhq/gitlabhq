@@ -94,7 +94,7 @@ module MergeRequests
     end
 
     def track_title_and_desc_edits(changed_fields)
-      tracked_fields = %w(title description)
+      tracked_fields = %w[title description]
 
       return unless changed_fields.any? { |field| tracked_fields.include?(field) }
 

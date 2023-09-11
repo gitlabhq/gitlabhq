@@ -11,7 +11,7 @@ module Import
         end
 
         validates :file_url, addressable_url: {
-          schemes: %w(https),
+          schemes: %w[https],
           allow_localhost: allow_local_requests?,
           allow_local_network: allow_local_requests?,
           dns_rebind_protection: true

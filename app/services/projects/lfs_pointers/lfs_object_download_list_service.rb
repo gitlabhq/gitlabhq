@@ -101,7 +101,7 @@ module Projects
       # The import url must end with '.git' here we ensure it is
       def default_endpoint_uri
         @default_endpoint_uri ||= import_uri.dup.tap do |uri|
-          path = uri.path.gsub(%r(/$), '')
+          path = uri.path.gsub(%r{/$}, '')
           path += '.git' unless path.ends_with?('.git')
           uri.path = path + LFS_BATCH_API_ENDPOINT
         end

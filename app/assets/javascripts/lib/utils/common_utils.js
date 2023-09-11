@@ -729,3 +729,11 @@ export const isCurrentUser = (userId) => {
 
   return Number(userId) === currentUserId;
 };
+
+/**
+ * Clones an object via JSON stringifying and re-parsing.
+ * This ensures object references are not persisted (e.g. unlike lodash cloneDeep)
+ */
+export const cloneWithoutReferences = (obj) => {
+  return JSON.parse(JSON.stringify(obj));
+};

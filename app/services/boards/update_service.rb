@@ -2,7 +2,7 @@
 
 module Boards
   class UpdateService < Boards::BaseService
-    PERMITTED_PARAMS = %i(name hide_backlog_list hide_closed_list).freeze
+    PERMITTED_PARAMS = %i[name hide_backlog_list hide_closed_list].freeze
 
     def execute(board)
       filter_params

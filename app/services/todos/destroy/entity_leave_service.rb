@@ -8,7 +8,7 @@ module Todos
       attr_reader :user, :entity
 
       def initialize(user_id, entity_id, entity_type)
-        unless %w(Group Project).include?(entity_type)
+        unless %w[Group Project].include?(entity_type)
           raise ArgumentError, "#{entity_type} is not an entity user can leave"
         end
 

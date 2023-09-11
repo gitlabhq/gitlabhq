@@ -2,7 +2,7 @@
 
 class Namespace::RootStorageStatistics < ApplicationRecord
   SNIPPETS_SIZE_STAT_NAME = 'snippets_size'
-  STATISTICS_ATTRIBUTES = %W(
+  STATISTICS_ATTRIBUTES = %W[
     storage_size
     repository_size
     wiki_size
@@ -12,7 +12,7 @@ class Namespace::RootStorageStatistics < ApplicationRecord
     #{SNIPPETS_SIZE_STAT_NAME}
     pipeline_artifacts_size
     uploads_size
-  ).freeze
+  ].freeze
 
   self.primary_key = :namespace_id
 
@@ -36,7 +36,7 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   end
 
   def self.namespace_statistics_attributes
-    %w(storage_size dependency_proxy_size)
+    %w[storage_size dependency_proxy_size]
   end
 
   private

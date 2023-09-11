@@ -120,11 +120,11 @@ module Projects
     end
 
     def after_update
-      todos_features_changes = %w(
+      todos_features_changes = %w[
         issues_access_level
         merge_requests_access_level
         repository_access_level
-      )
+      ]
       project_changed_feature_keys = project.project_feature.previous_changes.keys
 
       if project.visibility_level_previous_changes && project.private?

@@ -381,21 +381,7 @@ An alternative approach to building Organizations is to convert top-level Groups
 
 ## Frequently Asked Questions
 
-### Do we expect large SaaS customers to be licensed at the Organization level, for example to have the ability to include multiple top-level Groups under on license?
-
-Yes, this has been discussed with Fulfillment and is part of the post MVC roadmap for Organizations.
-See also [Alignment between Organization and Fulfillment](#alignment-between-organization-and-fulfillment).
-
-### Do we expect to be able to configure alternate GitLab domain names for Organizations (such as `customer.gitlab.com`)?
-
-There is no plan at this point to allow configuration of alternate GitLab domain names.
-We have previously heard that sub-domains bring administrative challenges.
-GitLab Dedicated will be a much better fit for that at this moment.
-
-### Do we expect Organizations to have visibility settings (public/private) of their own? Will visibility remain a property of top-level Groups?
-
-Organizations are public for now but will have their own independent visibility settings.
-See also [When can Users see an Organization?](#when-can-users-see-an-organization).
+See [Organization: Frequently Asked Questions](organization-faq.md).
 
 ## Decision Log
 

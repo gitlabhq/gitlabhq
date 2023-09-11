@@ -68,10 +68,10 @@ class Project < ApplicationRecord
   }.freeze
 
   VALID_IMPORT_PORTS = [80, 443].freeze
-  VALID_IMPORT_PROTOCOLS = %w(http https git).freeze
+  VALID_IMPORT_PROTOCOLS = %w[http https git].freeze
 
   VALID_MIRROR_PORTS = [22, 80, 443].freeze
-  VALID_MIRROR_PROTOCOLS = %w(http https ssh git).freeze
+  VALID_MIRROR_PROTOCOLS = %w[http https ssh git].freeze
 
   SORTING_PREFERENCE_FIELD = :projects_sort
   MAX_BUILD_TIMEOUT = 1.month
@@ -1667,7 +1667,7 @@ class Project < ApplicationRecord
     return unless Gitlab::Email::IncomingEmail.supports_issue_creation? && author
 
     # check since this can come from a request parameter
-    return unless %w(issue merge_request).include?(address_type)
+    return unless %w[issue merge_request].include?(address_type)
 
     author.ensure_incoming_email_token!
 
@@ -3495,11 +3495,11 @@ class Project < ApplicationRecord
   end
 
   def sync_project_namespace?
-    (changes.keys & %w(name path namespace_id namespace visibility_level shared_runners_enabled)).any? && project_namespace.present?
+    (changes.keys & %w[name path namespace_id namespace visibility_level shared_runners_enabled]).any? && project_namespace.present?
   end
 
   def reload_project_namespace_details
-    return unless (previous_changes.keys & %w(description description_html cached_markdown_version)).any? && project_namespace.namespace_details.present?
+    return unless (previous_changes.keys & %w[description description_html cached_markdown_version]).any? && project_namespace.namespace_details.present?
 
     project_namespace.namespace_details.reset
   end

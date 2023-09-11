@@ -20,7 +20,7 @@ module Projects
   # > AppleTargetPlatformDetectorService.new(multiplatform_project).execute
   # => [:ios, :osx, :tvos, :watchos]
   class AppleTargetPlatformDetectorService < BaseService
-    BUILD_CONFIG_FILENAMES = %w(project.pbxproj *.xcconfig).freeze
+    BUILD_CONFIG_FILENAMES = %w[project.pbxproj *.xcconfig].freeze
 
     # For the current iteration, we only want to detect when the project targets
     # iOS. In the future, we can use the same logic to detect projects that

@@ -39,11 +39,11 @@ module Auth
     end
 
     def self.full_access_token(*names)
-      access_token(%w(*), names)
+      access_token(%w[*], names)
     end
 
     def self.import_access_token
-      access_token(%w(*), ['import'], 'registry')
+      access_token(%w[*], ['import'], 'registry')
     end
 
     def self.pull_access_token(*names)

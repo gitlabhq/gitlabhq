@@ -11,7 +11,7 @@ module Releases
     FILEPATH_REGEX = %r{\A\/[^\/](?!.*\/\/.*)[\-\.\w\/]+[\da-zA-Z]+\z}.freeze
     FILEPATH_MAX_LENGTH = 128
 
-    validates :url, presence: true, addressable_url: { schemes: %w(http https ftp) }, uniqueness: { scope: :release }
+    validates :url, presence: true, addressable_url: { schemes: %w[http https ftp] }, uniqueness: { scope: :release }
     validates :name, presence: true, uniqueness: { scope: :release }
     validates :filepath, uniqueness: { scope: :release }, allow_blank: true
     validate :filepath_format_valid?

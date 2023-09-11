@@ -1,5 +1,6 @@
 - page_title _("Find File"), @ref
 - add_page_specific_style 'page_bundles/tree'
+- add_page_specific_style 'page_bundles/projects'
 
 .file-finder-holder.tree-holder.clearfix.js-file-finder.gl-pt-4{ 'data-file-find-url': "#{escape_javascript(project_files_path(@project, @ref, format: :json))}", 'data-find-tree-url': escape_javascript(project_tree_path(@project, @ref)), 'data-blob-url-template': escape_javascript(project_blob_path(@project, @ref)) }
   .nav-block.gl-xs-mr-0

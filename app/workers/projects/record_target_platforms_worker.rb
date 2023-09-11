@@ -6,7 +6,7 @@ module Projects
     include ExclusiveLeaseGuard
 
     LEASE_TIMEOUT = 1.hour.to_i
-    APPLE_PLATFORM_LANGUAGES = %w(swift objective-c).freeze
+    APPLE_PLATFORM_LANGUAGES = %w[swift objective-c].freeze
 
     feature_category :experimentation_activation
     data_consistency :always

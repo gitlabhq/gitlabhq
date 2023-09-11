@@ -15,7 +15,7 @@ module BulkImports
 
     ServiceError = Class.new(StandardError)
 
-    DEFAULT_ALLOWED_CONTENT_TYPES = %w(application/gzip application/octet-stream).freeze
+    DEFAULT_ALLOWED_CONTENT_TYPES = %w[application/gzip application/octet-stream].freeze
 
     def initialize(
       configuration:,
@@ -120,7 +120,7 @@ module BulkImports
         http_client.resource_url(relative_url),
         allow_localhost: allow_local_requests?,
         allow_local_network: allow_local_requests?,
-        schemes: %w(http https)
+        schemes: %w[http https]
       )
     end
 

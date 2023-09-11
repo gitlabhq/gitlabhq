@@ -38,7 +38,7 @@ module ResourceAccessTokens
     end
 
     def can_destroy_token?
-      %w(project group).include?(resource.class.name.downcase) && can?(current_user, :destroy_resource_access_tokens, resource)
+      %w[project group].include?(resource.class.name.downcase) && can?(current_user, :destroy_resource_access_tokens, resource)
     end
 
     def find_member

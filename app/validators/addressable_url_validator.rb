@@ -51,7 +51,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   # tasks that uses that url won't work.
   # See https://gitlab.com/gitlab-org/gitlab-foss/issues/66723
   BLOCKER_VALIDATE_OPTIONS = {
-    schemes: %w(http https),
+    schemes: %w[http https],
     ports: [],
     allow_localhost: true,
     allow_local_network: true,

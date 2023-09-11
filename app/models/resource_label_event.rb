@@ -21,7 +21,7 @@ class ResourceLabelEvent < ResourceEvent
   }
 
   def self.issuable_attrs
-    %i(issue merge_request).freeze
+    %i[issue merge_request].freeze
   end
 
   def self.preload_label_subjects(events)

@@ -9,7 +9,7 @@ class LfsDownloadObject
 
   validates :oid, format: { with: /\A\h{64}\z/ }
   validates :size, numericality: { greater_than_or_equal_to: 0 }
-  validates :link, public_url: { protocols: %w(http https) }
+  validates :link, public_url: { protocols: %w[http https] }
   validate :headers_must_be_hash
 
   def initialize(oid:, size:, link:, headers: {})

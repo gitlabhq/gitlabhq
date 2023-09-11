@@ -50,7 +50,7 @@ class PipelineSerializer < BaseSerializer
       {
         manual_actions: :metadata,
         scheduled_actions: :metadata,
-        failed_builds: %i(project metadata),
+        failed_builds: %i[project metadata],
         merge_request: {
           source_project: [:route, { namespace: :route }],
           target_project: [:route, { namespace: :route }]

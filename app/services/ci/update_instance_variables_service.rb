@@ -5,7 +5,7 @@
 
 module Ci
   class UpdateInstanceVariablesService
-    UNASSIGNABLE_KEYS = %w(id _destroy).freeze
+    UNASSIGNABLE_KEYS = %w[id _destroy].freeze
 
     def initialize(params)
       @params = params[:variables_attributes]

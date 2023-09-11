@@ -5,7 +5,7 @@ class ProjectSetting < ApplicationRecord
   include EachBatch
   include IgnorableColumns
 
-  ALLOWED_TARGET_PLATFORMS = %w(ios osx tvos watchos android).freeze
+  ALLOWED_TARGET_PLATFORMS = %w[ios osx tvos watchos android].freeze
 
   belongs_to :project, inverse_of: :project_setting
 

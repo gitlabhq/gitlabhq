@@ -6,7 +6,7 @@ module ApplicationSettings
 
     attr_reader :params, :application_setting
 
-    MARKDOWN_CACHE_INVALIDATING_PARAMS = %w(asset_proxy_enabled asset_proxy_url asset_proxy_secret_key asset_proxy_whitelist).freeze
+    MARKDOWN_CACHE_INVALIDATING_PARAMS = %w[asset_proxy_enabled asset_proxy_url asset_proxy_secret_key asset_proxy_whitelist].freeze
 
     def execute
       result = update_settings

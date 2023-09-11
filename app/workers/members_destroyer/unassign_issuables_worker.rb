@@ -8,7 +8,7 @@ module MembersDestroyer
 
     sidekiq_options retry: 3
 
-    ENTITY_TYPES = %w(Group Project).freeze
+    ENTITY_TYPES = %w[Group Project].freeze
 
     queue_namespace :unassign_issuables
     feature_category :user_management

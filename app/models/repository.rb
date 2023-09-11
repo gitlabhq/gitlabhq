@@ -47,20 +47,20 @@ class Repository
   #
   # For example, for entry `:commit_count` there's a method called `commit_count` which
   # stores its data in the `commit_count` cache key.
-  CACHED_METHODS = %i(size recent_objects_size commit_count readme_path contribution_guide
+  CACHED_METHODS = %i[size recent_objects_size commit_count readme_path contribution_guide
                       changelog license_blob license_gitaly gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref merged_branch_names
                       has_visible_content? issue_template_names_hash merge_request_template_names_hash
-                      xcode_project? has_ambiguous_refs?).freeze
+                      xcode_project? has_ambiguous_refs?].freeze
 
   # Certain method caches should be refreshed when certain types of files are
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
   # the corresponding methods to call for refreshing caches.
   METHOD_CACHES_FOR_FILE_TYPES = {
-    readme: %i(readme_path),
+    readme: %i[readme_path],
     changelog: :changelog,
-    license: %i(license_blob license_gitaly),
+    license: %i[license_blob license_gitaly],
     contributing: :contribution_guide,
     gitignore: :gitignore,
     gitlab_ci: :gitlab_ci_yml,
@@ -343,13 +343,13 @@ class Repository
   end
 
   def expire_tags_cache
-    expire_method_caches(%i(tag_names tag_count has_ambiguous_refs?))
+    expire_method_caches(%i[tag_names tag_count has_ambiguous_refs?])
     @tags = nil
     @tag_names_include = nil
   end
 
   def expire_branches_cache
-    expire_method_caches(%i(branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?))
+    expire_method_caches(%i[branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?])
     expire_protected_branches_cache
 
     @local_branches = nil
@@ -362,7 +362,7 @@ class Repository
   end
 
   def expire_statistics_caches
-    expire_method_caches(%i(size recent_objects_size commit_count))
+    expire_method_caches(%i[size recent_objects_size commit_count])
   end
 
   def expire_all_method_caches
@@ -370,7 +370,7 @@ class Repository
   end
 
   def expire_avatar_cache
-    expire_method_caches(%i(avatar))
+    expire_method_caches(%i[avatar])
   end
 
   # Refreshes the method caches of this repository.
@@ -411,19 +411,19 @@ class Repository
   end
 
   def expire_root_ref_cache
-    expire_method_caches(%i(root_ref))
+    expire_method_caches(%i[root_ref])
   end
 
   # Expires the cache(s) used to determine if a repository is empty or not.
   def expire_emptiness_caches
     return unless empty?
 
-    expire_method_caches(%i(has_visible_content?))
+    expire_method_caches(%i[has_visible_content?])
     raw_repository.expire_has_local_branches_cache
   end
 
   def expire_exists_cache
-    expire_method_caches(%i(exists?))
+    expire_method_caches(%i[exists?])
   end
 
   # expire cache that doesn't depend on repository data (when expiring)
