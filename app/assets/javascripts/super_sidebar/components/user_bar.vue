@@ -37,8 +37,6 @@ export default {
     GlIcon,
   },
   i18n: {
-    createNew: __('Create new...'),
-    homepage: __('Homepage'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
     searchKbdHelp: sprintf(

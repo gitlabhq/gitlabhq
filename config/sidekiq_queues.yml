@@ -661,6 +661,8 @@
   - 1
 - - upload_checksum
   - 1
+- - users_track_namespace_visits
+  - 1
 - - vulnerabilities_mark_dropped_as_resolved
   - 1
 - - vulnerabilities_statistics_adjustment

@@ -122,6 +122,7 @@ export const sidebarData = {
       css_class: 'shortcut-link-class',
     },
   ],
+  track_visits_path: '/-/track_visits',
 };
 
 export const loggedOutSidebarData = {

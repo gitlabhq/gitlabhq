@@ -107,7 +107,8 @@ module SidebarsHelper
       update_pins_url: pins_path,
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
-      shortcut_links: shortcut_links(user: user, project: project)
+      shortcut_links: shortcut_links(user: user, project: project),
+      track_visits_path: track_namespace_visits_path
     })
   end
 

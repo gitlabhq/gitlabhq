@@ -227,6 +227,13 @@ external_pull_requests:
   - table: projects
     column: project_id
     on_delete: async_delete
+groups_visits:
+  - table: namespaces
+    column: entity_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_delete
 members:
   - table: users
     column: user_id
@@ -295,6 +302,13 @@ projects:
   - table: organizations
     column: organization_id
     on_delete: async_nullify
+projects_visits:
+  - table: projects
+    column: entity_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_delete
 requirements_management_test_reports:
   - table: ci_builds
     column: build_id

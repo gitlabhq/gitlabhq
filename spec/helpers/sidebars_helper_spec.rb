@@ -169,7 +169,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
         pinned_items: %w[foo bar],
         update_pins_url: pins_path,
-        shortcut_links: global_shortcut_links
+        shortcut_links: global_shortcut_links,
+        track_visits_path: track_namespace_visits_path
       })
     end
 

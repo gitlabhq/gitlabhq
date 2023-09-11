@@ -3774,6 +3774,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: users_track_namespace_visits
+  :worker_name: Users::TrackNamespaceVisitsWorker
+  :feature_category: :navigation
+  :has_external_dependencies: false
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: web_hook
   :worker_name: WebHookWorker
   :feature_category: :webhooks

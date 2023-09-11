@@ -8,7 +8,9 @@ Gitlab::Database::Partitioning.register_models(
     Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
     Ci::RunnerManagerBuild,
     Ci::JobAnnotation,
-    BatchedGitRefUpdates::Deletion
+    BatchedGitRefUpdates::Deletion,
+    Users::ProjectVisit,
+    Users::GroupVisit
   ])
 
 if Gitlab.ee?

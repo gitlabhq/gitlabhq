@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import MockAdapter from 'axios-mock-adapter';
 import {
   getTopFrequentItems,
   trackContextAccess,
@@ -7,9 +8,12 @@ import {
   removeItemFromLocalStorage,
   ariaCurrent,
 } from '~/super_sidebar/utils';
+import axios from '~/lib/utils/axios_utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import waitForPromises from 'helpers/wait_for_promises';
 import { unsortedFrequentItems, sortedFrequentItems } from '../frequent_items/mock_data';
 import { cachedFrequentProjects, searchUserProjectsAndGroupsResponseMock } from './mock_data';
 
@@ -42,12 +46,28 @@ describe('Super sidebar utils spec', () => {
   });
 
   describe('trackContextAccess', () => {
+    useLocalStorageSpy();
+
+    let axiosMock;
+
     const username = 'root';
+    const trackVisitsPath = '/-/track_visits';
     const context = {
       namespace: 'groups',
       item: { id: 1 },
     };
     const storageKey = `${username}/frequent-${context.namespace}`;
+
+    beforeEach(() => {
+      gon.features = { serverSideFrecentNamespaces: true };
+      axiosMock = new MockAdapter(axios);
+      axiosMock.onPost(trackVisitsPath).reply(HTTP_STATUS_OK);
+    });
+
+    afterEach(() => {
+      gon.features = {};
+      axiosMock.restore();
+    });
 
     it('returns `false` if local storage is not available', () => {
       jest.spyOn(AccessorUtilities, 'canUseLocalStorage').mockReturnValue(false);
@@ -56,7 +76,7 @@ describe('Super sidebar utils spec', () => {
     });
 
     it('creates a new item if it does not exist in the local storage', () => {
-      trackContextAccess(username, context);
+      trackContextAccess(username, context, trackVisitsPath);
 
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         storageKey,
@@ -70,6 +90,24 @@ describe('Super sidebar utils spec', () => {
       );
     });
 
+    it('sends a POST request to persist the visit in the DB', async () => {
+      expect(axiosMock.history.post).toHaveLength(0);
+
+      trackContextAccess(username, context, trackVisitsPath);
+      await waitForPromises();
+
+      expect(axiosMock.history.post).toHaveLength(1);
+      expect(axiosMock.history.post[0].url).toBe(trackVisitsPath);
+    });
+
+    it('does not send a POST request when the serverSideFrecentNamespaces feature flag is disabled', async () => {
+      gon.features = { serverSideFrecentNamespaces: false };
+      trackContextAccess(username, context, trackVisitsPath);
+      await waitForPromises();
+
+      expect(axiosMock.history.post).toHaveLength(0);
+    });
+
     it('updates existing item frequency/access time if it was persisted to the local storage over 15 minutes ago', () => {
       window.localStorage.setItem(
         storageKey,
@@ -81,7 +119,7 @@ describe('Super sidebar utils spec', () => {
           },
         ]),
       );
-      trackContextAccess(username, context);
+      trackContextAccess(username, context, trackVisitsPath);
 
       expect(window.localStorage.setItem).toHaveBeenCalledWith(
         storageKey,
@@ -95,7 +133,7 @@ describe('Super sidebar utils spec', () => {
       );
     });
 
-    it('leaves item frequency/access time as is if it was persisted to the local storage under 15 minutes ago', () => {
+    it('leaves item frequency/access time as is if it was persisted to the local storage under 15 minutes ago, and does not send a POST request', () => {
       const jsonString = JSON.stringify([
         {
           id: 1,
@@ -108,10 +146,12 @@ describe('Super sidebar utils spec', () => {
       expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
       expect(window.localStorage.setItem).toHaveBeenCalledWith(storageKey, jsonString);
 
-      trackContextAccess(username, context);
+      trackContextAccess(username, context, trackVisitsPath);
 
       expect(window.localStorage.setItem).toHaveBeenCalledTimes(3);
       expect(window.localStorage.setItem).toHaveBeenLastCalledWith(storageKey, jsonString);
+
+      expect(axiosMock.history.post).toHaveLength(0);
     });
 
     it('always updates stored item metadata', () => {
@@ -163,10 +203,14 @@ describe('Super sidebar utils spec', () => {
       const newItem = {
         id: FREQUENT_ITEMS.MAX_COUNT + 1,
       };
-      trackContextAccess(username, {
-        namespace: 'groups',
-        item: newItem,
-      });
+      trackContextAccess(
+        username,
+        {
+          namespace: 'groups',
+          item: newItem,
+        },
+        trackVisitsPath,
+      );
       // Finally, retrieve the final data from the local storage
       const finallyStoredItems = JSON.parse(window.localStorage.getItem(storageKey));
 

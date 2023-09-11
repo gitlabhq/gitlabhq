@@ -593,6 +593,14 @@ CREATE TABLE p_ci_runner_machine_builds (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE groups_visits (
+    id bigint NOT NULL,
+    entity_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    visited_at timestamp with time zone NOT NULL
+)
+PARTITION BY RANGE (visited_at);
+
 CREATE TABLE incident_management_pending_alert_escalations (
     id bigint NOT NULL,
     rule_id bigint NOT NULL,
@@ -637,6 +645,14 @@ CREATE TABLE p_batched_git_ref_updates_deletions (
     CONSTRAINT check_f322d53b92 CHECK ((char_length(ref) <= 1024))
 )
 PARTITION BY LIST (partition_id);
+
+CREATE TABLE projects_visits (
+    id bigint NOT NULL,
+    entity_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    visited_at timestamp with time zone NOT NULL
+)
+PARTITION BY RANGE (visited_at);
 
 CREATE TABLE security_findings (
     id bigint NOT NULL,
@@ -17051,6 +17067,15 @@ CREATE SEQUENCE group_wiki_repository_states_id_seq
 
 ALTER SEQUENCE group_wiki_repository_states_id_seq OWNED BY group_wiki_repository_states.id;
 
+CREATE SEQUENCE groups_visits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE groups_visits_id_seq OWNED BY groups_visits.id;
+
 CREATE TABLE historical_data (
     id integer NOT NULL,
     date date,
@@ -21949,6 +21974,15 @@ CREATE SEQUENCE projects_sync_events_id_seq
 
 ALTER SEQUENCE projects_sync_events_id_seq OWNED BY projects_sync_events.id;
 
+CREATE SEQUENCE projects_visits_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE projects_visits_id_seq OWNED BY projects_visits.id;
+
 CREATE TABLE prometheus_alert_events (
     id bigint NOT NULL,
     project_id integer NOT NULL,
@@ -25888,6 +25922,8 @@ ALTER TABLE ONLY group_ssh_certificates ALTER COLUMN id SET DEFAULT nextval('gro
 
 ALTER TABLE ONLY group_wiki_repository_states ALTER COLUMN id SET DEFAULT nextval('group_wiki_repository_states_id_seq'::regclass);
 
+ALTER TABLE ONLY groups_visits ALTER COLUMN id SET DEFAULT nextval('groups_visits_id_seq'::regclass);
+
 ALTER TABLE ONLY historical_data ALTER COLUMN id SET DEFAULT nextval('historical_data_id_seq'::regclass);
 
 ALTER TABLE ONLY identities ALTER COLUMN id SET DEFAULT nextval('identities_id_seq'::regclass);
@@ -26269,6 +26305,8 @@ ALTER TABLE ONLY project_wiki_repositories ALTER COLUMN id SET DEFAULT nextval('
 ALTER TABLE ONLY projects ALTER COLUMN id SET DEFAULT nextval('projects_id_seq'::regclass);
 
 ALTER TABLE ONLY projects_sync_events ALTER COLUMN id SET DEFAULT nextval('projects_sync_events_id_seq'::regclass);
+
+ALTER TABLE ONLY projects_visits ALTER COLUMN id SET DEFAULT nextval('projects_visits_id_seq'::regclass);
 
 ALTER TABLE ONLY prometheus_alert_events ALTER COLUMN id SET DEFAULT nextval('prometheus_alert_events_id_seq'::regclass);
 
@@ -28018,6 +28056,9 @@ ALTER TABLE ONLY group_wiki_repositories
 ALTER TABLE ONLY group_wiki_repository_states
     ADD CONSTRAINT group_wiki_repository_states_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY groups_visits
+    ADD CONSTRAINT groups_visits_pkey PRIMARY KEY (id, visited_at);
+
 ALTER TABLE ONLY historical_data
     ADD CONSTRAINT historical_data_pkey PRIMARY KEY (id);
 
@@ -28695,6 +28736,9 @@ ALTER TABLE ONLY projects
 
 ALTER TABLE ONLY projects_sync_events
     ADD CONSTRAINT projects_sync_events_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY projects_visits
+    ADD CONSTRAINT projects_visits_pkey PRIMARY KEY (id, visited_at);
 
 ALTER TABLE ONLY prometheus_alert_events
     ADD CONSTRAINT prometheus_alert_events_pkey PRIMARY KEY (id);
@@ -32070,6 +32114,10 @@ CREATE INDEX index_groups_on_parent_id_id ON namespaces USING btree (parent_id, 
 
 CREATE INDEX index_groups_on_path_and_id ON namespaces USING btree (path, id) WHERE ((type)::text = 'Group'::text);
 
+CREATE INDEX index_groups_visits_on_entity_id ON ONLY groups_visits USING btree (entity_id);
+
+CREATE INDEX index_groups_visits_on_user_id_and_entity_id_and_visited_at ON ONLY groups_visits USING btree (user_id, entity_id, visited_at);
+
 CREATE INDEX index_historical_data_on_recorded_at ON historical_data USING btree (recorded_at);
 
 CREATE UNIQUE INDEX index_http_integrations_on_project_and_endpoint ON alert_management_http_integrations USING btree (project_id, endpoint_identifier);
@@ -33289,6 +33337,10 @@ CREATE INDEX index_projects_on_star_count ON projects USING btree (star_count);
 CREATE INDEX index_projects_on_updated_at_and_id ON projects USING btree (updated_at, id);
 
 CREATE INDEX index_projects_sync_events_on_project_id ON projects_sync_events USING btree (project_id);
+
+CREATE INDEX index_projects_visits_on_entity_id ON ONLY projects_visits USING btree (entity_id);
+
+CREATE INDEX index_projects_visits_on_user_id_and_entity_id_and_visited_at ON ONLY projects_visits USING btree (user_id, entity_id, visited_at);
 
 CREATE UNIQUE INDEX index_prometheus_alert_event_scoped_payload_key ON prometheus_alert_events USING btree (prometheus_alert_id, payload_key);
 

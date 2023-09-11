@@ -222,6 +222,8 @@ InitializerConnections.raise_if_new_database_connection do
       post '/members/mailgun/permanent_failures' => 'mailgun/webhooks#process_webhook'
 
       get '/timelogs' => 'time_tracking/timelogs#index'
+
+      post '/track_namespace_visits' => 'users/namespace_visits#create'
     end
     # End of the /-/ scope.
 

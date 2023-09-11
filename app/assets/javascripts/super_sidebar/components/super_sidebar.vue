@@ -61,9 +61,10 @@ export default {
       is_logged_in: isLoggedIn,
       current_context: currentContext,
       username,
+      track_visits_path: trackVisitsPath,
     } = this.sidebarData;
     if (isLoggedIn && currentContext.namespace) {
-      trackContextAccess(username, currentContext);
+      trackContextAccess(username, currentContext, trackVisitsPath);
     }
   },
   mounted() {
