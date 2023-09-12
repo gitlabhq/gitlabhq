@@ -82,6 +82,39 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
 
       specify { expect(step.perform!).to contain_exactly('Project is deleted!') }
     end
+
+    context 'with project imports in progress' do
+      let(:project) { create(:project, :import_started, import_type: 'gitlab_project') }
+
+      before do
+        step.perform!
+      end
+
+      it 'adds an error about imports' do
+        expect(pipeline.errors.to_a)
+          .to include /Import in progress/
+      end
+
+      it 'breaks the pipeline builder chain' do
+        expect(step.break?).to eq true
+      end
+    end
+
+    context 'with completed project imports' do
+      let(:project) { create(:project, :import_finished, import_type: 'gitlab_project') }
+
+      before do
+        step.perform!
+      end
+
+      it 'does not invalidate the pipeline' do
+        expect(pipeline).to be_valid
+      end
+
+      it 'does not break the chain' do
+        expect(step.break?).to eq false
+      end
+    end
   end
 
   describe '#allowed_to_write_ref?' do
