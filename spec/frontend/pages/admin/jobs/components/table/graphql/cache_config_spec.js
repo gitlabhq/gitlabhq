@@ -3,7 +3,7 @@ import {
   CIJobConnectionExistingCache,
   CIJobConnectionIncomingCache,
   CIJobConnectionIncomingCacheRunningStatus,
-} from '../../../../../../jobs/mock_data';
+} from 'jest/ci/jobs_mock_data';
 
 const firstLoadArgs = { first: 3, statuses: 'PENDING' };
 const runningArgs = { first: 3, statuses: 'RUNNING' };

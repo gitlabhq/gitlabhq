@@ -7,19 +7,19 @@ module QA
         class Show < QA::Page::Base
           include Component::CiBadgeLink
 
-          view 'app/assets/javascripts/jobs/components/log/log.vue' do
+          view 'app/assets/javascripts/ci/job_details/components/log/log.vue' do
             element 'job-log-content'
           end
 
-          view 'app/assets/javascripts/jobs/components/job/sidebar/stages_dropdown.vue' do
+          view 'app/assets/javascripts/ci/job_details/components/sidebar/stages_dropdown.vue' do
             element 'pipeline-path', required: true
           end
 
-          view 'app/assets/javascripts/jobs/components/job/sidebar/sidebar_header.vue' do
+          view 'app/assets/javascripts/ci/job_details/components/sidebar/sidebar_header.vue' do
             element 'retry-button'
           end
 
-          view 'app/assets/javascripts/jobs/components/job/sidebar/artifacts_block.vue' do
+          view 'app/assets/javascripts/ci/job_details/components/sidebar/artifacts_block.vue' do
             element 'browse-artifacts-button'
             element 'artifacts-unlocked-message-content'
             element 'artifacts-locked-message-content'

@@ -11,5 +11,10 @@ FactoryBot.define do
     trait :overdue do
       triggered_at { (ServiceDesk::CustomEmailVerification::TIMEFRAME + 1).minutes.ago }
     end
+
+    trait :finished do
+      state { 'finished' }
+      token { nil }
+    end
   end
 end

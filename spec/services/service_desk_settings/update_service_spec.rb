@@ -3,7 +3,12 @@ require 'spec_helper'
 
 RSpec.describe ServiceDeskSettings::UpdateService, feature_category: :service_desk do
   describe '#execute' do
-    let_it_be(:settings) { create(:service_desk_setting, outgoing_name: 'original name') }
+    let_it_be(:settings) do
+      create(:service_desk_setting, outgoing_name: 'original name', custom_email: 'user@example.com')
+    end
+
+    let_it_be(:credential) { create(:service_desk_custom_email_credential, project: settings.project) }
+    let_it_be(:verification) { create(:service_desk_custom_email_verification, :finished, project: settings.project) }
     let_it_be(:user) { create(:user) }
 
     context 'with valid params' do
@@ -15,6 +20,24 @@ RSpec.describe ServiceDeskSettings::UpdateService, feature_category: :service_de
         expect(response).to be_success
         expect(settings.reload.outgoing_name).to eq 'some name'
         expect(settings.reload.project_key).to eq 'foo'
+      end
+
+      context 'with custom email verification in finished state' do
+        let(:params) { { custom_email_enabled: true } }
+
+        before do
+          allow(Gitlab::AppLogger).to receive(:info)
+        end
+
+        it 'allows to enable custom email' do
+          settings.project.reset
+
+          response = described_class.new(settings.project, user, params).execute
+
+          expect(response).to be_success
+          expect(settings.reset.custom_email_enabled).to be true
+          expect(Gitlab::AppLogger).to have_received(:info).with({ category: 'custom_email' })
+        end
       end
     end
 

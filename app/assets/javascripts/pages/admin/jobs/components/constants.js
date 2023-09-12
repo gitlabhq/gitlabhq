@@ -1,5 +1,5 @@
 import { s__, __ } from '~/locale';
-import { RAW_TEXT_WARNING } from '~/jobs/components/table/constants';
+import { RAW_TEXT_WARNING } from '~/ci/jobs_page/constants';
 
 export const JOBS_COUNT_ERROR_MESSAGE = __('There was an error fetching the number of jobs.');
 export const JOBS_FETCH_ERROR_MSG = __('There was an error fetching the jobs.');

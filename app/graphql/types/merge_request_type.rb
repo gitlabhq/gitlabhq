@@ -185,6 +185,8 @@ module Types
           description: 'Users from whom a review has been requested.'
     field :subscribed, GraphQL::Types::Boolean, method: :subscribed?, null: false, complexity: 5,
                                                 description: 'Indicates if the currently logged in user is subscribed to this merge request.'
+    field :supports_lock_on_merge, GraphQL::Types::Boolean, null: false, method: :supports_lock_on_merge?,
+                                                            description: 'Indicates if the merge request supports locked labels.'
     field :task_completion_status, Types::TaskCompletionStatus, null: false,
                                                                 description: Types::TaskCompletionStatus.description
     field :time_estimate, GraphQL::Types::Int, null: false,

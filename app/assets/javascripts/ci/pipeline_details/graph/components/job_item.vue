@@ -1,7 +1,7 @@
 <script>
 import { GlBadge, GlForm, GlFormCheckbox, GlLink, GlModal, GlTooltipDirective } from '@gitlab/ui';
 import { reportToSentry } from '~/ci/utils';
-import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
+import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';

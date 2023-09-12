@@ -16,6 +16,13 @@
         "type": "string"
       },
       "uniqueItems": true
+    },
+    "organization": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
     }
   },
   "additionalProperties": false

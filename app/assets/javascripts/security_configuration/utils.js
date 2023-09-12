@@ -1,5 +1,6 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { SCANNER_NAMES_MAP } from '~/security_configuration/components/constants';
+import { REPORT_TYPE_DAST } from '~/vue_shared/security_reports/constants';
 
 /**
  * This function takes in 3 arrays of objects, securityFeatures and features.
@@ -27,6 +28,10 @@ export const augmentFeatures = (securityFeatures, features = []) => {
 
     if (augmented.secondary) {
       augmented.secondary = { ...augmented.secondary, ...featuresByType[feature.secondary.type] };
+    }
+
+    if (augmented.type === REPORT_TYPE_DAST && !augmented.onDemandAvailable) {
+      delete augmented.badge;
     }
 
     if (augmented.badge && augmented.metaInfoPath) {

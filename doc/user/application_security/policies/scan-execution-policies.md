@@ -221,7 +221,7 @@ Note the following:
   is not scheduled successfully.
 - For a secret detection scan, only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/index.md#custom-rulesets)
   are not supported.
-- A secret detection scan runs in `normal` mode when executed as part of a pipeline, and in
+- A secret detection scan runs in `default` mode when executed as part of a pipeline, and in
   [`historic`](../secret_detection/index.md#full-history-secret-detection)
   mode when executed as part of a scheduled scan.
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.

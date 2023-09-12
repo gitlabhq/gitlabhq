@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import JobsApp from '~/ci/pipeline_details/jobs/jobs_app.vue';
-import JobsTable from '~/jobs/components/table/jobs_table.vue';
+import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import getPipelineJobsQuery from '~/ci/pipeline_details/jobs/graphql/queries/get_pipeline_jobs.query.graphql';
 import { mockPipelineJobsQueryResponse } from '../mock_data';
 

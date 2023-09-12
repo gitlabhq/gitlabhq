@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/browser';
 import { uniq } from 'lodash';
 import { allEnvironments } from './constants';
 
@@ -48,13 +47,4 @@ export const convertEnvironmentScope = (environmentScope = '') => {
  */
 export const mapEnvironmentNames = (nodes = []) => {
   return nodes.map((env) => env.name);
-};
-
-export const reportMessageToSentry = (component, message, context) => {
-  Sentry.withScope((scope) => {
-    // eslint-disable-next-line @gitlab/require-i18n-strings
-    scope.setContext('Vue data', context);
-    scope.setTag('component', component);
-    Sentry.captureMessage(message);
-  });
 };

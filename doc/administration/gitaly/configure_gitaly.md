@@ -786,13 +786,13 @@ gitaly['configuration'] = {
       {
          rpc: '/gitaly.SmartHTTPService/PostUploadPackWithSidechannel',
          max_per_repo: 20,
-         max_queue_time: '1s',
+         max_queue_wait: '1s',
          max_queue_size: 10,
       },
       {
          rpc: '/gitaly.SSHService/SSHUploadPackWithSidechannel',
          max_per_repo: 20,
-         max_queue_time: '1s',
+         max_queue_wait: '1s',
          max_queue_size: 10,
       },
    ],
@@ -801,7 +801,7 @@ gitaly['configuration'] = {
 
 - `rpc` is the name of the RPC to set a concurrency limit for per repository.
 - `max_per_repo` is the maximum number of in-flight RPC calls for the given RPC per repository.
-- `max_queue_time` is the maximum amount of time a request can wait in the concurrency queue to
+- `max_queue_wait` is the maximum amount of time a request can wait in the concurrency queue to
   be picked up by Gitaly.
 - `max_queue_size` is the maximum size the concurrency queue (per RPC method) can grow to before requests are rejected by
   Gitaly.
@@ -823,6 +823,9 @@ You can observe the behavior of this queue using the Gitaly logs and Prometheus.
 information, see the [relevant documentation](monitoring.md#monitor-gitaly-concurrency-limiting).
 
 ## Limit pack-objects concurrency
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7891) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `gitaly_pack_objects_limiting_remote_ip`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5772) in GitLab 16.0. Feature flag `gitaly_pack_objects_limiting_remote_ip` removed.
 
 Gitaly triggers `git-pack-objects` processes when handling both SSH and HTTPS traffic to clone or pull repositories. These processes generate a `pack-file` and can
 consume a significant amount of resources, especially in situations such as unexpectedly high traffic or concurrent pulls from a large repository. On GitLab.com, we also
@@ -1324,6 +1327,8 @@ going from 0 to 1 saved us 50% cache disk space while barely affecting
 the cache hit rate.
 
 ### Observe the cache
+
+> Logs for pack-objects caching was [changed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5719) in GitLab 16.0.
 
 You can observe the cache [using metrics](monitoring.md#pack-objects-cache) and in the following logged information. These logs are part of the gRPC logs and can
 be discovered when a call is executed.

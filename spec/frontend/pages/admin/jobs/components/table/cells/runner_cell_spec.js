@@ -2,7 +2,7 @@ import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import RunnerCell from '~/pages/admin/jobs/components/table/cells/runner_cell.vue';
 import { RUNNER_EMPTY_TEXT } from '~/pages/admin/jobs/components/constants';
-import { allRunnersData } from '../../../../../../ci/runner/mock_data';
+import { allRunnersData } from 'jest/ci/runner/mock_data';
 
 const mockRunner = allRunnersData.data.runners.nodes[0];
 

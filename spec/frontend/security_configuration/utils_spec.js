@@ -34,6 +34,33 @@ describe('augmentFeatures', () => {
     },
   ];
 
+  const mockSecurityFeaturesDast = [
+    {
+      name: 'DAST',
+      type: 'dast',
+    },
+  ];
+
+  const mockValidCustomFeatureWithOnDemandAvailableFalse = [
+    {
+      name: 'DAST',
+      type: 'dast',
+      customField: 'customvalue',
+      onDemandAvailable: false,
+      badge: {},
+    },
+  ];
+
+  const mockValidCustomFeatureWithOnDemandAvailableTrue = [
+    {
+      name: 'DAST',
+      type: 'dast',
+      customField: 'customvalue',
+      onDemandAvailable: true,
+      badge: {},
+    },
+  ];
+
   const mockValidCustomFeatureSnakeCase = [
     {
       name: 'SAST',
@@ -52,6 +79,29 @@ describe('augmentFeatures', () => {
 
   const expectedOutputCustomFeature = {
     augmentedSecurityFeatures: mockValidCustomFeature,
+  };
+
+  const expectedOutputCustomFeatureWithOnDemandAvailableFalse = {
+    augmentedSecurityFeatures: [
+      {
+        name: 'DAST',
+        type: 'dast',
+        customField: 'customvalue',
+        onDemandAvailable: false,
+      },
+    ],
+  };
+
+  const expectedOutputCustomFeatureWithOnDemandAvailableTrue = {
+    augmentedSecurityFeatures: [
+      {
+        name: 'DAST',
+        type: 'dast',
+        customField: 'customvalue',
+        onDemandAvailable: true,
+        badge: {},
+      },
+    ],
   };
 
   describe('returns an object with augmentedSecurityFeatures  when', () => {
@@ -83,6 +133,20 @@ describe('augmentFeatures', () => {
       expect(augmentFeatures(mockSecurityFeatures, mockValidCustomFeatureSnakeCase)).toEqual(
         expectedOutputCustomFeature,
       );
+    });
+  });
+
+  describe('follows onDemandAvailable', () => {
+    it('deletes badge when false', () => {
+      expect(
+        augmentFeatures(mockSecurityFeaturesDast, mockValidCustomFeatureWithOnDemandAvailableFalse),
+      ).toEqual(expectedOutputCustomFeatureWithOnDemandAvailableFalse);
+    });
+
+    it('keeps badge when true', () => {
+      expect(
+        augmentFeatures(mockSecurityFeaturesDast, mockValidCustomFeatureWithOnDemandAvailableTrue),
+      ).toEqual(expectedOutputCustomFeatureWithOnDemandAvailableTrue);
     });
   });
 });

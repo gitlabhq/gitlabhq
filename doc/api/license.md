@@ -265,3 +265,40 @@ Returns:
 | Attribute                    | Type          | Description                               |
 |:-----------------------------|:--------------|:------------------------------------------|
 | `success`                    | boolean       | Whether the request succeeded or not.     |
+
+## Retrieve usage information about the current license
+
+Gets usage information about the current license and exports it in CSV format.
+
+```plaintext
+GET /license/usage_export.csv
+```
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/license/usage_export.csv"
+```
+
+Example response:
+
+```csv
+License Key,"eyJkYXRhIjoib1EwRWZXU3RobDY2Yl=
+"
+Email,user@example.com
+License Start Date,2023-02-22
+License End Date,2024-02-22
+Company,Example Corp.
+Generated At,2023-09-05 06:56:23
+"",""
+Date,Billable User Count
+2023-07-11 12:00:05,21
+2023-07-13 12:00:06,21
+2023-08-16 12:00:02,21
+2023-09-04 12:00:12,21
+
+```
+
+Returns:
+
+- `202 Accepted` if the request to refresh billable users is successfully initiated.
+- `403 Forbidden` if the current user in not permitted to refresh billable users for the license.
+- `404 Not Found` if the license could not be found.

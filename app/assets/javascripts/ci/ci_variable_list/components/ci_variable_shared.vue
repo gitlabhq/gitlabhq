@@ -2,7 +2,8 @@
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { mapEnvironmentNames, reportMessageToSentry } from '../utils';
+import { reportMessageToSentry } from '~/ci/utils';
+import { mapEnvironmentNames } from '../utils';
 import {
   ADD_MUTATION_ACTION,
   DELETE_MUTATION_ACTION,

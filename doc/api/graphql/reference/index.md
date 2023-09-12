@@ -9095,6 +9095,75 @@ The edge type for [`CustomerRelationsOrganization`](#customerrelationsorganizati
 | <a id="customerrelationsorganizationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="customerrelationsorganizationedgenode"></a>`node` | [`CustomerRelationsOrganization`](#customerrelationsorganization) | The item at the end of the edge. |
 
+#### `CustomizableDashboardConnection`
+
+The connection type for [`CustomizableDashboard`](#customizabledashboard).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardconnectionedges"></a>`edges` | [`[CustomizableDashboardEdge]`](#customizabledashboardedge) | A list of edges. |
+| <a id="customizabledashboardconnectionnodes"></a>`nodes` | [`[CustomizableDashboard]`](#customizabledashboard) | A list of nodes. |
+| <a id="customizabledashboardconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CustomizableDashboardEdge`
+
+The edge type for [`CustomizableDashboard`](#customizabledashboard).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="customizabledashboardedgenode"></a>`node` | [`CustomizableDashboard`](#customizabledashboard) | The item at the end of the edge. |
+
+#### `CustomizableDashboardPanelConnection`
+
+The connection type for [`CustomizableDashboardPanel`](#customizabledashboardpanel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardpanelconnectionedges"></a>`edges` | [`[CustomizableDashboardPanelEdge]`](#customizabledashboardpaneledge) | A list of edges. |
+| <a id="customizabledashboardpanelconnectionnodes"></a>`nodes` | [`[CustomizableDashboardPanel]`](#customizabledashboardpanel) | A list of nodes. |
+| <a id="customizabledashboardpanelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CustomizableDashboardPanelEdge`
+
+The edge type for [`CustomizableDashboardPanel`](#customizabledashboardpanel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardpaneledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="customizabledashboardpaneledgenode"></a>`node` | [`CustomizableDashboardPanel`](#customizabledashboardpanel) | The item at the end of the edge. |
+
+#### `CustomizableDashboardVisualizationConnection`
+
+The connection type for [`CustomizableDashboardVisualization`](#customizabledashboardvisualization).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardvisualizationconnectionedges"></a>`edges` | [`[CustomizableDashboardVisualizationEdge]`](#customizabledashboardvisualizationedge) | A list of edges. |
+| <a id="customizabledashboardvisualizationconnectionnodes"></a>`nodes` | [`[CustomizableDashboardVisualization]`](#customizabledashboardvisualization) | A list of nodes. |
+| <a id="customizabledashboardvisualizationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CustomizableDashboardVisualizationEdge`
+
+The edge type for [`CustomizableDashboardVisualization`](#customizabledashboardvisualization).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardvisualizationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="customizabledashboardvisualizationedgenode"></a>`node` | [`CustomizableDashboardVisualization`](#customizabledashboardvisualization) | The item at the end of the edge. |
+
 #### `DastProfileConnection`
 
 The connection type for [`DastProfile`](#dastprofile).
@@ -11017,75 +11086,6 @@ The edge type for [`PipelineTrigger`](#pipelinetrigger).
 | ---- | ---- | ----------- |
 | <a id="pipelinetriggeredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pipelinetriggeredgenode"></a>`node` | [`PipelineTrigger`](#pipelinetrigger) | The item at the end of the edge. |
-
-#### `ProductAnalyticsDashboardConnection`
-
-The connection type for [`ProductAnalyticsDashboard`](#productanalyticsdashboard).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardconnectionedges"></a>`edges` | [`[ProductAnalyticsDashboardEdge]`](#productanalyticsdashboardedge) | A list of edges. |
-| <a id="productanalyticsdashboardconnectionnodes"></a>`nodes` | [`[ProductAnalyticsDashboard]`](#productanalyticsdashboard) | A list of nodes. |
-| <a id="productanalyticsdashboardconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `ProductAnalyticsDashboardEdge`
-
-The edge type for [`ProductAnalyticsDashboard`](#productanalyticsdashboard).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="productanalyticsdashboardedgenode"></a>`node` | [`ProductAnalyticsDashboard`](#productanalyticsdashboard) | The item at the end of the edge. |
-
-#### `ProductAnalyticsDashboardPanelConnection`
-
-The connection type for [`ProductAnalyticsDashboardPanel`](#productanalyticsdashboardpanel).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardpanelconnectionedges"></a>`edges` | [`[ProductAnalyticsDashboardPanelEdge]`](#productanalyticsdashboardpaneledge) | A list of edges. |
-| <a id="productanalyticsdashboardpanelconnectionnodes"></a>`nodes` | [`[ProductAnalyticsDashboardPanel]`](#productanalyticsdashboardpanel) | A list of nodes. |
-| <a id="productanalyticsdashboardpanelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `ProductAnalyticsDashboardPanelEdge`
-
-The edge type for [`ProductAnalyticsDashboardPanel`](#productanalyticsdashboardpanel).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardpaneledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="productanalyticsdashboardpaneledgenode"></a>`node` | [`ProductAnalyticsDashboardPanel`](#productanalyticsdashboardpanel) | The item at the end of the edge. |
-
-#### `ProductAnalyticsDashboardVisualizationConnection`
-
-The connection type for [`ProductAnalyticsDashboardVisualization`](#productanalyticsdashboardvisualization).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardvisualizationconnectionedges"></a>`edges` | [`[ProductAnalyticsDashboardVisualizationEdge]`](#productanalyticsdashboardvisualizationedge) | A list of edges. |
-| <a id="productanalyticsdashboardvisualizationconnectionnodes"></a>`nodes` | [`[ProductAnalyticsDashboardVisualization]`](#productanalyticsdashboardvisualization) | A list of nodes. |
-| <a id="productanalyticsdashboardvisualizationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `ProductAnalyticsDashboardVisualizationEdge`
-
-The edge type for [`ProductAnalyticsDashboardVisualization`](#productanalyticsdashboardvisualization).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardvisualizationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="productanalyticsdashboardvisualizationedgenode"></a>`node` | [`ProductAnalyticsDashboardVisualization`](#productanalyticsdashboardvisualization) | The item at the end of the edge. |
 
 #### `ProjectConnection`
 
@@ -14866,6 +14866,48 @@ A custom emoji uploaded by user.
 | <a id="customerrelationsorganizationname"></a>`name` | [`String!`](#string) | Name of the organization. |
 | <a id="customerrelationsorganizationupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the organization was last updated. |
 
+### `CustomizableDashboard`
+
+Represents a product analytics dashboard.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardcategory"></a>`category` | [`CustomizableDashboardCategory!`](#customizabledashboardcategory) | Category of dashboard. |
+| <a id="customizabledashboarddescription"></a>`description` | [`String`](#string) | Description of the dashboard. |
+| <a id="customizabledashboardpanels"></a>`panels` | [`CustomizableDashboardPanelConnection!`](#customizabledashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
+| <a id="customizabledashboardslug"></a>`slug` | [`String!`](#string) | Slug of the dashboard. |
+| <a id="customizabledashboardtitle"></a>`title` | [`String!`](#string) | Title of the dashboard. |
+| <a id="customizabledashboarduserdefined"></a>`userDefined` | [`Boolean!`](#boolean) | Indicates whether the dashboard is user-defined or provided by GitLab. |
+
+### `CustomizableDashboardPanel`
+
+Represents a product analytics dashboard panel.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardpanelgridattributes"></a>`gridAttributes` | [`JSON`](#json) | Description of the position and size of the panel. |
+| <a id="customizabledashboardpanelqueryoverrides"></a>`queryOverrides` | [`JSON`](#json) | Overrides for the visualization query object. |
+| <a id="customizabledashboardpaneltitle"></a>`title` | [`String!`](#string) | Title of the panel. |
+| <a id="customizabledashboardpanelvisualization"></a>`visualization` | [`CustomizableDashboardVisualization!`](#customizabledashboardvisualization) | Visualization of the panel. |
+
+### `CustomizableDashboardVisualization`
+
+Represents a product analytics dashboard visualization.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizabledashboardvisualizationdata"></a>`data` | [`JSON!`](#json) | Data of the visualization. |
+| <a id="customizabledashboardvisualizationerrors"></a>`errors` | [`[String!]`](#string) | Validation errors in the visualization. |
+| <a id="customizabledashboardvisualizationoptions"></a>`options` | [`JSON!`](#json) | Options of the visualization. |
+| <a id="customizabledashboardvisualizationslug"></a>`slug` | [`String!`](#string) | Slug of the visualization. |
+| <a id="customizabledashboardvisualizationtype"></a>`type` | [`String!`](#string) | Type of the visualization. |
+
 ### `DastPreScanVerification`
 
 Represents a DAST Pre Scan Verification.
@@ -18630,6 +18672,7 @@ Represents an SSH key.
 | <a id="labeldescription"></a>`description` | [`String`](#string) | Description of the label (Markdown rendered as HTML for caching). |
 | <a id="labeldescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="labelid"></a>`id` | [`ID!`](#id) | Label ID. |
+| <a id="labellockonmerge"></a>`lockOnMerge` | [`Boolean!`](#boolean) | Indicates this label is locked for merge requests that have been merged. |
 | <a id="labeltextcolor"></a>`textColor` | [`String!`](#string) | Text color of the label. |
 | <a id="labeltitle"></a>`title` | [`String!`](#string) | Content of the label. |
 | <a id="labelupdatedat"></a>`updatedAt` | [`Time!`](#time) | When this label was last updated. |
@@ -18823,6 +18866,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequeststate"></a>`state` | [`MergeRequestState!`](#mergerequeststate) | State of the merge request. |
 | <a id="mergerequestsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates if the currently logged in user is subscribed to this merge request. |
 | <a id="mergerequestsuggestedreviewers"></a>`suggestedReviewers` **{warning-solid}** | [`SuggestedReviewersType`](#suggestedreviewerstype) | **Introduced** in 15.4. This feature is an Experiment. It can be changed or removed at any time. Suggested reviewers for merge request. Returns `null` if `suggested_reviewers` feature flag is disabled. This flag is disabled by default and only available on GitLab.com because the feature is experimental and is subject to change without notice. |
+| <a id="mergerequestsupportslockonmerge"></a>`supportsLockOnMerge` | [`Boolean!`](#boolean) | Indicates if the merge request supports locked labels. |
 | <a id="mergerequesttargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the merge request. |
 | <a id="mergerequesttargetbranchexists"></a>`targetBranchExists` | [`Boolean!`](#boolean) | Indicates if the target branch of the merge request exists. |
 | <a id="mergerequesttargetproject"></a>`targetProject` | [`Project!`](#project) | Target project of the merge request. |
@@ -21233,47 +21277,6 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="previewbillableuserchangeseatsinsubscription"></a>`seatsInSubscription` | [`Int`](#int) | Number of seats in subscription. |
 | <a id="previewbillableuserchangewillincreaseoverage"></a>`willIncreaseOverage` | [`Boolean`](#boolean) | If the group will have an increased overage after change. |
 
-### `ProductAnalyticsDashboard`
-
-Represents a product analytics dashboard.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboarddescription"></a>`description` | [`String`](#string) | Description of the dashboard. |
-| <a id="productanalyticsdashboardpanels"></a>`panels` | [`ProductAnalyticsDashboardPanelConnection!`](#productanalyticsdashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
-| <a id="productanalyticsdashboardslug"></a>`slug` | [`String!`](#string) | Slug of the dashboard. |
-| <a id="productanalyticsdashboardtitle"></a>`title` | [`String!`](#string) | Title of the dashboard. |
-| <a id="productanalyticsdashboarduserdefined"></a>`userDefined` | [`Boolean!`](#boolean) | Indicates whether the dashboard is user-defined or provided by GitLab. |
-
-### `ProductAnalyticsDashboardPanel`
-
-Represents a product analytics dashboard panel.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardpanelgridattributes"></a>`gridAttributes` | [`JSON`](#json) | Description of the position and size of the panel. |
-| <a id="productanalyticsdashboardpanelqueryoverrides"></a>`queryOverrides` | [`JSON`](#json) | Overrides for the visualization query object. |
-| <a id="productanalyticsdashboardpaneltitle"></a>`title` | [`String!`](#string) | Title of the panel. |
-| <a id="productanalyticsdashboardpanelvisualization"></a>`visualization` | [`ProductAnalyticsDashboardVisualization!`](#productanalyticsdashboardvisualization) | Visualization of the panel. |
-
-### `ProductAnalyticsDashboardVisualization`
-
-Represents a product analytics dashboard visualization.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="productanalyticsdashboardvisualizationdata"></a>`data` | [`JSON!`](#json) | Data of the visualization. |
-| <a id="productanalyticsdashboardvisualizationerrors"></a>`errors` | [`[String!]`](#string) | Validation errors in the visualization. |
-| <a id="productanalyticsdashboardvisualizationoptions"></a>`options` | [`JSON!`](#json) | Options of the visualization. |
-| <a id="productanalyticsdashboardvisualizationslug"></a>`slug` | [`String!`](#string) | Slug of the visualization. |
-| <a id="productanalyticsdashboardvisualizationtype"></a>`type` | [`String!`](#string) | Type of the visualization. |
-
 ### `Project`
 
 #### Fields
@@ -21622,6 +21625,47 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="projectcontainerrepositoriesname"></a>`name` | [`String`](#string) | Filter the container repositories by their name. |
 | <a id="projectcontainerrepositoriessort"></a>`sort` | [`ContainerRepositorySort`](#containerrepositorysort) | Sort container repositories by this criteria. |
+
+##### `Project.customizableDashboardVisualizations`
+
+Visualizations of the project or associated configuration project.
+
+WARNING:
+**Introduced** in 16.1.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardvisualizationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcustomizabledashboardvisualizationsslug"></a>`slug` | [`String`](#string) | Slug of the visualization to return. |
+
+##### `Project.customizableDashboards`
+
+Customizable dashboards for the project.
+
+WARNING:
+**Introduced** in 15.6.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`CustomizableDashboardConnection`](#customizabledashboardconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcustomizabledashboardscategory"></a>`category` | [`CustomizableDashboardCategory`](#customizabledashboardcategory) | Find by dashboard type. |
+| <a id="projectcustomizabledashboardsslug"></a>`slug` | [`String`](#string) | Find by dashboard slug. |
 
 ##### `Project.dastProfile`
 
@@ -22351,46 +22395,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectpipelinesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Pipelines updated after this date. |
 | <a id="projectpipelinesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Pipelines updated before this date. |
 | <a id="projectpipelinesusername"></a>`username` | [`String`](#string) | Filter pipelines by the user that triggered the pipeline. |
-
-##### `Project.productAnalyticsDashboards`
-
-Product Analytics dashboards of the project.
-
-WARNING:
-**Introduced** in 15.6.
-This feature is an Experiment. It can be changed or removed at any time.
-
-Returns [`ProductAnalyticsDashboardConnection`](#productanalyticsdashboardconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="projectproductanalyticsdashboardsslug"></a>`slug` | [`String`](#string) | Find by dashboard slug. |
-
-##### `Project.productAnalyticsVisualizations`
-
-Visualizations of the project or associated configuration project.
-
-WARNING:
-**Introduced** in 16.1.
-This feature is an Experiment. It can be changed or removed at any time.
-
-Returns [`ProductAnalyticsDashboardVisualizationConnection`](#productanalyticsdashboardvisualizationconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, `last: Int`.
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="projectproductanalyticsvisualizationsslug"></a>`slug` | [`String`](#string) | Slug of the visualization to return. |
 
 ##### `Project.projectMembers`
 
@@ -26720,6 +26724,14 @@ Values for sorting tags.
 | <a id="customerrelationsorganizationstateactive"></a>`active` | Active organizations. |
 | <a id="customerrelationsorganizationstateall"></a>`all` | All available organizations. |
 | <a id="customerrelationsorganizationstateinactive"></a>`inactive` | Inactive organizations. |
+
+### `CustomizableDashboardCategory`
+
+Categories for customizable dashboards.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="customizabledashboardcategoryanalytics"></a>`ANALYTICS` | Analytics category for customizable dashboards. |
 
 ### `DastPreScanVerificationCheckType`
 

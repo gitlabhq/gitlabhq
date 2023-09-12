@@ -83,7 +83,8 @@ module Projects
           configuration_path: scan.configuration_path,
           available: scan.available?,
           can_enable_by_merge_request: scan.can_enable_by_merge_request?,
-          meta_info_path: scan.meta_info_path
+          meta_info_path: scan.meta_info_path,
+          on_demand_available: scan.on_demand_available?
         }
       end
 

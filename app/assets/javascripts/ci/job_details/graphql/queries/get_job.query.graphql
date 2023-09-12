@@ -1,0 +1,12 @@
+#import "~/ci/job_details/graphql/fragments/ci_job.fragment.graphql"
+
+query getJob($fullPath: ID!, $id: JobID!) {
+  project(fullPath: $fullPath) {
+    id
+    job(id: $id) {
+      ...BaseCiJob
+      manualJob
+      name
+    }
+  }
+}

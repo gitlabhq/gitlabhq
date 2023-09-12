@@ -1,7 +1,7 @@
 import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import ProjectCell from '~/pages/admin/jobs/components/table/cell/project_cell.vue';
-import { mockAllJobsNodes } from '../../../../../../jobs/mock_data';
+import { mockAllJobsNodes } from 'jest/ci/jobs_mock_data';
 
 const mockJob = mockAllJobsNodes[0];
 

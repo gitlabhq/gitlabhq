@@ -275,3 +275,30 @@ To create a thread:
 A threaded comment is created.
 
 ![Thread comment](img/discussion_comment.png)
+
+## Resolve a thread
+
+> - Resolvable threads for issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `resolvable_issue_threads`. Disabled by default.
+> - Resolvable threads for issues [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available for _issues_.
+To make it available, an administrator can
+[enable the feature flag](../../administration/feature_flags.md) named `resolvable_issue_threads`.
+On GitLab.com, this feature is available.
+This feature is not ready for production use.
+
+You can resolve a thread when you want to finish a conversation.
+
+Prerequisites:
+
+- You must be in an issue or merge request.
+- You must have at least the Developer role or be the author of the issue or merge request.
+
+To resolve a thread:
+
+1. Go to the thread.
+1. Do one of the following:
+   - In the upper-right corner of the original comment, select **Resolve thread** (**{check-circle}**).
+   - Below the last reply, in the **Reply** field, select **Resolve thread**.
+   - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.

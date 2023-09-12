@@ -33,6 +33,10 @@ module Gitlab
 
       def meta_info_path; end
 
+      def on_demand_available?
+        false
+      end
+
       private
 
       attr_reader :project, :configured

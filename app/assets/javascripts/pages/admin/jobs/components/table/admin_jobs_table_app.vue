@@ -1,11 +1,11 @@
 <script>
 import { GlAlert, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
-import { validateQueryString } from '~/jobs/components/filtered_search/utils';
-import JobsTable from '~/jobs/components/table/jobs_table.vue';
-import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
-import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
-import JobsTableEmptyState from '~/jobs/components/table/jobs_table_empty_state.vue';
+import { validateQueryString } from '~/ci/common/private/jobs_filtered_search/utils';
+import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
+import JobsTableTabs from '~/ci/jobs_page/components/jobs_table_tabs.vue';
+import JobsFilteredSearch from '~/ci/common/private/jobs_filtered_search/app.vue';
+import JobsTableEmptyState from '~/ci/jobs_page/components/jobs_table_empty_state.vue';
 import { createAlert } from '~/alert';
 import {
   TOKEN_TYPE_STATUS,

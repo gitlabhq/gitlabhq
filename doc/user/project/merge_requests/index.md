@@ -341,22 +341,7 @@ sort order by clicking the sort button on the right.
 
 > Resolving comments individually was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/28750) in GitLab 13.6.
 
-In a merge request, you can resolve a thread when you want to finish a conversation.
-
-Prerequisites:
-
-- You must have at least the Developer role
-  or be the author of the change being reviewed.
-- Resolvable threads can be added only to merge requests. It doesn't work
-  for comments in issues, commits, or snippets.
-
-To resolve a thread:
-
-1. Go to the thread.
-1. Do one of the following:
-   - In the upper-right corner of the original comment, select **Resolve thread** (**{check-circle}**).
-   - Below the last reply, in the **Reply** field, select **Resolve thread**.
-   - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
+In a merge request, you can [resolve a thread](../../discussions/index.md#resolve-a-thread) when you want to finish a conversation.
 
 At the top of the page, the number of unresolved threads is updated:
 

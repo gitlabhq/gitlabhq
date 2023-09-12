@@ -18,6 +18,9 @@ module Types
           description: 'Description of the label (Markdown rendered as HTML for caching).'
     field :id, GraphQL::Types::ID, null: false,
                                    description: 'Label ID.'
+    field :lock_on_merge, GraphQL::Types::Boolean, null: false,
+                                                   description: 'Indicates this label is locked for merge requests ' \
+                                                                'that have been merged.'
     field :text_color, GraphQL::Types::String, null: false,
                                                description: 'Text color of the label.'
     field :title, GraphQL::Types::String, null: false,

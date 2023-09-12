@@ -4,17 +4,17 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import JobsTableTabs from '~/jobs/components/table/jobs_table_tabs.vue';
+import JobsTableTabs from '~/ci/jobs_page/components/jobs_table_tabs.vue';
 import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
 import getAllJobsQuery from '~/pages/admin/jobs/components/table/graphql/queries/get_all_jobs.query.graphql';
 import getAllJobsCount from '~/pages/admin/jobs/components/table/graphql/queries/get_all_jobs_count.query.graphql';
 import getCancelableJobsQuery from '~/pages/admin/jobs/components/table/graphql/queries/get_cancelable_jobs_count.query.graphql';
 import AdminJobsTableApp from '~/pages/admin/jobs/components/table/admin_jobs_table_app.vue';
 import CancelJobs from '~/pages/admin/jobs/components/cancel_jobs.vue';
-import JobsTable from '~/jobs/components/table/jobs_table.vue';
+import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import { createAlert } from '~/alert';
 import { TEST_HOST } from 'spec/test_constants';
-import JobsFilteredSearch from '~/jobs/components/filtered_search/jobs_filtered_search.vue';
+import JobsFilteredSearch from '~/ci/common/private/jobs_filtered_search/app.vue';
 import * as urlUtils from '~/lib/utils/url_utility';
 import {
   JOBS_FETCH_ERROR_MSG,
@@ -31,7 +31,7 @@ import {
   statuses,
   mockFailedSearchToken,
   mockAllJobsCountResponse,
-} from '../../../../../jobs/mock_data';
+} from 'jest/ci/jobs_mock_data';
 
 Vue.use(VueApollo);
 

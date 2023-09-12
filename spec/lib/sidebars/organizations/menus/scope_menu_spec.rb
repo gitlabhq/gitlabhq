@@ -11,8 +11,8 @@ RSpec.describe Sidebars::Organizations::Menus::ScopeMenu, feature_category: :nav
     let(:menu) { described_class.new(context) }
     let(:extra_attrs) do
       {
-        title: s_('Organization|Organization overview'),
-        sprite_icon: 'organization',
+        avatar: nil,
+        entity_id: organization.id,
         super_sidebar_parent: ::Sidebars::StaticMenu,
         item_id: :organization_overview
       }

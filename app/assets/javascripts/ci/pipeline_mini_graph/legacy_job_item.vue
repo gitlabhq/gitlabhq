@@ -3,9 +3,9 @@ import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
 import JobNameComponent from '~/ci/common/private/job_name_component.vue';
 import { ICONS } from '~/ci/pipeline_details/constants';
-import delayedJobMixin from '~/jobs/mixins/delayed_job_mixin';
+import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import { s__, sprintf } from '~/locale';
-import { reportToSentry } from '../utils';
+import { reportToSentry } from '~/ci/utils';
 
 /**
  * Renders the badge for the pipeline graph and the job's dropdown.

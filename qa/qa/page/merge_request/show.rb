@@ -138,7 +138,7 @@ module QA
           element :close_button
         end
 
-        view 'app/assets/javascripts/jobs/components/table/cells/job_cell.vue' do
+        view 'app/assets/javascripts/ci/jobs_page/components/job_cells/job_cell.vue' do
           element 'fork-icon'
         end
 

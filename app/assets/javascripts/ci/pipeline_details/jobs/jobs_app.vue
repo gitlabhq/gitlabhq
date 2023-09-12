@@ -3,9 +3,9 @@ import { GlIntersectionObserver, GlLoadingIcon, GlSkeletonLoader } from '@gitlab
 import produce from 'immer';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
-import eventHub from '~/jobs/components/table/event_hub';
-import JobsTable from '~/jobs/components/table/jobs_table.vue';
-import { JOBS_TAB_FIELDS } from '~/jobs/components/table/constants';
+import eventHub from '~/ci/jobs_page/event_hub';
+import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
+import { JOBS_TAB_FIELDS } from '~/ci/jobs_page/constants';
 import getPipelineJobs from './graphql/queries/get_pipeline_jobs.query.graphql';
 
 export default {
