@@ -23,8 +23,15 @@ type Injector struct {
 }
 
 type entryParams struct {
-	Url    string
-	Header http.Header
+	Url          string
+	Headers      http.Header
+	UploadConfig uploadConfig
+}
+
+type uploadConfig struct {
+	Headers http.Header
+	Method  string
+	Url     string
 }
 
 type nullResponseWriter struct {
@@ -55,7 +62,13 @@ func (p *Injector) SetUploadHandler(uploadHandler http.Handler) {
 }
 
 func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
-	dependencyResponse, err := p.fetchUrl(r.Context(), sendData)
+	params, err := p.unpackParams(sendData)
+	if err != nil {
+		fail.Request(w, r, err)
+		return
+	}
+
+	dependencyResponse, err := p.fetchUrl(r.Context(), params)
 	if err != nil {
 		fail.Request(w, r, err)
 		return
@@ -70,11 +83,10 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	w.Header().Set("Content-Length", dependencyResponse.Header.Get("Content-Length"))
 
 	teeReader := io.TeeReader(dependencyResponse.Body, w)
-	saveFileRequest, err := http.NewRequestWithContext(r.Context(), "POST", r.URL.String()+"/upload", teeReader)
+	saveFileRequest, err := p.newUploadRequest(r.Context(), params, r, teeReader)
 	if err != nil {
 		fail.Request(w, r, fmt.Errorf("dependency proxy: failed to create request: %w", err))
 	}
-	saveFileRequest.Header = r.Header.Clone()
 
 	// forward headers from dependencyResponse to rails and client
 	for key, values := range dependencyResponse.Header {
@@ -100,17 +112,56 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	}
 }
 
-func (p *Injector) fetchUrl(ctx context.Context, sendData string) (*http.Response, error) {
+func (p *Injector) fetchUrl(ctx context.Context, params *entryParams) (*http.Response, error) {
+	r, err := http.NewRequestWithContext(ctx, "GET", params.Url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("dependency proxy: failed to fetch dependency: %w", err)
+	}
+	r.Header = params.Headers
+
+	return httpClient.Do(r)
+}
+
+func (p *Injector) newUploadRequest(ctx context.Context, params *entryParams, originalRequest *http.Request, body io.Reader) (*http.Request, error) {
+	method := p.uploadMethodFrom(params)
+	uploadUrl := p.uploadUrlFrom(params, originalRequest)
+	request, err := http.NewRequestWithContext(ctx, method, uploadUrl, body)
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header = originalRequest.Header.Clone()
+
+	for key, values := range params.UploadConfig.Headers {
+		request.Header.Del(key)
+		for _, value := range values {
+			request.Header.Add(key, value)
+		}
+	}
+
+	return request, nil
+}
+
+func (p *Injector) unpackParams(sendData string) (*entryParams, error) {
 	var params entryParams
 	if err := p.Unpack(&params, sendData); err != nil {
 		return nil, fmt.Errorf("dependency proxy: unpack sendData: %v", err)
 	}
 
-	r, err := http.NewRequestWithContext(ctx, "GET", params.Url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("dependency proxy: failed to fetch dependency: %v", err)
-	}
-	r.Header = params.Header
+	return &params, nil
+}
 
-	return httpClient.Do(r)
+func (p *Injector) uploadMethodFrom(params *entryParams) string {
+	if params.UploadConfig.Method != "" {
+		return params.UploadConfig.Method
+	}
+	return http.MethodPost
+}
+
+func (p *Injector) uploadUrlFrom(params *entryParams, originalRequest *http.Request) string {
+	if params.UploadConfig.Url != "" {
+		return params.UploadConfig.Url
+	}
+
+	return originalRequest.URL.String() + "/upload"
 }

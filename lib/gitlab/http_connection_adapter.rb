@@ -18,6 +18,8 @@
 #   to read header data. It is a modified version of Net::BufferedIO that
 #   raises a timeout error if reading header data takes too much time.
 
+require_relative 'utils/override'
+
 module Gitlab
   class HTTPConnectionAdapter < HTTParty::ConnectionAdapter
     extend ::Gitlab::Utils::Override

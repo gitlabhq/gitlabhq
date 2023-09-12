@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
+import { TRACKING_CATEGORIES } from '~/ci/constants';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import {
@@ -8,7 +9,6 @@ import {
   needsTabName,
   pipelineTabName,
   testReportTabName,
-  TRACKING_CATEGORIES,
 } from '../constants';
 
 export default {

@@ -1,0 +1,2 @@
+export const ANY_TRIGGER_AUTHOR = 'Any';
+export const FILTER_PIPELINES_SEARCH_DELAY = 200;

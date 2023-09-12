@@ -184,11 +184,17 @@ module Gitlab
         ]
       end
 
-      def send_dependency(headers, url)
+      def send_dependency(headers, url, upload_config: {})
         params = {
-          'Header' => headers,
-          'Url' => url
+          'Headers' => headers.transform_values { |v| Array.wrap(v) },
+          'Url' => url,
+          'UploadConfig' => {
+            'Method' => upload_config[:method],
+            'Url' => upload_config[:url],
+            'Headers' => (upload_config[:headers] || {}).transform_values { |v| Array.wrap(v) }
+          }.compact_blank!
         }
+        params.compact_blank!
 
         [
           SEND_DATA_HEADER,

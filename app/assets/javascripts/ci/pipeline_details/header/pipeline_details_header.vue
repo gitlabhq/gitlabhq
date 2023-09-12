@@ -11,6 +11,7 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/ci/constants';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __, s__, sprintf, formatNumber } from '~/locale';
@@ -19,14 +20,7 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import {
-  LOAD_FAILURE,
-  POST_FAILURE,
-  DELETE_FAILURE,
-  DEFAULT,
-  BUTTON_TOOLTIP_RETRY,
-  BUTTON_TOOLTIP_CANCEL,
-} from '../constants';
+import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
 import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';

@@ -2,7 +2,7 @@ import { GlTab } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import PipelineTabs from '~/ci/pipeline_details/tabs/pipeline_tabs.vue';
-import { TRACKING_CATEGORIES } from '~/ci/pipeline_details/constants';
+import { TRACKING_CATEGORIES } from '~/ci/constants';
 
 describe('The Pipeline Tabs', () => {
   let wrapper;

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Workhorse do
+RSpec.describe Gitlab::Workhorse, feature_category: :shared do
   let_it_be(:project) { create(:project, :repository) }
   let(:features) { { 'gitaly-feature-enforce-requests-limits' => 'true' } }
 
@@ -552,18 +552,53 @@ RSpec.describe Gitlab::Workhorse do
   describe '.send_dependency' do
     let(:headers) { { Accept: 'foo', Authorization: 'Bearer asdf1234' } }
     let(:url) { 'https://foo.bar.com/baz' }
+    let(:upload_method) { nil }
+    let(:upload_url) { nil }
+    let(:upload_headers) { {} }
+    let(:upload_config) { { method: upload_method, headers: upload_headers, url: upload_url }.compact_blank! }
 
-    subject { described_class.send_dependency(headers, url) }
+    subject { described_class.send_dependency(headers, url, upload_config: upload_config) }
 
-    it 'sets the header correctly', :aggregate_failures do
-      key, command, params = decode_workhorse_header(subject)
+    shared_examples 'setting the header correctly' do |ensure_upload_config_field: nil|
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
+        expected_params = {
+          'Headers' => headers.transform_values { |v| Array.wrap(v) },
+          'Url' => url,
+          'UploadConfig' => {
+            'Method' => upload_method,
+            'Url' => upload_url,
+            'Headers' => upload_headers.transform_values { |v| Array.wrap(v) }
+          }.compact_blank!
+        }
+        expected_params.compact_blank!
 
-      expect(key).to eq("Gitlab-Workhorse-Send-Data")
-      expect(command).to eq("send-dependency")
-      expect(params).to eq({
-        'Header' => headers,
-        'Url' => url
-      }.deep_stringify_keys)
+        expect(key).to eq("Gitlab-Workhorse-Send-Data")
+        expect(command).to eq("send-dependency")
+        expect(params).to eq(expected_params.deep_stringify_keys)
+
+        expect(params.dig('UploadConfig', ensure_upload_config_field)).to be_present if ensure_upload_config_field
+      end
+    end
+
+    it_behaves_like 'setting the header correctly'
+
+    context 'overriding the method' do
+      let(:upload_method) { 'PUT' }
+
+      it_behaves_like 'setting the header correctly', ensure_upload_config_field: 'Method'
+    end
+
+    context 'overriding the upload url' do
+      let(:upload_url) { 'https://test.dev' }
+
+      it_behaves_like 'setting the header correctly', ensure_upload_config_field: 'Url'
+    end
+
+    context 'with upload headers set' do
+      let(:upload_headers) { { 'Private-Token' => '1234567890' } }
+
+      it_behaves_like 'setting the header correctly', ensure_upload_config_field: 'Headers'
     end
   end
 

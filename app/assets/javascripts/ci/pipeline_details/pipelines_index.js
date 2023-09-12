@@ -10,7 +10,7 @@ import {
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import Translate from '~/vue_shared/translate';
-import Pipelines from './pipelines_list/pipelines.vue';
+import Pipelines from '~/ci/pipelines_page/pipelines.vue';
 import PipelinesStore from './stores/pipelines_store';
 
 Vue.use(Translate);

@@ -103,7 +103,7 @@
 {"name":"date","version":"3.3.3","platform":"ruby","checksum":"819792019d5712b748fb15f6dfaaedef14b0328723ef23583ea35f186774530f"},
 {"name":"dead_end","version":"3.1.1","platform":"ruby","checksum":"1011df7f7c0149be004e11cbbc37747760227c55305cd902fd3c06e1394b2f5b"},
 {"name":"debug_inspector","version":"1.1.0","platform":"ruby","checksum":"eaa5a2d0195e1d65fb4164e8e7e466cca2e7eb53bc5e608cf12b8bf02c3a8606"},
-{"name":"deckar01-task_list","version":"2.3.2","platform":"ruby","checksum":"5a19092548d24309d8b2c2704d64cdc08a4a615823c9a722f4142edec1de8805"},
+{"name":"deckar01-task_list","version":"2.3.3","platform":"ruby","checksum":"918abaf3f81e6c0d224c2b7bef593d7f84ee5847a0692726d24e3fb272c2c758"},
 {"name":"declarative","version":"0.0.20","platform":"ruby","checksum":"8021dd6cb17ab2b61233c56903d3f5a259c5cf43c80ff332d447d395b17d9ff9"},
 {"name":"declarative_policy","version":"1.1.0","platform":"ruby","checksum":"9af4cf299ade03f2bbf63908f2ce6a117d132fc714c39a128596667fb13331cb"},
 {"name":"deprecation_toolkit","version":"1.5.1","platform":"ruby","checksum":"a8a1ab1a19ae40ea12560b65010e099f3459ebde390b76621ef0c21c516a04ba"},

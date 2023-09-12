@@ -6,7 +6,7 @@ event = event.present
 event_url = event_feed_url(event)
 
 xml.entry do
-  xml.id      "tag:#{request.host},#{event.created_at.strftime("%Y-%m-%d")}:#{event.id}"
+  xml.id      "tag:#{request.host},#{event.created_at.to_date.iso8601}:#{event.id}"
   xml.link    href: event_url if event_url
   xml.title   truncate(event_feed_title(event), length: 80)
   xml.updated event.updated_at.xmlschema

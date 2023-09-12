@@ -24,6 +24,7 @@ require_relative '../lib/system_check/helpers'
 # Required for config/initializers/1_settings.rb
 require 'omniauth'
 require 'omniauth-github'
+require 'omniauth-saml'
 require 'etc'
 require 'gitlab/utils/all'
 require 'gitlab/safe_request_store'

@@ -1,12 +1,14 @@
 <script>
 import { getCssClassDimensions } from '~/lib/utils/css_utils';
 import Tracking from '~/tracking';
-import { SUPER_SIDEBAR_PEEK_OPEN_DELAY, SUPER_SIDEBAR_PEEK_CLOSE_DELAY } from '../constants';
-
-export const STATE_CLOSED = 'closed';
-export const STATE_WILL_OPEN = 'will-open';
-export const STATE_OPEN = 'open';
-export const STATE_WILL_CLOSE = 'will-close';
+import {
+  SUPER_SIDEBAR_PEEK_OPEN_DELAY,
+  SUPER_SIDEBAR_PEEK_CLOSE_DELAY,
+  SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
+  SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
+  SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
+  SUPER_SIDEBAR_PEEK_STATE_WILL_CLOSE as STATE_WILL_CLOSE,
+} from '../constants';
 
 export default {
   name: 'SidebarPeek',

@@ -13,7 +13,7 @@ module API
       expose :active?, as: :active, documentation: { type: 'boolean' }
       expose :expires_at, documentation:
         { type: 'dateTime', example: '2020-08-31T15:53:00.073Z' } do |personal_access_token|
-        personal_access_token.expires_at ? personal_access_token.expires_at.strftime("%Y-%m-%d") : nil
+        personal_access_token.expires_at ? personal_access_token.expires_at.iso8601 : nil
       end
     end
   end

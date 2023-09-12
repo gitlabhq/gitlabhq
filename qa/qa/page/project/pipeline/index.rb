@@ -5,23 +5,23 @@ module QA
     module Project
       module Pipeline
         class Index < QA::Page::Base
-          view 'app/assets/javascripts/ci/pipeline_details/pipelines_list/components/pipeline_url.vue' do
+          view 'app/assets/javascripts/ci/pipelines_page/components/pipeline_url.vue' do
             element :pipeline_url_link
           end
 
-          view 'app/assets/javascripts/ci/pipeline_details/pipelines_list/components/pipelines_status_badge.vue' do
+          view 'app/assets/javascripts/ci/pipelines_page/components/pipelines_status_badge.vue' do
             element :pipeline_commit_status
           end
 
-          view 'app/assets/javascripts/ci/pipeline_details/pipelines_list/components/pipeline_operations.vue' do
+          view 'app/assets/javascripts/ci/pipelines_page/components/pipeline_operations.vue' do
             element :pipeline_retry_button
           end
 
-          view 'app/assets/javascripts/ci/pipeline_details/pipelines_list/components/nav_controls.vue' do
+          view 'app/assets/javascripts/ci/pipelines_page/components/nav_controls.vue' do
             element :run_pipeline_button
           end
 
-          view 'app/assets/javascripts/ci/pipeline_details/pipelines_list/components/pipelines_table.vue' do
+          view 'app/assets/javascripts/ci/common/pipelines_table.vue' do
             element :pipeline_row_container
           end
 

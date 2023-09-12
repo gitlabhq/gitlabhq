@@ -2,14 +2,14 @@ import { mount } from '@vue/test-utils';
 import {
   SUPER_SIDEBAR_PEEK_OPEN_DELAY,
   SUPER_SIDEBAR_PEEK_CLOSE_DELAY,
+  SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
+  SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
+  SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
+  SUPER_SIDEBAR_PEEK_STATE_WILL_CLOSE as STATE_WILL_CLOSE,
 } from '~/super_sidebar/constants';
-import SidebarPeek, {
-  STATE_CLOSED,
-  STATE_WILL_OPEN,
-  STATE_OPEN,
-  STATE_WILL_CLOSE,
-} from '~/super_sidebar/components/sidebar_peek_behavior.vue';
+import SidebarPeek from '~/super_sidebar/components/sidebar_peek_behavior.vue';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import { moveMouse, moveMouseOutOfDocument } from '../mocks';
 
 // These are measured at runtime in the browser, but statically defined here
 // since Jest does not do layout/styling.
@@ -39,19 +39,6 @@ describe('SidebarPeek component', () => {
     wrapper = mount(SidebarPeek, {
       propsData: props,
     });
-  };
-
-  const moveMouse = (clientX) => {
-    const event = new MouseEvent('mousemove', {
-      clientX,
-    });
-
-    document.dispatchEvent(event);
-  };
-
-  const moveMouseOutOfDocument = () => {
-    const event = new MouseEvent('mouseleave');
-    document.documentElement.dispatchEvent(event);
   };
 
   const lastNChangeEvents = (n = 1) => wrapper.emitted('change').slice(-n).flat();

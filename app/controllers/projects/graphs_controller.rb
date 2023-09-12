@@ -34,7 +34,7 @@ class Projects::GraphsController < Projects::ApplicationController
           {
             author_name: commit.author_name,
             author_email: commit.author_email,
-            date: commit.committed_date.strftime("%Y-%m-%d")
+            date: commit.committed_date.to_date.iso8601
           }
         end
 

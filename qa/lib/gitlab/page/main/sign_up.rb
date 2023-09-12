@@ -6,16 +6,15 @@ module Gitlab
       class SignUp < Chemlab::Page
         path '/users/sign_up'
 
-        # TODO: Refactor data-qa-selectors to be more terse
-        text_field :first_name, 'data-qa-selector': 'new_user_first_name_field'
-        text_field :last_name, 'data-qa-selector': 'new_user_last_name_field'
+        text_field :first_name, 'data-testid': 'new-user-first-name-field'
+        text_field :last_name, 'data-testid': 'new-user-last-name-field'
 
-        text_field :username, 'data-testid': 'new_user_username_field'
+        text_field :username, 'data-testid': 'new-user-username-field'
 
-        text_field :email, 'data-qa-selector': 'new_user_email_field'
-        text_field :password, 'data-qa-selector': 'new_user_password_field'
+        text_field :email, 'data-testid': 'new-user-email-field'
+        text_field :password, 'data-testid': 'new-user-password-field'
 
-        button :register, 'data-qa-selector': 'new_user_register_button'
+        button :register, 'data-testid': 'new-user-register-button'
 
         # Register a user
         # @param [Resource::User] user the user to register

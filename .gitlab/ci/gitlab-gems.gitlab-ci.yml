@@ -26,3 +26,6 @@ include:
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
       gem_name: "csv_builder"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "gitlab-http"

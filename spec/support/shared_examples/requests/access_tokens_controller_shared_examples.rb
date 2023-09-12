@@ -72,7 +72,7 @@ RSpec.shared_examples 'GET access tokens are paginated and ordered' do
 
       first_token = assigns(:active_access_tokens).first.as_json
       expect(first_token['name']).to eq("Token1")
-      expect(first_token['expires_at']).to eq(expires_1_day_from_now.strftime("%Y-%m-%d"))
+      expect(first_token['expires_at']).to eq(expires_1_day_from_now.iso8601)
     end
 
     it "orders tokens on id in case token has same expires_at" do
@@ -82,11 +82,11 @@ RSpec.shared_examples 'GET access tokens are paginated and ordered' do
 
       first_token = assigns(:active_access_tokens).first.as_json
       expect(first_token['name']).to eq("Token3")
-      expect(first_token['expires_at']).to eq(expires_1_day_from_now.strftime("%Y-%m-%d"))
+      expect(first_token['expires_at']).to eq(expires_1_day_from_now.iso8601)
 
       second_token = assigns(:active_access_tokens).second.as_json
       expect(second_token['name']).to eq("Token1")
-      expect(second_token['expires_at']).to eq(expires_1_day_from_now.strftime("%Y-%m-%d"))
+      expect(second_token['expires_at']).to eq(expires_1_day_from_now.iso8601)
     end
   end
 

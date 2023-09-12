@@ -19672,6 +19672,9 @@ msgstr ""
 msgid "Failed to delete custom emoji. Please try again."
 msgstr ""
 
+msgid "Failed to delete target branch rule"
+msgstr ""
+
 msgid "Failed to deploy to"
 msgstr ""
 
@@ -27098,6 +27101,9 @@ msgid "Keep artifacts from most recent successful jobs"
 msgstr ""
 
 msgid "Keep divergent refs"
+msgstr ""
+
+msgid "Keep sidebar visible"
 msgstr ""
 
 msgid "Kerberos access denied"
@@ -44071,9 +44077,6 @@ msgstr ""
 msgid "Show project milestones"
 msgstr ""
 
-msgid "Show sidebar"
-msgstr ""
-
 msgid "Show sub-group milestones"
 msgstr ""
 
@@ -46586,6 +46589,9 @@ msgid "Target branch rule"
 msgstr ""
 
 msgid "Target branch rule created."
+msgstr ""
+
+msgid "Target branch rule does not exist"
 msgstr ""
 
 msgid "Target branch rules"
@@ -54374,6 +54380,9 @@ msgid "You have insufficient permissions to create an HTTP integration for this 
 msgstr ""
 
 msgid "You have insufficient permissions to create an on-call schedule for this project"
+msgstr ""
+
+msgid "You have insufficient permissions to delete a target branch rule"
 msgstr ""
 
 msgid "You have insufficient permissions to manage alerts for this project"

@@ -1,0 +1,56 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Naming/ClassAndModuleCamelCase:
+  AllowedNames:
+    - HTTP_V2
+
+Layout/LineLength:
+  Enabled: false
+
+Performance/RegexpMatch:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: false
+
+Style/OpenStructUse:
+  Enabled: false
+
+Lint/AssignmentInCondition:
+  Enabled: false
+
+Naming/InclusiveLanguage:
+  Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Lint/DuplicateBranch:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Exclude:
+    - spec/**/*.rb
+
+RSpec/InstanceVariable:
+  Exclude:
+    - spec/**/*.rb
+
+RSpec/ContextWording:
+  Exclude:
+    - spec/**/*.rb
+
+RSpec/ExpectInHook:
+  Exclude:
+    - spec/**/*.rb
+
+RSpec/FilePath:
+  Exclude:
+    - spec/**/*.rb

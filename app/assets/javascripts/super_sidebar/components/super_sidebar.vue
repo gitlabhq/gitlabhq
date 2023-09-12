@@ -4,14 +4,20 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { sidebarState } from '../constants';
+import {
+  sidebarState,
+  SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
+  SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
+  SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
+} from '../constants';
 import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 import { trackContextAccess } from '../utils';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
-import SidebarPeekBehavior, { STATE_CLOSED, STATE_WILL_OPEN } from './sidebar_peek_behavior.vue';
+import SidebarPeekBehavior from './sidebar_peek_behavior.vue';
+import SidebarHoverPeekBehavior from './sidebar_hover_peek_behavior.vue';
 
 export default {
   components: {
@@ -20,6 +26,7 @@ export default {
     HelpCenter,
     SidebarMenu,
     SidebarPeekBehavior,
+    SidebarHoverPeekBehavior,
     SidebarPortalTarget,
     TrialStatusWidget: () =>
       import('ee_component/contextual_sidebar/components/trial_status_widget.vue'),
@@ -43,16 +50,21 @@ export default {
       sidebarState,
       showPeekHint: false,
       isMouseover: false,
+      breakpoint: null,
     };
   },
   computed: {
+    showOverlay() {
+      return this.sidebarState.isPeek || this.sidebarState.isHoverPeek;
+    },
     menuItems() {
       return this.sidebarData.current_menu_items || [];
     },
     peekClasses() {
       return {
         'super-sidebar-peek-hint': this.showPeekHint,
-        'super-sidebar-peek': this.sidebarState.isPeek,
+        'super-sidebar-peek': this.showOverlay,
+        'super-sidebar-has-peeked': this.sidebarState.hasPeeked,
       };
     },
   },
@@ -90,6 +102,7 @@ export default {
         this.sidebarState.isCollapsed = true;
         this.showPeekHint = false;
       } else if (state === STATE_WILL_OPEN) {
+        this.sidebarState.hasPeeked = true;
         this.sidebarState.isPeek = false;
         this.sidebarState.isCollapsed = true;
         this.showPeekHint = true;
@@ -97,6 +110,16 @@ export default {
         this.sidebarState.isPeek = true;
         this.sidebarState.isCollapsed = false;
         this.showPeekHint = false;
+      }
+    },
+    onHoverPeekChange(state) {
+      if (state === STATE_OPEN) {
+        this.sidebarState.hasPeeked = true;
+        this.sidebarState.isHoverPeek = true;
+        this.sidebarState.isCollapsed = false;
+      } else if (state === STATE_CLOSED) {
+        this.sidebarState.isHoverPeek = false;
+        this.sidebarState.isCollapsed = true;
       }
     },
   },
@@ -124,7 +147,7 @@ export default {
       @mouseenter="isMouseover = true"
       @mouseleave="isMouseover = false"
     >
-      <user-bar :has-collapse-button="!sidebarState.isPeek" :sidebar-data="sidebarData" />
+      <user-bar :has-collapse-button="!showOverlay" :sidebar-data="sidebarData" />
       <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
         <trial-status-widget
           class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! nav-item-link gl-py-3"
@@ -165,13 +188,18 @@ export default {
     </a>
 
     <!--
-      Only mount SidebarPeekBehavior if the sidebar is peekable, to avoid
+      Only mount peek behavior components if the sidebar is peekable, to avoid
       setting up event listeners unnecessarily.
     -->
     <sidebar-peek-behavior
-      v-if="sidebarState.isPeekable"
+      v-if="sidebarState.isPeekable && !sidebarState.isHoverPeek"
       :is-mouse-over-sidebar="isMouseover"
       @change="onPeekChange"
+    />
+    <sidebar-hover-peek-behavior
+      v-if="sidebarState.isPeekable && !sidebarState.isPeek"
+      :is-mouse-over-sidebar="isMouseover"
+      @change="onHoverPeekChange"
     />
   </div>
 </template>

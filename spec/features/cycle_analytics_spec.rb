@@ -60,8 +60,8 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
       # NOTE: in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68595 travel back
       # 5 days in time before we create data for these specs, to mitigate some flakiness
       # So setting the date range to be the last 2 days should skip past the existing data
-      from = 2.days.ago.strftime("%Y-%m-%d")
-      to = 1.day.ago.strftime("%Y-%m-%d")
+      from = 2.days.ago.to_date.iso8601
+      to = 1.day.ago.to_date.iso8601
       max_items_per_page = 20
 
       around do |example|

@@ -185,6 +185,15 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   display: none;
 }
 
+.super-sidebar-has-peeked {
+  margin-top: calc(#{$header-height} - #{$gl-spacing-scale-2});
+  margin-bottom: #{$gl-spacing-scale-2};
+}
+
+.super-sidebar-peek {
+  margin-left: #{$gl-spacing-scale-2};
+}
+
 .super-sidebar-peek,
 .super-sidebar-peek-hint {
   @include gl-shadow;
@@ -194,6 +203,14 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 .super-sidebar-peek-hint {
   @media (prefers-reduced-motion: no-preference) {
     transition: transform $super-sidebar-transition-hint-duration ease-out;
+  }
+}
+
+.super-sidebar-peek {
+  border-radius: $border-radius-default;
+
+  .user-bar {
+    border-radius: $border-radius-default $border-radius-default 0 0;
   }
 }
 

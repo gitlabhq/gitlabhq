@@ -1,21 +1,10 @@
-import { s__, __ } from '~/locale';
+import { __, s__ } from '~/locale';
 
 export const CANCEL_REQUEST = 'CANCEL_REQUEST';
-export const FILTER_PIPELINES_SEARCH_DELAY = 200;
-export const ANY_TRIGGER_AUTHOR = 'Any';
 export const SUPPORTED_FILTER_PARAMETERS = ['username', 'ref', 'status', 'source'];
-export const FILTER_TAG_IDENTIFIER = 'tag';
 export const SCHEDULE_ORIGIN = 'schedule';
 export const NEEDS_PROPERTY = 'needs';
 export const EXPLICIT_NEEDS_PROPERTY = 'previousStageJobsOrNeeds';
-
-export const ICONS = {
-  TAG: 'tag',
-  MR: 'git-merge',
-  BRANCH: 'branch',
-  RETRY: 'retry',
-  SUCCESS: 'success',
-};
 
 export const TestStatus = {
   FAILED: 'failed',
@@ -24,13 +13,6 @@ export const TestStatus = {
   ERROR: 'error',
   UNKNOWN: 'unknown',
 };
-
-export const FETCH_AUTHOR_ERROR_MESSAGE = __('There was a problem fetching project users.');
-export const FETCH_BRANCH_ERROR_MESSAGE = __('There was a problem fetching project branches.');
-export const FETCH_TAG_ERROR_MESSAGE = __('There was a problem fetching project tags.');
-export const RAW_TEXT_WARNING = s__(
-  'Pipeline|Raw text search is not currently supported. Please use the available search tokens.',
-);
 
 /* Error constants shared across graphs */
 export const DEFAULT = 'default';
@@ -64,24 +46,7 @@ export const validPipelineTabNames = [
   codeQualityTabName,
 ];
 
-// Constants for the ID and IID selection dropdown
-export const PipelineKeyOptions = [
-  {
-    text: __('Show Pipeline ID'),
-    label: __('Pipeline ID'),
-    value: 'id',
-  },
-  {
-    text: __('Show Pipeline IID'),
-    label: __('Pipeline IID'),
-    value: 'iid',
-  },
-];
-
 export const TOAST_MESSAGE = s__('Pipeline|Creating pipeline.');
-
-export const BUTTON_TOOLTIP_RETRY = __('Retry all failed or cancelled jobs');
-export const BUTTON_TOOLTIP_CANCEL = __('Cancel the running pipeline');
 
 export const DEFAULT_FIELDS = [
   {
@@ -106,14 +71,6 @@ export const DEFAULT_FIELDS = [
     columnClass: 'gl-w-20p',
   },
 ];
-
-export const TRACKING_CATEGORIES = {
-  table: 'pipelines_table_component',
-  tabs: 'pipelines_filter_tabs',
-  search: 'pipelines_filtered_search',
-  failed: 'pipeline_failed_jobs_tab',
-  tests: 'pipeline_tests_tab',
-};
 
 // Pipeline Mini Graph
 

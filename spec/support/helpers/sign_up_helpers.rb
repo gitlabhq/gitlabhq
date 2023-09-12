@@ -22,6 +22,6 @@ module SignUpHelpers
   private
 
   def expect_username_to_be_validated
-    expect(page).to have_selector('[data-testid="new_user_username_field"].gl-field-success-outline')
+    expect(page).to have_selector('[data-testid="new-user-username-field"].gl-field-success-outline')
   end
 end

@@ -6,8 +6,9 @@ import { createAlert } from '~/alert';
 import Tracking from '~/tracking';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import { TRACKING_CATEGORIES } from '~/ci/constants';
 import RetryFailedJobMutation from '../graphql/mutations/retry_failed_job.mutation.graphql';
-import { DEFAULT_FIELDS, TRACKING_CATEGORIES } from '../../constants';
+import { DEFAULT_FIELDS } from '../../constants';
 
 export default {
   fields: DEFAULT_FIELDS,

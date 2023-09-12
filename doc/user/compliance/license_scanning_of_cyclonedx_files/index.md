@@ -164,3 +164,29 @@ gemnasium-dependency_scanning:
     - apk update && apk add jq
     - jq '.components |= unique' gl-sbom-gem-bundler.cdx.json > tmp.json && mv tmp.json gl-sbom-gem-bundler.cdx.json
 ```
+
+### Remove unused license data
+
+License scanning changes (released in GitLab 15.9) required a significant amount of additional disk space to be available on the instances. This issue was resolved in GitLab 16.3 by the [Reduce package metadata table on-disk footprint](https://gitlab.com/groups/gitlab-org/-/epics/10415) epic. But if your instance was running license scanning between GitLab 15.9 and 16.3, you may want to remove the unneeded data.
+
+To remove the unneeded data:
+
+1. Check if the [package_metadata_synchronization](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#new-license-compliance-scanner) feature flag is currently, or was previously enabled, and if so, disable it. Use [Rails console](../../../administration/operations/rails_console.md) to execute the following commands.
+
+   ```ruby
+   Feature.enabled?(:package_metadata_synchronization) && Feature.disable(:package_metadata_synchronization)
+   ```
+
+1. Check if there is deprecated data in the database:
+
+   ```ruby
+   PackageMetadata::PackageVersionLicense.count
+   PackageMetadata::PackageVersion.count
+   ```
+
+1. If there is deprecated data in the database, remove it by running the following commands in order:
+
+   ```ruby
+   PackageMetadata::PackageVersionLicense.delete_all
+   PackageMetadata::PackageVersion.delete_all
+   ```

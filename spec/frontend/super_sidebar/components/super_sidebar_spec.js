@@ -4,15 +4,17 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
-import SidebarPeekBehavior, {
-  STATE_CLOSED,
-  STATE_WILL_OPEN,
-  STATE_OPEN,
-  STATE_WILL_CLOSE,
-} from '~/super_sidebar/components/sidebar_peek_behavior.vue';
+import SidebarPeekBehavior from '~/super_sidebar/components/sidebar_peek_behavior.vue';
+import SidebarHoverPeekBehavior from '~/super_sidebar/components/sidebar_hover_peek_behavior.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
-import { sidebarState } from '~/super_sidebar/constants';
+import {
+  sidebarState,
+  SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
+  SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
+  SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
+  SUPER_SIDEBAR_PEEK_STATE_WILL_CLOSE as STATE_WILL_CLOSE,
+} from '~/super_sidebar/constants';
 import {
   toggleSuperSidebarCollapsed,
   isCollapsed,
@@ -37,6 +39,7 @@ const TrialStatusPopoverStub = {
 };
 
 const peekClass = 'super-sidebar-peek';
+const hasPeekedClass = 'super-sidebar-has-peeked';
 const peekHintClass = 'super-sidebar-peek-hint';
 
 describe('SuperSidebar component', () => {
@@ -48,6 +51,7 @@ describe('SuperSidebar component', () => {
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
   const findPeekBehavior = () => wrapper.findComponent(SidebarPeekBehavior);
+  const findHoverPeekBehavior = () => wrapper.findComponent(SidebarHoverPeekBehavior);
   const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
   const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
@@ -171,10 +175,11 @@ describe('SuperSidebar component', () => {
       expect(findTrialStatusPopover().exists()).toBe(false);
     });
 
-    it('does not have peek behavior', () => {
+    it('does not have peek behaviors', () => {
       createWrapper();
 
       expect(findPeekBehavior().exists()).toBe(false);
+      expect(findHoverPeekBehavior().exists()).toBe(false);
     });
 
     it('renders the context header', () => {
@@ -216,6 +221,7 @@ describe('SuperSidebar component', () => {
 
       expect(findSidebar().attributes('inert')).toBe('inert');
       expect(findSidebar().classes()).not.toContain(peekHintClass);
+      expect(findSidebar().classes()).not.toContain(hasPeekedClass);
       expect(findSidebar().classes()).not.toContain(peekClass);
     });
 
@@ -227,6 +233,7 @@ describe('SuperSidebar component', () => {
 
       expect(findSidebar().attributes('inert')).toBe('inert');
       expect(findSidebar().classes()).toContain(peekHintClass);
+      expect(findSidebar().classes()).toContain(hasPeekedClass);
       expect(findSidebar().classes()).not.toContain(peekClass);
     });
 
@@ -241,8 +248,22 @@ describe('SuperSidebar component', () => {
         expect(findSidebar().attributes('inert')).toBe(undefined);
         expect(findSidebar().classes()).toContain(peekClass);
         expect(findSidebar().classes()).not.toContain(peekHintClass);
+        expect(findHoverPeekBehavior().exists()).toBe(false);
       },
     );
+
+    it(`makes sidebar interactive and visible when hover peek state is ${STATE_OPEN}`, async () => {
+      createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
+
+      findHoverPeekBehavior().vm.$emit('change', STATE_OPEN);
+      await nextTick();
+
+      expect(findSidebar().attributes('inert')).toBe(undefined);
+      expect(findSidebar().classes()).toContain(peekClass);
+      expect(findSidebar().classes()).toContain(hasPeekedClass);
+      expect(findSidebar().classes()).not.toContain(peekHintClass);
+      expect(findPeekBehavior().exists()).toBe(false);
+    });
 
     it('keeps track of if sidebar has mouseover or not', async () => {
       createWrapper({ sidebarState: { isCollapsed: false, isPeekable: true } });

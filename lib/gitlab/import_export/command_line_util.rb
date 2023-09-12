@@ -68,6 +68,8 @@ module Gitlab
         File.open(upload_path, 'wb') do |file|
           current_size = 0
 
+          # When migrating from Gitlab::HTTP to Gitlab:HTTP_V2, we need to pass `extra_allowed_uris` as an option
+          # instead of `allow_object_storage`.
           Gitlab::HTTP.get(url, stream_body: true, allow_object_storage: true) do |fragment|
             if [301, 302, 303, 307].include?(fragment.code)
               Gitlab::Import::Logger.warn(message: "received redirect fragment", fragment_code: fragment.code)

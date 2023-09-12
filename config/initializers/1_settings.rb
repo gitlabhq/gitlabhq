@@ -160,6 +160,10 @@ if github_settings
     end
 end
 
+# Fill out default Settings for omniauth-saml
+
+OmniAuth::Strategies::SAML.default_options['message_max_bytesize'] = Settings.omniauth['saml_message_max_byte_size']
+
 # SAML should be enabled for the tests automatically, but only for EE.
 saml_provider_enabled = Settings.omniauth.providers.any? do |provider|
   provider['name'] == 'group_saml'
