@@ -87,17 +87,7 @@ RSpec.shared_examples 'a harbor repositories controller' do |args|
       get harbor_repository_url(container)
     end
 
-    context 'with harbor registry feature flag enabled' do
-      it_behaves_like 'responds with 200 status with html'
-    end
-
-    context 'with harbor registry feature flag disabled' do
-      before do
-        stub_feature_flags(harbor_registry_integration: false)
-      end
-
-      it_behaves_like 'responds with 404 status'
-    end
+    it_behaves_like 'responds with 200 status with html'
 
     context 'with anonymous user' do
       before do
@@ -121,17 +111,7 @@ RSpec.shared_examples 'a harbor repositories controller' do |args|
       get harbor_repository_url(container), headers: json_header
     end
 
-    context 'with harbor registry feature flag enabled' do
-      it_behaves_like 'responds with 200 status with json'
-    end
-
-    context 'with harbor registry feature flag disabled' do
-      before do
-        stub_feature_flags(harbor_registry_integration: false)
-      end
-
-      it_behaves_like 'responds with 404 status'
-    end
+    it_behaves_like 'responds with 200 status with json'
 
     context 'with valid params' do
       context 'with valid page params' do

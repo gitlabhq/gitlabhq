@@ -1,5 +1,3 @@
-@import 'mixins_and_variables_and_functions';
-
 .suggest-colors {
   padding-top: 3px;
 
@@ -31,19 +29,19 @@
       margin-bottom: -5px;
 
       &:first-of-type {
-        border-top-left-radius: $gl-border-radius-base;
+        border-top-left-radius: $border-radius-base;
       }
 
       &:nth-of-type(7) {
-        border-top-right-radius: $gl-border-radius-base;
+        border-top-right-radius: $border-radius-base;
       }
 
       &:nth-last-child(7) {
-        border-bottom-left-radius: $gl-border-radius-base;
+        border-bottom-left-radius: $border-radius-base;
       }
 
       &:last-of-type {
-        border-bottom-right-radius: $gl-border-radius-base;
+        border-bottom-right-radius: $border-radius-base;
       }
     }
   }

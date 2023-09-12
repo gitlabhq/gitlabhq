@@ -20,3 +20,10 @@ export const compactJobLog = (jobLog) => {
 
   return compactedLog;
 };
+
+export const filterAnnotations = (annotations, type) => {
+  return [...annotations]
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .flatMap((annotationList) => annotationList.data)
+    .flatMap((annotation) => annotation[type] ?? []);
+};

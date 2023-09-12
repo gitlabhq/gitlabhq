@@ -8,7 +8,7 @@
 - elsif @search_objects.blank?
   = render partial: "search/results/empty"
 - else
-  - statusBarClass = !show_super_sidebar? ? 'gl-md-pl-5' : ''
+  - statusBarClass = !show_super_sidebar? ? 'gl-lg-pl-5' : ''
 
   .section{ class: statusBarClass }
     - if @scope == 'commits'

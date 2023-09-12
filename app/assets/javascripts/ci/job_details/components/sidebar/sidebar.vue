@@ -3,8 +3,10 @@ import { isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { forwardDeploymentFailureModalId } from '~/ci/constants';
+import { filterAnnotations } from '~/ci/job_details/utils';
 import ArtifactsBlock from './artifacts_block.vue';
 import CommitBlock from './commit_block.vue';
+import ExternalLinksBlock from './external_links_block.vue';
 import JobsContainer from './jobs_container.vue';
 import JobRetryForwardDeploymentModal from './job_retry_forward_deployment_modal.vue';
 import JobSidebarDetailsContainer from './sidebar_job_details_container.vue';
@@ -25,6 +27,7 @@ export default {
     SidebarHeader,
     StagesDropdown,
     TriggerBlock,
+    ExternalLinksBlock,
   },
   props: {
     artifactHelpUrl: {
@@ -40,6 +43,9 @@ export default {
       // the artifact object will always have a locked property
       return Object.keys(this.job.artifact).length > 1;
     },
+    hasExternalLinks() {
+      return this.externalLinks.length > 0;
+    },
     hasTriggers() {
       return !isEmpty(this.job.trigger);
     },
@@ -51,6 +57,9 @@ export default {
     },
     shouldShowJobRetryForwardDeploymentModal() {
       return this.job.retry_path && this.hasForwardDeploymentFailure;
+    },
+    externalLinks() {
+      return filterAnnotations(this.job.annotations, 'external_link');
     },
   },
   watch: {
@@ -86,6 +95,13 @@ export default {
           :class="$options.borderTopClass"
           :artifact="job.artifact"
           :help-url="artifactHelpUrl"
+        />
+
+        <external-links-block
+          v-if="hasExternalLinks"
+          class="gl-py-4"
+          :class="$options.borderTopClass"
+          :external-links="externalLinks"
         />
 
         <trigger-block

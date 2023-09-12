@@ -5,6 +5,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ArtifactsBlock from '~/ci/job_details/components/sidebar/artifacts_block.vue';
+import ExternalLinksBlock from '~/ci/job_details/components/sidebar/external_links_block.vue';
 import JobRetryForwardDeploymentModal from '~/ci/job_details/components/sidebar/job_retry_forward_deployment_modal.vue';
 import JobsContainer from '~/ci/job_details/components/sidebar/jobs_container.vue';
 import Sidebar from '~/ci/job_details/components/sidebar/sidebar.vue';
@@ -20,6 +21,7 @@ describe('Sidebar details block', () => {
   const forwardDeploymentFailure = 'forward_deployment_failure';
   const findModal = () => wrapper.findComponent(JobRetryForwardDeploymentModal);
   const findArtifactsBlock = () => wrapper.findComponent(ArtifactsBlock);
+  const findExternalLinksBlock = () => wrapper.findComponent(ExternalLinksBlock);
   const findJobStagesDropdown = () => wrapper.findComponent(StagesDropdown);
   const findJobsContainer = () => wrapper.findComponent(JobsContainer);
 
@@ -179,6 +181,42 @@ describe('Sidebar details block', () => {
       await nextTick();
 
       expect(findArtifactsBlock().exists()).toBe(true);
+    });
+  });
+
+  describe('external links', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('external links block is not shown if there are no external links', () => {
+      expect(findExternalLinksBlock().exists()).toBe(false);
+    });
+
+    it('external links block is shown if there are external links', async () => {
+      store.state.job.annotations = [
+        {
+          name: 'external_links',
+          data: [
+            {
+              external_link: {
+                label: 'URL 1',
+                url: 'https://url1.example.com/',
+              },
+            },
+            {
+              external_link: {
+                label: 'URL 2',
+                url: 'https://url2.example.com/',
+              },
+            },
+          ],
+        },
+      ];
+
+      await nextTick();
+
+      expect(findExternalLinksBlock().exists()).toBe(true);
     });
   });
 });

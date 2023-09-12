@@ -51,7 +51,7 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
 
       context 'when failed_attempts is LT overridden amount' do
         before do
-          instance.failed_attempts = 5
+          instance.failed_attempts = 2
         end
 
         it { is_expected.to eq(false) }

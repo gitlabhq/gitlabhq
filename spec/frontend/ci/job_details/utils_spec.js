@@ -1,4 +1,4 @@
-import { compactJobLog } from '~/ci/job_details/utils';
+import { compactJobLog, filterAnnotations } from '~/ci/job_details/utils';
 import { mockJobLog } from 'jest/ci/jobs_mock_data';
 
 describe('Job utils', () => {
@@ -217,6 +217,49 @@ describe('Job utils', () => {
       ];
 
       expect(compactJobLog(mockJobLog)).toStrictEqual(expectedResults);
+    });
+  });
+
+  describe('filterAnnotations', () => {
+    it('filters annotations by type', () => {
+      const data = [
+        {
+          name: 'b',
+          data: [
+            {
+              dummy: {},
+            },
+            {
+              external_link: {
+                label: 'URL 2',
+                url: 'https://url2.example.com/',
+              },
+            },
+          ],
+        },
+        {
+          name: 'a',
+          data: [
+            {
+              external_link: {
+                label: 'URL 1',
+                url: 'https://url1.example.com/',
+              },
+            },
+          ],
+        },
+      ];
+
+      expect(filterAnnotations(data, 'external_link')).toEqual([
+        {
+          label: 'URL 1',
+          url: 'https://url1.example.com/',
+        },
+        {
+          label: 'URL 2',
+          url: 'https://url2.example.com/',
+        },
+      ]);
     });
   });
 });

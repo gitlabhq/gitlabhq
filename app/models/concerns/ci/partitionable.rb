@@ -107,7 +107,10 @@ module Ci
         partitioned_by :partition_id,
           strategy: :ci_sliding_list,
           next_partition_if: proc { false },
-          detach_partition_if: proc { false }
+          detach_partition_if: proc { false },
+          # Most of the db tasks are run in a weekly basis, e.g. execute_batched_migrations.
+          # Therefore, let's start with 1.week and see how it'd go.
+          analyze_interval: 1.week
       end
     end
   end

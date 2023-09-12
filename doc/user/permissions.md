@@ -477,6 +477,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 > - The ability for a custom role to view a vulnerability report [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10160) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `custom_roles_vulnerability`.
 > - Ability to view a vulnerability report [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123835) in GitLab 16.1.
 > - [Feature flag `custom_roles_vulnerability` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124049) in GitLab 16.2.
+> - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
 
 Custom roles allow group members who are assigned the Owner role to create roles
 specific to the needs of their organization.
@@ -502,12 +503,48 @@ This does not apply to the Guest+1 custom role because the `view_code` ability i
 
 ### Create a custom role
 
-To enable custom roles for your group, a group member with the Owner role:
+Prerequisites:
 
-1. Makes sure that there is at least one private project in this group or one of
-   its subgroups, so that you can see the effect of giving a Guest a custom role.
-1. Creates a personal access token with the API scope.
-1. Uses [the API](../api/member_roles.md#add-a-member-role-to-a-group) to create a custom role for the root group.
+- You must be an administrator for the self-managed instance, or have the Owner
+  role in the group you are creating the custom role in.
+- The group must be in the Ultimate tier.
+- You must have:
+  - At least one private project so that you can see the effect of giving a
+    user with the Guest role a custom role. The project can be in the group itself
+    or one of that group's subgroups.
+  - A [personal access token with the API scope](profile/personal_access_tokens.md#create-a-personal-access-token).
+
+#### GitLab SaaS
+
+Prerequisite:
+
+- You must have the Owner role in the group you are creating the custom role in.
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Roles and Permissions**.
+1. Select **Add new role**.
+1. In **Base role to use as template**, select **Guest**.
+1. In **Role name**, enter the custom role's title.
+1. Select the **Permissions** for the new custom role.
+1. Select **Create new role**.
+
+#### GitLab.com
+
+Prerequisite:
+
+- You must be an administrator for the self-managed instance you are creating the custom role in.
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Settings > Roles and Permissions**.
+1. From the top dropdown list, select the group you want to create a custom role in.
+1. Select **Add new role**.
+1. In **Base role to use as template**, select **Guest**.
+1. In **Role name**, enter the custom role's title.
+1. Select the **Permissions** for the new custom role.
+1. Select **Create new role**.
+
+To create a custom role, you can also [use the API](../api/member_roles.md#add-a-member-role-to-a-group).
 
 #### Custom role requirements
 
@@ -567,16 +604,45 @@ Now the user is a regular Guest.
 
 ### Remove a custom role
 
-Removing a custom role also removes all members with that custom role from
-the group. If you decide to delete a custom role, you must re-add any users with that custom
-role to the group.
+Prerequisite:
 
-To remove a custom role from a group, a group member with
-the Owner role:
+- You must have the Owner role in the group you are removing the custom role from.
+- No group members have that custom role.
 
-1. Optional. If the Owner does not know the `ID` of a custom
-   role, finds that `ID` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
-1. Uses [the API](../api/member_roles.md#remove-member-role-of-a-group) to delete the custom role.
+You cannot remove a custom role from a group until there are no group members with
+that custom role.
+
+To do this, you can either remove the custom role from all group members with that
+custom role, or remove those members from the group. You complete both of these actions
+from the group members page:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Manage > Members**.
+
+To remove a custom role from a group member with that custom role:
+
+1. On the member row you want to remove, in the **Max role** column, select the
+   dropdown list to change the role for the group member.
+
+To remove a member with a custom role from the group:
+
+1. On the member row you want to remove, select the vertical ellipsis
+   (**{ellipsis_v}**) and select **Remove member**.
+1. In the **Remove member** confirmation dialog, do not select any checkboxes.
+1. Select **Remove member**.
+
+After you have made sure no group members have that custom role, delete the
+custom role.
+
+1. On the left sidebar, select **Search or go to**.
+1. GitLab.com only. Select **Admin Area**.
+1. Select **Settings > Roles and Permissions**.
+1. Select **Custom Roles**.
+1. In the **Actions** column, select **Delete role** (**{remove}**) and confirm.
+
+To delete a custom role, you can also [use the API](../api/member_roles.md#remove-member-role-of-a-group).
+To use the API, you must know the `ID` of the custom role. If you do not know this
+`ID`, find it by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
 
 ### Known issues
 

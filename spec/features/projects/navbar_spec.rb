@@ -15,7 +15,6 @@ RSpec.describe 'Project navbar', :with_license, feature_category: :groups_and_pr
     sign_in(user)
 
     stub_config(registry: { enabled: false })
-    stub_feature_flags(harbor_registry_integration: false)
     stub_feature_flags(ml_experiment_tracking: false)
     insert_package_nav(_('Deployments'))
     insert_infrastructure_registry_nav
@@ -87,8 +86,6 @@ RSpec.describe 'Project navbar', :with_license, feature_category: :groups_and_pr
     let_it_be(:harbor_integration) { create(:harbor_integration, project: project) }
 
     before do
-      stub_feature_flags(harbor_registry_integration: true)
-
       insert_harbor_registry_nav(_('Terraform modules'))
 
       visit project_path(project)

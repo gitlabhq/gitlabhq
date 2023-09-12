@@ -57,6 +57,10 @@ class BuildDetailsEntity < Ci::JobEntity
     using: JobArtifactReportEntity,
     if: -> (*) { can?(current_user, :read_build, build) }
 
+  expose :job_annotations,
+    as: :annotations,
+    using: Ci::JobAnnotationEntity
+
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
   expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|
     erase_project_job_path(project, build)

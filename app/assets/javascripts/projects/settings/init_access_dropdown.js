@@ -18,6 +18,15 @@ export const initAccessDropdown = (el, options) => {
 
   return new Vue({
     el,
+    name: 'AccessDropdownRoot',
+    data() {
+      return { preselected };
+    },
+    methods: {
+      setPreselectedItems(items) {
+        this.preselected = items;
+      },
+    },
     render(createElement) {
       const vm = this;
       return createElement(AccessDropdown, {
@@ -25,7 +34,7 @@ export const initAccessDropdown = (el, options) => {
           label,
           disabled,
           accessLevelsData: accessLevelsData.roles,
-          preselectedItems: preselected,
+          preselectedItems: this.preselected,
           ...props,
         },
         on: {
@@ -34,6 +43,9 @@ export const initAccessDropdown = (el, options) => {
           },
           shown() {
             vm.$emit('shown');
+          },
+          hidden() {
+            vm.$emit('hidden');
           },
         },
       });

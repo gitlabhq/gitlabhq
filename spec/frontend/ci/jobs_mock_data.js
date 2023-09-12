@@ -989,6 +989,7 @@ export default {
   },
   erase_path: '/root/ci-mock/-/jobs/4757/erase',
   artifacts: [null],
+  annotations: [],
   runner: {
     id: 1,
     short_sha: 'ABCDEFGH',

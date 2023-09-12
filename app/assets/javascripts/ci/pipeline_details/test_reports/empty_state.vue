@@ -54,6 +54,7 @@ export default {
     :title="emptyStateText.title"
     :description="emptyStateText.description"
     :svg-path="emptyStateImagePath"
+    :svg-height="150"
     :primary-button-link="testReportDocPath"
     :primary-button-text="emptyStateText.button"
   />

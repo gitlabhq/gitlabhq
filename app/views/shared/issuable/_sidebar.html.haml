@@ -11,7 +11,6 @@
 - is_merge_request = issuable_type === 'merge_request'
 - moved_sidebar_enabled = moved_mr_sidebar_enabled?
 - is_merge_request_with_flag = is_merge_request && moved_sidebar_enabled
-- add_page_specific_style 'page_bundles/labels'
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { always_show_toggle: true, signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class(is_merge_request_with_flag)} #{'right-sidebar-merge-requests' if is_merge_request_with_flag}", 'aria-live' => 'polite', 'aria-label': issuable_type }
   .issuable-sidebar{ class: "#{'is-merge-request' if is_merge_request_with_flag}" }

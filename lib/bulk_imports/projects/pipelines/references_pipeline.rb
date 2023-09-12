@@ -40,11 +40,14 @@ module BulkImports
         private
 
         def mapped_usernames
-          @mapped_usernames ||= ::BulkImports::UsersMapper.new(context: context).map_usernames
+          @mapped_usernames ||= ::BulkImports::UsersMapper.new(context: context)
+                                  .map_usernames.transform_keys { |key| "@#{key}" }
+                                  .transform_values { |value| "@#{value}" }
         end
 
         def username_regex(mapped_usernames)
-          @username_regex ||= Regexp.new(mapped_usernames.keys.map { |x| Regexp.escape(x) }.join('|'))
+          @username_regex ||= Regexp.new(mapped_usernames.keys.sort_by(&:length)
+                                .reverse.map { |x| Regexp.escape(x) }.join('|'))
         end
 
         def add_matching_objects(collection, enum)

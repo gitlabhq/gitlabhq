@@ -18,7 +18,7 @@ module Projects
         suite_endpoint: project_pipeline_test_path(project, pipeline, suite_name: 'suite', format: :json),
         blob_path: project_blob_path(project, pipeline.sha),
         has_test_report: pipeline.has_test_reports?,
-        empty_state_image_path: image_path('illustrations/empty-state/empty-test-cases-lg.svg'),
+        empty_state_image_path: image_path('illustrations/empty-todos-md.svg'),
         empty_dag_svg_path: image_path('illustrations/empty-state/empty-dag-md.svg'),
         artifacts_expired_image_path: image_path('illustrations/pipeline.svg'),
         tests_count: pipeline.test_report_summary.total[:count]

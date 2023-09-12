@@ -234,8 +234,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
 
   describe 'when failing to login the maximum allowed number of times' do
     before do
-      # See comment in RequireEmailVerification::MAXIMUM_ATTEMPTS on why this is divided by 2
-      (RequireEmailVerification::MAXIMUM_ATTEMPTS / 2).times do
+      RequireEmailVerification::MAXIMUM_ATTEMPTS.times do
         gitlab_sign_in(user, password: 'wrong_password')
       end
     end
@@ -345,7 +344,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
 
       before do
         perform_enqueued_jobs do
-          (User.maximum_attempts / 2).times do
+          User.maximum_attempts.times do
             gitlab_sign_in(user, password: 'wrong_password')
           end
         end

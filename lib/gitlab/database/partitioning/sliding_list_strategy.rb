@@ -4,15 +4,16 @@ module Gitlab
   module Database
     module Partitioning
       class SlidingListStrategy
-        attr_reader :model, :partitioning_key, :next_partition_if, :detach_partition_if
+        attr_reader :model, :partitioning_key, :next_partition_if, :detach_partition_if, :analyze_interval
 
         delegate :table_name, to: :model
 
-        def initialize(model, partitioning_key, next_partition_if:, detach_partition_if:)
+        def initialize(model, partitioning_key, next_partition_if:, detach_partition_if:, analyze_interval: nil)
           @model = model
           @partitioning_key = partitioning_key
           @next_partition_if = next_partition_if
           @detach_partition_if = detach_partition_if
+          @analyze_interval = analyze_interval
 
           ensure_partitioning_column_ignored_or_readonly!
         end

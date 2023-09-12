@@ -3,7 +3,6 @@
 - search = params[:search]
 - subscribed = params[:subscribed]
 - labels_or_filters = @labels.exists? || search.present? || subscribed.present?
-- add_page_specific_style 'page_bundles/labels'
 
 - if labels_or_filters
   #js-promote-label-modal

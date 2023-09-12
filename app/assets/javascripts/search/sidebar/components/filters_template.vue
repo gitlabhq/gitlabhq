@@ -21,9 +21,6 @@ export default {
   computed: {
     ...mapState(['sidebarDirty', 'useSidebarNavigation']),
     ...mapGetters(['currentScope']),
-    hrClasses() {
-      return [...HR_DEFAULT_CLASSES, 'gl-display-none', 'gl-md-display-block'];
-    },
   },
   methods: {
     ...mapActions(['applyQuery', 'resetQuery']),
@@ -40,14 +37,15 @@ export default {
       this.resetQuery();
     },
   },
+  HR_DEFAULT_CLASSES,
 };
 </script>
 
 <template>
   <gl-form class="issue-filters gl-px-5 gl-pt-0" @submit.prevent="applyQueryWithTracking">
-    <hr v-if="!useSidebarNavigation" :class="hrClasses" />
+    <hr v-if="!useSidebarNavigation" :class="$options.HR_DEFAULT_CLASSES" />
     <slot></slot>
-    <hr v-if="!useSidebarNavigation" :class="hrClasses" />
+    <hr v-if="!useSidebarNavigation" :class="$options.HR_DEFAULT_CLASSES" />
     <div class="gl-display-flex gl-align-items-center gl-mt-4">
       <gl-button category="primary" variant="confirm" type="submit" :disabled="!sidebarDirty">
         {{ __('Apply') }}

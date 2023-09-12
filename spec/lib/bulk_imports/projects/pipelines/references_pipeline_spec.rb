@@ -51,7 +51,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       :note,
       project: project,
       noteable: mr,
-      note: '@manuelgrabowski-admin'
+      note: '@manuelgrabowski-admin, @boaty-mc-boatface'
     )
   end
 
@@ -91,8 +91,10 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
         'source_username' => 'destination_username',
         'bob' => 'alice-gdk',
         'alice' => 'bob-gdk',
+        'manuelgrabowski' => 'manuelgrabowski-admin',
         'manuelgrabowski-admin' => 'manuelgrabowski',
-        'manuelgrabowski' => 'manuelgrabowski-admin'
+        'boaty-mc-boatface' => 'boatymcboatface',
+        'boatymcboatface' => 'boaty-mc-boatface'
       })
   end
 
@@ -179,7 +181,9 @@ RSpec.describe BulkImports::Projects::Pipelines::ReferencesPipeline, feature_cat
       transformed_interchanged_usernames = subject.transform(context, interchanged_usernames)
 
       expect(transformed_interchanged_usernames.note).to include("@manuelgrabowski")
+      expect(transformed_interchanged_usernames.note).to include("@boatymcboatface")
       expect(transformed_interchanged_usernames.note).not_to include("@manuelgrabowski-admin")
+      expect(transformed_interchanged_usernames.note).not_to include("@boaty-mc-boatface")
     end
 
     context 'when object does not have reference or username' do

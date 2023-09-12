@@ -33,7 +33,7 @@ module Gitlab
         end
 
         def self.providers
-          Devise.omniauth_providers
+          ::Devise.omniauth_providers
         end
 
         def self.enabled?(name)

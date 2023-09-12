@@ -4,9 +4,12 @@ module Gitlab
   module Database
     module Partitioning
       class PartitionManager
+        include ::Gitlab::Utils::StrongMemoize
+
         UnsafeToDetachPartitionError = Class.new(StandardError)
 
-        LEASE_TIMEOUT = 1.minute
+        LEASE_TIMEOUT = 1.hour
+        STATEMENT_TIMEOUT = 1.hour
         MANAGEMENT_LEASE_KEY = 'database_partition_management_%s'
         RETAIN_DETACHED_PARTITIONS_FOR = 1.week
 
@@ -33,6 +36,8 @@ module Gitlab
 
             create(partitions_to_create) unless partitions_to_create.empty?
             detach(partitions_to_detach) unless partitions_to_detach.empty?
+
+            run_analyze_on_partitioned_table
           end
         rescue ArgumentError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
@@ -145,6 +150,50 @@ module Gitlab
             table_name: model.table_name,
             connection_name: @connection_name
           )
+        end
+
+        def run_analyze_on_partitioned_table
+          return if Feature.disabled?(:database_analyze_on_partitioned_tables)
+          return if ineligible_for_analyzing?
+
+          set_analyze_statement_timeout do
+            # Running ANALYZE on partitioned table will go through itself and its partitions
+            connection.execute("ANALYZE VERBOSE #{model.quoted_table_name}")
+          end
+        end
+
+        def ineligible_for_analyzing?
+          first_model_partition.blank? || analyze_interval.blank? || last_analyzed_at_within_interval?
+        end
+
+        def last_analyzed_at_within_interval?
+          table_to_query = first_model_partition.identifier
+
+          # We don't need to get the last_analyze_time from partitioned table,
+          # because it's not supported and always returns NULL for PG version below 14
+          # Therefore, we can always get the last_analyze_time from the first partition
+          last_analyzed_at = connection.select_value(
+            "SELECT pg_stat_get_last_analyze_time('#{table_to_query}'::regclass)"
+          )
+          last_analyzed_at.present? && last_analyzed_at >= Time.current - analyze_interval
+        end
+
+        def first_model_partition
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            Gitlab::Database::PostgresPartition.for_parent_table(model.table_name).first
+          end
+        end
+        strong_memoize_attr :first_model_partition
+
+        def analyze_interval
+          model.partitioning_strategy.analyze_interval
+        end
+
+        def set_analyze_statement_timeout
+          connection.execute(format("SET statement_timeout TO '%ds'", STATEMENT_TIMEOUT))
+          yield
+        ensure
+          connection.execute('RESET statement_timeout')
         end
       end
     end

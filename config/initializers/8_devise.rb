@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
+require_dependency 'gitlab/auth/devise/strategies/combined_two_factor_authenticatable'
+
 # Use this hook to configure devise mailer, warden hooks and so forth. The first
 # four configuration values can also be set straight in your models.
 Devise.setup do |config|
   config.warden do |manager|
-    manager.default_strategies(scope: :user).unshift :two_factor_authenticatable
-    manager.default_strategies(scope: :user).unshift :two_factor_backupable
+    user_scoped_strategies = manager.default_strategies(scope: :user)
+    user_scoped_strategies.delete :two_factor_backupable
+    user_scoped_strategies.delete :two_factor_authenticatable
+    user_scoped_strategies.unshift :combined_two_factor_authenticatable
   end
 
   # This is the default. This makes it explicit that Devise loads routes

@@ -7,10 +7,7 @@ module RequireEmailVerification
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
 
-  # This value is twice the amount we want it to be, because due to a bug in the devise-two-factor
-  # gem every failed login attempt increments the value of failed_attempts by 2 instead of 1.
-  # See: https://github.com/tinfoil/devise-two-factor/issues/127
-  MAXIMUM_ATTEMPTS = 3 * 2
+  MAXIMUM_ATTEMPTS = 3
   UNLOCK_IN = 24.hours
 
   included do

@@ -3,8 +3,11 @@
 import { mapState, mapGetters } from 'vuex';
 import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
+import SmallScreenDrawerNavigation from '~/search/sidebar/components/small_screen_drawer_navigation.vue';
 import SidebarPortal from '~/super_sidebar/components/sidebar_portal.vue';
+import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import DomElementListener from '~/vue_shared/components/dom_element_listener.vue';
 import {
   SCOPE_ISSUES,
   SCOPE_MERGE_REQUESTS,
@@ -21,12 +24,14 @@ export default {
   name: 'GlobalSearchSidebar',
   components: {
     IssuesFilters,
-    ScopeLegacyNavigation,
-    ScopeSidebarNavigation,
-    SidebarPortal,
     MergeRequestsFilters,
     BlobsFilters,
     ProjectsFilters,
+    ScopeLegacyNavigation,
+    ScopeSidebarNavigation,
+    SidebarPortal,
+    DomElementListener,
+    SmallScreenDrawerNavigation,
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
@@ -53,11 +58,17 @@ export default {
       return Boolean(this.currentScope);
     },
   },
+  methods: {
+    toggleFiltersFromSidebar() {
+      toggleSuperSidebarCollapsed();
+    },
+  },
 };
 </script>
 
 <template>
   <section v-if="useSidebarNavigation">
+    <dom-element-listener selector="#js-open-mobile-filters" @click="toggleFiltersFromSidebar" />
     <sidebar-portal>
       <scope-sidebar-navigation />
       <issues-filters v-if="showIssuesFilters" />
@@ -66,14 +77,24 @@ export default {
       <projects-filters v-if="showProjectsFilters" />
     </sidebar-portal>
   </section>
+
   <section
     v-else-if="showScopeNavigation"
-    class="search-sidebar gl-display-flex gl-flex-direction-column gl-md-mr-5 gl-mb-6 gl-mt-5"
+    class="gl-display-flex gl-flex-direction-column gl-lg-mr-0 gl-md-mr-5 gl-lg-mb-6 gl-lg-mt-5"
   >
-    <scope-legacy-navigation />
-    <issues-filters v-if="showIssuesFilters" />
-    <merge-requests-filters v-if="showMergeRequestFilters" />
-    <blobs-filters v-if="showBlobFilters" />
-    <projects-filters v-if="showProjectsFilters" />
+    <div class="search-sidebar gl-display-none gl-lg-display-block">
+      <scope-legacy-navigation />
+      <issues-filters v-if="showIssuesFilters" />
+      <merge-requests-filters v-if="showMergeRequestFilters" />
+      <blobs-filters v-if="showBlobFilters" />
+      <projects-filters v-if="showProjectsFilters" />
+    </div>
+    <small-screen-drawer-navigation class="gl-lg-display-none">
+      <scope-legacy-navigation />
+      <issues-filters v-if="showIssuesFilters" />
+      <merge-requests-filters v-if="showMergeRequestFilters" />
+      <blobs-filters v-if="showBlobFilters" />
+      <projects-filters v-if="showProjectsFilters" />
+    </small-screen-drawer-navigation>
   </section>
 </template>

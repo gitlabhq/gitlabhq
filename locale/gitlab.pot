@@ -1969,10 +1969,22 @@ msgstr ""
 msgid "AI|GitLab Duo"
 msgstr ""
 
+msgid "AI|Give feedback on AI content"
+msgstr ""
+
+msgid "AI|Give feedback to improve this answer."
+msgstr ""
+
 msgid "AI|Has no support and might not be documented"
 msgstr ""
 
 msgid "AI|Helpful"
+msgstr ""
+
+msgid "AI|How could the content be improved?"
+msgstr ""
+
+msgid "AI|How was the AI content?"
 msgstr ""
 
 msgid "AI|I don't see how I can help. Please give better instructions!"
@@ -2002,6 +2014,9 @@ msgstr ""
 msgid "AI|Something went wrong. Please try again later"
 msgstr ""
 
+msgid "AI|Thank you for your feedback."
+msgstr ""
+
 msgid "AI|The container element wasn't found, stopping AI Genie."
 msgstr ""
 
@@ -2015,6 +2030,9 @@ msgid "AI|These features can cause performance and stability issues and may chan
 msgstr ""
 
 msgid "AI|Third-party AI services"
+msgstr ""
+
+msgid "AI|To help improve the quality of the content, send your feedback to GitLab team members."
 msgstr ""
 
 msgid "AI|Unhelpful"
@@ -2420,6 +2438,9 @@ msgid "AbuseReport|Verification"
 msgstr ""
 
 msgid "AbuseReport|View screenshot"
+msgstr ""
+
+msgid "Abusive or offensive"
 msgstr ""
 
 msgid "Accept invitation"
@@ -19549,6 +19570,9 @@ msgstr ""
 msgid "Facebook"
 msgstr ""
 
+msgid "Factually incorrect"
+msgstr ""
+
 msgid "Fail"
 msgstr ""
 
@@ -21838,6 +21862,9 @@ msgstr ""
 msgid "GlobalSearch|Fetching aggregations error."
 msgstr ""
 
+msgid "GlobalSearch|Filters"
+msgstr ""
+
 msgid "GlobalSearch|Group"
 msgstr ""
 
@@ -23394,6 +23421,9 @@ msgid "Help translate GitLab into your language"
 msgstr ""
 
 msgid "Help translate to your language"
+msgstr ""
+
+msgid "Helpful"
 msgstr ""
 
 msgid "Helps prevent bots from brute-force attacks."
@@ -26901,6 +26931,9 @@ msgid "Job|Duration"
 msgstr ""
 
 msgid "Job|Erase job log and artifacts"
+msgstr ""
+
+msgid "Job|External links"
 msgstr ""
 
 msgid "Job|Failed"
@@ -39719,9 +39752,6 @@ msgstr ""
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr ""
 
-msgid "RepositorySettingsAccessLevel|Select"
-msgstr ""
-
 msgid "Request"
 msgstr ""
 
@@ -44668,6 +44698,9 @@ msgstr ""
 msgid "Someone, hopefully you, has requested to reset the password for your GitLab account on %{link_to_gitlab}."
 msgstr ""
 
+msgid "Something else"
+msgstr ""
+
 msgid "Something went wrong"
 msgstr ""
 
@@ -49477,6 +49510,9 @@ msgstr ""
 msgid "Tomorrow"
 msgstr ""
 
+msgid "Too long"
+msgstr ""
+
 msgid "Too many namespaces enabled. Manage them through the console or the API."
 msgstr ""
 
@@ -50247,6 +50283,9 @@ msgid "Unfortunately, your email message to GitLab could not be processed."
 msgstr ""
 
 msgid "Unhappy?"
+msgstr ""
+
+msgid "Unhelpful or irrelevant"
 msgstr ""
 
 msgid "Units|d"

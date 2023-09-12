@@ -138,7 +138,7 @@ export const setLabelFilterSearch = ({ commit }, { value }) => {
 export const fetchSidebarCount = ({ commit, state }) => {
   const promises = Object.values(state.navigation).map((navItem) => {
     // active nav item has count already so we skip it
-    if (!navItem.active) {
+    if (!navItem.active && navItem.count_link) {
       return axios
         .get(navItem.count_link)
         .then(({ data: { count } }) => {

@@ -286,6 +286,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
             enter_code(code, only_two_factor_webauthn_enabled: only_two_factor_webauthn_enabled)
             expect(page).to have_content('Invalid two-factor code.')
+            expect(user.reload.failed_attempts).to eq(1)
           end
         end
       end
@@ -576,7 +577,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       end
     end
 
-    context 'with invalid username and password' do
+    context 'with correct username and invalid password' do
       let(:user) { create(:user, :no_super_sidebar) }
 
       it 'blocks invalid login' do
@@ -588,6 +589,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
         expect_single_session_with_short_ttl
         expect(page).to have_content('Invalid login or password.')
+        expect(user.reload.failed_attempts).to eq(1)
       end
     end
   end

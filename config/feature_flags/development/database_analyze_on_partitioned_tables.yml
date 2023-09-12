@@ -1,0 +1,8 @@
+---
+name: database_analyze_on_partitioned_tables
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130599
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423959
+milestone: '16.4'
+type: development
+group: group::database
+default_enabled: false

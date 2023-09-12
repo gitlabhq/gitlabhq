@@ -39,7 +39,7 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
     before do
       stub_container_registry_config(enabled: registry_enabled)
       stub_config(packages: { enabled: packages_enabled })
-      stub_feature_flags(harbor_registry_integration: false, ml_experiment_tracking: false)
+      stub_feature_flags(ml_experiment_tracking: false)
     end
 
     context 'when Packages Registry is visible' do
@@ -58,8 +58,8 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
       context 'when Container Registry is not visible' do
         let(:registry_enabled) { false }
 
-        it 'does not display menu link' do
-          expect(subject.render?).to eq false
+        it 'displays menu link' do
+          expect(subject.render?).to eq true
         end
       end
     end
@@ -155,26 +155,13 @@ RSpec.describe Sidebars::Projects::Menus::PackagesRegistriesMenu, feature_catego
     describe 'Harbor Registry' do
       let(:item_id) { :harbor_registry }
 
-      context 'when config harbor registry setting is disabled' do
-        it 'does not add the menu item to the list' do
-          stub_feature_flags(harbor_registry_integration: false)
-
-          is_expected.to be_nil
-        end
-      end
-
-      context 'when config harbor registry setting is enabled' do
-        it 'the menu item is added to list of menu items' do
-          stub_feature_flags(harbor_registry_integration: true)
-
-          is_expected.not_to be_nil
-          expect(subject.active_routes[:controller]).to eq('projects/harbor/repositories')
-        end
+      it 'the menu item is added to list of menu items' do
+        is_expected.not_to be_nil
+        expect(subject.active_routes[:controller]).to eq('projects/harbor/repositories')
       end
 
       context 'when config harbor registry setting is not activated' do
         it 'does not add the menu item to the list' do
-          stub_feature_flags(harbor_registry_integration: true)
           project.harbor_integration.update!(active: false)
 
           is_expected.to be_nil

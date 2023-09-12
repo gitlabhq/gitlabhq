@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
+RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_category: :database do
+  include ActiveSupport::Testing::TimeHelpers
   include Database::PartitioningHelpers
   include ExclusiveLeaseHelpers
 
@@ -252,6 +253,141 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager do
 
       it 'does not detach partitions with a referenced foreign key' do
         expect { subject }.not_to change { find_partitions(my_model.table_name).size }
+      end
+    end
+  end
+
+  describe 'analyze partitioned table' do
+    let(:analyze_table) { partitioned_table_name }
+    let(:analyze_partition) { "#{partitioned_table_name}_1" }
+    let(:analyze_regex) { /ANALYZE VERBOSE "#{analyze_table}"/ }
+    let(:analyze_interval) { 1.week }
+    let(:connection) { my_model.connection }
+    let(:create_partition) { true }
+    let(:my_model) do
+      interval = analyze_interval
+      Class.new(ApplicationRecord) do
+        include PartitionedTable
+
+        partitioned_by :partition_id,
+          strategy: :ci_sliding_list,
+          next_partition_if: proc { false },
+          detach_partition_if: proc { false },
+          analyze_interval: interval
+      end
+    end
+
+    shared_examples_for 'run only once analyze within interval' do
+      it 'runs only once analyze within interval' do
+        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+        expect(control.occurrences).to include(analyze_regex)
+
+        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+        expect(control.occurrences).not_to include(analyze_regex)
+
+        travel_to((analyze_interval * 1.1).since) do
+          control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+          expect(control.occurrences).to include(analyze_regex)
+        end
+      end
+    end
+
+    shared_examples_for 'not to run the analyze at all' do
+      it 'does not run the analyze at all' do
+        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+        expect(control.occurrences).not_to include(analyze_regex)
+
+        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+        expect(control.occurrences).not_to include(analyze_regex)
+
+        travel_to((analyze_interval * 2).since) do
+          control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+          expect(control.occurrences).not_to include(analyze_regex)
+        end
+      end
+    end
+
+    before do
+      my_model.table_name = partitioned_table_name
+
+      connection.execute(<<~SQL)
+        CREATE TABLE #{analyze_table}(id serial) PARTITION BY LIST (id);
+      SQL
+
+      connection.execute(<<~SQL) if create_partition
+        CREATE TABLE IF NOT EXISTS #{analyze_partition} PARTITION OF #{analyze_table} FOR VALUES IN (1);
+      SQL
+
+      allow(connection).to receive(:select_value).and_return(nil, Time.current, Time.current)
+    end
+
+    context 'when feature flag database_analyze_on_partitioned_tables is enabled' do
+      before do
+        stub_feature_flags(database_analyze_on_partitioned_tables: true)
+      end
+
+      it_behaves_like 'run only once analyze within interval'
+
+      context 'when model does not set analyze_interval' do
+        let(:my_model) do
+          Class.new(ApplicationRecord) do
+            include PartitionedTable
+
+            partitioned_by :partition_id,
+              strategy: :ci_sliding_list,
+              next_partition_if: proc { false },
+              detach_partition_if: proc { false }
+          end
+        end
+
+        it_behaves_like 'not to run the analyze at all'
+      end
+
+      context 'when no partition is created' do
+        let(:create_partition) { false }
+
+        it_behaves_like 'run only once analyze within interval'
+      end
+    end
+
+    context 'when feature flag database_analyze_on_partitioned_tables is disabled' do
+      before do
+        stub_feature_flags(database_analyze_on_partitioned_tables: false)
+      end
+
+      it_behaves_like 'not to run the analyze at all'
+
+      context 'when model does not set analyze_interval' do
+        let(:my_model) do
+          Class.new(ApplicationRecord) do
+            include PartitionedTable
+
+            partitioned_by :partition_id,
+              strategy: :ci_sliding_list,
+              next_partition_if: proc { false },
+              detach_partition_if: proc { false }
+          end
+        end
+
+        it_behaves_like 'not to run the analyze at all'
+      end
+
+      context 'when no partition is created' do
+        let(:create_partition) { false }
+
+        it_behaves_like 'not to run the analyze at all'
+      end
+    end
+  end
+
+  describe 'strategies that support analyze_interval' do
+    [
+      ::Gitlab::Database::Partitioning::MonthlyStrategy,
+      ::Gitlab::Database::Partitioning::SlidingListStrategy,
+      ::Gitlab::Database::Partitioning::CiSlidingListStrategy
+    ].each do |klass|
+      specify "#{klass} supports analyze_interval" do
+        expect(klass).to be_method_defined(:analyze_interval)
       end
     end
   end
