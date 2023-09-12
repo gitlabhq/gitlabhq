@@ -15,7 +15,7 @@ exports[`Alert integration settings form default state should match the default 
     >
       <gl-form-checkbox-stub
         checked="true"
-        data-qa-selector="create_incident_checkbox"
+        data-testid="create-incident-checkbox"
         id="reference-0"
       >
         <span>
@@ -49,7 +49,7 @@ exports[`Alert integration settings form default state should match the default 
       <gl-collapsible-listbox-stub
         block="true"
         category="primary"
-        data-qa-selector="incident_templates_dropdown"
+        data-testid="incident-templates-dropdown"
         headertext=""
         icon=""
         id="reference-1"
@@ -72,7 +72,7 @@ exports[`Alert integration settings form default state should match the default 
       optionaltext="(optional)"
     >
       <gl-form-checkbox-stub
-        data-qa-selector="enable_email_notification_checkbox"
+        data-testid="enable-email-notification-checkbox"
         id="reference-2"
       >
         <span>
@@ -98,7 +98,7 @@ exports[`Alert integration settings form default state should match the default 
       buttontextclasses=""
       category="primary"
       class="js-no-auto-disable"
-      data-qa-selector="save_changes_button"
+      data-testid="save-changes-button"
       icon=""
       size="medium"
       type="submit"

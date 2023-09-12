@@ -7,7 +7,7 @@ module QA
         module Alerts
           class Index < Page::Base
             view 'app/assets/javascripts/alert_management/components/alert_management_table.vue' do
-              element :alert_table_container, required: true
+              element 'alert-table-container', required: true
             end
 
             def has_alert_with_title?(title)

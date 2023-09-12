@@ -15,6 +15,7 @@ class UserCustomAttribute < ApplicationRecord
   UNBLOCKED_BY = 'unblocked_by'
   ARKOSE_RISK_BAND = 'arkose_risk_band'
   AUTO_BANNED_BY_ABUSE_REPORT_ID = 'auto_banned_by_abuse_report_id'
+  AUTO_BANNED_BY_SPAM_LOG_ID = 'auto_banned_by_spam_log_id'
   ALLOW_POSSIBLE_SPAM = 'allow_possible_spam'
   IDENTITY_VERIFICATION_PHONE_EXEMPT = 'identity_verification_phone_exempt'
 
@@ -41,6 +42,14 @@ class UserCustomAttribute < ApplicationRecord
       return unless abuse_report
 
       custom_attribute = { user_id: abuse_report.user.id, key: AUTO_BANNED_BY_ABUSE_REPORT_ID, value: abuse_report.id }
+
+      upsert_custom_attributes([custom_attribute])
+    end
+
+    def set_banned_by_spam_log(spam_log)
+      return unless spam_log
+
+      custom_attribute = { user_id: spam_log.user_id, key: AUTO_BANNED_BY_SPAM_LOG_ID, value: spam_log.id }
 
       upsert_custom_attributes([custom_attribute])
     end

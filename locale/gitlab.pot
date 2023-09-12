@@ -3294,9 +3294,6 @@ msgstr ""
 msgid "AdminArea|Sign up for the GitLab newsletter"
 msgstr ""
 
-msgid "AdminArea|Stop all jobs"
-msgstr ""
-
 msgid "AdminArea|Total Billable users"
 msgstr ""
 
@@ -24411,13 +24408,7 @@ msgstr ""
 msgid "In use"
 msgstr ""
 
-msgid "InProductMarketing|%{organization_name} logo"
-msgstr ""
-
 msgid "InProductMarketing|%{strong_start}GitLab Inc.%{strong_end} 268 Bush Street, #350, San Francisco, CA 94104, USA"
-msgstr ""
-
-msgid "InProductMarketing|Advanced security testing"
 msgstr ""
 
 msgid "InProductMarketing|Blog"
@@ -24426,13 +24417,13 @@ msgstr ""
 msgid "InProductMarketing|Building for iOS? We've got you covered."
 msgstr ""
 
-msgid "InProductMarketing|Deliver Better Products Faster"
+msgid "InProductMarketing|Built-in security"
+msgstr ""
+
+msgid "InProductMarketing|Ensure compliance"
 msgstr ""
 
 msgid "InProductMarketing|Facebook"
-msgstr ""
-
-msgid "InProductMarketing|Free 30-day trial"
 msgstr ""
 
 msgid "InProductMarketing|Free guest users"
@@ -24447,28 +24438,19 @@ msgstr ""
 msgid "InProductMarketing|If you no longer wish to receive marketing emails from us,"
 msgstr ""
 
-msgid "InProductMarketing|Increase Operational Efficiencies"
-msgstr ""
-
 msgid "InProductMarketing|Invite unlimited colleagues"
 msgstr ""
 
 msgid "InProductMarketing|Learn how to build for iOS"
 msgstr ""
 
-msgid "InProductMarketing|No credit card required."
-msgstr ""
-
-msgid "InProductMarketing|Portfolio management"
-msgstr ""
-
-msgid "InProductMarketing|Reduce Security and Compliance Risk"
-msgstr ""
-
-msgid "InProductMarketing|Security risk mitigation"
+msgid "InProductMarketing|No credit card required"
 msgstr ""
 
 msgid "InProductMarketing|Start a Self-Managed trial"
+msgstr ""
+
+msgid "InProductMarketing|Start your 30-day free trial"
 msgstr ""
 
 msgid "InProductMarketing|Team members collaborating"
@@ -24478,12 +24460,6 @@ msgid "InProductMarketing|To opt out of these onboarding emails, %{unsubscribe_l
 msgstr ""
 
 msgid "InProductMarketing|Twitter"
-msgstr ""
-
-msgid "InProductMarketing|Used by more than 100,000 organizations from around the globe:"
-msgstr ""
-
-msgid "InProductMarketing|Value stream management"
 msgstr ""
 
 msgid "InProductMarketing|Want to get your iOS app up and running, including publishing all the way to TestFlight? Follow our guide to set up GitLab and fastlane to publish iOS apps to the App Store."

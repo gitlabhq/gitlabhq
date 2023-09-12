@@ -209,7 +209,7 @@ export default {
           </div>
           <time-ago-tooltip v-if="createdAt" :time="createdAt" class="gl-display-flex">
             <template #default="{ timeAgo }">
-              <gl-icon name="calendar" />
+              <gl-icon name="calendar" class="gl-mr-2" />
               <span class="gl-mr-2 gl-white-space-nowrap">{{ timeAgo }}</span>
             </template>
           </time-ago-tooltip>

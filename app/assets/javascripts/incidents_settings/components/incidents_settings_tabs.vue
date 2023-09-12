@@ -25,7 +25,7 @@ export default {
 <template>
   <section
     id="incident-management-settings"
-    data-qa-selector="incidents_settings_content"
+    data-testid="incidents-settings-content"
     class="settings no-animate"
   >
     <div class="settings-header">

@@ -2,9 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Jobs', feature_category: :continuous_integration do
+RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
   before do
-    stub_feature_flags(admin_jobs_vue: false)
     admin = create(:admin)
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
@@ -23,12 +22,13 @@ RSpec.describe 'Admin Jobs', feature_category: :continuous_integration do
 
           visit admin_jobs_path
 
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'All')
-          expect(page).to have_selector('.row-content-block', text: 'All jobs')
-          expect(page.all('.build-link').size).to eq(4)
-          expect(page).to have_button 'Stop all jobs'
+          wait_for_requests
 
-          click_button 'Stop all jobs'
+          expect(page).to have_selector('[data-testid="jobs-all-tab"]')
+          expect(page.all('[data-testid="jobs-table-row"]').size).to eq(4)
+          expect(page).to have_button 'Cancel all jobs'
+
+          click_button 'Cancel all jobs'
           expect(page).to have_button 'Yes, proceed'
           expect(page).to have_content 'Are you sure?'
         end
@@ -38,73 +38,11 @@ RSpec.describe 'Admin Jobs', feature_category: :continuous_integration do
         it 'shows a message' do
           visit admin_jobs_path
 
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'All')
-          expect(page).to have_content 'No jobs to show'
-          expect(page).not_to have_button 'Stop all jobs'
-        end
-      end
-    end
+          wait_for_requests
 
-    context 'Pending tab' do
-      context 'when have pending jobs' do
-        it 'shows pending jobs' do
-          build1 = create(:ci_build, pipeline: pipeline, status: :pending)
-          build2 = create(:ci_build, pipeline: pipeline, status: :running)
-          build3 = create(:ci_build, pipeline: pipeline, status: :success)
-          build4 = create(:ci_build, pipeline: pipeline, status: :failed)
-
-          visit admin_jobs_path(scope: :pending)
-
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Pending')
-          expect(page.find('.build-link')).to have_content(build1.id)
-          expect(page.find('.build-link')).not_to have_content(build2.id)
-          expect(page.find('.build-link')).not_to have_content(build3.id)
-          expect(page.find('.build-link')).not_to have_content(build4.id)
-          expect(page).to have_button 'Stop all jobs'
-        end
-      end
-
-      context 'when have no jobs pending' do
-        it 'shows a message' do
-          create(:ci_build, pipeline: pipeline, status: :success)
-
-          visit admin_jobs_path(scope: :pending)
-
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Pending')
-          expect(page).to have_content 'No jobs to show'
-          expect(page).not_to have_button 'Stop all jobs'
-        end
-      end
-    end
-
-    context 'Running tab' do
-      context 'when have running jobs' do
-        it 'shows running jobs' do
-          build1 = create(:ci_build, pipeline: pipeline, status: :running)
-          build2 = create(:ci_build, pipeline: pipeline, status: :success)
-          build3 = create(:ci_build, pipeline: pipeline, status: :failed)
-          build4 = create(:ci_build, pipeline: pipeline, status: :pending)
-
-          visit admin_jobs_path(scope: :running)
-
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Running')
-          expect(page.find('.build-link')).to have_content(build1.id)
-          expect(page.find('.build-link')).not_to have_content(build2.id)
-          expect(page.find('.build-link')).not_to have_content(build3.id)
-          expect(page.find('.build-link')).not_to have_content(build4.id)
-          expect(page).to have_button 'Stop all jobs'
-        end
-      end
-
-      context 'when have no jobs running' do
-        it 'shows a message' do
-          create(:ci_build, pipeline: pipeline, status: :success)
-
-          visit admin_jobs_path(scope: :running)
-
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Running')
-          expect(page).to have_content 'No jobs to show'
-          expect(page).not_to have_button 'Stop all jobs'
+          expect(page).to have_selector('[data-testid="jobs-all-tab"]')
+          expect(page).to have_selector('[data-testid="jobs-empty-state"]')
+          expect(page).not_to have_button 'Cancel all jobs'
         end
       end
     end
@@ -116,13 +54,19 @@ RSpec.describe 'Admin Jobs', feature_category: :continuous_integration do
           build2 = create(:ci_build, pipeline: pipeline, status: :running)
           build3 = create(:ci_build, pipeline: pipeline, status: :success)
 
-          visit admin_jobs_path(scope: :finished)
+          visit admin_jobs_path
 
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Finished')
-          expect(page.find('.build-link')).not_to have_content(build1.id)
-          expect(page.find('.build-link')).not_to have_content(build2.id)
-          expect(page.find('.build-link')).to have_content(build3.id)
-          expect(page).to have_button 'Stop all jobs'
+          wait_for_requests
+
+          find_by_testid('jobs-finished-tab').click
+
+          wait_for_requests
+
+          expect(page).to have_selector('[data-testid="jobs-finished-tab"]')
+          expect(find_by_testid('job-id-link')).not_to have_content(build1.id)
+          expect(find_by_testid('job-id-link')).not_to have_content(build2.id)
+          expect(find_by_testid('job-id-link')).to have_content(build3.id)
+          expect(page).to have_button 'Cancel all jobs'
         end
       end
 
@@ -130,11 +74,17 @@ RSpec.describe 'Admin Jobs', feature_category: :continuous_integration do
         it 'shows a message' do
           create(:ci_build, pipeline: pipeline, status: :running)
 
-          visit admin_jobs_path(scope: :finished)
+          visit admin_jobs_path
 
-          expect(page).to have_selector('[data-testid="jobs-tabs"] a.active', text: 'Finished')
+          wait_for_requests
+
+          find_by_testid('jobs-finished-tab').click
+
+          wait_for_requests
+
+          expect(page).to have_selector('[data-testid="jobs-finished-tab"]')
           expect(page).to have_content 'No jobs to show'
-          expect(page).to have_button 'Stop all jobs'
+          expect(page).to have_button 'Cancel all jobs'
         end
       end
     end

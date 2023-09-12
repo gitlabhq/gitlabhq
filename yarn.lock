@@ -1227,13 +1227,14 @@
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.7.tgz#1ee6f838cc4410a1d797770934df91d90df8179e"
   integrity sha512-c6ySRK/Ma7lxwpIVbSAF3P+xiTLrNTGTLRx4/pHK111AdFxwgUwrYF6aVZFXvmG65jHOJHoa0eQQ21RW6rm0Rg==
 
-"@gitlab/cluster-client@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/cluster-client/-/cluster-client-1.2.0.tgz#3b56da46748403354b5af73678b17db3851cbe53"
-  integrity sha512-2emHgfOF9CdibzwXJ2yZVf2d+ez8b67O47qa+pwlG+NnYatjfIcj9Pkzs4kBcO/9+j2lVH/EegPDyEkZZt8Irg==
+"@gitlab/cluster-client@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/cluster-client/-/cluster-client-1.3.0.tgz#0b25330929f2527501f62f43fbbb0d09b8755eeb"
+  integrity sha512-B53Gm3XYK9TVdoSnPkhma0MESpdo4WW/1/Rtt5YOk5vN869TggF74D064hgqfEo8n7z8w1yMCF/fGpXkDU8YVg==
   dependencies:
     axios "^0.24.0"
     core-js "^3.29.1"
+    mitt "^3.0.1"
 
 "@gitlab/eslint-plugin@19.0.1":
   version "19.0.1"
@@ -9959,6 +9960,11 @@ mississippi@^3.0.0:
     pumpify "^1.3.3"
     stream-each "^1.1.0"
     through2 "^2.0.0"
+
+mitt@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/mitt/-/mitt-3.0.1.tgz#ea36cf0cc30403601ae074c8f77b7092cdab36d1"
+  integrity sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==
 
 mixin-deep@^1.2.0:
   version "1.3.2"

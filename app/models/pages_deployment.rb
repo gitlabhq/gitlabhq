@@ -11,9 +11,11 @@ class PagesDeployment < ApplicationRecord
   attribute :file_store, :integer, default: -> { ::Pages::DeploymentUploader.default_store }
 
   belongs_to :project, optional: false
+
+  # ci_build is optional, because PagesDeployment must live even if its build/pipeline is removed.
   belongs_to :ci_build, class_name: 'Ci::Build', optional: true
 
-  scope :older_than, -> (id) { where('id < ?', id) }
+  scope :older_than, ->(id) { where('id < ?', id) }
   scope :migrated_from_legacy_storage, -> { where(file: MIGRATED_FILE_NAME) }
   scope :with_files_stored_locally, -> { where(file_store: ::ObjectStorage::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(file_store: ::ObjectStorage::Store::REMOTE) }

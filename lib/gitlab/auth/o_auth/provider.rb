@@ -69,7 +69,7 @@ module Gitlab
             end
           else
             provider = Gitlab.config.omniauth.providers.find do |provider|
-              provider.name == name || (provider.name == 'openid_connect' && provider.args.name == name)
+              provider.name == name || (provider.name == 'openid_connect' && provider.dig(:args, :name) == name)
             end
             merge_provider_args_with_defaults!(provider)
 

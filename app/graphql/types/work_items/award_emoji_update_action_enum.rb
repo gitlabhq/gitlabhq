@@ -8,6 +8,7 @@ module Types
 
       value 'ADD', 'Adds the emoji.', value: :add
       value 'REMOVE', 'Removes the emoji.', value: :remove
+      value 'TOGGLE', 'Toggles the status of the emoji.', value: :toggle
     end
   end
 end

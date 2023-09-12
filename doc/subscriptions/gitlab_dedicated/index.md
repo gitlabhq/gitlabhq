@@ -29,7 +29,7 @@ GitLab Dedicated leverages the GitLab [Cloud Native Hybrid reference architectur
 
 When [onboarding](../../administration/dedicated/index.md#onboarding) to GitLab Dedicated, you can provide a Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.
 
-For more information, read about the [recovery plan for GitLab Dedicated](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets.
+For more information, read about the [recovery plan for GitLab Dedicated](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets. These targets are available only when both the primary and secondary regions are supported by GitLab Dedicated. See below for a [list of regions that are not supported](#aws-regions-not-supported) by GitLab Dedicated.
 
 ### Security
 
@@ -157,6 +157,15 @@ The following AWS regions are not available:
 - Zurich (`eu-central-2`)
 - GovCloud (US-East) (`us-gov-east-1`)
 - GovCloud (US-West) (`us-gov-west-1`)
+- Melbourne (`ap-southeast-4`)
+- Hyderabad (`ap-south-2`)
+- Osaka (`ap-northeast-3`)
+- Beijing (`cn-north-1`)
+- Ningxia (`cn-northwest-1`)
+- Spain (`eu-south-2`)
+- Tel Aviv (`il-central-1`)
+- UAE (`me-central-1`)
+- São Paulo (`sa-east-1`)
 
 ## Planned features
 

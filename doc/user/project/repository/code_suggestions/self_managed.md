@@ -67,7 +67,11 @@ The users in your instance can now use Code Suggestions.
 Prerequisites:
 
 - You are an administrator.
+- You have a [customer success manager](https://about.gitlab.com/handbook/customer-success/csm/]).
 - You have a [GitLab SaaS account](https://gitlab.com/users/sign_up). You do not need to have a GitLab SaaS subscription.
+
+NOTE:
+If you do not have a customer success manager, you cannot participate in the free trial of Code Suggestions on self-managed GitLab. Upgrade to GitLab 16.3 to [perform self-service onboarding](#gitlab-163-and-later).
 
 Then, you will:
 
@@ -106,11 +110,9 @@ If you clear the **Turn on Code Suggestions for this instance** checkbox, the us
 #### Request access to Code Suggestions
 
 GitLab provisions access on a customer-by-customer basis for Code Suggestions
-on self-managed instances. To request access:
+on self-managed instances. To request access, contact your customer success manager.
 
-1. Sign into your GitLab SaaS account.
-1. Comment on [issue 415393](https://gitlab.com/gitlab-org/gitlab/-/issues/415393)
-   and tag your customer success manager.
+Your customer success manager then provisions access by commenting on [issue 415393](https://gitlab.com/gitlab-org/gitlab/-/issues/415393) (internal access only).
 
 After GitLab has provisioned access to Code Suggestions for your instance,
 the users in your instance can now enable Code Suggestions.

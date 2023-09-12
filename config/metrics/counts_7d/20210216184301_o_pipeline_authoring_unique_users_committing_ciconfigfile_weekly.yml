@@ -13,6 +13,8 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - o_pipeline_authoring_unique_users_committing_ciconfigfile
+performance_indicator_type:
+- customer_health_score
 distribution:
 - ee
 - ce

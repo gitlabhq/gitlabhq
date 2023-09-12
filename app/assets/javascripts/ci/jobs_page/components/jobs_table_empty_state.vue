@@ -31,5 +31,6 @@ export default {
     :svg-path="emptyStateSvgPath"
     :primary-button-link="pipelineEditorPath"
     :primary-button-text="$options.i18n.buttonText"
+    data-testid="jobs-empty-state"
   />
 </template>

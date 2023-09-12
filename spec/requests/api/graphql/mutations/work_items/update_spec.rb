@@ -1431,6 +1431,20 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
               'User has not awarded emoji of type thumbsdown on the awardable'
           end
         end
+
+        context 'when toggling award emoji' do
+          let(:award_action) { 'TOGGLE' }
+
+          context 'when emoji award is present' do
+            let(:award_name) { 'thumbsup' }
+
+            it_behaves_like 'request that removes emoji'
+          end
+
+          context 'when emoji award is not present' do
+            it_behaves_like 'request that adds emoji'
+          end
+        end
       end
     end
 

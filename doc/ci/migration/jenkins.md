@@ -21,7 +21,9 @@ video for examples of:
 The following list of recommended steps was created after observing organizations
 that were able to quickly complete this migration.
 
-Engineers that plan to migrate projects to GitLab CI/CD should:
+Before doing any migration work, you should [start with a migration plan](plan_a_migration.md).
+
+Engineers that need to migrate projects to GitLab CI/CD should:
 
 - Read about some [key GitLab CI/CD features](#key-gitlab-cicd-features).
 - Follow tutorials to create:
@@ -44,26 +46,6 @@ Engineers that plan to migrate projects to GitLab CI/CD should:
 
 If you have questions that are not answered here, the [GitLab community forum](https://forum.gitlab.com/)
 can be a great resource.
-
-### Manage organizational changes
-
-An important part of transitioning from Jenkins to GitLab is the cultural and organizational
-changes that come with the move, and successfully managing them.
-
-A few things that organizations have reported as helping:
-
-- Set and communicate a clear vision of what your migration goals are, which helps
-  your users understand why the effort is worth it. The value is clear when
-  the work is done, but people need to be aware while it's in progress too.
-- Sponsorship and alignment from the relevant leadership teams helps with the point above.
-- Spend time educating your users on what's different, and share this guide
-  with them.
-- Finding ways to sequence or delay parts of the migration can help a lot. Importantly though,
-  try not to leave things in a non-migrated (or partially-migrated) state for too
-  long.
-- To gain all the benefits of GitLab, moving your existing Jenkins setup over
-  as-is, including any current problems, isn't enough. Take advantage of the improvements
-  that GitLab CI/CD offers, and update your implementation as part of the transition.
 
 ### Key GitLab CI/CD features
 

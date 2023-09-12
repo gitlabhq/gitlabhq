@@ -357,8 +357,7 @@ export default {
         <gl-button
           v-if="isHeaderButtonVisible"
           class="gl-my-3 gl-mr-5 create-incident-button"
-          data-testid="createIncidentBtn"
-          data-qa-selector="create_incident_button"
+          data-testid="create-incident-button"
           :loading="redirecting"
           :disabled="redirecting"
           category="primary"
@@ -406,7 +405,6 @@ export default {
             >
               <gl-link
                 data-testid="incident-link"
-                data-qa-selector="incident_link"
                 :href="showIncidentLink(item)"
                 class="gl-min-w-0"
               >

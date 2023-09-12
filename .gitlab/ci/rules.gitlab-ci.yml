@@ -378,6 +378,7 @@
   - "spec/support/database_cleaner.rb"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
+  - "{,ee/,jh/}app/{,models/,services/,workers/}loose_foreign_keys/**/*"
   # Gitaly has interactions with background migrations: https://gitlab.com/gitlab-org/gitlab/-/issues/336538
   - "GITALY_SERVER_VERSION"
   - "lib/gitlab/setup_helper.rb"

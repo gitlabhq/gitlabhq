@@ -79,7 +79,6 @@ Layout/SpaceInLambdaLiteral:
     - 'app/models/packages/maven/metadatum.rb'
     - 'app/models/packages/package.rb'
     - 'app/models/packages/tag.rb'
-    - 'app/models/pages_deployment.rb'
     - 'app/models/personal_access_token.rb'
     - 'app/models/project.rb'
     - 'app/models/project_daily_statistic.rb'

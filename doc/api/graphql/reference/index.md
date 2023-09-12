@@ -379,6 +379,16 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
 `before: String`, `after: String`, `first: Int`, `last: Int`.
 
+### `Query.instanceGoogleCloudLoggingConfigurations`
+
+Instance level google cloud logging configurations.
+
+Returns [`InstanceGoogleCloudLoggingConfigurationTypeConnection`](#instancegooglecloudloggingconfigurationtypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
 ### `Query.instanceSecurityDashboard`
 
 Fields related to Instance Security Dashboard.
@@ -10083,6 +10093,29 @@ The edge type for [`InstanceExternalAuditEventDestination`](#instanceexternalaud
 | <a id="instanceexternalauditeventdestinationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="instanceexternalauditeventdestinationedgenode"></a>`node` | [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination) | The item at the end of the edge. |
 
+#### `InstanceGoogleCloudLoggingConfigurationTypeConnection`
+
+The connection type for [`InstanceGoogleCloudLoggingConfigurationType`](#instancegooglecloudloggingconfigurationtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instancegooglecloudloggingconfigurationtypeconnectionedges"></a>`edges` | [`[InstanceGoogleCloudLoggingConfigurationTypeEdge]`](#instancegooglecloudloggingconfigurationtypeedge) | A list of edges. |
+| <a id="instancegooglecloudloggingconfigurationtypeconnectionnodes"></a>`nodes` | [`[InstanceGoogleCloudLoggingConfigurationType]`](#instancegooglecloudloggingconfigurationtype) | A list of nodes. |
+| <a id="instancegooglecloudloggingconfigurationtypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `InstanceGoogleCloudLoggingConfigurationTypeEdge`
+
+The edge type for [`InstanceGoogleCloudLoggingConfigurationType`](#instancegooglecloudloggingconfigurationtype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instancegooglecloudloggingconfigurationtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="instancegooglecloudloggingconfigurationtypeedgenode"></a>`node` | [`InstanceGoogleCloudLoggingConfigurationType`](#instancegooglecloudloggingconfigurationtype) | The item at the end of the edge. |
+
 #### `IssuableResourceLinkConnection`
 
 The connection type for [`IssuableResourceLink`](#issuableresourcelink).
@@ -18237,6 +18270,20 @@ Represents an external resource to send instance audit events to.
 | <a id="instanceexternalauditeventdestinationid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="instanceexternalauditeventdestinationname"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 | <a id="instanceexternalauditeventdestinationverificationtoken"></a>`verificationToken` | [`String!`](#string) | Verification token to validate source of event. |
+
+### `InstanceGoogleCloudLoggingConfigurationType`
+
+Stores instance level Google Cloud Logging configurations associated with IAM service accounts,used for generating access tokens.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="instancegooglecloudloggingconfigurationtypeclientemail"></a>`clientEmail` | [`String!`](#string) | Client email. |
+| <a id="instancegooglecloudloggingconfigurationtypegoogleprojectidname"></a>`googleProjectIdName` | [`String!`](#string) | Google project ID. |
+| <a id="instancegooglecloudloggingconfigurationtypeid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
+| <a id="instancegooglecloudloggingconfigurationtypelogidname"></a>`logIdName` | [`String!`](#string) | Log ID. |
+| <a id="instancegooglecloudloggingconfigurationtypename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
 ### `InstanceSecurityDashboard`
 
@@ -28600,6 +28647,7 @@ Values for work item award emoji update enum.
 | ----- | ----------- |
 | <a id="workitemawardemojiupdateactionadd"></a>`ADD` | Adds the emoji. |
 | <a id="workitemawardemojiupdateactionremove"></a>`REMOVE` | Removes the emoji. |
+| <a id="workitemawardemojiupdateactiontoggle"></a>`TOGGLE` | Toggles the status of the emoji. |
 
 ### `WorkItemRelatedLinkType`
 
@@ -29751,6 +29799,23 @@ Implementations:
 | <a id="externalauditeventdestinationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the destination. |
 | <a id="externalauditeventdestinationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 | <a id="externalauditeventdestinationinterfaceverificationtoken"></a>`verificationToken` | [`String!`](#string) | Verification token to validate source of event. |
+
+#### `GoogleCloudLoggingConfigurationInterface`
+
+Implementations:
+
+- [`GoogleCloudLoggingConfigurationType`](#googlecloudloggingconfigurationtype)
+- [`InstanceGoogleCloudLoggingConfigurationType`](#instancegooglecloudloggingconfigurationtype)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="googlecloudloggingconfigurationinterfaceclientemail"></a>`clientEmail` | [`String!`](#string) | Client email. |
+| <a id="googlecloudloggingconfigurationinterfacegoogleprojectidname"></a>`googleProjectIdName` | [`String!`](#string) | Google project ID. |
+| <a id="googlecloudloggingconfigurationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
+| <a id="googlecloudloggingconfigurationinterfacelogidname"></a>`logIdName` | [`String!`](#string) | Log ID. |
+| <a id="googlecloudloggingconfigurationinterfacename"></a>`name` | [`String!`](#string) | Name of the external destination to send audit events to. |
 
 #### `MemberInterface`
 

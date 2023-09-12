@@ -56,15 +56,19 @@ If using a declarative pipeline, the configuration might look like:
 ```groovy
 pipeline {
     agent any
+    tools {
+        maven 'maven-3.6.3'
+        jdk 'jdk11'
+    }
     stages {
-        stage('Test') {
-            steps {
-                sh "mvn test"
-            }
-        }
         stage('Build') {
             steps {
                 sh "mvn package -DskipTests"
+            }
+        }
+        stage('Test') {
+            steps {
+                sh "mvn test"
             }
         }
         stage('Install') {
@@ -88,22 +92,84 @@ with the same pipeline configuration.
 
 Prerequisites:
 
-- A GitLab Runner with the Docker executor that can be used by the project.
-  If you are using GitLab.com, you can use the public shared runners.
+- A GitLab Runner with a Shell executor
+- Maven 3.6.3 and Java 11 JDK installed on the shell runner
+
+This example mimics the behavior and syntax of building, testing, and installing on Jenkins.
+
+In a GitLab CI/CD pipeline, the commands run in "jobs", which are grouped into stages.
+The migrated configuration in the `.gitlab-ci.yml` configuration file consists of
+two global keywords (`stages` and `variables`) followed by 3 jobs:
+
+```yaml
+stages:
+  - build
+  - test
+  - install
+
+variables:
+  MAVEN_OPTS: >-
+    -Dhttps.protocols=TLSv1.2
+    -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+  MAVEN_CLI_OPTS: >-
+    -DskipTests
+
+build-JAR:
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS package
+
+test-code:
+  stage: test
+  script:
+    - mvn test
+
+install-JAR:
+  stage: install
+  script:
+    - mvn $MAVEN_CLI_OPTS install
+```
+
+In this example:
+
+- `stages` defines three stages that run in order. Like the Jenkins examples above,
+  the test job runs first, followed by the build job, and finally the install job.
+- `variables` defines [CI/CD variables](../../variables/index.md) that can be used by all jobs:
+  - `MAVEN_OPTS` are Maven environment variables needed whenever Maven is executed:
+    - `-Dhttps.protocols=TLSv1.2` sets the TLS protocol to version 1.2 for any HTTP requests in the pipeline.
+    - `-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository` sets the location of the
+      local Maven repository to the GitLab project directory on the runner, so the job
+      can access and modify the repository.
+  - `MAVEN_CLI_OPTS` are specific arguments to be added to `mvn` commands:
+    - `-DskipTests` skips the `test` stage in the Maven build lifecycle.
+- `test-code`, `build-JAR`, and `install-JAR` are the user-defined names for the jobs
+  to run in the pipeline:
+  - `stage` defines which stage the job runs in. A pipeline contains one or more stages
+    and a stage contains one or more jobs. This example has three stages, each with a single job.
+  - `script` defines the commands to run in that job, similar to `steps` in a `Jenkinsfile`.
+    Jobs can run multiple commands in sequence, which run in the image container,
+    but in this example the jobs run only one command each.
+
+### Run jobs in Docker containers
 
 Instead of using a persistent machine for handling this build process like the Jenkins samples,
 this example uses an ephemeral Docker container to handle execution. Using a container
 removes the need for maintaining a virtual machine and the Maven version installed on it.
 It also increases flexibility for expanding and extending the functionality of the pipeline.
 
-In a GitLab CI/CD pipeline, the commands run in "jobs", which are grouped into stages.
-The migrated configuration in the `.gitlab-ci.yml` configuration file consists of
-three global keywords (`stages`, `default`, and `variables`) followed by 3 jobs:
+Prerequisites:
+
+- A GitLab Runner with the Docker executor that can be used by the project.
+  If you are using GitLab.com, you can use the public shared runners.
+
+This migrated pipeline configuration consists of three global keywords (`stages`, `default`, and `variables`)
+followed by 3 jobs. This configuration makes use of additional GitLab CI/CD features
+for an improved pipeline compared to the [example above](#convert-jenkins-configuration-to-gitlab-cicd):
 
 ```yaml
 stages:
-  - test
   - build
+  - test
   - install
 
 default:
@@ -120,15 +186,15 @@ variables:
   MAVEN_CLI_OPTS: >-
     -DskipTests
 
-test-code:
-  stage: test
-  script:
-    - mvn test
-
 build-JAR:
   stage: build
   script:
     - mvn $MAVEN_CLI_OPTS package
+
+test-code:
+  stage: test
+  script:
+    - mvn test
 
 install-JAR:
   stage: install

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Auth::OAuth::Provider do
+RSpec.describe Gitlab::Auth::OAuth::Provider, feature_category: :system_access do
   describe '.enabled?' do
     before do
       allow(described_class).to receive(:providers).and_return([:ldapmain, :google_oauth2])
@@ -62,25 +62,27 @@ RSpec.describe Gitlab::Auth::OAuth::Provider do
 
     context 'for an OmniAuth provider' do
       before do
-        provider = ActiveSupport::InheritableOptions.new(
+        provider = GitlabSettings::Options.new(
           name: 'google_oauth2',
           app_id: 'asd123',
           app_secret: 'asd123'
         )
-        allow(Gitlab.config.omniauth).to receive(:providers).and_return([provider])
+        openid_connect = GitlabSettings::Options.new(name: 'openid_connect')
+
+        stub_omniauth_setting(providers: [provider, openid_connect])
       end
 
       context 'when the provider exists' do
-        subject { described_class.config_for('google_oauth2') }
+        subject(:config) { described_class.config_for('google_oauth2') }
 
         it 'returns the config' do
-          expect(subject).to be_a(ActiveSupport::InheritableOptions)
+          expect(config).to be_a(GitlabSettings::Options)
         end
 
         it 'merges defaults with the given configuration' do
           defaults = Gitlab::OmniauthInitializer.default_arguments_for('google_oauth2').deep_stringify_keys
 
-          expect(subject['args']).to include(defaults)
+          expect(config['args']).to include(defaults)
         end
       end
 

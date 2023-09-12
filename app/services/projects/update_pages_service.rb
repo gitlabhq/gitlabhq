@@ -7,7 +7,7 @@ module Projects
     # old deployment can be cached by pages daemon
     # so we need to give pages daemon some time update cache
     # 10 minutes is enough, but 30 feels safer
-    OLD_DEPLOYMENTS_DESTRUCTION_DELAY = 30.minutes.freeze
+    OLD_DEPLOYMENTS_DESTRUCTION_DELAY = 30.minutes
 
     attr_reader :build, :deployment_update
 
@@ -31,13 +31,10 @@ module Projects
         deployment = create_pages_deployment(artifacts_path, build)
 
         break error('The uploaded artifact size does not match the expected value') unless deployment
+        break error(deployment_update.errors.first.full_message) unless deployment_update.valid?
 
-        if deployment_update.valid?
-          update_project_pages_deployment(deployment)
-          success
-        else
-          error(deployment_update.errors.first.full_message)
-        end
+        update_project_pages_deployment(deployment)
+        success
       end
     rescue StandardError => e
       error(e.message)
@@ -115,14 +112,6 @@ module Projects
       )
     end
 
-    def ref
-      build.ref
-    end
-
-    def artifacts
-      build.artifacts_file.path
-    end
-
     def register_attempt
       pages_deployments_total_counter.increment
     end
@@ -132,12 +121,14 @@ module Projects
     end
 
     def pages_deployments_total_counter
-      @pages_deployments_total_counter ||= Gitlab::Metrics.counter(:pages_deployments_total, "Counter of GitLab Pages deployments triggered")
+      Gitlab::Metrics.counter(:pages_deployments_total, "Counter of GitLab Pages deployments triggered")
     end
+    strong_memoize_attr :pages_deployments_total_counter
 
     def pages_deployments_failed_total_counter
-      @pages_deployments_failed_total_counter ||= Gitlab::Metrics.counter(:pages_deployments_failed_total, "Counter of GitLab Pages deployments which failed")
+      Gitlab::Metrics.counter(:pages_deployments_failed_total, "Counter of GitLab Pages deployments which failed")
     end
+    strong_memoize_attr :pages_deployments_failed_total_counter
 
     def publish_deployed_event
       event = ::Pages::PageDeployedEvent.new(data: {
