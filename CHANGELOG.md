@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.2.6 (2023-09-12)
+
+### Fixed (3 changes)
+
+- [Prevent pipeline creation while import is running](gitlab-org/gitlab@457561758ed262b3958ff202f31a3f4d1098e983) ([merge request](gitlab-org/gitlab!131155))
+- [Create iid sequence for ci_pipelines with new projects](gitlab-org/gitlab@386708854a916b28154535bf76777526ffb78a31) ([merge request](gitlab-org/gitlab!130836))
+- [Drop bridge jobs on unknown failures](gitlab-org/gitlab@0cf3c9c5fc59bf6a8ea66d6017b33960c109852f) ([merge request](gitlab-org/gitlab!130834))
+
 ## 16.2.5 (2023-08-31)
 
 ### Fixed (1 change)
