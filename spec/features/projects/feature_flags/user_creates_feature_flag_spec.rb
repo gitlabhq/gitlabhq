@@ -7,13 +7,14 @@ RSpec.describe 'User creates feature flag', :js do
 
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
+  let!(:environment) { create(:environment, :production, project: project) }
 
   before do
     project.add_developer(user)
     sign_in(user)
   end
 
-  it 'user creates a flag enabled for user ids' do
+  it 'user creates a flag enabled for user ids with existing environment' do
     visit(new_project_feature_flag_path(project))
     set_feature_flag_info('test_feature', 'Test feature')
     within_strategy_row(1) do
@@ -22,6 +23,22 @@ RSpec.describe 'User creates feature flag', :js do
       environment_plus_button.click
       environment_search_input.set('production')
       environment_search_results.first.click
+    end
+    click_button 'Create feature flag'
+
+    expect_user_to_see_feature_flags_index_page
+    expect(page).to have_text('test_feature')
+  end
+
+  it 'user creates a flag enabled for user ids with non-existing environment' do
+    visit(new_project_feature_flag_path(project))
+    set_feature_flag_info('test_feature', 'Test feature')
+    within_strategy_row(1) do
+      select 'User IDs', from: 'Type'
+      fill_in 'User IDs', with: 'user1, user2'
+      environment_plus_button.click
+      environment_search_input.set('foo-bar')
+      environment_search_create_button.first.click
     end
     click_button 'Create feature flag'
 
@@ -74,14 +91,18 @@ RSpec.describe 'User creates feature flag', :js do
   end
 
   def environment_plus_button
-    find('.js-new-environments-dropdown')
+    find('[data-testid=new-environments-dropdown]')
   end
 
   def environment_search_input
-    find('.js-new-environments-dropdown input')
+    find('[data-testid=new-environments-dropdown] input')
   end
 
   def environment_search_results
-    all('.js-new-environments-dropdown button.dropdown-item')
+    all('[data-testid=new-environments-dropdown] li')
+  end
+
+  def environment_search_create_button
+    all('[data-testid=new-environments-dropdown] button')
   end
 end

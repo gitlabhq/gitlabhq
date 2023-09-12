@@ -279,6 +279,12 @@ class MergeRequest < ApplicationRecord
     def check_state?(merge_status)
       [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking].include?(merge_status.to_sym)
     end
+
+    # rubocop: disable Style/SymbolProc
+    before_transition { |merge_request| merge_request.enable_transitioning }
+
+    after_transition { |merge_request| merge_request.disable_transitioning }
+    # rubocop: enable Style/SymbolProc
   end
 
   # Returns current merge_status except it returns `cannot_be_merged_rechecking` as `checking`
@@ -292,10 +298,14 @@ class MergeRequest < ApplicationRecord
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :auto_merge_enabled?, unless: :importing?
-  validate :validate_branches, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
+  validate :validate_branches, unless: [
+    :allow_broken,
+    :importing_or_transitioning?,
+    :closed_or_merged_without_fork?
+  ]
   validate :validate_fork, unless: :closed_or_merged_without_fork?
-  validate :validate_target_project, on: :create, unless: :importing?
-  validate :validate_reviewer_size_length, unless: :importing?
+  validate :validate_target_project, on: :create, unless: :importing_or_transitioning?
+  validate :validate_reviewer_size_length, unless: :importing_or_transitioning?
 
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)

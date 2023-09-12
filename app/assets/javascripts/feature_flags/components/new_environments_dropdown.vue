@@ -1,25 +1,15 @@
 <script>
-import {
-  GlDropdown,
-  GlDropdownDivider,
-  GlDropdownItem,
-  GlIcon,
-  GlLoadingIcon,
-  GlSearchBoxByType,
-} from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
+import { debounce, memoize } from 'lodash';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { __, sprintf } from '~/locale';
+import { __, n__, sprintf } from '~/locale';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownDivider,
-    GlDropdownItem,
-    GlSearchBoxByType,
-    GlIcon,
-    GlLoadingIcon,
+    GlButton,
+    GlCollapsibleListbox,
   },
   inject: ['environmentsEndpoint'],
   data() {
@@ -34,69 +24,96 @@ export default {
     noResultsLabel: __('No matching results'),
   },
   computed: {
+    srOnlyResultsCount() {
+      return n__('%d environment found', '%d environments found', this.results.length);
+    },
     createEnvironmentLabel() {
       return sprintf(__('Create %{environment}'), { environment: this.environmentSearch });
     },
-  },
-  methods: {
-    addEnvironment(newEnvironment) {
-      this.$emit('add', newEnvironment);
-      this.environmentSearch = '';
-      this.results = [];
+    isCreateEnvironmentShown() {
+      return !this.isLoading && this.results.length === 0 && Boolean(this.environmentSearch);
     },
-    fetchEnvironments: debounce(function debouncedFetchEnvironments() {
+  },
+  mounted() {
+    this.fetchEnvironments();
+  },
+  unmounted() {
+    // cancel debounce if the component is unmounted to avoid unnecessary fetches
+    this.fetchEnvironments.cancel();
+  },
+  created() {
+    this.fetch = memoize(async function fetchEnvironmentsFromApi(query) {
       this.isLoading = true;
-      axios
-        .get(this.environmentsEndpoint, { params: { query: this.environmentSearch } })
-        .then(({ data }) => {
-          this.results = data || [];
+      try {
+        const { data } = await axios.get(this.environmentsEndpoint, { params: { query } });
+
+        return data;
+      } catch {
+        createAlert({
+          message: __('Something went wrong on our end. Please try again.'),
+        });
+        return [];
+      } finally {
+        this.isLoading = false;
+      }
+    });
+
+    this.fetchEnvironments = debounce(function debouncedFetchEnvironments(query = '') {
+      this.fetch(query)
+        .then((data) => {
+          this.results = data.map((item) => ({ text: item, value: item }));
         })
         .catch(() => {
-          createAlert({
-            message: __('Something went wrong on our end. Please try again.'),
-          });
-        })
-        .finally(() => {
-          this.isLoading = false;
+          this.results = [];
         });
-    }, 250),
-    setFocus() {
-      this.$refs.searchBox.focusInput();
+    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+  },
+  methods: {
+    onSelect(selected) {
+      this.$emit('add', selected[0]);
+    },
+    addEnvironment(newEnvironment) {
+      this.$emit('add', newEnvironment);
+      this.results = [];
+    },
+    onSearch(query) {
+      this.environmentSearch = query;
+      this.fetchEnvironments(query);
     },
   },
 };
 </script>
 <template>
-  <gl-dropdown class="js-new-environments-dropdown" @shown="setFocus">
-    <template #button-content>
-      <span class="d-md-none mr-1">
-        {{ $options.translations.addEnvironmentsLabel }}
-      </span>
-      <gl-icon class="d-none d-md-inline-flex gl-mr-1" name="plus" />
+  <gl-collapsible-listbox
+    icon="plus"
+    data-testid="new-environments-dropdown"
+    :toggle-text="$options.translations.addEnvironmentsLabel"
+    :items="results"
+    :searching="isLoading"
+    :header-text="$options.translations.addEnvironmentsLabel"
+    searchable
+    multiple
+    @search="onSearch"
+    @select="onSelect"
+  >
+    <template #footer>
+      <div
+        v-if="isCreateEnvironmentShown"
+        class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-200 gl-p-2"
+      >
+        <gl-button
+          category="tertiary"
+          block
+          class="gl-justify-content-start!"
+          data-testid="add-environment-button"
+          @click="addEnvironment(environmentSearch)"
+        >
+          {{ createEnvironmentLabel }}
+        </gl-button>
+      </div>
     </template>
-    <gl-search-box-by-type
-      ref="searchBox"
-      v-model.trim="environmentSearch"
-      @focus="fetchEnvironments"
-      @keyup="fetchEnvironments"
-    />
-    <gl-loading-icon v-if="isLoading" size="sm" />
-    <gl-dropdown-item
-      v-for="environment in results"
-      v-else-if="results.length"
-      :key="environment"
-      @click="addEnvironment(environment)"
-    >
-      {{ environment }}
-    </gl-dropdown-item>
-    <template v-else-if="environmentSearch.length">
-      <span ref="noResults" class="text-secondary gl-p-3">
-        {{ $options.translations.noMatchingResults }}
-      </span>
-      <gl-dropdown-divider />
-      <gl-dropdown-item @click="addEnvironment(environmentSearch)">
-        {{ createEnvironmentLabel }}
-      </gl-dropdown-item>
+    <template #search-summary-sr-only>
+      {{ srOnlyResultsCount }}
     </template>
-  </gl-dropdown>
+  </gl-collapsible-listbox>
 </template>

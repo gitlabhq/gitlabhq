@@ -11,7 +11,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
 
 Get a list of repository tags from a project, sorted by update date and time in
-descending order. If the repository is publicly accessible, authentication
+descending order.
+
+NOTE:
+If the repository is publicly accessible, authentication
 (`--header "PRIVATE-TOKEN: <your_access_token>"`) is not required.
 
 ```plaintext
@@ -26,6 +29,13 @@ Parameters:
 | `order_by` | string            | no       | Return tags ordered by `name`, `updated`, or `version`. Default is `updated`. |
 | `sort`     | string            | no       | Return tags sorted in `asc` or `desc` order. Default is `desc`. |
 | `search`   | string            | no       | Return a list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term` respectively. No other regular expressions are supported. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/repository/tags"
+```
+
+Example Response:
 
 ```json
 [

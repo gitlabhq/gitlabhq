@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SidekiqHelper do
+RSpec.describe SidekiqHelper, feature_category: :shared do
   describe 'parse_sidekiq_ps' do
     it 'parses line with time' do
       line = '55137	10,0	2,1	S+	2:30pm	sidekiq 4.1.4 gitlab [0 of 25 busy]   '

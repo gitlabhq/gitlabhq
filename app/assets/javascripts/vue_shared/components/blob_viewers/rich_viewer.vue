@@ -77,6 +77,7 @@ export default {
 
       if (!this.isMarkup || !this.remainingContent.length) {
         this.$emit(CONTENT_LOADED_EVENT);
+        this.isLoading = false;
         return;
       }
 
@@ -89,6 +90,7 @@ export default {
           fileContent.append(...content);
           if (nextChunkEnd < this.remainingContent.length) return;
           this.$emit(CONTENT_LOADED_EVENT);
+          this.isLoading = false;
         }, i);
       }
     },
@@ -99,5 +101,9 @@ export default {
 };
 </script>
 <template>
-  <markdown-field-view ref="content" v-safe-html:[$options.safeHtmlConfig]="rawContent" />
+  <markdown-field-view
+    ref="content"
+    v-safe-html:[$options.safeHtmlConfig]="rawContent"
+    :is-loading="isLoading"
+  />
 </template>

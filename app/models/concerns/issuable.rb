@@ -19,6 +19,7 @@ module Issuable
   include Awardable
   include Taskable
   include Importable
+  include Transitionable
   include Editable
   include AfterCommitQueue
   include Sortable
@@ -237,6 +238,10 @@ module Issuable
 
     def exportable_restricted_associations
       super + [:notes]
+    end
+
+    def importing_or_transitioning?
+      importing? || transitioning?
     end
 
     private

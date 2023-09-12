@@ -116,7 +116,7 @@ For more information on:
        omniauth:
          enabled: true
          allowSingleSignOn: ['saml']
-         blockAutoCreatedUsers: true
+         blockAutoCreatedUsers: false
    ```
 
 1. Optional. You can automatically link SAML users with existing GitLab users if their

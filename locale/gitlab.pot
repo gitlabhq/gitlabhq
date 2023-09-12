@@ -252,6 +252,11 @@ msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d environment found"
+msgid_plural "%d environments found"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d epic"
 msgid_plural "%d epics"
 msgstr[0] ""

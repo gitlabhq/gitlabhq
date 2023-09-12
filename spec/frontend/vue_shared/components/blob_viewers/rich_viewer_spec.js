@@ -29,6 +29,8 @@ describe('Blob Rich Viewer component', () => {
 
   beforeEach(() => createComponent());
 
+  const findMarkdownFieldView = () => wrapper.findComponent(MarkdownFieldView);
+
   describe('Markdown content', () => {
     const generateDummyContent = (contentLength) => {
       let generatedContent = '';
@@ -48,14 +50,17 @@ describe('Blob Rich Viewer component', () => {
         expect(wrapper.text()).toContain('Line: 10');
         expect(wrapper.text()).not.toContain('Line: 50');
         expect(wrapper.emitted(CONTENT_LOADED_EVENT)).toBeUndefined();
+        expect(findMarkdownFieldView().props('isLoading')).toBe(true);
       });
 
-      it('renders the rest of the file later and emits a content loaded event', () => {
+      it('renders the rest of the file later and emits a content loaded event', async () => {
         jest.runAllTimers();
+        await nextTick();
 
         expect(wrapper.text()).toContain('Line: 10');
         expect(wrapper.text()).toContain('Line: 50');
         expect(wrapper.emitted(CONTENT_LOADED_EVENT)).toHaveLength(1);
+        expect(findMarkdownFieldView().props('isLoading')).toBe(false);
       });
 
       it('sanitizes the content', () => {
@@ -72,6 +77,7 @@ describe('Blob Rich Viewer component', () => {
       it('renders the entire file immediately and emits a content loaded event', () => {
         expect(wrapper.text()).toContain('Line: 5');
         expect(wrapper.emitted(CONTENT_LOADED_EVENT)).toHaveLength(1);
+        expect(findMarkdownFieldView().props('isLoading')).toBe(false);
       });
 
       it('sanitizes the content', () => {
@@ -97,7 +103,7 @@ describe('Blob Rich Viewer component', () => {
   });
 
   it('is using Markdown View Field', () => {
-    expect(wrapper.findComponent(MarkdownFieldView).exists()).toBe(true);
+    expect(findMarkdownFieldView().exists()).toBe(true);
   });
 
   it('scrolls to the hash location', () => {

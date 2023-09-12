@@ -626,6 +626,21 @@ RSpec.describe Issuable, feature_category: :team_planning do
     end
   end
 
+  describe "#importing_or_transitioning?" do
+    let(:merge_request) { build(:merge_request, transitioning: transitioning, importing: importing) }
+
+    where(:transitioning, :importing, :result) do
+      true  | false | true
+      false | true  | true
+      true  | true  | true
+      false | false | false
+    end
+
+    with_them do
+      it { expect(merge_request.importing_or_transitioning?).to eq(result) }
+    end
+  end
+
   describe '#labels_array' do
     let(:project) { create(:project) }
     let(:bug) { create(:label, project: project, title: 'bug') }

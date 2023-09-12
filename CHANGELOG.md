@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.3.3 (2023-09-12)
+
+### Fixed (2 changes)
+
+- [Prevent pipeline creation while import is running](gitlab-org/gitlab@b4e374ed7f5b264f04a2589a99004e568ef92319) ([merge request](gitlab-org/gitlab!131156))
+- [Create iid sequence for ci_pipelines with new projects](gitlab-org/gitlab@a74b9ac352e0d9783ec39adaadbe2b65028f8e0c) ([merge request](gitlab-org/gitlab!130835))
+
 ## 16.3.2 (2023-09-05)
 
 ### Fixed (2 changes)
@@ -817,6 +824,14 @@ entry.
 - [Remove the FF ci_refactoring_pipeline_schedule_create_service](gitlab-org/gitlab@8fa85f70277e83665a1deb8b085ac3740530ee61) ([merge request](gitlab-org/gitlab!125736))
 - [Fix test pollution in count_deployments_metric_spec](gitlab-org/gitlab@610e6a033fe9b20aabc237b18837cddf150d4d1b) ([merge request](gitlab-org/gitlab!126808))
 - [Update BulkImports::PipelineBatchWorker resource boundary](gitlab-org/gitlab@7d2477d81bcc2d035be26587802706f7098b6e44) ([merge request](gitlab-org/gitlab!126696))
+
+## 16.2.6 (2023-09-12)
+
+### Fixed (3 changes)
+
+- [Prevent pipeline creation while import is running](gitlab-org/gitlab@457561758ed262b3958ff202f31a3f4d1098e983) ([merge request](gitlab-org/gitlab!131155))
+- [Create iid sequence for ci_pipelines with new projects](gitlab-org/gitlab@386708854a916b28154535bf76777526ffb78a31) ([merge request](gitlab-org/gitlab!130836))
+- [Drop bridge jobs on unknown failures](gitlab-org/gitlab@0cf3c9c5fc59bf6a8ea66d6017b33960c109852f) ([merge request](gitlab-org/gitlab!130834))
 
 ## 16.2.5 (2023-08-31)
 

@@ -360,6 +360,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe "#validate_reviewer_size_length" do
+      let(:merge_request) { build(:merge_request, transitioning: transitioning) }
+
+      where(:transitioning, :to_or_not_to) do
+        false  | :to
+        true   | :not_to
+      end
+
+      with_them do
+        it do
+          expect(merge_request).send(to_or_not_to, receive(:validate_reviewer_size_length))
+
+          merge_request.valid?
+        end
+      end
+    end
+
     describe '#validate_target_project' do
       let(:merge_request) do
         build(:merge_request, source_project: project, target_project: project, importing: importing)
@@ -384,6 +401,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           let(:importing) { true }
 
           it { expect(merge_request.valid?(false)).to eq true }
+        end
+      end
+
+      context "with the skip_validations_during_transition_feature_flag" do
+        let(:merge_request) { build(:merge_request, transitioning: transitioning) }
+
+        where(:transitioning, :to_or_not_to) do
+          false | :to
+          true  | :not_to
+        end
+
+        with_them do
+          it do
+            expect(merge_request).send(to_or_not_to, receive(:validate_target_project))
+
+            merge_request.valid?
+          end
         end
       end
     end
@@ -4487,6 +4521,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     shared_examples 'for an invalid state transition' do
       specify 'is not a valid state transition' do
         expect { transition! }.to raise_error(StateMachines::InvalidTransition)
+        expect(subject.transitioning?).to be_falsey
       end
     end
 
@@ -4496,6 +4531,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .to change { subject.merge_status }
           .from(merge_status.to_s)
           .to(expected_merge_status)
+        expect(subject.transitioning?).to be_falsey
       end
     end
 
