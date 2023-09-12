@@ -27,9 +27,14 @@ export const initOrganizationsShow = () => {
   const {
     dataset: { appData },
   } = el;
-  const { organization, groupsAndProjectsOrganizationPath } = convertObjectPropsToCamelCase(
-    JSON.parse(appData),
-  );
+  const {
+    organization,
+    groupsAndProjectsOrganizationPath,
+    projectsEmptyStateSvgPath,
+    groupsEmptyStateSvgPath,
+    newGroupPath,
+    newProjectPath,
+  } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   Vue.use(VueRouter);
   const router = createRouter();
@@ -42,6 +47,12 @@ export const initOrganizationsShow = () => {
     name: 'OrganizationShowRoot',
     apolloProvider,
     router,
+    provide: {
+      projectsEmptyStateSvgPath,
+      groupsEmptyStateSvgPath,
+      newGroupPath,
+      newProjectPath,
+    },
     render(createElement) {
       return createElement(App, {
         props: { organization, groupsAndProjectsOrganizationPath },

@@ -416,7 +416,7 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
           before do
             detached_merge_request_pipeline.reload.succeed!
 
-            refresh
+            wait_for_requests
           end
 
           it 'merges the merge request' do

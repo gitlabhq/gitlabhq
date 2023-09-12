@@ -13,7 +13,7 @@ You can update your preferences to change the look and feel of GitLab.
 
 You can change the color theme of the GitLab UI. These colors are displayed on the left sidebar.
 Using individual color themes might help you differentiate between your different
-GitLab instances. 
+GitLab instances.
 
 To change the color theme:
 
@@ -25,7 +25,7 @@ To change the color theme:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252).
 
-Dark mode makes elements on the GitLab UI stand out on a dark background. 
+Dark mode makes elements on the GitLab UI stand out on a dark background.
 
 - To turn on Dark mode, Select **Preferences > Color theme > Dark Mode**.
 
@@ -44,11 +44,11 @@ To change the syntax highlighting theme:
 1. In the **Syntax highlighting theme** section, select a theme.
 1. Select **Save changes**.
 
-To view the updated syntax highlighting theme, refresh your project's page. 
+To view the updated syntax highlighting theme, refresh your project's page.
 
 To customize the syntax highlighting theme, you can also [use the Application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls). Use `default_syntax_highlighting_theme` to change the syntax highlighting colors on a more granular level.
 
-If these steps do not work, your programming language might not be supported by the syntax highlighters. 
+If these steps do not work, your programming language might not be supported by the syntax highlighters.
 For more information, view [Rouge Ruby Library](https://github.com/rouge-ruby/rouge) for guidance on code files and Snippets. View [Moncaco Editor](https://microsoft.github.io/monaco-editor/) and [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) for guidance on the Web IDE.  
 
 ## Change the diff colors
@@ -59,7 +59,7 @@ To change the diff colors:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. Go to the **Diff colors** section. 
+1. Go to the **Diff colors** section.
 1. Select a color or enter a color code.
 1. Select **Save changes**.
 
@@ -142,7 +142,7 @@ To render whitespace in the Web IDE:
 1. Select the **Render whitespace characters in the Web IDE** checkbox.
 1. Select **Save changes**.
 
-You can view changes to whitespace in diffs. 
+You can view changes to whitespace in diffs.
 
 To view diffs on the Web IDE, follow these steps:
 
@@ -315,7 +315,7 @@ To integrate with Gitpod:
 
 ### Integrate your GitLab instance with Sourcegraph
 
-GitLab supports Sourcegraph integration for all public projects on GitLab. 
+GitLab supports Sourcegraph integration for all public projects on GitLab.
 
 To integrate with Sourcegraph:
 

@@ -1,6 +1,6 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import { formatGroups } from '~/organizations/shared/utils';
 import resolvers from '~/organizations/shared/graphql/resolvers';
@@ -20,10 +20,19 @@ describe('GroupsView', () => {
   let wrapper;
   let mockApollo;
 
-  const createComponent = ({ mockResolvers = resolvers } = {}) => {
+  const defaultProvide = {
+    groupsEmptyStateSvgPath: 'illustrations/empty-state/empty-groups-md.svg',
+    newGroupPath: '/groups/new',
+  };
+
+  const createComponent = ({ mockResolvers = resolvers, propsData = {} } = {}) => {
     mockApollo = createMockApollo([], mockResolvers);
 
-    wrapper = shallowMountExtended(GroupsView, { apolloProvider: mockApollo });
+    wrapper = shallowMountExtended(GroupsView, {
+      apolloProvider: mockApollo,
+      provide: defaultProvide,
+      propsData,
+    });
   };
 
   afterEach(() => {
@@ -47,17 +56,66 @@ describe('GroupsView', () => {
   });
 
   describe('when API call is successful', () => {
-    beforeEach(() => {
-      createComponent();
+    describe('when there are no groups', () => {
+      it('renders empty state without buttons by default', async () => {
+        const mockResolvers = {
+          Query: {
+            organization: jest.fn().mockResolvedValueOnce({
+              groups: { nodes: [] },
+            }),
+          },
+        };
+        createComponent({ mockResolvers });
+
+        jest.runAllTimers();
+        await waitForPromises();
+
+        expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
+          title: "You don't have any groups yet.",
+          description:
+            'A group is a collection of several projects. If you organize your projects under a group, it works like a folder.',
+          svgHeight: 144,
+          svgPath: defaultProvide.groupsEmptyStateSvgPath,
+          primaryButtonLink: null,
+          primaryButtonText: null,
+        });
+      });
+
+      describe('when `shouldShowEmptyStateButtons` is `true` and `groupsEmptyStateSvgPath` is set', () => {
+        it('renders empty state with buttons', async () => {
+          const mockResolvers = {
+            Query: {
+              organization: jest.fn().mockResolvedValueOnce({
+                groups: { nodes: [] },
+              }),
+            },
+          };
+          createComponent({ mockResolvers, propsData: { shouldShowEmptyStateButtons: true } });
+
+          jest.runAllTimers();
+          await waitForPromises();
+
+          expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
+            primaryButtonLink: defaultProvide.newGroupPath,
+            primaryButtonText: 'New group',
+          });
+        });
+      });
     });
 
-    it('renders `GroupsList` component and passes correct props', async () => {
-      jest.runAllTimers();
-      await waitForPromises();
+    describe('when there are groups', () => {
+      beforeEach(() => {
+        createComponent();
+      });
 
-      expect(wrapper.findComponent(GroupsList).props()).toEqual({
-        groups: formatGroups(organizationGroups.nodes),
-        showGroupIcon: true,
+      it('renders `GroupsList` component and passes correct props', async () => {
+        jest.runAllTimers();
+        await waitForPromises();
+
+        expect(wrapper.findComponent(GroupsList).props()).toEqual({
+          groups: formatGroups(organizationGroups.nodes),
+          showGroupIcon: true,
+        });
       });
     });
   });

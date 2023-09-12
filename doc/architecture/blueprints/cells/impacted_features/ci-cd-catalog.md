@@ -51,4 +51,4 @@ Today we can have multiple catalogs based on the number of namespaces, making it
 
 ### 4.2. Cons
 
-- A separate catalog that surfaces components across Organizations would need to be implemented to serve the wider community (community catalog). This catalog will be required for GitLab.com only, later on we can evaluate if a similar catalog is needed for self-managed customers. 
+- A separate catalog that surfaces components across Organizations would need to be implemented to serve the wider community (community catalog). This catalog will be required for GitLab.com only, later on we can evaluate if a similar catalog is needed for self-managed customers.

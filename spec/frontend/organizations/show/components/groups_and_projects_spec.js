@@ -72,7 +72,9 @@ describe('OrganizationShowGroupsAndProjects', () => {
       });
 
       it('renders expected view', () => {
-        expect(wrapper.findComponent(expectedViewComponent).exists()).toBe(true);
+        expect(
+          wrapper.findComponent(expectedViewComponent).props('shouldShowEmptyStateButtons'),
+        ).toBe(true);
       });
     },
   );

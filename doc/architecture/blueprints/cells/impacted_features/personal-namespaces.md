@@ -26,7 +26,7 @@ This is especially the case with the merge request, as it is one of the most com
 
 Today personal Namespaces serve two purposes that are mostly non-overlapping:
 
-1. They provide a place for users to create personal Projects 
+1. They provide a place for users to create personal Projects
    that aren't expected to receive contributions from other people. This use case saves them from having to create a Group just for themselves.
 1. They provide a default place for a user to put any forks they
    create when contributing to Projects where they don't have permission to push a branch. This again saves them from needing to create a Group just to store these forks. But the primary user need here is because they can't push branches to the upstream Project so they create a fork and contribute merge requests from the fork.

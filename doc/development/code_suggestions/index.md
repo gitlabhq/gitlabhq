@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Code Suggestions development setup
 
-The recommended setup for locally developing and debugging Code Suggestions is to have all 3 different components running: 
+The recommended setup for locally developing and debugging Code Suggestions is to have all 3 different components running:
 
 - IDE Extension (e.g. VSCode Extension)
 - Main application configured correctly

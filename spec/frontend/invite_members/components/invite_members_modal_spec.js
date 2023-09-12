@@ -1,4 +1,4 @@
-import { GlLink, GlModal, GlSprintf, GlFormGroup, GlCollapse, GlIcon } from '@gitlab/ui';
+import { GlModal, GlSprintf, GlFormGroup, GlCollapse, GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
@@ -12,7 +12,6 @@ import ModalConfetti from '~/invite_members/components/confetti.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import UserLimitNotification from '~/invite_members/components/user_limit_notification.vue';
 import {
-  INVITE_MEMBERS_FOR_TASK,
   MEMBERS_MODAL_CELEBRATE_INTRO,
   MEMBERS_MODAL_CELEBRATE_TITLE,
   MEMBERS_PLACEHOLDER,
@@ -31,7 +30,6 @@ import {
   HTTP_STATUS_CREATED,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
 } from '~/lib/utils/http_status';
-import { getParameterValues } from '~/lib/utils/url_utility';
 import {
   displaySuccessfulInvitationAlert,
   reloadOnInvitationSuccess,
@@ -54,10 +52,6 @@ import {
 
 jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 jest.mock('~/experimentation/experiment_tracking');
-jest.mock('~/lib/utils/url_utility', () => ({
-  ...jest.requireActual('~/lib/utils/url_utility'),
-  getParameterValues: jest.fn(() => []),
-}));
 
 describe('InviteMembersModal', () => {
   let wrapper;
@@ -129,7 +123,6 @@ describe('InviteMembersModal', () => {
   });
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const findBase = () => wrapper.findComponent(InviteModalBase);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
   const findEmptyInvitesAlert = () => wrapper.findByTestId('empty-invites-alert');
   const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
@@ -155,10 +148,6 @@ describe('InviteMembersModal', () => {
     findMembersFormGroup().attributes('invalid-feedback');
   const membersFormGroupDescription = () => findMembersFormGroup().attributes('description');
   const findMembersSelect = () => wrapper.findComponent(MembersTokenSelect);
-  const findTasksToBeDone = () => wrapper.findByTestId('invite-members-modal-tasks-to-be-done');
-  const findTasks = () => wrapper.findByTestId('invite-members-modal-tasks');
-  const findProjectSelect = () => wrapper.findByTestId('invite-members-modal-project-select');
-  const findNoProjectsAlert = () => wrapper.findByTestId('invite-members-modal-no-projects-alert');
   const findCelebrationEmoji = () => wrapper.findComponent(GlEmoji);
   const triggerOpenModal = async ({ mode = 'default', source } = {}) => {
     eventHub.$emit('openModal', { mode, source });
@@ -168,130 +157,10 @@ describe('InviteMembersModal', () => {
     findMembersSelect().vm.$emit('input', val);
     await nextTick();
   };
-  const triggerTasks = async (val) => {
-    findTasks().vm.$emit('input', val);
-    await nextTick();
-  };
-  const triggerAccessLevel = async (val) => {
-    findBase().vm.$emit('access-level', val);
-    await nextTick();
-  };
   const removeMembersToken = async (val) => {
     findMembersSelect().vm.$emit('token-remove', val);
     await nextTick();
   };
-
-  describe('rendering the tasks to be done', () => {
-    const setupComponent = async (props = {}, urlParameter = ['invite_members_for_task']) => {
-      getParameterValues.mockImplementation(() => urlParameter);
-      createComponent(props);
-
-      await triggerAccessLevel(30);
-    };
-
-    const setupComponentWithTasks = async (...args) => {
-      await setupComponent(...args);
-      await triggerTasks(['ci', 'code']);
-    };
-
-    afterAll(() => {
-      getParameterValues.mockImplementation(() => []);
-    });
-
-    it('renders the tasks to be done', async () => {
-      await setupComponent();
-
-      expect(findTasksToBeDone().exists()).toBe(true);
-    });
-
-    describe('when the selected access level is lower than 30', () => {
-      it('does not render the tasks to be done', async () => {
-        await setupComponent();
-        await triggerAccessLevel(20);
-
-        expect(findTasksToBeDone().exists()).toBe(false);
-      });
-    });
-
-    describe('when the url does not contain the parameter `open_modal=invite_members_for_task`', () => {
-      it('does not render the tasks to be done', async () => {
-        await setupComponent({}, []);
-
-        expect(findTasksToBeDone().exists()).toBe(false);
-      });
-    });
-
-    describe('rendering the tasks', () => {
-      it('renders the tasks', async () => {
-        await setupComponent();
-
-        expect(findTasks().exists()).toBe(true);
-      });
-
-      it('does not render an alert', async () => {
-        await setupComponent();
-
-        expect(findNoProjectsAlert().exists()).toBe(false);
-      });
-
-      describe('when there are no projects passed in the data', () => {
-        it('does not render the tasks', async () => {
-          await setupComponent({ projects: [] });
-
-          expect(findTasks().exists()).toBe(false);
-        });
-
-        it('renders an alert with a link to the new projects path', async () => {
-          await setupComponent({ projects: [] });
-
-          expect(findNoProjectsAlert().exists()).toBe(true);
-          expect(findNoProjectsAlert().findComponent(GlLink).attributes('href')).toBe(
-            newProjectPath,
-          );
-        });
-      });
-    });
-
-    describe('rendering the project dropdown', () => {
-      it('renders the project select', async () => {
-        await setupComponentWithTasks();
-
-        expect(findProjectSelect().exists()).toBe(true);
-      });
-
-      describe('when the modal is shown for a project', () => {
-        it('does not render the project select', async () => {
-          await setupComponentWithTasks({ isProject: true });
-
-          expect(findProjectSelect().exists()).toBe(false);
-        });
-      });
-
-      describe('when no tasks are selected', () => {
-        it('does not render the project select', async () => {
-          await setupComponent();
-
-          expect(findProjectSelect().exists()).toBe(false);
-        });
-      });
-    });
-
-    describe('tracking events', () => {
-      it('tracks the submit for invite_members_for_task', async () => {
-        await setupComponentWithTasks();
-
-        await triggerMembersTokenSelect([user1]);
-
-        trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-
-        clickInviteButton();
-
-        expectTracking(INVITE_MEMBERS_FOR_TASK.submit, 'selected_tasks_to_be_done', 'ci,code');
-
-        unmockTracking();
-      });
-    });
-  });
 
   describe('rendering with tracking considerations', () => {
     describe('when inviting to a project', () => {
@@ -623,6 +492,18 @@ describe('InviteMembersModal', () => {
           );
           expect(membersFormGroupInvalidFeedback()).toBe('');
           expect(findMembersSelect().props('exceptionState')).not.toBe(false);
+        });
+
+        it('displays invite limit error message', async () => {
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.INVITE_LIMIT);
+
+          clickInviteButton();
+
+          await waitForPromises();
+
+          expect(membersFormGroupInvalidFeedback()).toBe(
+            invitationsApiResponse.INVITE_LIMIT.message,
+          );
         });
       });
     });

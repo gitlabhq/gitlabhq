@@ -58,7 +58,6 @@ You can upload files of the following types as designs:
 - JPEG
 - JPG
 - PNG
-- SVG
 - TIFF
 - WEBP
 

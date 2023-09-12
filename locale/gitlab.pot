@@ -3028,7 +3028,7 @@ msgstr ""
 msgid "AddMember|Invite email is invalid"
 msgstr ""
 
-msgid "AddMember|Invite limit of %{daily_invites} per day exceeded"
+msgid "AddMember|Invite limit of %{daily_invites} per day exceeded."
 msgstr ""
 
 msgid "AddMember|Invites cannot be blank"
@@ -10275,10 +10275,22 @@ msgstr ""
 msgid "CiVariables|This %{entity} has %{currentVariableCount} defined CI/CD variables. The maximum number of variables per %{entity} is %{maxVariableLimit}. To add new variables, you must reduce the number of defined variables."
 msgstr ""
 
+msgid "CiVariables|This variable value does not meet the masking requirements."
+msgstr ""
+
 msgid "CiVariables|Type"
 msgstr ""
 
+msgid "CiVariables|Unselect \"Expand variable reference\" if you want to use the variable value as a raw string."
+msgstr ""
+
 msgid "CiVariables|Value"
+msgstr ""
+
+msgid "CiVariables|Value might contain a variable reference"
+msgstr ""
+
+msgid "CiVariables|Variable value will be evaluated as raw string."
 msgstr ""
 
 msgid "CiVariables|Variable will be masked in job logs. Requires values to meet regular expression requirements."
@@ -32821,6 +32833,9 @@ msgstr ""
 msgid "Organizations"
 msgstr ""
 
+msgid "Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder."
+msgstr ""
+
 msgid "Organization|An error occurred loading the groups. Please refresh the page to try again."
 msgstr ""
 
@@ -32858,6 +32873,12 @@ msgid "Organization|Search or filter list"
 msgstr ""
 
 msgid "Organization|View all"
+msgstr ""
+
+msgid "Organization|You don't have any groups yet."
+msgstr ""
+
+msgid "Organization|You don't have any projects yet."
 msgstr ""
 
 msgid "Orphaned member"

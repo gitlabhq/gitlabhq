@@ -1,0 +1,8 @@
+---
+name: k8s_dashboard
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130953"
+rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/424237"
+milestone: '16.4'
+type: development
+group: group::environments
+default_enabled: false

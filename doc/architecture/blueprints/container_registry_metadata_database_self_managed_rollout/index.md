@@ -74,7 +74,7 @@ quick reference for what features we have now, are planning, their statuses, and
 an excutive summary of the overall state of the migration experience.
 This could be advertised to self-managed users via a simple chart, allowing them
 to tell at a glance the status of this project and determine if it is feature-
-complete enough for their needs and level of risk tolerance. 
+complete enough for their needs and level of risk tolerance.
 
 This should be documented in the container registry administration documentation,
 rather than in this blueprint. Providing this information there will place it in
@@ -86,7 +86,7 @@ For example:
 
 The metadata database is in early beta for self-managed users. The core migration
 process for existing registries has been implemented, and online garbage collection
-is fully implemented. Certain database enabled features are only enabled for GitLab.com 
+is fully implemented. Certain database enabled features are only enabled for GitLab.com
 and automatic database provisioning for the registry database is not available.
 Please see the table below for the status of features related to the container
 registry database.

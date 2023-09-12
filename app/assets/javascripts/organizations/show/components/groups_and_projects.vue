@@ -105,6 +105,6 @@ export default {
         $options.i18n.viewAll
       }}</gl-link>
     </div>
-    <component :is="routerView" class="gl-mt-5" />
+    <component :is="routerView" should-show-empty-state-buttons class="gl-mt-5" />
   </div>
 </template>

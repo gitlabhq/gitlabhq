@@ -1,6 +1,6 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
 import { formatProjects } from '~/organizations/shared/utils';
 import resolvers from '~/organizations/shared/graphql/resolvers';
@@ -20,10 +20,19 @@ describe('ProjectsView', () => {
   let wrapper;
   let mockApollo;
 
-  const createComponent = ({ mockResolvers = resolvers } = {}) => {
+  const defaultProvide = {
+    projectsEmptyStateSvgPath: 'illustrations/empty-state/empty-projects-md.svg',
+    newProjectPath: '/projects/new',
+  };
+
+  const createComponent = ({ mockResolvers = resolvers, propsData = {} } = {}) => {
     mockApollo = createMockApollo([], mockResolvers);
 
-    wrapper = shallowMountExtended(ProjectsView, { apolloProvider: mockApollo });
+    wrapper = shallowMountExtended(ProjectsView, {
+      apolloProvider: mockApollo,
+      provide: defaultProvide,
+      propsData,
+    });
   };
 
   afterEach(() => {
@@ -47,17 +56,66 @@ describe('ProjectsView', () => {
   });
 
   describe('when API call is successful', () => {
-    beforeEach(() => {
-      createComponent();
+    describe('when there are no projects', () => {
+      it('renders empty state without buttons by default', async () => {
+        const mockResolvers = {
+          Query: {
+            organization: jest.fn().mockResolvedValueOnce({
+              projects: { nodes: [] },
+            }),
+          },
+        };
+        createComponent({ mockResolvers });
+
+        jest.runAllTimers();
+        await waitForPromises();
+
+        expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
+          title: "You don't have any projects yet.",
+          description:
+            'Projects are where you can store your code, access issues, wiki, and other features of Gitlab.',
+          svgHeight: 144,
+          svgPath: defaultProvide.projectsEmptyStateSvgPath,
+          primaryButtonLink: null,
+          primaryButtonText: null,
+        });
+      });
+
+      describe('when `shouldShowEmptyStateButtons` is `true` and `projectsEmptyStateSvgPath` is set', () => {
+        it('renders empty state with buttons', async () => {
+          const mockResolvers = {
+            Query: {
+              organization: jest.fn().mockResolvedValueOnce({
+                projects: { nodes: [] },
+              }),
+            },
+          };
+          createComponent({ mockResolvers, propsData: { shouldShowEmptyStateButtons: true } });
+
+          jest.runAllTimers();
+          await waitForPromises();
+
+          expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
+            primaryButtonLink: defaultProvide.newProjectPath,
+            primaryButtonText: 'New project',
+          });
+        });
+      });
     });
 
-    it('renders `ProjectsList` component and passes correct props', async () => {
-      jest.runAllTimers();
-      await waitForPromises();
+    describe('when there are projects', () => {
+      beforeEach(() => {
+        createComponent();
+      });
 
-      expect(wrapper.findComponent(ProjectsList).props()).toEqual({
-        projects: formatProjects(organizationProjects.nodes),
-        showProjectIcon: true,
+      it('renders `ProjectsList` component and passes correct props', async () => {
+        jest.runAllTimers();
+        await waitForPromises();
+
+        expect(wrapper.findComponent(ProjectsList).props()).toEqual({
+          projects: formatProjects(organizationProjects.nodes),
+          showProjectIcon: true,
+        });
       });
     });
   });

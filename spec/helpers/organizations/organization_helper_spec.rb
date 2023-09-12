@@ -4,6 +4,17 @@ require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:organization) { build_stubbed(:organization) }
+  let_it_be(:new_group_path) { '/groups/new' }
+  let_it_be(:new_project_path) { '/projects/new' }
+  let_it_be(:groups_empty_state_svg_path) { 'illustrations/empty-state/empty-groups-md.svg' }
+  let_it_be(:projects_empty_state_svg_path) { 'illustrations/empty-state/empty-projects-md.svg' }
+
+  before do
+    allow(helper).to receive(:new_group_path).and_return(new_group_path)
+    allow(helper).to receive(:new_project_path).and_return(new_project_path)
+    allow(helper).to receive(:image_path).with(groups_empty_state_svg_path).and_return(groups_empty_state_svg_path)
+    allow(helper).to receive(:image_path).with(projects_empty_state_svg_path).and_return(projects_empty_state_svg_path)
+  end
 
   describe '#organization_show_app_data' do
     before do
@@ -20,7 +31,28 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
       ).to eq(
         {
           'organization' => { 'id' => organization.id, 'name' => organization.name },
-          'groups_and_projects_organization_path' => '/-/organizations/default/groups_and_projects'
+          'groups_and_projects_organization_path' => '/-/organizations/default/groups_and_projects',
+          'new_group_path' => new_group_path,
+          'new_project_path' => new_project_path,
+          'groups_empty_state_svg_path' => groups_empty_state_svg_path,
+          'projects_empty_state_svg_path' => projects_empty_state_svg_path
+        }
+      )
+    end
+  end
+
+  describe '#organization_groups_and_projects_app_data' do
+    it 'returns expected json' do
+      expect(
+        Gitlab::Json.parse(
+          helper.organization_groups_and_projects_app_data
+        )
+      ).to eq(
+        {
+          'new_group_path' => new_group_path,
+          'new_project_path' => new_project_path,
+          'groups_empty_state_svg_path' => groups_empty_state_svg_path,
+          'projects_empty_state_svg_path' => projects_empty_state_svg_path
         }
       )
     end

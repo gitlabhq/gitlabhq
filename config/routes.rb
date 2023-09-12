@@ -117,6 +117,12 @@ InitializerConnections.raise_if_new_database_connection do
       get 'offline' => "pwa#offline"
       get 'manifest' => "pwa#manifest", constraints: lambda { |req| req.format == :json }
 
+      scope module: 'clusters' do
+        scope module: 'agents' do
+          get '/kubernetes/:agent_id', to: 'dashboard#show', as: 'kubernetes_dashboard'
+        end
+      end
+
       # '/-/health' implemented by BasicHealthCheck middleware
       get 'liveness' => 'health#liveness'
       get 'readiness' => 'health#readiness'

@@ -256,7 +256,7 @@ In our component, we then listen on the `aiCompletionResponse` using the `userId
 ```graphql
 subscription aiCompletionResponse($userId: UserID, $resourceId: AiModelID, $clientSubscriptionId: String) {
   aiCompletionResponse(userId: $userId, resourceId: $resourceId, clientSubscriptionId: $clientSubscriptionId) {
-    responseBody
+    content
     errors
   }
 }

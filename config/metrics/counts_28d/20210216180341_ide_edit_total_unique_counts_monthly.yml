@@ -18,7 +18,6 @@ options:
   - g_edit_by_web_ide
   - g_edit_by_sfe
   - g_edit_by_snippet_ide
-  - g_edit_by_live_preview
 distribution:
 - ce
 - ee

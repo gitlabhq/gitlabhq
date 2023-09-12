@@ -102,8 +102,14 @@ export default {
 </script>
 
 <template>
-  <div class="user-bar">
-    <div class="gl-display-flex gl-align-items-center gl-px-3 gl-py-2">
+  <div
+    class="user-bar gl-display-flex gl-p-3 gl-gap-1"
+    :class="{ 'gl-flex-direction-column gl-gap-3': sidebarData.is_logged_in }"
+  >
+    <div
+      v-if="hasCollapseButton || sidebarData.is_logged_in"
+      class="gl-display-flex gl-align-items-center gl-gap-1"
+    >
       <template v-if="sidebarData.is_logged_in">
         <brand-logo :logo-url="sidebarData.logo_url" />
         <gl-badge
@@ -111,7 +117,6 @@ export default {
           variant="success"
           :href="sidebarData.canary_toggle_com_url"
           size="sm"
-          class="gl-ml-2"
         >
           {{ $options.NEXT_LABEL }}
         </gl-badge>
@@ -146,7 +151,7 @@ export default {
     </div>
     <div
       v-if="sidebarData.is_logged_in"
-      class="gl-display-flex gl-justify-content-space-between gl-px-3 gl-pt-2 gl-pb-3 gl-gap-2"
+      class="gl-display-flex gl-justify-content-space-between gl-gap-2"
     >
       <counter
         v-gl-tooltip:super-sidebar.hover.noninteractive.ds500.bottom="$options.i18n.issues"
@@ -193,18 +198,16 @@ export default {
         data-track-property="nav_core_menu"
       />
     </div>
-    <div class="gl-px-3 gl-pb-3">
-      <button
-        id="super-sidebar-search"
-        v-gl-tooltip.bottom.hover.noninteractive.ds500.html="searchTooltip"
-        v-gl-modal="$options.SEARCH_MODAL_ID"
-        class="counter gl-display-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-inset-border-1-gray-a-08 gl-line-height-1 gl-focus--focus gl-w-full"
-        data-testid="super-sidebar-search-button"
-      >
-        <gl-icon name="search" />
-        {{ $options.i18n.searchBtnText }}
-      </button>
-      <search-modal @shown="hideSearchTooltip" @hidden="showSearchTooltip" />
-    </div>
+    <button
+      id="super-sidebar-search"
+      v-gl-tooltip.bottom.hover.noninteractive.ds500.html="searchTooltip"
+      v-gl-modal="$options.SEARCH_MODAL_ID"
+      class="counter gl-display-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-inset-border-1-gray-a-08 gl-line-height-1 gl-focus--focus gl-w-full"
+      data-testid="super-sidebar-search-button"
+    >
+      <gl-icon name="search" />
+      {{ $options.i18n.searchBtnText }}
+    </button>
+    <search-modal @shown="hideSearchTooltip" @hidden="showSearchTooltip" />
   </div>
 </template>
