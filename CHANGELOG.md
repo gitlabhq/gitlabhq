@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.3.3 (2023-09-12)
+
+### Fixed (2 changes)
+
+- [Prevent pipeline creation while import is running](gitlab-org/gitlab@b4e374ed7f5b264f04a2589a99004e568ef92319) ([merge request](gitlab-org/gitlab!131156))
+- [Create iid sequence for ci_pipelines with new projects](gitlab-org/gitlab@a74b9ac352e0d9783ec39adaadbe2b65028f8e0c) ([merge request](gitlab-org/gitlab!130835))
+
 ## 16.3.2 (2023-09-05)
 
 ### Fixed (2 changes)
