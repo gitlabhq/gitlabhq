@@ -12,6 +12,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Get the job's artifacts zipped archive of a project.
 
+If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
+as the request might redirect through a CND.
+
 ```plaintext
 GET /projects/:id/jobs/:job_id/artifacts
 ```
@@ -25,7 +28,7 @@ GET /projects/:id/jobs/:job_id/artifacts
 Example request using the `PRIVATE-TOKEN` header:
 
 ```shell
-curl --location --output artifacts.zip --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
+curl --location --output artifacts.zip --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
 ```
 
 To use this in a [`script` definition](../ci/yaml/index.md#script) inside
@@ -68,6 +71,9 @@ Download the artifacts zipped archive from the latest **successful** pipeline fo
 the given reference name and job, provided the job finished successfully. This
 is the same as [getting the job's artifacts](#get-job-artifacts), but by
 defining the job's name instead of its ID.
+
+If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
+as the request might redirect through a CND.
 
 NOTE:
 If a pipeline is [parent of other child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines), artifacts
@@ -132,6 +138,9 @@ Download a single artifact file from a job with a specified ID from inside
 the job's artifacts zipped archive. The file is extracted from the archive and
 streamed to the client.
 
+If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
+as the request might redirect through a CND.
+
 ```plaintext
 GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
 ```
@@ -171,6 +180,9 @@ The artifact file provides more detail than what is available in the
 Artifacts for [parent and child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)
 are searched in hierarchical order from parent to child. For example, if both parent and child pipelines
 have a job with the same name, the artifact from the parent pipeline is returned.
+
+If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
+as the request might redirect through a CND.
 
 ```plaintext
 GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name

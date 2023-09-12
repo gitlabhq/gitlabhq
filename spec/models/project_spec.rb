@@ -152,6 +152,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:npm_metadata_caches).class_name('Packages::Npm::MetadataCache') }
     it { is_expected.to have_one(:packages_cleanup_policy).class_name('Packages::Cleanup::Policy').inverse_of(:project) }
+    it { is_expected.to have_many(:package_protection_rules).class_name('Packages::Protection::Rule').inverse_of(:project) }
     it { is_expected.to have_many(:pipeline_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
     it { is_expected.to have_many(:timelogs) }

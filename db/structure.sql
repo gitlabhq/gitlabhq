@@ -11970,11 +11970,11 @@ CREATE TABLE application_settings (
     package_registry_allow_anyone_to_pull_option boolean DEFAULT true NOT NULL,
     bulk_import_max_download_file_size bigint DEFAULT 5120 NOT NULL,
     max_import_remote_file_size bigint DEFAULT 10240 NOT NULL,
-    sentry_clientside_traces_sample_rate double precision DEFAULT 0.0 NOT NULL,
     protected_paths_for_get_request text[] DEFAULT '{}'::text[] NOT NULL,
     max_decompressed_archive_size integer DEFAULT 25600 NOT NULL,
-    ci_max_total_yaml_size_bytes integer DEFAULT 157286400 NOT NULL,
+    sentry_clientside_traces_sample_rate double precision DEFAULT 0.0 NOT NULL,
     prometheus_alert_db_indicators_settings jsonb,
+    ci_max_total_yaml_size_bytes integer DEFAULT 157286400 NOT NULL,
     decompress_archive_file_timeout integer DEFAULT 210 NOT NULL,
     search_rate_limit_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
@@ -20296,6 +20296,26 @@ CREATE SEQUENCE packages_packages_id_seq
 
 ALTER SEQUENCE packages_packages_id_seq OWNED BY packages_packages.id;
 
+CREATE TABLE packages_protection_rules (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    push_protected_up_to_access_level integer NOT NULL,
+    package_type smallint NOT NULL,
+    package_name_pattern text NOT NULL,
+    CONSTRAINT check_d2d75d206d CHECK ((char_length(package_name_pattern) <= 255))
+);
+
+CREATE SEQUENCE packages_protection_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_protection_rules_id_seq OWNED BY packages_protection_rules.id;
+
 CREATE TABLE packages_pypi_metadata (
     package_id bigint NOT NULL,
     required_python text DEFAULT ''::text,
@@ -26200,6 +26220,8 @@ ALTER TABLE ONLY packages_package_files ALTER COLUMN id SET DEFAULT nextval('pac
 
 ALTER TABLE ONLY packages_packages ALTER COLUMN id SET DEFAULT nextval('packages_packages_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_protection_rules ALTER COLUMN id SET DEFAULT nextval('packages_protection_rules_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_rpm_repository_files ALTER COLUMN id SET DEFAULT nextval('packages_rpm_repository_files_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_tags ALTER COLUMN id SET DEFAULT nextval('packages_tags_id_seq'::regclass);
@@ -28548,6 +28570,9 @@ ALTER TABLE ONLY packages_package_files
 ALTER TABLE ONLY packages_packages
     ADD CONSTRAINT packages_packages_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY packages_protection_rules
+    ADD CONSTRAINT packages_protection_rules_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY packages_pypi_metadata
     ADD CONSTRAINT packages_pypi_metadata_pkey PRIMARY KEY (package_id);
 
@@ -30513,6 +30538,8 @@ CREATE INDEX i_dast_pre_scan_verification_steps_on_pre_scan_verification_id ON d
 CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags USING btree (dast_profile_id);
 
 CREATE INDEX i_dast_scanner_profiles_tags_on_scanner_profiles_id ON dast_scanner_profiles_tags USING btree (dast_scanner_profile_id);
+
+CREATE UNIQUE INDEX i_packages_unique_project_id_package_type_package_name_pattern ON packages_protection_rules USING btree (project_id, package_type, package_name_pattern);
 
 CREATE INDEX i_pkgs_deb_file_meta_on_updated_at_package_file_id_when_unknown ON packages_debian_file_metadata USING btree (updated_at, package_file_id) WHERE (file_type = 1);
 
@@ -38874,6 +38901,9 @@ ALTER TABLE ONLY clusters_integration_prometheus
 
 ALTER TABLE ONLY vulnerability_occurrence_identifiers
     ADD CONSTRAINT fk_rails_e4ef6d027c FOREIGN KEY (occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_protection_rules
+    ADD CONSTRAINT fk_rails_e52adb5267 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_flags
     ADD CONSTRAINT fk_rails_e59393b48b FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;

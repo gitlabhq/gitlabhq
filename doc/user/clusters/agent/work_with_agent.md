@@ -4,9 +4,9 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Working with the agent for Kubernetes **(FREE ALL)**
+# Managing the agent for Kubernetes instances **(FREE ALL)**
 
-Use the following tasks when working with the agent for Kubernetes.
+Use the following tasks when you work with the agent for Kubernetes.
 
 ## View your agents
 

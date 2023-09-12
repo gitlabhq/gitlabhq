@@ -28958,6 +28958,9 @@ msgstr ""
 msgid "MemberRoles|Select a standard role to add permissions."
 msgstr ""
 
+msgid "MemberRoles|To add a new role select 'Add new role'."
+msgstr ""
+
 msgid "MemberRoles|To add a new role select a group and then 'Add new role'."
 msgstr ""
 

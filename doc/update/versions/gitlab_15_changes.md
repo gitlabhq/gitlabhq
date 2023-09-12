@@ -64,7 +64,7 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
   - To resolve this issue, upgrade to 15.11 or use the workaround in the issue.
 - A [bug with zero-downtime reindexing](https://gitlab.com/gitlab-org/gitlab/-/issues/422938) can cause a `Couldn't load task status` error when you reindex. You might also get a `sliceId must be greater than 0 but was [-1]` error on the Elasticsearch host. As a workaround, consider [reindexing from scratch](../../integration/advanced_search/elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index) or upgrading to GitLab 16.3.
 - Gitaly configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.10 while backwards compatibility is
-  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](gitlab_16_changes.md#1600).
+  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](gitlab_16_changes.md#gitaly-configuration-structure-change).
 - You might encounter the following error while upgrading to GitLab 15.10 or later:
 
   ```shell
@@ -143,7 +143,7 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
 
   You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. [Read more about repository verification, and to see an example log entry](../../administration/gitaly/praefect.md#repository-verification).
 - Praefect configuration changes significantly in Omnibus GitLab 16.0. You can begin migrating to the new structure in Omnibus GitLab 15.9 while backwards compatibility is
-  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](gitlab_16_changes.md#1600).
+  maintained in the lead up to Omnibus GitLab 16.0. [Read more about this change](gitlab_16_changes.md#praefect-configuration-structure-change).
 
 ### Self-compiled installations
 

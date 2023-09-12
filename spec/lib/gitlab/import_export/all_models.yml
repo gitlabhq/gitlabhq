@@ -738,6 +738,7 @@ project:
 - project_registry
 - packages
 - package_files
+- package_protection_rules
 - rpm_repository_files
 - npm_metadata_caches
 - packages_cleanup_policy
