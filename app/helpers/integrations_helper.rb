@@ -324,7 +324,8 @@ module IntegrationsHelper
   def serialize_integration(integration, group: nil, project: nil)
     {
       id: integration.id,
-      active: integration.operating?,
+      active: integration.activated?,
+      configured: integration.persisted?,
       title: integration.title,
       description: integration.description,
       updated_at: integration.updated_at,

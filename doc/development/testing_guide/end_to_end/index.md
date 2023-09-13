@@ -55,17 +55,17 @@ graph TB
     A2 -.->|1. Triggers an `omnibus-gitlab-mirror` pipeline<br>and wait for it to be done| B1
     B2[`Trigger-qa` stage<br>`Trigger:qa-test` job] -.->|2. Triggers a `gitlab-qa-mirror` pipeline<br>and wait for it to be done| C1
 
-subgraph "`gitlab-org/gitlab` pipeline"
+subgraph " `gitlab-org/gitlab` pipeline"
     A1[`build-images` stage<br>`build-qa-image` and `build-assets-image` jobs]
     A2[`qa` stage<br>`e2e:package-and-test` job]
     end
 
-subgraph "`gitlab-org/build/omnibus-gitlab-mirror` pipeline"
+subgraph " `gitlab-org/build/omnibus-gitlab-mirror` pipeline"
     B1[`Trigger-docker` stage<br>`Trigger:gitlab-docker` job] -->|once done| B2
     end
 
-subgraph "`gitlab-org/gitlab-qa-mirror` pipeline"
-    C1>End-to-end jobs run]
+subgraph " `gitlab-org/gitlab-qa-mirror` pipeline"
+    C1[End-to-end jobs run]
     end
 ```
 

@@ -62,20 +62,45 @@ the documentation helps others efficiently accomplish tasks and solve problems.
 
 ## Writing for localization
 
-The GitLab documentation is not localized, but we follow guidelines that
-help benefit translation. For example, we:
+The GitLab documentation is not localized, but we follow guidelines that help us write for a global audience.
 
-- Write in [active voice](word_list.md#active-voice).
-- Write in [present tense](word_list.md#future-tense).
-- Avoid words that can be translated incorrectly, like:
-  - [since and because](word_list.md#since)
-  - [once and after](word_list.md#once)
-  - [it](word_list.md#it)
-- Avoid [-ing](word_list.md#-ing-words) words.
+[The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly with translation in mind.
+Our style guide, [word list](word_list.md), and [Vale rules](../testing.md) ensure consistency in the documentation.
 
-[The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly,
-and with translation in mind. [The word list](word_list.md) and our Vale rules
-also aid in consistency, which is important for localization.
+When documentation is translated into other languages, the meaning of each word must be clear.
+The increasing use of machine translation, GitLab Duo Chat, and other AI tools
+means that consistency is even more important.
+
+The following rules can help documentation be translated more efficiently.
+
+Avoid:
+
+- Phrases that hide the subject like [**there is** and **there are**](word_list.md#there-is-there-are).
+- Ambiguous pronouns like [**it**](word_list.md#it).
+- Words that end in [**-ing**](word_list.md#-ing-words).
+- Words that can be confused with one another like [**since**](word_list.md#since) and **because**.
+- Latin abbreviations like [**e.g.**](word_list.md#eg) and [**i.e.**](word_list.md#ie).
+- Culture-specific references like **kill two birds with one stone**.
+
+Use:
+
+- Standard [text for links](#text-for-links).
+- [Lists](#lists) and [tables](#tables) instead of complex sentences and paragraphs.
+- Common abbreviations like [**AI**](word_list.md#ai-artificial-intelligence) and
+  [**CI/CD**](word_list.md#cicd) and abbreviations you've previously spelled out.
+
+Also, keep the following guidance in mind:
+
+- Be consistent with [feature names](#feature-names) and how to interact with them.
+- Break up noun strings. For example, instead of **project integration custom settings**,
+  use **custom settings for project integrations**.
+- Format [dates and times](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/date-time-terms)
+  consistently and for an international audience.
+- Use [images](#images), including screenshots, sparingly.
+- For [UI text](#ui-text), allow for up to 30% expansion and contraction in translation.
+  To see how much a string expands or contracts in another language, paste the string
+  into [Google Translate](https://translate.google.com/) and review the results.
+  You can ask a colleague who speaks the language to verify if the translation is clear.
 
 ## Markdown
 

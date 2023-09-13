@@ -62,7 +62,7 @@ module Users
       project_quality_summary_feedback: 59, # EE-only
       merge_request_settings_moved_callout: 60,
       new_top_level_group_alert: 61,
-      artifacts_management_page_feedback_banner: 62,
+      # 62, removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131314
       # 63 and 64 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120233
       branch_rules_info_callout: 65,
       create_runner_workflow_banner: 66,

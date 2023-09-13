@@ -93,8 +93,11 @@ export default {
   },
   methods: {
     getStatusTooltipTitle(integration) {
-      return sprintf(s__('Integrations|%{integrationTitle}: active'), {
+      const status = integration.active ? 'active' : 'inactive';
+
+      return sprintf(s__('Integrations|%{integrationTitle}: %{status}'), {
         integrationTitle: integration.title,
+        status,
       });
     },
   },
@@ -105,10 +108,10 @@ export default {
   <gl-table :items="filteredIntegrations" :fields="fields" :empty-text="emptyText" show-empty fixed>
     <template #cell(active)="{ item }">
       <gl-icon
-        v-if="item.active"
+        v-if="item.configured"
         v-gl-tooltip
-        name="check"
-        class="gl-text-green-500"
+        :name="item.active ? 'status-success' : 'status-paused'"
+        :class="item.active ? 'gl-text-green-500' : 'gl-text-gray-500'"
         :title="getStatusTooltipTitle(item)"
       />
     </template>

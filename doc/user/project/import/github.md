@@ -86,6 +86,8 @@ If you are importing from GitHub.com to a self-managed GitLab instance:
 - Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383047), if you are using GitHub as an
   OmniAuth provider, ensure that the URL perimeter is specified in the
   [OmniAuth configuration](../../../integration/github.md#enable-github-oauth-in-gitlab).
+- Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424400), Markdown attachments from
+  repositories on GitHub Enterprise Server instances aren't imported.
 
 ## Import your GitHub repository into GitLab
 

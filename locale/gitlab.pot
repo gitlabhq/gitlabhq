@@ -6478,16 +6478,10 @@ msgstr ""
 msgid "Artifacts|Delete selected"
 msgstr ""
 
-msgid "Artifacts|Help us improve this page"
-msgstr ""
-
 msgid "Artifacts|Maximum selected artifacts limit reached"
 msgstr ""
 
 msgid "Artifacts|Something went wrong while deleting. Please refresh the page to try again."
-msgstr ""
-
-msgid "Artifacts|Take a quick survey"
 msgstr ""
 
 msgid "Artifacts|The selected artifact will be permanently deleted. Any reports generated from these artifacts will be empty."
@@ -6499,9 +6493,6 @@ msgid "Artifacts|This artifact will be permanently deleted. Any reports generate
 msgstr ""
 
 msgid "Artifacts|Total artifacts size"
-msgstr ""
-
-msgid "Artifacts|We want you to be able to use this page to easily manage your CI/CD job artifacts. We are working to improve this experience and would appreciate any feedback you have about the improvements we are making."
 msgstr ""
 
 msgid "As this is a newly created account, to get started, click the link below to confirm your account."
@@ -25062,7 +25053,7 @@ msgstr ""
 msgid "Integrations"
 msgstr ""
 
-msgid "Integrations|%{integrationTitle}: active"
+msgid "Integrations|%{integrationTitle}: %{status}"
 msgstr ""
 
 msgid "Integrations|%{integration} settings saved and active."

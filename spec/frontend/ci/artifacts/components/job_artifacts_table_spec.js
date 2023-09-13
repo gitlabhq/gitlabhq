@@ -13,7 +13,6 @@ import getJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import JobArtifactsTable from '~/ci/artifacts/components/job_artifacts_table.vue';
-import FeedbackBanner from '~/ci/artifacts/components/feedback_banner.vue';
 import ArtifactsTableRowDetails from '~/ci/artifacts/components/artifacts_table_row_details.vue';
 import ArtifactDeleteModal from '~/ci/artifacts/components/artifact_delete_modal.vue';
 import ArtifactsBulkDelete from '~/ci/artifacts/components/artifacts_bulk_delete.vue';
@@ -45,8 +44,6 @@ describe('JobArtifactsTable component', () => {
   let requestHandlers;
 
   const mockToastShow = jest.fn();
-
-  const findBanner = () => wrapper.findComponent(FeedbackBanner);
 
   const findLoadingState = () => wrapper.findComponent(GlLoadingIcon);
   const findTable = () => wrapper.findComponent(GlTable);
@@ -162,7 +159,6 @@ describe('JobArtifactsTable component', () => {
         projectPath: 'project/path',
         projectId,
         canDestroyArtifacts,
-        artifactsManagementFeedbackImagePath: 'banner/image/path',
       },
       mocks: {
         $toast: {
@@ -174,12 +170,6 @@ describe('JobArtifactsTable component', () => {
       },
     });
   };
-
-  it('renders feedback banner', () => {
-    createComponent();
-
-    expect(findBanner().exists()).toBe(true);
-  });
 
   it('when loading, shows a loading state', () => {
     createComponent();
@@ -373,6 +363,7 @@ describe('JobArtifactsTable component', () => {
     it('is disabled when job has no metadata.gz', async () => {
       const jobWithoutMetadata = {
         ...job,
+        hasArtifacts: true,
         artifacts: { nodes: [archiveArtifact] },
       };
 
@@ -389,6 +380,7 @@ describe('JobArtifactsTable component', () => {
     it('is disabled when job has no artifacts', async () => {
       const jobWithoutArtifacts = {
         ...job,
+        hasArtifacts: false,
         artifacts: { nodes: [] },
       };
 

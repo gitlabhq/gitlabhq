@@ -47,13 +47,6 @@ export const I18N_MODAL_BODY = s__(
 export const I18N_MODAL_PRIMARY = s__('Artifacts|Delete artifact');
 export const I18N_MODAL_CANCEL = __('Cancel');
 
-export const I18N_FEEDBACK_BANNER_TITLE = s__('Artifacts|Help us improve this page');
-export const I18N_FEEDBACK_BANNER_BODY = s__(
-  'Artifacts|We want you to be able to use this page to easily manage your CI/CD job artifacts. We are working to improve this experience and would appreciate any feedback you have about the improvements we are making.',
-);
-export const I18N_FEEDBACK_BANNER_BUTTON = s__('Artifacts|Take a quick survey');
-export const FEEDBACK_URL = 'https://gitlab.fra1.qualtrics.com/jfe/form/SV_cI9rAUI20Vo2St8';
-
 export const SELECTED_ARTIFACTS_MAX_COUNT = 50;
 export const I18N_BULK_DELETE_MAX_SELECTED = s__(
   'Artifacts|Maximum selected artifacts limit reached',

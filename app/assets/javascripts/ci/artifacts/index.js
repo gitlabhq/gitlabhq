@@ -19,12 +19,7 @@ export const initArtifactsTable = () => {
     return false;
   }
 
-  const {
-    projectPath,
-    projectId,
-    canDestroyArtifacts,
-    artifactsManagementFeedbackImagePath,
-  } = el.dataset;
+  const { projectPath, projectId, canDestroyArtifacts } = el.dataset;
 
   return new Vue({
     el,
@@ -33,7 +28,6 @@ export const initArtifactsTable = () => {
       projectPath,
       projectId,
       canDestroyArtifacts: parseBoolean(canDestroyArtifacts),
-      artifactsManagementFeedbackImagePath,
     },
     render: (createElement) => createElement(App),
   });

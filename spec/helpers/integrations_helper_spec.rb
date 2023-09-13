@@ -180,7 +180,8 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
     it 'serializes the integration' do
       is_expected.to match(a_hash_including(
         id: nil,
-        active: false,
+        active: true,
+        configured: false,
         title: 'Jenkins',
         description: _('Run CI/CD pipelines with Jenkins.'),
         updated_at: nil,
