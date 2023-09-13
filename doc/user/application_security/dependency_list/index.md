@@ -117,4 +117,10 @@ You can download your group's or project's list of dependencies and their detail
 
 ### Using the API
 
+#### List project Dependencies
+
 You can download your project's list of dependencies [using the API](../../../api/dependencies.md#list-project-dependencies). Note this only provides the dependencies identified by the [Gemnasium family of analyzers](../dependency_scanning/index.md#dependency-analyzers) and not any other of the GitLab dependency analyzers.
+
+#### Export pipeline dependency list
+
+You can download your project's list of dependencies identified in a pipeline [using the API](../../../api/dependency_list_export.md).

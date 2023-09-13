@@ -61,12 +61,7 @@ describe('IssueBoardFilter', () => {
       ({ isSignedIn }) => {
         createComponent({ isSignedIn });
 
-        const tokens = mockTokens(
-          fetchLabelsSpy,
-          fetchUsersSpy,
-          wrapper.vm.fetchMilestones,
-          isSignedIn,
-        );
+        const tokens = mockTokens(fetchLabelsSpy, fetchUsersSpy, isSignedIn);
 
         expect(findBoardsFilteredSearch().props('tokens')).toEqual(orderBy(tokens, ['title']));
       },

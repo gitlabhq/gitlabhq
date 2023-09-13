@@ -43,7 +43,7 @@ To install the agent in your cluster:
 For configuration settings, the agent uses a YAML file in the GitLab project. You must create this file if:
 
 - You use [a GitOps workflow](../gitops/agent.md#gitops-workflow-steps).
-- You use [a GitLab CI/CD workflow](../ci_cd_workflow.md#gitlab-cicd-workflow-steps) and want to authorize a different project to use the agent.
+- You use [a GitLab CI/CD workflow](../ci_cd_workflow.md#use-gitlab-cicd-with-your-cluster) and want to authorize a different project to use the agent.
 - You [allow specific project or group members to access Kubernetes](../user_access.md).
 
 To create an agent configuration file:

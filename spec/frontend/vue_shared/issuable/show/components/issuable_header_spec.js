@@ -170,7 +170,7 @@ describe('IssuableHeader component', () => {
 
       expect(findWorkItemTypeIcon().props()).toMatchObject({
         showText: true,
-        workItemType: 'ISSUE',
+        workItemType: 'issue',
       });
     });
 

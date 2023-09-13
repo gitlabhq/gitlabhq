@@ -158,6 +158,7 @@ The following API resources are available outside of project and group contexts 
 | [Code snippets](snippets.md)                                                                 | `/snippets`                                                                                      |
 | [Code Suggestions](code_suggestions.md)                                                      | `/code_suggestions`                                                                              |
 | [Custom attributes](custom_attributes.md)                                                    | `/users/:id/custom_attributes` (also available for groups and projects)                          |
+| [Dependency list exports](dependency_list_export.md) **(ULTIMATE ALL)**                      | `/pipelines/:id/dependency_list_exports`, `/projects/:id/dependency_list_exports`, `/groups/:id/dependency_list_exports`, `/security/dependency_list_exports/:id`, `/security/dependency_list_exports/:id/download` |
 | [Deploy keys](deploy_keys.md)                                                                | `/deploy_keys` (also available for projects)                                                     |
 | [Deploy tokens](deploy_tokens.md)                                                            | `/deploy_tokens` (also available for projects and groups)                                        |
 | [Events](events.md)                                                                          | `/events`, `/users/:id/events` (also available for projects)                                     |

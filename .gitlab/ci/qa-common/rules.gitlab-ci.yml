@@ -45,7 +45,7 @@
 
 # If Schedule pipeline
 .if-schedule-pipeline: &if-schedule-pipeline
-  if: '$CI_PIPELINE_SOURCE == "schedule"'
+  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $SCHEDULE_TYPE == "maintenance"'
 
 # Selective test execution against omnibus instance have following execution scenarios:
 #   * only e2e spec files changed - runs only changed specs

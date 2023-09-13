@@ -32,6 +32,9 @@ After you add templates, you can use them for the entire instance.
 They are available in the [Web Editor](../../user/project/repository/web_editor.md)
 and through the [API settings](../../api/settings.md).
 
+These templates cannot be used as a value of the
+[`include:template`](../../ci/yaml/index.md#includetemplate) key in `.gitlab-ci.yml`.
+
 ## Supported file types and locations
 
 Templates must be added to a specific subdirectory in the repository,

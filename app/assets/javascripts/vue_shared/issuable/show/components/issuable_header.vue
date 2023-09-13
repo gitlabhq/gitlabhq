@@ -192,9 +192,8 @@ export default {
       </span>
       <work-item-type-icon
         v-if="shouldShowWorkItemTypeIcon"
-        class="gl-m-0!"
         show-text
-        :work-item-type="issuableType.toUpperCase()"
+        :work-item-type="issuableType"
       />
       <gl-sprintf :message="createdMessage">
         <template #timeAgo>

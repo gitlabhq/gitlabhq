@@ -84,6 +84,19 @@ export const mockMilestones = [
   mockEscapedMilestone,
 ];
 
+export const projectMilestonesResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      attributes: {
+        nodes: mockMilestones,
+        __typename: 'MilestoneConnection',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
 export const mockCrmContacts = [
   {
     __typename: 'CustomerRelationsContact',
@@ -257,7 +270,8 @@ export const mockMilestoneToken = {
   symbol: '%',
   token: MilestoneToken,
   operators: OPERATORS_IS,
-  fetchMilestones: () => Promise.resolve({ data: mockMilestones }),
+  fullPath: 'gitlab-org',
+  isProject: true,
 };
 
 export const mockReleaseToken = {

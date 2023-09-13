@@ -1,6 +1,11 @@
 #import "./milestone.fragment.graphql"
 
-query searchMilestones($fullPath: ID!, $search: String, $isProject: Boolean = false) {
+query searchMilestones(
+  $fullPath: ID!
+  $search: String
+  $isProject: Boolean = false
+  $state: MilestoneStateEnum
+) {
   group(fullPath: $fullPath) @skip(if: $isProject) {
     id
     milestones(
@@ -8,7 +13,7 @@ query searchMilestones($fullPath: ID!, $search: String, $isProject: Boolean = fa
       includeAncestors: true
       includeDescendants: true
       sort: EXPIRED_LAST_DUE_DATE_ASC
-      state: active
+      state: $state
     ) {
       nodes {
         ...Milestone
@@ -21,7 +26,7 @@ query searchMilestones($fullPath: ID!, $search: String, $isProject: Boolean = fa
       searchTitle: $search
       includeAncestors: true
       sort: EXPIRED_LAST_DUE_DATE_ASC
-      state: active
+      state: $state
     ) {
       nodes {
         ...Milestone

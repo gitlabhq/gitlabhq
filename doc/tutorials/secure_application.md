@@ -11,6 +11,7 @@ GitLab can check your application for security vulnerabilities and that it meets
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | [Set up dependency scanning](dependency_scanning.md) | Learn how to detect vulnerabilities in an application's dependencies. | **{star}** |
+| [Export Dependency List in SBOM format](export_sbom.md) | Learn how to export an application's dependencies to the CycloneDX SBOM format. | **{star}** |
 | [Create a compliance pipeline](compliance_pipeline/index.md) | Learn how to create compliance pipelines for your groups. | **{star}** |
 | [Set up a scan result policy](scan_result_policy/index.md) | Learn how to configure a scan result policy that takes action based on scan results. | **{star}** |
 | [Scan a Docker container for vulnerabilities](container_scanning/index.md) | Learn how to use container scanning templates to add container scanning to your projects. | **{star}** |

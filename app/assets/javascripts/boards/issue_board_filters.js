@@ -1,7 +1,5 @@
 import { BoardType } from 'ee_else_ce/boards/constants';
 import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
-import groupBoardMilestonesQuery from './graphql/group_board_milestones.query.graphql';
-import projectBoardMilestonesQuery from './graphql/project_board_milestones.query.graphql';
 import boardLabels from './graphql/board_labels.query.graphql';
 
 export default function issueBoardFilters(apollo, fullPath, isGroupBoard) {
@@ -34,27 +32,8 @@ export default function issueBoardFilters(apollo, fullPath, isGroupBoard) {
       .then(transformLabels);
   };
 
-  const fetchMilestones = (searchTerm) => {
-    const variables = {
-      fullPath,
-      searchTerm,
-    };
-
-    const query = isGroupBoard ? groupBoardMilestonesQuery : projectBoardMilestonesQuery;
-
-    return apollo
-      .query({
-        query,
-        variables,
-      })
-      .then(({ data }) => {
-        return data.workspace?.milestones.nodes;
-      });
-  };
-
   return {
     fetchLabels,
     fetchUsers,
-    fetchMilestones,
   };
 }

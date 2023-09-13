@@ -6,17 +6,27 @@ import {
 } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { sortMilestonesByDueDate } from '~/milestones/utils';
 
+import searchMilestonesQuery from '~/issues/list/queries/search_milestones.query.graphql';
 import { DEFAULT_MILESTONES } from '~/vue_shared/components/filtered_search_bar/constants';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
-import { mockMilestoneToken, mockMilestones, mockRegularMilestone } from '../mock_data';
+import {
+  mockMilestoneToken,
+  mockMilestones,
+  mockRegularMilestone,
+  projectMilestonesResponse,
+} from '../mock_data';
+
+Vue.use(VueApollo);
 
 jest.mock('~/alert');
 jest.mock('~/milestones/utils');
@@ -31,6 +41,9 @@ const defaultStubs = {
   },
 };
 
+const milestonesQueryHandler = jest.fn().mockResolvedValue(projectMilestonesResponse);
+const mockApollo = createMockApollo([[searchMilestonesQuery, milestonesQueryHandler]]);
+
 function createComponent(options = {}) {
   const {
     config = { ...mockMilestoneToken, shouldSkipSort: true },
@@ -39,6 +52,7 @@ function createComponent(options = {}) {
     stubs = defaultStubs,
   } = options;
   return mount(MilestoneToken, {
+    apolloProvider: mockApollo,
     propsData: {
       config,
       value,
@@ -99,6 +113,33 @@ describe('MilestoneToken', () => {
           await triggerFetchMilestones();
 
           expect(sortMilestonesByDueDate).toHaveBeenCalledTimes(0);
+        });
+      });
+
+      describe('default - when fetchMilestones function is not provided in config', () => {
+        beforeEach(() => {
+          wrapper = createComponent({});
+          return triggerFetchMilestones();
+        });
+
+        it('calls searchMilestonesQuery to fetch milestones', () => {
+          expect(milestonesQueryHandler).toHaveBeenCalledWith({
+            fullPath: mockMilestoneToken.fullPath,
+            isProject: mockMilestoneToken.isProject,
+            search: null,
+          });
+        });
+
+        it('calls searchMilestonesQuery with search parameter when provided', async () => {
+          const searchTerm = 'foo';
+
+          await triggerFetchMilestones(searchTerm);
+
+          expect(milestonesQueryHandler).toHaveBeenCalledWith({
+            fullPath: mockMilestoneToken.fullPath,
+            isProject: mockMilestoneToken.isProject,
+            search: searchTerm,
+          });
         });
       });
 

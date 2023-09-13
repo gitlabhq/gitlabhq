@@ -41427,6 +41427,9 @@ msgstr ""
 msgid "ScanResultPolicy|Attributes are automatically applied by the scanners"
 msgstr ""
 
+msgid "ScanResultPolicy|Block users from modifying protected branches"
+msgstr ""
+
 msgid "ScanResultPolicy|Choose criteria type"
 msgstr ""
 
@@ -41493,10 +41496,19 @@ msgstr ""
 msgid "ScanResultPolicy|Pre-existing"
 msgstr ""
 
-msgid "ScanResultPolicy|Prevent branch protection modification"
+msgid "ScanResultPolicy|Prevent approval by anyone who added a commit"
+msgstr ""
+
+msgid "ScanResultPolicy|Prevent approval by merge request's author"
 msgstr ""
 
 msgid "ScanResultPolicy|Protected branch settings"
+msgstr ""
+
+msgid "ScanResultPolicy|Remove all approvals when commit is added"
+msgstr ""
+
+msgid "ScanResultPolicy|Require the user's password to approve"
 msgstr ""
 
 msgid "ScanResultPolicy|Select a scan type before adding criteria"
@@ -41530,6 +41542,9 @@ msgid "ScanResultPolicy|When %{scanType} in an open that targets %{branches} %{b
 msgstr ""
 
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} %{branchExceptions} and match %{boldDescription} of the following criteria"
+msgstr ""
+
+msgid "ScanResultPolicy|When enabled, two person approval will be required on all MRs as merge request authors cannot approve their own MRs and merge them unilaterally"
 msgstr ""
 
 msgid "ScanResultPolicy|any commits"

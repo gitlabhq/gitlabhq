@@ -99,7 +99,6 @@ import {
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
-import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
 import setSortPreferenceMutation from '../queries/set_sort_preference.mutation.graphql';
 import {
   convertToApiParams,
@@ -405,9 +404,10 @@ export default {
           title: TOKEN_TITLE_MILESTONE,
           icon: 'clock',
           token: MilestoneToken,
-          fetchMilestones: this.fetchMilestones,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-milestone`,
           shouldSkipSort: true,
+          fullPath: this.fullPath,
+          isProject: this.isProject,
         },
         {
           type: TOKEN_TYPE_LABEL,
@@ -633,14 +633,6 @@ export default {
     },
     fetchLatestLabels(search) {
       return this.fetchLabelsWithFetchPolicy(search, fetchPolicies.NETWORK_ONLY);
-    },
-    fetchMilestones(search) {
-      return this.$apollo
-        .query({
-          query: searchMilestonesQuery,
-          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
-        })
-        .then(({ data }) => data[this.namespace]?.milestones.nodes);
     },
     fetchUsers(search) {
       return this.$apollo

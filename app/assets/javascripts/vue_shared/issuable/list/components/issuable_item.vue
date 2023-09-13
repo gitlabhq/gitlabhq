@@ -251,6 +251,7 @@ export default {
       <div data-testid="issuable-title" class="issue-title title">
         <work-item-type-icon
           v-if="showWorkItemTypeIcon"
+          class="gl-mr-2"
           :work-item-type="type"
           show-tooltip-on-hover
         />

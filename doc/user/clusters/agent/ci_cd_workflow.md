@@ -15,9 +15,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - The ability to switch between certificate-based clusters and agents was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335089) in GitLab 14.9. The certificate-based cluster context is always called `gitlab-deploy`.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80508) from _CI/CD tunnel_ to _CI/CD workflow_ in GitLab 14.9.
 
-You can use a GitLab CI/CD workflow to safely deploy to and update your Kubernetes clusters.
+You can use GitLab CI/CD to safely connect, deploy, and update your Kubernetes clusters.
 
-To do so, you must first [install an agent in your cluster](install/index.md). When done, you have a Kubernetes context and can
+To do so, [install an agent in your cluster](install/index.md). When done, you have a Kubernetes context and can
 run Kubernetes API commands in your GitLab CI/CD pipeline.
 
 To ensure access to your cluster is safe:
@@ -25,11 +25,11 @@ To ensure access to your cluster is safe:
 - Each agent has a separate context (`kubecontext`).
 - Only the project where the agent is configured, and any additional projects you authorize, can access the agent in your cluster.
 
-The CI/CD workflow requires runners to be registered with GitLab, but these runners do not have to be in the cluster where the agent is.
+To use GitLab CI/CD to interact with your cluster, runners must be registered with GitLab. However, these runners do not have to be in the cluster where the agent is.
 
-## GitLab CI/CD workflow steps
+## Use GitLab CI/CD with your cluster
 
-To update a Kubernetes cluster by using GitLab CI/CD, complete the following steps.
+To update a Kubernetes cluster with GitLab CI/CD:
 
 1. Ensure you have a working Kubernetes cluster and the manifests are in a GitLab project.
 1. In the same GitLab project, [register and install the GitLab agent](install/index.md).
