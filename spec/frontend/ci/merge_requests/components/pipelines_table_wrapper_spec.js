@@ -7,7 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import { createAlert } from '~/alert';
-import PipelinesTableWrapper from '~/commit/pipelines/pipelines_table_wrapper.vue';
+import PipelinesTableWrapper from '~/ci/merge_requests/components/pipelines_table_wrapper.vue';
 import getMergeRequestsPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 
 import { mergeRequestPipelinesResponse } from '../mock_data';

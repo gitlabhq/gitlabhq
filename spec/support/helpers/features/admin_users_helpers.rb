@@ -4,7 +4,7 @@ module Features
   module AdminUsersHelpers
     def click_user_dropdown_toggle(user_id)
       page.within("[data-testid='user-actions-#{user_id}']") do
-        find("[data-testid='dropdown-toggle']").click
+        find("[data-testid='user-actions-dropdown-toggle']").click
       end
     end
 

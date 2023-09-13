@@ -116,8 +116,7 @@ export default {
         category="tertiary"
         :toggle-text="$options.i18n.userAdministration"
         text-sr-only
-        data-testid="dropdown-toggle"
-        data-qa-selector="user_actions_dropdown_toggle"
+        data-testid="user-actions-dropdown-toggle"
         :data-qa-username="user.username"
         no-caret
       >

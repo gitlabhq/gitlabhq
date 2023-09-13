@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class WebHookLog < ApplicationRecord
-  include SafeUrl
   include Presentable
   include DeleteWithLimit
   include CreatedAtFilterable
@@ -69,7 +68,7 @@ class WebHookLog < ApplicationRecord
   private
 
   def obfuscate_basic_auth
-    self.url = safe_url
+    self.url = Gitlab::UrlSanitizer.sanitize_masked_url(url)
   end
 
   def redact_user_emails

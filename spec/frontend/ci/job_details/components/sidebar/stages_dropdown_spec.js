@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import StagesDropdown from '~/ci/job_details/components/sidebar/stages_dropdown.vue';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import * as copyToClipboard from '~/behaviors/copy_to_clipboard';
 import {
   mockPipelineWithoutRef,
@@ -15,7 +15,7 @@ import {
 describe('Stages Dropdown', () => {
   let wrapper;
 
-  const findStatus = () => wrapper.findComponent(CiIcon);
+  const findStatus = () => wrapper.findComponent(CiBadgeLink);
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findSelectedStageText = () => findDropdown().props('toggleText');
 

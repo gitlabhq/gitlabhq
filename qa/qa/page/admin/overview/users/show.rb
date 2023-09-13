@@ -7,54 +7,53 @@ module QA
         module Users
           class Show < QA::Page::Base
             view 'app/views/admin/users/_head.html.haml' do
-              element :impersonate_user_link
-              element :impersonation_tokens_tab
+              element 'impersonate-user-link'
+              element 'impersonation-tokens-tab'
             end
 
             view 'app/views/admin/users/show.html.haml' do
-              element :user_id_content
+              element 'user-id-content'
             end
 
             view 'app/assets/javascripts/admin/users/components/actions/approve.vue' do
-              element :approve_user_button
-              element :approve_user_confirm_button
+              element 'approve-user-confirm-button'
             end
 
             view 'app/assets/javascripts/admin/users/components/user_actions.vue' do
-              element :user_actions_dropdown_toggle
+              element 'user-actions-dropdown-toggle'
             end
 
             view 'app/helpers/users_helper.rb' do
-              element :confirm_user_button
-              element :confirm_user_confirm_button
+              element 'confirm-user-button'
+              element 'confirm-user-confirm-button'
             end
 
             def open_user_actions_dropdown(user)
-              click_element(:user_actions_dropdown_toggle, username: user.username)
+              click_element('user-actions-dropdown-toggle', username: user.username)
             end
 
             def go_to_impersonation_tokens(&block)
-              navigate_to_tab(:impersonation_tokens_tab)
+              navigate_to_tab('impersonation-tokens-tab')
               Users::Components::ImpersonationTokens.perform(&block)
             end
 
             def click_impersonate_user
-              click_element(:impersonate_user_link)
+              click_element('impersonate-user-link')
             end
 
             def user_id
-              find_element(:user_id_content).text
+              find_element('user-id-content').text
             end
 
             def confirm_user
-              click_element :confirm_user_button
-              click_element :confirm_user_confirm_button
+              click_element 'confirm-user-button'
+              click_element 'confirm-user-confirm-button'
             end
 
             def approve_user(user)
               open_user_actions_dropdown(user)
-              click_element :approve_user_button
-              click_element :approve_user_confirm_button
+              click_element 'approve'
+              click_element 'approve-user-confirm-button'
             end
 
             private

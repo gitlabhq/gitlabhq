@@ -22,25 +22,32 @@ export default {
 </script>
 <template>
   <div>
-    <span class="gl-font-weight-bold">{{ __('Commit') }}</span>
+    <p class="gl-display-flex gl-flex-wrap gl-align-items-baseline gl-gap-2 gl-mb-0">
+      <span class="gl-display-flex gl-font-weight-bold">{{ __('Commit') }}</span>
 
-    <gl-link :href="commit.commit_path" class="gl-text-blue-600!" data-testid="commit-sha">
-      {{ commit.short_id }}
-    </gl-link>
-
-    <clipboard-button
-      :text="commit.id"
-      :title="__('Copy commit SHA')"
-      category="tertiary"
-      size="small"
-    />
-
-    <span v-if="mergeRequest">
-      {{ __('in') }}
-      <gl-link :href="mergeRequest.path" class="gl-text-blue-600!" data-testid="link-commit"
-        >!{{ mergeRequest.iid }}</gl-link
+      <gl-link
+        :href="commit.commit_path"
+        class="gl-text-blue-500! gl-font-monospace"
+        data-testid="commit-sha"
       >
-    </span>
+        {{ commit.short_id }}
+      </gl-link>
+
+      <clipboard-button
+        :text="commit.id"
+        :title="__('Copy commit SHA')"
+        category="tertiary"
+        size="small"
+        class="gl-align-self-center"
+      />
+
+      <span v-if="mergeRequest">
+        {{ __('in') }}
+        <gl-link :href="mergeRequest.path" class="gl-text-blue-500!" data-testid="link-commit"
+          >!{{ mergeRequest.iid }}</gl-link
+        >
+      </span>
+    </p>
 
     <p class="gl-mb-0">{{ commit.title }}</p>
   </div>

@@ -77,7 +77,7 @@ en:
       email: Allows read-only access to the user's primary email address using OpenID Connect
       admin_mode: Admin Mode is a functionality designed to limit the access level of administrator's personal access tokens.
       create_runner: Grants create access to the runners
-      k8s_proxy: Grants permissions to perform Kubernetes API calls using the agent for Kubernetes.
+      k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
     scope_desc:
       api:
         Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry.
@@ -110,7 +110,7 @@ en:
       create_runner:
         Grants create access to the runners.
       k8s_proxy:
-        Grants access to a Kubernetes cluster.
+        Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
     project_access_token_scope_desc:
       api:
         Grants complete read and write access to the scoped project API, including the Package Registry.
@@ -126,6 +126,8 @@ en:
         Grants write access (push) to the Container Registry.
       create_runner:
         Grants create access to the runners.
+      k8s_proxy:
+        Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
     flash:
       applications:
         create:

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class IosSpecificTemplatesExperiment < ApplicationExperiment
+  control
+
   before_run(if: :skip_experiment) { throw(:abort) } # rubocop:disable Cop/BanCatchThrow
 
   private

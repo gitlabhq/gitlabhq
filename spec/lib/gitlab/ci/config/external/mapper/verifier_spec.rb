@@ -409,32 +409,6 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Verifier, feature_category:
           expect { process }.to raise_error(expected_error_class)
         end
       end
-
-      context 'when introduce_ci_max_total_yaml_size_bytes is disabled' do
-        before do
-          stub_feature_flags(introduce_ci_max_total_yaml_size_bytes: false)
-        end
-
-        context 'when pipeline tree size is within the limit' do
-          before do
-            stub_application_setting(ci_max_total_yaml_size_bytes: 10000)
-          end
-
-          it 'passes the verification' do
-            expect(process.all?(&:valid?)).to be_truthy
-          end
-        end
-
-        context 'when pipeline tree size is larger then the limit' do
-          before do
-            stub_application_setting(ci_max_total_yaml_size_bytes: 100)
-          end
-
-          it 'passes the verification' do
-            expect(process.all?(&:valid?)).to be_truthy
-          end
-        end
-      end
     end
   end
 end

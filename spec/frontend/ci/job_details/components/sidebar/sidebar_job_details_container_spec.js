@@ -53,6 +53,7 @@ describe('Job Sidebar Details Container', () => {
       ['erased_at', 'Erased: 3 weeks ago'],
       ['finished_at', 'Finished: 3 weeks ago'],
       ['queued_duration', 'Queued: 9 seconds'],
+      ['id', 'Job ID: #4757'],
       ['runner', 'Runner: #1 (ABCDEFGH) local ci runner'],
       ['coverage', 'Coverage: 20%'],
     ])('uses %s to render job-%s', async (detail, value) => {
@@ -77,7 +78,7 @@ describe('Job Sidebar Details Container', () => {
       createWrapper();
       await store.dispatch('receiveJobSuccess', job);
 
-      expect(findAllDetailsRow()).toHaveLength(7);
+      expect(findAllDetailsRow()).toHaveLength(8);
     });
 
     describe('duration row', () => {

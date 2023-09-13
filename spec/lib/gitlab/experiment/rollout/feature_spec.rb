@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Experiment::Rollout::Feature, :experiment do
-  subject { described_class.new.for(subject_experiment) }
+  subject { described_class.new(subject_experiment) }
 
   let(:subject_experiment) { experiment('namespaced/stub') }
 

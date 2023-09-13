@@ -156,7 +156,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
           it 'disables impersonate button' do
             subject
 
-            impersonate_btn = find('[data-testid="impersonate_user_link"]')
+            impersonate_btn = find('[data-testid="impersonate-user-link"]')
 
             expect(impersonate_btn).not_to be_nil
             expect(impersonate_btn['disabled']).not_to be_nil
@@ -174,7 +174,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
             subject
 
             expect(page).to have_content('Impersonate')
-            impersonate_btn = find('[data-testid="impersonate_user_link"]')
+            impersonate_btn = find('[data-testid="impersonate-user-link"]')
             expect(impersonate_btn['disabled']).to be_nil
           end
         end

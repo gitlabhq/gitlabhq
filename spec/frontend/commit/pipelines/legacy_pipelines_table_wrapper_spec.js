@@ -7,7 +7,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
-import PipelinesTable from '~/commit/pipelines/pipelines_table.vue';
+import LegacyPipelinesTableWraper from '~/commit/pipelines/legacy_pipelines_table_wrapper.vue';
 import {
   HTTP_STATUS_BAD_REQUEST,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
@@ -42,7 +42,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = extendedWrapper(
-      mount(PipelinesTable, {
+      mount(LegacyPipelinesTableWraper, {
         propsData: {
           endpoint: 'endpoint.json',
           emptyStateSvgPath: 'foo',

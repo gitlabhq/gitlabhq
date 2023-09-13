@@ -93,7 +93,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-py-4">
+  <div>
     <tooltip-on-truncate :title="job.name" truncate-target="child"
       ><h4 class="gl-mt-0 gl-mb-3 gl-text-truncate" data-testid="job-name">{{ job.name }}</h4>
     </tooltip-on-truncate>
@@ -158,7 +158,7 @@ export default {
       />
       <gl-button
         :aria-label="$options.i18n.toggleSidebar"
-        category="tertiary"
+        category="secondary"
         class="gl-md-display-none gl-ml-2"
         icon="chevron-double-lg-right"
         @click="toggleSidebar"

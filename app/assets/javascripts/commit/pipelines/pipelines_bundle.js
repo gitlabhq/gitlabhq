@@ -26,7 +26,8 @@ export default () => {
     if (pipelineTableViewEl.dataset.disableInitialization === undefined) {
       const table = new Vue({
         components: {
-          CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
+          CommitPipelinesTable: () =>
+            import('~/commit/pipelines/legacy_pipelines_table_wrapper.vue'),
         },
         apolloProvider,
         provide: {

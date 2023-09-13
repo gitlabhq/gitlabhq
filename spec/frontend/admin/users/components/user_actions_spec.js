@@ -18,7 +18,7 @@ describe('AdminUserActions component', () => {
   const findUserActions = (id) => wrapper.findByTestId(`user-actions-${id}`);
   const findEditButton = (id = user.id) => findUserActions(id).find('[data-testid="edit"]');
   const findActionsDropdown = (id = user.id) =>
-    findUserActions(id).find('[data-testid="dropdown-toggle"]');
+    findUserActions(id).find('[data-testid="user-actions-dropdown-toggle"]');
   const findDisclosureGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
 
   const initComponent = ({ actions = [], showButtonLabels } = {}) => {

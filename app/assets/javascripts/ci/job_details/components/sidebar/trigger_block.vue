@@ -68,7 +68,7 @@ export default {
 
     <template v-if="hasVariables">
       <p class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-        <span class="gl-font-weight-bold">{{ __('Trigger variables:') }}</span>
+        <span class="gl-display-flex gl-font-weight-bold">{{ __('Trigger variables') }}</span>
 
         <gl-button
           v-if="hasValues"

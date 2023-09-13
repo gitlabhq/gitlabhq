@@ -95,8 +95,8 @@ function mountPipelines() {
     components: {
       CommitPipelinesTable: () => {
         return gon.features.mrPipelinesGraphql
-          ? import('~/commit/pipelines/pipelines_table_wrapper.vue')
-          : import('~/commit/pipelines/pipelines_table.vue');
+          ? import('~/ci/merge_requests/components/pipelines_table_wrapper.vue')
+          : import('~/commit/pipelines/legacy_pipelines_table_wrapper.vue');
       },
     },
     apolloProvider,

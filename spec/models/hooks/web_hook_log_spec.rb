@@ -46,6 +46,20 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
       end
     end
 
+    context 'with basic auth credentials and masked components' do
+      let(:web_hook_log) { build(:web_hook_log, web_hook: hook, url: 'http://test:123@{domain}.com:{port}') }
+
+      subject { web_hook_log.save! }
+
+      it { is_expected.to eq(true) }
+
+      it 'obfuscates the basic auth credentials' do
+        subject
+
+        expect(web_hook_log.url).to eq('http://*****:*****@{domain}.com:{port}')
+      end
+    end
+
     context "with users' emails" do
       let(:author) { build(:user) }
       let(:user) { build(:user) }

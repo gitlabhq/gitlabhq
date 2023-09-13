@@ -26683,6 +26683,9 @@ msgstr ""
 msgid "Job Failed #%{build_id}"
 msgstr ""
 
+msgid "Job ID"
+msgstr ""
+
 msgid "Job artifacts"
 msgstr ""
 
@@ -26878,16 +26881,16 @@ msgstr ""
 msgid "Jobs|You're about to retry a job that failed because it attempted to deploy code that is older than the latest deployment. Retrying this job could result in overwriting the environment with the older source code."
 msgstr ""
 
-msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id}"
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} %{status}"
 msgstr ""
 
-msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source}"
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} %{status} for %{mrId} with %{source}"
+msgstr ""
+
+msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} %{status} for %{ref}"
 msgstr ""
 
 msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{mrId} with %{source} into %{target}"
-msgstr ""
-
-msgid "Job|%{boldStart}Pipeline%{boldEnd} %{id} for %{ref}"
 msgstr ""
 
 msgid "Job|%{searchLength} results found for %{searchTerm}"
@@ -38834,6 +38837,9 @@ msgstr ""
 msgid "Related issues"
 msgstr ""
 
+msgid "Related jobs"
+msgstr ""
+
 msgid "Related merge request %{link_to_merge_request} to merge %{link_to_merge_request_source_branch}"
 msgstr ""
 
@@ -46478,9 +46484,6 @@ msgstr ""
 msgid "Tags this commit to %{tag_name}."
 msgstr ""
 
-msgid "Tags:"
-msgstr ""
-
 msgid "TagsPage|Are you sure you want to delete this tag?"
 msgstr ""
 
@@ -49933,7 +49936,7 @@ msgstr ""
 msgid "Trigger token:"
 msgstr ""
 
-msgid "Trigger variables:"
+msgid "Trigger variables"
 msgstr ""
 
 msgid "Trigger was created successfully."

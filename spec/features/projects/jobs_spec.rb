@@ -93,7 +93,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
         visit project_job_path(project, job)
 
         within '.js-pipeline-info' do
-          expect(page).to have_content("Pipeline ##{pipeline.id} for #{pipeline.ref}")
+          expect(page).to have_content("Pipeline ##{pipeline.id} #{pipeline.status} for #{pipeline.ref}")
         end
       end
 
@@ -239,7 +239,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
 
           href = new_project_issue_path(project, options)
 
-          page.within('.build-sidebar') do
+          page.within('aside.right-sidebar') do
             expect(find('[data-testid="job-new-issue"]')['href']).to include(href)
           end
         end

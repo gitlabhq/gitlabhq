@@ -40,7 +40,7 @@ module Gitlab
                 file.validate_content! if file.valid?
                 file.load_and_validate_expanded_hash! if file.valid?
 
-                next unless Feature.enabled?(:introduce_ci_max_total_yaml_size_bytes, context.project) && file.valid?
+                next unless file.valid?
 
                 # We are checking the file.content.to_s because that is returning the actual content of the file,
                 # whereas file.content would return the BatchLoader.

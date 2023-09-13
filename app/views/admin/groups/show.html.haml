@@ -8,7 +8,7 @@
   = _('Group: %{group_name}') % { group_name: @group.full_name }
 
   = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(@group),
-    button_options: { class: 'gl-float-right', data: { qa_selector: 'edit_group_link' }},
+    button_options: { class: 'gl-float-right', data: { testid: 'edit-group-link' }},
     icon: 'pencil') do
     = _('Edit')
 %hr

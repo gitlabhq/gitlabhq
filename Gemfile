@@ -362,7 +362,6 @@ gem 'gitlab-labkit', '~> 0.34.0'
 gem 'thrift', '>= 0.16.0'
 
 # I18n
-gem 'ruby_parser', '~> 3.20.3', require: false
 gem 'rails-i18n', '~> 7.0'
 gem 'gettext_i18n_rails', '~> 1.11.0'
 gem 'gettext_i18n_rails_js', '~> 1.3'
@@ -545,7 +544,7 @@ gem 'flipper', '~> 0.26.2'
 gem 'flipper-active_record', '~> 0.26.2'
 gem 'flipper-active_support_cache_store', '~> 0.26.2'
 gem 'unleash', '~> 3.2.2'
-gem 'gitlab-experiment', '~> 0.7.1'
+gem 'gitlab-experiment', '~> 0.8.0'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
