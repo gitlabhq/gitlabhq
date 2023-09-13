@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe StageEntity, feature_category: :continuous_integration do
+RSpec.describe StageEntity do
   let(:pipeline) { create(:ci_pipeline) }
   let(:request) { double('request') }
   let(:user) { create(:user) }
@@ -76,8 +76,8 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
     context 'with a skipped stage ' do
       let(:stage) { create(:ci_stage, status: 'skipped') }
 
-      it 'does not contain play_all_manual' do
-        expect(subject[:status][:action]).not_to be_present
+      it 'contains play_all_manual' do
+        expect(subject[:status][:action]).to be_present
       end
     end
 

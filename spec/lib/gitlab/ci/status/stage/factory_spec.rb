@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Stage::Factory, feature_category: :continuous_integration do
+RSpec.describe Gitlab::Ci::Status::Stage::Factory do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::Factory, feature_category: :continuous
   end
 
   context 'when stage has manual builds' do
-    Ci::HasStatus::BLOCKED_STATUS.each do |core_status|
+    (Ci::HasStatus::BLOCKED_STATUS + ['skipped']).each do |core_status|
       context "when status is #{core_status}" do
         let(:stage) { create(:ci_stage, pipeline: pipeline, status: core_status) }
 
