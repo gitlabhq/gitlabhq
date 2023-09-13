@@ -5,8 +5,6 @@ module Integrations
     extend ActiveSupport::Concern
 
     included do
-      undef :notify_only_broken_pipelines
-
       field :webhook,
         help: -> { webhook_help },
         required: true,

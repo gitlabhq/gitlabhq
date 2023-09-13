@@ -98,10 +98,10 @@ the following sections and tables provide an alternative.
 
 > - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
 > - Generally available in GitLab 16.2. Feature flag `security_policies_branch_type` removed.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Disabled by default.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
 
 FLAG:
-On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
 On GitLab.com, this feature is available.
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
@@ -119,10 +119,10 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 
 > - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
 > - Generally available in GitLab 16.2. Feature flag `security_policies_branch_type` removed.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Disabled by default.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
 
 FLAG:
-On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
 On GitLab.com, this feature is available.
 
 This rule schedules a scan pipeline, enforcing the defined actions on the schedule defined in the `cadence` field. A scheduled pipeline does not run other jobs defined in the project's `.gitlab-ci.yml` file. When a project is linked to a security policy project, a security policy bot is created in the project and will become the author of any scheduled pipelines.

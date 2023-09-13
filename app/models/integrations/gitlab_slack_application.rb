@@ -68,18 +68,7 @@ module Integrations
     def sections
       return [] unless editable?
 
-      [
-        {
-          type: SECTION_TYPE_TRIGGER,
-          title: s_('Integrations|Trigger'),
-          description: s_('Integrations|An event will be triggered when one of the following items happen.')
-        },
-        {
-          type: SECTION_TYPE_CONFIGURATION,
-          title: s_('Integrations|Notification settings'),
-          description: s_('Integrations|Configure the scope of notifications.')
-        }
-      ]
+      super.drop(1)
     end
 
     override :configurable_events

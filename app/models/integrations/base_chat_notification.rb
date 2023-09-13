@@ -31,7 +31,7 @@ module Integrations
     # Custom serialized properties initialization
     prop_accessor(*SUPPORTED_EVENTS.map { |event| EVENT_CHANNEL[event] })
 
-    boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
+    boolean_accessor :notify_only_default_branch
 
     validates :webhook,
       presence: true,
@@ -44,7 +44,7 @@ module Integrations
       super
 
       if properties.empty?
-        self.notify_only_broken_pipelines = true
+        self.notify_only_broken_pipelines = true if self.respond_to?(:notify_only_broken_pipelines)
         self.branches_to_be_notified = "default"
         self.labels_to_be_notified_behavior = MATCH_ANY_LABEL
       elsif !self.notify_only_default_branch.nil?
@@ -134,6 +134,10 @@ module Integrations
       raise NotImplementedError
     end
 
+    def help
+      raise NotImplementedError
+    end
+
     # With some integrations the webhook is already tied to a specific channel,
     # for others the channels are configurable for each event.
     def configurable_channels?
@@ -159,6 +163,27 @@ module Integrations
 
     def mask_configurable_channels?
       false
+    end
+
+    override :sections
+    def sections
+      [
+        {
+          type: SECTION_TYPE_CONNECTION,
+          title: s_('Integrations|Connection details'),
+          description: help
+        },
+        {
+          type: SECTION_TYPE_TRIGGER,
+          title: s_('Integrations|Trigger'),
+          description: s_('Integrations|An event will be triggered when one of the following items happen.')
+        },
+        {
+          type: SECTION_TYPE_CONFIGURATION,
+          title: s_('Integrations|Notification settings'),
+          description: s_('Integrations|Configure the scope of notifications.')
+        }
+      ]
     end
 
     private

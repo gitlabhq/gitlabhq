@@ -20,18 +20,19 @@ RSpec.describe 'admin/identities/index.html.haml', :aggregate_failures do
     it 'shows table headers' do
       render
 
-      expect(rendered).to include('<th class="gl-border-t-0!">').exactly(5)
+      expect(rendered).to include('<th class="gl-border-t-0!">').exactly(6)
       expect(rendered).to include(_('Provider'))
       expect(rendered).to include(s_('Identity|Provider ID'))
       expect(rendered).to include(_('Group'))
       expect(rendered).to include(_('Identifier'))
+      expect(rendered).to include(_('Active'))
       expect(rendered).to include(_('Actions'))
     end
 
     it 'shows information text' do
       render
 
-      expect(rendered).to include('<td colspan="5">').exactly(1)
+      expect(rendered).to include('<td colspan="6">').exactly(1)
       expect(rendered).to include(_('This user has no identities'))
     end
   end
@@ -41,10 +42,10 @@ RSpec.describe 'admin/identities/index.html.haml', :aggregate_failures do
       assign(:identities, ldap_user.identities)
     end
 
-    it 'shows exactly 5 columns' do
+    it 'shows exactly 6 columns' do
       render
 
-      expect(rendered).to include('</td>').exactly(5)
+      expect(rendered).to include('</td>').exactly(6)
     end
 
     it 'shows identity without provider ID or group' do

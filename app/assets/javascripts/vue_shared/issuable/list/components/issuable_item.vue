@@ -372,7 +372,7 @@ export default {
     </div>
     <div class="issuable-meta">
       <ul v-if="showIssuableMeta" class="controls">
-        <li v-if="hasSlotContents('status')" class="issuable-status">
+        <li v-if="hasSlotContents('status')">
           <slot name="status"></slot>
         </li>
         <li v-if="assignees.length">

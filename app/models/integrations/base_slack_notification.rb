@@ -36,6 +36,10 @@ module Integrations
       true
     end
 
+    def help
+      # noop
+    end
+
     private
 
     override :log_usage

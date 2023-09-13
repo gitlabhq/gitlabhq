@@ -2,8 +2,6 @@
 
 module Integrations
   class WebexTeams < BaseChatNotification
-    undef :notify_only_broken_pipelines
-
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://api.ciscospark.com/v1/webhooks/incoming/...',

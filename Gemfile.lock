@@ -1234,7 +1234,7 @@ GEM
       rack (>= 0.4)
     rack-attack (6.7.0)
       rack (>= 1.0, < 4)
-    rack-cors (1.1.1)
+    rack-cors (2.0.1)
       rack (>= 2.0.0)
     rack-oauth2 (1.21.3)
       activesupport
@@ -1955,7 +1955,7 @@ DEPENDENCIES
   puma (~> 6.3, >= 6.3.1)
   rack (~> 2.2.8)
   rack-attack (~> 6.7.0)
-  rack-cors (~> 1.1.1)
+  rack-cors (~> 2.0.1)
   rack-oauth2 (~> 1.21.3)
   rack-proxy (~> 0.7.6)
   rack-timeout (~> 0.6.3)

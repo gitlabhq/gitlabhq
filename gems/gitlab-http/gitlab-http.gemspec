@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name = "gitlab-http"
   spec.version = Gitlab::HTTP_V2::Version::VERSION
   spec.authors = ["GitLab Engineers"]
-  spec.email = ["engineering@gmail.com"]
+  spec.email = ["engineering@gitlab.com"]
 
   spec.summary = "GitLab HTTP client"
   spec.description = "GitLab HTTP client"

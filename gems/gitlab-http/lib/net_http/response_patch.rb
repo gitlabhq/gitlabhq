@@ -20,7 +20,11 @@ module Net
       start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       key = value = nil
       while true
-        line = sock.is_a?(Gitlab::HTTP_V2::BufferedIo) ? sock.readuntil("\n", true, start_time) : sock.readuntil("\n", true)
+        line = if sock.is_a?(Gitlab::HTTP_V2::BufferedIo)
+                 sock.readuntil("\n", true, start_time)
+               else
+                 sock.readuntil("\n", true)
+               end
         line = line.sub(/\s{0,10}\z/, '')
         break if line.empty?
         if line[0] == ?\s or line[0] == ?\t and value

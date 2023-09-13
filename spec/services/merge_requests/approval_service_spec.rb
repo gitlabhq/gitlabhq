@@ -78,6 +78,51 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
         service.execute(merge_request)
       end
 
+      context 'when generating a patch_id_sha' do
+        it 'records a value' do
+          service.execute(merge_request)
+
+          expect(merge_request.approvals.last.patch_id_sha).not_to be_nil
+        end
+
+        context 'when base_sha is nil' do
+          it 'records patch_id_sha as nil' do
+            expect_next_instance_of(Gitlab::Diff::DiffRefs) do |diff_ref|
+              expect(diff_ref).to receive(:base_sha).at_least(:once).and_return(nil)
+            end
+
+            service.execute(merge_request)
+
+            expect(merge_request.approvals.last.patch_id_sha).to be_nil
+          end
+        end
+
+        context 'when head_sha is nil' do
+          it 'records patch_id_sha as nil' do
+            expect_next_instance_of(Gitlab::Diff::DiffRefs) do |diff_ref|
+              expect(diff_ref).to receive(:head_sha).at_least(:once).and_return(nil)
+            end
+
+            service.execute(merge_request)
+
+            expect(merge_request.approvals.last.patch_id_sha).to be_nil
+          end
+        end
+
+        context 'when base_sha and head_sha match' do
+          it 'records patch_id_sha as nil' do
+            expect_next_instance_of(Gitlab::Diff::DiffRefs) do |diff_ref|
+              expect(diff_ref).to receive(:base_sha).at_least(:once).and_return("abc123")
+              expect(diff_ref).to receive(:head_sha).at_least(:once).and_return("abc123")
+            end
+
+            service.execute(merge_request)
+
+            expect(merge_request.approvals.last.patch_id_sha).to be_nil
+          end
+        end
+      end
+
       it 'publishes MergeRequests::ApprovedEvent' do
         expect { service.execute(merge_request) }
           .to publish_event(MergeRequests::ApprovedEvent)

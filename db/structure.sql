@@ -21852,7 +21852,8 @@ CREATE TABLE project_statistics (
     uploads_size bigint DEFAULT 0 NOT NULL,
     container_registry_size bigint DEFAULT 0 NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    root_namespace_id bigint
 );
 
 CREATE SEQUENCE project_statistics_id_seq
@@ -33273,6 +33274,8 @@ CREATE UNIQUE INDEX index_project_statistics_on_project_id ON project_statistics
 
 CREATE INDEX index_project_statistics_on_repository_size_and_project_id ON project_statistics USING btree (repository_size, project_id);
 
+CREATE INDEX index_project_statistics_on_root_namespace_id ON project_statistics USING btree (root_namespace_id);
+
 CREATE INDEX index_project_statistics_on_storage_size_and_project_id ON project_statistics USING btree (storage_size, project_id);
 
 CREATE INDEX index_project_statistics_on_wiki_size_and_project_id ON project_statistics USING btree (wiki_size, project_id);
@@ -36358,6 +36361,9 @@ ALTER TABLE ONLY ci_pipelines
 
 ALTER TABLE ONLY analytics_devops_adoption_segments
     ADD CONSTRAINT fk_190a24754d FOREIGN KEY (display_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_statistics
+    ADD CONSTRAINT fk_198ad46fdc FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY agent_project_authorizations
     ADD CONSTRAINT fk_1d30bb4987 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

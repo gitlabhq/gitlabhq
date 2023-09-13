@@ -7,6 +7,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:noteable).touch(false) }
     it { is_expected.to belong_to(:author).class_name('User') }
 
@@ -32,6 +33,7 @@ RSpec.describe Note, feature_category: :team_planning do
     it { is_expected.to validate_length_of(:note).is_at_most(1_000_000) }
     it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_presence_of(:namespace) }
 
     context 'when note is on commit' do
       before do
@@ -308,6 +310,70 @@ RSpec.describe Note, feature_category: :team_planning do
         let(:confidential) { nil }
 
         it { is_expected.to be false }
+      end
+    end
+
+    describe '#ensure_namespace_id' do
+      context 'for a project noteable' do
+        let_it_be(:issue) { create(:issue) }
+
+        it 'copies the project_namespace_id of the project' do
+          note = build(:note, noteable: issue, project: issue.project)
+
+          note.valid?
+
+          expect(note.namespace_id).to eq(issue.project.project_namespace_id)
+        end
+
+        context 'when noteable is changed' do
+          let_it_be(:another_issue) { create(:issue) }
+
+          it 'updates the namespace_id' do
+            note = create(:note, noteable: issue, project: issue.project)
+
+            note.noteable = another_issue
+            note.project = another_issue.project
+            note.valid?
+
+            expect(note.namespace_id).to eq(another_issue.project.project_namespace_id)
+          end
+        end
+
+        context 'when project is missing' do
+          it 'does not raise an exception' do
+            note = build(:note, noteable: issue, project: nil)
+
+            expect { note.valid? }.not_to raise_error
+          end
+        end
+      end
+
+      context 'for a personal snippet note' do
+        let_it_be(:snippet) { create(:personal_snippet) }
+
+        it 'copies the personal namespace_id of the author' do
+          note = build(:note, noteable: snippet, project: nil)
+
+          note.valid?
+
+          expect(note.namespace_id).to eq(snippet.author.namespace.id)
+        end
+
+        context 'when snippet author is missing' do
+          it 'does not raise an exception' do
+            note = build(:note, noteable: build(:personal_snippet, author: nil), project: nil)
+
+            expect { note.valid? }.not_to raise_error
+          end
+        end
+      end
+
+      context 'when noteable is missing' do
+        it 'does not raise an exception' do
+          note = build(:note, noteable: nil, project: nil)
+
+          expect { note.valid? }.not_to raise_error
+        end
       end
     end
   end

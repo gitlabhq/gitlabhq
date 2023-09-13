@@ -19,7 +19,6 @@ const DROPDOWN_X_OFFSET_BASE = -211;
 const DROPDOWN_X_OFFSET_IMPERSONATING = DROPDOWN_X_OFFSET_BASE + IMPERSONATING_OFFSET;
 
 export default {
-  feedbackUrl: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409005',
   i18n: {
     newNavigation: {
       sectionTitle: s__('NorthstarNavigation|Navigation redesign'),
@@ -31,7 +30,6 @@ export default {
     buyPipelineMinutes: s__('CurrentUser|Buy Pipeline minutes'),
     oneOfGroupsRunningOutOfPipelineMinutes: s__('CurrentUser|One of your groups is running out'),
     gitlabNext: s__('CurrentUser|Switch to GitLab Next'),
-    provideFeedback: s__('NorthstarNavigation|Provide feedback'),
     startTrial: s__('CurrentUser|Start an Ultimate trial'),
     signOut: __('Sign out'),
   },
@@ -128,17 +126,6 @@ export default {
         extraAttrs: {
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'switch_to_canary',
-        },
-      };
-    },
-    feedbackItem() {
-      return {
-        text: this.$options.i18n.provideFeedback,
-        href: this.$options.feedbackUrl,
-        extraAttrs: {
-          target: '_blank',
-          ...USER_MENU_TRACKING_DEFAULTS,
-          'data-track-label': 'provide_nav_feedback',
         },
       };
     },
@@ -316,7 +303,6 @@ export default {
           <span class="gl-font-sm">{{ $options.i18n.newNavigation.sectionTitle }}</span>
         </template>
         <new-nav-toggle :endpoint="toggleNewNavEndpoint" enabled new-navigation />
-        <gl-disclosure-dropdown-item :item="feedbackItem" data-testid="feedback-item" />
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group

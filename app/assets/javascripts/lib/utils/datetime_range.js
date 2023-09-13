@@ -21,7 +21,7 @@ const datePlusDuration = (date, duration) => new Date(date.getTime() + durationT
 
 const isValidDuration = (duration) => Boolean(duration && Number.isFinite(duration.seconds));
 
-const isValidDateString = (dateString) => {
+export const isValidDateString = (dateString) => {
   if (typeof dateString !== 'string' || !dateString.trim()) {
     return false;
   }

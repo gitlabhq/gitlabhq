@@ -104,14 +104,14 @@ On GitLab.com, this feature is not available.
 > - The scan result policy field `vulnerability_attributes` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123052) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/418784) in GitLab 16.3.
 > - The scan result policy field `vulnerability_age` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123956) in GitLab 16.2.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Disabled by default.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default the `vulnerability_attributes` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`.
 On GitLab.com, this feature is available.
 
 FLAG:
-On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
 On GitLab.com, this feature is available.
 
 This rule enforces the defined actions based on security scan findings.
@@ -133,10 +133,10 @@ This rule enforces the defined actions based on security scan findings.
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/397644) in GitLab 15.11. Feature flag `license_scanning_policies` removed.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Disabled by default.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
 
 FLAG:
-On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
 On GitLab.com, this feature is available.
 
 This rule enforces the defined actions based on license findings.
@@ -154,10 +154,10 @@ This rule enforces the defined actions based on license findings.
 ## `any_merge_request` rule type
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4.
-> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Disabled by default.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
 
 FLAG:
-On self-managed GitLab, by default the `branch_exceptions` field is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
 On GitLab.com, this feature is available.
 
 This rule enforces the defined actions for any merge request based on the commits signature.

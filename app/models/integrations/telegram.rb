@@ -2,8 +2,6 @@
 
 module Integrations
   class Telegram < BaseChatNotification
-    undef :notify_only_broken_pipelines
-
     TELEGRAM_HOSTNAME = "https://api.telegram.org/bot%{token}/sendMessage"
 
     field :token,
@@ -60,26 +58,6 @@ module Integrations
 
     def self.supported_events
       super - ['deployment']
-    end
-
-    def sections
-      [
-        {
-          type: SECTION_TYPE_CONNECTION,
-          title: s_('Integrations|Connection details'),
-          description: help
-        },
-        {
-          type: SECTION_TYPE_TRIGGER,
-          title: s_('Integrations|Trigger'),
-          description: s_('Integrations|An event will be triggered when one of the following items happen.')
-        },
-        {
-          type: SECTION_TYPE_CONFIGURATION,
-          title: s_('Integrations|Notification settings'),
-          description: s_('Integrations|Configure the scope of notifications.')
-        }
-      ]
     end
 
     private

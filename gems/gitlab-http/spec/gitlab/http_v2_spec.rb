@@ -70,8 +70,8 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
 
     after(:all) do
       Net.send(:remove_const, :HTTP)
-      Net.send(:const_set, :HTTP, @original_net_http)
-      WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_set(:@webMockNetHTTP, @webmock_net_http)
+      Net.send(:const_set, :HTTP, @original_net_http) # rubocop:disable RSpec/InstanceVariable
+      WebMock::HttpLibAdapters::NetHttpAdapter.instance_variable_set(:@webMockNetHTTP, @webmock_net_http) # rubocop:disable RSpec/InstanceVariable
 
       # Reload Gitlab::NetHttpAdapter
       described_class.send(:remove_const, :NetHttpAdapter)
@@ -112,18 +112,22 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
     expect { |b| described_class.post('http://example.org', &b) }.to yield_with_args
   end
 
-  describe 'allow_local_requests is' do
+  describe 'allow_local_requests' do
     before do
       WebMock.stub_request(:get, /.*/).to_return(status: 200, body: 'Success')
     end
 
-    context 'disabled' do
+    context 'when it is disabled' do
       it 'deny requests to localhost' do
-        expect { described_class.get('http://localhost:3003', allow_local_requests: false) }.to raise_error(Gitlab::HTTP_V2::BlockedUrlError)
+        expect do
+          described_class.get('http://localhost:3003', allow_local_requests: false)
+        end.to raise_error(Gitlab::HTTP_V2::BlockedUrlError)
       end
 
       it 'deny requests to private network' do
-        expect { described_class.get('http://192.168.1.2:3003', allow_local_requests: false) }.to raise_error(Gitlab::HTTP_V2::BlockedUrlError)
+        expect do
+          described_class.get('http://192.168.1.2:3003', allow_local_requests: false)
+        end.to raise_error(Gitlab::HTTP_V2::BlockedUrlError)
       end
 
       context 'if allow_local_requests set to true' do
@@ -135,7 +139,7 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
       end
     end
 
-    context 'enabled' do
+    context 'when it is enabled' do
       it 'allow requests to localhost' do
         stub_full_request('http://localhost:3003')
 
@@ -266,7 +270,7 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
 
         context 'with path' do
           before do
-            expect(described_class::Client).to receive(:httparty_perform_request)
+            expect(described_class::Client).to receive(:httparty_perform_request) # rubocop:disable RSpec/ExpectInHook
               .with(Net::HTTP::Get, path, default_timeout_options)
               .and_raise(klass)
           end
@@ -298,7 +302,7 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
 
         context 'with path and options' do
           before do
-            expect(described_class::Client).to receive(:httparty_perform_request)
+            expect(described_class::Client).to receive(:httparty_perform_request) # rubocop:disable RSpec/ExpectInHook
               .with(Net::HTTP::Get, path, request_options)
               .and_raise(klass)
           end
@@ -334,7 +338,7 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
           end
 
           before do
-            expect(described_class::Client).to receive(:httparty_perform_request)
+            expect(described_class::Client).to receive(:httparty_perform_request) # rubocop:disable RSpec/ExpectInHook
               .with(Net::HTTP::Get, path, request_options, &block)
               .and_raise(klass)
           end
@@ -390,15 +394,21 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
       end
 
       it 'blocks POST requests' do
-        expect { described_class.post('http://example.org', silent_mode_enabled: silent_mode) }.to raise_error(Gitlab::HTTP_V2::SilentModeBlockedError)
+        expect do
+          described_class.post('http://example.org', silent_mode_enabled: silent_mode)
+        end.to raise_error(Gitlab::HTTP_V2::SilentModeBlockedError)
       end
 
       it 'blocks PUT requests' do
-        expect { described_class.put('http://example.org', silent_mode_enabled: silent_mode) }.to raise_error(Gitlab::HTTP_V2::SilentModeBlockedError)
+        expect do
+          described_class.put('http://example.org', silent_mode_enabled: silent_mode)
+        end.to raise_error(Gitlab::HTTP_V2::SilentModeBlockedError)
       end
 
       it 'blocks DELETE requests' do
-        expect { described_class.delete('http://example.org', silent_mode_enabled: silent_mode) }.to raise_error(Gitlab::HTTP_V2::SilentModeBlockedError)
+        expect do
+          described_class.delete('http://example.org', silent_mode_enabled: silent_mode)
+        end.to raise_error(Gitlab::HTTP_V2::SilentModeBlockedError)
       end
 
       it 'logs blocked requests' do
@@ -406,7 +416,9 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
           "Outbound HTTP request blocked", 'Net::HTTP::Post'
         )
 
-        expect { described_class.post('http://example.org', silent_mode_enabled: silent_mode) }.to raise_error(Gitlab::HTTP_V2::SilentModeBlockedError)
+        expect do
+          described_class.post('http://example.org', silent_mode_enabled: silent_mode)
+        end.to raise_error(Gitlab::HTTP_V2::SilentModeBlockedError)
       end
     end
 

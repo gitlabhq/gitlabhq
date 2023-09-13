@@ -124,7 +124,7 @@ gem 'net-ldap', '~> 0.17.1'
 # API
 gem 'grape', '~> 1.7.1'
 gem 'grape-entity', '~> 0.10.0'
-gem 'rack-cors', '~> 1.1.1', require: 'rack/cors'
+gem 'rack-cors', '~> 2.0.1', require: 'rack/cors'
 gem 'grape-swagger', '~> 1.6.1', group: [:development, :test]
 gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test]
 

@@ -4833,7 +4833,7 @@ msgstr ""
 msgid "Allow users to extend their session"
 msgstr ""
 
-msgid "Allow users to register any application to use GitLab as an OAuth provider"
+msgid "Allow users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications."
 msgstr ""
 
 msgid "Allowed"
@@ -12329,6 +12329,15 @@ msgid "ComplianceStandardsAdherence|Prevent committers as approvers"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|View details"
+msgstr ""
+
+msgid "ComplianceViolations|Compliance Violations Export"
+msgstr ""
+
+msgid "ComplianceViolations|Your Compliance Violations CSV export for the group \"%{group_name}\" has been attached to this email."
+msgstr ""
+
+msgid "ComplianceViolations|Your Compliance Violations CSV export for the group %{group_link} has been attached to this email."
 msgstr ""
 
 msgid "Component"
@@ -23949,6 +23958,9 @@ msgstr ""
 msgid "IdentityVerification|Your verification code expires after %{expires_in_minutes} minutes."
 msgstr ""
 
+msgid "Identity|Active"
+msgstr ""
+
 msgid "Identity|Provider ID"
 msgstr ""
 
@@ -31486,9 +31498,6 @@ msgid "NorthstarNavigation|Navigation redesign"
 msgstr ""
 
 msgid "NorthstarNavigation|New navigation"
-msgstr ""
-
-msgid "NorthstarNavigation|Provide feedback"
 msgstr ""
 
 msgid "NorthstarNavigation|Toggle new navigation"
@@ -44335,6 +44344,27 @@ msgid "Signing in using %{label} has been disabled"
 msgstr ""
 
 msgid "Signing in using your %{label} account without a pre-existing GitLab account is not allowed."
+msgstr ""
+
+msgid "SilentMode|All outbound communications are blocked. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "SilentMode|Enable silent mode"
+msgstr ""
+
+msgid "SilentMode|Silent mode"
+msgstr ""
+
+msgid "SilentMode|Silent mode %{status}"
+msgstr ""
+
+msgid "SilentMode|Silent mode is enabled"
+msgstr ""
+
+msgid "SilentMode|Suppress outbound communication, such as emails, from GitLab."
+msgstr ""
+
+msgid "SilentMode|There was an error updating the Silent Mode Settings."
 msgstr ""
 
 msgid "Similar issues"

@@ -1,0 +1,11 @@
+%section.settings.no-animate#js-silent-mode-toggle{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = s_('SilentMode|Silent mode')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p.gl-text-secondary
+      = s_('SilentMode|Suppress outbound communication, such as emails, from GitLab.')
+      = link_to _('Learn more.'), help_page_path('administration/silent_mode/index'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    #js-silent-mode-settings{ data: { "silent-mode-enabled" => @application_setting.silent_mode_enabled.to_s } }

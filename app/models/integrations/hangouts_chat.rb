@@ -2,8 +2,6 @@
 
 module Integrations
   class HangoutsChat < BaseChatNotification
-    undef :notify_only_broken_pipelines
-
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://chat.googleapis.com/v1/spaces…',

@@ -33,7 +33,10 @@ RSpec.describe Gitlab::HTTP_V2::BufferedIo do
       end
 
       it 'raises a timeout error' do
-        expect { readuntil }.to raise_error(Gitlab::HTTP_V2::HeaderReadTimeout, /Request timed out after reading headers for 0\.[0-9]+ seconds/)
+        expect do
+          readuntil
+        end.to raise_error(Gitlab::HTTP_V2::HeaderReadTimeout,
+          /Request timed out after reading headers for 0\.[0-9]+ seconds/)
       end
 
       context 'when not passing start_time' do
@@ -42,7 +45,10 @@ RSpec.describe Gitlab::HTTP_V2::BufferedIo do
         end
 
         it 'raises a timeout error' do
-          expect { readuntil }.to raise_error(Gitlab::HTTP_V2::HeaderReadTimeout, /Request timed out after reading headers for 0\.[0-9]+ seconds/)
+          expect do
+            readuntil
+          end.to raise_error(Gitlab::HTTP_V2::HeaderReadTimeout,
+            /Request timed out after reading headers for 0\.[0-9]+ seconds/)
         end
       end
     end

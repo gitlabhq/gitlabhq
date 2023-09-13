@@ -3,7 +3,7 @@
 - @force_desktop_expanded_sidebar = true
 
 = render 'shared/doorkeeper/applications/index',
-        oauth_applications_enabled: user_oauth_applications?,
+        oauth_applications_enabled: true,
         oauth_authorized_applications_enabled: false,
         form_url: group_settings_applications_path(@group),
         application_url: ->(application) { group_settings_application_path(@group, application) },

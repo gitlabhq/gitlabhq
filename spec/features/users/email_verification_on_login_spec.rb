@@ -247,7 +247,6 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
 
     it_behaves_like 'email verification required'
-    it_behaves_like 'no email verification required when 2fa enabled or ff disabled'
 
     describe 'when waiting for the auto unlock time' do
       before do

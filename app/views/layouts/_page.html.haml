@@ -36,6 +36,7 @@
       = dispensable_render_if_exists "layouts/header/seat_count_alert"
       = dispensable_render_if_exists "shared/namespace_user_cap_reached_alert"
       = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
+      = dispensable_render_if_exists "shared/silent_mode_banner"
       = yield :page_level_alert
       = yield :group_invite_members_banner
       - unless @hide_top_bar

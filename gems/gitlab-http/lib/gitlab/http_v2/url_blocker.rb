@@ -38,11 +38,12 @@ module Gitlab
         # ascii_only - Raises error if URL has unicode characters and argument is true.
         # enforce_user - Raises error if URL user doesn't start with alphanumeric characters and argument is true.
         # enforce_sanitization - Raises error if URL includes any HTML/CSS/JS tags and argument is true.
-        # deny_all_requests_except_allowed - Raises error if URL is not in the allow list and argument is true. Can be Boolean or Proc. Defaults to instance app setting.
+        # deny_all_requests_except_allowed - Raises error if URL is not in the allow list and argument is true.
+        #   Can be Boolean or Proc. Defaults to instance app setting.
         # dns_rebind_protection - Enforce DNS-rebinding attack protection.
         # outbound_local_requests_allowlist - A list of trusted domains or IP addresses to which local requests are
         #   allowed when local requests for webhooks and integrations are disabled. This parameter is static and
-        #   comes from the `outbound_local_requests_whitelist` application setting.
+        #   comes from the `outbound_local_requests_whitelist` application setting. # rubocop:disable Naming/InclusiveLanguage
         #
         # Returns a Result object.
         # rubocop:disable Metrics/ParameterLists
@@ -83,7 +84,12 @@ module Gitlab
           rescue SocketError
             proxy_in_use = uri_under_proxy_setting?(uri, nil)
 
-            return Result.new(uri, nil, proxy_in_use) unless enforce_address_info_retrievable?(uri, dns_rebind_protection, deny_all_requests_except_allowed, outbound_local_requests_allowlist)
+            unless enforce_address_info_retrievable?(uri,
+              dns_rebind_protection,
+              deny_all_requests_except_allowed,
+              outbound_local_requests_allowlist)
+              return Result.new(uri, nil, proxy_in_use)
+            end
 
             raise BlockedUrlError, 'Host cannot be resolved or invalid'
           end
@@ -98,7 +104,9 @@ module Gitlab
 
           protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, dns_rebind_protection, proxy_in_use)
 
-          return protected_uri_with_hostname if ip_in_allow_list?(ip_address, outbound_local_requests_allowlist, port: get_port(uri))
+          if ip_in_allow_list?(ip_address, outbound_local_requests_allowlist, port: get_port(uri))
+            return protected_uri_with_hostname
+          end
 
           return protected_uri_with_hostname if allowed_uri?(uri, extra_allowed_uris)
 
@@ -139,7 +147,9 @@ module Gitlab
         # The original hostname is used to validate the SSL, given in that scenario
         # we'll be making the request to the IP address, instead of using the hostname.
         def enforce_uri_hostname(ip_address, uri, dns_rebind_protection, proxy_in_use)
-          return Result.new(uri, nil, proxy_in_use) unless dns_rebind_protection && ip_address && ip_address != uri.hostname
+          unless dns_rebind_protection && ip_address && ip_address != uri.hostname
+            return Result.new(uri, nil, proxy_in_use)
+          end
 
           new_uri = uri.dup
           new_uri.hostname = ip_address
@@ -185,14 +195,16 @@ module Gitlab
           Addrinfo.getaddrinfo(uri.hostname, get_port(uri), nil, :STREAM).map do |addr|
             addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
           end
-        rescue ArgumentError => error
+        rescue ArgumentError => e
           # Addrinfo.getaddrinfo errors if the domain exceeds 1024 characters.
-          raise unless error.message.include?('hostname too long')
+          raise unless e.message.include?('hostname too long')
 
           raise BlockedUrlError, "Host is too long (maximum is 1024 characters)"
         end
 
-        def enforce_address_info_retrievable?(uri, dns_rebind_protection, deny_all_requests_except_allowed, outbound_local_requests_allowlist)
+        def enforce_address_info_retrievable?(
+          uri, dns_rebind_protection, deny_all_requests_except_allowed,
+          outbound_local_requests_allowlist)
           # Do not enforce if URI is in the allow list
           return false if domain_in_allow_list?(uri, outbound_local_requests_allowlist)
 
@@ -225,12 +237,12 @@ module Gitlab
             validate_loopback(address_info)
           end
 
-          unless allow_local_network
-            validate_local_network(address_info)
-            validate_link_local(address_info)
-            validate_shared_address(address_info)
-            validate_limited_broadcast_address(address_info)
-          end
+          return if allow_local_network
+
+          validate_local_network(address_info)
+          validate_link_local(address_info)
+          validate_shared_address(address_info)
+          validate_limited_broadcast_address(address_info)
         end
 
         def validate_shared_address(addrs_info)
@@ -243,9 +255,9 @@ module Gitlab
         def validate_html_tags(uri)
           uri_str = uri.to_s
           sanitized_uri = ActionController::Base.helpers.sanitize(uri_str, tags: [])
-          if sanitized_uri != uri_str
-            raise BlockedUrlError, 'HTML/CSS/JS tags are not allowed'
-          end
+          return if sanitized_uri == uri_str
+
+          raise BlockedUrlError, 'HTML/CSS/JS tags are not allowed'
         end
 
         def parse_url(url)
@@ -276,9 +288,9 @@ module Gitlab
         end
 
         def validate_scheme(scheme, schemes)
-          if scheme.blank? || (schemes.any? && schemes.exclude?(scheme))
-            raise BlockedUrlError, "Only allowed schemes are #{schemes.join(', ')}"
-          end
+          return unless scheme.blank? || (schemes.any? && schemes.exclude?(scheme))
+
+          raise BlockedUrlError, "Only allowed schemes are #{schemes.join(', ')}"
         end
 
         def validate_user(value)
@@ -372,7 +384,8 @@ module Gitlab
         end
 
         def domain_in_allow_list?(uri, outbound_local_requests_allowlist)
-          Gitlab::HTTP_V2::UrlAllowlist.domain_allowed?(uri.normalized_host, outbound_local_requests_allowlist, port: get_port(uri))
+          Gitlab::HTTP_V2::UrlAllowlist.domain_allowed?(
+            uri.normalized_host, outbound_local_requests_allowlist, port: get_port(uri))
         end
 
         def ip_in_allow_list?(ip_address, outbound_local_requests_allowlist, port: nil)

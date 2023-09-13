@@ -3,7 +3,7 @@
 RSpec.shared_examples 'variable list' do
   it 'shows a list of variables' do
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq(variable.key)
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]')).to have_content(variable.key)
     end
   end
 
@@ -17,7 +17,7 @@ RSpec.shared_examples 'variable list' do
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq('key')
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]')).to have_content('key')
     end
   end
 
@@ -31,8 +31,8 @@ RSpec.shared_examples 'variable list' do
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']").text).to eq('key')
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).to have_content(s_('CiVariables|Protected'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']")).to have_content('key')
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']")).to have_content(s_('CiVariables|Protected'))
     end
   end
 
@@ -46,25 +46,25 @@ RSpec.shared_examples 'variable list' do
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']").text).to eq('key')
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).not_to have_content(s_('CiVariables|Masked'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']")).to have_content('key')
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']")).not_to have_content(s_('CiVariables|Masked'))
     end
   end
 
   it 'reveals and hides variables' do
     page.within('[data-testid="ci-variable-table"]') do
-      expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq(variable.key)
+      expect(first('.js-ci-variable-row td[data-label="Key"]')).to have_content(variable.key)
       expect(page).to have_content('*' * 5)
 
       click_button('Reveal value')
 
-      expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq(variable.key)
-      expect(first('.js-ci-variable-row td[data-label="Value"]').text).to eq(variable.value)
+      expect(first('.js-ci-variable-row td[data-label="Key"]')).to have_content(variable.key)
+      expect(first('.js-ci-variable-row td[data-label="Value"]')).to have_content(variable.value)
       expect(page).not_to have_content('*' * 5)
 
       click_button('Hide value')
 
-      expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq(variable.key)
+      expect(first('.js-ci-variable-row td[data-label="Key"]')).to have_content(variable.key)
       expect(page).to have_content('*' * 5)
     end
   end
@@ -98,7 +98,7 @@ RSpec.shared_examples 'variable list' do
 
     wait_for_requests
 
-    expect(first('.js-ci-variable-row td[data-label="Key"]').text).to eq('new_key')
+    expect(first('.js-ci-variable-row td[data-label="Key"]')).to have_content('new_key')
   end
 
   it 'edits a variable to be unmasked' do
@@ -116,8 +116,8 @@ RSpec.shared_examples 'variable list' do
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).to have_content(s_('CiVariables|Protected'))
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).not_to have_content(s_('CiVariables|Masked'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']")).to have_content(s_('CiVariables|Protected'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']")).not_to have_content(s_('CiVariables|Masked'))
     end
   end
 
@@ -145,7 +145,7 @@ RSpec.shared_examples 'variable list' do
     end
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Attributes')}']")).to have_content(s_('CiVariables|Masked'))
+      expect(find(".js-ci-variable-row:nth-child(1) td[data-label='#{s_('CiVariables|Key')}']")).to have_content(s_('CiVariables|Masked'))
     end
   end
 
@@ -234,9 +234,9 @@ RSpec.shared_examples 'variable list' do
     # expect to find 3 rows of variables in alphabetical order
     expect(page).to have_selector('.js-ci-variable-row', count: 3)
     rows = all('.js-ci-variable-row')
-    expect(rows[0].find('td[data-label="Key"]').text).to eq('ckey')
-    expect(rows[1].find('td[data-label="Key"]').text).to eq('test_key')
-    expect(rows[2].find('td[data-label="Key"]').text).to eq('zkey')
+    expect(rows[0].find('td[data-label="Key"]')).to have_content('ckey')
+    expect(rows[1].find('td[data-label="Key"]')).to have_content('test_key')
+    expect(rows[2].find('td[data-label="Key"]')).to have_content('zkey')
   end
 
   context 'defaults to the application setting' do

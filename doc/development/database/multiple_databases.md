@@ -28,8 +28,8 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 
 | Database | Description | Notes |
 | -------- | ----------- | ------- |
-| `gitlab_main`| All tables that are being stored in the `main:` database (for example, `projects` and `users`) | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](../../architecture/blueprints/cells/index.md) architecture. `gitlab_main_cell` schema describes all tables that are local to a cell in a GitLab installation. |
-| `gitlab_main_clusterwide` | All tables that are being stored cluster-wide in a GitLab installation, in the [Cells](../../architecture/blueprints/cells/index.md) architecture. | |
+| `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](../../architecture/blueprints/cells/index.md) architecture. `gitlab_main_cell` schema describes all tables that are local to a cell in a GitLab installation. For example, `projects` and `groups` |
+| `gitlab_main_clusterwide` | All tables that are being stored cluster-wide in a GitLab installation, in the [Cells](../../architecture/blueprints/cells/index.md) architecture. For example, `users` and `application_settings` | |
 | `gitlab_ci` | All CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`) | |
 | `gitlab_geo` | All Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`) | |
 | `gitlab_shared` | All application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`. | |

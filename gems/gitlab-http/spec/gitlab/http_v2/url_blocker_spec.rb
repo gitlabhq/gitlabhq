@@ -431,7 +431,8 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
     end
 
     it 'returns true for bad port' do
-      expect(described_class.blocked_url?('https://gitlab.com:25/foo/foo.git', ports: ports, schemes: schemes)).to be true
+      expect(described_class.blocked_url?('https://gitlab.com:25/foo/foo.git', ports: ports, schemes: schemes))
+        .to be true
     end
 
     it 'returns true for bad scheme' do
@@ -493,16 +494,19 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
 
     context 'with ipv6 mapped address' do
       it 'returns true for localhost IPs' do
-        expect(described_class.blocked_url?('https://[0:0:0:0:0:ffff:0.0.0.0]/foo/foo.git', schemes: schemes)).to be true
+        expect(described_class.blocked_url?('https://[0:0:0:0:0:ffff:0.0.0.0]/foo/foo.git', schemes: schemes))
+          .to be true
         expect(described_class.blocked_url?('https://[::ffff:0.0.0.0]/foo/foo.git', schemes: schemes)).to be true
         expect(described_class.blocked_url?('https://[::ffff:0:0]/foo/foo.git', schemes: schemes)).to be true
       end
 
       it 'returns true for loopback IPs' do
-        expect(described_class.blocked_url?('https://[0:0:0:0:0:ffff:127.0.0.1]/foo/foo.git', schemes: schemes)).to be true
+        expect(described_class.blocked_url?('https://[0:0:0:0:0:ffff:127.0.0.1]/foo/foo.git', schemes: schemes))
+          .to be true
         expect(described_class.blocked_url?('https://[::ffff:127.0.0.1]/foo/foo.git', schemes: schemes)).to be true
         expect(described_class.blocked_url?('https://[::ffff:7f00:1]/foo/foo.git', schemes: schemes)).to be true
-        expect(described_class.blocked_url?('https://[0:0:0:0:0:ffff:127.0.0.2]/foo/foo.git', schemes: schemes)).to be true
+        expect(described_class.blocked_url?('https://[0:0:0:0:0:ffff:127.0.0.2]/foo/foo.git', schemes: schemes))
+          .to be true
         expect(described_class.blocked_url?('https://[::ffff:127.0.0.2]/foo/foo.git', schemes: schemes)).to be true
         expect(described_class.blocked_url?('https://[::ffff:7f00:2]/foo/foo.git', schemes: schemes)).to be true
       end
@@ -593,10 +597,12 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
         end
 
         it 'allows IPv6 link-local endpoints' do
-          expect(described_class).not_to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.169.254]', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url(
+            'http://[0:0:0:0:0:ffff:169.254.169.254]', **url_blocker_attributes)
           expect(described_class).not_to be_blocked_url('http://[::ffff:169.254.169.254]', **url_blocker_attributes)
           expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a9fe]', **url_blocker_attributes)
-          expect(described_class).not_to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.168.100]', **url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url(
+            'http://[0:0:0:0:0:ffff:169.254.168.100]', **url_blocker_attributes)
           expect(described_class).not_to be_blocked_url('http://[::ffff:169.254.168.100]', **url_blocker_attributes)
           expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a864]', **url_blocker_attributes)
           expect(described_class).not_to be_blocked_url('http://[fe80::c800:eff:fe74:8]', **url_blocker_attributes)
@@ -604,7 +610,8 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
 
         it 'allows limited broadcast address 255.255.255.255 and variants' do
           limited_broadcast_address_variants.each do |variant|
-            expect(described_class).not_to be_blocked_url("https://#{variant}", **url_blocker_attributes), "Expected #{variant} to be allowed"
+            expect(described_class).not_to be_blocked_url("https://#{variant}", **url_blocker_attributes),
+              "Expected #{variant} to be allowed"
           end
         end
       end
@@ -619,14 +626,16 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
 
         let(:options) { { schemes: schemes } }
 
-        it_behaves_like 'allows local requests', { allow_localhost: true, allow_local_network: true, schemes: %w[http https] }
+        it_behaves_like 'allows local requests',
+          { allow_localhost: true, allow_local_network: true, schemes: %w[http https] }
       end
 
       context 'when false' do
         it 'blocks urls from private networks' do
           local_ips.each do |ip|
             stub_domain_resolv(fake_domain, ip) do
-              expect(described_class).to be_blocked_url("http://#{fake_domain}", allow_local_network: false, schemes: schemes)
+              expect(described_class).to be_blocked_url(
+                "http://#{fake_domain}", allow_local_network: false, schemes: schemes)
             end
 
             expect(described_class).to be_blocked_url("http://#{ip}", allow_local_network: false, schemes: schemes)
@@ -634,18 +643,27 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
         end
 
         it 'blocks IPv4 link-local endpoints' do
-          expect(described_class).to be_blocked_url('http://169.254.169.254', allow_local_network: false, schemes: schemes)
-          expect(described_class).to be_blocked_url('http://169.254.168.100', allow_local_network: false, schemes: schemes)
+          expect(described_class).to be_blocked_url(
+            'http://169.254.169.254', allow_local_network: false, schemes: schemes)
+          expect(described_class).to be_blocked_url(
+            'http://169.254.168.100', allow_local_network: false, schemes: schemes)
         end
 
         it 'blocks IPv6 link-local endpoints' do
-          expect(described_class).to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.169.254]', allow_local_network: false, schemes: schemes)
-          expect(described_class).to be_blocked_url('http://[::ffff:169.254.169.254]', allow_local_network: false, schemes: schemes)
-          expect(described_class).to be_blocked_url('http://[::ffff:a9fe:a9fe]', allow_local_network: false, schemes: schemes)
-          expect(described_class).to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.168.100]', allow_local_network: false, schemes: schemes)
-          expect(described_class).to be_blocked_url('http://[::ffff:169.254.168.100]', allow_local_network: false, schemes: schemes)
-          expect(described_class).to be_blocked_url('http://[::ffff:a9fe:a864]', allow_local_network: false, schemes: schemes)
-          expect(described_class).to be_blocked_url('http://[fe80::c800:eff:fe74:8]', allow_local_network: false, schemes: schemes)
+          expect(described_class).to be_blocked_url(
+            'http://[0:0:0:0:0:ffff:169.254.169.254]', allow_local_network: false, schemes: schemes)
+          expect(described_class).to be_blocked_url(
+            'http://[::ffff:169.254.169.254]', allow_local_network: false, schemes: schemes)
+          expect(described_class).to be_blocked_url(
+            'http://[::ffff:a9fe:a9fe]', allow_local_network: false, schemes: schemes)
+          expect(described_class).to be_blocked_url(
+            'http://[0:0:0:0:0:ffff:169.254.168.100]', allow_local_network: false, schemes: schemes)
+          expect(described_class).to be_blocked_url(
+            'http://[::ffff:169.254.168.100]', allow_local_network: false, schemes: schemes)
+          expect(described_class).to be_blocked_url(
+            'http://[::ffff:a9fe:a864]', allow_local_network: false, schemes: schemes)
+          expect(described_class).to be_blocked_url(
+            'http://[fe80::c800:eff:fe74:8]', allow_local_network: false, schemes: schemes)
         end
 
         it 'blocks limited broadcast address 255.255.255.255 and variants' do
@@ -655,7 +673,9 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
           stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
 
           limited_broadcast_address_variants.each do |variant|
-            expect(described_class).to be_blocked_url("https://#{variant}", allow_local_network: false, schemes: schemes), "Expected #{variant} to be blocked"
+            expect(described_class).to be_blocked_url(
+              "https://#{variant}", allow_local_network: false, schemes: schemes),
+              "Expected #{variant} to be blocked"
           end
         end
 
@@ -690,7 +710,8 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
               ]
             end
 
-            it_behaves_like 'allows local requests', { allow_localhost: false, allow_local_network: false, schemes: %w[http https] }
+            it_behaves_like 'allows local requests',
+              { allow_localhost: false, allow_local_network: false, schemes: %w[http https] }
 
             it 'allows IP when dns_rebind_protection is disabled' do
               url = "http://example.com"
@@ -810,7 +831,8 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
 
             it 'allows domain with port when resolved ip has port allowed' do
               stub_domain_resolv("www.resolve-domain.com", '127.0.0.1', 2000) do
-                expect(described_class).not_to be_blocked_url("http://www.resolve-domain.com:2000", **url_blocker_attributes)
+                expect(described_class).not_to be_blocked_url(
+                  "http://www.resolve-domain.com:2000", **url_blocker_attributes)
               end
             end
           end
@@ -834,13 +856,16 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
       context 'when true' do
         it 'blocks urls with a non-alphanumeric username' do
           aggregate_failures do
-            expect(described_class).to be_blocked_url('ssh://-oProxyCommand=whoami@example.com/a', enforce_user: true, schemes: ['ssh'])
+            expect(described_class).to be_blocked_url(
+              'ssh://-oProxyCommand=whoami@example.com/a', enforce_user: true, schemes: ['ssh'])
 
             # The leading character here is a Unicode "soft hyphen"
-            expect(described_class).to be_blocked_url('ssh://­oProxyCommand=whoami@example.com/a', enforce_user: true, schemes: ['ssh'])
+            expect(described_class).to be_blocked_url(
+              'ssh://­oProxyCommand=whoami@example.com/a', enforce_user: true, schemes: ['ssh'])
 
             # Unicode alphanumerics are allowed
-            expect(described_class).not_to be_blocked_url('ssh://ğitlab@example.com/a', enforce_user: true, schemes: ['ssh'])
+            expect(described_class).not_to be_blocked_url(
+              'ssh://ğitlab@example.com/a', enforce_user: true, schemes: ['ssh'])
           end
         end
       end
@@ -848,22 +873,29 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
 
     context 'when ascii_only is true' do
       it 'returns true for unicode domain' do
-        expect(described_class.blocked_url?('https://𝕘itⅼαƄ.com/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
+        expect(described_class.blocked_url?(
+          'https://𝕘itⅼαƄ.com/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
       end
 
       it 'returns true for unicode tld' do
-        expect(described_class.blocked_url?('https://gitlab.ᴄοｍ/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
+        expect(described_class.blocked_url?(
+          'https://gitlab.ᴄοｍ/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
       end
 
       it 'returns true for unicode path' do
-        expect(described_class.blocked_url?('https://gitlab.com/𝒇οο/𝒇οο.Ƅαꮁ', ascii_only: true, schemes: schemes)).to be true
+        expect(described_class.blocked_url?(
+          'https://gitlab.com/𝒇οο/𝒇οο.Ƅαꮁ', ascii_only: true, schemes: schemes)).to be true
       end
 
       it 'returns true for IDNA deviations' do
-        expect(described_class.blocked_url?('https://mißile.com/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
-        expect(described_class.blocked_url?('https://miςςile.com/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
-        expect(described_class.blocked_url?('https://git‍lab.com/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
-        expect(described_class.blocked_url?('https://git‌lab.com/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
+        expect(described_class.blocked_url?(
+          'https://mißile.com/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
+        expect(described_class.blocked_url?(
+          'https://miςςile.com/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
+        expect(described_class.blocked_url?(
+          'https://git‍lab.com/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
+        expect(described_class.blocked_url?(
+          'https://git‌lab.com/foo/foo.bar', ascii_only: true, schemes: schemes)).to be true
       end
     end
 

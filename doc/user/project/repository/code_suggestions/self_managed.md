@@ -164,6 +164,12 @@ This feature is currently in [Beta](../../../../policy/experiment-beta-support.m
 Code Suggestions depends on both Google Vertex AI Codey APIs and the GitLab Code Suggestions service. We have built this feature to gracefully degrade and have controls in place to allow us to
 mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
 
+### Code Suggestions network and proxy settings
+
+Make sure any firewalls are configured to allow outbound connections to `https://codesuggestions.gitlab.com/`.
+
+If your GitLab instance uses an HTTP proxy server to access the internet, make sure that it is configured, including for [`gitlab_workhorse`](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
+
 ### Data privacy
 
 A self-managed GitLab instance does not generate the code suggestion. After successful

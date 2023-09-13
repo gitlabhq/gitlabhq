@@ -10,9 +10,11 @@ NET_PROTOCOL_VERSION_0_2_0 = Gem::Version.new(Net::Protocol::VERSION) >= Gem::Ve
 
 module Gitlab
   module HTTP_V2
-    # Net::BufferedIO is overwritten by webmock but in order to test this class, it needs to inherit from the original BufferedIO.
+    # Net::BufferedIO is overwritten by webmock but in order to test this class,
+    # it needs to inherit from the original BufferedIO.
     # https://github.com/bblimke/webmock/blob/867f4b290fd133658aa9530cba4ba8b8c52c0d35/lib/webmock/http_lib_adapters/net_http.rb#L266
-    parent_class = if const_defined?('WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetBufferedIO') && Rails.env.test?
+    parent_class = if const_defined?('WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetBufferedIO') &&
+        Rails.env.test?
                      WebMock::HttpLibAdapters::NetHttpAdapter::OriginalNetBufferedIO
                    else
                      Net::BufferedIO
@@ -31,9 +33,10 @@ module Gitlab
         if NET_PROTOCOL_VERSION_0_2_0
           offset = @rbuf_offset
           begin
-            until idx = @rbuf.index(terminator, offset)
+            until idx = @rbuf.index(terminator, offset) # rubocop:disable Lint/AssignmentInCondition
               if (elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) > HEADER_READ_TIMEOUT
-                raise Gitlab::HTTP_V2::HeaderReadTimeout, "Request timed out after reading headers for #{elapsed} seconds"
+                raise Gitlab::HTTP_V2::HeaderReadTimeout,
+                  "Request timed out after reading headers for #{elapsed} seconds"
               end
 
               offset = @rbuf.bytesize
@@ -47,9 +50,10 @@ module Gitlab
           end
         else
           begin
-            until idx = @rbuf.index(terminator)
+            until idx = @rbuf.index(terminator) # rubocop:disable Lint/AssignmentInCondition
               if (elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) > HEADER_READ_TIMEOUT
-                raise Gitlab::HTTP_V2::HeaderReadTimeout, "Request timed out after reading headers for #{elapsed} seconds"
+                raise Gitlab::HTTP_V2::HeaderReadTimeout,
+                  "Request timed out after reading headers for #{elapsed} seconds"
               end
 
               rbuf_fill

@@ -11,9 +11,9 @@ import {
   GlIcon,
   GlEmptyState,
 } from '@gitlab/ui';
-import { isValidSlaDueAt } from 'ee_else_ce/vue_shared/components/incidents/utils';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { visitUrl, mergeUrlParams, joinPaths } from '~/lib/utils/url_utility';
+import { isValidDateString } from '~/lib/utils/datetime_range';
 import { s__, n__ } from '~/locale';
 import { INCIDENT_SEVERITY } from '~/sidebar/constants';
 import SeverityToken from '~/sidebar/components/severity/severity.vue';
@@ -330,7 +330,7 @@ export default {
         item.assignees.nodes.length - MAX_VISIBLE_ASSIGNEES,
       );
     },
-    isValidSlaDueAt,
+    isValidDateString,
   },
 };
 </script>
@@ -441,7 +441,7 @@ export default {
 
           <template v-if="slaFeatureAvailable" #cell(incidentSla)="{ item }">
             <service-level-agreement-cell
-              v-if="isValidSlaDueAt(item.slaDueAt)"
+              v-if="isValidDateString(item.slaDueAt)"
               :issue-iid="item.iid"
               :project-path="projectPath"
               :sla-due-at="item.slaDueAt"

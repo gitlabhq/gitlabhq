@@ -41,15 +41,15 @@ RSpec.shared_examples 'variable list pagination' do |variable_type|
 
   it 'sorts variables alphabetically in ASC and DESC order' do
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq(variable.key)
-      expect(find('.js-ci-variable-row:nth-child(20) td[data-label="Key"]').text).to eq('test_key_8')
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]')).to have_content(variable.key)
+      expect(find('.js-ci-variable-row:nth-child(20) td[data-label="Key"]')).to have_content('test_key_8')
     end
 
     click_button 'Next'
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq('test_key_9')
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]')).to have_content('test_key_9')
     end
 
     page.within('[data-testid="ci-variable-table"]') do
@@ -59,8 +59,8 @@ RSpec.shared_examples 'variable list pagination' do |variable_type|
     wait_for_requests
 
     page.within('[data-testid="ci-variable-table"]') do
-      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]').text).to eq('test_key_9')
-      expect(find('.js-ci-variable-row:nth-child(20) td[data-label="Key"]').text).to eq('test_key_0')
+      expect(find('.js-ci-variable-row:nth-child(1) td[data-label="Key"]')).to have_content('test_key_9')
+      expect(find('.js-ci-variable-row:nth-child(20) td[data-label="Key"]')).to have_content('test_key_0')
     end
   end
 end

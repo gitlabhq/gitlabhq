@@ -2,8 +2,6 @@
 
 module Integrations
   class MicrosoftTeams < BaseChatNotification
-    undef :notify_only_broken_pipelines
-
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://outlook.office.com/webhook/…',
@@ -42,26 +40,6 @@ module Integrations
     def self.supported_events
       %w[push issue confidential_issue merge_request note confidential_note tag_push
          pipeline wiki_page]
-    end
-
-    def sections
-      [
-        {
-          type: SECTION_TYPE_CONNECTION,
-          title: s_('Integrations|Connection details'),
-          description: help
-        },
-        {
-          type: SECTION_TYPE_TRIGGER,
-          title: s_('Integrations|Trigger'),
-          description: s_('Integrations|An event will be triggered when one of the following items happen.')
-        },
-        {
-          type: SECTION_TYPE_CONFIGURATION,
-          title: s_('Integrations|Notification settings'),
-          description: s_('Integrations|Configure the scope of notifications.')
-        }
-      ]
     end
 
     private
