@@ -89,7 +89,7 @@ Sidekiq.configure_server do |config|
   end
 
   if enable_reliable_fetch?
-    if Gitlab::Utils.to_boolean(ENV['SIDEKIQ_POLL_NON_NAMESPACED'])
+    if Gitlab::Utils.to_boolean(ENV['SIDEKIQ_ENABLE_DUAL_NAMESPACE_POLLING'], default: true)
       # set non-namespaced store for fetcher to poll both namespaced and non-namespaced queues
       config[:alternative_store] = ::Gitlab::Redis::Queues
       config[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE

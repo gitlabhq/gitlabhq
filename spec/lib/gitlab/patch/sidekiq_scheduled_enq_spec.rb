@@ -16,8 +16,8 @@ RSpec.describe Gitlab::Patch::SidekiqScheduledEnq, :clean_gitlab_redis_queues, f
 
     subject { Sidekiq::Scheduled::Enq.new.enqueue_jobs }
 
-    it 'only polls with Sidekiq.redis' do
-      expect(Sidekiq::Client).to receive(:push).with(payload).once
+    it 'polls both namespaces by default' do
+      expect(Sidekiq::Client).to receive(:push).with(payload).twice
 
       subject
 
@@ -26,17 +26,17 @@ RSpec.describe Gitlab::Patch::SidekiqScheduledEnq, :clean_gitlab_redis_queues, f
       end
 
       Gitlab::Redis::Queues.with do |conn|
-        expect(conn.zcard('schedule')).to eq(1)
+        expect(conn.zcard('schedule')).to eq(0)
       end
     end
 
-    context 'when SIDEKIQ_POLL_NON_NAMESPACED is enabled' do
+    context 'when SIDEKIQ_ENABLE_DUAL_NAMESPACE_POLLING is disabled' do
       before do
-        stub_env('SIDEKIQ_POLL_NON_NAMESPACED', 'true')
+        stub_env('SIDEKIQ_ENABLE_DUAL_NAMESPACE_POLLING', 'false')
       end
 
-      it 'polls both sets' do
-        expect(Sidekiq::Client).to receive(:push).with(payload).twice
+      it 'polls via Sidekiq.redis only' do
+        expect(Sidekiq::Client).to receive(:push).with(payload).once
 
         subject
 
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Patch::SidekiqScheduledEnq, :clean_gitlab_redis_queues, f
         end
 
         Gitlab::Redis::Queues.with do |conn|
-          expect(conn.zcard('schedule')).to eq(0)
+          expect(conn.zcard('schedule')).to eq(1)
         end
       end
     end
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Patch::SidekiqScheduledEnq, :clean_gitlab_redis_queues, f
 
       before do
         stub_env('SIDEKIQ_ENQUEUE_NON_NAMESPACED', 'true')
-        stub_env('SIDEKIQ_POLL_NON_NAMESPACED', 'true')
+        stub_env('SIDEKIQ_ENABLE_DUAL_NAMESPACE_POLLING', 'true')
       end
 
       it 'polls both sets' do

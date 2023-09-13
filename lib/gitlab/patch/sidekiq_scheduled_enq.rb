@@ -10,7 +10,7 @@ module Gitlab
       # namespaced sets via super and vice-versa depending on how Sidekiq.redis was configured
       def enqueue_jobs(sorted_sets = Sidekiq::Scheduled::SETS)
         # checks the other namespace
-        if Gitlab::Utils.to_boolean(ENV['SIDEKIQ_POLL_NON_NAMESPACED'])
+        if Gitlab::Utils.to_boolean(ENV['SIDEKIQ_ENABLE_DUAL_NAMESPACE_POLLING'], default: true)
           # Refer to https://github.com/sidekiq/sidekiq/blob/v6.5.7/lib/sidekiq/scheduled.rb#L25
           # this portion swaps out Sidekiq.redis for Gitlab::Redis::Queues
           Gitlab::Redis::Queues.with do |conn| # rubocop:disable Cop/RedisQueueUsage

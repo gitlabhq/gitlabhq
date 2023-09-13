@@ -3,8 +3,10 @@
 module ActiveRecord
   module GitlabPatches
     # This adds `rescue_from` to ActiveRecord::Base.
-    # Currently, only errors called from `ActiveRecord::Relation#exec_queries`
-    # will be handled by `rescue_from`.
+    # Currently only the following places will be handled by `rescue_from`:
+    #
+    # - `ActiveRecord::Relation#load`, and other methods that call
+    #   `ActiveRecord::Relation#exec_queries`.
     #
     # class ApplicationRecord < ActiveRecord::Base
     #   rescue_from MyException, with: :my_handler
