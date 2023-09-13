@@ -8,6 +8,8 @@ module Registrations
     include ::Gitlab::Utils::StrongMemoize
 
     layout 'minimal'
+    # TODO: Once this is an ee + SaaS only feature, we can remove this.
+    # To be completed in https://gitlab.com/gitlab-org/gitlab/-/issues/411858
     skip_before_action :check_two_factor_requirement
 
     helper_method :welcome_update_params

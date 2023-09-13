@@ -26,6 +26,18 @@ module Gitlab
         events_from_new_structure || events_from_old_structure || {}
       end
 
+      def to_context
+        return unless %w[redis redis_hll].include?(data_source)
+
+        event_name = if data_source == 'redis_hll'
+                       options[:events].first
+                     elsif data_source == 'redis'
+                       Gitlab::Usage::Metrics::Instrumentations::RedisMetric.new(attributes).redis_key
+                     end
+
+        Gitlab::Tracking::ServicePingContext.new(data_source: data_source, event: event_name)
+      end
+
       def to_h
         attributes
       end
@@ -96,6 +108,10 @@ module Gitlab
 
         def with_instrumentation_class
           all.select { |definition| definition.attributes[:instrumentation_class].present? && definition.available? }
+        end
+
+        def context_for(key_path)
+          definitions[key_path].to_context
         end
 
         def schemer

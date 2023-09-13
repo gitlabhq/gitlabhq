@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'events/event/_push.html.haml' do
   let(:event) { build_stubbed(:push_event) }
+  let(:event_presenter) { event.present }
 
   context 'with a branch' do
     let(:payload) { build_stubbed(:push_event_payload, event: event) }
@@ -16,14 +17,14 @@ RSpec.describe 'events/event/_push.html.haml' do
       allow(event.project.repository).to receive(:branch_exists?).with(event.ref_name).and_return(true)
       link = project_commits_path(event.project, event.ref_name)
 
-      render partial: 'events/event/push', locals: { event: event }
+      render partial: 'events/event/push', locals: { event: event_presenter }
 
       expect(rendered).to have_link(event.ref_name, href: link)
     end
 
     context 'that has been deleted' do
       it 'does not link to the branch' do
-        render partial: 'events/event/push', locals: { event: event }
+        render partial: 'events/event/push', locals: { event: event_presenter }
 
         expect(rendered).not_to have_link(event.ref_name)
       end
@@ -40,7 +41,7 @@ RSpec.describe 'events/event/_push.html.haml' do
       end
 
       it 'includes the count in the text' do
-        render partial: 'events/event/push', locals: { event: event }
+        render partial: 'events/event/push', locals: { event: event_presenter }
 
         expect(rendered).to include('4 branches')
       end
@@ -58,14 +59,14 @@ RSpec.describe 'events/event/_push.html.haml' do
       allow(event.project.repository).to receive(:tag_exists?).with(event.ref_name).and_return(true)
       link = project_commits_path(event.project, event.ref_name)
 
-      render partial: 'events/event/push', locals: { event: event }
+      render partial: 'events/event/push', locals: { event: event_presenter }
 
       expect(rendered).to have_link(event.ref_name, href: link)
     end
 
     context 'that has been deleted' do
       it 'does not link to the tag' do
-        render partial: 'events/event/push', locals: { event: event }
+        render partial: 'events/event/push', locals: { event: event_presenter }
 
         expect(rendered).not_to have_link(event.ref_name)
       end
@@ -82,7 +83,7 @@ RSpec.describe 'events/event/_push.html.haml' do
       end
 
       it 'includes the count in the text' do
-        render partial: 'events/event/push', locals: { event: event }
+        render partial: 'events/event/push', locals: { event: event_presenter }
 
         expect(rendered).to include('4 tags')
       end

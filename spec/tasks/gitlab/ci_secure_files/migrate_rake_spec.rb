@@ -3,12 +3,12 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:ci_secure_files', feature_category: :mobile_devops do
-  let_it_be(:local_file) { create(:ci_secure_file) }
+  let!(:local_file) { create(:ci_secure_file) }
 
   let(:logger) { instance_double(Logger) }
   let(:helper) { double }
 
-  before_all do
+  before(:all) do
     Rake.application.rake_require 'tasks/gitlab/ci_secure_files/migrate'
   end
 

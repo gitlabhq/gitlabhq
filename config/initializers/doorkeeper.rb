@@ -101,7 +101,7 @@ Doorkeeper.configure do
   # "password"           => Resource Owner Password Credentials Grant Flow
   # "client_credentials" => Client Credentials Grant Flow
   #
-  grant_flows %w(authorization_code password client_credentials)
+  grant_flows %w[authorization_code password client_credentials]
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.

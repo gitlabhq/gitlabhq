@@ -911,7 +911,8 @@ so we need to set some guidelines for their use going forward:
 ### Common test setup
 
 NOTE:
-`before_all` does not work with the `:delete` strategy. For more information, see [issue 420379](https://gitlab.com/gitlab-org/gitlab/-/issues/420379).
+`let_it_be` and `before_all` do not work with DatabaseCleaner's deletion strategy. This includes migration specs, Rake task specs, and specs that have the `:delete` RSpec metadata tag.
+For more information, see [issue 420379](https://gitlab.com/gitlab-org/gitlab/-/issues/420379).
 
 In some cases, there is no need to recreate the same object for tests
 again for each example. For example, a project and a guest of that project
@@ -1060,7 +1061,7 @@ Failing with an error along the lines of:
 ```shell
 expected {
 "assignee_id" => nil, "...1 +0000 } to include {"customer_relations_contacts" => [{:created_at => "2023-08-04T13:30:20Z", :first_name => "Sidney Jones3" }]}
-       
+
 Diff:
        @@ -1,35 +1,69 @@
        -"customer_relations_contacts" => [{:created_at=>"2023-08-04T13:30:20Z", :first_name=>"Sidney Jones3" }],

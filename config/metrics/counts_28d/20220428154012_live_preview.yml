@@ -23,3 +23,5 @@ tier:
 - ultimate
 performance_indicator_type: []
 milestone: "15.0"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131356
+milestone_removed: '16.4'

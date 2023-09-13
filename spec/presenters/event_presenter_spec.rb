@@ -76,4 +76,104 @@ RSpec.describe EventPresenter do
         .to have_attributes(note_target_type_name: 'issue')
     end
   end
+
+  describe '#push_activity_description' do
+    subject { event.present.push_activity_description }
+
+    context 'when event is a regular event' do
+      let(:event) { build(:event, project: project) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when event is a push event' do
+      let!(:push_event_payload) { build(:push_event_payload, event: event, ref_count: ref_count) }
+      let(:event) { build(:push_event, project: project) }
+
+      context 'when it is an individual event' do
+        let(:ref_count) { nil }
+
+        it { is_expected.to eq 'pushed to branch' }
+      end
+
+      context 'when it is a batch event' do
+        let(:ref_count) { 1 }
+
+        it { is_expected.to eq 'pushed to 1 branch' }
+      end
+    end
+  end
+
+  describe '#batch_push?' do
+    subject { event.present.batch_push? }
+
+    context 'when event is a regular event' do
+      let(:event) { build(:event, project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when event is a push event' do
+      let!(:push_event_payload) { build(:push_event_payload, event: event, ref_count: ref_count) }
+      let(:event) { build(:push_event, project: project) }
+
+      context 'when it is an individual event' do
+        let(:ref_count) { nil }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when it is a batch event' do
+        let(:ref_count) { 1 }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
+  describe '#linked_to_reference?' do
+    subject { event.present.linked_to_reference? }
+
+    context 'when event is a regular event' do
+      let(:event) { build(:event, project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when event is a push event' do
+      let!(:push_event_payload) { build(:push_event_payload, event: event, ref: ref, ref_type: ref_type) }
+      let(:ref) { 'master' }
+      let(:ref_type) { :branch }
+
+      context 'when event belongs to group' do
+        let(:event) { build(:push_event, group: group) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when event belongs to project' do
+        let(:event) { build(:push_event, project: project) }
+
+        it { is_expected.to be_falsey }
+
+        context 'when matching tag exists' do
+          let(:ref_type) { :tag }
+
+          before do
+            allow(project.repository).to receive(:tag_exists?).with(ref).and_return(true)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when matching branch exists' do
+          before do
+            allow(project.repository).to receive(:branch_exists?).with(ref).and_return(true)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+  end
 end

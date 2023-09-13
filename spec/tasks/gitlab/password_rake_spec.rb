@@ -3,8 +3,8 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:password rake tasks', :silence_stdout do
-  let_it_be(:user_1) { create(:user, username: 'foobar', password: User.random_password) }
-  let_it_be(:password) { User.random_password }
+  let!(:user_1) { create(:user, username: 'foobar', password: User.random_password) }
+  let(:password) { User.random_password }
 
   def stub_username(username)
     allow(Gitlab::TaskHelpers).to receive(:prompt).with('Enter username: ').and_return(username)

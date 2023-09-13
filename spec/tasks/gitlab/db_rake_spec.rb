@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'rake'
+require 'rake_helper'
 
 RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_category: :database do
-  before(:all) do # rubocop:disable RSpec/BeforeAll
+  before(:all) do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
     Rake.application.rake_require 'tasks/gitlab/db'
@@ -552,9 +551,9 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'clean_structure_sql' do
-    let_it_be(:clean_rake_task) { 'gitlab:db:clean_structure_sql' }
-    let_it_be(:test_task_name) { 'gitlab:db:_test_multiple_structure_cleans' }
-    let_it_be(:input) { 'this is structure data' }
+    let(:clean_rake_task) { 'gitlab:db:clean_structure_sql' }
+    let(:test_task_name) { 'gitlab:db:_test_multiple_structure_cleans' }
+    let(:input) { 'this is structure data' }
 
     let(:output) { StringIO.new }
 

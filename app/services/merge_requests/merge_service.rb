@@ -79,7 +79,11 @@ module MergeRequests
 
       log_info("Git merge finished on JID #{merge_jid} commit #{commit_sha}")
 
-      new_merge_request_attributes = merge_result.slice(:merge_commit_sha, :squash_commit_sha)
+      new_merge_request_attributes = {
+        merged_commit_sha: commit_sha,
+        merge_commit_sha: merge_result[:merge_commit_sha],
+        squash_commit_sha: merge_result[:squash_commit_sha]
+      }.compact
       merge_request.update!(new_merge_request_attributes) if new_merge_request_attributes.present?
 
       commit_sha

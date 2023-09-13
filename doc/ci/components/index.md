@@ -15,15 +15,19 @@ to track future work. Tell us about your use case by leaving comments in the epi
 
 ## Components Repository
 
-A components repository is a GitLab project with a repository that hosts one or more pipeline components. A pipeline component is a reusable single pipeline configuration unit. You can use them to compose an entire pipeline configuration or a small part of a larger pipeline. It can optionally take [input parameters](../yaml/includes.md#define-input-parameters-with-specinputs).
+A components repository is a GitLab project with a repository that hosts one or more pipeline components.
+A pipeline component is a reusable single pipeline configuration unit. You can use them to compose
+an entire pipeline configuration or a small part of a larger pipeline.
 
-### Create a components repository
+A component can optionally take [input parameters](../yaml/includes.md#define-input-parameters-with-specinputs).
+
+## Create a components repository
 
 To create a components repository, you must:
 
 1. [Create a new project](../../user/project/index.md#create-a-blank-project) with a `README.md` file.
-
-1. Create a `template.yml` file inside the project's root directory that contains the configuration you want to provide as a component. For example:
+1. Create a `template.yml` file inside the project's root directory that contains the configuration you want to provide as a component.
+   For example:
 
    ```yaml
    spec:
@@ -116,8 +120,8 @@ namespace named `my-username`:
   └── .gitlab-ci.yml
   ```
 
-  The `.gitlab-ci.yml` file is not required for a CI/CD component to work, but [testing the component](#test-a-component)
-  in a pipeline in the project is recommended.
+  The `.gitlab-ci.yml` file is not required for a CI/CD component to work, but
+  [testing the component](#test-the-component) in a pipeline in the project is recommended.
 
   This component is referenced with the path `gitlab.com/my-username/my-component@<version>`.
 
@@ -154,11 +158,232 @@ Nesting of components is not possible. For example:
 │       └── nested_template.yml
 ```
 
-### Test a component
+## Release a component
 
-Testing CI/CD components as part of the development workflow is strongly recommended and helps ensure consistent behavior.
+To create a release for a CI/CD component, you can use:
 
-Test changes in a CI/CD pipeline like any other project, by creating a `.gitlab-ci.yml` file in the root directory of the component repository.
+- The [`release`](../yaml/index.md#release) keyword in a CI/CD pipeline. Like in the
+  [component testing example](#test-the-component), you can set a component to automatically
+  be released after all tests pass in pipelines for new tags.
+- The [UI for creating a release](../../user/project/releases/index.md#create-a-release).
+
+All released versions of the components are displayed in the CI/CD Catalog
+page for the given resource, providing users with information about official releases.
+
+Components [can be used](#use-a-component-in-a-cicd-configuration) without being released,
+but only with a commit SHA or a branch name. To enable the use of tags or the `~latest` version keyword,
+you must create a release.
+
+## Use a component in a CI/CD configuration
+
+You can add a component to a CI/CD configuration with the `include: component` keyword.
+For example:
+
+```yaml
+include:
+  - component: gitlab.example.com/my-namespace/my-component@1.0
+    inputs:
+      stage: build
+```
+
+The component is identified by a unique address in the form `<fully-qualified-doman-name>/<component-path>@<specific-version>`,
+where:
+
+- `<fully-qualified-doman-name>` matches the GitLab host.
+- `<component-path>` is the component project's full path and directory where the
+  component YAML file is located.
+- `<specific-version>` is the version of the component. In order of highest priority first,
+  the version can be:
+  - A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`.
+  - A tag, for example: `1.0`.
+  - `~latest`, which is a special version that always points to the most recent released tag.
+    Only available if the component has been [released](#release-a-component).
+  - A branch name, for example `main`.
+
+For example, for a component repository located at `gitlab-org/dast` on `gitlab.com`,
+the path:
+
+- `gitlab.com/gitlab-org/dast@main` targets the `template.yml` in the root directory
+  on the `main` branch.
+- `gitlab.com/gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8` targets the same file
+  for the specified commit SHA.
+- `gitlab.com/gitlab-org/dast@1.0` targets the same file for the `1.0` tag.
+- `gitlab.com/gitlab-org/dast@~latest` targets the same file for the latest release.
+- `gitlab.com/gitlab-org/dast/api-scan@main` targets a different file, the `template.yml`
+  in the `/api-scan` directory in the component repository, for the `main` branch.
+
+**Additional details**:
+
+- You can only reference components in the same GitLab instance as your project.
+- If a tag and branch exist with the same name, the tag takes precedence over the branch.
+- If a tag is named the same as a commit SHA that exists, like `e3262fdd0914fa823210cdb79a8c421e2cef79d8`,
+  the commit SHA takes precedence over the tag.
+
+## Best practices
+
+### Avoid using global keywords
+
+You should try to avoid [global keywords](../yaml/index.md#global-keywords) in a component.
+Using these keywords in a component affects all jobs in a pipeline, including jobs
+directly defined in the main `.gitlab-ci.yml` or in other included components.
+
+As an alternative to global keywords, you should instead:
+
+- Add the configuration directly to each job, even if it creates some duplication
+  in the component configuration.
+- Use the [`extends`](../yaml/index.md#extends) keyword in the component.
+
+For example, using the `default` keyword is not recommended:
+
+```yaml
+# Not recommended
+default:
+  image: ruby:3.0
+
+rspec-1:
+  script: bundle exec rspec dir1/
+
+rspec-2:
+  script: bundle exec rspec dir2/
+```
+
+Instead, you can:
+
+- Add the configuration to each job:
+
+  ```yaml
+  rspec-1:
+    image: ruby:3.0
+    script: bundle exec rspec dir1/
+
+  rspec-2:
+    image: ruby:3.0
+    script: bundle exec rspec dir2/
+  ```
+
+- Use `extends` to reuse configuration:
+
+  ```yaml
+  .rspec-image:
+    image: ruby:3.0
+
+  rspec-1:
+    extends:
+      - .rspec-image
+    script: bundle exec rspec dir1/
+
+  rspec-2:
+    extends:
+      - .rspec-image
+    script: bundle exec rspec dir2/
+  ```
+
+### Replace hard-coded values with inputs
+
+You should avoid hard-coding values in a CI/CD components. Hard-coded values might force
+component users to need to review the component's internal details and adapt their pipeline
+to work with the component.
+
+A common keyword with problematic hard-coded values is `stage`. If a component job's
+stage is set to a specific value, the pipeline using the component **must** define
+the exact same stage. Additionally, if the component user wants to use a different stage,
+they must [override](../yaml/includes.md#override-included-configuration-values) the configuration.
+
+The preferred method is to use the [`input` keyword](../yaml/includes.md#define-input-parameters-with-specinputs).
+The component user can specify the exact value they need.
+
+For example:
+
+- In the component configuration:
+
+  ```yaml
+  spec:
+    inputs:
+      stage:
+        default: test
+  ---
+  unit-test:
+    stage: $[[ inputs.stage ]]
+    script: echo unit tests
+
+  integration-test:
+    stage: $[[ inputs.stage ]]
+    script: echo integration tests
+  ```
+
+- In the project using the component:
+
+  ```yaml
+  include:
+    - component: gitlab.com/gitlab-org/ruby-test@1.0
+      inputs:
+        stage: verify
+
+  stages: [verify, deploy]
+  ```
+
+### Replace custom CI/CD variables with inputs
+
+When using CI/CD variables in a component, you should evaluate if the `inputs` keyword
+should be used instead. Requiring a user to define custom variables to change a component's
+behavior should be avoided. You should try to use `inputs` for any component customization.
+
+Inputs are explicitly defined in the component's specs and are better validated than variables.
+For example, if a required input is not passed to the component, GitLab returns a pipeline error.
+By contrast, if a variable is not defined, it's value is empty and there is no error.
+
+For example, use `inputs` instead of variables to let users change a scanner's output format:
+
+- In the component configuration:
+
+  ```yaml
+  spec:
+    inputs:
+      scanner-output:
+        default: json
+  ---
+  my-scanner:
+    script: my-scan --output $[[ inputs.scanner-output ]]
+  ```
+
+- In the project using the component:
+
+  ```yaml
+  include:
+    - component: gitlab.example.com/my-scanner@1.0
+      inputs:
+        scanner-output: yaml
+  ```
+
+In other cases, CI/CD variables are still preferred, including:
+
+- Using [predefined variables](../variables/predefined_variables.md) to automatically configure
+  a component to match a user's project.
+- Requiring tokens or other sensitive values to be stored as [masked or protected variables in project settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
+
+### Use semantic versioning
+
+When tagging and releasing new versions of components, you should use [semantic versioning](https://semver.org).
+Semantic versioning is the standard for communicating that a change is a major, minor, patch
+or other kind of change.
+
+You should use at least the `major.minor` format, as this is widely understood, for example
+`2.0` or `2.1`.
+
+Other examples of semantic versioning:
+
+- `1.0.0`
+- `2.1.3`
+- `1.0.0-alpha`
+- `3.0.0-rc1`
+
+### Test the component
+
+Testing CI/CD components as part of the development workflow is strongly recommended
+and helps ensure consistent behavior.
+
+You can test changes in a CI/CD pipeline (like any other project) by creating a `.gitlab-ci.yml`
+in the root directory.
 
 For example:
 
@@ -200,202 +425,15 @@ create-release:
 
 After committing and pushing changes, the pipeline tests the component then releases it if the test passes.
 
-### Release a component
+## Convert a CI/CD template to a component
 
-To create a release for a CI/CD component, you can use:
+Any existing CI/CD template that you use in projects by using the `include:` syntax
+can be converted to a CI/CD component:
 
-- The [`release`](../yaml/index.md#release) keyword in a CI/CD pipeline.
-- The [UI for creating a release](../../user/project/releases/index.md#create-a-release).
-
-Like in the [example above](#test-a-component), after all tests pass in a pipeline running for a tag ref, we can release a new version of the components repository.
-
-All released versions of the components repository are displayed in the Components Catalog page for the given resource, providing users with information about official releases.
-
-Components [can be used](#use-a-component-in-a-cicd-configuration) without being released, but only with a commit SHA or a branch name. To enable the use of tags or the `~latest` version keyword, you must create a release.
-
-### Use a component in a CI/CD configuration
-
-A pipeline component is identified by a unique address in the form `<fully-qualified-doman-name>/<component-path>@<version>`
-containing:
-
-- **A fully qualified domain name (FQDN)**: The FQDN must match the GitLab host.
-- **A specific version**: The version of the component can be (in order of highest priority first):
-  - A commit SHA, for example `gitlab.com/gitlab-org/dast@e3262fdd0914fa823210cdb79a8c421e2cef79d8`.
-  - A tag. for example: `gitlab.com/gitlab-org/dast@1.0`.
-  - `~latest`, which is a special version that always points to the most recent released tag,
-     for example `gitlab.com/gitlab-org/dast@~latest`.
-  - A branch name, for example `gitlab.com/gitlab-org/dast@main`.
-- **A component path**: Contains the project's full path and the directory where the component YAML file `template.yml` is located.
-
-For example, for a component repository located at `gitlab-org/dast` on `gitlab.com`:
-
-- The path `gitlab.com/gitlab-org/dast` tries to load the `template.yml` from the root directory.
-- The path `gitlab.com/gitlab-org/dast/api-scan` tries to load the `template.yml` from the `/api-scan` directory.
-
-**Additional notes:**
-
-- You can only reference components in the same GitLab instance as your project.
-- If a tag and branch exist with the same name, the tag takes precedence over the branch.
-- If a tag is named the same as a commit SHA that exists, like `e3262fdd0914fa823210cdb79a8c421e2cef79d8`,
-  the commit SHA takes precedence over the tag.
-
-### Best practices
-
-#### Avoid using global keywords
-
-When using [global keywords](../yaml/index.md#global-keywords) all jobs in the
-pipeline are affected. Using these keywords in a component affects all jobs in a
-pipeline, whether they are directly defined in the main `.gitlab-ci.yml` or
-in any included components.
-
-To make the composition of pipelines more deterministic, either:
-
-- Duplicate the default configuration for each job.
-- Use [`extends`](../yaml/index.md#extends) feature within the component.
-
-```yaml
-##
-# BAD
-default:
-  image: ruby:3.0
-
-rspec:
-  script: bundle exec rspec
-```
-
-```yaml
-##
-# GOOD
-rspec:
-  image: ruby:3.0
-  script: bundle exec rspec
-```
-
-#### Replace hard-coded values with inputs
-
-A typical hard-coded value found in CI templates is `stage:` value. Such hard coded values may force the user
-of the component to know and adapt the pipeline to such implementation details.
-
-For example, if `stage: test` is hard-coded for a job in a component, the pipeline using the component must
-define the `test` stage. Additionally, if the user of the component want to customize the stage value it has
-to override the configuration:
-
-```yaml
-##
-# BAD: In order to use different stage name you need to override all the jobs
-# included by the component.
-include:
-  - component: gitlab.com/gitlab-org/ruby-test@1.0
-
-stages: [verify, deploy]
-
-unit-test:
-  stage: verify
-
-integration-test:
-  stage: verify
-```
-
-```yaml
-##
-# BAD: In order to use the component correctly you need to define the stage
-# that is hard-coded in it.
-include:
-  - component: gitlab.com/gitlab-org/ruby-test@1.0
-
-stages: [test, deploy]
-```
-
-To improve this we can use [input parameters](../yaml/includes.md#define-input-parameters-with-specinputs)
-allowing the user of a component to inject values that can be customized:
-
-```yaml
-##
-# GOOD: We don't need to know the implementation details of a component and instead we can
-# rely on the inputs.
-include:
-  - component: gitlab.com/gitlab-org/ruby-test@1.0
-    inputs:
-      stage: verify
-
-stages: [verify, deploy]
-
-##
-# inside the component's template.yml file:
-spec:
-  inputs:
-    stage:
-      default: test
----
-unit-test:
-  stage: $[[ inputs.stage ]]
-  script: echo unit tests
-
-integration-test:
-  stage: $[[ inputs.stage ]]
-  script: echo integration tests
-```
-
-#### Prefer inputs over variables
-
-If variables are only used for YAML evaluation (for example `rules`) and not by the Runner
-execution, it's advised to use inputs instead.
-Inputs are explicitly defined in the component's contract and they are better validated
-than variables.
-
-For example, if a required input is not passed an error is returned as soon as the component
-is being used. By contrast, if a variable is not defined, it's value is empty.
-
-```yaml
-##
-# BAD: you need to configure an environment variable for a custom value that doesn't need
-# to be used on the Runner 
-unit-test:
-  image: $MY_COMPONENT_X_IMAGE
-  script: echo unit tests
-
-integration-test:
-  image: $MY_COMPONENT_X_IMAGE
-  script: echo integration tests
-
-##
-# Usage:
-include:
-  - component: gitlab.com/gitlab-org/ruby-test@1.0
-
-variables:
-  MY_COMPONENT_X_IMAGE: ruby:3.2
-```
-
-```yaml
-##
-# GOOD: we define a customizable value and accept it as input
-spec:
-  inputs:
-    image:
-      default: ruby:3.0
----
-unit-test:
-  image: $[[ inputs.image ]]
-  script: echo unit tests
-
-integration-test:
-  image: $[[ inputs.image ]]
-  script: echo integration tests
-
-##
-# Usage:
-include:
-  - component: gitlab.com/gitlab-org/ruby-test@1.0
-    inputs:
-      image: ruby:3.2
-```
-
-#### Use semantic versioning
-
-When tagging and releasing new versions of components we recommend using [semantic versioning](https://semver.org)
-which is the standard for communicating bugfixes, minor and major or breaking changes.
-
-We recommend adopting at least the `MAJOR.MINOR` format.
-
-For example: `2.1`, `1.0.0`, `1.0.0-alpha`, `2.1.3`, `3.0.0-rc.1`.
+1. Decide if you want the component to be part of an existing [components repository](index.md#components-repository)
+   to be grouped with other components, or create and set up a new components repository.
+1. Create a YAML file in the components repository according to the expected [directory structure](index.md#directory-structure).
+1. Copy the content of the original template YAML file into the new component YAML file.
+1. Refactor the new component's configuration to follow the [best practices](index.md#best-practices) for components.
+1. Leverage the `.gitlab-ci.yml` in the components repository to [test changes to the component](index.md#test-the-component).
+1. Tag and [release the component](index.md#release-a-component).

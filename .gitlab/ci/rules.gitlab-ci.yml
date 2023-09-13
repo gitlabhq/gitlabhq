@@ -1027,8 +1027,7 @@
 
 .caching:rules:cache-assets-as-if-foss:
   rules:
-    - <<: *if-jh
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - !reference [".caching:rules:cache-assets", "rules"]
 
 .caching:rules:packages-cleanup:
@@ -1195,8 +1194,7 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
-    - <<: *if-not-ee
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - !reference [.frontend:rules:compile-production-assets, rules]
 
 .frontend:rules:compile-test-assets:
@@ -1853,8 +1851,7 @@
 
 .rails:rules:single-db-as-if-foss:
   rules:
-    - <<: *if-jh
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - !reference [".rails:rules:single-db", "rules"]
 
 .rails:rules:db:check-migrations-single-db:
@@ -1880,8 +1877,7 @@
 
 .rails:rules:single-db-ci-connection-as-if-foss:
   rules:
-    - <<: *if-jh
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - !reference [".rails:rules:single-db-ci-connection", "rules"]
 
 .rails:rules:db:check-migrations-single-db-ci-connection:

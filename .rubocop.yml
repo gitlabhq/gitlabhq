@@ -523,6 +523,8 @@ Naming/RescuedExceptionsVariableName:
 
 RSpec/AvoidTestProf:
   Include:
+    - 'spec/tasks/**/*.rb'
+    - 'ee/spec/tasks/**/*.rb'
     - 'spec/migrations/**/*.rb'
     - 'ee/spec/migrations/**/*.rb'
     - 'spec/lib/gitlab/background_migration/**/*.rb'
@@ -577,6 +579,8 @@ RSpec/BeforeAll:
     - 'ee/spec/**/*.rb'
   # Conflict with RSpec/AvoidTestProf
   Exclude:
+    - 'spec/tasks/**/*.rb'
+    - 'ee/spec/tasks/**/*.rb'
     - 'spec/migrations/**/*.rb'
     - 'ee/spec/migrations/**/*.rb'
     - 'spec/lib/gitlab/background_migration/**/*.rb'

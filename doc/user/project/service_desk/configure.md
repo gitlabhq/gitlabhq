@@ -167,6 +167,9 @@ named `service_desk_custom_email`. On GitLab.com, this feature is not available.
 Configure a custom email address to show as the sender of your support communication.
 Maintain brand identity and instill confidence among support requesters with a domain they recognize.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see [a short showcase video](https://youtu.be/_moD5U3xcQs).
+
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta).
 A Beta feature is not production-ready, but is unlikely to change drastically
 before it's released. We encourage users to try Beta features and provide feedback

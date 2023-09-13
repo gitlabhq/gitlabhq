@@ -3,17 +3,22 @@
 module Gitlab
   module EventStore
     class Subscription
-      attr_reader :worker, :condition
+      attr_reader :worker, :condition, :delay
 
-      def initialize(worker, condition)
+      def initialize(worker, condition, delay)
         @worker = worker
         @condition = condition
+        @delay = delay
       end
 
       def consume_event(event)
         return unless condition_met?(event)
 
-        worker.perform_async(event.class.name, event.data.deep_stringify_keys)
+        if delay
+          worker.perform_in(delay, event.class.name, event.data.deep_stringify_keys)
+        else
+          worker.perform_async(event.class.name, event.data.deep_stringify_keys)
+        end
 
         # We rescue and track any exceptions here because we don't want to
         # impact other subscribers if one is faulty.

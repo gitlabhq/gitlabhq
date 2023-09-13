@@ -321,6 +321,39 @@ my_job:
     - if: $CI_COMMIT_BRANCH
 ```
 
+## Secrets Management
+
+Privileged information, often referred to as "secrets", is sensitive information
+or credentials you need in your CI/CD workflow. You might use secrets to unlock protected resources
+or sensitive information in tools, applications, containers, and cloud-native environments.
+
+Secrets management in Jenkins is usually handled with the `Secret` type field or the
+Credentials Plugin. Credentials stored in the Jenkins settings can be exposed to
+jobs as environment variables by using the Credentials Binding plugin.
+
+For secrets management in GitLab, you can use one of the supported integrations
+for an external service. These services securely store secrets outside of your GitLab project,
+though you must have a subscription for the service:
+
+- [HashiCorp Vault](../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
+- [Azure Key Vault](../secrets/azure_key_vault.md).
+
+GitLab also supports [OIDC authentication](../secrets/id_token_authentication.md)
+for other third party services that support OIDC.
+
+Additionally, you can make credentials available to jobs by storing them in CI/CD variables, though secrets
+stored in plain text are susceptible to accidental exposure, [the same as in Jenkins](https://www.jenkins.io/doc/developer/security/secrets/#storing-secrets).
+You should always store sensitive information in [masked](../variables/index.md#mask-a-cicd-variable)
+and [protected](../variables/index.md#protect-a-cicd-variable) variables, which mitigates
+some of the risk.
+
+Also, never store secrets as variables in your `.gitlab-ci.yml` file, which is public to all
+users with access to the project. Storing sensitive information in variables should
+only be done in [the project, group, or instance settings](../variables/index.md#define-a-cicd-variable-in-the-ui).
+
+Review the [security guidelines](../variables/index.md#cicd-variable-security) to improve
+the safety of your CI/CD variables.
+
 ## Additional resources
 
 - You can use the [JenkinsFile Wrapper](https://gitlab.com/gitlab-org/jfr-container-builder/)

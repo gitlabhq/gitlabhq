@@ -3,12 +3,12 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:terraform_states', :silence_stdout do
-  let_it_be(:version) { create(:terraform_state_version) }
+  let!(:version) { create(:terraform_state_version) }
 
   let(:logger) { instance_double(Logger) }
   let(:helper) { double }
 
-  before_all do
+  before(:all) do
     Rake.application.rake_require 'tasks/gitlab/terraform/migrate'
   end
 

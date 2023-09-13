@@ -187,7 +187,7 @@ module Notes
         namespace: project&.namespace,
         user: user,
         label: metric_key_path,
-        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: metric_key_path).to_context]
+        context: [Gitlab::Usage::MetricDefinition.context_for(metric_key_path).to_context]
       )
     end
 

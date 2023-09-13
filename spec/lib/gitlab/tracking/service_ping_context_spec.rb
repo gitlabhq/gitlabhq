@@ -7,29 +7,27 @@ RSpec.describe Gitlab::Tracking::ServicePingContext do
     using RSpec::Parameterized::TableSyntax
 
     context 'with valid configuration' do
-      where(:data_source, :event, :key_path) do
-        :redis     | nil          | 'counts.some_metric'
-        :redis_hll | 'some_event' | nil
+      where(:data_source, :event) do
+        :redis     | 'some_event'
+        :redis_hll | 'some_event'
       end
 
       with_them do
         it 'does not raise errors' do
-          expect { described_class.new(data_source: data_source, event: event, key_path: key_path) }.not_to raise_error
+          expect { described_class.new(data_source: data_source, event: event) }.not_to raise_error
         end
       end
     end
 
     context 'with invalid configuration' do
-      where(:data_source, :event, :key_path) do
-        :redis     | nil          | nil
-        :redis     | 'some_event' | nil
-        :redis_hll | nil          | nil
-        :redis_hll | nil          | 'some key_path'
-        :random    | 'some_event' | nil
+      where(:data_source, :event) do
+        :redis     | nil
+        :redis_hll | nil
+        :random    | 'some_event'
       end
 
       with_them do
-        subject(:new_instance) { described_class.new(data_source: data_source, event: event, key_path: key_path) }
+        subject(:new_instance) { described_class.new(data_source: data_source, event: event) }
 
         it 'does not raise errors' do
           expect { new_instance }.to raise_error(ArgumentError)
@@ -48,10 +46,10 @@ RSpec.describe Gitlab::Tracking::ServicePingContext do
     end
 
     context 'for redis data source' do
-      let(:context_instance) { described_class.new(data_source: :redis, key_path: 'counts.sample_metric') }
+      let(:context_instance) { described_class.new(data_source: :redis, event: 'some_event') }
 
       it 'contains event_name' do
-        expect(context_instance.to_context.to_json.dig(:data, :key_path)).to eq('counts.sample_metric')
+        expect(context_instance.to_context.to_json.dig(:data, :event_name)).to eq('some_event')
       end
     end
   end

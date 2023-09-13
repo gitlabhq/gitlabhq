@@ -15,12 +15,12 @@ module Gitlab
         lock!
       end
 
-      def subscribe(worker, to:, if: nil)
+      def subscribe(worker, to:, if: nil, delay: nil)
         condition = binding.local_variable_get('if')
 
         Array(to).each do |event|
           validate_subscription!(worker, event)
-          subscriptions[event] << Gitlab::EventStore::Subscription.new(worker, condition)
+          subscriptions[event] << Gitlab::EventStore::Subscription.new(worker, condition, delay)
         end
       end
 

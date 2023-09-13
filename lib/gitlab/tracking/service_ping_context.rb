@@ -9,13 +9,12 @@ module Gitlab
 
       ALLOWED_SOURCES = [REDISHLL_SOURCE, REDIS_SOURCE].freeze
 
-      def initialize(data_source:, event: nil, key_path: nil)
-        check_configuration(data_source, event, key_path)
+      def initialize(data_source:, event: nil)
+        check_configuration(data_source, event)
 
         @payload = { data_source: data_source }
 
-        payload[:event_name] = event if data_source.eql? REDISHLL_SOURCE
-        payload[:key_path] = key_path if data_source.eql? REDIS_SOURCE
+        payload[:event_name] = event
       end
 
       def to_context
@@ -33,18 +32,14 @@ module Gitlab
 
       attr_reader :payload
 
-      def check_configuration(data_source, event, key_path)
-        unless ALLOWED_SOURCES.include?(data_source)
+      def check_configuration(data_source, event)
+        unless ALLOWED_SOURCES.include?(data_source.to_sym)
           configuration_error("#{data_source} is not acceptable data source for ServicePingContext")
         end
 
-        if REDISHLL_SOURCE.eql?(data_source) && event.nil?
-          configuration_error("event attribute can not be missing for #{REDISHLL_SOURCE} data source")
-        end
+        return unless event.nil?
 
-        return unless REDIS_SOURCE.eql?(data_source) && key_path.nil?
-
-        configuration_error("key_path attribute can not be missing for #{REDIS_SOURCE} data source")
+        configuration_error("event attribute is required")
       end
 
       def configuration_error(message)

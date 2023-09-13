@@ -119,12 +119,7 @@ module MergeRequests
     end
 
     def update_merge_request!(merge_request, result)
-      merge_request.merge_params['train_ref'] =
-        result.slice(:commit_sha, :merge_commit_sha, :squash_commit_sha).stringify_keys
-      merge_request.save!
-    rescue StandardError => e
-      Gitlab::ErrorTracking.track_exception(e)
-      raise CreateRefError, "Failed to update merge params"
+      # overridden in EE
     end
 
     def safe_gitaly_operation

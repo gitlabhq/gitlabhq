@@ -121,7 +121,7 @@ Gitlab.ee do
     Settings.omniauth.providers.delete_if { |p| p.name == 'kerberos' }
     kerberos_spnego['name'] = 'kerberos'
 
-    omniauth_keys = %w(allow_single_sign_on auto_link_user external_providers sync_profile_from_provider allow_bypass_two_factor)
+    omniauth_keys = %w[allow_single_sign_on auto_link_user external_providers sync_profile_from_provider allow_bypass_two_factor]
     omniauth_keys.each do |key|
       next unless Settings.omniauth[key].is_a?(Array)
 
@@ -1090,7 +1090,7 @@ Settings.extra['maximum_text_highlight_size_kilobytes'] = Settings.extra.fetch('
 Settings['rack_attack'] ||= {}
 Settings.rack_attack['git_basic_auth'] ||= {}
 Settings.rack_attack.git_basic_auth['enabled'] = false if Settings.rack_attack.git_basic_auth['enabled'].nil?
-Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w{127.0.0.1}
+Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w[127.0.0.1]
 Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
 Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
 Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour

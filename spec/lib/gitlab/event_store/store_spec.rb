@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::EventStore::Store do
+RSpec.describe Gitlab::EventStore::Store, feature_category: :shared do
   let(:event_klass) { stub_const('TestEvent', Class.new(Gitlab::EventStore::Event)) }
   let(:event) { event_klass.new(data: data) }
   let(:another_event_klass) { stub_const('TestAnotherEvent', Class.new(Gitlab::EventStore::Event)) }
@@ -222,11 +222,23 @@ RSpec.describe Gitlab::EventStore::Store do
         end
       end
 
-      let(:event) { event_klass.new(data: data) }
-
       it 'dispatches the event to the workers satisfying the condition' do
         expect(worker).to receive(:perform_async).with('TestEvent', serialized_data)
         expect(another_worker).not_to receive(:perform_async)
+
+        store.publish(event)
+      end
+    end
+
+    context 'when subscription has delayed dispatching of event' do
+      let(:store) do
+        described_class.new do |s|
+          s.subscribe worker, to: event_klass, delay: 1.minute
+        end
+      end
+
+      it 'dispatches the event to the worker after some time' do
+        expect(worker).to receive(:perform_in).with(1.minute, 'TestEvent', serialized_data)
 
         store.publish(event)
       end
@@ -238,8 +250,6 @@ RSpec.describe Gitlab::EventStore::Store do
           s.subscribe unrelated_worker, to: another_event_klass
         end
       end
-
-      let(:event) { event_klass.new(data: data) }
 
       it 'returns successfully' do
         expect { store.publish(event) }.not_to raise_error

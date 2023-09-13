@@ -85,17 +85,6 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
         )
       end
 
-      context 'when the merge request fails to save' do
-        before do
-          allow(merge_request).to receive(:save!).and_raise(ActiveRecord::StatementTimeout)
-        end
-
-        it 'returns an error response' do
-          expect(result[:status]).to eq :error
-          expect(result[:message]).to eq 'Failed to update merge params'
-        end
-      end
-
       shared_examples_for 'writing with a merge commit' do
         it 'merges with a merge commit', :aggregate_failures do
           expect(result[:status]).to eq :success
@@ -104,10 +93,6 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
           expect(result[:target_sha]).to eq(project.repository.commit(first_parent_ref).sha)
           expect(result[:merge_commit_sha]).to be_present
           expect(result[:squash_commit_sha]).not_to be_present
-          expect(merge_request.reload.merge_params['train_ref']).to(
-            eq({ 'commit_sha' => result[:commit_sha],
-                 'merge_commit_sha' => result[:merge_commit_sha] })
-          )
           expect(project.repository.commits(target_ref, limit: 10, order: 'topo').map(&:message)).to(
             match(
               [
@@ -130,11 +115,6 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
           expect(result[:target_sha]).to eq(project.repository.commit(first_parent_ref).sha)
           expect(result[:merge_commit_sha]).to be_present
           expect(result[:squash_commit_sha]).to be_present
-          expect(merge_request.reload.merge_params['train_ref']).to(
-            eq({ 'commit_sha' => result[:commit_sha],
-                 'merge_commit_sha' => result[:merge_commit_sha],
-                 'squash_commit_sha' => result[:squash_commit_sha] })
-          )
           expect(project.repository.commits(target_ref, limit: 10, order: 'topo').map(&:message)).to(
             match(
               [
@@ -156,10 +136,6 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
           expect(result[:target_sha]).to eq(project.repository.commit(first_parent_ref).sha)
           expect(result[:merge_commit_sha]).not_to be_present
           expect(result[:squash_commit_sha]).to be_present
-          expect(merge_request.reload.merge_params['train_ref']).to(
-            eq({ 'commit_sha' => result[:commit_sha],
-                 'squash_commit_sha' => result[:squash_commit_sha] })
-          )
           expect(project.repository.commits(target_ref, limit: 10, order: 'topo').map(&:message)).to(
             match(
               [
@@ -180,7 +156,6 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
           expect(result[:target_sha]).to eq(project.repository.commit(first_parent_ref).sha)
           expect(result[:merge_commit_sha]).not_to be_present
           expect(result[:squash_commit_sha]).not_to be_present
-          expect(merge_request.reload.merge_params['train_ref']).to eq({ 'commit_sha' => result[:commit_sha] })
           expect(project.repository.commits(target_ref, limit: 10, order: 'topo').map(&:message)).to(
             eq(
               [

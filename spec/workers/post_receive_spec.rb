@@ -282,7 +282,7 @@ RSpec.describe PostReceive, feature_category: :source_code_management do
           let(:user) { project.creator }
           let(:label) { 'counts.source_code_pushes' }
           let(:property) { 'source_code_pushes' }
-          let(:context) { [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: label).to_h] }
+          let(:context) { [Gitlab::Usage::MetricDefinition.context_for(label).to_h] }
 
           subject(:post_receive) { perform }
         end

@@ -139,7 +139,7 @@ export default {
 
       <gl-button
         v-if="isImpersonating"
-        v-gl-tooltip.noninteractive.ds500.bottom
+        v-gl-tooltip.ds500.bottom
         :href="sidebarData.stop_impersonation_path"
         :title="$options.i18n.stopImpersonating"
         :aria-label="$options.i18n.stopImpersonating"
@@ -154,7 +154,7 @@ export default {
       class="gl-display-flex gl-justify-content-space-between gl-gap-2"
     >
       <counter
-        v-gl-tooltip:super-sidebar.hover.noninteractive.ds500.bottom="$options.i18n.issues"
+        v-gl-tooltip:super-sidebar.hover.ds500.bottom="$options.i18n.issues"
         class="gl-flex-basis-third dashboard-shortcuts-issues"
         icon="issues"
         :count="userCounts.assigned_issues"
@@ -172,7 +172,7 @@ export default {
         @hidden="mrMenuShown = false"
       >
         <counter
-          v-gl-tooltip:super-sidebar.hover.noninteractive.ds500.bottom="
+          v-gl-tooltip:super-sidebar.hover.ds500.bottom="
             mrMenuShown ? '' : $options.i18n.mergeRequests
           "
           class="gl-w-full"
@@ -186,7 +186,7 @@ export default {
         />
       </merge-request-menu>
       <counter
-        v-gl-tooltip:super-sidebar.hover.noninteractive.ds500.bottom="$options.i18n.todoList"
+        v-gl-tooltip:super-sidebar.hover.ds500.bottom="$options.i18n.todoList"
         class="gl-flex-basis-third shortcuts-todos js-todos-count"
         icon="todo-done"
         :count="userCounts.todos"
@@ -200,7 +200,7 @@ export default {
     </div>
     <button
       id="super-sidebar-search"
-      v-gl-tooltip.bottom.hover.noninteractive.ds500.html="searchTooltip"
+      v-gl-tooltip.bottom.hover.ds500.html="searchTooltip"
       v-gl-modal="$options.SEARCH_MODAL_ID"
       class="counter gl-display-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-inset-border-1-gray-a-08 gl-line-height-1 gl-focus--focus gl-w-full"
       data-testid="super-sidebar-search-button"

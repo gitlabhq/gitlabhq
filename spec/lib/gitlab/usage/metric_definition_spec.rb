@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::MetricDefinition do
+RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping do
   let(:attributes) do
     {
       description: 'GitLab instance unique identifier',
@@ -106,6 +106,42 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
 
     it 'returns a symbol from name' do
       is_expected.to eq('uuid')
+    end
+  end
+
+  describe '#to_context' do
+    subject { definition.to_context }
+
+    context 'with data_source redis_hll metric' do
+      before do
+        attributes[:data_source] = 'redis_hll'
+        attributes[:options] = { events: %w[some_event_1 some_event_2] }
+      end
+
+      it 'returns a ServicePingContext with first event as event_name' do
+        expect(subject.to_h[:data][:event_name]).to eq('some_event_1')
+      end
+    end
+
+    context 'with data_source redis metric' do
+      before do
+        attributes[:data_source] = 'redis'
+        attributes[:options] = { prefix: 'web_ide', event: 'views_count', include_usage_prefix: false }
+      end
+
+      it 'returns a ServicePingContext with redis key as event_name' do
+        expect(subject.to_h[:data][:event_name]).to eq('WEB_IDE_VIEWS_COUNT')
+      end
+    end
+
+    context 'with data_source database metric' do
+      before do
+        attributes[:data_source] = 'database'
+      end
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
     end
   end
 

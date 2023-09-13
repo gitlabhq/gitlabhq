@@ -3,7 +3,7 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:db:lock_writes', :reestablished_active_record_base, feature_category: :cell do
-  before_all do
+  before(:all) do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/seed_fu'
     Rake.application.rake_require 'tasks/gitlab/db/validate_config'

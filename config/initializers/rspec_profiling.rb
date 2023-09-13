@@ -5,8 +5,8 @@ return unless Rails.env.test?
 module RspecProfilingExt
   module Collectors
     class CSVWithTimestamps < ::RspecProfiling::Collectors::CSV
-      TIMESTAMP_FIELDS = %w(created_at updated_at).freeze
-      METADATA_FIELDS = %w(feature_category).freeze
+      TIMESTAMP_FIELDS = %w[created_at updated_at].freeze
+      METADATA_FIELDS = %w[feature_category].freeze
       HEADERS = (::RspecProfiling::Collectors::CSV::HEADERS + TIMESTAMP_FIELDS + METADATA_FIELDS).freeze
 
       def insert(attributes)

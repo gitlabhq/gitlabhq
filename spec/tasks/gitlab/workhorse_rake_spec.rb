@@ -3,7 +3,7 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:workhorse namespace rake task', :silence_stdout, feature_category: :source_code_management do
-  before_all do
+  before(:all) do
     Rake.application.rake_require 'tasks/gitlab/workhorse'
   end
 

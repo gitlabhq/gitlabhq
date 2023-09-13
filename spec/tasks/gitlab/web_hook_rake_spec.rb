@@ -3,10 +3,10 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:web_hook namespace rake tasks', :silence_stdout do
-  let_it_be(:group, refind: true) { create(:group) }
-  let_it_be(:project1, reload: true) { create(:project, namespace: group) }
-  let_it_be(:project2, reload: true) { create(:project, namespace: group) }
-  let_it_be(:other_group_project, reload: true) { create(:project) }
+  let!(:group) { create(:group) }
+  let!(:project1) { create(:project, namespace: group) }
+  let!(:project2) { create(:project, namespace: group) }
+  let!(:other_group_project) { create(:project) }
 
   let(:url) { 'http://example.com' }
   let(:hook_urls) { (project1.hooks + project2.hooks).map(&:url) }

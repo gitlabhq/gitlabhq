@@ -213,7 +213,7 @@ module Gitlab
       /^title$/,
       /^hook$/
     ]
-    config.filter_parameters += %i(
+    config.filter_parameters += %i[
       certificate
       encrypted_key
       import_url
@@ -230,7 +230,7 @@ module Gitlab
       sharedSecret
       redirect
       question
-    )
+    ]
 
     # This config option can be removed after Rails 7.1 by https://gitlab.com/gitlab-org/gitlab/-/issues/416270
     config.active_support.use_rfc4122_namespaced_uuids = true
@@ -458,30 +458,30 @@ module Gitlab
 
       allow do
         origins { |source, env| source == Gitlab::CurrentSettings.jira_connect_proxy_url }
-        resource '/-/jira_connect/oauth_application_id', headers: :any, credentials: false, methods: %i(get options)
+        resource '/-/jira_connect/oauth_application_id', headers: :any, credentials: false, methods: %i[get options]
       end
 
       allow do
         origins { |source, env| source == Gitlab::CurrentSettings.jira_connect_proxy_url }
-        resource '/-/jira_connect/subscriptions.json', headers: :any, credentials: false, methods: %i(get options)
+        resource '/-/jira_connect/subscriptions.json', headers: :any, credentials: false, methods: %i[get options]
       end
 
       allow do
         origins { |source, env| source == Gitlab::CurrentSettings.jira_connect_proxy_url }
-        resource '/-/jira_connect/subscriptions/*', headers: :any, credentials: false, methods: %i(delete options)
+        resource '/-/jira_connect/subscriptions/*', headers: :any, credentials: false, methods: %i[delete options]
       end
 
       # Cross-origin requests must be enabled for the Authorization code with PKCE OAuth flow when used from a browser.
-      %w(/oauth/token /oauth/revoke).each do |oauth_path|
+      %w[/oauth/token /oauth/revoke].each do |oauth_path|
         allow do
           origins '*'
           resource oauth_path,
             # These headers are added as defaults to axios.
             # See: https://gitlab.com/gitlab-org/gitlab/-/blob/dd1e70d3676891025534dc4a1e89ca9383178fe7/app/assets/javascripts/lib/utils/axios_utils.js#L8)
             # It's added to declare that this is a XHR request and add the CSRF token without which Rails may reject the request from the frontend.
-            headers: %w(Authorization X-CSRF-Token X-Requested-With),
+            headers: %w[Authorization X-CSRF-Token X-Requested-With],
             credentials: false,
-            methods: %i(post options)
+            methods: %i[post options]
         end
       end
 
@@ -490,17 +490,17 @@ module Gitlab
       allow do
         origins '*'
         resource '/oauth/userinfo',
-          headers: %w(Authorization),
+          headers: %w[Authorization],
           credentials: false,
-          methods: %i(get head post options)
+          methods: %i[get head post options]
       end
 
-      %w(/oauth/discovery/keys /.well-known/openid-configuration /.well-known/webfinger).each do |openid_path|
+      %w[/oauth/discovery/keys /.well-known/openid-configuration /.well-known/webfinger].each do |openid_path|
         allow do
           origins '*'
           resource openid_path,
           credentials: false,
-          methods: %i(get head)
+          methods: %i[get head]
         end
       end
 
@@ -510,7 +510,7 @@ module Gitlab
         origins 'https://*.web-ide.gitlab-static.net'
         resource '/assets/webpack/*',
                  credentials: false,
-                 methods: %i(get head)
+                 methods: %i[get head]
       end
     end
 

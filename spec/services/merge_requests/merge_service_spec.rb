@@ -103,10 +103,11 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
     end
 
     context 'when merge strategy is merge commit' do
-      it 'persists merge_commit_sha and nullifies in_progress_merge_commit_sha' do
+      it 'persists merge_commit_sha and merged_commit_sha and nullifies in_progress_merge_commit_sha' do
         service.execute(merge_request)
 
         expect(merge_request.merge_commit_sha).not_to be_nil
+        expect(merge_request.merged_commit_sha).to eq merge_request.merge_commit_sha
         expect(merge_request.in_progress_merge_commit_sha).to be_nil
       end
 
@@ -130,16 +131,18 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         )
       end
 
-      it 'does not create merge_commit_sha and nullifies in_progress_merge_commit_sha' do
+      it 'does not create merge_commit_sha, but persists merged_commit_sha and nullifies in_progress_merge_commit_sha' do
         service.execute(merge_request)
 
         expect(merge_request.merge_commit_sha).to be_nil
+        expect(merge_request.merged_commit_sha).not_to be_nil
+        expect(merge_request.merged_commit_sha).to eq merge_request.diff_head_sha
         expect(merge_request.in_progress_merge_commit_sha).to be_nil
       end
 
       it_behaves_like 'with valid params'
 
-      it 'updates squash_commit_sha if it is a squash' do
+      it 'updates squash_commit_sha and merged_commit_sha if it is a squash' do
         expect(merge_request).to receive(:update_and_mark_in_progress_merge_commit_sha).twice.and_call_original
 
         merge_request.update!(squash: true)
@@ -149,6 +152,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
                 .from(nil)
 
         expect(merge_request.merge_commit_sha).to be_nil
+        expect(merge_request.merged_commit_sha).to eq merge_request.squash_commit_sha
         expect(merge_request.in_progress_merge_commit_sha).to be_nil
       end
     end
