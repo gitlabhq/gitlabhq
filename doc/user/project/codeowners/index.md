@@ -239,7 +239,7 @@ In this example:
 - `@database-team` and `@agarcia` own all items in the `Database` section except
   `config/db/database-setup.md`, which has an override assigning it to `@docs-team`.
 
-Compare this behavior by using [regular entries and sections together](#use-regular-entries-and-sections-together),
+Compare this behavior to when you use [regular entries and sections together](#use-regular-entries-and-sections-together),
 when entries in sections don't override entries without sections.
 
 #### Use default owners and optional sections together
@@ -286,7 +286,7 @@ In this example:
 - A merge request that modifies `model/db/CHANGELOG.txt` would require three approvals: one from each
   of the `@general-approvers`,`@docs-team`, and `@database-team` groups.
 
-Compare this behavior by using only [default owners for sections](#set-default-owner-for-a-section),
+Compare this behavior to when you use only [default owners for sections](#set-default-owner-for-a-section),
 when specific entries within a section override the section default.
 
 #### Sections with duplicate names

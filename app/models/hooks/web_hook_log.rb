@@ -58,6 +58,14 @@ class WebHookLog < ApplicationRecord
     self[:request_headers].merge('X-Gitlab-Token' => _('[REDACTED]'))
   end
 
+  def url_current?
+    # URL hash hasn't been set, so we must assume there's no prior value to
+    # compare to.
+    return true if url_hash.nil?
+
+    Gitlab::CryptoHelper.sha256(web_hook.interpolated_url) == url_hash
+  end
+
   private
 
   def obfuscate_basic_auth

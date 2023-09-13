@@ -565,6 +565,32 @@ In GitLab 16.0 and later:
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Internal Container Registry API tag deletion endpoint
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/1094).
+</div>
+
+The [Docker Registry HTTP API V2 Spec](https://docs.docker.com/registry/spec/api/), later replaced by the [OCI Distribution Spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) did not include a tag delete operation, and an unsafe and slow workaround (involving deleting manifests, not tags) had to be used to achieve the same end.
+
+Tag deletion is an important function, so we added a tag deletion operation to the GitLab Container Registry, extending the V2 API beyond the scope of the Docker and OCI distribution spec.
+
+Since then, the OCI Distribution Spec has had some updates and it now has a tag delete operation, using the [`DELETE /v2/<name>/manifests/<tag>` endpoint](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#deleting-tags).
+
+This leaves the container registry with two endpoints that provide the exact same functionality. `DELETE /v2/<name>/tags/reference/<tag>` is the custom GitLab tag delete endpoint and `DELETE /v2/<name>/manifests/<tag>`, the OCI compliant tag delete endpoint introduced in GitLab 16.4.
+
+Support for the custom GitLab tag delete endpoint is deprecated in GitLab 16.4, and it will be removed in GitLab 17.0.
+
+This endpoint is used by the **internal** Container Registry application API, not the public [GitLab Container Registry API](https://docs.gitlab.com/ee/api/container_registry.html). No action should be required by the majority of container registry users. All the GitLab UI and API functionality related to tag deletions will remain intact as we transition to the new OCI-compliant endpoint.
+
+If you do access the internal container registry API and use the original tag deletion endpoint, you must update to the new endpoint.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Maintainer role providing the ability to change Package settings using GraphQL API
 
 <div class="deprecation-notes">
@@ -871,6 +897,20 @@ We will be transitioning to a new IID as a result of moving requirements to a [w
 </div>
 
 Due to limited customer usage and capabilities, the Visual Reviews feature for Review Apps is deprecated and will be removed. There is no planned replacement and users should stop using Visual Reviews before GitLab 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### The `ci_job_token_scope_enabled` projects API attribute is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423091).
+</div>
+
+GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.com/gitlab-org/gitlab/-/issues/351740). In the [projects API](https://docs.gitlab.com/ee/api/projects.html), the `ci_job_token_scope_enabled` attribute is deprecated, and will be removed in 17.0. You should use the [job token scope APIs](https://docs.gitlab.com/ee/api/project_job_token_scopes.html) instead.
 
 </div>
 

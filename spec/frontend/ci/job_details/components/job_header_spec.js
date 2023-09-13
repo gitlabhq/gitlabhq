@@ -2,7 +2,7 @@ import { GlButton, GlAvatarLink, GlTooltip } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
-import HeaderCi from '~/vue_shared/components/header_ci_component.vue';
+import JobHeader from '~/ci/job_details/components/job_header.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 describe('Header CI Component', () => {
@@ -33,12 +33,12 @@ describe('Header CI Component', () => {
   const findUserLink = () => wrapper.findComponent(GlAvatarLink);
   const findSidebarToggleBtn = () => wrapper.findComponent(GlButton);
   const findStatusTooltip = () => wrapper.findComponent(GlTooltip);
-  const findActionButtons = () => wrapper.findByTestId('ci-header-action-buttons');
-  const findHeaderItemText = () => wrapper.findByTestId('ci-header-item-text');
+  const findActionButtons = () => wrapper.findByTestId('job-header-action-buttons');
+  const findHeaderItemText = () => wrapper.findByTestId('job-header-item-text');
 
   const createComponent = (props, slots) => {
     wrapper = extendedWrapper(
-      shallowMount(HeaderCi, {
+      shallowMount(JobHeader, {
         propsData: {
           ...defaultProps,
           ...props,

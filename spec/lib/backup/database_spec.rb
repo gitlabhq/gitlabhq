@@ -2,12 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.configure do |rspec|
-  rspec.expect_with :rspec do |c|
-    c.max_formatted_output_length = nil
-  end
-end
-
 RSpec.describe Backup::Database, :reestablished_active_record_base, feature_category: :backup_restore do
   let(:progress) { StringIO.new }
   let(:output) { progress.string }

@@ -49,8 +49,8 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /ee/spec/frontend_integration/
 
 [Clickhouse] @gitlab-org/maintainers/clickhouse
-/db/clickhouse/
-/ee/db/clickhouse/
+/db/click_house/
+/ee/db/click_house/
 /**/click(_|-)?house/
 
 [Database] @gitlab-org/maintainers/database

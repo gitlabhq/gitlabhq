@@ -1244,6 +1244,8 @@ class Repository
 
   def get_patch_id(old_revision, new_revision)
     raw_repository.get_patch_id(old_revision, new_revision)
+  rescue Gitlab::Git::CommandError
+    nil
   end
 
   def object_pool

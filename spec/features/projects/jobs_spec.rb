@@ -1051,7 +1051,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       it 'retries the job' do
         find('[data-testid="retry-button-modal"]').click
 
-        within '[data-testid="ci-header-content"]' do
+        within '[data-testid="job-header-content"]' do
           expect(page).to have_content('pending')
         end
       end

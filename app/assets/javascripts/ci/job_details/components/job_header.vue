@@ -4,8 +4,8 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { glEmojiTag } from '~/emoji';
 import { __, sprintf } from '~/locale';
-import CiBadgeLink from './ci_badge_link.vue';
-import TimeagoTooltip from './time_ago_tooltip.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
+import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 /**
  * Renders header component for job and pipeline page based on UI mockups
@@ -114,11 +114,14 @@ export default {
 </script>
 
 <template>
-  <header class="page-content-header gl-md-display-flex gl-min-h-7" data-testid="ci-header-content">
+  <header
+    class="page-content-header gl-md-display-flex gl-min-h-7"
+    data-testid="job-header-content"
+  >
     <section class="header-main-content gl-mr-3">
       <ci-badge-link class="gl-mr-3" :status="status" />
 
-      <strong data-testid="ci-header-item-text">{{ item }}</strong>
+      <strong data-testid="job-header-item-text">{{ item }}</strong>
 
       <template v-if="shouldRenderTriggeredLabel">{{ __('started') }}</template>
       <template v-else>{{ __('created') }}</template>
@@ -158,7 +161,7 @@ export default {
     </section>
 
     <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
-    <section v-if="$slots.default" data-testid="ci-header-action-buttons" class="gl-display-flex">
+    <section v-if="$slots.default" data-testid="job-header-action-buttons" class="gl-display-flex">
       <slot></slot>
     </section>
     <gl-button

@@ -98,10 +98,6 @@ module Tooling
           \.gitlab/ci/frontend\.gitlab-ci\.yml
         )\z}x => %i[frontend tooling],
 
-        %r{\A(ee/)?db/click_house/} => :clickhouse,
-        %r{\Agems/click_house-client/} => :clickhouse,
-        %r{click((-)?|(_)?)house} => :clickhouse,
-
         %r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/} => [:database],
         %r{\A((ee|jh)/)?db/(?!fixtures)[^/]+} => [:database],
         %r{\A((ee|jh)/)?lib/gitlab/(database|background_migration|sql)(/|\.rb)} => [:database, :backend],

@@ -1,0 +1,26 @@
+#
+# REQUIRED FIELDS
+#
+- title: "The `ci_job_token_scope_enabled` projects API attribute is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
+  announcement_milestone: "16.4"  # (required) The milestone when this feature was first announced as deprecated.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: jocelynjane  # (required) GitLab username of the person reporting the change
+  stage: verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423091 # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.com/gitlab-org/gitlab/-/issues/351740). In the [projects API](https://docs.gitlab.com/ee/api/projects.html), the `ci_job_token_scope_enabled` attribute is deprecated, and will be removed in 17.0. You should use the [job token scope APIs](https://docs.gitlab.com/ee/api/project_job_token_scopes.html) instead.
+#
+# OPTIONAL END OF SUPPORT FIELDS
+#
+# If an End of Support period applies, the announcement should be shared with GitLab Support
+# in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
+#
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  #
+  # OTHER OPTIONAL FIELDS
+  #
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

@@ -47331,6 +47331,9 @@ msgstr ""
 msgid "The group_project_ids parameter is only allowed for a group"
 msgstr ""
 
+msgid "The hook URL has changed, and this log entry cannot be retried"
+msgstr ""
+
 msgid "The hostname of your PlantUML server."
 msgstr ""
 
@@ -50677,6 +50680,9 @@ msgstr ""
 msgid "UsageQuota|%{percentageRemaining}%% namespace storage remaining."
 msgstr ""
 
+msgid "UsageQuota|%{percentageRemaining}%% purchased storage remaining."
+msgstr ""
+
 msgid "UsageQuota|%{storage_limit_link_start}A namespace storage limit%{link_end} will soon be enforced for the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}"
 msgstr ""
 
@@ -50848,7 +50854,13 @@ msgstr ""
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
 msgstr ""
 
+msgid "UsageQuota|This namespace is under project-level limits, so only repository and LFS storage usage above the limit included in the plan is counted as excess storage. You can increase excess storage limit by purchasing storage packages."
+msgstr ""
+
 msgid "UsageQuota|This table omits projects that used 0 compute minutes or 0 shared runners duration"
+msgstr ""
+
+msgid "UsageQuota|Total excess storage"
 msgstr ""
 
 msgid "UsageQuota|Total purchased storage"

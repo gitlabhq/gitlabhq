@@ -19,7 +19,7 @@ A components repository is a GitLab project with a repository that hosts one or 
 A pipeline component is a reusable single pipeline configuration unit. You can use them to compose
 an entire pipeline configuration or a small part of a larger pipeline.
 
-A component can optionally take [input parameters](../yaml/includes.md#define-input-parameters-with-specinputs).
+A component can optionally take [input parameters](../yaml/inputs.md).
 
 ## Create a components repository
 
@@ -289,7 +289,7 @@ stage is set to a specific value, the pipeline using the component **must** defi
 the exact same stage. Additionally, if the component user wants to use a different stage,
 they must [override](../yaml/includes.md#override-included-configuration-values) the configuration.
 
-The preferred method is to use the [`input` keyword](../yaml/includes.md#define-input-parameters-with-specinputs).
+The preferred method is to use the [`input` keyword](../yaml/inputs.md).
 The component user can specify the exact value they need.
 
 For example:

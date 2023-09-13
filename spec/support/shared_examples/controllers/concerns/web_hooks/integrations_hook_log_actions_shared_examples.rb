@@ -43,5 +43,14 @@ RSpec.shared_examples WebHooks::HookLogActions do
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    it 'redirects back with a warning if the hook log url is outdated' do
+      web_hook_log.update!(url_hash: 'some_other_value')
+
+      post retry_path, headers: { 'REFERER' => show_path }
+
+      expect(response).to redirect_to(show_path)
+      expect(flash[:warning]).to eq(_('The hook URL has changed, and this log entry cannot be retried'))
+    end
   end
 end

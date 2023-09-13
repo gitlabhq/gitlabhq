@@ -8,13 +8,13 @@ import LogTopBar from 'ee_else_ce/ci/job_details/components/job_log_controllers.
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { __, sprintf } from '~/locale';
-import CiHeader from '~/vue_shared/components/header_ci_component.vue';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import Log from '~/ci/job_details/components/log/log.vue';
 import { MANUAL_STATUS } from '~/ci/constants';
 import EmptyState from './components/empty_state.vue';
 import EnvironmentsBlock from './components/environments_block.vue';
 import ErasedBlock from './components/erased_block.vue';
+import JobHeader from './components/job_header.vue';
 import StuckBlock from './components/stuck_block.vue';
 import UnmetPrerequisitesBlock from './components/unmet_prerequisites_block.vue';
 import Sidebar from './components/sidebar/sidebar.vue';
@@ -22,7 +22,7 @@ import Sidebar from './components/sidebar/sidebar.vue';
 export default {
   name: 'JobPageApp',
   components: {
-    CiHeader,
+    JobHeader,
     EmptyState,
     EnvironmentsBlock,
     ErasedBlock,
@@ -225,7 +225,7 @@ export default {
         <!-- Header Section -->
         <header>
           <div class="build-header top-area">
-            <ci-header
+            <job-header
               :status="job.status"
               :time="headerTime"
               :user="job.user"

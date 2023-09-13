@@ -3832,9 +3832,24 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
 
+    context 'when one of the param is nonexistant' do
+      it 'returns nil' do
+        expect(repository.get_patch_id('HEAD', "f" * 40)).to be_nil
+      end
+    end
+
     context 'when two revisions are the same' do
-      it 'raises an Gitlab::Git::CommandError error' do
-        expect { repository.get_patch_id('HEAD', 'HEAD') }.to raise_error(Gitlab::Git::CommandError)
+      it 'returns nil' do
+        expect(repository.get_patch_id('HEAD', 'HEAD')).to be_nil
+      end
+    end
+
+    context 'when a Gitlab::Git::CommandError is raised' do
+      it 'returns nil' do
+        expect(repository.raw_repository)
+          .to receive(:get_patch_id).and_raise(Gitlab::Git::CommandError)
+
+        expect(repository.get_patch_id('HEAD', "f" * 40)).to be_nil
       end
     end
   end

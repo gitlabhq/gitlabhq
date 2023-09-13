@@ -39,6 +39,44 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       expect(page).to have_selector('[data-testid="work-item-actions-dropdown"]')
     end
 
+    it 'reassigns to another user',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
+      find('[data-testid="work-item-assignees-input"]').fill_in(with: user.username)
+      wait_for_requests
+
+      send_keys(:enter)
+      find("body").click
+      wait_for_requests
+
+      find('[data-testid="work-item-assignees-input"]').fill_in(with: user2.username)
+      wait_for_requests
+
+      send_keys(:enter)
+      find("body").click
+      wait_for_requests
+
+      expect(work_item.reload.assignees).to include(user2)
+    end
+
+    it 'updates the assignee in real-time' do
+      Capybara::Session.new(:other_session)
+
+      using_session :other_session do
+        visit work_items_path
+        expect(work_item.reload.assignees).not_to include(user)
+      end
+
+      find('[data-testid="work-item-assignees-input"]').hover
+      find('[data-testid="assign-self"]').click
+      wait_for_requests
+
+      expect(work_item.reload.assignees).to include(user)
+
+      using_session :other_session do
+        expect(work_item.reload.assignees).to include(user)
+      end
+    end
+
     it_behaves_like 'work items title'
     it_behaves_like 'work items toggle status button'
     it_behaves_like 'work items assignees'
@@ -88,6 +126,12 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       within('[data-testid="work-item-award-list"]') do
         expect(page).not_to have_selector('[data-testid="emoji-picker"]')
         expect(page).to have_selector('[data-testid="award-button"].disabled')
+      end
+    end
+
+    it 'assignees input field is disabled' do
+      within('[data-testid="work-item-assignees-input"]') do
+        expect(page).to have_field(type: 'text', disabled: true)
       end
     end
   end
