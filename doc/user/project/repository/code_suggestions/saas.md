@@ -18,31 +18,22 @@ Write code more efficiently by using generative AI to suggest code while you're 
 Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
 Learn about [data usage when using Code Suggestions](index.md#code-suggestions-data-usage).
 
-## Enable Code Suggestions for a group
-
-You can enable Code Suggestions [for all members of a group](../../../group/manage.md#enable-code-suggestions).
-
-## Enable Code Suggestions for an individual user
+## Enable Code Suggestions 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta).
 
-If Code Suggestions is not enabled for the group, each user can still enable Code Suggestions for themselves:
+You can enable Code Suggestions for an individual or group:
 
-1. On the left sidebar, select your avatar.
-1. Select **Preferences**.
-1. In the **Code Suggestions** section, select the **Enable Code Suggestions** checkbox.
-1. Select **Save changes**.
+- [Enable Code Suggestions for all group members](../../../group/manage.md#enable-code-suggestions). (You must be a group owner).
+- [Enable Code Suggestions for your own account](../../../profile/preferences.md#enable-code-suggestions).
 
-If Code Suggestions is enabled for the group, the group setting overrides the user setting.
-
-NOTE:
-This setting controls Code Suggestions for all IDEs. Support for [more granular control per IDE](https://gitlab.com/groups/gitlab-org/-/epics/10624) is proposed.
+The group setting takes precedence over the user setting.
 
 ## Use Code Suggestions
 
 Prerequisites:
 
-- Code Suggestions must be enabled [for the top-level group](../../../group/manage.md#enable-code-suggestions) and [for your user account](#enable-code-suggestions-for-an-individual-user).
+- Ensure Code Suggestions is enabled for your user and group.
 - You must have installed and configured a [supported IDE editor extension](index.md#supported-editor-extensions).
 
 To use Code Suggestions:

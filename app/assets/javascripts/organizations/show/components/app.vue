@@ -1,10 +1,11 @@
 <script>
 import OrganizationAvatar from './organization_avatar.vue';
 import GroupsAndProjects from './groups_and_projects.vue';
+import AssociationCounts from './association_counts.vue';
 
 export default {
   name: 'OrganizationShowApp',
-  components: { OrganizationAvatar, GroupsAndProjects },
+  components: { OrganizationAvatar, GroupsAndProjects, AssociationCounts },
   props: {
     organization: {
       type: Object,
@@ -14,6 +15,10 @@ export default {
       type: String,
       required: true,
     },
+    associationCounts: {
+      type: Object,
+      required: true,
+    },
   },
 };
 </script>
@@ -21,6 +26,10 @@ export default {
 <template>
   <div class="gl-py-6">
     <organization-avatar :organization="organization" />
+    <association-counts
+      :association-counts="associationCounts"
+      :groups-and-projects-organization-path="groupsAndProjectsOrganizationPath"
+    />
     <groups-and-projects
       :groups-and-projects-organization-path="groupsAndProjectsOrganizationPath"
     />

@@ -39,8 +39,6 @@ You can use advanced search in:
 
 Advanced search uses [Elasticsearch syntax](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#simple-query-string-syntax). The syntax supports both exact and fuzzy search queries.
 
-<!-- markdownlint-disable -->
-
 | Syntax        | Description                     | Example                                                                                                                                              |
 |--------------|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `"`          | Exact search                    | [`"gem sidekiq"`](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=%22gem+sidekiq%22)                                 |
@@ -73,6 +71,8 @@ You can refine user search with [Elasticsearch syntax](#syntax).
 1. `extension:` and `blob:` return exact matches only.
 
 ### Examples
+
+<!-- markdownlint-disable MD044 -->
 
 | Query                                                                                                                                                                              | Description                                                          |
 |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|

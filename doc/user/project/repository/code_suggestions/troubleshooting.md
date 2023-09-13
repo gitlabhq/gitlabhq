@@ -15,7 +15,7 @@ If Code Suggestions are not displayed, try the following troubleshooting steps.
 
 In GitLab, ensure Code Suggestions is enabled:
 
-- [For your user account](saas.md#enable-code-suggestions-for-an-individual-user).
+- [For your user account](../../../profile/preferences.md#enable-code-suggestions).
 - [For *all* top-level groups your account belongs to](../../../group/manage.md#enable-code-suggestions). If you don't have a role that lets you view the top-level group's settings, contact a group owner.
 
 To confirm that your account is enabled, go to [https://gitlab.com/api/v4/ml/ai-assist](https://gitlab.com/api/v4/ml/ai-assist). A response of `user_is_allowed` should return `true`.

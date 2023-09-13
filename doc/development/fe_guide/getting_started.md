@@ -45,7 +45,7 @@ As you write code, make sure to test your change thoroughly. It is the author's 
 
 When it's time to send your code to review, it can be quite stressful. It is recommended to read through [the code review guidelines](../code_review.md) to get a better sense of what to expect. One of the most valuable pieces of advice that is **essential** is simply:
 
-> [...] to avoid unnecessary back-and-forth with reviewers, [...] perform a self-review of your own merge request, and follow the Code Review guidelines.
+> ... to avoid unnecessary back-and-forth with reviewers, ... perform a self-review of your own merge request, and follow the Code Review guidelines.
 
 This is key to having a great merge request experience because you will catch small mistakes and leave comments in areas where your reviewer might be uncertain and have questions. This speeds up the process tremendously.
 

@@ -22,7 +22,9 @@ For guidance not on this page, we defer to these style guides:
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
 
 <!-- vale off -->
-<!-- markdownlint-disable -->
+
+<!-- Disable trailing punctuation in heading rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md026---trailing-punctuation-in-heading -->
+<!-- markdownlint-disable MD026 -->
 
 ## `&`
 
@@ -232,7 +234,6 @@ Use lowercase for **boards**, **issue boards**, and **epic boards**.
 Use **text box** to refer to the UI field. Do not use **field** or **box**. For example:
 
 - In the **Variable name** text box, enter a value.
-
 
 ## bullet
 
@@ -813,7 +814,7 @@ Do not use **in order to**. Use **to** instead. ([Vale](../testing.md#vale) rule
 
 For the plural of **index**, use **indexes**.
 
-However, for ElasticSearch, use [**indices**](https://www.elastic.co/blog/what-is-an-elasticsearch-index).
+However, for Elasticsearch, use [**indices**](https://www.elastic.co/blog/what-is-an-elasticsearch-index).
 
 ## Installation from source
 
@@ -848,7 +849,7 @@ Use lowercase for **issue**.
 
 Use lowercase for **issue board**.
 
-# Issue description generation
+## Issue description generation
 
 Use sentence case for **Issue description generation**.
 
@@ -923,13 +924,13 @@ When writing about licenses:
 
 Use:
 
-  - Add a license to your instance.
-  - Purchase a subscription.
+- Add a license to your instance.
+- Purchase a subscription.
 
 Instead of:
 
-  - Buy a license.
-  - Purchase a license.
+- Buy a license.
+- Purchase a license.
 
 ## limitations
 
@@ -1347,7 +1348,7 @@ Do not use **roles** and [**permissions**](#permissions) interchangeably. Each u
 
 Roles are not the same as [**access levels**](#access-level).
 
-# Root cause analysis
+## Root cause analysis
 
 Use sentence case for **Root cause analysis**.
 

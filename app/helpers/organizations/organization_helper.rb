@@ -5,7 +5,14 @@ module Organizations
     def organization_show_app_data(organization)
       {
         organization: organization.slice(:id, :name),
-        groups_and_projects_organization_path: groups_and_projects_organization_path(organization)
+        groups_and_projects_organization_path: groups_and_projects_organization_path(organization),
+        # TODO: Update counts to use real data
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/424531
+        association_counts: {
+          groups: 10,
+          projects: 5,
+          users: 1050
+        }
       }.merge(shared_groups_and_projects_app_data).to_json
     end
 

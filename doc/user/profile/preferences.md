@@ -278,7 +278,7 @@ Instead of making separate API calls to get individual accounts, you can find yo
 External identities are not included by default.
 To enable including external identities, see [Token payload](../../ci/secrets/id_token_authentication.md#token-payload).
 
-### Control follower engagement
+## Control follower engagement
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0.
 
@@ -299,7 +299,23 @@ To access your **Followers** and **Following** tabs:
 - On the left sidebar, select your avatar > select your name or username.
 - Select **Followers** or **Following**.
 
+## Enable Code Suggestions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../policy/experiment-beta-support.md#beta).
+
+To enable [Code Suggestions](../../user/project/repository/code_suggestions/index.md):
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Select the **Enable Code Suggestions** checkbox.
+1. Select **Save changes**.
+
+NOTE:
+If Code Suggestions are turned off [for the group](../../user/group/manage.md#enable-code-suggestions), then you cannot enable them for yourself. (Your setting has no effect.)
+
 ## Integrate your GitLab instance with third-party services
+
+Give third-party services access to your GitLab account.
 
 ### Integrate your GitLab instance with Gitpod
 

@@ -80,14 +80,10 @@ Now that you have a cluster, you're ready to install and configure the Kubernete
 1. Install the Operator Lifecycle Manager (OLM), a tool that manages the Kubernetes Operators that
    run on the cluster:
 
-   <!-- markdownlint-disable -->
-
    ```shell
    curl --silent --location "https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.24.0/install.sh" \
     | bash -s v0.24.0
    ```
-
-   <!-- markdownlint-enable -->
 
 1. Install the Kubernetes Operator Catalog:
 

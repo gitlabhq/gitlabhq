@@ -32871,6 +32871,9 @@ msgstr ""
 msgid "Organization|Frequently visited projects"
 msgstr ""
 
+msgid "Organization|Manage"
+msgstr ""
+
 msgid "Organization|New organization"
 msgstr ""
 
@@ -51910,6 +51913,9 @@ msgid "View alert details at"
 msgstr ""
 
 msgid "View alert details."
+msgstr ""
+
+msgid "View all"
 msgstr ""
 
 msgid "View all environments."

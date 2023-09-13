@@ -35,7 +35,12 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'new_group_path' => new_group_path,
           'new_project_path' => new_project_path,
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,
-          'projects_empty_state_svg_path' => projects_empty_state_svg_path
+          'projects_empty_state_svg_path' => projects_empty_state_svg_path,
+          'association_counts' => {
+            'groups' => 10,
+            'projects' => 5,
+            'users' => 1050
+          }
         }
       )
     end

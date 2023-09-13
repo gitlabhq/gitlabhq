@@ -34,6 +34,7 @@ export const initOrganizationsShow = () => {
     groupsEmptyStateSvgPath,
     newGroupPath,
     newProjectPath,
+    associationCounts,
   } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   Vue.use(VueRouter);
@@ -55,7 +56,7 @@ export const initOrganizationsShow = () => {
     },
     render(createElement) {
       return createElement(App, {
-        props: { organization, groupsAndProjectsOrganizationPath },
+        props: { organization, groupsAndProjectsOrganizationPath, associationCounts },
       });
     },
   });

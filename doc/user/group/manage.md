@@ -452,7 +452,7 @@ You can give all users in a group and its subgroups access to [Code Suggestions]
 - This setting
   [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.
 - Each user can
-  [enable or disable Code Suggestions for themselves](../project/repository/code_suggestions/saas.md#enable-code-suggestions-for-an-individual-user).
+  [Enable Code Suggestions](../../user/profile/preferences.md#enable-code-suggestions).
 
 To enable Code Suggestions for a group:
 
