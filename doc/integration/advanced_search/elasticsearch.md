@@ -882,7 +882,7 @@ Make sure to prepare for this task by having a
 
    A force merge should be called after enabling the refreshing above.
 
-   For Elasticsearch 6.x, the index should be in read-only mode before proceeding with the force merge:
+   For Elasticsearch 6.x and later, ensure the index is in read-only mode before proceeding with the force merge:
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \
@@ -898,7 +898,7 @@ Make sure to prepare for this task by having a
    curl --request POST 'localhost:9200/gitlab-production/_forcemerge?max_num_segments=5'
    ```
 
-   After this, if your index is in read-only mode, switch back to read-write:
+   Then, change the index back to read-write mode:
 
    ```shell
    curl --request PUT localhost:9200/gitlab-production/_settings --header 'Content-Type: application/json' \

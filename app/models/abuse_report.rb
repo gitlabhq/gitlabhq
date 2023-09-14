@@ -65,6 +65,7 @@ class AbuseReport < ApplicationRecord
   scope :by_reporter_id, ->(reporter_id) { where(reporter_id: reporter_id) }
   scope :by_category, ->(category) { where(category: category) }
   scope :with_users, -> { includes(:reporter, :user) }
+  scope :with_labels, -> { includes(:labels) }
 
   enum category: {
     spam: 1,

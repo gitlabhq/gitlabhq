@@ -1059,21 +1059,10 @@ RSpec.describe Notify do
         is_expected.to have_body_text project_member.human_access
         is_expected.to have_body_text 'leave the project'
         is_expected.to have_body_text project_url(project, leave: 1)
-        is_expected.not_to have_body_text 'You were assigned the following tasks:'
-      end
-
-      context 'with tasks to be done present' do
-        let(:project_member) { create(:project_member, project: project, user: user, tasks_to_be_done: [:ci, :code]) }
-
-        it 'contains the assigned tasks to be done' do
-          is_expected.to have_body_text 'You were assigned the following tasks:'
-          is_expected.to have_body_text localized_tasks_to_be_done_choices[:ci]
-          is_expected.to have_body_text localized_tasks_to_be_done_choices[:code]
-        end
       end
     end
 
-    def invite_to_project(project, inviter:, user: nil, tasks_to_be_done: [])
+    def invite_to_project(project, inviter:, user: nil)
       create(
         :project_member,
         :developer,
@@ -1081,8 +1070,7 @@ RSpec.describe Notify do
         invite_token: '1234',
         invite_email: 'toto@example.com',
         user: user,
-        created_by: inviter,
-        tasks_to_be_done: tasks_to_be_done
+        created_by: inviter
       )
     end
 
@@ -1115,7 +1103,6 @@ RSpec.describe Notify do
           is_expected.to have_content("#{inviter.name} invited you to join the")
           is_expected.to have_content('Project details')
           is_expected.to have_content("What's it about?")
-          is_expected.not_to have_body_text 'and has assigned you the following tasks:'
         end
       end
 
@@ -1159,16 +1146,6 @@ RSpec.describe Notify do
             expect(subject).to have_header('X-Mailgun-Tag', ::Members::Mailgun::INVITE_EMAIL_TAG)
             expect(subject).to have_header('X-Mailgun-Variables', { ::Members::Mailgun::INVITE_EMAIL_TOKEN_KEY => project_member.invite_token }.to_json)
           end
-        end
-      end
-
-      context 'with tasks to be done present', :aggregate_failures do
-        let(:project_member) { invite_to_project(project, inviter: inviter, tasks_to_be_done: [:ci, :code]) }
-
-        it 'contains the assigned tasks to be done' do
-          is_expected.to have_body_text 'and has assigned you the following tasks:'
-          is_expected.to have_body_text localized_tasks_to_be_done_choices[:ci]
-          is_expected.to have_body_text localized_tasks_to_be_done_choices[:code]
         end
       end
     end
@@ -1773,7 +1750,7 @@ RSpec.describe Notify do
       end
     end
 
-    def invite_to_group(group, inviter:, user: nil, tasks_to_be_done: [])
+    def invite_to_group(group, inviter:, user: nil)
       create(
         :group_member,
         :developer,
@@ -1781,8 +1758,7 @@ RSpec.describe Notify do
         invite_token: '1234',
         invite_email: 'toto@example.com',
         user: user,
-        created_by: inviter,
-        tasks_to_be_done: tasks_to_be_done
+        created_by: inviter
       )
     end
 
@@ -1807,7 +1783,6 @@ RSpec.describe Notify do
           is_expected.to have_body_text group.name
           is_expected.to have_body_text group_member.human_access.downcase
           is_expected.to have_body_text group_member.invite_token
-          is_expected.not_to have_body_text 'and has assigned you the following tasks:'
         end
       end
 
@@ -1819,24 +1794,6 @@ RSpec.describe Notify do
           is_expected.to have_body_text group.name
           is_expected.to have_body_text group_member.human_access.downcase
           is_expected.to have_body_text group_member.invite_token
-        end
-      end
-
-      context 'with tasks to be done present', :aggregate_failures do
-        let(:group_member) { invite_to_group(group, inviter: inviter, tasks_to_be_done: [:ci, :code]) }
-
-        it 'contains the assigned tasks to be done' do
-          is_expected.to have_body_text 'and has assigned you the following tasks:'
-          is_expected.to have_body_text localized_tasks_to_be_done_choices[:ci]
-          is_expected.to have_body_text localized_tasks_to_be_done_choices[:code]
-        end
-
-        context 'when there is no inviter' do
-          let(:inviter) { nil }
-
-          it 'does not contain the assigned tasks to be done' do
-            is_expected.not_to have_body_text 'and has assigned you the following tasks:'
-          end
         end
       end
     end

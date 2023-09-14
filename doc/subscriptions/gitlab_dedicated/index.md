@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Dedicated is a fully isolated, single-tenant SaaS service that is:
 
 - Hosted and managed by GitLab, Inc.
-- Deployed on AWS in a cloud region of your choice (see the [regions that are not supported](#aws-regions-not-supported)).
+- Deployed on AWS in a cloud region of your choice. See [unavailable AWS regions](#unavailable-aws-regions).
 
 GitLab Dedicated removes the overhead of platform management to increase your operational efficiency, reduce risk, and enhance the speed and agility of your organization. Each GitLab Dedicated instance is highly available with disaster recovery and deployed into the cloud region of your choice. GitLab teams fully manage the maintenance and operations of each isolated instance, so customers can access our latest product improvements while meeting the most complex compliance standards.
 
@@ -19,7 +19,7 @@ It's the offering of choice for enterprises and organizations in highly regulate
 
 ### Data residency
 
-GitLab Dedicated allows you to select the cloud region where your data will be stored. Upon [onboarding](../../administration/dedicated/index.md#onboarding), choose the cloud region where you want to deploy your Dedicated instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [full list of regions](#aws-regions-not-supported) not supported.
+GitLab Dedicated allows you to select the cloud region where your data will be stored. Upon [onboarding](../../administration/dedicated/index.md#onboarding), choose the cloud region where you want to deploy your Dedicated instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [list of unavailable AWS regions](#unavailable-aws-regions).
 
 ### Availability and scalability
 
@@ -29,7 +29,7 @@ GitLab Dedicated leverages the GitLab [Cloud Native Hybrid reference architectur
 
 When [onboarding](../../administration/dedicated/index.md#onboarding) to GitLab Dedicated, you can provide a Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.
 
-For more information, read about the [recovery plan for GitLab Dedicated](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets. These targets are available only when both the primary and secondary regions are supported by GitLab Dedicated. See below for a [list of regions that are not supported](#aws-regions-not-supported) by GitLab Dedicated.
+For more information, read about the [recovery plan for GitLab Dedicated](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets. These targets are available only when both the primary and secondary regions are supported by GitLab Dedicated. See below for a [list of unavailable AWS regions](#unavailable-aws-regions) for GitLab Dedicated.
 
 ### Security
 
@@ -144,9 +144,12 @@ The following operational features are not available:
 - Observability Dashboard using Switchboard
 - Pre-Production Instance
 
-### AWS regions not supported
+### Unavailable AWS regions
 
-The following AWS regions are not available:
+The following is an incomplete list of unavailable AWS regions. Regions must support `io2` volumes and meet other requirements. GitLab team members can view our evaluation of additional
+regions in this confidential issue: `https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/1405`.
+
+Contact [GitLab Support](https://about.gitlab.com/support/) if you have any questions.
 
 - Jakarta (`ap-southeast-3`)
 - Bahrain (`me-south-1`)

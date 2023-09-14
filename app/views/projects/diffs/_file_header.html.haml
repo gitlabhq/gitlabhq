@@ -5,7 +5,7 @@
 
 - if diff_file.submodule?
   %span
-    = sprite_icon('archive')
+    = sprite_icon('folder-git', file_icon: true)
 
     %strong.file-title-name
       = submodule_link(diff_file.blob, diff_file.content_sha, diff_file.repository)

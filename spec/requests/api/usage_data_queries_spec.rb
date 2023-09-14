@@ -6,8 +6,8 @@ require 'rake_helper'
 RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :service_ping do
   include UsageDataHelpers
 
-  let_it_be(:admin) { create(:user, admin: true) }
-  let_it_be(:user) { create(:user) }
+  let!(:admin) { create(:user, admin: true) }
+  let!(:user) { create(:user) }
 
   before do
     stub_usage_data_connections

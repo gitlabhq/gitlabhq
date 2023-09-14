@@ -477,7 +477,7 @@ class Namespace < ApplicationRecord
     return { scope: :group, status: auto_devops_enabled } unless auto_devops_enabled.nil?
 
     strong_memoize(:first_auto_devops_config) do
-      if has_parent?
+      if parent.present?
         Rails.cache.fetch(first_auto_devops_config_cache_key_for(id), expires_in: 1.day) do
           parent.first_auto_devops_config
         end

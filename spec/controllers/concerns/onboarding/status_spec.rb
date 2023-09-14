@@ -75,32 +75,4 @@ RSpec.describe Onboarding::Status, feature_category: :onboarding do
       it { is_expected.to eq(last_member_source) }
     end
   end
-
-  describe '#invite_with_tasks_to_be_done?' do
-    subject { described_class.new(nil, nil, user).invite_with_tasks_to_be_done? }
-
-    context 'when there are tasks_to_be_done with one member' do
-      let_it_be(:member) { create(:group_member, user: user, tasks_to_be_done: tasks_to_be_done) }
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when there are multiple members and the tasks_to_be_done is on only one of them' do
-      before do
-        create(:group_member, user: user, tasks_to_be_done: tasks_to_be_done)
-      end
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'when there are no tasks_to_be_done' do
-      it { is_expected.to eq(false) }
-    end
-
-    context 'when there are no members' do
-      let_it_be(:user) { build_stubbed(:user) }
-
-      it { is_expected.to eq(false) }
-    end
-  end
 end

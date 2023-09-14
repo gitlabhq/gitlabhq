@@ -25,7 +25,7 @@ GitLab Dedicated Engineers also don't have direct access to tenant environments,
 To request the creation of a new GitLab Dedicated environment for your organization, you must provide the following information to your account team:
 
 - Expected number of users.
-- Desired primary region: Primary AWS region in which your data is stored (do note the [list of unsupported regions](../../subscriptions/gitlab_dedicated/index.md#aws-regions-not-supported)).
+- Desired primary region: Primary AWS region in which your data is stored (take note of [unavailable AWS regions](../../subscriptions/gitlab_dedicated/index.md#unavailable-aws-regions)).
 - Desired secondary region: Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster.
 - Desired backup region: An AWS region where the primary backups of your data are replicated. This can be the same as the primary or secondary region or different.
 - Desired instance subdomain: The main domain for GitLab Dedicated instances is `gitlab-dedicated.com`. You get to choose the subdomain name where your instance is accessible from (for example, `customer_name.gitlab-dedicated.com`).

@@ -53,6 +53,13 @@ RSpec.describe IconsHelper do
         .to eq "<svg class=\"s72 icon-danger\" data-testid=\"#{icon_name}-icon\"><use href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
+    it 'returns a file icon' do
+      file_icons_path = ActionController::Base.helpers.image_path("file_icons/file_icons.svg")
+
+      expect(sprite_icon('coffee', file_icon: true).to_s)
+        .to eq "<svg class=\"s#{IconsHelper::DEFAULT_ICON_SIZE}\" data-testid=\"coffee-icon\"><use href=\"#{file_icons_path}#coffee\"></use></svg>"
+    end
+
     describe 'non existing icon' do
       non_existing = 'non_existing_icon_sprite'
 
@@ -60,20 +67,24 @@ RSpec.describe IconsHelper do
         stub_rails_env('development')
 
         expect { sprite_icon(non_existing) }.to raise_error(ArgumentError, /is not a known icon/)
+        expect { sprite_icon(non_existing, file_icon: true) }.to raise_error(ArgumentError, /is not a known icon/)
       end
 
       it 'raises in test mode' do
         stub_rails_env('test')
 
         expect { sprite_icon(non_existing) }.to raise_error(ArgumentError, /is not a known icon/)
+        expect { sprite_icon(non_existing, file_icon: true) }.to raise_error(ArgumentError, /is not a known icon/)
       end
 
       it 'does not raise in production mode' do
         stub_rails_env('production')
 
         expect_file_not_to_read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json'))
+        expect_file_not_to_read(Rails.root.join('node_modules/@gitlab/svgs/dist/file_icons/file_icons.json'))
 
         expect { sprite_icon(non_existing) }.not_to raise_error
+        expect { sprite_icon(non_existing, file_icon: true) }.not_to raise_error
       end
     end
   end

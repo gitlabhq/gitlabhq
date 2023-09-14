@@ -21736,7 +21736,8 @@ CREATE TABLE project_security_settings (
     auto_fix_container_scanning boolean DEFAULT true NOT NULL,
     auto_fix_dast boolean DEFAULT true NOT NULL,
     auto_fix_dependency_scanning boolean DEFAULT true NOT NULL,
-    auto_fix_sast boolean DEFAULT true NOT NULL
+    auto_fix_sast boolean DEFAULT true NOT NULL,
+    continuous_vulnerability_scans_enabled boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_security_settings_project_id_seq

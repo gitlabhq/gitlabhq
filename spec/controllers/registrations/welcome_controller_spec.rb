@@ -113,12 +113,6 @@ RSpec.describe Registrations::WelcomeController, feature_category: :system_acces
             expect(subject).to redirect_to(dashboard_projects_path)
           end
         end
-
-        context 'when tasks to be done are assigned' do
-          let!(:member1) { create(:group_member, user: user, tasks_to_be_done: %w[ci code]) }
-
-          it { is_expected.to redirect_to(issues_dashboard_path(assignee_username: user.username)) }
-        end
       end
     end
   end

@@ -2148,6 +2148,48 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#first_auto_devops_config' do
+    let(:instance_autodevops_status) { Gitlab::CurrentSettings.auto_devops_enabled? }
+
+    context 'when namespace.auto_devops_enabled is not set' do
+      let(:group) { create(:group) }
+
+      it 'returns the config values using the instance setting' do
+        expect(group.first_auto_devops_config).to eq({ scope: :instance, status: instance_autodevops_status })
+      end
+
+      context 'when namespace does not have auto_deveops enabled but has a parent' do
+        let!(:parent) { create(:group, auto_devops_enabled: true) }
+        let!(:group) { create(:group, parent: parent) }
+
+        it 'returns the first_auto_devops_config of the parent' do
+          expect(parent).to receive(:first_auto_devops_config).and_call_original
+
+          expect(group.first_auto_devops_config).to eq({ scope: :group, status: true })
+        end
+
+        context 'then the parent is deleted' do
+          before do
+            parent.delete
+            group.reload
+          end
+
+          it 'returns its own config with status based on the instance settings' do
+            expect(group.first_auto_devops_config).to eq({ scope: :instance, status: instance_autodevops_status })
+          end
+        end
+      end
+    end
+
+    context 'when namespace.auto_devops_enable is set' do
+      let(:group) { create(:group, auto_devops_enabled: false) }
+
+      it 'returns the correct config values' do
+        expect(group.first_auto_devops_config).to eq({ scope: :group, status: false })
+      end
+    end
+  end
+
   describe '#user_namespace?' do
     subject { namespace.user_namespace? }
 

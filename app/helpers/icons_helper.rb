@@ -29,9 +29,10 @@ module IconsHelper
     ActionController::Base.helpers.image_path('file_icons/file_icons.svg', host: sprite_base_url)
   end
 
-  def sprite_icon(icon_name, size: DEFAULT_ICON_SIZE, css_class: nil)
+  def sprite_icon(icon_name, size: DEFAULT_ICON_SIZE, css_class: nil, file_icon: false)
     memoized_icon("#{icon_name}_#{size}_#{css_class}") do
-      if known_sprites&.exclude?(icon_name)
+      unknown_icon = file_icon ? unknown_file_icon_sprite(icon_name) : unknown_icon_sprite(icon_name)
+      if unknown_icon
         exception = ArgumentError.new("#{icon_name} is not a known icon in @gitlab-org/gitlab-svg")
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(exception)
       end
@@ -39,10 +40,11 @@ module IconsHelper
       css_classes = []
       css_classes << "s#{size}" if size
       css_classes << css_class.to_s unless css_class.blank?
+      sprite_path = file_icon ? sprite_file_icons_path : sprite_icon_path
 
       content_tag(
         :svg,
-        content_tag(:use, '', { 'href' => "#{sprite_icon_path}##{icon_name}" }),
+        content_tag(:use, '', { 'href' => "#{sprite_path}##{icon_name}" }),
         class: css_classes.empty? ? nil : css_classes.join(' '),
         data: { testid: "#{icon_name}-icon" }
       )
@@ -172,10 +174,24 @@ module IconsHelper
 
   private
 
+  def unknown_icon_sprite(icon_name)
+    known_sprites&.exclude?(icon_name)
+  end
+
+  def unknown_file_icon_sprite(icon_name)
+    known_file_icon_sprites&.exclude?(icon_name)
+  end
+
   def known_sprites
     return if Rails.env.production?
 
     @known_sprites ||= Gitlab::Json.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json')))['icons']
+  end
+
+  def known_file_icon_sprites
+    return if Rails.env.production?
+
+    @known_file_icon_sprites ||= Gitlab::Json.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/file_icons/file_icons.json')))['icons']
   end
 
   def memoized_icon(key)

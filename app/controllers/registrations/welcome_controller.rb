@@ -63,9 +63,7 @@ module Registrations
     end
 
     def update_success_path
-      if onboarding_status.invite_with_tasks_to_be_done?
-        issues_dashboard_path(assignee_username: current_user.username)
-      elsif onboarding_status.continue_full_onboarding? # trials/regular registration on .com
+      if onboarding_status.continue_full_onboarding? # trials/regular registration on .com
         signup_onboarding_path
       elsif onboarding_status.single_invite? # invites w/o tasks due to order
         flash[:notice] = helpers.invite_accepted_notice(onboarding_status.last_invited_member)

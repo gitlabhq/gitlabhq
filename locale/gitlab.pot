@@ -25467,12 +25467,6 @@ msgstr ""
 msgid "InviteEmail|You have been invited to join the %{project_or_group_name} %{project_or_group} as a %{role}"
 msgstr ""
 
-msgid "InviteEmail|You were assigned the following tasks:"
-msgstr ""
-
-msgid "InviteEmail|and has assigned you the following tasks:"
-msgstr ""
-
 msgid "InviteMembersBanner|Collaborate with your team"
 msgstr ""
 

@@ -29,6 +29,16 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
       expect(assigns(:abuse_reports).count).to eq 1
       expect(assigns(:abuse_reports).first.closed?).to eq true
     end
+
+    it 'labels does not introduce N+1 queries' do
+      get admin_abuse_reports_path # warm up
+
+      control = ActiveRecord::QueryRecorder.new { get admin_abuse_reports_path }
+
+      create_list(:abuse_report, 2)
+
+      expect { get admin_abuse_reports_path }.to issue_same_number_of_queries_as(control).ignoring_cached_queries
+    end
   end
 
   describe 'GET #show' do
