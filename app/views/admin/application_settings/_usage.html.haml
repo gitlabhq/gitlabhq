@@ -35,19 +35,10 @@
         checkbox_options: { id: 'application_setting_usage_ping_features_enabled' },
         label_options: { id: 'service_ping_features_label' }
       .form-text.gl-text-gray-500.gl-pl-6
-        %p.gl-mb-3= s_('AdminSettings|Registration Features include:')
-        - email_from_gitlab_path = help_page_path('administration/email_from_gitlab')
-        - repo_size_limit_path = help_page_path('administration/settings/account_and_limit_settings', anchor: 'repository-size-limit')
-        - restrict_ip_path = help_page_path('user/group/access_and_permissions', anchor: 'restrict-group-access-by-ip-address')
-        - email_from_gitlab_link = link_start % { url: email_from_gitlab_path }
-        - repo_size_limit_link = link_start % { url: repo_size_limit_path }
-        - restrict_ip_link = link_start % { url: restrict_ip_path }
-        %ul
-          %li
-            = s_('AdminSettings|Email from GitLab - email users right from the Admin Area. %{link_start}Learn more%{link_end}.').html_safe % { link_start: email_from_gitlab_link, link_end: link_end }
-          %li
-            = s_('AdminSettings|Limit project size at a global, group, and project level. %{link_start}Learn more%{link_end}.').html_safe % { link_start: repo_size_limit_link, link_end: link_end }
-          %li
-            = s_('AdminSettings|Restrict group access by IP address. %{link_start}Learn more%{link_end}.').html_safe % { link_start: restrict_ip_link, link_end: link_end }
+        %p.gl-mb-3
+          - registration_features_gitlab_path = help_page_path('administration/settings/usage_statistics', anchor: 'registration-features-program')
+          - registration_features_gitlab_link = link_to('', registration_features_gitlab_path, target: '_blank', rel: 'noopener noreferrer')
+          = safe_format(s_('AdminSettings|For a list of included Registration Features, see %{link_start}the documentation%{link_end}.'), tag_pair(registration_features_gitlab_link, :link_start, :link_end))
+
 
   = f.submit _('Save changes'), pajamas_button: true

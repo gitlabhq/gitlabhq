@@ -31,19 +31,24 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Metadata, feature_category: :dependenc
     ]
   end
 
+  let(:timestamp) { "2020-04-13T20:20:39+00:00" }
+
   subject(:metadata) do
-    described_class.new(
+    metadata = described_class.new(
       tools: tools,
       authors: authors,
       properties: properties
     )
+    metadata.timestamp = timestamp
+    metadata
   end
 
   it 'has correct attributes' do
     expect(metadata).to have_attributes(
       tools: tools,
       authors: authors,
-      properties: properties
+      properties: properties,
+      timestamp: timestamp
     )
   end
 end

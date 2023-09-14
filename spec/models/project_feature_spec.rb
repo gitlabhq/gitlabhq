@@ -437,4 +437,24 @@ RSpec.describe ProjectFeature, feature_category: :groups_and_projects do
     end
   end
   # rubocop:enable Gitlab/FeatureAvailableUsage
+
+  describe '#private?' do
+    where(:merge_requests_access_level, :expected_value) do
+      ProjectFeature::PUBLIC  | false
+      ProjectFeature::ENABLED | false
+      ProjectFeature::PRIVATE | true
+    end
+
+    with_them do
+      let(:project) { build_stubbed(:project) }
+
+      subject { project.project_feature.private?(:merge_requests) }
+
+      before do
+        project.project_feature.merge_requests_access_level = merge_requests_access_level
+      end
+
+      it { is_expected.to be(expected_value) }
+    end
+  end
 end

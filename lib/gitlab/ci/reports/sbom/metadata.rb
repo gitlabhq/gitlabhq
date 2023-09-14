@@ -5,7 +5,7 @@ module Gitlab
     module Reports
       module Sbom
         class Metadata
-          attr_accessor :tools, :authors, :properties
+          attr_accessor :tools, :authors, :properties, :timestamp
 
           def initialize(tools: [], authors: [], properties: [])
             @tools = tools

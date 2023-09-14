@@ -4,7 +4,7 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Getting Started
+# Getting started
 
 This page will guide you through the Frontend development process and show you what a normal Merge Request cycle looks like. You can find more about the organization of the frontend team in the [handbook](https://about.gitlab.com/handbook/engineering/frontend/).
 
@@ -49,6 +49,6 @@ When it's time to send your code to review, it can be quite stressful. It is rec
 
 This is key to having a great merge request experience because you will catch small mistakes and leave comments in areas where your reviewer might be uncertain and have questions. This speeds up the process tremendously.
 
-## Step 5: Verifying
+### Step 5: Verifying
 
 After your code has merged (congratulations!), make sure to verify that it works on the production environment and does not cause any errors.

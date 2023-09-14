@@ -561,13 +561,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def merge_pipeline
-    return unless merged?
-
-    # When the merge_method is :merge there will be a merge_commit_sha, however
-    # when it is fast-forward there is no merge commit, so we must fall back to
-    # either the squash commit (if the MR was squashed) or the diff head commit.
-    sha = merge_commit_sha || squash_commit_sha || diff_head_sha
-    target_project.latest_pipeline(target_branch, sha)
+    if sha = merged_commit_sha
+      target_project.latest_pipeline(target_branch, sha)
+    end
   end
 
   def head_pipeline_active?
@@ -1849,7 +1845,7 @@ class MergeRequest < ApplicationRecord
   def merged_commit_sha
     return unless merged?
 
-    sha = merge_commit_sha || squash_commit_sha || diff_head_sha
+    sha = super || merge_commit_sha || squash_commit_sha || diff_head_sha
     sha.presence
   end
 

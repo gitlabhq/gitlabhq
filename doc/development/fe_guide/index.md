@@ -88,7 +88,11 @@ We have detailed description on how we see GitLab frontend in the future in [Fro
 
 ### First time contributors
 
-Please make sure to read through the [getting started](getting_started.md) page to know more about what to consider when creating a merge request for the first time or to refresh your memory on the GitLab workflow for frontend changes.
+If you're a first-time contributor, see [Contribute to GitLab development](../contributing/index.md).
+
+When you're ready to create your first merge request, or need to review the GitLab frontend workflow, see [Getting started](getting_started.md).
+
+For a guided introduction to frontend development at GitLab, you can watch the [Frontend onboarding course](onboarding_course/index.md) which provides a six-week structured curriculum.
 
 ### Helpful links
 

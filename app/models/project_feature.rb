@@ -173,6 +173,10 @@ class ProjectFeature < ApplicationRecord
     package_registry_access_level == PUBLIC || project.public?
   end
 
+  def private?(feature)
+    access_level(feature) == PRIVATE
+  end
+
   private
 
   def set_pages_access_level

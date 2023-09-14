@@ -279,14 +279,13 @@ A threaded comment is created.
 ## Resolve a thread
 
 > - Resolvable threads for issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `resolvable_issue_threads`. Disabled by default.
-> - Resolvable threads for issues [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
+> - Resolvable threads for issues [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available for _issues_.
-To make it available, an administrator can
-[enable the feature flag](../../administration/feature_flags.md) named `resolvable_issue_threads`.
+On self-managed GitLab, resolvable threads _for issues_ are available by default.
+To hide the feature, an administrator can
+[disable the feature flag](../../administration/feature_flags.md) named `resolvable_issue_threads`.
 On GitLab.com, this feature is available.
-This feature is not ready for production use.
 
 You can resolve a thread when you want to finish a conversation.
 

@@ -221,10 +221,10 @@ export default {
         Promise.all([
           getDeployKeys(this.query),
           getUsers(this.query),
-          this.groups.length ? Promise.resolve({ data: this.groups }) : getGroups(),
+          this.groups.length ? Promise.resolve(this.groups) : getGroups(),
         ])
           .then(([deployKeysResponse, usersResponse, groupsResponse]) => {
-            this.consolidateData(deployKeysResponse.data, usersResponse.data, groupsResponse.data);
+            this.consolidateData(deployKeysResponse.data, usersResponse.data, groupsResponse);
             this.setSelected({ initial });
           })
           .catch(() =>

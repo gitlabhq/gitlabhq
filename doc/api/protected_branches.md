@@ -44,7 +44,7 @@ Example response:
 [
   {
     "id": 1,
-    "name": "master",
+    "name": "main",
     "push_access_levels": [
       {
         "id":  1,
@@ -102,7 +102,7 @@ Example response:
 [
   {
     "id": 1,
-    "name": "master",
+    "name": "main",
     "push_access_levels": [
       {
         "id":  1,
@@ -151,7 +151,7 @@ GET /projects/:id/protected_branches/:name
 | `name` | string | yes | The name of the branch or wildcard |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches/master"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/protected_branches/main"
 ```
 
 Example response:
@@ -159,7 +159,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "name": "master",
+  "name": "main",
   "push_access_levels": [
     {
       "id":  1,
@@ -187,7 +187,7 @@ Example response:
 ```json
 {
   "id": 1,
-  "name": "master",
+  "name": "main",
   "push_access_levels": [
     {
       "id":  1,
@@ -368,7 +368,7 @@ curl --request POST \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
      --data '{
-      "name": "master",
+      "name": "main",
       "allowed_to_push": [{"access_level": 30}],
       "allowed_to_merge": [{
           "access_level": 30
@@ -384,7 +384,7 @@ Example response:
 ```json
 {
     "id": 5,
-    "name": "master",
+    "name": "main",
     "push_access_levels": [
         {
             "id": 1,
@@ -486,14 +486,14 @@ To delete:
 curl --header 'Content-Type: application/json' --request PATCH \
      --data '{"allowed_to_push": [{"access_level": 40}]}' \
      --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/master"
+     "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/main"
 ```
 
 Example response:
 
 ```json
 {
-   "name": "master",
+   "name": "main",
    "push_access_levels": [
       {
          "id": 12,
@@ -511,14 +511,14 @@ Example response:
 ```shell
 curl --header 'Content-Type: application/json' --request PATCH \
      --data '{"allowed_to_push": [{"id": 12, "access_level": 0}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/master"
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/main"
 ```
 
 Example response:
 
 ```json
 {
-   "name": "master",
+   "name": "main",
    "push_access_levels": [
       {
          "id": 12,
@@ -536,14 +536,14 @@ Example response:
 ```shell
 curl --header 'Content-Type: application/json' --request PATCH \
      --data '{"allowed_to_push": [{"id": 12, "_destroy": true}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/master"
+     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/22034114/protected_branches/main"
 ```
 
 Example response:
 
 ```json
 {
-   "name": "master",
+   "name": "main",
    "push_access_levels": []
 }
 ```

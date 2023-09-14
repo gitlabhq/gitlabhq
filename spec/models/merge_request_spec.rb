@@ -2153,6 +2153,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         subject.mark_as_merged!
       end
 
+      context 'and merged_commit_sha is present' do
+        before do
+          subject.update_attribute(:merged_commit_sha, pipeline.sha)
+        end
+
+        it 'returns the pipeline associated with that merge request' do
+          expect(subject.merge_pipeline).to eq(pipeline)
+        end
+      end
+
       context 'and there is a merge commit' do
         before do
           subject.update_attribute(:merge_commit_sha, pipeline.sha)
@@ -2902,6 +2912,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       before do
         subject.mark_as_merged!
+      end
+
+      it 'returns merged_commit_sha when there is a merged_commit_sha' do
+        subject.update_attribute(:merged_commit_sha, sha)
+
+        expect(subject.merged_commit_sha).to eq(sha)
       end
 
       it 'returns merge_commit_sha when there is a merge_commit_sha' do

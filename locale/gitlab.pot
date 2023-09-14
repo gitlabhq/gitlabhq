@@ -3465,9 +3465,6 @@ msgstr ""
 msgid "AdminSettings|Elasticsearch indexing"
 msgstr ""
 
-msgid "AdminSettings|Email from GitLab - email users right from the Admin Area. %{link_start}Learn more%{link_end}."
-msgstr ""
-
 msgid "AdminSettings|Enable Registration Features"
 msgstr ""
 
@@ -3505,6 +3502,9 @@ msgid "AdminSettings|Enforce invitation flow for groups and projects"
 msgstr ""
 
 msgid "AdminSettings|Feed token"
+msgstr ""
+
+msgid "AdminSettings|For a list of included Registration Features, see %{link_start}the documentation%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|Git abuse rate limit"
@@ -3550,9 +3550,6 @@ msgid "AdminSettings|Keep the latest artifacts for all jobs in the latest succes
 msgstr ""
 
 msgid "AdminSettings|Let's Encrypt email"
-msgstr ""
-
-msgid "AdminSettings|Limit project size at a global, group, and project level. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|Limit the number of namespaces and projects that can be indexed."
@@ -3621,9 +3618,6 @@ msgstr ""
 msgid "AdminSettings|Protect CI/CD variables by default"
 msgstr ""
 
-msgid "AdminSettings|Registration Features include:"
-msgstr ""
-
 msgid "AdminSettings|Requeue indexing workers"
 msgstr ""
 
@@ -3634,9 +3628,6 @@ msgid "AdminSettings|Required pipeline configuration"
 msgstr ""
 
 msgid "AdminSettings|Requires %{linkStart}email notifications%{linkEnd}"
-msgstr ""
-
-msgid "AdminSettings|Restrict group access by IP address. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "AdminSettings|Restricted visibility levels"

@@ -123,3 +123,13 @@ docs-lint deprecations-and-removals:
   needs: []
   script:
     - bundle exec rake gitlab:docs:check_deprecations
+
+docs-lint redirects:
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
+  stage: lint
+  extends:
+    - .default-retry
+    - .docs:rules:redirect-check
+  needs: []
+  script:
+    - ./scripts/lint-docs-redirects.rb

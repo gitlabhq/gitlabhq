@@ -14,13 +14,11 @@ import AccessDropdown, { i18n } from '~/projects/settings/components/access_drop
 import { ACCESS_LEVELS, LEVEL_TYPES } from '~/projects/settings/constants';
 
 jest.mock('~/projects/settings/api/access_dropdown_api', () => ({
-  getGroups: jest.fn().mockResolvedValue({
-    data: [
-      { id: 4, name: 'group4' },
-      { id: 5, name: 'group5' },
-      { id: 6, name: 'group6' },
-    ],
-  }),
+  getGroups: jest.fn().mockResolvedValue([
+    { id: 4, name: 'group4' },
+    { id: 5, name: 'group5' },
+    { id: 6, name: 'group6' },
+  ]),
   getUsers: jest.fn().mockResolvedValue({
     data: [
       { id: 7, name: 'user7' },

@@ -1083,6 +1083,11 @@
       when: manual
       allow_failure: true
 
+.docs:rules:redirect-check:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *docs-patterns
+
 .docs:rules:docs-lint:
   rules:
     - <<: *if-default-refs
