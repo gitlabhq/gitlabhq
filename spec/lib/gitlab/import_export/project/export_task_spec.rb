@@ -2,7 +2,7 @@
 
 require 'rake_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout do
+RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout, feature_category: :importers do
   let_it_be(:username) { 'root' }
   let(:namespace_path) { username }
   let_it_be(:user) { create(:user, username: username) }

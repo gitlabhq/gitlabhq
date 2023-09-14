@@ -75,6 +75,10 @@ start-review-app-pipeline:
   stage: review
   needs:
     - job: e2e-test-pipeline-generate
+    - job: rails-production-server-boot-puma-example
+      optional: true
+    - job: rails-production-server-boot-puma-cng
+      optional: true
     - job: build-assets-image
       artifacts: false
   # We do not want to have ALL global variables passed as trigger variables,

@@ -36,9 +36,27 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
 ### Geo installations **(PREMIUM SELF)**
 
 - Some project imports do not initialize wiki repositories on project creation. See
-  [the details and workaround](#geo-wiki-repositories-not-initialized-on-project-creation).
+  [the details and workaround](gitlab_16_changes.md#wiki-repositories-not-initialized-on-project-creation).
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
-  [the details and workaround](#geo-pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+  [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+
+#### `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13
+
+| Affected minor releases | Affected patch releases | Fixed in |
+|-------------------------|-------------------------|----------|
+| 15.2 - 15.10            | All                     | None     |
+| 15.11                   | 15.11.0 - 15.11.11      | 15.11.12 and later |
+
+A [bug](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841) in the
+built-in `pg-upgrade` tool prevents upgrading the bundled PostgreSQL database
+to version 13. This leaves the secondary site in a broken state, and prevents
+upgrading the Geo installation to GitLab 16.x
+([PostgreSQL 12 support has removed in 16.0](../deprecations.md#postgresql-12-deprecated) and later
+releases). This occurs on secondary sites using the bundled PostgreSQL
+software, running both the secondary main Rails database and tracking database
+on the same node. There is a manual
+[workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841#workaround)
+if you can't upgrade to 15.11.12 and later.
 
 ## 15.11.x
 
@@ -114,7 +132,7 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
 ### Geo installations **(PREMIUM SELF)**
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
-  [the details and workaround](#geo-pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+  [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
 
 ## 15.9.0
 
@@ -156,7 +174,7 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
 ### Geo installations **(PREMIUM SELF)**
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
-  [the details and workaround](#geo-pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+  [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
 
 ## 15.8.2
 
@@ -184,7 +202,7 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
 ### Geo installations **(PREMIUM SELF)**
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
-  [the details and workaround](#geo-pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+  [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
 - We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
   - Affected versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
   - Versions containing fix: GitLab 15.8.3 and later.
@@ -304,7 +322,7 @@ see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/
 ### Geo installations **(PREMIUM SELF)**
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
-  [the details and workaround](#geo-pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+  [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
 - [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This affects versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
 - We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
   - Affected versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
@@ -411,7 +429,7 @@ potentially cause downtime.
 ### Geo installations **(PREMIUM SELF)**
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
-  [the details and workaround](#geo-pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+  [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
 - [Container registry push events are rejected](https://gitlab.com/gitlab-org/gitlab/-/issues/386389) by the `/api/v4/container_registry_event/events` endpoint resulting in Geo secondary sites not being aware of updates to container registry images and subsequently not replicating the updates. Secondary sites may contain out of date container images after a failover as a consequence. This affects versions 15.6.0 - 15.6.6 and 15.7.0 - 15.7.2. If you're using Geo with container repositories, you are advised to upgrade to GitLab 15.6.7, 15.7.3, or 15.8.0 which contain a fix for this issue and avoid potential data loss after a failover.
 - We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
   - Affected versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
@@ -477,7 +495,7 @@ potentially cause downtime.
 ### Geo installations **(PREMIUM SELF)**
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
-  [the details and workaround](#geo-pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+  [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
 
 ## 15.4.6
 
@@ -549,7 +567,7 @@ potentially cause downtime.
 ### Geo installations **(PREMIUM SELF)**
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
-  [the details and workaround](#geo-pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+  [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
 
 ## 15.3.4
 
@@ -619,11 +637,45 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 ### Geo installations **(PREMIUM SELF)**
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
-  [the details and workaround](#geo-pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+  [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
 - LFS transfers can redirect to the primary from secondary site mid-session. See
-  [the details and workaround](#geo-lfs-transfers-redirect-to-primary-from-secondary-site-mid-session).
+  [the details and workaround](#lfs-transfers-redirect-to-primary-from-secondary-site-mid-session).
 - Incorrect object storage LFS files deletion on Geo secondary sites. See
-  [the details and workaround](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites).
+  [the details and workaround](#incorrect-object-storage-lfs-file-deletion-on-secondary-sites).
+
+#### LFS transfers redirect to primary from secondary site mid-session
+
+| Affected minor releases | Affected patch releases | Fixed in |
+|-------------------------|-------------------------|----------|
+| 15.1                    | All                     | None     |
+| 15.2                    | All                     | None     |
+| 15.3                    | 15.3.0 - 15.3.2         | 15.3.3 and later |
+
+LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests in GitLab 15.1.0 to 15.3.2 when [Geo proxying](../../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later.
+
+This issue is resolved in GitLab 15.3.3, so customers with the following configuration should upgrade to 15.3.3 or later:
+
+- LFS is enabled.
+- LFS objects are being replicated across Geo sites.
+- Repositories are being pulled by using a Geo secondary site.
+
+#### Incorrect object storage LFS file deletion on secondary sites
+
+| Affected minor releases | Affected patch releases | Fixed in |
+|-------------------------|-------------------------|----------|
+| 15.0                    | All                     | None     |
+| 15.1                    | All                     | None     |
+| 15.2                    | All                     | None     |
+| 15.3                    | 15.3.0 - 15.3.2         | 15.3.3 and later |
+
+[Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397)
+can occur in GitLab 15.0.0 to 15.3.2 in the following situations:
+
+- GitLab-managed object storage replication is disabled, and LFS objects are created while importing a project with object storage enabled.
+- GitLab-managed replication to sync object storage is enabled and subsequently disabled.
+
+This issue is resolved in 15.3.3. Customers who have both LFS enabled and LFS objects being replicated across Geo sites
+should upgrade directly to 15.3.3 to reduce the risk of data loss on secondary sites.
 
 ## 15.2.5
 
@@ -657,11 +709,11 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 ### Geo installations **(PREMIUM SELF)**
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
-  [the details and workaround](#geo-pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
+  [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
 - LFS transfers can redirect to the primary from secondary site mid-session. See
-  [the details and workaround](#geo-lfs-transfers-redirect-to-primary-from-secondary-site-mid-session).
+  [the details and workaround](#lfs-transfers-redirect-to-primary-from-secondary-site-mid-session).
 - Incorrect object storage LFS files deletion on Geo secondary sites. See
-  [the details and workaround](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites).
+  [the details and workaround](#incorrect-object-storage-lfs-file-deletion-on-secondary-sites).
 
 ## 15.1.0
 
@@ -697,9 +749,9 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
 - [Geo proxying](../../administration/geo/secondary_proxy/index.md) was [enabled by default for different URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in 15.1. This may be a breaking change. If needed, you may [disable Geo proxying](../../administration/geo/secondary_proxy/index.md#disable-geo-proxying). If you are using SAML with different URLs, you must modify your SAML configuration and your Identity Provider configuration. For more information, see the [Geo with Single Sign-On (SSO) documentation](../../administration/geo/replication/single_sign_on.md).
 - LFS transfers can redirect to the primary from secondary site mid-session. See
-  [the details and workaround](#geo-lfs-transfers-redirect-to-primary-from-secondary-site-mid-session).
+  [the details and workaround](#lfs-transfers-redirect-to-primary-from-secondary-site-mid-session).
 - Incorrect object storage LFS files deletion on Geo secondary sites. See
-  [the details and workaround](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites).
+  [the details and workaround](#incorrect-object-storage-lfs-file-deletion-on-secondary-sites).
 
 ## 15.0.0
 
@@ -863,78 +915,4 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 ### Geo installations **(PREMIUM SELF)**
 
 - Incorrect object storage LFS files deletion on Geo secondary sites. See
-  [the details and workaround](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites).
-
-## Issues affecting multiple versions
-
-The following issues affect more than one version. Refer to the tables
-to find which version you should upgrade to.
-
-### Geo: LFS transfers redirect to primary from secondary site mid-session
-
-| Affected minor releases | Affected patch releases | Fixed in |
-| ------ | ------ | ------ |
-| 15.1   | All    | None   |
-| 15.2   | All    | None   |
-| 15.3   | 15.3.0 - 15.3.2   | 15.3.3 and later       |
-
-LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests in GitLab 15.1.0 to 15.3.2 when [Geo proxying](../../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later.
-
-This issue is resolved in GitLab 15.3.3, so customers with the following configuration should upgrade to 15.3.3 or later:
-
-- LFS is enabled.
-- LFS objects are being replicated across Geo sites.
-- Repositories are being pulled by using a Geo secondary site.
-
-### Geo: Incorrect object storage LFS file deletion on secondary sites
-
-| Affected minor releases | Affected patch releases | Fixed in |
-| ------ | ------ | ------ |
-| 15.0   | All    | None   |
-| 15.1   | All    | None   |
-| 15.2   | All    | None   |
-| 15.3   | 15.3.0 - 15.3.2   | 15.3.3 and later       |
-
-[Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397)
-can occur in GitLab 15.0.0 to 15.3.2 in the following situations:
-
-- GitLab-managed object storage replication is disabled, and LFS objects are created while importing a project with object storage enabled.
-- GitLab-managed replication to sync object storage is enabled and subsequently disabled.
-
-This issue is resolved in 15.3.3. Customers who have both LFS enabled and LFS objects being replicated across Geo sites
-should upgrade directly to 15.3.3 to reduce the risk of data loss on secondary sites.
-
-### Geo: Wiki repositories not initialized on project creation
-
-| Affected minor releases | Affected patch releases | Fixed in |
-| ------- | ------ | ------ |
-| 15.11   | All    | None   |
-| 16.0    | All    | None   |
-| 16.1    | 16.1.0 - 16.1.2    | 16.1.3 and later   |
-
-Some project imports do not initialize wiki repositories on project creation.
-Since the migration of project wikis to SSF,
-[missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704).
-This is not a result of an actual replication/verification failure but an
-invalid internal state for these missing repositories inside Geo and results in
-errors in the logs and the verification progress reporting a failed state for
-these wiki repositories. If you have not imported projects you are not impacted
-by this issue.
-
-### Geo: `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13
-
-| Affected minor releases | Affected patch releases | Fixed in |
-| ------- | ------ | ------ |
-| 15.2 - 15.10    | All    | None   |
-| 15.11    | 15.11.0 - 15.11.11    | 15.11.12 and later   |
-
-A [bug](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841) in the
-built-in `pg-upgrade` tool prevents upgrading the bundled PostgreSQL database
-to version 13. This leaves the secondary site in a broken state, and prevents
-upgrading the Geo installation to GitLab 16.x
-([PostgreSQL 12 support has removed in 16.0](../deprecations.md#postgresql-12-deprecated) and later
-releases). This occurs on secondary sites using the bundled PostgreSQL
-software, running both the secondary main Rails database and tracking database
-on the same node. There is a manual
-[workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841#workaround)
-if you can't upgrade to 15.11.12 and later.
+  [the details and workaround](#incorrect-object-storage-lfs-file-deletion-on-secondary-sites).

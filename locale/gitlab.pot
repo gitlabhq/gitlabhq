@@ -1959,7 +1959,7 @@ msgstr ""
 msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`. If it is not programming code, say `The selected text is not code. I am afraid this feature is for explaining code only. Would you like to ask a different question about the selected text?` and wait for another question."
 msgstr ""
 
-msgid "AI|Explain your rating (optional)"
+msgid "AI|Explain your rating to help us improve! (optional)"
 msgstr ""
 
 msgid "AI|Features that use third-party AI services require transmission of data, including personal data."
@@ -29021,9 +29021,6 @@ msgid "MemberRole|cannot be deleted because it is already assigned to a user. Pl
 msgstr ""
 
 msgid "MemberRole|maximum number of Member Roles are already in use by the group hierarchy. Please delete an existing Member Role."
-msgstr ""
-
-msgid "MemberRole|minimal base access level must be %{min_access_level}."
 msgstr ""
 
 msgid "MemberRole|must be top-level namespace"

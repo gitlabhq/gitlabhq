@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD Components **(FREE ALL EXPERIMENT)**
+# CI/CD components **(FREE ALL EXPERIMENT)**
 
 > - Introduced as an [experimental feature](../../policy/experiment-beta-support.md) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
@@ -13,10 +13,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This feature is an experimental feature and [an epic exists](https://gitlab.com/groups/gitlab-org/-/epics/9897)
 to track future work. Tell us about your use case by leaving comments in the epic.
 
-## Components Repository
+## Components repository
 
 A components repository is a GitLab project with a repository that hosts one or more pipeline components.
-A pipeline component is a reusable single pipeline configuration unit. You can use them to compose
+A pipeline component is a reusable single pipeline configuration unit. Use them to compose
 an entire pipeline configuration or a small part of a larger pipeline.
 
 A component can optionally take [input parameters](../yaml/inputs.md).
@@ -160,7 +160,7 @@ Nesting of components is not possible. For example:
 
 ## Release a component
 
-To create a release for a CI/CD component, you can use:
+To create a release for a CI/CD component, use either:
 
 - The [`release`](../yaml/index.md#release) keyword in a CI/CD pipeline. Like in the
   [component testing example](#test-the-component), you can set a component to automatically
@@ -186,19 +186,22 @@ include:
       stage: build
 ```
 
-The component is identified by a unique address in the form `<fully-qualified-doman-name>/<component-path>@<specific-version>`,
+The component is identified by a unique address in the form `<fully-qualified-domain-name>/<component-path>@<specific-version>`,
 where:
 
-- `<fully-qualified-doman-name>` matches the GitLab host.
+- `<fully-qualified-domain-name>` matches the GitLab host. You can only reference components
+  in the same GitLab instance as your project.
 - `<component-path>` is the component project's full path and directory where the
   component YAML file is located.
 - `<specific-version>` is the version of the component. In order of highest priority first,
   the version can be:
-  - A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`.
-  - A tag, for example: `1.0`.
-  - `~latest`, which is a special version that always points to the most recent released tag.
-    Only available if the component has been [released](#release-a-component).
   - A branch name, for example `main`.
+  - A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`.
+  - A tag, for example: `1.0`. If a tag and branch exist with the same name, the tag
+    takes precedence over the branch. If a tag and commit SHA exist with the same name,
+    the commit SHA takes precedence over the tag.
+  - `~latest`, which is a special version that always points to the most recent released tag.
+    Available only if the component has been [released](#release-a-component).
 
 For example, for a component repository located at `gitlab-org/dast` on `gitlab.com`,
 the path:
@@ -212,22 +215,15 @@ the path:
 - `gitlab.com/gitlab-org/dast/api-scan@main` targets a different file, the `template.yml`
   in the `/api-scan` directory in the component repository, for the `main` branch.
 
-**Additional details**:
-
-- You can only reference components in the same GitLab instance as your project.
-- If a tag and branch exist with the same name, the tag takes precedence over the branch.
-- If a tag is named the same as a commit SHA that exists, like `e3262fdd0914fa823210cdb79a8c421e2cef79d8`,
-  the commit SHA takes precedence over the tag.
-
 ## Best practices
 
 ### Avoid using global keywords
 
-You should try to avoid [global keywords](../yaml/index.md#global-keywords) in a component.
+Avoid using [global keywords](../yaml/index.md#global-keywords) in a component.
 Using these keywords in a component affects all jobs in a pipeline, including jobs
 directly defined in the main `.gitlab-ci.yml` or in other included components.
 
-As an alternative to global keywords, you should instead:
+As an alternative to global keywords, instead:
 
 - Add the configuration directly to each job, even if it creates some duplication
   in the component configuration.
@@ -280,7 +276,7 @@ Instead, you can:
 
 ### Replace hard-coded values with inputs
 
-You should avoid hard-coding values in a CI/CD components. Hard-coded values might force
+Avoid hard-coding values in CI/CD components. Hard-coded values might force
 component users to need to review the component's internal details and adapt their pipeline
 to work with the component.
 
@@ -324,13 +320,13 @@ For example:
 
 ### Replace custom CI/CD variables with inputs
 
-When using CI/CD variables in a component, you should evaluate if the `inputs` keyword
-should be used instead. Requiring a user to define custom variables to change a component's
-behavior should be avoided. You should try to use `inputs` for any component customization.
+When using CI/CD variables in a component, evaluate if the `inputs` keyword
+should be used instead. Avoid requiring a user to define custom variables to change a component's
+behavior. You should try to use `inputs` for any component customization.
 
-Inputs are explicitly defined in the component's specs and are better validated than variables.
+Inputs are explicitly defined in the component's specs, and are better validated than variables.
 For example, if a required input is not passed to the component, GitLab returns a pipeline error.
-By contrast, if a variable is not defined, it's value is empty and there is no error.
+By contrast, if a variable is not defined, its value is empty, and there is no error.
 
 For example, use `inputs` instead of variables to let users change a scanner's output format:
 
@@ -364,10 +360,10 @@ In other cases, CI/CD variables are still preferred, including:
 ### Use semantic versioning
 
 When tagging and releasing new versions of components, you should use [semantic versioning](https://semver.org).
-Semantic versioning is the standard for communicating that a change is a major, minor, patch
+Semantic versioning is the standard for communicating that a change is a major, minor, patch,
 or other kind of change.
 
-You should use at least the `major.minor` format, as this is widely understood, for example
+You should use at least the `major.minor` format, as this is widely understood. For example,
 `2.0` or `2.1`.
 
 Other examples of semantic versioning:
@@ -382,7 +378,7 @@ Other examples of semantic versioning:
 Testing CI/CD components as part of the development workflow is strongly recommended
 and helps ensure consistent behavior.
 
-You can test changes in a CI/CD pipeline (like any other project) by creating a `.gitlab-ci.yml`
+Test changes in a CI/CD pipeline (like any other project) by creating a `.gitlab-ci.yml`
 in the root directory.
 
 For example:
@@ -397,8 +393,8 @@ include:
 stages: [build, test, release]
 
 # Expect `component-job` is added.
-# This is an example of testing that the included component works as expected.
-# You can leverage GitLab API endpoints or 3rd party tools to inspect data generated by the component.
+# This example tests that the included component works as expected.
+# You can inspect data generated by the component, use GitLab API endpoints or third-party tools.
 ensure-job-added:
   stage: test
   image: badouralix/curl-jq
@@ -423,7 +419,7 @@ create-release:
     description: "Release $CI_COMMIT_TAG of components repository $CI_PROJECT_PATH"
 ```
 
-After committing and pushing changes, the pipeline tests the component then releases it if the test passes.
+After committing and pushing changes, the pipeline tests the component, then releases it if the test passes.
 
 ## Convert a CI/CD template to a component
 
@@ -434,6 +430,9 @@ can be converted to a CI/CD component:
    to be grouped with other components, or create and set up a new components repository.
 1. Create a YAML file in the components repository according to the expected [directory structure](index.md#directory-structure).
 1. Copy the content of the original template YAML file into the new component YAML file.
-1. Refactor the new component's configuration to follow the [best practices](index.md#best-practices) for components.
+1. Refactor the new component's configuration to:
+   - Follow the [best practices](index.md#best-practices) for components.
+   - Improve the configuration, for example by enabling [merge request pipelines](../pipelines/merge_request_pipelines.md)
+     or making it [more efficient](../pipelines/pipeline_efficiency.md).
 1. Leverage the `.gitlab-ci.yml` in the components repository to [test changes to the component](index.md#test-the-component).
 1. Tag and [release the component](index.md#release-a-component).

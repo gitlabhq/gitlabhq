@@ -27,6 +27,25 @@ There are two primary reasons for this: the best AI models are cloud-based as th
 
 The AI Gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: self-managed, dedicated or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
 
+Calls to the AI-gateway from GitLab-rails can be made using the
+[Abstraction Layer](ai_features/index.md#abstraction-layer).
+By default, these actions are performed asynchronously via a Sidekiq
+job to prevent long-running requests in Puma. It should be used for
+non-latency sensitive actions due to the added latency by Sidekiq.
+
+At the time of writing, the Abstraction Layer still directly calls the AI providers. This will be
+changed [in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/424614).
+
+When a certain action is latency sensitive, we can decide to call the
+AI-gateway directly. This avoids the latency added by Sidekiq.
+[We already do this for `code_suggestions`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb)
+which get handled by API endpoints nested in
+`/api/v4/code_suggestions`. For any new endpoints added, we should
+nest them within the `/api/v4/ai_assisted` namespace. Doing this will
+automatically route the requests on GitLab.com to the `ai-assisted`
+fleet for GitLab.com, isolating the workload from the regular API and
+making it easier to scale if needed.
+
 ## Supported technologies
 
 As part of the AI working group, we have been investigating various technologies and vetting them. Below is a list of the tools which have been reviewed and already approved for use within the GitLab application.

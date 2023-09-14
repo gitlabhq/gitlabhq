@@ -528,7 +528,7 @@ Prerequisite:
 1. Select the **Permissions** for the new custom role.
 1. Select **Create new role**.
 
-#### GitLab.com
+#### Self Managed GitLab Instances
 
 Prerequisite:
 

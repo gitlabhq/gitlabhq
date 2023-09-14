@@ -710,8 +710,8 @@ class Issue < ApplicationRecord
   end
 
   def expire_etag_cache
-    # TODO: Fix this for the case when issues is created at group level
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/395814
+    # We don't expire the cache for issues that don't have a project, since they are created at the group level
+    # and they are only displayed in the new work item view that uses GraphQL subscriptions for real-time updates
     return unless project
 
     key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)

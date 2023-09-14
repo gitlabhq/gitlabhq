@@ -70,8 +70,9 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, feature_category
         create_list(:issue, 3, :with_desc_relative_position, project: exportable ) # ascending ids, descending position
       end
 
-      it 'calls json_writer.write_relation_array with proper params' do
+      it 'calls json_writer.write_relation_array with proper params and clears SafeRequestStore' do
         expect(json_writer).to receive(:write_relation_array).with(exportable_path, :issues, array_including(issue.to_json))
+        expect(Gitlab::SafeRequestStore).to receive(:clear!)
 
         subject.execute
       end

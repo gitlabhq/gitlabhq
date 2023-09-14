@@ -41,17 +41,11 @@ module Packages
         package_versions = {}
 
         packages.each_batch do |relation|
-          batched_packages = if optimization_enabled?
-                               load_dependencies(relation)
-                               load_dependency_ids(relation)
+          load_dependencies(relation)
+          load_dependency_ids(relation)
 
-                               relation.preload_files
-                                       .preload_npm_metadatum
-                             else
-                               relation.including_dependency_links
-                                       .preload_files
-                                       .preload_npm_metadatum
-                             end
+          batched_packages = relation.preload_files
+                             .preload_npm_metadatum
 
           batched_packages.each do |package|
             package_file = package.installable_package_files.last
@@ -93,24 +87,17 @@ module Packages
       end
 
       def build_package_dependencies(package)
-        if optimization_enabled?
-          inverted_dependency_types = Packages::DependencyLink.dependency_types.invert.stringify_keys
-          dependency_ids[package.id].each_with_object(Hash.new { |h, key| h[key] = {} }) do |(type, ids), memo|
-            ids.each do |id|
-              memo[inverted_dependency_types[type]].merge!(dependencies[id])
-            end
+        dependency_ids[package.id].each_with_object(Hash.new { |h, key| h[key] = {} }) do |(type, ids), memo|
+          ids.each do |id|
+            memo[inverted_dependency_types[type]].merge!(dependencies[id])
           end
-        else
-          dependencies = Hash.new { |h, key| h[key] = {} }
-
-          package.dependency_links.each do |dependency_link|
-            dependency = dependency_link.dependency
-            dependencies[dependency_link.dependency_type][dependency.name] = dependency.version_pattern
-          end
-
-          dependencies
         end
       end
+
+      def inverted_dependency_types
+        Packages::DependencyLink.dependency_types.invert.stringify_keys
+      end
+      strong_memoize_attr :inverted_dependency_types
 
       def sorted_versions
         versions = packages.pluck_versions.compact
@@ -151,11 +138,6 @@ module Packages
             end
           end
       end
-
-      def optimization_enabled?
-        Feature.enabled?(:npm_optimize_metadata_generation)
-      end
-      strong_memoize_attr :optimization_enabled?
     end
   end
 end

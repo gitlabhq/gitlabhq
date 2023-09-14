@@ -4,11 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD Catalog **(PREMIUM ALL EXPERIMENT)**
+# CI/CD catalog **(PREMIUM ALL EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) in GitLab 16.1.
 
-The CI/CD Catalog is a list of [components repositories](index.md#components-repository),
+The CI/CD catalog is a list of [components repositories](index.md#components-repository),
 each containing resources that you can add to your CI/CD pipelines.
 
 ## Mark a components repository as a catalog resource

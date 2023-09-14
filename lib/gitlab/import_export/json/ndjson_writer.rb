@@ -44,12 +44,11 @@ module Gitlab
 
         def with_file(*path)
           file_path = File.join(@dir_path, *path)
-          raise ArgumentError, "The #{file_path} already exist" if File.exist?(file_path)
 
           # ensure that path is created
           mkdir_p(File.dirname(file_path))
 
-          File.open(file_path, "wb") do |file|
+          File.open(file_path, "ab+") do |file|
             yield(file)
           end
         end

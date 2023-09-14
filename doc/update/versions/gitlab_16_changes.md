@@ -197,13 +197,8 @@ Specific information applies to installations using Geo:
 
 Specific information applies to installations using Geo:
 
-- Some project imports do not initialize wiki repositories on project creation. Because of the migration of project wikis to
-  SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704).
-  This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing
-  repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for
-  these wiki repositories. If you have not imported projects you are not impacted by this issue.
-  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
-  - Versions containing fix: GitLab 16.1.3 and later.
+- Some project imports do not initialize wiki repositories on project creation. See
+  [the details and workaround](#wiki-repositories-not-initialized-on-project-creation).
 - Because of the migration of project designs to SSF, [missing design repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/414279).
   This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing
   repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for
@@ -216,6 +211,23 @@ Specific information applies to installations using Geo:
   - While running an affected version, artifacts which appeared to become synced may actually be missing on the secondary site.
     Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
     You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
+
+#### Wiki repositories not initialized on project creation
+
+| Affected minor releases | Affected patch releases | Fixed in |
+|-------------------------|-------------------------|----------|
+| 15.11                   | All                     | None     |
+| 16.0                    | All                     | None     |
+| 16.1                    | 16.1.0 - 16.1.2         | 16.1.3 and later |
+
+Some project imports do not initialize wiki repositories on project creation.
+Since the migration of project wikis to SSF,
+[missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704).
+This is not a result of an actual replication/verification failure but an
+invalid internal state for these missing repositories inside Geo and results in
+errors in the logs and the verification progress reporting a failed state for
+these wiki repositories. If you have not imported projects you are not impacted
+by this issue.
 
 ## 16.0.0
 
@@ -259,14 +271,8 @@ Specific information applies to Linux package installations:
 
 Specific information applies to installations using Geo:
 
-- Some project imports do not initialize wiki repositories on project creation. Because of the migration of project wikis to
-  SSF, [missing wiki repositories are being incorrectly flagged as failing verification](https://gitlab.com/gitlab-org/gitlab/-/issues/409704).
-  This issue is not a result of an actual replication/verification failure but an invalid internal state for these missing
-  repositories inside Geo and results in errors in the logs and the verification progress reporting a failed state for
-  these wiki repositories. If you have not imported projects you are not impacted by this issue.
-
-  - Impacted versions: GitLab versions 15.11.x, 16.0.x, and 16.1.0 - 16.1.2.
-  - Versions containing fix: GitLab 16.1.3 and later.
+- Some project imports do not initialize wiki repositories on project creation. See
+  [the details and workaround](#wiki-repositories-not-initialized-on-project-creation).
 
 ### Gitaly configuration structure change
 

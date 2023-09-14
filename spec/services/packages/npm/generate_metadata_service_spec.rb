@@ -80,19 +80,6 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
 
             subject
           end
-
-          context 'when npm_optimize_metadata_generation disabled' do
-            before do
-              stub_feature_flags(npm_optimize_metadata_generation: false)
-            end
-
-            it 'does not load grouped dependency links', :aggregate_failures do
-              expect(::Packages::DependencyLink).not_to receive(:dependency_ids_grouped_by_type)
-              expect(::Packages::Package).to receive(:including_dependency_links).and_call_original
-
-              subject
-            end
-          end
         end
       end
 
