@@ -620,11 +620,6 @@ class GfmAutoComplete {
             if (labels.find((label) => label.title.startsWith(lastCandidate))) {
               return lastCandidate;
             }
-          } else {
-            // Load all labels into the autocompleter.
-            // This needs to happen if e.g. editing a label in an existing comment, because normally
-            // label data would only be loaded only once you type `~`.
-            fetchData(this.$inputor, this.at);
           }
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);

@@ -89,17 +89,15 @@ To edit a merge request approval rule:
 
 ## Add multiple approval rules
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1979) in GitLab 11.10.
-
 In GitLab Premium and Ultimate tiers, you can enforce multiple approval rules on a
 merge request, and multiple default approval rules for a project. If your tier
 supports multiple default rules:
 
 - When [adding](#add-an-approval-rule) or [editing](#edit-an-approval-rule) an approval rule
-  for a project, GitLab displays the **Add approval rule** button even after a rule is defined.
+  for a project, GitLab displays **Add approval rule**, even after a rule is defined.
 - When editing or overriding multiple approval rules
   [on a merge request](#edit-or-override-merge-request-approval-rules), GitLab
-  displays the **Add approval rule** button even after a rule is defined.
+  displays **Add approval rule**, even after a rule is defined.
 
 When an [eligible approver](#eligible-approvers) approves a merge request, it
 reduces the number of approvals left (the **Approvals** column) for all rules that the approver belongs to:
@@ -110,8 +108,6 @@ reduces the number of approvals left (the **Approvals** column) for all rules th
 For an overview, see [Multiple Approvers](https://www.youtube.com/watch?v=8JQJ5821FrA).
 
 ## Eligible approvers
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10294) in GitLab 13.3, when an eligible approver comments on a merge request, it appears in the **Commented by** column of the Approvals widget.
 
 To be eligible as an approver for a project, a user must be a member of one or
 more of these:
@@ -140,15 +136,20 @@ users were not explicitly listed in the approval rules.
 
 ### Group approvers
 
-You can add a group of users as approvers, but those users count as approvers only if
-they have **direct membership** to the group. Inherited members do not count. Group approvers are
-restricted to only groups [with share access to the project](../../members/share_project_with_groups.md).
+You can add a group of users as approvers. All **direct members** of this group
+can approve the rule. **Inherited members** cannot approve the rule.
+
+Typically the group is a subgroup in your top-level namespace, unless you are
+collaborating with an external group. If you are collaborating with another group,
+you must [share access to the project](../../members/share_project_with_groups.md)
+before assigning the group as a group approver.
 
 A user's membership in an approvers group affects their individual ability to
 approve in these ways:
 
-- A user already part of a group approver who is later added as an individual approver
-  counts as one approver, and not two.
+- Inherited members are not considered approvers. Only direct members can approve merge requests.
+- A user from a group approver group who is later _also_ added as an individual approver
+  counts as one approver, not two.
 - Merge request authors do not count as eligible approvers on their own merge requests by default.
   To change this behavior, disable the
   [**Prevent author approval**](settings.md#prevent-approval-by-author)
@@ -156,6 +157,12 @@ approve in these ways:
 - Committers to merge requests can approve a merge request. To change this behavior, enable the
   [**Prevent committers approval**](settings.md#prevent-approvals-by-users-who-add-commits)
   project setting.
+
+NOTE:
+Creating multiple top-level groups to manage groups of users is not necessary, and is
+discouraged because GitLab Free [is limited to 5 group members](https://about.gitlab.com/pricing/faq-efficient-free-tier/).
+Managing groups of users using subgroups in your top-level namespace enables you
+to use a single license.
 
 ### Code owners as eligible approvers
 

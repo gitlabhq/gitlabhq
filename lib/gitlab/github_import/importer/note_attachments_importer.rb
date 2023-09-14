@@ -58,6 +58,8 @@ module Gitlab
           file = downloader.perform
           uploader = UploadService.new(project, file, FileUploader).execute
           uploader.to_h[:url]
+        rescue ::Gitlab::GithubImport::AttachmentsDownloader::UnsupportedAttachmentError
+          attachment.url
         ensure
           downloader&.delete
         end

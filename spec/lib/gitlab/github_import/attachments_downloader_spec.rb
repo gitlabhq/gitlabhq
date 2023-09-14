@@ -129,6 +129,20 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
           expect { downloader.perform }.to raise_error("expected a redirect response, got #{sample_response.code}")
         end
       end
+
+      context 'when redirection url is not supported' do
+        let(:redirect_url) { "https://https://github-production-user-asset-6210df.s3.amazonaws.com/142635249/740edb05293e.idk" }
+
+        before do
+          allow(Gitlab::HTTP).to receive(:perform_request)
+            .with(Net::HTTP::Get, file_url, { follow_redirects: false })
+            .and_return sample_response
+        end
+
+        it 'raises UnsupportedAttachmentError on unsupported extension' do
+          expect { downloader.perform }.to raise_error(described_class::UnsupportedAttachmentError)
+        end
+      end
     end
   end
 

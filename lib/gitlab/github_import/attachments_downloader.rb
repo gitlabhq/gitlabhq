@@ -8,11 +8,11 @@ module Gitlab
       include ::BulkImports::FileDownloads::Validations
 
       DownloadError = Class.new(StandardError)
+      UnsupportedAttachmentError = Class.new(StandardError)
 
       FILENAME_SIZE_LIMIT = 255 # chars before the extension
       DEFAULT_FILE_SIZE_LIMIT = 25.megabytes
       TMP_DIR = File.join(Dir.tmpdir, 'github_attachments').freeze
-      GITHUB_ASSETS_URL_REGEX = %r{#{Regexp.escape(::Gitlab::GithubImport::MarkdownText.github_url)}/.*/assets/}
 
       attr_reader :file_url, :filename, :file_size_limit, :options
 
@@ -29,7 +29,7 @@ module Gitlab
         validate_content_length
         validate_filepath
 
-        redirection_url = get_download_redirection_url
+        redirection_url = get_assets_download_redirection_url
         file = download_from(redirection_url)
 
         validate_symlink
@@ -55,14 +55,25 @@ module Gitlab
       # Keeping our bearer token will cause request rejection
       # eg. Only one auth mechanism allowed; only the X-Amz-Algorithm query parameter,
       # Signature query string parameter or the Authorization header should be specified.
-      def get_download_redirection_url
-        return file_url unless file_url.starts_with?(GITHUB_ASSETS_URL_REGEX)
+      def get_assets_download_redirection_url
+        return file_url unless file_url.starts_with?(github_assets_url_regex)
 
         options[:follow_redirects] = false
         response = Gitlab::HTTP.perform_request(Net::HTTP::Get, file_url, options)
         raise_error("expected a redirect response, got #{response.code}") unless response.redirection?
 
-        response.headers[:location]
+        redirection_url = response.headers[:location]
+        filename = URI.parse(redirection_url).path
+
+        unless Gitlab::GithubImport::Markdown::Attachment::MEDIA_TYPES.any? { |type| filename.ends_with?(type) }
+          raise UnsupportedAttachmentError
+        end
+
+        redirection_url
+      end
+
+      def github_assets_url_regex
+        %r{#{Regexp.escape(::Gitlab::GithubImport::MarkdownText.github_url)}/.*/assets/}
       end
 
       def download_from(url)

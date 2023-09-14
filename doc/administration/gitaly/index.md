@@ -25,6 +25,7 @@ Gitaly implements a client-server architecture:
   - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell)
   - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse)
   - [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer)
+  - [GitLab Zoekt Indexer](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer)
 
 Gitaly manages only Git repository access for GitLab. Other types of GitLab data aren't accessed
 using Gitaly.

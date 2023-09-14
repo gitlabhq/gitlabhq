@@ -134,5 +134,24 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
         expect(record.note).to include("[link to other project blob file](#{other_project_blob_url})")
       end
     end
+
+    context "when attachment behind redirection link is unsupported file type" do
+      let(:record) { create(:issue, project: project, description: text) }
+      let(:image_url) { 'https://github.com/nickname/public-test-repo/assets/142635249/123' }
+      let(:image_tag_url) { 'https://github.com/nickname/public-test-repo/assets/142635249/123' }
+
+      before do
+        allow(downloader_stub).to receive(:perform)
+          .and_raise(Gitlab::GithubImport::AttachmentsDownloader::UnsupportedAttachmentError)
+      end
+
+      it "does not replace url" do
+        importer.execute
+
+        record.reload
+        expect(record.description).to include("![image.jpeg](#{image_url}")
+        expect(record.description).to include("<img width=\"248\" alt=\"tag-image\" src=\"#{image_tag_url}\"")
+      end
+    end
   end
 end

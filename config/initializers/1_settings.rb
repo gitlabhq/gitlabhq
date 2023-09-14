@@ -876,12 +876,6 @@ Gitlab.ee do
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['job_class'] = 'PackageMetadata::AdvisoriesSyncWorker'
 
   Gitlab.com do
-    Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker'] ||= {}
-    Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['cron'] ||= '*/5 * * * *'
-    Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['job_class'] = 'Namespaces::FreeUserCap::BackfillNotificationJobsWorker'
-    Settings.cron_jobs['free_user_cap_backfill_clear_notified_flag'] ||= {}
-    Settings.cron_jobs['free_user_cap_backfill_clear_notified_flag']['cron'] ||= '*/5 * * * *'
-    Settings.cron_jobs['free_user_cap_backfill_clear_notified_flag']['job_class'] ||= 'Namespaces::FreeUserCap::BackfillNotificationClearingJobsWorker'
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['cron'] ||= "30 5 * * 0"
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['job_class'] = 'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker'
