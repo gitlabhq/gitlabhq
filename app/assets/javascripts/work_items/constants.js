@@ -256,3 +256,9 @@ export const WORK_ITEM_TO_ISSUE_MAP = {
   [WIDGET_TYPE_HEALTH_STATUS]: 'healthStatus',
   [WIDGET_TYPE_AWARD_EMOJI]: 'awardEmoji',
 };
+
+export const LINKED_CATEGORIES_MAP = {
+  RELATES_TO: 'relates_to',
+  IS_BLOCKED_BY: 'is_blocked_by',
+  BLOCKS: 'blocks',
+};

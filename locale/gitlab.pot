@@ -53535,6 +53535,12 @@ msgid_plural "WorkItem|Assignees"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "WorkItem|Blocked by"
+msgstr ""
+
+msgid "WorkItem|Blocking"
+msgstr ""
+
 msgid "WorkItem|Cancel"
 msgstr ""
 
@@ -53656,6 +53662,9 @@ msgid "WorkItem|Open"
 msgstr ""
 
 msgid "WorkItem|Promoted to objective."
+msgstr ""
+
+msgid "WorkItem|Related to"
 msgstr ""
 
 msgid "WorkItem|Remove"

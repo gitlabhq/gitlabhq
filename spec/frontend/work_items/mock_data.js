@@ -1,3 +1,5 @@
+import { WIDGET_TYPE_LINKED_ITEMS } from '~/work_items/constants';
+
 export const mockAssignees = [
   {
     __typename: 'UserCore',
@@ -451,6 +453,126 @@ export const objectiveType = {
   iconName: 'issue-type-objective',
 };
 
+export const mockEmptyLinkedItems = {
+  type: WIDGET_TYPE_LINKED_ITEMS,
+  blocked: false,
+  blockedByCount: 0,
+  blockingCount: 0,
+  linkedItems: {
+    nodes: [],
+    __typename: 'LinkedWorkItemTypeConnection',
+  },
+  __typename: 'WorkItemWidgetLinkedItems',
+};
+
+export const mockBlockingLinkedItem = {
+  type: WIDGET_TYPE_LINKED_ITEMS,
+  linkedItems: {
+    nodes: [
+      {
+        linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
+        linkType: 'blocks',
+        workItem: {
+          id: 'gid://gitlab/WorkItem/675',
+          iid: '83',
+          confidential: true,
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/5',
+            name: 'Task',
+            iconName: 'issue-type-task',
+            __typename: 'WorkItemType',
+          },
+          title: 'Task 1201',
+          state: 'OPEN',
+          createdAt: '2023-03-28T10:50:16Z',
+          closedAt: null,
+          widgets: [],
+          __typename: 'WorkItem',
+        },
+        __typename: 'LinkedWorkItemType',
+      },
+    ],
+    __typename: 'LinkedWorkItemTypeConnection',
+  },
+  __typename: 'WorkItemWidgetLinkedItems',
+};
+
+export const mockLinkedItems = {
+  type: WIDGET_TYPE_LINKED_ITEMS,
+  linkedItems: {
+    nodes: [
+      {
+        linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/8',
+        linkType: 'relates_to',
+        workItem: {
+          id: 'gid://gitlab/WorkItem/675',
+          iid: '83',
+          confidential: true,
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/5',
+            name: 'Task',
+            iconName: 'issue-type-task',
+            __typename: 'WorkItemType',
+          },
+          title: 'Task 1201',
+          state: 'OPEN',
+          createdAt: '2023-03-28T10:50:16Z',
+          closedAt: null,
+          widgets: [],
+          __typename: 'WorkItem',
+        },
+        __typename: 'LinkedWorkItemType',
+      },
+      {
+        linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/9',
+        linkType: 'is_blocked_by',
+        workItem: {
+          id: 'gid://gitlab/WorkItem/646',
+          iid: '55',
+          confidential: true,
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/6',
+            name: 'Objective',
+            iconName: 'issue-type-objective',
+            __typename: 'WorkItemType',
+          },
+          title: 'Multilevel Objective 1',
+          state: 'OPEN',
+          createdAt: '2023-03-28T10:50:16Z',
+          closedAt: null,
+          widgets: [],
+          __typename: 'WorkItem',
+        },
+        __typename: 'LinkedWorkItemType',
+      },
+      {
+        linkId: 'gid://gitlab/WorkItems::RelatedWorkItemLink/10',
+        linkType: 'blocks',
+        workItem: {
+          id: 'gid://gitlab/WorkItem/647',
+          iid: '56',
+          confidential: true,
+          workItemType: {
+            id: 'gid://gitlab/WorkItems::Type/6',
+            name: 'Objective',
+            iconName: 'issue-type-objective',
+            __typename: 'WorkItemType',
+          },
+          title: 'Multilevel Objective 2',
+          state: 'OPEN',
+          createdAt: '2023-03-28T10:50:16Z',
+          closedAt: null,
+          widgets: [],
+          __typename: 'WorkItem',
+        },
+        __typename: 'LinkedWorkItemType',
+      },
+    ],
+    __typename: 'LinkedWorkItemTypeConnection',
+  },
+  __typename: 'WorkItemWidgetLinkedItems',
+};
+
 export const workItemResponseFactory = ({
   iid = '1',
   canUpdate = false,
@@ -473,6 +595,7 @@ export const workItemResponseFactory = ({
   confidential = false,
   canInviteMembers = false,
   labelsWidgetPresent = true,
+  linkedItemsWidgetPresent = true,
   labels = mockLabels,
   allowsScopedLabels = false,
   lastEditedAt = null,
@@ -485,6 +608,7 @@ export const workItemResponseFactory = ({
   updatedAt = '2022-08-08T12:32:54Z',
   awardEmoji = mockAwardsWidget,
   state = 'OPEN',
+  linkedItems = mockEmptyLinkedItems,
 } = {}) => ({
   data: {
     workItem: {
@@ -683,6 +807,7 @@ export const workItemResponseFactory = ({
               awardEmoji,
             }
           : { type: 'MOCK TYPE' },
+        linkedItemsWidgetPresent ? linkedItems : { type: 'MOCK TYPE' },
       ],
     },
   },

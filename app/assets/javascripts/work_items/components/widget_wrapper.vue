@@ -14,6 +14,11 @@ export default {
       required: false,
       default: '',
     },
+    widgetName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -29,6 +34,12 @@ export default {
     },
     isOpenString() {
       return this.isOpen ? 'true' : 'false';
+    },
+    anchorLink() {
+      return `#${this.widgetName}`;
+    },
+    anchorLinkId() {
+      return `user-content-${this.widgetName}-links`;
     },
   },
   methods: {
@@ -46,14 +57,14 @@ export default {
 </script>
 
 <template>
-  <div id="tasks" class="gl-new-card" :aria-expanded="isOpenString">
+  <div :id="widgetName" class="gl-new-card" :aria-expanded="isOpenString">
     <div class="gl-new-card-header">
       <div class="gl-new-card-title-wrapper">
         <h3 class="gl-new-card-title">
           <gl-link
-            id="user-content-tasks-links"
-            class="anchor position-absolute gl-text-decoration-none"
-            href="#tasks"
+            :id="anchorLinkId"
+            class="gl-text-decoration-none"
+            :href="anchorLink"
             aria-hidden="true"
           />
           <slot name="header"></slot>

@@ -213,7 +213,7 @@ export default {
 </script>
 
 <template>
-  <div class="tree-item">
+  <li class="tree-item">
     <div
       class="gl-display-flex gl-align-items-flex-start"
       :class="{ 'gl-ml-6': canHaveChildren && !hasChildren && hasIndirectChildren }"
@@ -250,5 +250,5 @@ export default {
       @removeChild="removeChild"
       @click="$emit('click', $event)"
     />
-  </div>
+  </li>
 </template>

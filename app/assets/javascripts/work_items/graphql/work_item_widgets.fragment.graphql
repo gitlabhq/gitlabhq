@@ -103,5 +103,28 @@ fragment WorkItemWidgets on WorkItemWidget {
 
   ... on WorkItemWidgetLinkedItems {
     type
+    linkedItems {
+      nodes {
+        linkId
+        linkType
+        workItem {
+          id
+          iid
+          confidential
+          workItemType {
+            id
+            name
+            iconName
+          }
+          title
+          state
+          createdAt
+          closedAt
+          widgets {
+            ...WorkItemMetadataWidgets
+          }
+        }
+      }
+    }
   }
 }

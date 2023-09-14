@@ -149,7 +149,7 @@ export default {
           </span>
           <gl-link
             :href="childPath"
-            class="gl-text-truncate gl-text-black-normal! gl-font-weight-semibold"
+            class="gl-text-truncate gl-font-weight-semibold"
             data-testid="item-title"
             @click="$emit('click', $event)"
             @mouseover="$emit('mouseover')"

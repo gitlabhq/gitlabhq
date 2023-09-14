@@ -56,14 +56,14 @@ export default {
       return isLoggedIn() && this.canUpdate;
     },
     treeRootWrapper() {
-      return this.canReorder ? Draggable : 'div';
+      return this.canReorder ? Draggable : 'ul';
     },
     treeRootOptions() {
       const options = {
         ...defaultSortableOptions,
         fallbackOnBody: false,
         group: 'sortable-container',
-        tag: 'div',
+        tag: 'ul',
         'ghost-class': 'tree-item-drag-active',
         'data-parent-id': this.workItemId,
         value: this.children,
@@ -248,6 +248,7 @@ export default {
   <component
     :is="treeRootWrapper"
     v-bind="treeRootOptions"
+    class="content-list"
     :class="{ 'gl-cursor-grab sortable-container': canReorder }"
     @end="handleDragOnEnd"
   >

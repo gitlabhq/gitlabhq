@@ -606,7 +606,8 @@ export default {
             <work-item-relationships
               v-if="showWorkItemLinkedItems"
               :work-item-iid="workItemIid"
-              :work-item-fullpath="workItem.project.fullPath"
+              :work-item-full-path="workItem.project.fullPath"
+              @showModal="openInModal"
             />
             <work-item-notes
               v-if="workItemNotes"
