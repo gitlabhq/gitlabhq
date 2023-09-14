@@ -1,6 +1,6 @@
 *:not(
   /* Keep transition enabled where it would otherwise break specs */
-  .nav-item-link .show-on-focus-or-hover--target /* for spec/features/nav/pinned_nav_items_spec.rb */
+  .always-animate
 ) {
   /* stylelint-disable property-no-vendor-prefix */
   -o-transition: none !important;

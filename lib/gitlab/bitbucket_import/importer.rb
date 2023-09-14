@@ -210,7 +210,11 @@ module Gitlab
 
         source_branch_sha = pull_request.source_branch_sha
         target_branch_sha = pull_request.target_branch_sha
-        source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
+
+        source_sha_from_commit_sha = project.repository.commit(source_branch_sha)&.sha
+        source_sha_from_merge_sha = project.repository.commit(pull_request.merge_commit_sha)&.sha
+
+        source_branch_sha = source_sha_from_commit_sha || source_sha_from_merge_sha || source_branch_sha
         target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
 
         merge_request = project.merge_requests.create!(

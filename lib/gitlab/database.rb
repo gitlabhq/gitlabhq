@@ -216,6 +216,28 @@ module Gitlab
       end
     end
 
+    def self.check_single_connection_and_print_warning
+      return if Gitlab::Runtime.rails_runner?
+      return unless database_mode == MODE_SINGLE_DATABASE
+
+      Kernel.warn ERB.new(Rainbow.new.wrap(<<~EOS).red).result
+
+                  ██     ██  █████  ██████  ███    ██ ██ ███    ██  ██████ 
+                  ██     ██ ██   ██ ██   ██ ████   ██ ██ ████   ██ ██      
+                  ██  █  ██ ███████ ██████  ██ ██  ██ ██ ██ ██  ██ ██   ███ 
+                  ██ ███ ██ ██   ██ ██   ██ ██  ██ ██ ██ ██  ██ ██ ██    ██ 
+                   ███ ███  ██   ██ ██   ██ ██   ████ ██ ██   ████  ██████  
+
+        ******************************************************************************
+          Your database has a single connection, and single connections were
+          deprecated in GitLab 15.9 https://docs.gitlab.com/ee/update/deprecations.html#single-database-connection-is-deprecated.
+
+          Please add a :ci section to your database, following these instructions:
+          https://docs.gitlab.com/ee/install/installation.html#configure-gitlab-db-settings.
+        ******************************************************************************
+      EOS
+    end
+
     def self.random
       "RANDOM()"
     end

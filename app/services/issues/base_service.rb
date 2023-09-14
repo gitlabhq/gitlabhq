@@ -21,7 +21,7 @@ module Issues
       Issues::CloseService
     end
 
-    NO_REBALANCING_NEEDED = ((RelativePositioning::MIN_POSITION * 0.9999)..(RelativePositioning::MAX_POSITION * 0.9999)).freeze
+    NO_REBALANCING_NEEDED = ((RelativePositioning::MIN_POSITION * 0.9999)..(RelativePositioning::MAX_POSITION * 0.9999))
 
     def rebalance_if_needed(issue)
       return unless issue

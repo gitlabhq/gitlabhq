@@ -54,6 +54,10 @@ module Bitbucket
         target_branch.dig('commit', 'hash')
       end
 
+      def merge_commit_sha
+        raw['merge_commit']&.dig('hash')
+      end
+
       private
 
       def source_branch

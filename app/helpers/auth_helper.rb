@@ -19,7 +19,7 @@ module AuthHelper
     shibboleth
     twitter
   ].freeze
-  LDAP_PROVIDER = /\Aldap/.freeze
+  LDAP_PROVIDER = /\Aldap/
   POPULAR_PROVIDERS = %w[google_oauth2 github].freeze
 
   delegate :slack_app_id, to: :'Gitlab::CurrentSettings.current_application_settings'

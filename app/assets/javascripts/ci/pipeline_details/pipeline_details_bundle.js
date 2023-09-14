@@ -33,9 +33,15 @@ export default async function initPipelineDetailsBundle() {
 
   if (tabsEl) {
     const { dataset } = tabsEl;
+    const dismissalDescriptions = JSON.parse(dataset.dismissalDescriptions || '{}');
     const { createAppOptions } = await import('ee_else_ce/ci/pipeline_details/pipeline_tabs');
     const { createPipelineTabs } = await import('./pipeline_tabs');
     const { routes } = await import('ee_else_ce/ci/pipeline_details/routes');
+
+    const securityRoute = routes.find((route) => route.path === '/security');
+    if (securityRoute) {
+      securityRoute.props = { dismissalDescriptions };
+    }
 
     const router = new VueRouter({
       mode: 'history',

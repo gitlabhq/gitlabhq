@@ -29,7 +29,7 @@ RSpec.describe 'Users > User browses projects on user page', :js, feature_catego
   end
 
   before do
-    stub_feature_flags(profile_tabs_vue: false)
+    stub_feature_flags(profile_tabs_vue: false, super_sidebar_logged_out: false)
   end
 
   it 'hides loading spinner after load', :js do

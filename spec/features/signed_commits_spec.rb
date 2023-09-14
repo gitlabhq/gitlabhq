@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'GPG signed commits', feature_category: :source_code_management do
-  let(:project) { create(:project, :public, :repository) }
+RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_management do
+  let_it_be(:project) { create(:project, :public, :repository) }
 
   it 'changes from unverified to verified when the user changes their email to match the gpg key', :sidekiq_might_not_need_inline do
     ref = GpgHelpers::SIGNED_AND_AUTHORED_SHA
@@ -47,7 +47,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
     expect(page).to have_selector('.gl-badge', text: 'Verified')
   end
 
-  context 'shows popover badges', :js do
+  context 'shows popover badges' do
     let(:user_1) do
       create :user, email: GpgHelpers::User1.emails.first, username: 'nannie.bernhard', name: 'Nannie Bernhard'
     end
@@ -163,7 +163,7 @@ RSpec.describe 'GPG signed commits', feature_category: :source_code_management d
     end
   end
 
-  context 'view signed commit on the tree view', :js do
+  context 'view signed commit on the tree view' do
     shared_examples 'a commit with a signature' do
       before do
         visit project_tree_path(project, 'signed-commits')

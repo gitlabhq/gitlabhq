@@ -48,7 +48,7 @@ class IssuableFinder
   requires_cross_project_access unless: -> { params.project? }
 
   FULL_TEXT_SEARCH_TERM_PATTERN = '[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'
-  FULL_TEXT_SEARCH_TERM_REGEX = /\A#{FULL_TEXT_SEARCH_TERM_PATTERN}\z/.freeze
+  FULL_TEXT_SEARCH_TERM_REGEX = /\A#{FULL_TEXT_SEARCH_TERM_PATTERN}\z/
   NEGATABLE_PARAMS_HELPER_KEYS = %i[project_id scope status include_subgroups].freeze
 
   attr_accessor :current_user, :params

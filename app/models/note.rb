@@ -28,7 +28,7 @@ class Note < ApplicationRecord
 
   ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
 
-  ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/.freeze
+  ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/
 
   cache_markdown_field :note, pipeline: :note, issuable_reference_expansion_enabled: true
 

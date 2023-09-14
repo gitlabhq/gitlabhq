@@ -10,6 +10,7 @@ class Event < ApplicationRecord
   include UsageStatistics
   include ShaAttribute
   include IgnorableColumns
+  include EachBatch
 
   ignore_column :target_id_convert_to_bigint, remove_with: '16.4', remove_after: '2023-09-22'
 

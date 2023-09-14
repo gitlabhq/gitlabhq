@@ -3,7 +3,7 @@
 module Namespaces
   class RandomizedSuffixPath
     MAX_TRIES = 4
-    LEADING_ZEROS = /^0+/.freeze
+    LEADING_ZEROS = /^0+/
 
     def initialize(path)
       @path = path

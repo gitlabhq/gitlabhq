@@ -5,7 +5,7 @@ module Terraform
     include UsageStatistics
     include AfterCommitQueue
 
-    HEX_REGEXP = %r{\A\h+\z}.freeze
+    HEX_REGEXP = %r{\A\h+\z}
     UUID_LENGTH = 32
 
     self.locking_column = :activerecord_lock_version

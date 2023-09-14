@@ -79,7 +79,7 @@ class EnvironmentStatus
 
   private
 
-  PAGE_EXTENSIONS = /\A\.(s?html?|php|asp|cgi|pl)\z/i.freeze
+  PAGE_EXTENSIONS = /\A\.(s?html?|php|asp|cgi|pl)\z/i
 
   def deployment_metrics
     @deployment_metrics ||= DeploymentMetrics.new(project, deployment)

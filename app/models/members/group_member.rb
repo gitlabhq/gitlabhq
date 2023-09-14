@@ -5,7 +5,7 @@ class GroupMember < Member
   include CreatedAtFilterable
 
   SOURCE_TYPE = 'Namespace'
-  SOURCE_TYPE_FORMAT = /\ANamespace\z/.freeze
+  SOURCE_TYPE_FORMAT = /\ANamespace\z/
 
   belongs_to :group, foreign_key: 'source_id'
   alias_attribute :namespace_id, :source_id

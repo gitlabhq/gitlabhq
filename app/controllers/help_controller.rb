@@ -9,7 +9,7 @@ class HelpController < ApplicationController
 
   # Taken from Jekyll
   # https://github.com/jekyll/jekyll/blob/3.5-stable/lib/jekyll/document.rb#L13
-  YAML_FRONT_MATTER_REGEXP = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m.freeze
+  YAML_FRONT_MATTER_REGEXP = /\A(---\s*\n.*?\n?)^((---|\.\.\.)\s*$\n?)/m
 
   def index
     @help_index = get_markdown_without_frontmatter(path_to_doc('index.md'))

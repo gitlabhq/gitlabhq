@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CertificateFingerprintValidator < ActiveModel::EachValidator
-  FINGERPRINT_PATTERN = /\A([a-zA-Z0-9]{2}[\s\-:]?){16,}\z/.freeze
+  FINGERPRINT_PATTERN = /\A([a-zA-Z0-9]{2}[\s\-:]?){16,}\z/
 
   def validate_each(record, attribute, value)
     unless value.try(:match, FINGERPRINT_PATTERN)

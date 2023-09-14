@@ -26,6 +26,13 @@ RSpec.describe CsvBuilder::Gzip do
         ])
     end
 
+    it 'yields the number of written rows as the second argument' do
+      row_count = 0
+      builder.render { |_, rows| row_count = rows }
+
+      expect(row_count).to eq(2)
+    end
+
     it 'requires a block' do
       expect { builder.render }.to raise_error(LocalJumpError)
     end

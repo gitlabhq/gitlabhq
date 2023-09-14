@@ -1,7 +1,8 @@
 import { nextTick } from 'vue';
-import { GlLink, GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
+import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK, HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
@@ -40,19 +41,21 @@ describe('CustomEmailWrapper', () => {
   const showToast = jest.fn();
 
   const createWrapper = (props = {}) => {
-    wrapper = mount(CustomEmailWrapper, {
-      propsData: { ...defaultProps, ...props },
-      mocks: {
-        $toast: {
-          show: showToast,
+    wrapper = extendedWrapper(
+      mount(CustomEmailWrapper, {
+        propsData: { ...defaultProps, ...props },
+        mocks: {
+          $toast: {
+            show: showToast,
+          },
         },
-      },
-    });
+      }),
+    );
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findFeedbackLink = () => wrapper.findComponent(GlLink);
+  const findFeedbackLink = () => wrapper.findByTestId('feedback-link');
   const findCustomEmailForm = () => wrapper.findComponent(CustomEmailForm);
   const findCustomEmail = () => wrapper.findComponent(CustomEmail);
   const findCustomEmailConfirmModal = () => wrapper.findComponent(CustomEmailConfirmModal);

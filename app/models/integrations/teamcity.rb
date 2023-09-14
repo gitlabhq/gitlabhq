@@ -6,7 +6,7 @@ module Integrations
     include ReactivelyCached
     prepend EnableSslVerification
 
-    TEAMCITY_SAAS_HOSTNAME = /\A[^\.]+\.teamcity\.com\z/i.freeze
+    TEAMCITY_SAAS_HOSTNAME = /\A[^\.]+\.teamcity\.com\z/i
 
     field :teamcity_url,
       title: -> { s_('ProjectService|TeamCity server URL') },

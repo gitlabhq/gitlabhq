@@ -4,8 +4,8 @@ require 'app_store_connect'
 
 module Integrations
   class AppleAppStore < Integration
-    ISSUER_ID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/.freeze
-    KEY_ID_REGEX = /\A(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+\z/.freeze
+    ISSUER_ID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
+    KEY_ID_REGEX = /\A(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]+\z/
     IS_KEY_CONTENT_BASE64 = "true"
 
     SECTION_TYPE_APPLE_APP_STORE = 'apple_app_store'

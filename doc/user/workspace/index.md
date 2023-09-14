@@ -35,7 +35,8 @@ When you [create a workspace](configuration.md#set-up-a-workspace), you must:
 - Assign the workspace to a specific project.
 - Select a project with a [`.devfile.yaml`](#devfile) file.
 
-The workspace can then interact with the GitLab API based on the permissions granted to the current user.
+The workspace can interact with the GitLab API, with the access level defined by current user permissions.
+A running workspace remains accessible even if user permissions are later revoked.
 
 ### Open and manage workspaces from a project
 

@@ -233,6 +233,7 @@ export default {
               <gl-link
                 :href="$options.FEEDBACK_ISSUE_URL"
                 target="_blank"
+                data-testid="feedback-link"
                 class="gl-text-blue-600 font-size-inherit"
                 >{{ content }}
               </gl-link>

@@ -226,6 +226,13 @@ module MergeRequestsHelper
     }
   end
 
+  def mr_compare_form_data(_, merge_request)
+    {
+      source_branch_url: project_new_merge_request_branch_from_path(merge_request.source_project),
+      target_branch_url: project_new_merge_request_branch_to_path(merge_request.source_project)
+    }
+  end
+
   private
 
   def review_requested_merge_requests_count

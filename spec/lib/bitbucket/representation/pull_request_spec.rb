@@ -56,4 +56,9 @@ RSpec.describe Bitbucket::Representation::PullRequest, feature_category: :import
   describe '#updated_at' do
     it { expect(described_class.new('updated_on' => '2023-01-01').updated_at).to eq('2023-01-01') }
   end
+
+  describe '#merge_commit_sha' do
+    it { expect(described_class.new('merge_commit' => { 'hash' => 'SHA' }).merge_commit_sha).to eq('SHA') }
+    it { expect(described_class.new({}).merge_commit_sha).to be_nil }
+  end
 end

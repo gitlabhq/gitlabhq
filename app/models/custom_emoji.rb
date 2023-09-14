@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CustomEmoji < ApplicationRecord
-  NAME_REGEXP = /[a-z0-9_-]+/.freeze
+  NAME_REGEXP = /[a-z0-9_-]+/
 
   belongs_to :namespace, inverse_of: :custom_emoji
 

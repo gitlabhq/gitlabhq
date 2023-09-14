@@ -18,6 +18,8 @@ module BulkImports
 
       event :start do
         transition created: :started
+        # To avoid errors when re-starting a pipeline in case of network errors
+        transition started: :started
       end
 
       event :retry do

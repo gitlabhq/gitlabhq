@@ -5,7 +5,7 @@ class SnippetRepository < ApplicationRecord
   include Shardable
 
   DEFAULT_EMPTY_FILE_NAME = 'snippetfile'
-  EMPTY_FILE_PATTERN = /^#{DEFAULT_EMPTY_FILE_NAME}(\d+)\.txt$/.freeze
+  EMPTY_FILE_PATTERN = /^#{DEFAULT_EMPTY_FILE_NAME}(\d+)\.txt$/
 
   CommitError = Class.new(StandardError)
   InvalidPathError = Class.new(CommitError)

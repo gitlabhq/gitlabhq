@@ -1,5 +1,5 @@
 ---
-data_category: optional
+data_category: operational
 key_path: usage_activity_by_stage.verify.ci_pipeline_config_repository
 description: Total count of unique users creating pipelines from CI files in the repository
 product_section: ops

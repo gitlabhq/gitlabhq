@@ -90,6 +90,10 @@ describe('NavItem component', () => {
         expect(findPinButton().exists()).toBe(true);
       });
 
+      it('contains an aria-label', () => {
+        expect(findPinButton().attributes('aria-label')).toBe('Pin Foo');
+      });
+
       it('toggles pointer events on after CSS fade-in', async () => {
         const pinButton = findPinButton();
 

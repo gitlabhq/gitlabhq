@@ -157,12 +157,13 @@ To edit the custom email display name:
 
 ## Custom email address **(BETA)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `service_desk_custom_email`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `service_desk_custom_email`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.4.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your
-entire instance, an administrator can [enable the feature flag](../../../administration/feature_flags.md)
-named `service_desk_custom_email`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature per project or for
+your entire instance, an administrator can [disable the feature flag](../../../administration/feature_flags.md)
+named `service_desk_custom_email`. On GitLab.com, this feature is available.
 
 Configure a custom email address to show as the sender of your support communication.
 Maintain brand identity and instill confidence among support requesters with a domain they recognize.

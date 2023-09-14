@@ -1,6 +1,6 @@
 <script>
 import { GlAvatar, GlButton, GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import {
   CLICK_MENU_ITEM_ACTION,
   CLICK_PINNED_MENU_ITEM_ACTION,
@@ -12,7 +12,9 @@ import NavItemRouterLink from './nav_item_router_link.vue';
 
 export default {
   i18n: {
+    pin: s__('Navigation|Pin %{title}'),
     pinItem: s__('Navigation|Pin item'),
+    unpin: s__('Navigation|Unpin %{title}'),
     unpinItem: s__('Navigation|Unpin item'),
   },
   name: 'NavItem',
@@ -143,6 +145,16 @@ export default {
     avatarShape() {
       return this.item.avatar_shape || 'rect';
     },
+    pinAriaLabel() {
+      return sprintf(this.$options.i18n.pin, {
+        title: this.item.title,
+      });
+    },
+    unpinAriaLabel() {
+      return sprintf(this.$options.i18n.unpin, {
+        title: this.item.title,
+      });
+    },
   },
   mounted() {
     if (this.item.is_active) {
@@ -151,26 +163,27 @@ export default {
   },
   methods: {
     togglePointerEvents() {
-      if (this.isMouseIn) {
-        this.canClickPinButton = true;
-      } else {
-        this.canClickPinButton = false;
-      }
+      this.canClickPinButton = this.isMouseIn;
     },
   },
 };
 </script>
 
 <template>
-  <li @mouseenter="isMouseIn = true" @mouseleave="isMouseIn = false">
+  <li
+    class="gl-relative show-on-focus-or-hover--context hide-on-focus-or-hover--context transition-opacity-on-hover--context"
+    data-testid="nav-item"
+    @mouseenter="isMouseIn = true"
+    @mouseleave="isMouseIn = false"
+  >
     <component
       :is="navItemLinkComponent"
       #default="{ isActive }"
       v-bind="linkProps"
-      class="nav-item-link gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus show-on-focus-or-hover--context"
+      class="gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-focus--focus show-on-focus-or-hover--control hide-on-focus-or-hover--control"
       :class="computedLinkClasses"
-      data-qa-selector="nav_item_link"
       data-testid="nav-item-link"
+      data-qa-selector="nav_item_link"
     >
       <div
         :class="[isActive ? 'gl-opacity-10' : 'gl-opacity-0']"
@@ -204,41 +217,47 @@ export default {
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="hasPill || isPinnable" class="gl-text-right gl-relative gl-min-w-8">
+      <span v-if="hasPill" class="gl-text-right gl-relative gl-min-w-8">
         <gl-badge
           v-if="hasPill"
           size="sm"
           variant="neutral"
           class="gl-bg-t-gray-a-08!"
-          :class="{ 'nav-item-badge gl-absolute gl-right-0 gl-top-2': isPinnable }"
+          :class="{
+            'hide-on-focus-or-hover--target transition-opacity-on-hover--target': isPinnable,
+          }"
         >
           {{ pillData }}
         </gl-badge>
-        <gl-button
-          v-if="isPinnable && !isPinned"
-          v-gl-tooltip.ds500.right.viewport="$options.i18n.pinItem"
-          size="small"
-          category="tertiary"
-          icon="thumbtack"
-          class="show-on-focus-or-hover--target"
-          :class="{ 'gl-pointer-events-none': !canClickPinButton }"
-          :aria-label="$options.i18n.pinItem"
-          @click.prevent="$emit('pin-add', item.id)"
-          @transitionend="togglePointerEvents"
-        />
-        <gl-button
-          v-else-if="isPinnable && isPinned"
-          v-gl-tooltip.ds500.right.viewport="$options.i18n.unpinItem"
-          size="small"
-          category="tertiary"
-          :aria-label="$options.i18n.unpinItem"
-          icon="thumbtack-solid"
-          class="show-on-focus-or-hover--target"
-          :class="{ 'gl-pointer-events-none': !canClickPinButton }"
-          @click.prevent="$emit('pin-remove', item.id)"
-          @transitionend="togglePointerEvents"
-        />
       </span>
     </component>
+    <template v-if="isPinnable">
+      <gl-button
+        v-if="isPinned"
+        v-gl-tooltip.noninteractive.ds500.right.viewport="$options.i18n.unpinItem"
+        :aria-label="unpinAriaLabel"
+        category="tertiary"
+        class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-top-2"
+        :class="{ 'gl-pointer-events-none': !canClickPinButton }"
+        data-testid="nav-item-unpin"
+        icon="thumbtack-solid"
+        size="small"
+        @click="$emit('pin-remove', item.id)"
+        @transitionend="togglePointerEvents"
+      />
+      <gl-button
+        v-else
+        v-gl-tooltip.noninteractive.ds500.right.viewport="$options.i18n.pinItem"
+        :aria-label="pinAriaLabel"
+        category="tertiary"
+        class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-top-2"
+        :class="{ 'gl-pointer-events-none': !canClickPinButton }"
+        data-testid="nav-item-pin"
+        icon="thumbtack"
+        size="small"
+        @click="$emit('pin-add', item.id)"
+        @transitionend="togglePointerEvents"
+      />
+    </template>
   </li>
 </template>

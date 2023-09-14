@@ -22,6 +22,7 @@ RSpec.describe 'User RSS', feature_category: :user_profile do
 
     context 'when signed out' do
       before do
+        stub_feature_flags(super_sidebar_logged_out: false)
         visit path
       end
 
@@ -45,6 +46,7 @@ RSpec.describe 'User RSS', feature_category: :user_profile do
 
     context 'when signed out' do
       before do
+        stub_feature_flags(super_sidebar_logged_out: false)
         visit path
       end
 

@@ -52,7 +52,7 @@ module Ci
     RUNNER_QUEUE_EXPIRY_TIME = 1.hour
 
     # The `UPDATE_CONTACT_COLUMN_EVERY` defines how often the Runner DB entry can be updated
-    UPDATE_CONTACT_COLUMN_EVERY = (40.minutes..55.minutes).freeze
+    UPDATE_CONTACT_COLUMN_EVERY = (40.minutes..55.minutes)
 
     # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner will be considered stale
     STALE_TIMEOUT = 3.months

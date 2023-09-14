@@ -22,6 +22,10 @@ RSpec.describe 'Unsubscribe links', :sidekiq_inline, feature_category: :shared d
   end
 
   context 'when logged out' do
+    before do
+      stub_feature_flags(super_sidebar_logged_out: false)
+    end
+
     context 'when visiting the link from the body' do
       it 'shows the unsubscribe confirmation page and redirects to root path when confirming' do
         visit body_link

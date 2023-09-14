@@ -2,9 +2,9 @@
 
 module Integrations
   class Confluence < BaseThirdPartyWiki
-    VALID_SCHEME_MATCH = %r{\Ahttps?\Z}.freeze
-    VALID_HOST_MATCH = %r{\A.+\.atlassian\.net\Z}.freeze
-    VALID_PATH_MATCH = %r{\A/wiki(/|\Z)}.freeze
+    VALID_SCHEME_MATCH = %r{\Ahttps?\Z}
+    VALID_HOST_MATCH = %r{\A.+\.atlassian\.net\Z}
+    VALID_PATH_MATCH = %r{\A/wiki(/|\Z)}
 
     validates :confluence_url, presence: true, if: :activated?
     validate :validate_confluence_url_is_cloud, if: :activated?

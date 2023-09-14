@@ -10,15 +10,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
-> - Snowplow integration introduced in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
+> - Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
+> - Snowplow integration feature flag `product_analytics_snowplow_support` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130228) in GitLab 16.4.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
-FLAG:
-On self-managed GitLab, by default the Snowplow integration is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -67,7 +63,7 @@ flowchart TB
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `product_analytics_dashboards`, `product_analytics_admin_settings`, `product_analytics_snowplow_support`, and `combined_analytics_dashboards`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `product_analytics_dashboards`, `product_analytics_admin_settings`, and `combined_analytics_dashboards`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 

@@ -70,6 +70,12 @@ export default {
       );
     },
   },
+  watch: {
+    default(newVal) {
+      this.current = newVal;
+      this.selected = newVal.value;
+    },
+  },
   methods: {
     async fetchData() {
       if (!this.endpoint) return;

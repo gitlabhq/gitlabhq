@@ -33,7 +33,7 @@ export default {
 </script>
 <template>
   <gl-card
-    class="gl-new-card gl-mb-3"
+    class="gl-new-card gl-mb-3 gl-mt-0"
     header-class="gl-new-card-header"
     body-class="gl-new-card-body gl-py-4 gl-px-5"
   >

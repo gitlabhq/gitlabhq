@@ -30,10 +30,10 @@ class Commit
 
   MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
   MAX_SHA_LENGTH = Gitlab::Git::Commit::MAX_SHA_LENGTH
-  COMMIT_SHA_PATTERN = Gitlab::Git::Commit::SHA_PATTERN.freeze
-  EXACT_COMMIT_SHA_PATTERN = /\A#{COMMIT_SHA_PATTERN}\z/.freeze
+  COMMIT_SHA_PATTERN = Gitlab::Git::Commit::SHA_PATTERN
+  EXACT_COMMIT_SHA_PATTERN = /\A#{COMMIT_SHA_PATTERN}\z/
   # Used by GFM to match and present link extensions on node texts and hrefs.
-  LINK_EXTENSION_PATTERN = /(patch)/.freeze
+  LINK_EXTENSION_PATTERN = /(patch)/
 
   DEFAULT_MAX_DIFF_LINES_SETTING = 50_000
   DEFAULT_MAX_DIFF_FILES_SETTING = 1_000
@@ -539,7 +539,7 @@ class Commit
   #   added by `git commit --fixup` which is used by some community members.
   #   https://gitlab.com/gitlab-org/gitlab/-/issues/342937#note_892065311
   #
-  DRAFT_REGEX = /\A\s*#{Gitlab::Regex.merge_request_draft}|(fixup!|squash!)\s/.freeze
+  DRAFT_REGEX = /\A\s*#{Gitlab::Regex.merge_request_draft}|(fixup!|squash!)\s/
 
   def draft?
     !!(title =~ DRAFT_REGEX)

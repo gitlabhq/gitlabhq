@@ -2,7 +2,7 @@
 
 class ProjectMember < Member
   SOURCE_TYPE = 'Project'
-  SOURCE_TYPE_FORMAT = /\AProject\z/.freeze
+  SOURCE_TYPE_FORMAT = /\AProject\z/
 
   belongs_to :project, foreign_key: 'source_id'
 

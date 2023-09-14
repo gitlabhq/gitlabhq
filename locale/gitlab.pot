@@ -30812,6 +30812,9 @@ msgstr ""
 msgid "Navigation|Operate"
 msgstr ""
 
+msgid "Navigation|Pin %{title}"
+msgstr ""
+
 msgid "Navigation|Pin item"
 msgstr ""
 
@@ -30846,6 +30849,9 @@ msgid "Navigation|Switch context"
 msgstr ""
 
 msgid "Navigation|There was an error fetching search results."
+msgstr ""
+
+msgid "Navigation|Unpin %{title}"
 msgstr ""
 
 msgid "Navigation|Unpin item"
@@ -43481,7 +43487,7 @@ msgstr ""
 msgid "ServiceDesk|Configure a custom email address"
 msgstr ""
 
-msgid "ServiceDesk|Connect a custom email address your customers can use to create Service Desk issues. Forward all emails from your custom email address to the Service Desk email address of this project. GitLab will send Service Desk emails from the custom address on your behalf using your SMTP credentials."
+msgid "ServiceDesk|Connect a custom email address your customers can use to create Service Desk issues. Forward all emails from your custom email address to the Service Desk email address of this project. GitLab will send Service Desk emails from the custom address on your behalf using your SMTP credentials. %{linkStart}Learn more about prerequisites and the verification process%{linkEnd}."
 msgstr ""
 
 msgid "ServiceDesk|Copy Service Desk email address"

@@ -12,7 +12,7 @@ module Integrations
       pipeline build archive_trace
     ].freeze
 
-    TAG_KEY_VALUE_RE = %r{\A [\w-]+ : .*\S.* \z}x.freeze
+    TAG_KEY_VALUE_RE = %r{\A [\w-]+ : .*\S.* \z}x
 
     field :datadog_site,
       exposes_secrets: true,

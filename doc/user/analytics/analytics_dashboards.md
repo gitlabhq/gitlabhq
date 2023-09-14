@@ -29,14 +29,15 @@ The following data sources are configured for analytics dashboards:
 ## Built-in dashboards
 
 To help you get started with analytics, GitLab provides built-in dashboards with predefined visualizations.
+These dashboards are labeled **By GitLab**, and you cannot edit them.
+Instead, you can create a custom dashboard with a similar style.
 
 ### Product analytics
 
+When [product analytics](../product_analytics/index.md) is enabled and onboarded, two built-in dashboard are added:
+
 - **Audience** displays metrics related to traffic, such as the number of users and sessions.
 - **Behavior** displays metrics related to user activity, such as the number of page views and events.
-
-These dashboards are labeled **By GitLab**, and you cannot edit them.
-Instead, you can create a custom dashboard with a similar style.
 
 ### Value Stream Management
 
@@ -63,9 +64,6 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
-
-NOTE:
-This feature does not work in conjunction with the `product_analytics_snowplow_support` feature flag.
 
 You can use the dashboard designer to:
 

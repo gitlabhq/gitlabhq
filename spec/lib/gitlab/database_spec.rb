@@ -251,6 +251,43 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     end
   end
 
+  describe '.check_single_connection_and_print_warning' do
+    subject { described_class.check_single_connection_and_print_warning }
+
+    it 'prints a warning if single connection' do
+      allow(described_class).to receive(:database_mode).and_return(::Gitlab::Database::MODE_SINGLE_DATABASE)
+
+      expect(Kernel).to receive(:warn).with(/Your database has a single connection/)
+
+      subject
+    end
+
+    it 'does not print a warning if single ci connection' do
+      allow(described_class).to receive(:database_mode).and_return(::Gitlab::Database::MODE_SINGLE_DATABASE_CI_CONNECTION)
+
+      expect(Kernel).not_to receive(:warn)
+
+      subject
+    end
+
+    it 'does not print a warning if multiple connection' do
+      allow(described_class).to receive(:database_mode).and_return(::Gitlab::Database::MODE_MULTIPLE_DATABASES)
+
+      expect(Kernel).not_to receive(:warn)
+
+      subject
+    end
+
+    it 'does not print a warning in Rails runner environment' do
+      allow(described_class).to receive(:database_mode).and_return(::Gitlab::Database::MODE_SINGLE_DATABASE)
+      allow(Gitlab::Runtime).to receive(:rails_runner?).and_return(true)
+
+      expect(Kernel).not_to receive(:warn)
+
+      subject
+    end
+  end
+
   describe '.db_config_for_connection' do
     context 'when the regular connection is used' do
       it 'returns db_config' do

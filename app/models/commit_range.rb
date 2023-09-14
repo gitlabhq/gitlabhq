@@ -28,11 +28,11 @@ class CommitRange
 
   # The beginning and ending refs can be named or SHAs, and
   # the range notation can be double- or triple-dot.
-  REF_PATTERN = /[0-9a-zA-Z][0-9a-zA-Z_.-]*[0-9a-zA-Z\^]/.freeze
-  PATTERN = /#{REF_PATTERN}\.{2,3}#{REF_PATTERN}/.freeze
+  REF_PATTERN = /[0-9a-zA-Z][0-9a-zA-Z_.-]*[0-9a-zA-Z\^]/
+  PATTERN = /#{REF_PATTERN}\.{2,3}#{REF_PATTERN}/
 
   # In text references, the beginning and ending refs can only be valid SHAs.
-  STRICT_PATTERN = /#{Gitlab::Git::Commit::RAW_SHA_PATTERN}\.{2,3}#{Gitlab::Git::Commit::RAW_SHA_PATTERN}/.freeze
+  STRICT_PATTERN = /#{Gitlab::Git::Commit::RAW_SHA_PATTERN}\.{2,3}#{Gitlab::Git::Commit::RAW_SHA_PATTERN}/
 
   def self.reference_prefix
     '@'

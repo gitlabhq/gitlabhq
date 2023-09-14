@@ -9,7 +9,7 @@ module Projects
       include Gitlab::Utils::StrongMemoize
 
       HEAD_REV = 'HEAD'
-      LFS_ENDPOINT_PATTERN = /^\t?url\s*=\s*(.+)$/.freeze
+      LFS_ENDPOINT_PATTERN = /^\t?url\s*=\s*(.+)$/
       LFS_BATCH_API_ENDPOINT = '/info/lfs/objects/batch'
 
       LfsObjectDownloadListError = Class.new(StandardError)

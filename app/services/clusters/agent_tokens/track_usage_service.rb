@@ -4,7 +4,7 @@ module Clusters
   module AgentTokens
     class TrackUsageService
       # The `UPDATE_USED_COLUMN_EVERY` defines how often the token DB entry can be updated
-      UPDATE_USED_COLUMN_EVERY = (40.minutes..55.minutes).freeze
+      UPDATE_USED_COLUMN_EVERY = (40.minutes..55.minutes)
 
       delegate :agent, to: :token
 

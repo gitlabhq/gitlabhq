@@ -73,6 +73,16 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
       end
     end
 
+    context 'when batch status is started' do
+      let(:batch) { create(:bulk_import_batch_tracker, :started, tracker: tracker) }
+
+      it 'runs the given pipeline batch successfully' do
+        subject.perform(batch.id)
+
+        expect(batch.reload).to be_finished
+      end
+    end
+
     context 'when exclusive lease cannot be obtained' do
       it 'does not run the pipeline' do
         expect(subject).to receive(:try_obtain_lease).and_return(false)

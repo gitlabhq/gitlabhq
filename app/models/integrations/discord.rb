@@ -4,7 +4,7 @@ require "discordrb/webhooks"
 
 module Integrations
   class Discord < BaseChatNotification
-    ATTACHMENT_REGEX = /: (?<entry>.*?)\n - (?<name>.*)\n*/.freeze
+    ATTACHMENT_REGEX = /: (?<entry>.*?)\n - (?<name>.*)\n*/
 
     field :webhook,
       section: SECTION_TYPE_CONNECTION,

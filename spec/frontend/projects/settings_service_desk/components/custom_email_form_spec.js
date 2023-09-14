@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils';
+import { GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import CustomEmailForm from '~/projects/settings_service_desk/components/custom_email_form.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { I18N_FORM_FORWARDING_CLIPBOARD_BUTTON_TITLE } from '~/projects/settings_service_desk/custom_email_constants';
@@ -15,6 +17,7 @@ describe('CustomEmailForm', () => {
 
   const findForm = () => wrapper.find('form');
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
+  const findLink = () => wrapper.findComponent(GlLink);
   const findInputByTestId = (testId) => wrapper.findByTestId(testId).find('input');
   const findCustomEmailInput = () => findInputByTestId('form-custom-email');
   const findSmtpAddressInput = () => findInputByTestId('form-smtp-address');
@@ -34,6 +37,16 @@ describe('CustomEmailForm', () => {
   const createWrapper = (props = {}) => {
     wrapper = extendedWrapper(mount(CustomEmailForm, { propsData: { ...defaultProps, ...props } }));
   };
+
+  it('displays help page link', () => {
+    createWrapper();
+
+    expect(findLink().attributes('href')).toBe(
+      helpPagePath('user/project/service_desk/configure.html', {
+        anchor: 'custom-email-address',
+      }),
+    );
+  });
 
   it('renders a copy to clipboard button', () => {
     createWrapper();

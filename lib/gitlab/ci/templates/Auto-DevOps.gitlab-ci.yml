@@ -65,6 +65,10 @@ variables:
 
   DOCKER_TLS_CERTDIR: ""  # https://gitlab.com/gitlab-org/gitlab-runner/issues/4501
 
+  # License-Scanning job is removed from GitLab 16.3
+  # This is the fix for https://gitlab.com/gitlab-org/gitlab/-/issues/422791
+  LICENSE_MANAGEMENT_DISABLED: "true"
+
 stages:
   - build
   - test

@@ -496,7 +496,7 @@ group :test do
   gem 'gitlab_quality-test_tooling', '~> 0.9.3', require: false
 end
 
-gem 'octokit', '~> 4.15'
+gem 'octokit', '~> 6.0'
 
 gem 'gitlab-mail_room', '~> 0.0.23', require: 'mail_room'
 

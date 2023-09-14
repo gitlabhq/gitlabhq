@@ -178,6 +178,40 @@ Example response:
 
 - GitLab Shell
 
+## Authorized Certs
+
+This endpoint is called by the GitLab Shell to get the namespace that has a particular CA SSH certificate
+configured. It also accepts `user_identifier` to return a GitLab user for specified identifier.
+
+| Attribute             | Type   | Required | Description |
+|:----------------------|:-------|:---------|:------------|
+| `key`                 | string | yes      | The fingerprint of the SSH certificate. |
+| `user_identifier`     | string | yes      | The identifier of the user to whom the SSH certificate has been issued (username or primary email). |
+
+```plaintext
+GET /internal/authorized_certs
+```
+
+Example request:
+
+```shell
+curl --request GET --header "Gitlab-Shell-Api-Request: <JWT token>" "http://localhost:3001/api/v4/internal/authorized_certs?key=<key>&user_identifier=<user_identifier>"
+```
+
+Example response:
+
+```json
+{
+  "success": true,
+  "namespace": "gitlab-org",
+  "username": "root"
+}
+```
+
+### Known consumers
+
+- GitLab Shell
+
 ## Get user for user ID or key
 
 This endpoint is used when a user performs `ssh git@gitlab.com`. It

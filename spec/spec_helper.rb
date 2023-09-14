@@ -297,11 +297,6 @@ RSpec.configure do |config|
       stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
       stub_feature_flags(ci_queueing_disaster_recovery_disable_quota: false)
 
-      # The anonymous super-sidebar is under heavy development and enabling the flag
-      # globally leads to a lot of errors. This issue is for fixing all test to work with the
-      # new nav: https://gitlab.com/gitlab-org/gitlab/-/issues/420119
-      stub_feature_flags(super_sidebar_logged_out: false)
-
       # It's disabled in specs because we don't support certain features which
       # cause spec failures.
       stub_feature_flags(gitlab_error_tracking: false)

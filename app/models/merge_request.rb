@@ -643,7 +643,7 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  DRAFT_REGEX = /\A*#{Gitlab::Regex.merge_request_draft}+\s*/i.freeze
+  DRAFT_REGEX = /\A*#{Gitlab::Regex.merge_request_draft}+\s*/i
 
   def self.draft?(title)
     !!(title =~ DRAFT_REGEX)

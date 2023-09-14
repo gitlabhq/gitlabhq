@@ -14,7 +14,7 @@ class PersonalAccessToken < ApplicationRecord
     format_with_prefix: :prefix_from_application_current_settings
 
   # PATs are 20 characters + optional configurable settings prefix (0..20)
-  TOKEN_LENGTH_RANGE = (20..40).freeze
+  TOKEN_LENGTH_RANGE = (20..40)
   MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS = 365
 
   serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize

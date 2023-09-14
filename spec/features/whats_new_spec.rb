@@ -6,6 +6,10 @@ RSpec.describe "renders a `whats new` dropdown item", feature_category: :onboard
   let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   context 'when not logged in' do
+    before do
+      stub_feature_flags(super_sidebar_logged_out: false)
+    end
+
     it 'and on SaaS it renders', :saas do
       visit user_path(user)
 

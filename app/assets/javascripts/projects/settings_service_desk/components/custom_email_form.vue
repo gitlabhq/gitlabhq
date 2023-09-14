@@ -1,5 +1,14 @@
 <script>
-import { GlButton, GlForm, GlFormGroup, GlFormInputGroup, GlFormInput } from '@gitlab/ui';
+import {
+  GlButton,
+  GlForm,
+  GlFormGroup,
+  GlFormInputGroup,
+  GlFormInput,
+  GlLink,
+  GlSprintf,
+} from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { isEmptyValue, hasMinimumLength, isIntegerGreaterThan, isEmail } from '~/lib/utils/forms';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import {
@@ -23,6 +32,9 @@ import {
 } from '../custom_email_constants';
 
 export default {
+  customEmailHelpUrl: helpPagePath('user/project/service_desk/configure.html', {
+    anchor: 'custom-email-address',
+  }),
   components: {
     ClipboardButton,
     GlButton,
@@ -30,6 +42,8 @@ export default {
     GlFormGroup,
     GlFormInputGroup,
     GlFormInput,
+    GlLink,
+    GlSprintf,
   },
   I18N_FORM_INTRODUCTION_PARAGRAPH,
   I18N_FORM_CUSTOM_EMAIL_LABEL,
@@ -137,7 +151,19 @@ export default {
 
 <template>
   <div>
-    <p>{{ $options.I18N_FORM_INTRODUCTION_PARAGRAPH }}</p>
+    <p>
+      <gl-sprintf :message="$options.I18N_FORM_INTRODUCTION_PARAGRAPH">
+        <template #link="{ content }">
+          <gl-link
+            :href="$options.customEmailHelpUrl"
+            class="gl-display-inline-block"
+            target="_blank"
+          >
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
     <gl-form class="js-quick-submit" @submit.prevent="onSubmit">
       <gl-form-group
         :label="$options.I18N_FORM_FORWARDING_LABEL"

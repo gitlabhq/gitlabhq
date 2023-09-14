@@ -7,7 +7,7 @@ RSpec.describe 'Snippets tab on a user profile', :js, feature_category: :source_
     let(:user) { create(:user, :no_super_sidebar) }
 
     before do
-      stub_feature_flags(profile_tabs_vue: false)
+      stub_feature_flags(profile_tabs_vue: false, super_sidebar_logged_out: false)
     end
 
     context 'pagination' do
