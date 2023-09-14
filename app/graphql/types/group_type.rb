@@ -268,6 +268,12 @@ module Types
           alpha: { milestone: '16.3' },
           resolver: ::Resolvers::Namespaces::WorkItemsResolver
 
+    field :work_item, Types::WorkItemType,
+          resolver: Resolvers::Namespaces::WorkItemResolver,
+          alpha: { milestone: '16.4' },
+          description: 'Find a work item by IID directly associated with the group. Returns `null` if the ' \
+                       '`namespace_level_work_items` feature flag is disabled.'
+
     field :autocomplete_users,
           null: true,
           resolver: Resolvers::AutocompleteUsersResolver,

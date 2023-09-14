@@ -256,7 +256,7 @@ gem 'rainbow', '~> 3.0'
 gem 'ruby-progressbar', '~> 1.10'
 
 # Linear-time regex library for untrusted regular expressions
-gem 're2', '2.0.0.beta2'
+gem 're2', '2.0.0'
 
 # Misc
 

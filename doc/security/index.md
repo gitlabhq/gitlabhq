@@ -24,7 +24,7 @@ type: index
 - [Proxying images](asset_proxy.md)
 - [CI/CD variables](../ci/variables/index.md#cicd-variable-security)
 - [Token overview](token_overview.md)
-- [Maximum decompressed file size for imported archives](../administration/settings/account_and_limit_settings.md#maximum-decompressed-file-size-for-imported-archives)
+- [Maximum decompressed file size for imported archives](../administration/settings/import_and_export_settings.md#maximum-decompressed-file-size-for-imported-archives)
 - [Responding to security incidents](responding_to_security_incidents.md)
 
 To harden your GitLab instance and minimize the risk of unwanted user account creation, consider access control features like [Sign up restrictions](../administration/settings/sign_up_restrictions.md) and [Authentication options](../topics/authentication/index.md). For more detailed information, refer to [Hardening](hardening.md).

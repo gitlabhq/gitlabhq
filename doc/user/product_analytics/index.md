@@ -107,6 +107,9 @@ To instrument code to collect data, use one or more of the existing SDKs:
 
 - [Browser SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-browser)
 - [Ruby SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-rb)
+- [Python SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-python)
+- [Node SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-node)
+- [.NET SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-dotnet)
 
 ## Product analytics dashboards
 

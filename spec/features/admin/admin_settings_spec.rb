@@ -53,7 +53,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'modify import sources' do
         expect(current_settings.import_sources).to be_empty
 
-        page.within('[data-testid="admin-visibility-access-settings"]') do
+        page.within('[data-testid="admin-import-export-settings"]') do
           check "Repository by URL"
           click_button 'Save changes'
         end
@@ -63,7 +63,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Visibility and Access Controls' do
-        page.within('[data-testid="admin-visibility-access-settings"]') do
+        page.within('[data-testid="admin-import-export-settings"]') do
           page.within('[data-testid="project-export"]') do
             uncheck 'Enabled'
           end
@@ -113,7 +113,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Maximum export size' do
-        page.within(find('[data-testid="account-limit"]')) do
+        page.within(find('[data-testid="admin-import-export-settings"]')) do
           fill_in 'Maximum export size (MiB)', with: 25
           click_button 'Save changes'
         end
@@ -123,7 +123,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Maximum import size' do
-        page.within(find('[data-testid="account-limit"]')) do
+        page.within(find('[data-testid="admin-import-export-settings"]')) do
           fill_in 'Maximum import size (MiB)', with: 15
           click_button 'Save changes'
         end

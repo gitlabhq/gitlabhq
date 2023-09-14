@@ -3417,6 +3417,9 @@ msgstr ""
 msgid "AdminSettings|CI/CD limits"
 msgstr ""
 
+msgid "AdminSettings|Code can be imported from enabled sources during project creation. OmniAuth must be configured for GitHub %{github_docs_link_start}%{icon}%{github_docs_link_end} and Bitbucket %{bitbucket_docs_link_start}%{icon}%{bitbucket_docs_link_end}."
+msgstr ""
+
 msgid "AdminSettings|Collector host"
 msgstr ""
 
@@ -3688,6 +3691,9 @@ msgid "AdminSettings|Set the maximum number of GitLab Pages custom domains per p
 msgstr ""
 
 msgid "AdminSettings|Set the maximum size of GitLab Pages per project (0 for unlimited). %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "AdminSettings|Set visibility of project contents and configure Git access protocols."
 msgstr ""
 
 msgid "AdminSettings|Setting must be greater than 0."
@@ -8795,7 +8801,7 @@ msgstr ""
 msgid "BulkImport|Destination"
 msgstr ""
 
-msgid "BulkImport|Direct transfer maximum download file size (MB)"
+msgid "BulkImport|Direct transfer maximum download file size (MiB)"
 msgstr ""
 
 msgid "BulkImport|Existing groups"
@@ -11532,9 +11538,6 @@ msgstr ""
 msgid "Code block"
 msgstr ""
 
-msgid "Code can be imported from enabled sources during project creation. OmniAuth must be configured for GitHub"
-msgstr ""
-
 msgid "Code coverage statistics for %{ref} %{start_date} - %{end_date}"
 msgstr ""
 
@@ -12458,6 +12461,9 @@ msgid "Configure checkin reminder frequency"
 msgstr ""
 
 msgid "Configure custom rules for Jira issue key matching"
+msgstr ""
+
+msgid "Configure import sources and settings related to import and export features."
 msgstr ""
 
 msgid "Configure pipeline"
@@ -24145,6 +24151,9 @@ msgstr ""
 msgid "Import and export rate limits"
 msgstr ""
 
+msgid "Import and export settings"
+msgstr ""
+
 msgid "Import failed due to a GitHub error: %{original} (HTTP %{code})"
 msgstr ""
 
@@ -24345,7 +24354,7 @@ msgstr ""
 msgid "Import|Maximum decompressed file size for archives from imports (MiB)"
 msgstr ""
 
-msgid "Import|Maximum import remote file size (MB)"
+msgid "Import|Maximum import remote file size (MiB)"
 msgstr ""
 
 msgid "Import|Maximum remote file size for imports from external object storages. For example, AWS S3."
@@ -32680,6 +32689,9 @@ msgid "Only accessible by %{membersPageLinkStart}project members%{membersPageLin
 msgstr ""
 
 msgid "Only active projects show up in the search and on the dashboard."
+msgstr ""
+
+msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
 msgstr ""
 
 msgid "Only include features new to your current subscription tier."
@@ -41457,6 +41469,9 @@ msgstr ""
 msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} but only affect the branches selected in the policy."
 msgstr ""
 
+msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} for approval rules created by this policy."
+msgstr ""
+
 msgid "ScanResultPolicy|Is"
 msgstr ""
 
@@ -41470,6 +41485,9 @@ msgid "ScanResultPolicy|License scanning allows only one criteria: Status"
 msgstr ""
 
 msgid "ScanResultPolicy|Matching"
+msgstr ""
+
+msgid "ScanResultPolicy|Merge request approval settings"
 msgstr ""
 
 msgid "ScanResultPolicy|New age"
@@ -43815,9 +43833,6 @@ msgid "Set up new password"
 msgstr ""
 
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
-msgstr ""
-
-msgid "Set visibility of project contents. Configure import sources and Git access protocols."
 msgstr ""
 
 msgid "Set weight"

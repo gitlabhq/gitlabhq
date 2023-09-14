@@ -15,8 +15,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
     notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
-    vulnerabilities: [%w[finding_id]], # index will be created in https://gitlab.com/gitlab-org/gitlab/-/issues/423541
-    projects: %w[organization_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
+    vulnerabilities: [%w[finding_id]] # index will be created in https://gitlab.com/gitlab-org/gitlab/-/issues/423541
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze

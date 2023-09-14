@@ -12329,6 +12329,32 @@ CREATE SEQUENCE atlassian_identities_user_id_seq
 
 ALTER SEQUENCE atlassian_identities_user_id_seq OWNED BY atlassian_identities.user_id;
 
+CREATE TABLE audit_events_amazon_s3_configurations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint NOT NULL,
+    access_key_xid text NOT NULL,
+    name text NOT NULL,
+    bucket_name text NOT NULL,
+    aws_region text NOT NULL,
+    encrypted_secret_access_key bytea NOT NULL,
+    encrypted_secret_access_key_iv bytea NOT NULL,
+    CONSTRAINT check_3a41f4ea06 CHECK ((char_length(bucket_name) <= 63)),
+    CONSTRAINT check_72b5aaa71b CHECK ((char_length(aws_region) <= 50)),
+    CONSTRAINT check_90505816db CHECK ((char_length(name) <= 72)),
+    CONSTRAINT check_ec46f06e01 CHECK ((char_length(access_key_xid) <= 128))
+);
+
+CREATE SEQUENCE audit_events_amazon_s3_configurations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_amazon_s3_configurations_id_seq OWNED BY audit_events_amazon_s3_configurations.id;
+
 CREATE TABLE audit_events_external_audit_event_destinations (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -20686,7 +20712,8 @@ CREATE TABLE plan_limits (
     ci_max_artifact_size_annotations integer DEFAULT 0 NOT NULL,
     ci_job_annotations_size integer DEFAULT 81920 NOT NULL,
     ci_job_annotations_num integer DEFAULT 20 NOT NULL,
-    file_size_limit_mb double precision DEFAULT 100.0 NOT NULL
+    file_size_limit_mb double precision DEFAULT 100.0 NOT NULL,
+    audit_events_amazon_s3_configurations integer DEFAULT 5 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -25560,6 +25587,8 @@ ALTER TABLE ONLY atlassian_identities ALTER COLUMN user_id SET DEFAULT nextval('
 
 ALTER TABLE ONLY audit_events ALTER COLUMN id SET DEFAULT nextval('audit_events_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_amazon_s3_configurations ALTER COLUMN id SET DEFAULT nextval('audit_events_amazon_s3_configurations_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_external_audit_event_destinations_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_google_cloud_logging_configurations ALTER COLUMN id SET DEFAULT nextval('audit_events_google_cloud_logging_configurations_id_seq'::regclass);
@@ -27359,6 +27388,9 @@ ALTER TABLE ONLY ar_internal_metadata
 
 ALTER TABLE ONLY atlassian_identities
     ADD CONSTRAINT atlassian_identities_pkey PRIMARY KEY (user_id);
+
+ALTER TABLE ONLY audit_events_amazon_s3_configurations
+    ADD CONSTRAINT audit_events_amazon_s3_configurations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events_external_audit_event_destinations
     ADD CONSTRAINT audit_events_external_audit_event_destinations_pkey PRIMARY KEY (id);
@@ -33361,6 +33393,8 @@ CREATE INDEX index_projects_on_namespace_id_and_id ON projects USING btree (name
 
 CREATE INDEX index_projects_on_namespace_id_and_repository_size_limit ON projects USING btree (namespace_id, repository_size_limit);
 
+CREATE INDEX index_projects_on_organization_id ON projects USING btree (organization_id);
+
 CREATE INDEX index_projects_on_path_and_id ON projects USING btree (path, id);
 
 CREATE INDEX index_projects_on_path_trigram ON projects USING gin (path gin_trgm_ops);
@@ -34500,6 +34534,10 @@ CREATE UNIQUE INDEX uniq_pkgs_debian_group_distributions_group_id_and_suite ON p
 CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_codename ON packages_debian_project_distributions USING btree (project_id, codename);
 
 CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_suite ON packages_debian_project_distributions USING btree (project_id, suite);
+
+CREATE UNIQUE INDEX unique_amazon_s3_configurations_namespace_id_and_bucket_name ON audit_events_amazon_s3_configurations USING btree (namespace_id, bucket_name);
+
+CREATE UNIQUE INDEX unique_amazon_s3_configurations_namespace_id_and_name ON audit_events_amazon_s3_configurations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX unique_ci_builds_token_encrypted_and_partition_id ON ci_builds USING btree (token_encrypted, partition_id) WHERE (token_encrypted IS NOT NULL);
 
@@ -38255,6 +38293,9 @@ ALTER TABLE ONLY security_trainings
 
 ALTER TABLE ONLY zentao_tracker_data
     ADD CONSTRAINT fk_rails_84efda7be0 FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY audit_events_amazon_s3_configurations
+    ADD CONSTRAINT fk_rails_84f4b10a16 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_rails_851fe1510a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

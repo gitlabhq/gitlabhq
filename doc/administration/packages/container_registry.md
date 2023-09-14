@@ -1363,10 +1363,12 @@ including all the supported storage backends. To migrate to the GitLab Container
 you can follow the instructions on this page, and use the same storage backend as the Distribution Registry.
 The GitLab Container Registry should accept the same configuration that you are using for the Distribution Registry.
 
-## Use a PostgreSQL database for metadata **(BETA)**
+## Use a PostgreSQL database for metadata **(FREE SELF BETA)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [Beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
 
 WARNING:
-The metadata database is in early beta for self-managed GitLab instances.
+While the metadata database is already in use on GitLab.com, it is in early beta for self-managed GitLab instances.
 
 By default, the container registry uses object storage to persist metadata
 related to container images. This method to store metadata limits how efficiently
@@ -1377,9 +1379,6 @@ which removes old data automatically with zero downtime.
 
 This database works in conjunction with the object storage already used by the registry, but does not replace object storage.
 You must continue to maintain an object storage solution even after migrating to a metadata database.
-
-The metadata database is already in use on GitLab.com, and is now available as a beta feature
-for self-managed GitLab instances.
 
 ### Known Limitations
 

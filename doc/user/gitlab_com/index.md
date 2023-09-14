@@ -217,7 +217,7 @@ the default value [is the same as for self-managed instances](../../administrati
 | Maximum remote file size for imports from external object storages                                                 | 10 GB              |
 | Maximum download file size when importing from source GitLab instances by direct transfer                          | 5 GB               |
 | Maximum attachment size                                                                                            | 100 MB             |
-| [Maximum decompressed file size for imported archives](../../administration/settings/account_and_limit_settings.md#maximum-decompressed-file-size-for-imported-archives) | 25 GB |
+| [Maximum decompressed file size for imported archives](../../administration/settings/import_and_export_settings.md#maximum-decompressed-file-size-for-imported-archives) | 25 GB |
 
 If you are near or over the repository size limit, you can either
 [reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md)
@@ -236,7 +236,7 @@ The import sources that are available by default depend on which GitLab you use:
 
 - GitLab.com: all available import sources are enabled by default.
 - GitLab self-managed: no import sources are enabled by default and must be
-  [enabled](../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+  [enabled](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
 | Import source                                                                                       | GitLab.com default     | GitLab self-managed default |
 |:----------------------------------------------------------------------------------------------------|:-----------------------|:----------------------------|

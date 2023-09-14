@@ -244,3 +244,59 @@ Use `app/assets` for storing any asset that needs to be precompiled and served t
 Use `lib/assets` for storing any asset that does not need to be served to the end user directly, but is still required to be accessed by the application code.
 
 MR for reference: [!37671](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37671)
+
+## Do not override `has_many through:` or `has_one through:` associations
+
+Associations with the `:through` option should not be overridden as we could accidentally
+destroy the wrong object.
+
+This is because the `destroy()` method behaves differently when acting on
+`has_many through:` and `has_one through:` associations.
+
+```ruby
+group.users.destroy(id)
+```
+
+The code example above reads as if we are destroying a `User` record, but behind the scenes, it is destroying a `Member` record. This is because the `users` association is defined on `Group` as a `has_many through:` association:
+
+```ruby
+class Group < Namespace
+  has_many :group_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source
+
+  has_many :users, through: :group_members
+end
+```
+
+And Rails has the following [behavior](https://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#method-i-has_many) on using `destroy()` on such associations:
+
+> If the :through option is used, then the join records are destroyed instead, not the objects themselves.
+
+This is why a `Member` record, which is the join record connecting a `User` and `Group`, is being destroyed.
+
+Now, if we override the `users` association, so like:
+
+```ruby
+class Group < Namespace
+  has_many :group_members, -> { where(requested_at: nil).where.not(members: { access_level: Gitlab::Access::MINIMAL_ACCESS }) }, dependent: :destroy, as: :source
+
+  has_many :users, through: :group_members
+
+  def users
+    super.where(admin: false)
+  end
+end
+```
+
+The overridden method now changes the above behavior of `destroy()`, such that if we execute
+
+```ruby
+group.users.destroy(id)
+```
+
+a `User` record will be deleted, which can lead to data loss.
+
+In short, overriding a `has_many through:` or `has_one through:` association can prove dangerous.
+To prevent this from happening, we are introducing an
+automated check in [!131455](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131455).
+
+For more information, see [issue 424536](https://gitlab.com/gitlab-org/gitlab/-/issues/424536).

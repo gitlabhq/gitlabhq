@@ -194,54 +194,6 @@ To restrict visibility levels for groups, projects, snippets, and selected pages
 For more details on project visibility, see
 [Project visibility](../../user/public_access.md).
 
-## Configure allowed import sources
-
-Before you can import projects from other systems, you must enable the
-[import source](../../user/gitlab_com/index.md#default-import-sources) for that system.
-
-1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. Select **Settings > General**.
-1. Expand the **Visibility and access controls** section.
-1. Select each of **Import sources** to allow.
-1. Select **Save changes**.
-
-## Enable project export
-
-To enable the export of
-[projects and their data](../../user/project/settings/import_export.md#export-a-project-and-its-data):
-
-1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. Select **Settings > General**.
-1. Expand the **Visibility and access controls** section.
-1. Scroll to **Project export**.
-1. Select the **Enabled** checkbox.
-1. Select **Save changes**.
-
-## Enable migration of groups and projects by direct transfer
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
-
-You can enable migration of groups by direct transfer using the UI.
-
-To enable migration of groups by direct transfer:
-
-1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
-1. Select **Settings > General**.
-1. Expand the **Visibility and access controls** section.
-1. Scroll to **Allow migrating GitLab groups and projects by direct transfer**.
-1. Select the **Enabled** checkbox.
-1. Select **Save changes**.
-
-The same setting
-[is available](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) in the API as the
-`bulk_import_enabled` attribute.
-
 ## Configure enabled Git access protocols
 
 With GitLab access restrictions, you can select the protocols users can use to

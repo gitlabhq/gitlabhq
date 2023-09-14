@@ -33,7 +33,7 @@ To connect to an external repository:
 
 If the **Run CI/CD for external repository** option is not available, the GitLab instance
 might not have any import sources configured. Ask an administrator for your instance to check
-the [import sources configuration](../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+the [import sources configuration](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
 ## Pipelines for external pull requests
 

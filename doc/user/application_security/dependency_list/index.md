@@ -81,7 +81,7 @@ Dependency paths are supported for the following package managers:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10536) in GitLab 12.3.
 
 If the [Dependency Scanning](../../application_security/dependency_scanning/index.md) CI job is configured,
-[discovered licenses](../../compliance/license_scanning_of_cyclonedx_files/index.md#enable-license-scanning) are displayed on this page.
+[discovered licenses](../../compliance/license_scanning_of_cyclonedx_files/index.md) are displayed on this page.
 
 ## View a group's dependencies
 

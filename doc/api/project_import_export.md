@@ -32,7 +32,7 @@ project to a web server or to any S3-compatible platform. For exports, GitLab:
   time and is available throughout the export process.
 - Administrators can modify the maximum export file size. By default, the maximum is unlimited (`0`). To change this,
   edit `max_export_size` using either:
-  - [GitLab UI](../administration/settings/account_and_limit_settings.md).
+  - [GitLab UI](../administration/settings/import_and_export_settings.md).
   - [Application settings API](settings.md#change-application-settings)
 - Has a fixed limit for the maximum import file size on GitLab.com. For more information, see
   [Account and limit settings](../user/gitlab_com/index.md#account-and-limit-settings).

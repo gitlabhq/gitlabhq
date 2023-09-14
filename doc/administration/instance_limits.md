@@ -1133,6 +1133,20 @@ The [changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-fil
 - Each namespace (such as a group or a project) can have a maximum of 50 value streams.
 - Each value stream can have a maximum of 15 stages.
 
+## Audit events streaming destination limits
+
+### Custom HTTP Endpoint
+
+- Each top-level group can have a maximum of 5 custom HTTP streaming destinations.
+
+### Google Cloud Logging
+
+- Each top-level group can have a maximum of 5 Google Cloud Logging streaming destinations.
+
+### Amazon S3
+
+- Each top-level group can have a maximum of 5 Amazon S3 streaming destinations.
+
 ## List all instance limits
 
 To list all instance limit values, run the following from the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
@@ -1227,7 +1241,8 @@ web_hook_calls: 0,
 project_access_token_limit: 0,
 google_cloud_logging_configurations: 5,
 ml_model_max_file_size: 10737418240,
-limits_history: {}
+limits_history: {},
+audit_events_amazon_s3_configurations: 5
 ```
 
 Some limit values display as `[FILTERED]` in the list due to

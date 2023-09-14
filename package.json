@@ -183,7 +183,7 @@
     "portal-vue": "^2.1.7",
     "postcss": "8.4.28",
     "print-js": "^1.6.0",
-    "prosemirror-markdown": "1.11.1",
+    "prosemirror-markdown": "1.11.2",
     "raphael": "^2.2.7",
     "raw-loader": "^4.0.2",
     "rehype-raw": "^6.1.1",
