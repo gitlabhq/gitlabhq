@@ -157,10 +157,11 @@ func configureSentinel(cfg *config.RedisConfig) *redis.Client {
 	}
 
 	client := redis.NewFailoverClient(&redis.FailoverOptions{
-		MasterName:    cfg.SentinelMaster,
-		SentinelAddrs: sentinels,
-		Password:      cfg.Password,
-		DB:            getOrDefault(cfg.DB, 0),
+		MasterName:       cfg.SentinelMaster,
+		SentinelAddrs:    sentinels,
+		Password:         cfg.Password,
+		SentinelPassword: cfg.SentinelPassword,
+		DB:               getOrDefault(cfg.DB, 0),
 
 		PoolSize:        getOrDefault(cfg.MaxActive, defaultMaxActive),
 		MaxIdleConns:    getOrDefault(cfg.MaxIdle, defaultMaxIdle),

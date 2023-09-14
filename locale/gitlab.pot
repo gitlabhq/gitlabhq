@@ -43445,6 +43445,9 @@ msgstr ""
 msgid "Service usage data"
 msgstr ""
 
+msgid "ServiceAccount|No more seats are available to create Service Account User"
+msgstr ""
+
 msgid "ServiceAccount|User does not have permission to create a service account in this namespace."
 msgstr ""
 

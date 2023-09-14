@@ -17,8 +17,6 @@ class X509Certificate < ApplicationRecord
 
   # rfc 5280 - 4.2.1.2  Subject Key Identifier
   validates :subject_key_identifier, presence: true, format: { with: Gitlab::Regex.x509_subject_key_identifier_regex }
-  # rfc 5280 - 4.1.2.6  Subject
-  validates :subject, presence: true
   # rfc 5280 - 4.1.2.6  Subject (subjectAltName contains the email address)
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   # rfc 5280 - 4.1.2.2  Serial number

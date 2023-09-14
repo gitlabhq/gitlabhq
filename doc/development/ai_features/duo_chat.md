@@ -1,10 +1,10 @@
 ---
 stage: AI-powered
-group: AI Framework
+group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Duo chat
+# GitLab Duo Chat
 
 ## Set up GitLab Duo Chat
 
@@ -98,7 +98,7 @@ To add a new tool:
 
 The key things to keep in mind are properly instructing the large language model through prompts and tool descriptions,
 keeping tools self-sufficient, and returning responses to the zero-shot agent. With some trial and error on prompts,
-adding new tools can expand the capabilities of the chat feature.
+adding new tools can expand the capabilities of the Chat feature.
 
 There are available short [videos](https://www.youtube.com/playlist?list=PL05JrBw4t0KoOK-bm_bwfHaOv-1cveh8i) covering this topic.
 
@@ -130,10 +130,10 @@ make sure a new fixture is generated and committed together with the change.
 
 ## GraphQL Subscription
 
-The GraphQL Subscription for chat behaves slightly different because it's user-centric. A user could have the chat open on multiple browser tabs, or also on their IDE.
+The GraphQL Subscription for Chat behaves slightly different because it's user-centric. A user could have Chat open on multiple browser tabs, or also on their IDE.
 We therefore need to broadcast messages to multiple clients to keep them in sync. The `aiAction` mutation with the `chat` action behaves the following:
 
-1. All complete chat messages (including messages from the user) are broadcasted with the `userId` and the `resourceId` from the mutation as identifier, ignoring the `clientSubscriptionId`.
-1. Chunks from streamed chat messages are broadcasted with the `userId`, `resourceId`, and `clientSubscriptionId` as identifier.
+1. All complete Chat messages (including messages from the user) are broadcasted with the `userId` and the `resourceId` from the mutation as identifier, ignoring the `clientSubscriptionId`.
+1. Chunks from streamed Chat messages are broadcasted with the `userId`, `resourceId`, and `clientSubscriptionId` as identifier.
 
 To truly sync messages between all clients of a user, we need to remove the `resourceId` as well, which will be fixed by [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).

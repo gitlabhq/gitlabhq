@@ -235,22 +235,21 @@ module Gitlab
     # Filter milestones by authorized projects.
     # For performance reasons project_id is being plucked
     # to be used on a smaller query.
-    #
-    # rubocop: disable CodeReuse/ActiveRecord
     def filter_milestones_by_project(milestones)
-      project_ids =
-        milestones.where(project_id: project_ids_relation)
-          .select(:project_id).distinct
-          .pluck(:project_id)
+      candidate_project_ids = project_ids_relation
+
+      if Feature.enabled?(:search_milestones_hide_archived_projects, current_user) && !filters[:include_archived]
+        candidate_project_ids = candidate_project_ids.non_archived
+      end
+
+      project_ids = milestones.of_projects(candidate_project_ids).select(:project_id).distinct.pluck(:project_id) # rubocop: disable CodeReuse/ActiveRecord
 
       return Milestone.none if project_ids.nil?
 
-      authorized_project_ids_relation =
-        Project.where(id: project_ids).ids_with_issuables_available_for(current_user)
+      authorized_project_ids_relation = Project.id_in(project_ids).ids_with_issuables_available_for(current_user)
 
-      milestones.where(project_id: authorized_project_ids_relation)
+      milestones.of_projects(authorized_project_ids_relation)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def project_ids_relation

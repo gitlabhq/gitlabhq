@@ -593,6 +593,8 @@
   - 1
 - - search_wiki_elastic_delete_group_wiki
   - 1
+- - search_zoekt_default_branch_changed
+  - 1
 - - search_zoekt_delete_project
   - 1
 - - search_zoekt_namespace_indexer

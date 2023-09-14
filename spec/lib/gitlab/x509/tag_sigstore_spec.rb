@@ -1,38 +1,38 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Gitlab::X509::Tag, feature_category: :source_code_management do
   describe '#signature' do
-    let(:tag_id) { 'v1.1.1' }
+    let(:tag_id) { 'v1.1.2' }
     let(:tag) { instance_double('Gitlab::Git::Tag') }
-    let_it_be(:user) { create(:user, email: X509Helpers::User1.tag_email) }
-    let_it_be(:project) { create(:project, path: X509Helpers::User1.path, creator: user) }
+    let_it_be(:user) { create(:user, email: X509Helpers::User2.tag_email) }
+    let_it_be(:project) { create(:project, path: X509Helpers::User2.path, creator: user) }
     let(:signature) { described_class.new(project.repository, tag).signature }
 
     before do
       allow(tag).to receive(:id).and_return(tag_id)
       allow(tag).to receive(:has_signature?).and_return(true)
       allow(tag).to receive(:user_email).and_return(user.email)
-      allow(tag).to receive(:date).and_return(X509Helpers::User1.signed_tag_time)
+      allow(tag).to receive(:date).and_return(X509Helpers::User2.signed_tag_time)
       allow(Gitlab::Git::Tag).to receive(:extract_signature_lazily).with(project.repository, tag_id)
-        .and_return([X509Helpers::User1.signed_tag_signature, X509Helpers::User1.signed_tag_base_data])
+        .and_return([X509Helpers::User2.signed_tag_signature, X509Helpers::User2.signed_tag_base_data])
     end
 
     describe 'signed tag' do
       let(:certificate_attributes) do
         {
-          subject_key_identifier: X509Helpers::User1.tag_certificate_subject_key_identifier,
-          subject: X509Helpers::User1.certificate_subject,
-          email: X509Helpers::User1.certificate_email,
-          serial_number: X509Helpers::User1.tag_certificate_serial
+          subject_key_identifier: X509Helpers::User2.tag_certificate_subject_key_identifier,
+          subject: X509Helpers::User2.certificate_subject,
+          email: X509Helpers::User2.certificate_email,
+          serial_number: X509Helpers::User2.tag_certificate_serial
         }
       end
 
       let(:issuer_attributes) do
         {
-          subject_key_identifier: X509Helpers::User1.tag_issuer_subject_key_identifier,
-          subject: X509Helpers::User1.tag_certificate_issuer,
-          crl_url: X509Helpers::User1.tag_certificate_crl
+          subject_key_identifier: X509Helpers::User2.tag_issuer_subject_key_identifier,
+          subject: X509Helpers::User2.tag_certificate_issuer
         }
       end
 

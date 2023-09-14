@@ -83,13 +83,14 @@ type GoogleCredentials struct {
 }
 
 type RedisConfig struct {
-	URL            TomlURL
-	Sentinel       []TomlURL
-	SentinelMaster string
-	Password       string
-	DB             *int
-	MaxIdle        *int
-	MaxActive      *int
+	URL              TomlURL
+	Sentinel         []TomlURL
+	SentinelMaster   string
+	SentinelPassword string
+	Password         string
+	DB               *int
+	MaxIdle          *int
+	MaxActive        *int
 }
 
 type ImageResizerConfig struct {

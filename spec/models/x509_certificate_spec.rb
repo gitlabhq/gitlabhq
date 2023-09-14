@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe X509Certificate do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:subject_key_identifier) }
-    it { is_expected.to validate_presence_of(:subject) }
     it { is_expected.to validate_presence_of(:email) }
     it { is_expected.to validate_presence_of(:serial_number) }
     it { is_expected.to validate_presence_of(:x509_issuer_id) }

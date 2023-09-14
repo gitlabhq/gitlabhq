@@ -18,7 +18,7 @@ class X509IssuerCrlCheckWorker
   def perform
     @logger = Gitlab::GitLogger.build
 
-    X509Issuer.all.find_each do |issuer|
+    X509Issuer.with_crl_url.find_each do |issuer|
       with_context(related_class: X509IssuerCrlCheckWorker) do
         update_certificates(issuer)
       end

@@ -1669,6 +1669,7 @@
 
 .qa:rules:package-and-test-nightly:
   rules:
+    - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-default-branch-schedule-nightly
       allow_failure: true
       variables:

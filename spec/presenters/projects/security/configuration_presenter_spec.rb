@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Security::ConfigurationPresenter do
+RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :software_composition_analysis do
   include Gitlab::Routing.url_helpers
   using RSpec::Parameterized::TableSyntax
 
