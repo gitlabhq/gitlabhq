@@ -426,18 +426,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
           expect(entry.errors).to be_empty
           expect(entry.timeout).to eq('1m 1s')
         end
-
-        context 'when update_chronic_duration is disabled' do
-          before do
-            stub_feature_flags(update_chronic_duration: false)
-          end
-
-          it 'returns correct timeout' do
-            expect(entry).to be_valid
-            expect(entry.errors).to be_empty
-            expect(entry.timeout).to eq('1m 1s')
-          end
-        end
       end
 
       context 'when it is a release' do

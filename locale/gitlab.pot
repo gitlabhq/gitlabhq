@@ -9172,6 +9172,18 @@ msgstr ""
 msgid "CVE|Why Request a CVE ID?"
 msgstr ""
 
+msgid "CVS|By enabling this feature, you accept the %{linkStart}Testing Terms of Use%{linkEnd}"
+msgstr ""
+
+msgid "CVS|Continuous Vulnerability Scan"
+msgstr ""
+
+msgid "CVS|Detect vulnerabilities outside a pipeline as new data is added to the GitLab Advisory Database."
+msgstr ""
+
+msgid "CVS|Toggle CVS"
+msgstr ""
+
 msgid "Cadence is not automated"
 msgstr ""
 

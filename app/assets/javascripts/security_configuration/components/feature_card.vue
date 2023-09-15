@@ -73,6 +73,9 @@ export default {
     hasSecondary() {
       return Boolean(this.feature.secondary);
     },
+    hasSlotComponent() {
+      return Boolean(this.feature.slotComponent);
+    },
     // This condition is a temporary hack to not display any wrong information
     // until this BE Bug is fixed: https://gitlab.com/gitlab-org/gitlab/-/issues/350307.
     // More Information: https://gitlab.com/gitlab-org/gitlab/-/issues/350307#note_825447417
@@ -214,6 +217,10 @@ export default {
       >
         {{ $options.i18n.configurationGuide }}
       </gl-button>
+    </div>
+
+    <div v-if="hasSlotComponent">
+      <component :is="feature.slotComponent" :feature="feature" />
     </div>
   </gl-card>
 </template>

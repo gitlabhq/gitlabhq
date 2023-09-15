@@ -13,12 +13,14 @@ import {
   SCOPE_MERGE_REQUESTS,
   SCOPE_BLOB,
   SCOPE_PROJECTS,
+  SCOPE_NOTES,
   SEARCH_TYPE_ADVANCED,
 } from '../constants';
 import IssuesFilters from './issues_filters.vue';
 import MergeRequestsFilters from './merge_requests_filters.vue';
 import BlobsFilters from './blobs_filters.vue';
 import ProjectsFilters from './projects_filters.vue';
+import NotesFilters from './notes_filters.vue';
 
 export default {
   name: 'GlobalSearchSidebar',
@@ -27,6 +29,7 @@ export default {
     MergeRequestsFilters,
     BlobsFilters,
     ProjectsFilters,
+    NotesFilters,
     ScopeLegacyNavigation,
     ScopeSidebarNavigation,
     SidebarPortal,
@@ -50,6 +53,13 @@ export default {
     showProjectsFilters() {
       // for now the feature flag is here. Since we have only one filter in projects scope
       return this.currentScope === SCOPE_PROJECTS;
+    },
+    showNotesFilters() {
+      return (
+        this.currentScope === SCOPE_NOTES &&
+        this.searchType === SEARCH_TYPE_ADVANCED &&
+        this.glFeatures.searchNotesHideArchivedProjects
+      );
     },
     showScopeNavigation() {
       // showScopeNavigation refers to whether the scope navigation should be shown
@@ -75,6 +85,7 @@ export default {
       <merge-requests-filters v-if="showMergeRequestFilters" />
       <blobs-filters v-if="showBlobFilters" />
       <projects-filters v-if="showProjectsFilters" />
+      <notes-filters v-if="showNotesFilters" />
     </sidebar-portal>
   </section>
 
@@ -88,6 +99,7 @@ export default {
       <merge-requests-filters v-if="showMergeRequestFilters" />
       <blobs-filters v-if="showBlobFilters" />
       <projects-filters v-if="showProjectsFilters" />
+      <notes-filters v-if="showNotesFilters" />
     </div>
     <small-screen-drawer-navigation class="gl-lg-display-none">
       <scope-legacy-navigation />
@@ -95,6 +107,7 @@ export default {
       <merge-requests-filters v-if="showMergeRequestFilters" />
       <blobs-filters v-if="showBlobFilters" />
       <projects-filters v-if="showProjectsFilters" />
+      <notes-filters v-if="showNotesFilters" />
     </small-screen-drawer-navigation>
   </section>
 </template>

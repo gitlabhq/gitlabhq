@@ -39,16 +39,6 @@ RSpec.shared_examples 'ChronicDurationAttribute writer' do
     expect(subject.valid?).to be_truthy
   end
 
-  context 'when update_chronic_duration is disabled' do
-    before do
-      stub_feature_flags(update_chronic_duration: false)
-    end
-
-    it 'parses chronic duration input' do
-      expect(subject.send(source_field)).to eq(600)
-    end
-  end
-
   context 'when negative input is used' do
     before do
       subject.send("#{source_field}=", 3600)
@@ -82,16 +72,6 @@ RSpec.shared_examples 'ChronicDurationAttribute writer' do
     it 'passes validation' do
       expect(subject.valid?).to be_truthy
     end
-
-    context 'when update_chronic_duration is disabled' do
-      before do
-        stub_feature_flags(update_chronic_duration: false)
-      end
-
-      it 'writes default value' do
-        expect(subject.send(source_field)).to eq(default_value)
-      end
-    end
   end
 
   context 'when nil input is used' do
@@ -109,16 +89,6 @@ RSpec.shared_examples 'ChronicDurationAttribute writer' do
 
     it "doesn't raise exception" do
       expect { subject.send("#{virtual_field}=", nil) }.not_to raise_error
-    end
-
-    context 'when update_chronic_duration is disabled' do
-      before do
-        stub_feature_flags(update_chronic_duration: false)
-      end
-
-      it 'writes default value' do
-        expect(subject.send(source_field)).to eq(default_value)
-      end
     end
   end
 end

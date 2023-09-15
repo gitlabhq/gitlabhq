@@ -1290,6 +1290,48 @@ class BuildMetadata
 end
 ```
 
+Additionally, you can expose the keys in a `JSONB` column as
+ActiveRecord attributes. Do this when you need complex validations,
+or ActiveRecord change tracking. This feature is provided by the
+[`jsonb_accessor`](https://github.com/madeintandem/jsonb_accessor) gem,
+and does not replace `JsonSchemaValidator`.
+
+```ruby
+module Organizations
+  class OrganizationSetting < ApplicationRecord
+    belongs_to :organization
+
+    validates :settings, json_schema: { filename: "organization_settings" }
+
+    jsonb_accessor :settings,
+      restricted_visibility_levels: [:integer, { array: true }]
+
+    validates_each :restricted_visibility_levels do |record, attr, value|
+      value&.each do |level|
+        unless Gitlab::VisibilityLevel.options.value?(level)
+          record.errors.add(attr, format(_("'%{level}' is not a valid visibility level"), level: level))
+        end
+      end
+    end
+  end
+end
+```
+
+You can now use `restricted_visibility_levels` as an ActiveRecord attribute:
+
+```ruby
+> s = Organizations::OrganizationSetting.find(1)
+=> #<Organizations::OrganizationSetting:0x0000000148d67628>
+> s.settings
+=> {"restricted_visibility_levels"=>[20]}
+> s.restricted_visibility_levels
+=> [20]
+> s.restricted_visibility_levels = [0]
+=> [0]
+> s.changes
+=> {"settings"=>[{"restricted_visibility_levels"=>[20]}, {"restricted_visibility_levels"=>[0]}], "restricted_visibility_levels"=>[[20], [0]]}
+```
+
 ## Encrypted attributes
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227779) in GitLab 14.0.

@@ -6,9 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Distributed tracing **(ULTIMATE SAAS EXPERIMENT)**
 
-This feature is an [Experiment](../policy/experiment-beta-support.md). If you find a bug,
-[open an issue in our issue tracker](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/).
-
 > Introduced in GitLab 16.3 [with flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`. Disabled by default.
 
 FLAG:
@@ -16,10 +13,9 @@ On GitLab.com, by default this feature is not available. To make it available,
 an administrator can [enable the feature flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`.
 The feature is not ready for production use.
 
-With distributed tracing you can inspect how a request moves through different services and systems,
-the timing of each operation, and any errors or logs as they occur.
+With distributed tracing, you can troubleshoot application performance issues by inspecting how a request moves through different services and systems, the timing of each operation, and any errors or logs as they occur. Tracing is particularly useful in the context of microservice applications, which group multiple independent services collaborating to fulfill user requests.
 
-Tracing is particularly useful in the context of microservice applications, which group multiple independent services collaborating to fulfill user requests.
+This feature is an [Experiment](../policy/experiment-beta-support.md). For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/observability/). To leave feedback about tracing bugs or functionality, please comment in the [feedback issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2363) or open a [new issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/new).
 
 ## Configure distributed tracing for a project
 

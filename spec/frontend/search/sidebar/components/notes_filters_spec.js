@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import ProjectsFilters from '~/search/sidebar/components/projects_filters.vue';
-import ArchivedFilter from '~/search/sidebar/components/language_filter/index.vue';
+import NotesFilters from '~/search/sidebar/components/projects_filters.vue';
+import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';
 import FiltersTemplate from '~/search/sidebar/components/filters_template.vue';
 
 describe('GlobalSearch ProjectsFilters', () => {
@@ -10,7 +10,7 @@ describe('GlobalSearch ProjectsFilters', () => {
   const findFiltersTemplate = () => wrapper.findComponent(FiltersTemplate);
 
   const createComponent = () => {
-    wrapper = shallowMount(ProjectsFilters);
+    wrapper = shallowMount(NotesFilters);
   };
 
   describe('Renders correctly', () => {

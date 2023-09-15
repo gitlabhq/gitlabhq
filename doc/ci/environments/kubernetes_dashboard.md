@@ -15,9 +15,6 @@ Use the Dashboard for Kubernetes to understand the status of your clusters with 
 The dashboard works with every connected Kubernetes cluster, whether you deployed them
 with CI/CD or GitOps.
 
-For Flux users, the synchronization status of a given environment is not displayed in the dashboard.
-[Issue 391581](https://gitlab.com/gitlab-org/gitlab/-/issues/391581) proposes to add this functionality.
-
 ## Configure a dashboard
 
 > - Filtering resources by namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403618) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `kubernetes_namespace_for_environment`. Disabled by default.

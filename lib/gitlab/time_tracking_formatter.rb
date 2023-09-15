@@ -19,7 +19,7 @@ module Gitlab
             string,
             CUSTOM_DAY_AND_MONTH_LENGTH.merge(
               default_unit: 'hours', keep_zero: keep_zero,
-              use_complete_matcher: Feature.enabled?(:update_chronic_duration)
+              use_complete_matcher: true
             ))
         rescue StandardError
           nil

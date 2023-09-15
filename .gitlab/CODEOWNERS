@@ -1388,7 +1388,6 @@ lib/gitlab/checks/**
 /lib/tasks/gitlab/seed/runner_fleet.rake @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 # CI/CD templates require approval from specific owners.
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
-/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
 /lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @amarpatel
 /lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
 /lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be

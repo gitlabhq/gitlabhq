@@ -1,5 +1,6 @@
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, s__ } from '~/locale';
+import ContinuousVulnerabilityScan from '~/security_configuration/components/continuous_vulnerability_scan.vue';
 
 import {
   REPORT_TYPE_SAST,
@@ -210,6 +211,7 @@ export const securityFeatures = [
     configurationHelpPath: DEPENDENCY_SCANNING_CONFIG_HELP_PATH,
     type: REPORT_TYPE_DEPENDENCY_SCANNING,
     anchor: 'dependency-scanning',
+    slotComponent: ContinuousVulnerabilityScan,
   },
   {
     name: CONTAINER_SCANNING_NAME,

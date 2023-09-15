@@ -67,11 +67,10 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
-1. Enter the **Git repository URL**. Include the username
-   in the URL, if required: `https://MYUSERNAME@gitlab.com/GROUPNAME/PROJECTNAME.git`
+1. Enter the **Git repository URL**.
 
    NOTE:
-   To mirror the `gitlab` repository, use `git@gitlab.com:gitlab-org/gitlab.git`
+   To mirror the `gitlab` repository, use `gitlab.com:gitlab-org/gitlab.git`
    or `https://gitlab.com/gitlab-org/gitlab.git`.
 
 1. In **Mirror direction**, select **Pull**.

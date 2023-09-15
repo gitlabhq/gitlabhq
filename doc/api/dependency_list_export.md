@@ -6,11 +6,20 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Dependency list export API **(ULTIMATE ALL)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333463) in GitLab 16.4.
-
 Every call to this endpoint requires authentication.
 
-## Create a pipeline-level dependency list export
+## Create a pipeline-level dependency list export **(EXPERIMENT)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333463) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `merge_sbom_api`. Enabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md#experiment).
+
+FLAG:
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `merge_sbom_api`.
+On GitLab.com, this feature is available.
+
+WARNING:
+This feature is an [Experiment](../policy/experiment-beta-support.md#experiment)
+and subject to change without notice.
 
 Create a new CycloneDX JSON export for all the project dependencies detected in a pipeline.
 

@@ -1,3 +1,6 @@
+export const mockBranchNames = ['main', 'f-test', 'release'];
+export const mockBranchNames2 = ['dev', 'dev-1', 'dev-2'];
+
 export const mockProjects = [
   {
     id: 'test',
@@ -28,3 +31,15 @@ export const mockProjects = [
     },
   },
 ];
+
+export const mockProjectQueryResponse = (branchNames = mockBranchNames) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/27',
+      repository: {
+        branchNames,
+        rootRef: 'main',
+      },
+    },
+  },
+});

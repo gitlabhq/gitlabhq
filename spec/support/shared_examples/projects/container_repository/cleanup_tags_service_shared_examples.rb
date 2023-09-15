@@ -153,17 +153,6 @@ RSpec.shared_examples 'when removing older than 1 day' do
     service_response_extra: service_response_extra,
     supports_caching: supports_caching,
     delete_expectations: delete_expectations
-
-  context 'when update_chronic_duration is disabled' do
-    before do
-      stub_feature_flags(update_chronic_duration: false)
-    end
-
-    it_behaves_like 'removing the expected tags',
-      service_response_extra: service_response_extra,
-      supports_caching: supports_caching,
-      delete_expectations: delete_expectations
-  end
 end
 
 RSpec.shared_examples 'when combining all parameters' do

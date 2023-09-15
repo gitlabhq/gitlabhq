@@ -19,6 +19,7 @@ export default function initJiraConnectBranches() {
 
   return new Vue({
     el,
+    name: 'JiraConnectNewBranchRoot',
     apolloProvider,
     provide: {
       initialBranchName,

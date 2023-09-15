@@ -14,7 +14,6 @@ module QA
         view 'app/views/dashboard/todos/_todo.html.haml' do
           element :todo_item_container
           element :todo_action_name_content
-          element :todo_target_title_content
           element :todo_author_name_content
         end
 
@@ -43,18 +42,13 @@ module QA
           wait_for_requests
         end
 
+        def click_todo_with_content(content)
+          click_element(:todo_item_container, text: content)
+        end
+
         def has_latest_todo_with_author?(author:, action:)
           content = { selector: :todo_author_name_content, text: author }
           has_latest_todo_with_content?(action, **content)
-        end
-
-        def has_latest_todo_with_title?(title:, action:)
-          content = { selector: :todo_target_title_content, text: title }
-          has_latest_todo_with_content?(action, **content)
-        end
-
-        def click_todo_with_content(content)
-          click_element(:todo_item_container, text: content)
         end
 
         private

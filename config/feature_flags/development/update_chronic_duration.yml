@@ -1,8 +1,0 @@
----
-name: update_chronic_duration
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130531
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/423696
-milestone: '16.4'
-type: development
-group: group::pipeline authoring
-default_enabled: false

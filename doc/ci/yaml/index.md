@@ -79,8 +79,9 @@ or import additional pipeline configuration.
 
 > Support for `id_tokens` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419750) in GitLab 16.4.
 
-You can set global defaults for some keywords. Jobs that do not define one or more
-of the listed keywords use the value defined in the `default` section.
+You can set global defaults for some keywords. Each default keyword is copied to every job
+that doesn't already have it defined. If the job already has a keyword defined, that default
+is not used.
 
 **Keyword type**: Global keyword.
 
@@ -104,6 +105,7 @@ of the listed keywords use the value defined in the `default` section.
 ```yaml
 default:
   image: ruby:3.0
+  retry: 2
 
 rspec:
   script: bundle exec rspec
@@ -113,16 +115,17 @@ rspec 2.7:
   script: bundle exec rspec
 ```
 
-In this example, `ruby:3.0` is the default `image` value for all jobs in the pipeline.
-The `rspec 2.7` job does not use the default, because it overrides the default with
-a job-specific `image` section:
+In this example:
+
+- `image: ruby:3.0` and `retry: 2` are the default keywords for all jobs in the pipeline.
+- The `rspec` job does not have `image` or `retry` defined, so it uses the defaults of
+  `image: ruby:3.0` and `retry: 2`.
+- The `rspec 2.7` job does not have `retry` defined, but it does have `image` explictly defined.
+  It uses the default `retry: 2`, but ignores the default `image` and uses the `image: ruby:2.7`
+  defined in the job.
 
 **Additional details**:
 
-- When the pipeline is created, each default is copied to all jobs that don't have
-  that keyword defined.
-- If a job already has one of the keywords configured, the configuration in the job
-  takes precedence and is not replaced by the default.
 - Control inheritance of default keywords in jobs with [`inherit:default`](#inheritdefault).
 
 ### `include`

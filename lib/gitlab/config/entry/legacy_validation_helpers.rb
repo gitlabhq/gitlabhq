@@ -12,7 +12,7 @@ module Gitlab
           if parser && parser.respond_to?(:validate_duration)
             parser.validate_duration(value)
           else
-            ChronicDuration.parse(value, use_complete_matcher: Feature.enabled?(:update_chronic_duration))
+            ChronicDuration.parse(value, use_complete_matcher: true)
           end
         rescue ChronicDuration::DurationParseError
           false
@@ -25,10 +25,10 @@ module Gitlab
             parser.validate_duration_limit(value, limit)
           else
             ChronicDuration.parse(
-              value, use_complete_matcher: Feature.enabled?(:update_chronic_duration)
+              value, use_complete_matcher: true
             ).second.from_now <
               ChronicDuration.parse(
-                limit, use_complete_matcher: Feature.enabled?(:update_chronic_duration)
+                limit, use_complete_matcher: true
               ).second.from_now
           end
         rescue ChronicDuration::DurationParseError

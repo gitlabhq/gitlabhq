@@ -5,7 +5,7 @@
 
         = todo_target_state_pill(todo)
 
-        %span.todo-target-title{ data: { qa_selector: "todo_target_title_content" }, :id => dom_id(todo) + "_describer" }
+        %span.todo-target-title{ :id => dom_id(todo) + "_describer" }
           = todo_target_title(todo)
 
           - if !todo.for_design? && !todo.member_access_requested?

@@ -80,9 +80,7 @@ class ContainerExpirationPolicy < ApplicationRecord
   end
 
   def set_next_run_at
-    cadence_seconds = ChronicDuration.parse(
-      cadence, use_complete_matcher: Feature.enabled?(:update_chronic_duration)
-    ).seconds
+    cadence_seconds = ChronicDuration.parse(cadence, use_complete_matcher: true).seconds
 
     self.next_run_at = Time.zone.now + cadence_seconds
   end

@@ -23,7 +23,7 @@ the behavior of your old tool.
 
 ## Manage organizational changes
 
-An important part of transitioning from Jenkins to GitLab is the cultural and organizational
+An important part of transitioning to GitLab CI/CD is the cultural and organizational
 changes that come with the move, and successfully managing them.
 
 A few things that organizations have reported as helping:
@@ -37,8 +37,8 @@ A few things that organizations have reported as helping:
 - Finding ways to sequence or delay parts of the migration can help a lot. Importantly though,
   try not to leave things in a non-migrated (or partially-migrated) state for too
   long.
-- To gain all the benefits of GitLab, moving your existing Jenkins setup over
-  as-is, including any current problems, isn't enough. Take advantage of the improvements
+- To gain all the benefits of GitLab, moving your existing configuration over as-is,
+  including any current problems, isn't enough. Take advantage of the improvements
   that GitLab CI/CD offers, and update your implementation as part of the transition.
 
 ## Technical questions to ask before starting a migration
@@ -57,7 +57,7 @@ the migration requirements:
 
 ### Jenkins
 
-If you are migrating from Jenkins, these additional questions can help with planning
+If you are [migrating from Jenkins](jenkins.md), these additional questions can help with planning
 the migration:
 
 - What plugins are used by jobs in Jenkins today?

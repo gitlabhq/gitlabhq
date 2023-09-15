@@ -9,6 +9,7 @@ const scopes = {
   PROJECTS: 'projects',
   ISSUES: 'issues',
   MERGE_REQUESTS: 'merge_requests',
+  NOTES: 'notes',
 };
 
 const filterParam = 'include_archived';

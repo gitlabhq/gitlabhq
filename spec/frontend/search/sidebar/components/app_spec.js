@@ -2,7 +2,11 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { SEARCH_TYPE_ZOEKT, SEARCH_TYPE_ADVANCED } from '~/search/sidebar/constants';
+import {
+  SEARCH_TYPE_ZOEKT,
+  SEARCH_TYPE_ADVANCED,
+  SEARCH_TYPE_BASIC,
+} from '~/search/sidebar/constants';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import { toggleSuperSidebarCollapsed } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
@@ -10,6 +14,7 @@ import IssuesFilters from '~/search/sidebar/components/issues_filters.vue';
 import MergeRequestsFilters from '~/search/sidebar/components/merge_requests_filters.vue';
 import BlobsFilters from '~/search/sidebar/components/blobs_filters.vue';
 import ProjectsFilters from '~/search/sidebar/components/projects_filters.vue';
+import NotesFilters from '~/search/sidebar/components/notes_filters.vue';
 import ScopeLegacyNavigation from '~/search/sidebar/components/scope_legacy_navigation.vue';
 import SmallScreenDrawerNavigation from '~/search/sidebar/components/small_screen_drawer_navigation.vue';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
@@ -37,6 +42,11 @@ describe('GlobalSearchSidebar', () => {
 
     wrapper = shallowMount(GlobalSearchSidebar, {
       store,
+      provide: {
+        glFeatures: {
+          searchNotesHideArchivedProjects: true,
+        },
+      },
     });
   };
 
@@ -45,6 +55,7 @@ describe('GlobalSearchSidebar', () => {
   const findMergeRequestsFilters = () => wrapper.findComponent(MergeRequestsFilters);
   const findBlobsFilters = () => wrapper.findComponent(BlobsFilters);
   const findProjectsFilters = () => wrapper.findComponent(ProjectsFilters);
+  const findNotesFilters = () => wrapper.findComponent(NotesFilters);
   const findScopeLegacyNavigation = () => wrapper.findComponent(ScopeLegacyNavigation);
   const findSmallScreenDrawerNavigation = () => wrapper.findComponent(SmallScreenDrawerNavigation);
   const findScopeSidebarNavigation = () => wrapper.findComponent(ScopeSidebarNavigation);
@@ -62,18 +73,26 @@ describe('GlobalSearchSidebar', () => {
     });
 
     describe.each`
-      scope               | filter
-      ${'issues'}         | ${findIssuesFilters}
-      ${'merge_requests'} | ${findMergeRequestsFilters}
-      ${'blobs'}          | ${findBlobsFilters}
-    `('with sidebar $scope scope:', ({ scope, filter }) => {
+      scope               | filter                      | searchType              | isShown
+      ${'issues'}         | ${findIssuesFilters}        | ${SEARCH_TYPE_BASIC}    | ${true}
+      ${'merge_requests'} | ${findMergeRequestsFilters} | ${SEARCH_TYPE_BASIC}    | ${true}
+      ${'projects'}       | ${findProjectsFilters}      | ${SEARCH_TYPE_BASIC}    | ${true}
+      ${'blobs'}          | ${findBlobsFilters}         | ${SEARCH_TYPE_BASIC}    | ${false}
+      ${'blobs'}          | ${findBlobsFilters}         | ${SEARCH_TYPE_ADVANCED} | ${true}
+      ${'blobs'}          | ${findBlobsFilters}         | ${SEARCH_TYPE_ZOEKT}    | ${false}
+      ${'notes'}          | ${findNotesFilters}         | ${SEARCH_TYPE_BASIC}    | ${false}
+      ${'notes'}          | ${findNotesFilters}         | ${SEARCH_TYPE_ADVANCED} | ${true}
+    `('with sidebar $scope scope:', ({ scope, filter, searchType, isShown }) => {
       beforeEach(() => {
         getterSpies.currentScope = jest.fn(() => scope);
-        createComponent({ urlQuery: { scope }, searchType: SEARCH_TYPE_ADVANCED });
+        createComponent({ urlQuery: { scope }, searchType });
       });
 
-      it(`shows filter ${filter.name.replace('find', '')}`, () => {
-        expect(filter().exists()).toBe(true);
+      it(`renders correctly filter ${filter.name.replace(
+        'find',
+        '',
+      )} when search_type ${searchType}`, () => {
+        expect(filter().exists()).toBe(isShown);
       });
     });
 
@@ -101,24 +120,27 @@ describe('GlobalSearchSidebar', () => {
     describe.each`
       currentScope | sidebarNavShown | legacyNavShown
       ${'issues'}  | ${false}        | ${true}
-      ${''}        | ${false}        | ${false}
+      ${'test'}    | ${false}        | ${true}
       ${'issues'}  | ${true}         | ${false}
-      ${''}        | ${true}         | ${false}
-    `('renders navigation', ({ currentScope, sidebarNavShown, legacyNavShown }) => {
-      beforeEach(() => {
-        getterSpies.currentScope = jest.fn(() => currentScope);
-        createComponent({ useSidebarNavigation: sidebarNavShown });
-      });
+      ${'test'}    | ${true}         | ${false}
+    `(
+      'renders navigation for scope $currentScope',
+      ({ currentScope, sidebarNavShown, legacyNavShown }) => {
+        beforeEach(() => {
+          getterSpies.currentScope = jest.fn(() => currentScope);
+          createComponent({ useSidebarNavigation: sidebarNavShown });
+        });
 
-      it(`${!legacyNavShown ? 'hides' : 'shows'} the legacy navigation`, () => {
-        expect(findScopeLegacyNavigation().exists()).toBe(legacyNavShown);
-        expect(findSmallScreenDrawerNavigation().exists()).toBe(legacyNavShown);
-      });
+        it(`renders navigation correctly with legacyNavShown ${legacyNavShown}`, () => {
+          expect(findScopeLegacyNavigation().exists()).toBe(legacyNavShown);
+          expect(findSmallScreenDrawerNavigation().exists()).toBe(legacyNavShown);
+        });
 
-      it(`${!sidebarNavShown ? 'hides' : 'shows'} the sidebar navigation`, () => {
-        expect(findScopeSidebarNavigation().exists()).toBe(sidebarNavShown);
-      });
-    });
+        it(`renders navigation correctly with sidebarNavShown ${sidebarNavShown}`, () => {
+          expect(findScopeSidebarNavigation().exists()).toBe(sidebarNavShown);
+        });
+      },
+    );
   });
 
   describe('when useSidebarNavigation=true', () => {
