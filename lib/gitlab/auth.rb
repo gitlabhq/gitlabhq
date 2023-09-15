@@ -15,6 +15,10 @@ module Gitlab
     CREATE_RUNNER_SCOPE = :create_runner
     API_SCOPES = [API_SCOPE, READ_API_SCOPE, READ_USER_SCOPE, CREATE_RUNNER_SCOPE, K8S_PROXY_SCOPE].freeze
 
+    # Scopes for Duo
+    AI_FEATURES = :ai_features
+    AI_FEATURES_SCOPES = [AI_FEATURES].freeze
+
     PROFILE_SCOPE = :profile
     EMAIL_SCOPE = :email
     OPENID_SCOPE = :openid
@@ -432,7 +436,7 @@ module Gitlab
       end
 
       def non_admin_available_scopes
-        API_SCOPES + REPOSITORY_SCOPES + registry_scopes + OBSERVABILITY_SCOPES
+        API_SCOPES + REPOSITORY_SCOPES + registry_scopes + OBSERVABILITY_SCOPES + AI_FEATURES_SCOPES
       end
 
       def find_build_by_token(token)

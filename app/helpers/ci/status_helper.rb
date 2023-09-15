@@ -9,27 +9,6 @@
 #
 module Ci
   module StatusHelper
-    def ci_label_for_status(status)
-      if detailed_status?(status)
-        return status.label
-      end
-
-      label = case status
-              when 'success'
-                'passed'
-              when 'success-with-warnings'
-                'passed with warnings'
-              when 'manual'
-                'waiting for manual action'
-              when 'scheduled'
-                'waiting for delayed job'
-              else
-                status
-              end
-      translation = "CiStatusLabel|#{label}"
-      s_(translation)
-    end
-
     def ci_status_for_statuseable(subject)
       status = subject.try(:status) || 'not found'
       status.humanize
@@ -110,11 +89,34 @@ module Ci
       end
     end
 
+    private
+
     def detailed_status?(status)
       status.respond_to?(:text) &&
         status.respond_to?(:group) &&
         status.respond_to?(:label) &&
         status.respond_to?(:icon)
+    end
+
+    def ci_label_for_status(status)
+      if detailed_status?(status)
+        return status.label
+      end
+
+      label = case status
+              when 'success'
+                'passed'
+              when 'success-with-warnings'
+                'passed with warnings'
+              when 'manual'
+                'waiting for manual action'
+              when 'scheduled'
+                'waiting for delayed job'
+              else
+                status
+              end
+      translation = "CiStatusLabel|#{label}"
+      s_(translation)
     end
   end
 end

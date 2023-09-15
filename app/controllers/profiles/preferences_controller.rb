@@ -55,6 +55,7 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :gitpod_enabled,
       :render_whitespace_in_code,
       :project_shortcut_buttons,
+      :keyboard_shortcuts_enabled,
       :markdown_surround_selection,
       :markdown_automatic_lists,
       :use_new_navigation,

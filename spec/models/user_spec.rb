@@ -65,6 +65,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:project_shortcut_buttons).to(:user_preference) }
     it { is_expected.to delegate_method(:project_shortcut_buttons=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:keyboard_shortcuts_enabled).to(:user_preference) }
+    it { is_expected.to delegate_method(:keyboard_shortcuts_enabled=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:render_whitespace_in_code).to(:user_preference) }
     it { is_expected.to delegate_method(:render_whitespace_in_code=).to(:user_preference).with_arguments(:args) }
 

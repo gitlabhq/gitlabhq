@@ -77,6 +77,8 @@ or import additional pipeline configuration.
 
 ### `default`
 
+> Support for `id_tokens` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419750) in GitLab 16.4.
+
 You can set global defaults for some keywords. Jobs that do not define one or more
 of the listed keywords use the value defined in the `default` section.
 
@@ -89,6 +91,7 @@ of the listed keywords use the value defined in the `default` section.
 - [`before_script`](#before_script)
 - [`cache`](#cache)
 - [`hooks`](#hooks)
+- [`id_tokens`](#id_tokens)
 - [`image`](#image)
 - [`interruptible`](#interruptible)
 - [`retry`](#retry)

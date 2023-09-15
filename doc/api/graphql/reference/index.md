@@ -5616,6 +5616,28 @@ Input type: `ProjectSetComplianceFrameworkInput`
 | <a id="mutationprojectsetcomplianceframeworkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsetcomplianceframeworkproject"></a>`project` | [`Project`](#project) | Project after mutation. |
 
+### `Mutation.projectSetContinuousVulnerabilityScanning`
+
+Enable/disable Continuous Vulnerability Scanning for the given project.
+
+Input type: `ProjectSetContinuousVulnerabilityScanningInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsetcontinuousvulnerabilityscanningclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsetcontinuousvulnerabilityscanningenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for Continuous Vulnerability Scanning feature. |
+| <a id="mutationprojectsetcontinuousvulnerabilityscanningprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsetcontinuousvulnerabilityscanningclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsetcontinuousvulnerabilityscanningcontinuousvulnerabilityscanningenabled"></a>`continuousVulnerabilityScanningEnabled` | [`Boolean!`](#boolean) | Whether feature is enabled. |
+| <a id="mutationprojectsetcontinuousvulnerabilityscanningerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.projectSetLocked`
 
 Input type: `ProjectSetLockedInput`

@@ -314,6 +314,32 @@ To remove a compliance framework from multiple projects in a group:
 1. From the **Choose one bulk action** dropdown list, select **Remove framework from selected projects**.
 1. Select **Remove**.
 
+### Export a report of merge request compliance violations on projects in a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356791) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_violation_csv_export`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
+`compliance_violation_csv_export`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Export a report of merge request compliance violations on merge requests belonging to projects in a group. Reports:
+
+- Do not use filters on the violations report.
+- Are truncated at 15 MB so the email attachment is not too large.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To export a report of merge request compliance violations for projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Secure > Compliance center**.
+1. On the page, select the **Violations** tab.
+1. On the Violations tab, select the **Export full report as CSV** action in the top right corner
+
+A report is compiled and delivered to your email inbox as an attachment.
+
 ### Export a report of compliance frameworks on projects in a group
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387912) in GitLab 16.0.

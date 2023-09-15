@@ -93,6 +93,7 @@ See the warning in [create a project access token](#create-a-project-access-toke
 | `read_repository`  | Grants read access (pull) to the repository.                                                                                                                    |
 | `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                                 |
 | `create_runner`    | Grants permission to create runners in the project.                                                                                                             |
+| `ai_features`      | Grants permission to perform API actions for GitLab Duo.                                                                                                        |
 
 ## Enable or disable project access token creation
 

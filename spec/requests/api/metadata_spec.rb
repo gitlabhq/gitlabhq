@@ -41,6 +41,22 @@ RSpec.describe API::Metadata, feature_category: :shared do
         end
       end
 
+      context 'with ai_features scope' do
+        let(:scopes) { %i(ai_features) }
+
+        it 'returns the metadata information' do
+          get api(endpoint, personal_access_token: personal_access_token)
+
+          expect_metadata
+        end
+
+        it 'returns "200" response on head requests' do
+          head api(endpoint, personal_access_token: personal_access_token)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
       context 'with read_user scope' do
         let(:scopes) { %i(read_user) }
 
@@ -57,7 +73,7 @@ RSpec.describe API::Metadata, feature_category: :shared do
         end
       end
 
-      context 'with neither api nor read_user scope' do
+      context 'with neither api, ai_features nor read_user scope' do
         let(:scopes) { %i(read_repository) }
 
         it 'returns authorization error' do

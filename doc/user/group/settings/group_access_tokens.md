@@ -149,6 +149,7 @@ The scope determines the actions you can perform when you authenticate with a gr
 | `read_repository`  | Grants read access (pull) to all repositories within a group.                                                                                                                    |
 | `write_repository` | Grants read and write access (pull and push) to all repositories within a group.                                                                                                 |
 | `create_runner`    | Grants permission to create runners in a group.                                                                                                                                  |
+| `ai_features`      | Grants permission to perform API actions for GitLab Duo.                                                                                                                         |
 
 ## Enable or disable group access token creation
 

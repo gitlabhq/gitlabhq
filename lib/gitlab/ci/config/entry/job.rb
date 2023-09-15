@@ -120,7 +120,7 @@ module Gitlab
 
           entry :id_tokens, ::Gitlab::Config::Entry::ComposableHash,
             description: 'Configured JWTs for this job',
-            inherit: false,
+            inherit: true,
             metadata: { composable_class: ::Gitlab::Ci::Config::Entry::IdToken }
 
           entry :publish, Entry::Publish,

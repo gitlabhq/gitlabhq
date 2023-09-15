@@ -117,7 +117,7 @@ export default {
         <template #mrId>
           <gl-link
             :href="pipeline.merge_request.path"
-            class="link-commit ref-name gl-text-blue-500!"
+            class="link-commit gl-text-blue-500!"
             data-testid="mr-link"
             >!{{ pipeline.merge_request.iid }}</gl-link
           >

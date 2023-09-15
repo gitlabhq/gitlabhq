@@ -17989,6 +17989,9 @@ msgstr ""
 msgid "Enable only for confidential applications exclusively used by a trusted backend server that can securely store the client secret. Do not enable for native-mobile, single-page, or other JavaScript applications because they cannot keep the client secret confidential."
 msgstr ""
 
+msgid "Enable or disable keyboard shortcuts in your %{linkStart}user preferences%{linkEnd}."
+msgstr ""
+
 msgid "Enable or disable version check and Service Ping."
 msgstr ""
 
@@ -35315,6 +35318,9 @@ msgstr ""
 msgid "Preferences saved."
 msgstr ""
 
+msgid "Preferences|%{link_start}List of keyboard shortcuts%{link_end}"
+msgstr ""
+
 msgid "Preferences|Automatically add new list items"
 msgstr ""
 
@@ -35384,6 +35390,9 @@ msgstr ""
 msgid "Preferences|Enable integrated code intelligence on code views"
 msgstr ""
 
+msgid "Preferences|Enable keyboard shortcuts"
+msgstr ""
+
 msgid "Preferences|Failed to save preferences."
 msgstr ""
 
@@ -35400,6 +35409,9 @@ msgid "Preferences|Instead of all the files changed, show only one file at a tim
 msgstr ""
 
 msgid "Preferences|Integrations"
+msgstr ""
+
+msgid "Preferences|Keyboard shortcuts"
 msgstr ""
 
 msgid "Preferences|Layout width"

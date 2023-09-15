@@ -2042,6 +2042,52 @@ module Gitlab
         end
       end
 
+      describe 'id_tokens' do
+        subject(:execute) { described_class.new(config).execute }
+
+        let(:build) { execute.builds.first }
+        let(:id_tokens_vars) { { ID_TOKEN_1: { aud: 'http://gcp.com' } } }
+        let(:job_id_tokens_vars) { { ID_TOKEN_2: { aud: 'http://job.com' } } }
+
+        context 'when defined on job level' do
+          let(:config) do
+            YAML.dump({
+              rspec: { script: 'rspec', id_tokens: id_tokens_vars }
+            })
+          end
+
+          it 'returns defined id_tokens' do
+            expect(build[:id_tokens]).to eq(id_tokens_vars)
+          end
+        end
+
+        context 'when defined as default' do
+          let(:config) do
+            YAML.dump({
+              default: { id_tokens: id_tokens_vars },
+              rspec: { script: 'rspec' }
+            })
+          end
+
+          it 'returns inherited by default id_tokens' do
+            expect(build[:id_tokens]).to eq(id_tokens_vars)
+          end
+        end
+
+        context 'when defined as default and on job level' do
+          let(:config) do
+            YAML.dump({
+              default: { id_tokens: id_tokens_vars },
+              rspec: { script: 'rspec', id_tokens: job_id_tokens_vars }
+            })
+          end
+
+          it 'overrides default and returns defined on job level' do
+            expect(build[:id_tokens]).to eq(job_id_tokens_vars)
+          end
+        end
+      end
+
       describe "Artifacts" do
         it "returns artifacts when defined" do
           config = YAML.dump(

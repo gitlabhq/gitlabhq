@@ -14,7 +14,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Inheritable
 
           ALLOWED_KEYS = %i[before_script after_script hooks cache image services
-                            interruptible timeout retry tags artifacts].freeze
+                            interruptible timeout retry tags artifacts id_tokens].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -64,6 +64,11 @@ module Gitlab
           entry :artifacts, Entry::Artifacts,
             description: 'Default artifacts.',
             inherit: false
+
+          entry :id_tokens, ::Gitlab::Config::Entry::ComposableHash,
+            description: 'Configured JWTs for this job',
+            inherit: false,
+            metadata: { composable_class: ::Gitlab::Ci::Config::Entry::IdToken }
 
           private
 
