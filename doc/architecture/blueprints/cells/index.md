@@ -399,6 +399,29 @@ TBD
 
 TBD
 
+### How do I decide whether to move my feature to the cluster, Cell or Organization level?
+
+By default, features are required to be scoped to the Organization level. Any deviation from that rule should be validated and approved by Tenant Scale.
+
+The design goals of the Cells architecture describe that [all Cells are under a single domain](goals.md#all-cells-are-under-a-single-gitlabcom-domain) and as such, Cells are invisible to the user:
+
+- Cell-local features should be limited to those related to managing the Cell, but never be a feature where the Cell semantic is exposed to the customer.
+- The Cells architecture wants to freely control the distribution of Organization and customer data across Cells without impacting users when data is migrated.
+ 
+Cluster-wide features are strongly discouraged because:
+
+- They might require storing a substantial amount of data cluster-wide which decreases [scalability headroom](goals.md#provides-100x-headroom).
+- They might require implementation of non-trivial [data aggregation](goals.md#aggregation-of-cluster-wide-data) that reduces resilience to [single node failure](goals.md#high-resilience-to-a-single-cell-failure).
+- They are harder to build due to the need of being able to run [mixed deployments](goals.md#cells-running-in-mixed-deployments). Cluster-wide features need to take this into account.
+- They might affect our ability to provide an [on-premise like experience on GitLab.com](goals.md#on-premise-like-experience).
+- Some features that are expected to be cluster-wide might in fact be better implemented using federation techniques that use trusted intra-cluster communication using the same user identity. User Profile is shared across the cluster.
+- The Cells architecture limits what services can be considered cluster-wide. Services that might initially be cluster-wide are still expected to be split in the future to achieve full service isolation. No feature should be built to depend on such a service (like Elasticsearch).
+
+### Will Cells use the [reference architecture for 50,000 users](../../../administration/reference_architectures/50k_users.md)?
+
+The infrastructure team will properly size Cells depending on the load.
+The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for Cells deployment.
+
 ## Decision log
 
 - 2022-03-15: Google Cloud as the cloud service. For details, see [issue 396641](https://gitlab.com/gitlab-org/gitlab/-/issues/396641#note_1314932272).

@@ -995,6 +995,8 @@
 #################
 .caching:rules:cache-workhorse:
   rules:
+    - <<: *if-not-ee
+      when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
     - <<: *if-schedule-maintenance
@@ -1011,6 +1013,8 @@
   rules:
     # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
     - if: '$CACHE_ASSETS_AS_PACKAGE != "true"'
+      when: never
+    - <<: *if-not-ee
       when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
@@ -1034,6 +1038,8 @@
   rules:
     # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
     - if: '$CACHE_ASSETS_AS_PACKAGE != "true"'
+      when: never
+    - <<: *if-not-ee
       when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
@@ -1256,11 +1262,11 @@
     # The new strategy to upload fixtures as generic packages is experimental and can be disabled by removing the `REUSE_FRONTEND_FIXTURES_ENABLED` variable
     - if: '$REUSE_FRONTEND_FIXTURES_ENABLED != "true"'
       when: never
+    - <<: *if-not-ee
+      when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-dot-com-gitlab-org-default-branch
-      changes: *code-backstage-patterns
-    - <<: *if-foss-default-branch
       changes: *code-backstage-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
@@ -1816,6 +1822,9 @@
       when: never
     # From .qa:rules:package-and-test-schedule
     - <<: *if-dot-com-gitlab-org-schedule
+      when: never
+    # Do not run on unapproved MR
+    - <<: *if-merge-request-not-approved
       when: never
     # From .qa:rules:code-merge-request-manual
     - <<: *if-merge-request

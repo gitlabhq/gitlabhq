@@ -29,6 +29,10 @@ const initSentry = () => {
         : [gon.gitlab_url, 'webpack-internal://'],
     environment: gon.sentry_environment,
 
+    // Browser tracing configuration
+    tracePropagationTargets: [/^\//], // only trace internal requests
+    tracesSampleRate: gon.sentry_clientside_traces_sample_rate || 0,
+
     // This configuration imitates the Sentry.init() default configuration
     // https://github.com/getsentry/sentry-javascript/blob/7.66.0/MIGRATION.md#explicit-client-options
     transport: makeFetchTransport,

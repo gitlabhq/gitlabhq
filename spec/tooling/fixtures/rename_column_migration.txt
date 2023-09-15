@@ -1,0 +1,45 @@
++# frozen_string_literal: true
++
++class TestMigration < Gitlab::Database::Migration[2.1]
++  disable_ddl_transaction!
++
++  def up
++    cleanup_concurrent_column_rename :my_table, :old_column, :new_column
++  end
++
++  def up
++    cleanup_concurrent_column_rename 'my_table', 'old_column', 'new_column'
++  end
++
++  def up
++    cleanup_concurrent_column_rename "my_table", "old_column", "new_column"
++  end
++
++  def up
++    cleanup_concurrent_column_rename TABLE_NAME, OLD_COLUMN_NAME, NEW_COLUMN_NAME
++  end
++
++  def up
++    cleanup_concurrent_column_rename(:my_table, :old_column, :new_column)
++  end
++
++  def up
++    cleanup_concurrent_column_rename('my_table', 'old_column', 'new_column')
++  end
++
++  def up
++    cleanup_concurrent_column_rename("my_table", "old_column", "new_column")
++  end
++
++  def up
++    cleanup_concurrent_column_rename(TABLE_NAME, OLD_COLUMN_NAME, NEW_COLUMN_NAME)
++  end
++
++  def up
++    cleanup_concurrent_column_rename(
++      :my_table,
++      :old_column,
++      :new_column
++    )
++  end
++end

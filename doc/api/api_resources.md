@@ -112,37 +112,38 @@ The following API resources are available in the project context:
 
 The following API resources are available in the group context:
 
-| Resource                                                         | Available endpoints |
-|:-----------------------------------------------------------------|:--------------------|
-| [Access requests](access_requests.md)                            | `/groups/:id/access_requests/` (also available for projects) |
-| [Access tokens](group_access_tokens.md)                          | `/groups/:id/access_tokens` (also available for projects) |
-| [Custom attributes](custom_attributes.md)                        | `/groups/:id/custom_attributes` (also available for projects and users) |
-| [Debian distributions](packages/debian_group_distributions.md)   | `/groups/:id/-/packages/debian` (also available for projects) |
-| [Deploy tokens](deploy_tokens.md)                                | `/groups/:id/deploy_tokens` (also available for projects and standalone) |
-| [Discussions](discussions.md) (comments and threads)             | `/groups/:id/epics/.../discussions` (also available for projects) |
-| [Epic issues](epic_issues.md) **(PREMIUM ALL)**                      | `/groups/:id/epics/.../issues` |
-| [Epic links](epic_links.md) **(PREMIUM ALL)**                        | `/groups/:id/epics/.../epics` |
-| [Epics](epics.md) **(PREMIUM ALL)**                                  | `/groups/:id/epics` |
-| [Groups](groups.md)                                              | `/groups`, `/groups/.../subgroups` |
-| [Group badges](group_badges.md)                                  | `/groups/:id/badges` |
-| [Group issue boards](group_boards.md)                            | `/groups/:id/boards` |
-| [Group iterations](group_iterations.md) **(PREMIUM ALL)**            | `/groups/:id/iterations` (also available for projects) |
-| [Group labels](group_labels.md)                                  | `/groups/:id/labels` |
-| [Group-level variables](group_level_variables.md)                | `/groups/:id/variables` |
-| [Group milestones](group_milestones.md)                          | `/groups/:id/milestones` |
-| [Group releases](group_releases.md)                              | `/groups/:id/releases`|
-| [Group wikis](group_wikis.md) **(PREMIUM ALL)**                      | `/groups/:id/wikis` |
-| [Invitations](invitations.md)                                    | `/groups/:id/invitations` (also available for projects) |
-| [Issues](issues.md)                                              | `/groups/:id/issues` (also available for projects and standalone) |
-| [Issues Statistics](issues_statistics.md)                        | `/groups/:id/issues_statistics` (also available for projects and standalone) |
-| [Linked epics](linked_epics.md)                  | `/groups/:id/epics/.../related_epics` |
-| [Member Roles](member_roles.md)                                  | `/groups/:id/member_roles` |
-| [Members](members.md)                                            | `/groups/:id/members` (also available for projects) |
-| [Merge requests](merge_requests.md)                              | `/groups/:id/merge_requests` (also available for projects and standalone) |
-| [Notes](notes.md) (comments)                                     | `/groups/:id/epics/.../notes` (also available for projects) |
-| [Notification settings](notification_settings.md)                | `/groups/:id/notification_settings` (also available for projects and standalone) |
-| [Resource label events](resource_label_events.md)                | `/groups/:id/epics/.../resource_label_events` (also available for projects) |
-| [Search](search.md)                                              | `/groups/:id/search` (also available for projects and standalone) |
+| Resource                                                              | Available endpoints                                                              |
+|:----------------------------------------------------------------------|:---------------------------------------------------------------------------------|
+| [Access requests](access_requests.md)                                 | `/groups/:id/access_requests/` (also available for projects)                     |
+| [Access tokens](group_access_tokens.md)                               | `/groups/:id/access_tokens` (also available for projects)                        |
+| [Custom attributes](custom_attributes.md)                             | `/groups/:id/custom_attributes` (also available for projects and users)          |
+| [Debian distributions](packages/debian_group_distributions.md)        | `/groups/:id/-/packages/debian` (also available for projects)                    |
+| [Deploy tokens](deploy_tokens.md)                                     | `/groups/:id/deploy_tokens` (also available for projects and standalone)         |
+| [Discussions](discussions.md) (comments and threads)                  | `/groups/:id/epics/.../discussions` (also available for projects)                |
+| [Epic issues](epic_issues.md) **(PREMIUM ALL)**                       | `/groups/:id/epics/.../issues`                                                   |
+| [Epic links](epic_links.md) **(PREMIUM ALL)**                         | `/groups/:id/epics/.../epics`                                                    |
+| [Epics](epics.md) **(PREMIUM ALL)**                                   | `/groups/:id/epics`                                                              |
+| [Groups](groups.md)                                                   | `/groups`, `/groups/.../subgroups`                                               |
+| [Group badges](group_badges.md)                                       | `/groups/:id/badges`                                                             |
+| [Group issue boards](group_boards.md)                                 | `/groups/:id/boards`                                                             |
+| [Group iterations](group_iterations.md) **(PREMIUM ALL)**             | `/groups/:id/iterations` (also available for projects)                           |
+| [Group labels](group_labels.md)                                       | `/groups/:id/labels`                                                             |
+| [Group-level variables](group_level_variables.md)                     | `/groups/:id/variables`                                                          |
+| [Group milestones](group_milestones.md)                               | `/groups/:id/milestones`                                                         |
+| [Group releases](group_releases.md)                                   | `/groups/:id/releases`                                                           |
+| [Group SSH certificates](group_ssh_certificates.md) **(PREMIUM ALL)** | `/groups/:id/ssh_certificates`                                                   |
+| [Group wikis](group_wikis.md) **(PREMIUM ALL)**                       | `/groups/:id/wikis`                                                              |
+| [Invitations](invitations.md)                                         | `/groups/:id/invitations` (also available for projects)                          |
+| [Issues](issues.md)                                                   | `/groups/:id/issues` (also available for projects and standalone)                |
+| [Issues Statistics](issues_statistics.md)                             | `/groups/:id/issues_statistics` (also available for projects and standalone)     |
+| [Linked epics](linked_epics.md)                                       | `/groups/:id/epics/.../related_epics`                                            |
+| [Member Roles](member_roles.md)                                       | `/groups/:id/member_roles`                                                       |
+| [Members](members.md)                                                 | `/groups/:id/members` (also available for projects)                              |
+| [Merge requests](merge_requests.md)                                   | `/groups/:id/merge_requests` (also available for projects and standalone)        |
+| [Notes](notes.md) (comments)                                          | `/groups/:id/epics/.../notes` (also available for projects)                      |
+| [Notification settings](notification_settings.md)                     | `/groups/:id/notification_settings` (also available for projects and standalone) |
+| [Resource label events](resource_label_events.md)                     | `/groups/:id/epics/.../resource_label_events` (also available for projects)      |
+| [Search](search.md)                                                   | `/groups/:id/search` (also available for projects and standalone)                |
 
 ## Standalone resources
 

@@ -1,0 +1,84 @@
++# frozen_string_literal: true
++
++class TestMigration < Gitlab::Database::Migration[2.1]
++  disable_ddl_transaction!
++
++  def up
++    remove_column :my_table, :my_column
++    remove_column :my_other_table, :my_column
++  end
++
++  def down
++    remove_column :my_table, :my_column
++  end
++
++  def up
++    remove_column 'my_table', 'my_column'
++  end
++
++  def down
++    remove_column 'my_table', 'my_column'
++  end
++
++  def up
++    remove_column "my_table", "my_column", "new_column"
++  end
++
++  def down
++    remove_column "my_table", "my_column", "new_column"
++  end
++
++  def up
++    remove_column TABLE_NAME, MY_COLUMN
++  end
++
++  def down
++    remove_column TABLE_NAME, MY_COLUMN
++  end
++
++  def up
++    remove_column(:my_table, :my_column)
++  end
++
++  def down
++    remove_column(:my_table, :my_column)
++  end
++
++  def up
++    remove_column('my_table', 'my_column')
++  end
++
++  def down
++    remove_column('my_table', 'my_column')
++  end
++
++  def up
++    remove_column("my_table", "my_column")
++  end
++
++  def down
++    remove_column("my_table", "my_column")
++  end
++
++  def up
++    remove_column(TABLE_NAME, MY_COLUMN)
++  end
++
++  def down
++    remove_column(TABLE_NAME, MY_COLUMN)
++  end
++
++  def up
++    remove_column(
++      :my_table,
++      :my_column
++    )
++  end
++
++  def down
++    remove_column(
++      :my_table,
++      :my_column
++    )
++  end
++end

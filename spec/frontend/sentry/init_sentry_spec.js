@@ -22,6 +22,7 @@ const mockVersion = '1.0.0';
 const mockRevision = '00112233';
 const mockFeatureCategory = 'my_feature_category';
 const mockPage = 'index:page';
+const mockSentryClientsideTracesSampleRate = 0.1;
 
 jest.mock('sentrybrowser', () => {
   return {
@@ -51,6 +52,7 @@ describe('SentryConfig', () => {
       version: mockVersion,
       revision: mockRevision,
       feature_category: mockFeatureCategory,
+      sentry_clientside_traces_sample_rate: mockSentryClientsideTracesSampleRate,
     };
 
     document.body.dataset.page = mockPage;
@@ -89,6 +91,8 @@ describe('SentryConfig', () => {
             release: mockVersion,
             allowUrls: [mockGitlabUrl, 'webpack-internal://'],
             environment: mockEnvironment,
+            tracesSampleRate: mockSentryClientsideTracesSampleRate,
+            tracePropagationTargets: [/^\//],
 
             transport: makeFetchTransport,
             stackParser: defaultStackParser,

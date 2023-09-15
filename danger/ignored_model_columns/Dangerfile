@@ -1,0 +1,3 @@
+# frozen_string_literal: true
+
+ignored_model_columns.add_comment_for_ignored_model_columns

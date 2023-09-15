@@ -1,0 +1,44 @@
++# frozen_string_literal: true
++
++class TestMigration < Gitlab::Database::Migration[2.1]
++  disable_ddl_transaction!
++
++  def up
++    cleanup_conversion_of_integer_to_bigint :my_table, :my_column
++  end
++
++  def up
++    cleanup_conversion_of_integer_to_bigint 'my_table', 'my_column'
++  end
++
++  def up
++    cleanup_conversion_of_integer_to_bigint "my_table", "my_column", "new_column"
++  end
++
++  def up
++    cleanup_conversion_of_integer_to_bigint TABLE_NAME, MY_COLUMN
++  end
++
++  def up
++    cleanup_conversion_of_integer_to_bigint(:my_table, :my_column)
++  end
++
++  def up
++    cleanup_conversion_of_integer_to_bigint('my_table', 'my_column')
++  end
++
++  def up
++    cleanup_conversion_of_integer_to_bigint("my_table", "my_column")
++  end
++
++  def up
++    cleanup_conversion_of_integer_to_bigint(TABLE_NAME, MY_COLUMN)
++  end
++
++  def up
++    cleanup_conversion_of_integer_to_bigint(
++      :my_table,
++      :my_column
++    )
++  end
++end
