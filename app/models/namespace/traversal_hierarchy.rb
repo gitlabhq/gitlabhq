@@ -39,9 +39,16 @@ class Namespace
           AND namespaces.traversal_ids::bigint[] <> cte.traversal_ids
       SQL
 
-      Namespace.transaction do
-        @root.lock!("FOR NO KEY UPDATE")
-        Namespace.connection.exec_query(sql)
+      # Hint: when a user is created, it also creates a Namespaces::UserNamespace in
+      # `ensure_namespace_correct`. This method is then called within the same
+      # transaction of the user INSERT.
+      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+        %w[namespaces], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424279'
+      ) do
+        Namespace.transaction do
+          @root.lock!("FOR NO KEY UPDATE")
+          Namespace.connection.exec_query(sql)
+        end
       end
     rescue ActiveRecord::Deadlocked
       db_deadlock_counter.increment(source: 'Namespace#sync_traversal_ids!')

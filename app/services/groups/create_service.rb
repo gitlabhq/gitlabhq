@@ -35,10 +35,14 @@ module Groups
         @group.build_chat_team(name: response['name'], team_id: response['id'])
       end
 
-      Group.transaction do
-        if @group.save
-          @group.add_owner(current_user)
-          Integration.create_from_active_default_integrations(@group, :group_id)
+      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+        %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424281'
+      ) do
+        Group.transaction do
+          if @group.save
+            @group.add_owner(current_user)
+            Integration.create_from_active_default_integrations(@group, :group_id)
+          end
         end
       end
 

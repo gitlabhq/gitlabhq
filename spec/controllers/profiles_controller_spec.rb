@@ -193,20 +193,6 @@ RSpec.describe ProfilesController, :request_store do
         .to raise_error(ActionController::ParameterMissing)
     end
 
-    context 'with legacy storage' do
-      it 'moves dependent projects to new namespace' do
-        project = create(:project_empty_repo, :legacy_storage, namespace: namespace)
-
-        put :update_username,
-          params: { user: { username: new_username } }
-
-        user.reload
-
-        expect(response).to have_gitlab_http_status(:found)
-        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{new_username}/#{project.path}.git")).to be_truthy
-      end
-    end
-
     context 'with hashed storage' do
       it 'keeps repository location unchanged on disk' do
         project = create(:project_empty_repo, namespace: namespace)

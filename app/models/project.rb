@@ -44,8 +44,11 @@ class Project < ApplicationRecord
   include IssueParent
   include UpdatedAtFilterable
   include IgnorableColumns
+  include CrossDatabaseIgnoredTables
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
+
+  cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override

@@ -69,7 +69,7 @@ RSpec.describe GroupMember, feature_category: :cell do
 
   describe '#update_two_factor_requirement' do
     it 'is called after creation and deletion' do
-      user = build :user
+      user = create :user
       group = create :group
       group_member = build :group_member, user: user, group: group
 

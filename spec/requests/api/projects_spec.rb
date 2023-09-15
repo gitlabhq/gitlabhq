@@ -713,7 +713,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let!(:project9) { create(:project, :public, path: 'gitlab9') }
 
         before do
-          user.update!(starred_projects: [project5, project7, project8, project9])
+          [project5, project7, project8, project9].each do |project|
+            user.users_star_projects.create!(project_id: project.id)
+          end
         end
 
         context 'including owned filter' do
@@ -4657,8 +4659,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     before do
-      user.update!(starred_projects: [public_project])
-      private_user.update!(starred_projects: [public_project])
+      user.users_star_projects.create!(project_id: public_project.id)
+      private_user.users_star_projects.create!(project_id: public_project.id)
     end
 
     it 'returns not_found(404) for not existing project' do

@@ -17,6 +17,9 @@ class Namespace < ApplicationRecord
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings
   include Referable
+  include CrossDatabaseIgnoredTables
+
+  cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
@@ -145,7 +148,6 @@ class Namespace < ApplicationRecord
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
   after_update :move_dir, if: :saved_change_to_path_or_parent?, unless: -> { is_a?(Namespaces::ProjectNamespace) }
-  after_destroy :rm_dir
 
   after_save :reload_namespace_details
 
@@ -155,7 +157,6 @@ class Namespace < ApplicationRecord
 
   # Legacy Storage specific hooks
 
-  before_destroy(prepend: true) { prepare_for_destroy }
   after_commit :expire_child_caches, on: :update, if: -> {
     Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
       saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?

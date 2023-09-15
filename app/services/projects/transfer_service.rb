@@ -110,36 +110,40 @@ module Projects
     end
 
     def proceed_to_transfer
-      Project.transaction do
-        project.expire_caches_before_rename(@old_path)
+      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+        %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424282'
+      ) do
+        Project.transaction do
+          project.expire_caches_before_rename(@old_path)
 
-        # Apply changes to the project
-        update_namespace_and_visibility(@new_namespace)
-        project.reconcile_shared_runners_setting!
-        project.save!
+          # Apply changes to the project
+          update_namespace_and_visibility(@new_namespace)
+          project.reconcile_shared_runners_setting!
+          project.save!
 
-        # Notifications
-        project.send_move_instructions(@old_path)
+          # Notifications
+          project.send_move_instructions(@old_path)
 
-        # Directories on disk
-        move_project_folders(project)
+          # Directories on disk
+          move_project_folders(project)
 
-        transfer_missing_group_resources(@old_group)
+          transfer_missing_group_resources(@old_group)
 
-        # Move uploads
-        move_project_uploads(project)
+          # Move uploads
+          move_project_uploads(project)
 
-        update_integrations
+          update_integrations
 
-        remove_paid_features
+          remove_paid_features
 
-        project.old_path_with_namespace = @old_path
+          project.old_path_with_namespace = @old_path
 
-        update_repository_configuration(@new_path)
+          update_repository_configuration(@new_path)
 
-        remove_issue_contacts
+          remove_issue_contacts
 
-        execute_system_hooks
+          execute_system_hooks
+        end
       end
 
       update_pending_builds

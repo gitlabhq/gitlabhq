@@ -113,7 +113,7 @@ gem 'browser', '~> 5.3.1'
 gem 'ohai', '~> 17.9'
 
 # GPG
-gem 'gpgme', '~> 2.0.22'
+gem 'gpgme', '~> 2.0.23'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -493,7 +493,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false
 
-  gem 'gitlab_quality-test_tooling', '~> 0.9.3', require: false
+  gem 'gitlab_quality-test_tooling', '~> 1.0.0', require: false
 end
 
 gem 'octokit', '~> 6.0'

@@ -9,7 +9,6 @@ class GroupMember < Member
 
   belongs_to :group, foreign_key: 'source_id'
   alias_attribute :namespace_id, :source_id
-  delegate :update_two_factor_requirement, to: :user, allow_nil: true
 
   # Make sure group member points only to group as it source
   attribute :source_type, default: SOURCE_TYPE
@@ -25,6 +24,16 @@ class GroupMember < Member
   after_destroy :update_two_factor_requirement, unless: :invite?
 
   attr_accessor :last_owner
+
+  def update_two_factor_requirement
+    return unless user
+
+    Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+      %w[users user_details user_preferences], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424288'
+    ) do
+      user.update_two_factor_requirement
+    end
+  end
 
   # For those who get to see a modal with a role dropdown, here are the options presented
   def self.permissible_access_level_roles(_, _)

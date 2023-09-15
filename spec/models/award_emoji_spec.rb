@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe AwardEmoji do
+RSpec.describe AwardEmoji, feature_category: :team_planning do
+  let_it_be(:user) { create(:user) }
+
   describe 'Associations' do
     it { is_expected.to belong_to(:awardable) }
     it { is_expected.to belong_to(:user) }
@@ -60,7 +62,6 @@ RSpec.describe AwardEmoji do
     end
 
     context 'custom emoji' do
-      let_it_be(:user) { create(:user) }
       let_it_be(:group) { create(:group) }
       let_it_be(:emoji) { create(:custom_emoji, name: 'partyparrot', namespace: group) }
       let_it_be(:project) { create(:project, namespace: group) }
@@ -144,7 +145,7 @@ RSpec.describe AwardEmoji do
   describe 'broadcasting updates' do
     context 'on a note' do
       let(:note) { create(:note_on_issue) }
-      let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: note) }
+      let(:award_emoji) { build(:award_emoji, user: user, awardable: note) }
 
       it 'broadcasts updates on the note when saved' do
         expect(note).to receive(:broadcast_noteable_notes_changed)
@@ -161,7 +162,7 @@ RSpec.describe AwardEmoji do
       end
 
       context 'when importing' do
-        let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: note, importing: true) }
+        let(:award_emoji) { build(:award_emoji, user: user, awardable: note, importing: true) }
 
         it 'does not broadcast updates on the note when saved' do
           expect(note).not_to receive(:broadcast_noteable_notes_changed)
@@ -174,7 +175,7 @@ RSpec.describe AwardEmoji do
 
     context 'on another awardable' do
       let(:issue) { create(:issue) }
-      let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: issue) }
+      let(:award_emoji) { build(:award_emoji, user: user, awardable: issue) }
 
       it 'does not broadcast updates on the issue when saved' do
         expect(issue).not_to receive(:broadcast_noteable_notes_changed)
@@ -194,7 +195,7 @@ RSpec.describe AwardEmoji do
 
   describe 'bumping updated at' do
     let(:note) { create(:note_on_issue) }
-    let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: note) }
+    let(:award_emoji) { build(:award_emoji, user: user, awardable: note) }
 
     it 'calls bump_updated_at on the note when saved' do
       expect(note).to receive(:bump_updated_at)
@@ -210,7 +211,7 @@ RSpec.describe AwardEmoji do
 
     context 'on another awardable' do
       let(:issue) { create(:issue) }
-      let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: issue) }
+      let(:award_emoji) { build(:award_emoji, user: user, awardable: issue) }
 
       it 'does not error out when saved' do
         expect { award_emoji.save! }.not_to raise_error
@@ -248,8 +249,8 @@ RSpec.describe AwardEmoji do
   describe 'updating upvotes_count' do
     context 'on an issue' do
       let(:issue) { create(:issue) }
-      let(:upvote) { build(:award_emoji, :upvote, user: build(:user), awardable: issue) }
-      let(:downvote) { build(:award_emoji, :downvote, user: build(:user), awardable: issue) }
+      let(:upvote) { build(:award_emoji, :upvote, user: user, awardable: issue) }
+      let(:downvote) { build(:award_emoji, :downvote, user: user, awardable: issue) }
 
       it 'updates upvotes_count on the issue when saved' do
         expect(issue).to receive(:update_column).with(:upvotes_count, 1).once
@@ -268,7 +269,7 @@ RSpec.describe AwardEmoji do
 
     context 'on another awardable' do
       let(:merge_request) { create(:merge_request) }
-      let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: merge_request) }
+      let(:award_emoji) { build(:award_emoji, user: user, awardable: merge_request) }
 
       it 'does not update upvotes_count on the merge_request when saved' do
         expect(merge_request).not_to receive(:update_column)
@@ -329,7 +330,7 @@ RSpec.describe AwardEmoji do
 
   describe '#to_ability_name' do
     let(:merge_request) { create(:merge_request) }
-    let(:award_emoji) { build(:award_emoji, user: build(:user), awardable: merge_request) }
+    let(:award_emoji) { build(:award_emoji, user: user, awardable: merge_request) }
 
     it 'returns correct ability name' do
       expect(award_emoji.to_ability_name).to be('emoji')

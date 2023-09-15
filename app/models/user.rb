@@ -30,6 +30,7 @@ class User < MainClusterwide::ApplicationRecord
   include RestrictedSignup
   include StripAttribute
   include EachBatch
+  include CrossDatabaseIgnoredTables
   include IgnorableColumns
 
   ignore_column %i[
@@ -38,6 +39,19 @@ class User < MainClusterwide::ApplicationRecord
     email_opted_in_source_id
     email_opted_in_at
   ], remove_with: '16.6', remove_after: '2023-10-22'
+
+  # `ensure_namespace_correct` needs to be moved to an after_commit (?)
+  cross_database_ignore_tables %w[namespaces namespace_settings], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424279'
+
+  # `notification_settings_for` is called, and elsewhere `save` is then called.
+  cross_database_ignore_tables %w[notification_settings], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424284'
+
+  # Associations with dependent: option
+  cross_database_ignore_tables(
+    %w[namespaces projects project_authorizations issues merge_requests merge_requests issues issues merge_requests],
+    url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424285',
+    on: :destroy
+  )
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -348,7 +362,9 @@ class User < MainClusterwide::ApplicationRecord
         email_to_confirm.confirm
       end
     else
-      add_primary_email_to_emails!
+      ignore_cross_database_tables_if_factory_bot(%w[emails]) do
+        add_primary_email_to_emails!
+      end
     end
   end
   after_commit(on: :update) do
@@ -503,11 +519,19 @@ class User < MainClusterwide::ApplicationRecord
     end
 
     after_transition any => :active do |user|
-      user.starred_projects.update_counters(star_count: 1)
+      user.class.temporary_ignore_cross_database_tables(
+        %w[projects], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424278'
+      ) do
+        user.starred_projects.update_counters(star_count: 1)
+      end
     end
 
     after_transition active: any do |user|
-      user.starred_projects.update_counters(star_count: -1)
+      user.class.temporary_ignore_cross_database_tables(
+        %w[projects], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424278'
+      ) do
+        user.starred_projects.update_counters(star_count: -1)
+      end
     end
   end
 

@@ -625,7 +625,7 @@ For information, see [Download job artifacts](../../../ci/jobs/job_artifacts.md#
 For details of the report file's schema, see
 [SAST report file schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json).
 
-For an example SAST report file, see [`gl-secret-detection-report.json`](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/qa/expect/secrets/gl-secret-detection-report.json) example.
+For an example SAST report file, see [`gl-sast-report.json`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/qa/expect/js/default/gl-sast-report.json) example.
 
 ## Running SAST in an offline environment
 

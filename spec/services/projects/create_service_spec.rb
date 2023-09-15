@@ -640,6 +640,17 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
       expect(project.project_namespace).to be_in_sync_with_project(project)
     end
 
+    it 'raises when repository fails to create' do
+      expect_next_instance_of(Project) do |instance|
+        expect(instance).to receive(:create_repository).and_return(false)
+      end
+
+      project = create_project(user, opts)
+      expect(project).not_to be_persisted
+      expect(project.errors.messages).to have_key(:base)
+      expect(project.errors.messages[:base].first).to match('Failed to create repository')
+    end
+
     context 'when another repository already exists on disk' do
       let(:opts) do
         {
