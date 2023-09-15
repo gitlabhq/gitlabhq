@@ -17549,6 +17549,26 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupcontributionsfrom"></a>`from` | [`ISO8601Date!`](#iso8601date) | Start date of the reporting time range. |
 | <a id="groupcontributionsto"></a>`to` | [`ISO8601Date!`](#iso8601date) | End date of the reporting time range. The end date must be within 93 days after the start date. |
 
+##### `Group.customizableDashboardVisualizations`
+
+Visualizations of the group or associated configuration project.
+
+WARNING:
+**Introduced** in 16.4.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardvisualizationconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupcustomizabledashboardvisualizationsslug"></a>`slug` | [`String`](#string) | Slug of the visualization to return. |
+
 ##### `Group.customizableDashboards`
 
 Customizable dashboards for the group.

@@ -104,27 +104,6 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     box-shadow: none;
   }
 
-  .context-switcher .gl-new-dropdown-custom-toggle {
-    width: 100%;
-  }
-
-  .context-switcher .gl-new-dropdown-panel {
-    overflow-y: auto;
-  }
-
-  .context-switcher-search-box input {
-    @include gl-font-sm;
-  }
-
-  .gl-new-dropdown-custom-toggle .context-switcher-toggle {
-    &[aria-expanded='true'] {
-      background-color: $t-gray-a-08;
-    }
-
-    &:focus {
-      @include gl-focus($inset: true); }
-  }
-
   .btn-with-notification {
     position: relative;
 

@@ -3,7 +3,6 @@ import MockAdapter from 'axios-mock-adapter';
 import {
   getTopFrequentItems,
   trackContextAccess,
-  formatContextSwitcherItems,
   getItemsFromLocalStorage,
   removeItemFromLocalStorage,
   ariaCurrent,
@@ -15,7 +14,7 @@ import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constant
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import waitForPromises from 'helpers/wait_for_promises';
 import { unsortedFrequentItems, sortedFrequentItems } from '../frequent_items/mock_data';
-import { cachedFrequentProjects, searchUserProjectsAndGroupsResponseMock } from './mock_data';
+import { cachedFrequentProjects } from './mock_data';
 
 jest.mock('@sentry/browser');
 
@@ -223,21 +222,6 @@ describe('Super sidebar utils spec', () => {
           }),
         ]),
       );
-    });
-  });
-
-  describe('formatContextSwitcherItems', () => {
-    it('returns the formatted items', () => {
-      const projects = searchUserProjectsAndGroupsResponseMock.data.projects.nodes;
-      expect(formatContextSwitcherItems(projects)).toEqual([
-        {
-          id: projects[0].id,
-          avatar: null,
-          title: projects[0].name,
-          subtitle: 'Gitlab Org',
-          link: projects[0].webUrl,
-        },
-      ]);
     });
   });
 

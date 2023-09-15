@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/browser';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
-import { truncateNamespace } from '~/lib/utils/text_utility';
 import axios from '~/lib/utils/axios_utils';
 
 /**
@@ -117,15 +116,6 @@ export const trackContextAccess = (username, context, trackVisitsPath) => {
 
   return localStorage.setItem(storageKey, JSON.stringify(storedItems));
 };
-
-export const formatContextSwitcherItems = (items) =>
-  items.map(({ id, name: title, namespace, avatarUrl: avatar, webUrl: link }) => ({
-    id,
-    title,
-    subtitle: truncateNamespace(namespace),
-    avatar,
-    link,
-  }));
 
 export const getItemsFromLocalStorage = ({ storageKey, maxItems }) => {
   if (!AccessorUtilities.canUseLocalStorage()) {

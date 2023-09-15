@@ -282,36 +282,3 @@ export const cachedFrequentGroups = JSON.stringify([
     frequency: 3,
   },
 ]);
-
-export const searchUserProjectsAndGroupsResponseMock = {
-  data: {
-    projects: {
-      nodes: [
-        {
-          id: 'gid://gitlab/Project/2',
-          name: 'Gitlab Shell',
-          namespace: 'Gitlab Org / Gitlab Shell',
-          webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-shell',
-          avatarUrl: null,
-          __typename: 'Project',
-        },
-      ],
-    },
-
-    user: {
-      id: 'gid://gitlab/User/1',
-      groups: {
-        nodes: [
-          {
-            id: 'gid://gitlab/Group/60',
-            name: 'GitLab Instance',
-            namespace: 'gitlab-instance-2e4abb29',
-            webUrl: 'http://gdk.test:3000/groups/gitlab-instance-2e4abb29',
-            avatarUrl: null,
-            __typename: 'Group',
-          },
-        ],
-      },
-    },
-  },
-};

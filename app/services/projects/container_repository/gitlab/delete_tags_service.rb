@@ -39,7 +39,7 @@ module Projects
             end
           end
 
-          @deleted_tags.any? ? success(deleted: @deleted_tags) : error('could not delete tags')
+          @deleted_tags.any? ? success(deleted: @deleted_tags) : error("could not delete tags: #{@tag_names.join(', ')}".truncate(1000))
         end
       end
     end

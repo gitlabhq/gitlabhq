@@ -8,7 +8,6 @@ module QA
         # since tablets have the regular top navigation bar
         prepend Mobile::Page::Main::Menu if Runtime::Env.phone_layout?
         include SubMenus::CreateNewMenu
-        include SubMenus::ContextSwitcher
         include SubMenus::SuperSidebar::GlobalSearchModal
 
         view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
