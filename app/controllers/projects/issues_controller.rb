@@ -113,12 +113,6 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.atom { render layout: 'xml' }
-      format.json do
-        render json: {
-          html: view_to_html_string("projects/issues/_issues"),
-          labels: @labels.as_json(methods: :text_color)
-        }
-      end
     end
   end
 
@@ -281,7 +275,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def service_desk
     @issues = @issuables
-    @users.push(Users::Internal.support_bot)
   end
 
   protected

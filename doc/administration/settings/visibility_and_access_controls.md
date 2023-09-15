@@ -132,6 +132,9 @@ To set the default [visibility levels for new projects](../../user/public_access
    - **Public** - The project can be accessed without any authentication.
 1. Select **Save changes**.
 
+For more details on project visibility, see
+[Project visibility](../../user/public_access.md).
+
 ## Configure snippet visibility defaults
 
 To set the default visibility levels for new [snippets](../../user/snippets.md):
@@ -145,7 +148,7 @@ To set the default visibility levels for new [snippets](../../user/snippets.md):
 1. Select **Save changes**.
 
 For more details on snippet visibility, read
-[Project visibility](../../user/public_access.md).
+[Snippet visibility](../../user/snippets.md).
 
 ## Configure group visibility defaults
 
@@ -166,6 +169,9 @@ For more details on group visibility, see
 [Group visibility](../../user/group/index.md#group-visibility).
 
 ## Restrict visibility levels
+
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124649) in GitLab 16.3 to prevent restricting default project and group visibility, [with a flag](../feature_flags.md) named `prevent_visibility_restriction`. Disabled by default.
+> - `prevent_visibility_restriction` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) by default in GitLab 16.4.
 
 When restricting visibility levels, consider how these restrictions interact
 with permissions for subgroups and projects that inherit their visibility from
@@ -191,8 +197,8 @@ To restrict visibility levels for groups, projects, snippets, and selected pages
      - Only administrators are able to create private groups, projects, and snippets.
 1. Select **Save changes**.
 
-For more details on project visibility, see
-[Project visibility](../../user/public_access.md).
+NOTE:
+You cannot select the restricted default visibility level for new projects and groups.
 
 ## Configure enabled Git access protocols
 

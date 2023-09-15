@@ -1133,9 +1133,6 @@ msgstr ""
 msgid "%{startDate} – No due date"
 msgstr ""
 
-msgid "%{start} to %{end}"
-msgstr ""
-
 msgid "%{statusStart}Dismissed%{statusEnd}"
 msgstr ""
 
@@ -1686,12 +1683,6 @@ msgstr ""
 msgid "2FADevice|Registered On"
 msgstr ""
 
-msgid "3 hours"
-msgstr ""
-
-msgid "30 minutes"
-msgstr ""
-
 msgid "30+ contributions"
 msgstr ""
 
@@ -1717,9 +1708,6 @@ msgid "409|Please contact your GitLab administrator if you think this is a mista
 msgstr ""
 
 msgid "409|There was a conflict with your request."
-msgstr ""
-
-msgid "8 hours"
 msgstr ""
 
 msgid ":%{startLine} to %{endLine}"
@@ -3694,6 +3682,9 @@ msgid "AdminSettings|The latest artifacts for all jobs in the most recent succes
 msgstr ""
 
 msgid "AdminSettings|The maximum number of included files per pipeline."
+msgstr ""
+
+msgid "AdminSettings|The selected level must be different from the selected default group and project visibility."
 msgstr ""
 
 msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
@@ -14416,9 +14407,6 @@ msgstr ""
 msgid "Custom range"
 msgstr ""
 
-msgid "Custom range (UTC)"
-msgstr ""
-
 msgid "Customer contacts"
 msgstr ""
 
@@ -20655,9 +20643,6 @@ msgstr ""
 msgid "ForksDivergence|View merge request"
 msgstr ""
 
-msgid "Format: %{dateFormat}"
-msgstr ""
-
 msgid "Framework successfully deleted"
 msgstr ""
 
@@ -25411,9 +25396,6 @@ msgid "Invalid date"
 msgstr ""
 
 msgid "Invalid date format. Please use UTC format as YYYY-MM-DD"
-msgstr ""
-
-msgid "Invalid date range"
 msgstr ""
 
 msgid "Invalid dates set"
@@ -38593,9 +38575,6 @@ msgid "Quick actions can be used in description and comment boxes."
 msgstr ""
 
 msgid "Quick help"
-msgstr ""
-
-msgid "Quick range"
 msgstr ""
 
 msgid "README"

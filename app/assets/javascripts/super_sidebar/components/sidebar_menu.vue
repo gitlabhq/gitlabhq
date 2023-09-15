@@ -104,10 +104,8 @@ export default {
     },
   },
   mounted() {
-    if (this.glFeatures.superSidebarFlyoutMenus) {
-      this.decideFlyoutState();
-      window.addEventListener('resize', this.decideFlyoutState);
-    }
+    this.decideFlyoutState();
+    window.addEventListener('resize', this.decideFlyoutState);
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.decideFlyoutState);
