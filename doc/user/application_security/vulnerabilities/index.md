@@ -130,10 +130,6 @@ You can create either:
 - [A GitLab issue](#create-a-gitlab-issue-for-a-vulnerability) (default).
 - [A Jira issue](#create-a-jira-issue-for-a-vulnerability).
 
-Creating a Jira issue requires that
-[Jira integration](../../../integration/jira/index.md) is enabled on the project. Note
-that when Jira integration is enabled, the GitLab issue feature is not available.
-
 ### Create a GitLab issue for a vulnerability
 
 To create a GitLab issue for a vulnerability:
@@ -169,26 +165,19 @@ fields are pre-populated from the vulnerability's details.
 Unlike GitLab issues, the status of whether a Jira issue is open or closed does not display in the
 GitLab user interface.
 
-## Linking a vulnerability to issues
+## Linking a vulnerability to GitLab and Jira issues
 
-NOTE:
-If Jira issue support is enabled, GitLab issues are disabled so this feature is not available.
+You can link a vulnerability to one or more existing [GitLab](#create-a-gitlab-issue-for-a-vulnerability)
+or [Jira](#create-a-jira-issue-for-a-vulnerability) issues. Only one linking feature is available at the same time.
+Adding a link helps track the issue that resolves or mitigates a vulnerability.
 
-You can link a vulnerability to one or more existing GitLab issues. Adding a link helps track
-the issue that resolves or mitigates a vulnerability.
+### Link a vulnerability to existing GitLab issues
 
-Issues linked to a vulnerability are shown in the Vulnerability Report and the vulnerability's page.
+Prerequisite:
 
-Be aware of the following conditions between a vulnerability and a linked issue:
+- [Jira issue integration](../../../integration/jira/configure.md) must not be enabled.
 
-- The vulnerability page shows related issues, but the issue page doesn't show the vulnerability
-  it's related to.
-- An issue can only be related to one vulnerability at a time.
-- Issues can be linked across groups and projects.
-
-## Link a vulnerability to existing issues
-
-To link a vulnerability to existing issues:
+To link a vulnerability to existing GitLab issues:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Vulnerability report**.
@@ -199,8 +188,42 @@ To link a vulnerability to existing issues:
    - Enter the issue's ID (prefixed with a hash `#`).
 1. Select **Add**.
 
-The selected issues are added to the **Linked issues** section, and the linked issues counter is
+The selected GitLab issues are added to the **Linked items** section, and the linked issues counter is
 updated.
+
+GitLab issues linked to a vulnerability are shown in the Vulnerability Report and the vulnerability's page.
+
+Be aware of the following conditions between a vulnerability and a linked GitLab issue:
+
+- The vulnerability page shows related issues, but the issue page doesn't show the vulnerability
+  it's related to.
+- An issue can only be related to one vulnerability at a time.
+- Issues can be linked across groups and projects.
+
+### Link a vulnerability to existing Jira issues
+
+Prerequisite:
+
+- [Jira issue integration](../../../integration/jira/configure.md) must be enabled, with option **Enable Jira issue creation from vulnerabilities** also enabled.
+
+To link a vulnerability to existing Jira issues, add the following line to the Jira issue's description:
+
+```plaintext
+/-/security/vulnerabilities/<id>
+```
+
+`<id>` is any [vulnerability ID](../../../api/vulnerabilities.md#single-vulnerability).
+You can add several lines with different IDs to one description.
+
+Jira issues with appropriate description are added to the **Related Jira issues** section, and the linked issues counter is
+updated.
+
+Jira issues linked to a vulnerability are shown only on the vulnerability page.
+
+Be aware of the following conditions between a vulnerability and a linked Jira issue:
+
+- The vulnerability page and the issue page show the vulnerability they are related to.
+- An issue can be related to one or more vulnerabilities at the same time.
 
 ## Resolve a vulnerability
 

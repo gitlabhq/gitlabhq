@@ -179,9 +179,6 @@ gem 'google-apis-serviceusage_v1', '~> 0.28.0'
 gem 'google-apis-sqladmin_v1beta4', '~> 0.41.0'
 gem 'google-apis-androidpublisher_v3', '~> 0.34.0'
 
-# for aws storage
-gem 'unf', '~> 0.1.4'
-
 # Seed data
 gem 'seed-fu', '~> 2.3.7'
 
