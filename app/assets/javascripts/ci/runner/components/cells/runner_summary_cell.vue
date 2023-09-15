@@ -12,7 +12,6 @@ import RunnerManagersBadge from '../runner_managers_badge.vue';
 
 import { formatJobCount } from '../../utils';
 import {
-  I18N_NO_DESCRIPTION,
   I18N_LOCKED_RUNNER_DESCRIPTION,
   I18N_VERSION_LABEL,
   I18N_LAST_CONTACT_LABEL,
@@ -73,7 +72,6 @@ export default {
     formatNumber,
   },
   i18n: {
-    I18N_NO_DESCRIPTION,
     I18N_LOCKED_RUNNER_DESCRIPTION,
     I18N_VERSION_LABEL,
     I18N_LAST_CONTACT_LABEL,
@@ -100,7 +98,10 @@ export default {
       <runner-type-badge :type="runner.runnerType" size="sm" class="gl-vertical-align-middle" />
     </div>
 
-    <div class="gl-mb-3 gl-ml-auto gl-display-inline-flex gl-max-w-full">
+    <div
+      v-if="runner.version || runner.description"
+      class="gl-mb-3 gl-ml-auto gl-display-inline-flex gl-max-w-full gl-font-sm gl-align-items-center"
+    >
       <template v-if="runner.version">
         <div class="gl-flex-shrink-0">
           <runner-upgrade-status-icon :upgrade-status="runner.upgradeStatus" />
@@ -108,19 +109,20 @@ export default {
             <template #version>{{ runner.version }}</template>
           </gl-sprintf>
         </div>
-        <div class="gl-text-secondary gl-mx-2" aria-hidden="true">·</div>
+        <div v-if="runner.description" class="gl-text-secondary gl-mx-2" aria-hidden="true">·</div>
       </template>
       <tooltip-on-truncate
+        v-if="runner.description"
         class="gl-text-truncate gl-display-block"
         :class="{ 'gl-text-secondary': !runner.description }"
         :title="runner.description"
       >
-        {{ runner.description || $options.i18n.I18N_NO_DESCRIPTION }}
+        {{ runner.description }}
       </tooltip-on-truncate>
     </div>
 
-    <div>
-      <runner-summary-field icon="clock">
+    <div class="gl-font-sm">
+      <runner-summary-field icon="clock" icon-size="sm">
         <gl-sprintf :message="$options.i18n.I18N_LAST_CONTACT_LABEL">
           <template #timeAgo>
             <time-ago v-if="runner.contactedAt" :time="runner.contactedAt" />

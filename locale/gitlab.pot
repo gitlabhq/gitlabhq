@@ -1908,9 +1908,6 @@ msgstr ""
 msgid "AI| %{link_start}How is my data used?%{link_end}"
 msgstr ""
 
-msgid "AI| %{link_start}What are Experiment features?%{link_end}"
-msgstr ""
-
 msgid "AI|%{tool} is %{transition} an answer"
 msgstr ""
 
@@ -1947,13 +1944,7 @@ msgstr ""
 msgid "AI|Description is required"
 msgstr ""
 
-msgid "AI|Enabling these features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
-msgstr ""
-
 msgid "AI|Experiment"
-msgstr ""
-
-msgid "AI|Experiment features"
 msgstr ""
 
 msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`. If it is not programming code, say `The selected text is not code. I am afraid this feature is for explaining code only. Would you like to ask a different question about the selected text?` and wait for another question."
@@ -2031,9 +2022,6 @@ msgstr ""
 msgid "AI|There is too much text in the chat. Please try again with a shorter text."
 msgstr ""
 
-msgid "AI|These features can cause performance and stability issues and may change over time."
-msgstr ""
-
 msgid "AI|Third-party AI services"
 msgstr ""
 
@@ -2041,9 +2029,6 @@ msgid "AI|To help improve the quality of the content, send your feedback to GitL
 msgstr ""
 
 msgid "AI|Unhelpful"
-msgstr ""
-
-msgid "AI|Use Experiment features"
 msgstr ""
 
 msgid "AI|Use third-party AI services"
@@ -2494,6 +2479,9 @@ msgid "AccessDropdown|Deploy Keys"
 msgstr ""
 
 msgid "AccessDropdown|Groups"
+msgstr ""
+
+msgid "AccessDropdown|No role"
 msgstr ""
 
 msgid "AccessDropdown|Roles"
@@ -5368,6 +5356,12 @@ msgstr ""
 msgid "Analytics|Add a visualization"
 msgstr ""
 
+msgid "Analytics|Add to dashboard"
+msgstr ""
+
+msgid "Analytics|Add visualization"
+msgstr ""
+
 msgid "Analytics|Add visualizations"
 msgstr ""
 
@@ -5393,6 +5387,9 @@ msgid "Analytics|By GitLab"
 msgstr ""
 
 msgid "Analytics|Cancel"
+msgstr ""
+
+msgid "Analytics|Charts"
 msgstr ""
 
 msgid "Analytics|Choose a chart type on the right"
@@ -5524,13 +5521,13 @@ msgstr ""
 msgid "Analytics|Select a measurement"
 msgstr ""
 
-msgid "Analytics|Select a visualization from the sidebar to get started."
-msgstr ""
-
 msgid "Analytics|Select a visualization type"
 msgstr ""
 
 msgid "Analytics|Single Statistic"
+msgstr ""
+
+msgid "Analytics|Single stats"
 msgstr ""
 
 msgid "Analytics|Something is wrong with your panel visualization configuration. See %{linkStart}troubleshooting documentation%{linkEnd}."
@@ -5540,6 +5537,9 @@ msgid "Analytics|Something went wrong while connecting to your data source. See 
 msgstr ""
 
 msgid "Analytics|Something went wrong."
+msgstr ""
+
+msgid "Analytics|Tables"
 msgstr ""
 
 msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
@@ -12280,9 +12280,6 @@ msgstr ""
 msgid "ComplianceReport|No projects found that match filters"
 msgstr ""
 
-msgid "ComplianceReport|No projects with standards adherence checks found"
-msgstr ""
-
 msgid "ComplianceReport|No violations found"
 msgstr ""
 
@@ -12316,6 +12313,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|At least two approvals"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Failure reason"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Have a valid rule that prevents author approved merge requests"
 msgstr ""
 
@@ -12325,10 +12325,37 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Have a valid rule that requires any merge request to have more than two approvals"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|How to fix"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Merge request approval rules"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|No projects with standards adherence checks found"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|No rule configured to prevent merge requests approved by committers."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|No rule is configured to prevent author approved merge requests."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|No rule is configured to require two approvals."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Prevent authors as approvers"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Prevent committers as approvers"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Requirement"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|The following features help satisfy this requirement."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Update approval settings in the project's merge request settings to satisfy this requirement."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|View details"
@@ -17240,6 +17267,9 @@ msgid "Do not display content for customer experience improvement and offers fro
 msgstr ""
 
 msgid "Do not force push over diverged refs. After the mirror is created, this setting can only be modified using the API. %{mirroring_docs_link_start}Learn more about this option%{link_closing_tag} and %{mirroring_api_docs_link_start}the API.%{link_closing_tag}"
+msgstr ""
+
+msgid "Do not include the username in the URL, use the username field below if required: %{code_open}https://gitlab.company.com/group/project.git%{code_close}."
 msgstr ""
 
 msgid "Do you want to remove this deploy key?"
@@ -22752,6 +22782,9 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
+msgid "GroupSettings| %{link_start}What are Experiment features?%{link_end}"
+msgstr ""
+
 msgid "GroupSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave empty for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{project_sharing_docs_link_start}project sharing%{link_end} and %{group_sharing_docs_link_start}group sharing%{link_end}."
 msgstr ""
 
@@ -22822,6 +22855,12 @@ msgid "GroupSettings|Email notifications are disabled"
 msgstr ""
 
 msgid "GroupSettings|Enable overview background aggregation for Value Streams Dashboard"
+msgstr ""
+
+msgid "GroupSettings|Enabling these features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
+msgstr ""
+
+msgid "GroupSettings|Experiment features"
 msgstr ""
 
 msgid "GroupSettings|Export group"
@@ -22902,6 +22941,9 @@ msgstr ""
 msgid "GroupSettings|There was a problem updating the pipeline settings: %{error_messages}."
 msgstr ""
 
+msgid "GroupSettings|These features can cause performance and stability issues and may change over time."
+msgstr ""
+
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
 msgstr ""
 
@@ -22912,6 +22954,9 @@ msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can overr
 msgstr ""
 
 msgid "GroupSettings|Transfer group"
+msgstr ""
+
+msgid "GroupSettings|Use Experiment features"
 msgstr ""
 
 msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"
@@ -24796,9 +24841,6 @@ msgid "Include new features from all tiers."
 msgstr ""
 
 msgid "Include the name of the author of the issue, merge request or comment in the email body. By default, GitLab overrides the email sender's name. Some email servers don't support that option."
-msgstr ""
-
-msgid "Include the username in the URL if required: %{code_open}https://username@gitlab.company.com/group/project.git%{code_close}."
 msgstr ""
 
 msgid "Includes LFS objects. It can be overridden per group, or per project. Set to 0 for no limit."
@@ -28382,6 +28424,9 @@ msgid "Manage project labels"
 msgstr ""
 
 msgid "Manage projects."
+msgstr ""
+
+msgid "Manage rules"
 msgstr ""
 
 msgid "Manage two-factor authentication"
@@ -35672,9 +35717,6 @@ msgstr ""
 msgid "ProductAnalytics|Compares page views of all pages against each other"
 msgstr ""
 
-msgid "ProductAnalytics|Create a visualization"
-msgstr ""
-
 msgid "ProductAnalytics|Creating your product analytics instance..."
 msgstr ""
 
@@ -37650,9 +37692,6 @@ msgid "PrometheusService|Missing environment variable"
 msgstr ""
 
 msgid "PrometheusService|Monitor application health with Prometheus metrics and dashboards"
-msgstr ""
-
-msgid "PrometheusService|More information"
 msgstr ""
 
 msgid "PrometheusService|New metric"
@@ -51511,6 +51550,9 @@ msgid "Username"
 msgstr ""
 
 msgid "Username (optional)"
+msgstr ""
+
+msgid "Username and Password"
 msgstr ""
 
 msgid "Username is already taken."

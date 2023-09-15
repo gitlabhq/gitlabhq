@@ -473,7 +473,7 @@
 {"name":"rack-cors","version":"2.0.1","platform":"ruby","checksum":"bcc66bdf5c6a4af05d571c4d01d35ac4a873552ba4f86c05fbe39365c39b9b0a"},
 {"name":"rack-oauth2","version":"1.21.3","platform":"ruby","checksum":"4e72a79dd6a866692e84422a552b27c38a5a1918ded06661e04910f2bbe676ba"},
 {"name":"rack-protection","version":"2.2.2","platform":"ruby","checksum":"fd41414dbabbec274af0bdb1f72a48504449de4d979782c9af38cbb5dfff3299"},
-{"name":"rack-proxy","version":"0.7.6","platform":"ruby","checksum":"8704c5009bb60eb16dacf4bcc5e067a8484e668321e8443534bb58ded320c2a8"},
+{"name":"rack-proxy","version":"0.7.7","platform":"ruby","checksum":"446a4b57001022145d5c3ba73b775f66a2260eaf7420c6907483141900395c8a"},
 {"name":"rack-test","version":"2.1.0","platform":"ruby","checksum":"0c61fc61904049d691922ea4bb99e28004ed3f43aa5cfd495024cc345f125dfb"},
 {"name":"rack-timeout","version":"0.6.3","platform":"ruby","checksum":"1754892eacc124d405e7f1145731ec9b7421ebd1bee5d51ddc18b72c204d0ab3"},
 {"name":"rails","version":"7.0.6","platform":"ruby","checksum":"5dfbd481a23556ad425fc8541399a129a08ed550f877294b44d0170ca5b9f421"},

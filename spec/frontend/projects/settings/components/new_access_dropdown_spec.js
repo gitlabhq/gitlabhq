@@ -62,6 +62,10 @@ describe('Access Level Dropdown', () => {
       id: 3,
       text: 'role3',
     },
+    {
+      id: 0,
+      text: 'No one',
+    },
   ];
 
   const createComponent = ({
@@ -139,7 +143,7 @@ describe('Access Level Dropdown', () => {
     });
 
     it('renders dropdown item for each access level type', () => {
-      expect(findAllDropdownItems()).toHaveLength(12);
+      expect(findAllDropdownItems()).toHaveLength(13);
     });
 
     it.each`
@@ -184,12 +188,12 @@ describe('Access Level Dropdown', () => {
       expect(findDropdown().props('toggleClass')[defaultToggleClass]).toBe(true);
     });
 
-    it('displays a number of selected items for each group level', async () => {
+    it('displays selected items for each group level', async () => {
       dropdownItems.wrappers.forEach((item) => {
         item.trigger('click');
       });
       await nextTick();
-      expect(findDropdownToggleLabel()).toBe('3 roles, 3 users, 3 deploy keys, 3 groups');
+      expect(findDropdownToggleLabel()).toBe('No role, 3 users, 3 deploy keys, 3 groups');
     });
 
     it('with only role selected displays the role name and has no class applied', async () => {

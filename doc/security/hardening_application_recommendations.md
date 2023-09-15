@@ -206,7 +206,7 @@ security patches come out frequently, this helps you stay up to date.
 restrict data gathering and statistics reporting to a software vendor, you may have
 to disable the **Enable service ping** feature. For more information on what data is collected to
 help you make an informed decision, see
-[service ping](../development/service_ping/index.md).
+[service ping](../development/internal_analytics/service_ping/index.md).
 
 ## Network
 

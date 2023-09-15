@@ -28,3 +28,18 @@ export const swapArrayItems = (array, leftIndex = 0, rightIndex = 0) => {
 export const getDuplicateItemsFromArray = (array) => [
   ...new Set(array.filter((value, index) => array.indexOf(value) !== index)),
 ];
+
+/**
+ * Toggles the presence of an item in a given array.
+ * Use pass by reference when toggling non-primivive types.
+ *
+ * @param {Array} array - The array to use
+ * @param {Any} item - The array item to toggle
+ * @returns {Array} new array with toggled item
+ */
+export const toggleArrayItem = (array, value) => {
+  if (array.includes(value)) {
+    return array.filter((item) => item !== value);
+  }
+  return [...array, value];
+};

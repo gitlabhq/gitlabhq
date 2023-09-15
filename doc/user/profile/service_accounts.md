@@ -22,6 +22,11 @@ A service account:
 You should use service accounts in pipelines or integrations where credentials must be
 set up and maintained without being impacted by changes in human user membership.
 
+You can authenticate as a service account with a [personal access token](personal_access_tokens.md).
+Service account users with a personal access token have the same abilities as a standard user.
+This includes interacting with [registries](../packages/index.md) and using the personal access
+token for [Git operations](personal_access_tokens.md#clone-repository-using-personal-access-token).
+
 ## Create a service account
 
 The number of service accounts you can create is restricted by the number of service
@@ -50,10 +55,8 @@ Prerequisite:
 
    The response includes the personal access token value.
 
-1. Use the returned personal access token value to authenticate with the GitLab API as the service account user.
-
-This service account user is provisioned by the top-level group, but is not yet a group member.
-You must [manually add the service account user to the group](#add-a-service-account-to-subgroup-or-project).
+1. Make this service account a group or project member by [manually adding the service account user to the group or project](#add-a-service-account-to-subgroup-or-project).
+1. Use the returned personal access token value to authenticate as the service account user.
 
 ### Self-managed GitLab
 
@@ -73,7 +76,9 @@ Prerequisite:
 
    The response includes the personal access token value.
 
-1. Use the returned personal access token value to authenticate with the GitLab API as the service account user.
+1. Make this service account a group or project member by
+   [manually adding the service account user to the group or project](#add-a-service-account-to-subgroup-or-project).
+1. Use the returned personal access token value to authenticate as the service account user.
 
 ## Add a service account to subgroup or project
 

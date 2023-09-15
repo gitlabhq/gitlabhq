@@ -13,7 +13,7 @@ integrates GitLab with Neovim. The following Neovim versions are supported:
 
 ## Supported features
 
-GitLab for Neovim supports [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions.md).
+GitLab for Neovim supports [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md).
 
 ## Install and configure the extension
 

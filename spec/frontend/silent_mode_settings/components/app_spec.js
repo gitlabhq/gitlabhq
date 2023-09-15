@@ -1,4 +1,4 @@
-import { GlToggle } from '@gitlab/ui';
+import { GlToggle, GlBadge } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
@@ -29,8 +29,19 @@ describe('SilentModeSettingsApp', () => {
   };
 
   const findGlToggle = () => wrapper.findComponent(GlToggle);
+  const findGlBadge = () => wrapper.findComponent(GlBadge);
 
   describe('template', () => {
+    describe('experiment badge', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('renders properly', () => {
+        expect(findGlBadge().exists()).toBe(true);
+      });
+    });
+
     describe('when silent mode is already enabled', () => {
       beforeEach(() => {
         createComponent({ isSilentModeEnabled: true });

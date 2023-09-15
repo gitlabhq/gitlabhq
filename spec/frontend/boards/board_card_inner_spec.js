@@ -91,6 +91,7 @@ describe('Board card component', () => {
         rootPath: '/',
         scopedLabelsAvailable: false,
         isEpicBoard,
+        allowSubEpics: isEpicBoard,
         issuableType: TYPE_ISSUE,
         isGroupBoard,
         isApolloBoard: false,

@@ -282,27 +282,28 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           end
         end
 
-        shared_examples 'successfully deploys' do
-          it 'succeeds' do
-            expect do
-              expect(service.execute[:status]).to eq(:success)
-            end.to change { project.pages_deployments.count }.by(1)
+        it 'creates a new pages deployment and mark it as deployed' do
+          expect do
+            expect(service.execute[:status]).to eq(:success)
+          end.to change { project.pages_deployments.count }.by(1)
 
-            deployment = project.pages_deployments.last
-            expect(deployment.ci_build_id).to eq(build.id)
-          end
+          deployment = project.pages_deployments.last
+          expect(deployment.ci_build_id).to eq(build.id)
         end
 
-        include_examples 'successfully deploys'
-
         context 'when old deployment present' do
+          let!(:old_build) { create(:ci_build, name: 'pages', pipeline: old_pipeline, ref: 'HEAD') }
+          let!(:old_deployment) { create(:pages_deployment, ci_build: old_build, project: project) }
+
           before do
-            old_build = create(:ci_build, name: 'pages', pipeline: old_pipeline, ref: 'HEAD')
-            old_deployment = create(:pages_deployment, ci_build: old_build, project: project)
             project.update_pages_deployment!(old_deployment)
           end
 
-          include_examples 'successfully deploys'
+          it 'deactivates old deployments' do
+            expect(service.execute[:status]).to eq(:success)
+
+            expect(old_deployment.reload.deleted_at).not_to be_nil
+          end
         end
 
         context 'when newer deployment present' do

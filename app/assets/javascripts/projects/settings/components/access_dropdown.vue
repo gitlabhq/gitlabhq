@@ -19,6 +19,7 @@ export const i18n = {
   rolesSectionHeader: s__('AccessDropdown|Roles'),
   groupsSectionHeader: s__('AccessDropdown|Groups'),
   usersSectionHeader: s__('AccessDropdown|Users'),
+  noRole: s__('AccessDropdown|No role'),
   deployKeysSectionHeader: s__('AccessDropdown|Deploy Keys'),
   ownedBy: __('Owned by %{image_tag}'),
 };
@@ -121,6 +122,9 @@ export default {
         this.deployKeys.length
       );
     },
+    isAccessesLevelNoneSelected() {
+      return this.selected.role[0].id === ACCESS_LEVEL_NONE;
+    },
     toggleLabel() {
       const counts = Object.entries(this.selected).reduce((acc, [key, value]) => {
         acc[key] = value.length;
@@ -140,7 +144,11 @@ export default {
       const labelPieces = [];
 
       if (counts[LEVEL_TYPES.ROLE] > 0) {
-        labelPieces.push(n__('1 role', '%d roles', counts[LEVEL_TYPES.ROLE]));
+        if (this.isAccessesLevelNoneSelected) {
+          labelPieces.push(this.$options.i18n.noRole);
+        } else {
+          labelPieces.push(n__('1 role', '%d roles', counts[LEVEL_TYPES.ROLE]));
+        }
       }
 
       if (counts[LEVEL_TYPES.USER] > 0) {

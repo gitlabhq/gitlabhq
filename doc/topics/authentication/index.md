@@ -30,7 +30,6 @@ This page gathers all the resources for the topic **Authentication** in GitLab.
 - **Integrations:**
   - [OmniAuth](../../integration/omniauth.md)
   - [Atlassian Crowd OmniAuth Provider](../../administration/auth/crowd.md)
-  - [CAS OmniAuth Provider](../../integration/cas.md)
   - [SAML OmniAuth Provider](../../integration/saml.md)
   - [SAML for GitLab.com Groups](../../user/group/saml_sso/index.md)
   - [SCIM user provisioning for GitLab.com Groups](../../user/group/saml_sso/scim_setup.md)

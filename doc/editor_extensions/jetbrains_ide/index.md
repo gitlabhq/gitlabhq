@@ -30,7 +30,7 @@ integrates GitLab with JetBrains IDEs. The following JetBrains IDEs are supporte
 
 ## Supported features
 
-GitLab for JetBrains supports [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions.md).
+GitLab for JetBrains supports [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md).
 
 ## Download the extension
 

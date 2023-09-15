@@ -8,6 +8,7 @@ import BoardEditableItem from '~/boards/components/sidebar/board_editable_item.v
 import BoardSidebarTitle from '~/boards/components/sidebar/board_sidebar_title.vue';
 import { createStore } from '~/boards/stores';
 import issueSetTitleMutation from '~/boards/graphql/issue_set_title.mutation.graphql';
+import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
 import { updateIssueTitleResponse, updateEpicTitleResponse } from '../../mock_data';
 
@@ -39,6 +40,10 @@ describe('BoardSidebarTitle', () => {
   const updateEpicTitleMutationHandlerSuccess = jest
     .fn()
     .mockResolvedValue(updateEpicTitleResponse);
+
+  beforeEach(() => {
+    cacheUpdates.setError = jest.fn();
+  });
 
   afterEach(() => {
     localStorage.clear();
@@ -207,8 +212,7 @@ describe('BoardSidebarTitle', () => {
     it('collapses sidebar and renders former item title', () => {
       expect(findCollapsed().isVisible()).toBe(true);
       expect(findTitle().text()).toContain(TEST_ISSUE_B.title);
-      expect(storeDispatch).toHaveBeenCalledWith(
-        'setError',
+      expect(cacheUpdates.setError).toHaveBeenCalledWith(
         expect.objectContaining({ message: 'An error occurred when updating the title' }),
       );
     });

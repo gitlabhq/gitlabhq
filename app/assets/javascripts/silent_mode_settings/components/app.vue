@@ -1,5 +1,5 @@
 <script>
-import { GlToggle } from '@gitlab/ui';
+import { GlToggle, GlBadge } from '@gitlab/ui';
 import { updateApplicationSettings } from '~/rest_api';
 import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -13,9 +13,11 @@ export default {
     saveError: s__('SilentMode|There was an error updating the Silent Mode Settings.'),
     enabled: __('enabled'),
     disabled: __('disabled'),
+    experiment: __('Experiment'),
   },
   components: {
     GlToggle,
+    GlBadge,
   },
   props: {
     isSilentModeEnabled: {
@@ -60,5 +62,9 @@ export default {
     :label="$options.i18n.toggleLabel"
     :is-loading="isLoading"
     @change="updateSilentModeSettings"
-  />
+  >
+    <template #label
+      >{{ $options.i18n.toggleLabel }} <gl-badge>{{ $options.i18n.experiment }}</gl-badge></template
+    >
+  </gl-toggle>
 </template>

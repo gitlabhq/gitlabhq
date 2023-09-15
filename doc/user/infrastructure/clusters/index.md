@@ -54,12 +54,9 @@ This feature flag re-enables the certificate-based Kubernetes integration.
 - [GitLab-managed clusters](../../project/clusters/gitlab_managed_clusters.md)
 - [Deploy applications through certificate-based connection](../../project/clusters/deploy_to_cluster.md)
 - [Cluster Management Project](../../clusters/management_project.md)
-- [Cluster integrations](../../clusters/integrations.md)
-- [Cluster cost management](../../clusters/cost_management.md)
 - [Cluster environments](../../clusters/environments.md)
 - [Show Canary Ingress deployments on deploy boards](../../project/canary_deployments.md#show-canary-ingress-deployments-on-deploy-boards-deprecated)
 - [Deploy Boards](../../project/deploy_boards.md)
-- [Clusters health](manage/clusters_health.md)
 - [Web terminals](../../../administration/integration/terminal.md)
 
 ### Cluster levels

@@ -1530,27 +1530,28 @@ is extracted from the job output. The coverage is shown in the UI if at least on
 line in the job output matches the regular expression.
 
 To extract the code coverage value from the match, GitLab uses
-this smaller regular expression: `\d+(\.\d+)?`.
+this smaller regular expression: `\d+(?:\.\d+)?`.
 
 **Possible inputs**:
 
-- A regular expression. Must start and end with `/`. Must match the coverage number.
+- An RE2 regular expression. Must start and end with `/`. Must match the coverage number.
   May match surrounding text as well, so you don't need to use a regular expression character group
   to capture the exact number.
+  Because it uses RE2 syntax, all groups must be non-capturing.
 
 **Example of `coverage`**:
 
 ```yaml
 job1:
   script: rspec
-  coverage: '/Code coverage: \d+\.\d+/'
+  coverage: '/Code coverage: \d+(?:\.\d+)?/'
 ```
 
 In this example:
 
 1. GitLab checks the job log for a match with the regular expression. A line
    like `Code coverage: 67.89% of lines covered` would match.
-1. GitLab then checks the matched fragment to find a match to `\d+(\.\d+)?`.
+1. GitLab then checks the matched fragment to find a match to `\d+(?:\.\d+)?`.
    The sample matching line above gives a code coverage of `67.89`.
 
 **Additional details**:

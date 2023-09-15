@@ -84,3 +84,5 @@ module RestrictedSignup
     end
   end
 end
+
+::RestrictedSignup.prepend_mod

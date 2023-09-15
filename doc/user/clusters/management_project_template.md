@@ -99,7 +99,6 @@ The [built-in supported applications](https://gitlab.com/gitlab-org/project-temp
 - [Cert-manager](../infrastructure/clusters/manage/management_project_applications/certmanager.md)
 - [GitLab Runner](../infrastructure/clusters/manage/management_project_applications/runner.md)
 - [Ingress](../infrastructure/clusters/manage/management_project_applications/ingress.md)
-- [Prometheus](../../operations/metrics/index.md)
 - [Vault](../infrastructure/clusters/manage/management_project_applications/vault.md)
 
 Each application has an `applications/{app}/values.yaml` file.

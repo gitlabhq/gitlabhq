@@ -38,14 +38,16 @@ module QA
             wait ||= Support::Repeater::DEFAULT_MAX_WAIT_TIME
             finished_status = %w[passed failed canceled skipped manual]
 
-            wait_until(max_duration: wait, reload: reload, sleep_interval: 1) do
+            wait_until(max_duration: wait, reload: reload, sleep_interval: 1, message: "Wait for latest pipeline") do
               status ? latest_pipeline_status == status : finished_status.include?(latest_pipeline_status)
             end
           end
 
           def has_any_pipeline?(wait: nil)
             wait ||= Support::Repeater::DEFAULT_MAX_WAIT_TIME
-            wait_until(max_duration: wait) { has_element?(:pipeline_row_container) }
+            wait_until(max_duration: wait, message: "Wait for any pipeline") do
+              has_element?(:pipeline_row_container)
+            end
           end
 
           def has_no_pipeline?

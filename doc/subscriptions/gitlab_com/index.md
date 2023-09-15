@@ -264,6 +264,9 @@ To change the namespace linked to a subscription:
 
 Only one namespace can be linked to a subscription.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/8iOsN8ajBUw).
+
 ## Upgrade your GitLab SaaS subscription tier
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):

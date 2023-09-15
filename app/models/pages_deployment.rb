@@ -20,6 +20,7 @@ class PagesDeployment < ApplicationRecord
   scope :with_files_stored_locally, -> { where(file_store: ::ObjectStorage::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(file_store: ::ObjectStorage::Store::REMOTE) }
   scope :project_id_in, ->(ids) { where(project_id: ids) }
+  scope :active, -> { where(deleted_at: nil) }
 
   validates :file, presence: true
   validates :file_store, presence: true, inclusion: { in: ObjectStorage::SUPPORTED_STORES }
@@ -33,6 +34,14 @@ class PagesDeployment < ApplicationRecord
 
   skip_callback :save, :after, :store_file!
   after_commit :store_file_after_commit!, on: [:create, :update]
+
+  def self.deactivate_deployments_older_than(deployment, time: nil)
+    now = Time.now.utc
+    active
+      .older_than(deployment.id)
+      .where(project_id: deployment.project_id, path_prefix: deployment.path_prefix)
+      .update_all(updated_at: now, deleted_at: time || now)
+  end
 
   def migrated?
     file.filename == MIGRATED_FILE_NAME

@@ -163,8 +163,8 @@ The following integration guides are internal. Some integrations require access 
 ## Analytics Instrumentation guides
 
 - [Analytics Instrumentation guide](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/)
-- [Service Ping guide](service_ping/index.md)
-- [Snowplow guide](snowplow/index.md)
+- [Service Ping guide](internal_analytics/service_ping/index.md)
+- [Snowplow guide](internal_analytics/snowplow/index.md)
 
 ## Experiment guide
 

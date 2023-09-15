@@ -20508,6 +20508,7 @@ CREATE TABLE pages_deployments (
     root_directory text DEFAULT 'public'::text,
     path_prefix text,
     build_ref text,
+    deleted_at timestamp with time zone,
     CONSTRAINT check_4d04b8dc9a CHECK ((char_length(path_prefix) <= 128)),
     CONSTRAINT check_5f9132a958 CHECK ((size IS NOT NULL)),
     CONSTRAINT check_7e938c810a CHECK ((char_length(root_directory) <= 255)),
@@ -34162,6 +34163,8 @@ CREATE INDEX index_vulnerabilities_on_due_date_sourcing_milestone_id ON vulnerab
 
 CREATE INDEX index_vulnerabilities_on_epic_id ON vulnerabilities USING btree (epic_id);
 
+CREATE INDEX index_vulnerabilities_on_finding_id ON vulnerabilities USING btree (finding_id);
+
 CREATE INDEX index_vulnerabilities_on_last_edited_by_id ON vulnerabilities USING btree (last_edited_by_id);
 
 CREATE INDEX index_vulnerabilities_on_milestone_id ON vulnerabilities USING btree (milestone_id);
@@ -34431,6 +34434,8 @@ CREATE INDEX packages_packages_failed_verification ON packages_package_files USI
 CREATE INDEX packages_packages_needs_verification ON packages_package_files USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
 
 CREATE INDEX packages_packages_pending_verification ON packages_package_files USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
+CREATE INDEX pages_deployments_deleted_at_index ON pages_deployments USING btree (id, project_id, path_prefix) WHERE (deleted_at IS NULL);
 
 CREATE UNIQUE INDEX partial_index_bulk_import_exports_on_group_id_and_relation ON bulk_import_exports USING btree (group_id, relation) WHERE (group_id IS NOT NULL);
 

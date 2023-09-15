@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Transitionable, feature_category: :code_review_workflow do
+  using RSpec::Parameterized::TableSyntax
+
   let(:klass) do
     Class.new do
       include Transitionable
@@ -19,24 +21,20 @@ RSpec.describe Transitionable, feature_category: :code_review_workflow do
 
   let(:object) { klass.new(transitioning) }
 
-  describe 'For a class' do
-    using RSpec::Parameterized::TableSyntax
+  describe '#transitioning?' do
+    where(:transitioning, :feature_flag, :result) do
+      true  | true  | true
+      false | false | false
+      true  | false | false
+      false | true  | false
+    end
 
-    describe '#transitioning?' do
-      where(:transitioning, :feature_flag, :result) do
-        true  | true  | true
-        false | false | false
-        true  | false | false
-        false | true  | false
+    with_them do
+      before do
+        stub_feature_flags(skip_validations_during_transitions: feature_flag)
       end
 
-      with_them do
-        before do
-          stub_feature_flags(skip_validations_during_transitions: feature_flag)
-        end
-
-        it { expect(object.transitioning?).to eq(result) }
-      end
+      it { expect(object.transitioning?).to eq(result) }
     end
   end
 end

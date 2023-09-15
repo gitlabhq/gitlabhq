@@ -15,12 +15,8 @@ module Groups
 
       items = find_all_groups
 
-      if exact_matches_first_enabled?
-        # Search will perform an ORDER BY to ensure exact matches are returned first.
-        return by_search(items, exact_matches_first: true) if params[:search].present?
-      else
-        items = by_search(items)
-      end
+      # Search will perform an ORDER BY to ensure exact matches are returned first.
+      return by_search(items, exact_matches_first: true) if params[:search].present?
 
       sort(items)
     end
@@ -65,10 +61,6 @@ module Groups
 
     def can_transfer_group?
       Ability.allowed?(current_user, :admin_group, group_to_be_transferred)
-    end
-
-    def exact_matches_first_enabled?
-      Feature.enabled?(:exact_matches_first_group_transfer, group_to_be_transferred)
     end
   end
 end

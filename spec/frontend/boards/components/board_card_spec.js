@@ -72,6 +72,7 @@ describe('Board card', () => {
         issuableType: 'issue',
         isGroupBoard: true,
         disabled: false,
+        allowSubEpics: false,
         isApolloBoard: false,
         ...provide,
       },

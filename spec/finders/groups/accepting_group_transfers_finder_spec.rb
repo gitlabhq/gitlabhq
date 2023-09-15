@@ -137,18 +137,6 @@ RSpec.describe Groups::AcceptingGroupTransfersFinder, feature_category: :groups_
           expect(result.first).to eq(great_grandparent_group)
           expect(result[1..]).to match_array(other_groups)
         end
-
-        context 'when exact_matches_first_group_transfer feature flag is disabled' do
-          let(:expected_groups) { other_groups + [great_grandparent_group] }
-
-          before do
-            stub_feature_flags(exact_matches_first_group_transfer: false)
-          end
-
-          it 'returns matching groups sorted by namespace path' do
-            expect(result).to match_array(expected_groups.sort_by(&:path))
-          end
-        end
       end
     end
   end

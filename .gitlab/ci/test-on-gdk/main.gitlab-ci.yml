@@ -158,6 +158,7 @@ gdk-qa-reliable:
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
+  parallel: 10
   rules:
     - when: always
   allow_failure: true

@@ -691,11 +691,6 @@ To update the rendered references if the assignee, milestone, or health status c
 edit the comment or description and save it.
 For more information, see issue [420807](https://gitlab.com/gitlab-org/gitlab/-/issues/420807).
 
-### Embedding metrics
-
-Metric charts can be embedded in GitLab Flavored Markdown. Read
-[Embedding Metrics in GitLab flavored Markdown](../operations/metrics/embed.md) for more details.
-
 ### Embedding Observability dashboards
 
 You can embed GitLab Observability UI dashboards descriptions and comments, for example in epics, issues, and MRs.

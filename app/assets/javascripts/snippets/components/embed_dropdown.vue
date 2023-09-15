@@ -1,12 +1,5 @@
 <script>
-import {
-  GlButton,
-  GlDropdown,
-  GlDropdownSectionHeader,
-  GlDropdownText,
-  GlFormInputGroup,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown, GlFormInputGroup, GlTooltipDirective } from '@gitlab/ui';
 import { escape as esc } from 'lodash';
 import { __ } from '~/locale';
 
@@ -17,9 +10,7 @@ const MSG_COPY = __('Copy');
 export default {
   components: {
     GlButton,
-    GlDropdown,
-    GlDropdownSectionHeader,
-    GlDropdownText,
+    GlDisclosureDropdown,
     GlFormInputGroup,
   },
   directives: {
@@ -45,22 +36,16 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown
-    right
-    :text="$options.MSG_EMBED"
-    menu-class="gl-px-1! gl-pb-5! gl-dropdown-menu-wide"
+  <gl-disclosure-dropdown
+    :auto-close="false"
+    fluid-width
+    placement="right"
+    :toggle-text="$options.MSG_EMBED"
   >
     <template v-for="{ name, value } in sections">
-      <gl-dropdown-section-header :key="`header_${name}`" data-testid="header">{{
-        name
-      }}</gl-dropdown-section-header>
-      <gl-dropdown-text
-        :key="`input_${name}`"
-        tag="div"
-        class="gl-dropdown-text-py-0 gl-dropdown-text-block"
-        data-testid="input"
-      >
-        <gl-form-input-group :value="value" readonly select-on-click :label="name">
+      <div :key="name" :data-testid="`section-${name}`" class="gl-px-4 gl-py-2">
+        <h5 class="gl-font-sm gl-mt-1 gl-mb-2" data-testid="header">{{ name }}</h5>
+        <gl-form-input-group class="gl-w-31" :value="value" readonly select-on-click :label="name">
           <template #append>
             <gl-button
               v-gl-tooltip.hover
@@ -73,7 +58,7 @@ export default {
             />
           </template>
         </gl-form-input-group>
-      </gl-dropdown-text>
+      </div>
     </template>
-  </gl-dropdown>
+  </gl-disclosure-dropdown>
 </template>

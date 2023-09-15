@@ -14,7 +14,7 @@ integrates GitLab with Visual Studio. The following Visual Studio versions are s
 
 ## Supported features
 
-GitLab for Visual Studio supports [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions.md).
+GitLab for Visual Studio supports [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/index.md).
 
 ## Download the extension
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Oauth::ApplicationsController do
+RSpec.describe Oauth::ApplicationsController, feature_category: :system_access do
   let(:user) { create(:user) }
   let(:application) { create(:oauth_application, owner: user) }
 
@@ -86,10 +86,10 @@ RSpec.describe Oauth::ApplicationsController do
       it_behaves_like 'redirects to login page when the user is not signed in'
       it_behaves_like 'redirects to 2fa setup page when the user requires it'
 
-      it 'returns the secret in json format' do
+      it 'returns the prefixed secret in json format' do
         subject
 
-        expect(json_response['secret']).not_to be_nil
+        expect(json_response['secret']).to match(/gloas-\h{64}/)
       end
 
       context 'when renew fails' do
@@ -151,6 +151,15 @@ RSpec.describe Oauth::ApplicationsController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template :show
+      end
+
+      context 'the secret' do
+        render_views
+
+        it 'is in the response' do
+          subject
+          expect(response.body).to match(/gloas-\h{64}/)
+        end
       end
 
       it 'redirects back to profile page if OAuth applications are disabled' do

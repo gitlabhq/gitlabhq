@@ -15,4 +15,4 @@ Automate and interact with GitLab, and integrate with external applications.
 - [OAuth 2.0 identity provider API](oauth2.md)
 - [GitLab CLI (glab)](../integration/glab/index.md)
 - [Visual Studio Code extension](../user/project/repository/vscode.md)
-- [Code Suggestions](../user/project/repository/code_suggestions.md)
+- [Code Suggestions](../user/project/repository/code_suggestions/index.md)

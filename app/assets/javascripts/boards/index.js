@@ -102,6 +102,7 @@ function mountBoardApp(el) {
       swimlanesFeatureAvailable: gon.licensed_features?.swimlanes,
       multipleIssueBoardsAvailable: parseBoolean(el.dataset.multipleBoardsAvailable),
       scopedIssueBoardFeatureEnabled: parseBoolean(el.dataset.scopedIssueBoardFeatureEnabled),
+      allowSubEpics: false,
     },
     render: (createComponent) => createComponent(BoardApp),
   });

@@ -20,6 +20,7 @@ import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import { ListType } from '../constants';
 import eventHub from '../eventhub';
+import { setError } from '../graphql/cache_updates';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 
@@ -45,6 +46,7 @@ export default {
   },
   mixins: [boardCardInner],
   inject: [
+    'allowSubEpics',
     'rootPath',
     'scopedLabelsAvailable',
     'isEpicBoard',
@@ -85,7 +87,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isShowingLabels', 'allowSubEpics']),
+    ...mapState(['isShowingLabels']),
     isLoading() {
       return this.item.isLoading || this.item.iid === '-1';
     },
@@ -175,7 +177,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['performSearch', 'setError']),
+    ...mapActions(['performSearch']),
+    setError,
     isIndexLessThanlimit(index) {
       return index < this.limitBeforeCounter;
     },

@@ -234,7 +234,7 @@ export default {
     <template v-if="isPinnable">
       <gl-button
         v-if="isPinned"
-        v-gl-tooltip.noninteractive.ds500.right.viewport="$options.i18n.unpinItem"
+        v-gl-tooltip.noninteractive.right.viewport="$options.i18n.unpinItem"
         :aria-label="unpinAriaLabel"
         category="tertiary"
         class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-top-2"
@@ -247,7 +247,7 @@ export default {
       />
       <gl-button
         v-else
-        v-gl-tooltip.noninteractive.ds500.right.viewport="$options.i18n.pinItem"
+        v-gl-tooltip.noninteractive.right.viewport="$options.i18n.pinItem"
         :aria-label="pinAriaLabel"
         category="tertiary"
         class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-top-2"

@@ -15,7 +15,7 @@ export const I18N_CREATE_ERROR = s__(
 );
 
 export const FILTER_CSS_CLASSES =
-  'gl-bg-gray-10 gl-p-5 gl-border-solid gl-border-gray-100 gl-border-0 gl-border-t-1 gl-border-b-1';
+  'gl-bg-gray-10 gl-p-5 gl-border-solid gl-border-gray-100 gl-border-0 gl-border-t-1';
 
 // Type
 
@@ -96,7 +96,6 @@ export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
 // List
-export const I18N_NO_DESCRIPTION = s__('Runners|No description');
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
   'Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.',
 );

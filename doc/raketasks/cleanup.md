@@ -156,7 +156,7 @@ These commands don't work for artifacts stored on
 [object storage](../administration/object_storage.md).
 
 WARNING:
-Prior to GitLab 14.9, this task incorrectly deletes [pipeline artifacts](../ci/pipelines/pipeline_artifacts.md).
+Prior to GitLab 14.9, this task incorrectly deletes [test coverage-related artifacts](../ci/testing/test_coverage_visualization.md).
 [The bug fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81022) was
 also back-ported to 14.6.6, 14.7.5, and 14.8.3. Upgrade to a release with the bug
 fix to avoid data loss.

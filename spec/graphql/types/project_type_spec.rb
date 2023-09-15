@@ -892,22 +892,25 @@ RSpec.describe GitlabSchema.types['Project'] do
 
     subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
 
-    before do
+    before_all do
       fork_reporter.add_reporter(user)
       fork_developer.add_developer(user)
       fork_group_developer.group.add_developer(user)
+      fork_private.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
     end
 
     it 'contains all forks' do
-      expect(forks.count).to eq(5)
+      expect(forks.count).to eq(4)
     end
 
     context 'with minimum_access_level DEVELOPER' do
       let(:minimum_access_level) { '(minimumAccessLevel: DEVELOPER)' }
 
       it 'contains forks with developer access' do
-        expect(forks).to contain_exactly(a_hash_including('fullPath' => fork_developer.full_path),
-a_hash_including('fullPath' => fork_group_developer.full_path))
+        expect(forks).to contain_exactly(
+          a_hash_including('fullPath' => fork_developer.full_path),
+          a_hash_including('fullPath' => fork_group_developer.full_path)
+        )
       end
 
       context 'when current user is not set' do
