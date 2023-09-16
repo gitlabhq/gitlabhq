@@ -254,11 +254,10 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
         request
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to include('entities[0][destination_namespace] must have a relative path ' \
-                                                  'structure with no HTTP protocol characters, or leading or ' \
-                                                  'trailing forward slashes. Path segments must not start or end ' \
-                                                  'with a special character, and must not contain consecutive ' \
-                                                  'special characters.')
+        expect(json_response['error']).to include('entities[0][destination_namespace] must be a relative path ' \
+                                                  'and not include protocol, sub-domain, or domain information. ' \
+                                                  "For example, 'destination/full/path' not " \
+                                                  "'https://example.com/destination/full/path'")
       end
     end
 

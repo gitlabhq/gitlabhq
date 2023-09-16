@@ -36,7 +36,8 @@ module API
 
             raise Grape::Exceptions::Validation.new(
               params: [@scope.full_name(attr_name)],
-              message: Gitlab::Regex.bulk_import_destination_namespace_path_regex_message
+              message: "must be a relative path and not include protocol, sub-domain, or domain information. " \
+                       "For example, 'destination/full/path' not 'https://example.com/destination/full/path'"
             )
           end
         end
@@ -51,7 +52,7 @@ module API
             raise Grape::Exceptions::Validation.new(
               params: [@scope.full_name(attr_name)],
               message: "must be a relative path and not include protocol, sub-domain, or domain information. " \
-                       "For example, 'source/full/path' not 'https://example.com/source/full/path'" \
+                       "For example, 'source/full/path' not 'https://example.com/source/full/path'"
             )
           end
         end

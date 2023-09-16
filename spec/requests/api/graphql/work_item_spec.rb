@@ -70,7 +70,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           'adminWorkItem' => true,
           'adminParentLink' => true,
           'setWorkItemMetadata' => true,
-          'createNote' => true
+          'createNote' => true,
+          'adminWorkItemLink' => true
         },
         'project' => hash_including('id' => project.to_gid.to_s, 'fullPath' => project.full_path)
       )

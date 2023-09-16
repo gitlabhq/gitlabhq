@@ -8897,6 +8897,9 @@ msgstr ""
 msgid "BulkImport|must be a group"
 msgstr ""
 
+msgid "BulkImport|must have a relative path structure with no HTTP protocol characters, or leading or trailing forward slashes. Path segments must not start or end with a special character, and must not contain consecutive special characters"
+msgstr ""
+
 msgid "Bulkmport|Over six imports in one minute were attempted. Wait at least one minute and try again."
 msgstr ""
 

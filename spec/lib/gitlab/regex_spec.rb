@@ -86,31 +86,6 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('<any-Charact3r$|any-Charact3r$>') }
   end
 
-  describe '.bulk_import_destination_namespace_path_regex_message' do
-    subject { described_class.bulk_import_destination_namespace_path_regex_message }
-
-    it {
-      is_expected
-        .to eq("must have a relative path structure with no HTTP " \
-               "protocol characters, or leading or trailing forward slashes. Path segments must not start or " \
-               "end with a special character, and must not contain consecutive special characters."
-              )
-    }
-  end
-
-  describe '.bulk_import_source_full_path_regex_message' do
-    subject { described_class.bulk_import_source_full_path_regex_message }
-
-    it {
-      is_expected
-        .to eq(
-          "must have a relative path structure with no HTTP " \
-          "protocol characters, or leading or trailing forward slashes. Path segments must not start or " \
-          "end with a special character, and must not contain consecutive special characters."
-        )
-    }
-  end
-
   describe '.group_path_regex' do
     subject { described_class.group_path_regex }
 

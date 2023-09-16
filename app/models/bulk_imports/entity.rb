@@ -240,7 +240,9 @@ class BulkImports::Entity < ApplicationRecord
 
     errors.add(
       :source_full_path,
-      Gitlab::Regex.bulk_import_source_full_path_regex_message
+      s_('BulkImport|must have a relative path structure with no HTTP ' \
+         'protocol characters, or leading or trailing forward slashes. Path segments must not start or ' \
+         'end with a special character, and must not contain consecutive special characters')
     )
   end
 end

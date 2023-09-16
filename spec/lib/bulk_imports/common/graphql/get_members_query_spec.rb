@@ -41,7 +41,17 @@ RSpec.describe BulkImports::Common::Graphql::GetMembersQuery, feature_category: 
       it 'queries group & group members' do
         expect(query.to_s).to include('group')
         expect(query.to_s).to include('groupMembers')
-        expect(query.to_s).to include('SHARED_FROM_GROUPS')
+        expect(query.to_s).to include('DIRECT INHERITED')
+      end
+
+      context "when source version is past 14.7.0" do
+        before do
+          entity.bulk_import.update!(source_version: "14.8.0")
+        end
+
+        it 'includes SHARED_FROM_GROUPS' do
+          expect(query.to_s).to include('DIRECT INHERITED SHARED_FROM_GROUPS')
+        end
       end
     end
 
@@ -51,7 +61,17 @@ RSpec.describe BulkImports::Common::Graphql::GetMembersQuery, feature_category: 
       it 'queries project & project members' do
         expect(query.to_s).to include('project')
         expect(query.to_s).to include('projectMembers')
-        expect(query.to_s).to include('INVITED_GROUPS SHARED_INTO_ANCESTORS')
+        expect(query.to_s).to include('DIRECT INHERITED INVITED_GROUPS')
+      end
+
+      context "when source version is at least 16.0.0" do
+        before do
+          entity.bulk_import.update!(source_version: "16.0.0")
+        end
+
+        it 'includes SHARED_INTO_ANCESTORS' do
+          expect(query.to_s).to include('DIRECT INHERITED INVITED_GROUPS SHARED_INTO_ANCESTORS')
+        end
       end
     end
   end

@@ -3,7 +3,6 @@
 module Gitlab
   module Regex
     extend self
-    extend BulkImports
     extend MergeRequests
     extend Packages
 

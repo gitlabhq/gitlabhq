@@ -313,7 +313,7 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
                                      "Source full path must have a relative path structure with " \
                                      "no HTTP protocol characters, or leading or trailing forward slashes. " \
                                      "Path segments must not start or end with a special character, and " \
-                                     "must not contain consecutive special characters.")
+                                     "must not contain consecutive special characters")
       end
 
       describe '#user-role' do
