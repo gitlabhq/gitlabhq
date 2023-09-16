@@ -469,6 +469,12 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
   end
 
   describe 'without two-factor authentication' do
+    it 'renders sign in text for providers' do
+      visit new_user_session_path
+
+      expect(page).to have_content(_('or sign in with'))
+    end
+
     it 'displays the remember me checkbox' do
       visit new_user_session_path
 

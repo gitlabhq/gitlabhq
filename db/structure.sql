@@ -16515,9 +16515,7 @@ CREATE TABLE geo_node_statuses (
     lfs_objects_count integer,
     lfs_objects_synced_count integer,
     lfs_objects_failed_count integer,
-    last_event_id integer,
     last_event_date timestamp without time zone,
-    cursor_last_event_id integer,
     cursor_last_event_date timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -16557,7 +16555,9 @@ CREATE TABLE geo_node_statuses (
     design_repositories_synced_count integer,
     design_repositories_failed_count integer,
     design_repositories_registry_count integer,
-    status jsonb DEFAULT '{}'::jsonb NOT NULL
+    status jsonb DEFAULT '{}'::jsonb NOT NULL,
+    last_event_id bigint,
+    cursor_last_event_id bigint
 );
 
 CREATE SEQUENCE geo_node_statuses_id_seq

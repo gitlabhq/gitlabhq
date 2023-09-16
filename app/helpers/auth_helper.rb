@@ -15,7 +15,6 @@ module AuthHelper
     google_oauth2
     jwt
     openid_connect
-    salesforce
     shibboleth
     twitter
   ].freeze

@@ -3,7 +3,7 @@
 
 - if restyle_login_page_enabled && (any_form_based_providers_enabled? || password_authentication_enabled_for_web?)
   .omniauth-divider.gl-display-flex.gl-align-items-center
-    = _("or")
+    = _("or sign in with")
 
 .gl-mt-5.gl-px-5{ class: restyle_login_page_enabled ? 'omniauth-container gl-text-center gl-ml-auto gl-mr-auto' : 'omniauth-container gl-py-5' }
   - if !restyle_login_page_enabled
