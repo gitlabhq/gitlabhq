@@ -96,7 +96,7 @@ On GitLab.com, this feature is not available.
 | `description` (optional) | `string` | true |  | Description of the policy. |
 | `enabled` | `boolean` | true | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules` | `array` of rules | true |  | List of rules that the policy applies. |
-| `actions` | `array` of actions | true |  | List of actions that the policy enforces. |
+| `actions` | `array` of actions | false|  | List of actions that the policy enforces. |
 | `approval_settings` | `object` | false | `{prevent_approval_by_author: boolean, prevent_approval_by_commit_author: boolean, remove_approvals_with_new_commit: boolean, require_password_to_approve: boolean}` | Project settings that the policy overrides. |
 
 ## `scan_finding` rule type

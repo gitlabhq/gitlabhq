@@ -208,6 +208,20 @@
           "repair_issue_url"
         ]
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "data_source": {
+            "const": "internal_events"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "events"
+        ]
+      }
     }
   ]
 }

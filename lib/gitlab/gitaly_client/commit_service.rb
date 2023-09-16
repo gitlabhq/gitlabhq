@@ -418,6 +418,9 @@ module Gitlab
 
         response = gitaly_client_call(@repository.storage, :commit_service, :raw_blame, request, timeout: GitalyClient.medium_timeout)
         response.reduce([]) { |memo, msg| memo << msg.data }.join
+      # Temporary fix, use structured errors when they are available: https://gitlab.com/gitlab-org/gitaly/-/issues/5594
+      rescue GRPC::Internal
+        ""
       end
 
       def find_commit(revision)

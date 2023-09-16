@@ -1,6 +1,6 @@
 <script>
 import {
-  GlDropdown,
+  GlDisclosureDropdown,
   GlTooltipDirective,
   GlIcon,
   GlLink,
@@ -24,7 +24,6 @@ import PinComponent from './environment_pin.vue';
 import RollbackComponent from './environment_rollback.vue';
 import StopComponent from './environment_stop.vue';
 import TerminalButtonComponent from './environment_terminal_button.vue';
-
 /**
  * Environment Item Component
  *
@@ -36,7 +35,7 @@ export default {
     ActionsComponent,
     CommitComponent,
     ExternalUrlComponent,
-    GlDropdown,
+    GlDisclosureDropdown,
     GlBadge,
     GlIcon,
     GlLink,
@@ -820,13 +819,13 @@ export default {
           data-track-label="environment_stop"
         />
 
-        <gl-dropdown
-          v-if="hasExtraActions"
-          icon="ellipsis_v"
+        <gl-disclosure-dropdown
           text-sr-only
-          :text="__('More actions')"
-          category="secondary"
           no-caret
+          icon="ellipsis_v"
+          category="secondary"
+          placement="right"
+          :toggle-text="__('More actions')"
         >
           <rollback-component
             v-if="canRetry"
@@ -857,7 +856,7 @@ export default {
             data-track-action="click_button"
             data-track-label="environment_delete"
           />
-        </gl-dropdown>
+        </gl-disclosure-dropdown>
       </div>
     </div>
   </div>

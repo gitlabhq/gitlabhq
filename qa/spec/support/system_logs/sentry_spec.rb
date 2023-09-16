@@ -13,7 +13,7 @@ RSpec.describe QA::Support::SystemLogs::Sentry do
     end
 
     let(:staging_ref_url) do
-      "https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=gstg-ref&project=3&query=correlation_id%3A%22#{correlation_id}%22"
+      "https://new-sentry.gitlab.net/organizations/gitlab/projects/staging-ref/?project=18&query=correlation_id%3A%22#{correlation_id}%22"
     end
 
     let(:pre_url) do
