@@ -217,15 +217,15 @@ always fails because it uses `pool.ntp.org`. This error can be ignored but you c
 
 ## Enabling the Package Metadata Database
 
-Enabling the Package Metadata Database is required to enable [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files).
+Enabling the Package Metadata Database is required to enable
+[Continuous Vulnerability Scanning](../../user/application_security/continuous_vulnerability_scanning/index.md)
+and [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files/index.md).
 This process requires the use of License and/or Advisory Data under what is collectively called the Package Metadata Database, which is licensed under the [EE License](https://storage.googleapis.com/prod-export-license-bucket-1a6c642fc4de57d4/LICENSE).
 Note the following in relation to use of the Package Metadata Database:
 
 - We may change or discontinue all or any part of the Package Metadata Database, at any time and without notice, at our sole discretion.
 - The Package Metadata Database may contain links to third-party websites or resources. We provide these links only as a convenience and are not responsible for any third-party data, content, products, or services from those websites or resources or links displayed on such websites.
 - The Package Metadata Database is based in part on information made available by third parties, and GitLab is not responsible for the accuracy or completeness of content made available.
-
-Enabling the Package Metadata Database is also required to enable Continuous Vulnerability Scans for Dependency Scanning (see [epic 9534](https://gitlab.com/groups/gitlab-org/-/epics/9534) tracking this work for more info).
 
 Package metadata is stored in the following Google Cloud Provider (GCP) buckets:
 

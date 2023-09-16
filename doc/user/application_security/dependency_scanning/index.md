@@ -18,6 +18,8 @@ Dependency Scanning can run in the development phase of your application's life 
 pipeline runs, vulnerabilities are identified and compared between the source and target branches.
 Vulnerabilities and their severity are listed in the merge request, enabling you to proactively
 address the risk to your application, before the code change is committed.
+Vulnerabilities can also be identified outside a pipeline by
+[Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/index.md).
 
 GitLab offers both Dependency Scanning and [Container Scanning](../container_scanning/index.md) to
 ensure coverage for all of these dependency types. To cover as much of your risk area as possible,
