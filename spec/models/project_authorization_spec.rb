@@ -18,16 +18,6 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
     it 'sets is_unique' do
       expect { project_auth.save! }.to change { project_auth.is_unique }.to(true)
     end
-
-    context 'with feature disabled' do
-      before do
-        stub_feature_flags(write_project_authorizations_is_unique: false)
-      end
-
-      it 'does not set is_unique' do
-        expect { project_auth.save! }.not_to change { project_auth.is_unique }.from(nil)
-      end
-    end
   end
 
   describe 'unique user, project authorizations' do

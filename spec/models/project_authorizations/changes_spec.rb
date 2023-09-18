@@ -110,18 +110,6 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
           expect(user.project_authorizations.pluck(:is_unique)).to all(be(true))
         end
 
-        context 'with feature disabled' do
-          before do
-            stub_feature_flags(write_project_authorizations_is_unique: false)
-          end
-
-          it 'does not write is_unique' do
-            apply_project_authorization_changes
-
-            expect(user.project_authorizations.pluck(:is_unique)).to all(be(nil))
-          end
-        end
-
         it_behaves_like 'logs the detail', batch_size: 2
         it_behaves_like 'publishes AuthorizationsChangedEvent'
 

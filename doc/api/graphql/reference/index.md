@@ -504,6 +504,16 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#connection-pagination-arguments):
 `before: String`, `after: String`, `first: Int`, `last: Int`.
 
+### `Query.memberRolePermissions`
+
+List of all customizable permissions.
+
+Returns [`CustomizablePermissionConnection`](#customizablepermissionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
 ### `Query.mergeRequest`
 
 Find a merge request.
@@ -9217,6 +9227,29 @@ The edge type for [`CustomizableDashboardVisualization`](#customizabledashboardv
 | <a id="customizabledashboardvisualizationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="customizabledashboardvisualizationedgenode"></a>`node` | [`CustomizableDashboardVisualization`](#customizabledashboardvisualization) | The item at the end of the edge. |
 
+#### `CustomizablePermissionConnection`
+
+The connection type for [`CustomizablePermission`](#customizablepermission).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizablepermissionconnectionedges"></a>`edges` | [`[CustomizablePermissionEdge]`](#customizablepermissionedge) | A list of edges. |
+| <a id="customizablepermissionconnectionnodes"></a>`nodes` | [`[CustomizablePermission]`](#customizablepermission) | A list of nodes. |
+| <a id="customizablepermissionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CustomizablePermissionEdge`
+
+The edge type for [`CustomizablePermission`](#customizablepermission).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizablepermissionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="customizablepermissionedgenode"></a>`node` | [`CustomizablePermission`](#customizablepermission) | The item at the end of the edge. |
+
 #### `DastProfileConnection`
 
 The connection type for [`DastProfile`](#dastprofile).
@@ -15307,6 +15340,18 @@ Represents a product analytics dashboard visualization.
 | <a id="customizabledashboardvisualizationoptions"></a>`options` | [`JSON!`](#json) | Options of the visualization. |
 | <a id="customizabledashboardvisualizationslug"></a>`slug` | [`String!`](#string) | Slug of the visualization. |
 | <a id="customizabledashboardvisualizationtype"></a>`type` | [`String!`](#string) | Type of the visualization. |
+
+### `CustomizablePermission`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customizablepermissionavailablefor"></a>`availableFor` | [`[String!]!`](#string) | Objects the permission is available for. |
+| <a id="customizablepermissiondescription"></a>`description` | [`String`](#string) | Description of the permission. |
+| <a id="customizablepermissionname"></a>`name` | [`String!`](#string) | Localized name of the permission. |
+| <a id="customizablepermissionrequirement"></a>`requirement` | [`String`](#string) | Requirement of the permission. |
+| <a id="customizablepermissionvalue"></a>`value` | [`String!`](#string) | Value of the permission. |
 
 ### `DastPreScanVerification`
 

@@ -3,7 +3,7 @@ status: proposed
 creation-date: "2023-08-23"
 authors: [ "@ayufan" ]
 coach: "@grzegorz"
-approvers: [ "@dhershkovitch", "@gabrielengel_gl", "@marknuzzo", "@nicolewilliams" ]
+approvers: [ "@dhershkovitch", "@DarrenEastman", "@marknuzzo", "@nicolewilliams" ]
 owning-stage: "~devops::verify"
 participating-stages: [ ]
 ---

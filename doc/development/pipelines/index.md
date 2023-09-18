@@ -278,8 +278,8 @@ See `.review:rules:start-review-app-pipeline` in
 [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for
 the specific list of rules.
 
-If you want to force a Review App to be deployed regardless of your changes, you can add the
-`pipeline:run-review-app` label to the merge request.
+If you want to deploy a Review App in a merge request, you can either trigger the `start-review-app-pipeline` manual job in the CI/CD pipeline, or add the
+`pipeline:run-review-app` label to the merge request and run a new CI/CD pipeline.
 
 Consult the [Review Apps](../testing_guide/review_apps.md) dedicated page for more information.
 

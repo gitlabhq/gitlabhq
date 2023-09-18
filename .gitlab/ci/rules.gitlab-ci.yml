@@ -2549,7 +2549,7 @@
 
 # The following rules needs to be the same as the one for .review:rules:review-cleanup
 # except that:
-# - most rules re automatic here (i.e. no `when: manual`) and not allowed to fail (i.e. no `allow_failure: true`) here
+# - we start review apps automatically for scheduled pipelines and when the `pipeline:run-review-app` label is set
 # - several rules have `variables: *review-change-pattern` here
 .review:rules:start-review-app-pipeline:
   rules:
@@ -2562,9 +2562,13 @@
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-build-patterns
       variables: *review-change-pattern
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
       variables: *review-change-pattern
@@ -2582,6 +2586,8 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual

@@ -160,8 +160,9 @@ gdk-qa-reliable:
     QA_RUN_TYPE: gdk-qa-blocking
   parallel: 10
   rules:
-    - when: always
-  allow_failure: true
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /devops::govern/'
+    - when: on_success
+      allow_failure: true
 
 gdk-qa-reliable-with-load-balancer:
   extends:

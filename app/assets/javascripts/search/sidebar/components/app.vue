@@ -14,6 +14,7 @@ import {
   SCOPE_BLOB,
   SCOPE_PROJECTS,
   SCOPE_NOTES,
+  SCOPE_COMMITS,
   SEARCH_TYPE_ADVANCED,
 } from '../constants';
 import IssuesFilters from './issues_filters.vue';
@@ -21,6 +22,7 @@ import MergeRequestsFilters from './merge_requests_filters.vue';
 import BlobsFilters from './blobs_filters.vue';
 import ProjectsFilters from './projects_filters.vue';
 import NotesFilters from './notes_filters.vue';
+import CommitsFilters from './commits_filters.vue';
 
 export default {
   name: 'GlobalSearchSidebar',
@@ -35,6 +37,7 @@ export default {
     SidebarPortal,
     DomElementListener,
     SmallScreenDrawerNavigation,
+    CommitsFilters,
   },
   mixins: [glFeatureFlagsMixin()],
   computed: {
@@ -51,7 +54,6 @@ export default {
       return this.currentScope === SCOPE_BLOB && this.searchType === SEARCH_TYPE_ADVANCED;
     },
     showProjectsFilters() {
-      // for now the feature flag is here. Since we have only one filter in projects scope
       return this.currentScope === SCOPE_PROJECTS;
     },
     showNotesFilters() {
@@ -59,6 +61,14 @@ export default {
         this.currentScope === SCOPE_NOTES &&
         this.searchType === SEARCH_TYPE_ADVANCED &&
         this.glFeatures.searchNotesHideArchivedProjects
+      );
+    },
+    showCommitsFilters() {
+      // for now, the feature flag is placed here. Since we have only one filter in commits scope
+      return (
+        this.currentScope === SCOPE_COMMITS &&
+        this.searchType === SEARCH_TYPE_ADVANCED &&
+        this.glFeatures.searchCommitsHideArchivedProjects
       );
     },
     showScopeNavigation() {
@@ -86,6 +96,7 @@ export default {
       <blobs-filters v-if="showBlobFilters" />
       <projects-filters v-if="showProjectsFilters" />
       <notes-filters v-if="showNotesFilters" />
+      <commits-filters v-if="showCommitsFilters" />
     </sidebar-portal>
   </section>
 
@@ -100,6 +111,7 @@ export default {
       <blobs-filters v-if="showBlobFilters" />
       <projects-filters v-if="showProjectsFilters" />
       <notes-filters v-if="showNotesFilters" />
+      <commits-filters v-if="showCommitsFilters" />
     </div>
     <small-screen-drawer-navigation class="gl-lg-display-none">
       <scope-legacy-navigation />
@@ -108,6 +120,7 @@ export default {
       <blobs-filters v-if="showBlobFilters" />
       <projects-filters v-if="showProjectsFilters" />
       <notes-filters v-if="showNotesFilters" />
+      <commits-filters v-if="showCommitsFilters" />
     </small-screen-drawer-navigation>
   </section>
 </template>

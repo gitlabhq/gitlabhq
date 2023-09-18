@@ -47,7 +47,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
       it 'has only pending builds' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:builds).first.status).to eq('pending')
       end
     end
 
@@ -60,7 +59,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
       it 'has only running jobs' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:builds).first.status).to eq('running')
       end
     end
 
@@ -73,7 +71,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
       it 'has only finished jobs' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:builds).first.status).to eq('success')
       end
     end
 
@@ -89,7 +86,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
         it 'redirects to the page' do
           expect(response).to have_gitlab_http_status(:ok)
-          expect(assigns(:builds).current_page).to eq(last_page)
         end
       end
     end

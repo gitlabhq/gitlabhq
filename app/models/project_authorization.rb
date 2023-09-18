@@ -34,7 +34,7 @@ class ProjectAuthorization < ApplicationRecord
   private
 
   def assign_is_unique
-    self.is_unique = true if Feature.enabled?(:write_project_authorizations_is_unique)
+    self.is_unique = true
   end
 end
 

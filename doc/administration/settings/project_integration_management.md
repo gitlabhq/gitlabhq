@@ -18,7 +18,11 @@ for all projects that didn't have it already enabled.
 Only the entire settings for an integration can be inherited. Per-field inheritance
 is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
-## Manage instance-level default settings for a project integration **(FREE SELF)**
+## Manage instance-level default settings for a project integration
+
+Prerequisite:
+
+- You must have administrator access to the instance.
 
 To manage instance-level default settings for a project integration:
 
@@ -58,6 +62,10 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 ### Remove an instance-level default setting
 
+Prerequisite:
+
+- You must have administrator access to the instance.
+
 To remove an instance-level default setting:
 
 1. On the left sidebar, select **Search or go to**.
@@ -72,6 +80,10 @@ Resetting an instance-level default setting removes the integration from all pro
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218252) in GitLab 14.2.
 
+Prerequisite:
+
+- You must have administrator access to the instance.
+
 To view projects in your instance that [use custom settings](#use-custom-settings-for-a-project-or-group-integration):
 
 1. On the left sidebar, select **Search or go to**.
@@ -80,7 +92,11 @@ To view projects in your instance that [use custom settings](#use-custom-setting
 1. Select an integration.
 1. Select the **Projects using custom settings** tab.
 
-## Manage group-level default settings for a project integration
+## Manage group-level default settings for a project integration **(FREE ALL)**
+
+Prerequisite:
+
+- You must have at least the Maintainer role for the group.
 
 To manage group-level default settings for a project integration:
 
@@ -119,6 +135,10 @@ is proposed in [epic 2137](https://gitlab.com/groups/gitlab-org/-/epics/2137).
 
 ### Remove a group-level default setting
 
+Prerequisite:
+
+- You must have at least the Maintainer role for the group.
+
 To remove a group-level default setting:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -128,7 +148,11 @@ To remove a group-level default setting:
 
 Resetting a group-level default setting removes integrations that use default settings and belong to a project or subgroup of the group.
 
-## Use instance-level or group-level default settings for a project integration
+## Use instance-level or group-level default settings for a project integration **(FREE ALL)**
+
+Prerequisite:
+
+- You must have at least the Maintainer role for the project.
 
 To use instance-level or group-level default settings for a project integration:
 
@@ -140,7 +164,11 @@ To use instance-level or group-level default settings for a project integration:
 1. Complete the fields.
 1. Select **Save changes**.
 
-## Use custom settings for a project or group integration
+## Use custom settings for a project or group integration **(FREE ALL)**
+
+Prerequisite:
+
+- You must have at least the Maintainer role for the project or group.
 
 To use custom settings for a project or group integration:
 

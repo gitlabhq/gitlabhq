@@ -3226,6 +3226,36 @@ with the API scope enabled.
 | `only_mirror_protected_branches`| boolean | No | Limits mirroring to only protected branches when set to `true`. |
 | `mirror_branch_regex`            | String  | No | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
 
+Example creating a project with pull mirroring:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+ --header "Content-Type: application/json" \
+ --data '{
+  "name": "new_project",
+  "namespace_id": "1",
+  "mirror": true,
+  "import_url": "https://username:token@gitlab.example.com/group/project.git"
+ }' \
+ --url "https://gitlab.example.com/api/v4/projects/"
+```
+
+Example adding pull mirroring:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+ --url "https://gitlab.example.com/api/v4/projects/:id" \
+ --data "mirror=true&import_url=https://username:token@gitlab.example.com/group/project.git"
+```
+
+Example removing pull mirroring:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+ --url "https://gitlab.example.com/api/v4/projects/:id"  \
+ --data "mirror=false"
+```
+
 ## Start the pull mirroring process for a Project **(PREMIUM ALL)**
 
 > Moved to GitLab Premium in 13.9.

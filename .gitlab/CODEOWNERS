@@ -53,9 +53,24 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /ee/db/click_house/
 /**/click(_|-)?house/
 
+## We list db/ subfolders explicitly as we don't want to match Clickhouse files
 [Database] @gitlab-org/maintainers/database
-/db/
-/ee/db/
+/db/database_connections/
+/ee/db/database_connections/
+/db/docs/
+/ee/db/docs/
+/ee/db/embedding/
+/ee/db/geo/
+/ee/db/seeds/
+/db/gitlab_schemas/
+/ee/db/gitlab_schemas/
+/db/*migrate/
+/ee/db/*migrate/
+/db/schema_migrations/
+/ee/db/schema_migrations/
+# The following two lines only match db/ root files
+/db/*
+/ee/db/*
 /lib/gitlab/background_migration/
 /ee/lib/ee/gitlab/background_migration/
 /lib/gitlab/database/

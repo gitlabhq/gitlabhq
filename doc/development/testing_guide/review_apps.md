@@ -6,20 +6,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Using review apps in the development of GitLab
 
-Review apps are deployed using the `start-review-app-pipeline` job which triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a review app.
+Review apps are deployed using the `start-review-app-pipeline` manual job which triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a review app.
 
 ![start-review-app-pipeline job](img/review-app-parent-pipeline.png)
 
 For any of the following scenarios, the `start-review-app-pipeline` job would be automatically started:
 
-- for merge requests with CI configuration changes
-- for merge requests with frontend changes
-- for merge requests with changes to `{,ee/,jh/}{app/controllers}/**/*`
-- for merge requests with changes to `{,ee/,jh/}{app/models}/**/*`
-- for merge requests with changes to `{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*`
-- for merge requests with QA changes
 - for scheduled pipelines
 - the MR has the `pipeline:run-review-app` label set
+
+For all other scenarios, the `start-review-app-pipeline` job can be triggered manually.
 
 ## E2E test runs on review apps
 

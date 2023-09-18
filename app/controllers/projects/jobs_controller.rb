@@ -27,15 +27,7 @@ class Projects::JobsController < Projects::ApplicationController
   feature_category :continuous_integration
   urgency :low
 
-  def index
-    # We need all builds for tabs counters
-    @all_builds = Ci::JobsFinder.new(current_user: current_user, project: @project).execute
-
-    @scope = params[:scope]
-    @builds = Ci::JobsFinder.new(current_user: current_user, project: @project, params: params).execute
-    @builds = @builds.eager_load_everything
-    @builds = @builds.page(params[:page]).per(30).without_count
-  end
+  def index; end
 
   def show
     if @build.instance_of?(::Ci::Bridge)
