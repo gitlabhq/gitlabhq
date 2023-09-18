@@ -2,7 +2,6 @@
 import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
-  GlDropdownForm,
   GlDropdownDivider,
   GlModal,
   GlModalDirective,
@@ -55,7 +54,6 @@ export default {
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
-    GlDropdownForm,
     GlDropdownDivider,
     GlModal,
     GlToggle,
@@ -180,13 +178,16 @@ export default {
         navigator.clipboard.writeText(text);
       }
       toast(message);
+      this.closeDropdown();
     },
     handleToggleWorkItemConfidentiality() {
       this.track('click_toggle_work_item_confidentiality');
       this.$emit('toggleWorkItemConfidentiality', !this.isConfidential);
+      this.closeDropdown();
     },
     handleDelete() {
       this.$refs.modal.show();
+      this.closeDropdown();
     },
     handleDeleteWorkItem() {
       this.track('click_delete_work_item');
@@ -275,6 +276,9 @@ export default {
     throwConvertError() {
       this.$emit('error', this.i18n.convertError);
     },
+    closeDropdown() {
+      this.$refs.workItemsMoreActions.close();
+    },
     async promoteToObjective() {
       try {
         const {
@@ -300,6 +304,8 @@ export default {
       } catch (error) {
         this.throwConvertError();
         Sentry.captureException(error);
+      } finally {
+        this.closeDropdown();
       }
     },
   },
@@ -309,32 +315,36 @@ export default {
 <template>
   <div>
     <gl-disclosure-dropdown
+      ref="workItemsMoreActions"
       icon="ellipsis_v"
       data-testid="work-item-actions-dropdown"
       text-sr-only
       :text="__('More actions')"
       category="tertiary"
+      :auto-close="false"
       no-caret
       right
     >
       <template v-if="$options.isLoggedIn">
-        <gl-dropdown-form
-          class="work-item-notifications-form"
+        <gl-disclosure-dropdown-item
+          class="gl-display-flex gl-justify-content-end gl-w-full"
           :data-testid="$options.notificationsToggleFormTestId"
         >
-          <div class="gl-px-4 gl-pb-2 gl-pt-2">
+          <template #list-item>
             <gl-toggle
               :value="subscribedToNotifications"
               :label="$options.i18n.notifications"
               :data-testid="$options.notificationsToggleTestId"
+              class="work-item-notification-toggle"
               label-position="left"
               label-id="notifications-toggle"
               @change="toggleNotifications($event)"
             />
-          </div>
-        </gl-dropdown-form>
+          </template>
+        </gl-disclosure-dropdown-item>
         <gl-dropdown-divider />
       </template>
+
       <gl-disclosure-dropdown-item
         v-if="canPromoteToObjective"
         :data-testid="$options.promoteActionTestId"

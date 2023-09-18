@@ -195,7 +195,7 @@ export default {
               :status="commit.pipeline.detailedStatus"
               :details-path="commit.pipeline.detailedStatus.detailsPath"
               :aria-label="statusTitle"
-              badge-size="lg"
+              size="lg"
               :show-text="false"
               class="js-commit-pipeline"
             />

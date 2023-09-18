@@ -305,11 +305,7 @@ export default {
 </script>
 
 <template>
-  <section
-    class="media-section"
-    data-testid="widget-extension"
-    data-qa-selector="mr_widget_extension"
-  >
+  <section class="media-section" data-testid="widget-extension">
     <state-container
       :status="statusIconName"
       :is-loading="isLoadingSummary"
@@ -359,7 +355,6 @@ export default {
             :icon="isCollapsed ? 'chevron-lg-down' : 'chevron-lg-up'"
             category="tertiary"
             data-testid="toggle-button"
-            data-qa-selector="toggle_button"
             size="small"
             @click="toggleCollapsed"
           />

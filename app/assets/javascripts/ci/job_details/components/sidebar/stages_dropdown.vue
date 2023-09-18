@@ -110,7 +110,7 @@ export default {
         <template #status>
           <ci-badge-link
             :status="pipeline.details.status"
-            badge-size="sm"
+            size="sm"
             data-testid="pipeline-status-link"
           />
         </template>

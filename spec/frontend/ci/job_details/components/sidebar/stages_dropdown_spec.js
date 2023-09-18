@@ -46,7 +46,8 @@ describe('Stages Dropdown', () => {
     });
 
     it('renders pipeline status', () => {
-      expect(findStatus().exists()).toBe(true);
+      expect(findStatus().props('status')).toBe(mockPipelineWithoutMR.details.status);
+      expect(findStatus().props('size')).toBe('sm');
     });
 
     it('renders dropdown with stages', () => {

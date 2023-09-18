@@ -5,7 +5,6 @@ exports[`IssueStatusIcon renders "failed" state correctly 1`] = `
   class="failed report-block-list-icon"
 >
   <gl-icon-stub
-    data-qa-selector="status_failed_icon"
     name="status_failed_borderless"
     size="24"
   />
@@ -17,7 +16,6 @@ exports[`IssueStatusIcon renders "neutral" state correctly 1`] = `
   class="neutral report-block-list-icon"
 >
   <gl-icon-stub
-    data-qa-selector="status_neutral_icon"
     name="dash"
     size="24"
   />
@@ -29,7 +27,6 @@ exports[`IssueStatusIcon renders "success" state correctly 1`] = `
   class="report-block-list-icon success"
 >
   <gl-icon-stub
-    data-qa-selector="status_success_icon"
     name="status_success_borderless"
     size="24"
   />

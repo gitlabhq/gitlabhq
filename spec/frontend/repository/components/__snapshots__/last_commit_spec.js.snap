@@ -60,9 +60,9 @@ exports[`Repository last commit component renders commit widget 1`] = `
       >
         <ci-badge-link-stub
           aria-label="Pipeline: failed"
-          badgesize="lg"
           class="js-commit-pipeline"
           details-path="https://test.com/pipeline"
+          size="lg"
           status="[object Object]"
         />
       </div>

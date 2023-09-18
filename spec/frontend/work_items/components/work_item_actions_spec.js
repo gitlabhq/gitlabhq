@@ -55,7 +55,7 @@ describe('WorkItemActions component', () => {
   const findCopyReferenceButton = () => wrapper.findByTestId(TEST_ID_COPY_REFERENCE_ACTION);
   const findCopyCreateNoteEmailButton = () =>
     wrapper.findByTestId(TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION);
-  const findDropdownItems = () => wrapper.findAll('[data-testid="disclosure-content"] > *');
+  const findDropdownItems = () => wrapper.findAll('[data-testid="work-item-actions-dropdown"] > *');
   const findDropdownItemsActual = () =>
     findDropdownItems().wrappers.map((x) => {
       if (x.is(GlDropdownDivider)) {
@@ -140,10 +140,14 @@ describe('WorkItemActions component', () => {
       stubs: {
         GlModal: stubComponent(GlModal, {
           methods: {
-            show: modalShowSpy,
+            show: jest.fn(),
           },
         }),
-        GlDisclosureDropdown,
+        GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
+          methods: {
+            close: modalShowSpy,
+          },
+        }),
       },
     });
   };

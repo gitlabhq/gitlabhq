@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 type: reference, howto
 ---
 
-# Group access tokens
+# Group access tokens **(FREE)**
 
 With group access tokens, you can use a single token to:
 

@@ -173,3 +173,13 @@ $work-item-sticky-header-height: 52px;
     min-width: 100%;
   }
 }
+
+.work-item-notification-toggle {
+  .gl-toggle {
+    margin-left: auto;
+  }
+
+  .gl-toggle-label {
+    font-weight: normal;
+  }
+}

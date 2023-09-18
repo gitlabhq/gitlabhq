@@ -50,6 +50,6 @@ export default {
     }"
     class="report-block-list-icon"
   >
-    <gl-icon :name="iconName" :size="statusIconSize" :data-qa-selector="`status_${status}_icon`" />
+    <gl-icon :name="iconName" :size="statusIconSize" />
   </div>
 </template>
