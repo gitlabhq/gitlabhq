@@ -269,7 +269,7 @@ git push origin +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*
 
 Any other namespaces that the administrator wants to push can be included there as well via additional patterns.
 
-### Command line tools cannot connect to Gitaly
+### Command-line tools cannot connect to Gitaly
 
 gRPC cannot reach your Gitaly server if:
 

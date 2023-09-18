@@ -13,7 +13,7 @@ GitLab has plugins and extensions to extend GitLab functionality to the followin
 - [Visual Studio](visual_studio/index.md)
 - [Neovim](neovim/index.md)
 
-GitLab also supports developers in their command line interface with [`glab`](gitlab_cli/index.md) the GitLab CLI.
+GitLab also supports developers in their command-line interface with [`glab`](gitlab_cli/index.md) the GitLab CLI.
 
 ## Features
 

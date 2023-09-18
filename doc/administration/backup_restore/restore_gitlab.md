@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Restore GitLab **(FREE SELF)**
 
-GitLab provides a command line interface to restore your entire installation,
+GitLab provides a command-line interface to restore your entire installation,
 and is flexible enough to fit your needs.
 
 The [restore prerequisites section](#restore-prerequisites) includes crucial
@@ -287,7 +287,7 @@ Each backup archive contains a full self-contained backup, including those creat
 
 ## Restore options
 
-The command line tool GitLab provides to restore from backup can accept more
+The command-line tool GitLab provides to restore from backup can accept more
 options.
 
 ### Specify backup to restore when there are more than one

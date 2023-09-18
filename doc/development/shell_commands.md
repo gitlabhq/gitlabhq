@@ -88,7 +88,7 @@ cat: illegal option -- l
 usage: cat [-benstuv] [file ...]
 ```
 
-In the example above, the argument parser of `cat` assumes that `-l` is an option. The solution in the example above is to make it clear to `cat` that `-l` is really an argument, not an option. Many Unix command line tools follow the convention of separating options from arguments with `--`.
+In the example above, the argument parser of `cat` assumes that `-l` is an option. The solution in the example above is to make it clear to `cat` that `-l` is really an argument, not an option. Many Unix command-line tools follow the convention of separating options from arguments with `--`.
 
 ```shell
 # Example (continued)

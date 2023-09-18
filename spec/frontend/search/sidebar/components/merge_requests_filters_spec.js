@@ -113,7 +113,7 @@ describe('GlobalSearch MergeRequestsFilters', () => {
 
   describe('Renders correctly with wrong scope', () => {
     beforeEach(() => {
-      defaultGetters.currentScope = () => 'blobs';
+      defaultGetters.currentScope = () => 'test';
       createComponent();
     });
     it("doesn't render StatusFilter", () => {

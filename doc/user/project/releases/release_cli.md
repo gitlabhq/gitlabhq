@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Release CLI tool
 
-The [GitLab Release CLI (`release-cli`)](https://gitlab.com/gitlab-org/release-cli) tool
+The [GitLab Release CLI (`release-cli`)](https://gitlab.com/gitlab-org/release-cli)
 is a command-line tool for managing releases from the command line or from a CI/CD pipeline.
 You can use the release CLI to create, update, modify, and delete releases.
 

@@ -278,7 +278,7 @@ find a way to limit it to only us.**
 - [Review apps integration for CE/EE (presentation)](https://docs.google.com/presentation/d/1QPLr6FO4LduROU8pQIPkX1yfGvD13GEJIBOenqoKxR8/edit?usp=sharing)
 - [Stability issues](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/212)
 
-### Helpful command line tools
+### Helpful command-line tools
 
 - [K9s](https://github.com/derailed/k9s) - enables CLI dashboard across pods and enabling filtering by labels
 - [Stern](https://github.com/wercker/stern) - enables cross pod log tailing based on label/field selectors

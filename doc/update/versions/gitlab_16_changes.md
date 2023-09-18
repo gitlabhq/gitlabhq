@@ -119,6 +119,17 @@ Specific information applies to Linux package installations:
   - [An informal explanation](https://gitlab.com/gitlab-org/gitlab/-/issues/416714#note_1482388504).
   - `omnibus-gitlab` [merge request 7035](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7035), which introduces the environment variable.
 
+### Geo installations
+
+Specific information applies to installations using Geo:
+
+- Git pulls against a secondary Geo site are being proxied to the primary Geo site even when that secondary site is up to date. You are impacted if you are using Geo to accelerate remote users who make Git pull requests against a secondary Geo site.
+
+  - Impacted versions: 16.3.0 - 16.3.2
+  - Versions containing fix: 16.4.0
+
+  For more information, see [issue 425224](https://gitlab.com/gitlab-org/gitlab/-/issues/425224).
+
 ## 16.2.0
 
 - Legacy LDAP configuration settings may cause

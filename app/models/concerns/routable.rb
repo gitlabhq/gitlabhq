@@ -17,7 +17,14 @@ module Routable
 
   # rubocop:disable Metrics/CyclomaticComplexity
   # rubocop:disable Metrics/PerceivedComplexity
-  def self.find_by_full_path(path, follow_redirects: false, route_scope: Route, redirect_route_scope: RedirectRoute)
+  def self.find_by_full_path(
+    path,
+    follow_redirects: false,
+    route_scope: Route,
+    redirect_route_scope: RedirectRoute,
+    optimize_routable: Routable.optimize_routable_enabled?
+  )
+
     return unless path.present?
 
     # Convert path to string to prevent DB error: function lower(integer) does not exist
@@ -28,7 +35,7 @@ module Routable
     #
     # We need to qualify the columns with the table name, to support both direct lookups on
     # Route/RedirectRoute, and scoped lookups through the Routable classes.
-    if Feature.enabled?(:optimize_routable)
+    if optimize_routable
       path_condition = { path: path }
 
       source_type_condition = if route_scope == Route
@@ -69,6 +76,10 @@ module Routable
   # rubocop:enable Metrics/PerceivedComplexity
   # rubocop:enable Metrics/CyclomaticComplexity
 
+  def self.optimize_routable_enabled?
+    Feature.enabled?(:optimize_routable)
+  end
+
   included do
     # Remove `inverse_of: source` when upgraded to rails 5.2
     # See https://github.com/rails/rails/pull/28808
@@ -96,7 +107,9 @@ module Routable
     #
     # Returns a single object, or nil.
     def find_by_full_path(path, follow_redirects: false)
-      if Feature.enabled?(:optimize_routable)
+      optimize_routable = Routable.optimize_routable_enabled?
+
+      if optimize_routable
         route_scope = all
         redirect_route_scope = RedirectRoute
       else
@@ -108,7 +121,8 @@ module Routable
         path,
         follow_redirects: follow_redirects,
         route_scope: route_scope,
-        redirect_route_scope: redirect_route_scope
+        redirect_route_scope: redirect_route_scope,
+        optimize_routable: optimize_routable
       )
     end
 

@@ -9,6 +9,12 @@ RSpec.shared_examples 'routable resource' do
       expect(described_class.find_by_full_path(record.full_path.upcase)).to eq(record)
     end
 
+    it 'checks if `optimize_routable` is enabled only once' do
+      expect(Routable).to receive(:optimize_routable_enabled?).once
+
+      described_class.find_by_full_path(record.full_path)
+    end
+
     it 'returns nil for unknown paths' do
       expect(described_class.find_by_full_path('unknown')).to be_nil
     end
@@ -265,6 +271,22 @@ RSpec.describe Namespaces::ProjectNamespace, 'Routable', :with_clean_rails_cache
     expect do
       described_class.create!(project: nil, parent: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, path: 'foo', name: 'foo')
     end.not_to change { Route.count }
+  end
+end
+
+RSpec.describe Routable, feature_category: :groups_and_projects do
+  describe '.optimize_routable_enabled?' do
+    subject { described_class.optimize_routable_enabled? }
+
+    it { is_expected.to eq(true) }
+
+    context 'when the `optimize_routable` feature flag is turned OFF' do
+      before do
+        stub_feature_flags(optimize_routable: false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
   end
 end
 

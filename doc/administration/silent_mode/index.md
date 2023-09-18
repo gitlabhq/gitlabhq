@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature is an [Experiment](../../policy/experiment-beta-support.md#experiment).
 > - Enabling and disabling Silent Mode through the web UI was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131090) in GitLab 16.4
 
-Silent Mode allows you to suppress outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use. Two use-cases are:
+Silent Mode allows you to silence outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use. Two use-cases are:
 
 - Validating Geo site promotion. You have a secondary Geo site as part of your [disaster recovery](../geo/disaster_recovery/index.md) solution. You want to regularly test promoting it to become a primary Geo site, as a best practice to ensure your disaster recovery plan actually works. But you don't want to actually perform an entire failover, since the primary site lives in a region which provides the lowest latency to your users. And you don't want to take downtime during every regular test. So, you let the primary site remain up, while you promote the secondary site. You start smoke testing the promoted site. But, the promoted site starts emailing users, the push mirrors push changes to external Git repositories, etc. This is where Silent Mode comes in. You can enable it as part of site promotion, to avoid this issue.
 - Validating GitLab backups. You set up a testing instance to test that your backups restore successfully. As part of the restore, you enable Silent Mode, for example to avoid sending invalid emails to users.
@@ -80,32 +80,30 @@ This section documents the current behavior of GitLab when Silent Mode is enable
 
 When Silent Mode is enabled, a banner is displayed at the top of the page for all users stating the setting is enabled and **All outbound communications are blocked.**.
 
-### Service Desk
+### Outbound communications that are silenced
 
-Incoming emails still raise issues, but the users who sent the emails to [Service Desk](../../user/project/service_desk/index.md) are not notified of issue creation or comments on their issues.
+Outbound communications from the following features are silenced by Silent Mode.
 
-### Webhooks
+| Feature                                                                   | Notes                                                                                                                                                                                                                                                   |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Project and group webhooks](../../user/project/integrations/webhooks.md) | Triggering webhook tests via the UI results in HTTP status 500 responses.                                                                                                                                                                               |
+| [System hooks](../system_hooks.md)                                        |                                                                                                                                                                                                                                                         |
+| [Remote mirrors](../../user/project/repository/mirror/index.md)           | Pushes to remote mirrors are skipped. Pulls from remote mirrors is skipped.                                                                                                                                                                             |
+| [Executable integrations](../../user/project/integrations/index.md)       | The integrations are not executed.                                                                                                                                                                                                                      |
+| [Service Desk](../../user/project/service_desk/index.md)                  | Incoming emails still raise issues, but the users who sent the emails to Service Desk are not notified of issue creation or comments on their issues.                                                                                                   |
+| Outbound emails                                                           |                                                                                                                                                                                                                                                         |
+| Outbound HTTP requests                                                    | Many HTTP requests are blocked where features are not blocked or skipped explicitly. These may produce errors. If a particular error is problematic for testing during Silent Mode, please consult [GitLab Support](https://about.gitlab.com/support/). |
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) in GitLab 16.3.
+### Outbound communications that are not silenced
 
-[Project and group webhooks](../../user/project/integrations/webhooks.md) and [system hooks](../system_hooks.md) are suppressed.
+Outbound communications from the following features are not silenced by Silent Mode.
 
-In GitLab 16.2 and earlier, webhooks were triggered when Silent Mode was enabled, but the [webhook HTTP request was blocked](#outbound-http-requests).
-
-Triggering webhook tests via the UI results in HTTP status 500 responses.
-
-### Remote mirrors
-
-Updates on [remote mirrors](../../user/project/repository/mirror/index.md) (pushing to, and pulling from them) are suppressed.
-
-### Integrations
-
-Executable [integrations](../../user/project/integrations/index.md) are suppressed.
-
-### Outbound emails
-
-Outbound emails are suppressed.
-
-### Outbound HTTP requests
-
-Many outbound HTTP requests are suppressed. A list of unsuppressed requests does not exist at this time, since more suppression is planned.
+| Feature                                                                                                     | Notes                                                                                                                                                                                                                                           |
+| ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Dependency proxy](../packages/dependency_proxy.md)                                                         | Pulling images that are not cached will fetch from the source as usual. Consider pull rate limits.                                                                                                                                              |
+| [File hooks](../file_hooks.md)                                                                              |                                                                                                                                                                                                                                                 |
+| [Server hooks](../server_hooks.md)                                                                          |                                                                                                                                                                                                                                                 |
+| [Advanced search](../../integration/advanced_search/elasticsearch.md)                                       | If two GitLab instances are using the same Advanced Search instance, then they can both modify Search data. This is a split-brain scenario which can occur for example after promoting a secondary Geo site while the primary Geo site is live. |
+| [Snowplow](../../user/product_analytics/index.md)                                                           | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/409661).                                                                                                                                          |
+| [Deprecated Kubernetes Connections](../../user/clusters/agent/index.md)                                     | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/396470).                                                                                                                                          |
+| [Container registry webhooks](../packages/container_registry.md#configure-container-registry-notifications) | There is [a proposal to silence these requests](https://gitlab.com/gitlab-org/gitlab/-/issues/409682).                                                                                                                                          |

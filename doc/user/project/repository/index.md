@@ -73,7 +73,7 @@ into Xcode on macOS.
 1. Select **Xcode**.
 
 The project is cloned onto your computer and you are
-prompted to open XCode.
+prompted to open Xcode.
 
 ### Clone and open in Visual Studio Code
 

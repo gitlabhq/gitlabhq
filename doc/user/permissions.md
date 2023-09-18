@@ -588,7 +588,17 @@ the Owner role:
 
    Now the Guest+1 user can view code on all projects associated with this membership.
 
-### Remove a custom role from a group member
+### Remove a custom role
+
+Prerequisite:
+
+- You must be an administrator or have the Owner role in the group you are removing the custom role from.
+
+You can remove a custom role from a group only if no group members have that role.
+
+To do this, you can either remove the custom role from all group members with that custom role, or remove those members from the group.
+
+#### Remove a custom role from a group member
 
 To remove a custom role from a group member, use the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
 and pass an empty `member_role_id` value.
@@ -597,36 +607,16 @@ and pass an empty `member_role_id` value.
 curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id": "", "access_level": 10}' "https://example.gitlab.com/api/v4/groups/$GROUP_PATH/members/$GUEST_USER_ID"
 ```
 
-Now the user is a regular Guest.
-
-### Remove a custom role
-
-Prerequisite:
-
-- You must have the Owner role in the group you are removing the custom role from.
-- No group members have that custom role.
-
-You cannot remove a custom role from a group until there are no group members with
-that custom role.
-
-To do this, you can either remove the custom role from all group members with that
-custom role, or remove those members from the group. You complete both of these actions
-from the group members page:
+#### Remove a group member with a custom role from the group
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
-
-To remove a custom role from a group member with that custom role:
-
-1. On the member row you want to remove, in the **Max role** column, select the
-   dropdown list to change the role for the group member.
-
-To remove a member with a custom role from the group:
-
 1. On the member row you want to remove, select the vertical ellipsis
    (**{ellipsis_v}**) and select **Remove member**.
 1. In the **Remove member** confirmation dialog, do not select any checkboxes.
 1. Select **Remove member**.
+
+#### Delete the custom role
 
 After you have made sure no group members have that custom role, delete the
 custom role.

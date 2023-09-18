@@ -28,7 +28,7 @@ You must use the following scopes to [authenticate](../api/rest/index.md#authent
   - Full API access with the `api` scope.
   - At least the Maintainer role on all projects.
 
-You can use command line tools or a programming language to interact with the REST API.
+You can use command-line tools or a programming language to interact with the REST API.
 
 ### Command line
 

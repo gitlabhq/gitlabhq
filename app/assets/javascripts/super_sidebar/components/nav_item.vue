@@ -142,6 +142,9 @@ export default {
     navItemLinkComponent() {
       return this.item.to ? NavItemRouterLink : NavItemLink;
     },
+    hasAvatar() {
+      return Boolean(this.item.entity_id);
+    },
     avatarShape() {
       return this.item.avatar_shape || 'rect';
     },
@@ -154,6 +157,22 @@ export default {
       return sprintf(this.$options.i18n.unpin, {
         title: this.item.title,
       });
+    },
+    activeIndicatorStyle() {
+      const style = {
+        width: '3px',
+        borderRadius: '3px',
+        marginRight: '1px',
+      };
+
+      // The active indicator is too close to the avatar for items with one, so shift
+      // it left by 1px.
+      //
+      // The indicator is absolutely positioned using rem units. This tweak for this
+      // edge case is in pixel units, so that it does not scale with root font size.
+      if (this.hasAvatar) style.transform = 'translateX(-1px)';
+
+      return style;
     },
   },
   mounted() {
@@ -189,7 +208,7 @@ export default {
         :class="[isActive ? 'gl-opacity-10' : 'gl-opacity-0']"
         class="active-indicator gl-bg-blue-500 gl-absolute gl-left-2 gl-top-2 gl-bottom-2 gl-transition-slow"
         aria-hidden="true"
-        style="width: 3px; border-radius: 3px; margin-right: 1px"
+        :style="activeIndicatorStyle"
         data-testid="active-indicator"
       ></div>
       <div v-if="!isFlyout" class="gl-flex-shrink-0 gl-w-6 gl-display-flex">
@@ -201,7 +220,7 @@ export default {
             class="gl-m-auto gl-text-gray-400 js-draggable-icon gl-cursor-grab show-on-focus-or-hover--target"
           />
           <gl-avatar
-            v-else-if="item.entity_id"
+            v-else-if="hasAvatar"
             :size="24"
             :shape="avatarShape"
             :entity-name="item.title"

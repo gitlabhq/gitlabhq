@@ -158,9 +158,11 @@ export default {
         class="contextual-nav gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
       >
         <div class="gl-flex-grow-1 gl-overflow-auto" data-testid="nav-container">
-          <div class="gl-px-5 gl-pt-3 gl-pb-2 gl-font-weight-bold gl-font-sm gl-text-gray-500">
+          <h2
+            class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-sm super-sidebar-context-header"
+          >
             {{ sidebarData.current_context_header }}
-          </div>
+          </h2>
 
           <sidebar-menu
             v-if="menuItems.length"

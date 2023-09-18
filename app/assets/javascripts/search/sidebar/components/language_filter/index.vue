@@ -74,7 +74,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="hasBuckets" class="gl-my-0 language-filter-checkbox">
+  <div v-if="hasBuckets" class="language-filter-checkbox">
     <h5 class="gl-mt-0 gl-mb-5" :class="{ 'gl-font-sm': useSidebarNavigation }">
       {{ $options.languageFilterData.header }}
     </h5>

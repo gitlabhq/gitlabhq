@@ -5527,6 +5527,9 @@ msgstr ""
 msgid "Analytics|Something went wrong while connecting to your data source. See %{linkStart}troubleshooting documentation%{linkEnd}."
 msgstr ""
 
+msgid "Analytics|Something went wrong while loading the dashboard. Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
+msgstr ""
+
 msgid "Analytics|Something went wrong."
 msgstr ""
 

@@ -27,7 +27,7 @@ Set up Dependency Scanning. For detailed instructions, follow [the Dependency Sc
      curl --silent \
      --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" \
      -X 'POST' --data "export_type=sbom" \
-     "http://gitlab.localdev:3000/api/v4/pipelines/$CI_PIPELINE_ID/dependency_list_exports" \
+     "http://gitlab.example.com/api/v4/pipelines/$CI_PIPELINE_ID/dependency_list_exports" \
      | jq '.id'
    }
 
@@ -35,13 +35,13 @@ Set up Dependency Scanning. For detailed instructions, follow [the Dependency Sc
      curl --silent \
        --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" \
        --write-out "%{http_code}" --output /dev/null \
-       http://gitlab.localdev:3000/api/v4/dependency_list_exports/$1
+       http://gitlab.example.com/api/v4/dependency_list_exports/$1
    }
 
    function download {
      curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" \
        --output "gl-sbom-merged-$CI_PIPELINE_ID.cdx.json" \
-       "http://gitlab.localdev:3000/api/v4/dependency_list_exports/$1/download"
+       "http://gitlab.example.com/api/v4/dependency_list_exports/$1/download"
    }
 
    function export_sbom {

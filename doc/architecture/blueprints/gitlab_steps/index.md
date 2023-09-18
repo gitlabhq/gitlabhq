@@ -104,7 +104,7 @@ Step Runner:
 - Step Runner is responsible for parsing and compiling GitLab Steps and GitHub Actions.
 - Step Runner is responsible for downloading, and managing repositories required by GitLab Steps and GitHub Actions.
 - Step Runner does control and monitor execution flow of individual steps of execution.
-- Step Runner is required to be executable via command line interface (CLI). It means that it can be configured either via config file,
+- Step Runner is required to be executable from the command-line interface (CLI). It means that it can be configured either via config file,
   or environment file, or be able to read `.gitlab-ci.yml`.
 - Step Runner can expose gRPC or other programmable interface to run config or get trace from.
 

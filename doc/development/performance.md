@@ -250,7 +250,7 @@ the timeout.
 
 Once profiling stops, the profile is written out to disk at
 `$STACKPROF_FILE_PREFIX/stackprof.$PID.$RAND.profile`. It can then be inspected
-further through the `stackprof` command line tool, as described in the
+further through the `stackprof` command-line tool, as described in the
 [Reading a Stackprof profile section](#reading-a-stackprof-profile).
 
 Currently supported profiling targets are:

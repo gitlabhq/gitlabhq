@@ -246,7 +246,7 @@ Linux package-managed database. External databases are not supported.
 In some circumstances, like during [upgrades](replication/upgrading_the_geo_sites.md) or a
 [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
-Pausing and resuming replication is done via a command line tool from the node in the secondary site where the `postgresql` service is enabled.
+Pausing and resuming replication is done through a command-line tool from the node in the secondary site where the `postgresql` service is enabled.
 
 If `postgresql` is on a standalone database node, ensure that `gitlab.rb` on that node contains the configuration line `gitlab_rails['geo_node_name'] = 'node_name'`, where `node_name` is the same as the `geo_node_name` on the application node.
 

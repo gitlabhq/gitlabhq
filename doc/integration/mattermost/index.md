@@ -224,7 +224,7 @@ sudo chown mattermost:mattermost /var/opt/gitlab/mattermost/config.json
 sudo gitlab-ctl start mattermost
 ```
 
-## Mattermost Command Line Tools (CLI)
+## Mattermost command-line tool (CLI)
 
 [`mmctl`](https://docs.mattermost.com/manage/mmctl-command-line-tool.html) is a CLI tool for the Mattermost server which is installed locally and uses the Mattermost API, but may also be used remotely. You must configure Mattermost either for local connections or authenticate as an administrator with local login credentials (not through GitLab SSO). The executable is located at `/opt/gitlab/embedded/bin/mmctl`.
 

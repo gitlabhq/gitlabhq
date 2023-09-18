@@ -18,6 +18,7 @@ jest.mock('~/lib/utils/csrf', () => ({
 
 const ROOT_ELEMENT_ID = 'ide';
 const TEST_NONCE = 'test123nonce';
+const TEST_USERNAME = 'lipsum';
 const TEST_PROJECT_PATH = 'group1/project1';
 const TEST_BRANCH_NAME = '12345-foo-patch';
 const TEST_USER_PREFERENCES_PATH = '/user/preferences';
@@ -69,6 +70,7 @@ describe('ide/init_gitlab_web_ide', () => {
   };
 
   beforeEach(() => {
+    gon.current_username = TEST_USERNAME;
     process.env.GITLAB_WEB_IDE_PUBLIC_PATH = TEST_GITLAB_WEB_IDE_PUBLIC_PATH;
 
     confirmAction.mockImplementation(
@@ -100,6 +102,7 @@ describe('ide/init_gitlab_web_ide', () => {
         mrId: TEST_MR_ID,
         mrTargetProject: '',
         forkInfo: null,
+        username: gon.current_username,
         gitlabUrl: TEST_HOST,
         nonce: TEST_NONCE,
         httpHeaders: {
