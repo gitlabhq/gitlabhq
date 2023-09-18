@@ -127,6 +127,10 @@ This rule enforces the defined actions and schedules a scan on the provided date
 
 1. You must specify only one of `branches`, `branch_type`, or `agents`.
 
+Scheduled scan pipelines are triggered by a security policy bot user that is a guest member of the project with elevated permissions for users of type `security_policy_bot` so it may carry out this task. Security policy bot users are automatically created when the security policy project is linked, and removed when the security policy project is unlinked.
+
+If the project does not have a security policy bot user, the scheduled scan pipeline will not be triggered. To recreate a security policy bot user unlink and link the security policy project again.
+
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
 - A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
