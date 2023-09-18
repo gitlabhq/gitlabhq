@@ -236,6 +236,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     hostname: true,
     if: :snowplow_enabled
 
+  validates :snowplow_database_collector_hostname,
+    allow_blank: true,
+    hostname: true,
+    length: { maximum: 255 }
+
   validates :max_attachment_size,
     presence: true,
     numericality: { only_integer: true, greater_than: 0 }

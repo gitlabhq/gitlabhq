@@ -27,8 +27,6 @@ module Gitlab
     DEFAULT_TTL = 6.hours.to_i
 
     def self.notify(key, jid, ttl: DEFAULT_TTL)
-      ttl = DEFAULT_TTL if Feature.disabled?(:custom_job_waiter_ttl)
-
       Gitlab::Redis::SharedState.with do |redis|
         # Use a Redis MULTI transaction to ensure we always set an expiry
         redis.multi do |multi|

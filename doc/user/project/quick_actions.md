@@ -161,6 +161,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/remove_due_date`                                            | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Remove due date. |
 | `/reopen`                                                     | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Reopen. |
 | `/shrug <comment>`                                            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Append the comment with `¯\＿(ツ)＿/¯`. |
+| `/subscribe`                                                  | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Subscribe to notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 |
 | `/tableflip <comment>`                                        | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Append the comment with `(╯°□°)╯︵ ┻━┻`. |
 | `/title <new title>`                                          | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Change title. |
 | `/todo`                                                       | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Add a to-do item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412277) in GitLab 16.2. |
@@ -169,6 +170,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/unassign`                                                   | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes | Remove all assignees. |
 | `/unlabel ~label1 ~label2` or `/remove_label ~label1 ~label2` | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Remove specified labels. |
 | `/unlabel` or `/remove_label`                                 | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Remove all labels. |
+| `/unsubscribe`                                                  | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Unsubscribe to notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 |
 | `/weight <value>`                                             | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set weight. Valid options for `<value>` include `0`, `1`, and `2`. |
 
 ## Commit messages

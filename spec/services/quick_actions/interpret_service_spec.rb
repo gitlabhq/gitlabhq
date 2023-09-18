@@ -1396,6 +1396,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:issuable) { merge_request }
     end
 
+    it_behaves_like 'subscribe command' do
+      let(:content) { '/subscribe' }
+      let(:issuable) { work_item }
+    end
+
     it_behaves_like 'unsubscribe command' do
       let(:content) { '/unsubscribe' }
       let(:issuable) { issue }
@@ -1404,6 +1409,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     it_behaves_like 'unsubscribe command' do
       let(:content) { '/unsubscribe' }
       let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'unsubscribe command' do
+      let(:content) { '/unsubscribe' }
+      let(:issuable) { work_item }
     end
 
     it_behaves_like 'failed command', 'Could not apply due command.' do

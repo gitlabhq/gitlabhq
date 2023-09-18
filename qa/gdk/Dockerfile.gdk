@@ -5,7 +5,7 @@ ENV GITLAB_LICENSE_MODE=test \
 
 # Clone GDK at specific sha and bootstrap packages
 #
-ARG GDK_SHA=b69c76534928632a6fd1d89b86ccc62eaae4c66a
+ARG GDK_SHA=9756ad259ec0ed356f49ed22678e2f13252b3f4f
 RUN set -eux; \
     git clone --depth 1 https://gitlab.com/gitlab-org/gitlab-development-kit.git && cd gitlab-development-kit; \
     git fetch --depth 1 origin ${GDK_SHA} && git -c advice.detachedHead=false checkout ${GDK_SHA}; \
@@ -95,7 +95,9 @@ RUN set -eux; \
     # will always invalidate cache on 'COPY --chown=gdk:gdk ./ ./gitlab/' step and some gdk setup steps require gitlab
     # to be an actual git repository
     (cd gitlab && git init . && git add --all && git commit --quiet -m "Init repository") &> /dev/null; \
-    SKIP_WORKHORSE_SETUP=true SKIP_GITLAB_SHELL_SETUP=true SKIP_GITALY_SETUP=true \
+    gdk config set gitaly.skip_setup true \
+    && gdk config set workhorse.skip_setup true \
+    && gdk config set gitlab_shell.skip_setup true; \
     make redis/redis.conf all \
     && gdk kill
 

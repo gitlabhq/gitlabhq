@@ -21,7 +21,7 @@ If both `agent config` and `scan execution policies` are configured, the configu
 ### Enable via agent configuration
 
 To enable scanning of all images within your Kubernetes cluster via the agent configuration, add a `container_scanning` configuration block to your agent
-configuration with a `cadence` field containing a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans are run.
+configuration with a `cadence` field containing a [CRON expression](https://en.wikipedia.org/wiki/Cron) for when the scans are run.
 
 ```yaml
 container_scanning:

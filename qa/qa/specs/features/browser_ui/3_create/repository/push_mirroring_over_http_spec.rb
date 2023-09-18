@@ -25,6 +25,7 @@ module QA
             mirror_settings.repository_url = target_project_uri
             mirror_settings.mirror_direction = 'Push'
             mirror_settings.authentication_method = 'Password'
+            mirror_settings.username = Runtime::User.username
             mirror_settings.password = Runtime::User.password
             mirror_settings.mirror_repository
             mirror_settings.update(target_project_uri) # rubocop:disable Rails/SaveBang

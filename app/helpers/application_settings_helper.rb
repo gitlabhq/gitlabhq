@@ -437,6 +437,7 @@ module ApplicationSettingsHelper
       :mailgun_events_enabled,
       :snowplow_collector_hostname,
       :snowplow_cookie_domain,
+      :snowplow_database_collector_hostname,
       :snowplow_enabled,
       :snowplow_app_id,
       :push_event_hooks_limit,

@@ -445,11 +445,14 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
         it { is_expected.not_to allow_value(nil).for(:snowplow_collector_hostname) }
         it { is_expected.to allow_value("snowplow.gitlab.com").for(:snowplow_collector_hostname) }
+        it { is_expected.to allow_value("db-snowplow.gitlab.com").for(:snowplow_database_collector_hostname) }
+        it { is_expected.not_to allow_value("#{'a' * 256}db-snowplow.gitlab.com").for(:snowplow_database_collector_hostname) }
         it { is_expected.not_to allow_value('/example').for(:snowplow_collector_hostname) }
       end
 
       context 'when snowplow is not enabled' do
         it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
+        it { is_expected.to allow_value(nil).for(:snowplow_database_collector_hostname) }
       end
     end
 

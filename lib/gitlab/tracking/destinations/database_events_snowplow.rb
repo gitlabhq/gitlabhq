@@ -16,7 +16,7 @@ module Gitlab
 
         override :hostname
         def hostname
-          return HOSTNAME if ::Gitlab.com?
+          return Gitlab::CurrentSettings.snowplow_database_collector_hostname || HOSTNAME if ::Gitlab.com?
 
           'localhost:9091'
         end

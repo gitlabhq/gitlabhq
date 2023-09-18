@@ -21,20 +21,6 @@ RSpec.describe Gitlab::JobWaiter, :redis, feature_category: :shared do
         expect(redis.ttl(key)).to eq(5.minutes.to_i)
       end
     end
-
-    context 'when the flag is disabled' do
-      before do
-        stub_feature_flags(custom_job_waiter_ttl: false)
-      end
-
-      it 'ignores the custom TTL', :freeze_time do
-        described_class.notify(key, 123, ttl: 5.minutes)
-
-        Gitlab::Redis::SharedState.with do |redis|
-          expect(redis.ttl(key)).to eq(described_class::DEFAULT_TTL)
-        end
-      end
-    end
   end
 
   describe '.generate_key' do

@@ -1021,62 +1021,7 @@ variables:
 
 See explanations of the variables above in the [configuration section](#configuration).
 
-### Specific settings for languages and package managers
-
-See the following sections for configuring specific languages and package managers.
-
-#### Python (pip)
-
-If you need to install Python packages before the analyzer runs, you should use `pip install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
-
-#### Python (setuptools)
-
-If you need to install Python packages before the analyzer runs, you should use `python setup.py install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
-
-When using self-signed certificates for your private PyPi repository, no extra job configuration (aside
-from the template `.gitlab-ci.yml` above) is needed. However, you must update your `setup.py` to
-ensure that it can reach your private repository. Here is an example configuration:
-
-1. Update `setup.py` to create a `dependency_links` attribute pointing at your private repository for each
-   dependency in the `install_requires` list:
-
-   ```python
-   install_requires=['pyparsing>=2.0.3'],
-   dependency_links=['https://pypi.example.com/simple/pyparsing'],
-   ```
-
-1. Fetch the certificate from your repository URL and add it to the project:
-
-   ```shell
-   printf "\n" | openssl s_client -connect pypi.example.com:443 -servername pypi.example.com | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > internal.crt
-   ```
-
-1. Point `setup.py` at the newly downloaded certificate:
-
-   ```python
-   import setuptools.ssl_support
-   setuptools.ssl_support.cert_paths = ['internal.crt']
-   ```
-
-#### Python (Pipenv)
-
-If running in a limited network connectivity environment, you must configure the `PIPENV_PYPI_MIRROR`
-variable to use a private PyPi mirror. This mirror must contain both default and development dependencies.
-
-```yaml
-variables:
-  PIPENV_PYPI_MIRROR: https://pypi.example.com/simple
-```
-
-<!-- markdownlint-disable MD044 -->
-Alternatively, if it's not possible to use a private registry, you can load the required packages
-into the Pipenv virtual environment cache. For this option, the project must check in the
-`Pipfile.lock` into the repository, and load both default and development packages into the cache.
-See the example [python-pipenv](https://gitlab.com/gitlab-org/security-products/tests/python-pipenv/-/blob/41cc017bd1ed302f6edebcfa3bc2922f428e07b6/.gitlab-ci.yml#L20-42)
-project for an example of how this can be done.
-<!-- markdownlint-enable MD044 -->
-
-## Hosting a copy of the `gemnasium_db` advisory database
+### Hosting a copy of the `gemnasium_db` advisory database
 
 The [`gemnasium_db`](https://gitlab.com/gitlab-org/security-products/gemnasium-db) Git repository is
 used by `gemnasium`, `gemnasium-maven`, and `gemnasium-python` as the source of vulnerability data.
@@ -1087,7 +1032,7 @@ one of the following:
 - [Host a copy of the advisory database](#host-a-copy-of-the-advisory-database)
 - [Use a local clone](#use-a-local-clone)
 
-### Host a copy of the advisory database
+#### Host a copy of the advisory database
 
 If [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is not reachable
 from within the environment, the user can host their own Git copy. Then the analyzer can be
@@ -1100,7 +1045,7 @@ variables:
 ...
 ```
 
-### Use a local clone
+#### Use a local clone
 
 If a hosted copy is not possible, then the user can clone [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
 or create an archive before the scan and point the analyzer to the directory (using:
@@ -1130,6 +1075,61 @@ To make the Gradle wrapper script use a proxy, you can specify the options using
 variables:
   GRADLE_CLI_OPTS: "-Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts=localhost"
 ```
+
+## Specific settings for languages and package managers
+
+See the following sections for configuring specific languages and package managers.
+
+### Python (pip)
+
+If you need to install Python packages before the analyzer runs, you should use `pip install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
+
+### Python (setuptools)
+
+If you need to install Python packages before the analyzer runs, you should use `python setup.py install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
+
+When using self-signed certificates for your private PyPi repository, no extra job configuration (aside
+from the template `.gitlab-ci.yml` above) is needed. However, you must update your `setup.py` to
+ensure that it can reach your private repository. Here is an example configuration:
+
+1. Update `setup.py` to create a `dependency_links` attribute pointing at your private repository for each
+   dependency in the `install_requires` list:
+
+   ```python
+   install_requires=['pyparsing>=2.0.3'],
+   dependency_links=['https://pypi.example.com/simple/pyparsing'],
+   ```
+
+1. Fetch the certificate from your repository URL and add it to the project:
+
+   ```shell
+   printf "\n" | openssl s_client -connect pypi.example.com:443 -servername pypi.example.com | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > internal.crt
+   ```
+
+1. Point `setup.py` at the newly downloaded certificate:
+
+   ```python
+   import setuptools.ssl_support
+   setuptools.ssl_support.cert_paths = ['internal.crt']
+   ```
+
+### Python (Pipenv)
+
+If running in a limited network connectivity environment, you must configure the `PIPENV_PYPI_MIRROR`
+variable to use a private PyPi mirror. This mirror must contain both default and development dependencies.
+
+```yaml
+variables:
+  PIPENV_PYPI_MIRROR: https://pypi.example.com/simple
+```
+
+<!-- markdownlint-disable MD044 -->
+Alternatively, if it's not possible to use a private registry, you can load the required packages
+into the Pipenv virtual environment cache. For this option, the project must check in the
+`Pipfile.lock` into the repository, and load both default and development packages into the cache.
+See the example [python-pipenv](https://gitlab.com/gitlab-org/security-products/tests/python-pipenv/-/blob/41cc017bd1ed302f6edebcfa3bc2922f428e07b6/.gitlab-ci.yml#L20-42)
+project for an example of how this can be done.
+<!-- markdownlint-enable MD044 -->
 
 ## Warnings
 

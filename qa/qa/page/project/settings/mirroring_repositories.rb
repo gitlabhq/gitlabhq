@@ -7,7 +7,8 @@ module QA
         class MirroringRepositories < Page::Base
           view 'app/views/projects/mirrors/_authentication_method.html.haml' do
             element :authentication_method_field
-            element :password_field
+            element 'username-field'
+            element 'password-field'
           end
 
           view 'app/views/projects/mirrors/_mirror_repos.html.haml' do
@@ -42,8 +43,12 @@ module QA
             fill_element :mirror_repository_url_field, value
           end
 
+          def username=(value)
+            fill_element 'username-field', value
+          end
+
           def password=(value)
-            fill_element :password_field, value
+            fill_element 'password-field', value
           end
 
           def mirror_direction=(value)

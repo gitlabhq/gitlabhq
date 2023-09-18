@@ -63,6 +63,10 @@ RSpec.describe Gitlab::Tracking::Destinations::DatabaseEventsSnowplow, :do_not_s
       context 'when on gitlab.com environment' do
         let(:endpoint) { 'db-snowplow.trx.gitlab.net' }
 
+        before do
+          stub_application_setting(snowplow_database_collector_hostname: endpoint)
+        end
+
         it 'sends event to tracker' do
           allow(Gitlab).to receive(:com?).and_return(true)
           allow(tracker).to receive(:track_struct_event).and_call_original

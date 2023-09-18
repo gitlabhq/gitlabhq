@@ -171,6 +171,7 @@ module ApplicationSettingImplementation
         snowplow_app_id: nil,
         snowplow_collector_hostname: nil,
         snowplow_cookie_domain: nil,
+        snowplow_database_collector_hostname: nil,
         snowplow_enabled: false,
         sourcegraph_enabled: false,
         sourcegraph_public_only: true,
