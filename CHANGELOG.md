@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.3.4 (2023-09-18)
+
+### Fixed (2 changes)
+
+- [Fix Geo secondary proxying Git pulls unnecessarily](gitlab-org/security/gitlab@d4ac7db42e80dec97fee07c50471f1e7b60d3bcc) **GitLab Enterprise Edition**
+- [Use new indexer, fix removing blobs from index](gitlab-org/security/gitlab@5d48e6871bc6f1c36b93c10f2a54cf28d6adbc65) **GitLab Enterprise Edition**
+
+### Security (1 change)
+
+- [Enforce that the policy is executed by the bot user](gitlab-org/security/gitlab@3f278f761f18ee0b14aca68e2e5f764e1e274176) ([merge request](gitlab-org/security/gitlab!3568))
+
 ## 16.3.3 (2023-09-12)
 
 ### Fixed (2 changes)
@@ -824,6 +835,12 @@ entry.
 - [Remove the FF ci_refactoring_pipeline_schedule_create_service](gitlab-org/gitlab@8fa85f70277e83665a1deb8b085ac3740530ee61) ([merge request](gitlab-org/gitlab!125736))
 - [Fix test pollution in count_deployments_metric_spec](gitlab-org/gitlab@610e6a033fe9b20aabc237b18837cddf150d4d1b) ([merge request](gitlab-org/gitlab!126808))
 - [Update BulkImports::PipelineBatchWorker resource boundary](gitlab-org/gitlab@7d2477d81bcc2d035be26587802706f7098b6e44) ([merge request](gitlab-org/gitlab!126696))
+
+## 16.2.7 (2023-09-18)
+
+### Security (1 change)
+
+- [Enforce that the policy is executed by the bot user](gitlab-org/security/gitlab@336d6829bf5268dbbb1ccdaa224ed65c431a9ed6) ([merge request](gitlab-org/security/gitlab!3569))
 
 ## 16.2.6 (2023-09-12)
 

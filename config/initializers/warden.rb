@@ -38,8 +38,6 @@ Rails.application.configure do |config|
 
   Warden::Manager.before_logout(scope: :user) do |user, auth, opts|
     user ||= auth.user
-    # deletes marketing cookie when user session ends
-    ActiveSession.unset_active_user_cookie(auth) if ::Gitlab.com?
     # Rails CSRF protection may attempt to log out a user before that
     # user even logs in
     next unless user

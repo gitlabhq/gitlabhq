@@ -56,7 +56,7 @@ the entry, instead of relying on the key changing.
 
 ### Multi-key commands
 
-GitLab supports Redis Cluster only for the Redis [rate-limiting](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/rate_limiting.rb) type, introduced in [epic 823](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/823).
+GitLab supports Redis Cluster for [cache-related workloads](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/cache.rb) type, introduced in [epic 878](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/878).
 
 This imposes an additional constraint on naming: where GitLab is performing
 operations that require several keys to be held on the same Redis server - for
@@ -80,6 +80,12 @@ which is enabled for the `cache` and `shared_state`
 Developers are highly encouraged to use [hash-tags](https://redis.io/docs/reference/cluster-spec/#hash-tags)
 where appropriate to facilitate future adoption of Redis Cluster in more Redis types. For example, the Namespace model uses hash-tags
 for its [config cache keys](https://gitlab.com/gitlab-org/gitlab/-/blob/1a12337058f260d38405886d82da5e8bb5d8da0b/app/models/namespace.rb#L786).
+
+To perform multi-key commands, developers may use the [`Gitlab::Redis::CrossSlot::Pipeline`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/redis/cross_slot.rb) wrapper.
+However, this does not work for [transactions](https://redis.io/docs/interact/transactions/) as Redis Cluster does not support cross-slot transactions.
+
+For `Rails.cache`, we handle the `MGET` command found in `read_multi_get` by [patching it](https://gitlab.com/gitlab-org/gitlab/-/blob/c2bad2aac25e2f2778897bd4759506a72b118b15/lib/gitlab/patch/redis_cache_store.rb#L10) to use the `Gitlab::Redis::CrossSlot::Pipeline` wrapper.
+The minimum size of the pipeline is set to 1000 commands and it can be adjusted by using the `GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT` environment variable.
 
 ## Redis in structured logging
 

@@ -8,15 +8,15 @@ class PoolRepository < ApplicationRecord
   include AfterCommitQueue
 
   belongs_to :source_project, class_name: 'Project'
-  validates :source_project, presence: true
 
   has_many :member_projects, class_name: 'Project'
 
   after_create :set_disk_path
 
   scope :by_source_project, ->(project) { where(source_project: project) }
-  scope :by_source_project_and_shard_name, ->(project, shard_name) do
-    by_source_project(project)
+  scope :by_disk_path, ->(disk_path) { where(disk_path: disk_path) }
+  scope :by_disk_path_and_shard_name, ->(disk_path, shard_name) do
+    by_disk_path(disk_path)
       .for_repository_storage(shard_name)
   end
 
@@ -101,8 +101,8 @@ class PoolRepository < ApplicationRecord
     @object_pool ||= Gitlab::Git::ObjectPool.new(
       shard.name,
       disk_path + '.git',
-      source_project.repository.raw,
-      source_project.full_path
+      source_project&.repository&.raw,
+      source_project&.full_path
     )
   end
 

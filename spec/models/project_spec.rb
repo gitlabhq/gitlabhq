@@ -7018,8 +7018,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be_with_reload(:project) { create(:project, :empty_repo) }
     let_it_be(:shard_to) { create(:shard, name: 'test_second_storage') }
 
-    let!(:pool1) { create(:pool_repository, source_project: project) }
-    let!(:pool2) { create(:pool_repository, shard: shard_to, source_project: project) }
+    let(:disk_path1) { '@pool/aa/bb' }
+    let(:disk_path2) { disk_path1 }
+
+    let!(:pool1) { create(:pool_repository, disk_path: disk_path1, source_project: project) }
+    let!(:pool2) { create(:pool_repository, disk_path: disk_path2, shard: shard_to, source_project: project) }
     let(:project_pool) { pool1 }
     let(:repository_storage) { shard_to.name }
 
@@ -7072,6 +7075,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when pool repository for shard is missing' do
       let(:pool2) { nil }
+
+      it 'raises record not found error' do
+        expect { swap_pool_repository! }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'when pool repository has a different disk path' do
+      let(:disk_path2) { '@pool/different' }
 
       it 'raises record not found error' do
         expect { swap_pool_repository! }.to raise_error(ActiveRecord::RecordNotFound)

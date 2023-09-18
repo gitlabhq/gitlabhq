@@ -229,6 +229,27 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
             end
           end
 
+          context 'when new shard has a repository pool without the root project' do
+            let!(:new_pool_repository) { create(:pool_repository, :ready, shard: shard_to, disk_path: pool_repository.disk_path) }
+
+            before do
+              pool_repository.update!(source_project: nil)
+              new_pool_repository.update!(source_project: nil)
+            end
+
+            it 'connects project to it' do
+              result = subject.execute
+              expect(result).to be_success
+
+              project.reload.cleanup
+
+              project_pool_repository = project.pool_repository
+
+              expect(project_pool_repository).to eq(new_pool_repository)
+              expect(object_pool_double).to have_received(:link).with(project.repository.raw)
+            end
+          end
+
           context 'when repository does not exist' do
             let(:project) { create(:project) }
             let(:checksum) { nil }
@@ -261,6 +282,32 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
               expect(new_pool_repository.shard).to eq(shard_second_storage)
               expect(new_pool_repository.state).to eq('ready')
               expect(new_pool_repository.source_project).to eq(another_project)
+
+              expect(object_pool_double).to have_received(:link).with(project.repository.raw)
+            end
+          end
+
+          context 'when project belongs to the repository pool without a root project' do
+            let!(:pool_repository) { create(:pool_repository, :ready, shard: shard_from) }
+
+            before do
+              pool_repository.update!(source_project: nil)
+              project.update!(pool_repository: pool_repository)
+            end
+
+            it 'creates a new repository pool without a root project and connects project to it' do
+              result = subject.execute
+              expect(result).to be_success
+
+              project.reload.cleanup
+
+              new_pool_repository = project.pool_repository
+
+              expect(new_pool_repository).not_to eq(pool_repository)
+              expect(new_pool_repository.shard).to eq(shard_second_storage)
+              expect(new_pool_repository.state).to eq('ready')
+              expect(new_pool_repository.source_project).to eq(nil)
+              expect(new_pool_repository.disk_path).to eq(pool_repository.disk_path)
 
               expect(object_pool_double).to have_received(:link).with(project.repository.raw)
             end

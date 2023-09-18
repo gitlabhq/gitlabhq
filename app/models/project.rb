@@ -2846,7 +2846,7 @@ class Project < ApplicationRecord
     return if old_pool_repository.blank?
     return if pool_repository_shard_matches_repository?(old_pool_repository)
 
-    new_pool_repository = PoolRepository.by_source_project_and_shard_name(old_pool_repository.source_project, repository_storage).take!
+    new_pool_repository = PoolRepository.by_disk_path_and_shard_name(old_pool_repository.disk_path, repository_storage).take!
     update!(pool_repository: new_pool_repository)
 
     old_pool_repository.unlink_repository(repository, disconnect: !pending_delete?)

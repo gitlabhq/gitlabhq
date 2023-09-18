@@ -31,7 +31,7 @@ Gitlab/DocUrl:
     - 'lib/gitlab/ci/config/entry/processable.rb'
     - 'lib/gitlab/config_checker/external_database_checker.rb'
     - 'lib/gitlab/config_checker/puma_rugged_checker.rb'
-    - 'lib/gitlab/database.rb'
+    - 'lib/gitlab/database_warnings.rb'
     - 'lib/gitlab/database/migration_helpers/automatic_lock_writes_on_tables.rb'
     - 'lib/gitlab/database/migration_helpers/v2.rb'
     - 'lib/gitlab/database/migrations/batched_background_migration_helpers.rb'

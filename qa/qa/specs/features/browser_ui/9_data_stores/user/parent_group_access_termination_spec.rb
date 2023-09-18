@@ -9,13 +9,7 @@ module QA
 
       let!(:group) { create(:group, path: "group-to-test-access-termination-#{SecureRandom.hex(8)}") }
 
-      let!(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.group = group
-          project.name = "project-for-user-access-termination"
-          project.initialize_with_readme = true
-        end
-      end
+      let!(:project) { create(:project, :with_readme, name: 'project-for-user-access-termination', group: group) }
 
       context 'with terminated parent group membership' do
         before do

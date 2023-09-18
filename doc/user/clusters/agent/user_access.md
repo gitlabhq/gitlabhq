@@ -145,52 +145,48 @@ subjects:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131144) in GitLab 16.4.
 
-You can [configure an agent](#configure-kubernetes-access) to allow GitLab users to access a cluster with the Kubernetes API.
+You can configure an agent to allow GitLab users to access a cluster with the Kubernetes API.
 
-Use a [personal access token](../../profile/personal_access_tokens.md)
-with the `k8s_proxy` scope to access the cluster via `kubectl`:
+Prerequisite:
 
-1. Configure the agent with the [`user_access` entry](user_access.md).
+- You have an agent configured with the `user_access` entry.
+
+To grant Kubernetes API access:
+
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Kubernetes clusters** and retrieve the numerical ID of the agent you want to access. You need the ID to construct the full API token.
 1. Create a [personal access token](../../profile/personal_access_tokens.md) with the `k8s_proxy` scope. You need the access token to construct the full API token.
 1. Construct `kube config` entries to access the cluster:
-    1. Make sure that the proper `kube config` is selected.
-       For example, you can set the `KUBECONFIG` environment variable.
-    1. Add the GitLab KAS proxy cluster to the `kube config`:
+   1. Make sure that the proper `kube config` is selected.
+      For example, you can set the `KUBECONFIG` environment variable.
+   1. Add the GitLab KAS proxy cluster to the `kube config`:
 
-        ```shell
-        kubectl config set-cluster gitlab --server "https://kas.gitlab.com/k8s-proxy"
-        ```
+      ```shell
+      kubectl config set-cluster <cluster_name> --server "https://kas.gitlab.com/k8s-proxy"
+      ```
 
-       The `server` argument points to the KAS address of your GitLab instance.
-       On GitLab.com, this is `https://kas.gitlab.com/k8s-proxy`.
-       You can get the KAS address of your instance when you register an agent.
+      The `server` argument points to the KAS address of your GitLab instance.
+      On GitLab.com, this is `https://kas.gitlab.com/k8s-proxy`.
+      You can get the KAS address of your instance when you register an agent.
 
-       If needed, change `gitlab` to the name of your cluster.
-    1. Use your numerical agent ID and personal access token to construct an API token:
+   1. Use your numerical agent ID and personal access token to construct an API token:
 
-        ```shell
-        kubectl config set-credentials gitlab-user --token "pat:<agent-id>:<token>"
-        ```
+      ```shell
+      kubectl config set-credentials <gitlab_user> --token "pat:<agent-id>:<token>"
+      ```
 
-       If needed, change `gitlab-user` to your credentials name.
-    1. Add the context to combine the cluster and the user:
+   1. Add the context to combine the cluster and the user:
 
-        ```shell
-        kubectl config set-context gitlab-agent --cluster gitlab --user gitlab-user
-        ```
+      ```shell
+      kubectl config set-context <gitlab_agent> --cluster <cluster_name> --user <gitlab_user>
+      ```
 
-       If needed, change the arguments to `cluster` and `user`. The arguments must match the cluster name and user from the previous steps.
+   1. Activate the new context:
 
-       You can customize the context name.
-    1. Activate the new context:
+      ```shell
+      kubectl config use-context <gitlab_agent>
+      ```
 
-        ```shell
-        kubectl config use-context gitlab-agent
-        ```
-
-        If needed, change `gitlab-agent` to the context name you set in the last step.
 1. Check that the configuration works:
 
     ```shell

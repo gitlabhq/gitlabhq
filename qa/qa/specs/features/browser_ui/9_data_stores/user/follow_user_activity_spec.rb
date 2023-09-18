@@ -22,12 +22,7 @@ module QA
       end
 
       let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-for-tags'
-          project.initialize_with_readme = true
-          project.api_client = followed_user_api_client
-          project.group = group
-        end
+        create(:project, :with_readme, name: 'project-for-tags', api_client: followed_user_api_client, group: group)
       end
 
       let(:merge_request) do

@@ -21,11 +21,7 @@ module QA
         end
 
         let!(:sub_group_project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.group = sub_group
-            project.name = "sub-group-project-to-test-user-access"
-            project.initialize_with_readme = true
-          end
+          create(:project, :with_readme, name: 'sub-group-project-to-test-user-access', group: sub_group)
         end
 
         before do
@@ -57,11 +53,7 @@ module QA
 
       context 'when added to sub-group' do
         let!(:parent_group_project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.group = parent_group
-            project.name = "parent-group-project-to-test-user-access"
-            project.initialize_with_readme = true
-          end
+          create(:project, :with_readme, name: 'parent-group-project-to-test-user-access', group: parent_group)
         end
 
         let!(:sub_group_user) { create(:user, api_client: admin_api_client) }

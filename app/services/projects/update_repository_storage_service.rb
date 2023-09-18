@@ -80,8 +80,8 @@ module Projects
     end
 
     def pool_repository_exists_for?(shard_name:, pool_repository:)
-      PoolRepository.by_source_project_and_shard_name(
-        pool_repository.source_project,
+      PoolRepository.by_disk_path_and_shard_name(
+        pool_repository.disk_path,
         shard_name
       ).exists?
     end
