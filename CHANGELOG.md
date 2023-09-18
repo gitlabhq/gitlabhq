@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.2.7 (2023-09-18)
+
+### Security (1 change)
+
+- [Enforce that the policy is executed by the bot user](gitlab-org/security/gitlab@336d6829bf5268dbbb1ccdaa224ed65c431a9ed6) ([merge request](gitlab-org/security/gitlab!3569))
+
 ## 16.2.6 (2023-09-12)
 
 ### Fixed (3 changes)
