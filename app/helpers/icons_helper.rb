@@ -125,51 +125,49 @@ module IconsHelper
 
   def file_type_icon_class(type, mode, name)
     if type == 'folder'
-      icon_class = 'folder-o'
+      'folder-o'
     elsif type == 'archive'
-      icon_class = 'archive'
+      'archive'
     elsif mode == '120000'
-      icon_class = 'share'
+      'share'
     else
       # Guess which icon to choose based on file extension.
       # If you think a file extension is missing, feel free to add it on PR
 
       case File.extname(name).downcase
       when '.pdf'
-        icon_class = 'document'
+        'document'
       when '.jpg', '.jpeg', '.jif', '.jfif',
-          '.jp2', '.jpx', '.j2k', '.j2c',
-          '.apng', '.png', '.gif', '.tif', '.tiff',
-          '.svg', '.ico', '.bmp', '.webp'
-        icon_class = 'doc-image'
+           '.jp2', '.jpx', '.j2k', '.j2c',
+           '.apng', '.png', '.gif', '.tif', '.tiff',
+           '.svg', '.ico', '.bmp', '.webp'
+        'doc-image'
       when '.zip', '.zipx', '.tar', '.gz', '.gzip', '.tgz', '.bz', '.bzip',
-          '.bz2', '.bzip2', '.car', '.tbz', '.xz', 'txz', '.rar', '.7z',
-          '.lz', '.lzma', '.tlz'
-        icon_class = 'doc-compressed'
+           '.bz2', '.bzip2', '.car', '.tbz', '.xz', 'txz', '.rar', '.7z',
+           '.lz', '.lzma', '.tlz'
+        'doc-compressed'
       when '.mp3', '.wma', '.ogg', '.oga', '.wav', '.flac', '.aac', '.3ga',
-          '.ac3', '.midi', '.m4a', '.ape', '.mpa'
-        icon_class = 'volume-up'
+           '.ac3', '.midi', '.m4a', '.ape', '.mpa'
+        'volume-up'
       when '.mp4', '.m4p', '.m4v',
-          '.mpg', '.mp2', '.mpeg', '.mpe', '.mpv',
-          '.mpg', '.mpeg', '.m2v', '.m2ts',
-          '.avi', '.mkv', '.flv', '.ogv', '.mov',
-          '.3gp', '.3g2'
-        icon_class = 'live-preview'
+           '.mpg', '.mp2', '.mpeg', '.mpe', '.mpv',
+           '.mpg', '.mpeg', '.m2v', '.m2ts',
+           '.avi', '.mkv', '.flv', '.ogv', '.mov',
+           '.3gp', '.3g2'
+        'live-preview'
       when '.doc', '.dot', '.docx', '.docm', '.dotx', '.dotm', '.docb',
-          '.odt', '.ott', '.uot', '.rtf'
-        icon_class = 'doc-text'
+           '.odt', '.ott', '.uot', '.rtf'
+        'doc-text'
       when '.xls', '.xlt', '.xlm', '.xlsx', '.xlsm', '.xltx', '.xltm',
-          '.xlsb', '.xla', '.xlam', '.xll', '.xlw', '.ots', '.ods', '.uos'
-        icon_class = 'document'
+           '.xlsb', '.xla', '.xlam', '.xll', '.xlw', '.ots', '.ods', '.uos'
+        'document'
       when '.ppt', '.pot', '.pps', '.pptx', '.pptm', '.potx', '.potm',
-          '.ppam', '.ppsx', '.ppsm', '.sldx', '.sldm', '.odp', '.otp', '.uop'
-        icon_class = 'doc-chart'
+           '.ppam', '.ppsx', '.ppsm', '.sldx', '.sldm', '.odp', '.otp', '.uop'
+        'doc-chart'
       else
-        icon_class = 'doc-text'
+        'doc-text'
       end
     end
-
-    icon_class
   end
 
   private

@@ -402,11 +402,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics do
         include Sidekiq::Worker
         include WorkerAttributes
 
-        if category
-          feature_category category
-        else
-          feature_category :not_owned
-        end
+        feature_category category || :not_owned
 
         def perform; end
       end

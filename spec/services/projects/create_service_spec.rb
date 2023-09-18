@@ -156,7 +156,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
         project = create_project(bot_user, opts)
 
         expect(project.errors.errors.length).to eq 1
-        expect(project.errors.messages[:namespace].first).to eq(("is not valid"))
+        expect(project.errors.messages[:namespace].first).to eq("is not valid")
       end
     end
   end

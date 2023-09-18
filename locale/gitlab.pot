@@ -36791,6 +36791,9 @@ msgstr ""
 msgid "ProjectService|Trigger event for pushes to the repository."
 msgstr ""
 
+msgid "ProjectService|Trigger event when a build is created."
+msgstr ""
+
 msgid "ProjectService|Trigger event when a commit is created or updated."
 msgstr ""
 

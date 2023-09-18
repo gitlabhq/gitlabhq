@@ -171,8 +171,8 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
         it 'adds a verification error message' do
           expect(json_response)
-            .to include('message' => (s_('IdentityVerification|The code is incorrect. '\
-                                         'Enter it again, or send a new code.')))
+            .to include('message' => s_('IdentityVerification|The code is incorrect. '\
+                                        'Enter it again, or send a new code.'))
         end
       end
 
@@ -184,7 +184,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
         it 'adds a verification error message' do
           expect(json_response)
-            .to include('message' => (s_('IdentityVerification|The code has expired. Send a new code and try again.')))
+            .to include('message' => s_('IdentityVerification|The code has expired. Send a new code and try again.'))
         end
       end
 

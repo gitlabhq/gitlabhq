@@ -277,11 +277,11 @@ module IntegrationsHelper
       s_("ProjectService|Trigger event for new comments.")
     when "confidential_note", "confidential_note_events"
       s_("ProjectService|Trigger event for new comments on confidential issues.")
-    when "issue", "issue_events"
+    when "issue", "issue_events", "issues_events"
       s_("ProjectService|Trigger event when an issue is created, updated, or closed.")
-    when "confidential_issue", "confidential_issue_events"
+    when "confidential_issue", "confidential_issue_events", "confidential_issues_events"
       s_("ProjectService|Trigger event when a confidential issue is created, updated, or closed.")
-    when "merge_request", "merge_request_events"
+    when "merge_request", "merge_request_events", "merge_requests_events"
       s_("ProjectService|Trigger event when a merge request is created, updated, or merged.")
     when "pipeline", "pipeline_events"
       s_("ProjectService|Trigger event when a pipeline status changes.")
@@ -289,16 +289,20 @@ module IntegrationsHelper
       s_("ProjectService|Trigger event when a wiki page is created or updated.")
     when "commit", "commit_events"
       s_("ProjectService|Trigger event when a commit is created or updated.")
-    when "deployment"
+    when "deployment", "deployment_events"
       s_("ProjectService|Trigger event when a deployment starts or finishes.")
-    when "alert"
+    when "alert", "alert_events"
       s_("ProjectService|Trigger event when a new, unique alert is recorded.")
-    when "incident"
+    when "incident", "incident_events"
       s_("ProjectService|Trigger event when an incident is created.")
     when "group_mention"
       s_("ProjectService|Trigger event when a group is mentioned in a public context.")
     when "group_confidential_mention"
       s_("ProjectService|Trigger event when a group is mentioned in a confidential context.")
+    when "build_events"
+      s_("ProjectService|Trigger event when a build is created.")
+    when "archive_trace_events"
+      s_('When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces.')
     end
   end
   # rubocop:enable Metrics/CyclomaticComplexity
