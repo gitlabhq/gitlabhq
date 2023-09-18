@@ -100,7 +100,7 @@ Example response:
 
 ```json
 {
-  "name": "master",
+  "name": "main",
   "merged": false,
   "protected": true,
   "default": true,

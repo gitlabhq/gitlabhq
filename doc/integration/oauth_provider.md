@@ -85,6 +85,8 @@ The user authorization step is automatically skipped for this application.
 
 ## View all authorized applications
 
+> `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
+
 To see all the application you've authorized with your GitLab credentials:
 
 1. On the left sidebar, select your avatar.
@@ -95,7 +97,7 @@ The GitLab OAuth 2 applications support scopes, which allow application to perfo
 different actions. See the following table for all available scopes.
 
 | Scope              | Description |
-| ------------------ | ----------- |
+|--------------------| ----------- |
 | `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry. |
 | `read_user`        | Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users. |
 | `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry. |
@@ -108,6 +110,7 @@ different actions. See the following table for all available scopes.
 | `profile`          | Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
 | `email`            | Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
 | `create_runner`    | Grants permission to create runners. |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes. |
 
 At any time you can revoke any access by selecting **Revoke**.
 

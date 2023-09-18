@@ -62,6 +62,24 @@ RSpec.describe BulkImports::CreateService, feature_category: :importers do
         end
       end
 
+      # response when authorize_admin_project in API endpoint fails
+      context 'when direct transfer status query returns a 403' do
+        it 'raises a ServiceResponse::Error' do
+          expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
+            expect(client).to receive(:validate_instance_version!).and_return(true)
+            expect(client).to receive(:get)
+              .with("/groups/full%2Fpath%2Fto%2Fgroup1/export_relations/status")
+              .and_raise(BulkImports::NetworkError, '403 Forbidden')
+          end
+
+          result = subject.execute
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result).to be_error
+          expect(result.message).to eq("403 Forbidden")
+        end
+      end
+
       context 'when direct transfer setting query returns a 404' do
         it 'raises a ServiceResponse::Error' do
           stub_request(:get, 'http://gitlab.example/api/v4/version?private_token=token').to_return(status: 404)

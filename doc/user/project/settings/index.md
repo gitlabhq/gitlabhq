@@ -24,7 +24,10 @@ Prerequisite:
 
 Use the project general settings to edit your project details.
 
-1. Sign in to GitLab with at least the Maintainer role.
+Prerequisite:
+
+- You must have at least the Maintainer role for the project.
+
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. In the **Project name** text box, enter your project name.
@@ -175,9 +178,9 @@ to move any project to any namespace.
 
 ### Transferring a GitLab SaaS project to a different subscription tier
 
-When you transfer a project from a namespace licensed for GitLab SaaS Premium or Ultimate to GitLab Free, the following paid feature data is deleted:
+When you transfer a project from a namespace licensed for GitLab SaaS Premium or Ultimate to GitLab Free:
 
-- [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked
+- [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked.
 - [Pipeline subscriptions](../../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
   and [test cases](../../../ci/test_cases/index.md) are deleted.
 
@@ -223,6 +226,10 @@ Prerequisite:
 > - Default deletion behavior changed to delayed deletion on the Premium and Ultimate tier [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
 You can mark a project to be deleted.
+After you delete a project:
+
+- Projects in personal namespaces are deleted immediately.
+- Projects in groups are deleted after a retention period.
 
 Prerequisite:
 
@@ -238,6 +245,8 @@ To delete a project:
 
 This action deletes the project and all associated resources (such as issues and merge requests).
 
+You can also [delete projects using the Rails console](../working_with_projects.md#delete-a-project-using-console).
+
 ### Delayed project deletion **(PREMIUM ALL)**
 
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
@@ -248,6 +257,10 @@ Projects in a group (not a personal namespace) can be deleted after a delay peri
 
 On self-managed instances, group administrators can define a deletion delay period of between 1 and 90 days.
 On SaaS, there is a non-adjustable default retention period of seven days.
+
+You can [view projects that are pending deletion](../working_with_projects.md#view-projects-pending-deletion),
+and use the Rails console to
+[find projects that are pending deletion](../working_with_projects.md#find-projects-that-are-pending-deletion).
 
 ### Delete a project immediately
 
@@ -283,38 +296,16 @@ To restore a project marked for deletion:
 1. Expand **Advanced**.
 1. In the Restore project section, select **Restore project**.
 
-## Remove project analytics from the left sidebar
+## Disable project analytics
 
 By default, [analytics for a project](../../analytics/index.md#project-level-analytics) are displayed under the **Analyze** item in the left sidebar.
-To remove this item:
+To disable this feature and remove the **Analyze** item from the left sidebar:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn off the **Analytics** toggle.
 1. Select **Save changes**.
-
-## Add a compliance framework to a project **(PREMIUM)**
-
-You can
-[add compliance frameworks to projects](../../group/compliance_frameworks.md#add-a-compliance-framework-to-a-project)
-in a group that has a compliance framework.
-
-## Manage project access through LDAP groups
-
-You can [use LDAP to manage group membership](../../group/access_and_permissions.md#manage-group-memberships-via-ldap).
-
-You cannot use LDAP groups to manage project access, but you can use the following workaround.
-
-Prerequisites:
-
-- You must [integrate LDAP with GitLab](../../../administration/auth/ldap/index.md).
-- You must be an administrator.
-
-1. [Create a group](../../group/index.md#create-a-group) to track membership of your project.
-1. [Set up LDAP synchronization](../../../administration/auth/ldap/ldap_synchronization.md) for that group.
-1. To use LDAP groups to manage access to a project,
-[add the LDAP-synchronized group as a member](../members/index.md#add-groups-to-a-project) to the project.
 
 ## Disable CVE identifier request in issues **(FREE SAAS)**
 

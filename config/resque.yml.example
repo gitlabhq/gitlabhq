@@ -3,6 +3,11 @@
 #
 development:
   url: redis://localhost:6379
+  # ssl_params:
+  #   ca_path: "/path/to/dir/with/certs"
+  #   ca_file: "/path/to/ca.crt"
+  #   cert_file: "/path/to/client.crt"
+  #   key_file: "/path/to/client.key"
   # sentinels:
   #   -
   #     host: localhost

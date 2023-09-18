@@ -165,7 +165,7 @@ To configure a compliance pipeline:
    - `.compliance-ci.yaml@gitlab-org/gitlab`.
 
 This configuration is inherited by projects where the compliance framework label is
-[applied](../project/settings/index.md#add-a-compliance-framework-to-a-project). In projects with the applied compliance
+[applied](../project/working_with_projects.md#add-a-compliance-framework-to-a-project). In projects with the applied compliance
 framework label, the compliance pipeline configuration is run instead of the labeled project's own pipeline configuration.
 
 The user running the pipeline in the labeled project must at least have the Reporter role on the compliance project.

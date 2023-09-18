@@ -2337,7 +2337,7 @@ Example response:
     "state": "opened",
     "created_at": "2017-04-06T18:33:34.168Z",
     "updated_at": "2017-04-09T20:10:24.983Z",
-    "target_branch": "master",
+    "target_branch": "main",
     "source_branch": "feature.custom-highlighting",
     "upvotes": 0,
     "downvotes": 0,

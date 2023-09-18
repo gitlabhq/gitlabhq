@@ -327,7 +327,7 @@ Example response:
   {
     "id": 9,
     "description": "foo",
-    "default_branch": "master",
+    "default_branch": "main",
     "tag_list": [], //deprecated, use `topics` instead
     "topics": [],
     "archived": false,
@@ -407,13 +407,13 @@ Example response:
       "path":"html5-boilerplate",
       "path_with_namespace":"h5bp/html5-boilerplate",
       "created_at":"2020-04-27T06:13:22.642Z",
-      "default_branch":"master",
+      "default_branch":"main",
       "tag_list":[], //deprecated, use `topics` instead
       "topics":[],
       "ssh_url_to_repo":"ssh://git@gitlab.com/h5bp/html5-boilerplate.git",
       "http_url_to_repo":"https://gitlab.com/h5bp/html5-boilerplate.git",
       "web_url":"https://gitlab.com/h5bp/html5-boilerplate",
-      "readme_url":"https://gitlab.com/h5bp/html5-boilerplate/-/blob/master/README.md",
+      "readme_url":"https://gitlab.com/h5bp/html5-boilerplate/-/blob/main/README.md",
       "avatar_url":null,
       "star_count":0,
       "forks_count":4,
@@ -573,7 +573,7 @@ Example response:
     {
       "id": 7,
       "description": "Voluptas veniam qui et beatae voluptas doloremque explicabo facilis.",
-      "default_branch": "master",
+      "default_branch": "main",
       "tag_list": [], //deprecated, use `topics` instead
       "topics": [],
       "archived": false,
@@ -612,7 +612,7 @@ Example response:
     {
       "id": 6,
       "description": "Aspernatur omnis repudiandae qui voluptatibus eaque.",
-      "default_branch": "master",
+      "default_branch": "main",
       "tag_list": [], //deprecated, use `topics` instead
       "topics": [],
       "archived": false,
@@ -653,7 +653,7 @@ Example response:
     {
       "id": 8,
       "description": "Velit eveniet provident fugiat saepe eligendi autem.",
-      "default_branch": "master",
+      "default_branch": "main",
       "tag_list": [], //deprecated, use `topics` instead
       "topics": [],
       "archived": false,
@@ -1039,7 +1039,7 @@ Example response:
     {
       "id": 9,
       "description": "foo",
-      "default_branch": "master",
+      "default_branch": "main",
       "tag_list": [], //deprecated, use `topics` instead
       "topics": [],
       "public": false,

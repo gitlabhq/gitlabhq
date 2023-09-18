@@ -38,8 +38,8 @@ module Gitlab
         button :confirm_purchase, text: /Confirm purchase/
 
         # Order Summary
-        div :selected_plan, 'data-testid': 'selected-plan'
-        div :order_total, 'data-testid': 'total-amount'
+        div :selected_plan
+        div :total_amount
       end
     end
   end

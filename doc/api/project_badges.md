@@ -47,7 +47,7 @@ Example response:
     "id": 1,
     "link_url": "http://example.com/ci_status.svg?project=%{project_path}&ref=%{default_branch}",
     "image_url": "https://shields.io/my/badge",
-    "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=master",
+    "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=main",
     "rendered_image_url": "https://shields.io/my/badge",
     "kind": "project"
   },
@@ -56,7 +56,7 @@ Example response:
     "id": 2,
     "link_url": "http://example.com/ci_status.svg?project=%{project_path}&ref=%{default_branch}",
     "image_url": "https://shields.io/my/badge",
-    "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=master",
+    "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=main",
     "rendered_image_url": "https://shields.io/my/badge",
     "kind": "group"
   }
@@ -88,7 +88,7 @@ Example response:
   "id": 1,
   "link_url": "http://example.com/ci_status.svg?project=%{project_path}&ref=%{default_branch}",
   "image_url": "https://shields.io/my/badge",
-  "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=master",
+  "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=main",
   "rendered_image_url": "https://shields.io/my/badge",
   "kind": "project"
 }
@@ -111,7 +111,7 @@ POST /projects/:id/badges
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/master&image_url=https://shields.io/my/badge1&name=mybadge" \
+     --data "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/main&image_url=https://shields.io/my/badge1&name=mybadge" \
      "https://gitlab.example.com/api/v4/projects/:id/badges"
 ```
 
@@ -121,9 +121,9 @@ Example response:
 {
   "id": 1,
   "name": "mybadge",
-  "link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
+  "link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/main",
   "image_url": "https://shields.io/my/badge1",
-  "rendered_link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
+  "rendered_link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/main",
   "rendered_image_url": "https://shields.io/my/badge1",
   "kind": "project"
 }
@@ -155,9 +155,9 @@ Example response:
 {
   "id": 1,
   "name": "mybadge",
-  "link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
+  "link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/main",
   "image_url": "https://shields.io/my/badge",
-  "rendered_link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
+  "rendered_link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/main",
   "rendered_image_url": "https://shields.io/my/badge",
   "kind": "project"
 }
@@ -204,7 +204,7 @@ Example response:
 {
   "link_url": "http://example.com/ci_status.svg?project=%{project_path}&ref=%{default_branch}",
   "image_url": "https://shields.io/my/badge",
-  "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=master",
+  "rendered_link_url": "http://example.com/ci_status.svg?project=example-org/example-project&ref=main",
   "rendered_image_url": "https://shields.io/my/badge"
 }
 ```

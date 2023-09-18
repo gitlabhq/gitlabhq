@@ -79,6 +79,8 @@ To revoke a project access token:
 
 ## Scopes for a project access token
 
+> `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
+
 The scope determines the actions you can perform when you authenticate with a project access token.
 
 NOTE:
@@ -94,6 +96,7 @@ See the warning in [create a project access token](#create-a-project-access-toke
 | `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                                 |
 | `create_runner`    | Grants permission to create runners in the project.                                                                                                             |
 | `ai_features`      | Grants permission to perform API actions for GitLab Duo.                                                                                                        |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project.                                                                                     |
 
 ## Enable or disable project access token creation
 

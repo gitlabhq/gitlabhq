@@ -365,6 +365,90 @@ RSpec.shared_examples "redis_shared_examples" do
     end
   end
 
+  describe "#parse_client_tls_options" do
+    let(:dummy_certificate) { OpenSSL::X509::Certificate.new }
+    let(:dummy_key) { OpenSSL::PKey::RSA.new }
+    let(:resque_yaml_config_without_tls) { { url: 'redis://localhost:6379' } }
+    let(:resque_yaml_config_with_tls) do
+      {
+        url: 'rediss://localhost:6380',
+        ssl_params: {
+          cert_file: '/tmp/client.crt',
+          key_file: '/tmp/client.key'
+        }
+      }
+    end
+
+    let(:parsed_config_with_tls) do
+      {
+        url: 'rediss://localhost:6380',
+        ssl_params: {
+          cert: dummy_certificate,
+          key: dummy_key
+        }
+      }
+    end
+
+    before do
+      allow(::File).to receive(:exist?).and_call_original
+      allow(::File).to receive(:read).and_call_original
+    end
+
+    context 'when configuration does not have TLS related options' do
+      it 'returns the coniguration as-is' do
+        expect(subject.send(:parse_client_tls_options,
+          resque_yaml_config_without_tls)).to eq(resque_yaml_config_without_tls)
+      end
+    end
+
+    context 'when specified certificate file does not exist' do
+      before do
+        allow(::File).to receive(:exist?).with("/tmp/client.crt").and_return(false)
+        allow(::File).to receive(:exist?).with("/tmp/client.key").and_return(true)
+      end
+
+      it 'raises error about missing certificate file' do
+        expect do
+          subject.send(:parse_client_tls_options,
+            resque_yaml_config_with_tls)
+        end.to raise_error(Gitlab::Redis::Wrapper::InvalidPathError,
+          "Certificate file /tmp/client.crt specified in in `resque.yml` does not exist.")
+      end
+    end
+
+    context 'when specified key file does not exist' do
+      before do
+        allow(::File).to receive(:exist?).with("/tmp/client.crt").and_return(true)
+        allow(::File).to receive(:read).with("/tmp/client.crt").and_return("DUMMY_CERTIFICATE")
+        allow(OpenSSL::X509::Certificate).to receive(:new).with("DUMMY_CERTIFICATE").and_return(dummy_certificate)
+        allow(::File).to receive(:exist?).with("/tmp/client.key").and_return(false)
+      end
+
+      it 'raises error about missing key file' do
+        expect do
+          subject.send(:parse_client_tls_options,
+            resque_yaml_config_with_tls)
+        end.to raise_error(Gitlab::Redis::Wrapper::InvalidPathError,
+          "Key file /tmp/client.key specified in in `resque.yml` does not exist.")
+      end
+    end
+
+    context 'when configuration valid TLS related options' do
+      before do
+        allow(::File).to receive(:exist?).with("/tmp/client.crt").and_return(true)
+        allow(::File).to receive(:exist?).with("/tmp/client.key").and_return(true)
+        allow(::File).to receive(:read).with("/tmp/client.crt").and_return("DUMMY_CERTIFICATE")
+        allow(::File).to receive(:read).with("/tmp/client.key").and_return("DUMMY_KEY")
+        allow(OpenSSL::X509::Certificate).to receive(:new).with("DUMMY_CERTIFICATE").and_return(dummy_certificate)
+        allow(OpenSSL::PKey).to receive(:read).with("DUMMY_KEY").and_return(dummy_key)
+      end
+
+      it "converts cert_file and key_file appropriately" do
+        expect(subject.send(:parse_client_tls_options, resque_yaml_config_with_tls)).to eq(parsed_config_with_tls)
+      end
+    end
+  end
+
   describe '#fetch_config' do
     before do
       FileUtils.mkdir_p(File.join(rails_root, 'config'))

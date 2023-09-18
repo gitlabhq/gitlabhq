@@ -263,7 +263,7 @@ For more information on the administration of LDAP and group sync, refer to the 
 NOTE:
 When you add LDAP synchronization, if an LDAP user is a group member and they are not part of the LDAP group, they are removed from the group.
 
-You can use a workaround to [manage project access through LDAP groups](../project/settings/index.md#manage-project-access-through-ldap-groups).
+You can use a workaround to [manage project access through LDAP groups](../project/working_with_projects.md#manage-project-access-through-ldap-groups).
 
 ### Create group links via CN **(PREMIUM SELF)**
 

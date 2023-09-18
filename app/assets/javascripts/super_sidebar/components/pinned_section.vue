@@ -84,6 +84,9 @@ export default {
         return { ...i, title };
       });
     },
+    onPinRemove(itemId) {
+      this.$emit('pin-remove', itemId);
+    },
   },
 };
 </script>
@@ -94,7 +97,7 @@ export default {
     :expanded="expanded"
     :has-flyout="hasFlyout"
     @collapse-toggle="expanded = !expanded"
-    @pin-remove="(itemId) => $emit('pin-remove', itemId)"
+    @pin-remove="onPinRemove"
   >
     <draggable
       v-if="items.length > 0"
@@ -110,7 +113,7 @@ export default {
         :key="item.id"
         :item="item"
         is-in-pinned-section
-        @pin-remove="(itemId) => $emit('pin-remove', itemId)"
+        @pin-remove="onPinRemove"
       />
     </draggable>
     <li v-else class="gl-text-secondary gl-font-sm gl-py-3" style="margin-left: 2.5rem">

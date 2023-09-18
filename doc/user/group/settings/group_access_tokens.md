@@ -138,6 +138,8 @@ token.revoke!
 
 ## Scopes for a group access token
 
+> `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
+
 The scope determines the actions you can perform when you authenticate with a group access token.
 
 | Scope              | Description                                                                                                                                                                      |
@@ -150,6 +152,7 @@ The scope determines the actions you can perform when you authenticate with a gr
 | `write_repository` | Grants read and write access (pull and push) to all repositories within a group.                                                                                                 |
 | `create_runner`    | Grants permission to create runners in a group.                                                                                                                                  |
 | `ai_features`      | Grants permission to perform API actions for GitLab Duo.                                                                                                                         |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.                                                                                     |
 
 ## Enable or disable group access token creation
 

@@ -135,22 +135,6 @@ To add a star to a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. In the upper-right corner of the page, select **Star**.
 
-## Delete a project
-
-After you delete a project:
-
-- Projects in personal namespaces are deleted immediately.
-- Projects in groups are [deleted after a retention period](../project/settings/index.md#delayed-project-deletion).
-
-To delete a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand the **Advanced** section.
-1. Scroll down to the **Delete project** section.
-1. Select **Delete project**.
-1. Confirm this action by completing the field.
-
 ## View projects pending deletion **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
@@ -407,6 +391,26 @@ To access the Geo secondary server with HTTP:
 
 The `go get` request generates HTTP traffic to the primary Geo server. When the module
 download starts, the `insteadOf` configuration sends the traffic to the secondary Geo server.
+
+## Add a compliance framework to a project **(PREMIUM)**
+
+You can add compliance frameworks to projects in a group that has a [compliance framework](../group/compliance_frameworks.md).
+
+## Manage project access through LDAP groups
+
+You can [use LDAP to manage group membership](../group/access_and_permissions.md#manage-group-memberships-via-ldap).
+
+You cannot use LDAP groups to manage project access, but you can use the following workaround.
+
+Prerequisites:
+
+- You must [integrate LDAP with GitLab](../../administration/auth/ldap/index.md).
+- You must be an administrator.
+
+1. [Create a group](../group/index.md#create-a-group) to track membership of your project.
+1. [Set up LDAP synchronization](../../administration/auth/ldap/ldap_synchronization.md) for that group.
+1. To use LDAP groups to manage access to a project,
+[add the LDAP-synchronized group as a member](../group/manage.md) to the project.
 
 ## Related topics
 

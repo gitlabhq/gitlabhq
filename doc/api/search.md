@@ -53,13 +53,13 @@ Example response:
     "path": "flight",
     "path_with_namespace": "twitter/flight",
     "created_at": "2017-09-05T07:58:01.621Z",
-    "default_branch": "master",
+    "default_branch": "main",
     "tag_list":[], //deprecated, use `topics` instead
     "topics":[],
     "ssh_url_to_repo": "ssh://jarka@localhost:2222/twitter/flight.git",
     "http_url_to_repo": "http://localhost:3000/twitter/flight.git",
     "web_url": "http://localhost:3000/twitter/flight",
-    "readme_url": "http://localhost:3000/twitter/flight/-/blob/master/README.md",
+    "readme_url": "http://localhost:3000/twitter/flight/-/blob/main/README.md",
     "avatar_url": null,
     "star_count": 0,
     "forks_count": 0,
@@ -153,7 +153,7 @@ Example response:
     "state": "opened",
     "created_at": "2018-01-22T14:21:50.830Z",
     "updated_at": "2018-02-06T12:40:33.295Z",
-    "target_branch": "master",
+    "target_branch": "main",
     "source_branch": "jaja-test",
     "upvotes": 0,
     "downvotes": 0,
@@ -290,7 +290,7 @@ Example response:
     "path": "home.md",
     "filename": "home.md",
     "id": null,
-    "ref": "master",
+    "ref": "main",
     "startline": 5,
     "project_id": 6,
     "group_id": null
@@ -367,7 +367,7 @@ Example response:
     "path": "README.md",
     "filename": "README.md",
     "id": null,
-    "ref": "master",
+    "ref": "main",
     "startline": 46,
     "project_id": 6
   }
@@ -475,13 +475,13 @@ Example response:
     "path": "flight",
     "path_with_namespace": "twitter/flight",
     "created_at": "2017-09-05T07:58:01.621Z",
-    "default_branch": "master",
+    "default_branch": "main",
     "tag_list":[], //deprecated, use `topics` instead
     "topics":[],
     "ssh_url_to_repo": "ssh://jarka@localhost:2222/twitter/flight.git",
     "http_url_to_repo": "http://localhost:3000/twitter/flight.git",
     "web_url": "http://localhost:3000/twitter/flight",
-    "readme_url": "http://localhost:3000/twitter/flight/-/blob/master/README.md",
+    "readme_url": "http://localhost:3000/twitter/flight/-/blob/main/README.md",
     "avatar_url": null,
     "star_count": 0,
     "forks_count": 0,
@@ -575,7 +575,7 @@ Example response:
     "state": "opened",
     "created_at": "2018-01-22T14:21:50.830Z",
     "updated_at": "2018-02-06T12:40:33.295Z",
-    "target_branch": "master",
+    "target_branch": "main",
     "source_branch": "jaja-test",
     "upvotes": 0,
     "downvotes": 0,
@@ -681,7 +681,7 @@ Example response:
     "path": "home.md",
     "filename": "home.md",
     "id": null,
-    "ref": "master",
+    "ref": "main",
     "startline": 5,
     "project_id": 6,
     "group_id": 1
@@ -758,7 +758,7 @@ Example response:
     "path": "README.md",
     "filename": "README.md",
     "id": null,
-    "ref": "master",
+    "ref": "main",
     "startline": 46,
     "project_id": 6
   }
@@ -934,7 +934,7 @@ Example response:
     "state": "opened",
     "created_at": "2018-01-22T14:21:50.830Z",
     "updated_at": "2018-02-06T12:40:33.295Z",
-    "target_branch": "master",
+    "target_branch": "main",
     "source_branch": "jaja-test",
     "upvotes": 0,
     "downvotes": 0,
@@ -1094,7 +1094,7 @@ Example response:
     "path": "home.md",
     "filename": "home.md",
     "id": null,
-    "ref": "master",
+    "ref": "main",
     "startline": 5,
     "project_id": 6,
     "group_id": 1
@@ -1177,7 +1177,7 @@ Example response:
     "path": "README.md",
     "filename": "README.md",
     "id": null,
-    "ref": "master",
+    "ref": "main",
     "startline": 46,
     "project_id": 6
   }

@@ -70,6 +70,16 @@ module QA
           "transferred",
           "locked",
           "unlocked",
+          "deployed",
+          "marked_as_duplicate",
+          "unmarked_as_duplicate",
+          "connected",
+          "disconnected",
+          "moved_columns_in_project",
+          "added_to_project",
+          "removed_from_project",
+          "base_ref_deleted",
+          "converted_to_discussion",
           # mentions are supported but they can be reported differently on gitlab's side
           # for example mention of issue creation in pr will be reported in the issue on gitlab side
           # or referenced in github will still create a 'mentioned in' comment in gitlab

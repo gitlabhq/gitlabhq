@@ -189,7 +189,7 @@ Supported attributes:
 | `straight`        | boolean        | no       | Comparison method: `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)'. Default is `false`. |
 
 ```plaintext
-GET /projects/:id/repository/compare?from=master&to=feature
+GET /projects/:id/repository/compare?from=main&to=feature
 ```
 
 Example response:

@@ -81,7 +81,7 @@ With compliance violations report, you can see a high-level view of merge reques
 
 When you select a row in the compliance report, a drawer appears that provides:
 
-- The project name and [compliance framework label](../../project/settings/index.md#add-a-compliance-framework-to-a-project),
+- The project name and [compliance framework label](../../project/working_with_projects.md#add-a-compliance-framework-to-a-project),
   if the project has one assigned.
 - A link to the merge request that introduced the violation.
 - The merge request's branch path in the format `[source] into [target]`.
