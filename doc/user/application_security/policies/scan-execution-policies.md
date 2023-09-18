@@ -134,7 +134,7 @@ This rule enforces the defined actions and schedules a scan on the provided date
 
 Scheduled scan pipelines are triggered by a security policy bot user that is a guest member of the project. Security policy bot users are automatically created when the security policy project is linked, and removed when the security policy project is unlinked.
 
-If the project does not have a security policy bot user, the scheduled scan pipeline is triggered by the user that modified the security policy project last.
+If the project does not have a security policy bot user, the scheduled scan pipeline will not be triggered. To recreate a security policy bot user unlink and link the security policy project again.
 
 GitLab supports the following types of CRON syntax for the `cadence` field:
 
