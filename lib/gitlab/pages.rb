@@ -24,6 +24,21 @@ module Gitlab
           ::Gitlab::CurrentSettings.current_application_settings.force_pages_access_control
       end
 
+      def enabled?
+        Gitlab.config.pages.enabled
+      end
+
+      def add_unique_domain_to(project)
+        return unless enabled?
+        # If the project used a unique domain once, it'll always use the same
+        return if project.project_setting.pages_unique_domain_in_database.present?
+
+        project.project_setting.pages_unique_domain_enabled = true
+        project.project_setting.pages_unique_domain = Gitlab::Pages::RandomDomain.generate(
+          project_path: project.path,
+          namespace_path: project.parent.full_path)
+      end
+
       def multiple_versions_enabled_for?(project)
         return false if project.blank?
 

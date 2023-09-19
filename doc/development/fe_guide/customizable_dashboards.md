@@ -74,15 +74,15 @@ export const pageViewsOverTime = {
       dimensions: [],
       filters: [
         {
-          member: 'SnowplowTrackedEvents.event',
+          member: 'TrackedEvents.event',
           operator: 'equals',
           values: ['page_view']
         }
       ],
-      measures: ['SnowplowTrackedEvents.pageViewsCount'],
+      measures: ['TrackedEvents.pageViewsCount'],
       timeDimensions: [
         {
-          dimension: 'SnowplowTrackedEvents.derivedTstamp',
+          dimension: 'TrackedEvents.derivedTstamp',
           granularity: 'day',
         },
       ],
@@ -144,7 +144,7 @@ export const dashboard = {
       // Here we override the Cube.js query to get page views per week instead of days.
       queryOverrides: {
         timeDimensions: {
-          dimension: 'SnowplowTrackedEvents.derivedTstamp',
+          dimension: 'TrackedEvents.derivedTstamp',
           granularity: 'week',
         },
       },

@@ -9,7 +9,7 @@ product_group: container_security_group_was_removed
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86351
-milestone_removed: 15.0
+milestone_removed: "15.0"
 time_frame: all
 data_source: redis
 distribution:

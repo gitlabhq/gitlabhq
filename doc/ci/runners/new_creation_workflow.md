@@ -145,31 +145,13 @@ Existing runners will continue to work as usual. This change only affects regist
 
 ## Creating runners programmatically
 
-In GitLab 15.11 and later, you can use the [POST /user/runners REST API](../../api/users.md#create-a-runner) to create a runner as an authenticated user. This should only be used if the runner configuration is dynamic or not reusable. If the runner configuration is static, you should
-reuse the runner authentication token of an existing runner. For more information, see [How to automate the creation of GitLab Runners](https://about.gitlab.com/blog/2023/07/06/how-to-automate-creation-of-runners/).
+In GitLab 15.11 and later, you can use the [POST /user/runners REST API](../../api/users.md#create-a-runner)
+to create a runner as an authenticated user. This should only be used if the runner configuration is dynamic
+or not reusable. If the runner configuration is static, you should reuse the runner authentication token of
+an existing runner.
 
-The following snippet shows how a group runner could be created and registered with a
-[Group Access Token](../../user/group/settings/group_access_tokens.md) using the new creation flow.
-The process is very similar when using [Project Access Tokens](../../user/project/settings/project_access_tokens.md)
-or [Personal Access Tokens](../../user/profile/personal_access_tokens.md):
-
-```shell
-# `GROUP_ID` contains the numerical ID of the group where the runner will be created
-# `GITLAB_TOKEN` can be a Personal Access Token for a group owner, or a Group Access Token on the respective group
-#   created with `owner` access and `api` scope.
-#
-# The output will be parsed by `jq` to extract the token of the newly created runner
-RUNNER_TOKEN=$(curl --silent --request POST "https://gitlab.com/api/v4/user/runners" \
-    --header "private-token: $GITLAB_TOKEN" \
-    --data runner_type=group_type --data group_id=$GROUP_ID --data 'description=My runner' --data 'tag_list=java,linux' \
-  | jq -r '.token')
-
-gitlab-runner register \
-    --non-interactive \
-    --executor "shell" \
-    --url "https://gitlab.com/" \
-    --token "$RUNNER_TOKEN"
-```
+For instructions about how to automate runner creation and registration, see the tutorial,
+[Automate runner creation and registration](../../tutorials/automate_runner_creation/index.md).
 
 ## Installing GitLab Runner with Helm chart
 

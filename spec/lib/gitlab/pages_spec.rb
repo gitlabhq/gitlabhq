@@ -86,4 +86,51 @@ RSpec.describe Gitlab::Pages, feature_category: :pages do
       end
     end
   end
+
+  describe '#add_unique_domain_to' do
+    let(:project) { build(:project) }
+
+    context 'when pages is not enabled' do
+      before do
+        stub_pages_setting(enabled: false)
+      end
+
+      it 'does not set pages unique domain' do
+        expect(Gitlab::Pages::RandomDomain).not_to receive(:generate)
+
+        described_class.add_unique_domain_to(project)
+
+        expect(project.project_setting.pages_unique_domain_enabled).to eq(false)
+        expect(project.project_setting.pages_unique_domain).to eq(nil)
+      end
+    end
+
+    context 'when pages is enabled' do
+      before do
+        stub_pages_setting(enabled: true)
+      end
+
+      it 'enables unique domain by default' do
+        allow(Gitlab::Pages::RandomDomain)
+          .to receive(:generate)
+          .and_return('unique-domain')
+
+        described_class.add_unique_domain_to(project)
+
+        expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
+        expect(project.project_setting.pages_unique_domain).to eq('unique-domain')
+      end
+
+      context 'when project already have a unique domain' do
+        it 'does not changes the original unique domain' do
+          expect(Gitlab::Pages::RandomDomain).not_to receive(:generate)
+          project.project_setting.update!(pages_unique_domain: 'unique-domain')
+
+          described_class.add_unique_domain_to(project.reload)
+
+          expect(project.project_setting.pages_unique_domain).to eq('unique-domain')
+        end
+      end
+    end
+  end
 end

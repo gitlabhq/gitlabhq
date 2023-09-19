@@ -14,7 +14,7 @@ type: index, reference
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
-Code Suggestions are available on GitLab Enterprise Edition.
+GitLab Duo Code Suggestions are available on GitLab Enterprise Edition.
 Cloud licensing is required for Premium and Ultimate subscription tiers.
 
 Code Suggestions are not available for GitLab Community Edition.
@@ -180,7 +180,7 @@ authentication to the self-managed instance, a token is generated.
 The IDE/editor then uses this token to securely transmit data directly to
 GitLab.com's Code Suggestions service for processing.
 
-The Code Suggestion service then securely returns an AI-generated code suggestion.
+The Code Suggestions service then securely returns an AI-generated code suggestion.
 
 Neither GitLab nor Google Vertex AI Codey APIs have any visibility into a self-managed customer's code other than
 what is sent to generate the code suggestion.

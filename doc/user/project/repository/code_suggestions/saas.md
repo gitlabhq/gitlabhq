@@ -15,10 +15,10 @@ type: index, reference
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
-Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+Usage of GitLab Duo Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
 Learn about [data usage when using Code Suggestions](index.md#code-suggestions-data-usage).
 
-## Enable Code Suggestions 
+## Enable Code Suggestions
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../../../policy/experiment-beta-support.md#beta).
 

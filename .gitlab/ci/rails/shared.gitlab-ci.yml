@@ -89,7 +89,7 @@ include:
         bundle exec slow-test-issues --input-files "rspec/rspec-*.json" --project "gitlab-org/gitlab" --token "${TEST_FAILURES_PROJECT_TOKEN}";
       fi
       if [ "$ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST" == "true" ]; then
-        bundle exec slow-test-merge-request-report-note --input-files "rspec/rspec-*.json" --project "gitlab-org/gitlab" --merge_request_iid "$CI_MERGE_REQUEST_IID" --token "${TEST_FAILURES_PROJECT_TOKEN}";
+        bundle exec slow-test-merge-request-report-note --input-files "rspec/rspec-*.json" --project "gitlab-org/gitlab" --merge_request_iid "$CI_MERGE_REQUEST_IID" --token "${TEST_SLOW_NOTE_PROJECT_TOKEN}";
       fi
     - echo -e "\e[0Ksection_end:`date +%s`:report_results_section\r\e[0K"
 

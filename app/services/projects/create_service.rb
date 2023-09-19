@@ -144,6 +144,8 @@ module Projects
     end
 
     def create_project_settings
+      Gitlab::Pages.add_unique_domain_to(project)
+
       @project.project_setting.save if @project.project_setting.changed?
     end
 

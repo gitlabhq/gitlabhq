@@ -16,7 +16,7 @@ Beta users should read about the [known limitations](#known-limitations). We loo
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
-Code Suggestions are available:
+GitLab Duo Code Suggestions are available:
 
 - On [self-managed](self_managed.md) and [SaaS](saas.md).
 - In VS Code, Microsoft Visual Studio, JetBrains IDEs, and Neovim. You must have the corresponding GitLab extension installed.

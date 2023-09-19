@@ -20,3 +20,4 @@ performance_indicator_type: []
 milestone: "12.9"
 introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26441"
 milestone_removed: "14.4"
+removed_by_url:

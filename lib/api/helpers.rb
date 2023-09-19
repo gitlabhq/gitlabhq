@@ -709,8 +709,8 @@ module API
         namespace_id: namespace_id,
         project_id: project_id
       )
-    rescue StandardError => error
-      Gitlab::AppLogger.warn("Internal Event tracking event failed for event: #{event_name}, message: #{error.message}")
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name)
     end
 
     def order_by_similarity?(allow_unauthorized: true)

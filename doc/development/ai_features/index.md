@@ -563,6 +563,11 @@ Gitlab::Llm::VertexAi::Client.new(user)
 Gitlab::Llm::Anthropic::Client.new(user)
 ```
 
+### Monitoring Ai Actions
+
+- Error ratio and response latency apdex for each Ai action can be found on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview?orgId=1) under "SLI Detail: llm_completion".
+- Spent tokens, usage of each Ai feature and other statistics can be found on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features).
+
 ### Add Ai Action to GraphQL
 
 TODO

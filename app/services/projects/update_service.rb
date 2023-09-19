@@ -53,13 +53,7 @@ module Projects
     def add_pages_unique_domain
       return unless params.dig(:project_setting_attributes, :pages_unique_domain_enabled)
 
-      # If the project used a unique domain once, it'll always use the same
-      return if project.project_setting.pages_unique_domain_in_database.present?
-
-      params[:project_setting_attributes][:pages_unique_domain] = Gitlab::Pages::RandomDomain.generate(
-        project_path: project.path,
-        namespace_path: project.parent.full_path
-      )
+      Gitlab::Pages.add_unique_domain_to(project)
     end
 
     def validate!

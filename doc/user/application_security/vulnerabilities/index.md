@@ -27,7 +27,7 @@ the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#ac
 ## Explaining a vulnerability **(ULTIMATE SAAS BETA)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
-> - Promoted to [Beta](../../../policy/experiment-beta-support.md#beta) status in 16.2.
+> - Promoted to [Beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
 
 GitLab can help you with a vulnerability by using a large language model to:
 
@@ -37,8 +37,8 @@ GitLab can help you with a vulnerability by using a large language model to:
 
 ### Explain a vulnerability
 
-Use the explain this vulnerability feature to better understand a vulnerability and its possible
-mitigation.
+Explain a vulnerability with GitLab Duo Vulnerability summary. Use the explanation to better
+understand a vulnerability and its possible mitigation.
 
 Prerequisites:
 
@@ -46,7 +46,7 @@ Prerequisites:
 - You must be a member of the project.
 - The vulnerability must be a SAST finding.
 
-Learn more about [how to enable all AI features](../../ai_features.md#enable-aiml-features).
+Learn more about [how to enable all GitLab Duo features](../../ai_features.md#enable-aiml-features).
 
 To explain the vulnerability:
 

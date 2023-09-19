@@ -9,16 +9,19 @@ class CommitStatus < Ci::ApplicationRecord
   include BulkInsertableAssociations
   include TaggableQueries
 
-  ROUTING_FEATURE_FLAG = :ci_partitioning_use_ci_builds_routing_table
+  def self.switch_table_names
+    if Gitlab::Utils.to_boolean(ENV['USE_CI_BUILDS_ROUTING_TABLE'])
+      :p_ci_builds
+    else
+      :ci_builds
+    end
+  end
 
-  self.table_name = 'ci_builds'
-  self.sequence_name = 'ci_builds_id_seq'
+  self.table_name = self.switch_table_names
+  self.sequence_name = :ci_builds_id_seq
   self.primary_key = :id
 
-  partitionable scope: :pipeline, through: {
-    table: :p_ci_builds,
-    flag: ROUTING_FEATURE_FLAG
-  }
+  partitionable scope: :pipeline
 
   belongs_to :user
   belongs_to :project

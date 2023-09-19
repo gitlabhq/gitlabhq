@@ -41460,9 +41460,6 @@ msgstr ""
 msgid "ScanResultPolicy|Attributes are automatically applied by the scanners"
 msgstr ""
 
-msgid "ScanResultPolicy|Block users from modifying protected branches"
-msgstr ""
-
 msgid "ScanResultPolicy|Choose criteria type"
 msgstr ""
 
@@ -41470,6 +41467,9 @@ msgid "ScanResultPolicy|Clear all"
 msgstr ""
 
 msgid "ScanResultPolicy|Customized CI Variables"
+msgstr ""
+
+msgid "ScanResultPolicy|Don't show me this again"
 msgstr ""
 
 msgid "ScanResultPolicy|Except"
@@ -41541,7 +41541,13 @@ msgstr ""
 msgid "ScanResultPolicy|Prevent approval by merge request's author"
 msgstr ""
 
+msgid "ScanResultPolicy|Prevent branch protection modification"
+msgstr ""
+
 msgid "ScanResultPolicy|Protected branch settings"
+msgstr ""
+
+msgid "ScanResultPolicy|Recommended setting"
 msgstr ""
 
 msgid "ScanResultPolicy|Remove all approvals when commit is added"
@@ -41584,6 +41590,9 @@ msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an
 msgstr ""
 
 msgid "ScanResultPolicy|When enabled, two person approval will be required on all MRs as merge request authors cannot approve their own MRs and merge them unilaterally"
+msgstr ""
+
+msgid "ScanResultPolicy|You have selected any protected branch option as a condition. To better protect your project, it is recommended to enable the protect branch settings. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "ScanResultPolicy|any commits"
@@ -47341,9 +47350,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "The form contains the following warning:"
-msgstr ""
-
-msgid "The full package metadata sync can add up to 30 GB to GitLab PostgreSQL database. Ensure you have provisioned enough disk space for the database before enabling this feature. We are actively working on reducing this data size in %{link_start}epic 10415%{link_end}."
 msgstr ""
 
 msgid "The git server, Gitaly, is not available at this time. Please contact your administrator."

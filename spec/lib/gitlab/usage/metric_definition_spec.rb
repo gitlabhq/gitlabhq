@@ -153,7 +153,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       :value_type         | nil
       :value_type         | 'test'
       :status             | nil
-      :milestone          | nil
+      :milestone          | 10.0
       :data_category      | nil
       :key_path           | nil
       :product_group      | nil
@@ -265,26 +265,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         attributes[:status] = 'removed'
 
         expect(described_class.new(path, attributes).valid_service_ping_status?).to be_falsey
-      end
-    end
-  end
-
-  describe 'statuses' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:status, :skip_validation?) do
-      'active'         | false
-      'broken'         | false
-      'removed'        | true
-    end
-
-    with_them do
-      subject(:validation) do
-        described_class.new(path, attributes.merge( { status: status } )).send(:skip_validation?)
-      end
-
-      it 'returns true/false for skip_validation' do
-        expect(validation).to eq(skip_validation?)
       end
     end
   end

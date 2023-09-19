@@ -1169,4 +1169,17 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
       expect_not_disabled_features(project, exclude: [:repository, :builds, :merge_requests])
     end
   end
+
+  it 'adds pages unique domain', feature_category: :pages do
+    stub_pages_setting(enabled: true)
+
+    expect(Gitlab::Pages)
+    .to receive(:add_unique_domain_to)
+    .and_call_original
+
+    project = create_project(user, opts)
+
+    expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
+    expect(project.project_setting.pages_unique_domain).to be_present
+  end
 end

@@ -31,7 +31,7 @@ export const getGroups = () => {
   if (gon.current_project_id) {
     return Api.projectGroups(gon.current_project_id, {
       with_shared: true,
-      min_access_level: ACCESS_LEVEL_DEVELOPER_INTEGER,
+      shared_min_access_level: ACCESS_LEVEL_DEVELOPER_INTEGER,
     });
   }
   return axios.get(buildUrl(gon.relative_url_root || '', GROUPS_PATH)).then(({ data }) => {

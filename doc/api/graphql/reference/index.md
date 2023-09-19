@@ -28931,6 +28931,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumsecurity_configuration_devops_alert"></a>`SECURITY_CONFIGURATION_DEVOPS_ALERT` | Callout feature name for security_configuration_devops_alert. |
 | <a id="usercalloutfeaturenameenumsecurity_configuration_upgrade_banner"></a>`SECURITY_CONFIGURATION_UPGRADE_BANNER` | Callout feature name for security_configuration_upgrade_banner. |
 | <a id="usercalloutfeaturenameenumsecurity_newsletter_callout"></a>`SECURITY_NEWSLETTER_CALLOUT` | Callout feature name for security_newsletter_callout. |
+| <a id="usercalloutfeaturenameenumsecurity_policy_protected_branch_modification"></a>`SECURITY_POLICY_PROTECTED_BRANCH_MODIFICATION` | Callout feature name for security_policy_protected_branch_modification. |
 | <a id="usercalloutfeaturenameenumsecurity_training_feature_promotion"></a>`SECURITY_TRAINING_FEATURE_PROMOTION` | Callout feature name for security_training_feature_promotion. |
 | <a id="usercalloutfeaturenameenumsubmit_license_usage_data_banner"></a>`SUBMIT_LICENSE_USAGE_DATA_BANNER` | Callout feature name for submit_license_usage_data_banner. |
 | <a id="usercalloutfeaturenameenumsuggest_pipeline"></a>`SUGGEST_PIPELINE` | Callout feature name for suggest_pipeline. |

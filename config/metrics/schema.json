@@ -63,10 +63,9 @@
     },
     "milestone_removed": {
       "type": [
-        "string",
-        "null"
+        "string"
       ],
-      "pattern": "^[0-9]+\\.[0-9]+$"
+      "pattern": "^<?[0-9]+\\.[0-9]+$"
     },
     "introduced_by_url": {
       "type": [
@@ -220,6 +219,21 @@
       "then": {
         "required": [
           "events"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "removed"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "removed_by_url",
+          "milestone_removed"
         ]
       }
     }

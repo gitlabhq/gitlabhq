@@ -791,10 +791,12 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     it 'logs an exception for unknown event' do
-      expect(Gitlab::AppLogger).to receive(:warn).with(
-        "Internal Event tracking event failed for event: #{unknown_event}, message: Unknown event: #{unknown_event}"
-      )
-
+      expect(Gitlab::InternalEvents).to receive(:track_event).and_raise(Gitlab::InternalEvents::UnknownEventError, "Unknown event: #{unknown_event}")
+      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        .with(
+          instance_of(Gitlab::InternalEvents::UnknownEventError),
+          event_name: unknown_event
+        )
       helper.track_event(unknown_event, user_id: user_id, namespace_id: namespace_id, project_id: project_id)
     end
 

@@ -4,7 +4,6 @@ module Gitlab
   module Usage
     class MetricDefinition
       METRIC_SCHEMA_PATH = Rails.root.join('config', 'metrics', 'schema.json')
-      SKIP_VALIDATION_STATUS = 'removed'
       AVAILABLE_STATUSES = %w[active broken].to_set.freeze
       VALID_SERVICE_PING_STATUSES = %w[active broken].to_set.freeze
 
@@ -177,7 +176,7 @@ module Gitlab
       end
 
       def skip_validation?
-        !!attributes[:skip_validation] || @skip_validation || attributes[:status] == SKIP_VALIDATION_STATUS
+        !!attributes[:skip_validation] || @skip_validation
       end
 
       def events_from_new_structure

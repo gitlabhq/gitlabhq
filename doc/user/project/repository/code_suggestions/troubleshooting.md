@@ -7,7 +7,7 @@ type: index, reference
 
 # Troubleshooting Code Suggestions **(FREE ALL BETA)**
 
-When working with Code Suggestions, you might encounter the following issues.
+When working with GitLab Duo Code Suggestions, you might encounter the following issues.
 
 ## Code Suggestions aren't displayed
 
