@@ -258,6 +258,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'GeoRepositoryDestroyWorker' => 3,
         'Gitlab::BitbucketImport::AdvanceStageWorker' => 3,
         'Gitlab::BitbucketImport::Stage::FinishImportWorker' => 3,
+        'Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker' => 3,
         'Gitlab::BitbucketImport::Stage::ImportRepositoryWorker' => 3,
         'Gitlab::BitbucketServerImport::AdvanceStageWorker' => 3,
         'Gitlab::BitbucketServerImport::Stage::FinishImportWorker' => 3,

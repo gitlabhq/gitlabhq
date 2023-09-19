@@ -39,19 +39,41 @@ module Bitbucket
       end
 
       def source_branch_name
-        source_branch.dig('branch', 'name')
+        source_branch&.dig('branch', 'name')
       end
 
       def source_branch_sha
-        source_branch.dig('commit', 'hash')
+        source_branch&.dig('commit', 'hash')
       end
 
       def target_branch_name
-        target_branch.dig('branch', 'name')
+        target_branch&.dig('branch', 'name')
       end
 
       def target_branch_sha
-        target_branch.dig('commit', 'hash')
+        target_branch&.dig('commit', 'hash')
+      end
+
+      def reviewers
+        raw['reviewers']&.pluck('username')
+      end
+
+      def to_hash
+        {
+          iid: iid,
+          author: author,
+          description: description,
+          created_at: created_at,
+          updated_at: updated_at,
+          state: state,
+          title: title,
+          source_branch_name: source_branch_name,
+          source_branch_sha: source_branch_sha,
+          merge_commit_sha: merge_commit_sha,
+          target_branch_name: target_branch_name,
+          target_branch_sha: target_branch_sha,
+          reviewers: reviewers
+        }
       end
 
       def merge_commit_sha

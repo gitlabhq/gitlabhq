@@ -9,11 +9,11 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportRepositoryWorker, feature_c
 
   it_behaves_like Gitlab::BitbucketImport::StageMethods
 
-  it 'executes the importer and enqueues FinishImportWorker' do
+  it 'executes the importer and enqueues ImportPullRequestsWorker' do
     expect(Gitlab::BitbucketImport::Importers::RepositoryImporter).to receive_message_chain(:new, :execute)
       .and_return(true)
 
-    expect(Gitlab::BitbucketImport::Stage::FinishImportWorker).to receive(:perform_async).with(project.id)
+    expect(Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker).to receive(:perform_async).with(project.id)
       .and_return(true).once
 
     worker.perform(project.id)

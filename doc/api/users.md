@@ -2032,7 +2032,7 @@ POST /users/:user_id/impersonation_tokens
 | ------------ | ------- | -------- | --------------------------------------------------------------------------- |
 | `user_id`    | integer | yes      | ID of the user                                                          |
 | `name`       | string  | yes      | Name of the impersonation token                                         |
-| `expires_at` | date    | no       | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`) |
+| `expires_at` | date    | yes      | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`) |
 | `scopes`     | array   | yes      | Array of scopes of the impersonation token (`api`, `read_user`)         |
 
 ```shell

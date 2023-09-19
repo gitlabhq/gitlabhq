@@ -127,3 +127,12 @@ time is set to 15 minutes.
 
 If you are using self-managed GitLab, an administrator can
 [increase the token duration](../../../administration/packages/container_registry.md#increase-token-duration).
+
+## Slow uploads when using `kaniko` to push large images
+
+When you push large images with `kaniko`, you might experience uncharacteristically long delays.
+
+This is typically a result of [a performance issue with `kaniko` and HTTP/2](https://github.com/GoogleContainerTools/kaniko/issues/2751).
+The current workaround is to use HTTP/1.1 when pushing with `kaniko`.
+
+To use HTTP/1.1, set the `GODEBUG` environment variable to `"http2client=0"`.

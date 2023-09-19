@@ -21,7 +21,7 @@ review merge requests in Visual Studio Code.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 
-## Suggested reviewers **(ULTIMATE SAAS)**
+## GitLab Duo Suggested Reviewers **(ULTIMATE SAAS)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [Beta](../../../../policy/experiment-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/368356) in GitLab 15.6.
@@ -34,11 +34,11 @@ To suggest reviewers, GitLab uses:
 - The changes in the merge request
 - The project's contribution graph
 
-Suggested Reviewers also integrates with Code Owners, profile status, and merge request rules, helping you make a more informed decision when choosing reviewers that can meet your review criteria.
+GitLab Duo Suggested Reviewers also integrates with Code Owners, profile status, and merge request rules, helping you make a more informed decision when choosing reviewers that can meet your review criteria.
 
-![Suggested Reviewers](img/suggested_reviewers_v16_3.png)
+![GitLab Duo Suggested Reviewers](img/suggested_reviewers_v16_3.png)
 
-For more information, see [Data usage in Suggested Reviewers](data_usage.md).
+For more information, see [Data usage in GitLab Duo Suggested Reviewers](data_usage.md).
 
 ### Enable suggested reviewers
 

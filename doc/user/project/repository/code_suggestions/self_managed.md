@@ -50,7 +50,8 @@ To enable Code Suggestions for your self-managed GitLab instance:
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Code Suggestions** and select **Turn on Code Suggestions for this instance**.
-   You do not need to enter anything into the **Personal access token** field.
+   In GitLab 16.3, you do not need to enter anything into the **Personal access token** field.
+   In GitLab 16.4 and later, there is no **Personal access token** field.
 1. Select **Save changes**.
 
 This setting is visible only in self-managed GitLab instances.

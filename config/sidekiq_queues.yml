@@ -81,7 +81,11 @@
   - 1
 - - bitbucket_import_advance_stage
   - 1
+- - bitbucket_import_import_pull_request
+  - 1
 - - bitbucket_import_stage_finish_import
+  - 1
+- - bitbucket_import_stage_import_pull_requests
   - 1
 - - bitbucket_import_stage_import_repository
   - 1

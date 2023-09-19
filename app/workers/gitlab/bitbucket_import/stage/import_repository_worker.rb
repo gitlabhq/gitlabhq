@@ -13,7 +13,7 @@ module Gitlab
 
           importer.execute
 
-          FinishImportWorker.perform_async(project.id)
+          ImportPullRequestsWorker.perform_async(project.id)
         end
 
         def importer_class
