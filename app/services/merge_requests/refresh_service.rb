@@ -94,7 +94,9 @@ module MergeRequests
       )
 
       merge_requests.each do |merge_request|
-        merge_request.merge_commit_sha = analyzer.get_merge_commit(merge_request.diff_head_sha)
+        sha = analyzer.get_merge_commit(merge_request.diff_head_sha)
+        merge_request.merge_commit_sha = sha
+        merge_request.merged_commit_sha = sha
 
         MergeRequests::PostMergeService
           .new(project: merge_request.target_project, current_user: @current_user)

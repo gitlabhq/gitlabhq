@@ -9,7 +9,7 @@ export const extraContext = {
 };
 
 export const servicePingContext = {
-  schema: 'iglu:com.gitlab/gitlab_service_ping/jsonschema/1-0-0',
+  schema: 'iglu:com.gitlab/gitlab_service_ping/jsonschema/1-0-1',
   data: {
     event_name: 'track_incident_event',
     data_source: 'redis_hll',

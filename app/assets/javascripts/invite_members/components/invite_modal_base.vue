@@ -330,8 +330,6 @@ export default {
             :target="null"
           />
         </gl-form-group>
-
-        <slot name="form-after"></slot>
       </template>
 
       <template v-for="{ key } in extraSlots" #[key]>

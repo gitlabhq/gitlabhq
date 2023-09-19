@@ -1,28 +1,14 @@
 <script>
-import {
-  GlAlert,
-  GlCollapsibleListbox,
-  GlLink,
-  GlSprintf,
-  GlFormCheckboxGroup,
-  GlButton,
-  GlCollapse,
-  GlIcon,
-} from '@gitlab/ui';
+import { GlAlert, GlButton, GlCollapse, GlIcon } from '@gitlab/ui';
 import { partition, isString, uniqueId, isEmpty } from 'lodash';
 import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_base.vue';
 import Api from '~/api';
 import Tracking from '~/tracking';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { n__, sprintf } from '~/locale';
-import {
-  memberName,
-  triggerExternalAlert,
-  qualifiesForTasksToBeDone,
-} from 'ee_else_ce/invite_members/utils/member_utils';
+import { memberName, triggerExternalAlert } from 'ee_else_ce/invite_members/utils/member_utils';
 import {
   USERS_FILTER_ALL,
-  INVITE_MEMBERS_FOR_TASK,
   MEMBER_MODAL_LABELS,
   INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
 } from '../constants';
@@ -41,10 +27,6 @@ export default {
   name: 'InviteMembersModal',
   components: {
     GlAlert,
-    GlLink,
-    GlCollapsibleListbox,
-    GlSprintf,
-    GlFormCheckboxGroup,
     GlButton,
     GlCollapse,
     GlIcon,
@@ -56,7 +38,6 @@ export default {
       import('ee_component/invite_members/components/active_trial_notification.vue'),
   },
   mixins: [Tracking.mixin({ category: INVITE_MEMBER_MODAL_TRACKING_CATEGORY })],
-  inject: ['newProjectPath'],
   props: {
     id: {
       type: String,
@@ -96,14 +77,6 @@ export default {
       required: false,
       default: null,
     },
-    tasksToBeDoneOptions: {
-      type: Array,
-      required: true,
-    },
-    projects: {
-      type: Array,
-      required: true,
-    },
     fullPath: {
       type: String,
       required: true,
@@ -131,9 +104,6 @@ export default {
       modalId: uniqueId('invite-members-modal-'),
       newUsersToInvite: [],
       invalidMembers: {},
-      selectedTasksToBeDone: [],
-      selectedTaskProject: this.projects[0],
-      selectedTaskProjectId: this.projects[0]?.id,
       source: 'unknown',
       mode: 'default',
       // Kept in sync with "base"
@@ -141,7 +111,6 @@ export default {
       errorsLimit: 2,
       isErrorsSectionExpanded: false,
       shouldShowEmptyInvitesAlert: false,
-      projectsForDropdown: this.projects.map((p) => ({ value: p.id, text: p.title, ...p })),
     };
   },
   computed: {
@@ -169,26 +138,6 @@ export default {
         "InviteMembersModal|The following %d members couldn't be invited",
         this.errorList.length,
       );
-    },
-    tasksToBeDoneEnabled() {
-      return qualifiesForTasksToBeDone(this.source) && this.tasksToBeDoneOptions.length;
-    },
-    showTasksToBeDone() {
-      return (
-        this.tasksToBeDoneEnabled &&
-        this.selectedAccessLevel >= INVITE_MEMBERS_FOR_TASK.minimum_access_level
-      );
-    },
-    showTaskProjects() {
-      return !this.isProject && this.selectedTasksToBeDone.length;
-    },
-    tasksToBeDoneForPost() {
-      return this.showTasksToBeDone ? this.selectedTasksToBeDone : [];
-    },
-    tasksProjectForPost() {
-      return this.showTasksToBeDone && this.selectedTasksToBeDone.length
-        ? this.selectedTaskProject.id
-        : '';
     },
     showUserLimitNotification() {
       return !isEmpty(this.usersLimitDataset.alertVariant);
@@ -285,8 +234,6 @@ export default {
         expires_at: expiresAt,
         access_level: accessLevel,
         invite_source: this.source,
-        tasks_to_be_done: this.tasksToBeDoneForPost,
-        tasks_project_id: this.tasksProjectForPost,
         ...email,
         ...userId,
       };
@@ -299,8 +246,6 @@ export default {
         this.showEmptyInvitesAlert();
         return;
       }
-
-      this.trackInviteMembersForTask();
 
       const apiAddByInvite = this.isProject
         ? Api.inviteProjectMembers.bind(Api)
@@ -335,11 +280,6 @@ export default {
       // initial token creation hits this and nothing is found... so safe navigation
       return this.newUsersToInvite.find((member) => memberName(member) === username)?.name;
     },
-    trackInviteMembersForTask() {
-      const label = 'selected_tasks_to_be_done';
-      const property = this.selectedTasksToBeDone.join(',');
-      this.track(INVITE_MEMBERS_FOR_TASK.submit, { label, property });
-    },
     onCancel() {
       this.track('click_cancel', { label: this.source });
     },
@@ -351,11 +291,6 @@ export default {
       this.isLoading = false;
       this.shouldShowEmptyInvitesAlert = false;
       this.newUsersToInvite = [];
-      this.selectedTasksToBeDone = [];
-      [this.selectedTaskProject] = this.projects;
-    },
-    changeSelectedTaskProject(projectId) {
-      this.selectedTaskProject = this.projects.find((project) => project.id === projectId);
     },
     onInviteSuccess() {
       this.track('invite_successful', { label: this.source });
@@ -512,47 +447,6 @@ export default {
         @clear="clearValidation"
         @token-remove="removeToken"
       />
-    </template>
-    <template #form-after>
-      <div v-if="showTasksToBeDone" data-testid="invite-members-modal-tasks-to-be-done">
-        <label class="gl-mt-5">
-          {{ $options.labels.tasksToBeDone.title }}
-        </label>
-        <template v-if="projects.length">
-          <gl-form-checkbox-group
-            v-model="selectedTasksToBeDone"
-            :options="tasksToBeDoneOptions"
-            data-testid="invite-members-modal-tasks"
-          />
-          <template v-if="showTaskProjects">
-            <label class="gl-mt-5 gl-display-block">
-              {{ $options.labels.tasksProject.title }}
-            </label>
-            <gl-collapsible-listbox
-              v-model="selectedTaskProjectId"
-              :items="projectsForDropdown"
-              :block="true"
-              class="gl-w-half gl-xs-w-full"
-              data-testid="invite-members-modal-project-select"
-              @select="changeSelectedTaskProject"
-            />
-          </template>
-        </template>
-        <gl-alert
-          v-else-if="tasksToBeDoneEnabled"
-          variant="tip"
-          :dismissible="false"
-          data-testid="invite-members-modal-no-projects-alert"
-        >
-          <gl-sprintf :message="$options.labels.tasksToBeDone.noProjects">
-            <template #link="{ content }">
-              <gl-link :href="newProjectPath" target="_blank" class="gl-label-link">
-                {{ content }}
-              </gl-link>
-            </template>
-          </gl-sprintf>
-        </gl-alert>
-      </div>
     </template>
   </invite-modal-base>
 </template>

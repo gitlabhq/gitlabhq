@@ -7,12 +7,11 @@ module QA
       let(:destination_storage) { { type: :gitaly, name: QA::Runtime::Env.additional_repository_storage } }
 
       let(:snippet) do
-        Resource::Snippet.fabricate_via_api! do |snippet|
-          snippet.title = 'Snippet to move storage of'
-          snippet.file_name = 'original_file'
-          snippet.file_content = 'Original file content'
-          snippet.api_client = Runtime::API::Client.as_admin
-        end
+        create(:snippet,
+          title: 'Snippet to move storage of',
+          file_name: 'original_file',
+          file_content: 'Original file content',
+          api_client: Runtime::API::Client.as_admin)
       end
 
       praefect_manager = Service::PraefectManager.new

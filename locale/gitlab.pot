@@ -25548,16 +25548,10 @@ msgstr ""
 msgid "InviteMembersModal|Cancel"
 msgstr ""
 
-msgid "InviteMembersModal|Choose a project for the issues"
-msgstr ""
-
 msgid "InviteMembersModal|Close invite team members"
 msgstr ""
 
 msgid "InviteMembersModal|Congratulations on creating your project, you're almost there!"
-msgstr ""
-
-msgid "InviteMembersModal|Create issues for your new team member to work on (optional)"
 msgstr ""
 
 msgid "InviteMembersModal|During your trial, you can invite as many members to %{groupName} as you like. When the trial ends, you'll have a maximum of %{dashboardLimit} members on the Free tier. To get more members, %{linkStart}upgrade to a paid plan%{linkEnd}."
@@ -25624,9 +25618,6 @@ msgid "InviteMembersModal|The following member couldn't be invited"
 msgid_plural "InviteMembersModal|The following %d members couldn't be invited"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "InviteMembersModal|To assign issues to a new team member, you need a project for the issues. %{linkStart}Create a project to get started.%{linkEnd}"
-msgstr ""
 
 msgid "InviteMembersModal|To get more members an owner of the group can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
 msgstr ""
@@ -46700,15 +46691,6 @@ msgid "Task ID: %{elastic_task}"
 msgstr ""
 
 msgid "Task list"
-msgstr ""
-
-msgid "TasksToBeDone|Create/import code into a project (repository)"
-msgstr ""
-
-msgid "TasksToBeDone|Create/import issues (tickets) to collaborate on ideas and plan work"
-msgstr ""
-
-msgid "TasksToBeDone|Set up CI/CD pipelines to build, test, deploy, and monitor code"
 msgstr ""
 
 msgid "Tasks|%{complete_count} of %{total_count} %{checklist_item_noun} completed"

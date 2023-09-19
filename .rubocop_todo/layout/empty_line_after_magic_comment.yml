@@ -316,7 +316,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/spec/graphql/mutations/vulnerabilities/revert_to_detected_spec.rb'
     - 'ee/spec/helpers/ee/auth_helper_spec.rb'
     - 'ee/spec/helpers/ee/geo_helper_spec.rb'
-    - 'ee/spec/helpers/ee/invite_members_helper_spec.rb'
     - 'ee/spec/helpers/ee/namespaces_helper_spec.rb'
     - 'ee/spec/helpers/ee/saml_providers_helper_spec.rb'
     - 'ee/spec/helpers/roadmaps_helper_spec.rb'

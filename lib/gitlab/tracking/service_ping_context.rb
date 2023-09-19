@@ -3,7 +3,7 @@
 module Gitlab
   module Tracking
     class ServicePingContext
-      SCHEMA_URL = 'iglu:com.gitlab/gitlab_service_ping/jsonschema/1-0-0'
+      SCHEMA_URL = 'iglu:com.gitlab/gitlab_service_ping/jsonschema/1-0-1'
       REDISHLL_SOURCE = :redis_hll
       REDIS_SOURCE = :redis
 

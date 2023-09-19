@@ -31,7 +31,8 @@ RSpec.shared_examples "protected branches > access control > CE" do
       expect(ProtectedBranch.last.merge_access_levels.map(&:access_level)).to eq([access_type_id])
     end
 
-    it "allows updating protected branches so that #{access_type_name} can push to them" do
+    it "allows updating protected branches so that #{access_type_name} can push to them",
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/425080' do
       visit project_protected_branches_path(project)
 
       show_add_form

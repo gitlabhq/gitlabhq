@@ -42,12 +42,6 @@ module QA
         @id = Page::Dashboard::Snippet::Show.perform(&:snippet_id)
       end
 
-      def fabricate_via_api!
-        resource_web_url(api_post)
-      rescue ResourceNotFoundError
-        super
-      end
-
       def api_get_path
         "/snippets/#{id}"
       end

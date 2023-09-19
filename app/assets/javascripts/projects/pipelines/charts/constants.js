@@ -21,5 +21,5 @@ export const LOAD_PIPELINES_FAILURE = 'load_analytics_failure';
 export const UNSUPPORTED_DATA = 'unsupported_data';
 
 export const SNOWPLOW_LABEL = 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly';
-export const SNOWPLOW_SCHEMA = 'iglu:com.gitlab/gitlab_service_ping/jsonschema/1-0-0';
+export const SNOWPLOW_SCHEMA = 'iglu:com.gitlab/gitlab_service_ping/jsonschema/1-0-1';
 export const SNOWPLOW_DATA_SOURCE = 'redis_hll';

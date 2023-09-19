@@ -5,10 +5,6 @@ export const PROJECT_SELECT_LABEL_ID = 'project-select';
 export const SEARCH_DELAY = 200;
 export const VALID_TOKEN_BACKGROUND = 'gl-bg-green-100';
 export const INVALID_TOKEN_BACKGROUND = 'gl-bg-red-100';
-export const INVITE_MEMBERS_FOR_TASK = {
-  minimum_access_level: 30,
-  submit: 'submit',
-};
 export const TOAST_MESSAGE_LOCALSTORAGE_KEY = 'members_invited_successfully';
 
 export const GROUP_FILTERS = {
@@ -46,15 +42,6 @@ export const MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT = s__(
 );
 export const MEMBERS_SEARCH_FIELD = s__('InviteMembersModal|Username or email address');
 export const MEMBERS_PLACEHOLDER = s__('InviteMembersModal|Select members or type email addresses');
-export const MEMBERS_TASKS_TO_BE_DONE_TITLE = s__(
-  'InviteMembersModal|Create issues for your new team member to work on (optional)',
-);
-export const MEMBERS_TASKS_TO_BE_DONE_NO_PROJECTS = s__(
-  'InviteMembersModal|To assign issues to a new team member, you need a project for the issues. %{linkStart}Create a project to get started.%{linkEnd}',
-);
-export const MEMBERS_TASKS_PROJECTS_TITLE = s__(
-  'InviteMembersModal|Choose a project for the issues',
-);
 
 export const GROUP_MODAL_DEFAULT_TITLE = s__('InviteMembersModal|Invite a group');
 export const GROUP_MODAL_TO_GROUP_DEFAULT_INTRO_TEXT = s__(
@@ -123,13 +110,6 @@ export const MEMBER_MODAL_LABELS = {
   },
   searchField: MEMBERS_SEARCH_FIELD,
   placeHolder: MEMBERS_PLACEHOLDER,
-  tasksToBeDone: {
-    title: MEMBERS_TASKS_TO_BE_DONE_TITLE,
-    noProjects: MEMBERS_TASKS_TO_BE_DONE_NO_PROJECTS,
-  },
-  tasksProject: {
-    title: MEMBERS_TASKS_PROJECTS_TITLE,
-  },
   toastMessageSuccessful: TOAST_MESSAGE_SUCCESSFUL,
   memberErrorListText: MEMBER_ERROR_LIST_TEXT,
   collapsedErrors: COLLAPSED_ERRORS,

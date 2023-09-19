@@ -913,7 +913,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
     subject { service.execute(oldrev, newrev, 'refs/heads/merge-commit-analyze-before') }
 
     context 'feature enabled' do
-      it "updates merge requests' merge_commits" do
+      it "updates merge requests' merge_commit and merged_commit values", :aggregate_failures do
         expect(Gitlab::BranchPushMergeCommitAnalyzer).to receive(:new).and_wrap_original do |original_method, commits|
           expect(commits.map(&:id)).to eq(%w{646ece5cfed840eca0a4feb21bcd6a81bb19bda3 29284d9bcc350bcae005872d0be6edd016e2efb5 5f82584f0a907f3b30cfce5bb8df371454a90051 8a994512e8c8f0dfcf22bb16df6e876be7a61036 689600b91aabec706e657e38ea706ece1ee8268f db46a1c5a5e474aa169b6cdb7a522d891bc4c5f9})
 
@@ -927,6 +927,11 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
         expect(merge_request.merge_commit.id).to eq('646ece5cfed840eca0a4feb21bcd6a81bb19bda3')
         expect(merge_request_side_branch.merge_commit.id).to eq('29284d9bcc350bcae005872d0be6edd016e2efb5')
+        # we need to use read_attribute to bypass the overridden
+        # #merged_commit_sha method, which contains a fallback to
+        # #merge_commit_sha
+        expect(merge_request.read_attribute(:merged_commit_sha)).to eq('646ece5cfed840eca0a4feb21bcd6a81bb19bda3')
+        expect(merge_request_side_branch.read_attribute(:merged_commit_sha)).to eq('29284d9bcc350bcae005872d0be6edd016e2efb5')
       end
     end
   end
