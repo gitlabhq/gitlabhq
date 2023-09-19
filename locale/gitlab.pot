@@ -12367,6 +12367,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|The following features help satisfy this requirement."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Unable to load the standards adherence report. Refresh the page and try again."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Update approval settings in the project's merge request settings to satisfy this requirement."
 msgstr ""
 

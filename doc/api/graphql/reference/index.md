@@ -14389,7 +14389,7 @@ CI/CD variables for a GitLab instance.
 
 ##### `CiJobTrace.htmlSummary`
 
-HTML summary that contains the tail lines of the trace.
+HTML summary that contains the tail lines of the trace. Returns at most 16KB of raw bytes from the trace. The returned string might start with an unexpected invalid UTF-8 code point due to truncation.
 
 WARNING:
 **Introduced** in 15.11.

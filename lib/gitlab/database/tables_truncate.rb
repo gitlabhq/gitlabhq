@@ -5,7 +5,7 @@ module Gitlab
     class TablesTruncate
       GITLAB_SCHEMAS_TO_IGNORE = %i[gitlab_geo gitlab_embedding].freeze
 
-      def initialize(database_name:, min_batch_size:, logger: nil, until_table: nil, dry_run: false)
+      def initialize(database_name:, min_batch_size: 5, logger: nil, until_table: nil, dry_run: false)
         @database_name = database_name
         @min_batch_size = min_batch_size
         @logger = logger
@@ -18,19 +18,6 @@ module Gitlab
         raise "database is not supported" unless %w[main ci].include?(database_name)
 
         logger&.info "DRY RUN:" if dry_run
-
-        schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
-        tables_to_truncate = Gitlab::Database::GitlabSchema.tables_to_schema.reject do |_, schema_name|
-          GITLAB_SCHEMAS_TO_IGNORE.union(schemas_for_connection).include?(schema_name)
-        end.keys
-
-        Gitlab::Database::SharedModel.using_connection(connection) do
-          Postgresql::DetachedPartition.find_each do |detached_partition|
-            next if GITLAB_SCHEMAS_TO_IGNORE.union(schemas_for_connection).include?(detached_partition.table_schema)
-
-            tables_to_truncate << detached_partition.fully_qualified_table_name
-          end
-        end
 
         tables_sorted = Gitlab::Database::TablesSortedByForeignKeys.new(connection, tables_to_truncate).execute
         # Checking if all the tables have the write-lock triggers
@@ -63,9 +50,40 @@ module Gitlab
         truncate_tables_in_batches(tables_sorted)
       end
 
+      def needs_truncation?
+        return false if single_database_setup?
+
+        sql = tables_to_truncate.map { |table_name| "(SELECT EXISTS( SELECT * FROM #{table_name} ))" }.join("\nUNION\n")
+
+        result = with_suppressed_query_analyzers do
+          connection.execute(sql).to_a
+        end
+
+        result.to_a.any? { |row| row['exists'] == true }
+      end
+
       private
 
       attr_accessor :database_name, :min_batch_size, :logger, :dry_run, :until_table
+
+      def tables_to_truncate
+        @tables_to_truncate ||= begin
+          schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
+          tables = Gitlab::Database::GitlabSchema.tables_to_schema.reject do |_, schema_name|
+            GITLAB_SCHEMAS_TO_IGNORE.union(schemas_for_connection).include?(schema_name)
+          end.keys
+
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            Postgresql::DetachedPartition.find_each do |detached_partition|
+              next if GITLAB_SCHEMAS_TO_IGNORE.union(schemas_for_connection).include?(detached_partition.table_schema)
+
+              tables << detached_partition.fully_qualified_table_name
+            end
+          end
+
+          tables
+        end
+      end
 
       def connection
         @connection ||= Gitlab::Database.database_base_models[database_name].connection
@@ -132,6 +150,12 @@ module Gitlab
 
         ci_base_model = Gitlab::Database.database_base_models[:ci]
         !!Gitlab::Database.db_config_share_with(ci_base_model.connection_db_config)
+      end
+
+      def with_suppressed_query_analyzers(&block)
+        Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
+          Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer.with_suppressed(&block)
+        end
       end
     end
   end

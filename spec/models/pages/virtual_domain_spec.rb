@@ -73,19 +73,4 @@ RSpec.describe Pages::VirtualDomain, feature_category: :pages do
       end
     end
   end
-
-  describe '#cache_key' do
-    it 'returns the cache key based in the given cache_control' do
-      cache_control = instance_double(::Gitlab::Pages::CacheControl, cache_key: 'cache_key')
-      virtual_domain = described_class.new(projects: [instance_double(Project)], cache: cache_control)
-
-      expect(virtual_domain.cache_key).to eq('cache_key')
-    end
-
-    it 'returns nil when no cache_control is given' do
-      virtual_domain = described_class.new(projects: [instance_double(Project)])
-
-      expect(virtual_domain.cache_key).to be_nil
-    end
-  end
 end

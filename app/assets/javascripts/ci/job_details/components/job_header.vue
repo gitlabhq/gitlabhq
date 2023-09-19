@@ -7,13 +7,6 @@ import { __, sprintf } from '~/locale';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-/**
- * Renders header component for job and pipeline page based on UI mockups
- *
- * Used in:
- * - job show page
- * - pipeline show page
- */
 export default {
   components: {
     CiBadgeLink,
@@ -33,14 +26,9 @@ export default {
       type: Object,
       required: true,
     },
-    itemName: {
+    name: {
       type: String,
       required: true,
-    },
-    itemId: {
-      type: String,
-      required: false,
-      default: '',
     },
     time: {
       type: String,
@@ -48,18 +36,11 @@ export default {
     },
     user: {
       type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    hasSidebarButton: {
-      type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
     shouldRenderTriggeredLabel: {
       type: Boolean,
-      required: false,
-      default: true,
+      required: true,
     },
   },
 
@@ -92,13 +73,6 @@ export default {
     message() {
       return this.user?.status?.message;
     },
-    item() {
-      if (this.itemId) {
-        return `${this.itemName} #${this.itemId}`;
-      }
-
-      return this.itemName;
-    },
     userId() {
       return isGid(this.user?.id) ? getIdFromGraphQLId(this.user?.id) : this.user?.id;
     },
@@ -121,7 +95,7 @@ export default {
     <section class="header-main-content gl-mr-3">
       <ci-badge-link class="gl-mr-3" :status="status" />
 
-      <strong data-testid="job-header-item-text">{{ item }}</strong>
+      <strong data-testid="job-name">{{ name }}</strong>
 
       <template v-if="shouldRenderTriggeredLabel">{{ __('started') }}</template>
       <template v-else>{{ __('created') }}</template>
@@ -165,7 +139,6 @@ export default {
       <slot></slot>
     </section>
     <gl-button
-      v-if="hasSidebarButton"
       class="gl-md-display-none gl-ml-auto gl-align-self-start js-sidebar-build-toggle"
       icon="chevron-double-lg-left"
       :aria-label="__('Toggle sidebar')"

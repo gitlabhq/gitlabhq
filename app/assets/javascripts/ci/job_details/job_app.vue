@@ -129,7 +129,7 @@ export default {
       return Boolean(this.job.retry_path);
     },
 
-    itemName() {
+    jobName() {
       return sprintf(__('Job %{jobName}'), { jobName: this.job.name });
     },
   },
@@ -229,9 +229,8 @@ export default {
               :status="job.status"
               :time="headerTime"
               :user="job.user"
-              :has-sidebar-button="true"
               :should-render-triggered-label="shouldRenderTriggeredLabel"
-              :item-name="itemName"
+              :name="jobName"
               @clickedSidebarButton="toggleSidebar"
             />
           </div>

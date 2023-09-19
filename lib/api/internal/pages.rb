@@ -36,16 +36,7 @@ module API
             virtual_domain = ::Gitlab::Pages::VirtualHostFinder.new(params[:host]).execute
             no_content! unless virtual_domain
 
-            if virtual_domain.cache_key.present?
-              # Cache context is not added to make it easier to expire the cache with
-              # Gitlab::Pages::CacheControl
-              present_cached virtual_domain,
-                cache_context: nil,
-                with: Entities::Internal::Pages::VirtualDomain,
-                expires_in: ::Gitlab::Pages::CacheControl::EXPIRE
-            else
-              present virtual_domain, with: Entities::Internal::Pages::VirtualDomain
-            end
+            present virtual_domain, with: Entities::Internal::Pages::VirtualDomain
           end
         end
       end

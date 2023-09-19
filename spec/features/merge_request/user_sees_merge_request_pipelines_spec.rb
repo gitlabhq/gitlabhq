@@ -264,8 +264,6 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
       before do
         forked_project.add_maintainer(user2)
 
-        stub_feature_flags(auto_merge_labels_mr_widget: false)
-
         visit project_merge_request_path(project, merge_request)
 
         page.within('.merge-request-tabs') do

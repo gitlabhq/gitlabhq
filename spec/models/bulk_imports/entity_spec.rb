@@ -438,4 +438,12 @@ RSpec.describe BulkImports::Entity, type: :model, feature_category: :importers d
       end
     end
   end
+
+  describe '#source_version' do
+    subject { build(:bulk_import_entity, :group_entity) }
+
+    it 'pulls the source version from the associated BulkImport' do
+      expect(subject.source_version).to eq(subject.bulk_import.source_version_info)
+    end
+  end
 end

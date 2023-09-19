@@ -196,6 +196,10 @@ class BulkImports::Entity < ApplicationRecord
     update!(has_failures: true)
   end
 
+  def source_version
+    @source_version ||= bulk_import.source_version_info
+  end
+
   private
 
   def validate_parent_is_a_group

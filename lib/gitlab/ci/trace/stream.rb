@@ -53,18 +53,20 @@ module Gitlab
           append(data, 0)
         end
 
-        def raw(last_lines: nil)
+        def raw(last_lines: nil, max_size: nil)
           return unless valid?
 
-          if last_lines.to_i > 0
+          if max_size.to_i > 0
+            read_last_lines_with_max_size(last_lines, max_size)
+          elsif last_lines.to_i > 0
             read_last_lines(last_lines)
           else
             stream.read
           end.force_encoding(Encoding.default_external)
         end
 
-        def html(last_lines: nil)
-          text = raw(last_lines: last_lines)
+        def html(last_lines: nil, max_size: nil)
+          text = raw(last_lines: last_lines, max_size: max_size)
           buffer = StringIO.new(text)
           ::Gitlab::Ci::Ansi2html.convert(buffer).html
         end
@@ -115,6 +117,37 @@ module Gitlab
 
         def read_last_lines(limit)
           to_enum(:reverse_line).first(limit).reverse.join
+        end
+
+        def read_last_lines_with_max_size(limit, max_size)
+          linesleft = limit
+          result = ''
+
+          reverse_line_with_max_size(max_size) do |line|
+            result = line + result
+            unless linesleft.nil?
+              linesleft -= 1
+              break if linesleft <= 0
+            end
+          end
+
+          result
+        end
+
+        def reverse_line_with_max_size(max_size)
+          stream.seek(0, IO::SEEK_END)
+          debris = ''
+          sizeleft = max_size
+
+          until sizeleft <= 0 || (buf = read_backward([BUFFER_SIZE, sizeleft].min)).empty?
+            sizeleft -= buf.bytesize
+            debris, *lines = (buf + debris).each_line.to_a
+            lines.reverse_each do |line|
+              yield(line.force_encoding(Encoding.default_external))
+            end
+          end
+
+          yield(debris.force_encoding(Encoding.default_external)) unless debris.empty?
         end
 
         def reverse_line

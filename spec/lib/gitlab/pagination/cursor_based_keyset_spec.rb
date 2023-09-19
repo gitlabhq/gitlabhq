@@ -6,20 +6,52 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
   subject { described_class }
 
   describe '.available_for_type?' do
-    it 'returns true for Group' do
-      expect(subject.available_for_type?(Group.all)).to be_truthy
+    context 'with api_keyset_pagination_multi_order FF disabled' do
+      before do
+        stub_feature_flags(api_keyset_pagination_multi_order: false)
+      end
+
+      it 'returns true for Group' do
+        expect(subject.available_for_type?(Group.all)).to be_truthy
+      end
+
+      it 'returns true for Ci::Build' do
+        expect(subject.available_for_type?(Ci::Build.all)).to be_truthy
+      end
+
+      it 'returns true for Packages::BuildInfo' do
+        expect(subject.available_for_type?(Packages::BuildInfo.all)).to be_truthy
+      end
+
+      it 'return false for User' do
+        expect(subject.available_for_type?(User.all)).to be_falsey
+      end
     end
 
-    it 'returns true for Ci::Build' do
-      expect(subject.available_for_type?(Ci::Build.all)).to be_truthy
-    end
+    context 'with api_keyset_pagination_multi_order FF enabled' do
+      before do
+        stub_feature_flags(api_keyset_pagination_multi_order: true)
+      end
 
-    it 'returns true for Packages::BuildInfo' do
-      expect(subject.available_for_type?(Packages::BuildInfo.all)).to be_truthy
-    end
+      it 'returns true for Group' do
+        expect(subject.available_for_type?(Group.all)).to be_truthy
+      end
 
-    it 'return false for other types of relations' do
-      expect(subject.available_for_type?(User.all)).to be_falsey
+      it 'returns true for Ci::Build' do
+        expect(subject.available_for_type?(Ci::Build.all)).to be_truthy
+      end
+
+      it 'returns true for Packages::BuildInfo' do
+        expect(subject.available_for_type?(Packages::BuildInfo.all)).to be_truthy
+      end
+
+      it 'returns true for User' do
+        expect(subject.available_for_type?(User.all)).to be_truthy
+      end
+
+      it 'return false for other types of relations' do
+        expect(subject.available_for_type?(Issue.all)).to be_falsey
+      end
     end
   end
 
@@ -58,7 +90,7 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
       end
 
       it 'return false for other types of relations' do
-        expect(subject.available?(cursor_based_request_context, User.all)).to be_falsey
+        expect(subject.available?(cursor_based_request_context, Issue.all)).to be_falsey
         expect(subject.available?(cursor_based_request_context, Ci::Build.all)).to be_falsey
         expect(subject.available?(cursor_based_request_context, Packages::BuildInfo.all)).to be_falsey
       end
@@ -68,16 +100,48 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
       let(:order_by) { :id }
       let(:sort) { :desc }
 
-      it 'returns true for Ci::Build' do
-        expect(subject.available?(cursor_based_request_context, Ci::Build.all)).to be_truthy
+      context 'with api_keyset_pagination_multi_order FF disabled' do
+        before do
+          stub_feature_flags(api_keyset_pagination_multi_order: false)
+        end
+
+        it 'returns true for Ci::Build' do
+          expect(subject.available?(cursor_based_request_context, Ci::Build.all)).to be_truthy
+        end
+
+        it 'returns true for AuditEvent' do
+          expect(subject.available?(cursor_based_request_context, AuditEvent.all)).to be_truthy
+        end
+
+        it 'returns true for Packages::BuildInfo' do
+          expect(subject.available?(cursor_based_request_context, Packages::BuildInfo.all)).to be_truthy
+        end
+
+        it 'returns false for User' do
+          expect(subject.available?(cursor_based_request_context, User.all)).to be_falsey
+        end
       end
 
-      it 'returns true for AuditEvent' do
-        expect(subject.available?(cursor_based_request_context, AuditEvent.all)).to be_truthy
-      end
+      context 'with api_keyset_pagination_multi_order FF enabled' do
+        before do
+          stub_feature_flags(api_keyset_pagination_multi_order: true)
+        end
 
-      it 'returns true for Packages::BuildInfo' do
-        expect(subject.available?(cursor_based_request_context, Packages::BuildInfo.all)).to be_truthy
+        it 'returns true for Ci::Build' do
+          expect(subject.available?(cursor_based_request_context, Ci::Build.all)).to be_truthy
+        end
+
+        it 'returns true for AuditEvent' do
+          expect(subject.available?(cursor_based_request_context, AuditEvent.all)).to be_truthy
+        end
+
+        it 'returns true for Packages::BuildInfo' do
+          expect(subject.available?(cursor_based_request_context, Packages::BuildInfo.all)).to be_truthy
+        end
+
+        it 'returns true for User' do
+          expect(subject.available?(cursor_based_request_context, User.all)).to be_truthy
+        end
       end
     end
 
@@ -90,7 +154,7 @@ RSpec.describe Gitlab::Pagination::CursorBasedKeyset do
       end
 
       it 'return false for other types of relations' do
-        expect(subject.available?(cursor_based_request_context, User.all)).to be_falsey
+        expect(subject.available?(cursor_based_request_context, Issue.all)).to be_falsey
       end
     end
   end

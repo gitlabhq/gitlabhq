@@ -481,8 +481,6 @@
   - 1
 - - pages_domain_verification
   - 1
-- - pages_invalidate_domain_cache
-  - 1
 - - personal_access_tokens
   - 1
 - - pipeline_background

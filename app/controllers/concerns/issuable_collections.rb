@@ -23,7 +23,7 @@ module IssuableCollections
   end
 
   def set_pagination
-    row_count = finder.row_count
+    row_count = request.format.atom? ? -1 : finder.row_count
 
     @issuables          = @issuables.page(params[:page])
     @issuables          = per_page_for_relative_position if params[:sort] == 'relative_position'

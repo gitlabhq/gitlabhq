@@ -120,11 +120,11 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         allow(Kaminari.config).to receive(:default_per_page).and_return(1)
       end
 
-      it 'redirects to last page when out of bounds on non-html requests' do
+      it 'does not redirect when out of bounds on non-html requests' do
         get :index, params: params.merge(page: last_page + 1), format: 'atom'
 
-        expect(response).to have_gitlab_http_status(:redirect)
-        expect(response).to redirect_to(action: 'index', format: 'atom', page: last_page, state: 'opened')
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:issues).size).to eq(0)
       end
     end
 

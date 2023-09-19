@@ -958,4 +958,21 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       end
     end
   end
+
+  context 'views MR when pipeline has code coverage enabled' do
+    let!(:pipeline) { create(:ci_pipeline, status: 'success', project: project, ref: merge_request.source_branch) }
+    let!(:build) { create(:ci_build, :success, :coverage, pipeline: pipeline) }
+
+    before do
+      merge_request.update!(head_pipeline: pipeline)
+
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows the coverage' do
+      within '.ci-widget' do
+        expect(find_by_testid('pipeline-coverage')).to have_content('Test coverage 99.90% ')
+      end
+    end
+  end
 end

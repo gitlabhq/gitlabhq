@@ -176,13 +176,15 @@ Running? ... yes
 
 Checking Sidekiq ... Finished
 
-Checking GitLab ...
+Checking GitLab App...
 
 Database config exists? ... yes
 Database is SQLite ... no
 All migrations up? ... yes
 GitLab config exists? ... yes
-GitLab config outdated? ... no
+GitLab config up to date? ... no
+Cable config exists? ... yes
+Resque config exists? ... yes
 Log directory writable? ... yes
 Tmp directory writable? ... yes
 Init script exists? ... yes

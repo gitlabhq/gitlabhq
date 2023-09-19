@@ -40,22 +40,8 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
 
       it 'returns the virual domain when there are pages deployed for the project' do
         expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-        expect(virtual_domain.cache_key).to match(/pages_domain_for_domain_#{pages_domain.id}_/)
         expect(virtual_domain.lookup_paths.length).to eq(1)
         expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
-      end
-
-      context 'when :cache_pages_domain_api is disabled' do
-        before do
-          stub_feature_flags(cache_pages_domain_api: false)
-        end
-
-        it 'returns the virual domain when there are pages deployed for the project' do
-          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-          expect(virtual_domain.cache_key).to be_nil
-          expect(virtual_domain.lookup_paths.length).to eq(1)
-          expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
-        end
       end
     end
   end
@@ -76,22 +62,7 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         virtual_domain = described_class.new("#{project.namespace.path}.example.com").execute
 
         expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-        expect(virtual_domain.cache_key).to match(/pages_domain_for_namespace_#{project.namespace.id}_/)
         expect(virtual_domain.lookup_paths.length).to eq(0)
-      end
-
-      context 'when :cache_pages_domain_api is disabled' do
-        before do
-          stub_feature_flags(cache_pages_domain_api: false)
-        end
-
-        it 'returns the virual domain with no lookup_paths' do
-          virtual_domain = described_class.new("#{project.namespace.path}.example.com".downcase).execute
-
-          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-          expect(virtual_domain.cache_key).to be_nil
-          expect(virtual_domain.lookup_paths.length).to eq(0)
-        end
       end
     end
 
@@ -111,7 +82,6 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         virtual_domain = described_class.new("#{project.namespace.path}.example.com").execute
 
         expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-        expect(virtual_domain.cache_key).to match(/pages_domain_for_namespace_#{project.namespace.id}_/)
         expect(virtual_domain.lookup_paths.length).to eq(1)
         expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
       end
@@ -120,24 +90,8 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         virtual_domain = described_class.new("#{project.namespace.path}.Example.com").execute
 
         expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-        expect(virtual_domain.cache_key).to match(/pages_domain_for_namespace_#{project.namespace.id}_/)
         expect(virtual_domain.lookup_paths.length).to eq(1)
         expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
-      end
-
-      context 'when :cache_pages_domain_api is disabled' do
-        before_all do
-          stub_feature_flags(cache_pages_domain_api: false)
-        end
-
-        it 'returns the virual domain when there are pages deployed for the project' do
-          virtual_domain = described_class.new("#{project.namespace.path}.example.com").execute
-
-          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-          expect(virtual_domain.cache_key).to be_nil
-          expect(virtual_domain.lookup_paths.length).to eq(1)
-          expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
-        end
       end
     end
   end
@@ -184,18 +138,6 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
             other_project.mark_pages_as_deployed
 
             expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-            expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
-          end
-        end
-
-        context 'when :cache_pages_domain_api is disabled' do
-          before do
-            stub_feature_flags(cache_pages_domain_api: false)
-          end
-
-          it 'returns the virual domain when there are pages deployed for the project' do
-            expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
-            expect(virtual_domain.lookup_paths.length).to eq(1)
             expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
           end
         end

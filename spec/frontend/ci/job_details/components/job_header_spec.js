@@ -16,6 +16,7 @@ describe('Header CI Component', () => {
       text: 'failed',
       details_path: 'path',
     },
+    name: 'Job build_job',
     time: '2017-05-08T14:57:39.781Z',
     user: {
       id: 1234,
@@ -25,7 +26,7 @@ describe('Header CI Component', () => {
       email: 'foo@bar.com',
       avatar_url: 'link',
     },
-    hasSidebarButton: true,
+    shouldRenderTriggeredLabel: true,
   };
 
   const findCiBadgeLink = () => wrapper.findComponent(CiBadgeLink);
@@ -34,7 +35,7 @@ describe('Header CI Component', () => {
   const findSidebarToggleBtn = () => wrapper.findComponent(GlButton);
   const findStatusTooltip = () => wrapper.findComponent(GlTooltip);
   const findActionButtons = () => wrapper.findByTestId('job-header-action-buttons');
-  const findHeaderItemText = () => wrapper.findByTestId('job-header-item-text');
+  const findJobName = () => wrapper.findByTestId('job-name');
 
   const createComponent = (props, slots) => {
     wrapper = extendedWrapper(
@@ -50,7 +51,7 @@ describe('Header CI Component', () => {
 
   describe('render', () => {
     beforeEach(() => {
-      createComponent({ itemName: 'Pipeline' });
+      createComponent();
     });
 
     it('should render status badge', () => {
@@ -72,7 +73,7 @@ describe('Header CI Component', () => {
 
   describe('user avatar', () => {
     beforeEach(() => {
-      createComponent({ itemName: 'Pipeline' });
+      createComponent();
     });
 
     it('contains the username', () => {
@@ -93,7 +94,6 @@ describe('Header CI Component', () => {
 
       beforeEach(() => {
         createComponent({
-          itemName: 'Pipeline',
           user: { ...defaultProps.user, status: { message: STATUS_MESSAGE } },
         });
       });
@@ -108,7 +108,6 @@ describe('Header CI Component', () => {
 
       beforeEach(() => {
         createComponent({
-          itemName: 'Pipeline',
           user: { ...defaultProps.user, id: `gid://gitlab/User/${1}` },
         });
       });
@@ -125,29 +124,19 @@ describe('Header CI Component', () => {
     });
   });
 
-  describe('with item id', () => {
+  describe('job name', () => {
     beforeEach(() => {
-      createComponent({ itemName: 'Pipeline', itemId: '123' });
+      createComponent();
     });
 
-    it('should render item name and id', () => {
-      expect(findHeaderItemText().text()).toBe('Pipeline #123');
-    });
-  });
-
-  describe('without item id', () => {
-    beforeEach(() => {
-      createComponent({ itemName: 'Job build_job' });
-    });
-
-    it('should render item name', () => {
-      expect(findHeaderItemText().text()).toBe('Job build_job');
+    it('should render the job name', () => {
+      expect(findJobName().text()).toBe('Job build_job');
     });
   });
 
   describe('slot', () => {
     it('should render header action buttons', () => {
-      createComponent({ itemName: 'Job build_job' }, { slots: { default: 'Test Actions' } });
+      createComponent({}, { slots: { default: 'Test Actions' } });
 
       expect(findActionButtons().exists()).toBe(true);
       expect(findActionButtons().text()).toBe('Test Actions');
@@ -156,7 +145,7 @@ describe('Header CI Component', () => {
 
   describe('shouldRenderTriggeredLabel', () => {
     it('should render created keyword when the shouldRenderTriggeredLabel is false', () => {
-      createComponent({ shouldRenderTriggeredLabel: false, itemName: 'Job build_job' });
+      createComponent({ shouldRenderTriggeredLabel: false });
 
       expect(wrapper.text()).toContain('created');
       expect(wrapper.text()).not.toContain('started');

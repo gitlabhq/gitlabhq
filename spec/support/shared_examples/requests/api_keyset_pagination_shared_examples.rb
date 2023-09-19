@@ -40,9 +40,11 @@ RSpec.shared_examples 'an endpoint with keyset pagination' do |invalid_order: 'n
   context 'on making requests with unsupported ordering structure' do
     let(:additional_params) { { order_by: invalid_order, sort: invalid_sort } }
 
-    it 'returns error', :aggregate_failures do
-      is_expected.to have_gitlab_http_status(:method_not_allowed)
-      expect(json_response['error']).to eq('Keyset pagination is not yet available for this type of request')
+    if invalid_order
+      it 'returns error', :aggregate_failures do
+        is_expected.to have_gitlab_http_status(:method_not_allowed)
+        expect(json_response['error']).to eq('Keyset pagination is not yet available for this type of request')
+      end
     end
   end
 end
