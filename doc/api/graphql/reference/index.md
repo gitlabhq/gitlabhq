@@ -4096,6 +4096,29 @@ Input type: `InstanceExternalAuditEventDestinationUpdateInput`
 | <a id="mutationinstanceexternalauditeventdestinationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationinstanceexternalauditeventdestinationupdateinstanceexternalauditeventdestination"></a>`instanceExternalAuditEventDestination` | [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination) | Updated destination. |
 
+### `Mutation.instanceGoogleCloudLoggingConfigurationCreate`
+
+Input type: `InstanceGoogleCloudLoggingConfigurationCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstancegooglecloudloggingconfigurationcreateclientemail"></a>`clientEmail` | [`String!`](#string) | Email address associated with the service account that will be used to authenticate and interact with the Google Cloud Logging service. This is part of the IAM credentials. |
+| <a id="mutationinstancegooglecloudloggingconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstancegooglecloudloggingconfigurationcreategoogleprojectidname"></a>`googleProjectIdName` | [`String!`](#string) | Unique identifier of the Google Cloud project to which the logging configuration belongs. |
+| <a id="mutationinstancegooglecloudloggingconfigurationcreatelogidname"></a>`logIdName` | [`String`](#string) | Unique identifier used to distinguish and manage different logs within the same Google Cloud project.(defaults to `audit_events`). |
+| <a id="mutationinstancegooglecloudloggingconfigurationcreatename"></a>`name` | [`String`](#string) | Destination name. |
+| <a id="mutationinstancegooglecloudloggingconfigurationcreateprivatekey"></a>`privateKey` | [`String!`](#string) | Private Key associated with the service account. This key is used to authenticate the service account and authorize it to interact with the Google Cloud Logging service. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstancegooglecloudloggingconfigurationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstancegooglecloudloggingconfigurationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationinstancegooglecloudloggingconfigurationcreateinstancegooglecloudloggingconfiguration"></a>`instanceGoogleCloudLoggingConfiguration` | [`InstanceGoogleCloudLoggingConfigurationType`](#instancegooglecloudloggingconfigurationtype) | configuration created. |
+
 ### `Mutation.instanceGoogleCloudLoggingConfigurationDestroy`
 
 Input type: `InstanceGoogleCloudLoggingConfigurationDestroyInput`
@@ -23757,8 +23780,8 @@ The amount of time for a job to be picked up by a runner, in percentiles.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queueinghistorytimeseriesp25"></a>`p25` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. 25th percentile. 25% of the durations are lower than this value. |
 | <a id="queueinghistorytimeseriesp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. 50th percentile. 50% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. 75th percentile. 75% of the durations are lower than this value. |
 | <a id="queueinghistorytimeseriesp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. 90th percentile. 90% of the durations are lower than this value. |
 | <a id="queueinghistorytimeseriesp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. 95th percentile. 95% of the durations are lower than this value. |
 | <a id="queueinghistorytimeseriesp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. This feature is an Experiment. It can be changed or removed at any time. 99th percentile. 99% of the durations are lower than this value. |

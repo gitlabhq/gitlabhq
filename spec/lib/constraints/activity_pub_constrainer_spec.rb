@@ -11,8 +11,16 @@ RSpec.describe Constraints::ActivityPubConstrainer, feature_category: :groups_an
     let(:request) { ActionDispatch::Request.new(headers) }
 
     ['application/ld+json; profile="https://www.w3.org/ns/activitystreams"', 'application/activity+json'].each do |mime|
-      context "when mime is #{mime}" do
+      context "when Accept header is #{mime}" do
         let(:headers) { { 'HTTP_ACCEPT' => mime } }
+
+        it 'matches the header' do
+          is_expected.to be_truthy
+        end
+      end
+
+      context "when Content-Type header is #{mime}" do
+        let(:headers) { { 'CONTENT_TYPE' => mime } }
 
         it 'matches the header' do
           is_expected.to be_truthy
@@ -20,7 +28,7 @@ RSpec.describe Constraints::ActivityPubConstrainer, feature_category: :groups_an
       end
     end
 
-    context 'when Accept header is missing' do
+    context 'when Accept and Content-Type headers are missing' do
       let(:headers) { {} }
 
       it 'does not match' do

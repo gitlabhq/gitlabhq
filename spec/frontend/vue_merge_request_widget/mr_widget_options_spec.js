@@ -184,23 +184,6 @@ describe('MrWidgetOptions', () => {
   });
 
   describe('default', () => {
-    beforeEach(() => {
-      jest.spyOn(document, 'dispatchEvent');
-    });
-
-    // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/385238
-    // eslint-disable-next-line jest/no-disabled-tests
-    describe.skip('data', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('should instantiate Store and Service', () => {
-        expect(wrapper.vm.mr).toBeDefined();
-        expect(wrapper.vm.service).toBeDefined();
-      });
-    });
-
     describe('computed', () => {
       describe('componentName', () => {
         beforeEach(async () => {
@@ -353,30 +336,42 @@ describe('MrWidgetOptions', () => {
 
     describe('methods', () => {
       describe('checkStatus', () => {
-        let cb;
-        let isCbExecuted;
-
-        beforeEach(async () => {
-          await createComponent();
-          jest.spyOn(wrapper.vm.service, 'checkStatus').mockResolvedValue({ data: mockData });
-          jest.spyOn(wrapper.vm.mr, 'setData').mockImplementation(() => {});
-          jest.spyOn(wrapper.vm, 'handleNotification').mockImplementation(() => {});
-
-          isCbExecuted = false;
-          cb = () => {
-            isCbExecuted = true;
-          };
+        it('checks the status of the pipelines', async () => {
+          const callback = jest.fn();
+          await createComponent({ updatedMrData: { foo: 1 } });
+          await waitForPromises();
+          eventHub.$emit('MRWidgetUpdateRequested', callback);
+          await waitForPromises();
+          expect(callback).toHaveBeenCalledWith(expect.objectContaining({ foo: 1 }));
         });
 
-        it('should tell service to check status if document is visible', () => {
-          wrapper.vm.checkStatus(cb);
-
-          return nextTick().then(() => {
-            expect(wrapper.vm.service.checkStatus).toHaveBeenCalled();
-            expect(wrapper.vm.mr.setData).toHaveBeenCalled();
-            expect(wrapper.vm.handleNotification).toHaveBeenCalledWith(mockData);
-            expect(isCbExecuted).toBe(true);
+        it('notifies the user of the pipeline status', async () => {
+          jest.spyOn(notify, 'notifyMe').mockImplementation(() => {});
+          const logoFilename = 'logo.png';
+          await createComponent({
+            updatedMrData: { gitlabLogo: logoFilename },
           });
+          eventHub.$emit('MRWidgetUpdateRequested');
+          await waitForPromises();
+          expect(notify.notifyMe).toHaveBeenCalledWith(
+            `Pipeline passed`,
+            `Pipeline passed for "${mockData.title}"`,
+            logoFilename,
+          );
+        });
+
+        it('updates the stores data', async () => {
+          const mockSetData = jest.fn();
+          await createComponent({
+            data: {
+              mr: {
+                setData: mockSetData,
+                setGraphqlData: jest.fn(),
+              },
+            },
+          });
+          eventHub.$emit('MRWidgetUpdateRequested');
+          expect(mockSetData).toHaveBeenCalled();
         });
       });
 
@@ -398,66 +393,63 @@ describe('MrWidgetOptions', () => {
 
       describe('fetchDeployments', () => {
         beforeEach(async () => {
+          mock
+            .onGet(mockData.ci_environments_status_path)
+            .reply(() => [HTTP_STATUS_OK, [{ id: 1, status: SUCCESS }]]);
           await createComponent();
         });
 
-        it('should fetch deployments', () => {
-          jest
-            .spyOn(wrapper.vm.service, 'fetchDeployments')
-            .mockResolvedValue({ data: [{ id: 1, status: SUCCESS }] });
-
-          wrapper.vm.fetchPreMergeDeployments();
-
-          return nextTick().then(() => {
-            expect(wrapper.vm.service.fetchDeployments).toHaveBeenCalled();
-            expect(wrapper.vm.mr.deployments.length).toEqual(1);
-            expect(wrapper.vm.mr.deployments[0].id).toBe(1);
-          });
+        it('should fetch deployments', async () => {
+          eventHub.$emit('FetchDeployments', {});
+          await waitForPromises();
+          expect(wrapper.vm.mr.deployments.length).toEqual(1);
+          expect(wrapper.vm.mr.deployments[0].id).toBe(1);
         });
       });
 
       describe('fetchActionsContent', () => {
+        const innerHTML = 'hello world';
         beforeEach(async () => {
+          jest.spyOn(document, 'dispatchEvent');
+          mock.onGet(mockData.commit_change_content_path).reply(() => [HTTP_STATUS_OK, innerHTML]);
           await createComponent();
         });
 
-        it('should fetch content of Cherry Pick and Revert modals', () => {
-          jest
-            .spyOn(wrapper.vm.service, 'fetchMergeActionsContent')
-            .mockResolvedValue({ data: 'hello world' });
-
-          wrapper.vm.fetchActionsContent();
-
-          return nextTick().then(() => {
-            expect(wrapper.vm.service.fetchMergeActionsContent).toHaveBeenCalled();
-            expect(document.body.textContent).toContain('hello world');
-            expect(document.dispatchEvent).toHaveBeenCalledWith(
-              new CustomEvent('merged:UpdateActions'),
-            );
-          });
+        it('should fetch content of Cherry Pick and Revert modals', async () => {
+          eventHub.$emit('FetchActionsContent');
+          await waitForPromises();
+          expect(document.body.textContent).toContain(innerHTML);
+          expect(document.dispatchEvent).toHaveBeenCalledWith(
+            new CustomEvent('merged:UpdateActions'),
+          );
         });
       });
 
       describe('bindEventHubListeners', () => {
+        const mockSetData = jest.fn();
         beforeEach(async () => {
-          await createComponent();
+          await createComponent({
+            data: {
+              mr: {
+                setData: mockSetData,
+                setGraphqlData: jest.fn(),
+              },
+            },
+          });
         });
 
-        it.each`
-          event                        | method                        | methodArgs
-          ${'MRWidgetUpdateRequested'} | ${'checkStatus'}              | ${(x) => [x]}
-          ${'MRWidgetRebaseSuccess'}   | ${'checkStatus'}              | ${(x) => [x, true]}
-          ${'FetchActionsContent'}     | ${'fetchActionsContent'}      | ${() => []}
-          ${'EnablePolling'}           | ${'resumePolling'}            | ${() => []}
-          ${'DisablePolling'}          | ${'stopPolling'}              | ${() => []}
-          ${'FetchDeployments'}        | ${'fetchPreMergeDeployments'} | ${() => []}
-        `('should bind to $event', ({ event, method, methodArgs }) => {
-          jest.spyOn(wrapper.vm, method).mockImplementation();
+        it('refetches when "MRWidgetUpdateRequested" event is emitted', async () => {
+          expect(stateQueryHandler).toHaveBeenCalledTimes(1);
+          eventHub.$emit('MRWidgetUpdateRequested', () => {});
+          await waitForPromises();
+          expect(stateQueryHandler).toHaveBeenCalledTimes(2);
+        });
 
-          const eventArg = {};
-          eventHub.$emit(event, eventArg);
-
-          expect(wrapper.vm[method]).toHaveBeenCalledWith(...methodArgs(eventArg));
+        it('refetches when "MRWidgetRebaseSuccess" event is emitted', async () => {
+          expect(stateQueryHandler).toHaveBeenCalledTimes(1);
+          eventHub.$emit('MRWidgetRebaseSuccess', () => {});
+          await waitForPromises();
+          expect(stateQueryHandler).toHaveBeenCalledTimes(2);
         });
 
         it('should bind to SetBranchRemoveFlag', () => {
@@ -473,7 +465,7 @@ describe('MrWidgetOptions', () => {
         it('should bind to FailedToMerge', async () => {
           expect(findAlertMessage().exists()).toBe(false);
           expect(findPipelineContainer().props('mr')).toMatchObject({
-            mergeError: null,
+            mergeError: undefined,
             state: 'merged',
           });
           const mergeError = 'Something bad happened!';
@@ -488,12 +480,10 @@ describe('MrWidgetOptions', () => {
         });
 
         it('should bind to UpdateWidgetData', () => {
-          jest.spyOn(wrapper.vm.mr, 'setData').mockImplementation();
-
           const data = { ...mockData };
           eventHub.$emit('UpdateWidgetData', data);
 
-          expect(wrapper.vm.mr.setData).toHaveBeenCalledWith(data);
+          expect(mockSetData).toHaveBeenCalledWith(data);
         });
       });
 

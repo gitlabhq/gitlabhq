@@ -40,7 +40,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    using the Personal Access Token we just generated for authentication.
 
    ```plaintext
-   https://gitlab.com/api/v4/projects/<PROJECT_ID>/mirror/pull?private_token=<PERSONAL_ACCESS_TOKEN>
+   https://gitlab.example.com/api/v4/projects/:project_id/mirror/pull?private_token=<your_personal_access_token>
    ```
 
    The web hook Trigger should be set to 'Repository Push'.

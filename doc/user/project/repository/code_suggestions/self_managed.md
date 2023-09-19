@@ -117,6 +117,14 @@ Your customer success manager then provisions access by commenting on [issue 415
 After GitLab has provisioned access to Code Suggestions for your instance,
 the users in your instance can now enable Code Suggestions.
 
+### Configure network and proxy settings
+
+Configure any firewalls to allow outbound connections to `https://codesuggestions.gitlab.com/`.
+
+If your GitLab instance uses an HTTP proxy server to access the internet, ensure
+the server is configured to allow outbound connections, including the
+[`gitlab_workhorse` environment variable](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
+
 ### Update GitLab
 
 In GitLab 16.3 and later, GitLab is enforcing the cloud licensing requirement for Code Suggestions:
@@ -163,12 +171,6 @@ GitLab is making improvements to the Code Suggestions to improve the quality. AI
 This feature is currently in [Beta](../../../../policy/experiment-beta-support.md#beta).
 Code Suggestions depends on both Google Vertex AI Codey APIs and the GitLab Code Suggestions service. We have built this feature to gracefully degrade and have controls in place to allow us to
 mitigate abuse or misuse. GitLab may disable this feature for any or all customers at any time at our discretion.
-
-### Code Suggestions network and proxy settings
-
-Make sure any firewalls are configured to allow outbound connections to `https://codesuggestions.gitlab.com/`.
-
-If your GitLab instance uses an HTTP proxy server to access the internet, make sure that it is configured, including for [`gitlab_workhorse`](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
 
 ### Data privacy
 

@@ -371,7 +371,7 @@ For example:
 
 ```yaml
 variables:
-  SITE_URL: "https://example.gitlab.com"
+  SITE_URL: "https://gitlab.example.com"
 
 job:
   script:

@@ -988,7 +988,7 @@ Payload example:
     "draft": {
       "previous": true,
       "current": false
-    }
+    },
     "updated_at": {
       "previous": "2017-09-15 16:50:55 UTC",
       "current":"2017-09-15 16:52:00 UTC"
@@ -1026,7 +1026,7 @@ Payload example:
     "last_edited_by_id": {
       "previous": null,
       "current": 3278533
-    },
+    }
   },
   "assignees": [
     {

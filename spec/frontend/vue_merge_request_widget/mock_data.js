@@ -352,7 +352,7 @@ export default {
   merge_request_widget_path: '/root/acets-app/-/merge_requests/22/widget.json',
   merge_request_cached_widget_path: '/cached.json',
   merge_check_path: '/root/acets-app/-/merge_requests/22/merge_check',
-  ci_environments_status_url: '/root/acets-app/-/merge_requests/22/ci_environments_status',
+  ci_environments_status_path: '/root/acets-app/-/merge_requests/22/ci_environments_status',
   project_archived: false,
   default_merge_commit_message_with_description:
     "Merge branch 'daaaa' into 'main'\n\nUpdate README.md\n\nSee merge request !22",

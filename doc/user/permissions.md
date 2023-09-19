@@ -491,12 +491,15 @@ The following custom roles are available:
 
 You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 
-When you enable the view vulnerability custom role for a user with the Guest role, that user has access to elevated permissions, and therefore:
+When you enable a custom role for a user with the Guest role, that user has
+access to elevated permissions, and therefore:
 
 - Is considered a [billable user](../subscriptions/self_managed/index.md#billable-users) on self-managed GitLab.
 - [Uses a seat](../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined) on GitLab.com.
 
-This does not apply to the Guest+1 custom role because the `view_code` ability is excluded from this behavior.
+This does not apply to Guest+1, a Guest custom role that only enables the `read_code`
+permission. Users with that specific custom role are not considered billable users
+and do not use a seat.
 
 ### Create a custom role
 
@@ -567,24 +570,24 @@ the Owner role:
 1. Invites a user as a direct member to the root group or any subgroup or project in the root
    group's hierarchy as a Guest. At this point, this Guest user cannot see any
    code on the projects in the group or subgroup.
-1. Optional. If the Owner does not know the `ID` of the Guest user receiving a custom
-   role, finds that `ID` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
+1. Optional. If the Owner does not know the `id` of the Guest user receiving a custom
+   role, finds that `id` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
 
 1. Associates the member with the Guest+1 role using the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
 
    ```shell
    # to update a project membership
-   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id": '$MEMBER_ROLE_ID', "access_level": 10}' "https://example.gitlab.com/api/v4/projects/$ID/members/$GUEST_USER_ID"
+   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": '<member_role_id>', "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
 
    # to update a group membership
-   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id": '$MEMBER_ROLE_ID', "access_level": 10}' "https://example.gitlab.com/api/v4/groups/$ID/members/$GUEST_USER_ID"
+   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": '<member_role_id>', "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
    ```
 
    Where:
 
-   - `$ID`: The `ID` or [URL-encoded path of the project or group](../api/rest/index.md#namespaced-path-encoding) associated with the membership receiving the custom role.
-   - `$MEMBER_ROLE_ID`: The `ID` of the member role created in the previous section.
-   - `$GUEST_USER_ID`: The `ID` of the Guest user receiving a custom role.
+   - `<project_id` and `<group_id>`: The `id` or [URL-encoded path of the project or group](../api/rest/index.md#namespaced-path-encoding) associated with the membership receiving the custom role.
+   - `<member_role_id>`: The `id` of the member role created in the previous section.
+   - `<user_id>`: The `id` of the user receiving a custom role.
 
    Now the Guest+1 user can view code on all projects associated with this membership.
 
@@ -604,7 +607,11 @@ To remove a custom role from a group member, use the [Group and Project Members 
 and pass an empty `member_role_id` value.
 
 ```shell
-curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id": "", "access_level": 10}' "https://example.gitlab.com/api/v4/groups/$GROUP_PATH/members/$GUEST_USER_ID"
+# to update a project membership
+curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": "", "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
+
+# to update a group membership
+curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": "", "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
 ```
 
 #### Remove a group member with a custom role from the group
@@ -628,11 +635,12 @@ custom role.
 1. In the **Actions** column, select **Delete role** (**{remove}**) and confirm.
 
 To delete a custom role, you can also [use the API](../api/member_roles.md#remove-member-role-of-a-group).
-To use the API, you must know the `ID` of the custom role. If you do not know this
-`ID`, find it by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
+To use the API, you must know the `id` of the custom role. If you do not know this
+`id`, find it by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
 
 ### Known issues
 
-- Additional permissions can only be applied to users with the Guest role.
-- If a user with a custom role is shared with a group or project, their custom role is not transferred over with them. The user has the regular Guest role in the new group or project.
+- If a user with a custom role is shared with a group or project, their custom
+  role is not transferred over with them. The user has the regular Guest role in
+  the new group or project.
 - You cannot use an [Auditor user](../administration/auditor_users.md) as a template for a custom role.
