@@ -14,7 +14,7 @@ module Banzai
       include Gitlab::Utils::StrongMemoize
       extend Gitlab::Utils::SanitizeNodeLink
 
-      UNSAFE_PROTOCOLS = %w(data javascript vbscript).freeze
+      UNSAFE_PROTOCOLS = %w[data javascript vbscript].freeze
 
       def allowlist
         strong_memoize(:allowlist) do
@@ -24,9 +24,9 @@ module Banzai
           allowlist[:elements].push('span')
 
           # Allow data-math-style attribute in order to support LaTeX formatting
-          allowlist[:attributes]['code'] = %w(data-math-style)
-          allowlist[:attributes]['pre'] = %w(data-canonical-lang data-lang-params
-            data-math-style data-mermaid-style data-kroki-style)
+          allowlist[:attributes]['code'] = %w[data-math-style]
+          allowlist[:attributes]['pre'] = %w[data-canonical-lang data-lang-params
+            data-math-style data-mermaid-style data-kroki-style]
 
           # Allow html5 details/summary elements
           allowlist[:elements].push('details')
@@ -34,7 +34,7 @@ module Banzai
 
           # Allow abbr elements with title attribute
           allowlist[:elements].push('abbr')
-          allowlist[:attributes]['abbr'] = %w(title)
+          allowlist[:attributes]['abbr'] = %w[title]
 
           # Disallow `name` attribute globally, allow on `a`
           allowlist[:attributes][:all].delete('name')

@@ -488,7 +488,7 @@ export default {
     mergeAndSquashCommitTemplatesHintText: s__(
       'mrWidget|To change these default messages, edit the templates for both the merge and squash commit messages. %{linkStart}Learn more%{linkEnd}.',
     ),
-    sourceDivergedFromTargetText: s__('mrWidget|The source branch is %{link} the target branch'),
+    sourceDivergedFromTargetText: s__('mrWidget|The source branch is %{link} the target branch.'),
     divergedCommits: (count) => n__('%d commit behind', '%d commits behind', count),
   },
 };

@@ -2,8 +2,8 @@
 import { GlTable } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
-import ProjectCell from '~/pages/admin/jobs/components/table/cell/project_cell.vue';
-import RunnerCell from '~/pages/admin/jobs/components/table/cells/runner_cell.vue';
+import ProjectCell from '~/ci/admin/jobs_table/components/cells/project_cell.vue';
+import RunnerCell from '~/ci/admin/jobs_table/components/cells/runner_cell.vue';
 import { DEFAULT_FIELDS } from '../constants';
 import ActionsCell from './job_cells/actions_cell.vue';
 import DurationCell from './job_cells/duration_cell.vue';

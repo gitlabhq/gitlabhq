@@ -11,7 +11,7 @@ module Banzai
       include Gitlab::Utils::StrongMemoize
 
       NUMBER_OF_SUMMARY_ASSIGNEES = 2
-      VISIBLE_STATES = %w(closed merged).freeze
+      VISIBLE_STATES = %w[closed merged].freeze
       EXTENDED_FORMAT_XPATH = Gitlab::Utils::Nokogiri.css_to_xpath('a[data-reference-format="+s"]')
 
       def call

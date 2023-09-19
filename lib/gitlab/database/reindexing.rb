@@ -6,7 +6,7 @@ module Gitlab
       # Number of indexes to reindex per invocation
       DEFAULT_INDEXES_PER_INVOCATION = 2
 
-      SUPPORTED_TYPES = %w(btree gist).freeze
+      SUPPORTED_TYPES = %w[btree gist].freeze
 
       # When dropping an index, we acquire a SHARE UPDATE EXCLUSIVE lock,
       # which only conflicts with DDL and vacuum. We therefore execute this with a rather

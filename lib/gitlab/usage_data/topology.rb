@@ -130,7 +130,7 @@ module Gitlab
           client.query(query)
         end
 
-        map_instance_labels(node_uname_info, %w(machine sysname release))
+        map_instance_labels(node_uname_info, %w[machine sysname release])
       end
 
       def topology_all_service_memory(client)

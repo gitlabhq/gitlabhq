@@ -10,7 +10,7 @@ namespace :gitlab do
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         repo_root = repository_storage.legacy_disk_path.chomp('/')
         # Look for global repos (legacy, depth 1) and normal repos (depth 2)
-        IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *+moved*.git)) do |find|
+        IO.popen(%W[find #{repo_root} -mindepth 1 -maxdepth 2 -name *+moved*.git]) do |find|
           find.each_line do |path|
             path.chomp!
 

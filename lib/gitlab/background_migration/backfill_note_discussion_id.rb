@@ -37,7 +37,7 @@ module Gitlab
           { discussion_id: note.generate_discussion_id }
         end
 
-        Gitlab::Database::BulkUpdate.execute(%i(discussion_id), mapping)
+        Gitlab::Database::BulkUpdate.execute(%i[discussion_id], mapping)
       end
     end
   end

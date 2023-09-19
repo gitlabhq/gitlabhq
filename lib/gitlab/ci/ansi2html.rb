@@ -299,7 +299,7 @@ module Gitlab
         end
 
         def handle_new_line
-          write_in_tag %{<br/>}
+          write_in_tag %(<br/>)
 
           close_open_tags if @sections.any? && @lineno_in_section == 0
           @lineno_in_section += 1
@@ -324,7 +324,7 @@ module Gitlab
           return if @sections.include?(section)
 
           @sections << section
-          write_raw %{<div class="section-start" data-timestamp="#{timestamp}" data-section="#{data_section_names}" role="button"></div>}
+          write_raw %(<div class="section-start" data-timestamp="#{timestamp}" data-section="#{data_section_names}" role="button"></div>)
           @lineno_in_section = 0
         end
 
@@ -333,7 +333,7 @@ module Gitlab
 
           # close all sections up to section
           until @sections.empty?
-            write_raw %{<div class="section-end" data-section="#{data_section_names}"></div>}
+            write_raw %(<div class="section-end" data-section="#{data_section_names}"></div>)
 
             last_section = @sections.pop
             break if section == last_section
@@ -423,9 +423,9 @@ module Gitlab
           close_open_tags
 
           @out << if css_classes.any?
-                    %{<span class="#{css_classes.join(' ')}">}
+                    %(<span class="#{css_classes.join(' ')}">)
                   else
-                    %{<span>}
+                    %(<span>)
                   end
 
           @n_open_tags += 1
@@ -433,7 +433,7 @@ module Gitlab
 
         def close_open_tags
           while @n_open_tags > 0
-            @out << %{</span>}
+            @out << %(</span>)
             @n_open_tags -= 1
           end
         end

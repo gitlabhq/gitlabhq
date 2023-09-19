@@ -9,7 +9,7 @@ import {
   CANCEL_JOBS_MODAL_TITLE,
   CANCEL_JOBS_WARNING,
   PRIMARY_ACTION_TEXT,
-} from './constants';
+} from '../constants';
 
 export default {
   components: {

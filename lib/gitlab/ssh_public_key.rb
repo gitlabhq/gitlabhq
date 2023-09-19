@@ -9,12 +9,12 @@ module Gitlab
     # See https://man.openbsd.org/sshd#AUTHORIZED_KEYS_FILE_FORMAT for the list of
     # supported algorithms.
     TECHNOLOGIES = [
-      Technology.new(:rsa, SSHData::PublicKey::RSA, [1024, 2048, 3072, 4096], %w(ssh-rsa)),
-      Technology.new(:dsa, SSHData::PublicKey::DSA, [1024, 2048, 3072], %w(ssh-dss)),
-      Technology.new(:ecdsa, SSHData::PublicKey::ECDSA, [256, 384, 521], %w(ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521)),
-      Technology.new(:ed25519, SSHData::PublicKey::ED25519, [256], %w(ssh-ed25519)),
-      Technology.new(:ecdsa_sk, SSHData::PublicKey::SKECDSA, [256], %w(sk-ecdsa-sha2-nistp256@openssh.com)),
-      Technology.new(:ed25519_sk, SSHData::PublicKey::SKED25519, [256], %w(sk-ssh-ed25519@openssh.com))
+      Technology.new(:rsa, SSHData::PublicKey::RSA, [1024, 2048, 3072, 4096], %w[ssh-rsa]),
+      Technology.new(:dsa, SSHData::PublicKey::DSA, [1024, 2048, 3072], %w[ssh-dss]),
+      Technology.new(:ecdsa, SSHData::PublicKey::ECDSA, [256, 384, 521], %w[ecdsa-sha2-nistp256 ecdsa-sha2-nistp384 ecdsa-sha2-nistp521]),
+      Technology.new(:ed25519, SSHData::PublicKey::ED25519, [256], %w[ssh-ed25519]),
+      Technology.new(:ecdsa_sk, SSHData::PublicKey::SKECDSA, [256], %w[sk-ecdsa-sha2-nistp256@openssh.com]),
+      Technology.new(:ed25519_sk, SSHData::PublicKey::SKED25519, [256], %w[sk-ssh-ed25519@openssh.com])
     ].freeze
 
     def self.technologies

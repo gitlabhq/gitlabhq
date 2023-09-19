@@ -1,6 +1,6 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import { RUNNER_EMPTY_TEXT, RUNNER_NO_DESCRIPTION } from '~/pages/admin/jobs/components/constants';
+import { RUNNER_EMPTY_TEXT, RUNNER_NO_DESCRIPTION } from '../../constants';
 
 export default {
   i18n: {

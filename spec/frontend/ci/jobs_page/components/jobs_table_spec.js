@@ -3,9 +3,9 @@ import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
-import { DEFAULT_FIELDS_ADMIN } from '~/pages/admin/jobs/components/constants';
-import ProjectCell from '~/pages/admin/jobs/components/table/cell/project_cell.vue';
-import RunnerCell from '~/pages/admin/jobs/components/table/cells/runner_cell.vue';
+import { DEFAULT_FIELDS_ADMIN } from '~/ci/admin/jobs_table/constants';
+import ProjectCell from '~/ci/admin/jobs_table/components/cells/project_cell.vue';
+import RunnerCell from '~/ci/admin/jobs_table/components/cells/runner_cell.vue';
 import { mockJobsNodes, mockAllJobsNodes } from 'jest/ci/jobs_mock_data';
 
 describe('Jobs Table', () => {

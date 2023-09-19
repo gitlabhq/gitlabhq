@@ -20,7 +20,7 @@ module Gitlab
   class UsageData
     MAX_GENERATION_TIME_FOR_SAAS = 40.hours
 
-    CE_MEMOIZED_VALUES = %i(
+    CE_MEMOIZED_VALUES = %i[
       issue_minimum_id
       issue_maximum_id
       project_minimum_id
@@ -31,7 +31,7 @@ module Gitlab
       deployment_maximum_id
       auth_providers
       recorded_at
-    ).freeze
+    ].freeze
 
     class << self
       include Gitlab::Utils::UsageData

@@ -37,7 +37,7 @@ module Gitlab
 
       def gzip_with_options(dir:, filename:, options: nil)
         filepath = File.join(dir, filename)
-        cmd = %W(gzip #{filepath})
+        cmd = %W[gzip #{filepath}]
         cmd << "-#{options}" if options
 
         _, status = Gitlab::Popen.popen(cmd)
@@ -89,12 +89,12 @@ module Gitlab
       end
 
       def tar_with_options(archive:, dir:, options:)
-        execute_cmd(%W(tar -#{options} #{archive} -C #{dir} .))
+        execute_cmd(%W[tar -#{options} #{archive} -C #{dir} .])
       end
 
       def untar_with_options(archive:, dir:, options:)
-        execute_cmd(%W(tar -#{options} #{archive} -C #{dir}))
-        execute_cmd(%W(chmod -R #{UNTAR_MASK} #{dir}))
+        execute_cmd(%W[tar -#{options} #{archive} -C #{dir}])
+        execute_cmd(%W[chmod -R #{UNTAR_MASK} #{dir}])
         clean_extraction_dir!(dir)
       end
 

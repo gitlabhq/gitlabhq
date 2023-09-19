@@ -93,7 +93,7 @@ module Banzai
       end
 
       def use_rouge?(language)
-        (%w(math suggestion) + ::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES).exclude?(language)
+        (%w[math suggestion] + ::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES).exclude?(language)
       end
     end
   end

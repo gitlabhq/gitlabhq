@@ -26,7 +26,7 @@ module Gitlab
     def ask_to_continue
       return if Gitlab::Utils.to_boolean(ENV['GITLAB_ASSUME_YES'])
 
-      answer = prompt("Do you want to continue (yes/no)? ".color(:blue), %w{yes no})
+      answer = prompt("Do you want to continue (yes/no)? ".color(:blue), %w[yes no])
       raise Gitlab::TaskAbortedByUserError unless answer == "yes"
     end
 
@@ -35,7 +35,7 @@ module Gitlab
     # It will primarily use lsb_relase to determine the OS.
     # It has fallbacks to Debian, SuSE, OS X and systems running systemd.
     def os_name
-      os_name = run_command(%w(lsb_release -irs))
+      os_name = run_command(%w[lsb_release -irs])
       os_name ||=
         if File.readable?('/etc/system-release')
           File.read('/etc/system-release')
@@ -43,7 +43,7 @@ module Gitlab
           "Debian #{File.read('/etc/debian_version')}"
         elsif File.readable?('/etc/SuSE-release')
           File.read('/etc/SuSE-release')
-        elsif os_x_version = run_command(%w(sw_vers -productVersion))
+        elsif os_x_version = run_command(%w[sw_vers -productVersion])
           "Mac OS X #{os_x_version}"
         elsif File.readable?('/etc/os-release')
           File.read('/etc/os-release').match(/PRETTY_NAME=\"(.+)\"/)[1]
@@ -115,7 +115,7 @@ module Gitlab
     end
 
     def uid_for(user_name)
-      run_command(%W(id -u #{user_name})).chomp.to_i
+      run_command(%W[id -u #{user_name}]).chomp.to_i
     end
 
     def gid_for(group_name)
@@ -130,7 +130,7 @@ module Gitlab
 
     def gitlab_user?
       strong_memoize(:is_gitlab_user) do
-        current_user = run_command(%w(whoami)).chomp
+        current_user = run_command(%w[whoami]).chomp
         current_user == gitlab_user
       end
     end
@@ -139,7 +139,7 @@ module Gitlab
       return if gitlab_user?
 
       strong_memoize(:warned_user_not_gitlab) do
-        current_user = run_command(%w(whoami)).chomp
+        current_user = run_command(%w[whoami]).chomp
 
         puts " Warning ".color(:black).background(:yellow)
         puts "  You are running as user #{current_user.color(:magenta)}, we hope you know what you are doing."

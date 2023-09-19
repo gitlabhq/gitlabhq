@@ -11,8 +11,8 @@ module Gitlab
       end
 
       def execute
-        add_field(%w(issuetype name), 'Issue type')
-        add_field(%w(priority name), 'Priority')
+        add_field(%w[issuetype name], 'Issue type')
+        add_field(%w[priority name], 'Priority')
         add_field('environment', 'Environment')
         add_field('duedate', 'Due date')
         add_parent

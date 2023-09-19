@@ -5,9 +5,8 @@ module VersionCheckHelper
 
   def show_version_check?
     return false unless Gitlab::CurrentSettings.version_check_enabled
-    return false if User.single_user&.requires_usage_stats_consent?
 
-    current_user&.can_read_all_resources?
+    current_user&.can_read_all_resources? && !User.single_user&.requires_usage_stats_consent?
   end
 
   def gitlab_version_check

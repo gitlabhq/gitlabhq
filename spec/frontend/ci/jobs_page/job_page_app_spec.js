@@ -13,7 +13,7 @@ import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import JobsTableApp from '~/ci/jobs_page/jobs_page_app.vue';
 import JobsTableTabs from '~/ci/jobs_page/components/jobs_table_tabs.vue';
 import JobsFilteredSearch from '~/ci/common/private/jobs_filtered_search/app.vue';
-import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
+import JobsSkeletonLoader from '~/ci/admin/jobs_table/components/jobs_skeleton_loader.vue';
 import * as urlUtils from '~/lib/utils/url_utility';
 import {
   mockJobsResponsePaginated,

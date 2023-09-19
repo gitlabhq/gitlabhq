@@ -1021,7 +1021,7 @@ module API
 
       # Enabling /user endpoint for the v3 version to allow oauth
       # authentication through this endpoint.
-      version %w(v3 v4), using: :path do
+      version %w[v3 v4], using: :path do
         desc 'Get the currently authenticated user' do
           success Entities::UserPublic
         end

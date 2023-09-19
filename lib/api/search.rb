@@ -103,7 +103,7 @@ module API
       end
 
       def snippets?
-        %w(snippet_titles).include?(params[:scope]).to_s
+        %w[snippet_titles].include?(params[:scope]).to_s
       end
 
       def entity

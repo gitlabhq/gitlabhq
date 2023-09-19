@@ -13,7 +13,7 @@ module Gitlab
         extend ::Gitlab::Utils::Override
         include Gitlab::Git::RuggedImpl::UseRugged
 
-        FEATURE_FLAGS = %i(rugged_find_commit rugged_tree_entries rugged_tree_entry rugged_commit_is_ancestor rugged_commit_tree_entry rugged_list_commits_by_oid).freeze
+        FEATURE_FLAGS = %i[rugged_find_commit rugged_tree_entries rugged_tree_entry rugged_commit_is_ancestor rugged_commit_tree_entry rugged_list_commits_by_oid].freeze
 
         def alternate_object_directories
           relative_object_directories.map { |d| File.join(path, d) }

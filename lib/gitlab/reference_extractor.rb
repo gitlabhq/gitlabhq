@@ -3,9 +3,9 @@
 module Gitlab
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor < Banzai::ReferenceExtractor
-    REFERABLES = %i(user issue label milestone mentioned_user mentioned_group mentioned_project
+    REFERABLES = %i[user issue label milestone mentioned_user mentioned_group mentioned_project
                     merge_request snippet commit commit_range directly_addressed_user epic vulnerability
-                    alert).freeze
+                    alert].freeze
     attr_accessor :project, :current_user, :author
 
     def initialize(project, current_user = nil)
@@ -43,7 +43,7 @@ module Gitlab
         @references[type] ||= references(type)
       end
 
-      next unless %w(mentioned_user mentioned_group mentioned_project).include?(type.to_s)
+      next unless %w[mentioned_user mentioned_group mentioned_project].include?(type.to_s)
 
       define_method("#{type}_ids") do
         @references[type] ||= references(type, ids_only: true)

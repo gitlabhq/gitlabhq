@@ -103,7 +103,7 @@ module Backup
         pg_env = backup_model.config[:pg_env]
         success = with_transient_pg_env(pg_env) do
           decompress_rd, decompress_wr = IO.pipe
-          decompress_pid = spawn(*%w(gzip -cd), out: decompress_wr, in: db_file_name)
+          decompress_pid = spawn(*%w[gzip -cd], out: decompress_wr, in: db_file_name)
           decompress_wr.close
 
           status, @errors =

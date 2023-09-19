@@ -9,7 +9,7 @@ module Gitlab
 
         ROUTES = [
           [
-            %r(\Apipelines/id/\d+\z),
+            %r{\Apipelines/id/\d+\z},
             'pipelines_graph',
             'continuous_integration'
           ],
@@ -19,12 +19,12 @@ module Gitlab
             'pipeline_composition'
           ],
           [
-            %r(\Aon_demand_scan/counts/),
+            %r{\Aon_demand_scan/counts/},
             'on_demand_scans',
             'dynamic_application_security_testing'
           ],
           [
-            %r(\A/projects/.+/-/environments.json\z),
+            %r{\A/projects/.+/-/environments.json\z},
             'environment_details',
             'continuous_delivery'
           ]

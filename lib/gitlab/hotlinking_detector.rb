@@ -2,11 +2,11 @@
 
 module Gitlab
   class HotlinkingDetector
-    IMAGE_FORMATS = %w(image/jpeg image/apng image/png image/webp image/svg+xml image/*).freeze
-    MEDIA_FORMATS = %w(video/webm video/ogg video/* application/ogg audio/webm audio/ogg audio/wav audio/*).freeze
-    CSS_FORMATS = %w(text/css).freeze
+    IMAGE_FORMATS = %w[image/jpeg image/apng image/png image/webp image/svg+xml image/*].freeze
+    MEDIA_FORMATS = %w[video/webm video/ogg video/* application/ogg audio/webm audio/ogg audio/wav audio/*].freeze
+    CSS_FORMATS = %w[text/css].freeze
     INVALID_FORMATS = (IMAGE_FORMATS + MEDIA_FORMATS + CSS_FORMATS).freeze
-    INVALID_FETCH_MODES = %w(cors no-cors websocket).freeze
+    INVALID_FETCH_MODES = %w[cors no-cors websocket].freeze
 
     class << self
       def intercept_hotlinking?(request)

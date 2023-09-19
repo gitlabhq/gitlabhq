@@ -7,7 +7,7 @@ module Banzai
     #
     # Based on HTML::Pipeline::EmojiFilter
     class EmojiFilter < HTML::Pipeline::Filter
-      IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
+      IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
 
       def call
         doc.xpath('descendant-or-self::text()').each do |node|

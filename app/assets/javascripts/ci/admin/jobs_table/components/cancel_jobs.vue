@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { CANCEL_JOBS_MODAL_ID, CANCEL_JOBS_BUTTON_TEXT, CANCEL_BUTTON_TOOLTIP } from '../constants';
 import CancelJobsModal from './cancel_jobs_modal.vue';
-import { CANCEL_JOBS_MODAL_ID, CANCEL_JOBS_BUTTON_TEXT, CANCEL_BUTTON_TOOLTIP } from './constants';
 
 export default {
   name: 'CancelJobs',

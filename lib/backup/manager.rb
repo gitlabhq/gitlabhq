@@ -484,7 +484,7 @@ module Backup
 
         puts_time 'Unpacking backup ... '.color(:blue)
 
-        if Kernel.system(*%W(tar -xf #{tar_file}))
+        if Kernel.system(*%W[tar -xf #{tar_file}])
           puts_time 'Unpacking backup ... '.color(:blue) + 'done'.color(:green)
         else
           puts_time 'Unpacking backup failed'.color(:red)
@@ -494,7 +494,7 @@ module Backup
     end
 
     def tar_version
-      tar_version, _ = Gitlab::Popen.popen(%w(tar --version))
+      tar_version, _ = Gitlab::Popen.popen(%w[tar --version])
       tar_version.dup.force_encoding('locale').split("\n").first
     end
 

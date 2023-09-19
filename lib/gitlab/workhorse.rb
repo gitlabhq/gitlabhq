@@ -15,7 +15,7 @@ module Gitlab
     NOTIFICATION_PREFIX = 'workhorse:notifications:'
     ALLOWED_GIT_HTTP_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
     DETECT_HEADER = 'Gitlab-Workhorse-Detect-Content-Type'
-    ARCHIVE_FORMATS = %w(zip tar.gz tar.bz2 tar).freeze
+    ARCHIVE_FORMATS = %w[zip tar.gz tar.bz2 tar].freeze
 
     include JwtAuthenticatable
 

@@ -5,7 +5,7 @@ module Banzai
     module IncidentManagement
       class TimelineEventPipeline < PlainMarkdownPipeline
         ALLOWLIST = Banzai::Filter::SanitizationFilter::LIMITED.deep_dup.merge(
-          elements: %w(p b i strong em pre code a img)
+          elements: %w[p b i strong em pre code a img]
         ).freeze
 
         def self.filters

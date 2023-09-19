@@ -31,9 +31,9 @@ module Gitlab
       # persisting limits over that.
       MAX_PATCH_BYTES_UPPER_BOUND = 500.kilobytes
 
-      SERIALIZE_KEYS = %i(diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large).freeze
+      SERIALIZE_KEYS = %i[diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large].freeze
 
-      BINARY_NOTICE_PATTERN = %r(Binary files a\/(.*) and b\/(.*) differ).freeze
+      BINARY_NOTICE_PATTERN = %r{Binary files a\/(.*) and b\/(.*) differ}.freeze
 
       class << self
         def between(repo, head, base, options = {}, *paths)

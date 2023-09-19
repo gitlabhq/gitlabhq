@@ -7,7 +7,7 @@ module Gitlab
     module QueryAnalyzers
       module AST
         class RecursionAnalyzer < GraphQL::Analysis::AST::Analyzer
-          IGNORED_FIELDS = %w(node edges nodes ofType).freeze
+          IGNORED_FIELDS = %w[node edges nodes ofType].freeze
           RECURSION_THRESHOLD = 2
 
           def initialize(query)

@@ -62,9 +62,9 @@ module Gitlab
       end
 
       def link_tag(name, url)
-        href_attribute = %{href="#{ERB::Util.html_escape_once(url)}" } if Gitlab::UrlSanitizer.valid_web?(url)
+        href_attribute = %(href="#{ERB::Util.html_escape_once(url)}" ) if Gitlab::UrlSanitizer.valid_web?(url)
 
-        %{<a #{href_attribute}rel="nofollow noreferrer noopener" target="_blank">#{ERB::Util.html_escape_once(name)}</a>}.html_safe
+        %(<a #{href_attribute}rel="nofollow noreferrer noopener" target="_blank">#{ERB::Util.html_escape_once(name)}</a>).html_safe
       end
 
       # Links package names based on regex.

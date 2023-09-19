@@ -7,32 +7,32 @@ module Gitlab
       class Prometheus < Base
         extend Gitlab::Utils::Override
 
-        attribute :alert_markdown, paths: %w(annotations gitlab_incident_markdown)
+        attribute :alert_markdown, paths: %w[annotations gitlab_incident_markdown]
         attribute :annotations, paths: 'annotations'
-        attribute :description, paths: %w(annotations description)
+        attribute :description, paths: %w[annotations description]
         attribute :ends_at, paths: 'endsAt', type: :time
-        attribute :environment_name, paths: %w(labels gitlab_environment_name)
-        attribute :generator_url, paths: %w(generatorURL)
+        attribute :environment_name, paths: %w[labels gitlab_environment_name]
+        attribute :generator_url, paths: %w[generatorURL]
         attribute :gitlab_y_label,
-                  paths: [%w(annotations gitlab_y_label),
-                          %w(annotations title),
-                          %w(annotations summary),
-                          %w(labels alertname)]
-        attribute :runbook, paths: %w(annotations runbook)
+                  paths: [%w[annotations gitlab_y_label],
+                          %w[annotations title],
+                          %w[annotations summary],
+                          %w[labels alertname]]
+        attribute :runbook, paths: %w[annotations runbook]
         attribute :starts_at,
                   paths: 'startsAt',
                   type: :time,
                   fallback: -> { Time.current.utc }
         attribute :status, paths: 'status'
         attribute :title,
-                  paths: [%w(annotations title),
-                          %w(annotations summary),
-                          %w(labels alertname)]
+                  paths: [%w[annotations title],
+                          %w[annotations summary],
+                          %w[labels alertname]]
         attribute :starts_at_raw,
-                  paths: [%w(startsAt)]
+                  paths: [%w[startsAt]]
         private :starts_at_raw
 
-        attribute :severity_raw, paths: %w(labels severity)
+        attribute :severity_raw, paths: %w[labels severity]
         private :severity_raw
 
         METRIC_TIME_WINDOW = 30.minutes

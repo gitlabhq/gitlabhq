@@ -139,7 +139,7 @@ namespace :tanuki_emoji do
 
       puts "\n"
 
-      style_path = Rails.root.join(*%w(app assets stylesheets emoji_sprites.scss))
+      style_path = Rails.root.join(*%w[app assets stylesheets emoji_sprites.scss])
 
       print 'Compiling sprites regular sprites... '
 

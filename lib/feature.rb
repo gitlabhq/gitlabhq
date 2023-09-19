@@ -348,7 +348,7 @@ module Feature
     end
 
     def gate_specified?
-      %i(user project group feature_group namespace repository).any? { |key| params.key?(key) }
+      %i[user project group feature_group namespace repository].any? { |key| params.key?(key) }
     end
 
     def targets

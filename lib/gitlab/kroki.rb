@@ -14,8 +14,8 @@ module Gitlab
       packetdiag
       rackdiag
     ].freeze
-    DIAGRAMS_FORMATS = (::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES - %w(mermaid)).freeze
-    DIAGRAMS_FORMATS_WO_PLANTUML = (DIAGRAMS_FORMATS - %w(plantuml)).freeze
+    DIAGRAMS_FORMATS = (::AsciidoctorExtensions::Kroki::SUPPORTED_DIAGRAM_NAMES - %w[mermaid]).freeze
+    DIAGRAMS_FORMATS_WO_PLANTUML = (DIAGRAMS_FORMATS - %w[plantuml]).freeze
 
     # Get the list of diagram formats that are currently enabled
     #

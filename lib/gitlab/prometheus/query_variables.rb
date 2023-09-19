@@ -9,7 +9,7 @@ module Gitlab
           __range: range(start_time, end_time),
           ci_environment_slug: environment.slug,
           kube_namespace: environment.deployment_namespace || '',
-          environment_filter: %{container_name!="POD",environment="#{environment.slug}"},
+          environment_filter: %(container_name!="POD",environment="#{environment.slug}"),
           ci_project_name: environment.project.name,
           ci_project_namespace: environment.project.namespace.name,
           ci_project_path: environment.project.full_path,

@@ -4,26 +4,26 @@ module Gitlab
   module Middleware
     class ReadOnly
       class Controller
-        DISALLOWED_METHODS = %w(POST PATCH PUT DELETE).freeze
+        DISALLOWED_METHODS = %w[POST PATCH PUT DELETE].freeze
         APPLICATION_JSON = 'application/json'
-        APPLICATION_JSON_TYPES = %W{#{APPLICATION_JSON} application/vnd.git-lfs+json}.freeze
+        APPLICATION_JSON_TYPES = %W[#{APPLICATION_JSON} application/vnd.git-lfs+json].freeze
         ERROR_MESSAGE = 'You cannot perform write operations on a read-only instance'
 
         ALLOWLISTED_GIT_READ_ONLY_ROUTES = {
-          'repositories/git_http' => %w{git_upload_pack}
+          'repositories/git_http' => %w[git_upload_pack]
         }.freeze
 
         ALLOWLISTED_GIT_LFS_BATCH_ROUTES = {
-          'repositories/lfs_api' => %w{batch}
+          'repositories/lfs_api' => %w[batch]
         }.freeze
 
         ALLOWLISTED_GIT_REVISION_ROUTES = {
-          'projects/compare' => %w{create}
+          'projects/compare' => %w[create]
         }.freeze
 
         ALLOWLISTED_SESSION_ROUTES = {
-          'sessions' => %w{destroy},
-          'admin/sessions' => %w{create destroy}
+          'sessions' => %w[destroy],
+          'admin/sessions' => %w[create destroy]
         }.freeze
 
         GRAPHQL_URL = '/api/graphql'

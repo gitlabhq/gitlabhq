@@ -1,7 +1,7 @@
 <script>
 import { GlBadge, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import CancelJobs from '~/pages/admin/jobs/components/cancel_jobs.vue';
+import CancelJobs from '~/ci/admin/jobs_table/components/cancel_jobs.vue';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 
 export default {

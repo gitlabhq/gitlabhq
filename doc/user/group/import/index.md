@@ -160,13 +160,17 @@ To migrate groups by direct transfer:
   [enabled in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
 - The source GitLab instance must be running GitLab 14.0 or later.
-- You must have a [personal access token](../../../user/profile/personal_access_tokens.md) for the source GitLab
-  instance:
-  - For GitLab 15.1 and later source instances, the personal access token must have the `api` scope.
-  - For GitLab 15.0 and earlier source instances, the personal access token must have both the `api` and
-    `read_repository` scopes.
+- You must have a
+  [personal access token](../../../user/profile/personal_access_tokens.md) for
+  the source GitLab instance:
+  - For GitLab 15.1 and later source instances, the personal access token must
+    have the `api` scope.
+  - For GitLab 15.0 and earlier source instances, the personal access token must
+    have both the `api` and `read_repository` scopes.
 - You must have the Owner role on the source group to migrate from.
-- You must have at least the Maintainer role on the destination group to migrate to.
+- Your must have a role on the destination namespace the enables you to
+  [create a subgroup](../../group/subgroups/index.md#create-a-subgroup) in that
+  namespace.
 
 ### Prepare user accounts
 

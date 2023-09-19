@@ -4,7 +4,7 @@ import { GlModal } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
-import CancelJobsModal from '~/pages/admin/jobs/components/cancel_jobs_modal.vue';
+import CancelJobsModal from '~/ci/admin/jobs_table/components/cancel_jobs_modal.vue';
 import { setVueErrorHandler } from '../../../../__helpers__/set_vue_error_handler';
 
 jest.mock('~/lib/utils/url_utility', () => ({

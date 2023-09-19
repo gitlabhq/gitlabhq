@@ -3,7 +3,7 @@ import { GlAlert, GlIntersectionObserver, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
-import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
+import JobsSkeletonLoader from '~/ci/admin/jobs_table/components/jobs_skeleton_loader.vue';
 import JobsFilteredSearch from '~/ci/common/private/jobs_filtered_search/app.vue';
 import { validateQueryString } from '~/ci/common/private/jobs_filtered_search/utils';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';

@@ -1,6 +1,6 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import JobsSkeletonLoader from '~/pages/admin/jobs/components/jobs_skeleton_loader.vue';
+import JobsSkeletonLoader from '~/ci/admin/jobs_table/components/jobs_skeleton_loader.vue';
 
 describe('jobs_skeleton_loader.vue', () => {
   let wrapper;

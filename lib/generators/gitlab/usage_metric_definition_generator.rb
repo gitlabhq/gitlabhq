@@ -26,7 +26,7 @@ module Gitlab
     TOP_LEVEL_DIR = 'config'
     TOP_LEVEL_DIR_EE = 'ee'
 
-    VALID_INPUT_DIRS = (TIME_FRAME_DIRS.flat_map { |d| [d.name, d.time_frame] } - %w(none)).freeze
+    VALID_INPUT_DIRS = (TIME_FRAME_DIRS.flat_map { |d| [d.name, d.time_frame] } - %w[none]).freeze
 
     source_root File.expand_path('../../../generator_templates/usage_metric_definition', __dir__)
 

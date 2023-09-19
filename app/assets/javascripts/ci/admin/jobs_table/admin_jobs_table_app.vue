@@ -19,11 +19,11 @@ import {
   JOBS_FETCH_ERROR_MSG,
   LOADING_ARIA_LABEL,
   CANCELABLE_JOBS_ERROR_MSG,
-} from '../constants';
-import JobsSkeletonLoader from '../jobs_skeleton_loader.vue';
+} from './constants';
+import JobsSkeletonLoader from './components/jobs_skeleton_loader.vue';
 import GetAllJobs from './graphql/queries/get_all_jobs.query.graphql';
 import GetAllJobsCount from './graphql/queries/get_all_jobs_count.query.graphql';
-import CancelableJobs from './graphql/queries/get_cancelable_jobs_count.query.graphql';
+import getCancelableJobs from './graphql/queries/get_cancelable_jobs_count.query.graphql';
 
 export default {
   i18n: {
@@ -92,7 +92,7 @@ export default {
       },
     },
     cancelable: {
-      query: CancelableJobs,
+      query: getCancelableJobs,
       update(data) {
         this.isCancelable = data.cancelable.count !== 0;
       },

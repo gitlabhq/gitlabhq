@@ -5,7 +5,7 @@ module ReleaseHighlights
     include ActiveModel::Validations
     include ActiveModel::Validations::Callbacks
 
-    AVAILABLE_IN = %w(Free Premium Ultimate).freeze
+    AVAILABLE_IN = %w[Free Premium Ultimate].freeze
     HYPHENATED_ATTRIBUTES = [:self_managed, :gitlab_com].freeze
 
     attr_reader :entry

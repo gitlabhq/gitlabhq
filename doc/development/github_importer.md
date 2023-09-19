@@ -292,7 +292,7 @@ The code for this resides in:
 
 - `lib/gitlab/github_import/label_finder.rb`
 - `lib/gitlab/github_import/milestone_finder.rb`
-- `lib/gitlab/github_import/caching.rb`
+- `lib/gitlab/cache/import/caching.rb`
 
 ## Logs
 

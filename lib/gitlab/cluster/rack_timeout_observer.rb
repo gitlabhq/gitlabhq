@@ -4,7 +4,7 @@ module Gitlab
   module Cluster
     class RackTimeoutObserver
       include ActionView::Helpers::SanitizeHelper
-      TRANSITION_STATES = %i(ready active).freeze
+      TRANSITION_STATES = %i[ready active].freeze
 
       def initialize
         @counter = Gitlab::Metrics.counter(:rack_requests_total, 'Number of requests in a given rack state')

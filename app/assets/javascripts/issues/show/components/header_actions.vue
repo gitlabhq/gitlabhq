@@ -464,7 +464,7 @@ export default {
           >{{ copyMailAddressText }}</gl-dropdown-item
         >
       </template>
-      <gl-dropdown-divider v-if="showToggleIssueStateButton || canDestroyIssue || canReportSpam" />
+      <gl-dropdown-divider v-if="canDestroyIssue || canReportSpam || !isIssueAuthor" />
       <gl-dropdown-item
         v-if="canReportSpam"
         :href="submitAsSpamPath"

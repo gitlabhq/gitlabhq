@@ -6,7 +6,7 @@ module Gitlab
       class CodequalityReports
         attr_reader :degradations, :error_message
 
-        SEVERITY_PRIORITIES = %w(blocker critical major minor info unknown).map.with_index.to_h.freeze # { "blocker" => 0, "critical" => 1 ... }
+        SEVERITY_PRIORITIES = %w[blocker critical major minor info unknown].map.with_index.to_h.freeze # { "blocker" => 0, "critical" => 1 ... }
         CODECLIMATE_SCHEMA_PATH = Rails.root.join('app', 'validators', 'json_schemas', 'codeclimate.json').to_s
 
         def initialize

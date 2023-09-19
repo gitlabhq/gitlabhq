@@ -17,22 +17,22 @@ module Gitlab
 
         # These methods perform writes after which we need to stick to the
         # primary.
-        STICKY_WRITES = %i(
+        STICKY_WRITES = %i[
           delete
           delete_all
           insert
           update
           update_all
           exec_insert_all
-        ).freeze
+        ].freeze
 
-        NON_STICKY_READS = %i(
+        NON_STICKY_READS = %i[
           sanitize_limit
           select
           select_one
           select_rows
           quote_column_name
-        ).freeze
+        ].freeze
 
         # hosts - The hosts to use for load balancing.
         def initialize(load_balancer)

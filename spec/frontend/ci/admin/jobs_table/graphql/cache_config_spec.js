@@ -1,4 +1,4 @@
-import cacheConfig from '~/pages/admin/jobs/components/table/graphql/cache_config';
+import cacheConfig from '~/ci/admin/jobs_table/graphql/cache_config';
 import {
   CIJobConnectionExistingCache,
   CIJobConnectionIncomingCache,

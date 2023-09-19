@@ -4096,6 +4096,24 @@ Input type: `InstanceExternalAuditEventDestinationUpdateInput`
 | <a id="mutationinstanceexternalauditeventdestinationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationinstanceexternalauditeventdestinationupdateinstanceexternalauditeventdestination"></a>`instanceExternalAuditEventDestination` | [`InstanceExternalAuditEventDestination`](#instanceexternalauditeventdestination) | Updated destination. |
 
+### `Mutation.instanceGoogleCloudLoggingConfigurationDestroy`
+
+Input type: `InstanceGoogleCloudLoggingConfigurationDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstancegooglecloudloggingconfigurationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstancegooglecloudloggingconfigurationdestroyid"></a>`id` | [`AuditEventsInstanceGoogleCloudLoggingConfigurationID!`](#auditeventsinstancegooglecloudloggingconfigurationid) | ID of the Google Cloud logging configuration to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationinstancegooglecloudloggingconfigurationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationinstancegooglecloudloggingconfigurationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.issuableResourceLinkCreate`
 
 Input type: `IssuableResourceLinkCreateInput`
@@ -29269,6 +29287,12 @@ An example `AuditEventsGoogleCloudLoggingConfigurationID` is: `"gid://gitlab/Aud
 A `AuditEventsInstanceExternalAuditEventDestinationID` is a global ID. It is encoded as a string.
 
 An example `AuditEventsInstanceExternalAuditEventDestinationID` is: `"gid://gitlab/AuditEvents::InstanceExternalAuditEventDestination/1"`.
+
+### `AuditEventsInstanceGoogleCloudLoggingConfigurationID`
+
+A `AuditEventsInstanceGoogleCloudLoggingConfigurationID` is a global ID. It is encoded as a string.
+
+An example `AuditEventsInstanceGoogleCloudLoggingConfigurationID` is: `"gid://gitlab/AuditEvents::Instance::GoogleCloudLoggingConfiguration/1"`.
 
 ### `AuditEventsStreamingHeaderID`
 

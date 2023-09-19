@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import JobsTableTabs from '~/ci/jobs_page/components/jobs_table_tabs.vue';
-import CancelJobs from '~/pages/admin/jobs/components/cancel_jobs.vue';
+import CancelJobs from '~/ci/admin/jobs_table/components/cancel_jobs.vue';
 
 describe('Jobs Table Tabs', () => {
   let wrapper;

@@ -60,12 +60,12 @@ module SystemCheck
     end
 
     def sidekiq_worker_process_count
-      ps_ux, _ = Gitlab::Popen.popen(%w(ps uxww))
+      ps_ux, _ = Gitlab::Popen.popen(%w[ps uxww])
       ps_ux.lines.grep(/sidekiq \d+\.\d+\.\d+/).count
     end
 
     def sidekiq_cluster_process_count
-      ps_ux, _ = Gitlab::Popen.popen(%w(ps uxww))
+      ps_ux, _ = Gitlab::Popen.popen(%w[ps uxww])
       ps_ux.lines.grep(/sidekiq-cluster/).count
     end
   end
