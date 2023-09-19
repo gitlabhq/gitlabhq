@@ -4,7 +4,7 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DAST browser-based crawler vulnerability checks **(ULTIMATE ALL)**
+# DAST browser-based crawler vulnerability checks **(ULTIMATE)**
 
 The [DAST browser-based crawler](../browser_based.md) provides a number of vulnerability checks that are used to scan for vulnerabilities in the site under test.
 
@@ -167,4 +167,5 @@ The [DAST browser-based crawler](../browser_based.md) provides a number of vulne
 
 | ID | Check | Severity | Type |
 |:---|:------|:---------|:-----|
+| [113.1](113.1.md) | Improper Neutralization of CRLF Sequences in HTTP Headers | High | Active |
 | [22.1](22.1.md) | Improper limitation of a pathname to a restricted directory (Path traversal) | High | Active |

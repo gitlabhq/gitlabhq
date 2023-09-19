@@ -350,12 +350,12 @@ module SystemNotes
     # Returns the created Note object
     def change_issue_confidentiality
       if noteable.confidential
-        body = 'made the issue confidential'
+        body = "made the #{noteable_name} confidential"
         action = 'confidential'
 
         track_issue_event(:track_issue_made_confidential_action)
       else
-        body = 'made the issue visible to everyone'
+        body = "made the #{noteable_name} visible to everyone"
         action = 'visible'
 
         track_issue_event(:track_issue_made_visible_action)

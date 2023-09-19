@@ -65,6 +65,7 @@ this setting, unless you configure one of these options:
 
 > - Moved to GitLab Premium in 13.9.
 > - [Feature flag `keep_merge_commits_for_approvals`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127744) added in GitLab 16.3 to also include merge commits in this check.
+> - [Feature flag `keep_merge_commits_for_approvals`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131778) removed in GitLab 16.5. This check now includes merge commits.
 
 By default, users who commit to a merge request can still approve it. At both
 the project level or [instance level](../../../admin_area/merge_requests_approvals.md),

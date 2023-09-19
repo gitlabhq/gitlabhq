@@ -166,7 +166,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
     it 'returns quick action commands supported for all work items' do
       is_expected.to include(:title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
-        :subscribe, :unsubscribe)
+        :subscribe, :unsubscribe, :confidential, :award)
     end
 
     context 'when work item supports the assignee widget' do

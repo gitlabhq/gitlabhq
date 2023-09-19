@@ -1872,10 +1872,20 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         let(:issuable) { merge_request }
       end
 
+      it_behaves_like 'award command' do
+        let(:content) { '/award :100:' }
+        let(:issuable) { work_item }
+      end
+
       context 'ignores command with no argument' do
         it_behaves_like 'failed command' do
           let(:content) { '/award' }
           let(:issuable) { issue }
+        end
+
+        it_behaves_like 'failed command' do
+          let(:content) { '/award' }
+          let(:issuable) { work_item }
         end
       end
 
@@ -1888,6 +1898,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         it_behaves_like 'failed command' do
           let(:content) { '/award :lorem_ipsum:' }
           let(:issuable) { issue }
+        end
+
+        it_behaves_like 'failed command' do
+          let(:content) { '/award :lorem_ipsum:' }
+          let(:issuable) { work_item }
         end
       end
 

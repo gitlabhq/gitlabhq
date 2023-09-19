@@ -5,7 +5,7 @@ class WorkItem < Issue
 
   COMMON_QUICK_ACTIONS_COMMANDS = [
     :title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
-    :subscribe, :unsubscribe
+    :subscribe, :unsubscribe, :confidential, :award
   ].freeze
 
   self.table_name = 'issues'

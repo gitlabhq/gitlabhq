@@ -188,6 +188,45 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       end
     end
 
+    describe '/confidential' do
+      let_it_be_with_reload(:noteable) { create(:work_item, :issue, project: project) }
+      let_it_be(:note_text) { '/confidential' }
+      let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+
+      context 'when work item does not have children' do
+        it 'leaves the note empty' do
+          expect(execute(note)).to be_empty
+        end
+
+        it 'marks work item as confidential' do
+          expect { execute(note) }.to change { noteable.reload.confidential }.from(false).to(true)
+        end
+      end
+
+      context 'when work item has children' do
+        before do
+          create(:parent_link, work_item: task, work_item_parent: noteable)
+        end
+
+        context 'when children are not confidential' do
+          let(:task) { create(:work_item, :task, project: project) }
+
+          it 'does not mark parent work item as confidential' do
+            expect { execute(note) }.to not_change { noteable.reload.confidential }.from(false)
+            expect(noteable.errors[:base]).to include('A confidential work item cannot have a parent that already has non-confidential children.')
+          end
+        end
+
+        context 'when children are confidential' do
+          let(:task) { create(:work_item, :confidential, :task, project: project) }
+
+          it 'marks parent work item as confidential' do
+            expect { execute(note) }.to change { noteable.reload.confidential }.from(false).to(true)
+          end
+        end
+      end
+    end
+
     describe 'note with command & text' do
       describe '/close, /label, /assign & /milestone' do
         let(:note_text) do
