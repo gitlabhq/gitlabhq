@@ -29,3 +29,5 @@ module API
     end
   end
 end
+
+API::Entities::ProjectIntegrationBasic.prepend_mod

@@ -86,7 +86,7 @@ export const confidentialityInfoText = (workspaceType, issuableType) =>
     ),
     {
       workspaceType: workspaceType === WORKSPACE_PROJECT ? __('project') : __('group'),
-      issuableType: issuableType.toLowerCase(),
+      issuableType: issuableType.toLowerCase().replaceAll('_', ' '),
       permissions:
         issuableType === TYPE_ISSUE
           ? __('at least the Reporter role, the author, and assignees')

@@ -288,4 +288,18 @@ RSpec.describe GroupMember, feature_category: :cell do
       it_behaves_like 'calls AuthorizedProjectsWorker inline to recalculate authorizations'
     end
   end
+
+  context 'group member welcome email', :sidekiq_inline, :saas do
+    let_it_be(:group) { create(:group) }
+
+    let(:user) { create(:user) }
+
+    it 'schedules plain welcome to the group email' do
+      expect_next_instance_of(NotificationService) do |notification|
+        expect(notification).to receive(:new_group_member)
+      end
+
+      group.add_developer(user)
+    end
+  end
 end

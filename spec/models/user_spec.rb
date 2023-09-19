@@ -2095,6 +2095,7 @@ RSpec.describe User, feature_category: :user_profile do
     it 'uses SecureRandom to generate the incoming email token' do
       allow_next_instance_of(User) do |user|
         allow(user).to receive(:update_highest_role)
+        allow(user).to receive(:associate_with_enterprise_group)
       end
 
       allow_next_instance_of(Namespaces::UserNamespace) do |namespace|

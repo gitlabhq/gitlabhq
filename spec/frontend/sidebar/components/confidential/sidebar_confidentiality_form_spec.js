@@ -38,6 +38,23 @@ describe('Sidebar Confidentiality Form', () => {
     });
   };
 
+  const confidentialityMutation = (confidential, workspacePath) => {
+    return {
+      mutation: confidentialityQueries[wrapper.vm.issuableType].mutation,
+      variables: {
+        input: {
+          confidential,
+          iid: '1',
+          ...workspacePath,
+        },
+      },
+    };
+  };
+
+  const clickConfidentialToggle = () => {
+    findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
+  };
+
   it('emits a `closeForm` event when Cancel button is clicked', () => {
     createComponent();
     findCancelButton().vm.$emit('click');
@@ -94,17 +111,10 @@ describe('Sidebar Confidentiality Form', () => {
     });
 
     it('calls a mutation to set confidential to true on button click', () => {
-      findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: confidentialityQueries[wrapper.vm.issuableType].mutation,
-        variables: {
-          input: {
-            confidential: true,
-            iid: '1',
-            projectPath: 'group/project',
-          },
-        },
-      });
+      clickConfidentialToggle();
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith(
+        confidentialityMutation(true, { projectPath: 'group/project' }),
+      );
     });
   });
 
@@ -150,17 +160,49 @@ describe('Sidebar Confidentiality Form', () => {
     });
 
     it('calls a mutation to set epic confidentiality with correct parameters', () => {
-      findConfidentialToggle().vm.$emit('click', new MouseEvent('click'));
+      clickConfidentialToggle();
+      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith(
+        confidentialityMutation(false, { groupPath: 'group/project' }),
+      );
+    });
+  });
 
-      expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-        mutation: confidentialityQueries[wrapper.vm.issuableType].mutation,
-        variables: {
-          input: {
-            confidential: false,
-            iid: '1',
-            groupPath: 'group/project',
-          },
-        },
+  describe('when issuable type is `test_case`', () => {
+    describe('when test case is confidential', () => {
+      beforeEach(() => {
+        createComponent({ props: { confidential: true, issuableType: 'test_case' } });
+      });
+
+      it('renders a message about making a test case non-confidential', () => {
+        expect(findWarningMessage().text()).toBe(
+          'You are going to turn off the confidentiality. This means everyone will be able to see this test case.',
+        );
+      });
+
+      it('calls a mutation to set confidential to false on button click', () => {
+        clickConfidentialToggle();
+        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith(
+          confidentialityMutation(false, { projectPath: 'group/project' }),
+        );
+      });
+    });
+
+    describe('when test case is not confidential', () => {
+      beforeEach(() => {
+        createComponent({ props: { issuableType: 'test_case' } });
+      });
+
+      it('renders a message about making a test case confidential', () => {
+        expect(findWarningMessage().text()).toBe(
+          'You are going to turn on confidentiality. Only project members with at least the Reporter role can view or be notified about this test case.',
+        );
+      });
+
+      it('calls a mutation to set confidential to true on button click', () => {
+        clickConfidentialToggle();
+        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith(
+          confidentialityMutation(true, { projectPath: 'group/project' }),
+        );
       });
     });
   });

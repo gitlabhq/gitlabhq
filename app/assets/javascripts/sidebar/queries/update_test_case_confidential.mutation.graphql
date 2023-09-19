@@ -1,0 +1,9 @@
+mutation updateTestCaseConfidential($input: IssueSetConfidentialInput!) {
+  issuableSetConfidential: issueSetConfidential(input: $input) {
+    issuable: issue {
+      id
+      confidential
+    }
+    errors
+  }
+}

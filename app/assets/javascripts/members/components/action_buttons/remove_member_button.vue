@@ -71,7 +71,7 @@ export default {
     :title="title"
     :aria-label="title"
     icon="remove"
-    data-qa-selector="delete_member_button"
+    data-testid="delete-member-button"
     @click="showRemoveMemberModal(modalData)"
   />
 </template>

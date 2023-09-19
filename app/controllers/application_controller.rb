@@ -343,9 +343,12 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    return if session[:impersonator_id] || !current_user&.allow_password_authentication?
+    return if session[:impersonator_id]
+    return if current_user.nil?
 
-    redirect_to new_profile_password_path if current_user&.password_expired?
+    if current_user.password_expired? && current_user.allow_password_authentication?
+      redirect_to new_profile_password_path
+    end
   end
 
   def active_user_check

@@ -45,6 +45,9 @@ msgstr ""
 msgid " and %{sliced}"
 msgstr ""
 
+msgid " and leave a comment on"
+msgstr ""
+
 msgid " except branch:"
 msgid_plural " except branches:"
 msgstr[0] ""
@@ -18239,9 +18242,6 @@ msgid "Enterprise User"
 msgstr ""
 
 msgid "Enterprise User Account on GitLab"
-msgstr ""
-
-msgid "EnterpriseUsers|The user detail cannot be updated"
 msgstr ""
 
 msgid "EnterpriseUsers|The user does not match the \"Enterprise User\" definition for the group"
@@ -54065,7 +54065,7 @@ msgstr ""
 msgid "You are going to transfer %{project_full_name} to another namespace. Are you ABSOLUTELY sure?"
 msgstr ""
 
-msgid "You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see and leave a comment on this %{issuableType}."
+msgid "You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see%{commentText} this %{issuableType}."
 msgstr ""
 
 msgid "You are going to turn on confidentiality. Only %{context} members with %{strongStart}%{permissions}%{strongEnd} can view or be notified about this %{issuableType}."

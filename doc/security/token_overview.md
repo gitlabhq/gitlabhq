@@ -20,9 +20,8 @@ You can create [Personal access tokens](../user/profile/personal_access_tokens.m
 You can limit the scope and expiration date of your personal access tokens. By default,
 they inherit permissions from the user who created them.
 
-You can use the [personal access tokens API](../api/personal_access_tokens.md) to
-programmatically take action, such as
-[rotating a personal access token](../api/personal_access_tokens.md#rotate-a-personal-access-token).
+You can use the personal access tokens API to programmatically take action,
+such as [rotating a personal access token](../api/personal_access_tokens.md#rotate-a-personal-access-token).
 
 You will receive an email when personal access tokens are 7 days or less from expiration.
 
@@ -120,6 +119,9 @@ for the following executors only have access to the job token and not the runner
 Malicious access to a runner's file system may expose the `config.toml` file and the
 runner authentication token. The attacker could use the runner authentication
 to [clone the runner](https://docs.gitlab.com/runner/security/#cloning-a-runner).
+
+You can use the `runners` API to
+programmatically [rotate or revoke a runner authentication token](../api/runners.md#reset-runners-authentication-token-by-using-the-current-token).
 
 ## Runner registration tokens (deprecated)
 

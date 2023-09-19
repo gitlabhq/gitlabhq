@@ -1,6 +1,6 @@
 %li.todo.gl-hover-border-blue-200.gl-hover-bg-blue-50.gl-hover-cursor-pointer.gl-relative{ class: "todo-#{todo.done? ? 'done' : 'pending'}", id: dom_id(todo) }
   .gl-display-flex.gl-flex-direction-column.gl-sm-flex-direction-row.gl-sm-align-items-center
-    .todo-item.gl-overflow-hidden.gl-overflow-x-auto.gl-align-self-center.gl-w-full{ data: { qa_selector: "todo_item_container" } }
+    .todo-item.gl-overflow-hidden.gl-overflow-x-auto.gl-align-self-center.gl-w-full{ data: { testid: "todo-item-container" } }
       .todo-title.gl-pt-2.gl-pb-3.gl-px-2.gl-md-mb-1.gl-font-sm.gl-text-secondary
 
         = todo_target_state_pill(todo)
@@ -25,7 +25,7 @@
           = author_avatar(todo, size: 24)
         .todo-note
           - if todo_author_display?(todo)
-            .author-name.bold.gl-display-inline{ data: { qa_selector: "todo_author_name_content" } }<
+            .author-name.bold.gl-display-inline{ data: { testid: "todo-author-name-content" } }<
               - if todo.author
                 = link_to_author(todo, self_added: todo.self_added?)
               - else

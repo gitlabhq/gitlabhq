@@ -1,7 +1,7 @@
 <script>
 import { GlSprintf, GlButton } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { TYPE_ISSUE } from '~/issues/constants';
+import { TYPE_ISSUE, TYPE_TEST_CASE, IssuableTypeText } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import { confidentialityQueries } from '../../queries/constants';
 
@@ -11,7 +11,7 @@ export default {
       'You are going to turn on confidentiality. Only %{context} members with %{strongStart}%{permissions}%{strongEnd} can view or be notified about this %{issuableType}.',
     ),
     confidentialityOffWarning: __(
-      'You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see and leave a comment on this %{issuableType}.',
+      'You are going to turn off the confidentiality. This means %{strongStart}everyone%{strongEnd} will be able to see%{commentText} this %{issuableType}.',
     ),
   },
   components: {
@@ -56,11 +56,17 @@ export default {
     isIssue() {
       return this.issuableType === TYPE_ISSUE;
     },
+    isTestCase() {
+      return this.issuableType === TYPE_TEST_CASE;
+    },
+    isIssueOrTestCase() {
+      return this.isIssue || this.isTestCase;
+    },
     context() {
-      return this.isIssue ? __('project') : __('group');
+      return this.isIssueOrTestCase ? __('project') : __('group');
     },
     workspacePath() {
-      return this.isIssue
+      return this.isIssueOrTestCase
         ? {
             projectPath: this.fullPath,
           }
@@ -72,6 +78,12 @@ export default {
       return this.isIssue
         ? __('at least the Reporter role, the author, and assignees')
         : __('at least the Reporter role');
+    },
+    issuableTypeText() {
+      return IssuableTypeText[this.issuableType];
+    },
+    commentText() {
+      return this.isTestCase ? '' : __(' and leave a comment on');
     },
   },
   methods: {
@@ -108,7 +120,7 @@ export default {
             message: sprintf(
               __('Something went wrong while setting %{issuableType} confidentiality.'),
               {
-                issuableType: this.issuableType,
+                issuableType: this.issuableTypeText,
               },
             ),
           });
@@ -135,7 +147,8 @@ export default {
               </strong>
             </template>
             <template #context>{{ context }}</template>
-            <template #issuableType>{{ issuableType }}</template>
+            <template #commentText>{{ commentText }}</template>
+            <template #issuableType>{{ issuableTypeText }}</template>
           </gl-sprintf>
         </p>
         <div class="sidebar-item-warning-message-actions">

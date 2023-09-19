@@ -307,6 +307,8 @@
   - 1
 - - groups_create_event
   - 1
+- - groups_enterprise_users_associate
+  - 1
 - - groups_enterprise_users_disassociate
   - 1
 - - groups_export_memberships
@@ -372,6 +374,8 @@
 - - ldap_group_sync
   - 2
 - - llm_completion
+  - 1
+- - llm_embedding_gitlab_documentation_create_db_embeddings_per_doc_file
   - 1
 - - llm_embedding_gitlab_documentation_set_embeddings_on_the_record
   - 1

@@ -69,6 +69,8 @@ import groupMilestonesQuery from './group_milestones.query.graphql';
 import projectIssueMilestoneMutation from './project_issue_milestone.mutation.graphql';
 import projectIssueMilestoneQuery from './project_issue_milestone.query.graphql';
 import projectMilestonesQuery from './project_milestones.query.graphql';
+import testCaseConfidentialQuery from './test_case_confidential.query.graphql';
+import updateTestCaseConfidentialMutation from './update_test_case_confidential.mutation.graphql';
 
 export const assigneesQueries = {
   [TYPE_ISSUE]: {
@@ -119,6 +121,10 @@ export const confidentialityQueries = {
   [TYPE_EPIC]: {
     query: epicConfidentialQuery,
     mutation: updateEpicConfidentialMutation,
+  },
+  [TYPE_TEST_CASE]: {
+    query: testCaseConfidentialQuery,
+    mutation: updateTestCaseConfidentialMutation,
   },
 };
 

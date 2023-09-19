@@ -2,13 +2,7 @@ import { GlBadge, GlButton, GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import {
-  STATUS_CLOSED,
-  STATUS_OPEN,
-  STATUS_REOPENED,
-  TYPE_ISSUE,
-  WORKSPACE_PROJECT,
-} from '~/issues/constants';
+import { STATUS_CLOSED, STATUS_OPEN, STATUS_REOPENED, TYPE_ISSUE } from '~/issues/constants';
 import { __ } from '~/locale';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -45,7 +39,6 @@ describe('IssuableHeader component', () => {
         ...mockIssuableShowProps,
         issuableState: STATUS_OPEN,
         issuableType: TYPE_ISSUE,
-        workspaceType: WORKSPACE_PROJECT,
         ...props,
       },
       slots: {

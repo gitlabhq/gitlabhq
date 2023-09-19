@@ -92,6 +92,11 @@ export default {
       required: false,
       default: false,
     },
+    workspaceType: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   methods: {
     handleKeydownTitle(e, issuableMeta) {
@@ -116,6 +121,7 @@ export default {
       :author="issuable.author"
       :task-completion-status="taskCompletionStatus"
       :issuable-type="issuable.type"
+      :workspace-type="workspaceType"
       :show-work-item-type-icon="showWorkItemTypeIcon"
     >
       <template #status-badge>
