@@ -36,10 +36,13 @@ module QA
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
-          element :file_name_content
           element :file_title_container
           element :dropdown_button
           element :edit_in_ide_button
+        end
+
+        view 'app/assets/javascripts/vue_shared/components/file_row.vue' do
+          element 'file-row-name-container'
         end
 
         view 'app/assets/javascripts/diffs/components/diff_row.vue' do
@@ -226,17 +229,17 @@ module QA
         def has_file?(file_name)
           open_file_tree
 
-          return true if has_element?(:file_name_content, file_name: file_name)
+          return true if has_element?('file-row-name-container', file_name: file_name)
 
           # Since the file tree uses virtual scrolling, search for file in case it is outside of viewport
           search_file_tree(file_name)
-          has_element?(:file_name_content, file_name: file_name)
+          has_element?('file-row-name-container', file_name: file_name)
         end
 
         def has_no_file?(file_name)
           # Since the file tree uses virtual scrolling, search for file to ensure non-existence
           search_file_tree(file_name)
-          has_no_element?(:file_name_content, file_name: file_name)
+          has_no_element?('file-row-name-container', file_name: file_name)
         end
 
         def search_file_tree(file_name)

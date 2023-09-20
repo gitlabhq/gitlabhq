@@ -217,14 +217,43 @@ To enable the Inbound Private Link:
 
 ### Outbound Private Link
 
-Outbound Private Links allow the GitLab Dedicated instance to securely communicate with services running in your VPC on AWS. This type of connection can execute [webhooks](../../user/project/integrations/webhooks.md) where the targeted services are running in your VPC, import or mirror projects and repositories, or use any other GitLab functionality to access private services.
+Consider the following when using Outbound Private Links:
+
+- Outbound Private Links allow the GitLab Dedicated instance to securely communicate with services running in your VPC on AWS. This type of connection
+  can execute [webhooks](../../user/project/integrations/webhooks.md) where the targeted services are running in your VPC, import or mirror projects
+  and repositories, or use any other GitLab functionality to access private services.
+- You can only establish Private Links between VPCs in the same region. Therefore, you can only establish a connection in the regions you selected for
+  your Dedicated instance.
+- The Network Load Balancer (NLB) that backs the Endpoint Service at your end must be enabled in at least one of the Availability Zones to which your Dedicated tenant was
+  deployed. This is not the user-facing name such as `us-east-1a`, but the underlying [Availability Zone ID](https://docs.aws.amazon.com/ram/latest/userguide/working-with-az-ids.html).
+  If you did not specify these during onboarding to Dedicated, you must either:
+  - Ask for the Availability Zone IDs in the ticket you raise to enable the link and ensure the NLB is enabled in those AZs, or
+  - Ensure the NLB has is enabled in every Availability Zone in the region.
 
 To enable an Outbound Private Link:
 
-1. In your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), GitLab provides you with an IAM role ARN that connects to your endpoint service. You can then add this ARN to the allowlist on your side to restrict connections to your endpoint service.
-1. [Create the Endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) through which your internal service is available to GitLab Dedicated. Provide the associated `Service Endpoint Name` on the [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
-1. When creating the Endpoint service, you must provide GitLab with a [verified Private DNS Name](https://docs.aws.amazon.com/vpc/latest/privatelink/manage-dns-names.html#verify-domain-ownership) for your service. Optionally, if you would like GitLab Dedicated to reach your service via other aliases, you have the ability to specify a list of Private Hosted Zone (PHZ) entries. With this option, GitLab sets up a Private Hosted Zone with DNS names aliased to the verified Private DNS name. To enable this functionality, you must provide GitLab a list of PHZ entries on your support ticket. After the PHZ is created in the tenant environment, DNS resolution of any of the provided records correctly resolves to the PrivateLink endpoint.
-1. GitLab then configures the tenant instance to create the necessary Endpoint Interfaces based on the service names you provided. Any outbound calls made from the tenant GitLab instance are directed through the PrivateLink into your VPC.
+1. [Create the Endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) through which your internal service
+   will be available to GitLab Dedicated. Provide the associated `Service Endpoint Name` on a new
+   [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+1. In your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), GitLab will provide you with the ARN of an
+   IAM role that will be initiating the connection to your endpoint service. You must ensure this ARN is included, or otherwise covered by other
+   entries, in the list of "Allowed Principals" on the Endpoint Service, as described by the [AWS documentation](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions).
+   Though it's optional, you should you add it explicitly, allowing you to set `Acceptance required` to No so that Dedicated can connect in a single operation.
+   If you leave `Acceptance required` as Yes, then you must manually accept the connection after Dedicated has initiated it.
+1. To connect to services using the Endpoint, the Dedicated services require a DNS name. Private Link automatically creates an internal name, but
+   it is machine-generated and not generally directly useful. There are two options available:
+   - In your Endpoint Service, enable [Private DNS name](https://docs.aws.amazon.com/vpc/latest/privatelink/manage-dns-names.html), perform the
+     required validation, and let GitLab know in the support ticket that you are using this option. If `Acceptance Required` is set to Yes on your
+     Endpoint Service, also note this on the support ticket because Dedicated will need to initiate the connection without Private DNS, wait for you
+     to confirm it has been accepted, and then update the connection to enable the use of Private DNS.
+   - Dedicated can manage a Private Hosted Zone (PHZ) within the Dedicated AWS Account and alias any arbitrary DNS names to the Endpoint, directing
+     requests for those names to your Endpoint Service. This may be useful if you have multiple DNS names/aliases that will be accessed using a
+     single Endpoint (for example, if you are running a reverse proxy to connect to more than one service in your environment), or if the domain you
+     want to use is not public and cannot be validated for use by Private DNS. Let GitLab know on the support ticket if you are using this option and
+     provide a list of DNS names that should resolve to the Private Link Endpoint. This list can be updated as needed in future.
+
+GitLab then configures the tenant instance to create the necessary Endpoint Interfaces based on the service names you provided. Any matching outbound
+connections made from the tenant GitLab instance are directed through the PrivateLink into your VPC.
 
 #### Custom certificates
 

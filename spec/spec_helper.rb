@@ -487,6 +487,34 @@ RSpec.configure do |config|
   config.before(:each, :js) do
     allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
   end
+
+  [:migration, :delete].each do |spec_type|
+    message = <<~STRING
+      We detected an open transaction before running the example. This is not allowed with specs that rely on a table
+      deletion strategy like those marked as `:#{spec_type}`.
+
+      A common scenario for this is using `test-prof` methods in your specs. `let_it_be` and `before_all` methods open
+      a transaction before all the specs in a context are run, and this is not compatible with these type of specs.
+      Consider replacing these methods with `let!` and `before(:all)`.
+
+      For more information see
+      https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#testprof-in-migration-specs
+    STRING
+
+    config.around(:each, spec_type) do |example|
+      self.class.use_transactional_tests = false
+
+      if DbCleaner.all_connection_classes.any? { |klass| klass.connection.transaction_open? }
+        raise message
+      end
+
+      example.run
+
+      delete_from_all_tables!(except: deletion_except_tables)
+
+      self.class.use_transactional_tests = true
+    end
+  end
 end
 
 # Disabled because it's causing N+1 queries.

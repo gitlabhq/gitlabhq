@@ -337,7 +337,7 @@ export default {
           :title="filePath"
           class="file-title-name"
           data-container="body"
-          data-qa-selector="file_name_content"
+          data-testid="file-name-content"
         >
           {{ filePath }}
         </strong>

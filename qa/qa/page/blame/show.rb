@@ -5,7 +5,7 @@ module QA
     module Blame
       class Show < Page::Base
         view 'app/views/projects/blob/_header_content.html.haml' do
-          element :file_name_content
+          element 'file-name-content'
         end
 
         view 'app/views/projects/blame/show.html.haml' do
@@ -13,11 +13,11 @@ module QA
         end
 
         def has_file?(file_name)
-          within_element(:file_name_content) { has_text?(file_name) }
+          within_element('file-name-content') { has_text?(file_name) }
         end
 
         def has_no_file?(file_name)
-          within_element(:file_name_content) do
+          within_element('file-name-content') do
             has_no_text?(file_name)
           end
         end

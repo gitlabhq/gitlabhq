@@ -246,7 +246,7 @@ Merge requests which have run security scans let you know that the generated
 reports are available to download. To download a report, select
 **Download results**, and select the desired report.
 
-![Security widget](img/security_widget_v13_7.png)
+![Security widget](img/security_widget_v16_4.png)
 
 Security scans produce at least one of these [CI `artifacts:reports` types](../../ci/yaml/artifacts_reports.md):
 
@@ -257,6 +257,8 @@ Security scans produce at least one of these [CI `artifacts:reports` types](../.
 - `artifacts:reports:dependency_scanning`
 - `artifacts:reports:sast`
 - `artifacts:reports:secret_detection`
+
+In the Free tier, the reports above aren't parsed by GitLab. As a result, the widget does not change based on the results of the security scans.
 
 #### Ultimate
 

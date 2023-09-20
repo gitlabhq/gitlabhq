@@ -20,21 +20,11 @@ RSpec.configure do |config|
     Gitlab::CurrentSettings.clear_in_memory_application_settings!
   end
 
-  config.prepend_before(:all, :migration) do
-    TestProf::BeforeAll.adapter = ::TestProfBeforeAllAdapter.no_transaction_adapter
-  end
-
-  config.append_after(:all, :migration) do
-    TestProf::BeforeAll.adapter = ::TestProfBeforeAllAdapter.default_adapter
-  end
-
   config.append_after(:context, :migration) do
     recreate_databases_and_seed_if_needed || ensure_schema_and_empty_tables
   end
 
   config.around(:each, :migration) do |example|
-    self.class.use_transactional_tests = false
-
     migration_schema = example.metadata[:migration]
     migration_schema = :gitlab_main if migration_schema == true
     base_model = Gitlab::Database.schemas_to_base_models.fetch(migration_schema).first
@@ -52,10 +42,6 @@ RSpec.configure do |config|
     else
       example.run
     end
-
-    delete_from_all_tables!(except: deletion_except_tables)
-
-    self.class.use_transactional_tests = true
   end
 
   # Each example may call `migrate!`, so we must ensure we are migrated down every time

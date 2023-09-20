@@ -58,7 +58,7 @@ module QA
           end
 
           view 'app/assets/javascripts/vue_shared/components/file_row.vue' do
-            element :file_name_content
+            element 'file-row-name-container'
             element :file_row_container
           end
 
@@ -123,7 +123,7 @@ module QA
 
           def has_file?(file_name)
             within_element(:file_list_container) do
-              has_element?(:file_name_content, file_name: file_name)
+              has_element?('file-row-name-container', file_name: file_name)
             end
           end
 
@@ -289,7 +289,7 @@ module QA
           end
 
           def rename_file(file_name, new_file_name)
-            click_element(:file_name_content, file_name: file_name)
+            click_element('file-row-name-container', file_name: file_name)
             click_element(:dropdown_button)
             click_element(:rename_move_button, Page::Component::WebIDE::Modal::CreateNewFile)
             fill_element(:file_name_field, new_file_name)
@@ -314,7 +314,7 @@ module QA
           end
 
           def delete_file(file_name)
-            click_element(:file_name_content, file_name: file_name)
+            click_element('file-row-name-container', file_name: file_name)
             click_element(:dropdown_button)
             click_element(:delete_button)
           end
@@ -326,9 +326,9 @@ module QA
           def select_file(file_name)
             # wait for the list of files to load
             wait_until(reload: true) do
-              has_element?(:file_name_content, file_name: file_name)
+              has_element?('file-row-name-container', file_name: file_name)
             end
-            click_element(:file_name_content, file_name: file_name)
+            click_element('file-row-name-container', file_name: file_name)
           end
 
           def link_line(line_number)

@@ -33,8 +33,6 @@ feature_category: :continuous_integration do
     SQL
   end
 
-  let_it_be(:destination_root) { File.expand_path("../tmp", __dir__) }
-
   let(:generator_config) { { destination_root: destination_root } }
   let(:generator_args) { ['--source', '_test_tmp_metadata', '--target', '_test_tmp_builds', '--database', 'main'] }
 
@@ -123,5 +121,9 @@ feature_category: :continuous_integration do
   # the tests because we're removing the tables.
   def schema_migrate_down!
     # no-op
+  end
+
+  def destination_root
+    File.expand_path("../tmp", __dir__)
   end
 end

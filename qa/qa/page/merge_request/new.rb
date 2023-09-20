@@ -15,7 +15,7 @@ module QA
         end
 
         view 'app/assets/javascripts/merge_requests/components/compare_dropdown.vue' do
-          element :source_branch_dropdown, ':data-qa-selector="qaSelector"' # rubocop:disable QA/ElementWithPattern
+          element 'source-branch-dropdown', ':data-testid="testid"' # rubocop:disable QA/ElementWithPattern
         end
 
         view 'app/views/projects/merge_requests/creations/_new_submit.html.haml' do
@@ -23,7 +23,7 @@ module QA
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
-          element :file_name_content
+          element 'file-name-content'
         end
 
         def has_secure_description?(scanner_name)
@@ -46,11 +46,11 @@ module QA
         end
 
         def has_file?(file_name)
-          has_element?(:file_name_content, text: file_name)
+          has_element?('file-name-content', text: file_name)
         end
 
         def select_source_branch(branch)
-          click_element(:source_branch_dropdown)
+          click_element('source-branch-dropdown')
           search_and_select(branch)
         end
       end

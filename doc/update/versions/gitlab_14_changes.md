@@ -7,7 +7,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab 14 changes **(FREE SELF)**
 
 This page contains upgrade information for minor and patch versions of GitLab 14.
-Ensure you review these instructions for all versions between your current version and your target version.
+Ensure you review these instructions for:
+
+- Your installation type.
+- All versions between your current version and your target version.
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 5.0](https://docs.gitlab.com/charts/releases/5_0.html).
 

@@ -46,11 +46,6 @@ export default {
       required: false,
       default: '',
     },
-    qaSelector: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
@@ -142,7 +137,7 @@ export default {
         'gl-align-items-flex-start! gl-justify-content-start! mr-compare-dropdown',
         toggleClass,
       ]"
-      :data-qa-selector="qaSelector"
+      data-testid="source-branch-dropdown"
       @shown="fetchData"
       @search="searchData"
       @select="selectItem"

@@ -25,19 +25,8 @@ module TestProfBeforeAllAdapter
     end
   end
 
-  # This class is required so we can disable transactions on migration specs
-  module NoTransactionAdapter
-    def self.begin_transaction; end
-
-    def self.rollback_transaction; end
-  end
-
   def self.default_adapter
     MultipleDatabaseAdapter
-  end
-
-  def self.no_transaction_adapter
-    NoTransactionAdapter
   end
 end
 

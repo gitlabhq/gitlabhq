@@ -43,7 +43,6 @@ if (mrNewCompareNode) {
         project: 'js-source-project',
         branch: 'js-source-branch gl-font-monospace',
       },
-      branchQaSelector: 'source_branch_dropdown',
     },
     methods: {
       async selectedBranch(branchName) {
