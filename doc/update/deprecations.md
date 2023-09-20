@@ -1037,6 +1037,24 @@ removed in 17.0.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### `postgres_exporter['per_table_stats']` configuration setting
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8164).
+</div>
+
+The Linux package provides custom queries for the bundled PostgreSQL exporter, which included a `per_table_stats` query controlled by `postgres_exporter['per_table_stats']`
+configuration setting.
+
+The PostgreSQL exporter now provides a `stat_user_tables` collector that provides the same metrics. If you had `postgres_exporter['per_table_stats']` enabled,
+enable `postgres_exporter['flags']['collector.stat_user_tables']` instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated
 
 <div class="deprecation-notes">

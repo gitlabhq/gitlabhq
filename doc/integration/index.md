@@ -6,12 +6,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Integrate with GitLab **(FREE ALL)**
 
-You can integrate GitLab with external services for enhanced functionality.
+You can integrate GitLab with external applications for enhanced functionality.
 
-## Services
+## Project integrations
 
-Services such as Campfire, Jira, Pivotal Tracker, and Slack
-are available as [integrations](../user/project/integrations/index.md).
+Applications like Jira, Pivotal Tracker, and Slack are available
+as [project integrations](../user/project/integrations/index.md).
 
 ## Issue trackers
 
@@ -39,7 +39,7 @@ You can integrate GitLab with the following authentication sources:
   - Twitter
 - Use GitLab as an [OpenID Connect](openid_connect_provider.md) identity provider.
 - Authenticate with [Vault](vault.md) through GitLab OpenID Connect.
-- Configure GitLab as a [SAML 2.0](saml.md) Service Provider.
+- Configure GitLab as a [SAML 2.0](saml.md) service provider.
 
 ## Security enhancements
 
@@ -76,7 +76,7 @@ You can integrate GitLab with the following security partners:
 
 ## Continuous integration
 
-You can integrate GitLab with the following external services for continuous integration:
+You can integrate GitLab with the following external applications for continuous integration:
 
 - [Jenkins](jenkins.md) CI.
 - [Datadog](datadog.md) to monitor for CI/CD job failures and performance issues.
@@ -94,17 +94,19 @@ or [Kroki](../administration/integration/kroki.md) to use diagrams in AsciiDoc a
 
 ## Troubleshooting
 
+When working with integrations, you might encounter the following issues.
+
 ### SSL certificate errors
 
-When integrating GitLab with services using a self-signed certificate, you might
+When you use a self-signed certificate to integrate GitLab with external applications, you might
 encounter SSL certificate errors in different parts of the application.
 
-As a workaround, you can do one of the following:
+As a workaround, do one of the following:
 
-- Add the certificate to the OS trusted chain. See:
+- Add the certificate to the OS trusted chain. For more information, see:
   - [Adding trusted root certificates to the server](https://manuals.gfi.com/en/kerio/connect/content/server-configuration/ssl-certificates/adding-trusted-root-certificates-to-the-server-1605.html)
   - [How do you add a certificate authority (CA) to Ubuntu?](https://superuser.com/questions/437330/how-do-you-add-a-certificate-authority-ca-to-ubuntu)
-- In Omnibus GitLab, add the certificate to the Omnibus trusted chain:
+- For installations that use the Linux package, add the certificate to the GitLab trusted chain:
   1. [Install the self-signed certificate](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates).
   1. Concatenate the self-signed certificate with the GitLab trusted certificate.
      The self-signed certificate might be overwritten during upgrades.
@@ -133,3 +135,12 @@ You can find information in:
 - `json.exception.class`
 - `json.exception.message`
 - `json.message`
+
+### `Test Failed. Save Anyway` error
+
+When you configure an integration on an uninitialized repository, the integration might fail with
+a `Test Failed. Save Anyway` error. This error occurs because the integration uses push data
+to build the test payload when the project does not have push events.
+
+To resolve this issue, initialize the repository by pushing a test file to the project
+and configure the integration again.

@@ -45,6 +45,19 @@ module Bitbucket
         iid
       end
 
+      def to_hash
+        {
+          iid: iid,
+          title: title,
+          description: description,
+          state: state,
+          author: author,
+          milestone: milestone,
+          created_at: created_at,
+          updated_at: updated_at
+        }
+      end
+
       private
 
       def closed?

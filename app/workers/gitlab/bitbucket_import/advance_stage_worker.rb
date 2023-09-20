@@ -20,6 +20,7 @@ module Gitlab
 
       # The known importer stages and their corresponding Sidekiq workers.
       STAGES = {
+        issues: Stage::ImportIssuesWorker,
         finish: Stage::FinishImportWorker
       }.freeze
 

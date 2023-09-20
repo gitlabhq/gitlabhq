@@ -67,7 +67,7 @@ together {
 }
 
 together {
-  card "**Prometheus + Grafana**" as monitor #7FFFD4
+  card "**Prometheus**" as monitor #7FFFD4
   collections "**Consul** x3" as consul #e76a9b
 }
 
@@ -1393,7 +1393,6 @@ Updates to example must be made at:
    gitlab_workhorse['enable'] = false
    prometheus['enable'] = false
    alertmanager['enable'] = false
-   grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
 
@@ -1564,7 +1563,6 @@ Updates to example must be made at:
    gitlab_workhorse['enable'] = false
    prometheus['enable'] = false
    alertmanager['enable'] = false
-   grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
 
@@ -2106,8 +2104,7 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/index.htm
 ## Configure Prometheus
 
 The Linux package can be used to configure a standalone Monitoring node
-running [Prometheus](../monitoring/prometheus/index.md) and
-[Grafana](../monitoring/performance/grafana_configuration.md).
+running [Prometheus](../monitoring/prometheus/index.md).
 
 The following IP will be used as an example:
 
@@ -2130,10 +2127,6 @@ To configure the Monitoring node:
    # Prometheus
    prometheus['listen_address'] = '0.0.0.0:9090'
    prometheus['monitor_kubernetes'] = false
-
-   # Grafana
-   grafana['admin_password'] = '<grafana_password>'
-   grafana['disable_login_form'] = false
 
    # Enable service discovery for Prometheus
    consul['monitoring_service_discovery'] =  true
@@ -2165,13 +2158,10 @@ To configure the Monitoring node:
       },
    ]
 
-   # Nginx - For Grafana access
-   nginx['enable'] = true
+   nginx['enable'] = false
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-1. In the GitLab UI, set `admin/application_settings/metrics_and_profiling` > Metrics - Grafana to `/-/grafana` to
-`http[s]://<MONITOR NODE>/-/grafana`
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">
@@ -2241,7 +2231,7 @@ in Kubernetes via our official [Helm Charts](https://docs.gitlab.com/charts/).
 In this setup, we support running the equivalent of GitLab Rails and Sidekiq nodes
 in a Kubernetes cluster, named Webservice and Sidekiq respectively. In addition,
 the following other supporting services are supported: NGINX, Task Runner, Migrations,
-Prometheus, and Grafana.
+Prometheus.
 
 Hybrid installations leverage the benefits of both cloud native and traditional
 compute deployments. With this, _stateless_ components can benefit from cloud native

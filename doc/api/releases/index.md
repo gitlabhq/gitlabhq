@@ -26,11 +26,7 @@ For authentication, the Releases API accepts either:
 
 ## List Releases
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-> - The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-<!--- end_remove -->
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Returns a paginated list of releases, sorted by `released_at`.
 
@@ -258,11 +254,7 @@ Example response:
 
 ## Get a Release by a tag name
 
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-> - The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-<!--- end_remove -->
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Gets a release for the given tag.
 
@@ -470,13 +462,6 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 `?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in issue 352945](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
 
 ## Create a release
-
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-> The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-
-<!--- end_remove -->
 
 Creates a release. Developer level access to the project is required to create a release.
 

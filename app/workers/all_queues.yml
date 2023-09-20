@@ -2352,6 +2352,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: bitbucket_import_import_issue
+  :worker_name: Gitlab::BitbucketImport::ImportIssueWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: bitbucket_import_import_pull_request
   :worker_name: Gitlab::BitbucketImport::ImportPullRequestWorker
   :feature_category: :importers
@@ -2363,6 +2372,15 @@
   :tags: []
 - :name: bitbucket_import_stage_finish_import
   :worker_name: Gitlab::BitbucketImport::Stage::FinishImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_stage_import_issues
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportIssuesWorker
   :feature_category: :importers
   :has_external_dependencies: true
   :urgency: :low

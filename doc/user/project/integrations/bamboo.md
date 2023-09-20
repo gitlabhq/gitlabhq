@@ -124,7 +124,7 @@ For example:
 ### Builds not triggered
 
 If builds are not triggered, ensure you entered the right GitLab IP address in
-Bamboo under **Trigger IP addresses**. Also check [integration webhook logs](index.md#troubleshooting) for request failures.
+Bamboo under **Trigger IP addresses**. Also, check the integration webhook logs for request failures.
 
 ### Advanced Atlassian Bamboo features not available in GitLab UI
 

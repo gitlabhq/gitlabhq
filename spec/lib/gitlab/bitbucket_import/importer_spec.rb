@@ -384,6 +384,12 @@ RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, fea
           expect(label_after_import.attributes).to eq(existing_label.attributes)
         end
       end
+
+      it 'raises an error if a label is not valid' do
+        stub_const("#{described_class}::LABELS", [{ title: nil, color: nil }])
+
+        expect { importer.create_labels }.to raise_error(StandardError, /Failed to create label/)
+      end
     end
 
     it 'maps statuses to open or closed' do

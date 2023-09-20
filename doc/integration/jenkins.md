@@ -197,8 +197,7 @@ which is set to 10 seconds by default.
 
 For this issue, check:
 
-- [Integration webhook logs](../user/project/integrations/index.md#troubleshooting)
-for request failures.
+- The integration webhook logs for request failures.
 - `/var/log/gitlab/gitlab-rails/production.log` for messages like:
 
   ```plaintext

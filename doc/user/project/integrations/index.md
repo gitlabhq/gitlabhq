@@ -166,40 +166,25 @@ You can configure the following integrations.
 | [YouTrack](youtrack.md)                                                     | Use YouTrack as the issue tracker.                                    | **{dotted-circle}** No |
 | [ZenTao](zentao.md) (deprecated)                                            | Use ZenTao as the issue tracker.                                      | **{dotted-circle}** No |
 
-### Project webhooks
+## Project webhooks
+
+Some integrations use [webhooks](webhooks.md) for external applications.
 
 You can configure a project webhook to listen for specific events
-like pushes, issues, or merge requests. When the webhook is triggered, GitLab
-sends a POST request with data to a specified webhook URL.
+like pushes, issues, or merge requests. When the webhook is triggered,
+GitLab sends a POST request with data to a specified webhook URL.
 
-For more information, see [Webhooks](webhooks.md).
+For a list of integrations that use webhooks, see [Available integrations](#available-integrations).
 
-## Push hooks limit
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17874) in GitLab 12.4.
+## Push hook limit
 
 If a single push includes changes to more than three branches or tags, integrations
-supported by `push_hooks` and `tag_push_hooks` events aren't executed.
+supported by `push_hooks` and `tag_push_hooks` events are not executed.
 
-You can change the number of supported branches or tags by changing the
-[`push_event_hooks_limit` application setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+To change the number of supported branches or tags, configure the
+[`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
-## Contribute to integrations
+## Related topics
 
-If you're interested in developing a new native integration for GitLab, see:
-
-- [Integrations development guidelines](../../../development/integrations/index.md)
+- [Integration development guidelines](../../../development/integrations/index.md)
 - [GitLab Developer Portal](https://developer.gitlab.com)
-
-## Troubleshooting
-
-Some integrations use hooks to integrate with external applications. To confirm which ones use integration hooks, see the [available integrations](#available-integrations). For more information, see [webhook troubleshooting](webhooks.md#troubleshooting).
-
-### `Test Failed. Save Anyway` error
-
-Some integrations fail with an error `Test Failed. Save Anyway` when you set them
-up on uninitialized repositories. This error occurs because the integration uses
-push data to build the test payload, and there are no push events in the project.
-
-To resolve this error, initialize the repository by pushing a test file to the project
-and set up the integration again.

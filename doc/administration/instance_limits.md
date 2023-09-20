@@ -1014,10 +1014,10 @@ The maximum allowed [push size](../administration/settings/account_and_limit_set
 Total number of changes (branches or tags) in a single push. If changes are more
 than the specified limit, hooks are not executed.
 
-More information can be found in these documentations:
+For more information, see:
 
-- [Webhooks push events](../user/project/integrations/webhook_events.md#push-events)
-- [Project services push hooks limit](../user/project/integrations/index.md#push-hooks-limit)
+- [Webhook push events](../user/project/integrations/webhook_events.md#push-events)
+- [Push hook limit for project integrations](../user/project/integrations/index.md#push-hook-limit)
 
 ### Activities
 

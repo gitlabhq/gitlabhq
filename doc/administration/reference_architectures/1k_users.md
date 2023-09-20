@@ -33,7 +33,7 @@ many organizations.
 
 ```plantuml
 @startuml 1k
-card "**Prometheus + Grafana**" as monitor #7FFFD4
+card "**Prometheus**" as monitor #7FFFD4
 package "GitLab Single Server" as gitlab-single-server {
 together {
   card "**GitLab Rails**" as gitlab #32CD32

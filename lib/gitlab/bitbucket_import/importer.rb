@@ -31,6 +31,17 @@ module Gitlab
         true
       end
 
+      def create_labels
+        LABELS.each do |label_params|
+          label = ::Labels::FindOrCreateService.new(nil, project, label_params).execute(skip_authorization: true)
+          if label.valid?
+            @labels[label_params[:title]] = label
+          else
+            raise "Failed to create label \"#{label_params[:title]}\" for project \"#{project.full_name}\""
+          end
+        end
+      end
+
       private
 
       def already_imported?(collection, iid)
@@ -178,17 +189,6 @@ module Gitlab
             )
           rescue StandardError => e
             errors << { type: :issue_comment, iid: issue.iid, errors: e.message }
-          end
-        end
-      end
-
-      def create_labels
-        LABELS.each do |label_params|
-          label = ::Labels::FindOrCreateService.new(nil, project, label_params).execute(skip_authorization: true)
-          if label.valid?
-            @labels[label_params[:title]] = label
-          else
-            raise "Failed to create label \"#{label_params[:title]}\" for project \"#{project.full_name}\""
           end
         end
       end

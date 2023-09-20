@@ -73,10 +73,19 @@ Note: Please make sure to run the chatops commands in the slack channel that get
 - [ ] Verify the MR with the feature flag is merged to master.
 - Verify that the feature MRs have been deployed to non-production environments with:
     - [ ] `/chatops run auto_deploy status <merge-commit-of-your-feature>`
+<!-- Delete Incremental roll out if it is not relevant to this deploy -->
+- [ ] Deploy the feature flag at a percentage (recommended percentage: 50%)
+  - If the feature flag in code has [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform **actor-based** rollout.
+    - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --actors --dev --staging --staging-ref`
+  - If the feature flag in code does **NOT** have [an actor](https://docs.gitlab.com/ee/development/feature_flags/#feature-actors), perform time-based rollout (**random** rollout).
+    - [ ] `/chatops run feature set <feature-flag-name> <rollout-percentage> --random --dev --staging --staging-ref`
+  - [ ] Monitor that the error rates did not increase (repeat with a different percentage as necessary)
+<!-- End of block for deletes -->
 - [ ] Enable the feature globally on non-production environments.
     - [ ] `/chatops run feature set <feature-flag-name> true --dev --staging --staging-ref`
     - If the feature flag causes QA end-to-end tests to fail:
       - [ ] Disable the feature flag on staging to avoid blocking [deployments](https://about.gitlab.com/handbook/engineering/deployments-and-releases/deployments/).
+
 - [ ] Verify that the feature works as expected. Posting the QA result in this issue is preferable.
       The best environment to validate the feature in is [staging-canary](https://about.gitlab.com/handbook/engineering/infrastructure/environments/#staging-canary)
       as this is the first environment deployed to. Note you will need to make sure you are configured to use canary as outlined [here](https://about.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/)

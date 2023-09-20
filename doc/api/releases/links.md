@@ -15,13 +15,6 @@ GitLab supports links to `http`, `https`, and `ftp` assets.
 
 ## List links of a release
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-> The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-
-<!--- end_remove -->
-
 Get assets as links from a release.
 
 ```plaintext
@@ -60,13 +53,6 @@ Example response:
 
 ## Get a release link
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-> The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-
-<!--- end_remove -->
-
 Get an asset as a link from a release.
 
 ```plaintext
@@ -97,13 +83,6 @@ Example response:
 ```
 
 ## Create a release link
-
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-> The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-
-<!--- end_remove -->
 
 Creates an asset as a link from a release.
 
@@ -146,13 +125,6 @@ Example response:
 
 ## Update a release link
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-> The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-
-<!--- end_remove -->
-
 Updates an asset as a link from a release.
 
 ```plaintext
@@ -193,13 +165,6 @@ Example response:
 ```
 
 ## Delete a release link
-
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-> The `external` field in Release Links was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/388975) in GitLab 15.9
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112490) in 16.0.
-
-<!--- end_remove -->
 
 Deletes an asset as a link from a release.
 
