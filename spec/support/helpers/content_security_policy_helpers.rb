@@ -24,8 +24,8 @@ any_time: false)
   # ```
   # find_csp_directive('connect-src')
   # ```
-  def find_csp_directive(key)
-    csp = response.headers['Content-Security-Policy']
+  def find_csp_directive(key, header: nil)
+    csp = header || response.headers['Content-Security-Policy']
 
     # Transform "default-src foo bar; connect-src foo bar; script-src ..."
     # into array of values for a single directive based on the given key

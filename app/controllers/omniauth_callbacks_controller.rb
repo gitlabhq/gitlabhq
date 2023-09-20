@@ -7,6 +7,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include InitializesCurrentUserMode
   include KnownSignIn
   include AcceptsPendingInvitations
+  include Onboarding::Redirectable
 
   after_action :verify_known_sign_in
 
@@ -169,38 +170,38 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def sign_in_user_flow(auth_user_class)
     auth_user = build_auth_user(auth_user_class)
     new_user = auth_user.new?
-    user = auth_user.find_and_update!
+    @user = auth_user.find_and_update!
 
     if auth_user.valid_sign_in?
       # In this case the `#current_user` would not be set. So we can't fetch it
       # from that in `#context_user`. Pushing it manually here makes the information
       # available in the logs for this request.
-      Gitlab::ApplicationContext.push(user: user)
-      track_event(user, oauth['provider'], 'succeeded')
-      Gitlab::Tracking.event(self.class.name, "#{oauth['provider']}_sso", user: user) if new_user
+      Gitlab::ApplicationContext.push(user: @user)
+      track_event(@user, oauth['provider'], 'succeeded')
+      Gitlab::Tracking.event(self.class.name, "#{oauth['provider']}_sso", user: @user) if new_user
 
-      set_remember_me(user)
+      set_remember_me(@user)
 
-      if user.two_factor_enabled? && !auth_user.bypass_two_factor?
-        prompt_for_two_factor(user)
+      if @user.two_factor_enabled? && !auth_user.bypass_two_factor?
+        prompt_for_two_factor(@user)
         store_idp_two_factor_status(false)
       else
-        if user.deactivated?
-          user.activate
+        if @user.deactivated?
+          @user.activate
           flash[:notice] = _('Welcome back! Your account had been deactivated due to inactivity but is now reactivated.')
         end
 
         # session variable for storing bypass two-factor request from IDP
         store_idp_two_factor_status(true)
 
-        accept_pending_invitations(user: user) if new_user
-        persist_accepted_terms_if_required(user) if new_user
+        accept_pending_invitations(user: @user) if new_user
+        persist_accepted_terms_if_required(@user) if new_user
 
-        perform_registration_tasks(user, oauth['provider']) if new_user
-        sign_in_and_redirect_or_verify_identity(user, auth_user, new_user)
+        perform_registration_tasks(@user, oauth['provider']) if new_user
+        sign_in_and_redirect_or_verify_identity(@user, auth_user, new_user)
       end
     else
-      fail_login(user)
+      fail_login(@user)
     end
   rescue Gitlab::Auth::OAuth::User::SigninDisabledForProviderError
     handle_disabled_provider
@@ -323,9 +324,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     store_location_for(:user, after_sign_up_path)
   end
 
-  def after_sign_up_path
-    users_sign_up_welcome_path
+  def onboarding_status
+    Onboarding::Status.new(params.to_unsafe_h.deep_symbolize_keys, session, @user)
   end
+  strong_memoize_attr :onboarding_status
 
   # overridden in EE
   def sign_in_and_redirect_or_verify_identity(user, _, _)

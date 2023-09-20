@@ -130,7 +130,7 @@ export default {
     },
 
     jobName() {
-      return sprintf(__('Job %{jobName}'), { jobName: this.job.name });
+      return sprintf(__('%{jobName}'), { jobName: this.job.name });
     },
   },
   watch: {
@@ -224,7 +224,7 @@ export default {
       <div class="build-page" data-testid="job-content">
         <!-- Header Section -->
         <header>
-          <div class="build-header top-area">
+          <div class="build-header gl-display-flex">
             <job-header
               :status="job.status"
               :time="headerTime"

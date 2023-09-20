@@ -1,10 +1,12 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { forwardDeploymentFailureModalId } from '~/ci/constants';
 import { filterAnnotations } from '~/ci/job_details/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
 import ArtifactsBlock from './artifacts_block.vue';
 import CommitBlock from './commit_block.vue';
 import ExternalLinksBlock from './external_links_block.vue';
@@ -16,9 +18,13 @@ import StagesDropdown from './stages_dropdown.vue';
 import TriggerBlock from './trigger_block.vue';
 
 export default {
+  i18n: {
+    toggleSidebar: __('Toggle Sidebar'),
+  },
   name: 'JobSidebar',
   forwardDeploymentFailureModalId,
   components: {
+    GlButton,
     ArtifactsBlock,
     CommitBlock,
     JobsContainer,
@@ -64,6 +70,15 @@ export default {
     externalLinks() {
       return filterAnnotations(this.job.annotations, 'external_link');
     },
+    jobHasPath() {
+      return Boolean(
+        this.job.erase_path ||
+          this.job.new_issue_path ||
+          this.job.terminal_path ||
+          this.job.retry_path ||
+          this.job.cancel_path,
+      );
+    },
   },
   watch: {
     job(value, oldValue) {
@@ -76,43 +91,62 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchJobsForStage']),
+    ...mapActions(['fetchJobsForStage', 'toggleSidebar']),
   },
 };
 </script>
 <template>
   <aside class="right-sidebar build-sidebar" data-offset-top="101" data-spy="affix">
     <div class="sidebar-container">
-      <div class="blocks-container gl-p-4">
+      <div class="blocks-container gl-p-4 gl-pt-0">
+        <div
+          class="gl-py-4 gl-border-b gl-border-gray-50 gl-display-flex gl-md-display-none! gl-justify-content-end"
+        >
+          <gl-button
+            :aria-label="$options.i18n.toggleSidebar"
+            category="tertiary"
+            icon="chevron-double-lg-right"
+            @click="toggleSidebar"
+          />
+        </div>
         <sidebar-header
-          class="block gl-pb-4! gl-mb-2"
+          v-if="jobHasPath"
+          class="gl-py-4 gl-border-b gl-border-gray-50"
           :rest-job="job"
           :job-id="job.id"
           @updateVariables="$emit('updateVariables')"
         />
 
-        <job-sidebar-details-container class="block gl-mb-2" />
+        <job-sidebar-details-container class="gl-py-4 gl-border-b gl-border-gray-50" />
 
         <artifacts-block
           v-if="hasArtifact"
-          class="block gl-mb-2"
+          class="gl-py-4 gl-border-b gl-border-gray-50"
           :artifact="artifact"
           :help-url="artifactHelpUrl"
         />
 
         <external-links-block
           v-if="hasExternalLinks"
-          class="block gl-mb-2"
+          class="gl-py-4 gl-border-b gl-border-gray-50"
           :external-links="externalLinks"
         />
 
-        <trigger-block v-if="hasTriggers" class="block gl-mb-2" :trigger="job.trigger" />
+        <trigger-block
+          v-if="hasTriggers"
+          class="gl-py-4 gl-border-b gl-border-gray-50"
+          :trigger="job.trigger"
+        />
 
-        <commit-block class="block gl-mb-2" :commit="commit" :merge-request="job.merge_request" />
+        <commit-block
+          class="gl-py-4 gl-border-b gl-border-gray-50"
+          :commit="commit"
+          :merge-request="job.merge_request"
+        />
 
         <stages-dropdown
           v-if="job.pipeline"
-          class="block gl-mb-2"
+          class="gl-py-4 gl-border-b gl-border-gray-50"
           :pipeline="job.pipeline"
           :selected-stage="selectedStage"
           :stages="stages"

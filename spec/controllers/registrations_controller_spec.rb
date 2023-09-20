@@ -46,7 +46,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
 
     subject(:post_create) { post(:create, params: user_params, session: session_params) }
 
-    context '`blocked_pending_approval` state' do
+    context 'with `blocked_pending_approval` state' do
       context 'when the `require_admin_approval_after_user_signup` setting is turned on' do
         before do
           stub_application_setting(require_admin_approval_after_user_signup: true)
@@ -82,7 +82,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
           subject
         end
 
-        context 'email confirmation' do
+        context 'for email confirmation' do
           context 'when email confirmation setting is set to `hard`' do
             before do
               stub_application_setting_enum('email_confirmation_setting', 'hard')
@@ -95,7 +95,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
           end
         end
 
-        context 'audit events' do
+        context 'with audit events' do
           context 'when not licensed' do
             before do
               stub_licensed_features(admin_audit_log: false)
@@ -129,7 +129,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
           subject
         end
 
-        context 'email confirmation' do
+        context 'with email confirmation' do
           context 'when email confirmation setting is set to `hard`' do
             before do
               stub_application_setting_enum('email_confirmation_setting', 'hard')
@@ -145,7 +145,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
       end
     end
 
-    context 'private profile' do
+    context 'with private profile' do
       context 'when the `user_defaults_to_private_profile` setting is turned on' do
         before do
           stub_application_setting(user_defaults_to_private_profile: true)
@@ -160,7 +160,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
       end
     end
 
-    context 'email confirmation' do
+    context 'with email confirmation' do
       before do
         stub_feature_flags(identity_verification: false)
       end
@@ -209,7 +209,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
 
             context 'when member exists from the session key value' do
               it 'tracks the invite acceptance' do
-                subject
+                post_create
 
                 expect_snowplow_event(
                   category: 'RegistrationsController',
@@ -299,7 +299,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         it 'authenticates the user and sends a confirmation email' do
           expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
           expect(controller.current_user).to be_present
-          expect(response).to redirect_to(users_sign_up_welcome_path)
+          expect(response).to redirect_to(dashboard_projects_path)
         end
 
         it 'does not track an almost there redirect' do
@@ -310,6 +310,11 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
             action: 'render',
             user: User.find_by(email: base_user_params[:email])
           )
+        end
+
+        it_behaves_like Onboarding::Redirectable do
+          let(:email) { user_params.dig(:user, :email) }
+          let(:session_params) { { invite_email: email } }
         end
 
         context 'when invite email matches email used on registration' do
@@ -375,10 +380,10 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
         end
       end
 
-      it 'redirects to the welcome page when the reCAPTCHA is solved' do
+      it 'redirects to the dashboard projects page when the reCAPTCHA is solved' do
         subject
 
-        expect(response).to redirect_to(users_sign_up_welcome_path)
+        expect(response).to redirect_to(dashboard_projects_path)
       end
     end
 
@@ -430,7 +435,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
       describe 'timestamp spam detection' do
         let(:auth_log_message) { 'Invisible_Captcha_Timestamp_Request' }
 
-        context 'the sign up form has been submitted without the invisible_captcha_timestamp parameter' do
+        context 'when the sign up form has been submitted without the invisible_captcha_timestamp parameter' do
           let(:session_params) { nil }
 
           it 'logs the request, refuses to create an account and displays a flash alert' do
@@ -446,7 +451,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
           end
         end
 
-        context 'the sign up form has been submitted too quickly' do
+        context 'when the sign up form has been submitted too quickly' do
           let(:submit_time) { form_rendered_time }
 
           it 'logs the request, refuses to create an account and displays a flash alert' do
@@ -464,7 +469,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
       end
     end
 
-    context 'terms of service' do
+    context 'with terms of service' do
       context 'when terms are enforced' do
         before do
           enforce_terms
@@ -674,7 +679,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
       expect(response).to redirect_to new_user_session_path
     end
 
-    context 'user requires password confirmation' do
+    context 'when user requires password confirmation' do
       it 'fails if password confirmation is not provided' do
         post :destroy
 
@@ -694,7 +699,7 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
       end
     end
 
-    context 'user does not require password confirmation' do
+    context 'when user does not require password confirmation' do
       before do
         stub_application_setting(password_authentication_enabled_for_web: false)
         stub_application_setting(password_authentication_enabled_for_git: false)
@@ -719,8 +724,8 @@ RSpec.describe RegistrationsController, feature_category: :user_profile do
       end
     end
 
-    context 'prerequisites for account deletion' do
-      context 'solo-owned groups' do
+    context 'for prerequisites for account deletion' do
+      context 'with solo-owned groups' do
         let(:group) { create(:group) }
 
         context 'if the user is the sole owner of at least one group' do

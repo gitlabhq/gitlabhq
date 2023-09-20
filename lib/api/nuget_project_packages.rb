@@ -113,9 +113,7 @@ module API
           track_package_event(
             symbol_package ? 'push_symbol_package' : 'push_package',
             :nuget,
-            **{ category: 'API::NugetPackages',
-                project: package.project,
-                namespace: package.project.namespace }.tap { |args| args[:feed] = 'v2' if request.path.include?('nuget/v2') }
+            **track_package_event_attrs(package.project)
           )
         end
       rescue ObjectStorage::RemoteStoreError => e
@@ -147,6 +145,16 @@ module API
                         .payload
 
         present odata_entry
+      end
+
+      def track_package_event_attrs(project)
+        attrs = {
+          category: 'API::NugetPackages',
+          project: project,
+          namespace: project.namespace
+        }
+        attrs[:feed] = 'v2' if request.path.include?('nuget/v2')
+        attrs
       end
     end
 
@@ -216,9 +224,7 @@ module API
               track_package_event(
                 params[:format] == 'snupkg' ? 'pull_symbol_package' : 'pull_package',
                 :nuget,
-                category: 'API::NugetPackages',
-                project: package_file.project,
-                namespace: package_file.project.namespace
+                **track_package_event_attrs(package.project)
               )
 
               # nuget and dotnet don't support 302 Moved status codes, supports_direct_download has to be set to false

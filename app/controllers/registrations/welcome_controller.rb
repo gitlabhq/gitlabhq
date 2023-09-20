@@ -6,6 +6,7 @@ module Registrations
     include GoogleAnalyticsCSP
     include GoogleSyndicationCSP
     include ::Gitlab::Utils::StrongMemoize
+    include Onboarding::Redirectable
 
     layout 'minimal'
     # TODO: Once this is an ee + SaaS only feature, we can remove this.
@@ -18,7 +19,7 @@ module Registrations
     feature_category :user_management
 
     def show
-      return redirect_to path_for_signed_in_user(current_user) if completed_welcome_step?
+      return redirect_to path_for_signed_in_user if completed_welcome_step?
 
       track_event('render')
     end
@@ -52,16 +53,6 @@ module Registrations
       params.require(:user).permit(:role, :setup_for_company)
     end
 
-    def path_for_signed_in_user(user)
-      stored_location_for(user) || last_member_activity_path
-    end
-
-    def last_member_activity_path
-      return dashboard_projects_path unless onboarding_status.last_invited_member_source.present?
-
-      onboarding_status.last_invited_member_source.activity_path
-    end
-
     def update_success_path
       if onboarding_status.continue_full_onboarding? # trials/regular registration on .com
         signup_onboarding_path
@@ -71,7 +62,7 @@ module Registrations
       else
         # Subscription registrations goes through here as well.
         # Invites will come here too if there is more than 1.
-        path_for_signed_in_user(current_user)
+        path_for_signed_in_user
       end
     end
 

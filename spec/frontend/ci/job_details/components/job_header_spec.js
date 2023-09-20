@@ -16,7 +16,7 @@ describe('Header CI Component', () => {
       text: 'failed',
       details_path: 'path',
     },
-    name: 'Job build_job',
+    name: 'build_job',
     time: '2017-05-08T14:57:39.781Z',
     user: {
       id: 1234,
@@ -68,6 +68,10 @@ describe('Header CI Component', () => {
 
     it('should not render header action buttons when slot is empty', () => {
       expect(findActionButtons().exists()).toBe(false);
+    });
+
+    it('renders the correct job name', () => {
+      expect(findJobName().text()).toBe(defaultProps.name);
     });
   });
 
@@ -130,7 +134,7 @@ describe('Header CI Component', () => {
     });
 
     it('should render the job name', () => {
-      expect(findJobName().text()).toBe('Job build_job');
+      expect(findJobName().text()).toBe('build_job');
     });
   });
 
@@ -147,8 +151,8 @@ describe('Header CI Component', () => {
     it('should render created keyword when the shouldRenderTriggeredLabel is false', () => {
       createComponent({ shouldRenderTriggeredLabel: false });
 
-      expect(wrapper.text()).toContain('created');
-      expect(wrapper.text()).not.toContain('started');
+      expect(wrapper.text()).toContain('Created');
+      expect(wrapper.text()).not.toContain('Started');
     });
   });
 });

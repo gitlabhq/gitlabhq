@@ -249,7 +249,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
             fill_in_signup_form
 
             expect { click_button 'Register' }.to change { User.count }.by(1)
-            expect(page).to have_current_path users_sign_up_welcome_path, ignore_query: true
+            expect(page).to have_current_path dashboard_projects_path
           end
         end
       end
@@ -265,7 +265,7 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
           fill_in_signup_form
           click_button "Register"
 
-          expect(page).to have_current_path users_sign_up_welcome_path, ignore_query: true
+          expect(page).to have_current_path dashboard_projects_path
         end
       end
 
@@ -331,15 +331,6 @@ RSpec.describe 'Signup', :js, feature_category: :user_profile do
         fill_in_signup_form
         click_button 'Register'
 
-        expect(page).to have_current_path(users_sign_up_welcome_path), ignore_query: true
-
-        select 'Software Developer', from: 'user_role'
-        click_button 'Get started!'
-
-        created_user = User.find_by_username(new_user.username)
-
-        expect(created_user.software_developer_role?).to be_truthy
-        expect(created_user.setup_for_company).to be_nil
         expect(page).to have_current_path(dashboard_projects_path)
       end
 

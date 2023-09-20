@@ -113,7 +113,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
             end
 
             it 'declines application and redirects to dashboard' do
-              expect(page).to have_current_path(dashboard_projects_path, ignore_query: true)
+              expect(page).to have_current_path(dashboard_projects_path)
               expect(page).to have_content('You have declined the invitation to join group Owned.')
               expect { group_invite.reload }.to raise_error ActiveRecord::RecordNotFound
             end
@@ -178,7 +178,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         context 'when the user signs up for an account with the invitation email address' do
           it 'redirects to the most recent membership activity page with all invitations automatically accepted' do
             fill_in_sign_up_form(new_user)
-            fill_in_welcome_form
 
             expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
             expect(page).to have_content('You have been granted Owner access to group Owned.')
@@ -190,7 +189,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
           it 'signs up and redirects to the projects dashboard' do
             fill_in_sign_up_form(new_user)
-            fill_in_welcome_form
 
             expect_to_be_on_projects_dashboard_with_zero_authorized_projects
           end
@@ -226,7 +224,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         context 'when the user signs up for an account with the invitation email address' do
           it 'redirects to the most recent membership activity page with all invitations automatically accepted' do
             fill_in_sign_up_form(new_user)
-            fill_in_welcome_form
 
             expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
           end
@@ -245,7 +242,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
               fill_in_sign_up_form(new_user)
               confirm_email(new_user)
               gitlab_sign_in(new_user, remember: true, visit: false)
-              fill_in_welcome_form
 
               expect_to_be_on_projects_dashboard_with_zero_authorized_projects
             end
@@ -259,7 +255,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
             it 'signs up and redirects to the projects dashboard' do
               fill_in_sign_up_form(new_user)
-              fill_in_welcome_form
 
               expect_to_be_on_projects_dashboard_with_zero_authorized_projects
             end
@@ -283,7 +278,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
         fill_in_sign_up_form(new_user, 'Register')
 
-        expect(page).to have_current_path(users_sign_up_welcome_path, ignore_query: true)
+        expect(page).to have_current_path(activity_group_path(group))
+        expect(page).to have_content('You have been granted Owner access to group Owned.')
       end
     end
 

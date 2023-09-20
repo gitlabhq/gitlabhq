@@ -815,6 +815,9 @@ msgstr ""
 msgid "%{itemsCount} issues with a limit of %{maxIssueCount}"
 msgstr ""
 
+msgid "%{jobName}"
+msgstr ""
+
 msgid "%{jobName} job is being retried"
 msgstr ""
 
@@ -26731,13 +26734,7 @@ msgstr ""
 msgid "Job"
 msgstr ""
 
-msgid "Job %{jobName}"
-msgstr ""
-
 msgid "Job Failed #%{build_id}"
-msgstr ""
-
-msgid "Job ID"
 msgstr ""
 
 msgid "Job artifacts"
@@ -55839,9 +55836,6 @@ msgstr ""
 msgid "could not read private key, is the passphrase correct?"
 msgstr ""
 
-msgid "created"
-msgstr ""
-
 msgid "created %{issuable_created} by %{author}"
 msgstr ""
 
@@ -57167,9 +57161,6 @@ msgid "spendCommand|%{slash_command} adds or subtracts time already spent."
 msgstr ""
 
 msgid "ssh:"
-msgstr ""
-
-msgid "started"
 msgstr ""
 
 msgid "started a discussion on %{design_link}"

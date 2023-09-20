@@ -488,10 +488,29 @@ Example response:
 | `GET projects/:id/packages/nuget/v2/FindPackagesById()?id='<package_name>'` | Returns an OData XML document containing information about the package with the given name. |
 | `GET projects/:id/packages/nuget/v2/Packages(Id='<package_name>',Version='<package_version>')` | Returns an OData XML document containing information about the package with the given name and version. |
 
+```shell
+curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages(Id='mynugetpkg',Version='1.0.0')"
+```
+
+Example response:
+
+```xml
+<entry xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xml:base="https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2">
+    <id>https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages(Id='mynugetpkg',Version='1.0.0')</id>
+    <category term="V2FeedPackage" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
+    <title type="text">mynugetpkg</title>
+    <content type="application/zip" src="https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/mynugetpkg/1.0.0/mynugetpkg.1.0.0.nupkg"/>
+    <m:properties>
+      <d:Version>1.0.0</d:Version>
+    </m:properties>
+ </entry>
+```
+
 NOTE:
-GitLab doesn't receive an authentication token for the `Packages()` and `FindPackagesByID()` endpoints.
-To not reveal the package version to unauthenticated users, the actual latest package version is not returned. Instead, a placeholder version is returned.
-The latest version is obtained in the subsequent download request where the authentication token is sent.
+GitLab doesn't receive an authentication token for the `Packages()` and
+`FindPackagesByID()` endpoints, so the latest version of the package
+cannot be returned. You must provide the version when you install
+or upgrade a package with the NuGet v2 feed.
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages()?$filter=(tolower(Id) eq 'mynugetpkg')"
@@ -501,12 +520,12 @@ Example response:
 
 ```xml
 <entry xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xml:base="https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2">
-    <id>https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages(Id='mynugetpkg',Version='0.0.0-latest-version')</id>
+    <id>https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages(Id='mynugetpkg',Version='')</id>
     <category term="V2FeedPackage" scheme="http://schemas.microsoft.com/ado/2007/08/dataservices/scheme"/>
     <title type="text">mynugetpkg</title>
-    <content type="application/zip" src="https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/download/mynugetpkg/latest"/>
+    <content type="application/zip" src="https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2"/>
     <m:properties>
-      <d:Version>0.0.0-latest-version</d:Version>
+      <d:Version></d:Version>
     </m:properties>
  </entry>
 ```

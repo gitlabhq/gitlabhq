@@ -44,7 +44,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
     end
 
-    context 'authentication succeeds' do
+    context 'when authentication succeeds' do
       let(:extern_uid) { 'my-uid' }
       let(:provider) { :github }
 
@@ -77,7 +77,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       end
     end
 
-    context 'a deactivated user' do
+    context 'for a deactivated user' do
       let(:provider) { :github }
       let(:extern_uid) { 'my-uid' }
 
@@ -216,8 +216,8 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       end
     end
 
-    context 'strategies' do
-      shared_context 'sign_up' do
+    context 'with strategies' do
+      shared_context 'with sign_up' do
         let(:user) { double(email: 'new@example.com') }
 
         before do
@@ -225,7 +225,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         end
       end
 
-      context 'github' do
+      context 'for github' do
         let(:extern_uid) { 'my-uid' }
         let(:provider) { :github }
 
@@ -299,7 +299,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         end
 
         context 'for sign up' do
-          include_context 'sign_up'
+          include_context 'with sign_up'
 
           it 'is allowed' do
             post provider
@@ -307,10 +307,10 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             expect(request.env['warden']).to be_authenticated
           end
 
-          it 'redirects to welcome path' do
-            post provider
+          it_behaves_like Onboarding::Redirectable do
+            let(:email) { user.email }
 
-            expect(response).to redirect_to(users_sign_up_welcome_path)
+            subject(:post_create) { post provider }
           end
         end
 
@@ -341,8 +341,8 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
             expect { post provider }.to change { user.reload.identities.count }.by(1)
           end
 
-          context 'sign up' do
-            include_context 'sign_up'
+          context 'for sign up' do
+            include_context 'with sign_up'
 
             it 'is prevented' do
               post provider
@@ -353,7 +353,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         end
       end
 
-      context 'auth0' do
+      context 'for auth0' do
         let(:extern_uid) { '' }
         let(:provider) { :auth0 }
 
@@ -366,7 +366,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         end
       end
 
-      context 'atlassian_oauth2' do
+      context 'for atlassian_oauth2' do
         let(:provider) { :atlassian_oauth2 }
         let(:extern_uid) { 'my-uid' }
 
@@ -424,7 +424,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         end
       end
 
-      context 'salesforce' do
+      context 'for salesforce' do
         let(:extern_uid) { 'my-uid' }
         let(:provider) { :salesforce }
         let(:additional_info) { { extra: { email_verified: false } } }
@@ -440,7 +440,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
         end
 
         context 'with verified email' do
-          include_context 'sign_up'
+          include_context 'with sign_up'
           let(:additional_info) { { extra: { email_verified: true } } }
 
           it 'allows sign in' do
@@ -532,7 +532,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       let(:post_action) { post :saml, params: { SAMLResponse: mock_saml_response } }
     end
 
-    context 'sign up' do
+    context 'for sign up' do
       before do
         user.destroy!
       end
@@ -683,7 +683,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       expect(subject.current_user_mode.admin_mode?).to be(expected_admin_mode)
     end
 
-    context 'user and admin mode requested by the same user' do
+    context 'when user and admin mode is requested by the same user' do
       before do
         sign_in user
 
@@ -724,7 +724,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
       end
     end
 
-    context 'user and admin mode requested by different users' do
+    context 'when user and admin mode is requested by different users' do
       let(:reauth_extern_uid) { 'another_uid' }
       let(:reauth_user) { create(:omniauth_user, extern_uid: reauth_extern_uid, provider: provider) }
 

@@ -89,18 +89,25 @@ export default {
 
 <template>
   <header
-    class="page-content-header gl-md-display-flex gl-min-h-7"
+    class="page-content-header gl-md-display-flex gl-flex-wrap gl-min-h-7 gl-pb-2! gl-w-full"
     data-testid="job-header-content"
   >
-    <section class="header-main-content gl-mr-3">
+    <div
+      v-if="name"
+      class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-w-full"
+    >
+      <h1 class="gl-font-size-h-display gl-my-0 gl-display-inline-block" data-testid="job-name">
+        {{ name }}
+      </h1>
+    </div>
+
+    <section class="gl-md-display-flex gl-align-items-center gl-mr-3">
       <ci-badge-link class="gl-mr-3" :status="status" />
 
-      <strong data-testid="job-name">{{ name }}</strong>
+      <template v-if="shouldRenderTriggeredLabel">{{ __('Started') }}</template>
+      <template v-else>{{ __('Created') }}</template>
 
-      <template v-if="shouldRenderTriggeredLabel">{{ __('started') }}</template>
-      <template v-else>{{ __('created') }}</template>
-
-      <timeago-tooltip :time="time" />
+      <timeago-tooltip :time="time" class="gl-mx-2" />
 
       {{ __('by') }}
 

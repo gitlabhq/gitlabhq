@@ -9,7 +9,7 @@ RSpec.describe 'Google Syndication content security policy', feature_category: :
 
   let_it_be(:google_analytics_src) do
     'localhost https://cdn.cookielaw.org https://*.onetrust.com *.google-analytics.com ' \
-      '*.analytics.google.com *.googletagmanager.com'
+      '*.analytics.google.com *.googletagmanager.com *.g.doubleclick.net'
   end
 
   let_it_be(:allowed_src) do

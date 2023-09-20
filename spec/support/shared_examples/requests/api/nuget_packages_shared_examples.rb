@@ -357,12 +357,7 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
     end
 
     context 'with normalized package version' do
-      let(:normalized_version) { '0.1.0' }
-      let(:url) { "/projects/#{target.id}/packages/nuget/download/#{package.name}/#{normalized_version}/#{package.name}.#{package.version}.#{format}" }
-
-      before do
-        package.nuget_metadatum.update_column(:normalized_version, normalized_version)
-      end
+      let(:package_version) { '0.1.0' }
 
       it_behaves_like 'returning response status', status
 

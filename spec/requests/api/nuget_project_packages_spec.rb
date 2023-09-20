@@ -203,11 +203,12 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
 
   describe 'GET /api/v4/projects/:id/packages/nuget/download/*package_name/*package_version/*package_filename' do
     let_it_be(:package) { create(:nuget_package, :with_symbol_package, :with_metadatum, project: project, name: package_name, version: '0.1') }
+    let_it_be(:package_version) { package.version }
 
     let(:format) { 'nupkg' }
-    let(:url) { "/projects/#{target.id}/packages/nuget/download/#{package.name}/#{package.version}/#{package.name}.#{package.version}.#{format}" }
+    let(:url) { "/projects/#{target.id}/packages/nuget/download/#{package.name}/#{package_version}/#{package.name}.#{package_version}.#{format}" }
 
-    subject { get api(url) }
+    subject { get api(url), headers: headers }
 
     context 'with valid target' do
       where(:visibility_level, :user_role, :member, :user_token, :shared_examples_name, :expected_status) do
@@ -235,8 +236,6 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
         let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: user_role) }
-
-        subject { get api(url), headers: headers }
 
         before do
           update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))

@@ -19,20 +19,11 @@ module Ci
         return if pipeline.parent_pipeline? # skip if child pipeline
         return unless project.auto_cancel_pending_pipelines?
 
-        if Feature.enabled?(:use_offset_pagination_for_canceling_redundant_pipelines, project)
-          paginator.each do |ids|
-            pipelines = parent_and_child_pipelines(ids)
+        paginator.each do |ids|
+          pipelines = parent_and_child_pipelines(ids)
 
-            Gitlab::OptimisticLocking.retry_lock(pipelines, name: 'cancel_pending_pipelines') do |cancelables|
-              auto_cancel_interruptible_pipelines(cancelables.ids)
-            end
-          end
-        else
-          Gitlab::OptimisticLocking
-            .retry_lock(parent_and_child_pipelines, name: 'cancel_pending_pipelines') do |cancelables|
-            cancelables.select(:id).each_batch(of: BATCH_SIZE) do |cancelables_batch|
-              auto_cancel_interruptible_pipelines(cancelables_batch.ids)
-            end
+          Gitlab::OptimisticLocking.retry_lock(pipelines, name: 'cancel_pending_pipelines') do |cancelables|
+            auto_cancel_interruptible_pipelines(cancelables.ids)
           end
         end
       end
@@ -61,7 +52,7 @@ module Ci
         end
       end
 
-      def parent_auto_cancelable_pipelines(ids = nil)
+      def parent_auto_cancelable_pipelines(ids)
         scope = project.all_pipelines
           .created_after(pipelines_created_after)
           .for_ref(pipeline.ref)
@@ -70,11 +61,10 @@ module Ci
           .for_status(CommitStatus::AVAILABLE_STATUSES) # Force usage of project_id_and_status_and_created_at_index
           .ci_sources
 
-        scope = scope.id_in(ids) if ids.present?
-        scope
+        scope.id_in(ids)
       end
 
-      def parent_and_child_pipelines(ids = nil)
+      def parent_and_child_pipelines(ids)
         Ci::Pipeline.object_hierarchy(parent_auto_cancelable_pipelines(ids), project_condition: :same)
           .base_and_descendants
           .alive_or_scheduled

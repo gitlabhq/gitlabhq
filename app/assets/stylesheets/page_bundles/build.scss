@@ -155,10 +155,6 @@
 }
 
 .build-sidebar-item {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-gap: $gl-padding-8;
-
   &:last-of-type {
     @include gl-mb-0;
   }

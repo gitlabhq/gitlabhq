@@ -1,12 +1,9 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
 import { createAlert } from '~/alert';
 import { TYPENAME_COMMIT_STATUS } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { JOB_GRAPHQL_ERRORS, forwardDeploymentFailureModalId, PASSED_STATUS } from '~/ci/constants';
 import GetJob from '../../graphql/queries/get_job.query.graphql';
 import JobSidebarRetryButton from './job_sidebar_retry_button.vue';
@@ -20,7 +17,6 @@ export default {
     eraseLogConfirmText: s__('Job|Are you sure you want to erase this job log and artifacts?'),
     newIssue: __('New issue'),
     retryJobLabel: s__('Job|Retry'),
-    toggleSidebar: __('Toggle Sidebar'),
     runAgainJobButtonLabel: s__('Job|Run again'),
   },
   forwardDeploymentFailureModalId,
@@ -30,7 +26,6 @@ export default {
   components: {
     GlButton,
     JobSidebarRetryButton,
-    TooltipOnTruncate,
   },
   inject: ['projectPath'],
   apollo: {
@@ -86,17 +81,11 @@ export default {
       return this.restJob.status && this.restJob.recoverable ? 'primary' : 'secondary';
     },
   },
-  methods: {
-    ...mapActions(['toggleSidebar']),
-  },
 };
 </script>
 
 <template>
   <div>
-    <tooltip-on-truncate :title="job.name" truncate-target="child"
-      ><h4 class="gl-mt-0 gl-mb-3 gl-text-truncate" data-testid="job-name">{{ job.name }}</h4>
-    </tooltip-on-truncate>
     <div class="gl-display-flex gl-gap-3">
       <gl-button
         v-if="restJob.erase_path"
@@ -155,13 +144,6 @@ export default {
         data-method="post"
         data-testid="cancel-button"
         rel="nofollow"
-      />
-      <gl-button
-        :aria-label="$options.i18n.toggleSidebar"
-        category="secondary"
-        class="gl-md-display-none gl-ml-2"
-        icon="chevron-double-lg-right"
-        @click="toggleSidebar"
       />
     </div>
   </div>

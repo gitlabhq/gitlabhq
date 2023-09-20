@@ -44,13 +44,9 @@ export default {
           this.job.finished_at ||
           this.job.erased_at ||
           this.job.queued_duration ||
-          this.job.id ||
           this.job.runner ||
           this.job.coverage,
       );
-    },
-    jobId() {
-      return this.job?.id ? `#${this.job.id}` : '';
     },
     runnerId() {
       const { id, short_sha: token, description } = this.job.runner;
@@ -87,7 +83,6 @@ export default {
     RUNNER: __('Runner'),
     TAGS: __('Tags'),
     TIMEOUT: __('Timeout'),
-    ID: __('Job ID'),
   },
   TIMEOUT_HELP_URL: helpPagePath('/ci/pipelines/settings.md', {
     anchor: 'set-a-limit-for-how-long-jobs-can-run',
@@ -113,7 +108,6 @@ export default {
       data-testid="job-timeout"
       :title="$options.i18n.TIMEOUT"
     />
-    <detail-row v-if="job.id" :value="jobId" :title="$options.i18n.ID" />
     <detail-row
       v-if="job.runner"
       :value="runnerId"

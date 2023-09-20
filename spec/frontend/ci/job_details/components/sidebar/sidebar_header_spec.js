@@ -55,15 +55,9 @@ describe('Sidebar Header', () => {
   const findEraseButton = () => wrapper.findByTestId('job-log-erase-link');
   const findNewIssueButton = () => wrapper.findByTestId('job-new-issue');
   const findTerminalLink = () => wrapper.findByTestId('terminal-link');
-  const findJobName = () => wrapper.findByTestId('job-name');
   const findRetryButton = () => wrapper.findComponent(JobRetryButton);
 
   describe('when rendering contents', () => {
-    it('renders the correct job name', async () => {
-      await createComponentWithApollo();
-      expect(findJobName().text()).toBe(mockJobResponse.data.project.job.name);
-    });
-
     it('does not render buttons with no paths', async () => {
       await createComponentWithApollo();
       expect(findCancelButton().exists()).toBe(false);

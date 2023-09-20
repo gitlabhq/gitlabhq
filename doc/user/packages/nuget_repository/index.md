@@ -492,6 +492,55 @@ dotnet add package <package_id> \
 - `<package_id>` is the package ID.
 - `<package_version>` is the package version. Optional.
 
+### Install a package using NuGet v2 feed
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416405) in GitLab 16.5.
+
+Prerequisites:
+
+- The project-level Package Registry is a [v2 feed source](#add-a-source-with-chocolatey-cli) for Chocolatey.
+- A version must be provided when installing or upgrading a package using NuGet v2 feed.
+
+To install a package with the Chocolatey CLI:
+
+```shell
+choco install <package_id> -Source <source_url> -Version <package_version>
+```
+
+In this command:
+
+- `<package_id>` is the package ID.
+- `<source_url>` is the URL or name of the NuGet v2 feed Package Registry.
+- `<package_version>` is the package version.
+
+For example:
+
+```shell
+choco install MyPackage -Source gitlab -Version 1.0.2
+
+# or
+
+choco install MyPackage -Source "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/v2" -u <username> -p <gitlab_personal_access_token, deploy_token or job token> -Version 1.0.2
+```
+
+To upgrade a package with the Chocolatey CLI:
+
+```shell
+choco upgrade <package_id> -Source <source_url> -Version <package_version>
+```
+
+In this command:
+
+- `<package_id>` is the package ID.
+- `<source_url>` is the URL or name of the NuGet v2 feed Package Registry.
+- `<package_version>` is the package version.
+
+For example:
+
+```shell
+choco upgrade MyPackage -Source gitlab -Version 1.0.3
+```
+
 ## Symbol packages
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262081) in GitLab 14.1.

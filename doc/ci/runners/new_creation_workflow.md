@@ -203,3 +203,8 @@ data:
 NOTE:
 If your secret management solution doesn't allow you to set an empty string for `runner-registration-token`,
 you can set it to any string - it will be ignored when `runner-token` is present.
+
+## Known issues
+
+- When you use the new registration workflow to register your runners with the Helm chart, the pod name is not visible
+  in the runner details page. For more information, see [issue 423523](https://gitlab.com/gitlab-org/gitlab/-/issues/423523).
