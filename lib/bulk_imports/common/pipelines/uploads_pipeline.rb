@@ -6,7 +6,7 @@ module BulkImports
       class UploadsPipeline
         include Pipeline
 
-        AVATAR_PATTERN = %r{.*\/#{BulkImports::UploadsExportService::AVATAR_PATH}\/(?<identifier>.*)}.freeze
+        AVATAR_PATTERN = %r{.*\/#{BulkImports::UploadsExportService::AVATAR_PATH}\/(?<identifier>.*)}
 
         AvatarLoadingError = Class.new(StandardError)
 

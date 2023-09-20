@@ -10,7 +10,7 @@ module Gitlab
 
             attr_reader :location, :params, :context, :errors
 
-            YAML_WHITELIST_EXTENSION = /.+\.(yml|yaml)$/i.freeze
+            YAML_WHITELIST_EXTENSION = /.+\.(yml|yaml)$/i
 
             def initialize(params, context)
               @params = params

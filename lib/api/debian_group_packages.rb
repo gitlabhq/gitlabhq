@@ -3,7 +3,7 @@
 module API
   class DebianGroupPackages < ::API::Base
     PACKAGE_FILE_REQUIREMENTS = ::API::DebianProjectPackages::PACKAGE_FILE_REQUIREMENTS.merge(
-      project_id: %r{[0-9]+}.freeze
+      project_id: %r{[0-9]+}
     ).freeze
 
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do

@@ -132,8 +132,15 @@ class ProjectImportState < ApplicationRecord
 
   alias_method :no_import?, :none?
 
+  # This method is coupled to the repository mirror domain.
+  # Use with caution in the importers domain. As an alternative, use the `#completed?` method.
+  # See EE-override and https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4697
   def in_progress?
     scheduled? || started?
+  end
+
+  def completed?
+    finished? || failed? || canceled?
   end
 
   def started?

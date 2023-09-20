@@ -27596,9 +27596,6 @@ msgstr ""
 msgid "Learn more about shards and replicas in the %{configuration_link_start}Advanced Search configuration%{configuration_link_end} documentation. Changes don't take place until you %{recreated_link_start}recreate%{recreated_link_end} the index."
 msgstr ""
 
-msgid "Learn more in the"
-msgstr ""
-
 msgid "Learn more."
 msgstr ""
 
@@ -34241,7 +34238,13 @@ msgstr ""
 msgid "PipelineGraph|What is a downstream pipeline?"
 msgstr ""
 
-msgid "PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more%{linkEnd}.)"
+msgid "PipelineScheduleIntervalPattern|Custom"
+msgstr ""
+
+msgid "PipelineScheduleIntervalPattern|Set a custom interval with Cron syntax."
+msgstr ""
+
+msgid "PipelineScheduleIntervalPattern|What is Cron syntax?"
 msgstr ""
 
 msgid "PipelineSchedules|A scheduled pipeline starts automatically at regular intervals, like daily or weekly. The pipeline: "
@@ -36866,6 +36869,9 @@ msgstr ""
 msgid "ProjectSettings|Allow anyone to pull from Package Registry"
 msgstr ""
 
+msgid "ProjectSettings|Allow skipping the merge train"
+msgstr ""
+
 msgid "ProjectSettings|Always show thumbs-up and thumbs-down emoji buttons on issues, merge requests, and snippets."
 msgstr ""
 
@@ -37083,6 +37089,9 @@ msgid "ProjectSettings|Merge requests"
 msgstr ""
 
 msgid "ProjectSettings|Merge requests approved for merge are queued, and pipelines validate the combined results of the source and target branches before merge. %{link_start}What are merge trains?%{link_end}"
+msgstr ""
+
+msgid "ProjectSettings|Merge requests can be set to merge immediately without interrupting the merge train. Commits in earlier merge train pipelines might not get validated with immediately merged commits."
 msgstr ""
 
 msgid "ProjectSettings|Merge suggestions"
@@ -41665,9 +41674,6 @@ msgid "Schedules"
 msgstr ""
 
 msgid "Schedules to merge this merge request (%{strategy})."
-msgstr ""
-
-msgid "Scheduling Pipelines"
 msgstr ""
 
 msgid "Scope"
@@ -47527,9 +47533,6 @@ msgid "The password for your GitLab account on %{link_to_gitlab} has successfull
 msgstr ""
 
 msgid "The pipeline has been deleted"
-msgstr ""
-
-msgid "The pipelines schedule runs pipelines in the future, repeatedly, for specific branches or tags. Those scheduled pipelines will inherit limited project access based on their associated user."
 msgstr ""
 
 msgid "The project has already been added to your dashboard."
@@ -56927,9 +56930,6 @@ msgid "personal access tokens"
 msgstr ""
 
 msgid "pipeline"
-msgstr ""
-
-msgid "pipeline schedules documentation"
 msgstr ""
 
 msgid "pipelineEditorWalkthrough|Let's do this!"

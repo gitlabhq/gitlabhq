@@ -41,6 +41,7 @@ export default {
 <template>
   <gl-empty-state
     :svg-path="$options.SCHEDULE_MD_SVG_URL"
+    :svg-height="150"
     :primary-button-text="$options.i18n.createNew"
     :primary-button-link="newSchedulePath"
   >

@@ -6,7 +6,7 @@ module Gitlab
       module Expression
         module Lexeme
           class Equals < Lexeme::LogicalOperator
-            PATTERN = /==/.freeze
+            PATTERN = /==/
 
             def evaluate(variables = {})
               @left.evaluate(variables) == @right.evaluate(variables)

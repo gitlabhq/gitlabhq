@@ -21348,7 +21348,8 @@ CREATE TABLE project_ci_cd_settings (
     separated_caches boolean DEFAULT true NOT NULL,
     allow_fork_pipelines_to_run_in_parent_project boolean DEFAULT true NOT NULL,
     inbound_job_token_scope_enabled boolean DEFAULT true NOT NULL,
-    forward_deployment_rollback_allowed boolean DEFAULT true NOT NULL
+    forward_deployment_rollback_allowed boolean DEFAULT true NOT NULL,
+    merge_trains_skip_train_allowed boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq

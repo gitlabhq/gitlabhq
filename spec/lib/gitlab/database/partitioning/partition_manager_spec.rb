@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { partitioned_table_name }
     let(:partitioning_strategy) do
-      double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil)
+      double(missing_partitions: partitions, extra_partitions: [], after_adding_partitions: nil, analyze_interval: nil)
     end
 
     let(:partitions) do
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { :_test_foo }
     let(:partitioning_strategy) do
-      double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil)
+      double(extra_partitions: extra_partitions, missing_partitions: [], after_adding_partitions: nil, analyze_interval: nil)
     end
 
     before do
@@ -258,6 +258,7 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
   end
 
   describe 'analyze partitioned table' do
+    let(:analyze) { true }
     let(:analyze_table) { partitioned_table_name }
     let(:analyze_partition) { "#{partitioned_table_name}_1" }
     let(:analyze_regex) { /ANALYZE VERBOSE "#{analyze_table}"/ }
@@ -278,30 +279,30 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
     end
 
     shared_examples_for 'run only once analyze within interval' do
-      it 'runs only once analyze within interval' do
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+      specify do
+        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
         expect(control.occurrences).to include(analyze_regex)
 
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
         expect(control.occurrences).not_to include(analyze_regex)
 
-        travel_to((analyze_interval * 1.1).since) do
-          control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+        travel_to((analyze_interval * 2).since) do
+          control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
           expect(control.occurrences).to include(analyze_regex)
         end
       end
     end
 
     shared_examples_for 'not to run the analyze at all' do
-      it 'does not run the analyze at all' do
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+      specify do
+        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
         expect(control.occurrences).not_to include(analyze_regex)
 
-        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+        control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
         expect(control.occurrences).not_to include(analyze_regex)
 
         travel_to((analyze_interval * 2).since) do
-          control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions }
+          control = ActiveRecord::QueryRecorder.new { described_class.new(my_model, connection: connection).sync_partitions(analyze: analyze) }
           expect(control.occurrences).not_to include(analyze_regex)
         end
       end
@@ -327,6 +328,12 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       end
 
       it_behaves_like 'run only once analyze within interval'
+
+      context 'when analyze is false' do
+        let(:analyze) { false }
+
+        it_behaves_like 'not to run the analyze at all'
+      end
 
       context 'when model does not set analyze_interval' do
         let(:my_model) do
@@ -356,6 +363,12 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
       end
 
       it_behaves_like 'not to run the analyze at all'
+
+      context 'when analyze is false' do
+        let(:analyze) { false }
+
+        it_behaves_like 'not to run the analyze at all'
+      end
 
       context 'when model does not set analyze_interval' do
         let(:my_model) do

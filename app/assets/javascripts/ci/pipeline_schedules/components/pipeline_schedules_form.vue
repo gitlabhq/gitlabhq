@@ -370,7 +370,7 @@ export default {
         />
       </gl-form-group>
       <!--Variable List-->
-      <gl-form-group class="gl-mb-2" :label="$options.i18n.variables">
+      <gl-form-group class="gl-mb-0" :label="$options.i18n.variables">
         <div
           v-for="(variable, index) in variables"
           :key="`var-${index}`"
@@ -456,13 +456,23 @@ export default {
       <gl-form-checkbox id="schedule-active" v-model="activated" class="gl-mb-3">
         {{ $options.i18n.activated }}
       </gl-form-checkbox>
-
-      <gl-button variant="confirm" data-testid="schedule-submit-button" @click="scheduleHandler">
-        {{ buttonText }}
-      </gl-button>
-      <gl-button :href="schedulesPath" data-testid="schedule-cancel-button">
-        {{ $options.i18n.cancel }}
-      </gl-button>
+      <div class="gl-display-flex gl-gap-3 gl-flex-wrap">
+        <gl-button
+          variant="confirm"
+          data-testid="schedule-submit-button"
+          class="gl-w-full gl-sm-w-auto"
+          @click="scheduleHandler"
+        >
+          {{ buttonText }}
+        </gl-button>
+        <gl-button
+          :href="schedulesPath"
+          data-testid="schedule-cancel-button"
+          class="gl-w-full gl-sm-w-auto"
+        >
+          {{ $options.i18n.cancel }}
+        </gl-button>
+      </div>
     </gl-form>
   </div>
 </template>

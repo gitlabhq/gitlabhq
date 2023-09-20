@@ -6,7 +6,7 @@ module Gitlab
     class Generator
       # The regex used to parse a release header.
       RELEASE_REGEX =
-        /^##\s+(?<version>#{Gitlab::Regex.unbounded_semver_regex})/.freeze
+        /^##\s+(?<version>#{Gitlab::Regex.unbounded_semver_regex})/
 
       # The `input` argument must be a `String` containing the existing
       # changelog Markdown. If no changelog exists, this should be an empty

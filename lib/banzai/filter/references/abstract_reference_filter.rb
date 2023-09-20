@@ -20,7 +20,7 @@ module Banzai
         # transitory value (it never gets saved) we can initialize once, and it
         # doesn't matter if it changes on a restart.
         REFERENCE_PLACEHOLDER = "_reference_#{SecureRandom.hex(16)}_"
-        REFERENCE_PLACEHOLDER_PATTERN = %r{#{REFERENCE_PLACEHOLDER}(\d+)}.freeze
+        REFERENCE_PLACEHOLDER_PATTERN = %r{#{REFERENCE_PLACEHOLDER}(\d+)}
 
         # Public: Find references in text (like `!123` for merge requests)
         #

@@ -2,7 +2,7 @@
 
 module Gitaly
   class Server
-    SHA_VERSION_REGEX = /\A\d+\.\d+\.\d+-\d+-g([a-f0-9]{8})\z/.freeze
+    SHA_VERSION_REGEX = /\A\d+\.\d+\.\d+-\d+-g([a-f0-9]{8})\z/
     DEFAULT_REPLICATION_FACTOR = 1
 
     class << self

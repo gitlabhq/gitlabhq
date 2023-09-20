@@ -1,12 +1,5 @@
 <script>
-import {
-  GlFormRadio,
-  GlFormRadioGroup,
-  GlIcon,
-  GlLink,
-  GlSprintf,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlFormRadio, GlFormRadioGroup, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { getWeekdayNames } from '~/lib/utils/datetime_utility';
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -23,7 +16,6 @@ export default {
     GlFormRadioGroup,
     GlIcon,
     GlLink,
-    GlSprintf,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -97,8 +89,7 @@ export default {
         },
         {
           value: KEY_CUSTOM,
-          text: s__('PipelineScheduleIntervalPattern|Custom (%{linkStart}Learn more%{linkEnd}.)'),
-          link: this.cronSyntaxUrl,
+          text: s__('PipelineScheduleIntervalPattern|Custom'),
         },
       ];
     },
@@ -155,6 +146,10 @@ export default {
       return value === KEY_CUSTOM && this.dailyLimit;
     },
   },
+  i18n: {
+    learnCronSyntax: s__('PipelineScheduleIntervalPattern|Set a custom interval with Cron syntax.'),
+    cronSyntaxLink: s__('PipelineScheduleIntervalPattern|What is Cron syntax?'),
+  },
 };
 </script>
 
@@ -167,19 +162,14 @@ export default {
         :value="option.value"
         :data-testid="option.value"
       >
-        <gl-sprintf v-if="option.link" :message="option.text">
-          <template #link="{ content }">
-            <gl-link :href="option.link" target="_blank" class="gl-font-sm">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-
-        <template v-else>{{ option.text }}</template>
+        {{ option.text }}
 
         <gl-icon
           v-if="showDailyLimitMessage(option)"
           v-gl-tooltip.hover
           name="question-o"
           :title="scheduleDailyLimitMsg"
+          data-testid="daily-limit"
         />
       </gl-form-radio>
     </gl-form-radio-group>
@@ -193,5 +183,11 @@ export default {
       required="true"
       @input="onCustomInput"
     />
+    <p class="gl-mt-1 gl-mb-0 gl-text-secondary">
+      {{ $options.i18n.learnCronSyntax }}
+      <gl-link :href="cronSyntaxUrl" target="_blank">
+        {{ $options.i18n.cronSyntaxLink }}
+      </gl-link>
+    </p>
   </div>
 </template>

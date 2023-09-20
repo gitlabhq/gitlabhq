@@ -5,9 +5,9 @@ module Banzai
     # See comments in MarkdownPreEscapeFilter for details on strategy
     class MarkdownPostEscapeFilter < HTML::Pipeline::Filter
       LITERAL_KEYWORD   = MarkdownPreEscapeFilter::LITERAL_KEYWORD
-      LITERAL_REGEX     = %r{#{LITERAL_KEYWORD}-(.*?)-#{LITERAL_KEYWORD}}.freeze
-      NOT_LITERAL_REGEX = %r{#{LITERAL_KEYWORD}-((%5C|\\).+?)-#{LITERAL_KEYWORD}}.freeze
-      SPAN_REGEX        = %r{<span data-escaped-char>(.*?)</span>}.freeze
+      LITERAL_REGEX     = %r{#{LITERAL_KEYWORD}-(.*?)-#{LITERAL_KEYWORD}}
+      NOT_LITERAL_REGEX = %r{#{LITERAL_KEYWORD}-((%5C|\\).+?)-#{LITERAL_KEYWORD}}
+      SPAN_REGEX        = %r{<span data-escaped-char>(.*?)</span>}
 
       XPATH_A            = Gitlab::Utils::Nokogiri.css_to_xpath('a').freeze
       XPATH_LANG_TAG     = Gitlab::Utils::Nokogiri.css_to_xpath('pre').freeze

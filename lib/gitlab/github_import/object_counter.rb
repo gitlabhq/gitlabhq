@@ -38,7 +38,7 @@ module Gitlab
           # After import is completed we store this information in project's import_checksums
           return cached_summary if cached_summary != EMPTY_SUMMARY || project.import_state.blank?
 
-          project.import_state.in_progress? ? cached_summary : project.import_checksums
+          project.import_state.completed? ? project.import_checksums : cached_summary
         end
 
         private

@@ -32,7 +32,7 @@ module Banzai
 
       XPATH = 'descendant-or-self::li[input[@data-inapplicable]] | descendant-or-self::li[p[input[@data-inapplicable]]]'
       INAPPLICABLE = '[~]'
-      INAPPLICABLEPATTERN = /\[~\]/.freeze
+      INAPPLICABLEPATTERN = /\[~\]/
 
       # Pattern used to identify all task list items.
       # Useful when you need iterate over all items.
@@ -46,7 +46,7 @@ module Banzai
           #{INAPPLICABLEPATTERN}
         )
         (?=\s)                  # followed by whitespace
-      /x.freeze
+      /x
 
       # Force the gem's constant to use our new one
       superclass.send(:remove_const, :ItemPattern) # rubocop: disable GitlabSecurity/PublicSend

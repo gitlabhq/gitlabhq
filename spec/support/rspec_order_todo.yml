@@ -590,7 +590,6 @@
 - './ee/spec/graphql/api/vulnerabilities_spec.rb'
 - './ee/spec/graphql/ee/mutations/boards/issues/issue_move_list_spec.rb'
 - './ee/spec/graphql/ee/mutations/boards/lists/create_spec.rb'
-- './ee/spec/graphql/ee/mutations/ci/project_ci_cd_settings_update_spec.rb'
 - './ee/spec/graphql/ee/mutations/ci/runner/update_spec.rb'
 - './ee/spec/graphql/ee/mutations/concerns/mutations/resolves_issuable_spec.rb'
 - './ee/spec/graphql/ee/resolvers/board_list_issues_resolver_spec.rb'

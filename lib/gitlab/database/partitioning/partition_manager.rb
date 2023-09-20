@@ -19,7 +19,7 @@ module Gitlab
           @connection_name = @connection.pool.db_config.name
         end
 
-        def sync_partitions
+        def sync_partitions(analyze: true)
           return skip_synching_partitions unless table_partitioned?
 
           Gitlab::AppLogger.info(
@@ -37,7 +37,7 @@ module Gitlab
             create(partitions_to_create) unless partitions_to_create.empty?
             detach(partitions_to_detach) unless partitions_to_detach.empty?
 
-            run_analyze_on_partitioned_table
+            run_analyze_on_partitioned_table if analyze
           end
         rescue ArgumentError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
@@ -156,26 +156,30 @@ module Gitlab
           return if Feature.disabled?(:database_analyze_on_partitioned_tables)
           return if ineligible_for_analyzing?
 
-          set_analyze_statement_timeout do
+          primary_transaction(statement_timeout: STATEMENT_TIMEOUT) do
             # Running ANALYZE on partitioned table will go through itself and its partitions
             connection.execute("ANALYZE VERBOSE #{model.quoted_table_name}")
           end
         end
 
         def ineligible_for_analyzing?
-          first_model_partition.blank? || analyze_interval.blank? || last_analyzed_at_within_interval?
+          analyze_interval.blank? ||
+            first_model_partition.blank? ||
+            last_analyzed_at_within_interval?
         end
 
         def last_analyzed_at_within_interval?
           table_to_query = first_model_partition.identifier
 
-          # We don't need to get the last_analyze_time from partitioned table,
-          # because it's not supported and always returns NULL for PG version below 14
-          # Therefore, we can always get the last_analyze_time from the first partition
-          last_analyzed_at = connection.select_value(
-            "SELECT pg_stat_get_last_analyze_time('#{table_to_query}'::regclass)"
-          )
-          last_analyzed_at.present? && last_analyzed_at >= Time.current - analyze_interval
+          primary_transaction do
+            # We don't need to get the last_analyze_time from partitioned table,
+            # because it's not supported and always returns NULL for PG version below 14
+            # Therefore, we can always get the last_analyze_time from the first partition
+            last_analyzed_at = connection.select_value(
+              "SELECT pg_stat_get_last_analyze_time('#{table_to_query}'::regclass)"
+            )
+            last_analyzed_at.present? && last_analyzed_at >= Time.current - analyze_interval
+          end
         end
 
         def first_model_partition
@@ -189,11 +193,18 @@ module Gitlab
           model.partitioning_strategy.analyze_interval
         end
 
-        def set_analyze_statement_timeout
-          connection.execute(format("SET statement_timeout TO '%ds'", STATEMENT_TIMEOUT))
-          yield
-        ensure
-          connection.execute('RESET statement_timeout')
+        def primary_transaction(statement_timeout: nil)
+          Gitlab::Database::LoadBalancing::Session.current.use_primary do
+            connection.transaction(requires_new: false) do
+              if statement_timeout.present?
+                connection.execute(
+                  format("SET LOCAL statement_timeout TO '%ds'", statement_timeout)
+                )
+              end
+
+              yield
+            end
+          end
         end
       end
     end

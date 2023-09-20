@@ -20,7 +20,7 @@ module Mutations
         null: true,
         description: 'User namespace commit email after mutation.'
 
-      authorize :read_namespace
+      authorize :read_namespace_via_membership
 
       def resolve(args)
         namespace = authorized_find!(args[:namespace_id])

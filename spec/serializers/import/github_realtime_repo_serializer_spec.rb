@@ -10,7 +10,7 @@ RSpec.describe Import::GithubRealtimeRepoSerializer, feature_category: :importer
   end
 
   describe '#represent' do
-    let(:import_state) { instance_double(ProjectImportState, failed?: false, in_progress?: true) }
+    let(:import_state) { instance_double(ProjectImportState, failed?: false, completed?: false) }
     let(:project) do
       instance_double(
         Project,

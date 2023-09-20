@@ -29,6 +29,7 @@ module Types
         null: true,
         description: 'Whether merge pipelines are enabled.',
         method: :merge_pipelines_enabled?
+      # TODO(Issue 422295): this is EE only and should be moved to the EE file
       field :merge_trains_enabled,
         GraphQL::Types::Boolean,
         null: true,
@@ -41,3 +42,5 @@ module Types
     end
   end
 end
+
+Types::Ci::CiCdSettingType.prepend_mod_with('Types::Ci::CiCdSettingType')

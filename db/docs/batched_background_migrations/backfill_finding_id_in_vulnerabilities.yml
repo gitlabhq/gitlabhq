@@ -1,0 +1,6 @@
+---
+migration_job_name: BackfillFindingIdInVulnerabilities
+description: Backfills finding_id column on vulnerabilities table for a proper 1:1 relation
+feature_category: vulnerability_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/418971
+milestone: 16.4

@@ -7,13 +7,13 @@ module Import
         return error('Not Found', :not_found) unless authorized_to_read?
         return error('Unauthorized access', :forbidden) unless authorized_to_cancel?
 
-        if project.import_in_progress?
+        if project.import_state.completed?
+          error(cannot_cancel_error_message, :bad_request)
+        else
           project.import_state.cancel
           metrics.track_canceled_import
 
           success(project: project)
-        else
-          error(cannot_cancel_error_message, :bad_request)
         end
       end
 

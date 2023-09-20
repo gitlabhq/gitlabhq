@@ -6,7 +6,7 @@ module Gitlab
       module Expression
         module Lexeme
           class String < Lexeme::Value
-            PATTERN = /("(?<string>.*?)")|('(?<string>.*?)')/.freeze
+            PATTERN = /("(?<string>.*?)")|('(?<string>.*?)')/
 
             def evaluate(variables = {})
               @value.to_s

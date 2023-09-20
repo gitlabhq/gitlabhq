@@ -10,7 +10,7 @@ module API
         # We have skipped some checks that are optional and can be skipped for exception.
         # We also check for control characters, More info on ctrl chars - https://ruby-doc.org/core-2.7.0/Regexp.html#class-Regexp-label-Character+Classes
         INVALID_CHARS = Regexp.union('..', '\\', '@', '@{', ' ', '~', '^', ':', '*', '?', '[', /[[:cntrl:]]/).freeze
-        GIT_REF_LENGTH = (1..1024).freeze
+        GIT_REF_LENGTH = (1..1024)
 
         def validate_param!(attr_name, params)
           revision = params[attr_name]

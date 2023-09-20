@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ExpandVariables
-  VARIABLES_REGEXP = /\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/.freeze
+  VARIABLES_REGEXP = /\$([a-zA-Z_][a-zA-Z0-9_]*)|\${\g<1>}|%\g<1>%/
 
   class << self
     def expand(value, variables, expand_file_refs: true)

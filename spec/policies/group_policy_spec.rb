@@ -19,6 +19,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
       expect_disallowed(:read_namespace)
+      expect_disallowed(:read_namespace_via_membership)
     end
   end
 
@@ -34,6 +35,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       expect_disallowed(*maintainer_permissions)
       expect_disallowed(*owner_permissions)
       expect_disallowed(:read_namespace)
+      expect_disallowed(:read_namespace_via_membership)
     end
   end
 

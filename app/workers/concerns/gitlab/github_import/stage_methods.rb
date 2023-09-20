@@ -9,7 +9,7 @@ module Gitlab
 
         return unless (project = find_project(project_id))
 
-        unless project.import_state&.in_progress?
+        if project.import_state&.completed?
           info(
             project_id,
             message: 'Project import is no longer running. Stopping worker.',

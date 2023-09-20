@@ -19,7 +19,7 @@ module API
     API_TOKEN_ENV = 'gitlab.api.token'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
-    INTEGER_ID_REGEX = /^-?\d+$/.freeze
+    INTEGER_ID_REGEX = /^-?\d+$/
 
     def logger
       API.logger
@@ -237,7 +237,7 @@ module API
     end
 
     def check_namespace_access(namespace)
-      return namespace if can?(current_user, :read_namespace, namespace)
+      return namespace if can?(current_user, :read_namespace_via_membership, namespace)
 
       not_found!('Namespace')
     end

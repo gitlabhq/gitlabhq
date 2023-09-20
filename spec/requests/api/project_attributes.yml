@@ -94,6 +94,7 @@ ci_cd_settings:
     - id
     - project_id
     - merge_trains_enabled
+    - merge_trains_skip_train_allowed
     - merge_pipelines_enabled
     - auto_rollback_enabled
     - inbound_job_token_scope_enabled

@@ -9,7 +9,7 @@
 module API
   module V3
     class Github < ::API::Base
-      NO_SLASH_URL_PART_REGEX = %r{[^/]+}.freeze
+      NO_SLASH_URL_PART_REGEX = %r{[^/]+}
       ENDPOINT_REQUIREMENTS = {
         namespace: NO_SLASH_URL_PART_REGEX,
         project: NO_SLASH_URL_PART_REGEX,

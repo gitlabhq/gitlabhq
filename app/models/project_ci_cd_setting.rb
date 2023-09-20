@@ -19,6 +19,7 @@ class ProjectCiCdSetting < ApplicationRecord
 
   attribute :forward_deployment_enabled, default: true
   attribute :separated_caches, default: true
+  validates :merge_trains_skip_train_allowed, inclusion: { in: [true, false] }
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
 

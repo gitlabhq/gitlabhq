@@ -20,13 +20,13 @@ module Gitlab
           registered_tables.merge(tables)
         end
 
-        def sync_partitions_ignore_db_error
-          sync_partitions unless ENV['DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP']
+        def sync_partitions_ignore_db_error(analyze: false)
+          sync_partitions(analyze: analyze) unless ENV['DISABLE_POSTGRES_PARTITION_CREATION_ON_STARTUP']
         rescue ActiveRecord::ActiveRecordError, PG::Error
           # ignore - happens when Rake tasks yet have to create a database, e.g. for testing
         end
 
-        def sync_partitions(models_to_sync = registered_for_sync, only_on: nil)
+        def sync_partitions(models_to_sync = registered_for_sync, only_on: nil, analyze: true)
           return if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
 
           return unless Feature.enabled?(:partition_manager_sync_partitions, type: :ops)
@@ -34,7 +34,7 @@ module Gitlab
           Gitlab::AppLogger.info(message: 'Syncing dynamic postgres partitions')
 
           Gitlab::Database::EachDatabase.each_model_connection(models_to_sync, only_on: only_on) do |model|
-            PartitionManager.new(model).sync_partitions
+            PartitionManager.new(model).sync_partitions(analyze: analyze)
           end
 
           unless only_on
@@ -44,7 +44,7 @@ module Gitlab
               model_connection_name = model.connection_db_config.name
               Gitlab::Database::EachDatabase.each_connection(include_shared: false) do |connection, connection_name|
                 if connection_name != model_connection_name
-                  PartitionManager.new(model, connection: connection).sync_partitions
+                  PartitionManager.new(model, connection: connection).sync_partitions(analyze: analyze)
                 end
               end
             end

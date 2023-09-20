@@ -7,7 +7,7 @@ module Gitlab
         class Skip < Chain::Base
           include ::Gitlab::Utils::StrongMemoize
 
-          SKIP_PATTERN = /\[(ci[ _-]skip|skip[ _-]ci)\]/i.freeze
+          SKIP_PATTERN = /\[(ci[ _-]skip|skip[ _-]ci)\]/i
 
           def perform!
             if skipped?

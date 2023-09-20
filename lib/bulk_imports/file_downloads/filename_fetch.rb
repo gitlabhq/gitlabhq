@@ -3,7 +3,7 @@
 module BulkImports
   module FileDownloads
     module FilenameFetch
-      REMOTE_FILENAME_PATTERN = %r{filename="(?<filename>[^"]+)"}.freeze
+      REMOTE_FILENAME_PATTERN = %r{filename="(?<filename>[^"]+)"}
       FILENAME_SIZE_LIMIT = 255 # chars before the extension
 
       def raise_error(message)

@@ -6,7 +6,7 @@ module Gitlab
       module Expression
         module Lexeme
           class Null < Lexeme::Value
-            PATTERN = /null/.freeze
+            PATTERN = /null/
 
             def initialize(value = nil)
               super

@@ -3,7 +3,7 @@
 module ErrorTracking
   class SentryClient
     module PaginationParser
-      PATTERN = /rel="(?<direction>\w+)";\sresults="(?<results>\w+)";\scursor="(?<cursor>.+)"/.freeze
+      PATTERN = /rel="(?<direction>\w+)";\sresults="(?<results>\w+)";\scursor="(?<cursor>.+)"/
 
       def self.parse(headers)
         links = headers['link'].to_s.split(',')

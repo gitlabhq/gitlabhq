@@ -7,7 +7,7 @@ module API
 
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
-    NO_SLASH_URL_PART_REGEX = %r{[^/]+}.freeze
+    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
     NAMESPACE_OR_PROJECT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
     COMMIT_ENDPOINT_REQUIREMENTS = NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
     USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze

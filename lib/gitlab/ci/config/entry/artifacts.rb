@@ -14,7 +14,7 @@ module Gitlab
 
           ALLOWED_WHEN = %w[on_success on_failure always].freeze
           ALLOWED_KEYS = %i[name untracked paths reports when expire_in expose_as exclude public].freeze
-          EXPOSE_AS_REGEX = /\A\w[-\w ]*\z/.freeze
+          EXPOSE_AS_REGEX = /\A\w[-\w ]*\z/
           EXPOSE_AS_ERROR_MESSAGE = "can contain only letters, digits, '-', '_' and spaces"
 
           attributes ALLOWED_KEYS

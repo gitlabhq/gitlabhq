@@ -8,7 +8,7 @@ module Gitlab
           require_dependency 're2'
 
           class Pattern < Lexeme::Value
-            PATTERN = %r{^\/([^\/]|\\/)+[^\\]\/[ismU]*}.freeze
+            PATTERN = %r{^\/([^\/]|\\/)+[^\\]\/[ismU]*}
 
             def initialize(regexp)
               super(regexp.gsub(%r{\\/}, '/'))
