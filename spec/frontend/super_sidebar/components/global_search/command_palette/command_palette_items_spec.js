@@ -9,6 +9,7 @@ import {
   PATH_GROUP_TITLE,
   USER_HANDLE,
   PATH_HANDLE,
+  PROJECT_HANDLE,
   SEARCH_SCOPE,
   MAX_ROWS,
 } from '~/super_sidebar/components/global_search/command_palette/constants';
@@ -20,6 +21,7 @@ import {
 import { getFormattedItem } from '~/super_sidebar/components/global_search/utils';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { COMMANDS, LINKS, USERS, FILES } from './mock_data';
 
@@ -32,7 +34,7 @@ describe('CommandPaletteItems', () => {
   const projectFilesPath = 'project/files/path';
   const projectBlobPath = '/blob/main';
 
-  const createComponent = (props) => {
+  const createComponent = (props, options = {}) => {
     wrapper = shallowMount(CommandPaletteItems, {
       propsData: {
         handle: COMMAND_HANDLE,
@@ -51,6 +53,7 @@ describe('CommandPaletteItems', () => {
         projectFilesPath,
         projectBlobPath,
       },
+      ...options,
     });
   };
 
@@ -225,6 +228,43 @@ describe('CommandPaletteItems', () => {
       await wrapper.setProps({ searchQuery: newSearchQuery });
 
       expect(axios.get).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Tracking', () => {
+    let trackingSpy;
+    let mockAxios;
+
+    beforeEach(() => {
+      trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
+      mockAxios = new MockAdapter(axios);
+      createComponent({ attachTo: document.body });
+    });
+
+    afterEach(() => {
+      mockAxios.restore();
+    });
+
+    it('tracks event immediately', () => {
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'activate_command_palette', {
+        label: 'command',
+      });
+    });
+
+    it.each`
+      handle            | label
+      ${USER_HANDLE}    | ${'user'}
+      ${PROJECT_HANDLE} | ${'project'}
+      ${PATH_HANDLE}    | ${'path'}
+    `('tracks changing the handle to "$handle"', async ({ handle, label }) => {
+      trackingSpy.mockClear();
+
+      await wrapper.setProps({ handle });
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'activate_command_palette', {
+        label,
+      });
     });
   });
 });

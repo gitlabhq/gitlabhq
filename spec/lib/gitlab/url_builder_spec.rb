@@ -32,6 +32,9 @@ RSpec.describe Gitlab::UrlBuilder do
       :ci_build          | ->(build)         { "/#{build.project.full_path}/-/jobs/#{build.id}" }
       :design            | ->(design)        { "/#{design.project.full_path}/-/design_management/designs/#{design.id}/raw_image" }
 
+      [:issue, :group_level]     | ->(issue)     { "/groups/#{issue.namespace.full_path}/-/work_items/#{issue.iid}" }
+      [:work_item, :group_level] | ->(work_item) { "/groups/#{work_item.namespace.full_path}/-/work_items/#{work_item.iid}" }
+
       :group             | ->(group)         { "/groups/#{group.full_path}" }
       :group_milestone   | ->(milestone)     { "/groups/#{milestone.group.full_path}/-/milestones/#{milestone.iid}" }
 

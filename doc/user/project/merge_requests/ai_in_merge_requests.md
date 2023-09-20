@@ -34,8 +34,7 @@ Provide feedback on this experimental feature in [issue 416537](https://gitlab.c
 
 - Title of the merge request
 - Contents of the description
-- Source branch name
-- Target branch name
+- Diff of changes between the source branch's head and the target branch
 
 ## Summarize merge request changes **(ULTIMATE SAAS)**
 

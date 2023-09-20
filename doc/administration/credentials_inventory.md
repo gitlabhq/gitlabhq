@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto
@@ -10,42 +10,45 @@ type: howto
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20912) in GitLab 12.6.
 > - [Bot-created access tokens not displayed in personal access token list](https://gitlab.com/gitlab-org/gitlab/-/issues/351759) in GitLab 14.9.
 
-GitLab administrators are responsible for the overall security of their instance. To assist, GitLab
-provides a Credentials inventory to keep track of all the credentials that can be used to access
-their self-managed instance.
+As a GitLab administrator, you are responsible for the overall security of your instance.
+To assist, GitLab provides an inventory of all the credentials that can be used to access
+your self-managed instance.
 
-Use Credentials inventory to see for your GitLab instance all:
+In the credentials inventory, you can view all:
 
-- Personal access tokens (PAT).
-- Project access tokens (GitLab 14.8 and later).
+- Personal access tokens (PATs).
+- Project access tokens (introduced in GitLab 14.8).
+- Group access tokens ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102959) in GitLab 15.6).
 - SSH keys.
 - GPG keys.
 
-You can also [revoke](#revoke-a-users-personal-access-token) and [delete](#delete-a-users-ssh-key) and see:
+You can also [revoke](#revoke-a-users-personal-access-token), [delete](#delete-a-users-ssh-key), and view:
 
 - Who they belong to.
 - Their access scope.
 - Their usage pattern.
-- When they expire. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214809) in GitLab 13.2.
-- When they were revoked. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214809) in GitLab 13.2.
-
-To access the Credentials inventory:
-
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Admin Area**.
-1. Select **Credentials**.
+- [In GitLab 13.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/214809), when they:
+  - Expire.
+  - Were revoked.
 
 ## Revoke a user's personal access token
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214811) in GitLab 13.4.
 
-If you see a **Revoke** button, you can revoke that user's PAT. Whether you see a **Revoke** button depends on the token state, and if an expiration date has been set. For more information, see the following table:
+You can revoke a user's personal access token.
 
-| Token state | Show Revoke button? | Comments                                                                   |
-|-------------|---------------------|----------------------------------------------------------------------------|
-| Active      | Yes                 | Allows administrators to revoke the PAT, such as for a compromised account |
-| Expired     | No                  | Not applicable; token is already expired                                   |
-| Revoked     | No                  | Not applicable; token is already revoked                                   |
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Credentials**.
+1. By the personal access token, select **Revoke**.
+
+If a **Revoke** button is not available, the token may be expired or revoked, or an expiration date set.
+
+| Token state | Revoke button displayed? | Comments                                                                   |
+|-------------|--------------------------|----------------------------------------------------------------------------|
+| Active      | Yes                      | Allows administrators to revoke the PAT, such as for a compromised account |
+| Expired     | No                       | Not applicable; token is already expired                                   |
+| Revoked     | No                       | Not applicable; token is already revoked                                   |
 
 When a PAT is revoked from the credentials inventory, the instance notifies the user by email.
 
@@ -55,10 +58,13 @@ When a PAT is revoked from the credentials inventory, the instance notifies the 
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243833) in GitLab 14.8.
 
-The **Revoke** button next to a project access token can be selected to revoke that particular project access token. This both:
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Credentials**.
+1. Select the **Project Access Tokens** tab.
+1. By the project access token, select **Revoke**.
 
-- Revokes the token project access token.
-- Enqueues a background worker to delete the project bot user.
+The project access token is revoked and a background worker is queued to delete the project bot user.
 
 ![Credentials inventory page - Project access tokens](img/credentials_inventory_project_access_tokens_v14_9.png)
 
@@ -66,8 +72,13 @@ The **Revoke** button next to a project access token can be selected to revoke t
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225248) in GitLab 13.5.
 
-You can **Delete** a user's SSH key by navigating to the credentials inventory's SSH Keys tab.
-The instance then notifies the user.
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Credentials**.
+1. Select the **SSH Keys** tab.
+1. By the SSH key, select **Delete**.
+
+The instance notifies the user.
 
 ![Credentials inventory page - SSH keys](img/credentials_inventory_ssh_keys_v14_9.png)
 
@@ -76,11 +87,11 @@ The instance then notifies the user.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282429) in GitLab 13.10.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292961) in GitLab 13.12.
 
-You can view all existing GPG in your GitLab instance by navigating to the
+You can view all existing GPG in your GitLab instance by going to the
 credentials inventory GPG Keys tab, as well as the following properties:
 
 - Who the GPG key belongs to.
 - The ID of the GPG key.
-- Whether the GPG key is [verified or unverified](../user/project/repository/gpg_signed_commits/index.md)
+- Whether the GPG key is [verified or unverified](../user/project/repository/signed_commits/gpg.md).
 
 ![Credentials inventory page - GPG keys](img/credentials_inventory_gpg_keys_v14_9.png)

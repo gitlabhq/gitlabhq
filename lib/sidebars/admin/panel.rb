@@ -21,10 +21,7 @@ module Sidebars
 
       override :super_sidebar_context_header
       def super_sidebar_context_header
-        @super_sidebar_context_header ||= {
-          title: aria_label,
-          icon: 'admin'
-        }
+        aria_label
       end
 
       def add_menus

@@ -26,20 +26,28 @@ export default {
 
 <template>
   <a
-    v-gl-tooltip:super-sidebar.hover.noninteractive.bottom.ds500="$options.i18n.homepage"
+    v-gl-tooltip:super-sidebar.hover.bottom="$options.i18n.homepage"
     class="brand-logo"
     :href="rootPath"
-    :title="$options.i18n.homepage"
     data-track-action="click_link"
     data-track-label="gitlab_logo_link"
     data-track-property="nav_core_menu"
   >
+    <span class="gl-sr-only">{{ $options.i18n.homepage }}</span>
+    <!-- eslint-disable @gitlab/vue-require-i18n-attribute-strings -->
     <img
       v-if="logoUrl"
+      alt=""
       data-testid="brand-header-custom-logo"
       :src="logoUrl"
       class="gl-h-6 gl-max-w-full"
     />
-    <span v-else v-safe-html="$options.logo" data-testid="brand-header-default-logo"></span>
+    <!-- eslint-enable @gitlab/vue-require-i18n-attribute-strings -->
+    <span
+      v-else
+      v-safe-html="$options.logo"
+      aria-hidden
+      data-testid="brand-header-default-logo"
+    ></span>
   </a>
 </template>

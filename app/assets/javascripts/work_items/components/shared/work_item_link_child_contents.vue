@@ -43,15 +43,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    parentWorkItemId: {
-      type: String,
-      required: true,
-    },
-    workItemType: {
-      type: String,
-      required: false,
-      default: '',
-    },
     childPath: {
       type: String,
       required: true,
@@ -158,7 +149,7 @@ export default {
           </span>
           <gl-link
             :href="childPath"
-            class="gl-text-truncate gl-text-black-normal! gl-font-weight-semibold"
+            class="gl-text-truncate gl-font-weight-semibold"
             data-testid="item-title"
             @click="$emit('click', $event)"
             @mouseover="$emit('mouseover')"

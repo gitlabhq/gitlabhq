@@ -27,7 +27,7 @@ module Gitlab
           # If a job is being exhausted we still want to notify the
           # Gitlab::Import::AdvanceStageWorker to prevent the entire import from getting stuck
           if args.length == 3 && (key = args.last) && key.is_a?(String)
-            JobWaiter.notify(key, jid)
+            JobWaiter.notify(key, jid, ttl: Gitlab::Import::JOB_WAITER_TTL)
           end
         end
       end
@@ -38,7 +38,7 @@ module Gitlab
       # client - An instance of `Gitlab::GithubImport::Client`
       # hash - A Hash containing the details of the object to import.
       def import(project, client, hash)
-        unless project.import_state&.in_progress?
+        if project.import_state&.completed?
           info(
             project.id,
             message: 'Project import is no longer running. Stopping worker.',

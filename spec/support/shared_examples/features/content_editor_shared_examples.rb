@@ -244,7 +244,8 @@ RSpec.shared_examples 'edits content using the content editor' do |params = { wi
         end
       end
 
-      it 'expands the link, updates the link attributes and text if text is updated' do
+      it 'expands the link, updates the link attributes and text if text is updated',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419684' do
         page.within '[data-testid="link-bubble-menu"]' do
           fill_in 'link-text', with: 'new text'
           fill_in 'link-href', with: 'https://about.gitlab.com'

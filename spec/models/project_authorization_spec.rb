@@ -3,6 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
+  describe 'create' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project_1) { create(:project) }
+
+    let(:project_auth) do
+      build(
+        :project_authorization,
+        user: user,
+        project: project_1
+      )
+    end
+
+    it 'sets is_unique' do
+      expect { project_auth.save! }.to change { project_auth.is_unique }.to(true)
+    end
+  end
+
   describe 'unique user, project authorizations' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project_1) { create(:project) }
@@ -63,6 +80,26 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.all_values) }
+  end
+
+  describe 'scopes' do
+    describe '.non_guests' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:project_original_owner_authorization) { project.owner.project_authorizations.first }
+      let_it_be(:project_authorization_guest) { create(:project_authorization, :guest, project: project) }
+      let_it_be(:project_authorization_reporter) { create(:project_authorization, :reporter, project: project) }
+      let_it_be(:project_authorization_developer) { create(:project_authorization, :developer, project: project) }
+      let_it_be(:project_authorization_maintainer) { create(:project_authorization, :maintainer, project: project) }
+      let_it_be(:project_authorization_owner) { create(:project_authorization, :owner, project: project) }
+
+      it 'returns all records which are greater than Guests access' do
+        expect(described_class.non_guests.map(&:attributes)).to match_array([
+          project_authorization_reporter, project_authorization_developer,
+          project_authorization_maintainer, project_authorization_owner,
+          project_original_owner_authorization
+        ].map(&:attributes))
+      end
+    end
   end
 
   describe '.insert_all' do

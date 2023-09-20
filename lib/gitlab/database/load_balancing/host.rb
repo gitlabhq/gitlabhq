@@ -80,11 +80,26 @@ module Gitlab
           start_time = ::Gitlab::Metrics::System.monotonic_time
 
           while (::Gitlab::Metrics::System.monotonic_time - start_time) <= timeout
-            break if pool.connections.none?(&:in_use?)
+            return if try_disconnect
 
             sleep(2)
           end
 
+          force_disconnect!
+        end
+
+        # Attempt to disconnect the pool if all connections are no longer in use.
+        # Returns true if the pool was disconnected, false if not.
+        def try_disconnect
+          if pool.connections.none?(&:in_use?)
+            pool.disconnect!
+            return true
+          end
+
+          false
+        end
+
+        def force_disconnect!
           pool.disconnect!
         end
 
@@ -104,16 +119,19 @@ module Gitlab
         def online?
           return @online unless check_replica_status?
 
+          was_online = @online
           refresh_status
 
-          if @online
+          # Log that the host came back online if it was previously offline
+          if @online && !was_online
             ::Gitlab::Database::LoadBalancing::Logger.info(
               event: :host_online,
               message: 'Host is online after replica status check',
               db_host: @host,
               db_port: @port
             )
-          else
+          # Always log if the host goes offline
+          elsif !@online
             ::Gitlab::Database::LoadBalancing::Logger.warn(
               event: :host_offline,
               message: 'Host is offline after replica status check',

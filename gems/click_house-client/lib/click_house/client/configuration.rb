@@ -18,6 +18,9 @@ module ClickHouse
       #
       # *json_parser*: object for parsing JSON strings, it should respond to the "parse" method
       #
+      # *logger*: object for receiving logger commands. Default `$stdout`
+      # *log_proc*: any output (e.g. structure) to wrap around the query for every statement
+      #
       # Example:
       #
       # Gitlab::ClickHouse::Client.configure do |c|
@@ -30,6 +33,11 @@ module ClickHouse
       #       join_use_nulls: 1 # treat JOINs as per SQL standard
       #     }
       #   )
+      #
+      #   c.logger = MyLogger.new
+      #   c.log_proc = ->(query) do
+      #     { query_body: query.to_redacted_sql }
+      #   end
       #
       #   c.http_post_proc = lambda do |url, headers, body|
       #     options = {
@@ -44,13 +52,15 @@ module ClickHouse
       #
       #   c.json_parser = JSON
       # end
-      attr_accessor :http_post_proc, :json_parser
+      attr_accessor :http_post_proc, :json_parser, :logger, :log_proc
       attr_reader :databases
 
       def initialize
         @databases = {}
         @http_post_proc = nil
         @json_parser = JSON
+        @logger = ::Logger.new($stdout)
+        @log_proc = ->(query) { query.to_sql }
       end
 
       def register_database(name, **args)

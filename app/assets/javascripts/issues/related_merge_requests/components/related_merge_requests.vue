@@ -4,7 +4,6 @@ import { GlLink, GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import { sprintf, __, n__ } from '~/locale';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
-import { parseIssuableData } from '~/issues/show/utils/parse_data';
 
 export default {
   name: 'RelatedMergeRequests',
@@ -18,6 +17,11 @@ export default {
     endpoint: {
       type: String,
       required: true,
+    },
+    hasClosingMergeRequest: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     projectNamespace: {
       type: String,
@@ -47,9 +51,6 @@ export default {
   mounted() {
     this.setInitialState({ apiEndpoint: this.endpoint });
     this.fetchMergeRequests();
-  },
-  created() {
-    this.hasClosingMergeRequest = parseIssuableData().hasClosingMergeRequest;
   },
   methods: {
     ...mapActions(['setInitialState', 'fetchMergeRequests']),

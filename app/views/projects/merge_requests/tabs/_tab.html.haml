@@ -1,8 +1,8 @@
 - tab_name = local_assigns.fetch(:name, nil)
 - tab_class = local_assigns.fetch(:class, nil)
-- qa_selector = local_assigns.fetch(:qa_selector, nil)
+- testid = local_assigns.fetch(:testid, nil)
 - id = local_assigns.fetch(:id, nil)
-- attrs = { class: [tab_class, ("active" if params[:tab] == tab_name)], data: { qa_selector: qa_selector } }
+- attrs = { class: [tab_class, ("active" if params[:tab] == tab_name)], data: { testid: testid } }
 - attrs[:id] = id if id.present?
 
 %li{ attrs }

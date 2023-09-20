@@ -6,7 +6,7 @@ module Gitlab
       # When SERIALIZE_KEYS is updated, to reset the redis cache entries you'll
       #   need to bump the VERSION constant on Gitlab::Diff::HighlightCache
       #
-      SERIALIZE_KEYS = %i(line_code rich_text text type index old_pos new_pos).freeze
+      SERIALIZE_KEYS = %i[line_code rich_text text type index old_pos new_pos].freeze
 
       attr_reader :marker_ranges
       attr_writer :text, :rich_text

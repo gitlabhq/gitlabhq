@@ -4,19 +4,17 @@ module QA
   RSpec.describe 'Create', product_group: :source_code do
     describe 'Multiple file snippet' do
       let(:personal_snippet) do
-        Resource::Snippet.fabricate_via_api! do |snippet|
-          snippet.title = 'Personal snippet to add file to'
-          snippet.file_name = 'Original file name'
-          snippet.file_content = 'Original file content'
-        end
+        create(:snippet,
+          title: 'Personal snippet to add file to',
+          file_name: 'Original file name',
+          file_content: 'Original file content')
       end
 
       let(:project_snippet) do
-        Resource::ProjectSnippet.fabricate_via_api! do |snippet|
-          snippet.title = 'Project snippet to add file to'
-          snippet.file_name = 'Original file name'
-          snippet.file_content = 'Original file content'
-        end
+        create(:project_snippet,
+          title: 'Project snippet to add file to',
+          file_name: 'Original file name',
+          file_content: 'Original file content')
       end
 
       before do

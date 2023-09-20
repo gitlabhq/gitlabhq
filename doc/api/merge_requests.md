@@ -51,8 +51,8 @@ Supported attributes:
 
 | Attribute                       | Type           | Required | Description |
 | ------------------------------- | -------------- | -------- | ----------- |
-| `approved_by_ids` **(PREMIUM)** | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`. Maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `approver_ids` **(PREMIUM)**    | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approved_by_ids` **(PREMIUM ALL)** | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`. Maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
+| `approver_ids` **(PREMIUM ALL)**    | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3159) in GitLab 15.11. Available only when the feature flag `mr_approved_filter` is enabled. |
 | `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. |
@@ -114,7 +114,7 @@ Supported attributes:
     "closed_at": null,
     "created_at": "2017-04-29T08:46:00Z",
     "updated_at": "2017-04-29T08:46:00Z",
-    "target_branch": "master",
+    "target_branch": "main",
     "source_branch": "test1",
     "upvotes": 0,
     "downvotes": 0,
@@ -242,8 +242,8 @@ Supported attributes:
 | Attribute                       | Type           | Required | Description |
 | ------------------------------- | -------------- | -------- | ----------- |
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `approved_by_ids` **(PREMIUM)** | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `approver_ids` **(PREMIUM)**    | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approved_by_ids` **(PREMIUM ALL)** | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
+| `approver_ids` **(PREMIUM ALL)**    | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3159) in GitLab 15.11. Available only when the feature flag `mr_approved_filter` is enabled. |
 | `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. |
@@ -303,7 +303,7 @@ Supported attributes:
     "closed_at": null,
     "created_at": "2017-04-29T08:46:00Z",
     "updated_at": "2017-04-29T08:46:00Z",
-    "target_branch": "master",
+    "target_branch": "main",
     "source_branch": "test1",
     "upvotes": 0,
     "downvotes": 0,
@@ -419,9 +419,9 @@ Supported attributes:
 | Attribute                       | Type           | Required | Description |
 | ------------------------------- | -------------- | -------- | ----------- |
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `approved_by_ids` **(PREMIUM)** | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `approved_by_usernames` **(PREMIUM)** | string array  | No       | Returns merge requests which have been approved by all the users with the given `username`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
-| `approver_ids` **(PREMIUM)**    | integer array  | No       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
+| `approved_by_ids` **(PREMIUM ALL)** | integer array  | No       | Returns merge requests which have been approved by all the users with the given `id`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
+| `approved_by_usernames` **(PREMIUM ALL)** | string array  | No       | Returns merge requests which have been approved by all the users with the given `username`, with a maximum of 5. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. |
+| `approver_ids` **(PREMIUM ALL)**    | integer array  | No       | Returns merge requests which have specified all the users with the given `id`s as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. |
 | `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3159) in GitLab 15.11. Available only when the feature flag `mr_approved_filter` is enabled. |
 | `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
 | `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. |
@@ -479,7 +479,7 @@ Supported attributes:
     "closed_at": null,
     "created_at": "2017-04-29T08:46:00Z",
     "updated_at": "2017-04-29T08:46:00Z",
-    "target_branch": "master",
+    "target_branch": "main",
     "source_branch": "test1",
     "upvotes": 0,
     "downvotes": 0,
@@ -598,7 +598,7 @@ Supported attributes:
 
 | Attribute                        | Type | Description |
 |----------------------------------|------|-------------|
-| `approvals_before_merge`| integer |  **(PREMIUM)** Number of approvals required before this merge request can merge. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
+| `approvals_before_merge`| integer |  **(PREMIUM ALL)** Number of approvals required before this merge request can merge. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
 | `assignee` | object | First assignee of the merge request. |
 | `assignees` | array | Assignees of the merge request. |
 | `author` | object | User who created this merge request. |
@@ -672,7 +672,7 @@ Supported attributes:
   "prepared_at": "2018-09-04T11:16:17.520Z",
   "closed_by": null,
   "closed_at": null,
-  "target_branch": "master",
+  "target_branch": "main",
   "source_branch": "manual-job-rules",
   "user_notes_count": 0,
   "upvotes": 0,
@@ -1084,7 +1084,7 @@ Supported attributes:
     "new_path": "VERSION",
     "a_mode": "100644",
     "b_mode": "100644",
-    "diff": "--- a/VERSION\ +++ b/VERSION\ @@ -1 +1 @@\ -1.9.7\ +1.9.8",
+    "diff": "@@ -1 +1 @@\ -1.9.7\ +1.9.8",
     "new_file": false,
     "renamed_file": false,
     "deleted_file": false
@@ -1140,7 +1140,7 @@ Example response:
     "new_path": "README",
     "a_mode": "100644",
     "b_mode": "100644",
-    "diff": "--- a/README\ +++ b/README\ @@ -1 +1 @@\ -Title\ +README",
+    "diff": "@@ -1 +1 @@\ -Title\ +README",
     "new_file": false,
     "renamed_file": false,
     "deleted_file": false
@@ -1150,7 +1150,7 @@ Example response:
     "new_path": "VERSION",
     "a_mode": "100644",
     "b_mode": "100644",
-    "diff": "--- a/VERSION\ +++ b/VERSION\ @@ -1 +1 @@\ -1.9.7\ +1.9.8",
+    "diff": "@@\ -1.9.7\ +1.9.8",
     "new_file": false,
     "renamed_file": false,
     "deleted_file": false
@@ -1179,7 +1179,7 @@ Supported attributes:
   {
     "id": 77,
     "sha": "959e04d7c7a30600c894bd3c0cd0e1ce7f42c11d",
-    "ref": "master",
+    "ref": "main",
     "status": "success"
   }
 ]
@@ -1262,7 +1262,7 @@ POST /projects/:id/merge_requests
 | `target_branch`            | string  | Yes      | The target branch. |
 | `title`                    | string  | Yes      | Title of MR. |
 | `allow_collaboration`      | boolean | No       | Allow commits from members who can merge to the target branch. |
-| `approvals_before_merge` **(PREMIUM)**                      | integer | No | Number of approvals required before this can be merged (see below). To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
+| `approvals_before_merge` **(PREMIUM ALL)**                      | integer | No | Number of approvals required before this can be merged (see below). To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. |
 | `allow_maintainer_to_push` | boolean | No       | Alias of `allow_collaboration`. |
 | `assignee_id`              | integer | No       | Assignee user ID. |
 | `assignee_ids`             | integer array | No | The ID of the users to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees. |
@@ -1284,7 +1284,7 @@ POST /projects/:id/merge_requests
   "state": "merged",
   "created_at": "2017-04-29T08:46:00Z",
   "updated_at": "2017-04-29T08:46:00Z",
-  "target_branch": "master",
+  "target_branch": "main",
   "source_branch": "test1",
   "upvotes": 0,
   "downvotes": 0,
@@ -1439,7 +1439,7 @@ Must include at least one non-required attribute from above.
   "state": "merged",
   "created_at": "2017-04-29T08:46:00Z",
   "updated_at": "2017-04-29T08:46:00Z",
-  "target_branch": "master",
+  "target_branch": "main",
   "source_branch": "test1",
   "upvotes": 0,
   "downvotes": 0,
@@ -1617,7 +1617,7 @@ Supported attributes:
   "state": "merged",
   "created_at": "2017-04-29T08:46:00Z",
   "updated_at": "2017-04-29T08:46:00Z",
-  "target_branch": "master",
+  "target_branch": "main",
   "source_branch": "test1",
   "upvotes": 0,
   "downvotes": 0,
@@ -1819,7 +1819,7 @@ Supported attributes:
   "state": "merged",
   "created_at": "2017-04-29T08:46:00Z",
   "updated_at": "2017-04-29T08:46:00Z",
-  "target_branch": "master",
+  "target_branch": "main",
   "source_branch": "test1",
   "upvotes": 0,
   "downvotes": 0,
@@ -2121,7 +2121,7 @@ Example response:
   "state": "merged",
   "created_at": "2017-04-29T08:46:00Z",
   "updated_at": "2017-04-29T08:46:00Z",
-  "target_branch": "master",
+  "target_branch": "main",
   "source_branch": "test1",
   "upvotes": 0,
   "downvotes": 0,
@@ -2281,7 +2281,7 @@ Example response:
   "state": "merged",
   "created_at": "2017-04-29T08:46:00Z",
   "updated_at": "2017-04-29T08:46:00Z",
-  "target_branch": "master",
+  "target_branch": "main",
   "source_branch": "test1",
   "upvotes": 0,
   "downvotes": 0,
@@ -2568,7 +2568,8 @@ Example response:
   "created_at": "2016-07-26T14:44:48.926Z",
   "merge_request_id": 105,
   "state": "collected",
-  "real_size": "1"
+  "real_size": "1",
+  "patch_id_sha": "d504412d5b6e6739647e752aff8e468dde093f2f"
 }, {
   "id": 108,
   "head_commit_sha": "3eed087b29835c48015768f839d76e5ea8f07a24",
@@ -2577,7 +2578,8 @@ Example response:
   "created_at": "2016-07-25T14:21:33.028Z",
   "merge_request_id": 105,
   "state": "collected",
-  "real_size": "1"
+  "real_size": "1",
+  "patch_id_sha": "72c30d1f0115fc1d2bb0b29b24dc2982cbcdfd32"
 }]
 ```
 
@@ -2620,6 +2622,7 @@ Example response:
   "merge_request_id": 105,
   "state": "collected",
   "real_size": "1",
+  "patch_id_sha": "d504412d5b6e6739647e752aff8e468dde093f2f",
   "commits": [{
     "id": "33e2ee8579fda5bc36accc9c6fbd0b4fefda9e30",
     "short_id": "33e2ee85",
@@ -2650,7 +2653,7 @@ Example response:
     "new_path": "LICENSE",
     "a_mode": "0",
     "b_mode": "100644",
-    "diff": "--- /dev/null\n+++ b/LICENSE\n@@ -0,0 +1,21 @@\n+The MIT License (MIT)\n+\n+Copyright (c) 2018 Administrator\n+\n+Permission is hereby granted, free of charge, to any person obtaining a copy\n+of this software and associated documentation files (the \"Software\"), to deal\n+in the Software without restriction, including without limitation the rights\n+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n+copies of the Software, and to permit persons to whom the Software is\n+furnished to do so, subject to the following conditions:\n+\n+The above copyright notice and this permission notice shall be included in all\n+copies or substantial portions of the Software.\n+\n+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n+SOFTWARE.\n",
+    "diff": "@@ -0,0 +1,21 @@\n+The MIT License (MIT)\n+\n+Copyright (c) 2018 Administrator\n+\n+Permission is hereby granted, free of charge, to any person obtaining a copy\n+of this software and associated documentation files (the \"Software\"), to deal\n+in the Software without restriction, including without limitation the rights\n+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n+copies of the Software, and to permit persons to whom the Software is\n+furnished to do so, subject to the following conditions:\n+\n+The above copyright notice and this permission notice shall be included in all\n+copies or substantial portions of the Software.\n+\n+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n+SOFTWARE.\n",
     "new_file": true,
     "renamed_file": false,
     "deleted_file": false

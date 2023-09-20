@@ -54,6 +54,11 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
           let(:runner) { instance_runner }
         end
 
+        it_behaves_like 'shows runner details from list' do
+          let(:runner) { instance_runner }
+          let(:runner_page_path) { admin_runner_path(instance_runner) }
+        end
+
         it_behaves_like 'pauses, resumes and deletes a runner' do
           let(:runner) { instance_runner }
         end
@@ -574,6 +579,8 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
       let(:runner) { project_runner }
       let(:runner_page_path) { admin_runner_path(project_runner) }
     end
+
+    it_behaves_like 'shows locked field'
 
     describe 'breadcrumbs' do
       it 'contains the current runner id and token' do

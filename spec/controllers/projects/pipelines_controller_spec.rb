@@ -769,22 +769,6 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
     [
       {
-        chart_param: '',
-        event: 'p_analytics_ci_cd_pipelines'
-      },
-      {
-        chart_param: 'pipelines',
-        event: 'p_analytics_ci_cd_pipelines'
-      },
-      {
-        chart_param: 'deployment-frequency',
-        event: 'p_analytics_ci_cd_deployment_frequency'
-      },
-      {
-        chart_param: 'lead-time',
-        event: 'p_analytics_ci_cd_lead_time'
-      },
-      {
         chart_param: 'time-to-restore-service',
         event: 'p_analytics_ci_cd_time_to_restore_service'
       },
@@ -807,6 +791,38 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
         let(:namespace) { project.namespace }
         let(:label) { 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly' }
         let(:property) { 'p_analytics_pipelines' }
+      end
+    end
+
+    [
+      {
+        chart_param: '',
+        event: 'p_analytics_ci_cd_pipelines'
+      },
+      {
+        chart_param: 'pipelines',
+        event: 'p_analytics_ci_cd_pipelines'
+      },
+      {
+        chart_param: 'deployment-frequency',
+        event: 'p_analytics_ci_cd_deployment_frequency'
+      },
+      {
+        chart_param: 'lead-time',
+        event: 'p_analytics_ci_cd_lead_time'
+      }
+    ].each do |tab|
+      it_behaves_like 'tracking unique visits', :charts do
+        let(:request_params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] } }
+        let(:target_id) { ['p_analytics_pipelines', tab[:event]] }
+      end
+
+      it_behaves_like 'internal event tracking' do
+        subject { get :charts, params: request_params, format: :html }
+
+        let(:request_params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] } }
+        let(:action) { tab[:event] }
+        let(:namespace) { project.namespace }
       end
     end
   end

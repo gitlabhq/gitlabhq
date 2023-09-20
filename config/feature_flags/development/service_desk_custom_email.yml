@@ -5,5 +5,5 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/329990
 milestone: '15.9'
 type: development
 group: group::incubation
-default_enabled: false
+default_enabled: true
 log_state_changes: true

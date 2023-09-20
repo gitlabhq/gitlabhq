@@ -34,7 +34,8 @@ const diff = ({ content, path }, origBlob) => {
       content,
       filePath: path,
     };
-  } else if (origBlob.path !== path || origBlob.content !== content) {
+  }
+  if (origBlob.path !== path || origBlob.content !== content) {
     return {
       action: origBlob.path === path ? SNIPPET_BLOB_ACTION_UPDATE : SNIPPET_BLOB_ACTION_MOVE,
       previousPath: origBlob.path,

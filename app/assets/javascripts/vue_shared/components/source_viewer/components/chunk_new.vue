@@ -82,6 +82,7 @@ export default {
   methods: {
     handleChunkAppear() {
       this.hasAppeared = true;
+      this.$emit('appear');
     },
     calculateLineNumber(index) {
       return this.startingFrom + index + 1;

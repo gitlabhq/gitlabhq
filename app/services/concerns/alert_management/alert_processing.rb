@@ -36,7 +36,7 @@ module AlertManagement
       SystemNoteService.log_resolving_alert(alert, alert_source)
 
       if alert.resolve(incoming_payload.ends_at)
-        SystemNoteService.change_alert_status(alert, User.alert_bot)
+        SystemNoteService.change_alert_status(alert, Users::Internal.alert_bot)
 
         close_issue(alert.issue_id) if auto_close_incident?
       end

@@ -26,7 +26,7 @@ Supported attributes:
 
 | Attribute   | Type     | Required | Description           |
 |:------------|:---------|:---------|:----------------------|
-| `public` | boolean | **{dotted-circle}** No | Only return deploy keys that are public. Defaults to `false`. |
+| `public` | boolean | No | Only return deploy keys that are public. Defaults to `false`. |
 
 Example request:
 

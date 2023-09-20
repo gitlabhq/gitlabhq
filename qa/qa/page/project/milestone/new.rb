@@ -7,7 +7,7 @@ module QA
         class New < Page::Milestone::New
           view 'app/views/projects/milestones/_form.html.haml' do
             element :create_milestone_button
-            element :milestone_description_field
+            element 'milestone-description-field'
             element :milestone_title_field
           end
 
@@ -25,7 +25,7 @@ module QA
           end
 
           def set_description(description)
-            fill_element :milestone_description_field, description
+            fill_element('milestone-description-field', description)
           end
 
           def set_due_date(due_date)

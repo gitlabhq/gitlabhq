@@ -61,8 +61,15 @@ module Admin
       def close_report
         return error('Report already closed') if abuse_report.closed?
 
+        close_similar_open_reports
         abuse_report.closed!
         success
+      end
+
+      def close_similar_open_reports
+        # admins see the abuse report and other open reports for the same user in one page
+        # hence, if the request is to close the report, close other open reports for the same user too
+        abuse_report.similar_open_reports_for_user.update_all(status: 'closed')
       end
 
       def close_report_and_record_event

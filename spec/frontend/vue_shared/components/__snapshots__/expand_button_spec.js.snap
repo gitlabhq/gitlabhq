@@ -4,12 +4,10 @@ exports[`Expand button on click when short text is provided renders button after
 <span>
   <button
     aria-label="Click to expand text"
-    class="btn js-text-expander-prepend text-expander btn-blank btn-default btn-md gl-button btn-icon button-ellipsis-horizontal"
+    class="btn btn-blank btn-default btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-prepend text-expander"
     style="display: none;"
     type="button"
   >
-    <!---->
-     
     <svg
       aria-hidden="true"
       class="gl-button-icon gl-icon s16"
@@ -20,26 +18,18 @@ exports[`Expand button on click when short text is provided renders button after
         href="file-mock#ellipsis_h"
       />
     </svg>
-      
-    <!---->
   </button>
-   
-  <!---->
-   
   <span>
     <p>
       Expanded!
     </p>
   </span>
-   
   <button
     aria-label="Click to expand text"
-    class="btn js-text-expander-append text-expander btn-blank btn-default btn-md gl-button btn-icon button-ellipsis-horizontal"
+    class="btn btn-blank btn-default btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-append text-expander"
     style=""
     type="button"
   >
-    <!---->
-     
     <svg
       aria-hidden="true"
       class="gl-button-icon gl-icon s16"
@@ -50,8 +40,6 @@ exports[`Expand button on click when short text is provided renders button after
         href="file-mock#ellipsis_h"
       />
     </svg>
-      
-    <!---->
   </button>
 </span>
 `;
@@ -60,11 +48,9 @@ exports[`Expand button when short text is provided renders button before text 1`
 <span>
   <button
     aria-label="Click to expand text"
-    class="btn js-text-expander-prepend text-expander btn-blank btn-default btn-md gl-button btn-icon button-ellipsis-horizontal"
+    class="btn btn-blank btn-default btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-prepend text-expander"
     type="button"
   >
-    <!---->
-     
     <svg
       aria-hidden="true"
       class="gl-button-icon gl-icon s16"
@@ -75,26 +61,18 @@ exports[`Expand button when short text is provided renders button before text 1`
         href="file-mock#ellipsis_h"
       />
     </svg>
-      
-    <!---->
   </button>
-   
   <span>
     <p>
       Short
     </p>
   </span>
-   
-  <!---->
-   
   <button
     aria-label="Click to expand text"
-    class="btn js-text-expander-append text-expander btn-blank btn-default btn-md gl-button btn-icon button-ellipsis-horizontal"
+    class="btn btn-blank btn-default btn-icon btn-md button-ellipsis-horizontal gl-button js-text-expander-append text-expander"
     style="display: none;"
     type="button"
   >
-    <!---->
-     
     <svg
       aria-hidden="true"
       class="gl-button-icon gl-icon s16"
@@ -105,8 +83,6 @@ exports[`Expand button when short text is provided renders button before text 1`
         href="file-mock#ellipsis_h"
       />
     </svg>
-      
-    <!---->
   </button>
 </span>
 `;

@@ -61,10 +61,6 @@ module Gitlab
           pipeline_source: pipeline.source&.to_sym,
           pipeline_source_bridge: pipeline.source_bridge
         )
-      rescue StandardError => e
-        # We don't want endpoints relying on this code to fail if there's an error here.
-        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, pipeline_id: pipeline.id)
-        nil
       end
       strong_memoize_attr(:project_config)
 

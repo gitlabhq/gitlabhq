@@ -47,7 +47,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
       it 'has only pending builds' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:builds).first.status).to eq('pending')
       end
     end
 
@@ -60,7 +59,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
       it 'has only running jobs' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:builds).first.status).to eq('running')
       end
     end
 
@@ -73,7 +71,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
       it 'has only finished jobs' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:builds).first.status).to eq('success')
       end
     end
 
@@ -89,7 +86,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
         it 'redirects to the page' do
           expect(response).to have_gitlab_http_status(:ok)
-          expect(assigns(:builds).current_page).to eq(last_page)
         end
       end
     end
@@ -154,6 +150,18 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
         it 'renders not_found' do
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the job is a bridge' do
+        let!(:downstream_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let(:job) { downstream_pipeline.source_job }
+
+        it 'redirects to the downstream pipeline page' do
+          get_show(id: job.id)
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(namespace_project_pipeline_path(id: downstream_pipeline.id))
         end
       end
     end

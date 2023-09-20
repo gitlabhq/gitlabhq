@@ -1,14 +1,10 @@
 - breadcrumb_title _('Schedules')
 - @breadcrumb_link = namespace_project_pipeline_schedules_path(@project.namespace, @project)
 - page_title _("New Pipeline Schedule")
-- add_page_specific_style 'page_bundles/pipeline_schedules'
 
 - add_to_breadcrumbs("Pipelines", project_pipelines_path(@project))
 
 %h1.page-title.gl-font-size-h-display
   = _("Schedule a new pipeline")
 
-- if Feature.enabled?(:pipeline_schedules_vue, @project)
-  #pipeline-schedules-form-new{ data: js_pipeline_schedules_form_data(@project, @schedule) }
-- else
-  = render "form"
+#pipeline-schedules-form-new{ data: js_pipeline_schedules_form_data(@project, @schedule) }

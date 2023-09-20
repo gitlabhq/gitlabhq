@@ -15,11 +15,7 @@ module QA
 
       shared_examples 'adds user as owner' do |project_type, testcase|
         let!(:issue) do
-          Resource::Issue.fabricate_via_api! do |issue|
-            issue.api_client = owner_api_client
-            issue.project = project
-            issue.title = 'Test Owner Deletes Issue'
-          end
+          create(:issue, title: 'Test Owner Deletes Issue', project: project, api_client: owner_api_client)
         end
 
         before do
@@ -46,11 +42,7 @@ module QA
 
       shared_examples 'adds user as maintainer' do |testcase|
         let!(:issue) do
-          Resource::Issue.fabricate_via_api! do |issue|
-            issue.api_client = owner_api_client
-            issue.project = project
-            issue.title = 'Test Maintainer Deletes Issue'
-          end
+          create(:issue, title: 'Test Maintainer Deletes Issue', project: project, api_client: owner_api_client)
         end
 
         before do
@@ -75,11 +67,10 @@ module QA
 
       context 'for personal projects' do
         let!(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.api_client = owner_api_client
-            project.name = 'qa-owner-personal-project'
-            project.personal_namespace = owner.username
-          end
+          create(:project,
+            name: 'qa-owner-personal-project',
+            api_client: owner_api_client,
+            personal_namespace: owner.username)
         end
 
         it_behaves_like 'adds user as owner', :personal_project, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/352542'
@@ -88,13 +79,7 @@ module QA
 
       context 'for group projects' do
         let!(:group) { create(:group) }
-
-        let!(:project) do
-          Resource::Project.fabricate_via_api! do |project|
-            project.group = group
-            project.name = 'qa-owner-group-project'
-          end
-        end
+        let!(:project) { create(:project, name: 'qa-owner-group-project', group: group) }
 
         it_behaves_like 'adds user as owner', :group_project, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366436'
         it_behaves_like 'adds user as maintainer', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366435'

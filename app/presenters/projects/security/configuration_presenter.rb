@@ -25,7 +25,8 @@ module Projects
           auto_fix_enabled: autofix_enabled,
           can_toggle_auto_fix_settings: can_toggle_autofix,
           auto_fix_user_path: auto_fix_user_path,
-          security_training_enabled: project.security_training_available?
+          security_training_enabled: project.security_training_available?,
+          continuous_vulnerability_scans_enabled: continuous_vulnerability_scans_enabled
         }
       end
 
@@ -83,7 +84,8 @@ module Projects
           configuration_path: scan.configuration_path,
           available: scan.available?,
           can_enable_by_merge_request: scan.can_enable_by_merge_request?,
-          meta_info_path: scan.meta_info_path
+          meta_info_path: scan.meta_info_path,
+          on_demand_available: scan.on_demand_available?
         }
       end
 
@@ -94,6 +96,8 @@ module Projects
       def project_settings
         project.security_setting
       end
+
+      def continuous_vulnerability_scans_enabled; end
     end
   end
 end

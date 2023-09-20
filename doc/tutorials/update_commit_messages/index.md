@@ -12,7 +12,7 @@ that your commit message didn't completely align with a project's
 [commit message guidelines](../../development/contributing/merge_request_workflow.md#commit-messages-guidelines).
 
 Updating the message can be tricky if you don't have much practice with using Git
-from the command line interface (CLI). But don't worry, even if you have only ever worked in
+from the command-line interface (CLI). But don't worry, even if you have only ever worked in
 the GitLab UI, we'll walk you through the steps to use the CLI.
 
 This tutorial explains how to rewrite commit messages in both cases:
@@ -33,7 +33,7 @@ You must have:
 
 - A GitLab project with a Git branch containing commits that you want to update.
 - Git [installed on your local machine](../../topics/git/how_to_install_git/index.md).
-- The ability to get to your local machine's command line interface (CLI). In macOS,
+- The ability to get to your local machine's command-line interface (CLI). In macOS,
   you can use Terminal. In Windows, you can use PowerShell. Linux users are probably
   already familiar with their system's CLI.
 - Familiarity with your system's default editor. This tutorial assumes your editor is Vim,

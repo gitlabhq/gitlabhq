@@ -3,7 +3,7 @@
 module Gitlab
   module SlashCommands
     class Deploy < BaseCommand
-      DEPLOY_REGEX = /\Adeploy\s/.freeze
+      DEPLOY_REGEX = /\Adeploy\s/
 
       def self.match(text)
         return unless text&.match?(DEPLOY_REGEX)

@@ -75,6 +75,26 @@ RSpec.describe EachBatch do
       expect(ids).to eq(ids.sort.reverse)
     end
 
+    shared_examples 'preloaded batch' do |method|
+      it 'respects preloading without N+1 queries' do
+        one, two = User.first(2)
+
+        create(:key, user: one)
+
+        scope = User.send(method, :keys)
+
+        control = ActiveRecord::QueryRecorder.new { scope.each_batch(of: 5) { |batch| batch.each(&:keys) } }
+
+        create(:key, user: one)
+        create(:key, user: two)
+
+        expect { scope.each_batch(of: 5) { |batch| batch.each(&:keys) } }.not_to exceed_query_limit(control)
+      end
+    end
+
+    it_behaves_like 'preloaded batch', :preload
+    it_behaves_like 'preloaded batch', :includes
+
     describe 'current scope' do
       let(:entry) { create(:user, sign_in_count: 1) }
       let(:ids_with_new_relation) { model.where(id: entry.id).pluck(:id) }

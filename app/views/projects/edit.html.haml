@@ -5,8 +5,6 @@
 - reduce_visibility_form_id = 'reduce-visibility-form'
 - @force_desktop_expanded_sidebar = true
 
-= render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
-
 = render Pajamas::AlertComponent.new(title: _('GitLab Pages has moved'),
     alert_options: { class: 'gl-my-5', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
   - c.with_body do
@@ -91,8 +89,8 @@
         .gl-new-card-title-wrapper
           %h4.gl-new-card-title.warning-title= _('Change path')
         %p.gl-new-card-description
-          - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/settings/index', anchor: 'rename-a-repository') }
-          = _("A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}").html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+          - link = link_to('', help_page_path('user/project/settings/index', anchor: 'rename-a-repository'), target: '_blank', rel: 'noopener noreferrer')
+          = safe_format(_("A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
 
       - c.with_body do
         = render 'projects/errors'

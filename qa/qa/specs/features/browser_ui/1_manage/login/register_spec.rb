@@ -17,7 +17,12 @@ module QA
 
   RSpec.describe 'Manage', :skip_signup_disabled, :requires_admin, product_group: :authentication_and_authorization do
     describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
-      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
+      testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934',
+      quarantine: {
+        only: { job: 'airgapped' },
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414247',
+        type: :investigating
+      } do
       before do
         # When LDAP is enabled, a previous test might have created a token for the LDAP 'tanuki' user who is not an admin
         # So we need to set it to nil in order to create a new token for admin user so that we are able to set_application_settings
@@ -43,7 +48,12 @@ module QA
     end
 
     describe 'standard', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347867' do
-      context 'when admin approval is not required' do
+      context 'when admin approval is not required',
+        quarantine: {
+          only: { job: 'airgapped' },
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414247',
+          type: :investigating
+        } do
         before(:all) do
           set_require_admin_approval_after_user_signup(false)
         end
@@ -51,11 +61,7 @@ module QA
         it_behaves_like 'registration and login'
 
         context 'when user account is deleted' do
-          let(:user) do
-            Resource::User.fabricate_via_api! do |resource|
-              resource.api_client = admin_api_client
-            end
-          end
+          let(:user) { create(:user, api_client: admin_api_client) }
 
           before do
             # Use the UI instead of API to delete the account since
@@ -101,7 +107,13 @@ module QA
         end
       end
 
-      context 'when admin approval is required' do
+      context 'when admin approval is required',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347871',
+        quarantine: {
+          only: { job: 'airgapped' },
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414247',
+          type: :investigating
+        } do
         let(:signed_up_waiting_approval_text) do
           'You have signed up successfully. However, we could not sign you in because your account is awaiting approval from your GitLab administrator.'
         end
@@ -125,8 +137,7 @@ module QA
           set_require_admin_approval_after_user_signup(false)
         end
 
-        it 'allows user login after approval',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347871' do
+        it 'allows user login after approval' do
           user # sign up user
 
           expect(page).to have_text(signed_up_waiting_approval_text)

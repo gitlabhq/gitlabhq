@@ -10,7 +10,7 @@
           .input-group
             %input.label.label-monospace.monospace{ id: "application_id", type: "text", autocomplete: 'off', value: @application.uid, readonly: true, data: { qa_selector: 'application_id_field' } }
             .input-group-append
-              = clipboard_button(target: '#application_id', title: _("Copy ID"), class: "gl-button btn btn-default")
+              = clipboard_button(target: "#application_id", title: _("Copy ID"), category: :primary, size: :medium)
     %tr
       %td
         = _('Secret')

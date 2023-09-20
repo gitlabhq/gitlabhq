@@ -3,7 +3,7 @@
     .js-table-contents
   = blob_icon blob.mode, blob.name
 
-  %strong.file-title-name.gl-word-break-all{ data: { qa_selector: 'file_name_content' } }
+  %strong.file-title-name.gl-word-break-all{ data: { testid: 'file-name-content' } }
     = blob.name
 
   = copy_file_path_button(blob.path)

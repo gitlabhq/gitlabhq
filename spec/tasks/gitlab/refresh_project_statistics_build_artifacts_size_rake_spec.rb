@@ -6,9 +6,9 @@ RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task
   let(:rake_task) { 'gitlab:refresh_project_statistics_build_artifacts_size' }
 
   describe 'enqueuing build artifacts size statistics refresh for given list of project IDs' do
-    let_it_be(:project_1) { create(:project) }
-    let_it_be(:project_2) { create(:project) }
-    let_it_be(:project_3) { create(:project) }
+    let!(:project_1) { create(:project) }
+    let!(:project_2) { create(:project) }
+    let!(:project_3) { create(:project) }
 
     let(:csv_body) do
       <<~BODY

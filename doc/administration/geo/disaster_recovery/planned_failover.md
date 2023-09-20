@@ -90,6 +90,11 @@ gitlab-ctl promotion-preflight-checks
 
 Each step is described in more detail below.
 
+### DNS TTL
+
+If you plan to [update the primary domain DNS record](index.md#step-4-optional-updating-the-primary-domain-dns-record),
+you may wish to maintain a low TTL to ensure fast propagation of DNS changes.
+
 ### Object storage
 
 If you have a large GitLab installation or cannot tolerate downtime, consider
@@ -149,7 +154,7 @@ ensure these processes are close to 100% as possible during active use.
 
 On the **secondary** site:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
    Replicated objects (shown in green) should be close to 100%,
@@ -178,7 +183,7 @@ This [content was moved to another location](background_verification.md).
 
 On the **primary** site:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Messages**.
 1. Add a message notifying users on the maintenance window.
@@ -192,7 +197,7 @@ To ensure that all data is replicated to a secondary site, updates (write reques
 be disabled on the **primary** site:
 
 1. Enable [maintenance mode](../../maintenance_mode/index.md) on the **primary** site.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Background Jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
@@ -203,13 +208,10 @@ be disabled on the **primary** site:
 
 ## Finish replicating and verifying all data
 
-NOTE:
-GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary site statuses appears to stop updating and become unhealthy. For more information, see [Geo Admin Area shows 'Unhealthy' after enabling Maintenance Mode](../replication/troubleshooting.md#geo-admin-area-shows-unhealthy-after-enabling-maintenance-mode).
-
 1. If you are manually replicating any data not managed by Geo, trigger the
    final replication process now.
 1. On the **primary** site:
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. On the left sidebar, select **Search or go to**.
    1. Select **Admin Area**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
@@ -225,7 +227,7 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary
       - The Geo log cursor is up to date (0 events behind).
 
 1. On the **secondary** site:
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. On the left sidebar, select **Search or go to**.
    1. Select **Admin Area**.
    1. On the left sidebar, select **Monitoring > Background Jobs**.
    1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`

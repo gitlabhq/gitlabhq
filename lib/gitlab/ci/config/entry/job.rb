@@ -13,7 +13,7 @@ module Gitlab
           ALLOWED_WHEN = %w[on_success on_failure always manual delayed].freeze
           ALLOWED_KEYS = %i[tags script image services start_in artifacts
                             cache dependencies before_script after_script hooks
-                            environment coverage retry parallel interruptible timeout
+                            coverage retry parallel interruptible timeout
                             release id_tokens publish].freeze
 
           validations do
@@ -102,10 +102,6 @@ module Gitlab
             metadata: { allowed_needs: %i[job cross_dependency] },
             inherit: false
 
-          entry :environment, Entry::Environment,
-            description: 'Environment configuration for this job.',
-            inherit: false
-
           entry :coverage, Entry::Coverage,
             description: 'Coverage configuration for this job.',
             inherit: false
@@ -124,7 +120,7 @@ module Gitlab
 
           entry :id_tokens, ::Gitlab::Config::Entry::ComposableHash,
             description: 'Configured JWTs for this job',
-            inherit: false,
+            inherit: true,
             metadata: { composable_class: ::Gitlab::Ci::Config::Entry::IdToken }
 
           entry :publish, Entry::Publish,
@@ -160,13 +156,11 @@ module Gitlab
               when: self.when,
               start_in: self.start_in,
               dependencies: dependencies,
-              environment: environment_defined? ? environment_value : nil,
-              environment_name: environment_defined? ? environment_value[:name] : nil,
               coverage: coverage_defined? ? coverage_value : nil,
               retry: retry_defined? ? retry_value : nil,
               parallel: has_parallel? ? parallel_value : nil,
               interruptible: interruptible_defined? ? interruptible_value : nil,
-              timeout: has_timeout? ? ChronicDuration.parse(timeout.to_s) : nil,
+              timeout: parsed_timeout,
               artifacts: artifacts_value,
               release: release_value,
               after_script: after_script_value,
@@ -178,6 +172,12 @@ module Gitlab
               id_tokens: id_tokens_value,
               publish: publish
             ).compact
+          end
+
+          def parsed_timeout
+            return unless has_timeout?
+
+            ChronicDuration.parse(timeout.to_s, use_complete_matcher: true)
           end
 
           def ignored?

@@ -6,16 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Architecture
 
-When developing a feature that requires architectural design, or changing the fundamental design of an existing feature, discuss it with a Frontend Architecture Expert.
+When building new features, consider reaching out to relevant stakeholders as early as possible in the process.
 
-A Frontend Architect is an expert who makes high-level Frontend design decisions
-and decides on technical standards, including coding standards and frameworks.
-
-Architectural decisions should be accessible to everyone, so document
-them in the relevant Merge Request discussion or by updating our documentation
-when appropriate.
-
-You can find the Frontend Architecture experts on the [team page](https://about.gitlab.com/company/team/).
+Architectural decisions should be accessible to everyone. Document
+them in the relevant Merge Request discussions or by updating our documentation
+when appropriate by adding an entry to this section.
 
 ## Widget Architecture
 
@@ -23,8 +18,3 @@ The [Plan stage](https://about.gitlab.com/handbook/engineering/development/dev/p
 is refactoring the right sidebar to consist of **widgets**. They have a specific architecture to be
 reusable and to expose an interface that can be used by external Vue applications on the page.
 Learn more about the [widget architecture](widgets.md).
-
-## Examples
-
-You can find [documentation about the desired architecture](vue.md) for a new
-feature built with Vue.js.

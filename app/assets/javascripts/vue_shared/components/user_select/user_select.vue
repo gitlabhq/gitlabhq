@@ -13,7 +13,7 @@ import { __ } from '~/locale';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { participantsQueries, userSearchQueries } from '~/sidebar/constants';
+import { participantsQueries, userSearchQueries } from '~/sidebar/queries/constants';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 
@@ -130,11 +130,11 @@ export default {
       },
       update(data) {
         return (
-          data.workspace?.users?.nodes
-            .filter((x) => x?.user)
-            .map((node) => ({
-              ...node.user,
-              canMerge: node.mergeRequestInteraction?.canMerge || false,
+          data.workspace?.users
+            .filter((user) => user)
+            .map((user) => ({
+              ...user,
+              canMerge: user.mergeRequestInteraction?.canMerge || false,
             })) || []
         );
       },

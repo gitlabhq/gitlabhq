@@ -1,12 +1,8 @@
 - add_to_breadcrumbs _("Schedules"), pipeline_schedules_path(@project)
 - breadcrumb_title "##{@schedule.id}"
 - page_title _("Edit"), @schedule.description, _("Pipeline Schedule")
-- add_page_specific_style 'page_bundles/pipeline_schedules'
 
 %h1.page-title.gl-font-size-h-display
   = _("Edit Pipeline Schedule")
 
-- if Feature.enabled?(:pipeline_schedules_vue, @project)
-  #pipeline-schedules-form-edit{ data: js_pipeline_schedules_form_data(@project, @schedule) }
-- else
-  = render "form"
+#pipeline-schedules-form-edit{ data: js_pipeline_schedules_form_data(@project, @schedule) }

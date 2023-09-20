@@ -17,26 +17,30 @@ module GoogleCloud
     private
 
     def create_cloud_instance
-      google_api_client.create_cloudsql_instance(gcp_project_id,
-                                                 instance_name,
-                                                 root_password,
-                                                 database_version,
-                                                 region,
-                                                 tier)
+      google_api_client.create_cloudsql_instance(
+        gcp_project_id,
+        instance_name,
+        root_password,
+        database_version,
+        region,
+        tier
+      )
     end
 
     def trigger_instance_setup_worker
-      GoogleCloud::CreateCloudsqlInstanceWorker.perform_in(WORKER_INTERVAL,
-                                                           current_user.id,
-                                                           project.id,
-                                                           {
-                                                             'google_oauth2_token': google_oauth2_token,
-                                                             'gcp_project_id': gcp_project_id,
-                                                             'instance_name': instance_name,
-                                                             'database_version': database_version,
-                                                             'environment_name': environment_name,
-                                                             'is_protected': protected?
-                                                           })
+      GoogleCloud::CreateCloudsqlInstanceWorker.perform_in(
+        WORKER_INTERVAL,
+        current_user.id,
+        project.id,
+        {
+          'google_oauth2_token': google_oauth2_token,
+          'gcp_project_id': gcp_project_id,
+          'instance_name': instance_name,
+          'database_version': database_version,
+          'environment_name': environment_name,
+          'is_protected': protected?
+        }
+      )
     end
 
     def protected?

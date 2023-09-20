@@ -82,8 +82,20 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
 
     context 'when content-type is not valid' do
       let(:content_type) { 'invalid' }
+      let(:import_logger) { instance_double(Gitlab::Import::Logger) }
 
-      it 'raises an error' do
+      before do
+        allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
+        allow(import_logger).to receive(:warn)
+      end
+
+      it 'logs and raises an error' do
+        expect(import_logger).to receive(:warn).once.with(
+          message: 'Invalid content type',
+          response_headers: headers,
+          importer: 'gitlab_migration'
+        )
+
         expect { subject.execute }.to raise_error(described_class::ServiceError, 'Invalid content type')
       end
     end

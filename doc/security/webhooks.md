@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: concepts, reference, howto
@@ -50,7 +50,7 @@ To prevent exploitation of insecure internal web services, all webhook and integ
 
 To allow access to these addresses:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Outbound requests**.
@@ -64,7 +64,7 @@ Prerequisite:
 
 [System hooks](../administration/system_hooks.md) can make requests to the local network by default. To prevent system hook requests to the local network:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Outbound requests**.
@@ -80,7 +80,7 @@ Prerequisite:
 
 To filter requests by blocking many requests:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Outbound requests**.
@@ -106,7 +106,7 @@ Prerequisite:
 
 To allow outbound requests to certain IP addresses and domains:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Outbound requests**.

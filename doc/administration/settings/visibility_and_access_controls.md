@@ -13,7 +13,7 @@ specific controls on branches, projects, snippets, groups, and more.
 To access the visibility and access control options:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -25,7 +25,7 @@ Instance-level protections for project creation define which roles can
 on the instance. To alter which roles have permission to create projects:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -42,7 +42,7 @@ on the instance. To alter which roles have permission to create projects:
 By default both administrators and anyone with the **Owner** role can delete a project. To restrict project deletion to only administrators:
 
 1. Sign in to GitLab as a user with administrator access.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -80,7 +80,7 @@ then it gets automatically changed to `1` while also disabling deletion protecti
 To configure delayed project deletion:
 
 1. Sign in to GitLab as a user with administrator access.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -121,7 +121,7 @@ Alternatively, projects that are marked for removal can be deleted immediately. 
 To set the default [visibility levels for new projects](../../user/public_access.md):
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -132,12 +132,15 @@ To set the default [visibility levels for new projects](../../user/public_access
    - **Public** - The project can be accessed without any authentication.
 1. Select **Save changes**.
 
+For more details on project visibility, see
+[Project visibility](../../user/public_access.md).
+
 ## Configure snippet visibility defaults
 
 To set the default visibility levels for new [snippets](../../user/snippets.md):
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -145,14 +148,14 @@ To set the default visibility levels for new [snippets](../../user/snippets.md):
 1. Select **Save changes**.
 
 For more details on snippet visibility, read
-[Project visibility](../../user/public_access.md).
+[Snippet visibility](../../user/snippets.md).
 
 ## Configure group visibility defaults
 
 To set the default visibility levels for new groups:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -167,6 +170,9 @@ For more details on group visibility, see
 
 ## Restrict visibility levels
 
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124649) in GitLab 16.3 to prevent restricting default project and group visibility, [with a flag](../feature_flags.md) named `prevent_visibility_restriction`. Disabled by default.
+> - `prevent_visibility_restriction` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) by default in GitLab 16.4.
+
 When restricting visibility levels, consider how these restrictions interact
 with permissions for subgroups and projects that inherit their visibility from
 the item you're changing.
@@ -174,7 +180,7 @@ the item you're changing.
 To restrict visibility levels for groups, projects, snippets, and selected pages:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -191,56 +197,8 @@ To restrict visibility levels for groups, projects, snippets, and selected pages
      - Only administrators are able to create private groups, projects, and snippets.
 1. Select **Save changes**.
 
-For more details on project visibility, see
-[Project visibility](../../user/public_access.md).
-
-## Configure allowed import sources
-
-Before you can import projects from other systems, you must enable the
-[import source](../../user/gitlab_com/index.md#default-import-sources) for that system.
-
-1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Admin Area**.
-1. Select **Settings > General**.
-1. Expand the **Visibility and access controls** section.
-1. Select each of **Import sources** to allow.
-1. Select **Save changes**.
-
-## Enable project export
-
-To enable the export of
-[projects and their data](../../user/project/settings/import_export.md#export-a-project-and-its-data):
-
-1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Admin Area**.
-1. Select **Settings > General**.
-1. Expand the **Visibility and access controls** section.
-1. Scroll to **Project export**.
-1. Select the **Enabled** checkbox.
-1. Select **Save changes**.
-
-## Enable migration of groups and projects by direct transfer
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
-
-You can enable migration of groups by direct transfer using the UI.
-
-To enable migration of groups by direct transfer:
-
-1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **Admin Area**.
-1. Select **Settings > General**.
-1. Expand the **Visibility and access controls** section.
-1. Scroll to **Allow migrating GitLab groups and projects by direct transfer**.
-1. Select the **Enabled** checkbox.
-1. Select **Save changes**.
-
-The same setting
-[is available](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) in the API as the
-`bulk_import_enabled` attribute.
+NOTE:
+You cannot select the restricted default visibility level for new projects and groups.
 
 ## Configure enabled Git access protocols
 
@@ -252,7 +210,7 @@ The GitLab restrictions apply at the application level.
 To specify the enabled Git access protocols:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
@@ -339,7 +297,7 @@ include the `10.0.0.0/24` range.
 To add a IP address range to the group-level allowlist:
 
 1. Sign in to GitLab as a user with Administrator access level.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Visibility and access controls** section.

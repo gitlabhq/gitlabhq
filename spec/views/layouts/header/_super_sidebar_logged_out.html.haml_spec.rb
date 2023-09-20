@@ -19,6 +19,10 @@ RSpec.describe 'layouts/header/_super_sidebar_logged_out', feature_category: :na
       expect(rendered).to have_content('Pricing')
       expect(rendered).to have_content('Contact Sales')
     end
+
+    it 'renders the free trial button' do
+      expect(rendered).to have_content('Get free trial')
+    end
   end
 
   context 'on self-managed' do

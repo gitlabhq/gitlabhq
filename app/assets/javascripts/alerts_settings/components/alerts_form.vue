@@ -72,7 +72,7 @@ export default {
     </p>
     <form ref="settingsForm" @submit.prevent="updateAlertsIntegrationSettings">
       <gl-form-group class="gl-pl-0">
-        <gl-form-checkbox v-model="createIssueEnabled" data-qa-selector="create_incident_checkbox">
+        <gl-form-checkbox v-model="createIssueEnabled" data-testid="create-incident-checkbox">
           <span>{{ $options.i18n.createIncident.label }}</span>
         </gl-form-checkbox>
       </gl-form-group>
@@ -93,14 +93,14 @@ export default {
           v-model="issueTemplate"
           :items="templates"
           block
-          data-qa-selector="incident_templates_dropdown"
+          data-testid="incident-templates-dropdown"
         />
       </gl-form-group>
 
       <gl-form-group class="gl-pl-0 gl-mb-5">
         <gl-form-checkbox
           v-model="sendEmailEnabled"
-          data-qa-selector="enable_email_notification_checkbox"
+          data-testid="enable-email-notification-checkbox"
         >
           <span>{{ $options.i18n.sendEmail.label }}</span>
         </gl-form-checkbox>
@@ -112,7 +112,7 @@ export default {
       </gl-form-group>
       <gl-button
         ref="submitBtn"
-        data-qa-selector="save_changes_button"
+        data-testid="save-changes-button"
         :disabled="loading"
         variant="confirm"
         type="submit"

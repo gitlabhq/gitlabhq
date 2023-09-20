@@ -4,7 +4,7 @@ RSpec.shared_context 'project integration activation' do
   include_context 'with integration activation'
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   before do
     project.add_maintainer(user)
@@ -19,7 +19,7 @@ RSpec.shared_context 'project integration activation' do
     visit_project_integrations
 
     within('#content-body') do
-      click_link(name)
+      click_link(name, match: :first)
     end
   end
 

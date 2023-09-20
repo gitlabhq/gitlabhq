@@ -32,8 +32,7 @@ module Packages
         result
           .with_nuget_version_or_normalized_version(
             @params[:package_version],
-            with_normalized: Feature.enabled?(:nuget_normalized_version, @project_or_group) &&
-              client_forces_normalized_version?
+            with_normalized: client_forces_normalized_version?
           )
       end
 

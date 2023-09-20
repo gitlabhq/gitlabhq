@@ -1,10 +1,12 @@
 import API from '~/api';
+import getStandardContext from './get_standard_context';
 
 import Tracking from './tracking';
 import {
   GITLAB_INTERNAL_EVENT_CATEGORY,
   LOAD_INTERNAL_EVENTS_SELECTOR,
   SERVICE_PING_SCHEMA,
+  USER_CONTEXT_SCHEMA,
 } from './constants';
 import { Tracker } from './tracker';
 import { InternalEventHandler, createInternalEventPayload } from './utils';
@@ -13,17 +15,24 @@ const InternalEvents = {
   /**
    *
    * @param {string} event
+   * @param {object} data
    */
-  track_event(event) {
+  track_event(event, data = {}) {
+    const { context, ...rest } = data;
+
+    const defaultContext = {
+      schema: SERVICE_PING_SCHEMA,
+      data: {
+        event_name: event,
+        data_source: 'redis_hll',
+      },
+    };
+    const mergedContext = context ? [defaultContext, context] : defaultContext;
+
     API.trackInternalEvent(event);
     Tracking.event(GITLAB_INTERNAL_EVENT_CATEGORY, event, {
-      context: {
-        schema: SERVICE_PING_SCHEMA,
-        data: {
-          event_name: event,
-          data_source: 'redis_hll',
-        },
-      },
+      context: mergedContext,
+      ...rest,
     });
   },
   /**
@@ -33,8 +42,8 @@ const InternalEvents = {
   mixin() {
     return {
       methods: {
-        track_event(event) {
-          InternalEvents.track_event(event);
+        track_event(event, data = {}) {
+          InternalEvents.track_event(event, data);
         },
       },
     };
@@ -77,6 +86,25 @@ const InternalEvents = {
     });
 
     return loadEvents;
+  },
+  /**
+   * Initialize browser sdk for product analytics
+   */
+  initBrowserSDK() {
+    const standardContext = getStandardContext();
+
+    if (window.glClient) {
+      window.glClient.setDocumentTitle('GitLab');
+      window.glClient.page({
+        title: 'GitLab',
+        context: [
+          {
+            schema: USER_CONTEXT_SCHEMA,
+            data: standardContext?.data || {},
+          },
+        ],
+      });
+    }
   },
 };
 

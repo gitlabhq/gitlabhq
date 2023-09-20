@@ -6,6 +6,10 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
   include ExclusiveLeaseHelpers
   include Database::DatabaseHelpers
 
+  before do
+    stub_feature_flags(disallow_database_ddl_feature_flags: false)
+  end
+
   describe '.invoke' do
     let(:databases) { Gitlab::Database.database_base_models_with_gitlab_shared }
     let(:databases_count) { databases.count }
@@ -39,6 +43,14 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
     context 'when async index creation is disabled' do
       it 'does not execute async index creation' do
         stub_feature_flags(database_async_index_creation: false)
+
+        expect(Gitlab::Database::AsyncIndexes).not_to receive(:create_pending_indexes!)
+
+        described_class.invoke
+      end
+
+      it 'does not execute async index creation when disable ddl flag is enabled' do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
 
         expect(Gitlab::Database::AsyncIndexes).not_to receive(:create_pending_indexes!)
 
@@ -83,6 +95,14 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
         stub_feature_flags(database_async_foreign_key_validation: false)
 
         expect(Gitlab::Database::AsyncConstraints).not_to receive(:validate_pending_entries!)
+
+        described_class.invoke
+      end
+
+      it 'does not execute async index creation when disable ddl flag is enabled' do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
+
+        expect(Gitlab::Database::AsyncIndexes).not_to receive(:validate_pending_entries!)
 
         described_class.invoke
       end

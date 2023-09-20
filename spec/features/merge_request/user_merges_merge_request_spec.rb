@@ -5,7 +5,7 @@ require "spec_helper"
 RSpec.describe "User merges a merge request", :js, feature_category: :code_review_workflow do
   include ContentEditorHelpers
 
-  let(:user) { project.first_owner }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   before do
     sign_in(user)
@@ -24,7 +24,7 @@ RSpec.describe "User merges a merge request", :js, feature_category: :code_revie
   end
 
   context 'sidebar merge requests counter' do
-    let(:project) { create(:project, :public, :repository) }
+    let_it_be(:project) { create(:project, :public, :repository, namespace: user.namespace) }
     let!(:merge_request) { create(:merge_request, source_project: project) }
 
     it 'decrements the open MR count', :sidekiq_inline do

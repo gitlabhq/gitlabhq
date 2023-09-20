@@ -15,7 +15,7 @@ requirements or needs additional oversight. The label can optionally enforce
 
 Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 1. Create, edit, or delete compliance frameworks.
@@ -31,7 +31,7 @@ Prerequisite:
 
 To assign a compliance framework to a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Compliance frameworks**.
 1. Select a compliance framework.
@@ -66,7 +66,7 @@ A compliance framework that is set to default has a **default** label.
 
 Group owners can set a compliance framework as default (or remove the setting):
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Compliance frameworks** section and locate the compliance framework to set (or remove) as default.
 1. Select the vertical ellipsis (**{ellipsis_v}**) for the compliance frame and then select **Set default** (or
@@ -155,7 +155,7 @@ Therefore, communicate with project users about compliance pipeline configuratio
 
 To configure a compliance pipeline:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 1. In **Compliance pipeline configuration (optional)**, add the path to the compliance framework configuration. Use the
@@ -165,7 +165,7 @@ To configure a compliance pipeline:
    - `.compliance-ci.yaml@gitlab-org/gitlab`.
 
 This configuration is inherited by projects where the compliance framework label is
-[applied](../project/settings/index.md#add-a-compliance-framework-to-a-project). In projects with the applied compliance
+[applied](../project/working_with_projects.md#add-a-compliance-framework-to-a-project). In projects with the applied compliance
 framework label, the compliance pipeline configuration is run instead of the labeled project's own pipeline configuration.
 
 The user running the pipeline in the labeled project must at least have the Reporter role on the compliance project.

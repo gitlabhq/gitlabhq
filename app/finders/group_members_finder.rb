@@ -20,6 +20,8 @@ class GroupMembersFinder < UnionFinder
   #   search:     string
   #   created_after: datetime
   #   created_before: datetime
+  #   non_invite:      boolean
+  #   with_custom_role: boolean
   attr_reader :params
 
   def initialize(group, user = nil, params: {})
@@ -34,7 +36,10 @@ class GroupMembersFinder < UnionFinder
                            Group.shared_into_ancestors(group).public_or_visible_to_user(user)
                          end
 
-    members = all_group_members(groups, shared_from_groups).distinct_on_user_with_max_access_level
+    members = all_group_members(groups, shared_from_groups)
+    if static_roles_only?
+      members = members.distinct_on_user_with_max_access_level
+    end
 
     filter_members(members)
   end
@@ -70,7 +75,10 @@ class GroupMembersFinder < UnionFinder
     members = filter_by_user_type(members)
     members = apply_additional_filters(members)
 
-    by_created_at(members)
+    members = by_created_at(members)
+    members = members.non_invite if params[:non_invite]
+
+    members
   end
 
   def can_manage_members
@@ -136,6 +144,10 @@ class GroupMembersFinder < UnionFinder
   def apply_additional_filters(members)
     # overridden in EE to include additional filtering conditions.
     members
+  end
+
+  def static_roles_only?
+    true
   end
 end
 

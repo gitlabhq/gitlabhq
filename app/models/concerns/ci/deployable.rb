@@ -138,7 +138,11 @@ module Ci
     end
 
     def environment_url
-      options&.dig(:environment, :url) || persisted_environment&.external_url
+      options&.dig(:environment, :url) || persisted_environment.try(:external_url)
+    end
+
+    def environment_slug
+      persisted_environment.try(:slug)
     end
 
     def environment_status

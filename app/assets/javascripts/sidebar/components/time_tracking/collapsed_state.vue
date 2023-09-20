@@ -42,11 +42,14 @@ export default {
     divClass() {
       if (this.showComparisonState) {
         return 'compare';
-      } else if (this.showEstimateOnlyState) {
+      }
+      if (this.showEstimateOnlyState) {
         return 'estimate-only';
-      } else if (this.showSpentOnlyState) {
+      }
+      if (this.showSpentOnlyState) {
         return 'spend-only';
-      } else if (this.showNoTimeTrackingState) {
+      }
+      if (this.showNoTimeTrackingState) {
         return 'no-tracking';
       }
 
@@ -55,9 +58,11 @@ export default {
     spanClass() {
       if (this.showComparisonState) {
         return '';
-      } else if (this.showEstimateOnlyState || this.showSpentOnlyState) {
+      }
+      if (this.showEstimateOnlyState || this.showSpentOnlyState) {
         return 'bold';
-      } else if (this.showNoTimeTrackingState) {
+      }
+      if (this.showNoTimeTrackingState) {
         return 'no-value collapse-truncated-title gl-pt-2 gl-px-3 gl-font-sm';
       }
 
@@ -66,11 +71,14 @@ export default {
     text() {
       if (this.showComparisonState) {
         return `${this.timeSpentHumanReadable} / ${this.timeEstimateHumanReadable}`;
-      } else if (this.showEstimateOnlyState) {
+      }
+      if (this.showEstimateOnlyState) {
         return `-- / ${this.timeEstimateHumanReadable}`;
-      } else if (this.showSpentOnlyState) {
+      }
+      if (this.showSpentOnlyState) {
         return `${this.timeSpentHumanReadable} / --`;
-      } else if (this.showNoTimeTrackingState) {
+      }
+      if (this.showNoTimeTrackingState) {
         return __('None');
       }
 

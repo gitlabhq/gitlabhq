@@ -19,6 +19,7 @@ export const issuesQueryResponse = {
           reference: 'group/project#123456',
           state: 'opened',
           title: 'Issue title',
+          titleHtml: 'Issue title',
           type: 'issue',
           updatedAt: '2021-05-22T04:08:01Z',
           upvotes: 3,

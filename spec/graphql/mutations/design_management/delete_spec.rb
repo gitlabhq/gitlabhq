@@ -90,12 +90,12 @@ RSpec.describe Mutations::DesignManagement::Delete do
           allow(Gitlab::Tracking).to receive(:event) # rubocop:disable RSpec/ExpectGitlabTracking
 
           filenames.each(&:present?) # ignore setup
-          # Queries: as of 2022-06-15
+          # Queries: as of 2022-08-30
           # -------------
           # 01. routing query
-          # 02. find project by id
-          # 03. project.project_features
-          # 04. find namespace by id and type
+          # 02. policy query: find namespace by type and id
+          # 03. policy query: find namespace by id
+          # 04. policy query: project.project_feature
           # 05,06. project.authorizations for user (same query twice)
           # 07. find issue by iid
           # 08. find project by id
@@ -109,21 +109,22 @@ RSpec.describe Mutations::DesignManagement::Delete do
           # 16, 17 project.authorizations for user (same query as 5)
           # 18. find design_management_repository for project
           # 19. find route by id and source_type
-          # 20. find plan for standard context
           # ------------- our queries are below:
-          # 21. start transaction 1
-          # 22.   start transaction 2
-          # 23.     find version by sha and issue
-          # 24.     exists version with sha and issue?
-          # 25.   leave transaction 2
-          # 26.   create version with sha and issue
-          # 27.   create design-version links
-          # 28.   validate version.actions.present?
-          # 29.   validate version.issue.present?
-          # 30.   validate version.sha is unique
-          # 31. leave transaction 1
+          # 20. start transaction
+          # 21.   create version with sha and issue
+          # 22.   create design-version links
+          # 23.   validate version.actions.present?
+          # 24.   validate version.sha is unique
+          # 25.   validate version.issue.present?
+          # 26. leave transaction
+          # 27. find project by id (same query as 8)
+          # 28. find namespace by id (same query as 9)
+          # 29. find project by id (same query as 8)
+          # 30. find project by id (same query as 8)
+          # 31. create event
+          # 32. find plan for standard context
           #
-          expect { run_mutation }.not_to exceed_query_limit(31)
+          expect { run_mutation }.not_to exceed_query_limit(32)
         end
       end
 

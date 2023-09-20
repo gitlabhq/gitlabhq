@@ -69,7 +69,7 @@ module Sidebars
             title: _('Commits'),
             link: link,
             super_sidebar_parent: ::Sidebars::Projects::SuperSidebarMenus::CodeMenu,
-            active_routes: { controller: %w(commit commits) },
+            active_routes: { controller: %w[commit commits] },
             item_id: :commits,
             container_html_options: { id: 'js-onboarding-commits-link', class: 'shortcuts-commits' }
           )

@@ -46,7 +46,7 @@ configured by an administrator.
 
 To change the permitted Git access protocols for a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Choose the permitted protocols from **Enabled Git access protocols**.
@@ -71,7 +71,7 @@ Administrators can combine restricted access by IP address with
 
 To restrict group access by IP address:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict access by IP address** text box, enter a list of IPv4 or IPv6
@@ -102,6 +102,15 @@ Keep in mind that restricting group access by IP address has the following impli
   IP access restrictions applied to self-managed instances are possible with [`gitlab-sshd`](../../administration/operations/gitlab_sshd.md)
   with [PROXY protocol](../../administration/operations/gitlab_sshd.md#proxy-protocol-support) enabled.
 - IP restriction is not applicable to shared resources belonging to a group. Any shared resource is accessible to a user even if that user is not able to access the group.
+- While IP restrictions apply to public projects, they aren't a complete firewall and cached files for a project may still be accessible to users not in the IP block
+
+### GitLab.com access restrictions
+
+On GitLab.com shared runners are added to the [global allowlist](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges), so that they are available regardless of IP restrictions.
+
+Artifact and Registry downloading from runners is sourced from any Google or, in the case of MacOS runners, Amazon IP address in that region.
+The download is therefore not added to the global allowlist.
+To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com/index.md#ip-range) to your group allowlist.
 
 ## Restrict group access by domain **(PREMIUM ALL)**
 
@@ -113,7 +122,7 @@ You can prevent users with email addresses in specific domains from being added 
 
 To restrict group access by domain:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email** field, enter the domain names.
@@ -157,7 +166,7 @@ If you prevent group sharing outside the hierarchy for the **Animals** group:
 
 To prevent sharing outside of the group's hierarchy:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Select **Members cannot invite groups outside of `<group_name>` and its subgroups**.
@@ -173,7 +182,7 @@ which can be confusing and difficult to control.
 To restrict the permission to invite project members to a single source,
 prevent a project from being shared with other groups:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Projects in `<group_name>` cannot be shared with other groups**.
@@ -187,7 +196,7 @@ added to a project lose access when the setting is enabled.
 As a group Owner, you can prevent non-members from requesting access to
 your group.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow users to request access** checkbox.
@@ -207,7 +216,7 @@ If even one is set to `true`, then the group does not allow outside forks.
 
 To prevent projects from being forked outside the group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Check **Prevent project forking outside current group**.
@@ -232,7 +241,7 @@ The setting does not cascade. Projects in subgroups observe the subgroup configu
 
 To prevent members from being added to projects in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
 1. Under **Membership**, select **Users cannot be added to projects in this group**.
@@ -254,7 +263,7 @@ For more information on the administration of LDAP and group sync, refer to the 
 NOTE:
 When you add LDAP synchronization, if an LDAP user is a group member and they are not part of the LDAP group, they are removed from the group.
 
-You can use a workaround to [manage project access through LDAP groups](../project/settings/index.md#manage-project-access-through-ldap-groups).
+You can use a workaround to [manage project access through LDAP groups](../project/working_with_projects.md#manage-project-access-through-ldap-groups).
 
 ### Create group links via CN **(PREMIUM SELF)**
 
@@ -284,7 +293,7 @@ To create group links via filter:
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Manage > Members**. If LDAP synchronization
    has granted a user a role with:
    - More permissions than the parent group membership, that user is displayed as having

@@ -163,6 +163,9 @@ export default {
     projectName() {
       return this.workItem?.project?.name;
     },
+    isWorkItemConfidential() {
+      return this.workItem?.confidential;
+    },
   },
   apollo: {
     workItem: {
@@ -314,6 +317,7 @@ export default {
         :markdown-preview-path="markdownPreviewPath"
         :work-item-id="workItemId"
         :autofocus="isEditing"
+        :is-work-item-confidential="isWorkItemConfidential"
         class="gl-pl-3 gl-mt-3"
         @cancelEditing="isEditing = false"
         @submitForm="updateNote"

@@ -25,18 +25,22 @@ module Integrations
 
     override :supported_events
     def supported_events
-      additional = %w[alert]
-
-      if group_level? && Feature.enabled?(:group_mentions, group)
-        additional += %w[group_mention group_confidential_mention]
-      end
+      additional = group_level? ? %w[group_mention group_confidential_mention] : []
 
       (super + additional).freeze
+    end
+
+    def self.supported_events
+      super + %w[alert]
     end
 
     override :configurable_channels?
     def configurable_channels?
       true
+    end
+
+    def help
+      # noop
     end
 
     private

@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: ongoing
 creation-date: "2022-09-07"
 authors: [ "@ayufan", "@fzimmer", "@DylanGriffith", "@lohrc", "@tkuah" ]
 coach: "@ayufan"
@@ -18,9 +18,7 @@ Cells is a new architecture for our software as a service platform. This archite
 
 For more information about Cells, see also:
 
-- [Glossary](glossary.md)
-- [Goals](goals.md)
-- [Cross-section impact](impact.md)
+- [Goals, Glossary and Requirements](goals.md)
 
 ## Work streams
 
@@ -101,6 +99,10 @@ The first 2-3 quarters are required to define a general split of data and build 
 
     The purpose is to perform a targeted decomposition of `users` and `projects`, because `projects` will be stored locally in the Cell.
 
+1. **User can create Organization on Cell 2.**
+
+    The purpose is to create Organizations that are isolated from each other.
+
 1. **User can change profile avatar that is shared in cluster.**
 
     The purpose is to fix global uploads that are shared in cluster.
@@ -165,6 +167,11 @@ For example:
 1. **Cell discovery.**
 
     The routing service needs to be able to discover and monitor the health of all Cells.
+
+1. **User can use single domain to interact with many Cells.**
+
+    The routing service will intelligently route all requests to Cells based on the resource being
+    accessed versus the Cell containing the data.
 
 1. **Router endpoints classification.**
 
@@ -258,28 +265,30 @@ One iteration describes one quarter's worth of work.
     - Data access layer: Initial Admin Area settings are shared across cluster.
     - Essential workflows: Allow to share cluster-wide data with database-level data access layer
 
-1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - FY24Q2 - In progress
+1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - Expected delivery: 16.2 FY24Q2 | Actual delivery: 16.4 FY24Q3 - In progress
 
     - Essential workflows: User accounts are shared across cluster.
     - Essential workflows: User can create Group.
 
-1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - FY24Q3 - Planned
+1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - Expected delivery: 16.7 FY24Q4 - Planned
 
     - Essential workflows: User can create Project.
     - Routing: Technology.
-    - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer
+    - Routing: Cell discovery.
+    - Data access layer: Evaluate the efficiency of database-level access vs. API-oriented access layer.
+    - Data access layer: Data access layer.
 
-1. [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) - FY24Q4
+1. [Iteration 4](https://gitlab.com/groups/gitlab-org/-/epics/10998) - Expected delivery: 16.10 FY25Q1 - Planned
+
+    - Essential workflows: User can create organization on Cell 2.
+    - Data access layer: Cluster-unique identifiers.
+    - Routing: User can use single domain to interact with many Cells.
+    - Cell deployment: Extend GitLab Dedicated to support GCP.
+
+1. Iteration 5..N - starting FY25Q1
 
     - Essential workflows: User can push to Git repository.
     - Essential workflows: User can create issue, merge request, and merge it after it is green.
-    - Data access layer: Cluster-unique identifiers.
-    - Routing: Cell discovery.
-    - Routing: Router endpoints classification.
-    - Cell deployment: Extend GitLab Dedicated to support GCP
-
-1. Iteration 5 - FY25Q1
-
     - Essential workflows: User can run CI pipeline.
     - Essential workflows: Instance-wide settings are shared across cluster.
     - Essential workflows: User can change profile avatar that is shared in cluster.
@@ -287,22 +296,13 @@ One iteration describes one quarter's worth of work.
     - Essential workflows: User can manage Group and Project members.
     - Essential workflows: User can manage instance-wide runners.
     - Essential workflows: User is part of Organization and can only see information from the Organization.
+    - Routing: Router endpoints classification.
     - Routing: GraphQL and other ambiguous endpoints.
     - Data access layer: Allow to share cluster-wide data with database-level data access layer.
     - Data access layer: Cluster-wide deletions.
-    - Data access layer: Data access layer.
     - Data access layer: Database migrations.
 
-1. Iteration 6 - FY25Q2
-    - TBD
-
-1. Iteration 7 - FY25Q3
-    - TBD
-
-1. Iteration 8 - FY25Q4
-    - TBD
-
-## Technical Proposals
+## Technical proposals
 
 The Cells architecture has long lasting implications to data processing, location, scalability and the GitLab architecture.
 This section links all different technical proposals that are being evaluated.
@@ -315,34 +315,36 @@ This section links all different technical proposals that are being evaluated.
 The Cells architecture will impact many features requiring some of them to be rewritten, or changed significantly.
 Below is a list of known affected features with preliminary proposed solutions.
 
-- [Cells: Admin Area](cells-feature-admin-area.md)
-- [Cells: Backups](cells-feature-backups.md)
-- [Cells: CI Runners](cells-feature-ci-runners.md)
-- [Cells: Container Registry](cells-feature-container-registry.md)
-- [Cells: Contributions: Forks](cells-feature-contributions-forks.md)
-- [Cells: Database Sequences](cells-feature-database-sequences.md)
-- [Cells: Data Migration](cells-feature-data-migration.md)
-- [Cells: Explore](cells-feature-explore.md)
-- [Cells: Git Access](cells-feature-git-access.md)
-- [Cells: Global Search](cells-feature-global-search.md)
-- [Cells: GraphQL](cells-feature-graphql.md)
-- [Cells: Organizations](cells-feature-organizations.md)
-- [Cells: Secrets](cells-feature-secrets.md)
-- [Cells: Snippets](cells-feature-snippets.md)
-- [Cells: User Profile](cells-feature-user-profile.md)
-- [Cells: Your Work](cells-feature-your-work.md)
+- [Cells: Admin Area](impacted_features/admin-area.md)
+- [Cells: Backups](impacted_features/backups.md)
+- [Cells: CI Runners](impacted_features/ci-runners.md)
+- [Cells: Container Registry](impacted_features/container-registry.md)
+- [Cells: Contributions: Forks](impacted_features/contributions-forks.md)
+- [Cells: Database Sequences](impacted_features/database-sequences.md)
+- [Cells: Data Migration](impacted_features/data-migration.md)
+- [Cells: Explore](impacted_features/explore.md)
+- [Cells: Git Access](impacted_features/git-access.md)
+- [Cells: Global Search](impacted_features/global-search.md)
+- [Cells: GraphQL](impacted_features/graphql.md)
+- [Cells: Organizations](impacted_features/organizations.md)
+- [Cells: Personal Namespaces](impacted_features/personal-namespaces.md)
+- [Cells: Secrets](impacted_features/secrets.md)
+- [Cells: Snippets](impacted_features/snippets.md)
+- [Cells: User Profile](impacted_features/user-profile.md)
+- [Cells: Your Work](impacted_features/your-work.md)
 
 ### Impacted features: Placeholders
 
 The following list of impacted features only represents placeholders that still require work to estimate the impact of Cells and develop solution proposals.
 
-- [Cells: Agent for Kubernetes](cells-feature-agent-for-kubernetes.md)
-- [Cells: GitLab Pages](cells-feature-gitlab-pages.md)
-- [Cells: Personal Access Tokens](cells-feature-personal-access-tokens.md)
-- [Cells: Personal Namespaces](cells-feature-personal-namespaces.md)
-- [Cells: Router Endpoints Classification](cells-feature-router-endpoints-classification.md)
-- [Cells: Schema changes (Postgres and Elasticsearch migrations)](cells-feature-schema-changes.md)
-- [Cells: Uploads](cells-feature-uploads.md)
+- [Cells: Agent for Kubernetes](impacted_features/agent-for-kubernetes.md)
+- [Cells: CI/CD Catalog](impacted_features/ci-cd-catalog.md)
+- [Cells: Data pipeline ingestion](impacted_features/data-pipeline-ingestion.md)
+- [Cells: GitLab Pages](impacted_features/gitlab-pages.md)
+- [Cells: Personal Access Tokens](impacted_features/personal-access-tokens.md)
+- [Cells: Router Endpoints Classification](impacted_features/router-endpoints-classification.md)
+- [Cells: Schema changes (Postgres and Elasticsearch migrations)](impacted_features/schema-changes.md)
+- [Cells: Uploads](impacted_features/uploads.md)
 - ...
 
 ## Frequently Asked Questions
@@ -367,6 +369,59 @@ For example, users on GitLab Dedicated don't have to have a different and unique
 Up until iteration 3, Cells communicate with each other only via a shared database that contains common data.
 In iteration 4 we are going to evaluate the option of Cells calling each other via API to provide more isolation and reliability.
 
+### How are Cells provisioned?
+
+The GitLab.com cluster of Cells will use GitLab Dedicated instances.
+Once a GitLab Dedicated instance gets provisioned it could join the GitLab.com cluster and become a Cell.
+One requirement will be that the GitLab Dedicated instance does not contain any prior data.
+
+To reach shared resources, Cells will use [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect).
+
+See also the [design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/396641).
+
+### What is a Cells topology?
+
+See the [design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/396641).
+
+### How are users of an Organization routed to the correct Cell?
+
+TBD
+
+### How do users authenticate with Cells and Organizations?
+
+See the [design discussion](https://gitlab.com/gitlab-org/gitlab/-/issues/395736).
+
+### How are Cells rebalanced?
+
+TBD
+
+### How can Cells implement disaster recovery capabilities?
+
+TBD
+
+### How do I decide whether to move my feature to the cluster, Cell or Organization level?
+
+By default, features are required to be scoped to the Organization level. Any deviation from that rule should be validated and approved by Tenant Scale.
+
+The design goals of the Cells architecture describe that [all Cells are under a single domain](goals.md#all-cells-are-under-a-single-gitlabcom-domain) and as such, Cells are invisible to the user:
+
+- Cell-local features should be limited to those related to managing the Cell, but never be a feature where the Cell semantic is exposed to the customer.
+- The Cells architecture wants to freely control the distribution of Organization and customer data across Cells without impacting users when data is migrated.
+ 
+Cluster-wide features are strongly discouraged because:
+
+- They might require storing a substantial amount of data cluster-wide which decreases [scalability headroom](goals.md#provides-100x-headroom).
+- They might require implementation of non-trivial [data aggregation](goals.md#aggregation-of-cluster-wide-data) that reduces resilience to [single node failure](goals.md#high-resilience-to-a-single-cell-failure).
+- They are harder to build due to the need of being able to run [mixed deployments](goals.md#cells-running-in-mixed-deployments). Cluster-wide features need to take this into account.
+- They might affect our ability to provide an [on-premise like experience on GitLab.com](goals.md#on-premise-like-experience).
+- Some features that are expected to be cluster-wide might in fact be better implemented using federation techniques that use trusted intra-cluster communication using the same user identity. User Profile is shared across the cluster.
+- The Cells architecture limits what services can be considered cluster-wide. Services that might initially be cluster-wide are still expected to be split in the future to achieve full service isolation. No feature should be built to depend on such a service (like Elasticsearch).
+
+### Will Cells use the [reference architecture for 50,000 users](../../../administration/reference_architectures/50k_users.md)?
+
+The infrastructure team will properly size Cells depending on the load.
+The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for Cells deployment.
+
 ## Decision log
 
 - 2022-03-15: Google Cloud as the cloud service. For details, see [issue 396641](https://gitlab.com/gitlab-org/gitlab/-/issues/396641#note_1314932272).
@@ -378,3 +433,4 @@ In iteration 4 we are going to evaluate the option of Cells calling each other v
 - [Database group investigation](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/doc/root-namespace-sharding.html)
 - [Shopify Pods architecture](https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale)
 - [Opstrace architecture](https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/docs/architecture/overview.md)
+- [Adding Diagrams to this blueprint](diagrams/index.md)

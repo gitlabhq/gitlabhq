@@ -20,6 +20,7 @@ import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_up
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
+import WorkItemRelationships from '~/work_items/components/work_item_relationships/work_item_relationships.vue';
 import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -37,6 +38,7 @@ import {
   workItemByIidResponseFactory,
   objectiveType,
   mockWorkItemCommentNote,
+  mockBlockingLinkedItem,
 } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
@@ -76,6 +78,7 @@ describe('WorkItemDetail component', () => {
   const findCloseButton = () => wrapper.findByTestId('work-item-close');
   const findWorkItemType = () => wrapper.findByTestId('work-item-type');
   const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
+  const findWorkItemRelationships = () => wrapper.findComponent(WorkItemRelationships);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
   const findModal = () => wrapper.findComponent(WorkItemDetailModal);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
@@ -96,6 +99,7 @@ describe('WorkItemDetail component', () => {
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     error = undefined,
     workItemsMvc2Enabled = false,
+    linkedWorkItemsEnabled = false,
   } = {}) => {
     const handlers = [
       [workItemByIidQuery, handler],
@@ -119,6 +123,7 @@ describe('WorkItemDetail component', () => {
       provide: {
         glFeatures: {
           workItemsMvc2: workItemsMvc2Enabled,
+          linkedWorkItems: linkedWorkItemsEnabled,
         },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
@@ -581,12 +586,91 @@ describe('WorkItemDetail component', () => {
     });
   });
 
+  describe('relationship widget', () => {
+    it('does not render linked items by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findWorkItemRelationships().exists()).toBe(false);
+    });
+
+    describe('work item has children', () => {
+      const mockWorkItemLinkedItem = workItemByIidResponseFactory({
+        linkedItems: mockBlockingLinkedItem,
+      });
+      const handler = jest.fn().mockResolvedValue(mockWorkItemLinkedItem);
+
+      it('renders relationship widget when work item has linked items', async () => {
+        createComponent({ handler, linkedWorkItemsEnabled: true });
+        await waitForPromises();
+
+        expect(findWorkItemRelationships().exists()).toBe(true);
+      });
+
+      it('opens the modal with the linked item when `showModal` is emitted', async () => {
+        createComponent({
+          handler,
+          linkedWorkItemsEnabled: true,
+          workItemsMvc2Enabled: true,
+        });
+        await waitForPromises();
+
+        const event = {
+          preventDefault: jest.fn(),
+        };
+
+        findWorkItemRelationships().vm.$emit('showModal', {
+          event,
+          modalWorkItem: { id: 'childWorkItemId' },
+        });
+        await waitForPromises();
+
+        expect(findModal().props().workItemId).toBe('childWorkItemId');
+        expect(showModalHandler).toHaveBeenCalled();
+      });
+
+      describe('linked work item is rendered in a modal and has linked items', () => {
+        beforeEach(async () => {
+          createComponent({
+            isModal: true,
+            handler,
+            workItemsMvc2Enabled: true,
+            linkedWorkItemsEnabled: true,
+          });
+
+          await waitForPromises();
+        });
+
+        it('does not render a new modal', () => {
+          expect(findModal().exists()).toBe(false);
+        });
+
+        it('emits `update-modal` when `show-modal` is emitted', async () => {
+          const event = {
+            preventDefault: jest.fn(),
+          };
+
+          findWorkItemRelationships().vm.$emit('showModal', {
+            event,
+            modalWorkItem: { id: 'childWorkItemId' },
+          });
+          await waitForPromises();
+
+          expect(wrapper.emitted('update-modal')).toBeDefined();
+        });
+      });
+    });
+  });
+
   describe('notes widget', () => {
     it('renders notes by default', async () => {
       createComponent();
       await waitForPromises();
 
+      const { confidential } = workItemQueryResponse.data.workspace.workItems.nodes[0];
+
       expect(findNotesWidget().exists()).toBe(true);
+      expect(findNotesWidget().props('isWorkItemConfidential')).toBe(confidential);
     });
   });
 

@@ -93,8 +93,6 @@ describe('WorkItemLinkChild', () => {
       expect(findWorkItemLinkChildContents().props()).toEqual({
         childItem: workItemObjectiveWithChild,
         canUpdate: true,
-        parentWorkItemId: 'gid://gitlab/WorkItem/2',
-        workItemType: 'Objective',
         childPath: '/gitlab-org/gitlab-test/-/work_items/12',
       });
     });

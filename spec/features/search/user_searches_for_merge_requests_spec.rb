@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User searches for merge requests', :js, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
   let_it_be(:merge_request1) { create(:merge_request, title: 'Merge Request Foo', source_project: project, target_project: project, created_at: 1.hour.ago) }
   let_it_be(:merge_request2) { create(:merge_request, :simple, title: 'Merge Request Bar', source_project: project, target_project: project) }

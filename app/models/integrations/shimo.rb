@@ -8,6 +8,10 @@ module Integrations
       title: -> { s_('Shimo|Shimo Workspace URL') },
       required: true
 
+    def avatar_url
+      ActionController::Base.helpers.image_path('logos/shimo.svg')
+    end
+
     def render?
       valid? && activated?
     end

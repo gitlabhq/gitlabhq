@@ -31,7 +31,7 @@
       - if impersonation_enabled?
         .gl-p-2
           %span.btn-group{ class: !@can_impersonate ? 'has-tooltip' : nil, title: @impersonation_error_text }
-            = render Pajamas::ButtonComponent.new(disabled: !@can_impersonate, method: :post, href: impersonate_admin_user_path(@user), button_options: { data: { qa_selector: 'impersonate_user_link', testid: 'impersonate_user_link' } }) do
+            = render Pajamas::ButtonComponent.new(disabled: !@can_impersonate, method: :post, href: impersonate_admin_user_path(@user), button_options: { data: { testid: 'impersonate-user-link' } }) do
               = _('Impersonate')
       - if can_force_email_confirmation?(@user)
         .gl-p-2
@@ -48,5 +48,5 @@
   = gl_tab_link_to _("SSH keys"), keys_admin_user_path(@user)
   = gl_tab_link_to _("Identities"), admin_user_identities_path(@user)
   - if impersonation_enabled?
-    = gl_tab_link_to _("Impersonation Tokens"), admin_user_impersonation_tokens_path(@user), data: { qa_selector: 'impersonation_tokens_tab' }
+    = gl_tab_link_to _("Impersonation Tokens"), admin_user_impersonation_tokens_path(@user), data: { testid: 'impersonation-tokens-tab' }
 .gl-mb-3

@@ -31,7 +31,7 @@ module API
         INTEGRATIONS[integration.to_param.tr("_", "-")] << {
           required: false,
           name: event_name.to_sym,
-          type: String,
+          type: ::Grape::API::Boolean,
           desc: IntegrationsHelper.integration_event_description(integration, event_name)
         }
       end

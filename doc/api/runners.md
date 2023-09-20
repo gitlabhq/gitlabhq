@@ -395,7 +395,7 @@ Example response:
         "status": "running",
         "stage": "test",
         "name": "test",
-        "ref": "master",
+        "ref": "main",
         "tag": false,
         "coverage": null,
         "created_at": "2017-11-16T08:50:29.000Z",
@@ -439,7 +439,7 @@ Example response:
         "pipeline": {
             "id": 2,
             "sha": "97de212e80737a608d939f648d959671fb0a0142",
-            "ref": "master",
+            "ref": "main",
             "status": "running"
         },
         "project": {

@@ -59,9 +59,6 @@ export const initHeader = () => {
 };
 
 export const initPage = async () => {
-  if (!gon.features.environmentDetailsVue) {
-    return null;
-  }
   const EnvironmentsDetailPageModule = await import('./environment_details/index.vue');
   const EnvironmentsDetailPage = EnvironmentsDetailPageModule.default;
   const dataElement = document.getElementById('environments-detail-view');

@@ -19,7 +19,7 @@ import {
   VALIDATE_TAB,
   VALIDATE_TAB_BADGE_DISMISSED_KEY,
 } from '~/ci/pipeline_editor/constants';
-import PipelineGraph from '~/pipelines/components/pipeline_graph/pipeline_graph.vue';
+import PipelineGraph from '~/ci/pipeline_editor/components/graph/pipeline_graph.vue';
 import getBlobContent from '~/ci/pipeline_editor/graphql/queries/blob_content.query.graphql';
 import {
   mockBlobContentQueryResponse,

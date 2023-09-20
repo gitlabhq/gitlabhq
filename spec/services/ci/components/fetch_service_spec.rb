@@ -3,13 +3,33 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project, :repository, create_tag: 'v1.0') }
   let_it_be(:user) { create(:user) }
   let_it_be(:current_user) { user }
   let_it_be(:current_host) { Gitlab.config.gitlab.host }
+  let_it_be(:content) do
+    <<~COMPONENT
+    job:
+      script: echo
+    COMPONENT
+  end
 
   let(:service) do
     described_class.new(address: address, current_user: current_user)
+  end
+
+  let_it_be(:project) do
+    project = create(
+      :project, :custom_repo,
+      files: {
+        'template.yml' => content,
+        'my-component/template.yml' => content,
+        'my-dir/my-component/template.yml' => content
+      }
+    )
+
+    project.repository.add_tag(project.creator, 'v0.1', project.repository.commit.sha)
+
+    project
   end
 
   before do
@@ -22,19 +42,6 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
     shared_examples 'an external component' do
       shared_examples 'component address' do
         context 'when content exists' do
-          let(:sha) { project.commit(version).id }
-
-          let(:content) do
-            <<~COMPONENT
-            job:
-              script: echo
-            COMPONENT
-          end
-
-          before do
-            stub_project_blob(sha, component_yaml_path, content)
-          end
-
           it 'returns the content' do
             expect(result).to be_success
             expect(result.payload[:content]).to eq(content)
@@ -42,6 +49,8 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
         end
 
         context 'when content does not exist' do
+          let(:address) { "#{current_host}/#{component_path}@~version-does-not-exist" }
+
           it 'returns an error' do
             expect(result).to be_error
             expect(result.reason).to eq(:content_not_found)

@@ -3,14 +3,12 @@
 module Packages
   module Nuget
     class ExtractMetadataFileService
-      include Gitlab::Utils::StrongMemoize
-
       ExtractionError = Class.new(StandardError)
 
       MAX_FILE_SIZE = 4.megabytes.freeze
 
-      def initialize(package_file_id)
-        @package_file_id = package_file_id
+      def initialize(package_file)
+        @package_file = package_file
       end
 
       def execute
@@ -21,12 +19,7 @@ module Packages
 
       private
 
-      attr_reader :package_file_id
-
-      def package_file
-        ::Packages::PackageFile.find_by_id(package_file_id)
-      end
-      strong_memoize_attr :package_file
+      attr_reader :package_file
 
       def valid_package_file?
         package_file &&
@@ -41,7 +34,7 @@ module Packages
           raise ExtractionError, 'nuspec file not found' unless entry
           raise ExtractionError, 'nuspec file too big' if MAX_FILE_SIZE < entry.size
 
-          Tempfile.open("nuget_extraction_package_file_#{package_file_id}") do |file|
+          Tempfile.open("nuget_extraction_package_file_#{package_file.id}") do |file|
             entry.extract(file.path) { true } # allow #extract to overwrite the file
             file.unlink
             file.read

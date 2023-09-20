@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Manage', :skip_live_env, requires_admin: 'creates users and instance OAuth application',
     product_group: :authentication_and_authorization do
-    let!(:user) { Resource::User.fabricate_via_api! }
+    let!(:user) { create(:user) }
     let(:consumer_host) { "http://#{consumer_name}.#{Runtime::Env.running_in_ci? ? 'test' : 'bridge'}" }
     let(:instance_oauth_app) do
       Resource::InstanceOauthApplication.fabricate! do |application|

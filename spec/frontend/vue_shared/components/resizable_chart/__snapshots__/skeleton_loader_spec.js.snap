@@ -23,7 +23,7 @@ exports[`Resizable Skeleton Loader default setup renders the bars, labels, and g
     />
     <defs>
       <clippath
-        id="null-idClip"
+        id="reference-0"
       >
         <rect
           data-testid="skeleton-chart-grid"
@@ -46,7 +46,6 @@ exports[`Resizable Skeleton Loader default setup renders the bars, labels, and g
           x="0"
           y="90%"
         />
-         
         <rect
           data-testid="skeleton-chart-bar"
           height="5%"
@@ -111,7 +110,6 @@ exports[`Resizable Skeleton Loader default setup renders the bars, labels, and g
           x="90%"
           y="10%"
         />
-         
         <rect
           data-testid="skeleton-chart-label"
           height="3%"
@@ -178,7 +176,7 @@ exports[`Resizable Skeleton Loader default setup renders the bars, labels, and g
         />
       </clippath>
       <lineargradient
-        id="null-idGradient"
+        id="reference-1"
       >
         <stop
           class="primary-stop"
@@ -242,7 +240,7 @@ exports[`Resizable Skeleton Loader with custom settings renders the correct posi
     />
     <defs>
       <clippath
-        id="-idClip"
+        id="reference-0"
       >
         <rect
           data-testid="skeleton-chart-grid"
@@ -265,7 +263,6 @@ exports[`Resizable Skeleton Loader with custom settings renders the correct posi
           x="0"
           y="90%"
         />
-         
         <rect
           data-testid="skeleton-chart-bar"
           height="5%"
@@ -330,7 +327,6 @@ exports[`Resizable Skeleton Loader with custom settings renders the correct posi
           x="90.9375%"
           y="10%"
         />
-         
         <rect
           data-testid="skeleton-chart-label"
           height="2%"
@@ -397,7 +393,7 @@ exports[`Resizable Skeleton Loader with custom settings renders the correct posi
         />
       </clippath>
       <lineargradient
-        id="-idGradient"
+        id="reference-1"
       >
         <stop
           class="primary-stop"

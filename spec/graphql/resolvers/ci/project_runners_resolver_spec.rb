@@ -6,7 +6,7 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :runner_
   include GraphqlHelpers
 
   describe '#resolve' do
-    subject do
+    subject(:resolve_scope) do
       resolve(described_class, obj: obj, ctx: { current_user: user }, args: args,
                                arg_style: :internal)
     end
@@ -17,8 +17,10 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :runner_
     let(:args) { {} }
 
     context 'when user cannot see runners' do
-      it 'returns no runners' do
-        expect(subject.items.to_a).to eq([])
+      it 'returns Gitlab::Graphql::Errors::ResourceNotAvailable' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_scope
+        end
       end
     end
 
@@ -30,7 +32,7 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :runner_
       let(:available_runners) { [inactive_project_runner, offline_project_runner, group_runner, instance_runner] }
 
       it 'returns all runners available to the project' do
-        expect(subject.items.to_a).to match_array(available_runners)
+        expect(resolve_scope.items.to_a).to match_array(available_runners)
       end
     end
 
@@ -38,7 +40,7 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :runner_
       let(:obj) { nil }
 
       it 'raises an error' do
-        expect { subject }.to raise_error('Expected project missing')
+        expect { resolve_scope }.to raise_error('Expected project missing')
       end
     end
 
@@ -46,7 +48,7 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :runner_
       let(:obj) { build(:group) }
 
       it 'raises an error' do
-        expect { subject }.to raise_error('Expected project missing')
+        expect { resolve_scope }.to raise_error('Expected project missing')
       end
     end
 
@@ -79,7 +81,7 @@ RSpec.describe Resolvers::Ci::ProjectRunnersResolver, feature_category: :runner_
                                                          params: expected_params).once.and_return(finder)
         allow(finder).to receive(:execute).once.and_return([:execute_return_value])
 
-        expect(subject.items.to_a).to eq([:execute_return_value])
+        expect(resolve_scope.items.to_a).to contain_exactly(:execute_return_value)
       end
     end
   end

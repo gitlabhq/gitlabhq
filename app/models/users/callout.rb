@@ -62,7 +62,7 @@ module Users
       project_quality_summary_feedback: 59, # EE-only
       merge_request_settings_moved_callout: 60,
       new_top_level_group_alert: 61,
-      artifacts_management_page_feedback_banner: 62,
+      # 62, removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131314
       # 63 and 64 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120233
       branch_rules_info_callout: 65,
       create_runner_workflow_banner: 66,
@@ -71,9 +71,11 @@ module Users
       project_repository_limit_alert_alert_threshold: 69, # EE-only
       project_repository_limit_alert_error_threshold: 70, # EE-only
       new_navigation_callout: 71,
-      code_suggestions_third_party_callout: 72, # EE-only
+      # 72 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129022
       namespace_over_storage_users_combined_alert: 73, # EE-only
-      rich_text_editor: 74
+      rich_text_editor: 74,
+      vsd_feedback_banner: 75, # EE-only
+      security_policy_protected_branch_modification: 76 # EE-only
     }
 
     validates :feature_name,

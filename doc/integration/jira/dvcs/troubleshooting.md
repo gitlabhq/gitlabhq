@@ -132,12 +132,12 @@ Failed to execute request [https://gitlab.com/api/v4/projects/:id/merge_requests
 {"message":"403 Forbidden"}
 ```
 
-If you find a `{"message":"403 Forbidden"}` error, it is possible that this specific project has some [GitLab features disabled](../../../user/project/settings/index.md#configure-project-visibility-features-and-permissions).
+If you find a `{"message":"403 Forbidden"}` error, it is possible that this specific project has some [GitLab features disabled](../../../user/project/settings/index.md#configure-project-features-and-permissions).
 In the example above, the merge requests feature is disabled.
 
 To resolve the issue, enable the relevant feature:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. Use the toggles to enable the features as needed.
@@ -146,7 +146,7 @@ To resolve the issue, enable the relevant feature:
 
 To find webhook logs in a DVCS-linked project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Settings > Webhooks**.
 1. Scroll down to **Project Hooks**.
 1. Next to the log that points to your Jira instance, select **Edit**.

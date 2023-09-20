@@ -9,6 +9,7 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
   let(:min_batch_size) { 1 }
   let(:main_connection) { ApplicationRecord.connection }
   let(:ci_connection) { Ci::ApplicationRecord.connection }
+  let(:logger) { instance_double(Logger) }
 
   # Main Database
   let(:main_db_main_item_model) { table("_test_gitlab_main_items", database: "main") }
@@ -32,8 +33,123 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
     table("gitlab_partitions_dynamic._test_gitlab_hook_logs_202201", database: "ci")
   end
 
+  before do
+    skip_if_shared_database(:ci)
+
+    # Creating some test tables on the main database
+    main_tables_sql = <<~SQL
+      CREATE TABLE _test_gitlab_main_items (id serial NOT NULL PRIMARY KEY);
+
+      CREATE TABLE _test_gitlab_main_references (
+        id serial NOT NULL PRIMARY KEY,
+        item_id BIGINT NOT NULL,
+        CONSTRAINT fk_constrained_1 FOREIGN KEY(item_id) REFERENCES _test_gitlab_main_items(id)
+      );
+
+      CREATE TABLE _test_gitlab_hook_logs (
+        id bigserial not null,
+        created_at timestamptz not null,
+        item_id BIGINT NOT NULL,
+        PRIMARY KEY (id, created_at),
+        CONSTRAINT fk_constrained_1 FOREIGN KEY(item_id) REFERENCES _test_gitlab_main_items(id)
+      ) PARTITION BY RANGE(created_at);
+
+      CREATE TABLE gitlab_partitions_dynamic._test_gitlab_hook_logs_202201
+      PARTITION OF _test_gitlab_hook_logs
+      FOR VALUES FROM ('20220101') TO ('20220131');
+
+      CREATE TABLE gitlab_partitions_dynamic._test_gitlab_hook_logs_202202
+      PARTITION OF _test_gitlab_hook_logs
+      FOR VALUES FROM ('20220201') TO ('20220228');
+
+      ALTER TABLE _test_gitlab_hook_logs DETACH PARTITION gitlab_partitions_dynamic._test_gitlab_hook_logs_202201;
+    SQL
+
+    execute_on_each_database(main_tables_sql)
+
+    ci_tables_sql = <<~SQL
+      CREATE TABLE _test_gitlab_ci_items (id serial NOT NULL PRIMARY KEY);
+
+      CREATE TABLE _test_gitlab_ci_references (
+        id serial NOT NULL PRIMARY KEY,
+        item_id BIGINT NOT NULL,
+        CONSTRAINT fk_constrained_1 FOREIGN KEY(item_id) REFERENCES _test_gitlab_ci_items(id)
+      );
+    SQL
+
+    execute_on_each_database(ci_tables_sql)
+
+    internal_tables_sql = <<~SQL
+      CREATE TABLE _test_gitlab_shared_items (id serial NOT NULL PRIMARY KEY);
+    SQL
+
+    execute_on_each_database(internal_tables_sql)
+
+    # Filling the tables
+    5.times do |i|
+      # Main Database
+      main_db_main_item_model.create!(id: i)
+      main_db_main_reference_model.create!(item_id: i)
+      main_db_ci_item_model.create!(id: i)
+      main_db_ci_reference_model.create!(item_id: i)
+      main_db_shared_item_model.create!(id: i)
+      main_db_partitioned_item.create!(item_id: i, created_at: '2022-02-02 02:00')
+      main_db_partitioned_item_detached.create!(item_id: i, created_at: '2022-01-01 01:00')
+      # CI Database
+      ci_db_main_item_model.create!(id: i)
+      ci_db_main_reference_model.create!(item_id: i)
+      ci_db_ci_item_model.create!(id: i)
+      ci_db_ci_reference_model.create!(item_id: i)
+      ci_db_shared_item_model.create!(id: i)
+      ci_db_partitioned_item.create!(item_id: i, created_at: '2022-02-02 02:00')
+      ci_db_partitioned_item_detached.create!(item_id: i, created_at: '2022-01-01 01:00')
+    end
+
+    Gitlab::Database::SharedModel.using_connection(main_connection) do
+      Postgresql::DetachedPartition.create!(
+        table_name: '_test_gitlab_hook_logs_202201',
+        drop_after: Time.current
+      )
+    end
+
+    Gitlab::Database::SharedModel.using_connection(ci_connection) do
+      Postgresql::DetachedPartition.create!(
+        table_name: '_test_gitlab_hook_logs_202201',
+        drop_after: Time.current
+      )
+    end
+
+    allow(Gitlab::Database::GitlabSchema).to receive(:tables_to_schema).and_return(
+      {
+        "_test_gitlab_main_items" => :gitlab_main,
+        "_test_gitlab_main_references" => :gitlab_main,
+        "_test_gitlab_hook_logs" => :gitlab_main,
+        "_test_gitlab_ci_items" => :gitlab_ci,
+        "_test_gitlab_ci_references" => :gitlab_ci,
+        "_test_gitlab_shared_items" => :gitlab_shared,
+        "_test_gitlab_geo_items" => :gitlab_geo
+      }
+    )
+
+    allow(Gitlab::Database::GitlabSchema).to receive(:views_and_tables_to_schema).and_return(
+      {
+        "_test_gitlab_main_items" => :gitlab_main,
+        "_test_gitlab_main_references" => :gitlab_main,
+        "_test_gitlab_hook_logs" => :gitlab_main,
+        "_test_gitlab_ci_items" => :gitlab_ci,
+        "_test_gitlab_ci_references" => :gitlab_ci,
+        "_test_gitlab_shared_items" => :gitlab_shared,
+        "_test_gitlab_geo_items" => :gitlab_geo,
+        "detached_partitions" => :gitlab_shared,
+        "postgres_foreign_keys" => :gitlab_shared,
+        "postgres_partitions" => :gitlab_shared
+      }
+    )
+
+    allow(logger).to receive(:info).with(any_args)
+  end
+
   shared_examples 'truncating legacy tables on a database' do
-    let(:logger) { instance_double(Logger) }
     let(:dry_run) { false }
     let(:until_table) { nil }
 
@@ -45,122 +161,6 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
         dry_run: dry_run,
         until_table: until_table
       ).execute
-    end
-
-    before do
-      skip_if_shared_database(:ci)
-
-      # Creating some test tables on the main database
-      main_tables_sql = <<~SQL
-        CREATE TABLE _test_gitlab_main_items (id serial NOT NULL PRIMARY KEY);
-
-        CREATE TABLE _test_gitlab_main_references (
-          id serial NOT NULL PRIMARY KEY,
-          item_id BIGINT NOT NULL,
-          CONSTRAINT fk_constrained_1 FOREIGN KEY(item_id) REFERENCES _test_gitlab_main_items(id)
-        );
-
-        CREATE TABLE _test_gitlab_hook_logs (
-          id bigserial not null,
-          created_at timestamptz not null,
-          item_id BIGINT NOT NULL,
-          PRIMARY KEY (id, created_at),
-          CONSTRAINT fk_constrained_1 FOREIGN KEY(item_id) REFERENCES _test_gitlab_main_items(id)
-        ) PARTITION BY RANGE(created_at);
-
-        CREATE TABLE gitlab_partitions_dynamic._test_gitlab_hook_logs_202201
-        PARTITION OF _test_gitlab_hook_logs
-        FOR VALUES FROM ('20220101') TO ('20220131');
-
-        CREATE TABLE gitlab_partitions_dynamic._test_gitlab_hook_logs_202202
-        PARTITION OF _test_gitlab_hook_logs
-        FOR VALUES FROM ('20220201') TO ('20220228');
-
-        ALTER TABLE _test_gitlab_hook_logs DETACH PARTITION gitlab_partitions_dynamic._test_gitlab_hook_logs_202201;
-      SQL
-
-      execute_on_each_database(main_tables_sql)
-
-      ci_tables_sql = <<~SQL
-        CREATE TABLE _test_gitlab_ci_items (id serial NOT NULL PRIMARY KEY);
-
-        CREATE TABLE _test_gitlab_ci_references (
-          id serial NOT NULL PRIMARY KEY,
-          item_id BIGINT NOT NULL,
-          CONSTRAINT fk_constrained_1 FOREIGN KEY(item_id) REFERENCES _test_gitlab_ci_items(id)
-        );
-      SQL
-
-      execute_on_each_database(ci_tables_sql)
-
-      internal_tables_sql = <<~SQL
-        CREATE TABLE _test_gitlab_shared_items (id serial NOT NULL PRIMARY KEY);
-      SQL
-
-      execute_on_each_database(internal_tables_sql)
-
-      # Filling the tables
-      5.times do |i|
-        # Main Database
-        main_db_main_item_model.create!(id: i)
-        main_db_main_reference_model.create!(item_id: i)
-        main_db_ci_item_model.create!(id: i)
-        main_db_ci_reference_model.create!(item_id: i)
-        main_db_shared_item_model.create!(id: i)
-        main_db_partitioned_item.create!(item_id: i, created_at: '2022-02-02 02:00')
-        main_db_partitioned_item_detached.create!(item_id: i, created_at: '2022-01-01 01:00')
-        # CI Database
-        ci_db_main_item_model.create!(id: i)
-        ci_db_main_reference_model.create!(item_id: i)
-        ci_db_ci_item_model.create!(id: i)
-        ci_db_ci_reference_model.create!(item_id: i)
-        ci_db_shared_item_model.create!(id: i)
-        ci_db_partitioned_item.create!(item_id: i, created_at: '2022-02-02 02:00')
-        ci_db_partitioned_item_detached.create!(item_id: i, created_at: '2022-01-01 01:00')
-      end
-
-      Gitlab::Database::SharedModel.using_connection(main_connection) do
-        Postgresql::DetachedPartition.create!(
-          table_name: '_test_gitlab_hook_logs_202201',
-          drop_after: Time.current
-        )
-      end
-
-      Gitlab::Database::SharedModel.using_connection(ci_connection) do
-        Postgresql::DetachedPartition.create!(
-          table_name: '_test_gitlab_hook_logs_202201',
-          drop_after: Time.current
-        )
-      end
-
-      allow(Gitlab::Database::GitlabSchema).to receive(:tables_to_schema).and_return(
-        {
-          "_test_gitlab_main_items" => :gitlab_main,
-          "_test_gitlab_main_references" => :gitlab_main,
-          "_test_gitlab_hook_logs" => :gitlab_main,
-          "_test_gitlab_ci_items" => :gitlab_ci,
-          "_test_gitlab_ci_references" => :gitlab_ci,
-          "_test_gitlab_shared_items" => :gitlab_shared,
-          "_test_gitlab_geo_items" => :gitlab_geo
-        }
-      )
-
-      allow(Gitlab::Database::GitlabSchema).to receive(:views_and_tables_to_schema).and_return(
-        {
-          "_test_gitlab_main_items" => :gitlab_main,
-          "_test_gitlab_main_references" => :gitlab_main,
-          "_test_gitlab_hook_logs" => :gitlab_main,
-          "_test_gitlab_ci_items" => :gitlab_ci,
-          "_test_gitlab_ci_references" => :gitlab_ci,
-          "_test_gitlab_shared_items" => :gitlab_shared,
-          "_test_gitlab_geo_items" => :gitlab_geo,
-          "detached_partitions" => :gitlab_shared,
-          "postgres_foreign_keys" => :gitlab_shared,
-          "postgres_partitions" => :gitlab_shared
-        }
-      )
-
-      allow(logger).to receive(:info).with(any_args)
     end
 
     context 'when the truncated tables are not locked for writes' do
@@ -345,6 +345,50 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
       expect do
         described_class.new(database_name: 'ci', min_batch_size: min_batch_size).execute
       end.to raise_error(/Cannot truncate legacy tables in single-db setup/)
+    end
+  end
+
+  describe '#needs_truncation?' do
+    let(:database_name) { 'ci' }
+
+    subject { described_class.new(database_name: database_name).needs_truncation? }
+
+    context 'when running in a single database mode' do
+      before do
+        skip_if_multiple_databases_are_setup(:ci)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when running in a multiple database mode' do
+      before do
+        skip_if_shared_database(:ci)
+      end
+
+      context 'with main data in ci database' do
+        it { is_expected.to eq(true) }
+      end
+
+      context 'with no main data in ci datatabase' do
+        before do
+          # Remove 'main' data in ci database
+          ci_connection.truncate_tables([:_test_gitlab_main_items, :_test_gitlab_main_references])
+        end
+
+        it { is_expected.to eq(false) }
+
+        it 'supresses some QueryAnalyzers' do
+          expect(
+            Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
+          ).to receive(:with_suppressed).and_call_original
+          expect(
+            Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer
+          ).to receive(:with_suppressed).and_call_original
+
+          subject
+        end
+      end
     end
   end
 

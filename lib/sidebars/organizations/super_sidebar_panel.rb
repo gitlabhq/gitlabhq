@@ -23,10 +23,7 @@ module Sidebars
 
       override :super_sidebar_context_header
       def super_sidebar_context_header
-        {
-          title: context.container.name,
-          id: context.container.id
-        }
+        _('Organization')
       end
     end
   end

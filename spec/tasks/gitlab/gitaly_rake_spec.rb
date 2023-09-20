@@ -3,7 +3,7 @@
 require 'rake_helper'
 
 RSpec.describe 'gitlab:gitaly namespace rake task', :silence_stdout do
-  before_all do
+  before(:all) do
     Rake.application.rake_require 'tasks/gitlab/gitaly'
   end
 

@@ -26,7 +26,7 @@ module API
         def get_runner_details_from_request
           return get_runner_ip unless params['info'].present?
 
-          attributes_for_keys(%w(name version revision platform architecture executor), params['info'])
+          attributes_for_keys(%w[name version revision platform architecture executor], params['info'])
             .merge(get_system_id_from_request)
             .merge(get_runner_config_from_request)
             .merge(get_runner_ip)
@@ -45,9 +45,7 @@ module API
         def current_runner
           token = params[:token]
 
-          if token
-            ::Ci::Runner.sticking.stick_or_unstick_request(env, :runner, token)
-          end
+          load_balancer_stick_request(::Ci::Runner, :runner, token) if token
 
           strong_memoize(:current_runner) do
             ::Ci::Runner.find_by_token(token.to_s)
@@ -111,11 +109,7 @@ module API
         def current_job
           id = params[:id]
 
-          if id
-            ::Ci::Build
-              .sticking
-              .stick_or_unstick_request(env, :build, id)
-          end
+          load_balancer_stick_request(::Ci::Build, :build, id) if id
 
           strong_memoize(:current_job) do
             ::Ci::Build.find_by_id(id)
@@ -155,7 +149,7 @@ module API
         private
 
         def get_runner_config_from_request
-          { config: attributes_for_keys(%w(gpus), params.dig('info', 'config')) }
+          { config: attributes_for_keys(%w[gpus], params.dig('info', 'config')) }
         end
 
         def metrics

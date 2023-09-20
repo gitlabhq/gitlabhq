@@ -36,7 +36,7 @@ When importing:
 
 - [Bitbucket Cloud integration](../../../integration/bitbucket.md) must be enabled. If that integration is not enabled, ask your GitLab administrator
   to enable it. The Bitbucket Cloud integration is enabled by default on GitLab.com.
-- [Bitbucket Cloud import source](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources) must be enabled. If not enabled, ask your
+- [Bitbucket Cloud import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources) must be enabled. If not enabled, ask your
   GitLab administrator to enable it. The Bitbucket Cloud import source is enabled by default on GitLab.com.
 - At least the Maintainer role on the destination group to import to.
 
@@ -117,5 +117,5 @@ current Bitbucket public name, and reconnect if there's a mismatch:
 1. Following reconnection, the user should use the API again to verify that their `extern_uid` in
    the GitLab database now matches their current Bitbucket public name.
 
-The importer must then [delete the imported project](../../project/working_with_projects.md#delete-a-project)
+The importer must then [delete the imported project](../../project/settings/index.md#delete-a-project)
 and import again.

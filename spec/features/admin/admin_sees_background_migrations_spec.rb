@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe "Admin > Admin sees background migrations", feature_category: :database do
   include ListboxHelpers
 
-  let_it_be(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin, :no_super_sidebar) }
   let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 
   let_it_be(:active_migration) { create(:batched_background_migration, :active, table_name: 'active') }

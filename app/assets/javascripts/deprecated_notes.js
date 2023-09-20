@@ -458,7 +458,8 @@ export default class Notes {
       this.setupNewNote($newNote);
       this.refresh();
       return this.updateNotesCount(1);
-    } else if (Notes.isUpdatedNote(noteEntity, $note)) {
+    }
+    if (Notes.isUpdatedNote(noteEntity, $note)) {
       // The server can send the same update multiple times so we need to make sure to only update once per actual update.
       const isEditing = $note.hasClass('is-editing');
       const initialContent = normalizeNewlines($note.find('.original-note-content').text().trim());

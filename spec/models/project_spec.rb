@@ -17,12 +17,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   it_behaves_like 'ensures runners_token is prefixed', :project
 
   describe 'associations' do
+    it { is_expected.to belong_to(:organization) }
     it { is_expected.to belong_to(:group) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:project_namespace).class_name('Namespaces::ProjectNamespace').with_foreign_key('project_namespace_id').inverse_of(:project) }
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
+    it { is_expected.to have_many(:maintainers).through(:project_members).source(:user).conditions(members: { access_level: Gitlab::Access::MAINTAINER }) }
     it { is_expected.to have_many(:events) }
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
@@ -139,11 +141,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
     it { is_expected.to have_many(:prometheus_alert_events) }
-    it { is_expected.to have_many(:self_managed_prometheus_alert_events) }
     it { is_expected.to have_many(:alert_management_alerts) }
     it { is_expected.to have_many(:alert_management_http_integrations) }
     it { is_expected.to have_many(:jira_imports) }
-    it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:project) }
     it { is_expected.to have_many(:repository_storage_moves) }
     it { is_expected.to have_many(:reviews).inverse_of(:project) }
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
@@ -152,6 +152,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:npm_metadata_caches).class_name('Packages::Npm::MetadataCache') }
     it { is_expected.to have_one(:packages_cleanup_policy).class_name('Packages::Cleanup::Policy').inverse_of(:project) }
+    it { is_expected.to have_many(:package_protection_rules).class_name('Packages::Protection::Rule').inverse_of(:project) }
     it { is_expected.to have_many(:pipeline_artifacts).dependent(:restrict_with_error) }
     it { is_expected.to have_many(:terraform_states).class_name('Terraform::State').inverse_of(:project) }
     it { is_expected.to have_many(:timelogs) }
@@ -222,6 +223,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.lfs_objects_projects.size).to eq(2)
       expect(project.lfs_objects.size).to eq(1)
       expect(project.lfs_objects.to_a).to eql([lfs_object])
+    end
+
+    describe 'maintainers association' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:maintainer1) { create(:user) }
+      let_it_be(:maintainer2) { create(:user) }
+      let_it_be(:reporter) { create(:user) }
+
+      before do
+        project.add_maintainer(maintainer1)
+        project.add_maintainer(maintainer2)
+        project.add_reporter(reporter)
+      end
+
+      it 'returns only maintainers' do
+        expect(project.maintainers).to match_array([maintainer1, maintainer2])
+      end
     end
 
     context 'after initialized' do
@@ -1140,6 +1158,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           merge_pipelines_enabled
           merge_trains_enabled
           auto_rollback_enabled
+          merge_trains_skip_train_allowed
         )
       end
     end
@@ -2380,7 +2399,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#service_desk_address' do
+  describe '#service_desk_address', feature_category: :service_desk do
     let_it_be(:project, reload: true) { create(:project, service_desk_enabled: true) }
 
     subject { project.service_desk_address }
@@ -2424,7 +2443,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'when project_key is set' do
-        it 'returns custom address including the project_key' do
+        it 'returns Service Desk alias address including the project_key' do
           create(:service_desk_setting, project: project, project_key: 'key1')
 
           expect(subject).to eq("foo+#{project.full_path_slug}-key1@bar.com")
@@ -2432,8 +2451,32 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       context 'when project_key is not set' do
-        it 'returns custom address including the project full path' do
+        it 'returns Service Desk alias address including the project full path' do
           expect(subject).to eq("foo+#{project.full_path_slug}-#{project.project_id}-issue-@bar.com")
+        end
+      end
+    end
+
+    context 'when custom email is enabled' do
+      let(:custom_email) { 'support@example.com' }
+
+      before do
+        setting = ServiceDeskSetting.new(project: project, custom_email: custom_email, custom_email_enabled: true)
+        allow(project).to receive(:service_desk_setting).and_return(setting)
+      end
+
+      it 'returns custom email address' do
+        expect(subject).to eq(custom_email)
+      end
+
+      context 'when feature flag service_desk_custom_email is disabled' do
+        before do
+          stub_feature_flags(service_desk_custom_email: false)
+        end
+
+        it 'returns custom email address' do
+          # Don't check for a specific value. Just make sure it's not the custom email
+          expect(subject).not_to eq(custom_email)
         end
       end
     end
@@ -3882,16 +3925,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#mark_primary_write_location' do
-    let(:project) { create(:project) }
-
-    it 'marks the location with project ID' do
-      expect(ApplicationRecord.sticking).to receive(:mark_primary_write_location).with(:project, project.id)
-
-      project.mark_primary_write_location
-    end
-  end
-
   describe '#mark_stuck_remote_mirrors_as_failed!' do
     it 'fails stuck remote mirrors' do
       project = create(:project, :repository, :remote_mirror)
@@ -5086,7 +5119,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     subject { described_class.wrap_with_cte(projects) }
 
     it 'wrapped query matches original' do
-      expect(subject.to_sql).to match(/^WITH "projects_cte" AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported}/)
+      expect(subject.to_sql).to match(/^WITH "projects_cte" AS MATERIALIZED/)
       expect(subject).to match_array(projects)
     end
   end
@@ -6986,8 +7019,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be_with_reload(:project) { create(:project, :empty_repo) }
     let_it_be(:shard_to) { create(:shard, name: 'test_second_storage') }
 
-    let!(:pool1) { create(:pool_repository, source_project: project) }
-    let!(:pool2) { create(:pool_repository, shard: shard_to, source_project: project) }
+    let(:disk_path1) { '@pool/aa/bb' }
+    let(:disk_path2) { disk_path1 }
+
+    let!(:pool1) { create(:pool_repository, disk_path: disk_path1, source_project: project) }
+    let!(:pool2) { create(:pool_repository, disk_path: disk_path2, shard: shard_to, source_project: project) }
     let(:project_pool) { pool1 }
     let(:repository_storage) { shard_to.name }
 
@@ -7040,6 +7076,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when pool repository for shard is missing' do
       let(:pool2) { nil }
+
+      it 'raises record not found error' do
+        expect { swap_pool_repository! }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context 'when pool repository has a different disk path' do
+      let(:disk_path2) { '@pool/different' }
 
       it 'raises record not found error' do
         expect { swap_pool_repository! }.to raise_error(ActiveRecord::RecordNotFound)
@@ -7409,17 +7453,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
 
       it_behaves_like 'returns active, non_invited, non_requested owners/maintainers of the project'
-    end
-  end
-
-  describe '#pages_lookup_path' do
-    let(:pages_domain) { build(:pages_domain) }
-    let(:project) { build(:project) }
-
-    it 'returns instance of Pages::LookupPath' do
-      expect(Pages::LookupPath).to receive(:new).with(project, domain: pages_domain, trim_prefix: 'mygroup').and_call_original
-
-      expect(project.pages_lookup_path(domain: pages_domain, trim_prefix: 'mygroup')).to be_a(Pages::LookupPath)
     end
   end
 
@@ -8086,14 +8119,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it { is_expected.to contain_exactly(project_bot) }
     it { is_expected.not_to include(user) }
-  end
-
-  describe "#metrics_setting" do
-    let(:project) { build(:project) }
-
-    it 'creates setting if it does not exist' do
-      expect(project.metrics_setting).to be_an_instance_of(ProjectMetricsSetting)
-    end
   end
 
   describe '#enabled_group_deploy_keys' do
@@ -9167,6 +9192,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(project.public_send(project_method)).to eq(true)
         expect(project.project_feature.public_send(project_feature_attr)).to eq(ProjectFeature::ENABLED)
       end
+    end
+  end
+
+  describe '#supports_lock_on_merge?' do
+    it_behaves_like 'checks self (project) and root ancestor feature flag' do
+      let(:feature_flag) { :enforce_locked_labels_on_merge }
+      let(:feature_flag_method) { :supports_lock_on_merge? }
+    end
+  end
+
+  context 'with loose foreign key on organization_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let_it_be(:parent) { create(:organization) }
+      let_it_be(:model) { create(:project, organization: parent) }
     end
   end
 

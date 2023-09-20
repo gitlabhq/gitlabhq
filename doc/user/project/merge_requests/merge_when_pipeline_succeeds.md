@@ -39,7 +39,7 @@ To do this when pushing from the command line, use the `merge_request.merge_when
 
 To do this from the GitLab user interface:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
 1. Select the merge request to edit.
 1. Scroll to the merge request reports section.
@@ -63,7 +63,7 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
 1. Select the merge request to edit.
 1. Scroll to the merge request reports section.
@@ -79,7 +79,7 @@ merge. This configuration works for both:
 - GitLab CI/CD pipelines.
 - Pipelines run from an [external CI integration](../integrations/index.md#available-integrations).
 
-As a result, [disabling GitLab CI/CD pipelines](../../../ci/enable_or_disable_ci.md)
+As a result, [disabling GitLab CI/CD pipelines](../../../ci/enable_or_disable_ci.md#disable-cicd-in-a-project)
 does not disable this feature, but you can use pipelines from external
 CI providers with it.
 
@@ -90,7 +90,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. Scroll to **Merge checks**, and select **Pipelines must succeed**.
    This setting also prevents merge requests from being merged if there is no pipeline,
@@ -111,7 +111,7 @@ Prerequisite:
 
 To change this behavior:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. Under **Merge checks**:
    - Select **Pipelines must succeed**.

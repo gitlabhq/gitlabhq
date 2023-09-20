@@ -109,6 +109,10 @@ export const MOCK_SCOPED_SEARCH_OPTIONS_DEF = [
     scopeCategory: PROJECTS_CATEGORY,
     icon: ICON_PROJECT,
     href: MOCK_PROJECT.path,
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'scoped_in_project',
+    },
   },
   {
     text: 'scoped-in-group',
@@ -116,11 +120,19 @@ export const MOCK_SCOPED_SEARCH_OPTIONS_DEF = [
     scopeCategory: GROUPS_CATEGORY,
     icon: ICON_GROUP,
     href: MOCK_GROUP.path,
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'scoped_in_group',
+    },
   },
   {
     text: 'scoped-in-all',
     description: MSG_IN_ALL_GITLAB,
     href: MOCK_ALL_PATH,
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'scoped_in_all',
+    },
   },
 ];
 export const MOCK_SCOPED_SEARCH_OPTIONS = [
@@ -263,6 +275,10 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
         avatar_size: 32,
         entity_id: 1,
         entity_name: 'MockGroup1',
+        extraAttrs: {
+          'data-track-action': 'click_command_palette_item',
+          'data-track-label': 'groups',
+        },
       },
     ],
   },
@@ -281,6 +297,10 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
         avatar_size: 32,
         entity_id: 1,
         entity_name: 'MockProject1',
+        extraAttrs: {
+          'data-track-action': 'click_command_palette_item',
+          'data-track-label': 'projects',
+        },
       },
       {
         category: 'Projects',
@@ -294,6 +314,10 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
         avatar_size: 32,
         entity_id: 2,
         entity_name: 'MockProject2',
+        extraAttrs: {
+          'data-track-action': 'click_command_palette_item',
+          'data-track-label': 'projects',
+        },
       },
     ],
   },
@@ -307,6 +331,10 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS = [
         href: 'help/gitlab',
         avatar_size: 16,
         entity_name: 'GitLab Help',
+        extraAttrs: {
+          'data-track-action': 'click_command_palette_item',
+          'data-track-label': 'help',
+        },
       },
     ],
   },
@@ -325,6 +353,10 @@ export const MOCK_SORTED_AUTOCOMPLETE_OPTIONS = [
     avatar_size: 32,
     entity_id: 1,
     entity_name: 'MockGroup1',
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'groups',
+    },
   },
   {
     avatar_size: 32,
@@ -338,6 +370,10 @@ export const MOCK_SORTED_AUTOCOMPLETE_OPTIONS = [
     namespace: 'Gitlab Org / MockProject1',
     text: 'MockProject1',
     value: 'MockProject1',
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'projects',
+    },
   },
   {
     avatar_size: 32,
@@ -351,6 +387,10 @@ export const MOCK_SORTED_AUTOCOMPLETE_OPTIONS = [
     namespace: 'Gitlab Org / MockProject2',
     text: 'MockProject2',
     value: 'MockProject2',
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'projects',
+    },
   },
   {
     avatar_size: 16,
@@ -359,6 +399,10 @@ export const MOCK_SORTED_AUTOCOMPLETE_OPTIONS = [
     label: 'GitLab Help',
     text: 'GitLab Help',
     href: 'help/gitlab',
+    extraAttrs: {
+      'data-track-action': 'click_command_palette_item',
+      'data-track-label': 'help',
+    },
   },
 ];
 

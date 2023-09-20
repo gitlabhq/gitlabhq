@@ -24,6 +24,10 @@ export const containsSensitiveToken = (message) => {
       name: 'Feed Token',
       regex: 'feed_token=((glft-)?[0-9a-zA-Z_-]{20}|glft-[a-h0-9]+-[0-9]+_)',
     },
+    {
+      name: 'GitLab OAuth Application Secret',
+      regex: `gloas-[0-9a-zA-Z_-]{64}`,
+    },
   ];
 
   for (const rule of sensitiveDataPatterns) {

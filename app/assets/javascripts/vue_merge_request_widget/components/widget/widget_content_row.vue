@@ -128,11 +128,7 @@ export default {
               >
             </template>
           </help-popover>
-          <action-buttons
-            v-if="hasActionButtons"
-            :widget="widgetName"
-            :tertiary-buttons="actionButtons"
-          />
+          <action-buttons v-if="hasActionButtons" :tertiary-buttons="actionButtons" />
         </div>
       </div>
       <div class="gl-display-flex gl-align-items-baseline">

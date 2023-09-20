@@ -68,7 +68,8 @@ export const setFrequentItemToLS = (key, data, itemData) => {
     frequentItems.sort((a, b) => {
       if (a.frequency > b.frequency) {
         return -1;
-      } else if (a.frequency < b.frequency) {
+      }
+      if (a.frequency < b.frequency) {
         return 1;
       }
       return b.lastUsed - a.lastUsed;

@@ -32,12 +32,17 @@ module Banzai
         lang, lang_params = parse_lang_params(code_node)
         pre_node = code_node.parent
 
-        pre_node.remove_attribute('lang') if lang.present?
+        if lang.present?
+          code_node.remove_attribute('lang')
+          pre_node.remove_attribute('lang')
+        end
+
         pre_node.set_attribute(LANG_ATTR, escape_once(lang)) if lang.present?
         pre_node.set_attribute(LANG_PARAMS_ATTR, escape_once(lang_params)) if lang_params.present?
 
         # cmark-gfm added this, it's now in data-lang-params
         pre_node.remove_attribute('data-meta')
+        code_node.remove_attribute('data-meta')
       end
 
       private
@@ -55,14 +60,14 @@ module Banzai
       # "```suggestion:+1-10 more```" -> '<pre data-canonical-lang="suggestion" data-lang-params="+1-10 more">'.
       def parse_lang_params(code_node)
         pre_node = code_node.parent
-        language = pre_node.attr('lang')
+        language = pre_node.attr('lang') || code_node.attr('lang')
 
         return unless language
 
         language, language_params = language.split(LANG_PARAMS_DELIMITER, 2)
 
         # cmark-gfm places extra lang parameters into data-meta
-        language_params = [pre_node.attr('data-meta'), language_params].compact.join(' ')
+        language_params = [pre_node.attr('data-meta'), code_node.attr('data-meta'), language_params].compact.join(' ')
 
         [language, language_params]
       end

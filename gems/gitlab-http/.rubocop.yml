@@ -1,0 +1,22 @@
+inherit_from:
+  - ../config/rubocop.yml
+
+Naming/ClassAndModuleCamelCase:
+  AllowedNames:
+    - HTTP_V2
+
+Performance/RegexpMatch:
+  Enabled: false
+
+Style/SpecialGlobalVars:
+  Enabled: false
+
+Lint/DuplicateBranch:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/FilePath:
+  CustomTransform:
+    HTTP_V2: http_v2

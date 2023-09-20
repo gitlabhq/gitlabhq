@@ -1,9 +1,7 @@
 <script>
 import { createAlert } from '~/alert';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../../event_hub';
 import MRWidgetService from '../../services/mr_widget_service';
 import {
@@ -25,7 +23,6 @@ export default {
     DeploymentActionButton,
     DeploymentViewButton,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     computedDeploymentStatus: {
       type: String,
@@ -71,10 +68,7 @@ export default {
       return this.deployment.details?.playable_build?.play_path;
     },
     redeployPath() {
-      if (this.redeployMrWidgetFeatureFlagEnabled) {
-        return this.deployment.retry_url;
-      }
-      return this.deployment.details?.playable_build?.retry_path;
+      return this.deployment.retry_url;
     },
     stopUrl() {
       return this.deployment.stop_url;
@@ -82,13 +76,8 @@ export default {
     environmentAvailable() {
       return Boolean(this.deployment.environment_available);
     },
-    redeployMrWidgetFeatureFlagEnabled() {
-      return this.glFeatures.reviewAppsRedeployMrWidget;
-    },
     showDeploymentActionButton() {
-      return (
-        this.redeployPath && !this.environmentAvailable && this.redeployMrWidgetFeatureFlagEnabled
-      );
+      return this.redeployPath && !this.environmentAvailable;
     },
   },
   actionsConfiguration: {
@@ -137,16 +126,6 @@ export default {
         this.actionInProgress = actionName;
 
         MRWidgetService.executeInlineAction(endpoint)
-          .then((resp) => {
-            if (this.redeployMrWidgetFeatureFlagEnabled) {
-              return;
-            }
-
-            const redirectUrl = resp?.data?.redirect_url;
-            if (redirectUrl) {
-              visitUrl(redirectUrl);
-            }
-          })
           .catch(() => {
             createAlert({
               message: errorMessage,
@@ -183,17 +162,6 @@ export default {
       @click="deployManually"
     >
       <span>{{ $options.actionsConfiguration[constants.DEPLOYING].buttonText }}</span>
-    </deployment-action-button>
-    <deployment-action-button
-      v-if="canBeManuallyRedeployed && !redeployMrWidgetFeatureFlagEnabled"
-      :action-in-progress="actionInProgress"
-      :actions-configuration="$options.actionsConfiguration[constants.REDEPLOYING]"
-      :computed-deployment-status="computedDeploymentStatus"
-      :icon="$options.btnIcons.repeat"
-      container-classes="js-manual-redeploy-action"
-      @click="redeploy"
-    >
-      <span>{{ $options.actionsConfiguration[constants.REDEPLOYING].buttonText }}</span>
     </deployment-action-button>
     <deployment-view-button
       v-if="hasExternalUrls && environmentAvailable"

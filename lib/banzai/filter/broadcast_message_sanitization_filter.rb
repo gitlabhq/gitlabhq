@@ -11,7 +11,7 @@ module Banzai
 
         allowlist[:attributes]['a'].push('class', 'style')
 
-        allowlist[:css] = { properties: %w(color border background padding margin text-decoration) }
+        allowlist[:css] = { properties: %w[color border background padding margin text-decoration] }
 
         allowlist
       end

@@ -38,15 +38,9 @@ module Gitlab
 
         return if namespace.blank?
 
-        cache = if Feature.enabled?(:cache_pages_domain_api, namespace)
-                  ::Gitlab::Pages::CacheControl.for_namespace(namespace.id)
-                end
-
         ::Pages::VirtualDomain.new(
           trim_prefix: namespace.full_path,
-          projects: namespace.all_projects_with_pages,
-          cache: cache
-        )
+          projects: namespace.all_projects_with_pages)
       end
 
       def by_custom_domain(host)
@@ -54,15 +48,7 @@ module Gitlab
 
         return unless domain&.pages_deployed?
 
-        cache = if Feature.enabled?(:cache_pages_domain_api, domain.project.root_namespace)
-                  ::Gitlab::Pages::CacheControl.for_domain(domain.id)
-                end
-
-        ::Pages::VirtualDomain.new(
-          projects: [domain.project],
-          domain: domain,
-          cache: cache
-        )
+        ::Pages::VirtualDomain.new(projects: [domain.project], domain: domain)
       end
     end
   end

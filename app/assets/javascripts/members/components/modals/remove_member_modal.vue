@@ -56,7 +56,8 @@ export default {
     actionText() {
       if (this.isAccessRequest) {
         return __('Deny access request');
-      } else if (this.isInvite) {
+      }
+      if (this.isInvite) {
         return s__('Member|Revoke invite');
       }
 

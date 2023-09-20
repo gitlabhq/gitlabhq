@@ -7,13 +7,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # License scanning of CycloneDX files **(ULTIMATE ALL)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags are disabled by default and both flags must be enabled for this feature to work.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.10 for GitLab SaaS.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.10 for self-managed GitLab [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`, both of which must be enabled for this feature to work. The flags are disabled by default due to the initial performance load when the license database is first imported. Work to improve performance is being tracked in [issue 397670](https://gitlab.com/gitlab-org/gitlab/-/issues/397670).
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385173) in GitLab 15.11 for self-managed GitLab.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
 
-FLAG:
-The legacy License Compliance analyzer was deprecated in GitLab 15.9 and removed in GitLab 16.3. To continue using GitLab for License Compliance, remove the License Compliance template from your CI/CD pipeline and add the [Dependency Scanning template](../../application_security/dependency_scanning/index.md#configuration). The Dependency Scanning template is now capable of gathering the required license information so it is no longer necessary to run a separate License Compliance job. The License Compliance CI/CD template should not be removed prior to verifying that the `license_scanning_sbom_scanner` and `package_metadata_synchronization` flags are enabled for the instance and that the instance has been upgraded to a version that supports the new method of license scanning. To begin using the Dependency Scanner quickly at scale, you may set up a [scan execution policy](../../application_security/policies/scan-execution-policies.md) at the group level to enforce the SBOM-based license scan for all projects in the group. Then, you may remove the inclusion of the `Jobs/License-Scanning.gitlab-ci.yml` template from your CI/CD configuration. If you wish to continue using the legacy License Compliance feature, you can do so by setting the `LICENSE_MANAGEMENT_VERSION CI` variable to `4`. This variable can be set at the [project](../../../ci/variables/index.md#for-a-project), [group](../../../ci/variables/index.md#for-a-group) or [instance](../../../ci/variables/index.md#for-an-instance) level. This configuration change will allow you to continue using an existing version of the License Compliance without having to adopt the new approach.  **Bugs and vulnerabilities in this legacy analyzer will no longer be fixed.**
+NOTE:
+The legacy License Compliance analyzer was deprecated in GitLab 15.9 and removed in GitLab 16.3. To continue using GitLab for License Compliance, remove the License Compliance template from your CI/CD pipeline and add the [Dependency Scanning template](../../application_security/dependency_scanning/index.md#configuration). The Dependency Scanning template is now capable of gathering the required license information so it is no longer necessary to run a separate License Compliance job. The License Compliance CI/CD template should not be removed prior to verifying that the instance has been upgraded to a version that supports the new method of license scanning. To begin using the Dependency Scanner quickly at scale, you may set up a [scan execution policy](../../application_security/policies/scan-execution-policies.md) at the group level to enforce the SBOM-based license scan for all projects in the group. Then, you may remove the inclusion of the `Jobs/License-Scanning.gitlab-ci.yml` template from your CI/CD configuration. If you wish to continue using the legacy License Compliance feature, you can do so by setting the `LICENSE_MANAGEMENT_VERSION CI` variable to `4`. This variable can be set at the [project](../../../ci/variables/index.md#for-a-project), [group](../../../ci/variables/index.md#for-a-group) or [instance](../../../ci/variables/index.md#for-an-instance) level. This configuration change will allow you to continue using the existing version of License Compliance to generate [license scanning report](../../../ci/yaml/artifacts_reports.md#artifactsreportslicense_scanning) artifacts in your pipelines. However, since legacy license scanning support is being removed from our codebase, switching back to this legacy analyzer prevents other License Compliance features from working as expected, so this approach is not recommended. In addition to this, **bugs and vulnerabilities in this legacy analyzer will no longer be fixed.**
 
 To detect the licenses in use, License Compliance relies on running the
 [Dependency Scanning CI Jobs](../../application_security/dependency_scanning/index.md),
@@ -22,16 +20,15 @@ Other 3rd party scanners may also be used as long as they produce a CycloneDX fi
 This method of scanning is also capable of parsing and identifying over 500 different types of licenses, as defined in [the SPDX list](https://spdx.org/licenses/).
 Licenses not in the SPDX list are reported as "Unknown". License information can also be extracted from packages that are dual-licensed, or have multiple different licenses that apply.
 
-## Enable license scanning
+## Configuration
 
-Prerequisites:
-
-- On GitLab self-managed only, enable [Synchronization with the GitLab License Database](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in Admin Area for the GitLab instance. On GitLab SaaS this step has already been completed.
-- Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#configuration)
-  and ensure that its prerequisites are met.
+Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#configuration)
+and ensure that its prerequisites are met.
 
 From the `.gitlab-ci.yml` file, remove the deprecated line `Jobs/License-Scanning.gitlab-ci.yml`, if
 it's present.
+
+On GitLab self-managed only, you can [choose package registry metadata to sync](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the Admin Area for the GitLab instance.
 
 ## Supported languages and package managers
 
@@ -164,3 +161,29 @@ gemnasium-dependency_scanning:
     - apk update && apk add jq
     - jq '.components |= unique' gl-sbom-gem-bundler.cdx.json > tmp.json && mv tmp.json gl-sbom-gem-bundler.cdx.json
 ```
+
+### Remove unused license data
+
+License scanning changes (released in GitLab 15.9) required a significant amount of additional disk space to be available on the instances. This issue was resolved in GitLab 16.3 by the [Reduce package metadata table on-disk footprint](https://gitlab.com/groups/gitlab-org/-/epics/10415) epic. But if your instance was running license scanning between GitLab 15.9 and 16.3, you may want to remove the unneeded data.
+
+To remove the unneeded data:
+
+1. Check if the [package_metadata_synchronization](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#new-license-compliance-scanner) feature flag is currently, or was previously enabled, and if so, disable it. Use [Rails console](../../../administration/operations/rails_console.md) to execute the following commands.
+
+   ```ruby
+   Feature.enabled?(:package_metadata_synchronization) && Feature.disable(:package_metadata_synchronization)
+   ```
+
+1. Check if there is deprecated data in the database:
+
+   ```ruby
+   PackageMetadata::PackageVersionLicense.count
+   PackageMetadata::PackageVersion.count
+   ```
+
+1. If there is deprecated data in the database, remove it by running the following commands in order:
+
+   ```ruby
+   PackageMetadata::PackageVersionLicense.delete_all
+   PackageMetadata::PackageVersion.delete_all
+   ```

@@ -28,6 +28,7 @@ describe('containsSensitiveToken', () => {
       'token: feed_token=ABCDEFGHIJKLMNOPQRSTUVWXYZ',
       'token: feed_token=glft-ABCDEFGHIJKLMNOPQRSTUVWXYZ',
       'token: feed_token=glft-a8cc74ccb0de004d09a968705ba49099229b288b3de43f26c473a9d8d7fb7693-1234',
+      'token: gloas-a8cc74ccb0de004d09a968705ba49099229b288b3de43f26c473a9d8d7fb7693',
       'https://example.com/feed?feed_token=123456789_abcdefghij',
       'glpat-1234567890 and feed_token=ABCDEFGHIJKLMNOPQRSTUVWXYZ',
     ];

@@ -60,8 +60,7 @@ export default {
         v-safe-html="issuable.titleHtml || issuable.title"
         class="title gl-font-size-h-display"
         dir="auto"
-        data-qa-selector="title_content"
-        data-testid="title"
+        data-testid="issuable-title"
       ></h1>
       <gl-button
         v-if="enableEdit"

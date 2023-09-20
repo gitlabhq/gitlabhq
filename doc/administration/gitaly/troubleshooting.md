@@ -20,7 +20,7 @@ and our advice on [parsing the `gitaly/current` file](../logs/log_parsing.md#par
 When using standalone Gitaly servers, you must make sure they are the same version
 as GitLab to ensure full compatibility:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Gitaly Servers**.
 1. Confirm all Gitaly servers indicate that they are up to date.
@@ -269,7 +269,7 @@ git push origin +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*
 
 Any other namespaces that the administrator wants to push can be included there as well via additional patterns.
 
-### Command line tools cannot connect to Gitaly
+### Command-line tools cannot connect to Gitaly
 
 gRPC cannot reach your Gitaly server if:
 
@@ -555,6 +555,9 @@ You can retrieve a repository's metadata by its Praefect-assigned repository ID:
 ```shell
 sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml metadata -repository-id <repository-id>
 ```
+
+When the physical path on the physical storage starts with `@cluster`, you can
+[find the repository ID in the physical path](index.md#praefect-generated-replica-paths-gitlab-150-and-later).
 
 You can also retrieve a repository's metadata by its virtual storage and relative path:
 

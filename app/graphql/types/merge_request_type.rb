@@ -185,6 +185,8 @@ module Types
           description: 'Users from whom a review has been requested.'
     field :subscribed, GraphQL::Types::Boolean, method: :subscribed?, null: false, complexity: 5,
                                                 description: 'Indicates if the currently logged in user is subscribed to this merge request.'
+    field :supports_lock_on_merge, GraphQL::Types::Boolean, null: false, method: :supports_lock_on_merge?,
+                                                            description: 'Indicates if the merge request supports locked labels.'
     field :task_completion_status, Types::TaskCompletionStatus, null: false,
                                                                 description: Types::TaskCompletionStatus.description
     field :time_estimate, GraphQL::Types::Int, null: false,
@@ -230,6 +232,14 @@ module Types
 
     field :prepared_at, Types::TimeType, null: true,
                                          description: 'Timestamp of when the merge request was prepared.'
+
+    field :codequality_reports_comparer,
+      type: ::Types::Security::CodequalityReportsComparerType,
+      null: true,
+      alpha: { milestone: '16.4' },
+      description: 'Code quality reports comparison reported on the merge request. Returns `null` ' \
+                   'if `sast_reports_in_inline_diff` feature flag is disabled.',
+      resolver: ::Resolvers::CodequalityReportsComparerResolver
 
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
@@ -297,7 +307,7 @@ module Types
     end
 
     def security_auto_fix
-      object.author == User.security_bot
+      object.author == ::Users::Internal.security_bot
     end
 
     def merge_user

@@ -794,6 +794,28 @@ module Gitlab
 
                 it_behaves_like 'returns errors', 'test_job_1 has the following needs duplicated: test_job_2.'
               end
+
+              context 'when needed job name is too long' do
+                let(:job_name) { 'a' * (::Ci::BuildNeed::MAX_JOB_NAME_LENGTH + 1) }
+
+                let(:config) do
+                  <<-EOYML
+                    lint_job:
+                      script: 'echo lint_job'
+                      rules:
+                        - if: $var == null
+                          needs: [#{job_name}]
+                    #{job_name}:
+                      script: 'echo job'
+                  EOYML
+                end
+
+                it 'returns an error' do
+                  expect(subject.errors).to include(
+                    "lint_job job: need `#{job_name}` name is too long (maximum is #{::Ci::BuildNeed::MAX_JOB_NAME_LENGTH} characters)"
+                  )
+                end
+              end
             end
 
             context 'rule needs as hash' do
@@ -2020,6 +2042,52 @@ module Gitlab
         end
       end
 
+      describe 'id_tokens' do
+        subject(:execute) { described_class.new(config).execute }
+
+        let(:build) { execute.builds.first }
+        let(:id_tokens_vars) { { ID_TOKEN_1: { aud: 'http://gcp.com' } } }
+        let(:job_id_tokens_vars) { { ID_TOKEN_2: { aud: 'http://job.com' } } }
+
+        context 'when defined on job level' do
+          let(:config) do
+            YAML.dump({
+              rspec: { script: 'rspec', id_tokens: id_tokens_vars }
+            })
+          end
+
+          it 'returns defined id_tokens' do
+            expect(build[:id_tokens]).to eq(id_tokens_vars)
+          end
+        end
+
+        context 'when defined as default' do
+          let(:config) do
+            YAML.dump({
+              default: { id_tokens: id_tokens_vars },
+              rspec: { script: 'rspec' }
+            })
+          end
+
+          it 'returns inherited by default id_tokens' do
+            expect(build[:id_tokens]).to eq(id_tokens_vars)
+          end
+        end
+
+        context 'when defined as default and on job level' do
+          let(:config) do
+            YAML.dump({
+              default: { id_tokens: id_tokens_vars },
+              rspec: { script: 'rspec', id_tokens: job_id_tokens_vars }
+            })
+          end
+
+          it 'overrides default and returns defined on job level' do
+            expect(build[:id_tokens]).to eq(job_id_tokens_vars)
+          end
+        end
+      end
+
       describe "Artifacts" do
         it "returns artifacts when defined" do
           config = YAML.dump(
@@ -2552,6 +2620,60 @@ module Gitlab
               root_variables_inheritance: true,
               scheduling_type: :dag
             )
+          end
+
+          context 'when expanded job name is too long' do
+            let(:parallel_job_name) { 'a' * ::Ci::BuildNeed::MAX_JOB_NAME_LENGTH }
+            let(:needs) { [parallel_job_name] }
+
+            before do
+              config[parallel_job_name] = { stage: 'build', script: 'test', parallel: 1 }
+            end
+
+            it 'returns an error' do
+              expect(subject.errors).to include(
+                "test1 job: need `#{parallel_job_name} 1/1` name is too long (maximum is #{::Ci::BuildNeed::MAX_JOB_NAME_LENGTH} characters)"
+              )
+            end
+          end
+
+          context 'when parallel job has matrix specified' do
+            let(:var1) { '1' }
+            let(:var2) { '2' }
+
+            before do
+              config[:parallel] = { stage: 'build', script: 'test', parallel: { matrix: [{ VAR1: var1, VAR2: var2 }] } }
+            end
+
+            it 'does create jobs with valid specification' do
+              expect(subject.builds.size).to eq(6)
+              expect(subject.builds[3]).to eq(
+                stage: 'test',
+                stage_idx: 2,
+                name: 'test1',
+                only: { refs: %w[branches tags] },
+                options: { script: ['test'] },
+                needs_attributes: [
+                  { name: 'parallel: [1, 2]', artifacts: true, optional: false }
+                ],
+                when: "on_success",
+                allow_failure: false,
+                job_variables: [],
+                root_variables_inheritance: true,
+                scheduling_type: :dag
+              )
+            end
+
+            context 'when expanded job name is too long' do
+              let(:var1) { '1' * (::Ci::BuildNeed::MAX_JOB_NAME_LENGTH / 2) }
+              let(:var2) { '2' * (::Ci::BuildNeed::MAX_JOB_NAME_LENGTH / 2) }
+
+              it 'returns an error' do
+                expect(subject.errors).to include(
+                  "test1 job: need `parallel: [#{var1}, #{var2}]` name is too long (maximum is #{::Ci::BuildNeed::MAX_JOB_NAME_LENGTH} characters)"
+                )
+              end
+            end
           end
         end
 

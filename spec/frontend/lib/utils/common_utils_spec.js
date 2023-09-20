@@ -1174,4 +1174,43 @@ describe('common_utils', () => {
       });
     });
   });
+
+  describe('cloneWithoutReferences', () => {
+    it('clones the provided object', () => {
+      const obj = {
+        foo: 'bar',
+        cool: 1337,
+        nested: {
+          peanut: 'butter',
+        },
+        arrays: [0, 1, 2],
+      };
+
+      const cloned = commonUtils.cloneWithoutReferences(obj);
+
+      expect(cloned).toMatchObject({
+        foo: 'bar',
+        cool: 1337,
+        nested: {
+          peanut: 'butter',
+        },
+        arrays: [0, 1, 2],
+      });
+    });
+
+    it('does not persist object references after cloning', () => {
+      const ref = {
+        foo: 'bar',
+      };
+
+      const obj = {
+        ref,
+      };
+
+      const cloned = commonUtils.cloneWithoutReferences(obj);
+
+      expect(cloned.ref).toMatchObject({ foo: 'bar' });
+      expect(cloned.ref === ref).toBe(false);
+    });
+  });
 });

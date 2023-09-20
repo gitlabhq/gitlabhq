@@ -21,7 +21,7 @@ rate limits and speed up your pipelines. For more information about the Docker R
 
 You can view the Container Registry for a project or group.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. For:
    - A group, select **Operate > Container Registry**.
    - A project, select **Deploy > Container Registry**.
@@ -38,7 +38,7 @@ If a project is public, the Container Registry is also public.
 
 You can use the Container Registry **Tag Details** page to view a list of tags associated with a given container image:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. For:
    - A group, select **Operate > Container Registry**.
    - A project, select **Deploy > Container Registry**.
@@ -54,7 +54,7 @@ tags on this page. You can share a filtered view by copying the URL from your br
 
 To download and run a container image hosted in the Container Registry:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. For:
    - A group, select **Operate > Container Registry**.
    - A project, select **Deploy > Container Registry**.
@@ -115,7 +115,7 @@ The Container Registry is enabled by default.
 
 You can, however, remove the Container Registry for a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section
    and disable **Container Registry**.
@@ -133,7 +133,7 @@ You can, however, change the visibility of the Container Registry for a project.
 For more information about the permissions that this setting grants to users,
 see [Container Registry visibility permissions](#container-registry-visibility-permissions).
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand the section **Visibility, project features, permissions**.
 1. Under **Container Registry**, select an option from the dropdown list:

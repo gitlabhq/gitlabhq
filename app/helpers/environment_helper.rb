@@ -62,7 +62,7 @@ module EnvironmentHelper
     klass = "ci-status ci-#{status.dasherize} #{ci_icon_utilities}"
     text = "#{ci_icon_for_status(status)} <span class=\"gl-ml-2\">#{status_text}</span>".html_safe
 
-    if deployment.deployable
+    if deployment.deployable.instance_of?(::Ci::Build)
       link_to(text, deployment_path(deployment), class: klass)
     else
       content_tag(:span, text, class: klass)

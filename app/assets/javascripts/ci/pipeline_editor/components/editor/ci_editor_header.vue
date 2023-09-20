@@ -89,7 +89,6 @@ export default {
       icon="external-link"
       target="_blank"
       data-testid="template-repo-link"
-      data-qa-selector="template_repo_link"
       @click="trackTemplateBrowsing"
     >
       {{ $options.i18n.browseTemplates }}
@@ -98,7 +97,6 @@ export default {
       icon="information-o"
       size="small"
       data-testid="drawer-toggle"
-      data-qa-selector="drawer_toggle"
       @click="toggleHelpDrawer"
     >
       {{ $options.i18n.help }}
@@ -107,7 +105,6 @@ export default {
       v-if="glFeatures.ciJobAssistantDrawer"
       icon="bulb"
       size="small"
-      data-qa-selector="job_assistant_drawer_toggle"
       @click="toggleJobAssistantDrawer"
     >
       {{ $options.i18n.jobAssistant }}
@@ -117,7 +114,6 @@ export default {
       icon="bulb"
       size="small"
       data-testid="ai-assistant-drawer-toggle"
-      data-qa-selector="ai_assistant_drawer_toggle"
       @click="toggleAiAssistantDrawer"
     >
       {{ $options.i18n.aiAssistant }}

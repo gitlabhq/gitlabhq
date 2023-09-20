@@ -24,7 +24,7 @@ class UserInteractedProject < ApplicationRecord
       }
 
       cached_exists?(**attributes) do
-        where(attributes).exists? || UserInteractedProject.insert_all([attributes], unique_by: %w(project_id user_id))
+        where(attributes).exists? || UserInteractedProject.insert_all([attributes], unique_by: %w[project_id user_id])
         true
       end
     end

@@ -577,8 +577,10 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
 
         context "when issuable feature is private" do
           before do
-            project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE,
-                                            merge_requests_access_level: ProjectFeature::PRIVATE)
+            project.project_feature.update!(
+              issues_access_level: ProjectFeature::PRIVATE,
+              merge_requests_access_level: ProjectFeature::PRIVATE
+            )
           end
 
           levels = [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]
@@ -680,7 +682,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
       end
 
       context 'with alert bot author' do
-        let_it_be(:user) { User.alert_bot }
+        let_it_be(:user) { Users::Internal.alert_bot }
         let_it_be(:label) { create(:label, project: project) }
 
         let(:opts) do

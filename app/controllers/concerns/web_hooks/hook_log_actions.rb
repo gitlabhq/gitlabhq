@@ -20,8 +20,13 @@ module WebHooks
     end
 
     def retry
-      execute_hook
-      redirect_to after_retry_redirect_path
+      if hook_log.url_current?
+        execute_hook
+        redirect_to after_retry_redirect_path
+      else
+        flash[:warning] = _('The hook URL has changed, and this log entry cannot be retried')
+        redirect_back(fallback_location: after_retry_redirect_path)
+      end
     end
 
     private

@@ -91,6 +91,25 @@ RSpec.describe Gitlab::UrlSanitizer do
     end
   end
 
+  describe '.sanitize_masked_url' do
+    where(:original_url, :masked_url) do
+      'http://{domain}.com'     | 'http://{domain}.com'
+      'http://{domain}/{hook}'  | 'http://{domain}/{hook}'
+      'http://user:pass@{domain}/hook' | 'http://*****:*****@{domain}/hook'
+      'http://user:pass@{domain}:{port}/hook' | 'http://*****:*****@{domain}:{port}/hook'
+      'http://user:@{domain}:{port}/hook' | 'http://*****:*****@{domain}:{port}/hook'
+      'http://:pass@{domain}:{port}/hook' | 'http://*****:*****@{domain}:{port}/hook'
+      'http://user@{domain}:{port}/hook' | 'http://*****:*****@{domain}:{port}/hook'
+      'http://u:p@{domain}/hook?email=james@example.com' | 'http://*****:*****@{domain}/hook?email=james@example.com'
+      'http://{domain}/hook?email=james@example.com' | 'http://{domain}/hook?email=james@example.com'
+      'http://user:{pass}@example.com' | 'http://*****:*****@example.com'
+    end
+
+    with_them do
+      it { expect(described_class.sanitize_masked_url(original_url)).to eq(masked_url) }
+    end
+  end
+
   describe '#sanitized_url' do
     context 'credentials in hash' do
       where(username: ['foo', '', nil], password: ['bar', '', nil])

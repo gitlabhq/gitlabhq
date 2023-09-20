@@ -7,13 +7,15 @@ import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import StatusBox from '~/issuable/components/status_box.vue';
+import StatusBadge from '~/issuable/components/status_badge.vue';
+import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import TodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import titleSubscription from '../queries/title.subscription.graphql';
 
 export default {
+  TYPE_MERGE_REQUEST,
   apollo: {
     $subscribe: {
       title: {
@@ -41,8 +43,8 @@ export default {
     GlLink,
     GlSprintf,
     GlBadge,
-    StatusBox,
     DiscussionCounter,
+    StatusBadge,
     TodoWidget,
     ClipboardButton,
   },
@@ -115,7 +117,11 @@ export default {
         :class="{ 'gl-max-w-container-xl': !isFluidLayout }"
       >
         <div class="gl-w-full gl-display-flex gl-align-items-baseline">
-          <status-box :initial-state="getNoteableData.state" issuable-type="merge_request" />
+          <status-badge
+            class="gl-align-self-center gl-mr-3"
+            :issuable-type="$options.TYPE_MERGE_REQUEST"
+            :state="getNoteableData.state"
+          />
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"

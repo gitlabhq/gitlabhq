@@ -168,17 +168,19 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
   private
 
-  def add_pin(menu_item_title)
-    menu_item = find("[data-testid=\"nav-item-link\"]", text: menu_item_title)
-    menu_item.hover
-    menu_item.find("[data-testid=\"thumbtack-icon\"]").click
+  def add_pin(nav_item_title)
+    nav_item = find("[data-testid=\"nav-item\"]", text: nav_item_title)
+    nav_item.hover
+    pin_button = nav_item.find("[data-testid=\"nav-item-pin\"]")
+    pin_button.click
     wait_for_requests
   end
 
-  def remove_pin(menu_item_title)
-    menu_item = find("[data-testid=\"nav-item-link\"]", text: menu_item_title)
-    menu_item.hover
-    menu_item.find("[data-testid=\"thumbtack-solid-icon\"]").click
+  def remove_pin(nav_item_title)
+    nav_item = find("[data-testid=\"nav-item\"]", text: nav_item_title)
+    nav_item.hover
+    unpin_button = nav_item.find("[data-testid=\"nav-item-unpin\"]")
+    unpin_button.click
     wait_for_requests
   end
 

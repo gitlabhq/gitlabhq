@@ -13,7 +13,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Burndown charts
 
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6495) to GitLab 11.2 for group milestones.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6903) [fixed burndown charts](#fixed-burndown-charts) in GitLab 13.6.
 > - Moved to GitLab Premium in 13.9.
 
@@ -32,13 +31,13 @@ For an overview, check the video demonstration on [Mapping work versus time with
 
 To view a project's burndown chart:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Milestones**.
 1. Select a milestone from the list.
 
 To view a group's burndown chart:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Milestones**.
 1. Select a milestone from the list.
 
@@ -112,13 +111,13 @@ Burnup charts show the assigned and completed work for a milestone.
 
 To view a project's burnup chart:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Milestones**.
 1. Select a milestone from the list.
 
 To view a group's burnup chart:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Milestones**.
 1. Select a milestone from the list.
 

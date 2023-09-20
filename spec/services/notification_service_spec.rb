@@ -324,7 +324,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe "never emails the ghost user" do
-        let(:key_options) { { user: User.ghost } }
+        let(:key_options) { { user: Users::Internal.ghost } }
 
         it "does not send email to key owner" do
           expect { subject }.not_to have_enqueued_email(key.id, mail: "new_ssh_key_email")
@@ -345,7 +345,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       end
 
       describe "never emails the ghost user" do
-        let(:key_options) { { user: User.ghost } }
+        let(:key_options) { { user: Users::Internal.ghost } }
 
         it "does not send email to key owner" do
           expect { subject }.not_to have_enqueued_email(key.id, mail: "new_gpg_key_email")
@@ -372,6 +372,74 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
         it 'does not send email to the token owner' do
           expect { notification_service }.not_to have_enqueued_email(user, pat.name, mail: "access_token_created_email")
+        end
+      end
+    end
+
+    describe '#resource_access_token_about_to_expire' do
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+
+      let_it_be(:owner1) { create(:user) }
+      let_it_be(:owner2) { create(:user) }
+
+      subject(:notification_service) do
+        notification.resource_access_tokens_about_to_expire(project_bot, [expiring_token.name])
+      end
+
+      context 'when the resource is a group' do
+        let(:group) { create(:group) }
+
+        before do
+          group.add_owner(owner1)
+          group.add_owner(owner2)
+          group.add_reporter(project_bot)
+        end
+
+        it 'sends emails to the group owners' do
+          expect { notification_service }.to(
+            have_enqueued_email(
+              owner1,
+              project_bot.resource_bot_resource,
+              [expiring_token.name],
+              mail: "resource_access_tokens_about_to_expire_email"
+            ).and(
+              have_enqueued_email(
+                owner2,
+                project_bot.resource_bot_resource,
+                [expiring_token.name],
+                mail: "resource_access_tokens_about_to_expire_email"
+              )
+            )
+          )
+        end
+      end
+
+      context 'when the resource is a project' do
+        let(:project) { create(:project) }
+
+        before do
+          project.add_maintainer(owner1)
+          project.add_maintainer(owner2)
+          project.add_reporter(project_bot)
+        end
+
+        it 'sends emails to the group owners' do
+          expect { notification_service }.to(
+            have_enqueued_email(
+              owner1,
+              project_bot.resource_bot_resource,
+              [expiring_token.name],
+              mail: "resource_access_tokens_about_to_expire_email"
+            ).and(
+              have_enqueued_email(
+                owner2,
+                project_bot.resource_bot_resource,
+                [expiring_token.name],
+                mail: "resource_access_tokens_about_to_expire_email"
+              )
+            )
+          )
         end
       end
     end
@@ -534,7 +602,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
         let(:subject) { described_class.new }
         let(:mailer) { double(deliver_later: true) }
-        let(:issue) { create(:issue, author: User.support_bot) }
+        let(:issue) { create(:issue, author: Users::Internal.support_bot) }
         let(:project) { issue.project }
         let(:note) { create(:note, noteable: issue, project: project) }
 
@@ -576,6 +644,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           end
 
           it_behaves_like 'notification with exact metric events', 1
+
+          context 'when service desk is disabled' do
+            before do
+              project.update!(service_desk_enabled: false)
+            end
+
+            it_behaves_like 'no participants are notified'
+          end
         end
 
         context 'do exist and note is confidential' do
@@ -1211,9 +1287,11 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let_it_be(:member_and_not_mentioned) { create(:user, developer_projects: [project]) }
       let_it_be(:non_member_and_mentioned) { create(:user) }
       let_it_be(:note) do
-        create(:diff_note_on_design,
-           noteable: design,
-           note: "Hello #{member_and_mentioned.to_reference}, G'day #{non_member_and_mentioned.to_reference}")
+        create(
+          :diff_note_on_design,
+          noteable: design,
+          note: "Hello #{member_and_mentioned.to_reference}, G'day #{non_member_and_mentioned.to_reference}"
+        )
       end
 
       let_it_be(:note_2) do
@@ -3498,12 +3576,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let(:commit) { project.commit }
 
       def create_pipeline(user, status)
-        create(:ci_pipeline, status,
-               project: project,
-               user: user,
-               ref: 'refs/heads/master',
-               sha: commit.id,
-               before_sha: '00000000')
+        create(
+          :ci_pipeline, status,
+          project: project,
+          user: user,
+          ref: 'refs/heads/master',
+          sha: commit.id,
+          before_sha: '00000000'
+        )
       end
 
       before_all do
@@ -4012,12 +4092,14 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       project.add_maintainer(reviewer)
       merge_request.assignees.each { |assignee| project.add_maintainer(assignee) }
 
-      create(:diff_note_on_merge_request,
-             project: project,
-             noteable: merge_request,
-             author: reviewer,
-             review: review,
-             note: "cc @mention")
+      create(
+        :diff_note_on_merge_request,
+        project: project,
+        noteable: merge_request,
+        author: reviewer,
+        review: review,
+        note: "cc @mention"
+      )
     end
 
     it 'sends emails' do
@@ -4059,10 +4141,18 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     subject { notification.inactive_project_deletion_warning(project, deletion_date) }
 
     it "sends email to project owners and maintainers" do
-      expect { subject }.to have_enqueued_email(project, maintainer, deletion_date,
-                                                mail: "inactive_project_deletion_warning_email")
-      expect { subject }.not_to have_enqueued_email(project, developer, deletion_date,
-                                                    mail: "inactive_project_deletion_warning_email")
+      expect { subject }.to have_enqueued_email(
+        project,
+        maintainer,
+        deletion_date,
+        mail: "inactive_project_deletion_warning_email"
+      )
+      expect { subject }.not_to have_enqueued_email(
+        project,
+        developer,
+        deletion_date,
+        mail: "inactive_project_deletion_warning_email"
+      )
     end
   end
 

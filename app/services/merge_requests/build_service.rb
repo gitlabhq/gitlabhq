@@ -74,7 +74,7 @@ module MergeRequests
       # IssuableBaseService#process_label_ids and
       # IssuableBaseService#process_assignee_ids take care
       # of the removal.
-      params[:label_ids] = process_label_ids(params, extra_label_ids: merge_request.label_ids.to_a)
+      params[:label_ids] = process_label_ids(params, issuable: merge_request, extra_label_ids: merge_request.label_ids.to_a)
 
       params[:assignee_ids] = process_assignee_ids(params, extra_assignee_ids: merge_request.assignee_ids.to_a)
 
@@ -130,8 +130,12 @@ module MergeRequests
       if source_branch_default? && !target_branch_specified?
         merge_request.target_branch = nil
       else
-        merge_request.target_branch ||= target_project.default_branch
+        merge_request.target_branch ||= get_target_branch
       end
+    end
+
+    def get_target_branch
+      target_project.default_branch
     end
 
     def source_branch_specified?

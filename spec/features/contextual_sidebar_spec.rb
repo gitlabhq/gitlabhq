@@ -4,9 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Contextual sidebar', :js, feature_category: :remote_development do
   context 'when context is a project' do
-    let_it_be(:project) { create(:project) }
-
-    let(:user) { project.first_owner }
+    let_it_be(:user) { create(:user, :no_super_sidebar) }
+    let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
 
     before do
       sign_in(user)

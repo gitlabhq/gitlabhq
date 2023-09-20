@@ -1,0 +1,29 @@
+# frozen_string_literal: true
+
+CH_MESSAGE = <<~MSG
+This merge request requires a ClickHouse review. To make sure these
+changes are reviewed, take the following steps:
+
+1. Ensure the merge request has ~clickhouse and ~"clickhouse::review pending" labels.
+1. Assign and mention a ClickHouse reviewer.
+MSG
+
+CH_UNREVIEWED_LABEL = 'clickhouse::review pending'
+CH_APPROVED_LABEL = 'clickhouse::approved'
+
+CH_URL =
+  'https://gitlab.com/groups/gitlab-org/maintainers/clickhouse/-/group_members?with_inherited_permissions=exclude'
+
+return if stable_branch.valid_stable_branch?
+return if helper.mr_labels.include?(CH_UNREVIEWED_LABEL)
+
+helper.labels_to_add << 'clickhouse' if clickhouse.changes.any?
+
+if helper.mr_labels.include?('clickhouse') || clickhouse.changes.any?
+  message 'This merge request adds or changes files that require a ' \
+          'review from the [GitLab ClickHouse team](CH_URL).'
+
+  markdown(CH_MESSAGE)
+
+  helper.labels_to_add << CH_UNREVIEWED_LABEL unless helper.has_scoped_label_with_scope?("clickhouse")
+end

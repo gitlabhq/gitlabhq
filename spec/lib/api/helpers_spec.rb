@@ -11,7 +11,6 @@ RSpec.describe API::Helpers, feature_category: :shared do
     include Rack::Test::Methods
 
     let(:user) { build(:user, id: 42) }
-    let(:request) { instance_double(Rack::Request) }
     let(:helper) do
       Class.new(Grape::API::Instance) do
         helpers API::APIGuard::HelperMethods
@@ -36,18 +35,23 @@ RSpec.describe API::Helpers, feature_category: :shared do
       allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(user)
 
       expect(ApplicationRecord.sticking)
-        .to receive(:stick_or_unstick_request).with(any_args, :user, 42)
+        .to receive(:find_caught_up_replica).with(:user, 42)
 
       get 'user'
 
       expect(Gitlab::Json.parse(last_response.body)).to eq({ 'id' => user.id })
+
+      stick_object = last_request.env[::Gitlab::Database::LoadBalancing::RackMiddleware::STICK_OBJECT].first
+      expect(stick_object[0]).to eq(User.sticking)
+      expect(stick_object[1]).to eq(:user)
+      expect(stick_object[2]).to eq(42)
     end
 
     it 'does not handle sticking if no user could be found' do
       allow_any_instance_of(described_class).to receive(:initial_current_user).and_return(nil)
 
       expect(ApplicationRecord.sticking)
-        .not_to receive(:stick_or_unstick_request)
+        .not_to receive(:find_caught_up_replica)
 
       get 'user'
 
@@ -238,6 +242,165 @@ RSpec.describe API::Helpers, feature_category: :shared do
 
             helper.find_project!(non_existing_id)
           end
+        end
+      end
+    end
+  end
+
+  describe '#find_pipeline' do
+    let(:pipeline) { create(:ci_pipeline) }
+
+    shared_examples 'pipeline finder' do
+      context 'when pipeline exists' do
+        it 'returns requested pipeline' do
+          expect(helper.find_pipeline(existing_id)).to eq(pipeline)
+        end
+      end
+
+      context 'when pipeline does not exists' do
+        it 'returns nil' do
+          expect(helper.find_pipeline(non_existing_id)).to be_nil
+        end
+      end
+
+      context 'when pipeline id is not provided' do
+        it 'returns nil' do
+          expect(helper.find_pipeline(nil)).to be_nil
+        end
+      end
+    end
+
+    context 'when ID is used as an argument' do
+      let(:existing_id) { pipeline.id }
+      let(:non_existing_id) { non_existing_record_id }
+
+      it_behaves_like 'pipeline finder'
+    end
+
+    context 'when string ID is used as an argument' do
+      let(:existing_id) { pipeline.id.to_s }
+      let(:non_existing_id) { non_existing_record_id }
+
+      it_behaves_like 'pipeline finder'
+    end
+
+    context 'when ID is a negative number' do
+      let(:existing_id) { pipeline.id }
+      let(:non_existing_id) { -1 }
+
+      it_behaves_like 'pipeline finder'
+    end
+  end
+
+  describe '#find_pipeline!' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:user) { create(:user) }
+
+    shared_examples 'private project without access' do
+      before do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value('private'))
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
+      end
+
+      it 'returns not found' do
+        expect(helper).to receive(:not_found!)
+
+        helper.find_pipeline!(pipeline.id)
+      end
+    end
+
+    context 'when user is authenticated' do
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:initial_current_user).and_return(user)
+      end
+
+      context 'public project' do
+        it 'returns requested pipeline' do
+          expect(helper.find_pipeline!(pipeline.id)).to eq(pipeline)
+        end
+      end
+
+      context 'private project' do
+        it_behaves_like 'private project without access'
+
+        context 'without read pipeline permission' do
+          before do
+            allow(helper).to receive(:can?).with(user, :read_pipeline, pipeline).and_return(false)
+          end
+
+          it_behaves_like 'private project without access'
+        end
+      end
+
+      context 'with read pipeline permission' do
+        before do
+          allow(helper).to receive(:can?).with(user, :read_pipeline, pipeline).and_return(true)
+        end
+
+        it 'returns requested pipeline' do
+          expect(helper.find_pipeline!(pipeline.id)).to eq(pipeline)
+        end
+      end
+    end
+
+    context 'when user is not authenticated' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+        allow(helper).to receive(:initial_current_user).and_return(nil)
+      end
+
+      context 'public project' do
+        it 'returns requested pipeline' do
+          expect(helper.find_pipeline!(pipeline.id)).to eq(pipeline)
+        end
+      end
+
+      context 'private project' do
+        it_behaves_like 'private project without access'
+      end
+    end
+
+    context 'support for IDs and paths as argument' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+
+      let(:user) { project.first_owner }
+
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:authorized_project_scope?).and_return(true)
+        allow(helper).to receive(:job_token_authentication?).and_return(false)
+        allow(helper).to receive(:authenticate_non_public?).and_return(false)
+      end
+
+      shared_examples 'pipeline finder' do
+        context 'when pipeline exists' do
+          it 'returns requested pipeline' do
+            expect(helper.find_pipeline!(existing_id)).to eq(pipeline)
+          end
+
+          it 'returns nil' do
+            expect(helper).to receive(:render_api_error!).with('404 Pipeline Not Found', 404)
+            expect(helper.find_pipeline!(non_existing_id)).to be_nil
+          end
+        end
+      end
+
+      context 'when ID is used as an argument' do
+        context 'when pipeline id is an integer' do
+          let(:existing_id) { pipeline.id }
+          let(:non_existing_id) { non_existing_record_id }
+
+          it_behaves_like 'pipeline finder'
+        end
+
+        context 'when pipeline id is a string' do
+          let(:existing_id) { pipeline.id.to_s }
+          let(:non_existing_id) { "non_existing_record_id" }
+
+          it_behaves_like 'pipeline finder'
         end
       end
     end
@@ -628,10 +791,12 @@ RSpec.describe API::Helpers, feature_category: :shared do
     end
 
     it 'logs an exception for unknown event' do
-      expect(Gitlab::AppLogger).to receive(:warn).with(
-        "Internal Event tracking event failed for event: #{unknown_event}, message: Unknown event: #{unknown_event}"
-      )
-
+      expect(Gitlab::InternalEvents).to receive(:track_event).and_raise(Gitlab::InternalEvents::UnknownEventError, "Unknown event: #{unknown_event}")
+      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+        .with(
+          instance_of(Gitlab::InternalEvents::UnknownEventError),
+          event_name: unknown_event
+        )
       helper.track_event(unknown_event, user_id: user_id, namespace_id: namespace_id, project_id: project_id)
     end
 
@@ -1070,6 +1235,49 @@ RSpec.describe API::Helpers, feature_category: :shared do
       let(:headers) { gitlab_shell_internal_api_request_header }
 
       it_behaves_like 'authorized'
+    end
+  end
+
+  describe "attributes_for_keys" do
+    let(:hash) do
+      {
+        existing_key_with_present_value: 'actual value',
+        existing_key_with_nil_value: nil,
+        existing_key_with_false_value: false
+      }
+    end
+
+    let(:parameters) { ::ActionController::Parameters.new(hash) }
+    let(:symbol_keys) do
+      %i[
+        existing_key_with_present_value
+        existing_key_with_nil_value
+        existing_key_with_false_value
+        non_existing_key
+      ]
+    end
+
+    let(:string_keys) { symbol_keys.map(&:to_s) }
+    let(:filtered_attrs) do
+      {
+        'existing_key_with_present_value' => 'actual value',
+        'existing_key_with_false_value' => false
+      }
+    end
+
+    let(:empty_attrs) { {} }
+
+    where(:params, :keys, :attrs_result) do
+      ref(:hash) | ref(:symbol_keys) | ref(:filtered_attrs)
+      ref(:hash) | ref(:string_keys) | ref(:empty_attrs)
+      ref(:parameters) | ref(:symbol_keys) | ref(:filtered_attrs)
+      ref(:parameters) | ref(:string_keys) | ref(:filtered_attrs)
+    end
+
+    with_them do
+      it 'returns the values for given keys' do
+        expect(helper.attributes_for_keys(keys, params)).to eq(attrs_result)
+      end
     end
   end
 end

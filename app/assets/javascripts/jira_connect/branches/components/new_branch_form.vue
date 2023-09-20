@@ -193,6 +193,7 @@ export default {
       >
         <source-branch-dropdown
           id="source-branch-select"
+          :key="selectedProject.id"
           :selected-project="selectedProject"
           :selected-branch-name="selectedSourceBranchName"
           @change="onSourceBranchSelect"

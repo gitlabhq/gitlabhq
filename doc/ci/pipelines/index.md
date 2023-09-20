@@ -139,7 +139,7 @@ operation of the pipeline.
 
 To execute a pipeline manually:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipelines**.
 1. Select **Run pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
@@ -310,9 +310,9 @@ related objects, such as builds, logs, artifacts, and triggers.
 A strict security model is enforced when pipelines are executed on
 [protected branches](../../user/project/protected_branches.md).
 
-The following actions are allowed on protected branches only if the user is
+The following actions are allowed on protected branches if the user is
 [allowed to merge or push](../../user/project/protected_branches.md)
-on that specific branch:
+to that specific branch:
 
 - Run manual pipelines (using the [Web UI](#run-a-pipeline-manually) or [pipelines API](#pipelines-api)).
 - Run scheduled pipelines.
@@ -321,15 +321,13 @@ on that specific branch:
 - Trigger manual actions on existing pipelines.
 - Retry or cancel existing jobs (using the Web UI or pipelines API).
 
-**Variables** marked as **protected** are accessible only to jobs that
-run on protected branches, preventing untrusted users getting unintended access to
-sensitive information like deployment credentials and tokens.
+**Variables** marked as **protected** are accessible to jobs that run in pipelines for protected branches. Only assign users the right to merge to protected branches if they have permission to access sensitive information like deployment credentials and tokens.
 
 **Runners** marked as **protected** can run jobs only on protected
 branches, preventing untrusted code from executing on the protected runner and
 preserving deployment keys and other credentials from being unintentionally
 accessed. To ensure that jobs intended to be executed on protected
-runners do not use regular runners, they must be tagged accordingly.
+runners do not use regular runners, they must be [tagged](../yaml/index.md#tags) accordingly.
 
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
@@ -349,7 +347,7 @@ Prerequisites:
 
 To trigger the pipeline when the upstream project is rebuilt:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Pipeline subscriptions**.
 1. Select **Add project**.

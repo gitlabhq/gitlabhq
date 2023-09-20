@@ -1,6 +1,6 @@
 ---
 type: reference, howto
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -13,6 +13,7 @@ You can use the open standard System for Cross-domain Identity Management (SCIM)
 
 - Create users.
 - Block users.
+- Re-add users (reactivate SCIM identity).
 
 The [internal GitLab SCIM API](../../development/internal_api/index.md#instance-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
 
@@ -26,7 +27,7 @@ Prerequisites:
 
 To configure GitLab SCIM:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **SCIM Token** section and select **Generate a SCIM token**.
@@ -41,3 +42,14 @@ the GitLab instance, while the SCIM identity remains linked to the GitLab user.
 
 To update the user SCIM identity, use the
 [internal GitLab SCIM API](../../development/internal_api/index.md#update-a-single-scim-provisioned-user-1).
+
+### Reactivate access
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a flag](../feature_flags.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121226) in GitLab 16.4. Feature flag `skip_saml_identity_destroy_during_scim_deprovision` removed.
+
+After a user is removed or deactivated through SCIM, you can reactivate that user by
+adding them to the SCIM identity provider.
+
+After the identity provider performs a sync based on its configured schedule,
+the user's SCIM identity is reactivated and their GitLab instance access is restored.

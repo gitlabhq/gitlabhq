@@ -254,11 +254,10 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
         request
         expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['error']).to include('entities[0][destination_namespace] must have a relative path ' \
-                                                  'structure with no HTTP protocol characters, or leading or ' \
-                                                  'trailing forward slashes. Path segments must not start or end ' \
-                                                  'with a special character, and must not contain consecutive ' \
-                                                  'special characters.')
+        expect(json_response['error']).to include('entities[0][destination_namespace] must be a relative path ' \
+                                                  'and not include protocol, sub-domain, or domain information. ' \
+                                                  "For example, 'destination/full/path' not " \
+                                                  "'https://example.com/destination/full/path'")
       end
     end
 
@@ -311,12 +310,11 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         }
       end
 
-      it 'returns blocked url message in the error' do
+      it 'returns blocked url message in the error', :aggregate_failures do
         request
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
-
-        expect(json_response['message']).to include("Url is blocked: Only allowed schemes are http, https")
+        expect(json_response['message']).to eq("URL is blocked: Only allowed schemes are http, https")
       end
     end
 
@@ -336,16 +334,16 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         }
       end
 
-      it 'returns blocked url error' do
+      it 'returns blocked url error', :aggregate_failures do
         stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=access_token")
-          .to_return(status: 404, body: "", headers: {})
+          .to_return(status: 404, body: "{'error':'404 Not Found'}")
 
         request
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
-
-        expect(json_response['message']).to include("Group import disabled on source or destination instance. " \
-                                                    "Ask an administrator to enable it on both instances and try again.")
+        expect(json_response['message']).to eq(
+          "Unsuccessful response 404 from /api/v4/groups/full_path/export_relations/status. Body: {'error':'404 Not Found'}"
+        )
       end
     end
 

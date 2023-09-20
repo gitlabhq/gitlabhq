@@ -15,7 +15,7 @@ module QA
           end.project
 
           project.visit!
-          Page::Project::Menu.perform(&:click_activity)
+          Page::Project::Menu.perform(&:go_to_activity)
           Page::Project::Activity.perform do |activity|
             activity.click_push_events
 

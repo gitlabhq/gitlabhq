@@ -266,7 +266,7 @@ ensuring we now sign in at the beginning of each test.
 
 Next, let's test something other than Login. Let's test Issues, which are owned by the Plan
 stage and the Project Management Group, so [create a file](#identify-the-devops-stage) in
-`qa/specs/features/browser_ui/3_create/issues` called `issues_spec.rb`.
+`qa/specs/features/browser_ui/2_plan/issue` called `issues_spec.rb`.
 
 ```ruby
 # frozen_string_literal: true
@@ -274,12 +274,7 @@ stage and the Project Management Group, so [create a file](#identify-the-devops-
 module QA
   RSpec.describe 'Plan' do
     describe 'Issues', product_group: :project_management do
-      let(:issue) do
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.title = 'My issue'
-          issue.description = 'This is an issue specific to this test'
-        end
-      end
+      let(:issue) { create(:issue) }
 
       before do
         Flow::Login.sign_in

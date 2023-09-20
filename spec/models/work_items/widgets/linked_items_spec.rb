@@ -19,7 +19,7 @@ RSpec.describe WorkItems::Widgets::LinkedItems, feature_category: :portfolio_man
     it { is_expected.to eq(:linked_items) }
   end
 
-  describe '#related_issues' do
-    it { expect(described_class.new(work_item).related_issues(user)).to eq(work_item.related_issues(user)) }
+  describe '#linked_work_items' do
+    it { expect(described_class.new(work_item).linked_work_items(user)).to eq(work_item.linked_work_items(user)) }
   end
 end

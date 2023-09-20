@@ -70,6 +70,16 @@ module QA
           "transferred",
           "locked",
           "unlocked",
+          "deployed",
+          "marked_as_duplicate",
+          "unmarked_as_duplicate",
+          "connected",
+          "disconnected",
+          "moved_columns_in_project",
+          "added_to_project",
+          "removed_from_project",
+          "base_ref_deleted",
+          "converted_to_discussion",
           # mentions are supported but they can be reported differently on gitlab's side
           # for example mention of issue creation in pr will be reported in the issue on gitlab side
           # or referenced in github will still create a 'mentioned in' comment in gitlab
@@ -80,11 +90,7 @@ module QA
 
       let(:api_client) { Runtime::API::Client.as_admin }
 
-      let(:user) do
-        Resource::User.fabricate_via_api! do |resource|
-          resource.api_client = api_client
-        end
-      end
+      let(:user) { create(:user, api_client: api_client) }
 
       let(:github_client) do
         Octokit::Client.new(
@@ -527,11 +533,7 @@ module QA
 
           logger.debug("= Fetching issue comments =")
           Parallel.map(imported_issues, in_threads: Etc.nprocessors) do |issue|
-            resource = Resource::Issue.init do |issue_resource|
-              issue_resource.project = imported_project
-              issue_resource.iid = issue[:iid]
-              issue_resource.api_client = api_client
-            end
+            resource = build(:issue, project: imported_project, iid: issue[:iid], api_client: api_client)
 
             logger.debug("Fetching events and comments for issue '!#{issue[:iid]}'")
             comments = resource.comments(**api_request_params)

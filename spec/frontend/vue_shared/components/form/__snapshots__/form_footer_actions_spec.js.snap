@@ -2,7 +2,7 @@
 
 exports[`Form Footer Actions renders content properly 1`] = `
 <footer
-  class="gl-mt-5 footer-block"
+  class="footer-block gl-mt-5"
 >
   Bar Foo Abrakadabra
 </footer>

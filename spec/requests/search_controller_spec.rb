@@ -9,6 +9,7 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
   let_it_be(:projects) { create_list(:project, 5, :public, :repository, :wiki_repo) }
 
   before do
+    stub_feature_flags(super_sidebar_nav_enrolled: false)
     login_as(user)
   end
 

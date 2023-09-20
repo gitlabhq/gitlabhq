@@ -1,8 +1,0 @@
----
-name: namespace_storage_forks_cost_factor
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126775
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419181
-milestone: '16.3'
-type: development
-group: group::utilization
-default_enabled: false

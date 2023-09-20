@@ -14,7 +14,7 @@ describe Mail::SMTPPool::Connection do
   end
 
   after do
-    MockSMTP.clear_deliveries
+    MockSMTP.reset
   end
 
   describe '#deliver!' do
@@ -58,7 +58,7 @@ describe Mail::SMTPPool::Connection do
 
       context 'with an SMTP error' do
         before do
-          expect(mock_smtp).to receive(:rset).once.and_raise(Net::SMTPServerBusy)
+          expect(mock_smtp).to receive(:rset).once.and_raise(Net::SMTPServerBusy, nil)
         end
 
         it 'creates a new SMTP connection' do

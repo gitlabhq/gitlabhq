@@ -31,9 +31,7 @@ module Gitlab
       private
 
       def with_redis(&blk)
-        # We use multistore as n interweaving double-write will result in n-1 subsequent requests
-        # becoming a cache-miss, however, 2 interweaving .touch will lead to 1 cache miss anyway.
-        Gitlab::Redis::EtagCache.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
+        Gitlab::Redis::Cache.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
       end
 
       def generate_etag

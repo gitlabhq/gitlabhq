@@ -207,7 +207,7 @@ Example response:
 {
   "file_name" : "dk.png",
   "file_path" : "uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png",
-  "branch" : "master",
+  "branch" : "main",
   "link" : {
     "url" : "uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png",
     "markdown" : "![dk](uploads/6a061c4cf9f1c28cb22c384b4b8d4e3c/dk.png)"

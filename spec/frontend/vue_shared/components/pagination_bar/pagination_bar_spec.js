@@ -1,4 +1,4 @@
-import { GlPagination, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlPagination, GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
@@ -42,8 +42,8 @@ describe('Pagination bar', () => {
     });
 
     it('emits set-page-size event when page size is selected', () => {
-      const firstItemInPageSizeDropdown = wrapper.findComponent(GlDropdownItem);
-      firstItemInPageSizeDropdown.vm.$emit('click');
+      const firstItemInPageSizeDropdown = wrapper.findComponent(GlDisclosureDropdownItem);
+      firstItemInPageSizeDropdown.vm.$emit('action');
 
       const [emittedPageSizeChange] = wrapper.emitted('set-page-size')[0];
       expect(firstItemInPageSizeDropdown.text()).toMatchInterpolatedText(
@@ -62,9 +62,9 @@ describe('Pagination bar', () => {
       },
     });
 
-    expect(wrapper.findComponent(GlDropdown).find('button').text()).toMatchInterpolatedText(
-      `${CURRENT_PAGE_SIZE} items per page`,
-    );
+    expect(
+      wrapper.findComponent(GlDisclosureDropdown).find('button').text(),
+    ).toMatchInterpolatedText(`${CURRENT_PAGE_SIZE} items per page`);
   });
 
   it('renders current page information', () => {

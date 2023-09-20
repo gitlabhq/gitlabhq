@@ -137,7 +137,8 @@ export default {
     filterType(value) {
       if (value === 0) {
         return DISCUSSION_FILTER_TYPES.ALL;
-      } else if (value === 1) {
+      }
+      if (value === 1) {
         return DISCUSSION_FILTER_TYPES.COMMENTS;
       }
       return DISCUSSION_FILTER_TYPES.HISTORY;

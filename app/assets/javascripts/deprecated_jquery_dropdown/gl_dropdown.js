@@ -94,6 +94,7 @@ export class GitLabDropdown {
           dataType: this.options.dataType,
           beforeSend: this.toggleLoading.bind(this),
           success: (data) => {
+            this.dropdown.trigger('done.remote.loading.gl.dropdown');
             this.fullData = data;
             this.parseData(this.fullData);
             this.focusTextInput();
@@ -220,7 +221,12 @@ export class GitLabDropdown {
   }
 
   toggleLoading() {
-    return $('.dropdown-menu', this.dropdown).toggleClass(LOADING_CLASS);
+    const menu = this.dropdown[0].querySelector('.dropdown-menu');
+    const isLoading = menu.classList.contains(LOADING_CLASS);
+
+    this.dropdown.trigger(`toggle.${isLoading ? 'off' : 'on'}.loading.gl.dropdown`);
+
+    menu.classList.toggle(LOADING_CLASS);
   }
 
   togglePage() {
@@ -718,5 +724,9 @@ export class GitLabDropdown {
   // eslint-disable-next-line class-methods-use-this
   clearField(field, isInput) {
     return isInput ? field.val('') : field.remove();
+  }
+
+  close() {
+    this.dropdown.find('.dropdown-menu-toggle').dropdown('hide');
   }
 }

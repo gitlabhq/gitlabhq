@@ -24,7 +24,8 @@ export const getTopFrequentItems = (items) => {
     // and then by lastAccessedOn with recent most first
     if (itemA.frequency !== itemB.frequency) {
       return itemB.frequency - itemA.frequency;
-    } else if (itemA.lastAccessedOn !== itemB.lastAccessedOn) {
+    }
+    if (itemA.lastAccessedOn !== itemB.lastAccessedOn) {
       return itemB.lastAccessedOn - itemA.lastAccessedOn;
     }
 

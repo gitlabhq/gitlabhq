@@ -19,34 +19,32 @@ RSpec.describe 'Issues > User sees live update', :js, feature_category: :team_pl
       expect(page).to have_text("new title")
 
       issue.update!(title: "updated title")
-
       wait_for_requests
+
       expect(page).to have_text("updated title")
     end
   end
 
   describe 'confidential issue#show' do
-    it 'shows confidential sibebar information as confidential and can be turned off', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/254644' do
+    it 'shows confidential sidebar information as confidential and can be turned off' do
       issue = create(:issue, :confidential, project: project)
 
       visit project_issue_path(project, issue)
 
-      expect(page).to have_css('.issuable-note-warning')
-      expect(find('.issuable-sidebar-item.confidentiality')).to have_css('.is-active')
-      expect(find('.issuable-sidebar-item.confidentiality')).not_to have_css('.not-active')
+      expect(page).to have_text('This is a confidential issue. People without permission will never get a notification.')
 
-      find('.confidential-edit').click
-      expect(page).to have_css('.sidebar-item-warning-message')
-
-      within('.sidebar-item-warning-message') do
-        find('[data-testid="confidential-toggle"]').click
+      within '.block.confidentiality' do
+        click_button 'Edit'
       end
 
-      wait_for_requests
+      expect(page).to have_text('You are going to turn off the confidentiality. This means everyone will be able to see and leave a comment on this issue.')
+
+      click_button 'Turn off'
 
       visit project_issue_path(project, issue)
 
-      expect(page).not_to have_css('.is-active')
+      expect(page).not_to have_css('.gl-badge', text: 'Confidential')
+      expect(page).not_to have_text('This is a confidential issue. People without permission will never get a notification.')
     end
   end
 end

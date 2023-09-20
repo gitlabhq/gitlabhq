@@ -15,6 +15,7 @@ import RunnerUpdateForm from '~/ci/runner/components/runner_update_form.vue';
 import runnerUpdateMutation from '~/ci/runner/graphql/edit/runner_update.mutation.graphql';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { saveAlertToLocalStorage } from '~/ci/runner/local_storage_alert/save_alert_to_local_storage';
+import { INSTANCE_TYPE } from '~/ci/runner/constants';
 import { runnerFormData } from '../mock_data';
 
 jest.mock('~/ci/runner/local_storage_alert/save_alert_to_local_storage');
@@ -119,6 +120,7 @@ describe('RunnerUpdateForm', () => {
 
     it('shows runner fields', () => {
       expect(findRunnerFormFields().props('value')).toEqual(runnerToModel(mockRunner));
+      expect(findRunnerFormFields().props('runnerType')).toEqual(INSTANCE_TYPE);
     });
 
     it('form has not been submitted', () => {

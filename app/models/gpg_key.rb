@@ -10,7 +10,7 @@ class GpgKey < ApplicationRecord
   sha_attribute :fingerprint
 
   belongs_to :user
-  has_many :gpg_signatures
+  has_many :gpg_signatures, class_name: 'CommitSignatures::GpgSignature'
   has_many :subkeys, class_name: 'GpgKeySubkey'
 
   scope :with_subkeys, -> { includes(:subkeys) }

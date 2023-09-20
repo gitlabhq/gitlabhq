@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper' # Change this to fast spec helper when FF `ci_refactor_external_rules` is removed
+require 'fast_spec_helper'
 require_dependency 'active_model'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pipeline_composition do
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pip
           entry.compose!
         end
 
-        it_behaves_like 'an invalid config', /contains unknown keys: changes/
+        it_behaves_like 'a valid config'
       end
     end
 
@@ -80,7 +80,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pip
     let(:config) do
       [
         { if: '$THIS == "that"' },
-        { if: '$SKIP', when: 'never' }
+        { if: '$SKIP', when: 'never' },
+        { changes: ['Dockerfile'] }
       ]
     end
 
@@ -96,7 +97,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pip
         is_expected.to eq(
           [
             { if: '$THIS == "that"' },
-            { if: '$SKIP', when: 'never' }
+            { if: '$SKIP', when: 'never' },
+            { changes: { paths: ['Dockerfile'] } }
           ]
         )
       end
@@ -113,31 +115,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Include::Rules, feature_category: :pip
           expect(entry).not_to be_valid
           is_expected.to eq(config)
         end
-      end
-    end
-
-    context 'when FF `ci_refactor_external_rules` is disabled' do
-      before do
-        stub_feature_flags(ci_refactor_external_rules: false)
-      end
-
-      context 'with an "if"' do
-        let(:config) do
-          [{ if: '$THIS == "that"' }]
-        end
-
-        it { is_expected.to eq(config) }
-      end
-
-      context 'with a list of two rules' do
-        let(:config) do
-          [
-            { if: '$THIS == "that"' },
-            { if: '$SKIP' }
-          ]
-        end
-
-        it { is_expected.to eq(config) }
       end
     end
   end

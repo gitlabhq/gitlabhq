@@ -11,11 +11,11 @@ class IssuableSeverity < ApplicationRecord
   }.freeze
 
   SEVERITY_QUICK_ACTION_PARAMS = {
-    unknown: %w(Unknown 0),
-    low: %w(Low S4 4),
-    medium: %w(Medium S3 3),
-    high: %w(High S2 2),
-    critical: %w(Critical S1 1)
+    unknown: %w[Unknown 0],
+    low: %w[Low S4 4],
+    medium: %w[Medium S3 3],
+    high: %w[High S2 2],
+    critical: %w[Critical S1 1]
   }.freeze
 
   belongs_to :issue

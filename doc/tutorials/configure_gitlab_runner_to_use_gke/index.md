@@ -80,14 +80,10 @@ Now that you have a cluster, you're ready to install and configure the Kubernete
 1. Install the Operator Lifecycle Manager (OLM), a tool that manages the Kubernetes Operators that
    run on the cluster:
 
-   <!-- markdownlint-disable -->
-
    ```shell
    curl --silent --location "https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.24.0/install.sh" \
     | bash -s v0.24.0
    ```
-
-   <!-- markdownlint-enable -->
 
 1. Install the Kubernetes Operator Catalog:
 
@@ -196,7 +192,6 @@ To check if runners are running in the GKE cluster, you can either:
   ```
 
 - Check the job log in GitLab:
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**)
-     to find your project.
+  1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Build > Jobs** and find the job.
   1. To view the job log, select the job status.

@@ -43,6 +43,14 @@ check the version your are upgrading to:
 - [GitLab 15](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html)
 - [GitLab 14](https://docs.gitlab.com/omnibus/update/gitlab_14_changes.html)
 
+### Earlier GitLab versions
+
+For version-specific information for earlier GitLab versions, see the [documentation archives](https://archives.docs.gitlab.com).
+The versions of the documentation in the archives contain version-specific information for even earlier versions of GitLab.
+
+For example, the [documentation for GitLab 15.11](https://archives.docs.gitlab.com/15.11/ee/update/package/#version-specific-changes)
+contains information on versions back to GitLab 11.
+
 ## Back up before upgrading
 
 The GitLab database is backed up before installing a newer GitLab version. You

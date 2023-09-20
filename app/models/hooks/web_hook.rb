@@ -103,7 +103,7 @@ class WebHook < ApplicationRecord
   end
 
   # See app/validators/json_schemas/web_hooks_url_variables.json
-  VARIABLE_REFERENCE_RE = /\{([A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*)\}/.freeze
+  VARIABLE_REFERENCE_RE = /\{([A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*)\}/
 
   def interpolated_url(url = self.url, url_variables = self.url_variables)
     return url unless url.include?('{')

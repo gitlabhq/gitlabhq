@@ -36,10 +36,7 @@ module MergeRequests
       merge_request.project.execute_integrations(merge_data, :merge_request_hooks)
 
       execute_external_hooks(merge_request, merge_data)
-
-      if action == 'open' && Feature.enabled?(:group_mentions, merge_request.project)
-        execute_group_mention_hooks(merge_request, merge_data)
-      end
+      execute_group_mention_hooks(merge_request, merge_data) if action == 'open'
 
       enqueue_jira_connect_messages_for(merge_request)
     end
@@ -113,7 +110,7 @@ module MergeRequests
 
     # Don't try to print expensive instance variables.
     def inspect
-      return "#<#{self.class}>" unless respond_to?(:merge_request)
+      return "#<#{self.class}>" unless respond_to?(:merge_request) && merge_request
 
       "#<#{self.class} #{merge_request.to_reference(full: true)}>"
     end
@@ -176,19 +173,8 @@ module MergeRequests
         params.delete(:allow_collaboration)
       end
 
-      filter_locked_labels(merge_request)
       filter_reviewer(merge_request)
       filter_suggested_reviewers
-    end
-
-    # Filter out any locked labels that are requested to be removed.
-    # Only supported for merged MRs.
-    def filter_locked_labels(merge_request)
-      return unless params[:remove_label_ids].present?
-      return unless merge_request.merged?
-      return unless Feature.enabled?(:enforce_locked_labels_on_merge, merge_request.project, type: :ops)
-
-      params[:remove_label_ids] -= labels_service.filter_locked_labels_ids_in_param(:remove_label_ids)
     end
 
     def filter_reviewer(merge_request)

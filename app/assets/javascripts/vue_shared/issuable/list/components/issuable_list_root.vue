@@ -5,6 +5,7 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
+import { __ } from '~/locale';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -51,7 +52,8 @@ export default {
     },
     searchInputPlaceholder: {
       type: String,
-      required: true,
+      required: false,
+      default: __('Search or filter results…'),
     },
     searchTokens: {
       type: Array,
@@ -344,7 +346,7 @@ export default {
       :show-friendly-text="showFilteredSearchFriendlyText"
       terms-as-tokens
       class="gl-flex-grow-1 gl-border-t-none row-content-block"
-      data-qa-selector="issuable_search_container"
+      data-testid="issuable-search-container"
       @checked-input="handleAllIssuablesCheckedInput"
       @onFilter="$emit('filter', $event)"
       @onSort="$emit('sort', $event)"
@@ -377,7 +379,7 @@ export default {
           v-for="issuable in issuables"
           :key="issuableId(issuable)"
           :class="{ 'gl-cursor-grab': isManualOrdering }"
-          data-qa-selector="issuable_container"
+          data-testid="issuable-container"
           :data-qa-issuable-title="issuable.title"
           :has-scoped-labels-feature="hasScopedLabelsFeature"
           :issuable-symbol="issuableSymbol"

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Container Registry', :js, feature_category: :container_registry do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
 

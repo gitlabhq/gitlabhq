@@ -11,11 +11,11 @@ module QA
             element :save_merge_request_changes_button
           end
 
-          view 'app/views/projects/_merge_request_merge_method_settings.html.haml' do
+          view 'app/views/projects/settings/merge_requests/_merge_request_merge_method_settings.html.haml' do
             element :merge_ff_radio
           end
 
-          view 'app/views/projects/_merge_request_pipelines_and_threads_options.html.haml' do
+          view 'app/views/projects/settings/merge_requests/_merge_request_pipelines_and_threads_options.html.haml' do
             element :only_allow_merge_if_all_discussions_are_resolved_checkbox
           end
 

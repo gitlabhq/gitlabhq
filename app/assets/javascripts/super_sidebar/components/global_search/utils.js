@@ -1,5 +1,5 @@
 import { pickBy } from 'lodash';
-import { truncateNamespace } from '~/lib/utils/text_utility';
+import { slugify, truncateNamespace } from '~/lib/utils/text_utility';
 import {
   GROUPS_CATEGORY,
   PROJECTS_CATEGORY,
@@ -7,6 +7,7 @@ import {
   ISSUES_CATEGORY,
   RECENT_EPICS_CATEGORY,
 } from '~/vue_shared/global_search/constants';
+import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from './command_palette/constants';
 import { LARGE_AVATAR_PX, SMALL_AVATAR_PX } from './constants';
 
 const getTruncatedNamespace = (string) => {
@@ -61,6 +62,15 @@ export const getFormattedItem = (item, searchContext) => {
   const avatarSize = getAvatarSize(category);
   const entityId = getEntityId(item, searchContext);
   const entityName = getEntityName(item, searchContext);
+  const trackingLabel = slugify(category ?? '');
+  const trackingAttrs = trackingLabel
+    ? {
+        extraAttrs: {
+          'data-track-action': TRACKING_CLICK_COMMAND_PALETTE_ITEM,
+          'data-track-label': slugify(category, '_'),
+        },
+      }
+    : {};
 
   return pickBy(
     {
@@ -75,6 +85,7 @@ export const getFormattedItem = (item, searchContext) => {
       namespace,
       entity_id: entityId,
       entity_name: entityName,
+      ...trackingAttrs,
     },
     (val) => val !== undefined,
   );

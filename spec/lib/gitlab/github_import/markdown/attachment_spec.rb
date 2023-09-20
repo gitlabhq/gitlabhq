@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :importers do
   let(:name) { FFaker::Lorem.word }
   let(:url) { FFaker::Internet.uri('https') }
+  let(:import_source) { 'nickname/public-test-repo' }
 
   describe '.from_markdown' do
     context "when it's a doc attachment" do
@@ -75,6 +76,17 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
 
         it { expect(described_class.from_markdown(markdown_node)).to eq nil }
       end
+
+      context 'when image attachment is in the new format' do
+        let(:url) { "https://github.com/#{import_source}/assets/142635249/4b9f9c90-f060-4845-97cf-b24c558bcb11" }
+
+        it 'returns instance with attachment info' do
+          attachment = described_class.from_markdown(markdown_node)
+
+          expect(attachment.name).to eq name
+          expect(attachment.url).to eq url
+        end
+      end
     end
 
     context "when it's an inline html node" do
@@ -103,7 +115,6 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
 
   describe '#part_of_project_blob?' do
     let(:attachment) { described_class.new('test', url) }
-    let(:import_source) { 'nickname/public-test-repo' }
 
     context 'when url is a part of project blob' do
       let(:url) { "https://github.com/#{import_source}/blob/main/example.md" }
@@ -120,7 +131,6 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
 
   describe '#doc_belongs_to_project?' do
     let(:attachment) { described_class.new('test', url) }
-    let(:import_source) { 'nickname/public-test-repo' }
 
     context 'when url relates to this project' do
       let(:url) { "https://github.com/#{import_source}/files/9020437/git-cheat-sheet.txt" }
@@ -147,13 +157,19 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
     context 'when it is a media link' do
       let(:url) { 'https://user-images.githubusercontent.com/6833842/0cf366b61ef2.jpeg' }
 
-      it { expect(attachment.media?).to eq true }
+      it { expect(attachment.media?(import_source)).to eq true }
+
+      context 'when it is a new media link' do
+        let(:url) { "https://github.com/#{import_source}/assets/142635249/4b9f9c90-f060-4845-97cf-b24c558bcb11" }
+
+        it { expect(attachment.media?(import_source)).to eq true }
+      end
     end
 
     context 'when it is not a media link' do
       let(:url) { 'https://github.com/nickname/public-test-repo/files/9020437/git-cheat-sheet.txt' }
 
-      it { expect(attachment.media?).to eq false }
+      it { expect(attachment.media?(import_source)).to eq false }
     end
   end
 

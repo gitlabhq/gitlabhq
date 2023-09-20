@@ -48,7 +48,8 @@ module Gitlab
       end
 
       def package_source(package)
-        git_url = package.project.http_url_to_repo
+        use_http_url = package.project.public? || Feature.disabled?(:composer_use_ssh_source_urls, package.project)
+        git_url = use_http_url ? package.project.http_url_to_repo : package.project.ssh_url_to_repo
 
         {
           'type' => 'git',

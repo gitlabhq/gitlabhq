@@ -276,11 +276,11 @@ Configure Gitaly server in one of two ways:
       storage: [
          {
             name: 'default',
-            path: '/var/opt/gitlab/git-data',
+            path: '/var/opt/gitlab/git-data/repositories',
          },
          {
             name: 'storage1',
-            path: '/mnt/gitlab/git-data',
+            path: '/mnt/gitlab/git-data/repositories',
          },
       ],
    }
@@ -294,7 +294,7 @@ Configure Gitaly server in one of two ways:
       storage: [
          {
             name: 'storage2',
-            path: '/srv/gitlab/git-data',
+            path: '/srv/gitlab/git-data/repositories',
          },
       ],
    }
@@ -517,7 +517,7 @@ gitaly['configuration'] = {
   storage: [
     {
       name: 'storage1',
-      path: '/mnt/gitlab/git-data',
+      path: '/mnt/gitlab/git-data/repositories',
     },
   ],
 }
@@ -786,13 +786,13 @@ gitaly['configuration'] = {
       {
          rpc: '/gitaly.SmartHTTPService/PostUploadPackWithSidechannel',
          max_per_repo: 20,
-         max_queue_time: '1s',
+         max_queue_wait: '1s',
          max_queue_size: 10,
       },
       {
          rpc: '/gitaly.SSHService/SSHUploadPackWithSidechannel',
          max_per_repo: 20,
-         max_queue_time: '1s',
+         max_queue_wait: '1s',
          max_queue_size: 10,
       },
    ],
@@ -801,7 +801,7 @@ gitaly['configuration'] = {
 
 - `rpc` is the name of the RPC to set a concurrency limit for per repository.
 - `max_per_repo` is the maximum number of in-flight RPC calls for the given RPC per repository.
-- `max_queue_time` is the maximum amount of time a request can wait in the concurrency queue to
+- `max_queue_wait` is the maximum amount of time a request can wait in the concurrency queue to
   be picked up by Gitaly.
 - `max_queue_size` is the maximum size the concurrency queue (per RPC method) can grow to before requests are rejected by
   Gitaly.
@@ -822,6 +822,50 @@ When these limits are reached, users are disconnected.
 You can observe the behavior of this queue using the Gitaly logs and Prometheus. For more
 information, see the [relevant documentation](monitoring.md#monitor-gitaly-concurrency-limiting).
 
+## Limit pack-objects concurrency
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7891) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `gitaly_pack_objects_limiting_remote_ip`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5772) in GitLab 16.0. Feature flag `gitaly_pack_objects_limiting_remote_ip` removed.
+
+Gitaly triggers `git-pack-objects` processes when handling both SSH and HTTPS traffic to clone or pull repositories. These processes generate a `pack-file` and can
+consume a significant amount of resources, especially in situations such as unexpectedly high traffic or concurrent pulls from a large repository. On GitLab.com, we also
+observe problems with clients that have slow internet connections.
+
+You can limit these processes from overwhelming your Gitaly server by setting pack-objects concurrency limits in the Gitaly configuration file. This setting limits the
+number of in-flight pack-object processes per remote IP address.
+
+WARNING:
+Only enable these limits on your environment with caution and only in select circumstances, such as to protect against unexpected traffic. When reached, these limits
+disconnect users. For consistent and stable performance, you should first explore other options such as adjusting node specifications, and
+[reviewing large repositories](../../user/project/repository/managing_large_repositories.md) or workloads.
+
+Example configuration:
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitaly['pack_objects_limiting'] = {
+   'max_concurrency' => 15,
+   'max_queue_length' => 200,
+   'max_queue_wait' => '60s',
+}
+```
+
+- `max_concurrency` is the maximum number of in-flight pack-object processes per key.
+- `max_queue_length` is the maximum size the concurrency queue (per key) can grow to before requests are rejected by Gitaly.
+- `max_queue_wait` is the maximum amount of time a request can wait in the concurrency queue to be picked up by Gitaly.
+
+In the example above:
+
+- Each remote IP can have at most 15 simultaneous pack-object processes in flight on a Gitaly node.
+- If another request comes in from an IP that has used up its 15 slots, that request gets queued.
+- If a request waits in the queue for more than 1 minute, it is rejected with an error.
+- If the queue grows beyond 200, subsequent requests are rejected with an error.
+
+When the pack-object cache is enabled, pack-objects limiting kicks in only if the cache is missed. For more, see [Pack-objects cache](#pack-objects-cache).
+
+You can observe the behavior of this queue using Gitaly logs and Prometheus. For more information, see
+[Monitor Gitaly pack-objects concurrency limiting](monitoring.md#monitor-gitaly-pack-objects-concurrency-limiting).
+
 ## Control groups
 
 WARNING:
@@ -830,10 +874,6 @@ in select circumstances, such as to protect against unexpected traffic.
 When reached, limits _do_ result in disconnects that negatively impact users.
 For consistent and stable performance, you should first explore other options such as
 adjusting node specifications, and [reviewing large repositories](../../user/project/repository/managing_large_repositories.md) or workloads.
-
-FLAG:
-On self-managed GitLab, by default repository cgroups are not available. To make it available, an administrator can
-[enable the feature flag](../feature_flags.md) named `gitaly_run_cmds_in_cgroup`.
 
 When enabling cgroups for memory, you should ensure that no swap is configured on the Gitaly nodes as
 processes may switch to using that instead of being terminated. This situation could lead to notably compromised
@@ -1288,25 +1328,34 @@ the cache hit rate.
 
 ### Observe the cache
 
-The cache can be observed [using metrics](monitoring.md#pack-objects-cache) and in the following logged
-information:
+> Logs for pack-objects caching was [changed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5719) in GitLab 16.0.
 
-|Message|Fields|Description|
-|:---|:---|:---|
-|`generated bytes`|`bytes`, `cache_key`|Logged when an entry was added to the cache|
-|`served bytes`|`bytes`, `cache_key`|Logged when an entry was read from the cache|
+You can observe the cache [using metrics](monitoring.md#pack-objects-cache) and in the following logged information. These logs are part of the gRPC logs and can
+be discovered when a call is executed.
+
+| Field | Description |
+|:---|:---|
+| `pack_objects_cache.hit` | Indicates whether the current pack-objects cache was hit (`true` or `false`) |
+| `pack_objects_cache.key` | Cache key used for the pack-objects cache |
+| `pack_objects_cache.generated_bytes` | Size (in bytes) of the new cache being written |
+| `pack_objects_cache.served_bytes` | Size (in bytes) of the cache being served |
+| `pack_objects.compression_statistics` | Statistics regarding pack-objects generation |
+| `pack_objects.enumerate_objects_ms` | Total time (in ms) spent enumerating objects sent by clients |
+| `pack_objects.prepare_pack_ms` | Total time (in ms) spent preparing the packfile before sending it back to the client |
+| `pack_objects.write_pack_file_ms` | Total time (in ms) spent sending back the packfile to the client. Highly dependent on the client's internet connection |
+| `pack_objects.written_object_count` | Total number of objects Gitaly sends back to the client |
 
 In the case of a:
 
-- Cache miss, Gitaly logs both a `generated bytes` and a `served bytes` message.
-- Cache hit, Gitaly logs only a `served bytes` message.
+- Cache miss, Gitaly logs both a `pack_objects_cache.generated_bytes` and `pack_objects_cache.served_bytes` message. Gitaly also logs some more detailed statistics of
+  pack-object generation.
+- Cache hit, Gitaly logs only a `pack_objects_cache.served_bytes` message.
 
 Example:
 
 ```json
 {
   "bytes":26186490,
-  "cache_key":"1b586a2698ca93c2529962e85cda5eea8f0f2b0036592615718898368b462e19",
   "correlation_id":"01F1MY8JXC3FZN14JBG1H42G9F",
   "grpc.meta.deadline_type":"none",
   "grpc.method":"PackObjectsHook",
@@ -1319,34 +1368,23 @@ Example:
   "grpc.service":"gitaly.HookService",
   "grpc.start_time":"2021-03-25T14:57:52.747Z",
   "level":"info",
-  "msg":"generated bytes",
+  "msg":"finished unary call with code OK",
   "peer.address":"@",
   "pid":20961,
   "span.kind":"server",
   "system":"grpc",
-  "time":"2021-03-25T14:57:53.543Z"
-}
-{
-  "bytes":26186490,
-  "cache_key":"1b586a2698ca93c2529962e85cda5eea8f0f2b0036592615718898368b462e19",
-  "correlation_id":"01F1MY8JXC3FZN14JBG1H42G9F",
-  "grpc.meta.deadline_type":"none",
-  "grpc.method":"PackObjectsHook",
-  "grpc.request.fullMethod":"/gitaly.HookService/PackObjectsHook",
-  "grpc.request.glProjectPath":"root/gitlab-workhorse",
-  "grpc.request.glRepository":"project-2",
-  "grpc.request.repoPath":"@hashed/d4/73/d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35.git",
-  "grpc.request.repoStorage":"default",
-  "grpc.request.topLevelGroup":"@hashed",
-  "grpc.service":"gitaly.HookService",
-  "grpc.start_time":"2021-03-25T14:57:52.747Z",
-  "level":"info",
-  "msg":"served bytes",
-  "peer.address":"@",
-  "pid":20961,
-  "span.kind":"server",
-  "system":"grpc",
-  "time":"2021-03-25T14:57:53.543Z"
+  "time":"2021-03-25T14:57:53.543Z",
+  "pack_objects.compression_statistics": "Total 145991 (delta 68), reused 6 (delta 2), pack-reused 145911",
+  "pack_objects.enumerate_objects_ms": 170,
+  "pack_objects.prepare_pack_ms": 7,
+  "pack_objects.write_pack_file_ms": 786,
+  "pack_objects.written_object_count": 145991,
+  "pack_objects_cache.generated_bytes": 49533030,
+  "pack_objects_cache.hit": "false",
+  "pack_objects_cache.key": "123456789",
+  "pack_objects_cache.served_bytes": 49533030,
+  "peer.address": "127.0.0.1",
+  "pid": 8813,
 }
 ```
 
@@ -1496,7 +1534,13 @@ value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
 
 ## Configure commit signing for GitLab UI commits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4.
+> - Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../feature_flags.md) named `gitaly_gpg_signing`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../feature_flags.md) named `gitaly_gpg_signing`.
+On GitLab.com, this feature is not available.
 
 By default, Gitaly doesn't sign commits made using GitLab UI. For example, commits made using:
 
@@ -1513,11 +1557,19 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
 :::TabTitle Linux package (Omnibus)
 
-1. [Create a GPG key](../../user/project/repository/gpg_signed_commits/index.md#create-a-gpg-key)
-   and export it. For optimal performance, consider using an EdDSA key.
+1. [Create a GPG key](../../user/project/repository/signed_commits/gpg.md#create-a-gpg-key)
+   and export it, or [create an SSH key](../../user/ssh.md#generate-an-ssh-key-pair). For optimal performance, use an EdDSA key.
+
+   Export GPG key:
 
    ```shell
    gpg --export-secret-keys <ID> > signing_key.gpg
+   ```
+
+   Or create an SSH key (with no passphrase):
+
+   ```shell
+   ssh-keygen -t ed25519 -f signing_key.ssh
    ```
 
 1. On the Gitaly nodes, copy the key into `/etc/gitlab/gitaly/`.
@@ -1537,11 +1589,19 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
 :::TabTitle Self-compiled (source)
 
-1. [Create a GPG key](../../user/project/repository/gpg_signed_commits/index.md#create-a-gpg-key)
-   and export it. For optimal performance, consider using an EdDSA key.
+1. [Create a GPG key](../../user/project/repository/signed_commits/gpg.md#create-a-gpg-key)
+   and export it, or [create an SSH key](../../user/ssh.md#generate-an-ssh-key-pair). For optimal performance, use an EdDSA key.
+
+   Export GPG key:
 
    ```shell
    gpg --export-secret-keys <ID> > signing_key.gpg
+   ```
+
+   Or create an SSH key (with no passphrase):
+
+   ```shell
+   ssh-keygen -t ed25519 -f signing_key.ssh
    ```
 
 1. On the Gitaly nodes, copy the key into `/etc/gitlab`.
@@ -1610,3 +1670,172 @@ Gitaly fails to start up if either:
 
 - The configuration command fails.
 - The output produced by the command cannot be parsed as valid JSON.
+
+## Configure server-side backups
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4941) in GitLab 16.3.
+
+Repository backups can be configured so that the Gitaly node that hosts each
+repository is responsible for creating the backup and streaming it to
+object storage. This helps reduce the network resources required to create and
+restore a backup.
+
+Each Gitaly node must be configured to connect to object storage for backups.
+
+After configuring server-side backups, you can
+[create a server-side repository backup](../backup_restore/backup_gitlab.md#create-server-side-repository-backups).
+
+### Configure Azure Blob storage
+
+How you configure Azure Blob storage for backups depends on the type of installation you have. For self-compiled installations, you must set
+the `AZURE_STORAGE_ACCOUNT` and `AZURE_STORAGE_KEY` environment variables outside of GitLab.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
+
+```ruby
+gitaly['env'] = {
+    'AZURE_STORAGE_ACCOUNT' => 'azure_storage_account',
+    'AZURE_STORAGE_KEY' => 'azure_storage_key' # or 'AZURE_STORAGE_SAS_TOKEN'
+}
+gitaly['configuration'] = {
+    backup: {
+        go_cloud_url: 'azblob://gitaly-backups'
+    }
+}
+```
+
+:::TabTitle Self-compiled (source)
+
+Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
+
+```toml
+[backup]
+go_cloud_url = "azblob://gitaly-backups"
+```
+
+::EndTabs
+
+### Configure Google Cloud storage
+
+Google Cloud storage (GCP) authenticates using Application Default Credentials. Set up Application Default Credentials on each Gitaly server using either:
+
+- The [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command.
+- The `GOOGLE_APPLICATION_CREDENTIALS` environment variable. For self-compiled installations, set the environment
+  variable outside of GitLab.
+
+For more information, see [Application Default Credentials](https://cloud.google.com/docs/authentication/provide-credentials-adc).
+
+The destination bucket is configured using the `go_cloud_url` option.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
+
+```ruby
+gitaly['env'] = {
+    'GOOGLE_APPLICATION_CREDENTIALS' => '/path/to/service.json'
+}
+gitaly['configuration'] = {
+    backup: {
+        go_cloud_url: 'gs://gitaly-backups'
+    }
+}
+```
+
+:::TabTitle Self-compiled (source)
+
+Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
+
+```toml
+[backup]
+go_cloud_url = "gs://gitaly-backups"
+```
+
+::EndTabs
+
+### Configure S3 storage
+
+To configure S3 storage authentication:
+
+- If you authenticate with the AWS CLI, you can use the default AWS session.
+- Otherwise, you can use the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables. For self-compiled installations, set the environment
+  variables outside of GitLab.
+
+For more information, see [AWS Session documentation](https://docs.aws.amazon.com/sdk-for-go/api/aws/session/).
+
+The destination bucket and region are configured using the `go_cloud_url` option.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
+
+```ruby
+gitaly['env'] = {
+    'AWS_ACCESS_KEY_ID' => 'aws_access_key_id',
+    'AWS_SECRET_ACCESS_KEY' => 'aws_secret_access_key'
+}
+gitaly['configuration'] = {
+    backup: {
+        go_cloud_url: 's3://gitaly-backups?region=us-west-1'
+    }
+}
+```
+
+:::TabTitle Self-compiled (source)
+
+Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
+
+```toml
+[backup]
+go_cloud_url = "s3://gitaly-backups?region=us-west-1"
+```
+
+::EndTabs
+
+#### Configure S3-compatible servers
+
+S3-compatible servers such as MinIO are configured similarly to S3 with the addition of the `endpoint` parameter.
+
+The following parameters are supported:
+
+- `region`: The AWS region.
+- `endpoint`: The endpoint URL.
+- `disabledSSL`: A value of `true` disables SSL.
+- `s3ForcePathStyle`: A value of `true` forces path-style addressing.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
+
+```ruby
+gitaly['env'] = {
+    'AWS_ACCESS_KEY_ID' => 'minio_access_key_id',
+    'AWS_SECRET_ACCESS_KEY' => 'minio_secret_access_key'
+}
+gitaly['configuration'] = {
+    backup: {
+        go_cloud_url: 's3://gitaly-backups?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true'
+    }
+}
+```
+
+:::TabTitle Self-compiled (source)
+
+Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
+
+```toml
+[backup]
+go_cloud_url = "s3://gitaly-backups?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true"
+```
+
+::EndTabs

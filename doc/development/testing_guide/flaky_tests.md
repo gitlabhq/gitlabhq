@@ -38,6 +38,18 @@ it's reset to a pristine test after each test.
 - [Example 4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103434#note_1172316521): A test for a database query passes in a fresh database, but in a
   CI/CD pipeline where the database is used to process previous test sequences, the test fails. This likely
   means that the query itself needs to be updated to work in a non-clean database.
+- [Example 5](https://gitlab.com/gitlab-org/gitlab/-/issues/416663#note_1457867234): Unrelated database connections
+  in asynchronous requests checked back in, causing the tests to accidentally
+  use these unrelated database connections. The failure was resolved in this
+  [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125742).
+- [Example 6](https://gitlab.com/gitlab-org/gitlab/-/issues/418757#note_1502138269): The maximum time to live
+  for a database connection causes these connections to be disconnected, which
+  in turn causes tests that rely on the transactions on these connections to
+  in turn causes tests that rely on the transactions on these connections to
+  fail. The issue was fixed in this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128567).
+- [Example 7](https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/3389#note_1534827164):
+  A TCP socket used in a test was not closed before the next test, which also used
+  the same port with another TCP socket.
 
 ### Dataset-specific
 
@@ -172,10 +184,12 @@ it 'succeeds', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345'
 end
 ```
 
-This means it is skipped unless run with `--tag quarantine`:
+This means it is skipped in CI. By default, the quarantined tests will run locally.
+
+We can skip them in local development as well by running with `--tag ~quarantine`:
 
 ```shell
-bin/rspec --tag quarantine
+bin/rspec --tag ~quarantine
 ```
 
 After the long-term quarantining MR has reached production, you should revert the fast-quarantine MR you created earlier.

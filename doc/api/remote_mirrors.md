@@ -107,7 +107,7 @@ POST /projects/:id/remote_mirrors
 | `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
 | `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
 | `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
-| `mirror_branch_regex` **(PREMIUM)**     | String  | no         | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_protected_branches` to be disabled. |
+| `mirror_branch_regex` **(PREMIUM ALL)**     | String  | no         | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_protected_branches` to be disabled. |
 
 Example request:
 
@@ -148,7 +148,7 @@ PUT /projects/:id/remote_mirrors/:mirror_id
 | `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
 | `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
 | `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
-| `mirror_branch_regex`**(PREMIUM)**     | String  | no         |  Determines if only the branch whose name matches the regex is mirrored. It does not work with `only_protected_branches` enabled. |
+| `mirror_branch_regex`**(PREMIUM ALL)**     | String  | no         |  Determines if only the branch whose name matches the regex is mirrored. It does not work with `only_protected_branches` enabled. |
 
 Example request:
 

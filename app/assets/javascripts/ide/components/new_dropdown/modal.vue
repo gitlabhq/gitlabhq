@@ -32,7 +32,8 @@ export default {
 
       if (this.modalType === modalTypes.tree) {
         return __('Create new directory');
-      } else if (this.modalType === modalTypes.rename) {
+      }
+      if (this.modalType === modalTypes.rename) {
         return entry.type === modalTypes.tree ? __('Rename folder') : __('Rename file');
       }
 
@@ -43,7 +44,8 @@ export default {
 
       if (this.modalType === modalTypes.tree) {
         return __('Create directory');
-      } else if (this.modalType === modalTypes.rename) {
+      }
+      if (this.modalType === modalTypes.rename) {
         return entry.type === modalTypes.tree ? __('Rename folder') : __('Rename file');
       }
 

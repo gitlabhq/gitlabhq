@@ -6,7 +6,7 @@ RSpec.describe 'top nav responsive', :js, feature_category: :navigation do
   include MobileHelpers
   include Features::InviteMembersModalHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   before do
     sign_in(user)

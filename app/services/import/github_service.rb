@@ -91,7 +91,7 @@ module Import
         url,
         allow_localhost: allow_local_requests?,
         allow_local_network: allow_local_requests?,
-        schemes: %w(http https)
+        schemes: %w[http https]
       )
     end
 

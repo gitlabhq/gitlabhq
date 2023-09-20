@@ -290,4 +290,30 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy, feature_cate
       expect(partition_3_model.partition).to eq(3)
     end
   end
+
+  describe 'attributes' do
+    let(:partitioning_key) { :partition }
+    let(:next_partition_if) { -> { puts "next_partition_if" } }
+    let(:detach_partition_if) { -> { puts "detach_partition_if" } }
+    let(:analyze_interval) { 1.week }
+
+    subject(:strategy) do
+      described_class.new(
+        model, partitioning_key,
+        next_partition_if: next_partition_if,
+        detach_partition_if: detach_partition_if,
+        analyze_interval: analyze_interval
+      )
+    end
+
+    specify do
+      expect(strategy).to have_attributes({
+        model: model,
+        partitioning_key: partitioning_key,
+        next_partition_if: next_partition_if,
+        detach_partition_if: detach_partition_if,
+        analyze_interval: analyze_interval
+      })
+    end
+  end
 end

@@ -243,6 +243,56 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
           expect(result.encoding).to eq(Encoding.default_external)
         end
       end
+
+      context 'limit max size' do
+        before do
+          # specifying BUFFER_SIZE forces to seek backwards
+          allow(described_class).to receive(:BUFFER_SIZE)
+            .and_return(2)
+        end
+
+        it 'returns every lines with respect of the size' do
+          all_lines = lines.join
+          max_size = all_lines.bytesize.div(2)
+          result = stream.raw(max_size: max_size)
+
+          expect(result.bytes).to eq(all_lines.bytes[-max_size..])
+          expect(result.lines.count).to be > 1
+          expect(result.encoding).to eq(Encoding.default_external)
+        end
+
+        it 'returns everything if trying to get too many bytes' do
+          all_lines = lines.join
+          result = stream.raw(max_size: all_lines.bytesize * 2)
+
+          expect(result).to eq(all_lines)
+          expect(result.encoding).to eq(Encoding.default_external)
+        end
+      end
+
+      context 'limit max lines and max size' do
+        before do
+          # specifying BUFFER_SIZE forces to seek backwards
+          allow(described_class).to receive(:BUFFER_SIZE)
+            .and_return(2)
+        end
+
+        it 'returns max lines if max size is greater' do
+          result = stream.raw(last_lines: 2, max_size: lines.join.bytesize * 2)
+
+          expect(result).to eq(lines.last(2).join)
+          expect(result.encoding).to eq(Encoding.default_external)
+        end
+
+        it 'returns max size if max lines is greater' do
+          all_lines = lines.join
+          max_size = all_lines.bytesize.div(2)
+          result = stream.raw(last_lines: lines.size * 2, max_size: max_size)
+
+          expect(result.bytes).to eq(all_lines.bytes[-max_size..])
+          expect(result.encoding).to eq(Encoding.default_external)
+        end
+      end
     end
 
     let(:path) { __FILE__ }

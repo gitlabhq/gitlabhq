@@ -23,7 +23,7 @@ To pair the Web IDE with a remote development environment, see [remote developme
 
 To open the Web IDE from the GitLab UI:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Use the <kbd>.</kbd> keyboard shortcut.
 
 You can also open the Web IDE from:
@@ -80,6 +80,20 @@ To view a list of files you changed in the Web IDE:
 
 Your `CHANGES`, `STAGED CHANGES`, and `MERGE CHANGES` are displayed.
 For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/sourcecontrol/overview#_commit).
+
+## Restore uncommitted changes
+
+You don't have to manually save any file you modify in the Web IDE.
+Modified files are automatically staged and can be [committed](#commit-changes).
+Uncommitted changes are saved in your browser's local storage and persist
+even if you close the browser tab or refresh the Web IDE.
+
+If your uncommitted changes are not available, you can restore the changes from local history.
+To restore uncommitted changes in the Web IDE:
+
+1. Press <kbd>Shift</kbd>+<kbd>Command</kbd>+<kbd>P</kbd>.
+1. In the search box, enter `Local History: Find Entry to Restore`.
+1. Select the file that contains the uncommitted changes.
 
 ## Upload a new file
 
@@ -203,7 +217,7 @@ To protect your privacy and data:
 - Carefully review the permissions requested by an extension before you install the extension.
 - Keep your extensions up to date to ensure that any security or privacy vulnerabilities are addressed promptly. -->
 
-## Interactive web terminals for the Web IDE (Beta)
+## Interactive web terminals for the Web IDE **(BETA)**
 
 WARNING:
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.

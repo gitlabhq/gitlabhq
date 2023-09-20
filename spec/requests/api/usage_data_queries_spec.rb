@@ -6,8 +6,8 @@ require 'rake_helper'
 RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :service_ping do
   include UsageDataHelpers
 
-  let_it_be(:admin) { create(:user, admin: true) }
-  let_it_be(:user) { create(:user) }
+  let!(:admin) { create(:user, admin: true) }
+  let!(:user) { create(:user) }
 
   before do
     stub_usage_data_connections
@@ -70,7 +70,7 @@ RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :se
       end
     end
 
-    context 'when querying sql metrics' do
+    context 'when querying sql metrics', type: :task do
       let(:file) { Rails.root.join('tmp', 'test', 'sql_metrics_queries.json') }
 
       before do

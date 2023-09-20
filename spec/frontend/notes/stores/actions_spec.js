@@ -8,11 +8,7 @@ import { createAlert } from '~/alert';
 import toast from '~/vue_shared/plugins/global_toast';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
-import {
-  HTTP_STATUS_INTERNAL_SERVER_ERROR,
-  HTTP_STATUS_OK,
-  HTTP_STATUS_SERVICE_UNAVAILABLE,
-} from '~/lib/utils/http_status';
+import { HTTP_STATUS_OK, HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
 import * as actions from '~/notes/stores/actions';
@@ -24,7 +20,6 @@ import updateMergeRequestLockMutation from '~/sidebar/queries/update_merge_reque
 import promoteTimelineEvent from '~/notes/graphql/promote_timeline_event.mutation.graphql';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import notesEventHub from '~/notes/event_hub';
-import waitForPromises from 'helpers/wait_for_promises';
 import { resetStore } from '../helpers';
 import {
   discussionMock,
@@ -262,13 +257,7 @@ describe('Actions Notes Store', () => {
   });
 
   describe('initPolling', () => {
-    afterEach(() => {
-      gon.features = {};
-    });
-
     it('creates the Action Cable subscription', () => {
-      gon.features = { actionCableNotes: true };
-
       store.dispatch('setNotesData', notesDataMock);
       store.dispatch('initPolling');
 
@@ -290,8 +279,6 @@ describe('Actions Notes Store', () => {
     const response = { notes: [], last_fetched_at: '123456' };
     const successMock = () =>
       axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, response);
-    const failureMock = () =>
-      axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
     beforeEach(() => {
       return store.dispatch('setNotesData', notesDataMock);
@@ -303,153 +290,6 @@ describe('Actions Notes Store', () => {
       await store.dispatch('fetchUpdatedNotes');
 
       expect(store.state.lastFetchedAt).toBe('123456');
-    });
-
-    it('shows an alert when fetching fails', async () => {
-      failureMock();
-
-      await store.dispatch('fetchUpdatedNotes');
-
-      expect(createAlert).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('poll', () => {
-    const pollInterval = 6000;
-    const pollResponse = { notes: [], last_fetched_at: '123456' };
-    const pollHeaders = { 'poll-interval': `${pollInterval}` };
-    const successMock = () =>
-      axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_OK, pollResponse, pollHeaders);
-    const failureMock = () =>
-      axiosMock.onGet(notesDataMock.notesPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-    const advanceAndRAF = (time) => {
-      if (time) {
-        jest.advanceTimersByTime(time);
-      }
-
-      return waitForPromises();
-    };
-    const advanceXMoreIntervals = (number) => {
-      const timeoutLength = pollInterval * number;
-
-      return advanceAndRAF(timeoutLength);
-    };
-    const startPolling = async () => {
-      await store.dispatch('poll');
-      await advanceAndRAF(2);
-    };
-    const cleanUp = () => {
-      jest.clearAllTimers();
-
-      return store.dispatch('stopPolling');
-    };
-
-    beforeEach(() => {
-      return store.dispatch('setNotesData', notesDataMock);
-    });
-
-    afterEach(() => {
-      return cleanUp();
-    });
-
-    it('calls service with last fetched state', async () => {
-      successMock();
-
-      await startPolling();
-
-      expect(store.state.lastFetchedAt).toBe('123456');
-
-      await advanceXMoreIntervals(1);
-
-      expect(axiosMock.history.get).toHaveLength(2);
-      expect(axiosMock.history.get[1].headers).toMatchObject({
-        'X-Last-Fetched-At': '123456',
-      });
-    });
-
-    describe('polling side effects', () => {
-      it('retries twice', async () => {
-        failureMock();
-
-        await startPolling();
-
-        // This is the first request, not a retry
-        expect(axiosMock.history.get).toHaveLength(1);
-
-        await advanceXMoreIntervals(1);
-
-        // Retry #1
-        expect(axiosMock.history.get).toHaveLength(2);
-
-        await advanceXMoreIntervals(1);
-
-        // Retry #2
-        expect(axiosMock.history.get).toHaveLength(3);
-
-        await advanceXMoreIntervals(10);
-
-        // There are no more retries
-        expect(axiosMock.history.get).toHaveLength(3);
-      });
-
-      it('shows the error display on the second failure', async () => {
-        failureMock();
-
-        await startPolling();
-
-        expect(axiosMock.history.get).toHaveLength(1);
-        expect(createAlert).not.toHaveBeenCalled();
-
-        await advanceXMoreIntervals(1);
-
-        expect(axiosMock.history.get).toHaveLength(2);
-        expect(createAlert).toHaveBeenCalled();
-        expect(createAlert).toHaveBeenCalledTimes(1);
-      });
-
-      it('resets the failure counter on success', async () => {
-        // We can't get access to the actual counter in the polling closure.
-        // So we can infer that it's reset by ensuring that the error is only
-        //  shown when we cause two failures in a row - no successes between
-
-        axiosMock
-          .onGet(notesDataMock.notesPath)
-          .replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR) // cause one error
-          .onGet(notesDataMock.notesPath)
-          .replyOnce(HTTP_STATUS_OK, pollResponse, pollHeaders) // then a success
-          .onGet(notesDataMock.notesPath)
-          .reply(HTTP_STATUS_INTERNAL_SERVER_ERROR); // and then more errors
-
-        await startPolling(); // Failure #1
-        await advanceXMoreIntervals(1); // Success #1
-        await advanceXMoreIntervals(1); // Failure #2
-
-        // That was the first failure AFTER a success, so we should NOT see the error displayed
-        expect(createAlert).not.toHaveBeenCalled();
-
-        // Now we'll allow another failure
-        await advanceXMoreIntervals(1); // Failure #3
-
-        // Since this is the second failure in a row, the error should happen
-        expect(createAlert).toHaveBeenCalledTimes(1);
-      });
-
-      it('hides the error display if it exists on success', async () => {
-        failureMock();
-
-        await startPolling();
-        await advanceXMoreIntervals(2);
-
-        // After two errors, the error should be displayed
-        expect(createAlert).toHaveBeenCalledTimes(1);
-
-        axiosMock.reset();
-        successMock();
-
-        await advanceXMoreIntervals(1);
-
-        expect(mockAlertDismiss).toHaveBeenCalledTimes(1);
-      });
     });
   });
 
@@ -996,11 +836,7 @@ describe('Actions Notes Store', () => {
           [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
 
-        expect(dispatch.mock.calls).toEqual([
-          ['stopPolling'],
-          ['resolveDiscussion', { discussionId }],
-          ['restartPolling'],
-        ]);
+        expect(dispatch.mock.calls).toEqual([['resolveDiscussion', { discussionId }]]);
         expect(createAlert).not.toHaveBeenCalled();
       });
     });
@@ -1015,7 +851,6 @@ describe('Actions Notes Store', () => {
           [mutationTypes.SET_RESOLVING_DISCUSSION, true],
           [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
-        expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(createAlert).toHaveBeenCalledWith({
           message: TEST_ERROR_MESSAGE,
           parent: flashContainer,
@@ -1033,7 +868,6 @@ describe('Actions Notes Store', () => {
           [mutationTypes.SET_RESOLVING_DISCUSSION, true],
           [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
-        expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(createAlert).toHaveBeenCalledWith({
           message: 'Something went wrong while applying the suggestion. Please try again.',
           parent: flashContainer,
@@ -1081,10 +915,8 @@ describe('Actions Notes Store', () => {
         ]);
 
         expect(dispatch.mock.calls).toEqual([
-          ['stopPolling'],
           ['resolveDiscussion', { discussionId: discussionIds[0] }],
           ['resolveDiscussion', { discussionId: discussionIds[1] }],
-          ['restartPolling'],
         ]);
 
         expect(createAlert).not.toHaveBeenCalled();
@@ -1104,7 +936,6 @@ describe('Actions Notes Store', () => {
           [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
 
-        expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(createAlert).toHaveBeenCalledWith({
           message: TEST_ERROR_MESSAGE,
           parent: flashContainer,
@@ -1125,7 +956,6 @@ describe('Actions Notes Store', () => {
           [mutationTypes.SET_RESOLVING_DISCUSSION, false],
         ]);
 
-        expect(dispatch.mock.calls).toEqual([['stopPolling'], ['restartPolling']]);
         expect(createAlert).toHaveBeenCalledWith({
           message:
             'Something went wrong while applying the batch of suggestions. Please try again.',

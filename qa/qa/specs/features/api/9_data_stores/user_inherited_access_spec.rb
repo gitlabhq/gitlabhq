@@ -12,11 +12,7 @@ module QA
       end
 
       context 'when added to parent group' do
-        let!(:parent_group_user) do
-          Resource::User.fabricate_via_api! do |user|
-            user.api_client = admin_api_client
-          end
-        end
+        let!(:parent_group_user) { create(:user, api_client: admin_api_client) }
 
         let!(:parent_group_user_api_client) do
           Runtime::API::Client.new(:gitlab, user: parent_group_user)
@@ -57,14 +53,10 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363348'
         ) do
           expect do
-            Resource::File.fabricate_via_api! do |file|
-              file.api_client = parent_group_user_api_client
-              file.project = sub_group_project
-              file.branch = "new_branch_#{SecureRandom.hex(8)}"
-              file.commit_message = 'Add new file'
-              file.name = 'test.txt'
-              file.content = "New file"
-            end
+            create(:file,
+              api_client: parent_group_user_api_client,
+              project: sub_group_project,
+              branch: "new_branch_#{SecureRandom.hex(8)}")
           end.not_to raise_error
         end
 
@@ -98,11 +90,7 @@ module QA
           create(:project, :with_readme, name: 'parent-group-project-to-test-user-access', group: parent_group)
         end
 
-        let!(:sub_group_user) do
-          Resource::User.fabricate_via_api! do |user|
-            user.api_client = admin_api_client
-          end
-        end
+        let!(:sub_group_user) { create(:user, api_client: admin_api_client) }
 
         let!(:sub_group_user_api_client) do
           Runtime::API::Client.new(:gitlab, user: sub_group_user)
@@ -138,14 +126,10 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363343'
         ) do
           expect do
-            Resource::File.fabricate_via_api! do |file|
-              file.api_client = sub_group_user_api_client
-              file.project = parent_group_project
-              file.branch = "new_branch_#{SecureRandom.hex(8)}"
-              file.commit_message = 'Add new file'
-              file.name = 'test.txt'
-              file.content = "New file"
-            end
+            create(:file,
+              api_client: sub_group_user_api_client,
+              project: parent_group_project,
+              branch: "new_branch_#{SecureRandom.hex(8)}")
           end.to raise_error(Resource::ApiFabricator::ResourceFabricationFailedError, /403 Forbidden/)
         end
 

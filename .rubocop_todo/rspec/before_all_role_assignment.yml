@@ -1,6 +1,5 @@
 ---
 RSpec/BeforeAllRoleAssignment:
-  Details: grace period
   Exclude:
     - 'ee/spec/components/namespaces/free_user_cap/non_owner_notification_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/free_user_cap/notification_alert_component_spec.rb'
@@ -1380,7 +1379,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/requests/api/wikis_spec.rb'
     - 'spec/requests/concerns/planning_hierarchy_spec.rb'
     - 'spec/requests/groups/deploy_tokens_controller_spec.rb'
-    - 'spec/requests/groups/email_campaigns_controller_spec.rb'
     - 'spec/requests/groups/settings/access_tokens_controller_spec.rb'
     - 'spec/requests/groups/settings/applications_controller_spec.rb'
     - 'spec/requests/groups/usage_quotas_controller_spec.rb'
@@ -1505,7 +1503,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/services/metrics/dashboard/system_dashboard_service_spec.rb'
     - 'spec/services/metrics/dashboard/transient_embed_service_spec.rb'
     - 'spec/services/metrics/dashboard/update_dashboard_service_spec.rb'
-    - 'spec/services/namespaces/in_product_marketing_emails_service_spec.rb'
     - 'spec/services/notes/build_service_spec.rb'
     - 'spec/services/notes/create_service_spec.rb'
     - 'spec/services/notes/quick_actions_service_spec.rb'

@@ -35,11 +35,14 @@ RSpec.describe Gitlab::HTTP do
           super do |response|
             response.instance_eval do
               def read_body(*)
-                @body.each do |fragment|
+                mock_stream = @body.split(' ')
+                mock_stream.each do |fragment|
                   sleep 0.002.seconds
 
                   yield fragment if block_given?
                 end
+
+                @body
               end
             end
 
@@ -64,8 +67,8 @@ RSpec.describe Gitlab::HTTP do
     before do
       stub_const("#{described_class}::DEFAULT_READ_TOTAL_TIMEOUT", 0.001.seconds)
 
-      WebMock.stub_request(:post, /.*/).to_return do |request|
-        { body: %w(a b), status: 200 }
+      WebMock.stub_request(:post, /.*/).to_return do
+        { body: "chunk-1 chunk-2", status: 200 }
       end
     end
 

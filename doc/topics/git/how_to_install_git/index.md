@@ -34,16 +34,16 @@ Prerequisites:
 
 To install Git on macOS:
 
-1. Open a terminal and install the XCode Command Line Tools:
+1. Open a terminal and install Xcode Command Line Tools:
 
    ```shell
    xcode-select --install
    ```
 
-   Alternatively, you can install the entire [XCode](https://developer.apple.com/xcode/)
+   Alternatively, you can install the entire [Xcode](https://developer.apple.com/xcode/)
    package through the macOS App Store.
 
-1. Select **Install** to download and install XCode Command Line Tools.
+1. Select **Install** to download and install Xcode Command Line Tools.
 1. Install Homebrew according to the [official Homebrew installation instructions](https://brew.sh/index.html).
 1. Install Git by running `brew install git` from your terminal.
 1. In a terminal, verify that Git works on your computer:

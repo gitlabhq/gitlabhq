@@ -3,7 +3,7 @@
 module WorkItems
   module Widgets
     class LinkedItems < Base
-      delegate :related_issues, to: :work_item
+      delegate :linked_work_items, to: :work_item
     end
   end
 end

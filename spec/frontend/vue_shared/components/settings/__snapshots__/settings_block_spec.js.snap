@@ -9,11 +9,11 @@ exports[`Settings Block renders the correct markup 1`] = `
   >
     <h4>
       <span
-        aria-controls="settings_content_3"
+        aria-controls="reference-1"
         aria-expanded="false"
         class="gl-cursor-pointer"
         data-testid="section-title-button"
-        id="settings_label_2"
+        id="reference-0"
         role="button"
         tabindex="0"
       >
@@ -22,9 +22,8 @@ exports[`Settings Block renders the correct markup 1`] = `
         />
       </span>
     </h4>
-     
     <gl-button-stub
-      aria-controls="settings_content_3"
+      aria-controls="reference-1"
       aria-expanded="false"
       aria-label="Expand settings section"
       buttontextclasses=""
@@ -33,22 +32,18 @@ exports[`Settings Block renders the correct markup 1`] = `
       size="medium"
       variant="default"
     >
-      
       Expand
-    
     </gl-button-stub>
-     
     <p>
       <div
         data-testid="description-slot"
       />
     </p>
   </div>
-   
   <div
-    aria-labelledby="settings_label_2"
+    aria-labelledby="reference-0"
     class="settings-content"
-    id="settings_content_3"
+    id="reference-1"
     role="region"
     style="display: none;"
     tabindex="-1"

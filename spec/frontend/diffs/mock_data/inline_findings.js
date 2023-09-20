@@ -4,6 +4,7 @@ export const multipleFindingsArrCodeQualityScale = [
     description: 'mocked minor Issue',
     line: 2,
     scale: 'codeQuality',
+    text: 'mocked minor Issue',
   },
   {
     severity: 'major',
@@ -43,6 +44,7 @@ export const multipleFindingsArrSastScale = [
     description: 'mocked low Issue',
     line: 2,
     scale: 'sast',
+    text: 'mocked low Issue',
   },
   {
     severity: 'medium',
@@ -76,48 +78,6 @@ export const multipleFindingsArrSastScale = [
   },
 ];
 
-export const multipleCodeQualityNoSast = {
-  codeQuality: multipleFindingsArrCodeQualityScale,
-  sast: [],
-};
-
-export const multipleSastNoCodeQuality = {
-  codeQuality: [],
-  sast: multipleFindingsArrSastScale,
-};
-
-export const fiveCodeQualityFindings = {
-  filePath: 'index.js',
-  codequality: multipleFindingsArrCodeQualityScale.slice(0, 5),
-};
-
-export const threeCodeQualityFindings = {
-  filePath: 'index.js',
-  codequality: multipleFindingsArrCodeQualityScale.slice(0, 3),
-};
-export const threeCodeQualityFindingsRaw = [multipleFindingsArrCodeQualityScale.slice(0, 3)];
-
-export const singularCodeQualityFinding = {
-  filePath: 'index.js',
-  codequality: [multipleFindingsArrCodeQualityScale[0]],
-};
-
-export const singularFindingSast = {
-  filePath: 'index.js',
-  sast: [multipleFindingsArrSastScale[0]],
-};
-
-export const threeSastFindings = {
-  filePath: 'index.js',
-  sast: multipleFindingsArrSastScale.slice(0, 3),
-};
-
-export const oneCodeQualityTwoSastFindings = {
-  filePath: 'index.js',
-  sast: multipleFindingsArrSastScale.slice(0, 2),
-  codequality: [multipleFindingsArrCodeQualityScale[0]],
-};
-
 export const diffCodeQuality = {
   diffFile: { file_hash: '123' },
   diffLines: [
@@ -150,4 +110,20 @@ export const diffCodeQuality = {
       },
     },
   ],
+};
+
+export const singularCodeQualityFinding = [multipleFindingsArrCodeQualityScale[0]];
+export const singularSastFinding = [multipleFindingsArrSastScale[0]];
+export const twoSastFindings = multipleFindingsArrSastScale.slice(0, 2);
+export const fiveCodeQualityFindings = multipleFindingsArrCodeQualityScale.slice(0, 5);
+export const threeCodeQualityFindings = multipleFindingsArrCodeQualityScale.slice(0, 3);
+
+export const filePath = 'testPath';
+export const scale = 'exampleScale';
+
+export const dropdownIcon = {
+  id: 'noise.rb-2',
+  key: 'mockedkey',
+  name: 'severity-medium',
+  class: 'gl-text-orange-400',
 };

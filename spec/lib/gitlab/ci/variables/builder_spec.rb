@@ -10,18 +10,27 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:job) do
     create(:ci_build,
+      :with_deployment,
       name: 'rspec:test 1',
       pipeline: pipeline,
       user: user,
       yaml_variables: [{ key: 'YAML_VARIABLE', value: 'value' }],
-      environment: 'test'
+      environment: 'review/$CI_COMMIT_REF_NAME',
+      options: {
+        environment: {
+          name: 'review/$CI_COMMIT_REF_NAME',
+          action: 'prepare',
+          deployment_tier: 'testing',
+          url: 'https://gitlab.com'
+        }
+      }
     )
   end
 
   let(:builder) { described_class.new(pipeline) }
 
   describe '#scoped_variables' do
-    let(:environment) { job.expanded_environment_name }
+    let(:environment_name) { job.expanded_environment_name }
     let(:dependencies) { true }
     let(:predefined_variables) do
       [
@@ -34,7 +43,13 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         { key: 'CI_NODE_TOTAL',
           value: '1' },
         { key: 'CI_ENVIRONMENT_NAME',
-          value: 'test' },
+          value: 'review/master' },
+        { key: 'CI_ENVIRONMENT_ACTION',
+          value: 'prepare' },
+        { key: 'CI_ENVIRONMENT_TIER',
+          value: 'testing' },
+        { key: 'CI_ENVIRONMENT_URL',
+          value: 'https://gitlab.com' },
         { key: 'CI',
           value: 'true' },
         { key: 'GITLAB_CI',
@@ -150,7 +165,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       ].map { |var| var.merge(public: true, masked: false) }
     end
 
-    subject { builder.scoped_variables(job, environment: environment, dependencies: dependencies) }
+    subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies) }
 
     it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
 

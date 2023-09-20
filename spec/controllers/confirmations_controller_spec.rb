@@ -19,17 +19,6 @@ RSpec.describe ConfirmationsController, feature_category: :system_access do
       get :show, params: { confirmation_token: confirmation_token }
     end
 
-    context 'when signup info is required' do
-      before do
-        allow(controller).to receive(:current_user) { user }
-        user.set_role_required!
-      end
-
-      it 'does not redirect' do
-        expect(perform_request).not_to redirect_to(users_sign_up_welcome_path)
-      end
-    end
-
     context 'user is already confirmed' do
       before do
         user.confirm
@@ -135,17 +124,6 @@ RSpec.describe ConfirmationsController, feature_category: :system_access do
 
     before do
       stub_feature_flags(identity_verification: false)
-    end
-
-    context 'when signup info is required' do
-      before do
-        allow(controller).to receive(:current_user) { user }
-        user.set_role_required!
-      end
-
-      it 'does not redirect' do
-        expect(perform_request).not_to redirect_to(users_sign_up_welcome_path)
-      end
     end
 
     context "when `email_confirmation_setting` is set to `soft`" do

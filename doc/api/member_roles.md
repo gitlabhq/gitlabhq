@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -12,6 +12,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Admin vulnerability added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121534) in GitLab 16.1.
 > - [Read dependency added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126247) in GitLab 16.3.
 > - [Name and description fields added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126423) in GitLab 16.3.
+> - [Admin merge request introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128302) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `admin_merge_request`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `admin_merge_request`.
+On GitLab.com, this feature is not available.
 
 ## List all member roles of a group
 
@@ -34,6 +39,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 | `[].description`         | string  | The description of the member role. |
 | `[].group_id`            | integer | The ID of the group that the member role belongs to. |
 | `[].base_access_level`   | integer | Base access level for member role. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer), 40 (Maintainer), or 50 (Owner).|
+| `[].admin_merge_request` | boolean | Permission to admin project merge requests and enables the ability to `download_code`. |
 | `[].admin_vulnerability` | boolean | Permission to admin project vulnerabilities. |
 | `[].read_code`           | boolean | Permission to read project code. |
 | `[].read_dependency`     | boolean | Permission to read project dependencies. |
@@ -42,7 +48,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 Example request:
 
 ```shell
-curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/member_roles"
+curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/groups/84/member_roles"
 ```
 
 Example response:
@@ -55,6 +61,7 @@ Example response:
     "description: "Custom guest that can read code",
     "group_id": 84,
     "base_access_level": 10,
+    "admin_merge_request": false,
     "admin_vulnerability": false,
     "read_code": true,
     "read_dependency": false,
@@ -66,6 +73,7 @@ Example response:
     "description: "Custom guest that read and admin security entities",
     "group_id": 84,
     "base_access_level": 10,
+    "admin_merge_request": false,
     "admin_vulnerability": true,
     "read_code": false,
     "read_dependency": true,
@@ -92,6 +100,7 @@ To add a member role to a group, the group must be at root-level (have no parent
 | `name`         | string         | yes      | The name of the member role. |
 | `description`  | string         | no       | The description of the member role. |
 | `base_access_level` | integer   | yes      | Base access level for configured role. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer), 40 (Maintainer), or 50 (Owner).|
+| `admin_merge_request` | boolean | no       | Permission to admin project merge requests. |
 | `admin_vulnerability` | boolean | no       | Permission to admin project vulnerabilities. |
 | `read_code`           | boolean | no       | Permission to read project code. |
 | `read_dependency`     | boolean | no       | Permission to read project dependencies. |
@@ -106,6 +115,7 @@ If successful, returns [`201`](rest/index.md#status-codes) and the following att
 | `description`            | string  | The description of the member role. |
 | `group_id`               | integer | The ID of the group that the member role belongs to. |
 | `base_access_level`      | integer | Base access level for member role. |
+| `admin_merge_request`    | boolean | Permission to admin project merge requests. |
 | `admin_vulnerability`    | boolean | Permission to admin project vulnerabilities. |
 | `read_code`              | boolean | Permission to read project code. |
 | `read_dependency`        | boolean | Permission to read project dependencies. |
@@ -114,7 +124,7 @@ If successful, returns [`201`](rest/index.md#status-codes) and the following att
 Example request:
 
 ```shell
- curl --request POST --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"name" : "Custom guest", "base_access_level" : 10, "read_code" : true}' "https://example.gitlab.com/api/v4/groups/:id/member_roles"
+ curl --request POST --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"name" : "Custom guest", "base_access_level" : 10, "read_code" : true}' "https://gitlab.example.com/api/v4/groups/84/member_roles"
 ```
 
 Example response:
@@ -126,6 +136,7 @@ Example response:
   "description": null,
   "group_id": 84,
   "base_access_level": 10,
+  "admin_merge_requests": false,
   "admin_vulnerability": false,
   "read_code": true,
   "read_dependency": false,
@@ -157,5 +168,5 @@ If successful, returns [`204`](rest/index.md#status-codes) and an empty response
 Example request:
 
 ```shell
-curl --request DELETE --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" "https://example.gitlab.com/api/v4/groups/:group_id/member_roles/:member_role_id"
+curl --request DELETE --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/groups/84/member_roles/1"
 ```

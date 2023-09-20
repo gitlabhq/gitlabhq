@@ -1,30 +1,21 @@
 - pretty_name = @project&.full_name ? html_escape(@project&.full_name) : '<' + _('project name') + '>'
 - run_actions_text = html_escape(s_("ProjectService|Perform common operations on GitLab project: %{project_name}")) % { project_name: pretty_name }
+- external_link_icon = sprite_icon('external-link')
 
 %p= s_("ProjectService|To configure this integration, you should:")
-%ul.list-unstyled.indent-list
+%ol.indent-list
   %li
-    1.
-    = link_to help_page_url('user/project/integrations/mattermost_slash_commands', anchor: 'enable-custom-slash-commands-in-mattermost'), target: '_blank', rel: 'noopener noreferrer nofollow' do
-      Enable custom slash commands
-      = sprite_icon('external-link')
-    on your Mattermost installation.
+    - enable_slash_commands_link_url = help_page_url('user/project/integrations/mattermost_slash_commands', anchor: 'enable-custom-slash-commands-in-mattermost')
+    - enable_slash_commands_link = link_to '', enable_slash_commands_link_url, target: '_blank', rel: 'noopener noreferrer'
+    = safe_format(s_('MattermostService|%{link_start}Enable custom slash commands %{icon}%{link_end} on your Mattermost installation.'), tag_pair(enable_slash_commands_link, :link_start, :link_end), icon: external_link_icon)
   %li
-    2.
-    = link_to help_page_url('user/project/integrations/mattermost_slash_commands', anchor: 'create-a-slash-command-in-mattermost'), target: '_blank', rel: 'noopener noreferrer nofollow' do
-      Add a slash command
-      = sprite_icon('external-link')
-    in your Mattermost team with the options listed below.
+    - create_slash_commands_link_url = help_page_url('user/project/integrations/mattermost_slash_commands', anchor: 'create-a-slash-command-in-mattermost')
+    - create_slash_commands_link = link_to '', create_slash_commands_link_url, target: '_blank', rel: 'noopener noreferrer'
+    = safe_format(s_('MattermostService|%{link_start}Add a slash command %{icon}%{link_end} in your Mattermost team with the options listed below.'), tag_pair(create_slash_commands_link, :link_start, :link_end), icon: external_link_icon)
   %li
-    3. Paste the token into the
-    %strong Token
-    field.
+    = safe_format(s_('MattermostService|Paste the token into the %{strong_start}Token%{strong_end} field.'), tag_pair(tag.strong, :strong_start, :strong_end))
   %li
-    4. Select the
-    %strong Active
-    check box, then select
-    %strong Save changes
-    to start using GitLab inside Mattermost!
+    = safe_format(s_('MattermostService|Select the %{strong_start}Active%{strong_end} check box, then select %{strong_start}Save changes%{strong_end} to start using GitLab inside Mattermost!'), tag_pair(tag.strong, :strong_start, :strong_end))
 
 %hr
 
@@ -34,14 +25,14 @@
     .col-12.input-group
       = text_field_tag :display_name, "GitLab / #{pretty_name}".html_safe, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = clipboard_button(target: '#display_name', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#display_name', category: :primary, size: :medium)
 
   .form-group
     = label_tag :description, _('Description'), class: 'col-12 col-form-label  label-bold'
     .col-12.input-group
       = text_field_tag :description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = clipboard_button(target: '#description', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#description', category: :primary, size: :medium)
 
   .form-group
     = label_tag nil, s_('MattermostService|Command trigger word'), class: 'col-12 col-form-label label-bold'
@@ -59,7 +50,7 @@
     .col-12.input-group
       = text_field_tag :request_url, service_trigger_url(integration), class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = clipboard_button(target: '#request_url', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#request_url', category: :primary, size: :medium)
 
   .form-group
     = label_tag nil, s_('MattermostService|Request method'), class: 'col-12 col-form-label label-bold'
@@ -70,14 +61,14 @@
     .col-12.input-group
       = text_field_tag :response_username, 'GitLab', class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = clipboard_button(target: '#response_username', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#response_username', category: :primary, size: :medium)
 
   .form-group
     = label_tag :response_icon, s_('MattermostService|Response icon'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
       = text_field_tag :response_icon, asset_url('gitlab_logo.png'), class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = clipboard_button(target: '#response_icon', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#response_icon', category: :primary, size: :medium)
 
   .form-group
     = label_tag nil, _('Autocomplete'), class: 'col-12 col-form-label label-bold'
@@ -88,11 +79,11 @@
     .col-12.input-group
       = text_field_tag :autocomplete_hint, '[help]', class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = clipboard_button(target: '#autocomplete_hint', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#autocomplete_hint', category: :primary, size: :medium)
 
   .form-group
     = label_tag :autocomplete_description, _('Autocomplete description'), class: 'col-12 col-form-label label-bold'
     .col-12.input-group
       = text_field_tag :autocomplete_description, run_actions_text, class: 'form-control form-control-sm', readonly: 'readonly'
       .input-group-append
-        = clipboard_button(target: '#autocomplete_description', class: 'gl-button btn-default btn-icon input-group-text')
+        = clipboard_button(target: '#autocomplete_description', category: :primary, size: :medium)

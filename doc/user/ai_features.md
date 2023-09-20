@@ -5,62 +5,49 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: index, reference
 ---
 
-# AI/ML powered features
+# GitLab Duo
 
 GitLab is creating AI-assisted features across our DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle.
 
+| Feature | Purpose | Large Language Model | Current availability | Maturity |
+|-|-|-|-|-|
+| [Suggested Reviewers](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers) | Assists in creating faster and higher-quality reviews by automatically suggesting reviewers for your merge request. | GitLab creates a machine learning model for each project, which is used to generate reviewers <br><br> [View the issue](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10) | SaaS only | [Generally Available (GA)](../policy/experiment-beta-support.md#generally-available-ga) |
+| [Code Suggestions](project/repository/code_suggestions/index.md) | Helps you write code more efficiently by viewing code suggestions as you type. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS <br> Self-managed | [Beta](../policy/experiment-beta-support.md#beta) |
+| [Vulnerability summary](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | Helps you remediate vulnerabilities more efficiently, uplevel your skills, and write more secure code. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) <br><br> Anthropic's claude model if degraded performance | SaaS only <br><br> Ultimate tier | [Beta](../policy/experiment-beta-support.md#beta) |
+| [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | Helps you understand code by explaining it in English language. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only <br><br> Ultimate tier | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Chat](#answer-questions-with-chat) | Process and generate text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | Anthropic's claude model <br><br> OpenAI Embeddings | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | Statistical forecasting | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | Efficiently communicate the impact of your merge request changes. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | Generate a description for the merge request based on the contents of the template. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Test generation](project/merge_requests/ai_in_merge_requests.md#generate-suggested-tests-in-merge-requests) | Automates repetitive tasks and helps catch bugs early. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Git suggestions](https://gitlab.com/gitlab-org/gitlab/-/issues/409636) | Helps you discover or recall Git commands when and where you need them. | OpenAI | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| **Root cause analysis** | Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+| [Issue description generation](#summarize-an-issue-with-issue-description-generation) | Generate issue descriptions. | [Google Vertex Codey APIs](https://cloud.google.com/vertex-ai/docs/generative-ai/code/code-models-overview) | SaaS only | [Experiment](../policy/experiment-beta-support.md#experiment) |
+
 ## Enable AI/ML features
 
-> Introduced in GitLab 16.0 and [actively being rolled out](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222).
+The [Generally Available](../policy/experiment-beta-support.md#generally-available-ga) features listed in the previous table do not need to be enabled.
 
-Prerequisites:
+[Experiment features](../policy/experiment-beta-support.md#experiment) and [Beta features](../policy/experiment-beta-support.md#beta) (besides Code Suggestions) on SaaS must be enabled by a user who has the Owner role in the group. Their usage is subject to the [Testing Terms of Use](https://about.gitlab.com/handbook/legal/testing-agreement/).
 
-- You must have the Owner role for the group.
+In addition, all features built on large language models (LLM) from Google, Anthropic or OpenAI require that [third-party AI features are enabled](group/manage.md#enable-third-party-ai-features) (which they are by default). The table above shows which features are built on which LLM. To disable AI features powered by third-party APIs, clear this setting.
 
-To enable AI/ML features for a top-level group:
+Code Suggestions currently has its own settings:
 
-- Enable [Experiment features](group/manage.md#enable-experiment-features).
-- Enable [third-party AI features](group/manage.md#enable-third-party-ai-features) (enabled by default).
-  To disable AI features powered by third-party APIs, clear this setting.
+- View [how to enable for self-managed](project/repository/code_suggestions/saas.md#enable-code-suggestions).
+- View [how to enable for SaaS](project/repository/code_suggestions/self_managed.md#enable-code-suggestions-on-self-managed-gitlab).
 
-These settings work together so you can have a mix of both experimental and third-party AI features.
+The use of Code Suggestions is also subject to the [Testing Terms of Use](https://about.gitlab.com/handbook/legal/testing-agreement/).
 
-## Generally Available AI features
+![Settings to enable AI/ML features](img/enable_AI_ML_features.png)
 
-When a feature is [Generally Available](../policy/experiment-beta-support.md#generally-available-ga),
-it does not require [Experiment features to be enabled](group/manage.md#enable-experiment-features).
-Some of these features might require [third-party AI features to be enabled](group/manage.md#enable-third-party-ai-features).
+## Experimental AI features and how to use them
 
-The following feature is Generally Available:
+The following subsections describe the experimental AI features in more detail.
 
-- [Suggested Reviewers](project/merge_requests/reviews/index.md#suggested-reviewers)
-
-## Beta AI features
-
-[Beta features](../policy/experiment-beta-support.md#beta) do not require
-[Experiment features to be enabled](group/manage.md#enable-experiment-features).
-
-The following features are in Beta:
-
-- [Code Suggestions](project/repository/code_suggestions.md)
-- [Explain this vulnerability](application_security/vulnerabilities/index.md#explaining-a-vulnerability-beta)
-
-## Experiment AI features
-
-[Experiment](../policy/experiment-beta-support.md#experiment) AI features require
-[Experiment features to be enabled](group/manage.md#enable-experiment-features) as well as [third-party AI services to be enabled](group/manage.md#enable-third-party-ai-features).
-
-The following features are in Experiment:
-
-- [Fill in merge request templates](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates)
-- [Summarize merge request changes](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes)
-- [Summarize my merge request review](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review)
-- [Suggested merge or squash commit message](project/merge_requests/ai_in_merge_requests.md#suggested-merge-or-squash-commit-message)
-- [Generate suggested tests in merge requests](project/merge_requests/ai_in_merge_requests.md#generate-suggested-tests-in-merge-requests)
-
-The rest of the features described on this page are also in the Experiment phase.
-
-### Explain Selected Code in the Web UI **(ULTIMATE SAAS)**
+### Explain code in the Web UI with Code explanation **(ULTIMATE SAAS EXPERIMENT)**
 
 > Introduced in GitLab 15.11 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
@@ -75,7 +62,7 @@ By using a large language model, GitLab can explain the code in natural language
 
 Prerequisites:
 
-Additional prerequisites [beyond the two above](#experiment-ai-features).
+Additional prerequisites in addition to [the settings listed previously](#enable-aiml-features).
 
 - The project must be on GitLab.com.
 - You must have the GitLab Ultimate subscription tier.
@@ -83,7 +70,7 @@ Additional prerequisites [beyond the two above](#experiment-ai-features).
 
 To explain your code:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select any file in your project that contains code.
 1. On the file, select the lines that you want to have explained.
 1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
@@ -93,7 +80,7 @@ To explain your code:
 You can also have code explained in the context of a merge request. To explain
 code in a merge request:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Code > Merge requests**, then select your merge request.
 1. On the secondary menu, select **Changes**.
 1. On the file you would like explained, select the three dots (**{ellipsis_v}**) and select **View File @ $SHA**.
@@ -109,7 +96,7 @@ code in a merge request:
 
 We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 
-### GitLab Duo Chat **(ULTIMATE SAAS)**
+### Answer questions with Chat **(ULTIMATE SAAS EXPERIMENT)**
 
 > Introduced in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
@@ -154,7 +141,7 @@ Or, you can add a comment in the [feedback issue](https://gitlab.com/gitlab-org/
 NOTE:
 Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.
 
-### Summarize issue discussions **(ULTIMATE SAAS)**
+### Summarize issue discussions with Discussion summary **(ULTIMATE SAAS EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
@@ -174,7 +161,7 @@ Provide feedback on this experimental feature in [issue 407779](https://gitlab.c
 **Data usage**: When you use this feature, the text of public comments on the issue are sent to the large
 language model referenced above.
 
-### Show deployment frequency forecast **(ULTIMATE SAAS)**
+### Forecast deployment frequency with Value stream forecasting **(ULTIMATE ALL EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
@@ -182,7 +169,7 @@ This feature is an [Experiment](../policy/experiment-beta-support.md) on GitLab.
 
 In CI/CD Analytics, you can view a forecast of deployment frequency:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > CI/CD analytics**.
 1. Select the **Deployment frequency** tab.
 1. Turn on the **Show forecast** toggle.
@@ -191,9 +178,11 @@ In CI/CD Analytics, you can view a forecast of deployment frequency:
 The forecast is displayed as a dotted line on the chart. Data is forecasted for a duration that is half of the selected date range.
 For example, if you select a 30-day range, a forecast for the following 15 days is displayed.
 
+![Forecast deployment frequency](img/forecast_deployment_frequency.png)
+
 Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
 
-### Generate issue descriptions **(ULTIMATE SAAS)**
+### Summarize an issue with Issue description generation **(ULTIMATE SAAS EXPERIMENT)**
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 

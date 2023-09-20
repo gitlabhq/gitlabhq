@@ -2,27 +2,31 @@
 import { GlButton } from '@gitlab/ui';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
-import { sidebarState } from '../constants';
+import {
+  sidebarState,
+  SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
+  SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
+  SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
+} from '../constants';
 import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
+import { trackContextAccess } from '../utils';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
-import ContextHeader from './context_header.vue';
-import ContextSwitcher from './context_switcher.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
-import SidebarPeekBehavior, { STATE_CLOSED, STATE_WILL_OPEN } from './sidebar_peek_behavior.vue';
+import SidebarPeekBehavior from './sidebar_peek_behavior.vue';
+import SidebarHoverPeekBehavior from './sidebar_hover_peek_behavior.vue';
 
 export default {
   components: {
     GlButton,
     UserBar,
-    ContextHeader,
-    ContextSwitcher,
     HelpCenter,
     SidebarMenu,
     SidebarPeekBehavior,
+    SidebarHoverPeekBehavior,
     SidebarPortalTarget,
     TrialStatusWidget: () =>
       import('ee_component/contextual_sidebar/components/trial_status_widget.vue'),
@@ -32,6 +36,7 @@ export default {
   mixins: [Tracking.mixin()],
   i18n: {
     skipToMainContent: __('Skip to main content'),
+    primary: s__('Navigation|Primary'),
   },
   inject: ['showTrialStatusWidget'],
   props: {
@@ -45,25 +50,34 @@ export default {
       sidebarState,
       showPeekHint: false,
       isMouseover: false,
+      breakpoint: null,
     };
   },
   computed: {
+    showOverlay() {
+      return this.sidebarState.isPeek || this.sidebarState.isHoverPeek;
+    },
     menuItems() {
       return this.sidebarData.current_menu_items || [];
     },
     peekClasses() {
       return {
         'super-sidebar-peek-hint': this.showPeekHint,
-        'super-sidebar-peek': this.sidebarState.isPeek,
+        'super-sidebar-peek': this.showOverlay,
+        'super-sidebar-has-peeked': this.sidebarState.hasPeeked,
       };
     },
   },
-  watch: {
-    'sidebarState.isCollapsed': function isCollapsedWatcher(newIsCollapsed) {
-      if (newIsCollapsed && this.$refs['context-switcher']) {
-        this.$refs['context-switcher'].close();
-      }
-    },
+  created() {
+    const {
+      is_logged_in: isLoggedIn,
+      current_context: currentContext,
+      username,
+      track_visits_path: trackVisitsPath,
+    } = this.sidebarData;
+    if (isLoggedIn && currentContext.namespace) {
+      trackContextAccess(username, currentContext, trackVisitsPath);
+    }
   },
   mounted() {
     Mousetrap.bind(keysFor(TOGGLE_SUPER_SIDEBAR), this.toggleSidebar);
@@ -88,6 +102,7 @@ export default {
         this.sidebarState.isCollapsed = true;
         this.showPeekHint = false;
       } else if (state === STATE_WILL_OPEN) {
+        this.sidebarState.hasPeeked = true;
         this.sidebarState.isPeek = false;
         this.sidebarState.isCollapsed = true;
         this.showPeekHint = true;
@@ -97,8 +112,15 @@ export default {
         this.showPeekHint = false;
       }
     },
-    onContextSwitcherToggled(open) {
-      this.sidebarState.contextSwitcherOpen = open;
+    onHoverPeekChange(state) {
+      if (state === STATE_OPEN) {
+        this.sidebarState.hasPeeked = true;
+        this.sidebarState.isHoverPeek = true;
+        this.sidebarState.isCollapsed = false;
+      } else if (state === STATE_CLOSED) {
+        this.sidebarState.isHoverPeek = false;
+        this.sidebarState.isCollapsed = true;
+      }
     },
   },
 };
@@ -114,8 +136,9 @@ export default {
     >
       {{ $options.i18n.skipToMainContent }}
     </gl-button>
-    <aside
+    <nav
       id="super-sidebar"
+      :aria-label="$options.i18n.primary"
       class="super-sidebar"
       :class="peekClasses"
       data-testid="super-sidebar"
@@ -124,32 +147,23 @@ export default {
       @mouseenter="isMouseover = true"
       @mouseleave="isMouseover = false"
     >
-      <user-bar :has-collapse-button="!sidebarState.isPeek" :sidebar-data="sidebarData" />
+      <user-bar :has-collapse-button="!showOverlay" :sidebar-data="sidebarData" />
       <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
         <trial-status-widget
-          class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! nav-item-link gl-py-3"
+          class="gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-hover-bg-t-gray-a-08 gl-focus-bg-t-gray-a-08 gl-text-decoration-none! gl-py-3"
         />
         <trial-status-popover />
       </div>
       <div
         class="contextual-nav gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
       >
-        <div
-          class="gl-flex-grow-1"
-          :class="{ 'gl-overflow-auto': !sidebarState.contextSwitcherOpen }"
-          data-testid="nav-container"
-        >
-          <context-switcher
-            v-if="sidebarData.is_logged_in"
-            ref="context-switcher"
-            :username="sidebarData.username"
-            :projects-path="sidebarData.projects_path"
-            :groups-path="sidebarData.groups_path"
-            :current-context="sidebarData.current_context"
-            :context-header="sidebarData.current_context_header"
-            @toggle="onContextSwitcherToggled"
-          />
-          <context-header v-else :context="sidebarData.current_context_header" />
+        <div class="gl-flex-grow-1 gl-overflow-auto" data-testid="nav-container">
+          <h2
+            class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-sm super-sidebar-context-header"
+          >
+            {{ sidebarData.current_context_header }}
+          </h2>
+
           <sidebar-menu
             v-if="menuItems.length"
             :items="menuItems"
@@ -164,7 +178,7 @@ export default {
           <help-center :sidebar-data="sidebarData" />
         </div>
       </div>
-    </aside>
+    </nav>
     <a
       v-for="shortcutLink in sidebarData.shortcut_links"
       :key="shortcutLink.href"
@@ -176,13 +190,18 @@ export default {
     </a>
 
     <!--
-      Only mount SidebarPeekBehavior if the sidebar is peekable, to avoid
+      Only mount peek behavior components if the sidebar is peekable, to avoid
       setting up event listeners unnecessarily.
     -->
     <sidebar-peek-behavior
-      v-if="sidebarState.isPeekable"
+      v-if="sidebarState.isPeekable && !sidebarState.isHoverPeek"
       :is-mouse-over-sidebar="isMouseover"
       @change="onPeekChange"
+    />
+    <sidebar-hover-peek-behavior
+      v-if="sidebarState.isPeekable && !sidebarState.isPeek"
+      :is-mouse-over-sidebar="isMouseover"
+      @change="onHoverPeekChange"
     />
   </div>
 </template>

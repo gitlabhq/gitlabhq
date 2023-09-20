@@ -27,19 +27,18 @@ export default {
   },
   i18n: {
     collapseSidebar: __('Hide sidebar'),
-    expandSidebar: __('Show sidebar'),
-    navigationSidebar: __('Navigation sidebar'),
+    expandSidebar: __('Keep sidebar visible'),
+    primaryNavigationSidebar: __('Primary navigation sidebar'),
   },
   data() {
     return sidebarState;
   },
   computed: {
+    canOpen() {
+      return this.isCollapsed || this.isPeek || this.isHoverPeek;
+    },
     tooltipTitle() {
-      if (this.isPeek) return '';
-
-      return this.isCollapsed
-        ? this.$options.i18n.expandSidebar
-        : this.$options.i18n.collapseSidebar;
+      return this.canOpen ? this.$options.i18n.expandSidebar : this.$options.i18n.collapseSidebar;
     },
     tooltip() {
       return {
@@ -49,21 +48,21 @@ export default {
       };
     },
     ariaExpanded() {
-      return String(!this.isCollapsed);
+      return String(!this.canOpen);
     },
   },
   methods: {
     toggle() {
-      this.track(this.isCollapsed ? 'nav_show' : 'nav_hide', {
+      this.track(this.canOpen ? 'nav_show' : 'nav_hide', {
         label: 'nav_toggle',
         property: 'nav_sidebar',
       });
-      toggleSuperSidebarCollapsed(!this.isCollapsed, true);
+      toggleSuperSidebarCollapsed(!this.canOpen, true);
       this.focusOtherToggle();
     },
     focusOtherToggle() {
       this.$nextTick(() => {
-        const classSelector = this.isCollapsed ? JS_TOGGLE_EXPAND_CLASS : JS_TOGGLE_COLLAPSE_CLASS;
+        const classSelector = this.canOpen ? JS_TOGGLE_EXPAND_CLASS : JS_TOGGLE_COLLAPSE_CLASS;
         const otherToggle = document.querySelector(`.${classSelector}`);
         otherToggle?.focus();
       });
@@ -74,13 +73,12 @@ export default {
 
 <template>
   <gl-button
-    v-gl-tooltip.hover.noninteractive.ds500="tooltip"
+    v-gl-tooltip.hover="tooltip"
     aria-controls="super-sidebar"
     :aria-expanded="ariaExpanded"
-    :aria-label="$options.i18n.navigationSidebar"
+    :aria-label="$options.i18n.primaryNavigationSidebar"
     icon="sidebar"
     category="tertiary"
-    :disabled="isPeek"
     @click="toggle"
   />
 </template>

@@ -113,32 +113,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           end
 
           context 'with merge status recheck projection' do
-            context 'with batched_api_mergeability_checks FF on' do
-              it 'checks mergeability asynchronously in batch', :sidekiq_inline do
-                get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
+            it 'checks mergeability asynchronously in batch', :sidekiq_inline do
+              get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
 
-                expect_successful_response_with_paginated_array
+              expect_successful_response_with_paginated_array
 
-                expect(merge_request.reload.merge_status).to eq('can_be_merged')
-              end
-            end
-
-            context 'with batched_api_mergeability_checks FF off' do
-              before do
-                stub_feature_flags(batched_api_mergeability_checks: false)
-              end
-
-              it 'checks mergeability asynchronously' do
-                expect_next_instances_of(check_service_class, (1..2)) do |service|
-                  expect(service).not_to receive(:execute)
-                  expect(service).to receive(:async_execute).and_call_original
-                end
-
-                get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
-
-                expect_successful_response_with_paginated_array
-                expect(mr_entity['merge_status']).to eq('checking')
-              end
+              expect(merge_request.reload.merge_status).to eq('can_be_merged')
             end
           end
 

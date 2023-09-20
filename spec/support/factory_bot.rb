@@ -1,5 +1,19 @@
 # frozen_string_literal: true
 
+FactoryBot.define do
+  after(:build) do |object, _|
+    next unless object.respond_to?(:factory_bot_built=)
+
+    object.factory_bot_built = true
+  end
+
+  before(:create) do |object, _|
+    next unless object.respond_to?(:factory_bot_built=)
+
+    object.factory_bot_built = false
+  end
+end
+
 FactoryBot::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
   include StubMethodCalls

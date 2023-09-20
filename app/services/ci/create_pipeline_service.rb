@@ -154,13 +154,6 @@ module Ci
 
           duration >= LOG_MAX_CREATION_THRESHOLD
         end
-
-        l.log_when do |observations|
-          pipeline_includes_count = observations['pipeline_includes_count']
-          next false unless pipeline_includes_count
-
-          pipeline_includes_count.to_i > Gitlab::Ci::Config::External::Context::TEMP_MAX_INCLUDES
-        end
       end
     end
   end

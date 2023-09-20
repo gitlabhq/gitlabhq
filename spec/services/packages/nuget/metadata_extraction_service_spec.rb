@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :package_registry do
   let_it_be(:package_file) { create(:nuget_package).package_files.first }
 
-  subject { described_class.new(package_file.id) }
+  subject { described_class.new(package_file) }
 
   describe '#execute' do
     let(:nuspec_file_content) do
@@ -49,7 +49,7 @@ RSpec.describe Packages::Nuget::MetadataExtractionService, feature_category: :pa
     end
 
     it 'calls the necessary services and executes the metadata extraction' do
-      expect(::Packages::Nuget::ExtractMetadataFileService).to receive(:new).with(package_file.id) do
+      expect(::Packages::Nuget::ExtractMetadataFileService).to receive(:new).with(package_file) do
         double.tap do |service|
           expect(service).to receive(:execute).and_return(double(payload: nuspec_file_content))
         end

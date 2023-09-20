@@ -15,7 +15,7 @@ module BulkImports
 
     ServiceError = Class.new(StandardError)
 
-    DEFAULT_ALLOWED_CONTENT_TYPES = %w(application/gzip application/octet-stream).freeze
+    DEFAULT_ALLOWED_CONTENT_TYPES = %w[application/gzip application/octet-stream].freeze
 
     def initialize(
       configuration:,
@@ -83,6 +83,8 @@ module BulkImports
     end
 
     def raise_error(message)
+      logger.warn(message: message, response_headers: response_headers, importer: 'gitlab_migration')
+
       raise ServiceError, message
     end
 
@@ -109,12 +111,16 @@ module BulkImports
       @filename.presence || remote_filename
     end
 
+    def logger
+      @logger ||= Gitlab::Import::Logger.build
+    end
+
     def validate_url
       ::Gitlab::UrlBlocker.validate!(
         http_client.resource_url(relative_url),
         allow_localhost: allow_local_requests?,
         allow_local_network: allow_local_requests?,
-        schemes: %w(http https)
+        schemes: %w[http https]
       )
     end
 

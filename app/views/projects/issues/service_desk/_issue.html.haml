@@ -48,10 +48,10 @@
     .issuable-meta
       %ul.controls
         - if issue.closed? && issue.moved?
-          %li.issuable-status
+          %li
             = render Pajamas::BadgeComponent.new(_('Closed (moved)'), size: 'sm', variant: 'info')
         - elsif issue.closed?
-          %li.issuable-status
+          %li
             = render Pajamas::BadgeComponent.new(_('Closed'), size: 'sm', variant: 'info')
         - if issue.assignees.any?
           %li.gl-display-flex

@@ -5,17 +5,17 @@ namespace :gitlab do
     desc 'GitLab | Env | Show information about GitLab and its environment'
     task info: :gitlab_environment do
       # check if there is an RVM environment
-      rvm_version = run_and_match(%w(rvm --version), /[\d\.]+/).try(:to_s)
+      rvm_version = run_and_match(%w[rvm --version], /[\d\.]+/).try(:to_s)
       # check Ruby version
-      ruby_version = run_and_match(%w(ruby --version), /[\d\.p]+/).try(:to_s)
+      ruby_version = run_and_match(%w[ruby --version], /[\d\.p]+/).try(:to_s)
       # check Gem version
-      gem_version = run_command(%w(gem --version))
+      gem_version = run_command(%w[gem --version])
       # check Bundler version
-      bunder_version = run_and_match(%w(bundle --version), /[\d\.]+/).try(:to_s)
+      bunder_version = run_and_match(%w[bundle --version], /[\d\.]+/).try(:to_s)
       # check Rake version
-      rake_version = run_and_match(%w(rake --version), /[\d\.]+/).try(:to_s)
+      rake_version = run_and_match(%w[rake --version], /[\d\.]+/).try(:to_s)
       # check redis version
-      redis_version = run_and_match(%w(redis-cli --version), /redis-cli (\d+\.\d+\.\d+)/).to_a
+      redis_version = run_and_match(%w[redis-cli --version], /redis-cli (\d+\.\d+\.\d+)/).to_a
 
       # check for system defined proxies
       if Gitlab.ee?
@@ -23,7 +23,7 @@ namespace :gitlab do
       end
 
       # check Go version
-      go_version = run_and_match(%w(go version), /go version (.+)/).to_a
+      go_version = run_and_match(%w[go version], /go version (.+)/).to_a
 
       puts ""
       puts "System information".color(:yellow)
@@ -33,7 +33,7 @@ namespace :gitlab do
         puts "Proxy:\t\t#{proxies.present? ? proxies.color(:green) : "no"}"
       end
 
-      puts "Current User:\t#{run_command(%w(whoami))}"
+      puts "Current User:\t#{run_command(%w[whoami])}"
       puts "Using RVM:\t#{rvm_version.present? ? "yes".color(:green) : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
       puts "Ruby Version:\t#{ruby_version || "unknown".color(:red)}"

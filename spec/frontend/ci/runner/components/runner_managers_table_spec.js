@@ -60,8 +60,8 @@ describe('RunnerJobs', () => {
 
   it('shows status', () => {
     createComponent();
-    expect(findCellText({ field: 'status', i: 0 })).toBe(s__('Runners|Online'));
-    expect(findCellText({ field: 'status', i: 1 })).toBe(s__('Runners|Online'));
+    expect(findCellText({ field: 'status', i: 0 })).toContain(s__('Runners|Online'));
+    expect(findCellText({ field: 'status', i: 0 })).toContain(s__('Runners|Idle'));
   });
 
   it('shows version', () => {

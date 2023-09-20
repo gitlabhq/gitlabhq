@@ -1,15 +1,16 @@
 <script>
-import { GlModal, GlSearchBoxByType } from '@gitlab/ui';
+import { GlModal, GlSearchBoxByType, GlLink, GlSprintf } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import { joinPaths } from '../../lib/utils/url_utility';
 import { keybindingGroups } from './keybindings';
 import Shortcut from './shortcut.vue';
-import ShortcutsToggle from './shortcuts_toggle.vue';
 
 export default {
   components: {
     GlModal,
     GlSearchBoxByType,
-    ShortcutsToggle,
+    GlLink,
+    GlSprintf,
     Shortcut,
   },
   data() {
@@ -39,6 +40,9 @@ export default {
 
       return mapped.filter((group) => group.keybindings.length);
     },
+    absoluteUserPreferencesPath() {
+      return joinPaths(gon.relative_url_root || '/', '/-/profile/preferences');
+    },
   },
   i18n: {
     title: __(`Keyboard shortcuts`),
@@ -66,7 +70,21 @@ export default {
         :aria-label="$options.i18n.search"
         class="gl-w-half gl-mr-3"
       />
-      <shortcuts-toggle class="gl-w-half gl-ml-3" />
+      <span>
+        <gl-sprintf
+          :message="
+            __(
+              'Enable or disable keyboard shortcuts in your %{linkStart}user preferences%{linkEnd}.',
+            )
+          "
+        >
+          <template #link="{ content }">
+            <gl-link :href="absoluteUserPreferencesPath">
+              {{ content }}
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </span>
     </div>
     <div v-if="filteredKeybindings.length === 0" class="gl-px-5">
       {{ $options.i18n.noMatch }}

@@ -6,6 +6,13 @@ import { SIDEBAR_PINS_EXPANDED_COOKIE, SIDEBAR_COOKIE_EXPIRATION } from '../cons
 import MenuSection from './menu_section.vue';
 import NavItem from './nav_item.vue';
 
+const AMBIGUOUS_SETTINGS = {
+  ci_cd: s__('Navigation|CI/CD settings'),
+  merge_request_settings: s__('Navigation|Merge requests settings'),
+  monitor: s__('Navigation|Monitor settings'),
+  repository: s__('Navigation|Repository settings'),
+};
+
 export default {
   i18n: {
     pinned: s__('Navigation|Pinned'),
@@ -23,11 +30,6 @@ export default {
       required: false,
       default: () => [],
     },
-    separated: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     hasFlyout: {
       type: Boolean,
       required: false,
@@ -37,7 +39,7 @@ export default {
   data() {
     return {
       expanded: getCookie(SIDEBAR_PINS_EXPANDED_COOKIE) !== 'false',
-      draggableItems: this.items,
+      draggableItems: this.renameSettings(this.items),
     };
   },
   computed: {
@@ -63,7 +65,7 @@ export default {
       });
     },
     items(newItems) {
-      this.draggableItems = newItems;
+      this.draggableItems = this.renameSettings(newItems);
     },
   },
   methods: {
@@ -76,6 +78,15 @@ export default {
         event.oldIndex < event.newIndex,
       );
     },
+    renameSettings(items) {
+      return items.map((i) => {
+        const title = AMBIGUOUS_SETTINGS[i.id] || i.title;
+        return { ...i, title };
+      });
+    },
+    onPinRemove(itemId) {
+      this.$emit('pin-remove', itemId);
+    },
   },
 };
 </script>
@@ -84,10 +95,9 @@ export default {
   <menu-section
     :item="sectionItem"
     :expanded="expanded"
-    :separated="separated"
     :has-flyout="hasFlyout"
     @collapse-toggle="expanded = !expanded"
-    @pin-remove="(itemId) => $emit('pin-remove', itemId)"
+    @pin-remove="onPinRemove"
   >
     <draggable
       v-if="items.length > 0"
@@ -103,7 +113,7 @@ export default {
         :key="item.id"
         :item="item"
         is-in-pinned-section
-        @pin-remove="(itemId) => $emit('pin-remove', itemId)"
+        @pin-remove="onPinRemove"
       />
     </draggable>
     <li v-else class="gl-text-secondary gl-font-sm gl-py-3" style="margin-left: 2.5rem">

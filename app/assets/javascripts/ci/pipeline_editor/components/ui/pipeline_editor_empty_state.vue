@@ -61,8 +61,7 @@ export default {
         <gl-button
           variant="confirm"
           class="gl-mt-3"
-          data-testid="create_new_ci_button"
-          data-qa-selector="create_new_ci_button"
+          data-testid="create-new-ci-button"
           @click="createEmptyConfigFile"
         >
           {{ $options.i18n.btnText }}

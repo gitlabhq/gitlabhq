@@ -8,7 +8,7 @@ product_section: 'TBD'
 value_type: number
 status: removed
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113422
-milestone_removed: 15.10
+milestone_removed: "15.10"
 time_frame: 28d
 data_source: redis_hll
 instrumentation_class: AggregatedMetric

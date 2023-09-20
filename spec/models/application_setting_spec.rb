@@ -25,6 +25,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.kroki_formats).to eq({}) }
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
     it { expect(setting.max_decompressed_archive_size).to eq(25600) }
+    it { expect(setting.decompress_archive_file_timeout).to eq(210) }
   end
 
   describe 'validations' do
@@ -134,6 +135,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_presence_of(:container_registry_import_target_plan) }
     it { is_expected.to validate_presence_of(:container_registry_import_created_before) }
 
+    it { is_expected.to validate_numericality_of(:decompress_archive_file_timeout).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.not_to allow_value(nil).for(:decompress_archive_file_timeout) }
+
     it { is_expected.to validate_numericality_of(:dependency_proxy_ttl_group_policy_worker_capacity).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.not_to allow_value(nil).for(:dependency_proxy_ttl_group_policy_worker_capacity) }
 
@@ -236,6 +240,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(many_usernames(101)).for(:users_get_by_id_limit_allowlist) }
     it { is_expected.not_to allow_value(nil).for(:users_get_by_id_limit_allowlist) }
     it { is_expected.to allow_value([]).for(:users_get_by_id_limit_allowlist) }
+
+    it { is_expected.to allow_value(many_usernames(100)).for(:search_rate_limit_allowlist) }
+    it { is_expected.not_to allow_value(many_usernames(101)).for(:search_rate_limit_allowlist) }
+    it { is_expected.not_to allow_value(nil).for(:search_rate_limit_allowlist) }
+    it { is_expected.to allow_value([]).for(:search_rate_limit_allowlist) }
 
     it { is_expected.to allow_value('all_tiers').for(:whats_new_variant) }
     it { is_expected.to allow_value('current_tier').for(:whats_new_variant) }
@@ -436,11 +445,14 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
         it { is_expected.not_to allow_value(nil).for(:snowplow_collector_hostname) }
         it { is_expected.to allow_value("snowplow.gitlab.com").for(:snowplow_collector_hostname) }
+        it { is_expected.to allow_value("db-snowplow.gitlab.com").for(:snowplow_database_collector_hostname) }
+        it { is_expected.not_to allow_value("#{'a' * 256}db-snowplow.gitlab.com").for(:snowplow_database_collector_hostname) }
         it { is_expected.not_to allow_value('/example').for(:snowplow_collector_hostname) }
       end
 
       context 'when snowplow is not enabled' do
         it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
+        it { is_expected.to allow_value(nil).for(:snowplow_database_collector_hostname) }
       end
     end
 

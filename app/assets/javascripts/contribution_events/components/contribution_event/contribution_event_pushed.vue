@@ -53,7 +53,8 @@ export default {
     message() {
       if (this.ref.is_new) {
         return this.$options.i18n.new[this.ref.type];
-      } else if (this.ref.is_removed) {
+      }
+      if (this.ref.is_removed) {
         return this.$options.i18n.removed[this.ref.type];
       }
 

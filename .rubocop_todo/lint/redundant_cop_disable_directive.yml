@@ -123,7 +123,6 @@ Lint/RedundantCopDisableDirective:
     - 'ee/app/services/ee/search_service.rb'
     - 'ee/app/services/security/token_revocation_service.rb'
     - 'ee/app/workers/ee/issuable_export_csv_worker.rb'
-    - 'ee/app/workers/ee/namespaces/in_product_marketing_emails_worker.rb'
     - 'ee/app/workers/geo/design_repository_shard_sync_worker.rb'
     - 'ee/app/workers/geo/repository_shard_sync_worker.rb'
     - 'ee/app/workers/geo/repository_verification/secondary/shard_worker.rb'

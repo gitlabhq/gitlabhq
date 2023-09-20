@@ -8,7 +8,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
-import StatusBox from '~/issuable/components/status_box.vue';
+import StatusBadge from '~/issuable/components/status_badge.vue';
 import IssuePopover from '~/issuable/popover/components/issue_popover.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 
@@ -52,9 +52,9 @@ describe('Issue Popover', () => {
     });
 
     it('shows status badge', () => {
-      expect(wrapper.findComponent(StatusBox).props()).toEqual({
+      expect(wrapper.findComponent(StatusBadge).props()).toEqual({
         issuableType: 'issue',
-        initialState: issueQueryResponse.data.project.issue.state,
+        state: issueQueryResponse.data.project.issue.state,
       });
     });
 

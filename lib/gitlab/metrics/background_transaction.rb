@@ -8,7 +8,7 @@ module Gitlab
     # metadata such as endpoint_id, queue, and feature category.
     class BackgroundTransaction < Transaction
       THREAD_KEY = :_gitlab_metrics_background_transaction
-      BASE_LABEL_KEYS = %i(queue endpoint_id feature_category).freeze
+      BASE_LABEL_KEYS = %i[queue endpoint_id feature_category].freeze
 
       class << self
         def current

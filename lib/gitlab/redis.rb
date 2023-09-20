@@ -13,12 +13,15 @@ module Gitlab
       Gitlab::Redis::DbLoadBalancing,
       Gitlab::Redis::FeatureFlag,
       Gitlab::Redis::Queues,
+      Gitlab::Redis::QueuesMetadata,
+      Gitlab::Redis::Pubsub,
       Gitlab::Redis::RateLimiting,
       Gitlab::Redis::RepositoryCache,
       Gitlab::Redis::Sessions,
       Gitlab::Redis::SharedState,
       Gitlab::Redis::TraceChunks,
-      Gitlab::Redis::Chat
+      Gitlab::Redis::Chat,
+      Gitlab::Redis::Workhorse
     ].freeze
   end
 end

@@ -19,11 +19,6 @@ module Gitlab
               validates :config, type: Array
             end
 
-            # Remove this method when FF `ci_refactor_external_rules` is removed
-            def value
-              Feature.enabled?(:ci_refactor_external_rules) ? super : @config
-            end
-
             def composable_class
               Entry::Include::Rules::Rule
             end

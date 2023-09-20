@@ -46,6 +46,7 @@ export const AWS_TIP_MESSAGE = s__(
 );
 
 export const EVENT_LABEL = 'ci_variable_modal';
+export const DRAWER_EVENT_LABEL = 'ci_variable_drawer';
 export const EVENT_ACTION = 'validation_error';
 
 // AWS TOKEN CONSTANTS

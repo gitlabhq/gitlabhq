@@ -6,8 +6,8 @@ RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
   include Warden::Test::Helpers
 
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user)    { create(:user) }
-  let_it_be(:user2)   { create(:user) }
+  let_it_be(:user)    { create(:user, :no_super_sidebar) }
+  let_it_be(:user2)   { create(:user, :no_super_sidebar) }
 
   let(:markdown) do
     <<-MARKDOWN.strip_heredoc

@@ -32,7 +32,7 @@ Prerequisites:
 
 To view the standards adherence dashboard for a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 
 ### GitLab standard
@@ -75,13 +75,13 @@ information, see [Merge request approval rules](../../project/merge_requests/app
 > - GraphQL API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7222) in GitLab 14.9.
 > - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/5237) in GitLab 14.10. [Feature flag `compliance_violations_report`](https://gitlab.com/gitlab-org/gitlab/-/issues/346266) removed.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112111) to compliance violations report in GitLab 15.9.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/394950) ability to create/edit compliance frameworks in GitLab 16.0.
+> - Ability to create and edit compliance frameworks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394950) in GitLab 16.0.
 
 With compliance violations report, you can see a high-level view of merge request activity for all projects in the group.
 
 When you select a row in the compliance report, a drawer appears that provides:
 
-- The project name and [compliance framework label](../../project/settings/index.md#add-a-compliance-framework-to-a-project),
+- The project name and [compliance framework label](../../project/working_with_projects.md#add-a-compliance-framework-to-a-project),
   if the project has one assigned.
 - A link to the merge request that introduced the violation.
 - The merge request's branch path in the format `[source] into [target]`.
@@ -100,7 +100,7 @@ Prerequisites:
 
 To view the compliance violations report:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 
 You can sort the compliance report on:
@@ -207,7 +207,7 @@ If the commit has a related merge commit, then the following are also included:
 
 To generate the Chain of Custody report:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. Select **List of all merge commits**.
 
@@ -223,7 +223,7 @@ details for the provided commit SHA.
 
 To generate a commit-specific Chain of Custody report:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. At the top of the compliance report, to the right of **List of all commits**, select the down arrow
    (**{chevron-lg-down}**).
@@ -254,7 +254,7 @@ Prerequisites:
 
 To view the compliance frameworks report:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 
@@ -271,7 +271,7 @@ Prerequisites:
 
 To apply a compliance framework to one project in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Next to the project you want to add the compliance framework to, select **{plus}** **Add framework**.
@@ -279,7 +279,7 @@ To apply a compliance framework to one project in a group:
 
 To apply a compliance framework to multiple projects in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select multiple projects.
@@ -300,19 +300,45 @@ Prerequisites:
 
 To remove a compliance framework from one project in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Next to the compliance framework to remove from the project, select **{close}** on the framework label.
 
 To remove a compliance framework from multiple projects in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select multiple projects.
 1. From the **Choose one bulk action** dropdown list, select **Remove framework from selected projects**.
 1. Select **Remove**.
+
+### Export a report of merge request compliance violations on projects in a group
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356791) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_violation_csv_export`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
+`compliance_violation_csv_export`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+Export a report of merge request compliance violations on merge requests belonging to projects in a group. Reports:
+
+- Do not use filters on the violations report.
+- Are truncated at 15 MB so the email attachment is not too large.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To export a report of merge request compliance violations for projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Secure > Compliance center**.
+1. On the page, select the **Violations** tab.
+1. On the Violations tab, select the **Export full report as CSV** action in the top right corner
+
+A report is compiled and delivered to your email inbox as an attachment.
 
 ### Export a report of compliance frameworks on projects in a group
 
@@ -329,7 +355,7 @@ Prerequisites:
 
 To export a report of compliance frameworks on projects in a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. On the Frameworks tab, select the **Export as CSV** action in the top right corner
@@ -342,7 +368,7 @@ A report is compiled and delivered to your email inbox as an attachment.
 
 To filter the list of compliance frameworks:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. On the left sidebar, select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. In the search field:

@@ -109,9 +109,9 @@ export function updateEpicsCount({
         epicBoardList: {
           ...epicBoardList,
           metadata: {
+            ...epicBoardList.metadata,
             epicsCount: epicBoardList.metadata.epicsCount - 1,
             totalWeight: epicBoardList.metadata.totalWeight - epicWeight,
-            ...epicBoardList.metadata,
           },
         },
       }),
@@ -127,9 +127,9 @@ export function updateEpicsCount({
       epicBoardList: {
         ...epicBoardList,
         metadata: {
+          ...epicBoardList.metadata,
           epicsCount: epicBoardList.metadata.epicsCount + 1,
           totalWeight: epicBoardList.metadata.totalWeight + epicWeight,
-          ...epicBoardList.metadata,
         },
       },
     }),

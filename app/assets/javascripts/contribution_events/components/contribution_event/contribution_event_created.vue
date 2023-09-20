@@ -24,7 +24,7 @@ export default {
       return this.event.resource_parent;
     },
     message() {
-      if (!this.target) {
+      if (!this.target.type) {
         return EVENT_CREATED_I18N[this.resourceParent.type] || EVENT_CREATED_I18N[TYPE_FALLBACK];
       }
 

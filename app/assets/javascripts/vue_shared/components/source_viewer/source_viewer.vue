@@ -33,11 +33,20 @@ export default {
   components: {
     GlLoadingIcon,
     Chunk,
+    CodeownersValidation: () => import('ee_component/blob/components/codeowners_validation.vue'),
   },
   mixins: [Tracking.mixin()],
   props: {
     blob: {
       type: Object,
+      required: true,
+    },
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    currentRef: {
+      type: String,
       required: true,
     },
   },
@@ -49,7 +58,6 @@ export default {
       firstChunk: null,
       chunks: {},
       isLoading: true,
-      isLineSelected: false,
       lineHighlighter: null,
     };
   },
@@ -66,7 +74,8 @@ export default {
       if (this.blob.name && this.blob.name.endsWith(`.${SVELTE_LANGUAGE}`)) {
         // override for svelte files until https://github.com/rouge-ruby/rouge/issues/1717 is resolved
         return SVELTE_LANGUAGE;
-      } else if (this.blob.name === this.$options.codeownersFileName) {
+      }
+      if (this.isCodeownersFile) {
         // override for codeowners files
         return this.$options.codeownersLanguage;
       }
@@ -86,6 +95,9 @@ export default {
     },
     totalChunks() {
       return Object.keys(this.chunks).length;
+    },
+    isCodeownersFile() {
+      return this.blob.name === CODEOWNERS_FILE_NAME;
     },
   },
   async created() {
@@ -121,7 +133,7 @@ export default {
       this.generateRemainingChunks();
       this.isLoading = false;
       await this.$nextTick();
-      this.lineHighlighter = new LineHighlighter({ scrollBehavior: 'auto' });
+      this.selectLine();
     });
   },
   methods: {
@@ -227,18 +239,16 @@ export default {
       return languageDefinition;
     },
     async selectLine() {
-      if (this.isLineSelected || !this.lineHighlighter) {
-        return;
+      if (!this.lineHighlighter) {
+        this.lineHighlighter = new LineHighlighter({ scrollBehavior: 'auto' });
       }
-
-      this.isLineSelected = true;
       await this.$nextTick();
-      this.lineHighlighter.highlightHash(this.$route.hash);
+      const scrollEnabled = false;
+      this.lineHighlighter.highlightHash(this.$route.hash, scrollEnabled);
     },
   },
   userColorScheme: window.gon.user_color_scheme,
   currentlySelectedLine: null,
-  codeownersFileName: CODEOWNERS_FILE_NAME,
   codeownersLanguage: CODEOWNERS_LANGUAGE,
 };
 </script>
@@ -250,6 +260,13 @@ export default {
     :data-path="blob.path"
     data-qa-selector="blob_viewer_file_content"
   >
+    <codeowners-validation
+      v-if="isCodeownersFile"
+      class="gl-text-black-normal"
+      :current-ref="currentRef"
+      :project-path="projectPath"
+      :file-path="blob.path"
+    />
     <chunk
       v-if="firstChunk"
       :lines="firstChunk.lines"
@@ -263,20 +280,21 @@ export default {
     />
 
     <gl-loading-icon v-if="isLoading" size="sm" class="gl-my-5" />
-    <chunk
-      v-for="(chunk, key, index) in chunks"
-      v-else
-      :key="key"
-      :lines="chunk.lines"
-      :content="chunk.content"
-      :total-lines="chunk.totalLines"
-      :starting-from="chunk.startingFrom"
-      :is-highlighted="chunk.isHighlighted"
-      :chunk-index="index"
-      :language="chunk.language"
-      :blame-path="blob.blamePath"
-      :total-chunks="totalChunks"
-      @appear="highlightChunk"
-    />
+    <template v-else>
+      <chunk
+        v-for="(chunk, key, index) in chunks"
+        :key="key"
+        :lines="chunk.lines"
+        :content="chunk.content"
+        :total-lines="chunk.totalLines"
+        :starting-from="chunk.startingFrom"
+        :is-highlighted="chunk.isHighlighted"
+        :chunk-index="index"
+        :language="chunk.language"
+        :blame-path="blob.blamePath"
+        :total-chunks="totalChunks"
+        @appear="highlightChunk"
+      />
+    </template>
   </div>
 </template>

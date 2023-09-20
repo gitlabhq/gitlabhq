@@ -26,7 +26,7 @@ module API
           end
           post 'create', urgency: :low do
             present candidate_repository.create!(experiment, params[:start_time], params[:tags], params[:run_name]),
-              with: Entities::Ml::Mlflow::Run, packages_url: packages_url
+              with: Entities::Ml::Mlflow::GetRun, packages_url: packages_url
           end
 
           desc 'Gets an MLFlow Run, which maps to GitLab Candidates' do
@@ -38,7 +38,47 @@ module API
             optional :run_uuid, type: String, desc: 'This parameter is ignored'
           end
           get 'get', urgency: :low do
-            present candidate, with: Entities::Ml::Mlflow::Run, packages_url: packages_url
+            present candidate, with: Entities::Ml::Mlflow::GetRun, packages_url: packages_url
+          end
+
+          desc 'Searches runs/candidates within a project' do
+            success Entities::Ml::Mlflow::Run
+            detail 'https://www.mlflow.org/docs/1.28.0/rest-api.html#search-runs' \
+                   'experiment_ids supports only a single experiment ID.' \
+                   'Introduced in GitLab 16.4'
+          end
+          params do
+            requires :experiment_ids,
+              type: Array,
+              desc: 'IDs of the experiments to get searches from, relative to the project'
+            optional :max_results,
+              type: Integer,
+              desc: 'Maximum number of runs/candidates to fetch in a page. Default is 200, maximum in 1000',
+              default: 200
+            optional :order_by,
+              type: String,
+              desc: 'Order criteria. Can be by a column of the run/candidate (created_at, name) or by a metric if' \
+                    'prefixed by `metrics`. Valid examples: `created_at`, `created_at DESC`, `metrics.my_metric DESC`' \
+                    'Sorting by candidate parameter or metadata is not supported.',
+              default: 'created_at DESC'
+            optional :page_token,
+              type: String,
+              desc: 'Token for pagination'
+          end
+          get 'search', urgency: :low do
+            params[:experiment_id] = params[:experiment_ids][0]
+
+            max_results = [params[:max_results], 1000].min
+            finder_params = candidates_order_params(params)
+            finder = ::Projects::Ml::CandidateFinder.new(experiment, finder_params)
+            paginator = finder.execute.keyset_paginate(cursor: params[:page_token], per_page: max_results)
+
+            result = {
+              candidates: paginator.records,
+              next_page_token: paginator.cursor_for_next_page
+            }
+
+            present result, with: Entities::Ml::Mlflow::SearchRuns, packages_url: packages_url
           end
 
           desc 'Updates a Run.' do

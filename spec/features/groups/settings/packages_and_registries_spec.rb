@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Group Package and registry settings', feature_category: :package_registry do
   include WaitForRequests
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
   let(:group) { create(:group) }
   let(:sub_group) { create(:group, parent: group) }
 

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Group Dependency Proxy', feature_category: :dependency_proxy do
-  let(:owner) { create(:user) }
-  let(:reporter) { create(:user) }
+  let(:owner) { create(:user, :no_super_sidebar) }
+  let(:reporter) { create(:user, :no_super_sidebar) }
   let(:group) { create(:group) }
   let(:path) { group_dependency_proxy_path(group) }
   let(:settings_path) { group_settings_packages_and_registries_path(group) }

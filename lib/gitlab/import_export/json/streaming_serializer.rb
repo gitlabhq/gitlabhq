@@ -75,10 +75,12 @@ module Gitlab
         def serialize_many_relations(key, records, options)
           log_relation_export(key, records.size)
 
-          enumerator = Enumerator.new do |items|
-            key_preloads = preloads&.dig(key)
+          key_preloads = preloads&.dig(key)
 
-            batch(records, key) do |batch|
+          batch(records, key) do |batch|
+            next if batch.empty?
+
+            batch_enumerator = Enumerator.new do |items|
               batch = batch.preload(key_preloads) if key_preloads
 
               batch.each do |record|
@@ -91,9 +93,11 @@ module Gitlab
                 after_read_callback(record)
               end
             end
-          end
 
-          json_writer.write_relation_array(@exportable_path, key, enumerator)
+            json_writer.write_relation_array(@exportable_path, key, batch_enumerator)
+
+            Gitlab::SafeRequestStore.clear!
+          end
         end
 
         def exportable_json_record(record, options, key)

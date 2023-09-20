@@ -71,7 +71,7 @@
                   %p.gl-mb-4.gl-text-gray-500= s_("UserProfile|Pronounced as: %{pronunciation}") % { pronunciation: @user.pronunciation }
 
               - if @user.status&.customized?
-                .cover-status.gl-display-inline-flex.gl-align-items-center.gl-mb-3
+                .cover-status.gl-display-inline-flex.gl-align-items-baseline.gl-mb-3
                   = emoji_icon(@user.status.emoji, class: 'gl-mr-2')
                   = markdown_field(@user.status, :message)
               = render "users/profile_basic_info"

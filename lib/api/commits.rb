@@ -41,7 +41,7 @@ module API
           namespace: namespace,
           user: current_user,
           label: 'counts.web_ide_commits',
-          context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: 'counts.web_ide_commits').to_context]
+          context: [Gitlab::Usage::MetricDefinition.context_for('counts.web_ide_commits').to_context]
         )
       end
     end

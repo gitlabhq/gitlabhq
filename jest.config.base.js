@@ -37,7 +37,7 @@ module.exports = (path, options = {}) => {
   }
 
   if (USE_VUE_3) {
-    setupFilesAfterEnv.unshift(`<rootDir>/${path}/vue_compat_test_setup.js`);
+    setupFilesAfterEnv.unshift('<rootDir>/spec/frontend/vue_compat_test_setup.js');
     Object.assign(vueModuleNameMappers, {
       '^vue$': '@vue/compat',
       '^@vue/test-utils$': '@vue/test-utils-vue3',
@@ -262,5 +262,9 @@ module.exports = (path, options = {}) => {
       url: TEST_HOST,
     },
     testRunner: 'jest-jasmine2',
+    snapshotSerializers: [
+      '<rootDir>/spec/frontend/__helpers__/html_string_serializer.js',
+      '<rootDir>/spec/frontend/__helpers__/clean_html_element_serializer.js',
+    ],
   };
 };

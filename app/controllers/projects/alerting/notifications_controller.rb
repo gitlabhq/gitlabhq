@@ -66,13 +66,9 @@ module Projects
       def integration
         AlertManagement::HttpIntegrationsFinder.new(
           project,
-          endpoint_identifier: endpoint_identifier,
+          endpoint_identifier: params[:endpoint_identifier],
           active: true
         ).execute.first
-      end
-
-      def endpoint_identifier
-        params[:endpoint_identifier] || AlertManagement::HttpIntegration::LEGACY_IDENTIFIERS
       end
 
       def notification_payload

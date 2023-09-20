@@ -299,7 +299,7 @@ RSpec.describe SentNotificationsController do
       end
 
       context 'when support bot is the notification recipient' do
-        let(:sent_notification) { create(:sent_notification, project: target_project, noteable: noteable, recipient: User.support_bot) }
+        let(:sent_notification) { create(:sent_notification, project: target_project, noteable: noteable, recipient: Users::Internal.support_bot) }
 
         it 'deletes the external author on the issue' do
           expect { unsubscribe }.to change { issue.issue_email_participants.count }.by(-1)

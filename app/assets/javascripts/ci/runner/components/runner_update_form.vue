@@ -96,7 +96,7 @@ export default {
 </script>
 <template>
   <gl-form @submit.prevent="onSubmit">
-    <runner-form-fields v-model="model" :loading="loading" />
+    <runner-form-fields v-model="model" :loading="loading" :runner-type="runnerType" />
     <runner-update-cost-factor-fields v-model="model" :runner-type="runnerType" />
 
     <div class="gl-mt-6">

@@ -38,7 +38,7 @@ module Gitlab::UsageDataCounters
         expanded_template_name = expand_template_name(template_name)
         results = [expanded_template_name].tap do |result|
           template = Gitlab::Template::GitlabCiYmlTemplate.find(template_name.chomp('.gitlab-ci.yml'))
-          data = Gitlab::Ci::Config::Yaml.load!(template.content)
+          data = Gitlab::Ci::Config::Yaml::Loader.new(template.content).load.content
           [data[:include]].compact.flatten.each do |ci_include|
             if ci_include_template = ci_include[:template]
               result.concat(all_included_templates(ci_include_template))

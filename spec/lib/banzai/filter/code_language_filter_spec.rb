@@ -27,7 +27,7 @@ RSpec.describe Banzai::Filter::CodeLanguageFilter, feature_category: :team_plann
     end
   end
 
-  context 'when lang is specified' do
+  context 'when lang is specified on `pre`' do
     it 'adds data-canonical-lang and removes lang attribute' do
       result = filter('<pre lang="ruby"><code>def fun end</code></pre>')
 
@@ -36,19 +36,39 @@ RSpec.describe Banzai::Filter::CodeLanguageFilter, feature_category: :team_plann
     end
   end
 
-  context 'when lang has extra params' do
-    let(:lang_params) { 'foo-bar-kux' }
-    let(:xss_lang) { %(ruby data-meta="foo-bar-kux"&lt;script&gt;alert(1)&lt;/script&gt;) }
+  context 'when lang is specified on `code`' do
+    it 'adds data-canonical-lang to `pre` and removes lang attribute' do
+      result = filter('<pre><code lang="ruby">def fun end</code></pre>')
 
-    it 'includes data-lang-params tag with extra information and removes data-meta' do
-      expected_result = <<~HTML
+      expect(result.to_html.delete("\n"))
+        .to eq('<pre data-canonical-lang="ruby"><code>def fun end</code></pre>')
+    end
+  end
+
+  context 'when lang has extra params' do
+    let_it_be(:lang_params) { 'foo-bar-kux' }
+    let_it_be(:xss_lang) { %(ruby data-meta="foo-bar-kux"&lt;script&gt;alert(1)&lt;/script&gt;) }
+    let_it_be(:expected_result) do
+      <<~HTML
         <pre data-canonical-lang="ruby" data-lang-params="#{lang_params}">
         <code>This is a test</code></pre>
       HTML
+    end
 
-      result = filter(%(<pre lang="ruby" data-meta="#{lang_params}"><code>This is a test</code></pre>))
+    context 'when lang is specified on `pre`' do
+      it 'includes data-lang-params tag with extra information and removes data-meta' do
+        result = filter(%(<pre lang="ruby" data-meta="#{lang_params}"><code>This is a test</code></pre>))
 
-      expect(result.to_html.delete("\n")).to eq(expected_result.delete("\n"))
+        expect(result.to_html.delete("\n")).to eq(expected_result.delete("\n"))
+      end
+    end
+
+    context 'when lang is specified on `code`' do
+      it 'includes data-lang-params tag with extra information and removes data-meta' do
+        result = filter(%(<pre><code lang="ruby" data-meta="#{lang_params}">This is a test</code></pre>))
+
+        expect(result.to_html.delete("\n")).to eq(expected_result.delete("\n"))
+      end
     end
 
     include_examples 'XSS prevention', 'ruby'

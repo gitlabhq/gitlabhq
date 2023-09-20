@@ -20,7 +20,7 @@
 
   // Header
 
-  .navbar-gitlab {
+  .navbar-gitlab:not(.super-sidebar-logged-out) {
     background-color: $navbar-theme-color;
 
     .navbar-collapse {
@@ -283,11 +283,12 @@
   $theme-color,
   $theme-color-darkest,
 ) {
+  --sidebar-background: #{mix(white, $theme-color-lightest, 50%)};
   --transparent-white-16: rgba(255, 255, 255, 0.16);
   --transparent-white-24: rgba(255, 255, 255, 0.24);
 
   .super-sidebar {
-    background-color: $theme-color-lightest;
+    background-color: var(--sidebar-background);
   }
 
   .super-sidebar .user-bar {
@@ -334,5 +335,9 @@
 
   .active-indicator {
     background-color: $theme-color;
+  }
+
+  .super-sidebar-context-header {
+    color: $theme-color;
   }
 }

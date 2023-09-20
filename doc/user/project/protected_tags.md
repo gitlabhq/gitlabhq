@@ -31,7 +31,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected tags**.
 1. Select **Add new**.
@@ -77,7 +77,9 @@ all matching tags:
 A tag and a branch with identical names can contain different commits. If your
 tags and branches use the same names, users running `git checkout`
 commands might check out the _tag_ `qa` when they instead meant to check out
-the _branch_ `qa`.
+the _branch_ `qa`. As an added security measure, avoid creating tags with the
+same name as branches. Confusing the two could lead to potential
+security or operational issues.
 
 To prevent this problem:
 
@@ -111,7 +113,7 @@ Prerequisites:
 
 To allow a deploy key to create a protected tag:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Protected tags**.
 1. From the **Tag** dropdown list, select the tag you want to protect.
@@ -129,7 +131,7 @@ Prerequisite:
 
 To do this:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Tags**.
 1. Next to the tag you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, enter the tag name and select **Yes, delete protected tag**.

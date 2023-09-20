@@ -380,7 +380,7 @@ Example response:
     "iid": 2,
     "project_id": 9,
     "sha": "e564015ac6cb3d8617647802c875b27d392f72a6",
-    "ref": "master",
+    "ref": "main",
     "status": "canceled",
     "source": "push",
     "created_at": "2023-02-01T12:23:23.694Z",

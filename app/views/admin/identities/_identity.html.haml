@@ -7,6 +7,8 @@
     = saml_group_link(identity)
   %td
     = identity.extern_uid
+  %td
+    = '-'
   %td{ class: 'gl-py-0!' }
     - button_classes = 'has-tooltip gl-my-3'
     = render Pajamas::ButtonComponent.new(category: :tertiary,

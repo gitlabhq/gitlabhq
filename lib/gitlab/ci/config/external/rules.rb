@@ -5,29 +5,19 @@ module Gitlab
     class Config
       module External
         class Rules
-          # Remove these two constants when FF `ci_refactor_external_rules` is removed
-          ALLOWED_KEYS = Entry::Include::Rules::Rule::ALLOWED_KEYS
-          ALLOWED_WHEN = Entry::Include::Rules::Rule::ALLOWED_WHEN
-
           InvalidIncludeRulesError = Class.new(Mapper::Error)
 
           def initialize(rule_hashes)
-            if Feature.enabled?(:ci_refactor_external_rules)
-              return unless rule_hashes
+            return unless rule_hashes
 
-              # We must compose the include rules entry here because included
-              # files are expanded before `@root.compose!` runs in Ci::Config.
-              rules_entry = Entry::Include::Rules.new(rule_hashes)
-              rules_entry.compose!
+            # We must compose the include rules entry here because included
+            # files are expanded before `@root.compose!` runs in Ci::Config.
+            rules_entry = Entry::Include::Rules.new(rule_hashes)
+            rules_entry.compose!
 
-              raise InvalidIncludeRulesError, "include:#{rules_entry.errors.first}" unless rules_entry.valid?
+            raise InvalidIncludeRulesError, "include:#{rules_entry.errors.first}" unless rules_entry.valid?
 
-              @rule_list = Build::Rules::Rule.fabricate_list(rules_entry.value)
-            else
-              validate(rule_hashes)
-
-              @rule_list = Build::Rules::Rule.fabricate_list(rule_hashes)
-            end
+            @rule_list = Build::Rules::Rule.fabricate_list(rules_entry.value)
           end
 
           def evaluate(context)
@@ -38,28 +28,14 @@ module Gitlab
             else
               Result.new('never')
             end
+          rescue Build::Rules::Rule::Clause::ParseError => e
+            raise InvalidIncludeRulesError, "include:#{e.message}"
           end
 
           private
 
           def match_rule(context)
-            @rule_list.find { |rule| rule.matches?(nil, context) }
-          end
-
-          # Remove this method when FF `ci_refactor_external_rules` is removed
-          def validate(rule_hashes)
-            return unless rule_hashes.is_a?(Array)
-
-            rule_hashes.each do |rule_hash|
-              next if (rule_hash.keys - ALLOWED_KEYS).empty? && valid_when?(rule_hash)
-
-              raise InvalidIncludeRulesError, "invalid include rule: #{rule_hash}"
-            end
-          end
-
-          # Remove this method when FF `ci_refactor_external_rules` is removed
-          def valid_when?(rule_hash)
-            rule_hash[:when].nil? || rule_hash[:when].in?(ALLOWED_WHEN)
+            @rule_list.find { |rule| rule.matches?(context.pipeline, context) }
           end
 
           Result = Struct.new(:when) do

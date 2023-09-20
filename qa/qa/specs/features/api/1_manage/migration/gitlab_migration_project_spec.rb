@@ -90,7 +90,11 @@ module QA
 
         it(
           'successfully imports repository',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347570'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347570',
+          quarantine: {
+            type: :bug,
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422430'
+          }
         ) do
           expect_project_import_finished_successfully
 

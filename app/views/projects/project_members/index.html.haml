@@ -1,8 +1,6 @@
 - add_page_specific_style 'page_bundles/members'
 - page_title _("Members")
 
-= render_if_exists 'shared/ultimate_feature_removal_banner', project: @project
-
 .row.gl-mt-3
   .col-lg-12
     .gl-display-flex.gl-flex-wrap
@@ -26,7 +24,7 @@
           - if can_admin_project_member?(@project)
             .js-invite-members-trigger{ data: { variant: 'confirm',
               classes: 'gl-md-w-auto gl-w-full gl-md-ml-3 gl-md-mt-0 gl-mt-3',
-              trigger_source: 'project-members-page',
+              trigger_source: 'project_members_page',
               display_text: _('Invite members') } }
       - else
         - if project_can_be_shared?

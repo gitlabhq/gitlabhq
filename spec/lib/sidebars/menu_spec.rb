@@ -33,6 +33,8 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
         item_id: 'id1',
         title: 'Is active',
         link: 'foo2',
+        avatar: '/avatar.png',
+        entity_id: 123,
         active_routes: { controller: 'fooc' }
       ))
       menu.add_item(Sidebars::MenuItem.new(
@@ -51,6 +53,9 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
         {
           title: "Title",
           icon: nil,
+          avatar: nil,
+          avatar_shape: 'rect',
+          entity_id: nil,
           link: "foo2",
           is_active: true,
           pill_count: nil,
@@ -60,6 +65,8 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
               id: 'id1',
               title: "Is active",
               icon: nil,
+              avatar: '/avatar.png',
+              entity_id: 123,
               link: "foo2",
               is_active: true,
               pill_count: nil,
@@ -69,6 +76,8 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
               id: 'id2',
               title: "Not active",
               icon: nil,
+              avatar: nil,
+              entity_id: nil,
               link: "foo3",
               is_active: false,
               pill_count: 10,
@@ -85,6 +94,9 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
         {
           title: "Title",
           icon: nil,
+          avatar: nil,
+          avatar_shape: 'rect',
+          entity_id: nil,
           link: nil,
           is_active: false,
           pill_count: 'foo',

@@ -16,8 +16,10 @@ module DesignManagement
 
       version = delete_designs!
       EventCreateService.new.destroy_designs(designs, current_user)
-      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_designs_removed_action(author: current_user,
-                                                                                               project: project)
+      Gitlab::UsageDataCounters::IssueActivityUniqueCounter.track_issue_designs_removed_action(
+        author: current_user,
+        project: project
+      )
       TodosDestroyer::DestroyedDesignsWorker.perform_async(designs.map(&:id))
 
       success(version: version)

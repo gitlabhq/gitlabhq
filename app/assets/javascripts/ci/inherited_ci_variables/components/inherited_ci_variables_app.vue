@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { reportMessageToSentry } from '~/ci/ci_variable_list/utils';
+import { reportMessageToSentry } from '~/ci/utils';
 import CiVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
 import getInheritedCiVariables from '../graphql/queries/inherited_ci_variables.query.graphql';
 

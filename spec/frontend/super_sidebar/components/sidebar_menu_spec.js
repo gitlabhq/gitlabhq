@@ -16,13 +16,8 @@ const menuItems = [
 
 describe('Sidebar Menu', () => {
   let wrapper;
-  let flyoutFlag = false;
-
   const createWrapper = (extraProps = {}) => {
     wrapper = shallowMountExtended(SidebarMenu, {
-      provide: {
-        glFeatures: { superSidebarFlyoutMenus: flyoutFlag },
-      },
       propsData: {
         items: sidebarData.current_menu_items,
         isLoggedIn: sidebarData.is_logged_in,
@@ -125,8 +120,11 @@ describe('Sidebar Menu', () => {
     });
 
     describe('flyout menus', () => {
-      describe('when feature is disabled', () => {
+      describe('when screen width is smaller than "md" breakpoint', () => {
         beforeEach(() => {
+          jest.spyOn(GlBreakpointInstance, 'windowWidth').mockImplementation(() => {
+            return 767;
+          });
           createWrapper({
             items: menuItems,
           });
@@ -140,59 +138,27 @@ describe('Sidebar Menu', () => {
         });
       });
 
-      describe('when feature is enabled', () => {
+      describe('when screen width is equal or larger than "md" breakpoint', () => {
         beforeEach(() => {
-          flyoutFlag = true;
-        });
-
-        describe('when screen width is smaller than "md" breakpoint', () => {
-          beforeEach(() => {
-            jest.spyOn(GlBreakpointInstance, 'windowWidth').mockImplementation(() => {
-              return 767;
-            });
-            createWrapper({
-              items: menuItems,
-            });
+          jest.spyOn(GlBreakpointInstance, 'windowWidth').mockImplementation(() => {
+            return 768;
           });
-
-          it('does not add flyout menus to sections', () => {
-            expect(findNonStaticSectionItems().wrappers.map((w) => w.props('hasFlyout'))).toEqual([
-              false,
-              false,
-            ]);
+          createWrapper({
+            items: menuItems,
           });
         });
 
-        describe('when screen width is equal or larger than "md" breakpoint', () => {
-          beforeEach(() => {
-            jest.spyOn(GlBreakpointInstance, 'windowWidth').mockImplementation(() => {
-              return 768;
-            });
-            createWrapper({
-              items: menuItems,
-            });
-          });
-
-          it('adds flyout menus to sections', () => {
-            expect(findNonStaticSectionItems().wrappers.map((w) => w.props('hasFlyout'))).toEqual([
-              true,
-              true,
-            ]);
-          });
+        it('adds flyout menus to sections', () => {
+          expect(findNonStaticSectionItems().wrappers.map((w) => w.props('hasFlyout'))).toEqual([
+            true,
+            true,
+          ]);
         });
       });
     });
   });
 
   describe('Separators', () => {
-    it('should add the separator above pinned section', () => {
-      createWrapper({
-        items: menuItems,
-        panelType: 'project',
-      });
-      expect(findPinnedSection().props('separated')).toBe(true);
-    });
-
     it('should add the separator above main menu items when there is a pinned section', () => {
       createWrapper({
         items: menuItems,
@@ -207,13 +173,6 @@ describe('Sidebar Menu', () => {
         panelType: 'explore',
       });
       expect(findMainMenuSeparator().exists()).toBe(false);
-    });
-  });
-
-  describe('ARIA attributes', () => {
-    it('adds aria-label attribute to nav element', () => {
-      createWrapper();
-      expect(wrapper.find('nav').attributes('aria-label')).toBe('Main navigation');
     });
   });
 });

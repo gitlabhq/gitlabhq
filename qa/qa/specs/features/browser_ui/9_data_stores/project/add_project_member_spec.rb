@@ -11,7 +11,7 @@ module QA
         project = create(:project, name: 'add-member-project')
         project.visit!
 
-        Page::Project::Menu.perform(&:click_members)
+        Page::Project::Menu.perform(&:go_to_members)
         Page::Project::Members.perform do |members|
           members.add_member(user.username)
           members.search_member(user.username)

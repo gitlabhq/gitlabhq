@@ -16,7 +16,7 @@ module OmniAuth
       option :secret, nil
       option :algorithm, 'HS256'
       option :uid_claim, 'email'
-      option :required_claims, %w(name email)
+      option :required_claims, %w[name email]
       option :info_map, { name: "name", email: "email" }
       option :auth_url, nil
       option :valid_within, nil
@@ -44,7 +44,7 @@ module OmniAuth
             OpenSSL::PKey::RSA.new(options.secret).public_key
           when *%w[ES256 ES384 ES512]
             OpenSSL::PKey::EC.new(options.secret).tap { |key| key.private_key = nil }
-          when *%w(HS256 HS384 HS512)
+          when *%w[HS256 HS384 HS512]
             options.secret
           else
             raise NotImplementedError, "Unsupported algorithm: #{options.algorithm}"

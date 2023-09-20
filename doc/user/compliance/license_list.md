@@ -20,7 +20,7 @@ requirements must be met:
 
 Alternatively, licenses will also appear under the license list when using our deprecated [`License-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/License-Scanning.gitlab-ci.yml) as long as the following requirements are met:
 
-1. The Dependency Scanning CI/CD job must be [enabled](license_scanning_of_cyclonedx_files/index.md#enable-license-scanning) for your project.
+1. The Dependency Scanning CI/CD job must be [enabled](license_scanning_of_cyclonedx_files/index.md#configuration) for your project.
 1. Your project must use at least one of the
    [supported languages and package managers](license_scanning_of_cyclonedx_files/index.md#supported-languages-and-package-managers).
 

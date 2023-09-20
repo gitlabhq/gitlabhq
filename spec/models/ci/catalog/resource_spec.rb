@@ -6,9 +6,9 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project, name: 'A') }
   let_it_be(:project_2) { build(:project, name: 'Z') }
   let_it_be(:project_3) { build(:project, name: 'L') }
-  let_it_be(:resource) { create(:catalog_resource, project: project) }
-  let_it_be(:resource_2) { create(:catalog_resource, project: project_2) }
-  let_it_be(:resource_3) { create(:catalog_resource, project: project_3) }
+  let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+  let_it_be(:resource_2) { create(:ci_catalog_resource, project: project_2) }
+  let_it_be(:resource_3) { create(:ci_catalog_resource, project: project_3) }
 
   let_it_be(:release1) { create(:release, project: project, released_at: Time.zone.now - 2.days) }
   let_it_be(:release2) { create(:release, project: project, released_at: Time.zone.now - 1.day) }

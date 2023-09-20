@@ -13,16 +13,16 @@ RSpec.describe "User edits labels", feature_category: :team_planning do
     project.add_maintainer(user)
     sign_in(user)
 
-    visit(edit_project_label_path(project, label))
+    visit edit_project_label_path(project, label)
   end
 
-  it "updates label's title" do
-    new_title = "fix"
+  it 'update label with new title' do
+    new_title = 'fix'
 
-    fill_in("Title", with: new_title)
-    click_button("Save changes")
+    fill_in('Title', with: new_title)
+    click_button('Save changes')
 
-    page.within(".other-labels .manage-labels-list") do
+    page.within('.other-labels .manage-labels-list') do
       expect(page).to have_content(new_title).and have_no_content(label.title)
     end
   end
@@ -37,5 +37,18 @@ RSpec.describe "User edits labels", feature_category: :team_planning do
     end
 
     expect(page).to have_content("#{label.title} was removed").and have_no_content("#{label.title}</span>")
+  end
+
+  describe 'lock_on_merge' do
+    let_it_be_with_reload(:label_unlocked) { create(:label, project: project, lock_on_merge: false) }
+    let_it_be(:label_locked) { create(:label, project: project, lock_on_merge: true) }
+    let_it_be(:edit_label_path_unlocked) { edit_project_label_path(project, label_unlocked) }
+    let_it_be(:edit_label_path_locked) { edit_project_label_path(project, label_locked) }
+
+    before do
+      visit edit_label_path_unlocked
+    end
+
+    it_behaves_like 'lock_on_merge when editing labels'
   end
 end

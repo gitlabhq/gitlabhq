@@ -12,6 +12,8 @@ class RegistrationsController < Devise::RegistrationsController
   include PreferredLanguageSwitcher
   include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
   include SkipsAlreadySignedInMessage
+  include Gitlab::RackLoadBalancingHelpers
+  include ::Gitlab::Utils::StrongMemoize
 
   layout 'devise'
 
@@ -46,7 +48,6 @@ class RegistrationsController < Devise::RegistrationsController
       accept_pending_invitations if new_user.persisted?
 
       persist_accepted_terms_if_required(new_user)
-      set_role_required(new_user)
       send_custom_confirmation_instructions
       track_weak_password_error(new_user, self.class.name, 'create')
 
@@ -87,10 +88,6 @@ class RegistrationsController < Devise::RegistrationsController
 
     terms = ApplicationSetting::Term.latest
     Users::RespondToTermsService.new(new_user, terms).execute(accepted: true)
-  end
-
-  def set_role_required(new_user)
-    new_user.set_role_required! if new_user.persisted?
   end
 
   def destroy_confirmation_valid?
@@ -138,7 +135,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     if identity_verification_enabled?
       session[:verification_user_id] = resource.id # This is needed to find the user on the identity verification page
-      User.sticking.stick_or_unstick_request(request.env, :user, resource.id)
+      load_balancer_stick_request(::User, :user, resource.id)
 
       return identity_verification_redirect_path
     end
@@ -251,6 +248,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     sign_up_params[:email] == invite_email
   end
+  strong_memoize_attr :registered_with_invite_email?
 
   def load_recaptcha
     Gitlab::Recaptcha.load_configurations!

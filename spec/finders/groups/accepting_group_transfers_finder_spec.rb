@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::AcceptingGroupTransfersFinder do
+RSpec.describe Groups::AcceptingGroupTransfersFinder, feature_category: :groups_and_projects do
   let_it_be(:current_user) { create(:user) }
 
   let_it_be(:great_grandparent_group) do
@@ -117,6 +117,25 @@ RSpec.describe Groups::AcceptingGroupTransfersFinder do
 
         it 'includes only the groups where the term matches the group name or path' do
           expect(result).to contain_exactly(great_grandparent_group)
+        end
+      end
+
+      context 'on searching with multiple matches' do
+        let(:params) { { search: 'great-grandparent-group' } }
+        let(:other_groups) { [] }
+
+        before do
+          2.times do
+            # app/finders/group/base.rb adds an ORDER BY path, so create a group with 1 in the front.
+            group = create(:group, parent: great_grandparent_group, path: "1-#{SecureRandom.hex}")
+            group.add_owner(current_user)
+            other_groups << group
+          end
+        end
+
+        it 'prioritizes exact matches first' do
+          expect(result.first).to eq(great_grandparent_group)
+          expect(result[1..]).to match_array(other_groups)
         end
       end
     end

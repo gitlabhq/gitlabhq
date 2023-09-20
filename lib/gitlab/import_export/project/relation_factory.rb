@@ -38,7 +38,6 @@ module Gitlab
                       ci_cd_settings: 'ProjectCiCdSetting',
                       error_tracking_setting: 'ErrorTracking::ProjectErrorTrackingSetting',
                       links: 'Releases::Link',
-                      metrics_setting: 'ProjectMetricsSetting',
                       commit_author: 'MergeRequest::DiffCommitUser',
                       committer: 'MergeRequest::DiffCommitUser',
                       merge_request_diff_commits: 'MergeRequestDiffCommit',
@@ -180,7 +179,7 @@ module Gitlab
           # When author is not present for source release set the author as ghost user.
 
           if @relation_hash['author_id'].blank?
-            @relation_hash['author_id'] = User.select(:id).ghost.id
+            @relation_hash['author_id'] = Users::Internal.ghost.id
           end
         end
 

@@ -37,7 +37,7 @@ The **Analyze > Repository analytics** group page displays the average test cove
 
 To see the latest code coverage for each project in your group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > Repository analytics**.
 1. In the **Latest test coverage results** section, from the **Select projects** dropdown list, choose the projects you want to check.
 
@@ -52,7 +52,7 @@ You can get a CSV of the code coverage data for all of the projects in your grou
 
 To get the report:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > Repository analytics**.
 1. Select **Download historic test coverage data (.csv)**.
 1. Select the projects and date range you want to include in the report.

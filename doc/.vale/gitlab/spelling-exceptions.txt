@@ -109,6 +109,7 @@ bugfixed
 bugfixes
 bugfixing
 Bugzilla
+Buildah
 Buildkite
 buildpack
 buildpacks
@@ -350,6 +351,7 @@ Fastly
 Fastzip
 favicon
 favorited
+Fediverse
 ffaker
 Figma
 Filebeat
@@ -525,6 +527,7 @@ LaunchDarkly
 ldapsearch
 Lefthook
 Leiningen
+Lemmy
 libFuzzer
 Libgcrypt
 Libravatar
@@ -644,6 +647,7 @@ OmniAuth
 onboarding
 OpenID
 OpenShift
+OpenTelemetry
 Opsgenie
 Opstrace
 ORMs
@@ -958,6 +962,7 @@ subqueried
 subqueries
 subquery
 subquerying
+Subreddit
 substring
 substrings
 subtask

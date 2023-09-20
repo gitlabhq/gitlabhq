@@ -118,10 +118,10 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
         subject
       end
 
-      it_behaves_like 'issue_edit snowplow tracking' do
-        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DUE_DATE_CHANGED }
+      it_behaves_like 'internal event tracking' do
+        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DUE_DATE_CHANGED }
         let(:user) { author }
-        subject(:service_action) { note }
+        let(:namespace) { project.namespace }
       end
 
       context 'when only start_date is added' do
@@ -231,10 +231,10 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
         subject
       end
 
-      it_behaves_like 'issue_edit snowplow tracking' do
-        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_ESTIMATE_CHANGED }
+      it_behaves_like 'internal event tracking' do
+        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_ESTIMATE_CHANGED }
         let(:user) { author }
-        let(:service_action) { subject }
+        let(:namespace) { project.namespace }
       end
     end
 
@@ -363,13 +363,10 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
           subject
         end
 
-        it_behaves_like 'issue_edit snowplow tracking' do
-          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_SPENT_CHANGED }
+        it_behaves_like 'internal event tracking' do
+          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_SPENT_CHANGED }
           let(:user) { author }
-          let(:service_action) do
-            spend_time!(277200)
-            subject
-          end
+          let(:namespace) { project.namespace }
         end
       end
 

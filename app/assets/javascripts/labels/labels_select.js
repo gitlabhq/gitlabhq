@@ -276,7 +276,8 @@ export default class LabelsSelect {
           if (selected && selected.id === 0) {
             this.selected = [];
             return __('No label');
-          } else if (isSelected) {
+          }
+          if (isSelected) {
             this.selected.push(title);
           } else if (!isSelected && title) {
             const index = this.selected.indexOf(title);
@@ -285,7 +286,8 @@ export default class LabelsSelect {
 
           if (selectedLabels.length === 1) {
             return selectedLabels;
-          } else if (selectedLabels.length) {
+          }
+          if (selectedLabels.length) {
             return sprintf(__('%{firstLabel} +%{labelCount} more'), {
               firstLabel: selectedLabels[0],
               labelCount: selectedLabels.length - 1,

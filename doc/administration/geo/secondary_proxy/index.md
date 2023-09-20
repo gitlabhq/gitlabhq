@@ -71,7 +71,7 @@ a single URL used by all Geo sites, including the primary.
    is using the secondary proxying and set the `URL` field to the single URL.
    Make sure the primary site is also using this URL.
 
-In Kubernetes, you can use the same domain under `global.hosts.domain` as for the primary site.
+In Kubernetes, you can [use the same domain under `global.hosts.domain` as for the primary site](https://docs.gitlab.com/charts/advanced/geo/index.html).
 
 ## Geo proxying with Separate URLs
 

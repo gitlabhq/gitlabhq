@@ -1,6 +1,5 @@
 ---
 RSpec/UselessDynamicDefinition:
-  Details: grace period
   Exclude:
     - 'ee/spec/factories/ci/builds.rb'
     - 'ee/spec/factories/ci/job_artifacts.rb'

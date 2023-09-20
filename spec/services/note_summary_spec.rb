@@ -24,8 +24,13 @@ RSpec.describe NoteSummary, feature_category: :code_review_workflow do
   describe '#note' do
     it 'returns note hash' do
       freeze_time do
-        expect(create_note_summary.note).to eq(noteable: noteable, project: project, author: user, note: 'note',
-                                               created_at: Time.current)
+        expect(create_note_summary.note).to eq(
+          noteable: noteable,
+          project: project,
+          author: user,
+          note: 'note',
+          created_at: Time.current
+        )
       end
     end
 

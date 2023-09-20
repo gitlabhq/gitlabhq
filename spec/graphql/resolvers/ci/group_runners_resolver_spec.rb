@@ -6,7 +6,7 @@ RSpec.describe Resolvers::Ci::GroupRunnersResolver, feature_category: :runner_fl
   include GraphqlHelpers
 
   describe '#resolve' do
-    subject do
+    subject(:resolve_scope) do
       resolve(described_class, obj: obj, ctx: { current_user: user }, args: args,
                                arg_style: :internal)
     end
@@ -18,8 +18,10 @@ RSpec.describe Resolvers::Ci::GroupRunnersResolver, feature_category: :runner_fl
 
     # First, we can do a couple of basic real tests to verify common cases. That ensures that the code works.
     context 'when user cannot see runners' do
-      it 'returns no runners' do
-        expect(subject.items.to_a).to eq([])
+      it 'returns Gitlab::Graphql::Errors::ResourceNotAvailable' do
+        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ResourceNotAvailable) do
+          resolve_scope
+        end
       end
     end
 
@@ -29,14 +31,16 @@ RSpec.describe Resolvers::Ci::GroupRunnersResolver, feature_category: :runner_fl
       end
 
       it 'returns all the runners' do
-        expect(subject.items.to_a).to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, subgroup_runner)
+        expect(resolve_scope.items.to_a).to contain_exactly(
+          inactive_project_runner, offline_project_runner, group_runner, subgroup_runner
+        )
       end
 
       context 'with membership direct' do
         let(:args) { { membership: :direct } }
 
         it 'returns only direct runners' do
-          expect(subject.items.to_a).to contain_exactly(group_runner)
+          expect(resolve_scope.items.to_a).to contain_exactly(group_runner)
         end
       end
     end
@@ -46,7 +50,7 @@ RSpec.describe Resolvers::Ci::GroupRunnersResolver, feature_category: :runner_fl
       let(:obj) { nil }
 
       it 'raises an error' do
-        expect { subject }.to raise_error('Expected group missing')
+        expect { resolve_scope }.to raise_error('Expected group missing')
       end
     end
 
@@ -54,7 +58,7 @@ RSpec.describe Resolvers::Ci::GroupRunnersResolver, feature_category: :runner_fl
       let(:obj) { build(:project) }
 
       it 'raises an error' do
-        expect { subject }.to raise_error('Expected group missing')
+        expect { resolve_scope }.to raise_error('Expected group missing')
       end
     end
 
@@ -90,7 +94,7 @@ RSpec.describe Resolvers::Ci::GroupRunnersResolver, feature_category: :runner_fl
         allow(::Ci::RunnersFinder).to receive(:new).with(current_user: user, params: expected_params).once.and_return(finder)
         allow(finder).to receive(:execute).once.and_return([:execute_return_value])
 
-        expect(subject.items.to_a).to eq([:execute_return_value])
+        expect(resolve_scope.items.to_a).to eq([:execute_return_value])
       end
     end
   end

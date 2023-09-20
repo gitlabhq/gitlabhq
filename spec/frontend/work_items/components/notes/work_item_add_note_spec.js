@@ -255,6 +255,20 @@ describe('Work item add note', () => {
 
         expect(wrapper.emitted('error')).toEqual([[error]]);
       });
+
+      it('sends confidential prop to work item comment form', async () => {
+        await createComponent({ isEditing: true, signedIn: true });
+
+        const {
+          data: {
+            workspace: {
+              workItems: { nodes },
+            },
+          },
+        } = workItemByIidResponseFactory({ canUpdate: true, canCreateNote: true });
+
+        expect(findCommentForm().props('isWorkItemConfidential')).toBe(nodes[0].confidential);
+      });
     });
   });
 

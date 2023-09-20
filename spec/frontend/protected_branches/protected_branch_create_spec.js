@@ -1,5 +1,8 @@
+import MockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import ProtectedBranchCreate from '~/protected_branches/protected_branch_create';
+import { ACCESS_LEVELS } from '~/protected_branches/constants';
+import axios from '~/lib/utils/axios_utils';
 
 const FORCE_PUSH_TOGGLE_TESTID = 'force-push-toggle';
 const CODE_OWNER_TOGGLE_TESTID = 'code-owner-toggle';
@@ -9,7 +12,12 @@ const IS_LOADING_CLASS = 'toggle-loading';
 
 describe('ProtectedBranchCreate', () => {
   beforeEach(() => {
-    jest.spyOn(ProtectedBranchCreate.prototype, 'buildDropdowns').mockImplementation();
+    // eslint-disable-next-line no-unused-vars
+    const mock = new MockAdapter(axios);
+    window.gon = {
+      merge_access_levels: { roles: [] },
+      push_access_levels: { roles: [] },
+    };
   });
 
   const findForcePushToggle = () =>
@@ -34,6 +42,12 @@ describe('ProtectedBranchCreate', () => {
           data-label="Toggle code owner approval"
           data-is-checked="${codeOwnerToggleChecked}"
           data-testid="${CODE_OWNER_TOGGLE_TESTID}"></span>
+        <div class="merge_access_levels-container">
+            <div class="js-allowed-to-merge"/>
+        </div>
+        <div class="push_access_levels-container">
+            <div class="js-allowed-to-push"/>
+        </div>
         <input type="submit" />
       </form>
     `);
@@ -85,14 +99,6 @@ describe('ProtectedBranchCreate', () => {
         forcePushToggleChecked: false,
         codeOwnerToggleChecked: true,
       });
-
-      // Mock access levels. This should probably be improved in future iterations.
-      protectedBranchCreate.merge_access_levels_dropdown = {
-        getSelectedItems: () => [],
-      };
-      protectedBranchCreate.push_access_levels_dropdown = {
-        getSelectedItems: () => [],
-      };
     });
 
     afterEach(() => {
@@ -113,6 +119,33 @@ describe('ProtectedBranchCreate', () => {
       expect(protectedBranchCreate.getFormData().protected_branch).toMatchObject({
         allow_force_push: true,
         code_owner_approval_required: false,
+      });
+    });
+  });
+
+  describe('access dropdown', () => {
+    let protectedBranchCreate;
+
+    beforeEach(() => {
+      protectedBranchCreate = create();
+    });
+
+    it('should be initialized', () => {
+      expect(protectedBranchCreate[`${ACCESS_LEVELS.MERGE}_dropdown`]).toBeDefined();
+      expect(protectedBranchCreate[`${ACCESS_LEVELS.PUSH}_dropdown`]).toBeDefined();
+    });
+
+    describe('`select` event is emitted', () => {
+      const selected = ['foo', 'bar'];
+
+      it('should update selected merged access items', () => {
+        protectedBranchCreate[`${ACCESS_LEVELS.MERGE}_dropdown`].$emit('select', selected);
+        expect(protectedBranchCreate.selectedItems[ACCESS_LEVELS.MERGE]).toEqual(selected);
+      });
+
+      it('should update selected push access items', () => {
+        protectedBranchCreate[`${ACCESS_LEVELS.PUSH}_dropdown`].$emit('select', selected);
+        expect(protectedBranchCreate.selectedItems[ACCESS_LEVELS.PUSH]).toEqual(selected);
       });
     });
   });

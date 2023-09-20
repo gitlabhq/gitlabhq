@@ -298,5 +298,21 @@ RSpec.describe BuildDetailsEntity do
         end
       end
     end
+
+    context 'when the build has annotations' do
+      let!(:build) { create(:ci_build) }
+      let!(:annotation) { create(:ci_job_annotation, job: build, name: 'external_links', data: [{ external_link: { label: 'URL', url: 'https://example.com/' } }]) }
+
+      it 'exposes job URLs' do
+        expect(subject[:annotations].count).to eq(1)
+        expect(subject[:annotations].first[:name]).to eq('external_links')
+        expect(subject[:annotations].first[:data]).to include(a_hash_including(
+          'external_link' => a_hash_including(
+            'label' => 'URL',
+            'url' => 'https://example.com/'
+          )
+        ))
+      end
+    end
   end
 end

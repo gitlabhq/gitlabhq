@@ -1,5 +1,6 @@
 <script>
 import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import { __, s__ } from '~/locale';
 import eventHub from '../event_hub';
 
@@ -13,7 +14,12 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
   },
-  inject: ['canUpdate'],
+  inject: ['canUpdate', 'issuableType'],
+  computed: {
+    showConvertToTaskItem() {
+      return [TYPE_INCIDENT, TYPE_ISSUE].includes(this.issuableType);
+    },
+  },
   methods: {
     convertToTask() {
       eventHub.$emit('convert-task-list-item', this.$el.closest('li').dataset.sourcepos);
@@ -37,12 +43,17 @@ export default {
     text-sr-only
     toggle-class="task-list-item-actions gl-opacity-0 gl-p-2! "
   >
-    <gl-disclosure-dropdown-item class="gl-ml-2!" @action="convertToTask">
+    <gl-disclosure-dropdown-item
+      v-if="showConvertToTaskItem"
+      class="gl-ml-2!"
+      data-testid="convert"
+      @action="convertToTask"
+    >
       <template #list-item>
         {{ $options.i18n.convertToTask }}
       </template>
     </gl-disclosure-dropdown-item>
-    <gl-disclosure-dropdown-item class="gl-ml-2!" @action="deleteTaskListItem">
+    <gl-disclosure-dropdown-item class="gl-ml-2!" data-testid="delete" @action="deleteTaskListItem">
       <template #list-item>
         <span class="gl-text-red-500!">{{ $options.i18n.delete }}</span>
       </template>

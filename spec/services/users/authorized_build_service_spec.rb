@@ -12,5 +12,13 @@ RSpec.describe Users::AuthorizedBuildService, feature_category: :user_management
 
     it_behaves_like 'common user build items'
     it_behaves_like 'current user not admin build items'
+
+    context 'for additional authorized build allowed params' do
+      before do
+        params.merge!(external: true)
+      end
+
+      it { expect(user).to be_external }
+    end
   end
 end

@@ -1,10 +1,9 @@
 import Vue from 'vue';
-import { TYPE_ISSUE } from '~/issues/constants';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import RelatedIssuesRoot from './components/related_issues_root.vue';
 
-export function initRelatedIssues(issueType = TYPE_ISSUE) {
+export function initRelatedIssues() {
   const el = document.querySelector('.js-related-issues-root');
 
   if (!el) {
@@ -28,7 +27,7 @@ export function initRelatedIssues(issueType = TYPE_ISSUE) {
           canAdmin: parseBoolean(el.dataset.canAddRelatedIssues),
           helpPath: el.dataset.helpPath,
           showCategorizedIssues: parseBoolean(el.dataset.showCategorizedIssues),
-          issuableType: issueType,
+          issuableType: el.dataset.issuableType,
           autoCompleteEpics: false,
         },
       }),

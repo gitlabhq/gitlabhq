@@ -557,21 +557,11 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
     context 'when rules defined' do
       context 'when a rule is invalid' do
         let(:values) do
-          { include: [{ local: 'builds.yml', rules: [{ changes: ['$MY_VAR'] }] }] }
+          { include: [{ local: 'builds.yml', rules: [{ allow_failure: ['$MY_VAR'] }] }] }
         end
 
         it 'raises IncludeError' do
-          expect { subject }.to raise_error(described_class::IncludeError, /contains unknown keys: changes/)
-        end
-
-        context 'when FF `ci_refactor_external_rules` is disabled' do
-          before do
-            stub_feature_flags(ci_refactor_external_rules: false)
-          end
-
-          it 'raises IncludeError' do
-            expect { subject }.to raise_error(described_class::IncludeError, /invalid include rule/)
-          end
+          expect { subject }.to raise_error(described_class::IncludeError, /contains unknown keys: allow_failure/)
         end
       end
     end

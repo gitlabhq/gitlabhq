@@ -36,8 +36,10 @@ RSpec.describe Files::UpdateService, feature_category: :source_code_management d
 
       it "returns a hash with the correct error message and a :error status" do
         expect { subject.execute }
-          .to raise_error(Files::UpdateService::FileChangedError,
-                         "You are attempting to update a file that has changed since you started editing it.")
+          .to raise_error(
+            Files::UpdateService::FileChangedError,
+            "You are attempting to update a file that has changed since you started editing it."
+          )
       end
     end
 

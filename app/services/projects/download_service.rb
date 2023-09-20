@@ -28,7 +28,7 @@ module Projects
     end
 
     def http?(url)
-      url =~ /\A#{URI::DEFAULT_PARSER.make_regexp(%w(http https))}\z/
+      url =~ /\A#{URI::DEFAULT_PARSER.make_regexp(%w[http https])}\z/
     end
 
     def valid_domain?(url)

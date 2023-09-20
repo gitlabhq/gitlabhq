@@ -11,8 +11,8 @@ require 'task_list/filter'
 module Taskable
   COMPLETED          = 'completed'
   INCOMPLETE         = 'incomplete'
-  COMPLETE_PATTERN   = /\[[xX]\]/.freeze
-  INCOMPLETE_PATTERN = /\[[[:space:]]\]/.freeze
+  COMPLETE_PATTERN   = /\[[xX]\]/
+  INCOMPLETE_PATTERN = /\[[[:space:]]\]/
   ITEM_PATTERN       = %r{
     ^
     (?:(?:>\s{0,4})*)               # optional blockquote characters
@@ -22,7 +22,7 @@ module Taskable
       #{COMPLETE_PATTERN}|#{INCOMPLETE_PATTERN}
     )
     (\s.+)                          # followed by whitespace and some text.
-  }x.freeze
+  }x
 
   ITEM_PATTERN_UNTRUSTED =
     '^' \

@@ -9,7 +9,7 @@ module Projects
       include Gitlab::Utils::StrongMemoize
 
       HEAD_REV = 'HEAD'
-      LFS_ENDPOINT_PATTERN = /^\t?url\s*=\s*(.+)$/.freeze
+      LFS_ENDPOINT_PATTERN = /^\t?url\s*=\s*(.+)$/
       LFS_BATCH_API_ENDPOINT = '/info/lfs/objects/batch'
 
       LfsObjectDownloadListError = Class.new(StandardError)
@@ -101,7 +101,7 @@ module Projects
       # The import url must end with '.git' here we ensure it is
       def default_endpoint_uri
         @default_endpoint_uri ||= import_uri.dup.tap do |uri|
-          path = uri.path.gsub(%r(/$), '')
+          path = uri.path.gsub(%r{/$}, '')
           path += '.git' unless path.ends_with?('.git')
           uri.path = path + LFS_BATCH_API_ENDPOINT
         end

@@ -62,7 +62,7 @@ export default {
     tokensCE() {
       const { issue, incident } = this.$options.i18n;
       const { types } = this.$options;
-      const { fetchUsers, fetchLabels, fetchMilestones } = issueBoardFilters(
+      const { fetchUsers, fetchLabels } = issueBoardFilters(
         this.$apollo,
         this.fullPath,
         this.isGroupBoard,
@@ -148,7 +148,8 @@ export default {
           token: MilestoneToken,
           unique: true,
           shouldSkipSort: true,
-          fetchMilestones,
+          isProject: !this.isGroupBoard,
+          fullPath: this.fullPath,
         },
         {
           icon: 'issues',

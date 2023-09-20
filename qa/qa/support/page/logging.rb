@@ -75,7 +75,7 @@ module QA
           super
         end
 
-        # @param name [Symbol] name of the data_qa_selector element
+        # @param name [Symbol, String] name of the data_qa_selector or data-testid element
         # @param page [Class] a target page class to check existence of (class must inherit from QA::Page::Base)
         # @param kwargs [Hash] keyword arguments to pass to Capybara finder
         def click_element(name, page = nil, **kwargs)

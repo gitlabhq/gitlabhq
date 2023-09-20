@@ -2,14 +2,13 @@
 
 exports[`Repository directory download links component renders downloads links for path app 1`] = `
 <section
-  class="border-top pt-1 mt-1"
+  class="border-top mt-1 pt-1"
 >
   <h5
-    class="m-0 dropdown-bold-header"
+    class="dropdown-bold-header m-0"
   >
     Download this directory
   </h5>
-   
   <div
     class="dropdown-menu-content"
   >
@@ -24,9 +23,7 @@ exports[`Repository directory download links component renders downloads links f
         size="small"
         variant="confirm"
       >
-        
         zip
-      
       </gl-button-stub>
       <gl-button-stub
         buttontextclasses=""
@@ -36,9 +33,7 @@ exports[`Repository directory download links component renders downloads links f
         size="small"
         variant="default"
       >
-        
         tar
-      
       </gl-button-stub>
     </div>
   </div>
@@ -47,14 +42,13 @@ exports[`Repository directory download links component renders downloads links f
 
 exports[`Repository directory download links component renders downloads links for path app/assets 1`] = `
 <section
-  class="border-top pt-1 mt-1"
+  class="border-top mt-1 pt-1"
 >
   <h5
-    class="m-0 dropdown-bold-header"
+    class="dropdown-bold-header m-0"
   >
     Download this directory
   </h5>
-   
   <div
     class="dropdown-menu-content"
   >
@@ -69,9 +63,7 @@ exports[`Repository directory download links component renders downloads links f
         size="small"
         variant="confirm"
       >
-        
         zip
-      
       </gl-button-stub>
       <gl-button-stub
         buttontextclasses=""
@@ -81,9 +73,7 @@ exports[`Repository directory download links component renders downloads links f
         size="small"
         variant="default"
       >
-        
         tar
-      
       </gl-button-stub>
     </div>
   </div>

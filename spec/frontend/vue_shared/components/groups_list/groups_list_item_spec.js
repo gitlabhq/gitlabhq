@@ -9,6 +9,9 @@ import {
 } from '~/visibility_level/constants';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
+import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
+import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import DangerConfirmModal from '~/vue_shared/components/confirm_danger/confirm_danger_modal.vue';
 import { groups } from './mock_data';
 
 describe('GroupsListItem', () => {
@@ -30,6 +33,8 @@ describe('GroupsListItem', () => {
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
   const findGroupDescription = () => wrapper.findByTestId('group-description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
+  const findListActions = () => wrapper.findComponent(ListActions);
+  const findConfirmationModal = () => wrapper.findComponent(DangerConfirmModal);
 
   it('renders group avatar', () => {
     createComponent();
@@ -177,6 +182,70 @@ describe('GroupsListItem', () => {
       createComponent();
 
       expect(wrapper.findByTestId('group-icon').exists()).toBe(false);
+    });
+  });
+
+  describe('when group has actions', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('displays actions dropdown', () => {
+      expect(findListActions().props()).toMatchObject({
+        actions: {
+          [ACTION_EDIT]: {
+            href: group.editPath,
+          },
+          [ACTION_DELETE]: {
+            action: expect.any(Function),
+          },
+        },
+        availableActions: [ACTION_EDIT, ACTION_DELETE],
+      });
+    });
+
+    describe('when delete action is fired', () => {
+      beforeEach(() => {
+        findListActions().props('actions')[ACTION_DELETE].action();
+      });
+
+      it('displays confirmation modal with correct props', () => {
+        expect(findConfirmationModal().props()).toMatchObject({
+          visible: true,
+          phrase: group.fullName,
+        });
+      });
+
+      describe('when deletion is confirmed', () => {
+        beforeEach(() => {
+          findConfirmationModal().vm.$emit('confirm');
+        });
+
+        it('emits `delete` event', () => {
+          expect(wrapper.emitted('delete')).toMatchObject([[group]]);
+        });
+      });
+    });
+  });
+
+  describe('when group does not have actions', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          group: {
+            ...group,
+            availableActions: [],
+          },
+        },
+      });
+    });
+
+    it('does not display actions dropdown', () => {
+      expect(findListActions().exists()).toBe(false);
+    });
+
+    it('does not display confirmation modal', () => {
+      expect(findConfirmationModal().exists()).toBe(false);
     });
   });
 });

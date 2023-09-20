@@ -12,6 +12,7 @@ RSpec.describe Mutations::WorkItems::LinkedItems::Base, feature_category: :group
   it 'raises a NotImplementedError error if the update_links method is called on the base class' do
     mutation = described_class.new(context: { current_user: user }, object: nil, field: nil)
 
-    expect { mutation.resolve(id: work_item.to_gid) }.to raise_error(NotImplementedError)
+    expect { mutation.resolve(id: work_item.to_gid) }
+      .to raise_error(NotImplementedError, "#{described_class} does not implement update_links")
   end
 end

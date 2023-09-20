@@ -7,11 +7,11 @@ module QA
         include Page::Component::RichTextPopover
 
         view 'app/views/shared/issuable/form/_title.html.haml' do
-          element :issuable_form_title_field
+          element 'issuable-form-title-field'
         end
 
         view 'app/views/shared/form_elements/_description.html.haml' do
-          element :issuable_form_description_field
+          element 'issuable-form-description-field'
         end
 
         view 'app/assets/javascripts/sidebar/components/milestone/milestone_dropdown.vue' do
@@ -35,11 +35,11 @@ module QA
         end
 
         def fill_title(title)
-          fill_element :issuable_form_title_field, title
+          fill_element('issuable-form-title-field', title)
         end
 
         def fill_description(description)
-          fill_element :issuable_form_description_field, description
+          fill_element('issuable-form-description-field', description)
         end
 
         def choose_milestone(milestone)

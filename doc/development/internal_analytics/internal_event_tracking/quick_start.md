@@ -1,15 +1,39 @@
 ---
-stage: Analytics
+stage: Analyze
 group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Quick start for internal event tracking
+# Quick start for Internal Event Tracking
 
 In an effort to provide a more efficient, scalable, and unified tracking API, GitLab is deprecating existing RedisHLL and Snowplow tracking. Instead, we're implementing a new `track_event` method.
-With this approach, we can both update RedisHLL counters and send Snowplow events simultaneously, streamlining the tracking process.
+With this approach, we can update both RedisHLL counters and send Snowplow events without worrying about the underlying implementation.
 
-## Create and trigger events
+In order to instrument your code with Internal Events Tracking need three things:
+
+1. Define an event
+1. Define one or more metrics
+1. Trigger the event
+
+## Defining event and metrics
+
+To create event and metric definitions you can use the `internal_events` generator.
+
+This example will create an event definition for an event called `project_created` and two metric definitions which will be aggregated every 7 and 28 days.
+
+```shell
+bin/rails g gitlab:analytics:internal_events \
+--time_frames=7d 28d \
+--group=project_management \
+--stage=plan --section=dev \
+--event=project_created \
+--unique=user.id \
+--mr=https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121544
+```
+
+## Trigger events
+
+Triggering an event and thereby updating a metric is slightly different on backend and frontend. Please refer to the relevant section below.
 
 ### Backend tracking
 
@@ -18,9 +42,9 @@ To trigger an event, call the `Gitlab::InternalEvents.track_event` method with t
 ```ruby
 Gitlab::InternalEvents.track_event(
         "i_code_review_user_apply_suggestion",
-        user_id: user_id,
-        namespace_id: namespace_id,
-        project_id: project_id
+        user: user,
+        namespace: namespace,
+        project: project
         )
 ```
 
@@ -46,7 +70,7 @@ To implement Vue component tracking:
    ```javascript
    export default {
      mixins: [trackingMixin],
- 
+
      data() {
        return {
          expanded: false,
@@ -97,7 +121,7 @@ This attribute ensures that if we want to track GitLab internal events for a but
   </gl-button>
 ```
 
-For Haml
+#### Haml
 
 ```haml
 = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle',  data: { event_tracking: 'action' }}) do
@@ -111,3 +135,7 @@ Sometimes we want to send internal events when the component is rendered or load
 = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: 'true', event_tracking: 'i_devops' } }) do
         = _("New project")
 ```
+
+### Limitations
+
+The only values we allow for `unique` are `user.id`, `project.id`, and `namespace.id`, as they are logged as part of the standard context. We currently don't have anywhere to put a value like `merge_request.id`. That will change with self-describing events.

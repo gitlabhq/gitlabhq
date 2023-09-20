@@ -18,7 +18,7 @@ RSpec.shared_context 'instance integration activation' do
     visit_instance_integrations
 
     within('#content-body') do
-      click_link(name)
+      click_link(name, match: :first)
     end
   end
 end

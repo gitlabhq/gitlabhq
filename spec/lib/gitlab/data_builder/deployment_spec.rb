@@ -50,6 +50,15 @@ RSpec.describe Gitlab::DataBuilder::Deployment, feature_category: :continuous_de
       expect(data[:deployable_url]).to be_nil
     end
 
+    it 'does not include the deployable URL when deployable is bridge' do
+      project = create(:project, :repository)
+      bridge = create(:ci_bridge, project: project)
+      deployment = create(:deployment, status: :failed, project: project, deployable: bridge)
+      data = described_class.build(deployment, 'failed', Time.current)
+
+      expect(data[:deployable_url]).to be_nil
+    end
+
     context 'when commit does not exist in the repository' do
       let_it_be(:project) { create(:project, :repository) }
       let_it_be(:deployment) { create(:deployment, project: project) }

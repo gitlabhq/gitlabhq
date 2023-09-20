@@ -3,6 +3,8 @@
 module ServiceDesk
   module CustomEmails
     class BaseService < ::BaseProjectService
+      include Logger
+
       private
 
       def legitimate_user?
@@ -34,6 +36,7 @@ module ServiceDesk
       end
 
       def error_response(message)
+        log_warning(error_message: message)
         ServiceResponse.error(message: message)
       end
     end

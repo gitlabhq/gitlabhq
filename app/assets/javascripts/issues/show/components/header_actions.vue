@@ -79,62 +79,25 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [trackingMixin, glFeatureFlagMixin()],
-  inject: {
-    canCreateIssue: {
-      default: false,
-    },
-    canDestroyIssue: {
-      default: false,
-    },
-    canPromoteToEpic: {
-      default: false,
-    },
-    canReopenIssue: {
-      default: false,
-    },
-    canReportSpam: {
-      default: false,
-    },
-    canUpdateIssue: {
-      default: false,
-    },
-    iid: {
-      default: '',
-    },
-    issuableId: {
-      default: '',
-    },
-    isIssueAuthor: {
-      default: false,
-    },
-    issuePath: {
-      default: '',
-    },
-    issueType: {
-      default: TYPE_ISSUE,
-    },
-    newIssuePath: {
-      default: '',
-    },
-    projectPath: {
-      default: '',
-    },
-    submitAsSpamPath: {
-      default: '',
-    },
-    reportedUserId: {
-      default: '',
-    },
-    reportedFromUrl: {
-      default: '',
-    },
-    issuableEmailAddress: {
-      default: '',
-    },
-    fullPath: {
-      default: '',
-    },
-  },
+  inject: [
+    'canCreateIssue',
+    'canDestroyIssue',
+    'canPromoteToEpic',
+    'canReopenIssue',
+    'canReportSpam',
+    'canUpdateIssue',
+    'iid',
+    'isIssueAuthor',
+    'issuePath',
+    'issueType',
+    'newIssuePath',
+    'projectPath',
+    'submitAsSpamPath',
+    'reportedUserId',
+    'reportedFromUrl',
+    'issuableEmailAddress',
+    'fullPath',
+  ],
   data() {
     return {
       isReportAbuseDrawerOpen: false,
@@ -256,7 +219,7 @@ export default {
           mutation: updateIssueMutation,
           variables: {
             input: {
-              iid: this.iid.toString(),
+              iid: String(this.iid),
               projectPath: this.projectPath,
               stateEvent: this.isClosed ? ISSUE_STATE_EVENT_REOPEN : ISSUE_STATE_EVENT_CLOSE,
             },
@@ -501,7 +464,7 @@ export default {
           >{{ copyMailAddressText }}</gl-dropdown-item
         >
       </template>
-      <gl-dropdown-divider v-if="showToggleIssueStateButton || canDestroyIssue || canReportSpam" />
+      <gl-dropdown-divider v-if="canDestroyIssue || canReportSpam || !isIssueAuthor" />
       <gl-dropdown-item
         v-if="canReportSpam"
         :href="submitAsSpamPath"

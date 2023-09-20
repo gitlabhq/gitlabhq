@@ -217,6 +217,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :update_cluster
     enable :admin_cluster
     enable :read_deploy_token
+    enable :read_group_runners
     enable :create_jira_connect_subscription
     enable :maintainer_access
     enable :read_upload

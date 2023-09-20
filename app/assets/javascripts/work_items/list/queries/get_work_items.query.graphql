@@ -1,3 +1,5 @@
+#import "ee_else_ce/work_items/list/queries/work_item_widgets.fragment.graphql"
+
 query getWorkItems($fullPath: ID!) {
   group(fullPath: $fullPath) {
     id
@@ -21,30 +23,7 @@ query getWorkItems($fullPath: ID!) {
         updatedAt
         webUrl
         widgets {
-          ... on WorkItemWidgetAssignees {
-            assignees {
-              nodes {
-                id
-                avatarUrl
-                name
-                username
-                webUrl
-              }
-            }
-            type
-          }
-          ... on WorkItemWidgetLabels {
-            allowsScopedLabels
-            labels {
-              nodes {
-                id
-                color
-                description
-                title
-              }
-            }
-            type
-          }
+          ...WorkItemWidgets
         }
         workItemType {
           id

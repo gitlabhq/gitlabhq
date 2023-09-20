@@ -1,0 +1,8 @@
+---
+name: loose_foreign_keys_turbo_mode_main
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128538
+rollout_issue_url:
+milestone: '16.4'
+type: ops
+group: group::tenant scale
+default_enabled: false

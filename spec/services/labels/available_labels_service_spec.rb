@@ -108,35 +108,23 @@ RSpec.describe Labels::AvailableLabelsService, feature_category: :team_planning 
     end
   end
 
-  describe '#filter_locked_labels_ids_in_param' do
-    let(:label_ids) { labels.map(&:id).push(non_existing_record_id) }
+  describe '#filter_locked_label_ids' do
+    let(:label_ids) { labels.map(&:id) }
 
     context 'when parent is a project' do
-      it 'returns only locked label ids' do
-        result = described_class.new(user, project, ids: label_ids).filter_locked_labels_ids_in_param(:ids)
+      it 'returns only relevant label ids' do
+        result = described_class.new(user, project, ids: label_ids).filter_locked_label_ids(label_ids)
 
         expect(result).to match_array([project_label_locked.id, group_label_locked.id])
-      end
-
-      it 'returns labels in preserved order' do
-        result = described_class.new(user, project, ids: label_ids.reverse).filter_locked_labels_ids_in_param(:ids)
-
-        expect(result).to eq([group_label_locked.id, project_label_locked.id])
       end
     end
 
     context 'when parent is a group' do
-      it 'returns only locked label ids' do
-        result = described_class.new(user, group, ids: label_ids).filter_locked_labels_ids_in_param(:ids)
+      it 'returns only relevant label ids' do
+        result = described_class.new(user, group, ids: label_ids).filter_locked_label_ids(label_ids)
 
         expect(result).to match_array([group_label_locked.id])
       end
-    end
-
-    it 'accepts a single id parameter' do
-      result = described_class.new(user, project, label_id: project_label_locked.id).filter_locked_labels_ids_in_param(:label_id)
-
-      expect(result).to match_array([project_label_locked.id])
     end
   end
 

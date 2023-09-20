@@ -55,7 +55,7 @@ To change all Jira projects to use instance-level integration settings:
 
    ```ruby
    jira_integration_instance_id = Integrations::Jira.find_by(instance: true).id
-   Integrations::Jira.where(active: true, instance: false, template: false, inherit_from_id: nil).find_each do |integration|
+   Integrations::Jira.where(active: true, instance: false, inherit_from_id: nil).find_each do |integration|
      integration.update_attribute(:inherit_from_id, jira_integration_instance_id)
    end
    ```

@@ -22,7 +22,7 @@ endpoint. New features can be added to the API in the same
 version number.
 
 New features and bug fixes are released in tandem with GitLab. Apart
-from incidental patch and security releases, GitLab is released on the 22nd of each
+from incidental patch and security releases, new minor versions of GitLab are released every
 month. Major API version changes, and removal of entire API versions, are done in tandem
 with major GitLab releases.
 
@@ -136,13 +136,10 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/ap
 Read more about [GitLab as an OAuth 2.0 provider](../oauth2.md).
 
 NOTE:
-You should give OAuth access tokens an expiration. You can use the `refresh_token` parameter
-to refresh tokens. Integrations may need to be updated to use refresh tokens prior to
-expiration, which is based on the [`expires_in`](https://datatracker.ietf.org/doc/html/rfc6749#appendix-A.14)
-property in the token endpoint response. See [OAuth 2.0 token](../oauth2.md) documentation
-for examples requesting a new access token using a refresh token.
-
-A default refresh setting of two hours is tracked in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336598).
+All OAuth access tokens are valid for two hours after they are created. You can
+use the `refresh_token` parameter to refresh tokens. See
+[OAuth 2.0 token](../oauth2.md) documentation for how to request a new access
+token using a refresh token.
 
 ### Personal/project/group access tokens
 
@@ -165,6 +162,24 @@ You can also use personal, project, or group access tokens with OAuth-compliant 
 
 ```shell
 curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/projects"
+```
+
+### Job tokens
+
+You can use job tokens to authenticate with [specific API endpoints](../../ci/jobs/ci_job_token.md)
+by passing the token in the `job_token` parameter or the `JOB-TOKEN` header.
+To pass the token in GitLab CI/CD jobs, use the `CI_JOB_TOKEN` variable.
+
+Example of using the job token in a parameter:
+
+```shell
+curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts?job_token=$CI_JOB_TOKEN"
+```
+
+Example of using the job token in a header:
+
+```shell
+curl --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/releases"
 ```
 
 ### Session cookie
@@ -525,6 +540,7 @@ options:
 | [Project jobs](../jobs.md#list-project-jobs)                                   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Project audit events](../audit_events.md#retrieve-all-project-audit-events)   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Projects](../projects.md)                                                     | `order_by=id` only               | Authenticated and unauthenticated users. |
+| [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`               | Authenticated and unauthenticated users.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 15.4 [with a flag](../../user/feature_flags.md)) named `api_keyset_pagination_multi_order`. Disabled by default. |
 
 ### Pagination response headers
 

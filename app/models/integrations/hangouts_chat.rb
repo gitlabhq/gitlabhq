@@ -2,8 +2,6 @@
 
 module Integrations
   class HangoutsChat < BaseChatNotification
-    undef :notify_only_broken_pipelines
-
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://chat.googleapis.com/v1/spaces…',
@@ -34,10 +32,6 @@ module Integrations
     def help
       docs_link = ActionController::Base.helpers.link_to _('How do I set up a Google Chat webhook?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/hangouts_chat'), target: '_blank', rel: 'noopener noreferrer'
       s_('Before enabling this integration, create a webhook for the room in Google Chat where you want to receive notifications from this project. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
-    end
-
-    def fields
-      self.class.fields + build_event_channels
     end
 
     def default_channel_placeholder

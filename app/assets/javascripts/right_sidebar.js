@@ -64,15 +64,12 @@ Sidebar.prototype.addEventListeners = function () {
 };
 
 Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
-  const $this = $(this);
-
-  if ($this.hasClass('right-sidebar-merge-requests')) return;
-
+  const $toggleButtons = $('.js-sidebar-toggle');
   const $collapseIcon = $('.js-sidebar-collapse');
   const $expandIcon = $('.js-sidebar-expand');
   const $toggleContainer = $('.js-sidebar-toggle-container');
   const isExpanded = $toggleContainer.data('is-expanded');
-  const tooltipLabel = isExpanded ? __('Collapse sidebar') : __('Expand sidebar');
+  const tooltipLabel = isExpanded ? __('Expand sidebar') : __('Collapse sidebar');
   e.preventDefault();
 
   if (isExpanded) {
@@ -93,10 +90,10 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
     $('.layout-page').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
   }
 
-  $this.attr('data-original-title', tooltipLabel);
-  $this.attr('title', tooltipLabel);
-  fixTitle($this);
-  hide($this);
+  $toggleButtons.attr('data-original-title', tooltipLabel);
+  $toggleButtons.attr('title', tooltipLabel);
+  fixTitle($toggleButtons);
+  hide($toggleButtons);
 
   if (!triggered) {
     setCookie('collapsed_gutter', $('.right-sidebar').hasClass('right-sidebar-collapsed'));

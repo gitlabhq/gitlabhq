@@ -1,3 +1,3 @@
-import initJobsTable from '~/jobs/components/table';
+import initJobsPage from '~/ci/jobs_page';
 
-initJobsTable();
+initJobsPage();

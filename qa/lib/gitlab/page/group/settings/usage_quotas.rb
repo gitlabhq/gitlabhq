@@ -6,14 +6,10 @@ module Gitlab
       module Settings
         class UsageQuotas < Chemlab::Page
           # Seats section
-          link :seats_tab
           div :seats_in_use
           p :seats_used
           p :seats_owed
           table :subscription_users
-          div :pending_members_alert
-          button :remove_user
-          button :view_pending_approvals, text: /View pending approvals/
 
           # Pipelines section
           link :pipelines_tab
@@ -27,23 +23,17 @@ module Gitlab
           link :purchase_more_storage
           div :namespace_usage_total
           div :group_usage_message
-          div :dependency_proxy_usage
           span :dependency_proxy_size
-          div :container_registry_usage
-          div :project
-          div :storage_type_legend
-          span :container_registry_size
-          div :storage_purchased, 'data-testid': 'storage-purchased'
+          div :storage_purchased
           div :storage_purchase_successful_alert, text: /You have successfully purchased a storage/
           span :project_repository_size
-          span :project_lfs_object_size
-          span :project_build_artifact_size
-          span :project_packages_size
           span :project_wiki_size
           span :project_snippets_size
           span :project_containers_registry_size
 
           # Pending members
+          button :view_pending_approvals, text: /View pending approvals/
+          div :pending_members_alert
           div :pending_members
           button :approve_member
           button :confirm_member_approval, text: /^OK$/
@@ -60,15 +50,6 @@ module Gitlab
             #  When opening the Usage quotas page, Seats quota tab is opened briefly even when url is to a different tab
             ::QA::Support::WaitForRequests.wait_for_requests
             additional_ci_minutes?
-          end
-
-          # Waits and Checks if storage project data loaded
-          #
-          # @return [Boolean] True if the alert presents, false if not after 5 second wait
-          def project_storage_data_available?
-            storage_type_legend_element.wait_until(timeout: 3, &:present?)
-          rescue Watir::Wait::TimeoutError
-            false
           end
 
           # Returns total purchased storage value once it's ready on page

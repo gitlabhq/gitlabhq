@@ -443,6 +443,15 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.by_root_id' do
+      it 'returns correct namespaces' do
+        expect(described_class.by_root_id(namespace1.id)).to match_array([namespace1, namespace1sub])
+        expect(described_class.by_root_id(namespace2.id)).to match_array([namespace2, namespace2sub])
+        expect(described_class.by_root_id(namespace1sub.id)).to be_empty
+        expect(described_class.by_root_id(nil)).to be_empty
+      end
+    end
+
     describe '.filter_by_path' do
       it 'includes correct namespaces' do
         expect(described_class.filter_by_path(namespace1.path)).to eq([namespace1])
@@ -1070,15 +1079,28 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     it 'defaults use_minimum_char_limit to true' do
-      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: true).once
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: true, exact_matches_first: false).once
 
       described_class.search('my namespace')
     end
 
     it 'passes use_minimum_char_limit if it is set' do
-      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: false).once
+      expect(described_class).to receive(:fuzzy_search).with(anything, anything, use_minimum_char_limit: false, exact_matches_first: false).once
 
       described_class.search('my namespace', use_minimum_char_limit: false)
+    end
+
+    context 'with multiple matching namespaces' do
+      let_it_be(:first_group) { create(:group, name: 'some name', path: 'z-path') }
+      let_it_be(:second_group) { create(:group, name: 'some name too', path: 'a-path') }
+
+      it 'returns exact matches first' do
+        expect(described_class.search('some name', exact_matches_first: true).to_a).to eq([first_group, second_group])
+      end
+
+      it 'returns exact matches first when parents are included' do
+        expect(described_class.search('some name', include_parents: true, exact_matches_first: true).to_a).to eq([first_group, second_group])
+      end
     end
 
     context 'with project namespaces' do
@@ -1186,8 +1208,11 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#move_dir', :request_store do
-    shared_examples "namespace restrictions" do
-      context "when any project has container images" do
+    context 'hashed storage' do
+      let_it_be(:namespace) { create(:namespace) }
+      let_it_be(:project) { create(:project_empty_repo, namespace: namespace) }
+
+      context 'when any project has container images' do
         let(:container_repository) { create(:container_repository) }
 
         before do
@@ -1207,190 +1232,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           )
         end
       end
-    end
-
-    context 'legacy storage' do
-      let(:namespace) { create(:namespace) }
-      let!(:project) { create(:project_empty_repo, :legacy_storage, namespace: namespace) }
-
-      it_behaves_like 'namespace restrictions'
-
-      it "raises error when directory exists" do
-        expect { namespace.move_dir }.to raise_error("namespace directory cannot be moved")
-      end
-
-      it "moves dir if path changed" do
-        namespace.update!(path: namespace.full_path + '_new')
-
-        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
-      end
-
-      context 'when #write_projects_repository_config raises an error' do
-        context 'in test environment' do
-          it 'raises an exception' do
-            expect(namespace).to receive(:write_projects_repository_config).and_raise('foo')
-
-            expect do
-              namespace.update!(path: namespace.full_path + '_new')
-            end.to raise_error('foo')
-          end
-        end
-
-        context 'in production environment' do
-          it 'does not cancel later callbacks' do
-            expect(namespace).to receive(:write_projects_repository_config).and_raise('foo')
-            expect(namespace).to receive(:move_dir).and_wrap_original do |m, *args|
-              move_dir_result = m.call(*args)
-
-              expect(move_dir_result).to be_truthy # Must be truthy, or else later callbacks would be canceled
-
-              move_dir_result
-            end
-            expect(Gitlab::ErrorTracking).to receive(:should_raise_for_dev?).and_return(false) # like prod
-
-            namespace.update!(path: namespace.full_path + '_new')
-          end
-        end
-      end
-
-      shared_examples 'move_dir without repository storage feature' do |storage_version|
-        let(:namespace) { create(:namespace) }
-        let(:gitlab_shell) { namespace.gitlab_shell }
-        let!(:project) { create(:project_empty_repo, namespace: namespace, storage_version: storage_version) }
-
-        it 'calls namespace service' do
-          expect(gitlab_shell).to receive(:add_namespace).and_return(true)
-          expect(gitlab_shell).to receive(:mv_namespace).and_return(true)
-
-          namespace.move_dir
-        end
-      end
-
-      shared_examples 'move_dir with repository storage feature' do |storage_version|
-        let(:namespace) { create(:namespace) }
-        let(:gitlab_shell) { namespace.gitlab_shell }
-        let!(:project) { create(:project_empty_repo, namespace: namespace, storage_version: storage_version) }
-
-        it 'does not call namespace service' do
-          expect(gitlab_shell).not_to receive(:add_namespace)
-          expect(gitlab_shell).not_to receive(:mv_namespace)
-
-          namespace.move_dir
-        end
-      end
-
-      context 'project is without repository storage feature' do
-        [nil, 0].each do |storage_version|
-          it_behaves_like 'move_dir without repository storage feature', storage_version
-        end
-      end
-
-      context 'project has repository storage feature' do
-        [1, 2].each do |storage_version|
-          it_behaves_like 'move_dir with repository storage feature', storage_version
-        end
-      end
-
-      context 'with subgroups' do
-        let(:parent) { create(:group, name: 'parent', path: 'parent') }
-        let(:new_parent) { create(:group, name: 'new_parent', path: 'new_parent') }
-        let(:child) { create(:group, name: 'child', path: 'child', parent: parent) }
-        let!(:project) { create(:project_empty_repo, :legacy_storage, path: 'the-project', namespace: child, skip_disk_validation: true) }
-        let(:uploads_dir) { FileUploader.root }
-        let(:pages_dir) { File.join(TestEnv.pages_path) }
-
-        def expect_project_directories_at(namespace_path, with_pages: true)
-          expected_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            File.join(TestEnv.repos_path, namespace_path, 'the-project.git')
-          end
-          expected_upload_path = File.join(uploads_dir, namespace_path, 'the-project')
-          expected_pages_path = File.join(pages_dir, namespace_path, 'the-project')
-
-          expect(File.directory?(expected_repository_path)).to be_truthy
-          expect(File.directory?(expected_upload_path)).to be_truthy
-          expect(File.directory?(expected_pages_path)).to be(with_pages)
-        end
-
-        before do
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            FileUtils.mkdir_p(File.join(TestEnv.repos_path, "#{project.full_path}.git"))
-          end
-          FileUtils.mkdir_p(File.join(uploads_dir, project.full_path))
-          FileUtils.mkdir_p(File.join(pages_dir, project.full_path))
-        end
-
-        after do
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            FileUtils.remove_entry(File.join(TestEnv.repos_path, parent.full_path), true)
-            FileUtils.remove_entry(File.join(TestEnv.repos_path, new_parent.full_path), true)
-            FileUtils.remove_entry(File.join(TestEnv.repos_path, child.full_path), true)
-          end
-          FileUtils.remove_entry(File.join(uploads_dir, project.full_path), true)
-          FileUtils.remove_entry(pages_dir, true)
-        end
-
-        context 'renaming child' do
-          context 'when no projects have pages deployed' do
-            it 'moves the repository and uploads', :sidekiq_inline do
-              project.pages_metadatum.update!(deployed: false)
-              child.update!(path: 'renamed')
-
-              expect_project_directories_at('parent/renamed', with_pages: false)
-            end
-          end
-        end
-
-        context 'renaming parent' do
-          context 'when no projects have pages deployed' do
-            it 'moves the repository and uploads', :sidekiq_inline do
-              project.pages_metadatum.update!(deployed: false)
-              parent.update!(path: 'renamed')
-
-              expect_project_directories_at('renamed/child', with_pages: false)
-            end
-          end
-        end
-
-        context 'moving from one parent to another' do
-          context 'when no projects have pages deployed' do
-            it 'moves the repository and uploads', :sidekiq_inline do
-              project.pages_metadatum.update!(deployed: false)
-              child.update!(parent: new_parent)
-
-              expect_project_directories_at('new_parent/child', with_pages: false)
-            end
-          end
-        end
-
-        context 'moving from having a parent to root' do
-          context 'when no projects have pages deployed' do
-            it 'moves the repository and uploads', :sidekiq_inline do
-              project.pages_metadatum.update!(deployed: false)
-              child.update!(parent: nil)
-
-              expect_project_directories_at('child', with_pages: false)
-            end
-          end
-        end
-
-        context 'moving from root to having a parent' do
-          context 'when no projects have pages deployed' do
-            it 'moves the repository and uploads', :sidekiq_inline do
-              project.pages_metadatum.update!(deployed: false)
-              parent.update!(parent: new_parent)
-
-              expect_project_directories_at('new_parent/parent/child', with_pages: false)
-            end
-          end
-        end
-      end
-    end
-
-    context 'hashed storage' do
-      let(:namespace) { create(:namespace) }
-      let!(:project) { create(:project_empty_repo, namespace: namespace) }
-
-      it_behaves_like 'namespace restrictions'
 
       it "repository directory remains unchanged if path changed" do
         before_disk_path = project.disk_path
@@ -1426,73 +1267,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         expect(repository_project_in_parent_group.reload.disk_path).to eq "mygroup_moved/#{project_in_parent_group.path}"
         expect(repository_hashed_project_in_subgroup.reload.disk_path).to eq hashed_project_in_subgroup.disk_path
         expect(repository_legacy_project_in_subgroup.reload.disk_path).to eq "mygroup_moved/mysubgroup/#{legacy_project_in_subgroup.path}"
-      end
-    end
-  end
-
-  describe '#rm_dir', 'callback' do
-    let(:repository_storage_path) do
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        Gitlab.config.repositories.storages.default.legacy_disk_path
-      end
-    end
-
-    let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }
-    let(:deleted_path) { namespace.full_path.gsub(namespace.path, "#{namespace.full_path}+#{namespace.id}+deleted") }
-    let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
-
-    context 'legacy storage' do
-      let!(:project) { create(:project_empty_repo, :legacy_storage, namespace: namespace) }
-
-      it 'renames its dirs when deleted' do
-        allow(GitlabShellWorker).to receive(:perform_in)
-
-        namespace.destroy!
-
-        expect(File.exist?(deleted_path_in_dir)).to be(true)
-      end
-
-      it 'schedules the namespace for deletion' do
-        expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage, deleted_path)
-
-        namespace.destroy!
-      end
-
-      context 'in sub-groups' do
-        let(:parent) { create(:group, path: 'parent') }
-        let(:child) { create(:group, parent: parent, path: 'child') }
-        let!(:project) { create(:project_empty_repo, :legacy_storage, namespace: child) }
-        let(:path_in_dir) { File.join(repository_storage_path, 'parent', 'child') }
-        let(:deleted_path) { File.join('parent', "child+#{child.id}+deleted") }
-        let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
-
-        it 'renames its dirs when deleted' do
-          allow(GitlabShellWorker).to receive(:perform_in)
-
-          child.destroy!
-
-          expect(File.exist?(deleted_path_in_dir)).to be(true)
-        end
-
-        it 'schedules the namespace for deletion' do
-          expect(GitlabShellWorker).to receive(:perform_in).with(5.minutes, :rm_namespace, repository_storage, deleted_path)
-
-          child.destroy!
-        end
-      end
-    end
-
-    context 'hashed storage' do
-      let!(:project) { create(:project_empty_repo, namespace: namespace) }
-
-      it 'has no repositories base directories to remove' do
-        expect(GitlabShellWorker).not_to receive(:perform_in)
-
-        expect(File.exist?(path_in_dir)).to be(false)
-
-        namespace.destroy!
-
-        expect(File.exist?(deleted_path_in_dir)).to be(false)
       end
     end
   end
@@ -2122,6 +1896,48 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         let(:auto_devops_enabled) { false }
 
         it { is_expected.to eq(false) }
+      end
+    end
+  end
+
+  describe '#first_auto_devops_config' do
+    let(:instance_autodevops_status) { Gitlab::CurrentSettings.auto_devops_enabled? }
+
+    context 'when namespace.auto_devops_enabled is not set' do
+      let(:group) { create(:group) }
+
+      it 'returns the config values using the instance setting' do
+        expect(group.first_auto_devops_config).to eq({ scope: :instance, status: instance_autodevops_status })
+      end
+
+      context 'when namespace does not have auto_deveops enabled but has a parent' do
+        let!(:parent) { create(:group, auto_devops_enabled: true) }
+        let!(:group) { create(:group, parent: parent) }
+
+        it 'returns the first_auto_devops_config of the parent' do
+          expect(parent).to receive(:first_auto_devops_config).and_call_original
+
+          expect(group.first_auto_devops_config).to eq({ scope: :group, status: true })
+        end
+
+        context 'then the parent is deleted' do
+          before do
+            parent.delete
+            group.reload
+          end
+
+          it 'returns its own config with status based on the instance settings' do
+            expect(group.first_auto_devops_config).to eq({ scope: :instance, status: instance_autodevops_status })
+          end
+        end
+      end
+    end
+
+    context 'when namespace.auto_devops_enable is set' do
+      let(:group) { create(:group, auto_devops_enabled: false) }
+
+      it 'returns the correct config values' do
+        expect(group.first_auto_devops_config).to eq({ scope: :group, status: false })
       end
     end
   end

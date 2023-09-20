@@ -38,7 +38,7 @@ RSpec.describe SnippetBlobPresenter do
         let(:blob) { blob_at(file) }
 
         it 'returns rich markdown content' do
-          expect(subject).to include('file-content md')
+          expect(subject).to include('file-content js-markup-content md')
         end
       end
 

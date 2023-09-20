@@ -109,18 +109,19 @@ These shortcuts are available when viewing issues:
 
 These shortcuts are available when viewing [merge requests](project/merge_requests/index.md):
 
-| macOS shortcut                    | Windows shortcut    | Description |
-|-----------------------------------|---------------------|-------------|
-| <kbd>]</kbd> or <kbd>j</kbd>      |                     | Move to next file. |
-| <kbd>&#91;</kbd> or <kbd>k</kbd>     |                     | Move to previous file. |
+| macOS shortcut                    | Windows shortcut                  | Description |
+|-----------------------------------|-----------------------------------|-------------|
+| <kbd>]</kbd> or <kbd>j</kbd>      |                                   | Move to next file. |
+| <kbd>&#91;</kbd> or <kbd>k</kbd>  |                                   | Move to previous file. |
 | <kbd>Command</kbd> + <kbd>p</kbd> | <kbd>Control</kbd> + <kbd>p</kbd> | Search for, and then jump to a file for review. |
-| <kbd>n</kbd>                      |                     | Move to next unresolved discussion. |
-| <kbd>p</kbd>                      |                     | Move to previous unresolved discussion. |
-| <kbd>b</kbd>                      |                     |  Copy source branch name. |
-| <kbd>c</kbd> + <kbd>r</kbd>       |                     | Copy merge request reference. |
-| <kbd>r</kbd>                      |                     |  Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
-| <kbd>c</kbd>                      |                     |  Move to next commit. |
-| <kbd>x</kbd>                      |                     |  Move to previous commit. |
+| <kbd>n</kbd>                      |                                   | Move to next unresolved discussion. |
+| <kbd>p</kbd>                      |                                   | Move to previous unresolved discussion. |
+| <kbd>b</kbd>                      |                                   | Copy source branch name. |
+| <kbd>c</kbd> + <kbd>r</kbd>       |                                   | Copy merge request reference. |
+| <kbd>r</kbd>                      |                                   | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
+| <kbd>c</kbd>                      |                                   | Move to next commit. |
+| <kbd>x</kbd>                      |                                   | Move to previous commit. |
+| <kbd>f</kbd>                      |                                   | Toggle file browser. |
 
 ### Project files
 
@@ -324,20 +325,25 @@ These shortcuts are available when viewing [epics](group/epics/index.md):
 
 ## Disable keyboard shortcuts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22113) in GitLab 12.8.
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
 
 To disable keyboard shortcuts:
 
-1. While viewing a page that supports keyboard shortcuts, and outside a text box,
-press <kbd>?</kbd> to display the list of shortcuts.
-1. Select **Toggle shortcuts**.
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. In the **Behavior** section, clear the **Enable keyboard shortcuts** checkbox.
+1. Select **Save changes**.
 
 ## Enable keyboard shortcuts
 
+> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+
 To enable keyboard shortcuts:
 
-1. On the left sidebar, at the bottom, select **Help** (**{question}**), then **Keyboard shortcuts**.
-1. Select **Toggle shortcuts**.
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. In the **Behavior** section, select the **Enable keyboard shortcuts** checkbox.
+1. Select **Save changes**.
 
 ## Troubleshooting
 

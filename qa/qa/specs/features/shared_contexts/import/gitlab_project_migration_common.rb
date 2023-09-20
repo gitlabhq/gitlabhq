@@ -9,11 +9,10 @@ module QA
     let(:source_project_with_readme) { false }
 
     let(:source_project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.api_client = source_admin_api_client
-        project.group = source_group
-        project.initialize_with_readme = source_project_with_readme
-      end
+      create(:project,
+        api_client: source_admin_api_client,
+        group: source_group,
+        initialize_with_readme: source_project_with_readme)
     end
 
     let(:imported_projects) { imported_group.reload!.projects }

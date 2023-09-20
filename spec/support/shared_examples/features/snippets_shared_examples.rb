@@ -52,7 +52,7 @@ RSpec.shared_examples 'tabs with counts' do
 end
 
 RSpec.shared_examples 'does not show New Snippet button' do
-  let(:user) { create(:user, :external) }
+  let(:user) { create(:user, :external, :no_super_sidebar) }
 
   specify do
     sign_in(user)

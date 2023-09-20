@@ -3,8 +3,8 @@
 module Sbom
   class PackageUrl
     class ArgumentValidator
-      QUALIFIER_KEY_REGEXP = /^[A-Za-z\d._-]+$/.freeze
-      START_WITH_NUMBER_REGEXP = /^\d/.freeze
+      QUALIFIER_KEY_REGEXP = /^[A-Za-z\d._-]+$/
+      START_WITH_NUMBER_REGEXP = /^\d/
 
       def initialize(package)
         @type = package.type

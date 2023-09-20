@@ -186,7 +186,8 @@ export default {
     getCountBetweenIndex(index) {
       if (index === 0) {
         return -1;
-      } else if (!this.diffLines[index + 1]) {
+      }
+      if (!this.diffLines[index + 1]) {
         return -1;
       }
 

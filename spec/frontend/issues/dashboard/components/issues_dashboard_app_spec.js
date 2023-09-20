@@ -137,7 +137,6 @@ describe('IssuesDashboardApp component', () => {
         issuablesLoading: false,
         namespace: 'dashboard',
         recentSearchesStorageKey: 'issues',
-        searchInputPlaceholder: i18n.searchPlaceholder,
         showPaginationControls: true,
         sortOptions: getSortOptions({
           hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,

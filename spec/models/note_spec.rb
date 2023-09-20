@@ -7,6 +7,7 @@ RSpec.describe Note, feature_category: :team_planning do
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:noteable).touch(false) }
     it { is_expected.to belong_to(:author).class_name('User') }
 
@@ -32,6 +33,7 @@ RSpec.describe Note, feature_category: :team_planning do
     it { is_expected.to validate_length_of(:note).is_at_most(1_000_000) }
     it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:project) }
+    it { is_expected.to validate_presence_of(:namespace) }
 
     context 'when note is on commit' do
       before do
@@ -308,6 +310,70 @@ RSpec.describe Note, feature_category: :team_planning do
         let(:confidential) { nil }
 
         it { is_expected.to be false }
+      end
+    end
+
+    describe '#ensure_namespace_id' do
+      context 'for a project noteable' do
+        let_it_be(:issue) { create(:issue) }
+
+        it 'copies the project_namespace_id of the project' do
+          note = build(:note, noteable: issue, project: issue.project)
+
+          note.valid?
+
+          expect(note.namespace_id).to eq(issue.project.project_namespace_id)
+        end
+
+        context 'when noteable is changed' do
+          let_it_be(:another_issue) { create(:issue) }
+
+          it 'updates the namespace_id' do
+            note = create(:note, noteable: issue, project: issue.project)
+
+            note.noteable = another_issue
+            note.project = another_issue.project
+            note.valid?
+
+            expect(note.namespace_id).to eq(another_issue.project.project_namespace_id)
+          end
+        end
+
+        context 'when project is missing' do
+          it 'does not raise an exception' do
+            note = build(:note, noteable: issue, project: nil)
+
+            expect { note.valid? }.not_to raise_error
+          end
+        end
+      end
+
+      context 'for a personal snippet note' do
+        let_it_be(:snippet) { create(:personal_snippet) }
+
+        it 'copies the personal namespace_id of the author' do
+          note = build(:note, noteable: snippet, project: nil)
+
+          note.valid?
+
+          expect(note.namespace_id).to eq(snippet.author.namespace.id)
+        end
+
+        context 'when snippet author is missing' do
+          it 'does not raise an exception' do
+            note = build(:note, noteable: build(:personal_snippet, author: nil), project: nil)
+
+            expect { note.valid? }.not_to raise_error
+          end
+        end
+      end
+
+      context 'when noteable is missing' do
+        it 'does not raise an exception' do
+          note = build(:note, noteable: nil, project: nil)
+
+          expect { note.valid? }.not_to raise_error
+        end
       end
     end
   end
@@ -1595,16 +1661,10 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
-  describe 'expiring ETag cache' do
+  describe 'broadcasting note changes' do
     let_it_be(:issue) { create(:issue) }
 
     let(:note) { build(:note, project: issue.project, noteable: issue) }
-
-    def expect_expiration(noteable)
-      expect_any_instance_of(Gitlab::EtagCaching::Store)
-        .to receive(:touch)
-        .with("/#{noteable.project.namespace.to_param}/#{noteable.project.to_param}/noteable/#{noteable.class.name.underscore}/#{noteable.id}/notes")
-    end
 
     it 'broadcasts an Action Cable event for the noteable' do
       expect(Noteable::NotesChannel).to receive(:broadcast_to).with(note.noteable, event: 'updated')
@@ -1612,36 +1672,19 @@ RSpec.describe Note, feature_category: :team_planning do
       note.save!
     end
 
-    context 'when action_cable_notes is disabled' do
-      before do
-        stub_feature_flags(action_cable_notes: false)
-      end
-
-      it 'does not broadcast an Action Cable event' do
-        expect(Noteable::NotesChannel).not_to receive(:broadcast_to)
-
-        note.save!
-      end
-    end
-
-    it "expires cache for note's issue when note is saved" do
-      expect_expiration(note.noteable)
-
+    it 'broadcast an Action Cable event for the noteable when note is destroyed' do
       note.save!
-    end
 
-    it "expires cache for note's issue when note is destroyed" do
-      note.save!
-      expect_expiration(note.noteable)
+      expect(Noteable::NotesChannel).to receive(:broadcast_to).with(note.noteable, event: 'updated')
 
       note.destroy!
     end
 
-    context 'when issuable etag caching is disabled' do
-      it 'does not store cache key' do
-        allow(note.noteable).to receive(:etag_caching_enabled?).and_return(false)
+    context 'when issuable real_time_notes is disabled' do
+      it 'does not broadcast an Action Cable event' do
+        allow(note.noteable).to receive(:real_time_notes_enabled?).and_return(false)
 
-        expect_any_instance_of(Gitlab::EtagCaching::Store).not_to receive(:touch)
+        expect(Noteable::NotesChannel).not_to receive(:broadcast_to)
 
         note.save!
       end
@@ -1653,8 +1696,8 @@ RSpec.describe Note, feature_category: :team_planning do
       context 'when adding a note to the MR' do
         let(:note) { build(:note, noteable: merge_request, project: merge_request.project) }
 
-        it 'expires the MR note etag cache' do
-          expect_expiration(merge_request)
+        it 'broadcasts an Action Cable event for the MR' do
+          expect(Noteable::NotesChannel).to receive(:broadcast_to).with(merge_request, event: 'updated')
 
           note.save!
         end
@@ -1663,8 +1706,8 @@ RSpec.describe Note, feature_category: :team_planning do
       context 'when adding a note to a commit on the MR' do
         let(:note) { build(:note_on_commit, commit_id: merge_request.commits.first.id, project: merge_request.project) }
 
-        it 'expires the MR note etag cache' do
-          expect_expiration(merge_request)
+        it 'broadcasts an Action Cable event for the MR' do
+          expect(Noteable::NotesChannel).to receive(:broadcast_to).with(merge_request, event: 'updated')
 
           note.save!
         end

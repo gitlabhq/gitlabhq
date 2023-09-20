@@ -79,11 +79,11 @@ module NavHelper
   end
 
   def admin_monitoring_nav_links
-    %w(system_info background_migrations background_jobs health_check)
+    %w[system_info background_migrations background_jobs health_check]
   end
 
   def admin_analytics_nav_links
-    %w(dev_ops_report usage_trends)
+    %w[dev_ops_report usage_trends]
   end
 
   def show_super_sidebar?(user = current_user)

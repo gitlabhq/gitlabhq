@@ -224,7 +224,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
           expect(page).not_to have_content('Retry job')
           within('[data-testid="pipeline-details-header"]') do
-            expect(page).to have_selector('[data-testid="ci-badge-running"]')
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'running')
           end
         end
       end
@@ -278,7 +278,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
           expect(page).not_to have_content('Retry job')
           within('[data-testid="pipeline-details-header"]') do
-            expect(page).to have_selector('[data-testid="ci-badge-running"]')
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'running')
           end
         end
 
@@ -312,7 +312,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
           expect(page).not_to have_content('Play job')
           within('[data-testid="pipeline-details-header"]') do
-            expect(page).to have_selector('[data-testid="ci-badge-running"]')
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'running')
           end
         end
       end
@@ -537,7 +537,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
 
         it 'shows running status in pipeline header', :sidekiq_might_not_need_inline do
           within('[data-testid="pipeline-details-header"]') do
-            expect(page).to have_selector('[data-testid="ci-badge-running"]')
+            expect(page).to have_selector('[data-testid="ci-badge-link"]', text: 'running')
           end
         end
       end
@@ -843,12 +843,10 @@ RSpec.describe 'Pipeline', :js, feature_category: :groups_and_projects do
         end
 
         it 'displays the PipelineSchedule in an inactive state' do
-          stub_feature_flags(pipeline_schedules_vue: false)
-
           visit project_pipeline_schedules_path(project)
           page.click_link('Inactive')
 
-          expect(page).to have_selector('table.ci-table > tbody > tr > td', text: 'blocked user schedule')
+          expect(page).to have_selector('[data-testid="pipeline-schedule-description"]', text: 'blocked user schedule')
         end
 
         it 'does not create a new Pipeline', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408215' do

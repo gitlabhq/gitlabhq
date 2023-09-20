@@ -68,7 +68,7 @@ module LabelsHelper
 
   # We need the `label` argument here for EE
   def wrap_label_html(label_html, small:, label:)
-    wrapper_classes = %w(gl-label)
+    wrapper_classes = %w[gl-label]
     wrapper_classes << 'gl-label-sm' if small
 
     %(<span class="#{wrapper_classes.join(' ')}">#{label_html}</span>).html_safe
@@ -220,10 +220,16 @@ module LabelsHelper
     project || group&.subgroup?
   end
 
+  def label_lock_on_merge_help_text
+    _('IMPORTANT: Use this setting only for VERY strict auditing purposes. ' \
+      'When turned on, nobody will be able to remove the label from any merge requests after they are merged. ' \
+      'In addition, nobody will be able to turn off this setting or delete this label.')
+  end
+
   private
 
   def render_label_link(label_html, link:, title:, dataset:)
-    classes = %w(gl-link gl-label-link)
+    classes = %w[gl-link gl-label-link]
     dataset ||= {}
 
     if title.present?

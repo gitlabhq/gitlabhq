@@ -11,6 +11,8 @@ workhorse:verify:
 .workhorse:test:
   extends: .workhorse:rules:workhorse
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-exiftool-12.60
+  services:
+    - name: redis:${REDIS_VERSION}-alpine
   variables:
     GITALY_ADDRESS: "tcp://127.0.0.1:8075"
   stage: test
@@ -22,6 +24,8 @@ workhorse:verify:
     - bundle_install_script
     - go version
     - scripts/gitaly-test-build
+    - cp workhorse/config.toml.example workhorse/config.toml
+    - sed -i 's|URL.*$|URL = "redis://redis:6379"|g' workhorse/config.toml
   script:
     - make -C workhorse test
 
@@ -30,6 +34,7 @@ workhorse:test go:
   parallel:
     matrix:
       - GO_VERSION: ["1.18", "1.19", "1.20"]
+        REDIS_VERSION: ["7.0", "6.2"]
   script:
     - make -C workhorse test-coverage
   coverage: '/\d+.\d+%/'
@@ -43,11 +48,15 @@ workhorse:test fips:
   parallel:
     matrix:
       - GO_VERSION: ["1.18", "1.19", "1.20"]
+        REDIS_VERSION: ["7.0", "6.2"]
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ubi-${UBI_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-exiftool-12.60
   variables:
     FIPS_MODE: 1
 
 workhorse:test race:
   extends: .workhorse:test
+  parallel:
+    matrix:
+      - REDIS_VERSION: ["7.0", "6.2"]
   script:
     - make -C workhorse test-race

@@ -12,9 +12,11 @@ module Users
       ghost_user_migrations.each do |job|
         break if execution_tracker.over_limit?
 
-        service = Users::MigrateRecordsToGhostUserService.new(job.user,
-                                                              job.initiator_user,
-                                                              execution_tracker)
+        service = Users::MigrateRecordsToGhostUserService.new(
+          job.user,
+          job.initiator_user,
+          execution_tracker
+        )
         service.execute(hard_delete: job.hard_delete)
       rescue Gitlab::Utils::ExecutionTracker::ExecutionTimeOutError
         # no-op

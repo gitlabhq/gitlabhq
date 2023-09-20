@@ -125,6 +125,14 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
     end
   end
 
+  describe '#completed?' do
+    it { expect(described_class.new(status: :failed)).to be_completed }
+    it { expect(described_class.new(status: :finished)).to be_completed }
+    it { expect(described_class.new(status: :canceled)).to be_completed }
+    it { expect(described_class.new(status: :scheduled)).not_to be_completed }
+    it { expect(described_class.new(status: :started)).not_to be_completed }
+  end
+
   describe '#expire_etag_cache' do
     context 'when project import type has realtime changes endpoint' do
       before do

@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:board) { create(:board, project: project) }
   let_it_be(:project_label) { create(:label, project: project, title: 'Label') }
   let_it_be(:milestone_1) { create(:milestone, project: project, due_date: 3.days.from_now) }
   let_it_be(:milestone_2) { create(:milestone, project: project, due_date: Date.tomorrow) }
@@ -21,166 +21,195 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
   let(:filter_first_suggestion) { find('.gl-filtered-search-suggestion-list').first('.gl-filtered-search-suggestion') }
   let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
 
-  before do
-    stub_feature_flags(apollo_boards: false)
-    project.add_maintainer(user)
-    sign_in(user)
+  context 'for a project board' do
+    let_it_be(:board) { create(:board, project: project) }
 
-    visit_project_board
-  end
+    before do
+      stub_feature_flags(apollo_boards: false)
+      project.add_maintainer(user)
+      sign_in(user)
 
-  shared_examples 'loads all the users when opened' do
-    it 'and submit one as filter', :aggregate_failures do
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
-
+      visit project_board_path(project, board)
       wait_for_requests
+    end
 
-      expect_filtered_search_dropdown_results(filter_dropdown, 4)
+    shared_examples 'loads all the users when opened' do
+      it 'and submit one as filter', :aggregate_failures do
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
 
-      click_on user.username
-      filter_submit.click
+        wait_for_requests
 
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
-      expect(find('.board-card')).to have_content(issue.title)
+        expect_filtered_search_dropdown_results(filter_dropdown, 3)
+
+        click_on user.username
+        filter_submit.click
+
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
+        expect(find('.board-card')).to have_content(issue.title)
+      end
+    end
+
+    describe 'filters by assignee' do
+      before do
+        set_filter('assignee')
+      end
+
+      it_behaves_like 'loads all the users when opened', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/351426' do
+        let(:issue) { issue_2 }
+      end
+    end
+
+    describe 'filters by author' do
+      before do
+        set_filter('author')
+      end
+
+      it_behaves_like 'loads all the users when opened' do
+        let(:issue) { issue_1 }
+      end
+    end
+
+    describe 'filters by label' do
+      before do
+        set_filter('label')
+      end
+
+      it 'loads all the labels when opened and submit one as filter', :aggregate_failures do
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
+
+        expect_filtered_search_dropdown_results(filter_dropdown, 3)
+
+        filter_dropdown.click_on project_label.title
+        filter_submit.click
+
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
+        expect(find('.board-card')).to have_content(issue_2.title)
+      end
+    end
+
+    describe 'filters by releases' do
+      before do
+        set_filter('release')
+      end
+
+      it 'loads all the releases when opened and submit one as filter', :aggregate_failures do
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
+
+        expect_filtered_search_dropdown_results(filter_dropdown, 2)
+
+        click_on release.tag
+        filter_submit.click
+
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
+        expect(find('.board-card')).to have_content(issue_1.title)
+      end
+    end
+
+    describe 'filters by confidentiality' do
+      before do
+        filter_input.click
+        filter_input.set("confidential:")
+      end
+
+      it 'loads all the confidentiality options when opened and submit one as filter', :aggregate_failures do
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
+
+        expect_filtered_search_dropdown_results(filter_dropdown, 2)
+
+        filter_dropdown.click_on 'Yes'
+        filter_submit.click
+
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
+        expect(find('.board-card')).to have_content(issue_2.title)
+      end
+    end
+
+    describe 'filters by milestone' do
+      before do
+        set_filter('milestone')
+      end
+
+      it 'loads all the milestones when opened and submit one as filter', :aggregate_failures do
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
+
+        expect_filtered_search_dropdown_results(filter_dropdown, 6)
+        expect(filter_dropdown).to have_content('None')
+        expect(filter_dropdown).to have_content('Any')
+        expect(filter_dropdown).to have_content('Started')
+        expect(filter_dropdown).to have_content('Upcoming')
+
+        dropdown_nodes = page.find_all('.gl-filtered-search-suggestion-list > .gl-filtered-search-suggestion')
+
+        expect(dropdown_nodes[4]).to have_content(milestone_2.title)
+        expect(dropdown_nodes.last).to have_content(milestone_1.title)
+
+        click_on milestone_1.title
+        filter_submit.click
+
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
+      end
+    end
+
+    describe 'filters by reaction emoji' do
+      before do
+        set_filter('my-reaction')
+      end
+
+      it 'loads all the emojis when opened and submit one as filter', :aggregate_failures do
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
+
+        expect_filtered_search_dropdown_results(filter_dropdown, 3)
+
+        click_on 'thumbsup'
+        filter_submit.click
+
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
+        expect(find('.board-card')).to have_content(issue_1.title)
+      end
+    end
+
+    describe 'filters by type' do
+      let_it_be(:incident) { create(:incident, project: project) }
+
+      before do
+        set_filter('type')
+      end
+
+      it 'loads all the types when opened and submit one as filter', :aggregate_failures do
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 3)
+
+        expect_filtered_search_dropdown_results(filter_dropdown, 2)
+
+        click_on 'Incident'
+        filter_submit.click
+
+        expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
+        expect(find('.board-card')).to have_content(incident.title)
+      end
     end
   end
 
-  describe 'filters by assignee' do
-    before do
-      set_filter('assignee')
-    end
+  context 'for a group board' do
+    let_it_be(:board) { create(:board, group: group) }
 
-    it_behaves_like 'loads all the users when opened', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/351426' do
-      let(:issue) { issue_2 }
-    end
-  end
-
-  describe 'filters by author' do
-    before do
-      set_filter('author')
-    end
-
-    it_behaves_like 'loads all the users when opened' do
-      let(:issue) { issue_1 }
-    end
-  end
-
-  describe 'filters by label' do
-    before do
-      set_filter('label')
-    end
-
-    it 'loads all the labels when opened and submit one as filter', :aggregate_failures do
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
-
-      expect_filtered_search_dropdown_results(filter_dropdown, 3)
-
-      filter_dropdown.click_on project_label.title
-      filter_submit.click
-
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
-      expect(find('.board-card')).to have_content(issue_2.title)
-    end
-  end
-
-  describe 'filters by releases' do
-    before do
-      set_filter('release')
-    end
-
-    it 'loads all the releases when opened and submit one as filter', :aggregate_failures do
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
-
-      expect_filtered_search_dropdown_results(filter_dropdown, 2)
-
-      click_on release.tag
-      filter_submit.click
-
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
-      expect(find('.board-card')).to have_content(issue_1.title)
-    end
-  end
-
-  describe 'filters by confidentiality' do
-    before do
-      filter_input.click
-      filter_input.set("confidential:")
-    end
-
-    it 'loads all the confidentiality options when opened and submit one as filter', :aggregate_failures do
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
-
-      expect_filtered_search_dropdown_results(filter_dropdown, 2)
-
-      filter_dropdown.click_on 'Yes'
-      filter_submit.click
-
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
-      expect(find('.board-card')).to have_content(issue_2.title)
-    end
-  end
-
-  describe 'filters by milestone' do
-    before do
-      set_filter('milestone')
-    end
-
-    it 'loads all the milestones when opened and submit one as filter', :aggregate_failures do
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
-
-      expect_filtered_search_dropdown_results(filter_dropdown, 6)
-      expect(filter_dropdown).to have_content('None')
-      expect(filter_dropdown).to have_content('Any')
-      expect(filter_dropdown).to have_content('Started')
-      expect(filter_dropdown).to have_content('Upcoming')
-
-      dropdown_nodes = page.find_all('.gl-filtered-search-suggestion-list > .gl-filtered-search-suggestion')
-
-      expect(dropdown_nodes[4]).to have_content(milestone_2.title)
-      expect(dropdown_nodes.last).to have_content(milestone_1.title)
-
-      click_on milestone_1.title
-      filter_submit.click
-
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
-    end
-  end
-
-  describe 'filters by reaction emoji' do
-    before do
-      set_filter('my-reaction')
-    end
-
-    it 'loads all the emojis when opened and submit one as filter', :aggregate_failures do
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 2)
-
-      expect_filtered_search_dropdown_results(filter_dropdown, 3)
-
-      click_on 'thumbsup'
-      filter_submit.click
-
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
-      expect(find('.board-card')).to have_content(issue_1.title)
-    end
-  end
-
-  describe 'filters by type' do
-    let_it_be(:incident) { create(:incident, project: project) }
+    let_it_be(:child_project_member) { create(:user).tap { |u| project.add_maintainer(u) } }
 
     before do
-      set_filter('type')
+      stub_feature_flags(apollo_boards: false)
+
+      group.add_maintainer(user)
+      sign_in(user)
     end
 
-    it 'loads all the types when opened and submit one as filter', :aggregate_failures do
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 3)
+    context 'when filtering by assignee' do
+      it 'includes descendant project members in autocomplete' do
+        visit group_board_path(group, board)
+        wait_for_requests
 
-      expect_filtered_search_dropdown_results(filter_dropdown, 2)
+        set_filter('assignee')
 
-      click_on 'Incident'
-      filter_submit.click
-
-      expect(find('.board:nth-child(1)')).to have_selector('.board-card', count: 1)
-      expect(find('.board-card')).to have_content(incident.title)
+        expect(page).to have_css('.gl-filtered-search-suggestion', text: child_project_member.name)
+      end
     end
   end
 
@@ -192,10 +221,5 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
 
   def expect_filtered_search_dropdown_results(filter_dropdown, count)
     expect(filter_dropdown).to have_selector('.gl-dropdown-item', count: count)
-  end
-
-  def visit_project_board
-    visit project_board_path(project, board)
-    wait_for_requests
   end
 end

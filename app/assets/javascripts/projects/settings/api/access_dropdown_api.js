@@ -1,7 +1,9 @@
+import Api from '~/api';
 import axios from '~/lib/utils/axios_utils';
+import { ACCESS_LEVEL_DEVELOPER_INTEGER } from '~/access_level/constants';
 
-const USERS_PATH = '/-/autocomplete/users.json';
 const GROUPS_PATH = '/-/autocomplete/project_groups.json';
+const USERS_PATH = '/-/autocomplete/users.json';
 const DEPLOY_KEYS_PATH = '/-/autocomplete/deploy_keys_with_owners.json';
 
 const buildUrl = (urlRoot, url) => {
@@ -26,10 +28,14 @@ export const getUsers = (query, states) => {
 };
 
 export const getGroups = () => {
-  return axios.get(buildUrl(gon.relative_url_root || '', GROUPS_PATH), {
-    params: {
-      project_id: gon.current_project_id,
-    },
+  if (gon.current_project_id) {
+    return Api.projectGroups(gon.current_project_id, {
+      with_shared: true,
+      shared_min_access_level: ACCESS_LEVEL_DEVELOPER_INTEGER,
+    });
+  }
+  return axios.get(buildUrl(gon.relative_url_root || '', GROUPS_PATH)).then(({ data }) => {
+    return data;
   });
 };
 

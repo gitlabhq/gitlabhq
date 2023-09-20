@@ -135,8 +135,7 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
       context 'when branch for stop action is protected' do
         before do
           project.add_developer(user)
-          create(:protected_branch, :no_one_can_push,
-                 name: 'master', project: project)
+          create(:protected_branch, :no_one_can_push, name: 'master', project: project)
         end
 
         it 'does not stop environment' do

@@ -20,7 +20,7 @@ Parameters:
 
 | Attribute | Type     | Required               | Description |
 |-----------|----------|------------------------|-------------|
-| `active`  | boolean  | **{dotted-circle}** No | Limit by active status. |
+| `active`  | boolean  | No | Limit by active status. |
 
 Example request:
 
@@ -66,8 +66,8 @@ Parameters:
 
 | Attribute      | Type           | Required               | Description |
 |:---------------|:---------------|:-----------------------|:------------|
-| `id`           | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `active`       | boolean        | **{dotted-circle}** No | Limit by active status. |
+| `id`           | integer/string | Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `active`       | boolean        | No | Limit by active status. |
 
 Example request:
 
@@ -108,8 +108,8 @@ Parameters:
 
 | Attribute  | Type           | Required               | Description |
 | ---------- | -------------- | ---------------------- | ----------- |
-| `id`       | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `token_id` | integer        | **{check-circle}** Yes | ID of the deploy token |
+| `id`       | integer/string | Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `token_id` | integer        | Yes | ID of the deploy token |
 
 Example request:
 
@@ -148,11 +148,11 @@ Parameters:
 
 | Attribute    | Type             | Required               | Description |
 | ------------ | ---------------- | ---------------------- | ----------- |
-| `id`         | integer/string   | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `name`       | string           | **{check-circle}** Yes | New deploy token's name |
-| `scopes`     | array of strings | **{check-circle}** Yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
-| `expires_at` | datetime         | **{dotted-circle}** No | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `username`   | string           | **{dotted-circle}** No | Username for deploy token. Default is `gitlab+deploy-token-{n}` |
+| `id`         | integer/string   | Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `name`       | string           | Yes | New deploy token's name |
+| `scopes`     | array of strings | Yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
+| `expires_at` | datetime         | No | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `username`   | string           | No | Username for deploy token. Default is `gitlab+deploy-token-{n}` |
 
 Example request:
 
@@ -193,8 +193,8 @@ Parameters:
 
 | Attribute  | Type           | Required               | Description |
 | ---------- | -------------- | ---------------------- | ----------- |
-| `id`       | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `token_id` | integer        | **{check-circle}** Yes | ID of the deploy token |
+| `id`       | integer/string | Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `token_id` | integer        | Yes | ID of the deploy token |
 
 Example request:
 
@@ -222,8 +222,8 @@ Parameters:
 
 | Attribute      | Type           | Required               | Description |
 |:---------------|:---------------|:-----------------------|:------------|
-| `id`           | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
-| `active`       | boolean        | **{dotted-circle}** No | Limit by active status. |
+| `id`           | integer/string | Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `active`       | boolean        | No | Limit by active status. |
 
 Example request:
 
@@ -264,8 +264,8 @@ Parameters:
 
 | Attribute   | Type           | Required               | Description |
 | ----------- | -------------- | ---------------------- | ----------- |
-| `id`        | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `token_id`  | integer        | **{check-circle}** Yes | ID of the deploy token |
+| `id`        | integer/string | Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `token_id`  | integer        | Yes | ID of the deploy token |
 
 Example request:
 
@@ -304,11 +304,11 @@ Parameters:
 
 | Attribute    | Type | Required  | Description |
 | ------------ | ---- | --------- | ----------- |
-| `id`         | integer/string   | **{check-circle}** Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `name`       | string           | **{check-circle}** Yes | New deploy token's name |
-| `scopes`     | array of strings | **{check-circle}** Yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
-| `expires_at` | datetime         | **{dotted-circle}** No | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `username`   | string           | **{dotted-circle}** No | Username for deploy token. Default is `gitlab+deploy-token-{n}` |
+| `id`         | integer/string   | Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `name`       | string           | Yes | New deploy token's name |
+| `scopes`     | array of strings | Yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
+| `expires_at` | datetime         | No | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
+| `username`   | string           | No | Username for deploy token. Default is `gitlab+deploy-token-{n}` |
 
 Example request:
 
@@ -349,8 +349,8 @@ Parameters:
 
 | Attribute   | Type           | Required               | Description |
 | ----------- | -------------- | ---------------------- | ----------- |
-| `id`        | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `token_id`  | integer        | **{check-circle}** Yes | ID of the deploy token |
+| `id`        | integer/string | Yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `token_id`  | integer        | Yes | ID of the deploy token |
 
 Example request:
 

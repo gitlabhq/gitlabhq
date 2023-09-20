@@ -1,0 +1,10 @@
+---
+table_name: packages_nuget_symbols
+classes:
+- Packages::Nuget::Symbol
+feature_categories:
+- package_registry
+description: Nuget package symbols
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129916
+milestone: '16.4'
+gitlab_schema: gitlab_main

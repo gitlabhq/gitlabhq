@@ -202,6 +202,7 @@ module Gitlab
           Rails.env.test? && caller_locations.any? do |l|
             l.path.end_with?('lib/factory_bot/evaluation.rb') && l.label == 'create' ||
               l.path.end_with?('lib/factory_bot/strategy/create.rb') ||
+              l.path.end_with?('lib/factory_bot/strategy/build.rb') ||
               l.path.end_with?('shoulda/matchers/active_record/validate_uniqueness_of_matcher.rb') && l.label == 'create_existing_record'
           end
         end

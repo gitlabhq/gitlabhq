@@ -18,7 +18,7 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347809' do
         project.visit!
 
-        Page::Project::Menu.perform(&:click_wiki)
+        Page::Project::Menu.perform(&:go_to_wiki)
         Page::Project::Wiki::Show.perform(&:click_create_your_first_page)
 
         Page::Project::Wiki::Edit.perform do |edit|

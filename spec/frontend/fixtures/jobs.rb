@@ -89,28 +89,28 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
       end
     end
 
-    it_behaves_like 'graphql queries', 'jobs/components/table/graphql/queries', 'get_jobs.query.graphql' do
+    it_behaves_like 'graphql queries', 'ci/jobs_page/graphql/queries', 'get_jobs.query.graphql' do
       let(:variables) { { fullPath: 'frontend-fixtures/builds-project' } }
       let(:success_path) { %w[project jobs] }
     end
 
-    it_behaves_like 'graphql queries', 'jobs/components/table/graphql/queries', 'get_jobs_count.query.graphql', true do
+    it_behaves_like 'graphql queries', 'ci/jobs_page/graphql/queries', 'get_jobs_count.query.graphql', true do
       let(:variables) { { fullPath: 'frontend-fixtures/builds-project' } }
       let(:success_path) { %w[project jobs] }
     end
 
-    it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_all_jobs.query.graphql' do
+    it_behaves_like 'graphql queries', 'ci/admin/jobs_table/graphql/queries', 'get_all_jobs.query.graphql' do
       let(:user) { create(:admin) }
       let(:success_path) { 'jobs' }
     end
 
-    it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_cancelable_jobs_count.query.graphql', true do
+    it_behaves_like 'graphql queries', 'ci/admin/jobs_table/graphql/queries', 'get_cancelable_jobs_count.query.graphql', true do
       let(:variables) { { statuses: %w[PENDING RUNNING] } }
       let(:user) { create(:admin) }
       let(:success_path) { %w[cancelable count] }
     end
 
-    it_behaves_like 'graphql queries', 'pages/admin/jobs/components/table/graphql/queries', 'get_all_jobs_count.query.graphql', true do
+    it_behaves_like 'graphql queries', 'ci/admin/jobs_table/graphql/queries', 'get_all_jobs_count.query.graphql', true do
       let(:user) { create(:admin) }
       let(:success_path) { 'jobs' }
     end

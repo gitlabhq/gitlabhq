@@ -1,5 +1,5 @@
 ---
-stage: Analytics
+stage: Analyze
 group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -58,7 +58,7 @@ checking the configuration file of your GitLab instance:
 
 - Using the Admin Area:
 
-  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. On the left sidebar, select **Search or go to**.
   1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage statistics**.
@@ -116,7 +116,7 @@ To work around this bug, you have two options:
      sudo gitlab-ctl reconfigure
      ```
 
-  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. On the left sidebar, select **Search or go to**.
   1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > Metrics and profiling**.
   1. Expand **Usage statistics**.

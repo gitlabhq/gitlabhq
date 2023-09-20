@@ -7,7 +7,7 @@ RSpec.shared_examples Gitlab::BitbucketServerImport::ObjectImporter do
     let(:job) { { 'args' => [1, {}, 'key'], 'jid' => 'jid' } }
 
     it 'notifies the waiter' do
-      expect(Gitlab::JobWaiter).to receive(:notify).with('key', 'jid')
+      expect(Gitlab::JobWaiter).to receive(:notify).with('key', 'jid', ttl: Gitlab::Import::JOB_WAITER_TTL)
 
       described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new)
     end
@@ -23,7 +23,7 @@ RSpec.shared_examples Gitlab::BitbucketServerImport::ObjectImporter do
       specify do
         allow_next(worker.importer_class).to receive(:execute)
 
-        expect(Gitlab::JobWaiter).to receive(:notify).with(waiter_key, anything)
+        expect(Gitlab::JobWaiter).to receive(:notify).with(waiter_key, anything, ttl: Gitlab::Import::JOB_WAITER_TTL)
 
         worker.perform(project_id, {}, waiter_key)
       end

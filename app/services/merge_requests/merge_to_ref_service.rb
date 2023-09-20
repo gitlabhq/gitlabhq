@@ -31,14 +31,13 @@ module MergeRequests
 
     private
 
-    override :source
     def source
       merge_request.diff_head_sha
     end
 
     override :error_check!
     def error_check!
-      check_source
+      raise_error('No source for merge') unless source
     end
 
     ##
@@ -53,6 +52,11 @@ module MergeRequests
     # Default is the target branch ref of the merge request.
     def first_parent_ref
       params[:first_parent_ref] || merge_request.target_branch_ref
+    end
+
+    def commit_message
+      params[:commit_message] ||
+        merge_request.default_merge_commit_message(user: current_user)
     end
 
     def extracted_merge_to_ref

@@ -7,6 +7,7 @@ import { joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 import { titleQueries } from 'ee_else_ce/boards/constants';
+import { setError } from '../../graphql/cache_updates';
 
 export default {
   components: {
@@ -65,7 +66,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setActiveItemTitle', 'setError']),
+    ...mapActions(['setActiveItemTitle']),
     getPendingChangesKey(item) {
       if (!item) {
         return '';
@@ -130,7 +131,7 @@ export default {
         this.showChangesAlert = false;
       } catch (e) {
         this.title = this.item.title;
-        this.setError({ error: e, message: this.$options.i18n.updateTitleError });
+        setError({ error: e, message: this.$options.i18n.updateTitleError });
       } finally {
         this.loading = false;
       }

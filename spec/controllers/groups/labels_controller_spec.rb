@@ -3,7 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Groups::LabelsController, feature_category: :team_planning do
-  let_it_be(:group) { create(:group) }
+  let_it_be(:root_group) { create(:group) }
+  let_it_be(:group) { create(:group, parent: root_group) }
   let_it_be(:user)  { create(:user) }
   let_it_be(:another_user) { create(:user) }
   let_it_be(:project) { create(:project, namespace: group) }
@@ -161,6 +162,51 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
       let_it_be(:sub_group) { create(:group, parent: group) }
       let(:group_request) { put :update, params: { group_id: group.to_param, id: label.to_param, label: { title: 'Test' } } }
       let(:sub_group_request) { put :update, params: { group_id: sub_group.to_param, id: label.to_param, label: { title: 'Test' } } }
+    end
+
+    context 'when updating lock_on_merge' do
+      let_it_be(:params) { { lock_on_merge: true } }
+      let_it_be_with_reload(:label) { create(:group_label, group: group) }
+
+      subject(:update_request) { put :update, params: { group_id: group.to_param, id: label.to_param, label: params } }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: false)
+        end
+
+        it 'does not allow setting lock_on_merge' do
+          update_request
+
+          expect(response).to redirect_to(group_labels_path)
+          expect(label.reload.lock_on_merge).to be_falsey
+        end
+      end
+
+      shared_examples 'allows setting lock_on_merge' do
+        it do
+          update_request
+
+          expect(response).to redirect_to(group_labels_path)
+          expect(label.reload.lock_on_merge).to be_truthy
+        end
+      end
+
+      context 'when feature flag for group is enabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: group)
+        end
+
+        it_behaves_like 'allows setting lock_on_merge'
+      end
+
+      context 'when feature flag for ancestor group is enabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: root_group)
+        end
+
+        it_behaves_like 'allows setting lock_on_merge'
+      end
     end
   end
 end

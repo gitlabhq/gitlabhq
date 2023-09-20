@@ -43,7 +43,7 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
-          iid: this.iid,
+          iid: String(this.iid),
         };
       },
       update(data) {

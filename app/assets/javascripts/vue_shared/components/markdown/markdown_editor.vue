@@ -119,9 +119,11 @@ export default {
     },
   },
   data() {
+    const editingMode =
+      localStorage.getItem(this.$options.EDITING_MODE_KEY) || EDITING_MODE_MARKDOWN_FIELD;
     return {
       markdown: this.value || (this.autosaveKey ? getDraft(this.autosaveKey) : '') || '',
-      editingMode: EDITING_MODE_MARKDOWN_FIELD,
+      editingMode,
       autofocused: false,
     };
   },

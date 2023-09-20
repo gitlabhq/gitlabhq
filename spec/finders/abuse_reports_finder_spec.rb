@@ -17,15 +17,19 @@ RSpec.describe AbuseReportsFinder, feature_category: :insider_threat do
     create(:abuse_report, :closed, category: 'phishing', user: user_2, reporter: reporter_2, id: 2)
   end
 
-  let(:params) { {} }
-
   subject(:finder) { described_class.new(params).execute }
 
   describe '#execute' do
-    context 'when params is empty' do
+    shared_examples 'returns all abuse reports' do
       it 'returns all abuse reports' do
         expect(finder).to match_array([abuse_report_1, abuse_report_2])
       end
+    end
+
+    context 'when params is empty' do
+      let(:params) { {} }
+
+      it_behaves_like 'returns all abuse reports'
     end
 
     shared_examples 'returns filtered reports' do |filter_field|
@@ -41,9 +45,7 @@ RSpec.describe AbuseReportsFinder, feature_category: :insider_threat do
             .and_return(nil)
         end
 
-        it 'returns all abuse reports' do
-          expect(finder).to match_array([abuse_report_1, abuse_report_2])
-        end
+        it_behaves_like 'returns all abuse reports'
       end
     end
 
@@ -166,40 +168,6 @@ RSpec.describe AbuseReportsFinder, feature_category: :insider_threat do
           it 'sorts reports by created_at in descending order' do
             expect(finder).to eq([abuse_report_5, abuse_report_2])
           end
-        end
-      end
-    end
-
-    context 'when legacy view is enabled' do
-      before do
-        stub_feature_flags(abuse_reports_list: false)
-      end
-
-      context 'when params is empty' do
-        it 'returns all abuse reports' do
-          expect(subject).to match_array([abuse_report_1, abuse_report_2])
-        end
-      end
-
-      context 'when params[:user_id] is present' do
-        let(:params) { { user_id: user_1 } }
-
-        it 'returns abuse reports for the specified user' do
-          expect(subject).to match_array([abuse_report_1])
-        end
-      end
-
-      context 'when sorting' do
-        it 'returns reports sorted by id in descending order' do
-          expect(subject).to match_array([abuse_report_2, abuse_report_1])
-        end
-      end
-
-      context 'when any of the new filters are present such as params[:status]' do
-        let(:params) { { status: 'open' } }
-
-        it 'returns all abuse reports' do
-          expect(subject).to match_array([abuse_report_1, abuse_report_2])
         end
       end
     end

@@ -67,7 +67,8 @@ export default {
     metricDetailsLabel() {
       if (this.metricDetails.duration && this.metricDetails.calls) {
         return `${this.metricDetails.duration} / ${this.metricDetails.calls}`;
-      } else if (this.metricDetails.calls) {
+      }
+      if (this.metricDetails.calls) {
         return this.metricDetails.calls;
       }
 

@@ -13,7 +13,8 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
-import { subscribedQueries, Tracking } from '../../constants';
+import { Tracking } from '../../constants';
+import { subscribedQueries } from '../../queries/constants';
 import SidebarEditableItem from '../sidebar_editable_item.vue';
 
 const ICON_ON = 'notifications';

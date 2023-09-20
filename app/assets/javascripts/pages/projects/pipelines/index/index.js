@@ -1,3 +1,3 @@
-import { initPipelinesIndex } from '~/pipelines/pipelines_index';
+import { initPipelinesIndex } from '~/ci/pipeline_details/pipelines_index';
 
 initPipelinesIndex();

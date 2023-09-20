@@ -12,6 +12,8 @@ import {
   EVENT_TYPE_CLOSED,
   EVENT_TYPE_REOPENED,
   EVENT_TYPE_COMMENTED,
+  EVENT_TYPE_UPDATED,
+  EVENT_TYPE_DESTROYED,
 } from '../constants';
 import ContributionEventApproved from './contribution_event/contribution_event_approved.vue';
 import ContributionEventExpired from './contribution_event/contribution_event_expired.vue';
@@ -24,6 +26,8 @@ import ContributionEventCreated from './contribution_event/contribution_event_cr
 import ContributionEventClosed from './contribution_event/contribution_event_closed.vue';
 import ContributionEventReopened from './contribution_event/contribution_event_reopened.vue';
 import ContributionEventCommented from './contribution_event/contribution_event_commented.vue';
+import ContributionEventUpdated from './contribution_event/contribution_event_updated.vue';
+import ContributionEventDestroyed from './contribution_event/contribution_event_destroyed.vue';
 
 export default {
   props: {
@@ -150,6 +154,12 @@ export default {
 
         case EVENT_TYPE_COMMENTED:
           return ContributionEventCommented;
+
+        case EVENT_TYPE_UPDATED:
+          return ContributionEventUpdated;
+
+        case EVENT_TYPE_DESTROYED:
+          return ContributionEventDestroyed;
 
         default:
           return EmptyComponent;

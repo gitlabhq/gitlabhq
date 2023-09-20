@@ -19,9 +19,9 @@ module Gitlab
     #   }
     # }
     class LinkHeaderParser
-      REL_PATTERN = %r{rel="(\w+)"}.freeze
+      REL_PATTERN = %r{rel="(\w+)"}
       # to avoid parse really long URIs we limit the amount of characters allowed
-      URI_PATTERN = %r{<(.{1,500})>}.freeze
+      URI_PATTERN = %r{<(.{1,500})>}
 
       def initialize(header)
         @header = header

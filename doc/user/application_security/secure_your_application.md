@@ -27,3 +27,4 @@ GitLab can check your applications for security vulnerabilities.
 - [Policies](policies/index.md)
 - [Security scanner integration](../../development/integrations/secure.md)
 - [Secure and Govern Terminology](terminology/index.md)
+- [GitLab Advisory Database](gitlab_advisory_database/index.md)

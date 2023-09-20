@@ -35,8 +35,8 @@ RSpec.shared_examples 'common trace features' do
         stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: trace.job.project)
       end
 
-      it 'calls ::Ci::Build.sticking.unstick_or_continue_sticking' do
-        expect(::Ci::Build.sticking).to receive(:unstick_or_continue_sticking)
+      it 'calls ::Ci::Build.sticking.find_caught_up_replica' do
+        expect(::Ci::Build.sticking).to receive(:find_caught_up_replica)
           .with(described_class::LOAD_BALANCING_STICKING_NAMESPACE, trace.job.id)
           .and_call_original
 
@@ -49,8 +49,8 @@ RSpec.shared_examples 'common trace features' do
         stub_feature_flags(gitlab_ci_archived_trace_consistent_reads: false)
       end
 
-      it 'does not call ::Ci::Build.sticking.unstick_or_continue_sticking' do
-        expect(::Ci::Build.sticking).not_to receive(:unstick_or_continue_sticking)
+      it 'does not call ::Ci::Build.sticking.find_caught_up_replica' do
+        expect(::Ci::Build.sticking).not_to receive(:find_caught_up_replica)
 
         trace.read { |stream| stream }
       end

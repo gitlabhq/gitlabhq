@@ -4,26 +4,23 @@ group: Product Analytics
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Product analytics (Experiment) **(ULTIMATE ALL)**
+# Product analytics **(ULTIMATE ALL EXPERIMENT)**
 
 > - Introduced in GitLab 15.4 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - `cube_api_proxy` revised to only reference the [Product Analytics API](../../api/product_analytics.md) in GitLab 15.6.
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
-> - Snowplow integration introduced in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
+> - Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
+> - Snowplow integration feature flag `product_analytics_snowplow_support` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130228) in GitLab 16.4.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
-FLAG:
-On self-managed GitLab, by default the Snowplow integration is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
-
 This page is a work in progress, and we're updating the information as we add more features.
 For more information, see the [group direction page](https://about.gitlab.com/direction/analytics/product-analytics/).
+To leave feedback about Product Analytics bugs or functionality, please comment in [issue 391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970) or open a new issue with the label `group::product analytics`.
 
 ## How product analytics works
 
@@ -66,7 +63,7 @@ flowchart TB
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `product_analytics_dashboards` and `product_analytics_admin_settings`.
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `product_analytics_dashboards`, `product_analytics_admin_settings`, and `combined_analytics_dashboards`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
@@ -77,7 +74,7 @@ Prerequisite:
 
 - You must be an administrator of a self-managed GitLab instance.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Analytics** tab and find the **Product analytics** section.
@@ -93,8 +90,9 @@ Prerequisites:
 
 - Product analytics must be enabled at the instance-level.
 - You must have at least the Maintainer role for the project or group the project belongs to.
+- The project must be in a group namespace.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Analytics**.
 1. Expand **Configure** and enter the configuration values.
 1. Select **Save changes**.
@@ -105,6 +103,9 @@ To instrument code to collect data, use one or more of the existing SDKs:
 
 - [Browser SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-browser)
 - [Ruby SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-rb)
+- [Python SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-python)
+- [Node SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-node)
+- [.NET SDK](https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-dotnet)
 
 ## Product analytics dashboards
 

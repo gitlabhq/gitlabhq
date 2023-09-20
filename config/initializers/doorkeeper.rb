@@ -101,7 +101,7 @@ Doorkeeper.configure do
   # "password"           => Resource Owner Password Credentials Grant Flow
   # "client_credentials" => Client Credentials Grant Flow
   #
-  grant_flows %w(authorization_code password client_credentials)
+  grant_flows %w[authorization_code password client_credentials]
 
   # Under some circumstances you might want to have applications auto-approved,
   # so that the user skips the authorization step.
@@ -120,4 +120,12 @@ Doorkeeper.configure do
   #
   # We might want to disable this in the future, see https://gitlab.com/gitlab-org/gitlab/-/issues/323615
   skip_client_authentication_for_password_grant true
+
+  # 2 hours in seconds
+  # This is also the database default value
+  access_token_expires_in 7200
+
+  # Use a custom class for generating the application secret.
+  # https://doorkeeper.gitbook.io/guides/configuration/other-configurations#custom-application-secret-generator
+  application_secret_generator 'Gitlab::DoorkeeperSecretStoring::Token::UniqueApplicationToken'
 end

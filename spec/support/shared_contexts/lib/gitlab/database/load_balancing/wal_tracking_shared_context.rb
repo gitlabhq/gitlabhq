@@ -62,7 +62,13 @@ RSpec.shared_context 'when tracking WAL location reference' do
 
   def stub_replica_available!(available)
     ::Gitlab::Database::LoadBalancing.each_load_balancer do |lb|
-      allow(lb).to receive(:select_up_to_date_host).with(current_location).and_return(available)
+      result = if available
+                 ::Gitlab::Database::LoadBalancing::LoadBalancer::ANY_CAUGHT_UP
+               else
+                 ::Gitlab::Database::LoadBalancing::LoadBalancer::NONE_CAUGHT_UP
+               end
+
+      allow(lb).to receive(:select_up_to_date_host).with(current_location).and_return(result)
     end
   end
 end

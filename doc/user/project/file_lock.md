@@ -151,7 +151,7 @@ You can push files to GitLab whether they're locked or unlocked.
 
 NOTE:
 Although multi-branch file locks can be created and managed through the Git LFS
-command line interface, file locks can be created for any file.
+command-line interface, file locks can be created for any file.
 
 ### View exclusively-locked files
 
@@ -221,7 +221,7 @@ similar functionality for locked files is discussed in
 
 To view and remove file locks:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Locked files**.
 
 This list shows all the files locked either through LFS or GitLab UI.

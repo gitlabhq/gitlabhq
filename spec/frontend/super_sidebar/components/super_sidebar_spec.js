@@ -4,29 +4,32 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
-import SidebarPeekBehavior, {
-  STATE_CLOSED,
-  STATE_WILL_OPEN,
-  STATE_OPEN,
-  STATE_WILL_CLOSE,
-} from '~/super_sidebar/components/sidebar_peek_behavior.vue';
+import SidebarPeekBehavior from '~/super_sidebar/components/sidebar_peek_behavior.vue';
+import SidebarHoverPeekBehavior from '~/super_sidebar/components/sidebar_hover_peek_behavior.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
-import ContextHeader from '~/super_sidebar/components/context_header.vue';
-import ContextSwitcher from '~/super_sidebar/components/context_switcher.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
-import { sidebarState } from '~/super_sidebar/constants';
+import {
+  sidebarState,
+  SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
+  SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
+  SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
+  SUPER_SIDEBAR_PEEK_STATE_WILL_CLOSE as STATE_WILL_CLOSE,
+} from '~/super_sidebar/constants';
 import {
   toggleSuperSidebarCollapsed,
   isCollapsed,
 } from '~/super_sidebar/super_sidebar_collapsed_state_manager';
-import { stubComponent } from 'helpers/stub_component';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
+import { trackContextAccess } from '~/super_sidebar/utils';
 import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
 
 const initialSidebarState = { ...sidebarState };
 
 jest.mock('~/super_sidebar/super_sidebar_collapsed_state_manager');
-const closeContextSwitcherMock = jest.fn();
+jest.mock('~/super_sidebar/utils', () => ({
+  ...jest.requireActual('~/super_sidebar/utils'),
+  trackContextAccess: jest.fn(),
+}));
 
 const trialStatusWidgetStubTestId = 'trial-status-widget';
 const TrialStatusWidgetStub = { template: `<div data-testid="${trialStatusWidgetStubTestId}" />` };
@@ -36,6 +39,7 @@ const TrialStatusPopoverStub = {
 };
 
 const peekClass = 'super-sidebar-peek';
+const hasPeekedClass = 'super-sidebar-has-peeked';
 const peekHintClass = 'super-sidebar-peek-hint';
 
 describe('SuperSidebar component', () => {
@@ -43,12 +47,11 @@ describe('SuperSidebar component', () => {
 
   const findSidebar = () => wrapper.findByTestId('super-sidebar');
   const findUserBar = () => wrapper.findComponent(UserBar);
-  const findContextHeader = () => wrapper.findComponent(ContextHeader);
-  const findContextSwitcher = () => wrapper.findComponent(ContextSwitcher);
   const findNavContainer = () => wrapper.findByTestId('nav-container');
   const findHelpCenter = () => wrapper.findComponent(HelpCenter);
   const findSidebarPortalTarget = () => wrapper.findComponent(SidebarPortalTarget);
   const findPeekBehavior = () => wrapper.findComponent(SidebarPeekBehavior);
+  const findHoverPeekBehavior = () => wrapper.findComponent(SidebarHoverPeekBehavior);
   const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
   const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
@@ -70,9 +73,6 @@ describe('SuperSidebar component', () => {
         sidebarData,
       },
       stubs: {
-        ContextSwitcher: stubComponent(ContextSwitcher, {
-          methods: { close: closeContextSwitcherMock },
-        }),
         TrialStatusWidget: TrialStatusWidgetStub,
         TrialStatusPopover: TrialStatusPopoverStub,
       },
@@ -128,12 +128,6 @@ describe('SuperSidebar component', () => {
       expect(findSidebarPortalTarget().exists()).toBe(true);
     });
 
-    it("does not call the context switcher's close method initially", () => {
-      createWrapper();
-
-      expect(closeContextSwitcherMock).not.toHaveBeenCalled();
-    });
-
     it('renders hidden shortcut links', () => {
       createWrapper();
       const [linkAttrs] = mockSidebarData.shortcut_links;
@@ -181,21 +175,43 @@ describe('SuperSidebar component', () => {
       expect(findTrialStatusPopover().exists()).toBe(false);
     });
 
-    it('does not have peek behavior', () => {
+    it('does not have peek behaviors', () => {
       createWrapper();
 
       expect(findPeekBehavior().exists()).toBe(false);
+      expect(findHoverPeekBehavior().exists()).toBe(false);
     });
-  });
 
-  describe('on collapse', () => {
-    beforeEach(() => {
+    it('renders the context header', () => {
       createWrapper();
-      sidebarState.isCollapsed = true;
+
+      expect(wrapper.text()).toContain('Your work');
     });
 
-    it('closes the context switcher', () => {
-      expect(closeContextSwitcherMock).toHaveBeenCalled();
+    describe('item access tracking', () => {
+      it('does not track anything if logged out', () => {
+        createWrapper({ sidebarData: loggedOutSidebarData });
+
+        expect(trackContextAccess).not.toHaveBeenCalled();
+      });
+
+      it('does not track anything if logged in and not within a trackable context', () => {
+        createWrapper();
+
+        expect(trackContextAccess).not.toHaveBeenCalled();
+      });
+
+      it('tracks item access if logged in within a trackable context', () => {
+        const currentContext = { namespace: 'groups' };
+        createWrapper({
+          sidebarData: {
+            ...mockSidebarData,
+            current_context: currentContext,
+          },
+        });
+
+        expect(trackContextAccess).toHaveBeenCalledWith('root', currentContext, '/-/track_visits');
+      });
     });
   });
 
@@ -205,6 +221,7 @@ describe('SuperSidebar component', () => {
 
       expect(findSidebar().attributes('inert')).toBe('inert');
       expect(findSidebar().classes()).not.toContain(peekHintClass);
+      expect(findSidebar().classes()).not.toContain(hasPeekedClass);
       expect(findSidebar().classes()).not.toContain(peekClass);
     });
 
@@ -216,6 +233,7 @@ describe('SuperSidebar component', () => {
 
       expect(findSidebar().attributes('inert')).toBe('inert');
       expect(findSidebar().classes()).toContain(peekHintClass);
+      expect(findSidebar().classes()).toContain(hasPeekedClass);
       expect(findSidebar().classes()).not.toContain(peekClass);
     });
 
@@ -230,8 +248,22 @@ describe('SuperSidebar component', () => {
         expect(findSidebar().attributes('inert')).toBe(undefined);
         expect(findSidebar().classes()).toContain(peekClass);
         expect(findSidebar().classes()).not.toContain(peekHintClass);
+        expect(findHoverPeekBehavior().exists()).toBe(false);
       },
     );
+
+    it(`makes sidebar interactive and visible when hover peek state is ${STATE_OPEN}`, async () => {
+      createWrapper({ sidebarState: { isCollapsed: true, isPeekable: true } });
+
+      findHoverPeekBehavior().vm.$emit('change', STATE_OPEN);
+      await nextTick();
+
+      expect(findSidebar().attributes('inert')).toBe(undefined);
+      expect(findSidebar().classes()).toContain(peekClass);
+      expect(findSidebar().classes()).toContain(hasPeekedClass);
+      expect(findSidebar().classes()).not.toContain(peekHintClass);
+      expect(findPeekBehavior().exists()).toBe(false);
+    });
 
     it('keeps track of if sidebar has mouseover or not', async () => {
       createWrapper({ sidebarState: { isCollapsed: false, isPeekable: true } });
@@ -248,15 +280,8 @@ describe('SuperSidebar component', () => {
       createWrapper();
     });
 
-    it('allows overflow while the context switcher is closed', () => {
+    it('allows overflow', () => {
       expect(findNavContainer().classes()).toContain('gl-overflow-auto');
-    });
-
-    it('hides overflow when context switcher is opened', async () => {
-      findContextSwitcher().vm.$emit('toggle', true);
-      await nextTick();
-
-      expect(findNavContainer().classes()).not.toContain('gl-overflow-auto');
     });
   });
 
@@ -271,14 +296,10 @@ describe('SuperSidebar component', () => {
     });
   });
 
-  describe('Logged out', () => {
-    beforeEach(() => {
-      createWrapper({ sidebarData: loggedOutSidebarData });
-    });
-
-    it('renders context header instead of context switcher', () => {
-      expect(findContextHeader().exists()).toBe(true);
-      expect(findContextSwitcher().exists()).toBe(false);
+  describe('ARIA attributes', () => {
+    it('adds aria-label attribute to nav element', () => {
+      createWrapper();
+      expect(wrapper.find('nav').attributes('aria-label')).toBe('Primary');
     });
   });
 });

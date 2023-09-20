@@ -14,6 +14,16 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
     let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
     let(:service) { described_class.new(project: settings.project, params: { mail: mail_object }) }
 
+    let(:error_feature_flag_disabled) { 'Feature flag service_desk_custom_email is not enabled' }
+    let(:error_parameter_missing) { s_('ServiceDesk|Service Desk setting or verification object missing') }
+    let(:error_already_finished) { s_('ServiceDesk|Custom email address has already been verified.') }
+    let(:error_already_failed) do
+      s_('ServiceDesk|Custom email address verification has already been processed and failed.')
+    end
+
+    let(:expected_error_message) { error_parameter_missing }
+    let(:logger_params) { { category: 'custom_email_verification' } }
+
     before do
       allow(message_delivery).to receive(:deliver_later)
       allow(Notify).to receive(:service_desk_verification_result_email).and_return(message_delivery)
@@ -22,6 +32,10 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
     shared_examples 'a failing verification process' do |expected_error_identifier|
       it 'refuses to verify and sends result emails' do
         expect(Notify).to receive(:service_desk_verification_result_email).twice
+
+        expect(Gitlab::AppLogger).to receive(:info).with(logger_params.merge(
+          error_message: expected_error_identifier.to_s
+        )).once
 
         response = described_class.new(project: settings.project, params: { mail: mail_object }).execute
 
@@ -41,6 +55,10 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
       it 'exits early' do
         expect(Notify).to receive(:service_desk_verification_result_email).exactly(0).times
 
+        expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
+          error_message: expected_error_message
+        )).once
+
         response = service.execute
 
         settings.reset
@@ -55,6 +73,10 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
     it 'exits early' do
       expect(Notify).to receive(:service_desk_verification_result_email).exactly(0).times
 
+      expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
+        error_message: expected_error_message
+      )).once
+
       response = service.execute
 
       settings.reset
@@ -64,12 +86,18 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
     end
 
     context 'when feature flag :service_desk_custom_email is disabled' do
+      let(:expected_error_message) { error_feature_flag_disabled }
+
       before do
         stub_feature_flags(service_desk_custom_email: false)
       end
 
       it 'exits early' do
         expect(Notify).to receive(:service_desk_verification_result_email).exactly(0).times
+
+        expect(Gitlab::AppLogger).to receive(:warn).with(logger_params.merge(
+          error_message: expected_error_message
+        )).once
 
         response = service.execute
 
@@ -85,6 +113,8 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
         it_behaves_like 'a failing verification process', 'mail_not_received_within_timeframe'
 
         context 'when already verified' do
+          let(:expected_error_message) { error_already_finished }
+
           before do
             verification.mark_as_finished!
           end
@@ -93,6 +123,8 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
         end
 
         context 'when we already have an error' do
+          let(:expected_error_message) { error_already_failed }
+
           before do
             verification.mark_as_failed!(:smtp_host_issue)
           end
@@ -111,6 +143,8 @@ RSpec.describe ServiceDesk::CustomEmailVerifications::UpdateService, feature_cat
 
         it 'verifies and sends result emails' do
           expect(Notify).to receive(:service_desk_verification_result_email).twice
+
+          expect(Gitlab::AppLogger).to receive(:info).with(logger_params).once
 
           response = service.execute
 

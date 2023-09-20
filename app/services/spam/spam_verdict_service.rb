@@ -36,16 +36,17 @@ module Spam
       # The target can override the verdict via the `allow_possible_spam` application setting
       final_verdict = OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM if override_via_allow_possible_spam?(verdict: final_verdict)
 
-      logger.info(class: self.class.name,
-                  akismet_verdict: akismet_verdict,
-                  spam_check_verdict: spamcheck_verdict,
-                  spam_check_rtt: external_spam_check_round_trip_time.real,
-                  final_verdict: final_verdict,
-                  username: user.username,
-                  user_id: user.id,
-                  target_type: target.class.to_s,
-                  project_id: target.project_id
-                 )
+      logger.info(
+        class: self.class.name,
+        akismet_verdict: akismet_verdict,
+        spam_check_verdict: spamcheck_verdict,
+        spam_check_rtt: external_spam_check_round_trip_time.real,
+        final_verdict: final_verdict,
+        username: user.username,
+        user_id: user.id,
+        target_type: target.class.to_s,
+        project_id: target.project_id
+      )
 
       final_verdict
     end

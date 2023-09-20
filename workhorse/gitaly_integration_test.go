@@ -20,6 +20,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
 	"gitlab.com/gitlab-org/gitaly/v16/streamio"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
@@ -76,27 +78,24 @@ func realGitalyOkBody(t *testing.T, gitalyAddress string) *api.Response {
 }
 
 func ensureGitalyRepository(t *testing.T, apiResponse *api.Response) error {
-	ctx, namespace, err := gitaly.NewNamespaceClient(
-		context.Background(),
-		apiResponse.GitalyServer,
-	)
-
-	if err != nil {
-		return err
-	}
-	ctx, repository, err := gitaly.NewRepositoryClient(ctx, apiResponse.GitalyServer)
+	ctx, repository, err := gitaly.NewRepositoryClient(context.Background(), apiResponse.GitalyServer)
 	if err != nil {
 		return err
 	}
 
 	// Remove the repository if it already exists, for consistency
-	rmNsReq := &gitalypb.RemoveNamespaceRequest{
-		StorageName: apiResponse.Repository.StorageName,
-		Name:        apiResponse.Repository.RelativePath,
-	}
-	_, err = namespace.RemoveNamespace(ctx, rmNsReq)
-	if err != nil {
-		return err
+	if _, err := repository.RepositoryServiceClient.RemoveRepository(ctx, &gitalypb.RemoveRepositoryRequest{
+		Repository: &gitalypb.Repository{
+			StorageName:  apiResponse.Repository.StorageName,
+			RelativePath: apiResponse.Repository.RelativePath,
+		},
+	}); err != nil {
+		status, ok := status.FromError(err)
+		if !ok || !(status.Code() == codes.NotFound && status.Message() == "repository does not exist") {
+			return fmt.Errorf("remove repository: %w", err)
+		}
+
+		// Repository didn't exist.
 	}
 
 	stream, err := repository.CreateRepositoryFromBundle(ctx)
@@ -139,13 +138,13 @@ func TestAllowedClone(t *testing.T) {
 			defer ws.Close()
 
 			// Do the git clone
-			require.NoError(t, os.RemoveAll(scratchDir))
-			cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), checkoutDir)
+			tmpDir := t.TempDir()
+			cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), tmpDir)
 			runOrFail(t, cloneCmd)
 
 			// We may have cloned an 'empty' repository, 'git log' will fail in it
 			logCmd := exec.Command("git", "log", "-1", "--oneline")
-			logCmd.Dir = checkoutDir
+			logCmd.Dir = tmpDir
 			runOrFail(t, logCmd)
 		})
 	}
@@ -167,13 +166,13 @@ func TestAllowedShallowClone(t *testing.T) {
 			defer ws.Close()
 
 			// Shallow git clone (depth 1)
-			require.NoError(t, os.RemoveAll(scratchDir))
-			cloneCmd := exec.Command("git", "clone", "--depth", "1", fmt.Sprintf("%s/%s", ws.URL, testRepo), checkoutDir)
+			tmpDir := t.TempDir()
+			cloneCmd := exec.Command("git", "clone", "--depth", "1", fmt.Sprintf("%s/%s", ws.URL, testRepo), tmpDir)
 			runOrFail(t, cloneCmd)
 
 			// We may have cloned an 'empty' repository, 'git log' will fail in it
 			logCmd := exec.Command("git", "log", "-1", "--oneline")
-			logCmd.Dir = checkoutDir
+			logCmd.Dir = tmpDir
 			runOrFail(t, logCmd)
 		})
 	}
@@ -194,9 +193,14 @@ func TestAllowedPush(t *testing.T) {
 			ws := startWorkhorseServer(ts.URL)
 			defer ws.Close()
 
+			// Do the git clone
+			tmpDir := t.TempDir()
+			cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), tmpDir)
+			runOrFail(t, cloneCmd)
+
 			// Perform the git push
 			pushCmd := exec.Command("git", "push", fmt.Sprintf("%s/%s", ws.URL, testRepo), fmt.Sprintf("master:%s", newBranch()))
-			pushCmd.Dir = checkoutDir
+			pushCmd.Dir = tmpDir
 			runOrFail(t, pushCmd)
 		})
 	}
@@ -249,7 +253,7 @@ func TestAllowedGetGitArchive(t *testing.T) {
 			apiResponse := realGitalyOkBody(t, gitalyAddress)
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
 
-			archivePath := path.Join(scratchDir, "my/path")
+			archivePath := path.Join(t.TempDir(), "my/path")
 			archivePrefix := "repo-1"
 
 			msg := serializedProtoMessage("GetArchiveRequest", &gitalypb.GetArchiveRequest{
@@ -296,7 +300,7 @@ func TestAllowedGetGitArchiveOldPayload(t *testing.T) {
 			repo := &apiResponse.Repository
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
 
-			archivePath := path.Join(scratchDir, "my/path")
+			archivePath := path.Join(t.TempDir(), "my/path")
 			archivePrefix := "repo-1"
 
 			jsonParams := fmt.Sprintf(

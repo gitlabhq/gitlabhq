@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { fixTitle } from '~/tooltips';
 import { getLocationHash } from '../lib/utils/url_utility';
 
 // Toggle button. Show/hide content inside parent container.
@@ -29,9 +30,22 @@ $(() => {
     $container.find('.js-toggle-content').toggle(toggleState);
   }
 
+  function updateTitle(el, container) {
+    const $container = $(container);
+    const isExpanded = $container.data('is-expanded');
+
+    el.setAttribute('title', isExpanded ? el.dataset.collapseTitle : el.dataset.expandTitle);
+
+    fixTitle(el);
+  }
+
   $('body').on('click', '.js-toggle-button', function toggleButton(e) {
     e.currentTarget.classList.toggle(e.currentTarget.dataset.toggleOpenClass || 'selected');
-    toggleContainer($(this).closest('.js-toggle-container'));
+
+    const containerEl = this.closest('.js-toggle-container');
+
+    toggleContainer(containerEl);
+    updateTitle(this, containerEl);
 
     const targetTag = e.currentTarget.tagName.toLowerCase();
     if (targetTag === 'a' || targetTag === 'button') {

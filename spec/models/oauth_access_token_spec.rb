@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe OauthAccessToken do
+RSpec.describe OauthAccessToken, feature_category: :system_access do
   let(:app_one) { create(:oauth_application) }
   let(:app_two) { create(:oauth_application) }
   let(:app_three) { create(:oauth_application) }
@@ -23,6 +23,10 @@ RSpec.describe OauthAccessToken do
   end
 
   describe 'Doorkeeper secret storing' do
+    it 'does not have a prefix' do
+      expect(token.plaintext_token).not_to start_with('gl')
+    end
+
     it 'stores the token in hashed format' do
       expect(token.token).not_to eq(token.plaintext_token)
     end

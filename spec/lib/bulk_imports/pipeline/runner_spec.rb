@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Pipeline::Runner do
+RSpec.describe BulkImports::Pipeline::Runner, feature_category: :importers do
   let(:extractor) do
     Class.new do
       def initialize(options = {}); end

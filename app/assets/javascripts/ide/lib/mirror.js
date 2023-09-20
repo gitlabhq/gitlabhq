@@ -32,7 +32,8 @@ const isErrorPayload = (payload) => payload && payload.status_code !== HTTP_STAT
 const getErrorFromResponse = (data) => {
   if (isErrorResponse(data.error)) {
     return { message: data.error.Message };
-  } else if (isErrorPayload(data.payload)) {
+  }
+  if (isErrorPayload(data.payload)) {
     return { message: data.payload.error_message };
   }
 

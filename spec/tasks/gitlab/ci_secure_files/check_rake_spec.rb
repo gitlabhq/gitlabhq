@@ -4,7 +4,7 @@ require 'rake_helper'
 
 RSpec.describe 'gitlab:ci_secure_files', factory_default: :keep, feature_category: :mobile_devops do
   describe 'check' do
-    let_it_be(:project) { create_default(:project).freeze }
+    let!(:project) { create_default(:project).freeze }
     let!(:secure_file) { create(:ci_secure_file) }
 
     before do

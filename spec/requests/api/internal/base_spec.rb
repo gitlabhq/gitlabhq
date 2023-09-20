@@ -881,7 +881,6 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
     end
 
     context "custom action" do
-      let(:access_checker) { double(Gitlab::GitAccess) }
       let(:payload) do
         {
           'action' => 'geo_proxy_to_primary',
@@ -898,7 +897,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
       before do
         project.add_guest(user)
-        expect(Gitlab::GitAccess).to receive(:new).with(
+
+        expect_next_instance_of(Gitlab::GitAccess,
           key,
           project,
           'ssh',
@@ -907,11 +907,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             repository_path: "#{project.full_path}.git",
             redirected_path: nil
           }
-        ).and_return(access_checker)
-        expect(access_checker).to receive(:check).with(
-          'git-receive-pack',
-          'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master'
-        ).and_return(custom_action_result)
+        ) do |access_checker|
+          expect(access_checker).to receive(:check).with(
+            'git-receive-pack',
+            'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master'
+          ).and_return(custom_action_result)
+        end
       end
 
       context "git push" do

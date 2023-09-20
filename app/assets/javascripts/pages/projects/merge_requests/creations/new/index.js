@@ -2,6 +2,8 @@ import Vue from 'vue';
 
 import { mountMarkdownEditor } from 'ee_else_ce/vue_shared/components/markdown/mount_markdown_editor';
 
+import { findTargetBranch } from 'ee_else_ce/pages/projects/merge_requests/creations/new/branch_finder';
+
 import initPipelines from '~/commit/pipelines/pipelines_bundle';
 import MergeRequest from '~/merge_request';
 import CompareApp from '~/merge_requests/components/compare_app.vue';
@@ -13,14 +15,15 @@ if (mrNewCompareNode) {
   const targetCompareEl = document.getElementById('js-target-project-dropdown');
   const sourceCompareEl = document.getElementById('js-source-project-dropdown');
   const compareEl = document.querySelector('.js-merge-request-new-compare');
+  const targetBranch = Vue.observable({ name: '' });
 
+  const currentSourceBranch = JSON.parse(sourceCompareEl.dataset.currentBranch);
   // eslint-disable-next-line no-new
   new Vue({
     el: sourceCompareEl,
     name: 'SourceCompareApp',
     provide: {
       currentProject: JSON.parse(sourceCompareEl.dataset.currentProject),
-      currentBranch: JSON.parse(sourceCompareEl.dataset.currentBranch),
       branchCommitPath: compareEl.dataset.sourceBranchUrl,
       inputs: {
         project: {
@@ -40,20 +43,35 @@ if (mrNewCompareNode) {
         project: 'js-source-project',
         branch: 'js-source-branch gl-font-monospace',
       },
-      branchQaSelector: 'source_branch_dropdown',
+    },
+    methods: {
+      async selectedBranch(branchName) {
+        const targetBranchName = await findTargetBranch(branchName);
+
+        if (targetBranchName) {
+          targetBranch.name = targetBranchName;
+        }
+      },
     },
     render(h) {
-      return h(CompareApp);
+      return h(CompareApp, {
+        props: {
+          currentBranch: currentSourceBranch,
+        },
+        on: {
+          'select-branch': this.selectedBranch,
+        },
+      });
     },
   });
 
+  const currentTargetBranch = JSON.parse(targetCompareEl.dataset.currentBranch);
   // eslint-disable-next-line no-new
   new Vue({
     el: targetCompareEl,
     name: 'TargetCompareApp',
     provide: {
       currentProject: JSON.parse(targetCompareEl.dataset.currentProject),
-      currentBranch: JSON.parse(targetCompareEl.dataset.currentBranch),
       projectsPath: targetCompareEl.dataset.targetProjectsPath,
       branchCommitPath: compareEl.dataset.targetBranchUrl,
       inputs: {
@@ -75,8 +93,17 @@ if (mrNewCompareNode) {
         branch: 'js-target-branch gl-font-monospace',
       },
     },
+    computed: {
+      currentBranch() {
+        if (targetBranch.name) {
+          return { text: targetBranch.name, value: targetBranch.name };
+        }
+
+        return currentTargetBranch;
+      },
+    },
     render(h) {
-      return h(CompareApp);
+      return h(CompareApp, { props: { currentBranch: this.currentBranch } });
     },
   });
 } else {

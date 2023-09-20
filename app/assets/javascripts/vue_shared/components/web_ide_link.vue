@@ -195,9 +195,11 @@ export default {
     webIdeActionText() {
       if (this.webIdeText) {
         return this.webIdeText;
-      } else if (this.isBlob) {
+      }
+      if (this.isBlob) {
         return __('Open in Web IDE');
-      } else if (this.isFork) {
+      }
+      if (this.isFork) {
         return __('Edit fork in Web IDE');
       }
 

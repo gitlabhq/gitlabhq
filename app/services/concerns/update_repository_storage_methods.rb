@@ -69,7 +69,17 @@ module UpdateRepositoryStorageMethods
       raise Error, s_('UpdateRepositoryStorage|Timeout waiting for %{type} repository pushes') % { type: type.name }
     end
 
-    repository = type.repository_for(container)
+    # `Projects::UpdateRepositoryStorageService`` expects the repository it is
+    # moving to have a `Project` as a container.
+    # This hack allows design repos to also be moved as part of a project move
+    # as before.
+    # The alternative to this hack is to setup a service like
+    # `Snippets::UpdateRepositoryStorageService' and a corresponding worker like
+    # `Snippets::UpdateRepositoryStorageWorker` for snippets.
+    #
+    # Gitlab issue: https://gitlab.com/gitlab-org/gitlab/-/issues/423429
+
+    repository = type.repository_for(type.design? ? container.design_management_repository : container)
     full_path = repository.full_path
     raw_repository = repository.raw
     checksum = repository.checksum

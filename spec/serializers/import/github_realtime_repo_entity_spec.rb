@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Import::GithubRealtimeRepoEntity, feature_category: :importers do
   subject(:entity) { described_class.new(project) }
 
-  let(:import_state) { instance_double(ProjectImportState, failed?: false, in_progress?: true) }
+  let(:import_state) { instance_double(ProjectImportState, failed?: false, completed?: true) }
   let(:import_failures) { [instance_double(ImportFailure, exception_message: 'test error')] }
   let(:project) do
     instance_double(
@@ -27,7 +27,7 @@ RSpec.describe Import::GithubRealtimeRepoEntity, feature_category: :importers do
   end
 
   context 'when import stats is failed' do
-    let(:import_state) { instance_double(ProjectImportState, failed?: true, in_progress?: false) }
+    let(:import_state) { instance_double(ProjectImportState, failed?: true, completed?: true) }
 
     it 'includes import_error' do
       data = entity.as_json

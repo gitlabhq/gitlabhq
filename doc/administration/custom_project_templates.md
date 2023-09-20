@@ -16,7 +16,7 @@ Every project in the group, but not its subgroups, can be selected when a new pr
 is created, based on the user's access permissions:
 
 - Public projects can be selected by any authenticated user as a template for a new project,
-  if all enabled [project features](../user/project/settings/index.md#configure-project-visibility-features-and-permissions)
+  if all enabled [project features](../user/project/settings/index.md#configure-project-features-and-permissions)
   except for **GitLab Pages** and **Security and Compliance** are set to **Everyone With Access**.
   The same applies to internal projects.
 - Private projects can be selected only by users who are members of the projects.
@@ -33,7 +33,7 @@ To set project templates at the group level, see [Custom group-level project tem
 
 To select the group to use as the source for the project templates:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Templates**.
 1. Expand **Custom project templates**.

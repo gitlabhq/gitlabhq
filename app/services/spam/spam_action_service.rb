@@ -76,10 +76,9 @@ module Spam
       spam_verdict_service.execute.tap do |result|
         case result
         when BLOCK_USER
-          # TODO: improve BLOCK_USER handling, non-existent until now
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/329666
           target.spam!
           create_spam_log
+          ban_user!
         when DISALLOW
           target.spam!
           create_spam_log
@@ -119,6 +118,12 @@ module Spam
       target.spam_log = spam_log
     end
 
+    def ban_user!
+      UserCustomAttribute.set_banned_by_spam_log(target.spam_log)
+
+      user.ban!
+    end
+
     def spam_verdict_service
       context = {
         action: action,
@@ -131,12 +136,13 @@ module Spam
         referer: spam_params&.referer
       }
 
-      SpamVerdictService.new(target: target,
-                             user: user,
-                             options: options,
-                             context: context,
-                             extra_features: extra_features
-                            )
+      SpamVerdictService.new(
+        target: target,
+        user: user,
+        options: options,
+        context: context,
+        extra_features: extra_features
+      )
     end
 
     def noteable_type

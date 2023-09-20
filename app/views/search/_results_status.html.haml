@@ -1,28 +1,33 @@
-- return unless @search_service_presenter.show_results_status?
-- statusBarClass = !show_super_sidebar? ? 'gl-md-pl-5' : ''
+- statusBarClass = !show_super_sidebar? ? 'gl-lg-pl-5' : ''
+- statusBarClass = statusBarClass + ' gl-lg-display-none' if @search_objects.to_a.empty?
 
 .section{ class: statusBarClass }
   .search-results-status
     .gl-display-flex.gl-flex-direction-column
-      .gl-p-5.gl-display-flex
-        .gl-md-display-flex.gl-text-left.gl-align-items-center.gl-flex-grow-1.gl-white-space-nowrap.gl-max-w-full
-          - unless @search_service_presenter.without_count?
-            .gl-text-truncate
-              = search_entries_info(@search_objects, @scope, @search_term)
-          - unless @search_service_presenter.show_snippets?
-            - if @project
-              - link_to_project = link_to(@project.full_name, @project, class: 'ml-md-1 gl-text-truncate search-wrap-f-md-down')
-              - if @scope == 'blobs'
-                = _("in")
-                .mx-md-1
-                  #js-blob-ref-switcher{ data: { "project-id" => @project.id, "ref" => repository_ref(@project), "field-name": "repository_ref" } }
-                = s_('SearchCodeResults|of %{link_to_project}').html_safe % { link_to_project: link_to_project }
-              - else
-                = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
-            - elsif @group
-              - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
-              = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
-        - if @search_service_presenter.show_sort_dropdown?
-          .gl-md-display-flex.gl-flex-direction-column
-            #js-search-sort{ data: { "search-sort-options" => search_sort_options.to_json } }
-      %hr.gl-mb-5.gl-mt-0.gl-border-gray-100.gl-w-full
+      .gl-p-5.gl-display-flex.gl-flex-wrap
+        - unless @search_objects.to_a.empty?
+          .gl-display-flex.gl-text-left.gl-flex-grow-1.gl-flex-shrink-1.gl-white-space-nowrap.gl-flex-wrap.gl-sm-w-half
+            %p.gl-text-truncate.gl-my-auto
+              - unless @search_service_presenter.without_count?
+                = search_entries_info(@search_objects, @scope, @search_term)
+              - unless @search_service_presenter.show_snippets?
+                - if @project
+                  - link_to_project = link_to(@project.full_name, @project, class: 'search-wrap-f-md-down')
+                  - if @scope == 'blobs'
+                    = _("in")
+                    .mx-md-1.gl-my-auto
+                      #js-blob-ref-switcher{ data: { "project-id" => @project.id, "ref" => repository_ref(@project), "field-name": "repository_ref" } }
+                    %p.gl-text-truncate.gl-my-auto
+                      = s_('SearchCodeResults|of %{link_to_project}').html_safe % { link_to_project: link_to_project }
+                  - else
+                    = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
+                - elsif @group
+                  - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
+                  = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
+        .gl-display-flex.gl-my-3.gl-flex-grow-1.gl-flex-shrink-1.gl-justify-content-end
+          = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: 'gl-lg-display-none'}) do
+            = s_('GlobalSearch|Filters')
+          - if @search_service_presenter.show_sort_dropdown? && !@search_objects.to_a.empty?
+            .gl-ml-3
+              #js-search-sort{ data: { "search-sort-options" => search_sort_options.to_json } }
+    %hr.gl-mb-5.gl-mt-0.gl-border-gray-100.gl-w-full

@@ -76,7 +76,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def pipeline_editor_path
-    project_ci_pipeline_editor_path(project, branch_name: blob.commit_id) if can_collaborate_with_project?(project) && blob.path == project.ci_config_path_or_default
+    project_ci_pipeline_editor_path(project, branch_name: commit_id) if can_collaborate_with_project?(project) && blob.path == project.ci_config_path_or_default
   end
 
   def gitpod_blob_url

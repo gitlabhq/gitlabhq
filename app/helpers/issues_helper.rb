@@ -35,15 +35,6 @@ module IssuesHelper
     end
   end
 
-  def issue_status_visibility(issue, status_box:)
-    case status_box
-    when :open
-      'hidden' if issue.closed?
-    when :closed
-      'hidden' unless issue.closed?
-    end
-  end
-
   def confidential_icon(issue)
     sprite_icon('eye-slash', css_class: 'gl-vertical-align-text-bottom') if issue.confidential?
   end
@@ -128,24 +119,6 @@ module IssuesHelper
       can?(current_user, :create_merge_request_in, @project)
   end
 
-  def issue_closed_link(issue, current_user, css_class: '')
-    if issue.moved? && can?(current_user, :read_issue, issue.moved_to)
-      link_to(s_('IssuableStatus|moved'), issue.moved_to, class: css_class)
-    elsif issue.duplicated? && can?(current_user, :read_issue, issue.duplicated_to)
-      link_to(s_('IssuableStatus|duplicated'), issue.duplicated_to, class: css_class)
-    end
-  end
-
-  def issue_closed_text(issue, current_user)
-    link = issue_closed_link(issue, current_user, css_class: 'text-underline gl-reset-color!')
-
-    if link
-      s_('IssuableStatus|Closed (%{link})').html_safe % { link: link }
-    else
-      s_('IssuableStatus|Closed')
-    end
-  end
-
   def show_moved_service_desk_issue_warning?(issue)
     return false unless issue.moved_from
     return false unless issue.from_service_desk?
@@ -167,11 +140,8 @@ module IssuesHelper
       can_reopen_issue: can?(current_user, :reopen_issue, issuable).to_s,
       can_report_spam: issuable.submittable_as_spam_by?(current_user).to_s,
       can_update_issue: can?(current_user, :update_issue, issuable).to_s,
-      iid: issuable.iid,
-      issuable_id: issuable.id,
       is_issue_author: (issuable.author == current_user).to_s,
       issue_path: issuable_path(issuable),
-      issue_type: issuable_display_type(issuable),
       new_issue_path: new_project_issue_path(project, new_issuable_params),
       project_path: project.full_path,
       report_abuse_path: add_category_abuse_reports_path,

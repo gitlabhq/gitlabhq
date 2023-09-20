@@ -3,8 +3,4 @@
 = render_dashboard_ultimate_trial(current_user)
 = render 'dashboard/groups_head'
 
-- if params[:filter].blank? && @groups.empty?
-  .empty-state
-    = render 'shared/groups/empty_state'
-- else
-  = render 'groups'
+= render 'groups'

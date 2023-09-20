@@ -19,8 +19,10 @@ module QA
 
           project.visit!
 
-          Page::Project::Show.perform do |show|
-            expect(show).to have_license(rendered_license_name)
+          Page::Project::Show.perform do |project|
+            Support::Waiter.wait_until(reload_page: project, message: 'Waiting for licence') do
+              project.has_license?(rendered_license_name)
+            end
           end
         end
       end

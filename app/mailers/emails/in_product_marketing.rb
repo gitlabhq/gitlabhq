@@ -12,15 +12,6 @@ module Emails
       'X-Mailgun-Tag' => 'marketing'
     }.freeze
 
-    def in_product_marketing_email(recipient_id, group_id, track, series)
-      group = Group.find(group_id)
-      user = User.find(recipient_id)
-      email = user.notification_email_for(group)
-      @message = Gitlab::Email::Message::InProductMarketing.for(track).new(group: group, user: user, series: series)
-
-      mail_to(to: email, subject: @message.subject_line)
-    end
-
     def build_ios_app_guide_email(recipient_email)
       @message = ::Gitlab::Email::Message::BuildIosAppGuide.new
 

@@ -10,7 +10,7 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
-      = _('Set visibility of project contents. Configure import sources and Git access protocols.')
+      = s_('AdminSettings|Set visibility of project contents and configure Git access protocols.')
   .settings-content
     = render 'visibility_and_access'
 
@@ -24,6 +24,17 @@
       = _('Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan.')
   .settings-content
     = render 'account_and_limit'
+
+%section.settings.as-import-export.no-animate#js-import-export-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'admin-import-export-settings' } }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = _('Import and export settings')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle '}) do
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p.gl-text-secondary
+      = _('Configure import sources and settings related to import and export features.')
+  .settings-content
+    = render 'import_and_export'
 
 %section.settings.as-diff-limits.no-animate#js-merge-request-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header
@@ -89,6 +100,7 @@
     = render 'terminal'
 
 = render_if_exists 'admin/application_settings/maintenance_mode_settings_form'
+= render 'admin/application_settings/silent_mode_settings_form'
 = render 'admin/application_settings/gitpod'
 = render 'admin/application_settings/kroki'
 = render 'admin/application_settings/mailgun'

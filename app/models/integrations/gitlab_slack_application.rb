@@ -20,6 +20,8 @@ module Integrations
     has_one :slack_integration, foreign_key: :integration_id, inverse_of: :integration
     delegate :bot_access_token, :bot_user_id, to: :slack_integration, allow_nil: true
 
+    include SlackMattermostFields
+
     def update_active_status
       update(active: !!slack_integration)
     end
@@ -66,18 +68,7 @@ module Integrations
     def sections
       return [] unless editable?
 
-      [
-        {
-          type: SECTION_TYPE_TRIGGER,
-          title: s_('Integrations|Trigger'),
-          description: s_('Integrations|An event will be triggered when one of the following items happen.')
-        },
-        {
-          type: SECTION_TYPE_CONFIGURATION,
-          title: s_('Integrations|Notification settings'),
-          description: s_('Integrations|Configure the scope of notifications.')
-        }
-      ]
+      super.drop(1)
     end
 
     override :configurable_events
@@ -88,7 +79,7 @@ module Integrations
     end
 
     override :requires_webhook?
-    def requires_webhook?
+    def self.requires_webhook?
       false
     end
 

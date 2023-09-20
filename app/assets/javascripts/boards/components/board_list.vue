@@ -88,6 +88,7 @@ export default {
       toListId: null,
       toList: {},
       addItemToListInProgress: false,
+      updateIssueOrderInProgress: false,
     };
   },
   apollo: {
@@ -253,7 +254,9 @@ export default {
       return this.canMoveIssue ? options : {};
     },
     disableScrollingWhenMutationInProgress() {
-      return this.hasNextPage && this.isUpdateIssueOrderInProgress;
+      return (
+        this.hasNextPage && (this.isUpdateIssueOrderInProgress || this.updateIssueOrderInProgress)
+      );
     },
     showMoveToPosition() {
       return !this.disabled && this.list.listType !== ListType.closed;
@@ -343,7 +346,7 @@ export default {
       sortableStart();
       this.track('drag_card', { label: 'board' });
     },
-    handleDragOnEnd({
+    async handleDragOnEnd({
       newIndex: originalNewIndex,
       oldIndex,
       from,
@@ -394,7 +397,8 @@ export default {
       }
 
       if (this.isApolloBoard) {
-        this.moveBoardItem(
+        this.updateIssueOrderInProgress = true;
+        await this.moveBoardItem(
           {
             epicId: itemId,
             iid: itemIid,
@@ -404,7 +408,9 @@ export default {
             moveAfterId,
           },
           newIndex,
-        );
+        ).finally(() => {
+          this.updateIssueOrderInProgress = false;
+        });
       } else {
         this.moveItem({
           itemId,

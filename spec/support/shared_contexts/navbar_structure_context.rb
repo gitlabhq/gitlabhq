@@ -82,7 +82,6 @@ RSpec.shared_context 'project navbar structure' do
       {
         nav_item: _('Monitor'),
         nav_sub_items: [
-          _('Tracing'),
           _('Error Tracking'),
           _('Alerts'),
           _('Incidents')
@@ -165,15 +164,6 @@ RSpec.shared_context 'group navbar structure' do
     }
   end
 
-  let(:ci_cd_nav_item) do
-    {
-      nav_item: _('CI/CD'),
-      nav_sub_items: [
-        s_('Runners|Runners')
-      ]
-    }
-  end
-
   let(:issues_nav_items) do
     [
       _('List'),
@@ -207,6 +197,12 @@ RSpec.shared_context 'group navbar structure' do
       },
       (security_and_compliance_nav_item if Gitlab.ee?),
       {
+        nav_item: _('CI/CD'),
+        nav_sub_items: [
+          s_('Runners|Runners')
+        ]
+      },
+      {
         nav_item: _('Kubernetes'),
         nav_sub_items: []
       },
@@ -228,6 +224,10 @@ RSpec.shared_context 'dashboard navbar structure' do
       },
       {
         nav_item: _("Groups"),
+        nav_sub_items: []
+      },
+      {
+        nav_item: _('Organizations'),
         nav_sub_items: []
       },
       {

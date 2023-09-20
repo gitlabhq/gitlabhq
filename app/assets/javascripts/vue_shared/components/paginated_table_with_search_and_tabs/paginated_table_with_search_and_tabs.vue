@@ -14,11 +14,10 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
-import { initialPaginationState, defaultI18n, defaultPageSize } from './constants';
+import { initialPaginationState, defaultPageSize } from './constants';
 import { isAny } from './utils';
 
 export default {
-  defaultI18n,
   components: {
     GlAlert,
     GlBadge,
@@ -300,7 +299,6 @@ export default {
     <div class="filtered-search-wrapper">
       <filtered-search-bar
         :namespace="projectPath"
-        :search-input-placeholder="$options.defaultI18n.searchPlaceholder"
         :tokens="filteredSearchTokens"
         :initial-filter-value="filteredSearchValue"
         initial-sortby="created_desc"

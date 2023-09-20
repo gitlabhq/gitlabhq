@@ -18,14 +18,14 @@ external repository to get the benefits of GitLab CI/CD.
 Connecting an external repository sets up [repository mirroring](../../user/project/repository/mirror/index.md)
 and creates a lightweight project with issues, merge requests, wiki, and
 snippets disabled. These features
-[can be re-enabled later](../../user/project/settings/index.md#configure-project-visibility-features-and-permissions).
+[can be re-enabled later](../../user/project/settings/index.md#configure-project-features-and-permissions).
 
 ## Connect to an external repository
 
 To connect to an external repository:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my projects**.
 1. Select **New project**.
 1. Select **Run CI/CD for external repository**.
 1. Select **GitHub** or **Repository by URL**.
@@ -33,7 +33,7 @@ To connect to an external repository:
 
 If the **Run CI/CD for external repository** option is not available, the GitLab instance
 might not have any import sources configured. Ask an administrator for your instance to check
-the [import sources configuration](../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+the [import sources configuration](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
 ## Pipelines for external pull requests
 

@@ -15,7 +15,7 @@ module Gitlab
     NOTIFICATION_PREFIX = 'workhorse:notifications:'
     ALLOWED_GIT_HTTP_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
     DETECT_HEADER = 'Gitlab-Workhorse-Detect-Content-Type'
-    ARCHIVE_FORMATS = %w(zip tar.gz tar.bz2 tar).freeze
+    ARCHIVE_FORMATS = %w[zip tar.gz tar.bz2 tar].freeze
 
     include JwtAuthenticatable
 
@@ -184,11 +184,17 @@ module Gitlab
         ]
       end
 
-      def send_dependency(headers, url)
+      def send_dependency(headers, url, upload_config: {})
         params = {
-          'Header' => headers,
-          'Url' => url
+          'Headers' => headers.transform_values { |v| Array.wrap(v) },
+          'Url' => url,
+          'UploadConfig' => {
+            'Method' => upload_config[:method],
+            'Url' => upload_config[:url],
+            'Headers' => (upload_config[:headers] || {}).transform_values { |v| Array.wrap(v) }
+          }.compact_blank!
         }
+        params.compact_blank!
 
         [
           SEND_DATA_HEADER,
@@ -227,8 +233,12 @@ module Gitlab
         Gitlab.config.workhorse.secret_file
       end
 
+      def cleanup_key(key)
+        with_redis { |redis| redis.del(key) }
+      end
+
       def set_key_and_notify(key, value, expire: nil, overwrite: true)
-        Gitlab::Redis::SharedState.with do |redis|
+        with_redis do |redis|
           result = redis.set(key, value, ex: expire, nx: !overwrite)
           if result
             redis.publish(NOTIFICATION_PREFIX + key, value)
@@ -248,6 +258,15 @@ module Gitlab
       end
 
       protected
+
+      def with_redis(&blk)
+        if Feature.enabled?(:use_primary_and_secondary_stores_for_workhorse) ||
+            Feature.enabled?(:use_primary_store_as_default_for_workhorse)
+          Gitlab::Redis::Workhorse.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
+        else
+          Gitlab::Redis::SharedState.with(&blk) # rubocop:disable CodeReuse/ActiveRecord
+        end
+      end
 
       # This is the outermost encoding of a senddata: header. It is safe for
       # inclusion in HTTP response headers

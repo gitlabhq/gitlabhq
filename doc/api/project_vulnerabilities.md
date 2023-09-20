@@ -90,7 +90,7 @@ Example response:
             "path": "security-reports",
             "path_with_namespace": "gitlab-org/security-reports"
         },
-        "project_default_branch": "master",
+        "project_default_branch": "main",
         "report_type": "dependency_scanning",
         "resolved_at": null,
         "resolved_by_id": null,
@@ -178,7 +178,7 @@ Example response:
         "path": "security-reports",
         "path_with_namespace": "gitlab-org/security-reports"
     },
-    "project_default_branch": "master",
+    "project_default_branch": "main",
     "report_type": "dependency_scanning",
     "resolved_at": null,
     "resolved_by_id": null,

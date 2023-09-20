@@ -9,9 +9,11 @@ type: reference
 
 This document lists the configuration options for your GitLab `.gitlab-ci.yml` file.
 
-- For a quick introduction to GitLab CI/CD, follow the [quick start guide](../quick_start/index.md).
-- For a collection of examples, see [GitLab CI/CD Examples](../examples/index.md).
-- To view a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
+- For a collection of examples, see [GitLab CI/CD examples](../examples/index.md).
+- To view a large `.gitlab-ci.yml` file used in an enterprise, see the
+  [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml).
+- To create your own `.gitlab-ci.yml` file, try a tutorial that demonstrates a
+  [simple](../quick_start/index.md) or [complex](../quick_start/tutorial.md) pipeline.
 
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](../lint.md) tool.
@@ -75,8 +77,11 @@ or import additional pipeline configuration.
 
 ### `default`
 
-You can set global defaults for some keywords. Jobs that do not define one or more
-of the listed keywords use the value defined in the `default` section.
+> Support for `id_tokens` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419750) in GitLab 16.4.
+
+You can set global defaults for some keywords. Each default keyword is copied to every job
+that doesn't already have it defined. If the job already has a keyword defined, that default
+is not used.
 
 **Keyword type**: Global keyword.
 
@@ -87,6 +92,7 @@ of the listed keywords use the value defined in the `default` section.
 - [`before_script`](#before_script)
 - [`cache`](#cache)
 - [`hooks`](#hooks)
+- [`id_tokens`](#id_tokens)
 - [`image`](#image)
 - [`interruptible`](#interruptible)
 - [`retry`](#retry)
@@ -99,6 +105,7 @@ of the listed keywords use the value defined in the `default` section.
 ```yaml
 default:
   image: ruby:3.0
+  retry: 2
 
 rspec:
   script: bundle exec rspec
@@ -108,16 +115,17 @@ rspec 2.7:
   script: bundle exec rspec
 ```
 
-In this example, `ruby:3.0` is the default `image` value for all jobs in the pipeline.
-The `rspec 2.7` job does not use the default, because it overrides the default with
-a job-specific `image` section:
+In this example:
+
+- `image: ruby:3.0` and `retry: 2` are the default keywords for all jobs in the pipeline.
+- The `rspec` job does not have `image` or `retry` defined, so it uses the defaults of
+  `image: ruby:3.0` and `retry: 2`.
+- The `rspec 2.7` job does not have `retry` defined, but it does have `image` explictly defined.
+  It uses the default `retry: 2`, but ignores the default `image` and uses the `image: ruby:2.7`
+  defined in the job.
 
 **Additional details**:
 
-- When the pipeline is created, each default is copied to all jobs that don't have
-  that keyword defined.
-- If a job already has one of the keywords configured, the configuration in the job
-  takes precedence and is not replaced by the default.
 - Control inheritance of default keywords in jobs with [`inherit:default`](#inheritdefault).
 
 ### `include`
@@ -267,6 +275,11 @@ include:
 - When you include a YAML file from another private project, the user running the pipeline
   must be a member of both projects and have the appropriate permissions to run pipelines.
   A `not found or access denied` error may be displayed if the user does not have access to any of the included files.
+- Be careful when including another project's CI/CD configuration file. No pipelines or notifications trigger when CI/CD configuration files change.
+  From a security perspective, this is similar to pulling a third-party dependency. For the `ref`, consider:
+  - Using a specific SHA hash, which should be the most stable option.
+  - Applying both [protected branch](../../user/project/protected_branches.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches) rules to
+  the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
 
 #### `include:remote`
 
@@ -293,9 +306,11 @@ include:
 
 - All [nested includes](includes.md#use-nested-includes) are executed without context as a public user,
   so you can only include public projects or templates. No variables are available in the `include` section of nested includes.
-- Be careful when including a remote CI/CD configuration file. No pipelines or notifications
-  trigger when external CI/CD configuration files change. From a security perspective,
-  this is similar to pulling a third-party dependency.
+- Be careful when including another project's CI/CD configuration file. No pipelines or notifications trigger
+  when the other project's files change. From a security perspective, this is similar to
+  pulling a third-party dependency. If you link to another GitLab project you own, consider the use of both
+  [protected branches](../../user/project/protected_branches.md) and [protected tags](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)
+  to enforce change management rules.
 
 #### `include:template`
 
@@ -1518,27 +1533,28 @@ is extracted from the job output. The coverage is shown in the UI if at least on
 line in the job output matches the regular expression.
 
 To extract the code coverage value from the match, GitLab uses
-this smaller regular expression: `\d+(\.\d+)?`.
+this smaller regular expression: `\d+(?:\.\d+)?`.
 
 **Possible inputs**:
 
-- A regular expression. Must start and end with `/`. Must match the coverage number.
+- An RE2 regular expression. Must start and end with `/`. Must match the coverage number.
   May match surrounding text as well, so you don't need to use a regular expression character group
   to capture the exact number.
+  Because it uses RE2 syntax, all groups must be non-capturing.
 
 **Example of `coverage`**:
 
 ```yaml
 job1:
   script: rspec
-  coverage: '/Code coverage: \d+\.\d+/'
+  coverage: '/Code coverage: \d+(?:\.\d+)?/'
 ```
 
 In this example:
 
 1. GitLab checks the job log for a match with the regular expression. A line
    like `Code coverage: 67.89% of lines covered` would match.
-1. GitLab then checks the matched fragment to find a match to `\d+(\.\d+)?`.
+1. GitLab then checks the matched fragment to find a match to `\d+(?:\.\d+)?`.
    The sample matching line above gives a code coverage of `67.89`.
 
 **Additional details**:
@@ -1997,12 +2013,19 @@ at certain stages of job execution, like before retrieving the Git repository.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
 
 Use `hooks:pre_get_sources_script` to specify a list of commands to execute on the runner
-before retrieving the Git repository and any submodules. You can use it
-to adjust the Git client configuration first, for example.
+before cloning the Git repository and any submodules.
+You can use it for example to:
 
-**Related topics**:
+- Adjust the [Git configuration](../troubleshooting.md#get_sources-job-section-fails-because-of-an-http2-problem).
+- Export [tracing variables](../../topics/git/useful_git_commands.md).
 
-- [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+**Possible inputs**: An array including:
+
+- Single line commands.
+- Long commands [split over multiple lines](script.md#split-long-commands).
+- [YAML anchors](yaml_optimization.md#yaml-anchors-for-scripts).
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `hooks:pre_get_sources_script`**:
 
@@ -2013,6 +2036,10 @@ job1:
       - echo 'hello job1 pre_get_sources_script'
   script: echo 'hello job1 script'
 ```
+
+**Related topics**:
+
+- [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 
 ### `id_tokens`
 
@@ -2717,7 +2744,7 @@ linux:rspec:
       parallel:
         matrix:
           - PROVIDER: aws
-          - STACK: app1
+            STACK: app1
   script: echo "Running rspec on linux..."
 ```
 
@@ -3379,6 +3406,8 @@ only one of the jobs starts. The other jobs wait until the `resource_group` is f
 
 Resource groups behave similar to semaphores in other programming languages.
 
+You can choose a [process mode](../resource_groups/index.md#process-modes) to strategically control the job concurrency for your deployment preferences. The default process mode is `unordered`. To change the process mode of a resource group, use the [API](../../api/resource_groups.md#edit-an-existing-resource-group) to send a request to edit an existing resource group.
+
 You can define multiple resource groups per environment. For example,
 when deploying to physical devices, you might have multiple physical devices. Each device
 can be deployed to, but only one deployment can occur per device at any given time.
@@ -3598,10 +3627,10 @@ to specific files.
 WARNING:
 You should use `rules: changes` only with **branch pipelines** or **merge request pipelines**.
 You can use `rules: changes` with other pipeline types, but `rules: changes` always
-evaluates to true when there is no Git `push` event. Tag pipelines, scheduled pipelines, manual pipelines,
-and so on do **not** have a Git `push` event associated with them. A `rules: changes` job
-is **always** added to those pipelines if there is no `if` that limits the job to
-branch or merge request pipelines.
+evaluates to true for new branch pipelines or when there is no Git `push` event. Pipelines like tag pipelines,
+scheduled pipelines, and manual pipelines, all do **not**
+have a Git `push` event associated with them. In these cases, use [`rules: changes: compare_to`](#ruleschangescompare_to)
+to specify the branch to compare against.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -4368,6 +4397,9 @@ test:
 
 ### `trigger`
 
+> - Support for `resource_group` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39057) support for `resource_group` in GitLab 13.9.
+> - Support for `environment` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369061) in GitLab 16.4.
+
 Use `trigger` to declare that a job is a "trigger job" which starts a
 [downstream pipeline](../pipelines/downstream_pipelines.md) that is either:
 
@@ -4386,6 +4418,8 @@ The keywords available for use in trigger jobs are:
 - [`trigger`](#trigger).
 - [`variables`](#variables).
 - [`when`](#when) (only with a value of `on_success`, `on_failure`, or `always`).
+- [`resource_group`](#resource_group).
+- [`environment`](#environment).
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -4417,6 +4451,7 @@ trigger-multi-project-pipeline:
   to forward these variables to downstream pipelines.
 - [Job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
   are not available in trigger jobs.
+- Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
 
 **Related topics**:
 

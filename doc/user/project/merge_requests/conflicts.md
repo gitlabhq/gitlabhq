@@ -59,7 +59,7 @@ in the user interface, and you can also resolve conflicts locally through the co
 
 To resolve less-complex conflicts from the GitLab user interface:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find the merge request.
 1. Select **Overview**, and scroll to the merge request reports section.
 1. Find the merge conflicts message, and select **Resolve conflicts**.
@@ -84,7 +84,7 @@ Some merge conflicts are more complex, requiring you to manually modify lines to
 resolve their conflicts. Use the merge conflict resolution editor to resolve complex
 conflicts in the GitLab interface:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find the merge request.
 1. Select **Overview**, and scroll to the merge request reports section.
 1. Find the merge conflicts message, and select **Resolve conflicts**.

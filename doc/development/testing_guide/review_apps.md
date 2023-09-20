@@ -6,20 +6,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Using review apps in the development of GitLab
 
-Review apps are deployed using the `start-review-app-pipeline` job which triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a review app.
+Review apps are deployed using the `start-review-app-pipeline` manual job which triggers a child pipeline containing a series of jobs to perform the various tasks needed to deploy a review app.
 
 ![start-review-app-pipeline job](img/review-app-parent-pipeline.png)
 
 For any of the following scenarios, the `start-review-app-pipeline` job would be automatically started:
 
-- for merge requests with CI configuration changes
-- for merge requests with frontend changes
-- for merge requests with changes to `{,ee/,jh/}{app/controllers}/**/*`
-- for merge requests with changes to `{,ee/,jh/}{app/models}/**/*`
-- for merge requests with changes to `{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*`
-- for merge requests with QA changes
 - for scheduled pipelines
 - the MR has the `pipeline:run-review-app` label set
+
+For all other scenarios, the `start-review-app-pipeline` job can be triggered manually.
 
 ## E2E test runs on review apps
 
@@ -278,7 +274,7 @@ find a way to limit it to only us.**
 - [Review apps integration for CE/EE (presentation)](https://docs.google.com/presentation/d/1QPLr6FO4LduROU8pQIPkX1yfGvD13GEJIBOenqoKxR8/edit?usp=sharing)
 - [Stability issues](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/212)
 
-### Helpful command line tools
+### Helpful command-line tools
 
 - [K9s](https://github.com/derailed/k9s) - enables CLI dashboard across pods and enabling filtering by labels
 - [Stern](https://github.com/wercker/stern) - enables cross pod log tailing based on label/field selectors

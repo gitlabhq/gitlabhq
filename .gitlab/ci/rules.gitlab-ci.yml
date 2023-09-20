@@ -378,9 +378,12 @@
   - "spec/support/database_cleaner.rb"
   - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
+  - "{,ee/,jh/}app/{,models/,services/,workers/}loose_foreign_keys/**/*"
   # Gitaly has interactions with background migrations: https://gitlab.com/gitlab-org/gitlab/-/issues/336538
   - "GITALY_SERVER_VERSION"
   - "lib/gitlab/setup_helper.rb"
+  # Test-gap from https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/275
+  - "{,ee/,jh/}lib/tasks/gitlab/seed/*.rake"
 
 # DB backup patterns
 .db-backup-patterns: &db-backup-patterns
@@ -503,7 +506,9 @@
   - "tests.yml"
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  # Auto-generated files
+  - "doc/api/graphql/reference/*"
+  - "doc/administration/audit_event_streaming/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -609,10 +614,13 @@
   - qa/gdk/**/*
   - Gemfile.lock
   - yarn.lock
+  - scripts/build_gdk_image
+  - scripts/frontend/postinstall.js
   - workhorse/**/*
+  - vendor/gems/**/*
+  - gems/**/*
   - VERSION
   - GITLAB_WORKHORSE_VERSION
-  - GITLAB_METRICS_EXPORTER_VERSION
   - GITLAB_SHELL_VERSION
   - GITALY_SERVER_VERSION
 
@@ -756,6 +764,8 @@
       changes: *backend-patterns
     - <<: *if-merge-request
       changes: *backstage-patterns
+    - <<: *if-merge-request
+      changes: ["**/*click_house*"]
 
 .rails:rules:ee-and-foss-integration:predictive:
   rules:
@@ -905,9 +915,12 @@
 # It's better to fail early and avoid wasting resources running test jobs that would just fail anyway.
 .build-images:rules:build-gdk-image:
   rules:
+    # Allows to force rebuild base image in case something goes wrong and this had to be disabled
     - if: '$QA_RUN_TESTS_ON_GDK !~ /true|yes|1/i'
       when: manual
       allow_failure: true
+      variables:
+        BUILD_GDK_BASE: "true"
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-default-branch-schedule-nightly # already executed in the 2-hourly schedule
       when: never
@@ -982,6 +995,8 @@
 #################
 .caching:rules:cache-workhorse:
   rules:
+    - <<: *if-not-ee
+      when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
     - <<: *if-schedule-maintenance
@@ -999,6 +1014,8 @@
     # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
     - if: '$CACHE_ASSETS_AS_PACKAGE != "true"'
       when: never
+    - <<: *if-not-ee
+      when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
     - <<: *if-schedule-maintenance
@@ -1014,14 +1031,15 @@
 
 .caching:rules:cache-assets-as-if-foss:
   rules:
-    - <<: *if-jh
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - !reference [".caching:rules:cache-assets", "rules"]
 
 .caching:rules:packages-cleanup:
   rules:
     # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
     - if: '$CACHE_ASSETS_AS_PACKAGE != "true"'
+      when: never
+    - <<: *if-not-ee
       when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
@@ -1070,6 +1088,11 @@
       changes: *docs-patterns
       when: manual
       allow_failure: true
+
+.docs:rules:redirect-check:
+  rules:
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes: *docs-patterns
 
 .docs:rules:docs-lint:
   rules:
@@ -1182,8 +1205,7 @@
   rules:
     - <<: *if-not-canonical-namespace
       when: never
-    - <<: *if-not-ee
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - !reference [.frontend:rules:compile-production-assets, rules]
 
 .frontend:rules:compile-test-assets:
@@ -1240,11 +1262,11 @@
     # The new strategy to upload fixtures as generic packages is experimental and can be disabled by removing the `REUSE_FRONTEND_FIXTURES_ENABLED` variable
     - if: '$REUSE_FRONTEND_FIXTURES_ENABLED != "true"'
       when: never
+    - <<: *if-not-ee
+      when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-dot-com-gitlab-org-default-branch
-      changes: *code-backstage-patterns
-    - <<: *if-foss-default-branch
       changes: *code-backstage-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
@@ -1603,14 +1625,12 @@
 
 .qa:rules:package-and-test-schedule:
   rules:
-    - <<: *if-dot-com-gitlab-org-schedule
+    - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
       allow_failure: true
-      <<: *qa-e2e-test-schedule-variables
 
 .qa:rules:e2e-schedule-blocking:
   rules:
-    - <<: *if-dot-com-gitlab-org-schedule
-      <<: *qa-e2e-test-schedule-variables
+    - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
 
 # Note: If any changes are made to this rule, the following should also be updated:
 # 1) .qa:rules:manual-omnibus-and-follow-up-e2e
@@ -1653,6 +1673,7 @@
 
 .qa:rules:package-and-test-nightly:
   rules:
+    - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-default-branch-schedule-nightly
       allow_failure: true
       variables:
@@ -1800,6 +1821,9 @@
     # From .qa:rules:package-and-test-schedule
     - <<: *if-dot-com-gitlab-org-schedule
       when: never
+    # Do not run on unapproved MR
+    - <<: *if-merge-request-not-approved
+      when: never
     # From .qa:rules:code-merge-request-manual
     - <<: *if-merge-request
       changes: *code-patterns
@@ -1840,8 +1864,7 @@
 
 .rails:rules:single-db-as-if-foss:
   rules:
-    - <<: *if-jh
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - !reference [".rails:rules:single-db", "rules"]
 
 .rails:rules:db:check-migrations-single-db:
@@ -1867,8 +1890,7 @@
 
 .rails:rules:single-db-ci-connection-as-if-foss:
   rules:
-    - <<: *if-jh
-      when: never
+    - !reference [".strict-ee-only-rules", rules]
     - !reference [".rails:rules:single-db-ci-connection", "rules"]
 
 .rails:rules:db:check-migrations-single-db-ci-connection:
@@ -1973,6 +1995,8 @@
       changes: *backend-patterns
     - <<: *if-default-refs
       changes: *backstage-patterns
+    - <<: *if-merge-request
+      changes: ["**/*click_house*"]
 
 .rails:rules:ee-and-foss-integration:
   rules:
@@ -2192,16 +2216,6 @@
       changes: *code-backstage-patterns
       when: on_failure
 
-.rails:rules:deprecations:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-default-branch-schedule-nightly
-    - <<: *if-ruby3_1-branch-schedule-nightly
-    - <<: *if-merge-request-labels-run-all-rspec
-
 .rails:rules:rspec-coverage:
   rules:
     - <<: *if-not-ee
@@ -2221,11 +2235,11 @@
       when: never
     - <<: *if-merge-request-labels-skip-undercoverage
       when: never
+    - <<: *if-merge-request-labels-run-all-rspec
     # We cannot get the coverage data from child pipeline so we only run undercoverage on full pipelines for now
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113410#note_1335422806
     - <<: *if-merge-request-not-approved
       when: never
-    - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *backend-patterns
 
@@ -2242,6 +2256,8 @@
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-record-queries
+    - <<: *if-default-branch-refs
+      changes: *code-patterns
 
 .rails:rules:default-branch-schedule-nightly--code-backstage-default-rules:
   rules:
@@ -2287,6 +2303,7 @@
   rules:
     - <<: *if-merge-request
       changes: ["**/*click_house*"]
+    - <<: *if-merge-request-labels-run-all-rspec
 
 #########################
 # Static analysis rules #
@@ -2530,7 +2547,7 @@
 
 # The following rules needs to be the same as the one for .review:rules:review-cleanup
 # except that:
-# - most rules re automatic here (i.e. no `when: manual`) and not allowed to fail (i.e. no `allow_failure: true`) here
+# - we start review apps automatically for scheduled pipelines and when the `pipeline:run-review-app` label is set
 # - several rules have `variables: *review-change-pattern` here
 .review:rules:start-review-app-pipeline:
   rules:
@@ -2538,12 +2555,18 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$CI_REVIEW_APPS_ENABLED != "true"'
+      when: never
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-build-patterns
       variables: *review-change-pattern
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
       variables: *review-change-pattern
@@ -2561,6 +2584,8 @@
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
+      when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual

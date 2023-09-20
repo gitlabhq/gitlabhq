@@ -1,5 +1,6 @@
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlButton, GlAvatar } from '@gitlab/ui';
 import { RouterLinkStub } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import NavItemRouterLink from '~/super_sidebar/components/nav_item_router_link.vue';
@@ -13,8 +14,10 @@ import {
 describe('NavItem component', () => {
   let wrapper;
 
+  const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findLink = () => wrapper.findByTestId('nav-item-link');
   const findPill = () => wrapper.findComponent(GlBadge);
+  const findPinButton = () => wrapper.findComponent(GlButton);
   const findNavItemRouterLink = () => extendedWrapper(wrapper.findComponent(NavItemRouterLink));
   const findNavItemLink = () => extendedWrapper(wrapper.findComponent(NavItemLink));
 
@@ -57,6 +60,66 @@ describe('NavItem component', () => {
         expect(findPill().exists()).toEqual(false);
       },
     );
+  });
+
+  describe('pins', () => {
+    describe('when pins are not supported', () => {
+      it('does not render pin button', () => {
+        createWrapper({
+          item: { title: 'Foo' },
+          provide: {
+            panelSupportsPins: false,
+          },
+        });
+
+        expect(findPinButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when pins are supported', () => {
+      beforeEach(() => {
+        createWrapper({
+          item: { title: 'Foo' },
+          provide: {
+            panelSupportsPins: true,
+          },
+        });
+      });
+
+      it('renders pin button', () => {
+        expect(findPinButton().exists()).toBe(true);
+      });
+
+      it('contains an aria-label', () => {
+        expect(findPinButton().attributes('aria-label')).toBe('Pin Foo');
+      });
+
+      it('toggles pointer events on after CSS fade-in', async () => {
+        const pinButton = findPinButton();
+
+        expect(pinButton.classes()).toContain('gl-pointer-events-none');
+
+        wrapper.trigger('mouseenter');
+        pinButton.vm.$emit('transitionend');
+        await nextTick();
+
+        expect(pinButton.classes()).not.toContain('gl-pointer-events-none');
+      });
+
+      it('does not toggle pointer events if mouse leaves before CSS fade-in ends', async () => {
+        const pinButton = findPinButton();
+
+        expect(pinButton.classes()).toContain('gl-pointer-events-none');
+
+        wrapper.trigger('mouseenter');
+        wrapper.trigger('mousemove');
+        wrapper.trigger('mouseleave');
+        pinButton.vm.$emit('transitionend');
+        await nextTick();
+
+        expect(pinButton.classes()).toContain('gl-pointer-events-none');
+      });
+    });
   });
 
   it('applies custom link classes', () => {
@@ -151,6 +214,38 @@ describe('NavItem component', () => {
           'gl-opacity-10',
         );
       });
+    });
+  });
+
+  describe('when `item` prop has `entity_id` attribute', () => {
+    it('renders an avatar', () => {
+      createWrapper({
+        item: { title: 'Foo', entity_id: 123, avatar: '/avatar.png', avatar_shape: 'circle' },
+      });
+
+      expect(findAvatar().props()).toMatchObject({
+        entityId: 123,
+        shape: 'circle',
+        src: '/avatar.png',
+      });
+    });
+  });
+
+  describe('when `item.is_active` is true', () => {
+    it('scrolls into view', () => {
+      createWrapper({
+        item: { is_active: true },
+      });
+      expect(wrapper.element.scrollIntoView).toHaveBeenNthCalledWith(1, false);
+    });
+  });
+
+  describe('when `item.is_active` is false', () => {
+    it('scrolls not into view', () => {
+      createWrapper({
+        item: { is_active: false },
+      });
+      expect(wrapper.element.scrollIntoView).not.toHaveBeenCalled();
     });
   });
 });

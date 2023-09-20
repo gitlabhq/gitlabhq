@@ -6,7 +6,7 @@ module Packages
       include ActiveModel::Model
 
       DIGESTS = %i[md5 sha1 sha256].freeze
-      FILENAME_REGEX = %r{\A[a-zA-Z0-9][a-zA-Z0-9_.~+-]*\z}.freeze
+      FILENAME_REGEX = %r{\A[a-zA-Z0-9][a-zA-Z0-9_.~+-]*\z}
 
       attr_accessor :filename,
         :size,

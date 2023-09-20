@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'it runs background migration jobs' do |tracking_database|
+  before do
+    stub_feature_flags(disallow_database_ddl_feature_flags: false)
+  end
+
   describe 'defining the job attributes' do
     it 'defines the data_consistency as always' do
       expect(described_class.get_data_consistency).to eq(:always)
@@ -45,6 +49,38 @@ RSpec.shared_examples 'it runs background migration jobs' do |tracking_database|
     context 'when execute_background_migrations feature flag is disabled' do
       before do
         stub_feature_flags(execute_background_migrations: false)
+      end
+
+      it 'does not perform the job, reschedules it in the future, and logs a message' do
+        expect(worker).not_to receive(:perform_with_connection)
+
+        expect(Sidekiq.logger).to receive(:info) do |payload|
+          expect(payload[:class]).to eq(described_class.name)
+          expect(payload[:database]).to eq(tracking_database)
+          expect(payload[:message]).to match(/skipping execution, migration rescheduled/)
+        end
+
+        lease_attempts = 3
+        delay = described_class::BACKGROUND_MIGRATIONS_DELAY
+        job_args = [10, 20]
+
+        freeze_time do
+          worker.perform('Foo', job_args, lease_attempts)
+
+          job = described_class.jobs.find { |job| job['args'] == ['Foo', job_args, lease_attempts] }
+          expect(job).to be, "Expected the job to be rescheduled with (#{job_args}, #{lease_attempts}), but it was not."
+
+          expected_time = delay.to_i + Time.now.to_i
+          expect(job['at']).to eq(expected_time),
+            "Expected the job to be rescheduled in #{expected_time} seconds, " \
+            "but it was rescheduled in #{job['at']} seconds."
+        end
+      end
+    end
+
+    context 'when disallow_database_ddl_feature_flags feature flag is disabled' do
+      before do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
       end
 
       it 'does not perform the job, reschedules it in the future, and logs a message' do

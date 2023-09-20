@@ -8,14 +8,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   layout 'project'
 
-  before_action only: [:show] do
-    push_frontend_feature_flag(:environment_details_vue, @project)
-  end
-
-  before_action only: [:index, :edit, :new] do
-    push_frontend_feature_flag(:flux_resource_for_environment)
-  end
-
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]
@@ -113,10 +105,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     job = stop_actions.first if stop_actions&.count == 1
 
     action_or_env_url =
-      if job.instance_of?(::Ci::Build)
-        polymorphic_url([project, job])
-      elsif job.instance_of?(::Ci::Bridge)
-        project_pipeline_url(project, job.pipeline_id)
+      if job
+        project_job_url(project, job)
       else
         project_environment_url(project, @environment)
       end

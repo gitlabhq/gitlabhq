@@ -7,12 +7,16 @@ module Gitlab
         class Include
           class Rules::Rule < ::Gitlab::Config::Entry::Node
             include ::Gitlab::Config::Entry::Validatable
+            include ::Gitlab::Config::Entry::Configurable
             include ::Gitlab::Config::Entry::Attributable
 
-            ALLOWED_KEYS = %i[if exists when].freeze
+            ALLOWED_KEYS = %i[if exists when changes].freeze
             ALLOWED_WHEN = %w[never always].freeze
 
             attributes :if, :exists, :when
+
+            entry :changes, Entry::Rules::Rule::Changes,
+              description: 'File change condition rule.'
 
             validations do
               validates :config, presence: true
@@ -27,7 +31,9 @@ module Gitlab
             end
 
             def value
-              Feature.enabled?(:ci_refactor_external_rules) ? config.compact : super
+              config.merge(
+                changes: (changes_value if changes_defined?)
+              ).compact
             end
           end
         end

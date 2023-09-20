@@ -61,14 +61,6 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
     expect(deprecable.deprecation_reason).to eq('This was renamed. Deprecated in 1.10.')
   end
 
-  it 'supports named reasons: alpha' do
-    deprecable = subject(deprecated: { milestone: '1.10', reason: :alpha })
-
-    expect(deprecable.deprecation_reason).to eq(
-      'This feature is an Experiment. It can be changed or removed at any time. Introduced in 1.10.'
-    )
-  end
-
   it 'supports :alpha' do
     deprecable = subject(alpha: { milestone: '1.10' })
 
@@ -82,7 +74,7 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
       subject(alpha: { milestone: '1.10' }, deprecated: { milestone: '1.10', reason: 'my reason' } )
     end.to raise_error(
       ArgumentError,
-      eq("`experiment` and `deprecated` arguments cannot be passed at the same time")
+      eq("`alpha` and `deprecated` arguments cannot be passed at the same time")
     )
   end
 

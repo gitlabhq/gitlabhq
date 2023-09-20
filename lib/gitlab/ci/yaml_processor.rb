@@ -129,6 +129,12 @@ module Gitlab
           error!("#{name} job: undefined #{dependency_type}: #{dependency}")
         end
 
+        # A parallel job's name is expanded in Config::Normalizer so we must revalidate the name length here
+        if dependency_type == 'need' && dependency.length > ::Ci::BuildNeed::MAX_JOB_NAME_LENGTH
+          error!("#{name} job: need `#{dependency}` name is too long " \
+                 "(maximum is #{::Ci::BuildNeed::MAX_JOB_NAME_LENGTH} characters)")
+        end
+
         job_stage_index = stage_index(name)
         dependency_stage_index = stage_index(dependency)
 

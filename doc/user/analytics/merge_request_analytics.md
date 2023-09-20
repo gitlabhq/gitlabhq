@@ -29,7 +29,7 @@ Prerequisite:
 
 To view merge request analytics:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Merge request analytics**.
 
 ## View the number of merge requests in a date range
@@ -39,7 +39,7 @@ To view merge request analytics:
 
 To view the number of merge requests merged during a specific date range:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Merge request analytics**.
 1. Optional. Filter results:
    1. Select the filter bar.
@@ -73,6 +73,6 @@ created and when it's merged. Closed and not yet merged merge requests are not i
 
 To view **Mean time to merge**:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Merge request analytics**. The **Mean time to merge** number
 is displayed on the dashboard.

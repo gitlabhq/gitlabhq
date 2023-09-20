@@ -17,6 +17,9 @@ class Namespace < ApplicationRecord
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings
   include Referable
+  include CrossDatabaseIgnoredTables
+
+  cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
@@ -145,7 +148,6 @@ class Namespace < ApplicationRecord
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
   after_update :move_dir, if: :saved_change_to_path_or_parent?, unless: -> { is_a?(Namespaces::ProjectNamespace) }
-  after_destroy :rm_dir
 
   after_save :reload_namespace_details
 
@@ -155,7 +157,6 @@ class Namespace < ApplicationRecord
 
   # Legacy Storage specific hooks
 
-  before_destroy(prepend: true) { prepare_for_destroy }
   after_commit :expire_child_caches, on: :update, if: -> {
     Feature.enabled?(:cached_route_lookups, self, type: :ops) &&
       saved_change_to_name? || saved_change_to_path? || saved_change_to_parent_id?
@@ -166,7 +167,9 @@ class Namespace < ApplicationRecord
   scope :sort_by_type, -> { order(arel_table[:type].asc.nulls_first) }
   scope :include_route, -> { includes(:route) }
   scope :by_parent, -> (parent) { where(parent_id: parent) }
+  scope :by_root_id, -> (root_id) { where('traversal_ids[1] IN (?)', root_id) }
   scope :filter_by_path, -> (query) { where('lower(path) = :query', query: query.downcase) }
+  scope :in_organization, -> (organization) { where(organization: organization) }
 
   scope :with_statistics, -> do
     joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
@@ -231,16 +234,26 @@ class Namespace < ApplicationRecord
     # query - The search query as a String.
     #
     # Returns an ActiveRecord::Relation.
-    def search(query, include_parents: false, use_minimum_char_limit: true)
+    def search(query, include_parents: false, use_minimum_char_limit: true, exact_matches_first: false)
       if include_parents
-        without_project_namespaces
+        route_columns = [Route.arel_table[:path], Route.arel_table[:name]]
+        namespaces = without_project_namespaces
           .where(id: Route.for_routable_type(Namespace.name)
           .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
-            .fuzzy_search(query, [Route.arel_table[:path], Route.arel_table[:name]],
+            .fuzzy_search(query, route_columns,
               use_minimum_char_limit: use_minimum_char_limit)
             .select(:source_id))
+
+        if exact_matches_first
+          namespaces = namespaces
+            .joins(:route)
+            .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
+            .order(exact_matches_first_sql(query, route_columns))
+        end
+
+        namespaces
       else
-        without_project_namespaces.fuzzy_search(query, [:path, :name], use_minimum_char_limit: use_minimum_char_limit)
+        without_project_namespaces.fuzzy_search(query, [:path, :name], use_minimum_char_limit: use_minimum_char_limit, exact_matches_first: exact_matches_first)
       end
     end
 
@@ -465,7 +478,7 @@ class Namespace < ApplicationRecord
     return { scope: :group, status: auto_devops_enabled } unless auto_devops_enabled.nil?
 
     strong_memoize(:first_auto_devops_config) do
-      if has_parent?
+      if parent.present?
         Rails.cache.fetch(first_auto_devops_config_cache_key_for(id), expires_in: 1.day) do
           parent.first_auto_devops_config
         end
@@ -751,7 +764,7 @@ class Namespace < ApplicationRecord
   end
 
   def reload_namespace_details
-    return unless !project_namespace? && (previous_changes.keys & %w(description description_html cached_markdown_version)).any? && namespace_details.present?
+    return unless !project_namespace? && (previous_changes.keys & %w[description description_html cached_markdown_version]).any? && namespace_details.present?
 
     namespace_details.reset
   end

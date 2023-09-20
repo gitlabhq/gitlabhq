@@ -61,10 +61,11 @@ class AbuseReport < ApplicationRecord
   validates :screenshot, file_size: { maximum: MAX_FILE_SIZE }
   validate :validate_screenshot_is_image
 
-  scope :by_user_id, ->(id) { where(user_id: id) }
-  scope :by_reporter_id, ->(id) { where(reporter_id: id) }
+  scope :by_user_id, ->(user_id) { where(user_id: user_id) }
+  scope :by_reporter_id, ->(reporter_id) { where(reporter_id: reporter_id) }
   scope :by_category, ->(category) { where(category: category) }
   scope :with_users, -> { includes(:reporter, :user) }
+  scope :with_labels, -> { includes(:labels) }
 
   enum category: {
     spam: 1,
@@ -141,8 +142,14 @@ class AbuseReport < ApplicationRecord
     end
   end
 
-  def other_reports_for_user
-    user.abuse_reports.id_not_in(id)
+  def past_closed_reports_for_user
+    user.abuse_reports.closed.id_not_in(id)
+  end
+
+  def similar_open_reports_for_user
+    return AbuseReport.none unless open?
+
+    user.abuse_reports.open.by_category(category).id_not_in(id).includes(:reporter)
   end
 
   private

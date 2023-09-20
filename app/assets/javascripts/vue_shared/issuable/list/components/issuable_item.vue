@@ -8,6 +8,7 @@ import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { STATE_CLOSED } from '~/work_items/constants';
 import { isAssigneesWidget, isLabelsWidget } from '~/work_items/utils';
@@ -24,6 +25,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    SafeHtml,
   },
   mixins: [timeagoMixin],
   props: {
@@ -80,14 +82,20 @@ export default {
     author() {
       return this.issuable.author || {};
     },
+    externalAuthor() {
+      return this.issuable.externalAuthor;
+    },
     webUrl() {
       return this.issuable.gitlabWebUrl || this.issuable.webUrl;
     },
     authorId() {
       return getIdFromGraphQLId(this.author.id);
     },
+    isIssueTrackerExternal() {
+      return Boolean(this.issuable.externalTracker);
+    },
     isIssuableUrlExternal() {
-      return isExternal(this.webUrl);
+      return isExternal(this.webUrl ?? '');
     },
     reference() {
       return this.issuable.reference || `${this.issuableSymbol}${this.issuable.iid}`;
@@ -130,7 +138,8 @@ export default {
         return sprintf(__('closed %{timeago}'), {
           timeago: this.timeFormatted(this.issuable.closedAt),
         });
-      } else if (this.issuable.updatedAt !== this.issuable.createdAt) {
+      }
+      if (this.issuable.updatedAt !== this.issuable.createdAt) {
         return sprintf(__('updated %{timeAgo}'), {
           timeAgo: this.timeFormatted(this.issuable.updatedAt),
         });
@@ -242,6 +251,7 @@ export default {
       <div data-testid="issuable-title" class="issue-title title">
         <work-item-type-icon
           v-if="showWorkItemTypeIcon"
+          class="gl-mr-2"
           :work-item-type="type"
           show-tooltip-on-hover
         />
@@ -259,18 +269,33 @@ export default {
           :title="__('This issue is hidden because its author has been banned')"
           :aria-label="__('Hidden')"
         />
-        <gl-link
-          class="issue-title-text"
-          dir="auto"
-          :href="webUrl"
-          data-qa-selector="issuable_title_link"
-          data-testid="issuable-title-link"
-          v-bind="issuableTitleProps"
-          @click="handleIssuableItemClick"
-        >
-          {{ issuable.title }}
+        <template v-if="isIssueTrackerExternal">
+          <gl-link
+            class="issue-title-text"
+            dir="auto"
+            :href="webUrl"
+            data-qa-selector="issuable_title_link"
+            data-testid="issuable-title-link"
+            v-bind="issuableTitleProps"
+            @click="handleIssuableItemClick"
+          >
+            {{ issuable.title }}
+            <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
+          </gl-link>
+        </template>
+        <template v-else>
+          <gl-link
+            v-safe-html="issuable.titleHtml || issuable.title"
+            class="issue-title-text"
+            dir="auto"
+            :href="webUrl"
+            data-qa-selector="issuable_title_link"
+            data-testid="issuable-title-link"
+            v-bind="issuableTitleProps"
+            @click="handleIssuableItemClick"
+          />
           <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
-        </gl-link>
+        </template>
         <span
           v-if="taskStatus"
           class="task-status gl-display-none gl-sm-display-inline-block! gl-ml-2 gl-font-sm"
@@ -298,6 +323,9 @@ export default {
                 </span>
               </template>
               <template #author>
+                <span v-if="externalAuthor" data-testid="external-author"
+                  >{{ externalAuthor }} {{ __('via') }}</span
+                >
                 <slot v-if="hasSlotContents('author')" name="author"></slot>
                 <gl-link
                   v-else
@@ -344,7 +372,7 @@ export default {
     </div>
     <div class="issuable-meta">
       <ul v-if="showIssuableMeta" class="controls">
-        <li v-if="hasSlotContents('status')" class="issuable-status">
+        <li v-if="hasSlotContents('status')">
           <slot name="status"></slot>
         </li>
         <li v-if="assignees.length">

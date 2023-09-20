@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe CodequalityReportsComparerSerializer do
-  let(:project) { double(:project) }
+RSpec.describe CodequalityReportsComparerSerializer, feature_category: :code_quality do
+  let(:project) { build_stubbed(:project) }
   let(:serializer) { described_class.new(project: project).represent(comparer) }
   let(:comparer) { Gitlab::Ci::Reports::CodequalityReportsComparer.new(base_report, head_report) }
   let(:base_report) { Gitlab::Ci::Reports::CodequalityReports.new }

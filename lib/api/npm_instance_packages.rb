@@ -10,6 +10,10 @@ module API
       def endpoint_scope
         :instance
       end
+
+      def group_or_namespace
+        top_namespace_from(params[:package_name])
+      end
     end
 
     namespace 'packages/npm' do

@@ -39,7 +39,7 @@ Packages can be pulled from your project, group, or instance.
 | [Maven (with `mvn`)](../maven_repository/index.md)    | Y       | Y     | Y        |
 | [Maven (with `gradle`)](../maven_repository/index.md) | Y       | Y     | Y        |
 | [Maven (with `sbt`)](../maven_repository/index.md)    | Y       | Y     | Y        |
-| [npm](../npm_registry/index.md)                       | Y       | N     | Y        |
+| [npm](../npm_registry/index.md)                       | Y       | Y     | Y        |
 | [NuGet](../nuget_repository/index.md)                 | Y       | Y     | N        |
 | [PyPI](../pypi_repository/index.md)                   | Y       | Y     | N        |
 | [Generic packages](../generic_packages/index.md)      | Y       | N     | N        |
@@ -72,7 +72,7 @@ Requests for packages not found in your GitLab project are forwarded to the publ
 | [Go](../go_proxy/index.md)                            | N                           |
 | [Ruby gems](../rubygems_registry/index.md)            | N                           |
 
-### Deleting packages
+## Deleting packages
 
 When package requests are forwarded to a public registry, deleting packages can
 be a [dependency confusion vulnerability](https://medium.com/@alex.birsan/dependency-confusion-4a5d60fec610).
@@ -88,6 +88,27 @@ To reduce the associated security risks, before deleting a package you can:
 - Disable request forwarding:
   - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#package-registry-configuration) of the Admin Area.
   - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
+
+## Importing packages from other repositories
+
+You can use GitLab pipelines to import packages from other repositories, such as Maven Central or Artifactory with the [package importer tool](https://gitlab.com/gitlab-org/ci-cd/package-stage/pkgs_importer).
+
+| Package type                                          | Importer available? |
+|-------------------------------------------------------|---------------------|
+| [Maven (with `mvn`)](../maven_repository/index.md)    | Y                   |
+| [Maven (with `gradle`)](../maven_repository/index.md) | Y                   |
+| [Maven (with `sbt`)](../maven_repository/index.md)    | Y                   |
+| [npm](../npm_registry/index.md)                       | Y                   |
+| [NuGet](../nuget_repository/index.md)                 | Y                   |
+| [PyPI](../pypi_repository/index.md)                   | Y                   |
+| [Generic packages](../generic_packages/index.md)      | N                   |
+| [Terraform](../terraform_module_registry/index.md)    | N                   |
+| [Composer](../composer_repository/index.md)           | N                   |
+| [Conan](../conan_repository/index.md)                 | N                   |
+| [Helm](../helm_repository/index.md)                   | N                   |
+| [Debian](../debian_repository/index.md)               | N                   |
+| [Go](../go_proxy/index.md)                            | N                   |
+| [Ruby gems](../rubygems_registry/index.md)            | N                   |
 
 ## Allow or prevent duplicates **(FREE ALL)**
 

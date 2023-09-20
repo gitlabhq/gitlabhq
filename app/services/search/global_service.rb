@@ -6,7 +6,7 @@ module Search
     include Gitlab::Utils::StrongMemoize
 
     DEFAULT_SCOPE = 'projects'
-    ALLOWED_SCOPES = %w(projects issues merge_requests milestones users).freeze
+    ALLOWED_SCOPES = %w[projects issues merge_requests milestones users].freeze
 
     attr_accessor :current_user, :params
 

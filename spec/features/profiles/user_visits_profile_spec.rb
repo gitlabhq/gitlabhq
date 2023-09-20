@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User visits their profile', feature_category: :user_profile do
-  let_it_be_with_refind(:user) { create(:user) }
+  let_it_be_with_refind(:user) { create(:user, :no_super_sidebar) }
 
   before do
     stub_feature_flags(profile_tabs_vue: false)

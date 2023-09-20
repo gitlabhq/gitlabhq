@@ -7,57 +7,33 @@ module QA
         # We need to check phone_layout? instead of mobile_layout? here
         # since tablets have the regular top navigation bar
         prepend Mobile::Page::Main::Menu if Runtime::Env.phone_layout?
+        include SubMenus::CreateNewMenu
+        include SubMenus::SuperSidebar::GlobalSearchModal
 
-        if Runtime::Env.super_sidebar_enabled?
-          prepend SubMenus::CreateNewMenu
-          include SubMenus::SuperSidebar::ContextSwitcher
+        view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
+          element :navbar, required: true # TODO: rename to sidebar once it's default implementation
         end
 
-        if QA::Runtime::Env.super_sidebar_enabled?
-          # Define alternative navbar (super sidebar) which does not yet implement all the same elements
-          view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
-            element :navbar, required: true # TODO: rename to sidebar once it's default implementation
-          end
+        view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
+          element 'user-dropdown', required: !Runtime::Env.phone_layout?
+          element :user_avatar_content, required: !Runtime::Env.phone_layout?
+          element :sign_out_link
+          element :edit_profile_link
+        end
 
-          view 'app/assets/javascripts/super_sidebar/components/user_menu.vue' do
-            element 'user-dropdown', required: !Runtime::Env.phone_layout?
-            element :user_avatar_content, required: !Runtime::Env.phone_layout?
-            element :sign_out_link
-            element :edit_profile_link
-          end
+        view 'app/assets/javascripts/super_sidebar/components/user_name_group.vue' do
+          element :user_profile_link
+        end
 
-          view 'app/assets/javascripts/super_sidebar/components/user_name_group.vue' do
-            element :user_profile_link
-          end
+        view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
+          element 'stop-impersonation-btn'
+          element 'issues-shortcut-button', required: !Runtime::Env.phone_layout?
+          element 'merge-requests-shortcut-button', required: !Runtime::Env.phone_layout?
+          element 'todos-shortcut-button', required: !Runtime::Env.phone_layout?
+        end
 
-          view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
-            element 'super-sidebar-search-button'
-            element 'stop-impersonation-btn'
-            element 'issues-shortcut-button', required: !Runtime::Env.phone_layout?
-            element 'merge-requests-shortcut-button', required: !Runtime::Env.phone_layout?
-            element 'todos-shortcut-button', required: !Runtime::Env.phone_layout?
-          end
-
-          view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
-            element 'global-search-input'
-          end
-        else
-          view 'app/views/layouts/header/_default.html.haml' do
-            element :navbar, required: true
-            element :canary_badge_link
-            element :user_avatar_content, required: !Runtime::Env.phone_layout?
-            element 'user-dropdown', required: !Runtime::Env.phone_layout?
-            element 'stop-impersonation-btn'
-            element 'issues-shortcut-button', required: !Runtime::Env.phone_layout?
-            element 'merge-requests-shortcut-button', required: !Runtime::Env.phone_layout?
-            element 'todos-shortcut-button', required: !Runtime::Env.phone_layout?
-          end
-
-          view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
-            element :sign_out_link
-            element :edit_profile_link
-            element :user_profile_link
-          end
+        view 'app/assets/javascripts/super_sidebar/components/global_search/components/global_search.vue' do
+          element 'global-search-input'
         end
 
         view 'app/assets/javascripts/nav/components/top_nav_app.vue' do
@@ -102,88 +78,31 @@ module QA
         end
 
         def go_to_projects
-          return click_element(:nav_item_link, submenu_item: 'Projects') if Runtime::Env.super_sidebar_enabled?
-
-          click_element(:sidebar_menu_link, menu_item: 'Projects')
+          click_element(:nav_item_link, submenu_item: 'Projects')
         end
 
         def go_to_groups
           # This needs to be fixed in the tests themselves. Fullfillment tests try to go to groups view from the
           # group. Instead of having a global hack, explicit test should navigate to correct view first.
           # see: https://gitlab.com/gitlab-org/gitlab/-/issues/403589#note_1383040061
-          if Runtime::Env.super_sidebar_enabled?
-            go_to_your_work unless has_element?(:nav_item_link, submenu_item: 'Groups', wait: 0)
-            click_element(:nav_item_link, submenu_item: 'Groups')
-          elsif has_element?(:sidebar_menu_link, menu_item: 'Groups')
-            # Use new functionality to visit Groups where possible
-            click_element(:sidebar_menu_link, menu_item: 'Groups')
-          else
-            # Otherwise fallback to previous functionality
-            # See https://gitlab.com/gitlab-org/gitlab/-/issues/403589
-            # and related issues
-            within_groups_menu do
-              click_element(:menu_item_link, title: 'View all groups')
-            end
-          end
+          go_to_your_work unless has_element?(:nav_item_link, submenu_item: 'Groups', wait: 0)
+          click_element(:nav_item_link, submenu_item: 'Groups')
         end
 
         def go_to_snippets
-          return click_element(:nav_item_link, submenu_item: 'Snippets') if Runtime::Env.super_sidebar_enabled?
-
-          click_element(:sidebar_menu_link, menu_item: 'Snippets')
+          click_element(:nav_item_link, submenu_item: 'Snippets')
         end
 
         def go_to_workspaces
-          return click_element(:nav_item_link, submenu_item: 'Workspaces') if Runtime::Env.super_sidebar_enabled?
-
-          click_element(:sidebar_menu_link, menu_item: 'Workspaces')
-        end
-
-        def go_to_create_project
-          click_element('new-menu-toggle')
-          click_element(:global_new_project_link)
-        end
-
-        def go_to_create_group
-          click_element('new-menu-toggle')
-          click_element(:global_new_group_link)
-        end
-
-        def go_to_create_snippet
-          click_element('new-menu-toggle')
-          click_element(:global_new_snippet_link)
+          click_element(:nav_item_link, submenu_item: 'Workspaces')
         end
 
         def go_to_menu_dropdown_option(option_name)
-          return click_element(option_name) if QA::Runtime::Env.super_sidebar_enabled?
-
-          within_top_menu do
-            click_element(:navbar_dropdown, title: 'Menu')
-            click_element(option_name)
-          end
+          click_element(option_name)
         end
 
-        # To go to one of the popular pages using the provided shortcut buttons within top menu
-        # @param [Symbol] the name of the element (e.g: `:issues_shortcut button`)
-        # @example:
-        #   Menu.perform do |menu|
-        #     menu.go_to_page_by_shortcut('issues-shortcut-button') #=> Go to Issues page using shortcut button
-        #   end
-        def go_to_page_by_shortcut(button)
-          within_top_menu do
-            click_element(button)
-          end
-        end
-
-        def go_to_admin_area
-          Runtime::Env.super_sidebar_enabled? ? super : click_admin_area
-
-          return unless has_text?('Enter admin mode', wait: 1.0)
-
-          Admin::NewSession.perform do |new_session|
-            new_session.set_password(Runtime::User.admin_password)
-            new_session.click_enter_admin_mode
-          end
+        def go_to_todos
+          click_element('todos-shortcut-button')
         end
 
         def signed_in?
@@ -209,6 +128,8 @@ module QA
         end
 
         def sign_out
+          close_global_search_modal_if_shown
+
           retry_until do
             wait_if_retry_later
 
@@ -242,26 +163,12 @@ module QA
           end
         end
 
-        def search_for(term)
-          click_element(Runtime::Env.super_sidebar_enabled? ? 'super-sidebar-search-button' : :search_box)
-          fill_element('global-search-input', "#{term}\n")
-        end
-
         def has_personal_area?(wait: Capybara.default_max_wait_time)
           has_element?(:user_avatar_content, wait: wait)
         end
 
         def has_no_personal_area?(wait: Capybara.default_max_wait_time)
           has_no_element?(:user_avatar_content, wait: wait)
-        end
-
-        def has_admin_area_link?(wait: Capybara.default_max_wait_time)
-          return super if Runtime::Env.super_sidebar_enabled?
-
-          within_top_menu do
-            click_element(:navbar_dropdown, title: 'Menu')
-            has_element?(:admin_area_link, wait: wait)
-          end
         end
 
         def click_stop_impersonation_link
@@ -278,54 +185,14 @@ module QA
           has_element?(:canary_badge_link)
         end
 
-        def enable_new_navigation
-          Runtime::Logger.info("Enabling super sidebar!")
-          return Runtime::Logger.info("User is not signed in, skipping") unless has_element?(:navbar, wait: 2)
-
-          return Runtime::Logger.info("Super sidebar is already enabled") if has_css?('[data-testid="super-sidebar"]')
-
-          within_user_menu { click_element(:new_navigation_toggle) }
-        end
-
-        def disable_new_navigation
-          Runtime::Logger.info("Disabling super sidebar!")
-          return Runtime::Logger.info("User is not signed in, skipping") unless has_element?(:navbar, wait: 2)
-
-          unless has_css?('[data-testid="super-sidebar"]')
-            return Runtime::Logger.info("Super sidebar is already disabled")
-          end
-
-          within_user_menu { click_element(:new_navigation_toggle) }
-        end
-
         private
 
-        def within_top_menu(&block)
-          within_element(:navbar, &block)
-        end
-
         def within_user_menu(&block)
-          within_top_menu do
+          within_element(:navbar) do
             click_element :user_avatar_content unless has_element?(:user_profile_link, wait: 1)
 
             within_element('user-dropdown', &block)
           end
-        end
-
-        def within_groups_menu(&block)
-          go_to_menu_dropdown_option(:groups_dropdown)
-
-          within_element('menu-subview', &block)
-        end
-
-        def within_projects_menu(&block)
-          go_to_menu_dropdown_option(:projects_dropdown)
-
-          within_element('menu-subview', &block)
-        end
-
-        def click_admin_area
-          go_to_menu_dropdown_option(:admin_area_link)
         end
       end
     end

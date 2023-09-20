@@ -8,5 +8,5 @@ RSpec.shared_context 'UsersFinder#execute filter by project context' do
   let_it_be(:external_user) { create(:user, :external) }
   let_it_be(:unconfirmed_user) { create(:user, confirmed_at: nil) }
   let_it_be(:omniauth_user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
-  let_it_be(:internal_user) { User.alert_bot.tap { |u| u.confirm } }
+  let_it_be(:internal_user) { Users::Internal.alert_bot.tap { |u| u.confirm } }
 end

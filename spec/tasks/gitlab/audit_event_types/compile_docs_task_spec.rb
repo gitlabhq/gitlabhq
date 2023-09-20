@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'rake_helper'
 require_relative '../../../../lib/tasks/gitlab/audit_event_types/compile_docs_task'
 
 RSpec.describe Tasks::Gitlab::AuditEventTypes::CompileDocsTask, feature_category: :audit_events do
-  let_it_be(:docs_dir) { Rails.root.join("tmp/tests/doc/administration/audit_event_streaming") }
-  let_it_be(:docs_path) { Rails.root.join(docs_dir, 'audit_event_types.md') }
-  let_it_be(:template_erb_path) { Rails.root.join("tooling/audit_events/docs/templates/audit_event_types.md.erb") }
+  let(:docs_dir) { Rails.root.join("tmp/tests/doc/administration/audit_event_streaming") }
+  let(:docs_path) { Rails.root.join(docs_dir, 'audit_event_types.md') }
+  let(:template_erb_path) { Rails.root.join("tooling/audit_events/docs/templates/audit_event_types.md.erb") }
 
   subject(:compile_docs_task) { described_class.new(docs_dir, docs_path, template_erb_path) }
 

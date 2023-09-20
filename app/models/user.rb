@@ -22,7 +22,6 @@ class User < MainClusterwide::ApplicationRecord
   include FromUnion
   include BatchDestroyDependentAssociations
   include BatchNullifyDependentAssociations
-  include HasUniqueInternalUsers
   include IgnorableColumns
   include UpdateHighestRole
   include HasUserType
@@ -31,7 +30,28 @@ class User < MainClusterwide::ApplicationRecord
   include RestrictedSignup
   include StripAttribute
   include EachBatch
-  include SafelyChangeColumnDefault
+  include CrossDatabaseIgnoredTables
+  include IgnorableColumns
+
+  ignore_column %i[
+    email_opted_in
+    email_opted_in_ip
+    email_opted_in_source_id
+    email_opted_in_at
+  ], remove_with: '16.6', remove_after: '2023-10-22'
+
+  # `ensure_namespace_correct` needs to be moved to an after_commit (?)
+  cross_database_ignore_tables %w[namespaces namespace_settings], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424279'
+
+  # `notification_settings_for` is called, and elsewhere `save` is then called.
+  cross_database_ignore_tables %w[notification_settings], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424284'
+
+  # Associations with dependent: option
+  cross_database_ignore_tables(
+    %w[namespaces projects project_authorizations issues merge_requests merge_requests issues issues merge_requests],
+    url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424285',
+    on: :destroy
+  )
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -55,12 +75,10 @@ class User < MainClusterwide::ApplicationRecord
     :public_email
   ].freeze
 
-  FORBIDDEN_SEARCH_STATES = %w(blocked banned ldap_blocked).freeze
+  FORBIDDEN_SEARCH_STATES = %w[blocked banned ldap_blocked].freeze
 
   INCOMING_MAIL_TOKEN_PREFIX = 'glimt-'
   FEED_TOKEN_PREFIX = 'glft-'
-
-  columns_changing_default :project_view
 
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token }
@@ -262,8 +280,6 @@ class User < MainClusterwide::ApplicationRecord
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users
 
-  has_many :metrics_users_starred_dashboards, class_name: 'Metrics::UsersStarredDashboard', inverse_of: :user
-
   has_one :status, class_name: 'UserStatus'
   has_one :user_preference
   has_one :user_detail
@@ -346,7 +362,9 @@ class User < MainClusterwide::ApplicationRecord
         email_to_confirm.confirm
       end
     else
-      add_primary_email_to_emails!
+      ignore_cross_database_tables_if_factory_bot(%w[emails]) do
+        add_primary_email_to_emails!
+      end
     end
   end
   after_commit(on: :update) do
@@ -378,6 +396,7 @@ class User < MainClusterwide::ApplicationRecord
     :gitpod_enabled, :gitpod_enabled=,
     :setup_for_company, :setup_for_company=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
+    :keyboard_shortcuts_enabled, :keyboard_shortcuts_enabled=,
     :render_whitespace_in_code, :render_whitespace_in_code=,
     :markdown_surround_selection, :markdown_surround_selection=,
     :markdown_automatic_lists, :markdown_automatic_lists=,
@@ -501,11 +520,19 @@ class User < MainClusterwide::ApplicationRecord
     end
 
     after_transition any => :active do |user|
-      user.starred_projects.update_counters(star_count: 1)
+      user.class.temporary_ignore_cross_database_tables(
+        %w[projects], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424278'
+      ) do
+        user.starred_projects.update_counters(star_count: 1)
+      end
     end
 
     after_transition active: any do |user|
-      user.starred_projects.update_counters(star_count: -1)
+      user.class.temporary_ignore_cross_database_tables(
+        %w[projects], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424278'
+      ) do
+        user.starred_projects.update_counters(star_count: -1)
+      end
     end
   end
 
@@ -882,92 +909,6 @@ class User < MainClusterwide::ApplicationRecord
           #{Regexp.escape(reference_prefix)}
           (?<user>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})
         }x
-    end
-
-    # Return (create if necessary) the ghost user. The ghost user
-    # owns records previously belonging to deleted users.
-    def ghost
-      email = 'ghost%s@example.com'
-      unique_internal(where(user_type: :ghost), 'ghost', email) do |u|
-        u.bio = _('This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.')
-        u.name = 'Ghost User'
-      end
-    end
-
-    def alert_bot
-      email_pattern = "alert%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :alert_bot), 'alert-bot', email_pattern) do |u|
-        u.bio = 'The GitLab alert bot'
-        u.name = 'GitLab Alert Bot'
-        u.avatar = bot_avatar(image: 'alert-bot.png')
-      end
-    end
-
-    def migration_bot
-      email_pattern = "noreply+gitlab-migration-bot%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :migration_bot), 'migration-bot', email_pattern) do |u|
-        u.bio = 'The GitLab migration bot'
-        u.name = 'GitLab Migration Bot'
-        u.confirmed_at = Time.zone.now
-      end
-    end
-
-    def security_bot
-      email_pattern = "security-bot%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :security_bot), 'GitLab-Security-Bot', email_pattern) do |u|
-        u.bio = 'System bot that monitors detected vulnerabilities for solutions and creates merge requests with the fixes.'
-        u.name = 'GitLab Security Bot'
-        u.website_url = Gitlab::Routing.url_helpers.help_page_url('user/application_security/security_bot/index.md')
-        u.avatar = bot_avatar(image: 'security-bot.png')
-        u.confirmed_at = Time.zone.now
-      end
-    end
-
-    def support_bot
-      email_pattern = "support%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :support_bot), 'support-bot', email_pattern) do |u|
-        u.bio = 'The GitLab support bot used for Service Desk'
-        u.name = 'GitLab Support Bot'
-        u.avatar = bot_avatar(image: 'support-bot.png')
-        u.confirmed_at = Time.zone.now
-      end
-    end
-
-    def automation_bot
-      email_pattern = "automation%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :automation_bot), 'automation-bot', email_pattern) do |u|
-        u.bio = 'The GitLab automation bot used for automated workflows and tasks'
-        u.name = 'GitLab Automation Bot'
-        u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for automation-bot
-      end
-    end
-
-    def llm_bot
-      email_pattern = "llm-bot%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :llm_bot), 'GitLab-Llm-Bot', email_pattern) do |u|
-        u.bio = 'The Gitlab LLM bot used for fetching LLM-generated content'
-        u.name = 'GitLab LLM Bot'
-        u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for llm-bot
-        u.confirmed_at = Time.zone.now
-      end
-    end
-
-    def admin_bot
-      email_pattern = "admin-bot%s@#{Settings.gitlab.host}"
-
-      unique_internal(where(user_type: :admin_bot), 'GitLab-Admin-Bot', email_pattern) do |u|
-        u.bio = 'Admin bot used for tasks that require admin privileges'
-        u.name = 'GitLab Admin Bot'
-        u.avatar = bot_avatar(image: 'admin-bot.png')
-        u.admin = true
-        u.confirmed_at = Time.zone.now
-      end
     end
 
     # Return true if there is only single non-internal user in the deployment,
@@ -2009,7 +1950,7 @@ class User < MainClusterwide::ApplicationRecord
 
   def access_level=(new_level)
     new_level = new_level.to_s
-    return unless %w(admin regular).include?(new_level)
+    return unless %w[admin regular].include?(new_level)
 
     self.admin = (new_level == 'admin')
   end
@@ -2173,16 +2114,6 @@ class User < MainClusterwide::ApplicationRecord
     last_sign_in = current_sign_in_at
 
     [last_activity, last_sign_in].compact.max
-  end
-
-  REQUIRES_ROLE_VALUE = 99
-
-  def role_required?
-    role_before_type_cast == REQUIRES_ROLE_VALUE
-  end
-
-  def set_role_required!
-    update_column(:role, REQUIRES_ROLE_VALUE)
   end
 
   def dismissed_callout?(feature_name:, ignore_dismissal_earlier_than: nil)
@@ -2354,7 +2285,7 @@ class User < MainClusterwide::ApplicationRecord
 
   def ban_and_report
     msg = 'Potential spammer account deletion'
-    attrs = { user_id: id, reporter: User.security_bot, category: 'spam' }
+    attrs = { user_id: id, reporter: Users::Internal.security_bot, category: 'spam' }
     abuse_report = AbuseReport.find_by(attrs)
 
     if abuse_report.nil?
@@ -2519,7 +2450,7 @@ class User < MainClusterwide::ApplicationRecord
   def update_highest_role?
     return false unless persisted?
 
-    (previous_changes.keys & %w(state user_type)).any?
+    (previous_changes.keys & %w[state user_type]).any?
   end
 
   def update_highest_role_attribute

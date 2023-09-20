@@ -39,7 +39,7 @@ Prerequisites:
 
 - The [storage name](gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage), path to the Gitaly configuration file
   (default is `/var/opt/gitlab/gitaly/config.toml` on Linux package instances), and the
-  [repository relative path](repository_storage_types.md#from-project-name-to-hashed-path) for the repository.
+  [repository relative path](repository_storage_paths.md#from-project-name-to-hashed-path) for the repository.
 
 To set server hooks for a repository:
 
@@ -71,15 +71,15 @@ If you implemented the server hook code correctly, it should execute when the Gi
 
 To create server hooks for a repository:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Go to **Overview > Projects** and select the project you want to add a server hook to.
 1. On the page that appears, locate the value of **Relative path**. This path is where server
    hooks must be located.
-   - If you are using [hashed storage](repository_storage_types.md#hashed-storage), see
-     [Translate hashed storage paths](repository_storage_types.md#translate-hashed-storage-paths) for information on
+   - If you are using [hashed storage](repository_storage_paths.md#hashed-storage), see
+     [Translate hashed storage paths](repository_storage_paths.md#translate-hashed-storage-paths) for information on
      interpreting the relative path.
-   - If you are not using [hashed storage](repository_storage_types.md#hashed-storage):
+   - If you are not using [hashed storage](repository_storage_paths.md#hashed-storage):
      - For Linux package installations, the path is usually `/var/opt/gitlab/git-data/repositories/<group>/<project>.git`.
      - For self-compiled installations, the path is usually `/home/git/repositories/<group>/<project>.git`.
 1. On the file system, create a new directory in the correct location called `custom_hooks`.
@@ -109,7 +109,7 @@ To accomplish this, follow the same steps for setting custom repository hooks fo
 
 The location to copy the scripts to depends on where repositories are stored:
 
-- In GitLab 15.2 and earlier, Gitaly Cluster uses the [hashed storage path](repository_storage_types.md#hashed-storage)
+- In GitLab 15.2 and earlier, Gitaly Cluster uses the [hashed storage path](repository_storage_paths.md#hashed-storage)
   reported by the GitLab application.
 - In GitLab 15.3 and later, new repositories are created using
   [Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later),
@@ -169,7 +169,7 @@ subdirectories.
 
 Prerequisites:
 
-- The [storage name and relative path](repository_storage_types.md#from-project-name-to-hashed-path) for the repository.
+- The [storage name and relative path](repository_storage_paths.md#from-project-name-to-hashed-path) for the repository.
 
 To remove server hooks, pass an empty tarball to `hook set` to indicate that the repository should contain no hooks. For example:
 

@@ -19,10 +19,6 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
     graphql_mutation_response(:create_annotation)
   end
 
-  before do
-    stub_feature_flags(remove_monitor_metrics: false)
-  end
-
   specify { expect(described_class).to require_graphql_authorizations(:admin_metrics_dashboard_annotation) }
 
   context 'when annotation source is environment' do
@@ -36,18 +32,6 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
       }
 
       graphql_mutation(:create_annotation, variables)
-    end
-
-    context 'when the user does not have permission' do
-      before do
-        project.add_reporter(current_user)
-      end
-
-      it 'does not create the annotation' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-        end.not_to change { Metrics::Dashboard::Annotation.count }
-      end
     end
 
     context 'when the user has permission' do
@@ -67,7 +51,8 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
           graphql_mutation(:create_annotation, variables)
         end
 
-        it_behaves_like 'a mutation that returns top-level errors', errors: [described_class::ANNOTATION_SOURCE_ARGUMENT_ERROR]
+        it_behaves_like 'a mutation that returns top-level errors',
+          errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
       end
 
       context 'when environment_id is invalid' do
@@ -87,10 +72,6 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
       end
 
       context 'when metrics dashboard feature is unavailable' do
-        before do
-          stub_feature_flags(remove_monitor_metrics: true)
-        end
-
         it_behaves_like 'a mutation that returns top-level errors',
           errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
       end
@@ -127,19 +108,8 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
           graphql_mutation(:create_annotation, variables)
         end
 
-        it_behaves_like 'a mutation that returns top-level errors', errors: [described_class::ANNOTATION_SOURCE_ARGUMENT_ERROR]
-      end
-    end
-
-    context 'without permission' do
-      before do
-        project.add_guest(current_user)
-      end
-
-      it 'does not create the annotation' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-        end.not_to change { Metrics::Dashboard::Annotation.count }
+        it_behaves_like 'a mutation that returns top-level errors',
+          errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
       end
     end
 
@@ -174,7 +144,8 @@ RSpec.describe Mutations::Metrics::Dashboard::Annotations::Create, feature_categ
       graphql_mutation(:create_annotation, variables)
     end
 
-    it_behaves_like 'a mutation that returns top-level errors', errors: [described_class::ANNOTATION_SOURCE_ARGUMENT_ERROR]
+    it_behaves_like 'a mutation that returns top-level errors',
+          errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
   end
 
   [:environment_id, :cluster_id].each do |arg_name|

@@ -28,6 +28,9 @@ When importing projects:
 - If a user referenced in the project is not found in the GitLab database, the project creator is set as the author and
   assignee. The project creator is usually the user that initiated the import process. A note on the issue mentioning the
   original GitHub author is added.
+- Reviewers assigned to GitHub pull requests that do not exist in GitLab are not imported. In this case, the import
+  creates comments describing that non-existent users were added as reviewers and approvers. However, the actual
+  reviewer status and approval are not applied to the merge request in GitLab.
 - You can change the target namespace and target repository name before you import.
 - The importer also imports branches on forks of projects related to open pull requests. These branches are
   imported with a naming scheme similar to `GH-SHA-username/pull-request-number/fork-name/branch`. This may lead to
@@ -43,7 +46,7 @@ For an overview of the import process, see [How to migrate from GitHub to GitLab
 
 To import projects from GitHub:
 
-- [GitHub import source](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
+- [GitHub import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The GitHub import source is enabled
   by default on GitLab.com.
 - You must have at least the Maintainer role on the destination group to import to.
@@ -55,12 +58,8 @@ To import projects from GitHub:
   When issues and pull requests are being imported, the importer attempts to find their GitHub authors and assignees in
   the database of the GitLab instance. Pull requests are called _merge requests_ in GitLab. For the importer to succeed,
   matching email addresses are required.
-- GitHub accounts must have a GitHub public-facing email address is populated. This means all comments and contributions
-  are properly mapped to the same user in GitLab. GitHub Enterprise does not require this field to be populated so you
-  may have to add it on existing accounts.
-
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383047), if you are using GitHub as an OmniAuth provider, ensure that the URL
-perimeter is specified in the [OmniAuth configuration](../../../integration/github.md#enable-github-oauth-in-gitlab).
+- GitHub accounts must have a GitHub public-facing email address so that all comments and contributions can be properly mapped to
+  the same user in GitLab. GitHub Enterprise does not require this field to be populated so you might have to add it on existing accounts.
 
 ### Importing from GitHub Enterprise to self-managed GitLab
 
@@ -68,7 +67,7 @@ If you are importing from GitHub Enterprise to a self-managed GitLab instance:
 
 - You must first enable the [GitHub integration](../../../integration/github.md).
 - GitHub must be enabled as an import source in the
-  [Admin Area](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+  [Admin Area](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 - For GitLab 15.10 and earlier, you must add `github.com` and `api.github.com` entries in the
   [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 
@@ -78,7 +77,17 @@ If you are importing from GitHub.com to a self-managed GitLab instance:
 
 - You don't need to enable the [GitHub integration](../../../integration/github.md).
 - GitHub must be enabled as an import source in the
-  [Admin Area](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources).
+  [Admin Area](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
+
+### Known issues
+
+- GitHub pull request comments (known as diff notes in GitLab) created before 2017 are imported in separate threads.
+  This occurs because of a limitation of the GitHub API that doesn't include `in_reply_to_id` for comments before 2017.
+- Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383047), if you are using GitHub as an
+  OmniAuth provider, ensure that the URL perimeter is specified in the
+  [OmniAuth configuration](../../../integration/github.md#enable-github-oauth-in-gitlab).
+- Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424400), Markdown attachments from
+  repositories on GitHub Enterprise Server instances aren't imported.
 
 ## Import your GitHub repository into GitLab
 
@@ -288,10 +297,10 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 | :---------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ |
 | **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved)                                | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
 | **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches)                    | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
-| **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
+| **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM ALL)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
 | **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                      | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
-| **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
-| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches) **(PREMIUM)**. Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
+| **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM ALL)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches) **(PREMIUM ALL)**. Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
 
 Mapping GitHub rule **Require status checks to pass before merging** to
 [external status checks](../merge_requests/status_checks.md) was considered in issue

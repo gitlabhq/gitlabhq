@@ -7,7 +7,6 @@ import (
 
 	"github.com/golang/protobuf/jsonpb" //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
 	"github.com/golang/protobuf/proto"  //lint:ignore SA1019 https://gitlab.com/gitlab-org/gitlab/-/issues/324868
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -114,16 +113,6 @@ func NewRepositoryClient(ctx context.Context, server api.GitalyServer) (context.
 	return withOutgoingMetadata(ctx, server), &RepositoryClient{grpcClient}, nil
 }
 
-// NewNamespaceClient is only used by the Gitaly integration tests at present
-func NewNamespaceClient(ctx context.Context, server api.GitalyServer) (context.Context, *NamespaceClient, error) {
-	conn, err := getOrCreateConnection(server)
-	if err != nil {
-		return nil, nil, err
-	}
-	grpcClient := gitalypb.NewNamespaceServiceClient(conn)
-	return withOutgoingMetadata(ctx, server), &NamespaceClient{grpcClient}, nil
-}
-
 func NewDiffClient(ctx context.Context, server api.GitalyServer) (context.Context, *DiffClient, error) {
 	conn, err := getOrCreateConnection(server)
 	if err != nil {
@@ -173,23 +162,19 @@ func CloseConnections() {
 func newConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
 	connOpts := append(gitalyclient.DefaultDialOpts,
 		grpc.WithPerRPCCredentials(gitalyauth.RPCCredentialsV2(server.Token)),
-		grpc.WithStreamInterceptor(
-			grpc_middleware.ChainStreamClient(
-				grpctracing.StreamClientTracingInterceptor(),
-				grpc_prometheus.StreamClientInterceptor,
-				grpccorrelation.StreamClientCorrelationInterceptor(
-					grpccorrelation.WithClientName("gitlab-workhorse"),
-				),
+		grpc.WithChainStreamInterceptor(
+			grpctracing.StreamClientTracingInterceptor(),
+			grpc_prometheus.StreamClientInterceptor,
+			grpccorrelation.StreamClientCorrelationInterceptor(
+				grpccorrelation.WithClientName("gitlab-workhorse"),
 			),
 		),
 
-		grpc.WithUnaryInterceptor(
-			grpc_middleware.ChainUnaryClient(
-				grpctracing.UnaryClientTracingInterceptor(),
-				grpc_prometheus.UnaryClientInterceptor,
-				grpccorrelation.UnaryClientCorrelationInterceptor(
-					grpccorrelation.WithClientName("gitlab-workhorse"),
-				),
+		grpc.WithChainUnaryInterceptor(
+			grpctracing.UnaryClientTracingInterceptor(),
+			grpc_prometheus.UnaryClientInterceptor,
+			grpccorrelation.UnaryClientCorrelationInterceptor(
+				grpccorrelation.WithClientName("gitlab-workhorse"),
 			),
 		),
 

@@ -269,7 +269,7 @@ export default {
         <gl-form-select
           id="jira-project-select"
           v-model="selectedProject"
-          data-qa-selector="jira_project_dropdown"
+          data-testid="jira-project-dropdown"
           class="mb-2"
           :options="jiraProjects"
           :state="selectState"
@@ -349,7 +349,7 @@ export default {
           variant="confirm"
           class="js-no-auto-disable"
           :loading="isSubmitting"
-          data-qa-selector="jira_issues_import_button"
+          data-testid="jira-issues-import-button"
         >
           {{ __('Continue') }}
         </gl-button>

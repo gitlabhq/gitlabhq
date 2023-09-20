@@ -14,11 +14,14 @@ export default class WebAuthnError {
   message() {
     if (this.errorName === 'NotSupportedError') {
       return __('Your device is not compatible with GitLab. Please try another device');
-    } else if (this.errorName === 'InvalidStateError' && this.flowType === WEBAUTHN_AUTHENTICATE) {
+    }
+    if (this.errorName === 'InvalidStateError' && this.flowType === WEBAUTHN_AUTHENTICATE) {
       return __('This device has not been registered with us.');
-    } else if (this.errorName === 'InvalidStateError' && this.flowType === WEBAUTHN_REGISTER) {
+    }
+    if (this.errorName === 'InvalidStateError' && this.flowType === WEBAUTHN_REGISTER) {
       return __('This device has already been registered with us.');
-    } else if (this.errorName === 'SecurityError' && this.httpsDisabled) {
+    }
+    if (this.errorName === 'SecurityError' && this.httpsDisabled) {
       return __(
         'WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details.',
       );

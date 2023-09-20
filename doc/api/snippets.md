@@ -184,7 +184,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/1/files/master/snippet%2Erb/raw"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/1/files/main/snippet%2Erb/raw"
 ```
 
 Example response:
@@ -270,7 +270,7 @@ Example response:
   "files": [
     {
       "path": "text.txt",
-      "raw_url": "https://gitlab.example.com/-/snippets/1/raw/master/renamed.md"
+      "raw_url": "https://gitlab.example.com/-/snippets/1/raw/main/renamed.md"
     }
   ]
 }
@@ -355,7 +355,7 @@ Example response:
   "files": [
     {
       "path": "renamed.md",
-      "raw_url": "https://gitlab.example.com/-/snippets/1/raw/master/renamed.md"
+      "raw_url": "https://gitlab.example.com/-/snippets/1/raw/main/renamed.md"
     }
   ]
 }

@@ -306,5 +306,4 @@ deploy_b:
   environment: production
 ```
 
-It's also possible to set jobs to run before or after triggering child pipelines,
-for example if you have common setup steps or a unified deployment at the end.
+Jobs can be set to run before or after triggering child pipelines in GitLab, allowing common setup steps or unified deployment.

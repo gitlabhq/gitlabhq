@@ -20,8 +20,8 @@ class FileUploader < GitlabUploader
     '!?\[.*?\]\(/uploads/(?P<secret>[0-9a-f]{32})/(?P<file>.*?)\)'
   )
 
-  DYNAMIC_PATH_PATTERN = %r{.*(?<secret>\b(\h{10}|\h{32}))\/(?<identifier>.*)}.freeze
-  VALID_SECRET_PATTERN = %r{\A\h{10,32}\z}.freeze
+  DYNAMIC_PATH_PATTERN = %r{.*(?<secret>\b(\h{10}|\h{32}))\/(?<identifier>.*)}
+  VALID_SECRET_PATTERN = %r{\A\h{10,32}\z}
 
   InvalidSecret = Class.new(StandardError)
 

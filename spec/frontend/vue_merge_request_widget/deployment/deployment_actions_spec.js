@@ -2,7 +2,6 @@ import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { visitUrl } from '~/lib/utils/url_utility';
 import {
   CREATED,
   MANUAL_DEPLOY,
@@ -20,6 +19,7 @@ import {
   deploymentMockData,
   playDetails,
   retryDetails,
+  mockRedeployProps,
 } from './deployment_mock_data';
 
 jest.mock('~/alert');
@@ -36,7 +36,6 @@ describe('DeploymentAction component', () => {
 
   const findStopButton = () => wrapper.find('.js-stop-env');
   const findDeployButton = () => wrapper.find('.js-manual-deploy-action');
-  const findManualRedeployButton = () => wrapper.find('.js-manual-redeploy-action');
   const findRedeployButton = () => wrapper.find('.js-redeploy-action');
 
   beforeEach(() => {
@@ -78,23 +77,25 @@ describe('DeploymentAction component', () => {
         expect(findDeployButton().exists()).toBe(false);
       });
     });
-
-    describe('when there is no retry_path in details', () => {
-      it('the manual redeploy button does not appear', () => {
-        expect(findManualRedeployButton().exists()).toBe(false);
-      });
-    });
   });
 
   describe('when conditions are met', () => {
     describe.each`
-      configConst    | computedDeploymentStatus | displayConditionChanges | finderFn                    | endpoint
-      ${STOPPING}    | ${CREATED}               | ${{}}                   | ${findStopButton}           | ${deploymentMockData.stop_url}
-      ${DEPLOYING}   | ${MANUAL_DEPLOY}         | ${playDetails}          | ${findDeployButton}         | ${playDetails.playable_build.play_path}
-      ${REDEPLOYING} | ${FAILED}                | ${retryDetails}         | ${findManualRedeployButton} | ${retryDetails.playable_build.retry_path}
+      configConst    | computedDeploymentStatus | displayConditionChanges | finderFn              | endpoint                                  | props
+      ${STOPPING}    | ${CREATED}               | ${{}}                   | ${findStopButton}     | ${deploymentMockData.stop_url}            | ${{}}
+      ${DEPLOYING}   | ${MANUAL_DEPLOY}         | ${playDetails}          | ${findDeployButton}   | ${playDetails.playable_build.play_path}   | ${{}}
+      ${REDEPLOYING} | ${FAILED}                | ${{}}                   | ${findRedeployButton} | ${retryDetails.playable_build.retry_path} | ${mockRedeployProps}
+      ${REDEPLOYING} | ${SUCCESS}               | ${{}}                   | ${findRedeployButton} | ${retryDetails.playable_build.retry_path} | ${mockRedeployProps}
     `(
       '$configConst action',
-      ({ configConst, computedDeploymentStatus, displayConditionChanges, finderFn, endpoint }) => {
+      ({
+        configConst,
+        computedDeploymentStatus,
+        displayConditionChanges,
+        finderFn,
+        endpoint,
+        props,
+      }) => {
         describe(`${configConst} action`, () => {
           beforeEach(() => {
             factory({
@@ -103,6 +104,7 @@ describe('DeploymentAction component', () => {
                 deployment: {
                   ...deploymentMockData,
                   details: displayConditionChanges,
+                  ...props,
                 },
               },
             });
@@ -163,25 +165,6 @@ describe('DeploymentAction component', () => {
                 expect(createAlert).not.toHaveBeenCalled();
               });
 
-              describe('response includes redirect_url', () => {
-                const url = '/root/example';
-                beforeEach(async () => {
-                  executeActionSpy.mockResolvedValueOnce({
-                    data: { redirect_url: url },
-                  });
-
-                  await waitForPromises();
-
-                  confirmAction.mockResolvedValueOnce(true);
-                  finderFn().trigger('click');
-                });
-
-                it('calls visit url with the redirect_url', () => {
-                  expect(visitUrl).toHaveBeenCalled();
-                  expect(visitUrl).toHaveBeenCalledWith(url);
-                });
-              });
-
               describe('it should call the executeAction method', () => {
                 beforeEach(async () => {
                   jest.spyOn(wrapper.vm, 'executeAction').mockImplementation();
@@ -234,7 +217,7 @@ describe('DeploymentAction component', () => {
     );
   });
 
-  describe('with the reviewAppsRedeployMrWidget feature flag turned on', () => {
+  describe('redeploy action', () => {
     beforeEach(() => {
       factory({
         propsData: {
@@ -244,11 +227,6 @@ describe('DeploymentAction component', () => {
             details: undefined,
             retry_url: retryDetails.playable_build.retry_path,
             environment_available: false,
-          },
-        },
-        provide: {
-          glFeatures: {
-            reviewAppsRedeployMrWidget: true,
           },
         },
       });
@@ -302,24 +280,6 @@ describe('DeploymentAction component', () => {
 
         it('should not throw an error', () => {
           expect(createAlert).not.toHaveBeenCalled();
-        });
-
-        describe('response includes redirect_url', () => {
-          const url = '/root/example';
-          beforeEach(async () => {
-            executeActionSpy.mockResolvedValueOnce({
-              data: { redirect_url: url },
-            });
-
-            await waitForPromises();
-
-            confirmAction.mockResolvedValueOnce(true);
-            findRedeployButton().trigger('click');
-          });
-
-          it('does not call visit url', () => {
-            expect(visitUrl).not.toHaveBeenCalled();
-          });
         });
 
         describe('it should call the executeAction method', () => {

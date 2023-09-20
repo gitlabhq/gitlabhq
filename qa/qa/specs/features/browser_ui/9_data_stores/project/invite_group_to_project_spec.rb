@@ -5,7 +5,7 @@ module QA
     describe 'Invite group', :reliable, product_group: :tenant_scale do
       shared_examples 'invites group to project' do
         it 'grants group and members correct access level' do
-          Page::Project::Menu.perform(&:click_members)
+          Page::Project::Menu.perform(&:go_to_members)
           Page::Project::Members.perform do |project_members|
             project_members.invite_group(group.path, 'Developer')
 

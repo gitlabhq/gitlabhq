@@ -493,5 +493,10 @@ Docker privileged mode applies to services. This means that the service image co
 
 ## Shared /builds directory
 
-Services can access files from the build because all services have the job
-directory mounted as a volume under `/builds`.
+The build directory is mounted as a volume under `/builds` and is shared
+between the job and services. The job checks the project out into
+`/builds/$CI_PROJECT_PATH` after the services are running. As a result, if your
+service needs files from the project or, for example, wants to put files there
+to serve as artifacts, it may need to wait for that directory to exist and
+have `$CI_COMMIT_SHA` checked out. Any changes made before the job finishes its
+checkout process are removed by the checkout process.

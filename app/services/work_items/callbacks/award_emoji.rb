@@ -15,7 +15,8 @@ module WorkItems
       def execute_emoji_service(action, name)
         class_name = {
           add: ::AwardEmojis::AddService,
-          remove: ::AwardEmojis::DestroyService
+          remove: ::AwardEmojis::DestroyService,
+          toggle: ::AwardEmojis::ToggleService
         }
 
         raise_error(invalid_action_error(action)) unless class_name.key?(action)

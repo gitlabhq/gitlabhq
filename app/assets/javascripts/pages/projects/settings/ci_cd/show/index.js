@@ -12,7 +12,6 @@ import initSettingsPanels from '~/settings_panels';
 import { initTokenAccess } from '~/token_access';
 import { initCiSecureFiles } from '~/ci_secure_files';
 import initDeployTokens from '~/deploy_tokens';
-import { initProjectRunners } from '~/ci/runner/project_runners';
 import { initProjectRunnersRegistrationDropdown } from '~/ci/runner/project_runners/register';
 import { initGeneralPipelinesOptions } from '~/ci_settings_general_pipeline';
 
@@ -45,7 +44,6 @@ initDeployFreeze();
 initSettingsPipelinesTriggers();
 initArtifactsSettings();
 
-initProjectRunners();
 initProjectRunnersRegistrationDropdown();
 initSharedRunnersToggle();
 initRefSwitcherBadges();

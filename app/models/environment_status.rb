@@ -79,7 +79,7 @@ class EnvironmentStatus
 
   private
 
-  PAGE_EXTENSIONS = /\A\.(s?html?|php|asp|cgi|pl)\z/i.freeze
+  PAGE_EXTENSIONS = /\A\.(s?html?|php|asp|cgi|pl)\z/i
 
   def deployment_metrics
     @deployment_metrics ||= DeploymentMetrics.new(project, deployment)
@@ -102,7 +102,6 @@ class EnvironmentStatus
     return [] unless pipeline
 
     environments = pipeline.environments_in_self_and_project_descendants.includes(:project)
-    environments = environments.available if Feature.disabled?(:review_apps_redeploy_mr_widget, mr.project)
     environments.map do |environment|
       next unless Ability.allowed?(user, :read_environment, environment)
 

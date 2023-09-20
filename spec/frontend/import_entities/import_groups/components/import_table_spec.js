@@ -317,7 +317,7 @@ describe('import table', () => {
     });
 
     it('updates page size when selected in Dropdown', async () => {
-      const otherOption = findPaginationDropdown().findAll('li p').at(1);
+      const otherOption = findPaginationDropdown().findAll('.gl-new-dropdown-item-content').at(1);
       expect(otherOption.text()).toMatchInterpolatedText('50 items per page');
 
       bulkImportSourceGroupsQueryMock.mockResolvedValue({

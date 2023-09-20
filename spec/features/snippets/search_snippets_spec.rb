@@ -4,10 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'Search Snippets', :js, feature_category: :global_search do
   it 'user searches for snippets by title' do
+    user = create(:user, :no_super_sidebar)
     public_snippet = create(:personal_snippet, :public, title: 'Beginning and Middle')
-    private_snippet = create(:personal_snippet, :private, title: 'Middle and End')
+    private_snippet = create(:personal_snippet, :private, title: 'Middle and End', author: user)
 
-    sign_in private_snippet.author
+    sign_in user
     visit dashboard_snippets_path
 
     submit_search('Middle')

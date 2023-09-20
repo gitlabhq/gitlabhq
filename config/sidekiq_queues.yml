@@ -79,6 +79,16 @@
   - 1
 - - batched_git_ref_updates_project_cleanup
   - 1
+- - bitbucket_import_advance_stage
+  - 1
+- - bitbucket_import_import_pull_request
+  - 1
+- - bitbucket_import_stage_finish_import
+  - 1
+- - bitbucket_import_stage_import_pull_requests
+  - 1
+- - bitbucket_import_stage_import_repository
+  - 1
 - - bitbucket_server_import_advance_stage
   - 1
 - - bitbucket_server_import_import_lfs_object
@@ -106,6 +116,8 @@
 - - bulk_imports_finish_batched_pipeline
   - 1
 - - bulk_imports_finish_batched_relation_export
+  - 1
+- - bulk_imports_finish_project_import
   - 1
 - - bulk_imports_pipeline
   - 1
@@ -163,6 +175,8 @@
   - 1
 - - compliance_management_update_default_framework
   - 1
+- - compliance_management_violation_export_mailer
+  - 1
 - - container_repository
   - 1
 - - container_repository_delete
@@ -176,6 +190,8 @@
 - - create_note_diff_file
   - 1
 - - cronjob
+  - 1
+- - database_lock_tables
   - 1
 - - default
   - 1
@@ -271,6 +287,10 @@
   - 1
 - - gitlab_shell
   - 2
+- - gitlab_subscriptions_add_on_purchases_cleanup_user_add_on_assignment
+  - 1
+- - gitlab_subscriptions_add_on_purchases_refresh_user_assignments
+  - 1
 - - gitlab_subscriptions_refresh_seats
   - 1
 - - gitlab_subscriptions_trials_apply_trial
@@ -290,6 +310,8 @@
 - - group_wikis_git_garbage_collect
   - 1
 - - groups_create_event
+  - 1
+- - groups_enterprise_users_associate
   - 1
 - - groups_enterprise_users_disassociate
   - 1
@@ -357,6 +379,10 @@
   - 2
 - - llm_completion
   - 1
+- - llm_embedding_gitlab_documentation_create_db_embeddings_per_doc_file
+  - 1
+- - llm_embedding_gitlab_documentation_set_embeddings_on_the_record
+  - 1
 - - llm_tanuki_bot_update
   - 1
 - - mail_scheduler
@@ -413,10 +439,6 @@
   - 1
 - - ml_experiment_tracking_associate_ml_candidate_to_package
   - 1
-- - namespaces_free_user_cap_notification_clearing
-  - 1
-- - namespaces_free_user_cap_over_limit_notification
-  - 1
 - - namespaces_process_sync_events
   - 1
 - - namespaces_sync_namespace_name
@@ -458,8 +480,6 @@
 - - pages_domain_ssl_renewal
   - 1
 - - pages_domain_verification
-  - 1
-- - pages_invalidate_domain_cache
   - 1
 - - personal_access_tokens
   - 1
@@ -581,9 +601,13 @@
   - 1
 - - search_wiki_elastic_delete_group_wiki
   - 1
+- - search_zoekt_default_branch_changed
+  - 1
 - - search_zoekt_delete_project
   - 1
 - - search_zoekt_namespace_indexer
+  - 1
+- - search_zoekt_project_transfer
   - 1
 - - security_auto_fix
   - 1
@@ -594,6 +618,10 @@
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
 - - security_process_scan_result_policy
+  - 1
+- - security_refresh_project_policies
+  - 1
+- - security_scan_execution_policies_rule_schedule
   - 1
 - - security_scan_result_policies_sync_opened_merge_requests
   - 1
@@ -644,6 +672,8 @@
 - - update_project_statistics
   - 1
 - - upload_checksum
+  - 1
+- - users_track_namespace_visits
   - 1
 - - vulnerabilities_mark_dropped_as_resolved
   - 1

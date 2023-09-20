@@ -10,5 +10,5 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: error
 scope: raw
 raw:
-  - '(?!\*\*\((FREE|PREMIUM|ULTIMATE)( (SELF|SAAS))?\)\*\*)'
-  - '(?i)\*\*\((free|premium|ultimate)( (self|saas))?\)\*\*'
+  - '(?!\*\*\((FREE|PREMIUM|ULTIMATE)( (SELF|SAAS|ALL) (BETA|EXPERIMENT))?\)\*\*)'
+  - '(?i)\*\*\((free|premium|ultimate)( (self|saas|all) (beta|experiment))?\)\*\*'

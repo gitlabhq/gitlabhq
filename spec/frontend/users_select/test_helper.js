@@ -70,7 +70,8 @@ export const findDropdownItemsModel = () =>
       return {
         type: 'divider',
       };
-    } else if (el.classList.contains('dropdown-header')) {
+    }
+    if (el.classList.contains('dropdown-header')) {
       return {
         type: 'dropdown-header',
         text: el.textContent,

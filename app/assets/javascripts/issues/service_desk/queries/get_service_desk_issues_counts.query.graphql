@@ -1,0 +1,82 @@
+query getServiceDeskIssuesCount(
+  $fullPath: ID!
+  $iid: String
+  $search: String
+  $assigneeId: String
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $confidential: Boolean
+  $labelName: [String]
+  $milestoneTitle: [String]
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
+  $types: [IssueType!]
+  $not: NegatedIssueFilterInput
+  $or: UnionedIssueFilterInput
+) {
+  project(fullPath: $fullPath) {
+    id
+    openedIssues: issues(
+      state: opened
+      iid: $iid
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
+      types: $types
+      not: $not
+      or: $or
+    ) {
+      count
+    }
+    closedIssues: issues(
+      state: closed
+      iid: $iid
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
+      types: $types
+      not: $not
+      or: $or
+    ) {
+      count
+    }
+    allIssues: issues(
+      state: all
+      iid: $iid
+      search: $search
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
+      types: $types
+      not: $not
+      or: $or
+    ) {
+      count
+    }
+  }
+}

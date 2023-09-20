@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Debian packages in the Package Registry **(FREE ALL)**
+# Debian packages in the Package Registry **(FREE ALL EXPERIMENT)**
 
 > - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
 > - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 The Debian package registry for GitLab is under development and isn't ready for production use. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6057) details the remaining
-work and timelines to make it production ready.
+work and timelines to make it production ready. Support for [Debian packages is an experiment](../package_registry/supported_package_managers.md), and has known security vulnerabilities.
 
 Publish Debian packages in your project's Package Registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -27,8 +27,11 @@ Prerequisites:
 - The `dpkg-deb` binary must be installed on the GitLab instance.
   This binary is usually provided by the [`dpkg` package](https://wiki.debian.org/Teams/Dpkg/Downstream),
   installed by default on Debian and derivatives.
+- Support for compression algorithm ZStandard requires version `dpkg >=
+  1.21.18` from Debian 12 Bookworm or `dpkg >= 1.19.0.5ubuntu2` from Ubuntu
+  18.04 Bionic Beaver.
 
-## Enable the Debian API **(FREE SELF)**
+## Enable the Debian API
 
 Debian repository support is still a work in progress. It's gated behind a feature flag that's
 **disabled by default**.
@@ -50,7 +53,7 @@ To disable it:
 Feature.disable(:debian_packages)
 ```
 
-## Enable the Debian group API **(FREE SELF)**
+## Enable the Debian group API
 
 The Debian group repository is also behind a second feature flag that is disabled by default.
 

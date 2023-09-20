@@ -11,7 +11,8 @@ export class GitLabDropdownRemote {
   execute() {
     if (typeof this.dataEndpoint === 'string') {
       return this.fetchData();
-    } else if (typeof this.dataEndpoint === 'function') {
+    }
+    if (typeof this.dataEndpoint === 'function') {
       if (this.options.beforeSend) {
         this.options.beforeSend();
       }

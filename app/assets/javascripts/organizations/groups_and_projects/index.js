@@ -2,9 +2,10 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
-import resolvers from './graphql/resolvers';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { ORGANIZATION_ROOT_ROUTE_NAME } from '../constants';
+import resolvers from '../shared/graphql/resolvers';
 import App from './components/app.vue';
-import { ORGANIZATION_ROOT_ROUTE_NAME } from './constants';
 
 export const createRouter = () => {
   const routes = [{ path: '/', name: ORGANIZATION_ROOT_ROUTE_NAME }];
@@ -23,6 +24,16 @@ export const initOrganizationsGroupsAndProjects = () => {
 
   if (!el) return false;
 
+  const {
+    dataset: { appData },
+  } = el;
+  const {
+    projectsEmptyStateSvgPath,
+    groupsEmptyStateSvgPath,
+    newGroupPath,
+    newProjectPath,
+  } = convertObjectPropsToCamelCase(JSON.parse(appData));
+
   Vue.use(VueRouter);
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(resolvers),
@@ -34,6 +45,12 @@ export const initOrganizationsGroupsAndProjects = () => {
     name: 'OrganizationsGroupsAndProjects',
     apolloProvider,
     router,
+    provide: {
+      projectsEmptyStateSvgPath,
+      groupsEmptyStateSvgPath,
+      newGroupPath,
+      newProjectPath,
+    },
     render(createElement) {
       return createElement(App);
     },

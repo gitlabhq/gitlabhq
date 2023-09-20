@@ -21,7 +21,7 @@ type: howto, reference
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/2493)
-to add this functionality to the [agent](../index.md).
+to add this functionality to the [agent](../clusters/agent/index.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `certificate_based_clusters`.

@@ -33,8 +33,7 @@ RSpec.describe ResourceAccessTokens::RevokeService, feature_category: :system_ac
         subject
 
         expect(
-          Users::GhostUserMigration.where(user: resource_bot,
-                                          initiator_user: user)
+          Users::GhostUserMigration.where(user: resource_bot, initiator_user: user)
         ).to be_exists
       end
 

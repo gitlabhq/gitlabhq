@@ -513,3 +513,9 @@ $ jq '.class' sidekiq/current | sort | uniq -c | sort -nr
 
 In this case, `free -m` on the overloaded GitLab node would also show
 unexpectedly high `buff/cache` usage.
+
+## `Couldn't load task status` error when reindexing
+
+When you reindex, you might get a `Couldn't load task status` error. A `sliceId must be greater than 0 but was [-1]` error might also appear on the Elasticsearch host. As a workaround, consider [reindexing from scratch](../../integration/advanced_search/elasticsearch_troubleshooting.md#last-resort-to-recreate-an-index) or upgrading to GitLab 16.3.
+
+For more information, see [issue 422938](https://gitlab.com/gitlab-org/gitlab/-/issues/422938).

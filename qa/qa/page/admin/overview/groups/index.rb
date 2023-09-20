@@ -7,21 +7,21 @@ module QA
         module Groups
           class Index < QA::Page::Base
             view 'app/views/admin/groups/index.html.haml' do
-              element :group_search_field, required: true
+              element 'group-search-field', required: true
             end
 
             view 'app/views/admin/groups/_group.html.haml' do
-              element :group_row_content
-              element :group_name_link
+              element 'group-row-content'
+              element 'group-name-link'
             end
 
             def search_group(group_name)
-              find_element(:group_search_field).set(group_name).send_keys(:return)
+              find_element('group-search-field').set(group_name).send_keys(:return)
             end
 
             def click_group(group_name)
-              within_element(:group_row_content, text: group_name) do
-                click_element(:group_name_link)
+              within_element('group-row-content', text: group_name) do
+                click_element('group-name-link')
               end
             end
           end

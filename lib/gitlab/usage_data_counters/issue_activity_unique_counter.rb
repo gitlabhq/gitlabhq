@@ -38,170 +38,120 @@ module Gitlab
 
       class << self
         def track_issue_created_action(author:, namespace:)
-          track_internal_action(ISSUE_CREATED, author, namespace)
+          track_internal_event(ISSUE_CREATED, author, namespace)
         end
 
         def track_issue_title_changed_action(author:, project:)
-          track_snowplow_action(ISSUE_TITLE_CHANGED, author, project)
-          track_unique_action(ISSUE_TITLE_CHANGED, author)
+          track_internal_event(ISSUE_TITLE_CHANGED, author, project)
         end
 
         def track_issue_description_changed_action(author:, project:)
-          track_snowplow_action(ISSUE_DESCRIPTION_CHANGED, author, project)
-          track_unique_action(ISSUE_DESCRIPTION_CHANGED, author)
+          track_internal_event(ISSUE_DESCRIPTION_CHANGED, author, project)
         end
 
         def track_issue_assignee_changed_action(author:, project:)
-          track_snowplow_action(ISSUE_ASSIGNEE_CHANGED, author, project)
-          track_unique_action(ISSUE_ASSIGNEE_CHANGED, author)
+          track_internal_event(ISSUE_ASSIGNEE_CHANGED, author, project)
         end
 
         def track_issue_made_confidential_action(author:, project:)
-          track_snowplow_action(ISSUE_MADE_CONFIDENTIAL, author, project)
-          track_unique_action(ISSUE_MADE_CONFIDENTIAL, author)
+          track_internal_event(ISSUE_MADE_CONFIDENTIAL, author, project)
         end
 
         def track_issue_made_visible_action(author:, project:)
-          track_snowplow_action(ISSUE_MADE_VISIBLE, author, project)
-          track_unique_action(ISSUE_MADE_VISIBLE, author)
+          track_internal_event(ISSUE_MADE_VISIBLE, author, project)
         end
 
         def track_issue_closed_action(author:, project:)
-          track_snowplow_action(ISSUE_CLOSED, author, project)
-          track_unique_action(ISSUE_CLOSED, author)
+          track_internal_event(ISSUE_CLOSED, author, project)
         end
 
         def track_issue_reopened_action(author:, project:)
-          track_snowplow_action(ISSUE_REOPENED, author, project)
-          track_unique_action(ISSUE_REOPENED, author)
+          track_internal_event(ISSUE_REOPENED, author, project)
         end
 
         def track_issue_label_changed_action(author:, project:)
-          track_snowplow_action(ISSUE_LABEL_CHANGED, author, project)
-          track_unique_action(ISSUE_LABEL_CHANGED, author)
+          track_internal_event(ISSUE_LABEL_CHANGED, author, project)
         end
 
         def track_issue_milestone_changed_action(author:, project:)
-          track_snowplow_action(ISSUE_MILESTONE_CHANGED, author, project)
-          track_unique_action(ISSUE_MILESTONE_CHANGED, author)
+          track_internal_event(ISSUE_MILESTONE_CHANGED, author, project)
         end
 
         def track_issue_cross_referenced_action(author:, project:)
-          track_snowplow_action(ISSUE_CROSS_REFERENCED, author, project)
-          track_unique_action(ISSUE_CROSS_REFERENCED, author)
+          track_internal_event(ISSUE_CROSS_REFERENCED, author, project)
         end
 
         def track_issue_moved_action(author:, project:)
-          track_snowplow_action(ISSUE_MOVED, author, project)
-          track_unique_action(ISSUE_MOVED, author)
+          track_internal_event(ISSUE_MOVED, author, project)
         end
 
         def track_issue_related_action(author:, project:)
-          track_snowplow_action(ISSUE_RELATED, author, project)
-          track_unique_action(ISSUE_RELATED, author)
+          track_internal_event(ISSUE_RELATED, author, project)
         end
 
         def track_issue_unrelated_action(author:, project:)
-          track_snowplow_action(ISSUE_UNRELATED, author, project)
-          track_unique_action(ISSUE_UNRELATED, author)
+          track_internal_event(ISSUE_UNRELATED, author, project)
         end
 
         def track_issue_marked_as_duplicate_action(author:, project:)
-          track_snowplow_action(ISSUE_MARKED_AS_DUPLICATE, author, project)
-          track_unique_action(ISSUE_MARKED_AS_DUPLICATE, author)
+          track_internal_event(ISSUE_MARKED_AS_DUPLICATE, author, project)
         end
 
         def track_issue_locked_action(author:, project:)
-          track_snowplow_action(ISSUE_LOCKED, author, project)
-          track_unique_action(ISSUE_LOCKED, author)
+          track_internal_event(ISSUE_LOCKED, author, project)
         end
 
         def track_issue_unlocked_action(author:, project:)
-          track_snowplow_action(ISSUE_UNLOCKED, author, project)
-          track_unique_action(ISSUE_UNLOCKED, author)
+          track_internal_event(ISSUE_UNLOCKED, author, project)
         end
 
         def track_issue_designs_added_action(author:, project:)
-          track_snowplow_action(ISSUE_DESIGNS_ADDED, author, project)
-          track_unique_action(ISSUE_DESIGNS_ADDED, author)
+          track_internal_event(ISSUE_DESIGNS_ADDED, author, project)
         end
 
         def track_issue_designs_modified_action(author:, project:)
-          track_snowplow_action(ISSUE_DESIGNS_MODIFIED, author, project)
-          track_unique_action(ISSUE_DESIGNS_MODIFIED, author)
+          track_internal_event(ISSUE_DESIGNS_MODIFIED, author, project)
         end
 
         def track_issue_designs_removed_action(author:, project:)
-          track_snowplow_action(ISSUE_DESIGNS_REMOVED, author, project)
-          track_unique_action(ISSUE_DESIGNS_REMOVED, author)
+          track_internal_event(ISSUE_DESIGNS_REMOVED, author, project)
         end
 
         def track_issue_due_date_changed_action(author:, project:)
-          track_snowplow_action(ISSUE_DUE_DATE_CHANGED, author, project)
-          track_unique_action(ISSUE_DUE_DATE_CHANGED, author)
+          track_internal_event(ISSUE_DUE_DATE_CHANGED, author, project)
         end
 
         def track_issue_time_estimate_changed_action(author:, project:)
-          track_snowplow_action(ISSUE_TIME_ESTIMATE_CHANGED, author, project)
-          track_unique_action(ISSUE_TIME_ESTIMATE_CHANGED, author)
+          track_internal_event(ISSUE_TIME_ESTIMATE_CHANGED, author, project)
         end
 
         def track_issue_time_spent_changed_action(author:, project:)
-          track_snowplow_action(ISSUE_TIME_SPENT_CHANGED, author, project)
-          track_unique_action(ISSUE_TIME_SPENT_CHANGED, author)
+          track_internal_event(ISSUE_TIME_SPENT_CHANGED, author, project)
         end
 
         def track_issue_comment_added_action(author:, project:)
-          track_snowplow_action(ISSUE_COMMENT_ADDED, author, project)
-          track_unique_action(ISSUE_COMMENT_ADDED, author)
+          track_internal_event(ISSUE_COMMENT_ADDED, author, project)
         end
 
         def track_issue_comment_edited_action(author:, project:)
-          track_snowplow_action(ISSUE_COMMENT_EDITED, author, project)
-          track_unique_action(ISSUE_COMMENT_EDITED, author)
+          track_internal_event(ISSUE_COMMENT_EDITED, author, project)
         end
 
         def track_issue_comment_removed_action(author:, project:)
-          track_snowplow_action(ISSUE_COMMENT_REMOVED, author, project)
-          track_unique_action(ISSUE_COMMENT_REMOVED, author)
+          track_internal_event(ISSUE_COMMENT_REMOVED, author, project)
         end
 
         def track_issue_cloned_action(author:, project:)
-          track_snowplow_action(ISSUE_CLONED, author, project)
-          track_unique_action(ISSUE_CLONED, author)
+          track_internal_event(ISSUE_CLONED, author, project)
         end
 
         def track_issue_design_comment_removed_action(author:, project:)
-          track_snowplow_action(ISSUE_DESIGN_COMMENT_REMOVED, author, project)
-          track_unique_action(ISSUE_DESIGN_COMMENT_REMOVED, author)
+          track_internal_event(ISSUE_DESIGN_COMMENT_REMOVED, author, project)
         end
 
         private
 
-        def track_snowplow_action(event_name, author, container)
-          namespace, project = get_params_from_container(container)
-
-          return unless author
-
-          Gitlab::Tracking.event(
-            ISSUE_CATEGORY,
-            ISSUE_ACTION,
-            label: ISSUE_LABEL,
-            property: event_name,
-            project: project,
-            namespace: namespace,
-            user: author,
-            context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context]
-          )
-        end
-
-        def track_unique_action(event_name, author)
-          return unless author
-
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: author.id)
-        end
-
-        def track_internal_action(event_name, author, container)
+        def track_internal_event(event_name, author, container)
           return unless author
 
           namespace, project = get_params_from_container(container)

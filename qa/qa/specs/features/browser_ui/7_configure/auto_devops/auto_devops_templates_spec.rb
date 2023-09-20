@@ -33,13 +33,11 @@ module QA
         end
 
         let(:pipeline) do
-          Resource::Pipeline.fabricate_via_api! do |pipeline|
-            pipeline.project = project
-            pipeline.variables =
-              optional_jobs.map do |job|
-                { key: job, value: '1', variable_type: 'env_var' }
-              end
-          end
+          create(:pipeline,
+            project: project,
+            variables: optional_jobs.map do |job|
+              { key: job, value: '1', variable_type: 'env_var' }
+            end)
         end
 
         before do

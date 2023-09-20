@@ -66,7 +66,7 @@ module ContainerRegistry
     def repository_name
       return unless has_project?
 
-      @path.remove(%r(^#{Regexp.escape(project_path)}/?))
+      @path.remove(%r{^#{Regexp.escape(project_path)}/?})
     end
 
     def project_path

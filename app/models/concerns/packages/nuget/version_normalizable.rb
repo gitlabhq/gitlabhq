@@ -13,7 +13,7 @@ module Packages
         private
 
         def set_normalized_version
-          return unless package && Feature.enabled?(:nuget_normalized_version, package.project)
+          return unless package
 
           self.normalized_version = normalize
         end

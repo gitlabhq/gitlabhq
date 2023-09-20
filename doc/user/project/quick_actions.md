@@ -146,10 +146,13 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 |:--------------------------------------------------------------|:-----------------------|:-----------------------|:-----------------------|:-------|
 | `/assign @user1 @user2`                                       | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Assign one or more users. |
 | `/assign me`                                                  | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Assign yourself. |
+| `/award :emoji:`                                                                                 | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Toggle an emoji reaction. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412275) in GitLab 16.5 |
 | `/cc @user`                                                   | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Mention a user. In GitLab 15.0 and later, this command performs no action. You can instead type `CC @user` or only `@user`. [In GitLab 14.9 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/31200), mentioning a user at the start of a line creates a specific type of to-do item notification. |
+| `/checkin_reminder`                                           | **{dotted-circle}** No| **{check-circle}** Yes | **{dotted-circle}** No | Set checkin reminder cadence. Options are `weekly`, `twice-monthly`, `monthly`, `never`. This action is behind a feature flag. |
 | `/clear_health_status`                                        | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Clear [health status](issues/managing_issues.md#health-status). |
 | `/clear_weight`                                               | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Clear weight. |
 | `/close`                                                      | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Close. |
+| `/confidential`                                               | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Mark work item as confidential.  [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412276) in GitLab 16.4. |
 | `/done`                                                       | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Mark to-do item as done. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412277) in GitLab 16.2. |
 | `/due <date>`                                                 | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Set due date. Examples of valid `<date>` include `in 2 days`, `this Friday` and `December 31st`. |
 | `/health_status <value>`                                      | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Set [health status](issues/managing_issues.md#health-status). Valid options for `<value>` are `on_track`, `needs_attention`, or `at_risk`. |
@@ -160,6 +163,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/remove_due_date`                                            | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Remove due date. |
 | `/reopen`                                                     | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Reopen. |
 | `/shrug <comment>`                                            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Append the comment with `¯\＿(ツ)＿/¯`. |
+| `/subscribe`                                                  | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Subscribe to notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 |
 | `/tableflip <comment>`                                        | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Append the comment with `(╯°□°)╯︵ ┻━┻`. |
 | `/title <new title>`                                          | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Change title. |
 | `/todo`                                                       | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Add a to-do item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412277) in GitLab 16.2. |
@@ -168,6 +172,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/unassign`                                                   | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes | Remove all assignees. |
 | `/unlabel ~label1 ~label2` or `/remove_label ~label1 ~label2` | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Remove specified labels. |
 | `/unlabel` or `/remove_label`                                 | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Remove all labels. |
+| `/unsubscribe`                                                  | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Unsubscribe to notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 |
 | `/weight <value>`                                             | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set weight. Valid options for `<value>` include `0`, `1`, and `2`. |
 
 ## Commit messages

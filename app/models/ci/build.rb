@@ -165,7 +165,10 @@ module Ci
     scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where("#{quoted_table_name}.id = #{Ci::BuildTraceChunk.quoted_table_name}.build_id").select(1)) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, -> (date) { finished.where('finished_at < ?', date) }
-    scope :license_management_jobs, -> { where(name: %i(license_management license_scanning)) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
+    scope :license_management_jobs, -> { where(name: %i[license_management license_scanning]) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911
+    # WARNING: This scope could lead to performance implications for large size of tables `ci_builds` and ci_runners`.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123131
+    scope :with_runner_type, -> (runner_type) { joins(:runner).where(runner: { runner_type: runner_type }) }
 
     scope :with_secure_reports_from_config_options, -> (job_types) do
       joins(:metadata).where("#{Ci::BuildMetadata.quoted_table_name}.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
@@ -388,6 +391,9 @@ module Ci
         name == 'pages'
     end
 
+    # overridden on EE
+    def pages_path_prefix; end
+
     def runnable?
       true
     end
@@ -408,7 +414,7 @@ module Ci
     end
 
     def options_scheduled_at
-      ChronicDuration.parse(options[:start_in])&.seconds&.from_now
+      ChronicDuration.parse(options[:start_in], use_complete_matcher: true)&.seconds&.from_now
     end
 
     def action?
@@ -487,10 +493,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless persisted? && persisted_environment.present?
 
-        variables.concat(persisted_environment.predefined_variables)
-
-        variables.append(key: 'CI_ENVIRONMENT_ACTION', value: environment_action)
-        variables.append(key: 'CI_ENVIRONMENT_TIER', value: environment_tier)
+        variables.append(key: 'CI_ENVIRONMENT_SLUG', value: environment_slug)
 
         # Here we're passing unexpanded environment_url for runner to expand,
         # and we need to make sure that CI_ENVIRONMENT_NAME and
@@ -735,7 +738,7 @@ module Ci
     def artifacts_expire_in=(value)
       self.artifacts_expire_at =
         if value
-          ChronicDuration.parse(value)&.seconds&.from_now
+          ChronicDuration.parse(value, use_complete_matcher: true)&.seconds&.from_now
         end
     end
 
@@ -1038,6 +1041,13 @@ module Ci
         group_name
       end
     end
+
+    def time_in_queue_seconds
+      return if queued_at.nil?
+
+      (::Time.current - queued_at).seconds.to_i
+    end
+    strong_memoize_attr :time_in_queue_seconds
 
     protected
 

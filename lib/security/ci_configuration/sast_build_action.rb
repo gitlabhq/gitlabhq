@@ -105,13 +105,13 @@ module Security
       end
 
       def global_variables
-        %w(
+        %w[
           SECURE_ANALYZERS_PREFIX
-        )
+        ]
       end
 
       def sast_variables
-        %w(
+        %w[
           SAST_EXCLUDED_PATHS
           SEARCH_MAX_DEPTH
           SAST_EXCLUDED_ANALYZERS
@@ -119,7 +119,7 @@ module Security
           SAST_BANDIT_EXCLUDED_PATHS
           SAST_FLAWFINDER_LEVEL
           SAST_GOSEC_LEVEL
-        )
+        ]
       end
     end
   end

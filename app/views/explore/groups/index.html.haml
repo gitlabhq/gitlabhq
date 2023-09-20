@@ -22,7 +22,4 @@
       %p= _("Below you will find all the groups that are public.")
       %p= _("You can easily contribute to them by requesting to join these groups.")
 
-- if params[:filter].blank? && @groups.empty?
-  .nothing-here-block= _("No public groups")
-- else
-  = render 'groups'
+= render 'groups'

@@ -3,6 +3,9 @@
 require 'gitlab/utils/all'
 require_relative '../environment'
 
+# See https://docs.gitlab.com/ee/development/utilities.html#override for
+# more information
+
 module Gitlab
   module Utils
     module Override

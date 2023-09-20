@@ -42,19 +42,19 @@ POST /bulk_imports
 | `configuration[access_token]`     | String | yes      | Access token to the source GitLab instance. |
 | `entities`                        | Array  | yes      | List of entities to import. |
 | `entities[source_type]`           | String | yes      | Source entity type. Valid values are `group_entity` (GitLab 14.2 and later) and `project_entity` (GitLab 15.11 and later). |
-| `entities[source_full_path]`      | String | yes      | Source full path of the entity to import. |
-| `entities[destination_slug]`      | String | yes      | Destination slug for the entity. |
+| `entities[source_full_path]`      | String | yes      | Source full path of the entity to import. For example, `gitlab-org/gitlab`. |
+| `entities[destination_slug]`      | String | yes      | Destination slug for the entity. GitLab uses the slug as the URL path to the entity. The name of the imported entity is copied from the name of the source entity and not the slug. |
 | `entities[destination_name]`      | String | no       | Deprecated: Use `destination_slug` instead. Destination slug for the entity. |
-| `entities[destination_namespace]` | String | yes      | Destination namespace for the entity. |
+| `entities[destination_namespace]` | String | yes      | Full path of the destination group [namespace](../user/namespace/index.md) for the entity. Must be an existing group in the destination instance. |
 | `entities[migrate_projects]`      | Boolean | no      | Also import all nested projects of the group (if `source_type` is `group_entity`). Defaults to `true`. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports" \
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token_for_destination_gitlab_instance>" "https://destination-gitlab-instance.example.com/api/v4/bulk_imports" \
   --header "Content-Type: application/json" \
   --data '{
     "configuration": {
-      "url": "http://gitlab.example/",
-      "access_token": "access_token"
+      "url": "https://source-gitlab-instance.example.com",
+      "access_token": "<your_access_token_for_source_gitlab_instance>"
     },
     "entities": [
       {
@@ -250,7 +250,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 ```json
 {
-  "id": 1,
+  "id": 2,
   "status": "finished",
   "source_type": "gitlab",
   "created_at": "2021-06-18T09:45:55.358Z",

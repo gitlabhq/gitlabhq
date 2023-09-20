@@ -28,9 +28,11 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
 
     let(:text) { "```suggestion\nfoo\n```" }
     let(:params) do
-      suggestion_params.merge(text: text,
-                              target_type: 'MergeRequest',
-                              target_id: merge_request.iid)
+      suggestion_params.merge(
+        text: text,
+        target_type: 'MergeRequest',
+        target_id: merge_request.iid
+      )
     end
 
     let(:service) { described_class.new(project, user, params) }
@@ -52,15 +54,16 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
       end
 
       it 'returns suggestions referenced in text' do
-        position = Gitlab::Diff::Position.new(new_path: path,
-                                              new_line: line,
-                                              diff_refs: diff_refs)
+        position = Gitlab::Diff::Position.new(new_path: path, new_line: line, diff_refs: diff_refs)
 
         expect(Gitlab::Diff::SuggestionsParser)
           .to receive(:parse)
-          .with(text, position: position,
-                      project: merge_request.project,
-                      supports_suggestion: true)
+          .with(
+            text,
+            position: position,
+            project: merge_request.project,
+            supports_suggestion: true
+          )
           .and_call_original
 
         result = service.execute

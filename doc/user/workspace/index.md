@@ -4,7 +4,7 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Workspaces (Beta) **(PREMIUM ALL)**
+# Workspaces **(PREMIUM ALL BETA)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
@@ -35,7 +35,8 @@ When you [create a workspace](configuration.md#set-up-a-workspace), you must:
 - Assign the workspace to a specific project.
 - Select a project with a [`.devfile.yaml`](#devfile) file.
 
-The workspace can then interact with the GitLab API based on the permissions granted to the current user.
+The workspace can interact with the GitLab API, with the access level defined by current user permissions.
+A running workspace remains accessible even if user permissions are later revoked.
 
 ### Open and manage workspaces from a project
 
@@ -43,7 +44,7 @@ The workspace can then interact with the GitLab API based on the permissions gra
 
 To open a workspace from a file or the repository file list:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. In the upper right, select **Edit**.
 1. From the dropdown list, under **Your workspaces**, select the workspace.
 
@@ -128,13 +129,15 @@ The Web IDE is the only code editor available for workspaces.
 The Web IDE is powered by the [GitLab VS Code fork](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork).
 For more information, see [Web IDE](../project/web_ide/index.md).
 
-## Private repositories
+## Personal access token
 
-You cannot [create a workspace](configuration.md#set-up-a-workspace) for a private repository
-because GitLab does not inject any credentials into the workspace.
-You can only create a workspace for public repositories that have a devfile.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129715) in GitLab 16.4.
 
-From a workspace, you can clone any repository manually.
+When you [create a workspace](configuration.md#set-up-a-workspace), you get a personal access token with `write_repository` permission.
+This token is used to initially clone the project while starting the workspace.
+
+Any Git operation you perform in the workspace uses this token for authentication and authorization.
+When you terminate the workspace, the token is revoked.
 
 ## Pod interaction in a cluster
 

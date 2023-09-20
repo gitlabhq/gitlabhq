@@ -104,27 +104,6 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     box-shadow: none;
   }
 
-  .context-switcher .gl-new-dropdown-custom-toggle {
-    width: 100%;
-  }
-
-  .context-switcher .gl-new-dropdown-panel {
-    overflow-y: auto;
-  }
-
-  .context-switcher-search-box input {
-    @include gl-font-sm;
-  }
-
-  .gl-new-dropdown-custom-toggle .context-switcher-toggle {
-    &[aria-expanded='true'] {
-      background-color: $t-gray-a-08;
-    }
-
-    &:focus {
-      @include gl-focus($inset: true); }
-  }
-
   .btn-with-notification {
     position: relative;
 
@@ -158,15 +137,6 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     }
   }
 
-  .nav-item-link {
-    &:hover,
-    &:focus-within {
-      .nav-item-badge {
-        opacity: 0;
-      }
-    }
-  }
-
   #trial-status-sidebar-widget:hover {
     text-decoration: none;
     @include gl-text-contrast-light;
@@ -175,6 +145,15 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 
 .super-sidebar-overlay {
   display: none;
+}
+
+.super-sidebar-has-peeked {
+  margin-top: calc(#{$header-height} - #{$gl-spacing-scale-2});
+  margin-bottom: #{$gl-spacing-scale-2};
+}
+
+.super-sidebar-peek {
+  margin-left: #{$gl-spacing-scale-2};
 }
 
 .super-sidebar-peek,
@@ -186,6 +165,14 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 .super-sidebar-peek-hint {
   @media (prefers-reduced-motion: no-preference) {
     transition: transform $super-sidebar-transition-hint-duration ease-out;
+  }
+}
+
+.super-sidebar-peek {
+  border-radius: $border-radius-default;
+
+  .user-bar {
+    border-radius: $border-radius-default $border-radius-default 0 0;
   }
 }
 
@@ -295,19 +282,71 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   }
 }
 
+.transition-opacity-on-hover--context {
+  .transition-opacity-on-hover--target {
+    transition: opacity $gl-transition-duration-fast linear;
+
+    &:hover {
+      transition-delay: $gl-transition-duration-slow;
+    }
+  }
+
+  &:hover {
+    .transition-opacity-on-hover--target {
+      transition-delay: $gl-transition-duration-slow;
+    }
+  }
+}
+
 .show-on-focus-or-hover--context {
   .show-on-focus-or-hover--target {
     opacity: 0;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
   }
 
   &:hover,
-  &:focus {
+  &:focus-within {
+    .show-on-focus-or-hover--control {
+      @include gl-bg-t-gray-a-08;
+    }
+
     .show-on-focus-or-hover--target {
       opacity: 1;
     }
   }
 
-  .show-on-focus-or-hover--target:focus {
+  .show-on-focus-or-hover--control {
+    &:hover,
+    &:focus {
+      + .show-on-focus-or-hover--target {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.hide-on-focus-or-hover--context {
+  .hide-on-focus-or-hover--target {
     opacity: 1;
+  }
+
+  &:hover,
+  &:focus-within {
+    .hide-on-focus-or-hover--target {
+      opacity: 0;
+    }
+  }
+
+  .hide-on-focus-or-hover--control {
+    &:hover,
+    &:focus {
+      .hide-on-focus-or-hover--target {
+        opacity: 0;
+      }
+    }
   }
 }

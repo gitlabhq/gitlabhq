@@ -4,7 +4,7 @@ module BlobViewer
   class Podfile < DependencyManager
     include Static
 
-    self.file_types = %i(podfile)
+    self.file_types = %i[podfile]
 
     def manager_name
       'CocoaPods'

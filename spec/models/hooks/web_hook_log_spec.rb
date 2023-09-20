@@ -46,6 +46,20 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
       end
     end
 
+    context 'with basic auth credentials and masked components' do
+      let(:web_hook_log) { build(:web_hook_log, web_hook: hook, url: 'http://test:123@{domain}.com:{port}') }
+
+      subject { web_hook_log.save! }
+
+      it { is_expected.to eq(true) }
+
+      it 'obfuscates the basic auth credentials' do
+        subject
+
+        expect(web_hook_log.url).to eq('http://*****:*****@{domain}.com:{port}')
+      end
+    end
+
     context "with users' emails" do
       let(:author) { build(:user) }
       let(:user) { build(:user) }
@@ -233,6 +247,30 @@ RSpec.describe WebHookLog, feature_category: :webhooks do
       let(:request_headers) { { 'X-Gitlab-Token' => hook.token } }
 
       it { expect(web_hook_log.request_headers).to eq(expected_headers) }
+    end
+  end
+
+  describe '#url_current?' do
+    let(:url) { 'example@gitlab.com' }
+
+    let(:hook) { build(:project_hook, url: url) }
+    let(:web_hook_log) do
+      build(
+        :web_hook_log,
+        web_hook: hook,
+        interpolated_url: hook.url,
+        url_hash: Gitlab::CryptoHelper.sha256('example@gitlab.com')
+      )
+    end
+
+    context 'with matching url' do
+      it { expect(web_hook_log.url_current?).to be_truthy }
+    end
+
+    context 'with different url' do
+      let(:url) { 'example@gitlab2.com' }
+
+      it { expect(web_hook_log.url_current?).to be_falsey }
     end
   end
 end

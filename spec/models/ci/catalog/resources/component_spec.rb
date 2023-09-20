@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category: :pipeline_composition do
-  let(:component) { build(:catalog_resource_component) }
+  let(:component) { build(:ci_catalog_resource_component) }
 
   it { is_expected.to belong_to(:catalog_resource).class_name('Ci::Catalog::Resource') }
   it { is_expected.to belong_to(:project) }

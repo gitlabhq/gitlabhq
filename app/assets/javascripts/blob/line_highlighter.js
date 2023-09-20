@@ -59,7 +59,7 @@ LineHighlighter.prototype.bindEvents = function () {
   }
 };
 
-LineHighlighter.prototype.highlightHash = function (newHash) {
+LineHighlighter.prototype.highlightHash = function (newHash, scrollEnabled = true) {
   let range;
   if (newHash && typeof newHash === 'string') this._hash = newHash;
 
@@ -71,12 +71,14 @@ LineHighlighter.prototype.highlightHash = function (newHash) {
       this.highlightRange(range);
       const lineSelector = `#L${range[0]}`;
 
-      scrollToElement(lineSelector, {
-        // Scroll to the first highlighted line on initial load
-        // Add an offset of -100 for some context
-        offset: -100,
-        behavior: this.options.scrollBehavior,
-      });
+      if (scrollEnabled) {
+        scrollToElement(lineSelector, {
+          // Scroll to the first highlighted line on initial load
+          // Add an offset of -100 for some context
+          offset: -100,
+          behavior: this.options.scrollBehavior,
+        });
+      }
     }
   }
 };
@@ -94,7 +96,8 @@ LineHighlighter.prototype.clickHandler = function (event) {
       // treat this like a single-line selection.
       this.setHash(lineNumber);
       return this.highlightLine(lineNumber);
-    } else if (event.shiftKey) {
+    }
+    if (event.shiftKey) {
       if (lineNumber < current[0]) {
         range = [lineNumber, current[0]];
       } else {

@@ -270,7 +270,7 @@ To change the number of job artifacts listed, change the number in `limit(50)`.
 ### Delete job artifacts from jobs completed before a specific date
 
 WARNING:
-These commands remove data permanently from both the database and from disk. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
+These commands remove data permanently from database and storage. Before running them, we highly recommend seeking guidance from a Support Engineer, or running them in a test environment with a backup of the instance ready to be restored, just in case.
 
 If you need to manually remove job artifacts associated with multiple jobs while
 **retaining their job logs**, this can be done from the Rails console (`sudo gitlab-rails console`):
@@ -453,7 +453,16 @@ value for the total storage space used by artifacts. To recalculate the artifact
 usage statistics for all projects in the instance, you can run this background script:
 
 ```shell
-bin/rake 'gitlab:refresh_project_statistics_build_artifacts_size[file.csv]'
+gitlab-rake gitlab:refresh_project_statistics_build_artifacts_size[https://example.com/path/file.csv]
+```
+
+The `https://example.com/path/file.csv` file must list the project IDs for
+all projects for which you want to recalculate artifact storage usage. Use this format for the file:
+
+```csv
+PROJECT_ID
+1
+2
 ```
 
 The artifact usage value can fluctuate to `0` while the script is running. After

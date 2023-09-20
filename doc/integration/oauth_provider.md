@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -75,7 +75,7 @@ To create a new application for a group:
 
 To create an application for your GitLab instance:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Applications**.
 1. Select **New application**.
@@ -84,6 +84,8 @@ When creating application in the **Admin Area** , mark it as **trusted**.
 The user authorization step is automatically skipped for this application.
 
 ## View all authorized applications
+
+> `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
 
 To see all the application you've authorized with your GitLab credentials:
 
@@ -95,7 +97,7 @@ The GitLab OAuth 2 applications support scopes, which allow application to perfo
 different actions. See the following table for all available scopes.
 
 | Scope              | Description |
-| ------------------ | ----------- |
+|--------------------| ----------- |
 | `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry. |
 | `read_user`        | Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users. |
 | `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry. |
@@ -108,6 +110,7 @@ different actions. See the following table for all available scopes.
 | `profile`          | Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
 | `email`            | Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
 | `create_runner`    | Grants permission to create runners. |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes. |
 
 At any time you can revoke any access by selecting **Revoke**.
 
@@ -115,16 +118,27 @@ At any time you can revoke any access by selecting **Revoke**.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21745) in GitLab 14.3, with the ability to opt out.
 > - Ability to opt-out of expiring access token [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0.
+> - Database validation on `expires_in` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112765) in GitLab 15.10. If your GitLab instance has any remaining OAuth Access Tokens without `expires_in` set when you are upgrading to 15.10 or later, the database migration will raise an error. For workaround instructions, see the [GitLab 15.10.0 upgrade documentation](../update/versions/gitlab_15_changes.md#15100).
 
 WARNING:
 The ability to opt out of expiring access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/340848)
 in GitLab 14.3 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in 15.0. All
 existing integrations must be updated to support access token refresh.
 
-Access tokens expire after two hours. Integrations that use access tokens must generate new ones at least every
-two hours.
+Access tokens expire after two hours. Integrations that use access tokens must
+generate new ones using the `refresh_token` attribute. Refresh tokens may be
+used even after the `access_token` itself expires.
+See [OAuth 2.0 token documentation](../api/oauth2.md) for more detailed
+information on how to refresh expired access tokens.
 
-When applications are deleted, all grants and tokens associated with the application are also deleted.
+This expiration setting is set in the GitLab codebase using the
+`access_token_expires_in` configuration from
+[Doorkeeper](https://github.com/doorkeeper-gem/doorkeeper), the library that
+provides GitLab as an OAuth provider functionality. The expiration setting is
+not configurable.
+
+When applications are deleted, all grants and tokens associated with the
+application are also deleted.
 
 ## Hashed OAuth application secrets
 

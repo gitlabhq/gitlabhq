@@ -45,14 +45,15 @@ Here are some problems with current issues usage and why we are looking into wor
 
 ## Work item terminology
 
-To avoid confusion and ensure communication is efficient, we will use the following terms exclusively when discussing work items.
+To avoid confusion and ensure [communication is efficient](https://handbook.gitlab.com/handbook/communication/#mecefu-terms), we will use the following terms exclusively when discussing work items. This list is the [single source of truth (SSoT)](https://handbook.gitlab.com/handbook/values/#single-source-of-truth) for Work Item terminology.
 
 | Term              | Description | Example of misuse | Should be |
 | ---               | ---         | ---               | ---       |
 | work item type    | Classes of work item; for example: issue, requirement, test case, incident, or task | _Epics will eventually become issues_ | _Epics will eventually become a **work item type**_ |
 | work item         | An instance of a work item type | | |
-| work item view    | The new frontend view that renders work items of any type |  | |
-| legacy issue view | The existing view used to render issues and incidents | | |
+| work item view    | The new frontend view that renders work items of any type | _This should be rendered in the new view_ | _This should be rendered in the work item view_ |
+| legacy object     | An object that has been or will be converted to a Work Item Type | _Epics will be migrated from a standalone/old/former object to a work item type_ | _Epics will be converted from a legacy object to a work item type_ |
+| legacy issue view | The existing view used to render issues and incidents | _Issues continue to be rendered in the old view_ | _Issues continue to be rendered in the legacy issue view_ |
 | issue             | The existing issue model | | |
 | issuable          | Any model currently using the issuable module (issues, epics and MRs) | _Incidents are an **issuable**_ | _Incidents are a **work item type**_ |
 | widget            | A UI element to present or allow interaction with specific work item data | | |
@@ -84,9 +85,10 @@ end
 
 We already use the concept of WITs within `issues` table through `issue_type`
 column. There are `issue`, `incident`, and `test_case` issue types. To extend this
-so that in future we can allow users to define custom WITs, we will move the
-`issue_type` to a separate table: `work_item_types`. The migration process of `issue_type`
-to `work_item_types` will involve creating the set of WITs for all root-level groups.
+so that in future we can allow users to define custom WITs, we will
+move the `issue_type` to a separate table: `work_item_types`. The migration process of `issue_type`
+to `work_item_types` will involve creating the set of WITs for all root-level groups as described in
+[this epic](https://gitlab.com/groups/gitlab-org/-/epics/6536).
 
 NOTE:
 At first, defining a WIT will only be possible at the root-level group, which would then be inherited by subgroups.
@@ -99,7 +101,7 @@ assume the following base types: `issue: 0`, `incident: 1`, `test_case: 2`.
 
 The respective `work_item_types` records:
 
-| `group_id`     | `base_type` | `title`   |
+| `namespace_id` | `base_type` | `title`   |
 | -------------- | ----------- | --------- |
 | 11             | 0           | Issue     |
 | 11             | 1           | Incident  |
@@ -190,6 +192,164 @@ work items), `base_type` will be removed.
 Until the architecture of WIT widgets is finalized, we are holding off on the creation of new work item
 types. If a new work item type is absolutely necessary, please reach out to a
 member of the [Project Management Engineering Team](https://gitlab.com/gitlab-org/gitlab/-/issues/370599).
+
+### Creating a new work item type in the database
+
+We have completed the removal of the `issue_type` column from the issues table, in favor of using the new
+`work_item_types` table as described in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/6536)).
+
+After the introduction of the `work_item_types` table, we added more `work_item_types`, and we want to make it
+easier for other teams to do so. To introduce a new `work_item_type`, you must:
+
+1. Write a database migration to create a new record in the `work_item_types` table.
+1. Update `Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter`.
+
+The following MRs demonstrate how to introduce new `work_item_types`:
+
+- [MR example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127482)
+- [MR example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127917)
+
+#### Write a database migration
+
+First, write a database migration that creates the new record in the `work_item_types` table.
+
+Keep the following in mind when you write your migration:
+
+- **Important:** Exclude new type from existing APIs.
+  - We probably want to exclude newly created work items of this type from showing
+    up in existing features (like issue lists) until we fully release a feature. For this reason,
+    we have to add a new type to
+    [this exclude list](https://gitlab.com/gitlab-org/gitlab/-/blob/a0a52dd05b5d3c6ca820b672f9c0626840d2429b/app/models/work_items/type.rb#L84),
+    unless it is expected that users can create new issues and work items with the new type as soon as the migration
+    is executed.
+- Use a regular migration, not a post-deploy.
+  - We believe it would be beneficial to use
+    [regular migrations](migration_style_guide.md#choose-an-appropriate-migration-type)
+    to add new work item types instead of a
+    [post deploy migration](database/post_deployment_migrations.md).
+    This way, follow-up MRs that depend on the type being created can assume it exists right away,
+    instead of having to wait for the next release.
+- Migrations should avoid failures.
+  - We expect data related to `work_item_types` to be in a certain state when running the migration that will create a new
+    type. At the moment, we write migrations that check the data and don't fail in the event we find
+    it in an inconsistent state. There's a discussion about how much we can rely on the state of data based on seeds and
+    migrations in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423483). We can only
+    have a successful pipeline if we write the migration so it doesn't fail if data exists in an inconsistent
+    state. We probably need to update some of the database jobs in order to change this.
+- Add widget definitions for the new type.
+  - The migration adds the new work item type as well as the widget definitions that are required for each work item.
+    The widgets you choose depend on the feature the new work item supports, but there are some that probably
+    all new work items need, like `Description`.
+- Optional. Create hierarchy restrictions.
+  - In one of the example MRs we also insert records in the `work_item_hierarchy_restrictions` table. This is only
+    necessary if the new work item type is going to use the `Hierarchy` widget. In this table, you must add what
+    work item type can have children and of what type. Also, you should specify the hierarchy depth for work items of the same
+    type.
+
+##### Example of adding a ticket work item
+
+The `Ticket` work item type already exists in the database, but we'll use it as an example migration.
+Note that for a new type you need to use a new name and ENUM value.
+
+```ruby
+class AddTicketWorkItemType < Gitlab::Database::Migration[2.1]
+  disable_ddl_transaction!
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+  ISSUE_ENUM_VALUE = 0
+  # Enum value comes from the model where the enum is defined in
+  # https://gitlab.com/gitlab-org/gitlab/-/blob/1253f12abddb69cd1418c9e13e289d828b489f36/app/models/work_items/type.rb#L30.
+  # A new work item type should simply pick the next integer value.
+  TICKET_ENUM_VALUE = 8
+  TICKET_NAME = 'Ticket'
+  # Widget definitions also have an enum defined in
+  # https://gitlab.com/gitlab-org/gitlab/-/blob/1253f12abddb69cd1418c9e13e289d828b489f36/app/models/work_items/widget_definition.rb#L17.
+  # We need to provide both the enum and name as we plan to support custom widget names in the future.
+  TICKET_WIDGETS = {
+    'Assignees' => 0,
+    'Description' => 1,
+    'Hierarchy' => 2,
+    'Labels' => 3,
+    'Milestone' => 4,
+    'Notes' => 5,
+    'Start and due date' => 6,
+    'Health status' => 7,
+    'Weight' => 8,
+    'Iteration' => 9,
+    'Notifications' => 14,
+    'Current user todos' => 15,
+    'Award emoji' => 16
+  }.freeze
+
+  class MigrationWorkItemType < MigrationRecord
+    self.table_name = 'work_item_types'
+  end
+
+  class MigrationWidgetDefinition < MigrationRecord
+    self.table_name = 'work_item_widget_definitions'
+  end
+
+  class MigrationHierarchyRestriction < MigrationRecord
+    self.table_name = 'work_item_hierarchy_restrictions'
+  end
+
+  def up
+    existing_ticket_work_item_type = MigrationWorkItemType.find_by(base_type: TICKET_ENUM_VALUE, namespace_id: nil)
+
+    return say('Ticket work item type record exists, skipping creation') if existing_ticket_work_item_type
+
+    new_ticket_work_item_type = MigrationWorkItemType.create(
+      name: TICKET_NAME,
+      namespace_id: nil,
+      base_type: TICKET_ENUM_VALUE,
+      icon_name: 'issue-type-issue'
+    )
+
+    return say('Ticket work item type create record failed, skipping creation') if new_ticket_work_item_type.new_record?
+
+    widgets = TICKET_WIDGETS.map do |widget_name, widget_enum_value|
+      {
+        work_item_type_id: new_ticket_work_item_type.id,
+        name: widget_name,
+        widget_type: widget_enum_value
+      }
+    end
+
+    MigrationWidgetDefinition.upsert_all(
+      widgets,
+      unique_by: :index_work_item_widget_definitions_on_default_witype_and_name
+    )
+
+    issue_type = MigrationWorkItemType.find_by(base_type: ISSUE_ENUM_VALUE, namespace_id: nil)
+    return say('Issue work item type not found, skipping hierarchy restrictions creation') unless issue_type
+
+    # This part of the migration is only necessary if the new type uses the `Hierarchy` widget.
+    restrictions = [
+      { parent_type_id: new_ticket_work_item_type.id, child_type_id: new_ticket_work_item_type.id, maximum_depth: 1 },
+      { parent_type_id: new_ticket_work_item_type.id, child_type_id: issue_type.id, maximum_depth: 1 }
+    ]
+
+    MigrationHierarchyRestriction.upsert_all(
+      restrictions,
+      unique_by: :index_work_item_hierarchy_restrictions_on_parent_and_child
+    )
+  end
+
+  def down
+    # There's the remote possibility that issues could already be
+    # using this issue type, with a tight foreign constraint.
+    # Therefore we will not attempt to remove any data.
+  end
+end
+```
+
+<!-- markdownlint-disable-next-line MD044 -->
+#### Update Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter
+
+The [BaseTypeImporter](https://gitlab.com/gitlab-org/gitlab/-/blob/f816a369d7d6bbd1d8d53d6c0bca4ca3389fdba7/lib/gitlab/database_importers/work_items/base_type_importer.rb)
+is where we can clearly visualize the structure of the types we have and what widgets are associated with each of them.
+`BaseTypeImporter` is the single source of truth for fresh GitLab installs and also our test suite. This should always
+reflect what we change with migrations.
 
 ### Custom work item types
 

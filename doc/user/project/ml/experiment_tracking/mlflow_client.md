@@ -24,7 +24,7 @@ Prerequisites:
 
 - A [personal](../../../../user/profile/personal_access_tokens.md), [project](../../../../user/project/settings/project_access_tokens.md), or [group](../../../../user/group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` permission.
 - The project ID. To find the project ID:
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Settings > General**.
 
 To use MLflow client compatibility from a local environment:
@@ -83,6 +83,7 @@ tested. More information can be found in the [MLflow Documentation](https://www.
 | `set_experiment`         | Yes              | 15.11          |                                                                                     |
 | `get_run`                | Yes              | 15.11          |                                                                                     |
 | `start_run`              | Yes              | 15.11          | (16.3) If a name is not provided, the candidate receives a random nickname.         |
+| `search_runs`            | Yes              | 15.11          | (16.4) `experiment_ids` supports only a single experiment ID with order by column or metric. |
 | `log_artifact`           | Yes with caveat  | 15.11          | (15.11) `artifact_path` must be empty. Does not support directories.                |
 | `log_artifacts`          | Yes with caveat  | 15.11          | (15.11) `artifact_path` must be empty. Does not support directories.                |
 | `log_batch`              | Yes              | 15.11          |                                                                                     |

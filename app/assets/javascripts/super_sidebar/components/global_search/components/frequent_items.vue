@@ -2,6 +2,8 @@
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { getItemsFromLocalStorage, removeItemFromLocalStorage } from '~/super_sidebar/utils';
+import { TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
+import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from '../command_palette/constants';
 import FrequentItem from './frequent_item.vue';
 
 export default {
@@ -65,6 +67,12 @@ export default {
           // validator, and the href field ensures it renders a link.
           text: item.name,
           href: item.webUrl,
+          extraAttrs: {
+            'data-track-action': TRACKING_CLICK_COMMAND_PALETTE_ITEM,
+            'data-track-label': item.id,
+            'data-track-property': TRACKING_UNKNOWN_PANEL,
+            'data-track-extra': JSON.stringify({ title: item.name }),
+          },
         },
         forRenderer: {
           id: item.id,

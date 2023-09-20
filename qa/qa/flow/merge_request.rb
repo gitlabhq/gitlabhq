@@ -22,7 +22,7 @@ module QA
           return
         end
 
-        Page::Project::Menu.perform(&:click_merge_requests)
+        Page::Project::Menu.perform(&:go_to_merge_requests)
         Page::MergeRequest::Index.perform(&:click_new_merge_request)
         Page::MergeRequest::New.perform do |merge_request|
           merge_request.select_source_branch(source_branch)

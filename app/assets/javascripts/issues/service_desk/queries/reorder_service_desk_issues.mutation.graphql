@@ -1,0 +1,13 @@
+mutation reorderServiceDeskIssues(
+  $oldIndex: Int
+  $newIndex: Int
+  $namespace: String
+  $serializedVariables: String
+) {
+  reorderIssues(
+    oldIndex: $oldIndex
+    newIndex: $newIndex
+    namespace: $namespace
+    serializedVariables: $serializedVariables
+  ) @client
+}

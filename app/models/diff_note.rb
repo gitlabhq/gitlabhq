@@ -9,7 +9,7 @@ class DiffNote < Note
   include Gitlab::Utils::StrongMemoize
 
   def self.noteable_types
-    %w(MergeRequest Commit DesignManagement::Design)
+    %w[MergeRequest Commit DesignManagement::Design]
   end
 
   validates :original_position, presence: true

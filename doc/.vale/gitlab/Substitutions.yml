@@ -14,6 +14,7 @@ swap:
   codequality: code quality
   Customer [Pp]ortal: Customers Portal
   disallow: prevent
+  '(?<!GitLab )Duo': GitLab Duo
   frontmatter: front matter
   GitLabber: GitLab team member
   GitLabbers: GitLab team members

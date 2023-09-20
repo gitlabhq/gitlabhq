@@ -22,7 +22,7 @@ RSpec.shared_context 'group integration activation' do
     visit_group_integrations
 
     within('#content-body') do
-      click_link(name)
+      click_link(name, match: :first)
     end
   end
 end

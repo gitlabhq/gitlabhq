@@ -25,7 +25,7 @@ On the top of each list, you can see the number of epics in the list (**{epic}**
 
 To view an epic board:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Epic boards**.
 
 ![GitLab epic board - Premium](img/epic_board_v15_10.png)
@@ -38,7 +38,7 @@ Prerequisites:
 
 To create a new epic board:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Epic boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -87,7 +87,7 @@ Prerequisites:
 
 To create a new list:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Epic boards**.
 1. In the upper-right corner, select **Create list**.
 1. In the **New list** column expand the **Select a label** dropdown list and select the label to use as

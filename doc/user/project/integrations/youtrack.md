@@ -14,7 +14,7 @@ You can configure YouTrack as an
 
 To enable the YouTrack integration in a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **YouTrack**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -30,7 +30,7 @@ project pages. This link takes you to the appropriate YouTrack project.
 
 You can also disable [GitLab internal issue tracking](../issues/index.md) in this project.
 For more information about the steps and consequences of disabling GitLab issues, see
-[Configure project visibility, features, and permissions](../settings/index.md#configure-project-visibility-features-and-permissions).
+Configure project [visibility](../../../user/public_access.md#change-project-visibility), [features, and permissions](../settings/index.md#configure-project-features-and-permissions).
 
 ## Reference YouTrack issues in GitLab
 

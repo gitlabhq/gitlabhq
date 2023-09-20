@@ -83,7 +83,7 @@ GET /groups/:id/-/debian_distributions/:codename
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `codename` | integer        | yes      | The `codename` of a distribution. |
+| `codename` | string         | yes      | The `codename` of a distribution. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable"
@@ -122,7 +122,7 @@ GET /groups/:id/-/debian_distributions/:codename/key.asc
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `codename` | integer        | yes      | The `codename` of a distribution. |
+| `codename` | string         | yes      | The `codename` of a distribution. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable/key.asc"
@@ -166,8 +166,8 @@ POST /groups/:id/-/debian_distributions
 | `version`                     | string         | no       | The version of the new Debian distribution. |
 | `description`                 | string         | no       | The description of the new Debian distribution. |
 | `valid_time_duration_seconds` | integer        | no       | The valid time duration (in seconds) of the new Debian distribution. |
-| `components`                  | architectures  | no       | The new Debian distribution's list of components. |
-| `architectures`               | architectures  | no       | The new Debian distribution's list of architectures. |
+| `components`                  | string array   | no       | The new Debian distribution's list of components. |
+| `architectures`               | string array   | no       | The new Debian distribution's list of architectures. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions?codename=sid"
@@ -213,8 +213,8 @@ PUT /groups/:id/-/debian_distributions/:codename
 | `version`                     | string         | no       | The Debian distribution's new version. |
 | `description`                 | string         | no       | The Debian distribution's new description. |
 | `valid_time_duration_seconds` | integer        | no       | The Debian distribution's new valid time duration (in seconds). |
-| `components`                  | architectures  | no       | The Debian distribution's new list of components. |
-| `architectures`               | architectures  | no       | The Debian distribution's new list of architectures. |
+| `components`                  | string array   | no       | The Debian distribution's new list of components. |
+| `architectures`               | string array   | no       | The Debian distribution's new list of architectures. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable?suite=new-suite&valid_time_duration_seconds=604800"
@@ -253,7 +253,7 @@ DELETE /groups/:id/-/debian_distributions/:codename
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `codename` | integer        | yes      | The codename of the Debian distribution. |
+| `codename` | string         | yes      | The codename of the Debian distribution. |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable"

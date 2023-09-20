@@ -53,7 +53,7 @@ export default {
 </script>
 
 <template>
-  <span class="gl-mr-2">
+  <span>
     <gl-icon
       v-gl-tooltip.hover="showTooltipOnHover"
       :name="iconName"

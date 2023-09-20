@@ -3,6 +3,12 @@
 $tabs-holder-z-index: 250;
 $comparison-empty-state-height: 62px;
 
+.apply-suggestions-input-min-width {
+  @include media-breakpoint-up(lg) {
+    width: $gl-dropdown-width-wide;
+  }
+}
+
 .space-children {
   @include clearfix;
 
@@ -199,6 +205,7 @@ $comparison-empty-state-height: 62px;
   top: $calc-application-header-height;
   z-index: $tabs-holder-z-index;
   border-bottom: 1px solid var(--border-color, $border-color);
+  background-color: var(--gray-10, $white);
 
   @include media-breakpoint-up(md) {
     position: sticky;

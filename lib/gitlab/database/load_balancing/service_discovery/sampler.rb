@@ -16,7 +16,7 @@ module Gitlab
           def sample(addresses)
             return addresses if @max_replica_pools.nil? || addresses.count <= @max_replica_pools
 
-            ::Gitlab::Database::LoadBalancing::Logger.info(
+            ::Gitlab::Database::LoadBalancing::Logger.debug(
               event: :host_list_limit_exceeded,
               message: "Host list length exceeds max_replica_pools so random hosts will be chosen.",
               max_replica_pools: @max_replica_pools,

@@ -20,9 +20,6 @@ module Gitlab
       ImportSource.new('manifest',         'Manifest file',     nil)
     ].freeze
 
-    LEGACY_IMPORT_TABLE = IMPORT_TABLE.deep_dup
-    LEGACY_IMPORT_TABLE[2].importer = Gitlab::BitbucketServerImport::Importer
-
     class << self
       prepend_mod_with('Gitlab::ImportSources') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
@@ -47,9 +44,15 @@ module Gitlab
       end
 
       def import_table
-        return IMPORT_TABLE if Feature.enabled?(:bitbucket_server_parallel_importer)
+        bitbucket_parallel_enabled = Feature.enabled?(:bitbucket_parallel_importer)
 
-        LEGACY_IMPORT_TABLE
+        return IMPORT_TABLE unless bitbucket_parallel_enabled
+
+        import_table = IMPORT_TABLE.deep_dup
+
+        import_table[1].importer = Gitlab::BitbucketImport::ParallelImporter if bitbucket_parallel_enabled
+
+        import_table
       end
     end
   end

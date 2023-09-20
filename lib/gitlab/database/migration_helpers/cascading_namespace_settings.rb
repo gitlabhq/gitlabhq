@@ -53,7 +53,7 @@ module Gitlab
         def check_cascading_namespace_setting_consistency(setting_name, lock_name)
           existing_columns = []
 
-          %w(namespace_settings application_settings).each do |table|
+          %w[namespace_settings application_settings].each do |table|
             existing_columns << "#{table}.#{setting_name}" if column_exists?(table.to_sym, setting_name)
             existing_columns << "#{table}.#{lock_name}" if column_exists?(table.to_sym, lock_name)
           end

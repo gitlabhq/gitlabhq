@@ -161,7 +161,7 @@ public URL of the primary site is used.
 
 To update the internal URL of the primary Geo site:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Sites**.
 1. Select **Edit** on the primary site.
@@ -193,9 +193,12 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 WARNING:
 This list of limitations only reflects the latest version of GitLab. If you are using an older version, extra limitations may be in place.
 
-- Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381), except when using Git over HTTP with credentials embedded in the URI. For example, `https://user:password@secondary.tld`.
+- Pushing directly to a **secondary** site redirects (for HTTP) or proxies (for SSH) the request to the **primary** site instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/-/issues/1381). The limitation is that you cannot use Git over HTTP with credentials embedded in the URI, for example, `https://user:personal-access-token@secondary.tld`. For more information, see how to [use a Geo Site](replication/usage.md).
 - The **primary** site has to be online for OAuth login to happen. Existing sessions and Git are not affected. Support for the **secondary** site to use an OAuth provider independent from the primary is [being planned](https://gitlab.com/gitlab-org/gitlab/-/issues/208465).
-- The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using [the GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to deploy and operate production GitLab instances based on our [Reference Architectures](../reference_architectures/index.md), including automation of common daily tasks. We are planning to [improve Geo's installation even further](https://gitlab.com/groups/gitlab-org/-/epics/1465).
+- The installation takes multiple manual steps that together can take about an hour depending on circumstances. Consider using the
+  [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts to deploy and operate production
+  GitLab instances based on our [Reference Architectures](../reference_architectures/index.md), including automation of common daily tasks.
+  [Epic 1465](https://gitlab.com/groups/gitlab-org/-/epics/1465) proposes to improve Geo installation even more.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** site.
 - Using Geo secondary sites to accelerate runners is not officially supported. Support for this functionality is planned and can be tracked in [epic 9779](https://gitlab.com/groups/gitlab-org/-/epics/9779). If a replication lag occurs between the primary and secondary site, and the pipeline ref is not available on the secondary site when the job is executed, the job will fail.
 - GitLab Runners cannot register with a **secondary** site. Support for this is [planned for the future](https://gitlab.com/gitlab-org/gitlab/-/issues/3294).
@@ -243,9 +246,9 @@ Linux package-managed database. External databases are not supported.
 In some circumstances, like during [upgrades](replication/upgrading_the_geo_sites.md) or a
 [planned failover](disaster_recovery/planned_failover.md), it is desirable to pause replication between the primary and secondary.
 
-Pausing and resuming replication is done via a command line tool from the node in the secondary site where the `postgresql` service is enabled.
+Pausing and resuming replication is done through a command-line tool from the node in the secondary site where the `postgresql` service is enabled.
 
-If `postgresql` is on a standalone database node, ensure that `gitlab.rb` on that node contains the configuration line `gitlab_rails['geo_node_name'] = 'node_name'`, where `node_name` is the same as the `geo_name_name` on the application node.
+If `postgresql` is on a standalone database node, ensure that `gitlab.rb` on that node contains the configuration line `gitlab_rails['geo_node_name'] = 'node_name'`, where `node_name` is the same as the `geo_node_name` on the application node.
 
 **To Pause: (from secondary)**
 

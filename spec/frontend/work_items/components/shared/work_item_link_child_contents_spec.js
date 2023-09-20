@@ -10,7 +10,7 @@ import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip
 
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
 import WorkItemLinksMenu from '~/work_items/components/shared/work_item_links_menu.vue';
-import { TASK_TYPE_NAME, WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '~/work_items/constants';
 
 import {
   workItemTask,
@@ -26,11 +26,9 @@ jest.mock('~/alert');
 describe('WorkItemLinkChildContents', () => {
   Vue.use(VueApollo);
 
-  const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
   let wrapper;
   const { LABELS } = workItemObjectiveMetadataWidgets;
   const mockLabels = LABELS.labels.nodes;
-  const mockFullPath = 'gitlab-org/gitlab-test';
 
   const findStatusIconComponent = () =>
     wrapper.findByTestId('item-status-icon').findComponent(GlIcon);
@@ -43,19 +41,11 @@ describe('WorkItemLinkChildContents', () => {
   const findScopedLabel = () => findAllLabels().at(1);
   const findLinksMenuComponent = () => wrapper.findComponent(WorkItemLinksMenu);
 
-  const createComponent = ({
-    canUpdate = true,
-    parentWorkItemId = WORK_ITEM_ID,
-    childItem = workItemTask,
-    workItemType = TASK_TYPE_NAME,
-  } = {}) => {
+  const createComponent = ({ canUpdate = true, childItem = workItemTask } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildContents, {
       propsData: {
         canUpdate,
-        parentWorkItemId,
         childItem,
-        workItemType,
-        fullPath: mockFullPath,
         childPath: '/gitlab-org/gitlab-test/-/work_items/4',
       },
     });

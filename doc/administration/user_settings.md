@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -44,7 +44,7 @@ For self-compiled installations:
 
 Administrators can:
 
-- Use the Admin Area to [prevent an existing user from creating top-level groups](../administration/admin_area.md#prevent-a-user-from-creating-groups).
+- Use the Admin Area to [prevent an existing user from creating top-level groups](../administration/admin_area.md#prevent-a-user-from-creating-top-level-groups).
 - Use the [modify an existing user API endpoint](../api/users.md#user-modification) to change the `can_create_group` setting.
 
 ## Prevent users from changing their usernames

@@ -74,7 +74,7 @@ Prerequisites:
 
 To create a release in the Releases page:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Deploy > Releases** and select **New release**.
 1. From the [**Tag name**](release_fields.md#tag-name) dropdown list, either:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
@@ -215,7 +215,7 @@ To delete a release, use either the
 
 In the UI:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Deploy > Releases**.
 1. In the upper-right corner of the release you want to delete, select **Edit this release**
    (**{pencil}**).
@@ -287,22 +287,40 @@ are defined as [crontab](https://crontab.guru/) entries.
 If the job that's executing is in a freeze period, GitLab CI/CD creates an environment
 variable named `$CI_DEPLOY_FREEZE`.
 
-To prevent the deployment job from executing, create a `rules` entry in your
-`.gitlab-ci.yml`, for example:
+To prevent the deployment job from executing in multiple projects in a group,
+define the `.freezedeployment` job in a file shared across the group.
+Use the [`includes`](../../../ci/yaml/includes.md) keyword to incorporate the
+template in your project's `.gitlab-ci.yml` file:
+
+```yaml
+.freezedeployment:
+  stage: deploy
+  before_script:
+    - '[[ ! -z "$CI_DEPLOY_FREEZE" ]] && echo "INFRASTRUCTURE OUTAGE WINDOW" && exit 1; '
+  rules:
+    - if: '$CI_DEPLOY_FREEZE'
+      when: manual
+      allow_failure: true
+    - when: on_success
+```
+
+To prevent the deployment job from executing, use the [`extends`](../../../ci/yaml/index.md#extends) keyword in the `deploy_to_production` job of your `.gitlab-ci.yml` file to inherit the configuration from the `.freezedeployment` template job:
 
 ```yaml
 deploy_to_production:
-  stage: deploy
+  extends: .freezedeployment
   script: deploy_to_prod.sh
-  rules:
-    - if: $CI_DEPLOY_FREEZE == null
   environment: production
 ```
+
+This configuration blocks deployment jobs conditionally and maintains pipeline continuity. When a freeze period is defined, the job fails and the pipeline can proceed without deployment. Manual deployment is possible after the freeze period.
+
+This approach offers deployment control during critical maintenance, and ensures the uninterrupted flow of the CI/CD pipeline.
 
 To set a deploy freeze window in the UI, complete these steps:
 
 1. Sign in to GitLab as a user with the Maintainer role.
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Scroll to **Deploy freezes**.
 1. Select **Expand** to see the deploy freeze table.
@@ -342,7 +360,7 @@ Releases can be made accessible to non-project members while keeping repository-
 projects that use releases as a way to give access to new versions of software but do not want the source code to
 be public.
 
-To make releases available publicly, set the following [project settings](../settings/index.md#project-feature-settings):
+To make releases available publicly, set the following [project settings](../settings/index.md#configure-project-features-and-permissions):
 
 - Repository is enabled and set to **Only Project Members**
 - Releases is enabled and set to **Everyone With Access**

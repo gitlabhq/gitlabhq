@@ -287,6 +287,23 @@
     }
   }
 
+  .non-blocking-loader & {
+    &.is-loading{
+      .dropdown-content {
+        display: block;
+        height: 2rem;
+
+        ul{
+          display: none;
+        }
+      }
+    }
+
+    .dropdown-loading{
+      position: relative;
+    }
+  }
+
   ul {
     margin: 0;
     padding: 0;

@@ -3,8 +3,8 @@ import CreateItemDropdown from '~/create_item_dropdown';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __ } from '~/locale';
-import AccessDropdown from '~/projects/settings/access_dropdown';
-import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
+import { initAccessDropdown } from '~/projects/settings/init_access_dropdown';
+import { ACCESS_LEVELS } from './constants';
 
 export default class ProtectedTagCreate {
   constructor({ hasLicense }) {
@@ -12,6 +12,7 @@ export default class ProtectedTagCreate {
     this.$form = $('.js-new-protected-tag');
     this.buildDropdowns();
     this.bindEvents();
+    this.selectedItems = [];
   }
 
   bindEvents() {
@@ -19,19 +20,8 @@ export default class ProtectedTagCreate {
   }
 
   buildDropdowns() {
-    const $allowedToCreateDropdown = this.$form.find('.js-allowed-to-create');
-
     // Cache callback
     this.onSelectCallback = this.onSelect.bind(this);
-
-    // Allowed to Create dropdown
-    this.protectedTagAccessDropdown = new AccessDropdown({
-      $dropdown: $allowedToCreateDropdown,
-      accessLevelsData: gon.create_access_levels,
-      onSelect: this.onSelectCallback,
-      accessLevel: ACCESS_LEVELS.CREATE,
-      hasLicense: this.hasLicense,
-    });
 
     // Protected tag dropdown
     this.createItemDropdown = new CreateItemDropdown({
@@ -41,17 +31,36 @@ export default class ProtectedTagCreate {
       onSelect: this.onSelectCallback,
       getData: ProtectedTagCreate.getProtectedTags,
     });
+
+    // Allowed to Create dropdown
+    const createTagSelector = 'js-allowed-to-create';
+    const [dropdownEl] = this.$form.find(`.${createTagSelector}`);
+    this.protectedTagAccessDropdown = initAccessDropdown(dropdownEl, {
+      toggleClass: createTagSelector,
+      hasLicense: this.hasLicense,
+      accessLevel: ACCESS_LEVELS.CREATE,
+      accessLevelsData: gon.create_access_levels,
+      searchEnabled: dropdownEl.dataset.filter !== undefined,
+      testId: 'allowed_to_create_dropdown',
+    });
+
+    this.protectedTagAccessDropdown.$on('select', (selected) => {
+      this.selectedItems = selected;
+      this.onSelectCallback();
+    });
+
+    this.protectedTagAccessDropdown.$on('shown', () => {
+      this.createItemDropdown.close();
+    });
   }
 
   // This will run after clicked callback
   onSelect() {
     // Enable submit button
     const $tagInput = this.$form.find('input[name="protected_tag[name]"]');
-    const $allowedToCreateInput = this.protectedTagAccessDropdown.getSelectedItems();
-
     this.$form
       .find('button[type="submit"]')
-      .prop('disabled', !($tagInput.val() && $allowedToCreateInput.length));
+      .prop('disabled', !($tagInput.val() && this.selectedItems.length));
   }
 
   static getProtectedTags(term, callback) {
@@ -65,35 +74,7 @@ export default class ProtectedTagCreate {
         name: this.$form.find('input[name="protected_tag[name]"]').val(),
       },
     };
-
-    Object.keys(ACCESS_LEVELS).forEach((level) => {
-      const accessLevel = ACCESS_LEVELS[level];
-      const selectedItems = this.protectedTagAccessDropdown.getSelectedItems();
-      const levelAttributes = [];
-
-      selectedItems.forEach((item) => {
-        if (item.type === LEVEL_TYPES.USER) {
-          levelAttributes.push({
-            user_id: item.user_id,
-          });
-        } else if (item.type === LEVEL_TYPES.ROLE) {
-          levelAttributes.push({
-            access_level: item.access_level,
-          });
-        } else if (item.type === LEVEL_TYPES.GROUP) {
-          levelAttributes.push({
-            group_id: item.group_id,
-          });
-        } else if (item.type === LEVEL_TYPES.DEPLOY_KEY) {
-          levelAttributes.push({
-            deploy_key_id: item.deploy_key_id,
-          });
-        }
-      });
-
-      formData.protected_tag[`${accessLevel}_attributes`] = levelAttributes;
-    });
-
+    formData.protected_tag[`${ACCESS_LEVELS.CREATE}_attributes`] = this.selectedItems;
     return formData;
   }
 

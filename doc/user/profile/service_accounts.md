@@ -1,6 +1,6 @@
 ---
 type: index, howto
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -21,6 +21,11 @@ A service account:
 
 You should use service accounts in pipelines or integrations where credentials must be
 set up and maintained without being impacted by changes in human user membership.
+
+You can authenticate as a service account with a [personal access token](personal_access_tokens.md).
+Service account users with a personal access token have the same abilities as a standard user.
+This includes interacting with [registries](../packages/index.md) and using the personal access
+token for [Git operations](personal_access_tokens.md#clone-repository-using-personal-access-token).
 
 ## Create a service account
 
@@ -50,7 +55,8 @@ Prerequisite:
 
    The response includes the personal access token value.
 
-1. Use the returned personal access token value to authenticate with the GitLab API as the service account user.
+1. Make this service account a group or project member by [manually adding the service account user to the group or project](#add-a-service-account-to-subgroup-or-project).
+1. Use the returned personal access token value to authenticate as the service account user.
 
 ### Self-managed GitLab
 
@@ -63,14 +69,16 @@ Prerequisite:
    This service account is associated with the entire instance, not a specific group
    or project in the instance.
 
-1. [Create a personal access token](../../api/users.md#create-service-account-user)
+1. [Create a personal access token](../../api/users.md#create-a-personal-access-token)
    for the service account user.
 
    You define the scopes for the service account by [setting the scopes for the personal access token](personal_access_tokens.md#personal-access-token-scopes).
 
    The response includes the personal access token value.
 
-1. Use the returned personal access token value to authenticate with the GitLab API as the service account user.
+1. Make this service account a group or project member by
+   [manually adding the service account user to the group or project](#add-a-service-account-to-subgroup-or-project).
+1. Use the returned personal access token value to authenticate as the service account user.
 
 ## Add a service account to subgroup or project
 
@@ -88,27 +96,13 @@ A service account:
 - Can have different roles across multiple subgroups and projects of the same top level group.
 - On GitLab.com, only belongs to one top-level group.
 
-### Add to a subgroup
+### Add to a subgroup or project
 
-You can add the service account to a subgroup [through the UI](../group/index.md#add-users-to-a-group)
-or API.
+You can add the service account to a subgroup or project through the:
 
-To add the service account through the API, call the following endpoint:
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <ACCESS TOKEN>" --data "user_id=<service_account_user_id>&access_level=30" "https://gitlab.example.com/api/v4/groups/<subgroup_id>/members"
-```
-
-### Add to a project
-
-You can add the service account to a project [through the UI](../project/members/index.md#add-users-to-a-project)
-or API.
-
-To add the service account through the API, call the following endpoint:
-
-```shell
-curl --request POST --header "PRIVATE-TOKEN: <PRIVATE-TOKEN>" --data "user_id=<service_account_user_id>&access_level=30" "https://gitlab.example.com/api/v4/projects/<project_id>/members"
-```
+- [API](../../api/members.md#add-a-member-to-a-group-or-project).
+- [Group members UI](../group/index.md#add-users-to-a-group).
+- [Project members UI](../project/members/index.md#add-users-to-a-project).
 
 ### Change a service account role in a subgroup or project
 

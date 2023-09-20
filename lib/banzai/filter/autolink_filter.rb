@@ -42,7 +42,7 @@ module Banzai
       ENTITY_UNTRUSTED_REGEX = Gitlab::UntrustedRegexp.new(ENTITY_UNTRUSTED, multiline: false)
 
       # Text matching LINK_PATTERN inside these elements will not be linked
-      IGNORE_PARENTS = %w(a code kbd pre script style).to_set
+      IGNORE_PARENTS = %w[a code kbd pre script style].to_set
 
       # The XPath query to use for finding text nodes to parse.
       TEXT_QUERY = %(descendant-or-self::text()[

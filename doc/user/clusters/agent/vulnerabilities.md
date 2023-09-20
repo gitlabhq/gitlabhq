@@ -9,9 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/368828) the starboard directive in GitLab 15.4. The starboard directive is scheduled for removal in GitLab 16.0.
 
-To view cluster vulnerabilities, you can view the [vulnerability report](../../application_security/vulnerabilities/index.md).
-You can also configure your agent so the vulnerabilities are displayed with other agent information in GitLab.
-
 ## Enable operational container scanning
 
 You can use operational container scanning to scan container images in your cluster for security vulnerabilities. You
@@ -24,7 +21,7 @@ If both `agent config` and `scan execution policies` are configured, the configu
 ### Enable via agent configuration
 
 To enable scanning of all images within your Kubernetes cluster via the agent configuration, add a `container_scanning` configuration block to your agent
-configuration with a `cadence` field containing a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans are run.
+configuration with a `cadence` field containing a [CRON expression](https://en.wikipedia.org/wiki/Cron) for when the scans are run.
 
 ```yaml
 container_scanning:
@@ -129,7 +126,7 @@ Resource requirements can only be set up using the agent configuration. If you e
 
 To view vulnerability information in GitLab:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the project that contains the agent configuration file.
+1. On the left sidebar, select **Search or go to** and find the project that contains the agent configuration file.
 1. Select **Operate > Kubernetes clusters**.
 1. Select the **Agent** tab.
 1. Select an agent to view the cluster vulnerabilities.
@@ -140,3 +137,9 @@ This information can also be found under [operational vulnerabilities](../../../
 
 NOTE:
 You must have at least the Developer role.
+
+## Scanning private images
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415451) in GitLab 16.4.
+
+To scan private images, the scanner relies on the image pull secrets (direct references and from the service account) to pull the image.

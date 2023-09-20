@@ -1,3 +1,5 @@
+.go/
+.git/
 .bundle/
 .gitlab/
 .lefthook/
@@ -6,11 +8,12 @@
 builds/
 changelogs/
 danger/
+data/
 doc/
-log/*.log
-node_modules/
 rubocop/
-tmp/*
+storybook/
+node_modules/
+log/*.log
 
 .eslint*
 .gitlab-ci.yml
@@ -27,6 +30,12 @@ tests.yml
 
 *.md
 
+tmp/*
+!tmp/feature_flags
+!tmp/pids
+!tmp/prometheus_multiproc_dir
+!tmp/sockets
+
 db/fixtures/
 !db/fixtures/development/01_admin.rb
 !db/fixtures/development/02_application_settings.rb
@@ -40,3 +49,13 @@ scripts/
 
 qa/
 !qa/gdk
+
+spec/
+!spec/contracts
+!spec/factories
+!spec/support
+
+ee/spec
+!ee/spec/contracts
+!ee/spec/factories
+!ee/spec/support

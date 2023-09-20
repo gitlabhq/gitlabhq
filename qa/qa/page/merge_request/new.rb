@@ -7,23 +7,23 @@ module QA
         include QA::Page::Component::Dropdown
 
         view 'app/views/shared/issuable/_form.html.haml' do
-          element :issuable_create_button, required: true
+          element 'issuable-create-button', required: true
         end
 
         view 'app/views/projects/merge_requests/creations/_new_compare.html.haml' do
-          element :compare_branches_button
+          element 'compare-branches-button'
         end
 
         view 'app/assets/javascripts/merge_requests/components/compare_dropdown.vue' do
-          element :source_branch_dropdown, ':data-qa-selector="qaSelector"' # rubocop:disable QA/ElementWithPattern
+          element 'source-branch-dropdown', ':data-testid="testid"' # rubocop:disable QA/ElementWithPattern
         end
 
-        view 'app/views/projects/merge_requests/_page.html.haml' do
-          element :diffs_tab
+        view 'app/views/projects/merge_requests/creations/_new_submit.html.haml' do
+          element 'diffs-tab'
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
-          element :file_name_content
+          element 'file-name-content'
         end
 
         def has_secure_description?(scanner_name)
@@ -34,23 +34,23 @@ module QA
         end
 
         def click_compare_branches_and_continue
-          click_element(:compare_branches_button)
+          click_element('compare-branches-button')
         end
 
         def create_merge_request
-          click_element(:issuable_create_button, Page::MergeRequest::Show)
+          click_element('issuable-create-button', Page::MergeRequest::Show)
         end
 
         def click_diffs_tab
-          click_element(:diffs_tab)
+          click_element('diffs-tab')
         end
 
         def has_file?(file_name)
-          has_element?(:file_name_content, text: file_name)
+          has_element?('file-name-content', text: file_name)
         end
 
         def select_source_branch(branch)
-          click_element(:source_branch_dropdown)
+          click_element('source-branch-dropdown')
           search_and_select(branch)
         end
       end

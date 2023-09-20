@@ -124,95 +124,6 @@ module API
         ].freeze
       end
 
-      def self.chat_notification_events
-        [
-          {
-            required: false,
-            name: :commit_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for commit_events'
-          },
-          {
-            required: false,
-            name: :push_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for push_events'
-          },
-          {
-            required: false,
-            name: :issues_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for issues_events'
-          },
-          {
-            required: false,
-            name: :incident_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for incident_events'
-          },
-          {
-            required: false,
-            name: :alert_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for alert_events'
-          },
-          {
-            required: false,
-            name: :confidential_issues_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for confidential_issues_events'
-          },
-          {
-            required: false,
-            name: :merge_requests_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for merge_requests_events'
-          },
-          {
-            required: false,
-            name: :note_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for note_events'
-          },
-          {
-            required: false,
-            name: :confidential_note_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for confidential_note_events'
-          },
-          {
-            required: false,
-            name: :tag_push_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for tag_push_events'
-          },
-          {
-            required: false,
-            name: :deployment_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for deployment_events'
-          },
-          {
-            required: false,
-            name: :job_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for job_events'
-          },
-          {
-            required: false,
-            name: :pipeline_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for pipeline_events'
-          },
-          {
-            required: false,
-            name: :wiki_page_events,
-            type: ::Grape::API::Boolean,
-            desc: 'Enable notifications for wiki_page_events'
-          }
-        ].freeze
-      end
-
       def self.integrations
         {
           'apple-app-store' => [
@@ -453,7 +364,6 @@ module API
               desc: 'Branches for which notifications are to be sent'
             },
             chat_notification_flags,
-            chat_notification_events,
             chat_notification_channels
           ].flatten,
           'drone-ci' => [
@@ -548,8 +458,7 @@ module API
               name: :branches_to_be_notified,
               type: String,
               desc: 'Branches for which notifications are to be sent'
-            },
-            chat_notification_events
+            }
           ].flatten,
           'harbor' => [
             {
@@ -813,8 +722,7 @@ module API
               name: :webhook,
               type: String,
               desc: 'The Pumble chat webhook. For example, https://api.pumble.com/workspaces/x/...'
-            },
-            chat_notification_events
+            }
           ].flatten,
           'pushover' => [
             {
@@ -919,8 +827,7 @@ module API
           'slack' => [
             chat_notification_settings,
             chat_notification_flags,
-            chat_notification_channels,
-            chat_notification_events
+            chat_notification_channels
           ].flatten,
           'microsoft-teams' => [
             {
@@ -940,8 +847,7 @@ module API
           'mattermost' => [
             chat_notification_settings,
             chat_notification_flags,
-            chat_notification_channels,
-            chat_notification_events
+            chat_notification_channels
           ].flatten,
           'teamcity' => [
             {
@@ -988,7 +894,7 @@ module API
               type: String,
               desc: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)'
             },
-            chat_notification_events
+            chat_notification_flags
           ].flatten,
           'unify-circuit' => [
             {
@@ -996,8 +902,7 @@ module API
               name: :webhook,
               type: String,
               desc: 'The Unify Circuit webhook. e.g. https://circuit.com/rest/v2/webhooks/incoming/…'
-            },
-            chat_notification_events
+            }
           ].flatten,
           'webex-teams' => [
             {
@@ -1005,8 +910,7 @@ module API
               name: :webhook,
               type: String,
               desc: 'The Webex Teams webhook. For example, https://api.ciscospark.com/v1/webhooks/incoming/...'
-            },
-            chat_notification_events
+            }
           ].flatten,
           'zentao' => [
             {
@@ -1082,12 +986,17 @@ module API
           ::Integrations::PipelinesEmail,
           ::Integrations::Pivotaltracker,
           ::Integrations::Prometheus,
+          ::Integrations::Pumble,
           ::Integrations::Pushover,
           ::Integrations::Redmine,
+          ::Integrations::Shimo,
           ::Integrations::Slack,
           ::Integrations::SlackSlashCommands,
           ::Integrations::SquashTm,
           ::Integrations::Teamcity,
+          ::Integrations::Telegram,
+          ::Integrations::UnifyCircuit,
+          ::Integrations::WebexTeams,
           ::Integrations::Youtrack,
           ::Integrations::Zentao
         ]

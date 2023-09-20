@@ -94,6 +94,17 @@ RSpec.shared_examples 'shows runner in list' do
   end
 end
 
+RSpec.shared_examples 'shows runner details from list' do
+  it 'shows runner details page' do
+    click_link("##{runner.id} (#{runner.short_sha})")
+
+    expect(current_url).to include(runner_page_path)
+
+    expect(page).to have_selector 'h1', text: "##{runner.id} (#{runner.short_sha})"
+    expect(page).to have_content "#{s_('Runners|Description')} #{runner.description}"
+  end
+end
+
 RSpec.shared_examples 'pauses, resumes and deletes a runner' do
   include Spec::Support::Helpers::ModalHelpers
 
@@ -188,6 +199,13 @@ RSpec.shared_examples 'shows runner jobs tab' do
         expect(page).to have_link("##{job.id}")
       end
     end
+  end
+end
+
+RSpec.shared_examples 'shows locked field' do
+  it 'shows locked checkbox with description', :js do
+    expect(page).to have_selector('input[type="checkbox"][name="locked"]')
+    expect(page).to have_content(_('Lock to current projects'))
   end
 end
 

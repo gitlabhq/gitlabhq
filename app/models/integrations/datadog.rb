@@ -12,7 +12,7 @@ module Integrations
       pipeline build archive_trace
     ].freeze
 
-    TAG_KEY_VALUE_RE = %r{\A [\w-]+ : .*\S.* \z}x.freeze
+    TAG_KEY_VALUE_RE = %r{\A [\w-]+ : .*\S.* \z}x
 
     field :datadog_site,
       exposes_secrets: true,
@@ -40,7 +40,7 @@ module Integrations
         ERB::Util.html_escape(
           s_('DatadogIntegration|%{linkOpen}API key%{linkClose} used for authentication with Datadog.')
         ) % {
-          linkOpen: %{<a href="#{URL_API_KEYS_DOCS}" target="_blank" rel="noopener noreferrer">}.html_safe,
+          linkOpen: %(<a href="#{URL_API_KEYS_DOCS}" target="_blank" rel="noopener noreferrer">).html_safe,
           linkClose: '</a>'.html_safe
         }
       end,

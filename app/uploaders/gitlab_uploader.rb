@@ -5,7 +5,7 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   class_attribute :storage_location_identifier
 
-  PROTECTED_METHODS = %i(filename cache_dir work_dir store_dir).freeze
+  PROTECTED_METHODS = %i[filename cache_dir work_dir store_dir].freeze
 
   ObjectNotReadyError = Class.new(StandardError)
 

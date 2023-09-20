@@ -20,17 +20,17 @@ module Sidebars
 
       override :super_sidebar_context_header
       def super_sidebar_context_header
-        @super_sidebar_context_header ||= {
-          title: aria_label,
-          icon: 'work'
-        }
+        aria_label
       end
 
       private
 
       def add_menus
+        return unless context.current_user
+
         add_menu(Sidebars::YourWork::Menus::ProjectsMenu.new(context))
         add_menu(Sidebars::YourWork::Menus::GroupsMenu.new(context))
+        add_menu(Sidebars::YourWork::Menus::OrganizationsMenu.new(context))
         add_menu(Sidebars::YourWork::Menus::IssuesMenu.new(context))
         add_menu(Sidebars::YourWork::Menus::MergeRequestsMenu.new(context))
         add_menu(Sidebars::YourWork::Menus::TodosMenu.new(context))

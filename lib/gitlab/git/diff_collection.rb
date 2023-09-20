@@ -13,6 +13,10 @@ module Gitlab
         { max_files: ::Commit.diff_safe_max_files, max_lines: ::Commit.diff_safe_max_lines }
       end
 
+      def self.collect_all_paths?(collect_all_paths)
+        Gitlab::Git::Diff.collect_patch_overage? ? collect_all_paths : false
+      end
+
       def self.limits(options = {})
         limits = {}
         defaults = default_limits
@@ -25,7 +29,7 @@ module Gitlab
         limits[:safe_max_bytes] = limits[:safe_max_files] * 5.kilobytes # Average 5 KB per file
         limits[:max_patch_bytes] = Gitlab::Git::Diff.patch_hard_limit_bytes
         limits[:max_patch_bytes_for_file_extension] = options.fetch(:max_patch_bytes_for_file_extension, {})
-
+        limits[:collect_all_paths] = collect_all_paths?(options.fetch(:collect_all_paths, false))
         limits
       end
 
@@ -164,7 +168,12 @@ module Gitlab
 
           if raw.overflow_marker
             @overflow = true
-            break
+            # If we're requesting patches with `collect_all_paths` enabled, then
+            # Once we hit the overflow marker, gitlay has still returned diffs, just without
+            # patches, only metadata
+            unless @limits[:collect_all_paths]
+              break
+            end
           end
 
           yield @array[i] = diff

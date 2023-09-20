@@ -1,0 +1,1 @@
+import '../performance_bar';

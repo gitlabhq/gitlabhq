@@ -19,22 +19,6 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
 
       expect(page).to have_selector("#note_#{note.id}", text: 'Looks good!')
     end
-
-    context 'when action_cable_notes is disabled' do
-      before do
-        stub_feature_flags(action_cable_notes: false)
-      end
-
-      it 'displays the new comment' do
-        visit project_issue_path(project, issue)
-        close_rich_text_promo_popover_if_present
-
-        note = create(:note, noteable: issue, project: project, note: 'Looks good!')
-        wait_for_requests
-
-        expect(page).to have_selector("#note_#{note.id}", text: 'Looks good!')
-      end
-    end
   end
 
   describe 'updates' do

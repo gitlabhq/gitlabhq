@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Composer packages in the Package Registry **(FREE ALL)**
+# Composer packages in the Package Registry **(FREE ALL BETA)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab 13.2.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
@@ -280,20 +280,52 @@ To install a package:
    composer req <package-name>:<package-version>
    ```
 
-   If successful, you should see output indicating that the package installed successfully.
-
-   You can also install from source (by pulling the Git repository directly) using the
-   `--prefer-source` option:
-
-   ```shell
-   composer update --prefer-source
-   ```
-
 WARNING:
 Never commit the `auth.json` file to your repository. To install packages from a CI/CD job,
 consider using the [`composer config`](https://getcomposer.org/doc/articles/handling-private-packages.md#satis) tool with your access token
 stored in a [GitLab CI/CD variable](../../../ci/variables/index.md) or in
 [HashiCorp Vault](../../../ci/secrets/index.md).
+
+### Install from source
+
+You can install from source by pulling the Git repository directly. To do so, either:
+
+- Use the `--prefer-source` option:
+
+  ```shell
+  composer update --prefer-source
+  ```
+
+- In the `composer.json`, use the [`preferred-install` field under the `config` key](https://getcomposer.org/doc/06-config.md#preferred-install):
+
+  ```json
+  {
+    ...
+    "config": {
+      "preferred-install": {
+        "<package name>": "source"
+      }
+    }
+    ...
+   }
+  ```
+
+#### SSH access
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119739) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can
+[enable the feature flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`.
+
+When you install from source, the `composer` configures an
+access to the project's Git repository.
+Depending on the project visibility, the access type is different:
+
+- On public projects, the `https` Git URL is used. Make sure you can [clone the repository with HTTPS](../../../gitlab-basics/start-using-git.md#clone-with-https).
+- On internal or private projects, the `ssh` Git URL is used. Make sure you can [clone the repository with SSH](../../../gitlab-basics/start-using-git.md#clone-with-ssh).
+
+You can access the `ssh` Git URL from a CI/CD job using [SSH keys with GitLab CI/CD](../../../ci/ssh_keys/index.md).
 
 ### Working with Deploy Tokens
 

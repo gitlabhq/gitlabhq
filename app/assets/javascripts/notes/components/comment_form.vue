@@ -5,7 +5,6 @@ import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/alert';
-import { badgeState } from '~/issuable/components/status_box.vue';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
 import {
@@ -14,6 +13,7 @@ import {
   slugifyWithUnderscore,
 } from '~/lib/utils/text_utility';
 import { sprintf } from '~/locale';
+import { badgeState } from '~/merge_requests/components/merge_request_status_badge.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -210,8 +210,6 @@ export default {
   methods: {
     ...mapActions([
       'saveNote',
-      'stopPolling',
-      'restartPolling',
       'removePlaceholderNotes',
       'closeIssuable',
       'reopenIssuable',
@@ -253,7 +251,6 @@ export default {
         }
 
         this.note = ''; // Empty textarea while being requested. Repopulate in catch
-        this.stopPolling();
 
         this.isSubmitting = true;
 
@@ -264,7 +261,6 @@ export default {
 
         this.saveNote(noteData)
           .then(() => {
-            this.restartPolling();
             this.discard();
 
             if (withIssueAction) {
@@ -381,7 +377,10 @@ export default {
                 @input="onInput"
               />
             </comment-field-layout>
-            <div class="note-form-actions">
+            <div
+              class="note-form-actions gl-font-size-0"
+              :class="{ 'gl-display-flex gl-gap-3': hasDrafts }"
+            >
               <template v-if="hasDrafts">
                 <gl-button
                   :disabled="disableSubmitButton"
@@ -404,7 +403,7 @@ export default {
                 <gl-form-checkbox
                   v-if="canSetInternalNote"
                   v-model="noteIsInternal"
-                  class="gl-mb-2"
+                  class="gl-mb-2 gl-flex-basis-full"
                   data-testid="internal-note-checkbox"
                 >
                   {{ $options.i18n.internal }}

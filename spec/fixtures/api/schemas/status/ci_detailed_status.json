@@ -17,7 +17,7 @@
     "group": { "type": "string" },
     "tooltip": { "type": "string" },
     "has_details": { "type": "boolean" },
-    "details_path": { "type": "string" },
+    "details_path": { "oneOf": [{ "type": "null" }, {"type": "string" }] },
     "favicon": { "type": "string" },
     "illustration": { "$ref": "illustration.json" },
     "action": { "$ref": "action.json" }

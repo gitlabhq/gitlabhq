@@ -292,7 +292,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       let(:label) { 'counts.package_events_i_package_push_package_by_deploy_token' }
       let(:property) { 'i_package_push_package_by_deploy_token' }
       let(:service_ping_context) do
-        [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: 'counts.package_events_i_package_push_package_by_deploy_token').to_h]
+        [Gitlab::Usage::MetricDefinition.context_for('counts.package_events_i_package_push_package_by_deploy_token').to_h]
       end
 
       it 'logs a snowplow event' do
@@ -320,7 +320,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       let(:label) { 'counts.package_events_i_package_pull_package_by_guest' }
       let(:property) { 'i_package_pull_package_by_guest' }
       let(:service_ping_context) do
-        [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: 'counts.package_events_i_package_pull_package_by_guest').to_h]
+        [Gitlab::Usage::MetricDefinition.context_for('counts.package_events_i_package_pull_package_by_guest').to_h]
       end
 
       it 'logs a snowplow event' do

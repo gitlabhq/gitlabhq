@@ -9,7 +9,7 @@ module Gitlab
       LOST_AND_FOUND = File.join(ABSOLUTE_ARTIFACT_DIR, '-', 'lost+found').freeze
       BATCH_SIZE = 500
       DEFAULT_NICENESS = 'best-effort'
-      VALID_NICENESS_LEVELS = %w{none realtime best-effort idle}.freeze
+      VALID_NICENESS_LEVELS = %w[none realtime best-effort idle].freeze
 
       attr_accessor :batch, :total_found, :total_cleaned
       attr_reader :dry_run, :niceness, :logger

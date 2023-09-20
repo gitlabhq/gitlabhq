@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/RedundantSafeNavigation:
-  Details: grace period
   Exclude:
     - 'app/controllers/import/base_controller.rb'
     - 'app/graphql/resolvers/users_resolver.rb'

@@ -10,7 +10,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
   end
 
   context 'as a user' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, :no_super_sidebar) }
 
     before do
       sign_in(user)
@@ -76,7 +76,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
   end
 
   context 'as an admin' do
-    let(:user) { create(:admin) }
+    let(:user) { create(:admin, :no_super_sidebar) }
 
     shared_examples '"New project" page' do
       before do
@@ -566,14 +566,14 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
     let(:provider) { :bitbucket }
 
     context 'as a user' do
-      let(:user) { create(:user) }
+      let(:user) { create(:user, :no_super_sidebar) }
       let(:oauth_config_instructions) { 'To enable importing projects from Bitbucket, ask your GitLab administrator to configure OAuth integration' }
 
       it_behaves_like 'has instructions to enable OAuth'
     end
 
     context 'as an admin', :do_not_mock_admin_mode_setting do
-      let(:user) { create(:admin) }
+      let(:user) { create(:admin, :no_super_sidebar) }
       let(:oauth_config_instructions) { 'To enable importing projects from Bitbucket, as administrator you need to configure OAuth integration' }
 
       it_behaves_like 'has instructions to enable OAuth'
@@ -581,7 +581,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
   end
 
   describe 'sidebar' do
-    let_it_be(:user) { create(:user) }
+    let_it_be(:user) { create(:user, :no_super_sidebar) }
     let_it_be(:parent_group) { create(:group) }
 
     before do
@@ -616,14 +616,14 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       context 'for a new top-level project' do
         it 'shows the "Your work" navigation' do
           visit new_project_path
-          expect(page).to have_selector(".super-sidebar .context-switcher-toggle", text: "Your work")
+          expect(page).to have_selector(".super-sidebar", text: "Your work")
         end
       end
 
       context 'for a new group project' do
         it 'shows the group sidebar of the parent group' do
           visit new_project_path(namespace_id: parent_group.id)
-          expect(page).to have_selector(".super-sidebar .context-switcher-toggle", text: parent_group.name)
+          expect(page).to have_selector(".super-sidebar", text: parent_group.name)
         end
       end
     end

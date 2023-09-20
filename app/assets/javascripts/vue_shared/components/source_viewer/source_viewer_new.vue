@@ -41,8 +41,14 @@ export default {
     addBlobLinksTracking();
   },
   mounted() {
-    const { hash } = this.$route;
-    this.lineHighlighter.highlightHash(hash);
+    this.selectLine();
+  },
+  methods: {
+    async selectLine() {
+      await this.$nextTick();
+      const scrollEnabled = false;
+      this.lineHighlighter.highlightHash(this.$route.hash, scrollEnabled);
+    },
   },
   userColorScheme: window.gon.user_color_scheme,
 };
@@ -66,6 +72,7 @@ export default {
       :total-lines="chunk.totalLines"
       :starting-from="chunk.startingFrom"
       :blame-path="blob.blamePath"
+      @appear="selectLine"
     />
   </div>
 </template>

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Blame do
+RSpec.describe Gitlab::Git::Blame, feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository.raw }
   let(:sha) { TestEnv::BRANCH_SHA['master'] }
@@ -37,6 +37,14 @@ RSpec.describe Gitlab::Git::Blame do
       it 'only returns the range' do
         expect(result.size).to eq(range.size)
         expect(result.map { |r| r[:line] }).to eq(['', 'This guide details how contribute to GitLab.', ''])
+      end
+
+      context 'when range is outside of the file content range' do
+        let(:range) { 9999..10000 }
+
+        it 'returns an empty array' do
+          expect(result).to eq([])
+        end
       end
     end
 

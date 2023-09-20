@@ -34,7 +34,7 @@ Prerequisite:
 
 To view code review analytics:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Code review analytics**.
 1. Optional. Filter results:
    1. Select the filter bar.

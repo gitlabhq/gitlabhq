@@ -3,7 +3,7 @@
 module Gitlab
   module X509
     class Certificate
-      CERT_REGEX = /-----BEGIN CERTIFICATE-----(?:.|\n)+?-----END CERTIFICATE-----/.freeze
+      CERT_REGEX = /-----BEGIN CERTIFICATE-----(?:.|\n)+?-----END CERTIFICATE-----/
 
       attr_reader :key, :cert, :ca_certs
 

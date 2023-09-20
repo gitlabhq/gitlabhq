@@ -26,6 +26,7 @@ variables:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   extends:
     - .qa-cache
+    - .default-retry
   stage: test
   services:
     - docker:${DOCKER_VERSION}-dind
@@ -41,15 +42,16 @@ variables:
     FF_NETWORK_PER_BUILD: 1
     GDK_URL: http://gdk.test:3000
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/*_spec.rb"
+    QA_SUITE_STATUS_ENV_FILE: "$CI_PROJECT_DIR/suite_status.env"
   before_script:
-    - echo "SUITE_RAN=true" > suite_status.env
-    - echo -e "\e[0Ksection_start:`date +%s`:pull_image\r\e[0KPull GDK QA image"
+    - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
+    - echo -e "\e[0Ksection_start:`date +%s`:pull_image[collapsed=true]\r\e[0KPull GDK QA image"
     - docker pull ${GDK_IMAGE}
     - echo -e "\e[0Ksection_end:`date +%s`:pull_image\r\e[0K"
     # Despite `incremental: false` and `static: true`, GDK sometimes fails to start without increasing max user watches
     # This is why we're not running the GDK container as a service
     - sysctl -n -w fs.inotify.max_user_watches=524288
-    - echo -e "\e[0Ksection_start:`date +%s`:launch_gdk\r\e[0KLaunch GDK"
+    - echo -e "\e[0Ksection_start:`date +%s`:launch_gdk[collapsed=true]\r\e[0KLaunch GDK"
     - mkdir -p $CI_PROJECT_DIR/log/gdk $CI_PROJECT_DIR/log/gitlab
     # This command matches the permissions of the user that runs GDK inside the container.
     - chown -R 1000:1000 $CI_PROJECT_DIR/log
@@ -61,29 +63,28 @@ variables:
     # With `FF_NETWORK_PER_BUILD=1` and `--network host` the IP of the gdk container should be 172.18.0.2, but we get it
     # dynamically just in case
     - echo "$(docker exec gdk bash -c "getent hosts \$HOSTNAME" | awk '{print $1}') gdk.test" >> /etc/hosts
+    - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
+    - echo -e "\e[0Ksection_start:`date +%s`:install_gems[collapsed=true]\r\e[0KInstall gems"
     - source scripts/utils.sh
     - cd qa && bundle install
+    - echo -e "\e[0Ksection_end:`date +%s`:install_gems\r\e[0K"
   script:
-    - retry_exponential test_url $GDK_URL/users/sign_in
-    - echo -e "\e[0Ksection_end:`date +%s`:launch_gdk\r\e[0K"
+    - echo -e "\e[0Ksection_start:`date +%s`:healthcheck[collapsed=true]\r\e[0KWait for gdk to start"
+    - retry_times_sleep 100 3 test_url $GDK_URL/users/sign_in
+    - echo -e "\e[0Ksection_end:`date +%s`:healthcheck\r\e[0K"
     - echo -e "\e[0Ksection_start:`date +%s`:run_tests\r\e[0KRun E2E tests"
     - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS $QA_RSPEC_TAGS $RSPEC_REPORT_OPTS"
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
     - echo -e "\e[0Ksection_end:`date +%s`:run_tests\r\e[0K"
-  after_script:
-    - |
-      if [ "$CI_JOB_STATUS" == "failed" ]; then
-        echo "SUITE_FAILED=true" >> suite_status.env
-      fi
-    - docker stop gdk
   artifacts:
     paths:
       - qa/tmp
-      - log
+      - log/gitlab
+      - log/gdk/*/current
     reports:
       junit: qa/tmp/rspec-*.xml
-      dotenv: suite_status.env
+      dotenv: "$QA_SUITE_STATUS_ENV_FILE"
     expire_in: 7 days
     when: always
 
@@ -125,6 +126,7 @@ download-fast-quarantine-report:
 gdk-qa-smoke:
   extends:
     - .gdk-qa-base
+    - .gitlab-qa-report
   variables:
     QA_SCENARIO: Test::Instance::Smoke
     QA_RUN_TYPE: gdk-qa-smoke
@@ -144,21 +146,23 @@ gdk-qa-smoke-with-load-balancer:
     reports:
       dotenv: ""
   rules:
-    - changes:
-        - ".gitlab/ci/test-on-gdk/**"
-        - "lib/gitlab/database/load_balancing/**/*"
+    - !reference [".rules:test:never-schedule-pipeline", rules]
+    - !reference [".rules:test:gdk-load-balancer-changes", rules]
   allow_failure: true
 
 gdk-qa-reliable:
   extends:
     - .gdk-qa-base
+    - .gitlab-qa-report
     - .parallel
   variables:
     QA_SCENARIO: Test::Instance::Blocking
     QA_RUN_TYPE: gdk-qa-blocking
+  parallel: 10
   rules:
-    - when: always
-  allow_failure: true
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /devops::govern/'
+    - when: on_success
+      allow_failure: true
 
 gdk-qa-reliable-with-load-balancer:
   extends:
@@ -174,9 +178,8 @@ gdk-qa-reliable-with-load-balancer:
     reports:
       dotenv: ""
   rules:
-    - changes:
-        - ".gitlab/ci/test-on-gdk/**"
-        - "lib/gitlab/database/load_balancing/**/*"
+    - !reference [".rules:test:never-schedule-pipeline", rules]
+    - !reference [".rules:test:gdk-load-balancer-changes", rules]
   allow_failure: true
 
 gdk-qa-non-blocking:

@@ -31,12 +31,12 @@ module Integrations
     # Custom serialized properties initialization
     prop_accessor(*SUPPORTED_EVENTS.map { |event| EVENT_CHANNEL[event] })
 
-    boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
+    boolean_accessor :notify_only_default_branch
 
     validates :webhook,
       presence: true,
       public_url: true,
-      if: -> (integration) { integration.activated? && integration.requires_webhook? }
+      if: -> (integration) { integration.activated? && integration.class.requires_webhook? }
     validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_blank: true, if: :activated?
     validate :validate_channel_limit, if: :activated?
 
@@ -44,7 +44,7 @@ module Integrations
       super
 
       if properties.empty?
-        self.notify_only_broken_pipelines = true
+        self.notify_only_broken_pipelines = true if self.respond_to?(:notify_only_broken_pipelines)
         self.branches_to_be_notified = "default"
         self.labels_to_be_notified_behavior = MATCH_ANY_LABEL
       elsif !self.notify_only_default_branch.nil?
@@ -72,48 +72,7 @@ module Integrations
     end
 
     def fields
-      default_fields + build_event_channels
-    end
-
-    def default_fields
-      [
-        {
-          type: :checkbox,
-          section: SECTION_TYPE_CONFIGURATION,
-          name: 'notify_only_broken_pipelines',
-          help: 'Do not send notifications for successful pipelines.'
-        }.freeze,
-        {
-          type: :select,
-          section: SECTION_TYPE_CONFIGURATION,
-          name: 'branches_to_be_notified',
-          title: s_('Integrations|Branches for which notifications are to be sent'),
-          choices: self.class.branch_choices
-        }.freeze,
-        {
-          type: :text,
-          section: SECTION_TYPE_CONFIGURATION,
-          name: 'labels_to_be_notified',
-          placeholder: '~backend,~frontend',
-          help: 'Send notifications for issue, merge request, and comment events with the listed labels only. Leave blank to receive notifications for all events.'
-        }.freeze,
-        {
-          type: :select,
-          section: SECTION_TYPE_CONFIGURATION,
-          name: 'labels_to_be_notified_behavior',
-          choices: [
-            ['Match any of the labels', MATCH_ANY_LABEL],
-            ['Match all of the labels', MATCH_ALL_LABELS]
-          ]
-        }.freeze
-      ].tap do |fields|
-        next unless requires_webhook?
-
-        fields.unshift(
-          { type: :text, name: 'webhook', help: webhook_help, required: true }.freeze,
-          { type: :text, name: 'username', placeholder: 'GitLab-integration' }.freeze
-        )
-      end.freeze
+      self.class.fields + build_event_channels
     end
 
     def execute(data)
@@ -154,6 +113,15 @@ module Integrations
       supported_events.map { |event| event_channel_name(event) }
     end
 
+    override :api_field_names
+    def api_field_names
+      if mask_configurable_channels?
+        super - event_channel_names
+      else
+        super
+      end
+    end
+
     def form_fields
       super.reject { |field| field[:name].end_with?('channel') }
     end
@@ -163,6 +131,10 @@ module Integrations
     end
 
     def webhook_help
+      raise NotImplementedError
+    end
+
+    def help
       raise NotImplementedError
     end
 
@@ -181,7 +153,7 @@ module Integrations
       self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
     end
 
-    def requires_webhook?
+    def self.requires_webhook?
       true
     end
 
@@ -193,11 +165,32 @@ module Integrations
       false
     end
 
+    override :sections
+    def sections
+      [
+        {
+          type: SECTION_TYPE_CONNECTION,
+          title: s_('Integrations|Connection details'),
+          description: help
+        },
+        {
+          type: SECTION_TYPE_TRIGGER,
+          title: s_('Integrations|Trigger'),
+          description: s_('Integrations|An event will be triggered when one of the following items happen.')
+        },
+        {
+          type: SECTION_TYPE_CONFIGURATION,
+          title: s_('Integrations|Notification settings'),
+          description: s_('Integrations|Configure the scope of notifications.')
+        }
+      ]
+    end
+
     private
 
     def should_execute?(object_kind)
       supported_events.include?(object_kind) &&
-        (!requires_webhook? || webhook.present?)
+        (!self.class.requires_webhook? || webhook.present?)
     end
 
     def log_usage(_, _)
@@ -264,7 +257,7 @@ module Integrations
 
     def build_event_channels
       event_channel_names.map do |channel_field|
-        { type: :text, name: channel_field, placeholder: default_channel_placeholder }
+        Field.new(name: channel_field, type: :text, placeholder: default_channel_placeholder, integration_class: self)
       end
     end
 

@@ -17,11 +17,11 @@ import TimelogsTable from './timelogs_table.vue';
 const ENTRIES_PER_PAGE = 20;
 
 // Define initial dates to current date and time
-const INITIAL_TO_DATE = new Date();
-const INITIAL_FROM_DATE = new Date();
+const INITIAL_TO_DATE_TIME = new Date(new Date().setHours(0, 0, 0, 0));
+const INITIAL_FROM_DATE_TIME = new Date(new Date().setHours(0, 0, 0, 0));
 
 // Set the initial 'from' date to 30 days before the current date
-INITIAL_FROM_DATE.setDate(INITIAL_TO_DATE.getDate() - 30);
+INITIAL_FROM_DATE_TIME.setDate(INITIAL_TO_DATE_TIME.getDate() - 30);
 
 export default {
   components: {
@@ -45,8 +45,8 @@ export default {
       projectId: null,
       groupId: null,
       username: null,
-      timeSpentFrom: INITIAL_FROM_DATE,
-      timeSpentTo: INITIAL_TO_DATE,
+      timeSpentFrom: INITIAL_FROM_DATE_TIME,
+      timeSpentTo: INITIAL_TO_DATE_TIME,
       cursor: {
         first: ENTRIES_PER_PAGE,
         after: null,
@@ -54,8 +54,8 @@ export default {
         before: null,
       },
       queryVariables: {
-        startDate: INITIAL_FROM_DATE,
-        endDate: INITIAL_TO_DATE,
+        startTime: INITIAL_FROM_DATE_TIME,
+        endTime: INITIAL_TO_DATE_TIME,
         projectId: null,
         groupId: null,
         username: null,
@@ -108,9 +108,15 @@ export default {
         before: null,
       };
 
+      const { timeSpentTo } = this;
+
+      if (timeSpentTo) {
+        timeSpentTo.setDate(timeSpentTo.getDate() + 1);
+      }
+
       this.queryVariables = {
-        startDate: this.nullIfBlank(this.timeSpentFrom),
-        endDate: this.nullIfBlank(this.timeSpentTo),
+        startTime: this.nullIfBlank(this.timeSpentFrom),
+        endTime: this.nullIfBlank(timeSpentTo),
         projectId: this.nullIfBlank(this.projectId),
         groupId: this.nullIfBlank(this.groupId),
         username: this.nullIfBlank(this.username),
@@ -141,8 +147,8 @@ export default {
   },
   i18n: {
     username: s__('TimeTrackingReport|Username'),
-    from: s__('TimeTrackingReport|From'),
-    to: s__('TimeTrackingReport|To'),
+    from: s__('TimeTrackingReport|From the start of'),
+    to: s__('TimeTrackingReport|To the end of'),
     runReport: s__('TimeTrackingReport|Run report'),
     totalTimeSpentText: s__('TimeTrackingReport|Total time spent: '),
   },

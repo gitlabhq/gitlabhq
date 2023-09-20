@@ -17,7 +17,7 @@ Ensure your own [runners are configured](../../runners/index.md).
 
 ## Prerequisites
 
-- An [AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).
+- An [AWS account](https://repost.aws/knowledge-center/create-and-activate-aws-account).
   Sign in with an existing AWS account or create a new one.
 - In this guide, you create an infrastructure in [`us-east-2` region](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html).
   You can use any region, but do not change it after you begin.

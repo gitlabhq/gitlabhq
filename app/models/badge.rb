@@ -18,7 +18,7 @@ class Badge < ApplicationRecord
   # This regex is built dynamically using the keys from the PLACEHOLDER struct.
   # So, we can easily add new placeholder just by modifying the PLACEHOLDER hash.
   # This regex will build the new PLACEHOLDER_REGEX with the new information
-  PLACEHOLDERS_REGEX = /(#{PLACEHOLDERS.keys.join('|')})/.freeze
+  PLACEHOLDERS_REGEX = /(#{PLACEHOLDERS.keys.join('|')})/
 
   default_scope { order_created_at_asc } # rubocop:disable Cop/DefaultScope
 

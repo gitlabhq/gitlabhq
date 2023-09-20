@@ -16,6 +16,57 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
 
       it_behaves_like 'common user build items'
       it_behaves_like 'current user not admin build items'
+
+      context 'with "user_default_external" application setting' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:user_default_external, :external, :email, :user_default_internal_regex, :result) do
+          true  | nil   | 'fl@example.com'        | nil                     | true
+          true  | true  | 'fl@example.com'        | nil                     | true
+          true  | false | 'fl@example.com'        | nil                     | true # admin difference
+
+          true  | nil   | 'fl@example.com'        | ''                      | true
+          true  | true  | 'fl@example.com'        | ''                      | true
+          true  | false | 'fl@example.com'        | ''                      | true # admin difference
+
+          true  | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+          true  | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false # admin difference
+          true  | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+
+          true  | nil   | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
+          true  | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true
+          true  | false | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | true # admin difference
+
+          false | nil   | 'fl@example.com'        | nil                     | false
+          false | true  | 'fl@example.com'        | nil                     | false # admin difference
+          false | false | 'fl@example.com'        | nil                     | false
+
+          false | nil   | 'fl@example.com'        | ''                      | false
+          false | true  | 'fl@example.com'        | ''                      | false # admin difference
+          false | false | 'fl@example.com'        | ''                      | false
+
+          false | nil   | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+          false | true  | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false # admin difference
+          false | false | 'fl@example.com'        | '^(?:(?!\.ext@).)*$\r?' | false
+
+          false | nil   | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false
+          false | true  | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false # admin difference
+          false | false | 'tester.ext@domain.com' | '^(?:(?!\.ext@).)*$\r?' | false
+        end
+
+        with_them do
+          before do
+            stub_application_setting(user_default_external: user_default_external)
+            stub_application_setting(user_default_internal_regex: user_default_internal_regex)
+
+            params.merge!({ external: external, email: email }.compact)
+          end
+
+          it 'sets the value of Gitlab::CurrentSettings.user_default_external' do
+            expect(user.external).to eq(result)
+          end
+        end
+      end
     end
 
     context 'with non admin current_user' do

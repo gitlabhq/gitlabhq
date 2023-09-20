@@ -26,7 +26,7 @@ Prerequisite:
 
 To create a trigger token:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Pipeline trigger tokens**.
 1. Select **Add new token**
@@ -154,7 +154,7 @@ users with the Owner and Maintainer role can view the values.
 
 To revoke a pipeline trigger token:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Pipeline triggers**.
 1. To the left of the trigger token you want to revoke, select **Revoke** (**{remove}**).

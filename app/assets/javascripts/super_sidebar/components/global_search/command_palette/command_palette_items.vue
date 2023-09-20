@@ -5,6 +5,7 @@ import { GlDisclosureDropdownGroup, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import Tracking from '~/tracking';
 import { getFormattedItem } from '../utils';
 
 import {
@@ -18,6 +19,8 @@ import {
   PATH_GROUP_TITLE,
   GROUP_TITLES,
   MAX_ROWS,
+  TRACKING_ACTIVATE_COMMAND_PALETTE,
+  TRACKING_HANDLE_LABEL_MAP,
 } from './constants';
 import SearchItem from './search_item.vue';
 import { commandMapper, linksReducer, autocompleteQuery, fileMapper } from './utils';
@@ -29,6 +32,7 @@ export default {
     GlLoadingIcon,
     SearchItem,
   },
+  mixins: [Tracking.mixin()],
   inject: [
     'commandPaletteCommands',
     'commandPaletteLinks',
@@ -134,10 +138,15 @@ export default {
       immediate: true,
     },
     handle: {
-      handler() {
-        this.debouncedSearch();
+      handler(value, oldValue) {
+        // Do not run search immediately on component creation
+        if (oldValue !== undefined) this.debouncedSearch();
+
+        // Track immediately on component creation
+        const label = TRACKING_HANDLE_LABEL_MAP[value] ?? 'unknown';
+        this.track(TRACKING_ACTIVATE_COMMAND_PALETTE, { label });
       },
-      immediate: false,
+      immediate: true,
     },
   },
   updated() {

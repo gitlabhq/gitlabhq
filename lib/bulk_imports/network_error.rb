@@ -5,10 +5,19 @@ module BulkImports
     TRACKER_COUNTER_KEY = 'bulk_imports/%{entity_id}/%{stage}/%{tracker_id}/network_error/%{error}'
     ENTITY_COUNTER_KEY = 'bulk_imports/%{entity_id}/network_error/%{error}'
 
-    RETRIABLE_EXCEPTIONS = Gitlab::HTTP::HTTP_TIMEOUT_ERRORS + [
+    NO_SPACE_LEFT_EXCEPTION = Errno::ENOSPC
+    DECOMPRESSION_FAILURE_EXCEPTION = Zlib::Error
+
+    EXCEPTIONS_RETRY_DELAY = {
+      NO_SPACE_LEFT_EXCEPTION => 120,
+      DECOMPRESSION_FAILURE_EXCEPTION => 60
+    }.freeze
+
+    RETRIABLE_EXCEPTIONS = Gitlab::HTTP::HTTP_TIMEOUT_ERRORS + EXCEPTIONS_RETRY_DELAY.keys + [
       EOFError, SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
       Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH
     ].freeze
+
     RETRIABLE_HTTP_CODES = [429].freeze
 
     DEFAULT_RETRY_DELAY_SECONDS = 30
@@ -37,7 +46,7 @@ module BulkImports
       if response&.code == 429
         response.headers.fetch('Retry-After', DEFAULT_RETRY_DELAY_SECONDS).to_i
       else
-        DEFAULT_RETRY_DELAY_SECONDS
+        EXCEPTIONS_RETRY_DELAY[cause&.class] || DEFAULT_RETRY_DELAY_SECONDS
       end.seconds
     end
 

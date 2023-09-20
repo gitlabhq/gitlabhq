@@ -14,7 +14,6 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import isLastDeployment from '../graphql/queries/is_last_deployment.query.graphql';
 import getEnvironmentClusterAgent from '../graphql/queries/environment_cluster_agent.query.graphql';
-import getEnvironmentClusterAgentWithFluxResource from '../graphql/queries/environment_cluster_agent_with_flux_resource.query.graphql';
 import ExternalUrl from './environment_external_url.vue';
 import Actions from './environment_actions.vue';
 import StopComponent from './environment_stop.vue';
@@ -165,9 +164,6 @@ export default {
     rolloutStatus() {
       return this.environment?.rolloutStatus;
     },
-    isFluxResourceAvailable() {
-      return this.glFeatures?.fluxResourceForEnvironment;
-    },
   },
   methods: {
     toggleEnvironmentCollapse() {
@@ -185,9 +181,7 @@ export default {
           return { environmentName: this.environment.name, projectFullPath: this.projectPath };
         },
         query() {
-          return this.isFluxResourceAvailable
-            ? getEnvironmentClusterAgentWithFluxResource
-            : getEnvironmentClusterAgent;
+          return getEnvironmentClusterAgent;
         },
         update(data) {
           this.clusterAgent = data?.project?.environment?.clusterAgent;

@@ -96,6 +96,12 @@ module Types
               required: true,
               description: 'Global ID of the note.'
           end
+    field :organization,
+          Types::Organizations::OrganizationType,
+          null: true,
+          resolver: Resolvers::Organizations::OrganizationResolver,
+          description: "Find an organization.",
+          alpha: { milestone: '16.4' }
     field :package,
           description: 'Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.',
           resolver: Resolvers::PackageDetailsResolver
@@ -122,7 +128,8 @@ module Types
     field :runners, Types::Ci::RunnerType.connection_type,
           null: true,
           resolver: Resolvers::Ci::RunnersResolver,
-          description: "Find runners visible to the current user."
+          description: "Get all runners in the GitLab instance (project and shared). " \
+                       "Access is restricted to users with administrator access."
     field :snippets,
           Types::SnippetType.connection_type,
           null: true,

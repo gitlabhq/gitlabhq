@@ -17,19 +17,20 @@ module ClickHouse
       end
 
       def uri
-        @uri ||= begin
-          parsed = Addressable::URI.parse(@url)
-          parsed.query_values = @variables
-          parsed
-        end
+        @uri ||= build_custom_uri
+      end
+
+      def build_custom_uri(extra_variables: {})
+        parsed = Addressable::URI.parse(@url)
+        parsed.query_values = @variables.merge(extra_variables)
+        parsed
       end
 
       def headers
         @headers ||= {
           'X-ClickHouse-User' => @username,
           'X-ClickHouse-Key' => @password,
-          'X-ClickHouse-Format' => 'JSON', # always return JSON data
-          'Content-Encoding' => 'gzip' # tell the server that we send compressed data
+          'X-ClickHouse-Format' => 'JSON' # always return JSON data
         }.freeze
       end
     end

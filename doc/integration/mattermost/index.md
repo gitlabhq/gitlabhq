@@ -224,7 +224,7 @@ sudo chown mattermost:mattermost /var/opt/gitlab/mattermost/config.json
 sudo gitlab-ctl start mattermost
 ```
 
-## Mattermost Command Line Tools (CLI)
+## Mattermost command-line tool (CLI)
 
 [`mmctl`](https://docs.mattermost.com/manage/mmctl-command-line-tool.html) is a CLI tool for the Mattermost server which is installed locally and uses the Mattermost API, but may also be used remotely. You must configure Mattermost either for local connections or authenticate as an administrator with local login credentials (not through GitLab SSO). The executable is located at `/opt/gitlab/embedded/bin/mmctl`.
 
@@ -308,42 +308,6 @@ This setting can also be configured in `/var/opt/gitlab/mattermost/config.json`.
 
 ## Upgrading GitLab Mattermost
 
-Below is a list of Mattermost versions for GitLab 14.0 and later:
-
-| GitLab version | Mattermost version |
-|:---------------|:-------------------|
-| 16.2           | 7.10               |
-| 16.1           | 7.10               |
-| 16.0           | 7.10               |
-| 15.11          | 7.9                |
-| 15.10          | 7.8                |
-| 15.9           | 7.7                |
-| 15.8           | 7.5                |
-| 15.7           | 7.5                |
-| 15.6           | 7.4                |
-| 15.5           | 7.3                |
-| 15.4           | 7.2                |
-| 15.3           | 7.1                |
-| 15.2           | 7.0                |
-| 15.1           | 6.7                |
-| 15.0           | 6.6                |
-| 14.10          | 6.5                |
-| 14.9           | 6.4                |
-| 14.8           | 6.3                |
-| 14.7           | 6.2                |
-| 14.6           | 6.1                |
-| 14.5           | 5.39               |
-| 14.4           | 5.39               |
-| 14.3           | 5.38               |
-| 14.2           | 5.37               |
-| 14.1           | 5.36               |
-| 14.0           | 5.35               |
-
-- GitLab 14.5 remained on Mattermost 5.39.
-- GitLab 14.6 updates to Mattermost 6.1 instead of 6.0.
-- GitLab 15.8 remained on Mattermost 7.5.
-- GitLab 16.1 and 16.2 remained on Mattermost 7.10.
-
 NOTE:
 When upgrading the Mattermost version, it is essential to check the
 [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html)
@@ -368,7 +332,38 @@ If this is not the case, there are two options:
 
 For a complete list of upgrade notices and special considerations for older versions, see the [Mattermost documentation](https://docs.mattermost.com/administration/important-upgrade-notes.html).
 
-## Upgrading GitLab Mattermost to 14.6
+### GitLab Mattermost versions shipped with the Linux package
+
+Below is a list of Mattermost version changes for GitLab 14.0 and later:
+
+| GitLab version | Mattermost version | Notes                                                                                    |
+| :------------- | :----------------- | ---------------------------------------------------------------------------------------- |
+| 16.4           | 8.1                |                                                                                          |
+| 16.3           | 8.0                |                                                                                          |
+| 16.0           | 7.10               |                                                                                          |
+| 15.11          | 7.9                |                                                                                          |
+| 15.10          | 7.8                |                                                                                          |
+| 15.9           | 7.7                |                                                                                          |
+| 15.7           | 7.5                |                                                                                          |
+| 15.6           | 7.4                |                                                                                          |
+| 15.5           | 7.3                |                                                                                          |
+| 15.4           | 7.2                |                                                                                          |
+| 15.3           | 7.1                |                                                                                          |
+| 15.2           | 7.0                |                                                                                          |
+| 15.1           | 6.7                |                                                                                          |
+| 15.0           | 6.6                |                                                                                          |
+| 14.10          | 6.5                |                                                                                          |
+| 14.9           | 6.4                |                                                                                          |
+| 14.8           | 6.3                |                                                                                          |
+| 14.7           | 6.2                |                                                                                          |
+| 14.6           | 6.1                | Updates to 6.1 instead of 6.0. [See upgrade notes](#upgrading-gitlab-mattermost-to-146). |
+| 14.4           | 5.39               |                                                                                          |
+| 14.3           | 5.38               |                                                                                          |
+| 14.2           | 5.37               |                                                                                          |
+| 14.1           | 5.36               |                                                                                          |
+| 14.0           | 5.35               |                                                                                          |
+
+### Upgrading GitLab Mattermost to 14.6
 
 GitLab 14.6 ships with Mattermost 6.1 including potentially long running database migrations for Mattermost 6.0. For information about upgrading and for ways to reduce the downtime caused by those migrations, read the [Important Upgrade Notes](https://docs.mattermost.com/administration/important-upgrade-notes.html) for both versions. If you need to perform any manual migrations, [connect to the bundled PostgreSQL database](#connecting-to-the-bundled-postgresql-database).
 
@@ -409,4 +404,3 @@ For help and support around your GitLab Mattermost deployment, see:
 
 - [Troubleshooting Mattermost issues](https://docs.mattermost.com/install/troubleshooting.html).
 - [Mattermost GitLab Issues Support Handbook](https://docs.mattermost.com/process/support.html?highlight=omnibus#gitlab-issues).
-- [GitLab Mattermost issue tracker](https://gitlab.com/gitlab-org/gitlab-mattermost/-/issues) for verified bugs with repro steps.

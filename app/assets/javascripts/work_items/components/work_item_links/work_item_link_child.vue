@@ -13,6 +13,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_NAME_TO_ICON_MAP,
 } from '../../constants';
+import { workItemPath } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
 import WorkItemTreeChildren from './work_item_tree_children.vue';
@@ -90,7 +91,7 @@ export default {
       return this.isItemOpen ? __('Created') : __('Closed');
     },
     childPath() {
-      return `${gon?.relative_url_root || ''}/${this.fullPath}/-/work_items/${this.childItem.iid}`;
+      return workItemPath(this.fullPath, this.childItem.iid);
     },
     chevronType() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
@@ -212,7 +213,7 @@ export default {
 </script>
 
 <template>
-  <div class="tree-item">
+  <li class="tree-item">
     <div
       class="gl-display-flex gl-align-items-flex-start"
       :class="{ 'gl-ml-6': canHaveChildren && !hasChildren && hasIndirectChildren }"
@@ -249,5 +250,5 @@ export default {
       @removeChild="removeChild"
       @click="$emit('click', $event)"
     />
-  </div>
+  </li>
 </template>

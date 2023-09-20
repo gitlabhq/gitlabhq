@@ -19,7 +19,7 @@ to streamline merge request creation.
 
 You can create a merge request from the list of merge requests.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
 1. In the upper-right corner, select **New merge request**.
 1. Select a source and target branch and then **Compare branches and continue**.
@@ -95,7 +95,7 @@ You can create a merge request when you add, edit, or upload a file to a reposit
 
 You can create a merge request when you create a branch.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Branches**.
 1. Type a branch name and select **New branch**.
 1. Above the file list, on the right side, select **Create merge request**.
@@ -142,7 +142,7 @@ to reduce the need for editing merge requests manually through the UI.
 
 You can create a merge request from your fork to contribute back to the main project.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select your fork of the repository.
 1. On the left sidebar, select **Code > Merge requests**, and select **New merge request**.
 1. In the **Source branch** dropdown list box, select the branch in your forked repository as the source branch.
@@ -171,7 +171,7 @@ Prerequisites:
 
 To create a merge request by sending an email:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
 1. In the upper-right corner, select **Email a new merge request to this project**.
    An email address is displayed. Copy this address.
@@ -216,7 +216,7 @@ scenarios when you create a new merge request:
 To have merge requests from a fork by default target your own fork
 (instead of the upstream project), you can change the default.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. In the **Target project** section, select the option you want to use for
    your default target project.

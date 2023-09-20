@@ -190,9 +190,7 @@ RSpec.describe PushEventPayloadService, feature_category: :source_code_managemen
     end
 
     it 'returns :removed when removing an existing ref' do
-      service = described_class.new(event,
-                                    before: '123',
-                                    after: Gitlab::Git::BLANK_SHA)
+      service = described_class.new(event, before: '123', after: Gitlab::Git::BLANK_SHA)
 
       expect(service.action).to eq(:removed)
     end

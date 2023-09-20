@@ -17,7 +17,7 @@ export const I18N_TOAST_ENABLED = s__('ServiceDesk|Custom email enabled.');
 export const I18N_TOAST_DISABLED = s__('ServiceDesk|Custom email disabled.');
 
 export const I18N_FORM_INTRODUCTION_PARAGRAPH = s__(
-  'ServiceDesk|Connect a custom email address your customers can use to create Service Desk issues. Forward all emails from your custom email address to the Service Desk email address of this project. GitLab will send Service Desk emails from the custom address on your behalf using your SMTP credentials.',
+  'ServiceDesk|Connect a custom email address your customers can use to create Service Desk issues. Forward all emails from your custom email address to the Service Desk email address of this project. GitLab will send Service Desk emails from the custom address on your behalf using your SMTP credentials. %{linkStart}Learn more about prerequisites and the verification process%{linkEnd}.',
 );
 export const I18N_FORM_FORWARDING_LABEL = s__(
   'ServiceDesk|Service Desk email address to forward emails to',

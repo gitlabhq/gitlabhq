@@ -102,15 +102,14 @@ class ActiveSession
 
   # set marketing cookie when user has active session
   def self.set_active_user_cookie(auth)
-    auth.cookies[:about_gitlab_active_user] =
+    expiration_time = 2.weeks.from_now
+
+    auth.cookies[:gitlab_user] =
       {
         value: true,
-        domain: Gitlab.config.gitlab.host
+        domain: Gitlab.config.gitlab.host,
+        expires: expiration_time
       }
-  end
-
-  def self.unset_active_user_cookie(auth)
-    auth.cookies.delete :about_gitlab_active_user
   end
 
   def self.list(user)

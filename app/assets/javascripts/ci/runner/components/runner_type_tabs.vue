@@ -112,7 +112,12 @@ export default {
           :scope="countScope"
           :variables="tabBadgeCountVariables(tab.runnerType)"
         >
-          <gl-badge v-if="tabCount(count)" class="gl-ml-1" size="sm">
+          <gl-badge
+            v-if="tabCount(count)"
+            class="gl-ml-1"
+            size="sm"
+            :data-testid="`runner-count-${tab.title.toLowerCase()}`"
+          >
             {{ tabCount(count) }}
           </gl-badge>
         </runner-count>

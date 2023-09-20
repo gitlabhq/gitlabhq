@@ -19,9 +19,11 @@ import { sprintf, s__ } from '~/locale';
 export const toNounSeriesText = (items, { onlyCommas = false } = {}) => {
   if (items.length === 0) {
     return '';
-  } else if (items.length === 1) {
+  }
+  if (items.length === 1) {
     return sprintf(s__(`nounSeries|%{item}`), { item: items[0] }, false);
-  } else if (items.length === 2 && !onlyCommas) {
+  }
+  if (items.length === 2 && !onlyCommas) {
     return sprintf(
       s__('nounSeries|%{firstItem} and %{lastItem}'),
       {

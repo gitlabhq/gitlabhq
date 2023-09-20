@@ -76,7 +76,6 @@ export default {
       v-if="showExportButton"
       v-gl-modal="exportModalId"
       data-testid="export-as-csv-button"
-      data-qa-selector="export_as_csv_button"
       :item="dropdownItems.exportAsCSV"
     />
     <gl-disclosure-dropdown-item
@@ -88,7 +87,6 @@ export default {
     <gl-disclosure-dropdown-item
       v-if="showImportButton && canEdit"
       data-testid="import-from-jira-link"
-      data-qa-selector="import_from_jira_link"
       :item="dropdownItems.importFromJIRA"
     />
 

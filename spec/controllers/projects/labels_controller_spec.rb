@@ -297,6 +297,53 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
     end
   end
 
+  describe 'PUT #update' do
+    context 'when updating lock_on_merge' do
+      let_it_be(:params) { { lock_on_merge: true } }
+      let_it_be_with_reload(:label) { create(:label, project: project) }
+
+      subject(:update_request) { put :update, params: { namespace_id: project.namespace, project_id: project, id: label.to_param, label: params } }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: false)
+        end
+
+        it 'does not allow setting lock_on_merge' do
+          update_request
+
+          expect(response).to redirect_to(namespace_project_labels_path)
+          expect(label.reload.lock_on_merge).to be_falsey
+        end
+      end
+
+      shared_examples 'allows setting lock_on_merge' do
+        it do
+          update_request
+
+          expect(response).to redirect_to(namespace_project_labels_path)
+          expect(label.reload.lock_on_merge).to be_truthy
+        end
+      end
+
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: project)
+        end
+
+        it_behaves_like 'allows setting lock_on_merge'
+      end
+
+      context 'when feature flag for ancestor group is enabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: group)
+        end
+
+        it_behaves_like 'allows setting lock_on_merge'
+      end
+    end
+  end
+
   describe 'DELETE #destroy' do
     context 'when current user has ability to destroy the label' do
       before do

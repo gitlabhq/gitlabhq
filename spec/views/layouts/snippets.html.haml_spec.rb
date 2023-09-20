@@ -10,7 +10,7 @@ RSpec.describe 'layouts/snippets', feature_category: :source_code_management do
 
   describe 'sidebar' do
     context 'when signed in' do
-      let(:user) { build_stubbed(:user) }
+      let(:user) { build_stubbed(:user, :no_super_sidebar) }
 
       it 'renders the "Your work" sidebar' do
         render

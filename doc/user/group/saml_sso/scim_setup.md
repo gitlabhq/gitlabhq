@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -10,12 +10,14 @@ You can use the open standard System for Cross-domain Identity Management (SCIM)
 
 - Create users.
 - Remove users (deactivate SCIM identity).
+- Re-add users (reactivate SCIM identity).
 
 GitLab SAML SSO SCIM doesn't support updating users.
 
 When SCIM is enabled for a GitLab group, membership of that group is synchronized between GitLab and an identity provider.
 
 The [internal GitLab group SCIM API](../../../development/internal_api/index.md#group-scim-api) implements part of [the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
+Identity providers can use the [internal GitLab group SCIM API](../../../development/internal_api/index.md#group-scim-api) to develop a SCIM app.
 
 ## Configure GitLab
 
@@ -25,7 +27,7 @@ Prerequisites:
 
 To configure GitLab SAML SSO SCIM:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > SAML SSO**.
 1. Select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:
@@ -40,7 +42,7 @@ You can configure one of the following as an identity provider:
 - [Okta](#configure-okta).
 
 NOTE:
-Other providers can work with GitLab but they have not been tested and are not supported.
+Other providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
 
 ### Configure Azure Active Directory
 
@@ -165,7 +167,8 @@ To configure Okta for SCIM:
 During the synchronization process, all new users:
 
 - Receive GitLab accounts.
-- Are welcomed to their groups with an invitation email. You may want to warn your employees to expect this email.
+- Are welcomed to their groups with an invitation email.
+  You can [bypass email confirmation with a verified domain](index.md#bypass-user-email-confirmation-with-verified-domains).
 
 The following diagram describes what happens when you add users to your SCIM app:
 
@@ -216,10 +219,11 @@ Remove or deactivate a user on the identity provider to remove their access to:
 - The top-level group.
 - All subgroups and projects.
 
-After the identity provider performs a sync based on its configured schedule, the user's membership is revoked and they
-lose access.
+After the identity provider performs a sync based on its configured schedule,
+the user's membership is revoked and they lose access.
 
-When you enable SCIM, this does not automatically remove existing users who do not have a SAML identity.
+When you enable SCIM, this does not automatically remove existing users who do
+not have a SAML identity.
 
 NOTE:
 Deprovisioning does not delete the GitLab user account.
@@ -230,3 +234,14 @@ graph TD
   B -->|No| C[Nothing to do]
   B -->|Yes| D[GitLab removes user from GitLab group]
 ```
+
+### Reactivate access
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a flag](../../feature_flags.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121226) in GitLab 16.4. Feature flag `skip_saml_identity_destroy_during_scim_deprovision` removed.
+
+After a user is removed or deactivated through SCIM, you can reactivate that user by
+adding them to the SCIM identity provider.
+
+After the identity provider performs a sync based on its configured schedule,
+the user's SCIM identity is reactivated and their group memberships are restored.

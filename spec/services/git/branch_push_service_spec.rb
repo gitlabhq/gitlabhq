@@ -81,18 +81,18 @@ RSpec.describe Git::BranchPushService, :use_clean_rails_redis_caching, services:
     end
 
     it 'creates a pipeline with the right parameters' do
-      expect(Ci::CreatePipelineService)
-        .to receive(:new)
-        .with(project,
-              user,
-              {
-                before: oldrev,
-                after: newrev,
-                ref: ref,
-                checkout_sha: SeedRepo::Commit::ID,
-                variables_attributes: [],
-                push_options: {}
-              }).and_call_original
+      expect(Ci::CreatePipelineService).to receive(:new).with(
+        project,
+        user,
+        {
+          before: oldrev,
+          after: newrev,
+          ref: ref,
+          checkout_sha: SeedRepo::Commit::ID,
+          variables_attributes: [],
+          push_options: {}
+        }
+      ).and_call_original
 
       subject
     end

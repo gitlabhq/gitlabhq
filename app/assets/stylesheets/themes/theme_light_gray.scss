@@ -10,7 +10,7 @@ body {
       $gray-500
     );
 
-    .navbar-gitlab {
+    .navbar-gitlab:not(.super-sidebar-logged-out) {
       background-color: $gray-50;
       box-shadow: 0 1px 0 0 $border-color;
 

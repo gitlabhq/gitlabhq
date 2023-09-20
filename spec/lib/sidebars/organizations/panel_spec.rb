@@ -14,4 +14,5 @@ RSpec.describe Sidebars::Organizations::Panel, feature_category: :navigation do
   end
 
   it_behaves_like 'a panel with uniquely identifiable menu items'
+  it_behaves_like 'a panel instantiable by the anonymous user'
 end

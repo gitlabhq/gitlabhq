@@ -68,7 +68,7 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
           .to receive(:info)
           .with(log_attributes.merge('message' => 'start importer'))
         expect(importer).to receive(:execute).and_return(importer_result)
-        expect(Gitlab::JobWaiter).to receive(:notify).with('some_key', subject.jid)
+        expect(Gitlab::JobWaiter).to receive(:notify).with('some_key', subject.jid, ttl: Gitlab::Import::JOB_WAITER_TTL)
         expect(Gitlab::GithubImport::Logger)
           .to receive(:info)
           .with(log_attributes.merge('message' => 'importer finished'))
@@ -114,7 +114,9 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
           expect(Gitlab::GithubImport::Logger)
             .to receive(:error)
             .with(log_attributes.merge('message' => 'importer failed', 'error.message' => 'error_message'))
-          expect(Gitlab::JobWaiter).to receive(:notify).with('some_key', subject.jid)
+          expect(Gitlab::JobWaiter)
+            .to receive(:notify)
+            .with('some_key', subject.jid, ttl: Gitlab::Import::JOB_WAITER_TTL)
 
           subject.perform(user.id, gist_hash, 'some_key')
 
@@ -189,7 +191,7 @@ RSpec.describe Gitlab::GithubGistsImport::ImportGistWorker, feature_category: :i
       it 'notifies the JobWaiter' do
         expect(Gitlab::JobWaiter)
           .to receive(:notify)
-          .with(job['args'].last, job['jid'])
+          .with(job['args'].last, job['jid'], ttl: Gitlab::Import::JOB_WAITER_TTL)
 
         sidekiq_retries_exhausted
       end

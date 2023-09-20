@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipeline_composition do
   let(:project) { build(:project) }
+  let(:pipeline) { double('Pipeline') }
   let(:user) { double('User') }
   let(:sha) { '12345' }
   let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'a', 'value' => 'b' }]) }
@@ -11,6 +12,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
   let(:attributes) do
     {
       project: project,
+      pipeline: pipeline,
       user: user,
       sha: sha,
       variables: variables,
@@ -32,7 +34,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
     end
 
     context 'without values' do
-      let(:attributes) { { project: nil, user: nil, sha: nil } }
+      let(:attributes) { { project: nil, pipeline: nil, user: nil, sha: nil } }
 
       it { is_expected.to have_attributes(**attributes) }
       it { expect(subject.expandset).to eq([]) }
@@ -148,6 +150,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
     let(:attributes) do
       {
         project: project,
+        pipeline: pipeline,
         user: user,
         sha: sha,
         logger: double('logger')
@@ -165,6 +168,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
       it { expect(mutated).not_to eq(subject) }
       it { expect(mutated).to be_a(described_class) }
       it { expect(mutated).to have_attributes(new_attributes) }
+      it { expect(mutated.pipeline).to eq(subject.pipeline) }
       it { expect(mutated.expandset).to eq(subject.expandset) }
       it { expect(mutated.execution_deadline).to eq(mutated.execution_deadline) }
       it { expect(mutated.logger).to eq(mutated.logger) }

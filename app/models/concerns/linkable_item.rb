@@ -16,6 +16,7 @@ module LinkableItem
 
     scope :for_source, ->(item) { where(source_id: item.id) }
     scope :for_target, ->(item) { where(target_id: item.id) }
+    scope :for_source_and_target, ->(source, target) { where(source: source, target: target) }
     scope :for_items, ->(source, target) do
       where(source: source, target: target).or(where(source: target, target: source))
     end

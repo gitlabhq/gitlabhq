@@ -3,7 +3,7 @@
 exports[`Metrics upload item render the metrics image component 1`] = `
 <gl-card-stub
   bodyclass="gl-border-1,gl-border-t-solid,gl-border-gray-100,[object Object]"
-  class="collapsible-card border gl-p-0 gl-mb-5"
+  class="border collapsible-card gl-mb-5 gl-p-0"
   footerclass=""
   headerclass="gl-display-flex gl-align-items-center gl-border-b-0 gl-py-3"
 >
@@ -18,12 +18,10 @@ exports[`Metrics upload item render the metrics image component 1`] = `
     size="sm"
     titletag="h4"
   >
-     
     <p>
       Are you sure you wish to delete this image?
     </p>
   </gl-modal-stub>
-   
   <gl-modal-stub
     actioncancel="[object Object]"
     actionprimary="[object Object]"
@@ -35,7 +33,6 @@ exports[`Metrics upload item render the metrics image component 1`] = `
     size="sm"
     titletag="h4"
   >
-     
     <gl-form-group-stub
       label="Text (optional)"
       label-for="upload-text-input"
@@ -44,10 +41,9 @@ exports[`Metrics upload item render the metrics image component 1`] = `
     >
       <gl-form-input-stub
         data-testid="metric-image-text-field"
-        id="upload-text-input"
+        id="reference-0"
       />
     </gl-form-group-stub>
-     
     <gl-form-group-stub
       description="Must start with http or https"
       label="Link (optional)"
@@ -57,17 +53,16 @@ exports[`Metrics upload item render the metrics image component 1`] = `
     >
       <gl-form-input-stub
         data-testid="metric-image-url-field"
-        id="upload-url-input"
+        id="reference-1"
       />
     </gl-form-group-stub>
   </gl-modal-stub>
-    
   <div
     class="gl-display-flex gl-flex-direction-column"
     data-testid="metric-image-body"
   >
     <img
-      class="gl-max-w-full gl-align-self-center"
+      class="gl-align-self-center gl-max-w-full"
       src="test_file_path"
     />
   </div>

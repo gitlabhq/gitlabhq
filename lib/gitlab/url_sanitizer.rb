@@ -26,6 +26,12 @@ module Gitlab
        #{URI::REGEXP::PATTERN::HOSTPORT}
     )
     }x
+    # This expression is derived from `URI::REGEXP::PATTERN::USERINFO` but with the
+    # addition of `{` and `}` in the list of allowed characters to account for the
+    # possibility of the userinfo portion of a URL containing masked segments.
+    # e.g.
+    # http://myuser:{masked_password}@{masked_domain}.com/{masked_hook}
+    MASKED_USERINFO_REGEX = %r{(?:[\\-_.!~*'()a-zA-Z\d;:&=+$,{}]|%[a-fA-F\d]{2})*}
 
     def self.sanitize(content)
       content.gsub(URI_REGEXP) do |url|
@@ -48,6 +54,14 @@ module Gitlab
 
     def self.valid_web?(url)
       valid?(url, allowed_schemes: ALLOWED_WEB_SCHEMES)
+    end
+
+    # The url associated with records like `WebHookLog` may contain masked
+    # portions represented by paired curly brackets in the URL. As this
+    # prohibits straightforward parsing of the URL, we can use a variation of
+    # the existing USERINFO regex for these cases.
+    def self.sanitize_masked_url(url)
+      url.gsub(%r{//#{MASKED_USERINFO_REGEX}@}o, '//*****:*****@')
     end
 
     def initialize(url, credentials: nil)

@@ -118,11 +118,6 @@ module BulkImports
       end
 
       client.get("/#{entity_type}/#{source_entity_identifier}/export_relations/status")
-    rescue BulkImports::NetworkError => e
-      # the source instance will return a 404 if the feature is disabled as the endpoint won't be available
-      return if e.cause.is_a?(Gitlab::HTTP::BlockedUrlError)
-
-      raise ::BulkImports::Error.setting_not_enabled
     end
 
     def track_access_level(entity_params)

@@ -255,7 +255,11 @@ module Projects
     # We need to remove them when a project is deleted
     # rubocop: disable CodeReuse/ActiveRecord
     def destroy_project_bots!
-      project.members.includes(:user).references(:user).merge(User.project_bot).each do |member|
+      members = project.members
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422405')
+        .includes(:user).references(:user).merge(User.project_bot)
+
+      members.each do |member|
         Users::DestroyService.new(current_user).execute(member.user, skip_authorization: true)
       end
     end

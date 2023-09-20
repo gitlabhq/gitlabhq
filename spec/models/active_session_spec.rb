@@ -650,25 +650,13 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions do
     end
   end
 
-  describe '.set_active_user_cookie' do
+  describe '.set_active_user_cookie', :freeze_time do
     let(:auth) { double(cookies: {}) }
 
     it 'sets marketing cookie' do
       described_class.set_active_user_cookie(auth)
-      expect(auth.cookies[:about_gitlab_active_user][:value]).to be_truthy
-    end
-  end
-
-  describe '.unset_active_user_cookie' do
-    let(:auth) { double(cookies: {}) }
-
-    before do
-      described_class.set_active_user_cookie(auth)
-    end
-
-    it 'unsets marketing cookie' do
-      described_class.unset_active_user_cookie(auth)
-      expect(auth.cookies[:about_gitlab_active_user]).to be_nil
+      expect(auth.cookies[:gitlab_user][:value]).to be_truthy
+      expect(auth.cookies[:gitlab_user][:expires]).to be_within(1.minute).of(2.weeks.from_now)
     end
   end
 end

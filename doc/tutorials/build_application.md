@@ -21,6 +21,7 @@ Use CI/CD pipelines to automatically build, test, and deploy your code.
 | [Find CI/CD examples and templates](../ci/examples/index.md#cicd-examples)  | Use these examples and templates to set up CI/CD for your use case. | |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Understand CI/CD rules](https://www.youtube.com/watch?v=QjQc-zeL16Q) (8m 56s) |  Learn more about how to use CI/CD rules. | |
 | [Use Auto DevOps to deploy an application](../topics/autodevops/cloud_deployments/auto_devops_with_gke.md)  | Deploy an application to Google Kubernetes Engine (GKE). | |
+| [Using Buildah in a rootless container with GitLab Runner Operator on OpenShift](../ci/docker/buildah_rootless_tutorial.md)  | Learn how to setup GitLab Runner Operator on OpenShift to build Docker images with Buildah in a rootless container | |
 
 ## Configure GitLab Runner
 
@@ -30,6 +31,7 @@ Set up runners to run jobs in a pipeline.
 |-------|-------------|--------------------|
 | [Create, register, and run your own project runner](create_register_first_runner/index.md) | Learn the basics of how to create and register a project runner that runs jobs for your project. | **{star}** |
 | [Configure GitLab Runner to use the Google Kubernetes Engine](configure_gitlab_runner_to_use_gke/index.md) | Learn how to configure GitLab Runner to use the GKE to run jobs. | |
+| [Automate the creation of runners](https://about.gitlab.com/blog/2023/07/06/how-to-automate-creation-of-runners/) | Learn how to automate runner creation as an authenticated user to optimize your runner fleet.  | |
 
 ## Publish a static website
 

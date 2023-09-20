@@ -1,10 +1,9 @@
 import { GlCollapsibleListbox, GlSorting, GlSortingItem } from '@gitlab/ui';
 import App from '~/organizations/groups_and_projects/components/app.vue';
-import GroupsPage from '~/organizations/groups_and_projects/components/groups_page.vue';
-import ProjectsPage from '~/organizations/groups_and_projects/components/projects_page.vue';
+import GroupsView from '~/organizations/shared/components/groups_view.vue';
+import ProjectsView from '~/organizations/shared/components/projects_view.vue';
+import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '~/organizations/constants';
 import {
-  DISPLAY_QUERY_GROUPS,
-  DISPLAY_QUERY_PROJECTS,
   SORT_ITEM_CREATED,
   SORT_DIRECTION_DESC,
 } from '~/organizations/groups_and_projects/constants';
@@ -36,10 +35,10 @@ describe('GroupsAndProjectsApp', () => {
 
   describe.each`
     display                   | expectedComponent | expectedDisplayListboxSelectedProp
-    ${null}                   | ${GroupsPage}     | ${DISPLAY_QUERY_GROUPS}
-    ${'unsupported_value'}    | ${GroupsPage}     | ${DISPLAY_QUERY_GROUPS}
-    ${DISPLAY_QUERY_GROUPS}   | ${GroupsPage}     | ${DISPLAY_QUERY_GROUPS}
-    ${DISPLAY_QUERY_PROJECTS} | ${ProjectsPage}   | ${DISPLAY_QUERY_PROJECTS}
+    ${null}                   | ${GroupsView}     | ${RESOURCE_TYPE_GROUPS}
+    ${'unsupported_value'}    | ${GroupsView}     | ${RESOURCE_TYPE_GROUPS}
+    ${RESOURCE_TYPE_GROUPS}   | ${GroupsView}     | ${RESOURCE_TYPE_GROUPS}
+    ${RESOURCE_TYPE_PROJECTS} | ${ProjectsView}   | ${RESOURCE_TYPE_PROJECTS}
   `(
     'when `display` query string is $display',
     ({ display, expectedComponent, expectedDisplayListboxSelectedProp }) => {
@@ -122,11 +121,11 @@ describe('GroupsAndProjectsApp', () => {
     beforeEach(() => {
       createComponent();
 
-      findListbox().vm.$emit('select', DISPLAY_QUERY_PROJECTS);
+      findListbox().vm.$emit('select', RESOURCE_TYPE_PROJECTS);
     });
 
     it('updates `display` query string', () => {
-      expect(routerMock.push).toHaveBeenCalledWith({ query: { display: DISPLAY_QUERY_PROJECTS } });
+      expect(routerMock.push).toHaveBeenCalledWith({ query: { display: RESOURCE_TYPE_PROJECTS } });
     });
   });
 

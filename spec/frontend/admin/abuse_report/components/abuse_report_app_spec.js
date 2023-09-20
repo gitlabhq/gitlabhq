@@ -1,28 +1,46 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AbuseReportApp from '~/admin/abuse_report/components/abuse_report_app.vue';
 import ReportHeader from '~/admin/abuse_report/components/report_header.vue';
 import UserDetails from '~/admin/abuse_report/components/user_details.vue';
+import ReportDetails from '~/admin/abuse_report/components/report_details.vue';
 import ReportedContent from '~/admin/abuse_report/components/reported_content.vue';
-import HistoryItems from '~/admin/abuse_report/components/history_items.vue';
+import ActivityEventsList from '~/admin/abuse_report/components/activity_events_list.vue';
+import ActivityHistoryItem from '~/admin/abuse_report/components/activity_history_item.vue';
 import { SUCCESS_ALERT } from '~/admin/abuse_report/constants';
 import { mockAbuseReport } from '../mock_data';
 
 describe('AbuseReportApp', () => {
   let wrapper;
 
+  const { similarOpenReports } = mockAbuseReport.user;
+
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findReportHeader = () => wrapper.findComponent(ReportHeader);
   const findUserDetails = () => wrapper.findComponent(UserDetails);
-  const findReportedContent = () => wrapper.findComponent(ReportedContent);
-  const findHistoryItems = () => wrapper.findComponent(HistoryItems);
 
-  const createComponent = (props = {}) => {
-    wrapper = shallowMount(AbuseReportApp, {
+  const findReportedContent = () => wrapper.findByTestId('reported-content');
+  const findReportedContentForSimilarReports = () =>
+    wrapper.findAllByTestId('reported-content-similar-open-reports');
+  const firstReportedContentForSimilarReports = () =>
+    findReportedContentForSimilarReports().at(0).findComponent(ReportedContent);
+
+  const findActivityList = () => wrapper.findComponent(ActivityEventsList);
+  const findActivityItem = () => wrapper.findByTestId('activity');
+  const findActivityForSimilarReports = () =>
+    wrapper.findAllByTestId('activity-similar-open-reports');
+  const firstActivityForSimilarReports = () =>
+    findActivityForSimilarReports().at(0).findComponent(ActivityHistoryItem);
+
+  const findReportDetails = () => wrapper.findComponent(ReportDetails);
+
+  const createComponent = (props = {}, provide = {}) => {
+    wrapper = shallowMountExtended(AbuseReportApp, {
       propsData: {
         abuseReport: mockAbuseReport,
         ...props,
       },
+      provide,
     });
   };
 
@@ -64,7 +82,7 @@ describe('AbuseReportApp', () => {
     });
   });
 
-  describe('ReportHeader', () => {
+  describe('Report header', () => {
     it('renders ReportHeader', () => {
       expect(findReportHeader().props('user')).toBe(mockAbuseReport.user);
       expect(findReportHeader().props('report')).toBe(mockAbuseReport.report);
@@ -83,7 +101,7 @@ describe('AbuseReportApp', () => {
     });
   });
 
-  describe('UserDetails', () => {
+  describe('User Details', () => {
     it('renders UserDetails', () => {
       expect(findUserDetails().props('user')).toBe(mockAbuseReport.user);
     });
@@ -101,13 +119,47 @@ describe('AbuseReportApp', () => {
     });
   });
 
-  it('renders ReportedContent', () => {
-    expect(findReportedContent().props('report')).toBe(mockAbuseReport.report);
-    expect(findReportedContent().props('reporter')).toBe(mockAbuseReport.reporter);
+  describe('Reported Content', () => {
+    it('renders ReportedContent', () => {
+      expect(findReportedContent().props('report')).toBe(mockAbuseReport.report);
+    });
+
+    it('renders similar abuse reports', () => {
+      expect(findReportedContentForSimilarReports()).toHaveLength(similarOpenReports.length);
+      expect(firstReportedContentForSimilarReports().props('report')).toBe(similarOpenReports[0]);
+    });
   });
 
-  it('renders HistoryItems', () => {
-    expect(findHistoryItems().props('report')).toBe(mockAbuseReport.report);
-    expect(findHistoryItems().props('reporter')).toBe(mockAbuseReport.reporter);
+  describe('ReportDetails', () => {
+    describe('when abuseReportLabels feature flag is enabled', () => {
+      it('renders ReportDetails', () => {
+        createComponent({}, { glFeatures: { abuseReportLabels: true } });
+
+        expect(findReportDetails().props('reportId')).toBe(mockAbuseReport.report.globalId);
+      });
+    });
+
+    describe('when abuseReportLabels feature flag is disabled', () => {
+      it('does not render ReportDetails', () => {
+        createComponent({}, { glFeatures: { abuseReportLabels: false } });
+
+        expect(findReportDetails().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('Activity', () => {
+    it('renders the activity events list', () => {
+      expect(findActivityList().exists()).toBe(true);
+    });
+
+    it('renders activity item for abuse report', () => {
+      expect(findActivityItem().props('report')).toBe(mockAbuseReport.report);
+    });
+
+    it('renders activity items for similar abuse reports', () => {
+      expect(findActivityForSimilarReports()).toHaveLength(similarOpenReports.length);
+      expect(firstActivityForSimilarReports().props('report')).toBe(similarOpenReports[0]);
+    });
   });
 });

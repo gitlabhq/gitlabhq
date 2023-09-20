@@ -12,13 +12,12 @@
 # end
 #
 ActiveSupport::Inflector.inflections do |inflect|
-  inflect.uncountable %w(
+  inflect.uncountable %w[
     custom_emoji
     award_emoji
     ci_secure_file_registry
     container_repository_registry
     dependency_proxy_blob_registry
-    design_registry
     design_management_repository_registry
     dependency_proxy_manifest_registry
     event_log
@@ -41,7 +40,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     terraform_state_version_registry
     vulnerabilities_feedback
     vulnerability_feedback
-  )
+  ]
   inflect.acronym 'CDN'
   inflect.acronym 'EE'
   inflect.acronym 'JH'

@@ -22,7 +22,7 @@ module Projects
       return unless ::Gitlab::CurrentSettings.delete_inactive_projects?
 
       @start_time ||= ::Gitlab::Metrics::System.monotonic_time
-      admin_bot = ::User.admin_bot
+      admin_bot = ::Users::Internal.admin_bot
 
       return unless admin_bot
 

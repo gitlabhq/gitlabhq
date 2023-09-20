@@ -990,7 +990,7 @@ For example, if a commit (`<COMMIT_ID>`) deletes line 463 in the README, you can
 on the deletion by referencing line 463 in the *old* file:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: [ACCESS_TOKEN]" \
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --form "note=Very clever to remove this unnecessary line!" \
   --form "path=README" --form "line=463" --form "line_type=old" \
   "https://gitlab.com/api/v4/projects/47/repository/commits/<COMMIT_ID>/comments"
@@ -1000,7 +1000,7 @@ If a commit (`<COMMIT_ID>`) adds line 157 to `hello.rb`, you can comment on the
 addition by referencing line 157 in the *new* file:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: [ACCESS_TOKEN]" \
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
   --form "note=This is brilliant!" --form "path=hello.rb" \
   --form "line=157" --form "line_type=new" \
   "https://gitlab.com/api/v4/projects/47/repository/commits/<COMMIT_ID>/comments"

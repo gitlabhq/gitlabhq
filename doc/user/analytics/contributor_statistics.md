@@ -15,7 +15,7 @@ and line charts with the number of commits by each project member.
 
 To view contributor statistics for a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Contributor statistics**.
 1. From the **Branches** (**main**) dropdown list, select the branch you want to view commits for.
 1. To view the number of commits made on a specific day, hover over the line chart.
@@ -28,7 +28,7 @@ To view contributor statistics for a project:
 
 To view a list of commits made by project members per day:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Contributor statistics**.
 1. Select **History**.
 1. From the **Branches** (**main**) dropdown list, select the branch you want to view commits for.
@@ -42,7 +42,7 @@ To view a list of commits made by project members per day:
 
 To view the list of commits to the project as an RSS feed in Atom format:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Contributor statistics**.
 1. Select **History**.
 1. In the upper-right corner, select the feed symbol (**{rss}**).

@@ -84,23 +84,36 @@ the following sections and tables provide an alternative.
 
 ## Scan result policy schema
 
+> The `approval_settings` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `scan_result_policy_settings`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_policy_settings`.
+On GitLab.com, this feature is not available.
+
 | Field | Type | Required |Possible values | Description |
 |-------|------|----------|----------------|-------------|
 | `name` | `string` | true |  | Name of the policy. Maximum of 255 characters.|
 | `description` (optional) | `string` | true |  | Description of the policy. |
 | `enabled` | `boolean` | true | `true`, `false` | Flag to enable (`true`) or disable (`false`) the policy. |
 | `rules` | `array` of rules | true |  | List of rules that the policy applies. |
-| `actions` | `array` of actions | true |  | List of actions that the policy enforces. |
+| `actions` | `array` of actions | false|  | List of actions that the policy enforces. |
+| `approval_settings` | `object` | false | `{prevent_approval_by_author: boolean, prevent_approval_by_commit_author: boolean, remove_approvals_with_new_commit: boolean, require_password_to_approve: boolean}` | Project settings that the policy overrides. |
 
 ## `scan_finding` rule type
 
 > - The scan result policy field `vulnerability_attributes` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123052) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/418784) in GitLab 16.3.
 > - The scan result policy field `vulnerability_age` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123956) in GitLab 16.2.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default the `vulnerability_attributes` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`.
 On GitLab.com, this feature is available.
+
+FLAG:
+On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On GitLab.com, this feature is available.
+
 This rule enforces the defined actions based on security scan findings.
 
 | Field | Type | Required | Possible values | Description |
@@ -108,6 +121,7 @@ This rule enforces the defined actions based on security scan findings.
 | `type` | `string` | true | `scan_finding` | The rule's type. |
 | `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
 | `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` | The types of branches the given policy applies to. Cannot be used with the `branches` field. |
+| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 | `scanners` | `array` of `string` | true | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. `sast` includes results from both SAST and SAST IaC scanners. |
 | `vulnerabilities_allowed` | `integer` | true | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
 | `severity_levels` | `array` of `string` | true | `info`, `unknown`, `low`, `medium`, `high`, `critical` | The severity levels for this rule to consider. |
@@ -119,6 +133,11 @@ This rule enforces the defined actions based on security scan findings.
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/397644) in GitLab 15.11. Feature flag `license_scanning_policies` removed.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On GitLab.com, this feature is available.
 
 This rule enforces the defined actions based on license findings.
 
@@ -127,9 +146,29 @@ This rule enforces the defined actions based on license findings.
 | `type` | `string` | true | `license_finding` | The rule's type. |
 | `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
 | `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` | The types of branches the given policy applies to. Cannot be used with the `branches` field. |
+| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 | `match_on_inclusion` | `boolean` | true | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
 | `license_types` | `array` of `string` | true | license types | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`. |
 | `license_states` | `array` of `string` | true | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
+
+## `any_merge_request` rule type
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On GitLab.com, this feature is available.
+
+This rule enforces the defined actions for any merge request based on the commits signature.
+
+| Field         | Type                | Required                                   | Possible values           | Description                                                                                                                                                         |
+|---------------|---------------------|--------------------------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`        | `string`            | true                                       | `any_merge_request`       | The rule's type. |
+| `branches`    | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
+| `branch_type` | `string`            | true if `branches` field does not exist    | `default` or `protected`  | The types of branches the given policy applies to. Cannot be used with the `branches` field. |
+| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
+| `commits`     | `string`            | true                                       | `any`, `unsigned`         | Whether the rule matches for any commits, or only if unsigned commits are detected in the merge request. |
 
 ## `require_approval` action type
 

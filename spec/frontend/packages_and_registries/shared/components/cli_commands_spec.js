@@ -1,4 +1,4 @@
-import { GlDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
@@ -23,7 +23,7 @@ Vue.use(Vuex);
 describe('cli_commands', () => {
   let wrapper;
 
-  const findDropdownButton = () => wrapper.findComponent(GlDropdown);
+  const findDropdownButton = () => wrapper.findComponent(GlDisclosureDropdown);
   const findCodeInstruction = () => wrapper.findAllComponents(CodeInstruction);
 
   const mountComponent = () => {

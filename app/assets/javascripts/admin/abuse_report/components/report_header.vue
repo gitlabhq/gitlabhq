@@ -32,9 +32,6 @@ export default {
     isOpen() {
       return this.state === STATUS_OPEN;
     },
-    badgeClass() {
-      return this.isOpen ? 'issuable-status-badge-open' : 'issuable-status-badge-closed';
-    },
     badgeVariant() {
       return this.isOpen ? 'success' : 'info';
     },
@@ -58,21 +55,16 @@ export default {
   <header
     class="gl-py-4 gl-border-b gl-display-flex gl-justify-content-space-between gl-xs-flex-direction-column"
   >
-    <div class="gl-display-flex gl-align-items-center">
-      <gl-badge
-        class="issuable-status-badge gl-mr-3"
-        :class="badgeClass"
-        :variant="badgeVariant"
-        :aria-label="badgeText"
-      >
+    <div class="gl-display-flex gl-align-items-center gl-gap-3">
+      <gl-badge :variant="badgeVariant" :aria-label="badgeText">
         <gl-icon :name="badgeIcon" class="gl-badge-icon" />
         <span class="gl-display-none gl-sm-display-block gl-ml-2">{{ badgeText }}</span>
       </gl-badge>
       <gl-avatar :size="48" :src="user.avatarUrl" />
-      <h1 class="gl-font-size-h-display gl-my-0 gl-ml-3">
+      <h1 class="gl-font-size-h-display gl-my-0">
         {{ user.name }}
       </h1>
-      <gl-link :href="user.path" class="gl-ml-3"> @{{ user.username }} </gl-link>
+      <gl-link :href="user.path"> @{{ user.username }} </gl-link>
     </div>
     <nav
       class="gl-display-flex gl-sm-align-items-center gl-mt-4 gl-sm-mt-0 gl-xs-flex-direction-column"

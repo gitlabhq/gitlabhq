@@ -119,14 +119,31 @@ export const EVENT_COMMENTED_I18N = Object.freeze({
   [COMMIT_NOTEABLE_TYPE]: s__(
     'ContributionEvent|Commented on commit %{noteableLink} in %{resourceParentLink}.',
   ),
-  fallback: s__('ContributionEvent|Commented on %{noteableLink}.'),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Commented on %{noteableLink}.'),
 });
 
 export const EVENT_COMMENTED_SNIPPET_I18N = Object.freeze({
   [RESOURCE_PARENT_TYPE_PROJECT]: s__(
     'ContributionEvent|Commented on snippet %{noteableLink} in %{resourceParentLink}.',
   ),
-  fallback: s__('ContributionEvent|Commented on snippet %{noteableLink}.'),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Commented on snippet %{noteableLink}.'),
+});
+
+export const EVENT_UPDATED_I18N = Object.freeze({
+  [TARGET_TYPE_DESIGN]: s__(
+    'ContributionEvent|Updated design %{targetLink} in %{resourceParentLink}.',
+  ),
+  [TARGET_TYPE_WIKI]: s__(
+    'ContributionEvent|Updated wiki page %{targetLink} in %{resourceParentLink}.',
+  ),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Updated resource.'),
+});
+
+export const EVENT_DESTROYED_I18N = Object.freeze({
+  [TARGET_TYPE_DESIGN]: s__('ContributionEvent|Archived design in %{resourceParentLink}.'),
+  [TARGET_TYPE_WIKI]: s__('ContributionEvent|Deleted wiki page in %{resourceParentLink}.'),
+  [TARGET_TYPE_MILESTONE]: s__('ContributionEvent|Deleted milestone in %{resourceParentLink}.'),
+  [TYPE_FALLBACK]: s__('ContributionEvent|Deleted resource.'),
 });
 
 export const EVENT_CLOSED_ICONS = Object.freeze({
@@ -138,4 +155,9 @@ export const EVENT_CLOSED_ICONS = Object.freeze({
 export const EVENT_REOPENED_ICONS = Object.freeze({
   [TARGET_TYPE_MERGE_REQUEST]: 'merge-request-open',
   [TYPE_FALLBACK]: 'status_open',
+});
+
+export const EVENT_DESTROYED_ICONS = Object.freeze({
+  [TARGET_TYPE_DESIGN]: 'archive',
+  [TYPE_FALLBACK]: 'remove',
 });

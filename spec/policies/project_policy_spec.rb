@@ -828,7 +828,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'alert bot' do
-    let(:current_user) { User.alert_bot }
+    let(:current_user) { Users::Internal.alert_bot }
 
     it { is_expected.to be_allowed(:reporter_access) }
 
@@ -882,7 +882,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'support bot' do
-    let(:current_user) { User.support_bot }
+    let(:current_user) { Users::Internal.support_bot }
 
     context 'with service desk disabled' do
       it { expect_allowed(:public_access) }

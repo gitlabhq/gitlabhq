@@ -7,7 +7,7 @@ return unless helper.ci?
 blueprint_changes = helper.changed_files(%r{^doc/architecture/blueprints/.*})
 
 BLUEPRINT_SHORT_MESSAGE = <<~MSG
-This merge request requires a review from an [Architecture Evolution Coach](https://about.gitlab.com/handbook/engineering/architecture/workflow/).
+This merge request might require a review from a [Coach Engineer](https://about.gitlab.com/handbook/engineering/architecture/workflow/).
 MSG
 
 BLUEPRINT_LONG_MESSAGE = <<~MSG

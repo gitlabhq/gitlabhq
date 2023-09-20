@@ -1,6 +1,5 @@
 import { nextTick } from 'vue';
 import { GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -46,31 +45,29 @@ describe('SuperSidebarToggle component', () => {
       expect(findButton().attributes('aria-expanded')).toBe('true');
     });
 
-    it('has aria-expanded as false when collapsed', () => {
-      createWrapper({ sidebarState: { isCollapsed: true } });
-      expect(findButton().attributes('aria-expanded')).toBe('false');
-    });
+    it.each(['isCollapsed', 'isPeek', 'isHoverPeek'])(
+      'has aria-expanded as false when %s is `true`',
+      (stateProp) => {
+        createWrapper({ sidebarState: { [stateProp]: true } });
+        expect(findButton().attributes('aria-expanded')).toBe('false');
+      },
+    );
 
     it('has aria-label attribute', () => {
       createWrapper();
-      expect(findButton().attributes('aria-label')).toBe(__('Navigation sidebar'));
-    });
-
-    it('is disabled when isPeek is true', () => {
-      createWrapper({ sidebarState: { isPeek: true } });
-      expect(findButton().attributes('disabled')).toBeDefined();
+      expect(findButton().attributes('aria-label')).toBe('Primary navigation sidebar');
     });
   });
 
   describe('tooltip', () => {
     it('displays collapse when expanded', () => {
       createWrapper();
-      expect(getTooltip().title).toBe(__('Hide sidebar'));
+      expect(getTooltip().title).toBe('Hide sidebar');
     });
 
     it('displays expand when collapsed', () => {
       createWrapper({ sidebarState: { isCollapsed: true } });
-      expect(getTooltip().title).toBe(__('Show sidebar'));
+      expect(getTooltip().title).toBe('Keep sidebar visible');
     });
   });
 

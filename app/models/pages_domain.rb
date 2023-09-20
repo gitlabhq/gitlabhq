@@ -9,6 +9,8 @@ class PagesDomain < ApplicationRecord
   VERIFICATION_THRESHOLD = 3.days.freeze
   SSL_RENEWAL_THRESHOLD = 30.days.freeze
 
+  MAX_CERTIFICATE_KEY_LENGTH = 8192
+
   enum certificate_source: { user_provided: 0, gitlab_provided: 1 }, _prefix: :certificate
   enum scope: { instance: 0, group: 1, project: 2 }, _prefix: :scope, _default: :project
   enum usage: { pages: 0, serverless: 1 }, _prefix: :usage, _default: :pages
@@ -34,6 +36,7 @@ class PagesDomain < ApplicationRecord
   validate :validate_matching_key, if: ->(domain) { domain.certificate.present? || domain.key.present? }
   validate :validate_intermediates, if: ->(domain) { domain.certificate.present? && domain.certificate_changed? }
   validate :validate_custom_domain_count_per_project, on: :create
+  validate :max_certificate_key_length, if: ->(domain) { domain.key.present? }
 
   attribute :auto_ssl_enabled, default: -> { ::Gitlab::LetsEncrypt.enabled? }
   attribute :wildcard, default: false
@@ -233,6 +236,16 @@ class PagesDomain < ApplicationRecord
   end
 
   private
+
+  def max_certificate_key_length
+    return unless pkey.is_a?(OpenSSL::PKey::RSA)
+    return if pkey.to_s.bytesize <= MAX_CERTIFICATE_KEY_LENGTH
+
+    errors.add(
+      :key,
+      s_("PagesDomain|Certificate Key is too long. (Max %d bytes)") % MAX_CERTIFICATE_KEY_LENGTH
+    )
+  end
 
   def set_verification_code
     return if self.verification_code.present?

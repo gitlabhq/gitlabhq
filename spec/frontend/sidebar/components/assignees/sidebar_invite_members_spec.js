@@ -26,7 +26,7 @@ describe('Sidebar invite members component', () => {
     });
 
     it('has expected attributes on the trigger', () => {
-      expect(findDirectInviteLink().props('triggerSource')).toBe('issue-assignee-dropdown');
+      expect(findDirectInviteLink().props('triggerSource')).toBe('issue_assignee_dropdown');
     });
   });
 });

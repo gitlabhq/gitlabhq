@@ -63,7 +63,8 @@ module API
           optional :version, type: String, desc: 'The version of the feature flag. Must be `new_version_flag`. Omit to create a Legacy feature flag.'
           optional :strategies, type: Array do
             requires :name, type: String, desc: 'The strategy name. Can be `default`, `gradualRolloutUserId`, `userWithId`, or `gitlabUserList`. In GitLab 13.5 and later, can be `flexibleRollout`'
-            requires :parameters, type: JSON, desc: 'The strategy parameters as a JSON-formatted string e.g. `{"userIds":"user1"}`', documentation: { type: 'String' }
+            optional :parameters, type: JSON, desc: 'The strategy parameters as a JSON-formatted string e.g. `{"userIds":"user1"}`', documentation: { type: 'String' }
+            optional :user_list_id, type: Integer, desc: "The ID of the feature flag user list. If strategy is `gitlabUserList`."
             optional :scopes, type: Array do
               requires :environment_scope, type: String, desc: 'The environment scope of the scope'
             end
@@ -131,6 +132,7 @@ module API
             optional :id, type: Integer, desc: 'The feature flag strategy ID'
             optional :name, type: String, desc: 'The strategy name'
             optional :parameters, type: JSON, desc: 'The strategy parameters as a JSON-formatted string e.g. `{"userIds":"user1"}`', documentation: { type: 'String' }
+            optional :user_list_id, type: Integer, desc: "The ID of the feature flag user list"
             optional :_destroy, type: Boolean, desc: 'Delete the strategy when true'
             optional :scopes, type: Array do
               optional :id, type: Integer, desc: 'The scope id'

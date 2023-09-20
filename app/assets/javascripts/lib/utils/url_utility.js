@@ -1,5 +1,3 @@
-import * as Sentry from '@sentry/browser';
-
 export const DASH_SCOPE = '-';
 
 export const PATH_SEPARATOR = '/';
@@ -705,11 +703,7 @@ export function visitUrl(destination, external = false) {
   }
 
   if (!isSafeURL(url)) {
-    // For now log this to Sentry and do not block the execution.
-    // See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121551#note_1408873600
-    // for more context. Once we're sure that it's not breaking functionality, we can use
-    // a RangeError here (throw new RangeError('Only http and https protocols are allowed')).
-    Sentry.captureException(new RangeError(`Only http and https protocols are allowed: ${url}`));
+    throw new RangeError(`Only http and https protocols are allowed: ${url}`);
   }
 
   if (external) {

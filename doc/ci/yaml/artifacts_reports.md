@@ -40,6 +40,55 @@ GitLab can display the results of one or more reports in the merge request
 
 For more information, see [Accessibility testing](../testing/accessibility_testing.md).
 
+## `artifacts:reports:annotations`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
+The `annotations` report is used to attach auxiliary data to a job.
+
+An annotations report is a JSON file with annotation sections. Each annotation
+section can have any desired name and can have any number of annotations of the
+same or differing types.
+
+Each annotation is a single key (the annotation type), containing the subkeys with
+the data for that annotation.
+
+### Annotation types
+
+#### `external_link`
+
+An `external_link` annotation can be attached to a job to add a link to the job
+output page. The value of an `external_link` annotation is an object with the
+following keys:
+
+| Key     | Description                                        |
+|---------|----------------------------------------------------|
+| `label` | The human-readable label associated with the link. |
+| `url`   | The URL pointed to by the link.                    |
+
+### Example report
+
+The following is an example of what a job annotations report might look like:
+
+```json
+{
+  "my_annotation_section_1": [
+    {
+      "external_link": {
+        "label": "URL 1",
+        "url": "https://url1.example.com/"
+      }
+    },
+    {
+      "external_link": {
+        "label": "URL 2",
+        "url": "https://url2.example.com/"
+      }
+    }
+  ]
+}
+```
+
 ## `artifacts:reports:api_fuzzing` **(ULTIMATE ALL)**
 
 > - Introduced in GitLab 13.4.
@@ -95,7 +144,7 @@ GitLab can display the results of coverage report in the merge request
 ## `artifacts:reports:codequality`
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
-> - [Added support for multiple reports in diff annotations and full pipeline report](https://gitlab.com/gitlab-org/gitlab/-/issues/9014) in 15.7.
+> - Support for multiple reports in diff annotations and full pipeline report [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9014) in 15.7.
 
 The `codequality` report collects [code quality issues](../testing/code_quality.md). The
 collected code quality report uploads to GitLab as an artifact.
@@ -313,7 +362,7 @@ The collected Secret Detection report is uploaded to GitLab.
 GitLab can display the results of one or more reports in:
 
 - The merge request [secret scanning widget](../../user/application_security/secret_detection/index.md).
-- The [pipeline **Security** tab](../../user/application_security/index.md#view-security-scan-information-in-the-pipeline-security-tab).
+- The [pipeline security tab](../../user/application_security/index.md#pipeline-security-tab).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
 ## `artifacts:reports:terraform`
@@ -325,6 +374,6 @@ The `terraform` report obtains a Terraform `tfplan.json` file. [JQ processing re
 The collected Terraform plan report uploads to GitLab as an artifact.
 
 GitLab can display the results of one or more reports in the merge request
-[terraform widget](../../user/infrastructure/iac/mr_integration.md#output-terraform-plan-information-into-a-merge-request).
+[Terraform widget](../../user/infrastructure/iac/mr_integration.md#output-terraform-plan-information-into-a-merge-request).
 
 For more information, see [Output `terraform plan` information into a merge request](../../user/infrastructure/iac/mr_integration.md).

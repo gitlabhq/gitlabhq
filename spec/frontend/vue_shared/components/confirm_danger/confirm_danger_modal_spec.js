@@ -31,6 +31,7 @@ describe('Confirm Danger Modal', () => {
       propsData: {
         modalId,
         phrase,
+        visible: false,
       },
       provide,
       stubs: { GlSprintf },
@@ -101,6 +102,18 @@ describe('Confirm Danger Modal', () => {
       await findModal().vm.$emit('primary');
 
       expect(wrapper.emitted('confirm')).not.toBeUndefined();
+    });
+  });
+
+  describe('v-model', () => {
+    it('emit `change` event', () => {
+      findModal().vm.$emit('change', true);
+
+      expect(wrapper.emitted('change')).toEqual([[true]]);
+    });
+
+    it('sets `visible` prop', () => {
+      expect(findModal().props('visible')).toBe(false);
     });
   });
 });

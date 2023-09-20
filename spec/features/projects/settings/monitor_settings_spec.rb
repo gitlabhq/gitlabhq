@@ -5,9 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Projects > Settings > For a forked project', :js, feature_category: :groups_and_projects do
   include ListboxHelpers
 
-  let_it_be(:project) { create(:project, :repository, create_templates: :issue) }
-
-  let(:user) { project.first_owner }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:project) { create(:project, :repository, create_templates: :issue, namespace: user.namespace) }
 
   before do
     sign_in(user)

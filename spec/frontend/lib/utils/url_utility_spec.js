@@ -1,10 +1,7 @@
-import * as Sentry from '@sentry/browser';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { safeUrls, unsafeUrls } from './mock_data';
-
-jest.mock('@sentry/browser');
 
 const shas = {
   valid: [
@@ -434,11 +431,10 @@ describe('URL utility', () => {
     it('does not navigate to unsafe urls', () => {
       // eslint-disable-next-line no-script-url
       const url = 'javascript:alert(document.domain)';
-      urlUtils.visitUrl(url);
 
-      expect(Sentry.captureException).toHaveBeenCalledWith(
-        new RangeError(`Only http and https protocols are allowed: ${url}`),
-      );
+      expect(() => {
+        urlUtils.visitUrl(url);
+      }).toThrow(new RangeError(`Only http and https protocols are allowed: ${url}`));
     });
 
     it('navigates to a page', () => {

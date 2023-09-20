@@ -1,11 +1,11 @@
 - group = local_assigns.fetch(:group)
 
-%li.group-row.gl-py-3.gl-align-items-center{ class: 'gl-display-flex!', data: { qa_selector: 'group_row_content' } }
+%li.group-row.gl-py-3.gl-align-items-center{ class: 'gl-display-flex!', data: { testid: 'group-row-content' } }
   = render Pajamas::AvatarComponent.new(group, size: 32, alt: '')
 
   .gl-min-w-0.gl-flex-grow-1.gl-ml-3
     .title
-      = link_to [:admin, group], class: 'group-name', data: { qa_selector: 'group_name_link' } do
+      = link_to [:admin, group], class: 'group-name', data: { testid: 'group-name-link' } do
         = group.full_name
 
     - if group.description.present?

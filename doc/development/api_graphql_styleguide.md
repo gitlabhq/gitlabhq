@@ -1058,6 +1058,17 @@ A taxonomic genus. See: [Wikipedia page on genera](https://wikipedia.org/wiki/Ge
 Multiple documentation references can be provided. The syntax for this property
 is a `HashMap` where the keys are textual descriptions, and the values are URLs.
 
+### Subscription tier badges
+
+If a field or argument is available to higher subscription tiers than the other fields,
+add the [tier badge](documentation/styleguide/index.md#product-tier-badges) inline.
+
+For example:
+
+```ruby
+description: '**(ULTIMATE ALL)** Full path of a custom template.'
+```
+
 ## Authorization
 
 See: [GraphQL Authorization](graphql_guide/authorization.md)

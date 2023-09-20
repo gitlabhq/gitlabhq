@@ -19,13 +19,16 @@ module Integrations
         url_index = fields.index { |field| field[:name].ends_with?('_url') }
         insert_index = url_index ? url_index + 1 : -1
 
-        fields.insert(insert_index, {
-          type: 'checkbox',
-          name: 'enable_ssl_verification',
-          title: s_('Integrations|SSL verification'),
-          checkbox_label: s_('Integrations|Enable SSL verification'),
-          help: s_('Integrations|Clear if using a self-signed certificate.')
-        })
+        fields.insert(insert_index,
+          Field.new(
+            name: 'enable_ssl_verification',
+            integration_class: self,
+            type: :checkbox,
+            title: s_('Integrations|SSL verification'),
+            checkbox_label: s_('Integrations|Enable SSL verification'),
+            help: s_('Integrations|Clear if using a self-signed certificate.')
+          )
+        )
       end
     end
   end

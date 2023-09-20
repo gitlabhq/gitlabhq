@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Policies::ProjectPolicy do
+RSpec.describe Packages::Policies::ProjectPolicy, feature_category: :package_registry do
   include_context 'ProjectPolicy context'
 
   let(:project) { public_project }

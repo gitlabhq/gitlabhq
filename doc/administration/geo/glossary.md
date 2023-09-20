@@ -14,8 +14,8 @@ these definitions yet.
 
  These are the defined terms to describe all aspects of Geo. Using a set of clearly
  defined terms helps us to communicate efficiently and avoids confusion. The language
- on this page aims to be [ubiquitous](https://about.gitlab.com/handbook/communication/#ubiquitous-language)
- and [as simple as possible](https://about.gitlab.com/handbook/communication/#simple-language).
+ on this page aims to be [ubiquitous](https://handbook.gitlab.com/handbook/communication/#ubiquitous-language)
+ and [as simple as possible](https://handbook.gitlab.com/handbook/communication/#simple-language).
 
  We provide example diagrams and statements to demonstrate correct usage of terms.
 

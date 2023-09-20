@@ -42,4 +42,40 @@ describe('array_utility', () => {
       expect(arrayUtils.getDuplicateItemsFromArray(array)).toEqual(result);
     });
   });
+
+  describe('toggleArrayItem', () => {
+    it('adds an item to the array if it does not exist', () => {
+      expect(arrayUtils.toggleArrayItem([], 'item')).toStrictEqual(['item']);
+    });
+
+    it('removes an item from the array if it already exists', () => {
+      expect(arrayUtils.toggleArrayItem(['item'], 'item')).toStrictEqual([]);
+    });
+
+    describe('pass by value', () => {
+      it('does not toggle the array item when passed a new object', () => {
+        expect(arrayUtils.toggleArrayItem([{ a: 1 }], { a: 1 })).toStrictEqual([
+          { a: 1 },
+          { a: 1 },
+        ]);
+      });
+
+      it('does not toggle the array item when passed a new array', () => {
+        expect(arrayUtils.toggleArrayItem([[1]], [1])).toStrictEqual([[1], [1]]);
+      });
+    });
+
+    describe('pass by reference', () => {
+      const array = [1];
+      const object = { a: 1 };
+
+      it('toggles the array item when passed a object reference', () => {
+        expect(arrayUtils.toggleArrayItem([object], object)).toStrictEqual([]);
+      });
+
+      it('toggles the array item when passed an array reference', () => {
+        expect(arrayUtils.toggleArrayItem([array], array)).toStrictEqual([]);
+      });
+    });
+  });
 });

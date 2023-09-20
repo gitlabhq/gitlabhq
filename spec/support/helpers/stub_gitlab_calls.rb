@@ -23,13 +23,17 @@ module StubGitlabCalls
   end
 
   def stub_ci_pipeline_yaml_file(ci_yaml_content)
-    allow_any_instance_of(Gitlab::Ci::ProjectConfig::Repository)
-      .to receive(:file_in_repository?)
-      .and_return(ci_yaml_content.present?)
+    blob = instance_double(Blob, empty?: ci_yaml_content.blank?, data: ci_yaml_content)
+    allow(blob).to receive(:load_all_data!)
 
     allow_any_instance_of(Repository)
-      .to receive(:gitlab_ci_yml_for)
-      .and_return(ci_yaml_content)
+      .to receive(:blob_at)
+      .and_call_original
+
+    allow_any_instance_of(Repository)
+      .to receive(:blob_at)
+      .with(String, '.gitlab-ci.yml')
+      .and_return(blob)
 
     # Ensure we don't hit auto-devops when config not found in repository
     unless ci_yaml_content

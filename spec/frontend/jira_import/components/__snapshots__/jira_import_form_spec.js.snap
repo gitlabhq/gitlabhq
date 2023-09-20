@@ -4,23 +4,17 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
 <table
   aria-busy=""
   aria-colcount="3"
-  class="table b-table gl-table b-table-fixed"
+  class="b-table b-table-fixed gl-table table"
   role="table"
 >
-  <!---->
-  <!---->
   <thead
-    class=""
     role="rowgroup"
   >
-    <!---->
     <tr
-      class=""
       role="row"
     >
       <th
         aria-colindex="1"
-        class=""
         role="columnheader"
         scope="col"
       >
@@ -31,7 +25,6 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
       <th
         aria-colindex="2"
         aria-label="Arrow"
-        class=""
         role="columnheader"
         scope="col"
       >
@@ -39,7 +32,6 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
       </th>
       <th
         aria-colindex="3"
-        class=""
         role="columnheader"
         scope="col"
       >
@@ -52,21 +44,17 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
   <tbody
     role="rowgroup"
   >
-    <!---->
     <tr
-      class=""
       role="row"
     >
       <td
         aria-colindex="1"
-        class=""
         role="cell"
       >
         Jane Doe
       </td>
       <td
         aria-colindex="2"
-        class=""
         role="cell"
       >
         <svg
@@ -82,33 +70,26 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
       </td>
       <td
         aria-colindex="3"
-        class=""
         role="cell"
       >
         <div
           aria-label="The GitLab user to which the Jira user Jane Doe will be mapped"
-          class="dropdown b-dropdown gl-dropdown w-100 btn-group"
+          class="b-dropdown btn-group dropdown gl-dropdown w-100"
         >
-          <!---->
           <button
             aria-expanded="false"
             aria-haspopup="menu"
-            class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
+            class="btn btn-default btn-md dropdown-toggle gl-button gl-dropdown-toggle"
             type="button"
           >
-            <!---->
-             
-            <!---->
-             
             <span
               class="gl-dropdown-button-text"
             >
               janedoe
             </span>
-             
             <svg
               aria-hidden="true"
-              class="gl-button-icon dropdown-chevron gl-icon s16"
+              class="dropdown-chevron gl-button-icon gl-icon s16"
               data-testid="chevron-down-icon"
               role="img"
             >
@@ -125,21 +106,15 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             <div
               class="gl-dropdown-inner"
             >
-              <!---->
-               
-              <!---->
-               
               <div
                 class="gl-dropdown-contents"
               >
-                <!---->
-                 
                 <div
                   class="gl-search-box-by-type"
                 >
                   <svg
                     aria-hidden="true"
-                    class="gl-search-box-by-type-search-icon gl-icon s16"
+                    class="gl-icon gl-search-box-by-type-search-icon s16"
                     data-testid="search-icon"
                     role="img"
                   >
@@ -147,17 +122,13 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                       href="file-mock#search"
                     />
                   </svg>
-                   
                   <input
                     aria-label="Search"
-                    class="gl-form-input form-control gl-search-box-by-type-input"
+                    class="form-control gl-form-input gl-search-box-by-type-input"
                     placeholder="Search"
                     type="search"
                   />
-                   
-                  <!---->
                 </div>
-                  
                 <li
                   class="gl-dropdown-text text-secondary"
                   role="presentation"
@@ -165,33 +136,26 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                   <p
                     class="b-dropdown-text"
                   >
-                    
-            No matches found
-          
+                    No matches found
                   </p>
                 </li>
               </div>
-               
-              <!---->
             </div>
           </ul>
         </div>
       </td>
     </tr>
     <tr
-      class=""
       role="row"
     >
       <td
         aria-colindex="1"
-        class=""
         role="cell"
       >
         Fred Chopin
       </td>
       <td
         aria-colindex="2"
-        class=""
         role="cell"
       >
         <svg
@@ -207,33 +171,26 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
       </td>
       <td
         aria-colindex="3"
-        class=""
         role="cell"
       >
         <div
           aria-label="The GitLab user to which the Jira user Fred Chopin will be mapped"
-          class="dropdown b-dropdown gl-dropdown w-100 btn-group"
+          class="b-dropdown btn-group dropdown gl-dropdown w-100"
         >
-          <!---->
           <button
             aria-expanded="false"
             aria-haspopup="menu"
-            class="btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle"
+            class="btn btn-default btn-md dropdown-toggle gl-button gl-dropdown-toggle"
             type="button"
           >
-            <!---->
-             
-            <!---->
-             
             <span
               class="gl-dropdown-button-text"
             >
               mrgitlab
             </span>
-             
             <svg
               aria-hidden="true"
-              class="gl-button-icon dropdown-chevron gl-icon s16"
+              class="dropdown-chevron gl-button-icon gl-icon s16"
               data-testid="chevron-down-icon"
               role="img"
             >
@@ -250,21 +207,15 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             <div
               class="gl-dropdown-inner"
             >
-              <!---->
-               
-              <!---->
-               
               <div
                 class="gl-dropdown-contents"
               >
-                <!---->
-                 
                 <div
                   class="gl-search-box-by-type"
                 >
                   <svg
                     aria-hidden="true"
-                    class="gl-search-box-by-type-search-icon gl-icon s16"
+                    class="gl-icon gl-search-box-by-type-search-icon s16"
                     data-testid="search-icon"
                     role="img"
                   >
@@ -272,17 +223,13 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                       href="file-mock#search"
                     />
                   </svg>
-                   
                   <input
                     aria-label="Search"
-                    class="gl-form-input form-control gl-search-box-by-type-input"
+                    class="form-control gl-form-input gl-search-box-by-type-input"
                     placeholder="Search"
                     type="search"
                   />
-                   
-                  <!---->
                 </div>
-                  
                 <li
                   class="gl-dropdown-text text-secondary"
                   role="presentation"
@@ -290,22 +237,15 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                   <p
                     class="b-dropdown-text"
                   >
-                    
-            No matches found
-          
+                    No matches found
                   </p>
                 </li>
               </div>
-               
-              <!---->
             </div>
           </ul>
         </div>
       </td>
     </tr>
-    <!---->
-    <!---->
   </tbody>
-  <!---->
 </table>
 `;

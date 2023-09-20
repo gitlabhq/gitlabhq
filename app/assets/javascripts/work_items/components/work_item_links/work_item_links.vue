@@ -103,6 +103,7 @@ export default {
       isReportDrawerOpen: false,
       reportedUserId: 0,
       reportedUrl: '',
+      widgetName: 'tasks',
     };
   },
   computed: {
@@ -166,7 +167,6 @@ export default {
       this.updateWorkItemIdUrlQuery(child);
     },
     async closeModal() {
-      this.activeChild = {};
       this.updateWorkItemIdUrlQuery();
     },
     handleWorkItemDeleted(child) {
@@ -206,6 +206,7 @@ export default {
   <widget-wrapper
     ref="wrapper"
     :error="error"
+    :widget-name="widgetName"
     data-testid="work-item-links"
     @dismissAlert="error = undefined"
   >

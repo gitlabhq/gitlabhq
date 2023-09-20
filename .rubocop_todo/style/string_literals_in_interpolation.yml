@@ -6,7 +6,6 @@ Style/StringLiteralsInInterpolation:
     - 'app/helpers/colors_helper.rb'
     - 'app/models/application_setting_implementation.rb'
     - 'app/models/ci/namespace_mirror.rb'
-    - 'app/models/integrations/campfire.rb'
     - 'app/models/integrations/jira.rb'
     - 'app/services/draft_notes/publish_service.rb'
     - 'app/services/projects/create_service.rb'

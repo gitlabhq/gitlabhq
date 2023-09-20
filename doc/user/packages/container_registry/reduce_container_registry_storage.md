@@ -229,7 +229,7 @@ For self-managed instances, those settings can be updated in the [Rails console]
 
 They are also available in the [administrator area](../../admin_area/index.md):
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > CI/CD**
 1. Expand **Container Registry**.

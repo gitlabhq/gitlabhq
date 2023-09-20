@@ -88,19 +88,5 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu, feature_category: :naviga
 
       it_behaves_like 'access rights checks'
     end
-
-    describe 'Tracing' do
-      let(:item_id) { :tracing }
-
-      specify { is_expected.not_to be_nil }
-
-      describe 'when feature is disabled' do
-        before do
-          stub_feature_flags(observability_tracing: false)
-        end
-
-        specify { is_expected.to be_nil }
-      end
-    end
   end
 end

@@ -30,9 +30,11 @@ export default {
     failedText() {
       if (this.mr.approvals && !this.mr.isApproved) {
         return this.$options.i18n.approvalNeeded;
-      } else if (this.mr.detailedMergeStatus === DETAILED_MERGE_STATUS.BLOCKED_STATUS) {
+      }
+      if (this.mr.detailedMergeStatus === DETAILED_MERGE_STATUS.BLOCKED_STATUS) {
         return this.$options.i18n.blockingMergeRequests;
-      } else if (this.mr.detailedMergeStatus === DETAILED_MERGE_STATUS.EXTERNAL_STATUS_CHECKS) {
+      }
+      if (this.mr.detailedMergeStatus === DETAILED_MERGE_STATUS.EXTERNAL_STATUS_CHECKS) {
         return this.$options.i18n.externalStatusChecksFailed;
       }
 

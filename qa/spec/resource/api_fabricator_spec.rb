@@ -156,7 +156,7 @@ RSpec.describe QA::Resource::ApiFabricator do
               expect(error.to_s).to eql(<<~ERROR.chomp)
                 Fabrication of FooBarResource using the API failed (400) with `#{raw_post}`.
                 Correlation Id: foobar
-                Sentry Url: https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg&query=correlation_id%3A%22foobar%22
+                Sentry Url: https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=gstg&project=3&query=correlation_id%3A%22foobar%22
                 Kibana - Discover Url: https://nonprod-log.gitlab.net/app/discover#/?_a=%28index:%27ed942d00-5186-11ea-ad8a-f3610a492295%27%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20foobar%27%29%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29
                 Kibana - Dashboard Url: https://nonprod-log.gitlab.net/app/dashboards#/view/b74dc030-6f56-11ed-9af2-6131f0ee4ce6?_g=%28time%3A%28from:%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29&_a=%28filters%3A%21%28%28query%3A%28match_phrase%3A%28json.correlation_id%3A%27foobar%27%29%29%29%29%29
               ERROR

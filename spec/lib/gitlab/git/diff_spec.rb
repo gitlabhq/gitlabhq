@@ -131,6 +131,31 @@ EOT
           expect(diff.diff).to be_utf8
         end
       end
+
+      context 'using a diff that it too large but collecting all paths' do
+        let(:gitaly_diff) do
+          Gitlab::GitalyClient::Diff.new(
+            from_path: '.gitmodules',
+            to_path: '.gitmodules',
+            old_mode: 0100644,
+            new_mode: 0100644,
+            from_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae',
+            to_id: 'efd587ccb47caf5f31fc954edb21f0a713d9ecc3',
+            overflow_marker: true,
+            collapsed: false,
+            too_large: false,
+            patch: ''
+          )
+        end
+
+        let(:diff) { described_class.new(gitaly_diff) }
+
+        it 'is already pruned and collapsed but not too large' do
+          expect(diff.diff).to be_empty
+          expect(diff).not_to be_too_large
+          expect(diff).to be_collapsed
+        end
+      end
     end
 
     context 'using a Gitaly::CommitDelta' do

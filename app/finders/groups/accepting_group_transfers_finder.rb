@@ -14,7 +14,9 @@ module Groups
       return Group.none unless can_transfer_group?
 
       items = find_all_groups
-      items = by_search(items)
+
+      # Search will perform an ORDER BY to ensure exact matches are returned first.
+      return by_search(items, exact_matches_first: true) if params[:search].present?
 
       sort(items)
     end

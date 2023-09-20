@@ -128,7 +128,6 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :container_registries, only: [:index, :show], controller: 'registry/repositories'
     resource :dependency_proxy, only: [:show, :update]
-    resources :email_campaigns, only: :index
 
     namespace :observability do
       get 'explore'
@@ -161,7 +160,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :achievements, only: [:index, :new, :edit]
 
-    resources :work_items, only: [:index]
+    resources :work_items, only: [:index, :show], param: :iid
   end
 
   scope(

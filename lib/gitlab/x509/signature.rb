@@ -39,6 +39,8 @@ module Gitlab
         return :unverified if
           x509_certificate.nil? ||
             x509_certificate.revoked? ||
+            certificate_subject.nil? ||
+            certificate_crl.nil? ||
             !verified_signature ||
             signed_by_user.nil?
 
@@ -127,6 +129,7 @@ module Gitlab
 
       def certificate_crl
         extension = get_certificate_extension('crlDistributionPoints')
+
         return if extension.nil?
 
         crl_url = nil
@@ -185,7 +188,7 @@ module Gitlab
       end
 
       def x509_issuer
-        return if verified_signature.nil? || issuer_subject_key_identifier.nil? || certificate_crl.nil?
+        return if verified_signature.nil? || issuer_subject_key_identifier.nil? || certificate_issuer.nil?
 
         attributes = {
           subject_key_identifier: issuer_subject_key_identifier,

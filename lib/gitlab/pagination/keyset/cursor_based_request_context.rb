@@ -32,6 +32,14 @@ module Gitlab
         def order_by
           { (params[:order_by]&.to_sym || DEFAULT_SORT_COLUMN) => (params[:sort]&.to_sym || DEFAULT_SORT_DIRECTION) }
         end
+
+        def order
+          params[:order_by]&.to_sym || DEFAULT_SORT_COLUMN
+        end
+
+        def sort
+          params[:sort]&.to_sym || DEFAULT_SORT_DIRECTION
+        end
       end
     end
   end

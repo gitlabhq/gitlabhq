@@ -13,15 +13,17 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
     let!(:pool_repository) { create(:pool_repository) }
 
     it { is_expected.to validate_presence_of(:shard) }
-    it { is_expected.to validate_presence_of(:source_project) }
   end
 
   describe 'scopes' do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }
     let_it_be(:new_shard) { create(:shard, name: 'new') }
-    let_it_be(:pool_repository1) { create(:pool_repository, source_project: project1) }
-    let_it_be(:pool_repository2) { create(:pool_repository, source_project: project1, shard: new_shard) }
+    let_it_be(:pool_repository1) { create(:pool_repository, source_project: project1, disk_path: 'disk_path') }
+    let_it_be(:pool_repository2) do
+      create(:pool_repository, source_project: project1, disk_path: 'disk_path', shard: new_shard)
+    end
+
     let_it_be(:another_pool_repository) { create(:pool_repository, source_project: project2) }
 
     describe '.by_source_project' do
@@ -32,8 +34,8 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
       end
     end
 
-    describe '.by_source_project_and_shard_name' do
-      subject { described_class.by_source_project_and_shard_name(project1, new_shard.name) }
+    describe '.by_disk_path_and_shard_name' do
+      subject { described_class.by_disk_path_and_shard_name('disk_path', new_shard.name) }
 
       it 'returns only a requested pool repository' do
         is_expected.to match_array([pool_repository2])
@@ -88,6 +90,40 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
         expect(pool.source_project.repository).to receive(:disconnect_alternates).and_call_original
 
         pool.unlink_repository(pool.source_project.repository)
+      end
+    end
+  end
+
+  describe '#object_pool' do
+    subject { pool.object_pool }
+
+    let(:pool) { build(:pool_repository, :ready, source_project: project, disk_path: disk_path) }
+    let(:project) { build(:project) }
+    let(:disk_path) { 'disk_path' }
+
+    it 'returns an object pool instance' do
+      is_expected.to be_a_kind_of(Gitlab::Git::ObjectPool)
+
+      is_expected.to have_attributes(
+        storage: pool.shard.name,
+        relative_path: "#{pool.disk_path}.git",
+        source_repository: pool.source_project.repository.raw,
+        gl_project_path: pool.source_project.full_path
+      )
+    end
+
+    context 'when source project is missing' do
+      let(:project) { nil }
+
+      it 'returns an object pool instance' do
+        is_expected.to be_a_kind_of(Gitlab::Git::ObjectPool)
+
+        is_expected.to have_attributes(
+          storage: pool.shard.name,
+          relative_path: "#{pool.disk_path}.git",
+          source_repository: nil,
+          gl_project_path: nil
+        )
       end
     end
   end

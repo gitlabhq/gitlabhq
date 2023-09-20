@@ -237,22 +237,6 @@ module Gitlab
         )
       end
 
-      def create_from_snapshot(http_url, http_auth)
-        request = Gitaly::CreateRepositoryFromSnapshotRequest.new(
-          repository: @gitaly_repo,
-          http_url: http_url,
-          http_auth: http_auth
-        )
-
-        gitaly_client_call(
-          @storage,
-          :repository_service,
-          :create_repository_from_snapshot,
-          request,
-          timeout: GitalyClient.long_timeout
-        )
-      end
-
       def write_ref(ref_path, ref, old_ref)
         request = Gitaly::WriteRefRequest.new(
           repository: @gitaly_repo,

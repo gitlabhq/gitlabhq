@@ -2,86 +2,70 @@
 
 exports[`Design management design index page renders design index 1`] = `
 <div
-  class="design-detail js-design-detail fixed-top gl-w-full gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row"
+  class="design-detail fixed-top gl-display-flex gl-flex-direction-column gl-justify-content-center gl-lg-flex-direction-row gl-w-full js-design-detail"
 >
   <div
-    class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
+    class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden gl-relative"
   >
     <div
       iid="1"
       project-path="project-path"
     />
-     
-    <!---->
-     
     <design-presentation-stub
       discussions="[object Object],[object Object]"
       image="test.jpg"
       imagename="test.jpg"
       scale="1"
     />
-     
     <div
-      class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
+      class="design-scaler-wrapper gl-absolute gl-align-items-center gl-display-flex gl-justify-content-center gl-mb-6"
     >
       <design-scaler-stub
         maxscale="2"
       />
     </div>
   </div>
-   
   <div
-    class="image-notes gl-pt-0"
+    class="gl-pt-0 image-notes"
   >
     <div
-      class="gl-py-4 gl-mb-4 gl-display-flex gl-justify-content-space-between gl-align-items-center gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
+      class="gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-display-flex gl-justify-content-space-between gl-mb-4 gl-py-4"
     >
       <span>
         To Do
       </span>
-       
       <design-todo-button-stub
         design="[object Object]"
       />
     </div>
-     
     <h2
       class="gl-font-weight-bold gl-mt-0"
     >
-      
-    My precious issue
-  
+      My precious issue
     </h2>
-     
     <a
-      class="gl-text-gray-400 gl-text-decoration-none gl-mb-6 gl-display-block"
+      class="gl-display-block gl-mb-6 gl-text-decoration-none gl-text-gray-400"
       href="full-issue-url"
     >
       ull-issue-path
     </a>
-     
     <description-form-stub
       design="[object Object]"
       designvariables="[object Object]"
       markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
     />
-     
     <participants-stub
       class="gl-mb-4"
       lazy="true"
       numberoflessparticipants="8"
       participants="[object Object]"
     />
-     
-    <!---->
-     
     <design-note-signed-out-stub
       class="gl-mb-4"
       isadddiscussion="true"
       registerpath=""
       signinpath=""
     />
-     
     <design-discussion-stub
       data-testid="unresolved-discussion"
       designid="gid::/gitlab/Design/1"
@@ -92,7 +76,6 @@ exports[`Design management design index page renders design index 1`] = `
       registerpath=""
       signinpath=""
     />
-     
     <gl-accordion-stub
       class="gl-mb-5"
       headerlevel="3"
@@ -113,23 +96,21 @@ exports[`Design management design index page renders design index 1`] = `
         />
       </gl-accordion-item-stub>
     </gl-accordion-stub>
-     
   </div>
 </div>
 `;
 
 exports[`Design management design index page with error GlAlert is rendered in correct position with correct content 1`] = `
 <div
-  class="design-detail js-design-detail fixed-top gl-w-full gl-display-flex gl-justify-content-center gl-flex-direction-column gl-lg-flex-direction-row"
+  class="design-detail fixed-top gl-display-flex gl-flex-direction-column gl-justify-content-center gl-lg-flex-direction-row gl-w-full js-design-detail"
 >
   <div
-    class="gl-display-flex gl-overflow-hidden gl-flex-grow-1 gl-flex-direction-column gl-relative"
+    class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden gl-relative"
   >
     <div
       iid="1"
       project-path="project-path"
     />
-     
     <div
       class="gl-p-5"
     >
@@ -144,82 +125,64 @@ exports[`Design management design index page with error GlAlert is rendered in c
         title=""
         variant="danger"
       >
-        
         woops
-      
       </gl-alert-stub>
     </div>
-     
     <design-presentation-stub
       discussions=""
       image="test.jpg"
       imagename="test.jpg"
       scale="1"
     />
-     
     <div
-      class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
+      class="design-scaler-wrapper gl-absolute gl-align-items-center gl-display-flex gl-justify-content-center gl-mb-6"
     >
       <design-scaler-stub
         maxscale="2"
       />
     </div>
   </div>
-   
   <div
-    class="image-notes gl-pt-0"
+    class="gl-pt-0 image-notes"
   >
     <div
-      class="gl-py-4 gl-mb-4 gl-display-flex gl-justify-content-space-between gl-align-items-center gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
+      class="gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-display-flex gl-justify-content-space-between gl-mb-4 gl-py-4"
     >
       <span>
         To Do
       </span>
-       
       <design-todo-button-stub
         design="[object Object]"
       />
     </div>
-     
     <h2
       class="gl-font-weight-bold gl-mt-0"
     >
-      
-    My precious issue
-  
+      My precious issue
     </h2>
-     
     <a
-      class="gl-text-gray-400 gl-text-decoration-none gl-mb-6 gl-display-block"
+      class="gl-display-block gl-mb-6 gl-text-decoration-none gl-text-gray-400"
       href="full-issue-url"
     >
       ull-issue-path
     </a>
-     
     <description-form-stub
       design="[object Object]"
       designvariables="[object Object]"
       markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
     />
-     
     <participants-stub
       class="gl-mb-4"
       lazy="true"
       numberoflessparticipants="8"
       participants="[object Object]"
     />
-     
-    <!---->
-     
     <design-note-signed-out-stub
       class="gl-mb-4"
       isadddiscussion="true"
       registerpath=""
       signinpath=""
     />
-      
-    <!---->
-     
   </div>
 </div>
 `;

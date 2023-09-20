@@ -5,9 +5,11 @@ RSpec.configure do |config|
     # We need to cleanup the queues before running jobs in specs because the
     # middleware might have written to redis
     redis_queues_cleanup!
+    redis_queues_metadata_cleanup!
     Sidekiq::Testing.inline!(&block)
   ensure
     redis_queues_cleanup!
+    redis_queues_metadata_cleanup!
   end
 
   # As we'll review the examples with this tag, we should either:

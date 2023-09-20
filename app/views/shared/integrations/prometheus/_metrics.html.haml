@@ -5,10 +5,9 @@
 .col-lg-3
   %p
     = s_('PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters.')
-    = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus'), target: '_blank', rel: "noopener noreferrer"
 
 .col-lg-9
-  = render Pajamas::CardComponent.new(body_options: { class: 'gl-p-0' }, card_options: { class: 'gl-mb-5 js-panel-monitored-metrics', data: { active_metrics: active_common_project_prometheus_metrics_path(project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/index') }}) do |c|
+  = render Pajamas::CardComponent.new(body_options: { class: 'gl-p-0' }, card_options: { class: 'gl-mb-5 js-panel-monitored-metrics', data: { active_metrics: active_common_project_prometheus_metrics_path(project, :json) }}) do |c|
     - c.with_header do
       %strong
         = s_('PrometheusService|Common metrics')
@@ -34,5 +33,4 @@
         .flash-notice
           .flash-text
             = html_escape(s_("PrometheusService|To set up automatic monitoring, add the environment variable %{variable} to exporter's queries.")) % { variable: "<code>$CI_ENVIRONMENT_SLUG</code>".html_safe }
-            = link_to s_('PrometheusService|More information'), help_page_path('operations/metrics/index.md')
       %ul.list-unstyled.metrics-list.js-missing-var-metrics-list

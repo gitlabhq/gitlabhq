@@ -114,7 +114,7 @@ module Banzai
         # Repository routes are under /-/ scope now.
         # Since we craft a path without using route helpers we must
         # ensure - is added here.
-        prefix = '-' if %w(tree blob raw commits).include?(resource_type.to_s)
+        prefix = '-' if %w[tree blob raw commits].include?(resource_type.to_s)
 
         uri.path = [
           relative_url_root,

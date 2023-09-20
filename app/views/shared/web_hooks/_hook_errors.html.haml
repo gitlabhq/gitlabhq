@@ -1,8 +1,5 @@
-- strong_start = '<strong>'.html_safe
-- strong_end = '</strong>'.html_safe
-- link_start = '<a href="%{url}">'.html_safe
-- link_end = '</a>'.html_safe
-
+- strong = { strong_start: '<strong>'.html_safe,
+  strong_end: '</strong>'.html_safe }
 - if hook.rate_limited?
   - placeholders = { limit: number_with_delimiter(hook.rate_limit),
     root_namespace: hook.parent.root_namespace.path }
@@ -14,15 +11,11 @@
   = render Pajamas::AlertComponent.new(title: s_('Webhooks|Webhook failed to connect'),
     variant: :danger) do |c|
     - c.with_body do
-      = s_('Webhooks|The webhook failed to connect, and is disabled. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below.').html_safe % { strong_start: strong_start, strong_end: strong_end }
+      = safe_format(s_('Webhooks|The webhook failed to connect, and is disabled. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below.'), strong)
 - elsif hook.temporarily_disabled?
-  - help_path = help_page_path('user/project/integrations/webhooks', anchor: 'webhook-fails-or-multiple-webhook-requests-are-triggered')
-  - placeholders = { strong_start: strong_start,
-    strong_end: strong_end,
-    retry_time: time_interval_in_words(hook.disabled_until - Time.now),
-    help_link_start: link_start % { url: help_path },
-    help_link_end: link_end }
+  - help_link = link_to('', help_page_path('user/project/integrations/webhooks', anchor: 'webhook-fails-or-multiple-webhook-requests-are-triggered'), target: '_blank', rel: 'noopener noreferrer')
+  - retry_time = { retry_time: time_interval_in_words(hook.disabled_until - Time.now) }
   = render Pajamas::AlertComponent.new(title: s_('Webhooks|Webhook fails to connect'),
     variant: :warning) do |c|
     - c.with_body do
-      = s_('Webhooks|The webhook %{help_link_start}failed to connect%{help_link_end}, and will retry in %{retry_time}. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below.').html_safe % placeholders
+      = safe_format(s_('Webhooks|The webhook %{help_link_start}failed to connect%{help_link_end}, and will retry in %{retry_time}. To re-enable it, check %{strong_start}Recent events%{strong_end} for error details, then test your settings below.'), retry_time, strong, tag_pair(help_link, :help_link_start, :help_link_end))

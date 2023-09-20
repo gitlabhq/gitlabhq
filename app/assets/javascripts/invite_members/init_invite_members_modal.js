@@ -25,7 +25,6 @@ export default (function initInviteMembersModal() {
         name: 'InviteMembersModalRoot',
         provide: {
           name: el.dataset.name,
-          newProjectPath: el.dataset.newProjectPath,
         },
         render: (createElement) =>
           createElement(InviteMembersModal, {
@@ -34,8 +33,6 @@ export default (function initInviteMembersModal() {
               isProject: parseBoolean(el.dataset.isProject),
               accessLevels: JSON.parse(el.dataset.accessLevels),
               defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
-              tasksToBeDoneOptions: JSON.parse(el.dataset.tasksToBeDoneOptions || '[]'),
-              projects: JSON.parse(el.dataset.projects || '[]'),
               usersFilter: el.dataset.usersFilter,
               filterId: parseInt(el.dataset.filterId, 10),
               usersLimitDataset: convertObjectPropsToCamelCase(

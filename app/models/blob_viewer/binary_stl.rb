@@ -6,7 +6,7 @@ module BlobViewer
     include ClientSide
 
     self.partial_name = 'stl'
-    self.extensions = %w(stl)
+    self.extensions = %w[stl]
     self.binary = true
   end
 end

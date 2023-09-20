@@ -24,7 +24,7 @@ For public and internal projects, you can change who can see your:
 
 To change the visibility of your pipelines and related features:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Select or clear the **Public pipelines** checkbox.
@@ -56,7 +56,7 @@ This setting has no effect when:
 
 To change the pipeline visibility for non-project members:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. For **CI/CD**, choose:
@@ -72,7 +72,7 @@ is selected.
 
 You can set pending or running pipelines to cancel automatically when a pipeline for new changes runs on the same branch. You can enable this in the project settings:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General Pipelines**.
 1. Select the **Auto-cancel redundant pipelines** checkbox.
@@ -94,7 +94,7 @@ newer one, which may not be what you want.
 
 To avoid this scenario:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Select the **Prevent outdated deployment jobs** checkbox.
@@ -112,7 +112,7 @@ directory. However, you can specify an alternate filename path, including locati
 
 To customize the path:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. In the **CI/CD configuration file** field, enter the filename. If the file:
@@ -161,7 +161,7 @@ able to edit it.
 
 You can choose how your repository is fetched from GitLab when a job runs.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Under **Git strategy**, select an option:
@@ -169,7 +169,7 @@ You can choose how your repository is fetched from GitLab when a job runs.
      for every job. However, the local working copy is always pristine.
    - `git fetch` is faster because it re-uses the local working copy (and falls
      back to clone if it doesn't exist). This is recommended, especially for
-     [large repositories](../large_repositories/index.md#git-strategy).
+     [large repositories](../../user/project/repository/managing_large_repositories.md#git-strategy).
 
 The configured Git strategy can be overridden by the [`GIT_STRATEGY` variable](../runners/configure_runners.md#git-strategy)
 in the `.gitlab-ci.yml` file.
@@ -182,7 +182,7 @@ in the `.gitlab-ci.yml` file.
 You can limit the number of changes that GitLab CI/CD fetches when it clones
 a repository.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Under **Git strategy**, under **Git shallow clone**, enter a value.
@@ -192,14 +192,14 @@ a repository.
 In GitLab versions 14.7 and later, newly created projects have a default `git depth`
 value of `20`. GitLab versions 14.6 and earlier have a default `git depth` value of `50`.
 
-This value can be overridden by the [`GIT_DEPTH` variable](../large_repositories/index.md#shallow-cloning)
+This value can be overridden by the [`GIT_DEPTH` variable](../../user/project/repository/managing_large_repositories.md#shallow-cloning)
 in the `.gitlab-ci.yml` file.
 
 ## Set a limit for how long jobs can run
 
 You can define how long a job can run before it times out.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Timeout** field, enter the number of minutes, or a human-readable value like `2 hours`.

@@ -19,6 +19,11 @@ export default {
     EntitySelect,
   },
   props: {
+    apiParams: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     label: {
       type: String,
       required: false,
@@ -48,7 +53,7 @@ export default {
       default: null,
     },
     groupsFilter: {
-      type: String,
+      type: String, // Two supported values: `descendant_groups` and `subgroups` See app/assets/javascripts/vue_shared/components/entity_select/utils.js.
       required: false,
       default: null,
     },
@@ -62,17 +67,15 @@ export default {
     async fetchGroups(searchString = '', page = 1) {
       let groups = [];
       let totalPages = 0;
+      const params = {
+        search: searchString,
+        per_page: DEFAULT_PER_PAGE,
+        page,
+        ...this.apiParams,
+      };
       try {
-        const { data = [], headers } = await axios.get(
-          Api.buildUrl(groupsPath(this.groupsFilter, this.parentGroupID)),
-          {
-            params: {
-              search: searchString,
-              per_page: DEFAULT_PER_PAGE,
-              page,
-            },
-          },
-        );
+        const url = groupsPath(this.groupsFilter, this.parentGroupID);
+        const { data = [], headers } = await axios.get(url, { params });
         groups = data.map((group) => ({
           ...group,
           text: group.full_name,

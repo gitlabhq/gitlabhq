@@ -258,6 +258,18 @@ namespace :gitlab do
       end
     end
 
+    def disabled_db_flags_note
+      return unless Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
+
+      puts <<~NOTE.color(:yellow)
+          Note: disallow_database_ddl_feature_flags feature is currently enabled. Disable it to proceed.
+
+          Disable with: Feature.disable(:disallow_database_ddl_feature_flags)
+      NOTE
+
+      yield if block_given?
+    end
+
     desc 'Enqueue an index for reindexing'
     task :enqueue_reindexing_action, [:index_name, :database] => :environment do |_, args|
       model = Gitlab::Database.database_base_models[args.fetch(:database, Gitlab::Database::PRIMARY_DATABASE_NAME)]
@@ -269,7 +281,9 @@ namespace :gitlab do
         puts "There are #{Gitlab::Database::Reindexing::QueuedAction.queued.size} queued actions in total."
       end
 
-      unless Feature.enabled?(:database_reindexing, type: :ops)
+      disabled_db_flags_note
+
+      if Feature.disabled?(:database_reindexing, type: :ops)
         puts <<~NOTE.color(:yellow)
           Note: database_reindexing feature is currently disabled.
 
@@ -282,6 +296,8 @@ namespace :gitlab do
       each_database(databases) do |database_name|
         task database_name, [:pick] => :environment do |_, args|
           args.with_defaults(pick: 2)
+
+          disabled_db_flags_note { exit }
 
           if Feature.disabled?(:database_async_index_operations, type: :ops)
             puts <<~NOTE.color(:yellow)
@@ -312,6 +328,8 @@ namespace :gitlab do
       each_database(databases) do |database_name|
         task database_name, [:pick] => :environment do |_, args|
           args.with_defaults(pick: 2)
+
+          disabled_db_flags_note { exit }
 
           if Feature.disabled?(:database_async_foreign_key_validation, type: :ops)
             puts <<~NOTE.color(:yellow)

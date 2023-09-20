@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -58,6 +58,8 @@ GET /users
 ]
 ```
 
+This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination). Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5 [with a flag](../user/feature_flags.md) named `api_keyset_pagination_multi_order`. Disabled by default.
+
 You can also use `?search=` to search for users by name, username, or public email. For example, `/users?search=John`. When you search for a:
 
 - Public email, you must use the full email address to get an exact match. A search might return a partial match. For example, if you search for the email `on@example.com`, the search can return both `on@example.com` and `jon@example.com`.
@@ -97,7 +99,7 @@ GET /users?external=true
 ```
 
 GitLab supports bot users such as the [alert bot](../operations/incident_management/integrations.md)
-or the [support bot](../user/project/service_desk/index.md#support-bot-user).
+or the [support bot](../user/project/service_desk/configure.md#support-bot-user).
 You can exclude the following types of [internal users](../development/internal_users.md#internal-users)
 from the users' list with the `exclude_internal=true` parameter
 ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241144) in GitLab 13.4):
@@ -146,9 +148,9 @@ You can use all [parameters available for everyone](#for-non-administrator-users
 | `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 | `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
 | `admins`           | boolean | no       | Return only administrators. Default is `false`                                 |
-| `auditors`  **(PREMIUM)** | boolean | no       | Return only auditor users. Default is `false`. If not included, it returns all users.  |
-| `saml_provider_id` **(PREMIUM)** | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. |
-| `skip_ldap` **(PREMIUM)** | boolean | no     | Skip LDAP users. |
+| `auditors`  **(PREMIUM ALL)** | boolean | no       | Return only auditor users. Default is `false`. If not included, it returns all users.  |
+| `saml_provider_id` **(PREMIUM ALL)** | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. |
+| `skip_ldap` **(PREMIUM ALL)** | boolean | no     | Skip LDAP users. |
 
 ```json
 [
@@ -325,6 +327,10 @@ If the returned value is `null`, the account was created by a user who registere
 Get a single user.
 
 ### For user
+
+Prerequisites:
+
+- You must be signed in to use this endpoint.
 
 ```plaintext
 GET /users/:id
@@ -532,7 +538,7 @@ Parameters:
 | Attribute                            | Required | Description                                                                                                                                             |
 | :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false.
-| `auditor` **(PREMIUM)**               | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.                                                                                                      |
+| `auditor` **(PREMIUM ALL)**               | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.                                                                                                      |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create top-level groups - true or false                                                                                                                  |
@@ -540,7 +546,7 @@ Parameters:
 | `email`                              | Yes      | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Additional compute minutes for this user.                                                                                                 |
+| `extra_shared_runners_minutes_limit` **(PREMIUM ALL)** | No       | Can be set by administrators only. Additional compute minutes for this user.                                                                                                 |
 | `force_random_password`              | No       | Set user password to a random value - true or false (default)                                                                                           |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -553,7 +559,7 @@ Parameters:
 | `projects_limit`                     | No       | Number of projects user can create                                                                                                                      |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
-| `shared_runners_minutes_limit` **(PREMIUM)**  | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                                                                                                      |
+| `shared_runners_minutes_limit` **(PREMIUM ALL)**  | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                                                                                                      |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information)                    |
@@ -581,7 +587,7 @@ Parameters:
 | Attribute                            | Required | Description                                                                                                                                             |
 | :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `admin`                              | No       |User is an administrator. Valid values are `true` or `false`. Defaults to false.
-| `auditor` **(PREMIUM)**              | No       |  User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.(default)                                                                                                           |
+| `auditor` **(PREMIUM ALL)**              | No       |  User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.(default)                                                                                                           |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create groups - true or false                                                                                                                  |
@@ -590,7 +596,7 @@ Parameters:
 | `email`                              | No       | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Additional compute minutes for this user.                                                                                                 |
+| `extra_shared_runners_minutes_limit` **(PREMIUM ALL)** | No       | Can be set by administrators only. Additional compute minutes for this user.                                                                                                 |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `id`                                 | Yes      | ID of the user                                                                                                                                      |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -604,7 +610,7 @@ Parameters:
 | `pronouns`                           | No       | Pronouns                                                                                                                                                |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | Public email of the user (must be already verified)                                                                                                                            |
-| `shared_runners_minutes_limit` **(PREMIUM)** | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`.                                                                                                      |
+| `shared_runners_minutes_limit` **(PREMIUM ALL)** | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`.                                                                                                      |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information)                    |
@@ -1265,7 +1271,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 ```
 
 NOTE:
-This also adds an audit event, as described in [audit instance events](../administration/audit_events.md#instance-events). **(PREMIUM)**
+This also adds an audit event. **(PREMIUM ALL)**
 
 ## Delete SSH key for current user
 
@@ -1871,7 +1877,8 @@ Example response:
       "id" : 2,
       "created_at" : "2017-03-17T17:18:09.283Z",
       "impersonation" : true,
-      "expires_at" : "2017-04-04"
+      "expires_at" : "2017-04-04",
+      "last_used_at": "2017-03-24T09:44:21.722Z"
    },
    {
       "active" : false,
@@ -1884,7 +1891,8 @@ Example response:
       "created_at" : "2017-03-17T17:19:28.697Z",
       "id" : 3,
       "impersonation" : true,
-      "expires_at" : "2017-04-14"
+      "expires_at" : "2017-04-14",
+      "last_used_at": "2017-03-24T09:44:21.722Z"
    }
 ]
 ```
@@ -2026,7 +2034,7 @@ POST /users/:user_id/impersonation_tokens
 | ------------ | ------- | -------- | --------------------------------------------------------------------------- |
 | `user_id`    | integer | yes      | ID of the user                                                          |
 | `name`       | string  | yes      | Name of the impersonation token                                         |
-| `expires_at` | date    | no       | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`) |
+| `expires_at` | date    | yes      | Expiration date of the impersonation token in ISO format (`YYYY-MM-DD`) |
 | `scopes`     | array   | yes      | Array of scopes of the impersonation token (`api`, `read_user`)         |
 
 ```shell

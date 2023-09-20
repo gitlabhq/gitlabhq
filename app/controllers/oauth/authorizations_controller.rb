@@ -14,7 +14,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   # include the call to session.delete
   def new
     if pre_auth.authorizable?
-      if skip_authorization? || matching_token?
+      if skip_authorization? || (matching_token? && pre_auth.client.application.confidential?)
         auth = authorization.authorize
         parsed_redirect_uri = URI.parse(auth.redirect_uri)
         session.delete(:user_return_to)

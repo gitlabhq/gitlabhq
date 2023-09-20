@@ -132,7 +132,7 @@ While Auto DevOps is enabled by default, Auto DevOps can be disabled at both
 the instance level (for self-managed instances) and the group level. Complete
 these steps to enable Auto DevOps if it's disabled:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the application project.
+1. On the left sidebar, select **Search or go to** and find the application project.
 1. Select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select **Default to Auto DevOps pipeline** to display more options.

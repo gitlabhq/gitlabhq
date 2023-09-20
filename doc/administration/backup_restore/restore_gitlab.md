@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Restore GitLab **(FREE SELF)**
 
-GitLab provides a command line interface to restore your entire installation,
+GitLab provides a command-line interface to restore your entire installation,
 and is flexible enough to fit your needs.
 
 The [restore prerequisites section](#restore-prerequisites) includes crucial
@@ -287,7 +287,7 @@ Each backup archive contains a full self-contained backup, including those creat
 
 ## Restore options
 
-The command line tool GitLab provides to restore from backup can accept more
+The command-line tool GitLab provides to restore from backup can accept more
 options.
 
 ### Specify backup to restore when there are more than one
@@ -450,3 +450,19 @@ For more information, see:
   - [Having different owners](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us).
 
 - Stack Overflow: [Resulting errors](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
+
+### Restoring fails due to Git server hook
+
+While restoring from backup, you can encounter an error when the following are true:
+
+- A Git Server Hook (`custom_hook`) is configured using the method for [GitLab version 15.10 and earlier](../server_hooks.md)
+- Your GitLab version is on version 15.11 and later
+- You created symlinks to a directory outside of the GitLab-managed locations
+
+The error looks like:
+
+```plaintext
+{"level":"fatal","msg":"restore: pipeline: 1 failures encountered:\n - @hashed/path/to/hashed_repository.git (path/to_project): manager: restore custom hooks, \"@hashed/path/to/hashed_repository/<BackupTimestamp>_<GitLabVersion>-ee/001.custom_hooks.tar\": rpc error: code = Internal desc = setting custom hooks: generating prepared vote: walking directory: copying file to hash: read /mnt/gitlab-app/git-data/repositories/+gitaly/tmp/default-repositories.old.<timestamp>.<temporaryfolder>/custom_hooks/compliance-triggers.d: is a directory\n","pid":3256017,"time":"2023-08-10T20:09:44.395Z"}
+```
+
+To resolve this, you can update the Git [server hooks](../server_hooks.md) for GitLab version 15.11 and later, and create a new backup.

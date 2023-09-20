@@ -5,7 +5,7 @@ module API
     class Diff < Grape::Entity
       expose :json_safe_diff, as: :diff, documentation: {
         type: 'string',
-        example: '--- a/doc/update/5.4-to-6.0.md\n+++ b/doc/update/5.4-to-6.0.md\n@@ -71,6 +71,8 @@\n...'
+        example: '@@ -71,6 +71,8 @@\n...'
       }
       expose :new_path, documentation: { type: 'string', example: 'doc/update/5.4-to-6.0.md' }
       expose :old_path, documentation: { type: 'string', example: 'doc/update/5.4-to-6.0.md' }

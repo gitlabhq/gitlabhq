@@ -14,125 +14,214 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   end
 
   describe 'FQDN path' do
-    let_it_be(:existing_project) { create(:project, :repository) }
-
-    let(:project_path) { existing_project.full_path }
-    let(:address) { "acme.com/#{project_path}/component@#{version}" }
     let(:version) { 'master' }
+    let(:project_path) { project.full_path }
+    let(:address) { "acme.com/#{project_path}/secret-detection@#{version}" }
 
-    context 'when project exists' do
-      it 'provides the expected attributes', :aggregate_failures do
-        expect(path.project).to eq(existing_project)
-        expect(path.host).to eq(current_host)
-        expect(path.sha).to eq(existing_project.commit('master').id)
-        expect(path.project_file_path).to eq('component/template.yml')
+    context 'when the project repository contains a templates directory' do
+      let_it_be(:project) do
+        create(
+          :project, :custom_repo,
+          files: {
+            'templates/secret-detection.yml' => 'image: alpine_1',
+            'templates/dast/template.yml' => 'image: alpine_2',
+            'templates/dast/another-template.yml' => 'image: alpine_3',
+            'templates/dast/another-folder/template.yml' => 'image: alpine_4'
+          }
+        )
       end
 
-      context 'when content exists' do
-        let(:content) { 'image: alpine' }
+      before do
+        project.add_developer(user)
+      end
+
+      context 'when user does not have permissions' do
+        it 'raises an error when fetching the content' do
+          expect { path.fetch_content!(current_user: build(:user)) }
+            .to raise_error(Gitlab::Access::AccessDeniedError)
+        end
+      end
+
+      context 'when the component is simple (single file template)' do
+        it 'fetches the component content', :aggregate_failures do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_1')
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('templates/secret-detection.yml')
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(project.commit('master').id)
+        end
+      end
+
+      context 'when the component is complex (directory-based template)' do
+        let(:address) { "acme.com/#{project_path}/dast@#{version}" }
+
+        it 'fetches the component content', :aggregate_failures do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_2')
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('templates/dast/template.yml')
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(project.commit('master').id)
+        end
+
+        context 'when there is an invalid nested component folder' do
+          let(:address) { "acme.com/#{project_path}/dast/another-folder@#{version}" }
+
+          it 'returns nil' do
+            expect(path.fetch_content!(current_user: user)).to be_nil
+          end
+        end
+
+        context 'when there is an invalid nested component path' do
+          let(:address) { "acme.com/#{project_path}/dast/another-template@#{version}" }
+
+          it 'returns nil' do
+            expect(path.fetch_content!(current_user: user)).to be_nil
+          end
+        end
+      end
+
+      context 'when fetching the latest version of a component' do
+        let_it_be(:project) do
+          create(
+            :project, :custom_repo,
+            files: {
+              'templates/secret-detection.yml' => 'image: alpine_1'
+            }
+          )
+        end
+
+        let(:version) { '~latest' }
+
+        let(:latest_sha) do
+          project.repository.commit('master').id
+        end
 
         before do
-          allow_next_instance_of(Repository) do |instance|
-            allow(instance)
-              .to receive(:blob_data_at)
-              .with(existing_project.commit('master').id, 'component/template.yml')
-              .and_return(content)
-          end
+          create(:release, project: project, sha: project.repository.root_ref_sha,
+            released_at: Time.zone.now - 1.day)
+
+          project.repository.update_file(
+            user, 'templates/secret-detection.yml', 'image: alpine_2',
+            message: 'Updates image', branch_name: project.default_branch
+          )
+
+          create(:release, project: project, sha: latest_sha,
+            released_at: Time.zone.now)
         end
 
-        context 'when user has permissions to read code' do
-          before do
-            existing_project.add_developer(user)
-          end
-
-          it 'fetches the content' do
-            expect(path.fetch_content!(current_user: user)).to eq(content)
-          end
+        it 'fetches the component content', :aggregate_failures do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_2')
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('templates/secret-detection.yml')
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(latest_sha)
         end
+      end
 
-        context 'when user does not have permissions to download code' do
-          it 'raises an error when fetching the content' do
-            expect { path.fetch_content!(current_user: user) }
-              .to raise_error(Gitlab::Access::AccessDeniedError)
-          end
+      context 'when version does not exist' do
+        let(:version) { 'non-existent' }
+
+        it 'returns nil', :aggregate_failures do
+          expect(path.fetch_content!(current_user: user)).to be_nil
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to be_nil
+          expect(path.project).to eq(project)
+          expect(path.sha).to be_nil
+        end
+      end
+
+      context 'when current GitLab instance is installed on a relative URL' do
+        let(:address) { "acme.com/gitlab/#{project_path}/secret-detection@#{version}" }
+        let(:current_host) { 'acme.com/gitlab/' }
+
+        it 'fetches the component content', :aggregate_failures do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine_1')
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('templates/secret-detection.yml')
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(project.commit('master').id)
         end
       end
     end
 
-    context 'when project path is nested under a subgroup' do
-      let(:existing_group) { create(:group, :nested) }
-      let(:existing_project) { create(:project, :repository, group: existing_group) }
+    # All the following tests are for deprecated code and will be removed
+    # in https://gitlab.com/gitlab-org/gitlab/-/issues/415855
+    context 'when the project does not contain a templates directory' do
+      let(:project_path) { project.full_path }
+      let(:address) { "acme.com/#{project_path}/component@#{version}" }
 
-      it 'provides the expected attributes', :aggregate_failures do
-        expect(path.project).to eq(existing_project)
+      let_it_be(:project) do
+        create(
+          :project, :custom_repo,
+          files: {
+            'component/template.yml' => 'image: alpine'
+          }
+        )
+      end
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'fetches the component content', :aggregate_failures do
+        expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
         expect(path.host).to eq(current_host)
-        expect(path.sha).to eq(existing_project.commit('master').id)
         expect(path.project_file_path).to eq('component/template.yml')
-      end
-    end
-
-    context 'when current GitLab instance is installed on a relative URL' do
-      let(:address) { "acme.com/gitlab/#{project_path}/component@#{version}" }
-      let(:current_host) { 'acme.com/gitlab/' }
-
-      it 'provides the expected attributes', :aggregate_failures do
-        expect(path.project).to eq(existing_project)
-        expect(path.host).to eq(current_host)
-        expect(path.sha).to eq(existing_project.commit('master').id)
-        expect(path.project_file_path).to eq('component/template.yml')
-      end
-    end
-
-    context 'when version does not exist' do
-      let(:version) { 'non-existent' }
-
-      it 'provides the expected attributes', :aggregate_failures do
-        expect(path.project).to eq(existing_project)
-        expect(path.host).to eq(current_host)
-        expect(path.sha).to be_nil
-        expect(path.project_file_path).to eq('component/template.yml')
+        expect(path.project).to eq(project)
+        expect(path.sha).to eq(project.commit('master').id)
       end
 
-      it 'returns nil when fetching the content' do
-        expect(path.fetch_content!(current_user: user)).to be_nil
-      end
-    end
-
-    context 'when version is `~latest`' do
-      let(:version) { '~latest' }
-
-      context 'when project has releases' do
-        let_it_be(:latest_release) do
-          create(:release, project: existing_project, sha: 'sha-1', released_at: Time.zone.now)
+      context 'when project path is nested under a subgroup' do
+        let_it_be(:group) { create(:group, :nested) }
+        let_it_be(:project) do
+          create(
+            :project, :custom_repo,
+            files: {
+              'component/template.yml' => 'image: alpine'
+            },
+            group: group
+          )
         end
 
-        before_all do
-          # Previous release
-          create(:release, project: existing_project, sha: 'sha-2', released_at: Time.zone.now - 1.day)
-        end
-
-        it 'returns the sha of the latest release' do
-          expect(path.sha).to eq(latest_release.sha)
+        it 'fetches the component content', :aggregate_failures do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('component/template.yml')
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(project.commit('master').id)
         end
       end
 
-      context 'when project does not have releases' do
-        it { expect(path.sha).to be_nil }
-      end
-    end
+      context 'when current GitLab instance is installed on a relative URL' do
+        let(:address) { "acme.com/gitlab/#{project_path}/component@#{version}" }
+        let(:current_host) { 'acme.com/gitlab/' }
 
-    context 'when project does not exist' do
-      let(:project_path) { 'non-existent/project' }
-
-      it 'provides the expected attributes', :aggregate_failures do
-        expect(path.project).to be_nil
-        expect(path.host).to eq(current_host)
-        expect(path.sha).to be_nil
-        expect(path.project_file_path).to be_nil
+        it 'fetches the component content', :aggregate_failures do
+          expect(path.fetch_content!(current_user: user)).to eq('image: alpine')
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to eq('component/template.yml')
+          expect(path.project).to eq(project)
+          expect(path.sha).to eq(project.commit('master').id)
+        end
       end
 
-      it 'returns nil when fetching the content' do
-        expect(path.fetch_content!(current_user: user)).to be_nil
+      context 'when version does not exist' do
+        let(:version) { 'non-existent' }
+
+        it 'returns nil', :aggregate_failures do
+          expect(path.fetch_content!(current_user: user)).to be_nil
+          expect(path.host).to eq(current_host)
+          expect(path.project_file_path).to be_nil
+          expect(path.project).to eq(project)
+          expect(path.sha).to be_nil
+        end
+      end
+
+      context 'when user does not have permissions' do
+        it 'raises an error when fetching the content' do
+          expect { path.fetch_content!(current_user: build(:user)) }
+            .to raise_error(Gitlab::Access::AccessDeniedError)
+        end
       end
     end
   end

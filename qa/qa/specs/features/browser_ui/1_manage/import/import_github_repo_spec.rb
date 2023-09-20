@@ -17,11 +17,10 @@ module QA
         end
 
         let(:imported_issue) do
-          Resource::Issue.init do |resource|
-            resource.project = imported_project
-            resource.iid = imported_project.issues.first[:iid]
-            resource.api_client = api_client
-          end.reload!
+          build(:issue,
+            project: imported_project,
+            iid: imported_project.issues.first[:iid],
+            api_client: api_client).reload!
         end
 
         let(:imported_issue_events) do

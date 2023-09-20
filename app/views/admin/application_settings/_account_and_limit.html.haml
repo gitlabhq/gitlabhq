@@ -19,25 +19,6 @@
       = f.label :receive_max_input_size, _('Maximum push size (MiB)'), class: 'label-light'
       = f.number_field :receive_max_input_size, class: 'form-control gl-form-input', title: _('Maximum size limit for a single commit.'), data: { toggle: 'tooltip', container: 'body', qa_selector: 'receive_max_input_size_field' }
     .form-group
-      = f.label :max_export_size, _('Maximum export size (MiB)'), class: 'label-light'
-      = f.number_field :max_export_size, class: 'form-control gl-form-input', title: _('Maximum size of export files.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted= _('Set to 0 for no size limit.')
-    .form-group
-      = f.label :max_import_size, _('Maximum import size (MiB)'), class: 'label-light'
-      = f.number_field :max_import_size, class: 'form-control gl-form-input', title: _('Maximum size of import files.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted= _('Only effective when remote storage is enabled. Set to 0 for no size limit.')
-    .form-group
-      = f.label :max_import_remote_file_size, s_('Import|Maximum import remote file size (MB)'), class: 'label-light'
-      = f.number_field :max_import_remote_file_size, class: 'form-control gl-form-input', title: s_('Import|Maximum remote file size for imports from external object storages. For example, AWS S3.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted= _('Set to 0 for no size limit.')
-    .form-group
-      = f.label :bulk_import_max_download_file_size, s_('BulkImport|Direct transfer maximum download file size (MB)'), class: 'label-light'
-      = f.number_field :bulk_import_max_download_file_size, class: 'form-control gl-form-input', title: s_('BulkImport|Maximum download file size when importing from source GitLab instances by direct transfer.'), data: { toggle: 'tooltip', container: 'body' }
-    .form-group
-      = f.label :max_decompressed_archive_size, s_('Import|Maximum decompressed size (MiB)'), class: 'label-light'
-      = f.number_field :max_decompressed_archive_size, class: 'form-control gl-form-input', title: s_('Import|Maximum size of decompressed archive.'), data: { toggle: 'tooltip', container: 'body' }
-      %span.form-text.text-muted= _('Set to 0 for no size limit.')
-    .form-group
       = f.label :session_expire_delay, _('Session duration (minutes)'), class: 'label-light'
       = f.number_field :session_expire_delay, class: 'form-control gl-form-input', title: _('Maximum duration of a session.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.text-muted#session_expire_delay_help_block= _('Restart GitLab to apply changes.')
@@ -53,7 +34,7 @@
 
     .form-group
       = f.label :user_oauth_applications, _('User OAuth applications'), class: 'label-bold'
-      = f.gitlab_ui_checkbox_component :user_oauth_applications, _('Allow users to register any application to use GitLab as an OAuth provider')
+      = f.gitlab_ui_checkbox_component :user_oauth_applications, _('Allow users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications.')
     .form-group
       = f.label :user_default_external, _('New users set to external'), class: 'label-bold'
       = f.gitlab_ui_checkbox_component :user_default_external, _('Newly-registered users are external by default')

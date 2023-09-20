@@ -90,6 +90,39 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         )
       end
     end
+
+    context 'when trigger variables have CI_ENVIRONMENT_* predefined variables' do
+      let(:config) do
+        <<-YAML
+        child:
+          variables:
+            UPSTREAM_ENVIRONMENT_NAME: $CI_ENVIRONMENT_NAME
+            UPSTREAM_ENVIRONMENT_TIER: $CI_ENVIRONMENT_TIER
+            UPSTREAM_ENVIRONMENT_URL: $CI_ENVIRONMENT_URL
+            UPSTREAM_ENVIRONMENT_ACTION: $CI_ENVIRONMENT_ACTION
+          environment:
+            name: review/$CI_COMMIT_REF_NAME
+            deployment_tier: testing
+            url: https://gitlab.com
+            action: start
+          trigger:
+            include: child.yml
+        YAML
+      end
+
+      let(:child) { find_job('child') }
+
+      it 'creates the pipeline with a trigger job that has downstream_variables' do
+        expect(pipeline).to be_created_successfully
+
+        expect(child.downstream_variables).to include(
+          { key: 'UPSTREAM_ENVIRONMENT_NAME', value: 'review/master' },
+          { key: 'UPSTREAM_ENVIRONMENT_TIER', value: 'testing' },
+          { key: 'UPSTREAM_ENVIRONMENT_URL', value: 'https://gitlab.com' },
+          { key: 'UPSTREAM_ENVIRONMENT_ACTION', value: 'start' }
+        )
+      end
+    end
   end
 
   private

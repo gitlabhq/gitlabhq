@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Tracking::StandardContext do
+RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_ping do
   let(:snowplow_context) { subject.to_context }
 
   describe '#to_context' do
@@ -76,6 +76,7 @@ RSpec.describe Gitlab::Tracking::StandardContext do
       it 'holds the correct values', :aggregate_failures do
         json_data = snowplow_context.to_json.fetch(:data)
         expect(json_data[:user_id]).to eq(user_id)
+        expect(json_data[:is_gitlab_team_member]).to eq(nil)
         expect(json_data[:project_id]).to eq(project_id)
         expect(json_data[:namespace_id]).to eq(namespace_id)
         expect(json_data[:plan]).to eq(plan_name)

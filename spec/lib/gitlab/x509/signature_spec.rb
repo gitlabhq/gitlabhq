@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::X509::Signature do
+RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_management do
   let(:issuer_attributes) do
     {
       subject_key_identifier: X509Helpers::User1.issuer_subject_key_identifier,

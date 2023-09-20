@@ -46,7 +46,7 @@ describe Mail::SMTPPool do
     end
 
     after do
-      MockSMTP.clear_deliveries
+      MockSMTP.reset
     end
 
     it 'delivers mail using a connection from the pool' do

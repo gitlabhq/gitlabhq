@@ -107,7 +107,7 @@ To select a notification level for a group, use either of these methods:
 
 Or:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select the notification dropdown list, next to the bell icon (**{notifications}**).
 1. Select the desired [notification level](#notification-levels).
 
@@ -138,7 +138,7 @@ To select a notification level for a project, use either of these methods:
 
 Or:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select the notification dropdown list, next to the bell icon (**{notifications}**).
 1. Select the desired [notification level](#notification-levels).
 
@@ -275,6 +275,7 @@ epics:
 | Merge Request | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
 | Merge Request | Pushed | Participants and Custom notification level with this event selected. |
 | Merge Request | Reassigned | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
+| Merge Request | Review requested | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old reviewer. |
 | Merge Request | Reopened | Subscribers and participants. |
 | Merge Request | Title or description changed | Any new mentions by username. |
 | Pipeline | Failed | The author of the pipeline. |
@@ -367,20 +368,21 @@ a merge request or an issue.
 
 The following table lists all GitLab-specific email headers:
 
-| Header                                                        | Description                                                                                                                                    |
-| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `List-Id`                                                     | The path of the project in an RFC 2919 mailing list identifier. You can use it for email organization with filters.                            |
-| `X-GitLab-(Resource)-ID`                                      | The ID of the resource the notification is for. The resource, for example, can be `Issue`, `MergeRequest`, `Commit`, or another such resource. |
-| `X-GitLab-ConfidentialIssue`                                  | The boolean value indicating issue confidentiality for notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222908) in GitLab 16.0. |
-| `X-GitLab-Discussion-ID`                                      | The ID of the thread the comment belongs to, in notification emails for comments.                                                              |
-| `X-GitLab-Group-Id`                                           | The group's ID. Only present on notification emails for [epics](../group/epics/index.md).                                                      |
-| `X-GitLab-Group-Path`                                         | The group's path. Only present on notification emails for [epics](../group/epics/index.md)                                                     |
-| `X-GitLab-NotificationReason` | The reason for the notification. [See possible values.](#x-gitlab-notificationreason). |
-| `X-GitLab-Pipeline-Id`                                        | The ID of the pipeline the notification is for, in notification emails for pipelines.                                                          |
-| `X-GitLab-Project-Id`                                         | The project's ID.                                                                                                                              |
-| `X-GitLab-Project-Path`                                       | The project's path.                                                                                                                            |
-| `X-GitLab-Project`                                            | The name of the project the notification belongs to.                                                                                           |
-| `X-GitLab-Reply-Key`                                          | A unique token to support reply by email.                                                                                                      |
+| Header                        | Description                                                                                                                                                                 |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `List-Id`                     | The path of the project in an RFC 2919 mailing list identifier. You can use it for email organization with filters.                                                         |
+| `X-GitLab-(Resource)-ID`      | The ID of the resource the notification is for. The resource, for example, can be `Issue`, `MergeRequest`, `Commit`, or another such resource.                              |
+| `X-GitLab-(Resource)-State`   | The state of the resource the notification is for. The resource can be, for example, `Issue` or `MergeRequest`. The value can be `opened`, `closed`, `merged`, or `locked`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130967) in GitLab 16.4. |
+| `X-GitLab-ConfidentialIssue`  | The boolean value indicating issue confidentiality for notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/222908) in GitLab 16.0.                    |
+| `X-GitLab-Discussion-ID`      | The ID of the thread the comment belongs to, in notification emails for comments.                                                                                           |
+| `X-GitLab-Group-Id`           | The group's ID. Only present on notification emails for [epics](../group/epics/index.md).                                                                                   |
+| `X-GitLab-Group-Path`         | The group's path. Only present on notification emails for [epics](../group/epics/index.md)                                                                                  |
+| `X-GitLab-NotificationReason` | The reason for the notification. [See possible values.](#x-gitlab-notificationreason).                                                                                      |
+| `X-GitLab-Pipeline-Id`        | The ID of the pipeline the notification is for, in notification emails for pipelines.                                                                                       |
+| `X-GitLab-Project-Id`         | The project's ID.                                                                                                                                                           |
+| `X-GitLab-Project-Path`       | The project's path.                                                                                                                                                         |
+| `X-GitLab-Project`            | The name of the project the notification belongs to.                                                                                                                        |
+| `X-GitLab-Reply-Key`          | A unique token to support reply by email.                                                                                                                                   |
 
 ### X-GitLab-NotificationReason
 

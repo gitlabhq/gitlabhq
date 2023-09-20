@@ -55,8 +55,7 @@ RSpec.describe Groups::GroupLinks::CreateService, '#execute', feature_category: 
 
     context 'when sharing outside the hierarchy is disabled' do
       let_it_be_with_refind(:group_parent) do
-        create(:group,
-               namespace_settings: create(:namespace_settings, prevent_sharing_groups_outside_hierarchy: true))
+        create(:group, namespace_settings: create(:namespace_settings, prevent_sharing_groups_outside_hierarchy: true))
       end
 
       it_behaves_like 'not shareable'

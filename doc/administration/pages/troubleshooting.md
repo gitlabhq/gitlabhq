@@ -152,7 +152,7 @@ This can happen to GitLab instances with multiple servers
 running both the core GitLab application and GitLab Pages. This can also happen when a single
 container is running both the core GitLab application and GitLab Pages.
 
-AWS [recommends using an IP target type](https://aws.amazon.com/premiumsupport/knowledge-center/target-connection-fails-load-balancer/)
+AWS [recommends using an IP target type](https://repost.aws/knowledge-center/target-connection-fails-load-balancer)
 to resolve this issue.
 
 Turning off [client IP preservation](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation)
@@ -170,7 +170,7 @@ Upgrading to an [officially supported operating system](https://about.gitlab.com
 
 This problem comes from the permissions of the GitLab Pages OAuth application. To fix it:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Applications > GitLab Pages**.
 1. Edit the application.
@@ -214,7 +214,7 @@ You may see this error if `pages_external_url` was updated at some point of time
 
 1. Check the [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application):
 
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. On the left sidebar, select **Search or go to**.
    1. Select **Admin Area**.
    1. Select **Applications** and then **Add new application**.
    1. Ensure the **Callback URL/Redirect URI** is using the protocol (HTTP or HTTPS) that

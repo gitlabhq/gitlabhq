@@ -2,9 +2,8 @@
 
 module Pages
   class VirtualDomain
-    def initialize(projects:, cache: nil, trim_prefix: nil, domain: nil)
+    def initialize(projects:, trim_prefix: nil, domain: nil)
       @projects = projects
-      @cache = cache
       @trim_prefix = trim_prefix
       @domain = domain
     end
@@ -18,23 +17,19 @@ module Pages
     end
 
     def lookup_paths
-      paths = projects.map do |project|
-        project.pages_lookup_path(trim_prefix: trim_prefix, domain: domain)
-      end
-
-      # TODO: remove in https://gitlab.com/gitlab-org/gitlab/-/issues/328715
-      paths = paths.select(&:source)
-
-      paths.sort_by(&:prefix).reverse
-    end
-
-    # cache_key is required by #present_cached in ::API::Internal::Pages
-    def cache_key
-      @cache_key ||= cache&.cache_key
+      projects
+        .map { |project| lookup_paths_for(project) }
+        .select(&:source) # TODO: remove in https://gitlab.com/gitlab-org/gitlab/-/issues/328715
+        .sort_by(&:prefix)
+        .reverse
     end
 
     private
 
-    attr_reader :projects, :trim_prefix, :domain, :cache
+    attr_reader :projects, :trim_prefix, :domain
+
+    def lookup_paths_for(project)
+      Pages::LookupPath.new(project, trim_prefix: trim_prefix, domain: domain)
+    end
   end
 end

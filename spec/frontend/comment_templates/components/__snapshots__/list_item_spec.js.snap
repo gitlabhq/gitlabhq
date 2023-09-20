@@ -13,23 +13,20 @@ exports[`Comment templates list item component renders list item 1`] = `
     >
       test
     </h6>
-     
     <div
       class="gl-ml-auto"
     >
       <div
-        class="gl-new-dropdown gl-disclosure-dropdown"
+        class="gl-disclosure-dropdown gl-new-dropdown"
       >
         <button
-          aria-controls="base-dropdown-7"
-          aria-labelledby="actions-toggle-3"
-          class="btn btn-default btn-md gl-button btn-default-tertiary gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
+          aria-controls="reference-1"
+          aria-labelledby="reference-0"
+          class="btn btn-default btn-default-tertiary btn-md gl-button gl-new-dropdown-icon-only gl-new-dropdown-toggle gl-new-dropdown-toggle-no-caret"
           data-testid="base-dropdown-toggle"
-          id="actions-toggle-3"
+          id="reference-0"
           type="button"
         >
-          <!---->
-           
           <svg
             aria-hidden="true"
             class="gl-button-icon gl-icon s16"
@@ -40,36 +37,29 @@ exports[`Comment templates list item component renders list item 1`] = `
               href="file-mock#ellipsis_v"
             />
           </svg>
-            
           <span
             class="gl-button-text"
           >
             <span
               class="gl-new-dropdown-button-text gl-sr-only"
             >
-              
-        Comment template actions
-      
+              Comment template actions
             </span>
-             
-            <!---->
           </span>
         </button>
-         
         <div
           class="gl-new-dropdown-panel gl-w-31!"
           data-testid="base-dropdown-menu"
-          id="base-dropdown-7"
+          id="reference-1"
         >
           <div
             class="gl-new-dropdown-inner"
           >
-              
             <ul
-              aria-labelledby="actions-toggle-3"
+              aria-labelledby="reference-0"
               class="gl-new-dropdown-contents"
               data-testid="disclosure-content"
-              id="disclosure-4"
+              id="reference-2"
               tabindex="-1"
             >
               <li
@@ -86,9 +76,7 @@ exports[`Comment templates list item component renders list item 1`] = `
                   <span
                     class="gl-new-dropdown-item-text-wrapper"
                   >
-                    
-          Edit
-        
+                    Edit
                   </span>
                 </button>
               </li>
@@ -106,36 +94,25 @@ exports[`Comment templates list item component renders list item 1`] = `
                   <span
                     class="gl-new-dropdown-item-text-wrapper"
                   >
-                    
-          Delete
-        
+                    Delete
                   </span>
                 </button>
               </li>
             </ul>
-             
           </div>
         </div>
       </div>
-       
       <div
         class="gl-tooltip"
       >
-        
         Comment template actions
-      
       </div>
     </div>
   </div>
-   
   <div
-    class="gl-font-monospace gl-white-space-pre-line gl-font-sm gl-mt-n5"
+    class="gl-font-monospace gl-font-sm gl-mt-n5 gl-white-space-pre-line"
   >
-    
     /assign_reviewer
-  
   </div>
-   
-  <!---->
 </li>
 `;

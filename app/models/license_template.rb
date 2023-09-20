@@ -5,12 +5,12 @@ class LicenseTemplate
     %r{[\<\{\[]
       (project|description|
       one\sline\s.+\swhat\sit\sdoes\.) # matching the start and end is enough here
-    [\>\}\]]}xi.freeze
-  YEAR_TEMPLATE_REGEX = /[<{\[](year|yyyy)[>}\]]/i.freeze
+    [\>\}\]]}xi
+  YEAR_TEMPLATE_REGEX = /[<{\[](year|yyyy)[>}\]]/i
   FULLNAME_TEMPLATE_REGEX =
     %r{[\<\{\[]
       (fullname|name\sof\s(author|copyright\sowner))
-    [\>\}\]]}xi.freeze
+    [\>\}\]]}xi
 
   attr_reader :key, :name, :project, :category, :nickname, :url, :meta
 

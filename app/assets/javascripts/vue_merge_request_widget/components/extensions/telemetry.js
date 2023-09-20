@@ -8,8 +8,10 @@ import {
 
 function simplifyWidgetName(componentName) {
   const noWidget = componentName.replace(/^Widget/, '');
+  const camelName = noWidget.charAt(0).toLowerCase() + noWidget.slice(1);
+  const tierlessName = camelName.replace(/(CE|EE)$/, '');
 
-  return noWidget.charAt(0).toLowerCase() + noWidget.slice(1);
+  return tierlessName;
 }
 
 function baseRedisEventName(extensionName) {

@@ -13,10 +13,9 @@
           = s_('GroupsNew|Importing groups by direct transfer is currently disabled.')
 
           - if current_user.admin?
-            - admin_link_start = '<a href="%{url}">'.html_safe % { url: general_admin_application_settings_path(anchor: 'js-visibility-settings') }
-            - admin_link_end = '</a>'.html_safe
+            - admin_link = link_to('', general_admin_application_settings_path(anchor: 'js-visibility-settings'))
 
-            = s_('GroupsNew|Please %{admin_link_start}enable it in the Admin settings%{admin_link_end}.').html_safe % { admin_link_start: admin_link_start, admin_link_end: admin_link_end }
+            = safe_format(s_('GroupsNew|Please %{admin_link_start}enable it in the Admin settings%{admin_link_end}.'), tag_pair(admin_link, :admin_link_start, :admin_link_end))
           - else
             = s_('GroupsNew|Please ask your Administrator to enable it in the Admin settings.')
 
@@ -25,9 +24,8 @@
       = render Pajamas::AlertComponent.new(dismissible: false,
         variant: :warning) do |c|
         - c.with_body do
-          - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/group/import/index.md', anchor: 'migrated-group-items') }
-          - docs_link_end = '</a>'.html_safe
-          = s_('GroupsNew|Not all group items are migrated. %{docs_link_start}What items are migrated%{docs_link_end}?').html_safe % { docs_link_start: docs_link_start, docs_link_end: docs_link_end }
+          - docs_link = link_to('', help_page_path('user/group/import/index.md', anchor: 'migrated-group-items'), target: '_blank', rel: 'noopener noreferrer')
+          = safe_format(s_('GroupsNew|Not all group items are migrated. %{docs_link_start}What items are migrated%{docs_link_end}?'), tag_pair(docs_link, :docs_link_start, :docs_link_end))
 
     %p.gl-mt-3
     = s_('GroupsNew|Provide credentials for the source instance to import from. You can provide this instance as a source to move groups in this instance.')
@@ -41,9 +39,9 @@
     .form-group.gl-display-flex.gl-flex-direction-column
       = f.label :bulk_import_gitlab_access_token, s_('GroupsNew|Personal access token'), for: 'import_gitlab_token'
       .gl-font-weight-normal
-        - pat_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path('user/profile/personal_access_tokens') }
-        - short_living_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path('security/token_overview', anchor: 'security-considerations') }
-        = s_('GroupsNew|Create a token with %{code_start}api%{code_end} and %{code_start}read_repository%{code_end} scopes in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, set a short expiration date for the token. Keep in mind that large migrations take more time.').html_safe % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe, pat_link_start: pat_link_start, pat_link_end: '</a>'.html_safe, short_living_link_start: short_living_link_start, short_living_link_end: '</a>'.html_safe }
+        - pat_link = link_to('', help_page_path('user/profile/personal_access_tokens'), target: '_blank')
+        - short_living_link = link_to('', help_page_path('security/token_overview', anchor: 'security-considerations'), target: '_blank')
+        = safe_format(s_('GroupsNew|Create a token with %{code_start}api%{code_end} and %{code_start}read_repository%{code_end} scopes in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, set a short expiration date for the token. Keep in mind that large migrations take more time.'), tag_pair('<code></code>'.html_safe, :code_start , :code_end), tag_pair(pat_link, :pat_link_start, :pat_link_end), tag_pair(short_living_link, :short_living_link_start, :short_living_link_end))
       = f.text_field :bulk_import_gitlab_access_token, placeholder: s_('GroupsNew|e.g. h8d3f016698e...'), class: 'gl-form-input gl-mt-3 col-xs-12 col-sm-8',
         required: true,
         disabled: bulk_imports_disabled,

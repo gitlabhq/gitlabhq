@@ -6,6 +6,7 @@ RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :
   include DependencyProxyHelpers
 
   include_context 'file upload requests helpers'
+  include_context 'with a server running the dependency proxy'
 
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
@@ -19,17 +20,6 @@ RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :
 
   subject do
     HTTParty.get(url, headers: headers)
-  end
-
-  def run_server(handler)
-    default_server = Capybara.server
-
-    Capybara.server = Capybara.servers[:puma]
-    server = Capybara::Server.new(handler)
-    server.boot
-    server
-  ensure
-    Capybara.server = default_server
   end
 
   let_it_be(:external_server) do

@@ -222,7 +222,7 @@ export default {
       <template #default>
         <board-sidebar-title :active-item="activeBoardIssuable" data-testid="sidebar-title" />
         <sidebar-assignees-widget
-          v-if="activeBoardItem.assignees"
+          v-if="activeBoardIssuable.assignees"
           :iid="activeBoardIssuable.iid"
           :full-path="projectPathForActiveIssue"
           :initial-assignees="activeBoardIssuable.assignees"
@@ -232,7 +232,7 @@ export default {
         />
         <sidebar-dropdown-widget
           v-if="epicFeatureAvailable && !isIncidentSidebar"
-          :key="`epic-${activeBoardItem.iid}`"
+          :key="`epic-${activeBoardIssuable.iid}`"
           :iid="activeBoardIssuable.iid"
           issuable-attribute="epic"
           :workspace-path="projectPathForActiveIssue"
@@ -242,7 +242,7 @@ export default {
         />
         <div>
           <sidebar-dropdown-widget
-            :key="`milestone-${activeBoardItem.iid}`"
+            :key="`milestone-${activeBoardIssuable.iid}`"
             :iid="activeBoardIssuable.iid"
             issuable-attribute="milestone"
             :workspace-path="projectPathForActiveIssue"
@@ -252,7 +252,7 @@ export default {
           />
           <sidebar-iteration-widget
             v-if="iterationFeatureAvailable && !isIncidentSidebar"
-            :key="`iteration-${activeBoardItem.iid}`"
+            :key="`iteration-${activeBoardIssuable.iid}`"
             :iid="activeBoardIssuable.iid"
             :workspace-path="projectPathForActiveIssue"
             :attr-workspace-path="groupPathForActiveIssue"

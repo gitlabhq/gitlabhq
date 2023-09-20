@@ -40,7 +40,7 @@ This works well for the following reasons:
    - `.ruby-cache`
    - `.static-analysis-cache`
    - `.rubocop-cache`
-   - `.coverage-cache`
+   - `.ruby-gems-coverage-cache`
    - `.ruby-node-cache`
    - `.qa-cache`
    - `.yarn-cache`

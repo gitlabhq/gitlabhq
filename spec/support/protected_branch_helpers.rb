@@ -34,7 +34,7 @@ module ProtectedBranchHelpers
     select_input.click
     wait_for_requests
 
-    within('.dropdown.show .dropdown-menu', &block)
+    within('.dropdown .dropdown-menu.show', &block)
 
     # Enhanced select is used in EE, therefore an extra click is needed.
     select_input.click if select_input['aria-expanded'] == 'true'

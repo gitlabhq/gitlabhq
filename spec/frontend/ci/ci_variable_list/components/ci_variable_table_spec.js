@@ -105,9 +105,8 @@ describe('Ci variable table', () => {
         index | text
         ${0}  | ${'Key (Click to sort descending)'}
         ${1}  | ${'Value'}
-        ${2}  | ${'Attributes'}
-        ${3}  | ${'Environments'}
-        ${4}  | ${'Actions'}
+        ${2}  | ${'Environments'}
+        ${3}  | ${'Actions'}
       `('renders the $text column', ({ index, text }) => {
         expect(findTableColumnText(index)).toEqual(text);
       });

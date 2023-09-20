@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Security::CiConfiguration::DependencyScanningCreateService, :snowplow,
-               feature_category: :software_composition_analysis do
+  feature_category: :software_composition_analysis do
   subject(:result) { described_class.new(project, user).execute }
 
   let(:branch_name) { 'set-dependency-scanning-config-1' }

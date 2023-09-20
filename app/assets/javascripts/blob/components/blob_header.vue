@@ -1,5 +1,8 @@
 <script>
 import DefaultActions from 'jh_else_ce/blob/components/blob_header_default_actions.vue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import userInfoQuery from '../queries/user_info.query.graphql';
+import applicationInfoQuery from '../queries/application_info.query.graphql';
 import BlobFilepath from './blob_header_filepath.vue';
 import ViewerSwitcher from './blob_header_viewer_switcher.vue';
 import { SIMPLE_BLOB_VIEWER } from './constants';
@@ -11,6 +14,21 @@ export default {
     DefaultActions,
     BlobFilepath,
     TableOfContents,
+    WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
+  },
+  apollo: {
+    currentUser: {
+      query: userInfoQuery,
+      error() {
+        this.$emit('error');
+      },
+    },
+    gitpodEnabled: {
+      query: applicationInfoQuery,
+      error() {
+        this.$emit('error');
+      },
+    },
   },
   props: {
     blob: {
@@ -52,10 +70,26 @@ export default {
       required: false,
       default: false,
     },
+    showForkSuggestion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    projectPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    projectId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
       viewer: this.hideViewerSwitcher ? null : this.activeViewerType,
+      gitpodEnabled: false,
     };
   },
   computed: {
@@ -65,11 +99,17 @@ export default {
     showDefaultActions() {
       return !this.hideDefaultActions;
     },
+    showWebIdeLink() {
+      return !this.blob.archived && this.blob.editBlobPath;
+    },
     isEmpty() {
       return this.blob.rawSize === '0';
     },
     blobSwitcherDocIcon() {
       return this.blob.richViewer?.fileType === 'csv' ? 'table' : 'document';
+    },
+    projectIdAsNumber() {
+      return getIdFromGraphQLId(this.projectId);
     },
   },
   watch: {
@@ -99,6 +139,27 @@ export default {
 
     <div class="gl-display-flex gl-flex-wrap file-actions">
       <viewer-switcher v-if="showViewerSwitcher" v-model="viewer" :doc-icon="blobSwitcherDocIcon" />
+
+      <web-ide-link
+        v-if="showWebIdeLink"
+        :show-edit-button="!isBinary"
+        class="gl-mr-3"
+        :edit-url="blob.editBlobPath"
+        :web-ide-url="blob.ideEditPath"
+        :needs-to-fork="showForkSuggestion"
+        :show-pipeline-editor-button="Boolean(blob.pipelineEditorPath)"
+        :pipeline-editor-url="blob.pipelineEditorPath"
+        :gitpod-url="blob.gitpodBlobUrl"
+        :show-gitpod-button="gitpodEnabled"
+        :gitpod-enabled="currentUser && currentUser.gitpodEnabled"
+        :project-path="projectPath"
+        :project-id="projectIdAsNumber"
+        :user-preferences-gitpod-path="currentUser && currentUser.preferencesGitpodPath"
+        :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
+        is-blob
+        disable-fork-modal
+        v-on="$listeners"
+      />
 
       <slot name="actions"></slot>
 

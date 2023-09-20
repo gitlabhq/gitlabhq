@@ -25,7 +25,7 @@ GitLab Dedicated Engineers also don't have direct access to tenant environments,
 To request the creation of a new GitLab Dedicated environment for your organization, you must provide the following information to your account team:
 
 - Expected number of users.
-- Desired primary region: Primary AWS region in which your data is stored (do note the [list of unsupported regions](../../subscriptions/gitlab_dedicated/index.md#aws-regions-not-supported)).
+- Desired primary region: Primary AWS region in which your data is stored (take note of [unavailable AWS regions](../../subscriptions/gitlab_dedicated/index.md#unavailable-aws-regions)).
 - Desired secondary region: Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster.
 - Desired backup region: An AWS region where the primary backups of your data are replicated. This can be the same as the primary or secondary region or different.
 - Desired instance subdomain: The main domain for GitLab Dedicated instances is `gitlab-dedicated.com`. You get to choose the subdomain name where your instance is accessible from (for example, `customer_name.gitlab-dedicated.com`).
@@ -39,13 +39,14 @@ When onboarding, you must also specify your preference for the weekly four-hour 
 
 Available scheduled maintenance windows, performed outside standard working hours:
 
-- APAC: Wednesday 1 AM - 5 AM UTC
+- APAC: Wednesday 1 PM - 5 PM UTC
 - EU: Tuesday 1 AM - 5 AM UTC
 - AMER Option 1: Tuesday 7 AM - 11 AM UTC
 - AMER Option 2: Sunday 9 PM - Monday 1 AM UTC
 
 Consider the following notes:
 
+- The Dedicated instance is not expected to be down the entire duration of the maintenance window. Occasionally, a small period of downtime (on the order of a few tens of seconds) can occur while compute resources restart after they are upgraded. If it occurs, this small period of downtime typically happens during the first half of the maintenance window. Long-running connections may be interrupted during this period. To mitigate this, clients should implement strategies like automatic recovery and retry. Longer periods of downtime during the maintenance window are rare, and GitLab provides notice if longer downtime is anticipated.
 - In case of a performance degradation or downtime during the scheduled maintenance window,
   the impact to [the system SLA](https://about.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/) is not counted.
 - The weekly scheduled maintenance window can be postponed into another window within the same week.
@@ -79,20 +80,30 @@ The turnaround time for processing configuration change requests is [documented 
 
 ### Encrypted Data At Rest (BYOK)
 
-If you want your GitLab data to be encrypted at rest, the KMS keys used must be accessible by GitLab services. KMS keys can be used in two modes for this purpose:
+NOTE:
+To enable BYOK, you must do it during onboarding.
 
-1. Per-service KMS keys (Backup, EBS, RDS, S3), or
-1. One KMS key for all services.
+You can opt to encrypt your GitLab data at rest with AWS KMS keys, which must be made accessible to GitLab Dedicated infrastructure. GitLab Dedicated only supports keys with AWS-managed key material (the [AWS_KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin) origin type).
 
-If you use a key per service, all services must be encrypted at rest. Selective enablement of this feature is not supported.
+For instructions on how to create and manage KMS keys, see the [AWS KMS documentation](https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html).
 
-The keys provided have to reside in the same primary, secondary and backup region specified during [onboarding](#onboarding).
+In GitLab Dedicated, you can use KMS keys in two ways:
 
-For instructions on how to create and manage KMS keys, visit [Managing keys](https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html) in the AWS KMS documentation.
+- One KMS key for all services
+- Per-service KMS keys (Backup, EBS, RDS, S3)
+  - Keys do not need to be unique to each service.
+  - All services must be encrypted at rest.
+  - Selective enablement of this feature is not supported.
+  - Keys do not need to be unique to each service.
 
-GitLab Dedicated supports only AWS managed KMS keys with KMS [as key material](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin).
+Make sure the AWS KMS keys are replicated to your desired primary, secondary, and backup region specified during [onboarding](#onboarding).
 
-To create a KMS key using the AWS Console:
+#### Create KMS keys in AWS
+
+To enable BYOK, indicate on your onboarding ticket that you'd like to use this functionality.
+GitLab will provide you with your AWS account ID which is necessary to enable BYOK.
+
+After you have received the AWS account ID, create your KMS keys using the AWS Console:
 
 1. In `Configure key`, select:
     1. Key type: **Symmetrical**
@@ -185,7 +196,7 @@ The last page asks you to confirm the KMS key policy. It should look similar to 
 }
 ```
 
-Make sure the AWS KMS keys are replicated to your desired primary, secondary and backup region specified during [onboarding](#onboarding).
+Make sure the AWS KMS keys are replicated to your desired primary, secondary and backup region specified during [onboarding](#onboarding). After you have created the keys, send GitLab the corresponding ARNs of each key so that GitLab can use to encrypt the data stored in your Dedicated instance.
 
 ### Inbound Private Link
 
@@ -206,14 +217,43 @@ To enable the Inbound Private Link:
 
 ### Outbound Private Link
 
-Outbound Private Links allow the GitLab Dedicated instance to securely communicate with services running in your VPC on AWS. This type of connection can execute [webhooks](../../user/project/integrations/webhooks.md) where the targeted services are running in your VPC, import or mirror projects and repositories, or use any other GitLab functionality to access private services.
+Consider the following when using Outbound Private Links:
+
+- Outbound Private Links allow the GitLab Dedicated instance to securely communicate with services running in your VPC on AWS. This type of connection
+  can execute [webhooks](../../user/project/integrations/webhooks.md) where the targeted services are running in your VPC, import or mirror projects
+  and repositories, or use any other GitLab functionality to access private services.
+- You can only establish Private Links between VPCs in the same region. Therefore, you can only establish a connection in the regions you selected for
+  your Dedicated instance.
+- The Network Load Balancer (NLB) that backs the Endpoint Service at your end must be enabled in at least one of the Availability Zones to which your Dedicated tenant was
+  deployed. This is not the user-facing name such as `us-east-1a`, but the underlying [Availability Zone ID](https://docs.aws.amazon.com/ram/latest/userguide/working-with-az-ids.html).
+  If you did not specify these during onboarding to Dedicated, you must either:
+  - Ask for the Availability Zone IDs in the ticket you raise to enable the link and ensure the NLB is enabled in those AZs, or
+  - Ensure the NLB has is enabled in every Availability Zone in the region.
 
 To enable an Outbound Private Link:
 
-1. In your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), GitLab provides you with an IAM role ARN that connects to your endpoint service. You can then add this ARN to the allowlist on your side to restrict connections to your endpoint service.
-1. [Create the Endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) through which your internal service is available to GitLab Dedicated. Provide the associated `Service Endpoint Name` on the [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
-1. When creating the Endpoint service, you must provide GitLab with a [verified Private DNS Name](https://docs.aws.amazon.com/vpc/latest/privatelink/manage-dns-names.html#verify-domain-ownership) for your service. Optionally, if you would like GitLab Dedicated to reach your service via other aliases, you have the ability to specify a list of Private Hosted Zone (PHZ) entries. With this option, GitLab sets up a Private Hosted Zone with DNS names aliased to the verified Private DNS name. To enable this functionality, you must provide GitLab a list of PHZ entries on your support ticket. After the PHZ is created in the tenant environment, DNS resolution of any of the provided records correctly resolves to the PrivateLink endpoint.
-1. GitLab then configures the tenant instance to create the necessary Endpoint Interfaces based on the service names you provided. Any outbound calls made from the tenant GitLab instance are directed through the PrivateLink into your VPC.
+1. [Create the Endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) through which your internal service
+   will be available to GitLab Dedicated. Provide the associated `Service Endpoint Name` on a new
+   [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+1. In your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), GitLab will provide you with the ARN of an
+   IAM role that will be initiating the connection to your endpoint service. You must ensure this ARN is included, or otherwise covered by other
+   entries, in the list of "Allowed Principals" on the Endpoint Service, as described by the [AWS documentation](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions).
+   Though it's optional, you should you add it explicitly, allowing you to set `Acceptance required` to No so that Dedicated can connect in a single operation.
+   If you leave `Acceptance required` as Yes, then you must manually accept the connection after Dedicated has initiated it.
+1. To connect to services using the Endpoint, the Dedicated services require a DNS name. Private Link automatically creates an internal name, but
+   it is machine-generated and not generally directly useful. There are two options available:
+   - In your Endpoint Service, enable [Private DNS name](https://docs.aws.amazon.com/vpc/latest/privatelink/manage-dns-names.html), perform the
+     required validation, and let GitLab know in the support ticket that you are using this option. If `Acceptance Required` is set to Yes on your
+     Endpoint Service, also note this on the support ticket because Dedicated will need to initiate the connection without Private DNS, wait for you
+     to confirm it has been accepted, and then update the connection to enable the use of Private DNS.
+   - Dedicated can manage a Private Hosted Zone (PHZ) within the Dedicated AWS Account and alias any arbitrary DNS names to the Endpoint, directing
+     requests for those names to your Endpoint Service. This may be useful if you have multiple DNS names/aliases that will be accessed using a
+     single Endpoint (for example, if you are running a reverse proxy to connect to more than one service in your environment), or if the domain you
+     want to use is not public and cannot be validated for use by Private DNS. Let GitLab know on the support ticket if you are using this option and
+     provide a list of DNS names that should resolve to the Private Link Endpoint. This list can be updated as needed in future.
+
+GitLab then configures the tenant instance to create the necessary Endpoint Interfaces based on the service names you provided. Any matching outbound
+connections made from the tenant GitLab instance are directed through the PrivateLink into your VPC.
 
 #### Custom certificates
 
@@ -258,9 +298,9 @@ To activate SAML for your GitLab Dedicated instance:
      "admin_groups": [
        // optional
      ],
-     "idp_cert_fingerprint": "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8", 
+     "idp_cert_fingerprint": "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8",
      "idp_sso_target_url": "https://login.example.com/idp",
-     "label": "IDP Name", 
+     "label": "IDP Name",
      "name_identifier_format": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
      "security": {
        // optional
@@ -305,7 +345,8 @@ To enable group sync:
 
 ### Access to application logs
 
-GitLab [application logs](../../administration/logs/index.md) are delivered to an S3 bucket in the GitLab tenant account, which can be shared with you.
+GitLab [application logs](../../administration/logs/index.md) are delivered to an S3 bucket in the GitLab tenant account, which can be shared with you. Logs stored in the S3 bucket are retained indefinitely, until the 1 year retention policy is fully enforced. GitLab team members can view more information in this confidential issue:
+`https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/483`.
 
 To gain read only access to this bucket:
 

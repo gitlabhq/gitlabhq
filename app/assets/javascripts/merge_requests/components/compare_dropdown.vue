@@ -46,11 +46,6 @@ export default {
       required: false,
       default: '',
     },
-    qaSelector: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
@@ -68,6 +63,12 @@ export default {
       return this.data.filter(
         (d) => d.text.toLowerCase().indexOf(this.searchStr.toLowerCase()) >= 0,
       );
+    },
+  },
+  watch: {
+    default(newVal) {
+      this.current = newVal;
+      this.selected = newVal.value;
     },
   },
   methods: {
@@ -136,7 +137,7 @@ export default {
         'gl-align-items-flex-start! gl-justify-content-start! mr-compare-dropdown',
         toggleClass,
       ]"
-      :data-qa-selector="qaSelector"
+      data-testid="source-branch-dropdown"
       @shown="fetchData"
       @search="searchData"
       @select="selectItem"

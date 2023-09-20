@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference
 ---
 
-# Mobile DevOps (Experiment)
+# Mobile DevOps **(EXPERIMENT)**
 
 Use GitLab Mobile DevOps to quickly build, sign, and release native and cross-platform mobile apps
 for Android and iOS using GitLab CI/CD. Mobile DevOps is an experimental feature developed by
@@ -189,8 +189,7 @@ fastlane init
 ```
 
 This command creates a `fastlane` folder in the project with an `Appfile` and a stubbed-out `fastfile`.
-This process asks you for login credentials to App Store Connect
-to generate an app identifier and App Store app if they don't already exist.
+During this process, you are prompted for App Store Connect login credentials to generate an app identifier and an App Store app if they don't already exist.
 
 The next step sets up fastlane match to manage code signing files for the project.
 Run the following command to generate a `Matchfile` with the configuration:
@@ -295,7 +294,7 @@ Use the [Google Play integration](../user/project/integrations/google_play.md),
 to configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console)
 to build and release Android apps. To enable the integration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Google Play**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -352,7 +351,7 @@ Use the [Apple App Store integration](../user/project/integrations/apple_app_sto
 to configure your CI/CD pipelines to connect to [App Store Connect](https://appstoreconnect.apple.com/)
 to build and release apps for iOS, iPadOS, macOS, tvOS, and watchOS. To enable the integration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Apple App Store**.
 1. Under **Enable integration**, select the **Active** checkbox.

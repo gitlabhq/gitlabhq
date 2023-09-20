@@ -30,10 +30,10 @@ class Commit
 
   MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
   MAX_SHA_LENGTH = Gitlab::Git::Commit::MAX_SHA_LENGTH
-  COMMIT_SHA_PATTERN = Gitlab::Git::Commit::SHA_PATTERN.freeze
-  EXACT_COMMIT_SHA_PATTERN = /\A#{COMMIT_SHA_PATTERN}\z/.freeze
+  COMMIT_SHA_PATTERN = Gitlab::Git::Commit::SHA_PATTERN
+  EXACT_COMMIT_SHA_PATTERN = /\A#{COMMIT_SHA_PATTERN}\z/
   # Used by GFM to match and present link extensions on node texts and hrefs.
-  LINK_EXTENSION_PATTERN = /(patch)/.freeze
+  LINK_EXTENSION_PATTERN = /(patch)/
 
   DEFAULT_MAX_DIFF_LINES_SETTING = 50_000
   DEFAULT_MAX_DIFF_FILES_SETTING = 1_000
@@ -432,7 +432,7 @@ class Commit
   end
 
   def cherry_pick_message(user)
-    %{#{message}\n\n#{cherry_pick_description(user)}}
+    %(#{message}\n\n#{cherry_pick_description(user)})
   end
 
   def revert_description(user)
@@ -444,7 +444,7 @@ class Commit
   end
 
   def revert_message(user)
-    %{Revert "#{title.strip}"\n\n#{revert_description(user)}}
+    %(Revert "#{title.strip}"\n\n#{revert_description(user)})
   end
 
   def reverts_commit?(commit, user)
@@ -539,7 +539,7 @@ class Commit
   #   added by `git commit --fixup` which is used by some community members.
   #   https://gitlab.com/gitlab-org/gitlab/-/issues/342937#note_892065311
   #
-  DRAFT_REGEX = /\A\s*#{Gitlab::Regex.merge_request_draft}|(fixup!|squash!)\s/.freeze
+  DRAFT_REGEX = /\A\s*#{Gitlab::Regex.merge_request_draft}|(fixup!|squash!)\s/
 
   def draft?
     !!(title =~ DRAFT_REGEX)
@@ -554,10 +554,10 @@ class Commit
     "commit:#{sha}"
   end
 
-  def expire_note_etag_cache
+  def broadcast_notes_changed
     super
 
-    expire_note_etag_cache_for_related_mrs
+    broadcast_notes_changed_for_related_mrs
   end
 
   def readable_by?(user)
@@ -614,8 +614,8 @@ class Commit
     end
   end
 
-  def expire_note_etag_cache_for_related_mrs
-    MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each(&:expire_note_etag_cache)
+  def broadcast_notes_changed_for_related_mrs
+    MergeRequest.includes(target_project: :namespace).by_commit_sha(id).find_each(&:broadcast_notes_changed)
   end
 
   def commit_reference(from, referable_commit_id, full: false)

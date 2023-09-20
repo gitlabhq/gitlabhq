@@ -162,7 +162,7 @@ Supported attributes:
     "protected_branches": [
       {
         "id": 1,
-        "name": "master",
+        "name": "main",
         "push_access_levels": [
           {
             "access_level": 30,
@@ -264,7 +264,7 @@ Supported attributes:
   "protected_branches": [
     {
       "id": 1,
-      "name": "master",
+      "name": "main",
       "push_access_levels": [
         {
           "access_level": 30,
@@ -374,7 +374,7 @@ Supported attributes:
   "protected_branches": [
     {
       "id": 1,
-      "name": "master",
+      "name": "main",
       "push_access_levels": [
         {
           "access_level": 30,
@@ -508,7 +508,7 @@ Supported attributes:
   "protected_branches": [
     {
       "id": 1,
-      "name": "master",
+      "name": "main",
       "push_access_levels": [
         {
           "access_level": 30,

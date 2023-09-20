@@ -170,7 +170,7 @@ To add a group variable:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
-   - **Environment scope** Optional. `All`, or specific [environments](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM)**
+   - **Environment scope** Optional. `All`, or specific [environments](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM ALL)**
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
    - **Mask variable** Optional. If selected, the variable's **Value** is masked
@@ -194,7 +194,7 @@ Prerequisite:
 
 To add an instance variable:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD** and expand the **Variables** section.
 1. Select **Add variable** and fill in the details:
@@ -371,7 +371,7 @@ For example:
 
 ```yaml
 variables:
-  SITE_URL: "https://example.gitlab.com"
+  SITE_URL: "https://gitlab.example.com"
 
 job:
   script:

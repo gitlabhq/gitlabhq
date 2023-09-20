@@ -97,6 +97,7 @@ describe('Pipeline schedules form', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   // Variables
   const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row');
+  const findVariableTypes = () => wrapper.findAllByTestId('pipeline-form-ci-variable-type');
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key');
   const findValueInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-value');
   const findHiddenValueInputs = () =>
@@ -180,6 +181,16 @@ describe('Pipeline schedules form', () => {
 
     afterEach(() => {
       mock.restore();
+    });
+
+    it('changes variable type', async () => {
+      expect(findVariableTypes().at(0).props('selected')).toBe('ENV_VAR');
+
+      findVariableTypes().at(0).vm.$emit('select', 'FILE');
+
+      await nextTick();
+
+      expect(findVariableTypes().at(0).props('selected')).toBe('FILE');
     });
 
     it('creates blank variable on input change event', async () => {

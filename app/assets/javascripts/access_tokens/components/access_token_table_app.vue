@@ -33,7 +33,7 @@ export default {
     emptyField: __('Never'),
     expired: __('Expired'),
     modalMessage: __(
-      'Are you sure you want to revoke this %{accessTokenType}? This action cannot be undone.',
+      'Are you sure you want to revoke the %{accessTokenType} "%{tokenName}"? This action cannot be undone.',
     ),
     revokeButton: __('Revoke'),
     tokenValidity: __('Token valid until revoked'),
@@ -72,11 +72,6 @@ export default {
 
       return FIELDS.filter(({ key }) => !ignoredFields.includes(key));
     },
-    modalMessage() {
-      return sprintf(this.$options.i18n.modalMessage, {
-        accessTokenType: this.accessTokenType,
-      });
-    },
     showPagination() {
       return this.activeAccessTokens.length > PAGE_SIZE;
     },
@@ -86,6 +81,12 @@ export default {
       const [{ active_access_tokens: activeAccessTokens }] = event.detail;
       this.activeAccessTokens = convertObjectPropsToCamelCase(activeAccessTokens, { deep: true });
       this.currentPage = INITIAL_PAGE;
+    },
+    modalMessage(tokenName) {
+      return sprintf(this.$options.i18n.modalMessage, {
+        accessTokenType: this.accessTokenType,
+        tokenName,
+      });
     },
     sortingChanged(aRow, bRow, key) {
       if (['createdAt', 'lastUsedAt', 'expiresAt'].includes(key)) {
@@ -149,13 +150,13 @@ export default {
             }}</span>
           </template>
 
-          <template #cell(action)="{ item: { revokePath } }">
+          <template #cell(action)="{ item: { name, revokePath } }">
             <gl-button
               v-if="revokePath"
               category="tertiary"
               :title="$options.i18n.revokeButton"
               :aria-label="$options.i18n.revokeButton"
-              :data-confirm="modalMessage"
+              :data-confirm="modalMessage(name)"
               data-confirm-btn-variant="danger"
               data-qa-selector="revoke_button"
               data-method="put"

@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -30,7 +30,6 @@ This page gathers all the resources for the topic **Authentication** in GitLab.
 - **Integrations:**
   - [OmniAuth](../../integration/omniauth.md)
   - [Atlassian Crowd OmniAuth Provider](../../administration/auth/crowd.md)
-  - [CAS OmniAuth Provider](../../integration/cas.md)
   - [SAML OmniAuth Provider](../../integration/saml.md)
   - [SAML for GitLab.com Groups](../../user/group/saml_sso/index.md)
   - [SCIM user provisioning for GitLab.com Groups](../../user/group/saml_sso/scim_setup.md)

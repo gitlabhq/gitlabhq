@@ -26,7 +26,7 @@ The default value (`1`) is recommended for the majority of GitLab installations.
 
 To adjust the polling interval multiplier:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Preferences**.
 1. Expand **Polling interval multiplier**.

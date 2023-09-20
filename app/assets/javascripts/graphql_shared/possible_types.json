@@ -48,6 +48,10 @@
     "ExternalAuditEventDestination",
     "InstanceExternalAuditEventDestination"
   ],
+  "GoogleCloudLoggingConfigurationInterface": [
+    "GoogleCloudLoggingConfigurationType",
+    "InstanceGoogleCloudLoggingConfigurationType"
+  ],
   "Issuable": [
     "Epic",
     "Issue",
@@ -139,6 +143,7 @@
     "WorkItem"
   ],
   "User": [
+    "AddOnUser",
     "AutocompletedUser",
     "MergeRequestAssignee",
     "MergeRequestAuthor",

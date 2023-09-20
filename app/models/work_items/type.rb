@@ -44,8 +44,6 @@ module WorkItems
     # where it's possible to switch between issue and incident.
     CHANGEABLE_BASE_TYPES = %w[issue incident test_case].freeze
 
-    WI_TYPES_WITH_CREATED_HEADER = %w[issue incident ticket].freeze
-
     cache_markdown_field :description, pipeline: :single_line
 
     enum base_type: BASE_TYPES.transform_values { |value| value[:enum_value] }

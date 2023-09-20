@@ -20,12 +20,7 @@ RSpec.describe Sidebars::Groups::SuperSidebarPanel, feature_category: :navigatio
   subject { described_class.new(context) }
 
   it 'implements #super_sidebar_context_header' do
-    expect(subject.super_sidebar_context_header).to eq(
-      {
-        title: group.name,
-        avatar: group.avatar_url,
-        id: group.id
-      })
+    expect(subject.super_sidebar_context_header).to eq(_('Group'))
   end
 
   describe '#renderable_menus' do
@@ -53,4 +48,5 @@ RSpec.describe Sidebars::Groups::SuperSidebarPanel, feature_category: :navigatio
 
   it_behaves_like 'a panel with uniquely identifiable menu items'
   it_behaves_like 'a panel with all menu_items categorized'
+  it_behaves_like 'a panel instantiable by the anonymous user'
 end

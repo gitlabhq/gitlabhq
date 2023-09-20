@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -141,6 +141,24 @@ POST /groups/:id/access_tokens/:token_id/rotate
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>/rotate"
+```
+
+Example response:
+
+```json
+{
+    "id": 42,
+    "name": "Rotated Token",
+    "revoked": false,
+    "created_at": "2023-08-01T15:00:00.000Z",
+    "scopes": ["api"],
+    "user_id": 1337,
+    "last_used_at": null,
+    "active": true,
+    "expires_at": "2023-08-15",
+    "access_level": 30,
+    "token": "s3cr3t"
+}
 ```
 
 ### Responses

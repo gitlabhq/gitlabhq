@@ -10,6 +10,9 @@
     "description": {
       "type": "string"
     },
+    "fingerprint": {
+      "type": "string"
+    },
     "severity": {
       "type": "string"
     },

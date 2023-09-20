@@ -388,7 +388,7 @@ export default {
               :display-text="__('Invite members')"
               trigger-element="side-nav"
               icon="plus"
-              trigger-source="work-item-assignees-dropdown"
+              trigger-source="work_item_assignees_dropdown"
               classes="gl-display-block gl-text-body! gl-hover-text-decoration-none gl-pb-2"
             />
           </gl-dropdown-item>

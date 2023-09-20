@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { mapValues } from 'lodash';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
 import { createAlert } from '~/alert';
@@ -309,6 +310,21 @@ describe('Global Search Store Actions', () => {
           expect(logger.logError).toHaveBeenCalledTimes(errorLogs);
         });
       });
+    });
+  });
+
+  describe('fetchSidebarCount with no count_link', () => {
+    beforeEach(() => {
+      state.navigation = mapValues(MOCK_NAVIGATION_DATA, (navItem) => ({
+        ...navItem,
+        count_link: null,
+      }));
+    });
+
+    it('should not request anything', async () => {
+      await testAction({ action: actions.fetchSidebarCount, state, expectedMutations: [] });
+
+      expect(mock.history.get.length).toBe(0);
     });
   });
 

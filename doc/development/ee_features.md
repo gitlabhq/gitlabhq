@@ -49,7 +49,7 @@ version of the product:
 1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
    only if the project namespace's plan includes the feature.
 
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. On the left sidebar, select **Search or go to**.
    1. Select **Admin Area**.
    1. On the left sidebar, select **Settings > General**.
    1. Expand **Account and limit**.
@@ -57,7 +57,7 @@ version of the product:
    1. Select **Save changes**.
 
 1. Ensure the group you want to test the EE feature for is actually using an EE plan:
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. On the left sidebar, select **Search or go to**.
    1. Select **Admin Area**.
    1. On the left sidebar, select **Overview > Groups**.
    1. Identify the group you want to modify, and select **Edit**.
@@ -463,7 +463,7 @@ end
 When it's not possible/logical to modify the implementation of a method, then
 wrap it in a self-descriptive method and use that method.
 
-For example, in GitLab-FOSS, the only user created by the system is `User.ghost`
+For example, in GitLab-FOSS, the only user created by the system is `Users::Internal.ghost`
 but in EE there are several types of bot-users that aren't really users. It would
 be incorrect to override the implementation of `User#ghost?`, so instead we add
 a method `#internal?` to `app/models/user.rb`. The implementation:

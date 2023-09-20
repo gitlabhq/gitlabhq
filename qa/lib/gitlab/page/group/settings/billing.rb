@@ -11,13 +11,12 @@ module Gitlab
           link :upgrade_to_ultimate
 
           # Subscription details
-          strong :subscription_header
+          h5 :subscription_header
           button :refresh_seats
 
           # Usage
           p :seats_in_subscription
           p :seats_currently_in_use
-          link :see_seats_usage
           p :max_seats_used
           p :seats_owed
 

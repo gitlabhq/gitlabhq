@@ -63,6 +63,7 @@ export default {
       :primary-button-link="createUrl"
       :primary-button-text="$options.i18n.createServiceAccount"
       :svg-path="emptyIllustrationUrl"
+      :svg-height="150"
     />
 
     <div v-else>

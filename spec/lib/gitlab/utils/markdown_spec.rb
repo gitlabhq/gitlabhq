@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Utils::Markdown do
+RSpec.describe Gitlab::Utils::Markdown, feature_category: :gitlab_docs do
   let(:klass) do
     Class.new do
       include Gitlab::Utils::Markdown
@@ -53,22 +53,27 @@ RSpec.describe Gitlab::Utils::Markdown do
     end
 
     context 'when string has a product suffix' do
-      %w[CORE STARTER PREMIUM ULTIMATE FREE BRONZE SILVER GOLD].each do |tier|
-        ['', ' ONLY', ' SELF', ' SAAS'].each do |modifier|
-          context "#{tier}#{modifier}" do
-            let(:string) { "My Header (#{tier}#{modifier})" }
+      %w[PREMIUM ULTIMATE FREE].each do |tier|
+        [' ALL', ' SELF', ' SAAS'].each do |modifier|
+          ['', ' BETA', ' EXPERIMENT'].each do |status|
+            context "#{tier}#{modifier}#{status}" do
+              context 'with "*" around a product suffix' do
+                let(:string) { "My Header **(#{tier}#{modifier}#{status})**" }
 
-            it 'ignores a product suffix' do
-              is_expected.to eq 'my-header'
-            end
-
-            context 'with "*" around a product suffix' do
-              let(:string) { "My Header **(#{tier}#{modifier})**" }
-
-              it 'ignores a product suffix' do
-                is_expected.to eq 'my-header'
+                it 'ignores a product suffix' do
+                  is_expected.to eq 'my-header'
+                end
               end
             end
+          end
+        end
+      end
+      %w[BETA EXPERIMENT].each do |status|
+        context 'with "*" around a product suffix' do
+          let(:string) { "My Header **(#{status})**" }
+
+          it 'ignores a product suffix' do
+            is_expected.to eq 'my-header'
           end
         end
       end

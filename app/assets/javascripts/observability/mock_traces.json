@@ -1,348 +1,107 @@
 {
-  "project_id": "10141740",
+  "project_id": 123,
   "traces": [
     {
-      "timestamp": "2023-07-18T10:31:23.661285Z",
-      "trace_id": "08a1b018-e1b9-88b2-094b-ca5fd40783ad",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
+      "timestamp": "2023-08-07T15:03:32.199806Z",
+      "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
+      "service_name": "tracegentracegentracegenttracegentracegentracegent",
+      "operation": "lets-golets-golets-goletslets-golets-golets-golets",
       "statusCode": "STATUS_CODE_UNSET",
+      "duration_nano": 100120000,
       "spans": [
         {
-          "timestamp": "2023-07-18T10:31:23.661285Z",
-          "span_id": "30A9220B254C42B1",
-          "trace_id": "08a1b018-e1b9-88b2-094b-ca5fd40783ad",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 250,
+          "timestamp": "2023-08-07T15:03:32.199806Z",
+          "span_id": "A1FB81EB031B09E8",
+          "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
+          "service_name": "tracegentracegentracegentracegentracegentracegentracegentracegentracegentracegentracegentracegentracegen",
+          "operation": "lets-golets-golets-golets-golets-golets-golets-golets-golets-golets-golets-golets-go",
+          "duration_nano": 100120000,
+          "parent_span_id": "",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-08-07T15:03:32.199871Z",
+          "span_id": "9C920500FE9C85E3",
+          "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
+          "service_name": "tracegen",
+          "operation": "okey-dokey",
+          "duration_nano": 100055000,
+          "parent_span_id": "A1FB81EB031B09E8",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-08-07T15:03:53.199871Z",
+          "span_id": "FAKE",
+          "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
+          "service_name": "tracegen",
+          "operation": "okey-dokey",
+          "duration_nano": 50027500,
+          "parent_span_id": "9C920500FE9C85E3",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-08-07T15:03:53.199871Z",
+          "span_id": "FAKE-2",
+          "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
+          "service_name": "fake-service-2",
+          "operation": "okey-dokey",
+          "duration_nano": 50027500,
+          "parent_span_id": "9C920500FE9C85E3",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-08-07T15:04:13.199871Z",
+          "span_id": "FAKE-3",
+          "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
+          "service_name": "fake-service-3",
+          "operation": "okey-dokey",
+          "duration_nano": 30000000,
+          "parent_span_id": "FAKE-2",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-08-07T15:04:13.199871Z",
+          "span_id": "FAKE-4",
+          "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
+          "service_name": "fake-service-4",
+          "operation": "okey-dokey",
+          "duration_nano": 25000000,
+          "parent_span_id": "FAKE-3",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-08-07T15:04:13.199871Z",
+          "span_id": "FAKE-5",
+          "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
+          "service_name": "fake-service-5",
+          "operation": "okey-dokey",
+          "duration_nano": 10000000,
+          "parent_span_id": "FAKE-4",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-08-07T15:04:13.199871Z",
+          "span_id": "FAKE-6",
+          "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
+          "service_name": "fake-service-6",
+          "operation": "okey-dokey",
+          "duration_nano": 10000000,
+          "parent_span_id": "FAKE-5",
+          "statusCode": "STATUS_CODE_UNSET"
+        },
+        {
+          "timestamp": "2023-08-07T15:04:13.199871Z",
+          "span_id": "FAKE-7",
+          "trace_id": "dabb7ae1-2501-8e57-18e1-30ab21a9ab19",
+          "service_name": "fake-service-7",
+          "operation": "okey-dokey",
+          "duration_nano": 5000000,
+          "parent_span_id": "FAKE-6",
           "statusCode": "STATUS_CODE_UNSET"
         }
       ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:17.026724Z",
-      "trace_id": "1c2099e0-6da8-d5fb-a91d-bdd5a5bea82c",
-      "service_name": "my-service-name2",
-      "operation": "Addition",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:17.026724Z",
-          "span_id": "154925D3DA2C1307",
-          "trace_id": "1c2099e0-6da8-d5fb-a91d-bdd5a5bea82c",
-          "service_name": "my-service-name",
-          "operation": "Addition",
-          "duration_nano": 208,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:21.602132Z",
-      "trace_id": "f4c2f964-afee-cc2e-bd1a-c654ff55db4e",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:21.602132Z",
-          "span_id": "53A4AE94DFF72A28",
-          "trace_id": "f4c2f964-afee-cc2e-bd1a-c654ff55db4e",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 5125,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:14.772009Z",
-      "trace_id": "fa6302ad-7214-7c05-40f7-91195356774e",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:14.772009Z",
-          "span_id": "5BB240D099656820",
-          "trace_id": "fa6302ad-7214-7c05-40f7-91195356774e",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 1584,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:22.623552Z",
-      "trace_id": "54021e57-a25c-c6fe-1f53-542bbdbcb16c",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:22.623552Z",
-          "span_id": "C5AE65D0C26BF3FD",
-          "trace_id": "54021e57-a25c-c6fe-1f53-542bbdbcb16c",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 750,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:21.602156Z",
-      "trace_id": "34d455cc-e518-fb4e-513f-e88030d4ccc8",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:21.602156Z",
-          "span_id": "5288B61252594EB2",
-          "trace_id": "34d455cc-e518-fb4e-513f-e88030d4ccc8",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 750,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:20.567364Z",
-      "trace_id": "3892a93a-f4eb-b416-372e-3c9237be97e3",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:20.567364Z",
-          "span_id": "1D690E5094345C98",
-          "trace_id": "3892a93a-f4eb-b416-372e-3c9237be97e3",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 958,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:23.661289Z",
-      "trace_id": "9d0630d5-21b5-686f-57cb-d97c647fc31f",
-      "service_name": "my-service-name",
-      "operation": "Addition",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:23.661289Z",
-          "span_id": "8F548EE08F9C2EAC",
-          "trace_id": "9d0630d5-21b5-686f-57cb-d97c647fc31f",
-          "service_name": "my-service-name",
-          "operation": "Addition",
-          "duration_nano": 167,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:14.77197Z",
-      "trace_id": "f2470b0e-3bbb-8af2-68f8-c97343fba7ee",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:14.77197Z",
-          "span_id": "6B5AB710CE8A4471",
-          "trace_id": "f2470b0e-3bbb-8af2-68f8-c97343fba7ee",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 5583,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:17.026712Z",
-      "trace_id": "f4e64ee0-ee32-0edb-c4d1-a15f4047bdc4",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:17.026712Z",
-          "span_id": "199D402DE1A29F3F",
-          "trace_id": "f4e64ee0-ee32-0edb-c4d1-a15f4047bdc4",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 6959,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:20.567337Z",
-      "trace_id": "344b4db1-c890-514c-b94f-425fff3a795b",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:20.567337Z",
-          "span_id": "CAC38748150E5A0C",
-          "trace_id": "344b4db1-c890-514c-b94f-425fff3a795b",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 3917,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:22.623559Z",
-      "trace_id": "40b933be-11d7-7b41-e63a-ff7e7c5d50ab",
-      "service_name": "my-service-name",
-      "operation": "Addition",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:22.623559Z",
-          "span_id": "3485100A27958F59",
-          "trace_id": "40b933be-11d7-7b41-e63a-ff7e7c5d50ab",
-          "service_name": "my-service-name",
-          "operation": "Addition",
-          "duration_nano": 709,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:17.026723Z",
-      "trace_id": "c3347c43-316f-2b08-0b46-7d142d6764b7",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:17.026723Z",
-          "span_id": "1CF28C36AB7EB3F9",
-          "trace_id": "c3347c43-316f-2b08-0b46-7d142d6764b7",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 208,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:23.661272Z",
-      "trace_id": "762f9104-d3db-c762-d6d7-0476ca21249f",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:23.661272Z",
-          "span_id": "83D8D6D2BD99A4D1",
-          "trace_id": "762f9104-d3db-c762-d6d7-0476ca21249f",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 10000,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:22.623524Z",
-      "trace_id": "b46ded15-f900-fba7-7396-a6b453221038",
-      "service_name": "my-service-name",
-      "operation": "Multiplication",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:22.623524Z",
-          "span_id": "EB84455AE35DEAD5",
-          "trace_id": "b46ded15-f900-fba7-7396-a6b453221038",
-          "service_name": "my-service-name",
-          "operation": "Multiplication",
-          "duration_nano": 17666,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:21.60216Z",
-      "trace_id": "8dcd7b90-7f94-6b19-4a8f-b681801568ba",
-      "service_name": "my-service-name",
-      "operation": "Addition",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:21.60216Z",
-          "span_id": "A5C773414186949D",
-          "trace_id": "8dcd7b90-7f94-6b19-4a8f-b681801568ba",
-          "service_name": "my-service-name",
-          "operation": "Addition",
-          "duration_nano": 250,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:14.772014Z",
-      "trace_id": "51e23c12-033d-a0db-d2b0-2f3f4e3d9fb3",
-      "service_name": "my-service-name",
-      "operation": "Addition",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:14.772014Z",
-          "span_id": "3397060046FD4428",
-          "trace_id": "51e23c12-033d-a0db-d2b0-2f3f4e3d9fb3",
-          "service_name": "my-service-name",
-          "operation": "Addition",
-          "duration_nano": 291,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
-    },
-    {
-      "timestamp": "2023-07-18T10:31:20.567369Z",
-      "trace_id": "d54b5015-3938-ddf8-3aa1-49882503233e",
-      "service_name": "my-service-name",
-      "operation": "Addition",
-      "statusCode": "STATUS_CODE_UNSET",
-      "spans": [
-        {
-          "timestamp": "2023-07-18T10:31:20.567369Z",
-          "span_id": "DAC36ACC2DBA8B11",
-          "trace_id": "d54b5015-3938-ddf8-3aa1-49882503233e",
-          "service_name": "my-service-name",
-          "operation": "Addition",
-          "duration_nano": 208,
-          "statusCode": "STATUS_CODE_UNSET"
-        }
-      ],
-      "totalSpans": 1
+      "totalSpans": 5
     }
   ],
-  "totalTraces": 18
+  "totalTraces": 50
 }

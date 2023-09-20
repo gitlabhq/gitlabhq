@@ -41,7 +41,7 @@ To use merged results pipelines:
 To enable merged results pipelines in a project, you must have at least the
 Maintainer role:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. In the **Merge options** section, select **Enable merged results pipelines**.
 1. Select **Save changes**.

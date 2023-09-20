@@ -65,62 +65,6 @@ RSpec.describe InviteMembersHelper do
 
       expect(helper.common_invite_modal_dataset(project)).to include(attributes)
     end
-
-    context 'with tasks_to_be_done' do
-      using RSpec::Parameterized::TableSyntax
-
-      subject(:output) { helper.common_invite_modal_dataset(source) }
-
-      shared_examples_for 'including the tasks to be done attributes' do
-        it 'includes the tasks to be done attributes when expected' do
-          if expected?
-            expect(output[:tasks_to_be_done_options]).to eq(
-              [
-                { value: :code, text: 'Create/import code into a project (repository)' },
-                { value: :ci, text: 'Set up CI/CD pipelines to build, test, deploy, and monitor code' },
-                { value: :issues, text: 'Create/import issues (tickets) to collaborate on ideas and plan work' }
-              ].to_json
-            )
-            expect(output[:projects]).to eq([{ id: project.id, title: project.title }].to_json)
-            expect(output[:new_project_path]).to eq(
-              source.is_a?(Project) ? '' : new_project_path(namespace_id: group.id)
-            )
-          else
-            expect(output[:tasks_to_be_done_options]).to be_nil
-            expect(output[:projects]).to be_nil
-            expect(output[:new_project_path]).to be_nil
-          end
-        end
-      end
-
-      context 'when inviting members for tasks' do
-        where(:open_modal_param?, :logged_in?, :expected?) do
-          true  | true  | true
-          true  | false | false
-          false | true  | false
-          false | false | false
-        end
-
-        with_them do
-          before do
-            allow(helper).to receive(:current_user).and_return(developer) if logged_in?
-            allow(helper).to receive(:params).and_return({ open_modal: 'invite_members_for_task' }) if open_modal_param?
-          end
-
-          context 'when the source is a project' do
-            let_it_be(:source) { project }
-
-            it_behaves_like 'including the tasks to be done attributes'
-          end
-
-          context 'when the source is a group' do
-            let_it_be(:source) { group }
-
-            it_behaves_like 'including the tasks to be done attributes'
-          end
-        end
-      end
-    end
   end
 
   context 'with project' do

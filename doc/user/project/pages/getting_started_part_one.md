@@ -25,13 +25,13 @@ For GitLab self-managed instances, replace `example.io`
 with your instance's Pages domain. For GitLab.com,
 Pages domains are `*.gitlab.io`.
 
-| Type of GitLab Pages | The name of the project created in GitLab | Website URL |
+| Type of GitLab Pages | Example path of a project in GitLab | Website URL |
 | -------------------- | ------------ | ----------- |
-| User pages  | `username.example.io`  | `http(s)://username.example.io`  |
-| Group pages | `groupname.example.io` | `http(s)://groupname.example.io` |
-| Project pages owned by a user  | `projectname` | `http(s)://username.example.io/projectname` |
-| Project pages owned by a group | `projectname` | `http(s)://groupname.example.io/projectname`|
-| Project pages owned by a subgroup | `subgroup/projectname` | `http(s)://groupname.example.io/subgroup/projectname`|
+| User pages  | `username/username.example.io`  | `http(s)://username.example.io`  |
+| Group pages | `acmecorp/acmecorp.example.io` | `http(s)://acmecorp.example.io` |
+| Project pages owned by a user  | `username/my-website` | `http(s)://username.example.io/my-website` |
+| Project pages owned by a group | `acmecorp/webshop` | `http(s)://acmecorp.example.io/webshop`|
+| Project pages owned by a subgroup | `acmecorp/documentation/product-manual` | `http(s)://acmecorp.example.io/documentation/product-manual`|
 
 WARNING:
 There are some known [limitations](introduction.md#subdomains-of-subdomains)
@@ -72,7 +72,7 @@ To understand Pages domains clearly, read the examples below.
 **General example:**
 
 - On GitLab.com, a project site is always available under
-  `https://namespace.gitlab.io/project-name`
+  `https://namespace.gitlab.io/project-slug`
 - On GitLab.com, a user or group website is available under
   `https://namespace.gitlab.io/`
 - On your GitLab instance, replace `gitlab.io` above with your
@@ -86,7 +86,7 @@ The `baseurl` option might be named differently in some static site generators.
 Every Static Site Generator (SSG) default configuration expects
 to find your website under a (sub)domain (`example.com`), not
 in a subdirectory of that domain (`example.com/subdir`). Therefore,
-whenever you publish a project website (`namespace.gitlab.io/project-name`),
+whenever you publish a project website (for example, `namespace.gitlab.io/project-slug`),
 you must look for this configuration (base URL) on your static site generator's
 documentation and set it up to reflect this pattern.
 

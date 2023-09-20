@@ -46,6 +46,7 @@ eslint-report.html
 /config/unicorn.rb
 /config/puma.rb
 /config/secrets.yml
+/config/session_store.yml
 /config/sidekiq.yml
 /config/click_house.yml
 /config/registry.key
@@ -106,3 +107,10 @@ tags.lock
 tags.temp
 .stylelintcache
 .solargraph.yml
+
+# Vite Ruby
+/public/vite*
+# Vite uses dotenv and suggests to ignore local-only env files. See
+# https://vitejs.dev/guide/env-and-mode.html#env-files
+*.local
+

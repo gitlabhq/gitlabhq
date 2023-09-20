@@ -34,9 +34,9 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the namespace has catalog resources' do
-        let_it_be(:resource) { create(:catalog_resource, project: project_1) }
-        let_it_be(:resource_2) { create(:catalog_resource, project: project_2) }
-        let_it_be(:other_namespace_resource) { create(:catalog_resource, project: project_3) }
+        let_it_be(:resource) { create(:ci_catalog_resource, project: project_1) }
+        let_it_be(:resource_2) { create(:ci_catalog_resource, project: project_2) }
+        let_it_be(:other_namespace_resource) { create(:ci_catalog_resource, project: project_3) }
 
         it 'contains only catalog resources for projects in that namespace' do
           is_expected.to contain_exactly(resource, resource_2)
@@ -65,8 +65,8 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     end
 
     context 'when the user only has access to some projects in the namespace' do
-      let!(:resource_1) { create(:catalog_resource, project: project_1) }
-      let!(:resource_2) { create(:catalog_resource, project: project_2) }
+      let!(:resource_1) { create(:ci_catalog_resource, project: project_1) }
+      let!(:resource_2) { create(:ci_catalog_resource, project: project_2) }
 
       before do
         project_1.add_developer(user)
@@ -79,7 +79,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
     end
 
     context 'when the user does not have access to the namespace' do
-      let!(:resource) { create(:catalog_resource, project: project_1) }
+      let!(:resource) { create(:ci_catalog_resource, project: project_1) }
 
       it { is_expected.to be_empty }
     end

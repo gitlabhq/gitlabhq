@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::EtagCaching::Store, :clean_gitlab_redis_shared_state do
+RSpec.describe Gitlab::EtagCaching::Store, :clean_gitlab_redis_cache do
   let(:store) { described_class.new }
 
   describe '#get' do

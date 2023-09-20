@@ -7,7 +7,6 @@ module WorkItems
     self.table_name = 'work_item_parent_links'
 
     MAX_CHILDREN = 100
-    PARENT_TYPES = [:issue, :incident].freeze
 
     belongs_to :work_item
     belongs_to :work_item_parent, class_name: 'WorkItem'
@@ -122,3 +121,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::ParentLink.prepend_mod

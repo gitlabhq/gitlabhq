@@ -1,14 +1,17 @@
 - mirror = f.object
-- auth_options = [[_('Password'), 'password'], [_('SSH public key'), 'ssh_public_key']]
+- auth_options = [[_('Username and Password'), 'password'], [_('SSH public key'), 'ssh_public_key']]
 
 .form-group
   = f.label :auth_method, _('Authentication method'), class: 'label-bold'
   = f.select :auth_method,
       options_for_select(auth_options, mirror.auth_method),
-      {}, { class: "custom-select gl-form-select js-mirror-auth-type", data: { qa_selector: 'authentication_method_field' } }
+      {}, { class: "custom-select gl-form-select js-mirror-auth-type gl-max-w-34 gl-display-block", data: { qa_selector: 'authentication_method_field' } }
   = f.hidden_field :auth_method, value: "password", class: "js-hidden-mirror-auth-type"
 
 .form-group
-  .well-password-auth.collapse.js-well-password-auth
+  = f.label :user, _('Username'), class: 'label-bold'
+  = f.text_field :user, class: 'form-control gl-form-input gl-form-input-xl', value: nil, autocomplete: 'off', required: false, autocorrect: 'off', autocapitalize: 'off', spellcheck: false, data: { testid: 'username-field' }
+.well-password-auth.collapse.js-well-password-auth
+  .form-group
     = f.label :password, _("Password"), class: "label-bold"
-    = f.password_field :password, class: 'form-control gl-form-input js-mirror-password-field', autocomplete: 'off', data: { qa_selector: 'password_field' }
+    = f.password_field :password, class: 'form-control gl-form-input js-mirror-password-field gl-form-input-xl', autocomplete: 'off', data: { testid: 'password-field' }

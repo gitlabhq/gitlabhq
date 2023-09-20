@@ -34,17 +34,17 @@ your cluster's level.
 
 **Project-level clusters:**
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Kubernetes clusters**.
 
 **Group-level clusters:**
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Operate > Kubernetes clusters**.
 
 **Instance-level clusters:**
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Kubernetes**.
 

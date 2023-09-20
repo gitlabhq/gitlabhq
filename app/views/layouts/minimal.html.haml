@@ -3,7 +3,7 @@
 !!! 5
 %html{ lang: I18n.locale, class: page_classes }
   = render "layouts/head"
-  %body{ data: body_data }
+  %body{ data: body_data, class: system_message_class }
     = header_message
     = render 'peek/bar'
     = render 'layouts/published_experiments'

@@ -3,6 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Plan do
+  describe 'scopes', :aggregate_failures do
+    let_it_be(:default_plan) { create(:default_plan) }
+
+    describe '.by_name' do
+      it 'returns plans by their name' do
+        expect(described_class.by_name('default')).to match_array([default_plan])
+        expect(described_class.by_name(%w[default unknown])).to match_array([default_plan])
+        expect(described_class.by_name(nil)).to be_empty
+      end
+    end
+  end
+
   describe '#default?' do
     subject { plan.default? }
 

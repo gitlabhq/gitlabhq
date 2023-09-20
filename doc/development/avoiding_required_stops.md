@@ -10,7 +10,7 @@ Required stops are any changes to GitLab [components](architecture.md) or
 dependencies that result in the need to upgrade to and stop at a specific
 `major.minor` version when [upgrading GitLab](../update/index.md).
 
-While Development maintains a [maintainenance policy](../policy/maintenance.md)
+While Development maintains a [maintenance policy](../policy/maintenance.md)
 that results in a three-release (3 month) backport window - GitLab maintains a
 much longer window of [version support](https://about.gitlab.com/support/statement-of-support/#version-support)
 that includes the current major version, as well as the two previous major
@@ -31,8 +31,16 @@ across greater than 1-3 minor releases.
 Wherever possible, a required stop should be avoided. If it can't be avoided,
 the required stop should be aligned to a _scheduled_ required stop.
 
+In cases where we are considering retroactively declaring an unplanned required stop,
+please contact the [Distribution team product manager](https://about.gitlab.com/handbook/product/categories/#distributionbuild-group) to advise on next steps. If there
+is uncertainty about whether we should declare a required stop, the Distribution product
+manager may escalate to GitLab product leadership (VP or Chief Product Officer) to make
+a final determination. This may happen, for example, if a change might require a stop for
+a small subset of very large self-managed installations and there are well-defined workarounds
+if customers run into issues.
+
 Scheduled required stops are often implemented for the previous `major`.`minor`
-release just prior to a `major` version release in order to accomodate multiple
+release just prior to a `major` version release in order to accommodate multiple
 [planned deprecations](../update/terminology.md#deprecation) and known
 [breaking changes](../update/terminology.md#breaking-change).
 

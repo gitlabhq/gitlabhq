@@ -16,9 +16,6 @@
     = render_if_exists 'admin/application_settings/email_additional_text_setting', form: f
 
     .form-group
-      = f.gitlab_ui_checkbox_component :in_product_marketing_emails_enabled, _('Enable in-product marketing emails'), help_text: _('Send emails to help guide new users through the onboarding process.')
-
-    .form-group
       = f.gitlab_ui_checkbox_component :user_deactivation_emails_enabled, _('Enable user deactivation emails'), help_text: _('Send emails to users upon account deactivation.')
 
     - if Feature.enabled?(:deactivation_email_additional_text)

@@ -133,7 +133,8 @@ export const loadBranch = ({ dispatch, getters, state }, { projectId, branchId }
 
   if (currentProject?.branches?.[branchId]) {
     return Promise.resolve();
-  } else if (getters.emptyRepo) {
+  }
+  if (getters.emptyRepo) {
     return dispatch('loadEmptyBranch', { projectId, branchId });
   }
 

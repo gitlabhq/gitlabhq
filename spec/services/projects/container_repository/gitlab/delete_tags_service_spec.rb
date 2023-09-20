@@ -48,7 +48,24 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
             stub_delete_reference_requests('A' => 500, 'Ba' => 500)
           end
 
-          it { is_expected.to eq(status: :error, message: 'could not delete tags') }
+          it { is_expected.to eq(status: :error, message: "could not delete tags: #{tags.join(', ')}") }
+
+          context 'when a large list of tag delete fails' do
+            let(:tags) { Array.new(135) { |i| "tag#{i}" } }
+            let(:container_repository) { instance_double(ContainerRepository) }
+
+            before do
+              allow(ContainerRepository).to receive(:find).with(repository).and_return(container_repository)
+              tags.each do |tag|
+                stub_delete_reference_requests(tag => 500)
+              end
+              allow(container_repository).to receive(:delete_tag_by_name).and_return(false)
+            end
+
+            it 'truncates the log message' do
+              expect(subject).to eq(status: :error, message: "could not delete tags: #{tags.join(', ')}".truncate(1000))
+            end
+          end
         end
       end
 

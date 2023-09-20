@@ -3,7 +3,7 @@
 module Bitbucket
   module Representation
     class Issue < Representation::Base
-      CLOSED_STATUS = %w(resolved invalid duplicate wontfix closed).freeze
+      CLOSED_STATUS = %w[resolved invalid duplicate wontfix closed].freeze
 
       def iid
         raw['id']

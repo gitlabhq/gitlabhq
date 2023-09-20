@@ -9,6 +9,8 @@
 ---
 - advisory_database
 - ai_abstraction_layer
+- ai_evaluation
+- ai_research
 - api
 - api_security
 - application_instrumentation
@@ -50,6 +52,7 @@
 - devops_reports
 - disaster_recovery
 - dora_metrics
+- duo_chat
 - dynamic_application_security_testing
 - editor_extensions
 - environment_management
@@ -68,7 +71,6 @@
 - gitaly
 - gitlab_cli
 - gitlab_docs
-- gitlab_duo_chat
 - global_search
 - groups_and_projects
 - helm_chart_registry
@@ -79,7 +81,6 @@
 - insider_threat
 - instance_resiliency
 - integrations
-- intel_code_security
 - interactive_application_security_testing
 - internationalization
 - logging
@@ -110,7 +111,6 @@
 - remote_development
 - requirements_management
 - review_apps
-- runbooks
 - runner
 - runner_fleet
 - runner_saas
@@ -140,4 +140,3 @@
 - web_ide
 - webhooks
 - wiki
-- workflow_automation

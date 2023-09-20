@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User searches for milestones', :js, :clean_gitlab_redis_rate_limiting,
   feature_category: :global_search do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
   let_it_be(:project) { create(:project, namespace: user.namespace) }
   let_it_be(:milestone1) { create(:milestone, title: 'Foo', project: project) }
   let_it_be(:milestone2) { create(:milestone, title: 'Bar', project: project) }

@@ -63,7 +63,7 @@ module MarkupHelper
     md = markdown_field(object, attribute, options.merge(post_process: false))
     return unless md.present?
 
-    tags = %w(a gl-emoji b strong i em pre code p span)
+    tags = %w[a gl-emoji b strong i em pre code p span]
 
     context = markdown_field_render_context(object, attribute, options)
     context.reverse_merge!(truncate_visible_max_chars: max_chars || md.length)
@@ -73,11 +73,11 @@ module MarkupHelper
       text,
       tags: tags,
       attributes: Rails::Html::WhiteListSanitizer.allowed_attributes +
-        %w(
+        %w[
           style data-src data-name data-unicode-version data-html
           data-reference-type data-project-path data-iid data-mr-title
           data-user
-        )
+        ]
     )
 
     render_links(text)

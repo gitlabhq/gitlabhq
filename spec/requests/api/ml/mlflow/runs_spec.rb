@@ -129,7 +129,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
     end
   end
 
@@ -185,6 +185,132 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
     end
   end
 
+  describe 'GET /projects/:id/ml/mlflow/api/2.0/mlflow/runs/search' do
+    let_it_be(:search_experiment) { create(:ml_experiments, user: nil, project: project) }
+    let_it_be(:first_candidate) do
+      create(:ml_candidates, experiment: search_experiment, name: 'c', user: nil).tap do |c|
+        c.metrics.create!(name: 'metric1', value: 0.3)
+      end
+    end
+
+    let_it_be(:second_candidate) do
+      create(:ml_candidates, experiment: search_experiment, name: 'a', user: nil).tap do |c|
+        c.metrics.create!(name: 'metric1', value: 0.2)
+      end
+    end
+
+    let_it_be(:third_candidate) do
+      create(:ml_candidates, experiment: search_experiment, name: 'b', user: nil).tap do |c|
+        c.metrics.create!(name: 'metric1', value: 0.6)
+      end
+    end
+
+    let(:route) { "/projects/#{project_id}/ml/mlflow/api/2.0/mlflow/runs/search" }
+    let(:order_by) { nil }
+    let(:default_params) do
+      {
+        'max_results' => 2,
+        'experiment_ids' => [search_experiment.iid],
+        'order_by' => order_by
+      }
+    end
+
+    it 'searches runs for a project', :aggregate_failures do
+      is_expected.to have_gitlab_http_status(:ok)
+      is_expected.to match_response_schema('ml/search_runs')
+    end
+
+    describe 'pagination and ordering' do
+      RSpec.shared_examples 'a paginated search runs request with order' do
+        it 'paginates respecting the provided order by' do
+          first_page_runs = json_response['runs']
+          expect(first_page_runs.size).to eq(2)
+
+          expect(first_page_runs[0]['info']['run_id']).to eq(expected_order[0].eid)
+          expect(first_page_runs[1]['info']['run_id']).to eq(expected_order[1].eid)
+
+          params = default_params.merge(page_token: json_response['next_page_token'])
+
+          get api(route), params: params, headers: headers
+
+          second_page_response = Gitlab::Json.parse(response.body)
+          second_page_runs = second_page_response['runs']
+
+          expect(second_page_response['next_page_token']).to be_nil
+          expect(second_page_runs.size).to eq(1)
+          expect(second_page_runs[0]['info']['run_id']).to eq(expected_order[2].eid)
+        end
+      end
+
+      let(:default_order) { [third_candidate, second_candidate, first_candidate] }
+
+      context 'when ordering is not provided' do
+        let(:expected_order) { default_order }
+
+        it_behaves_like 'a paginated search runs request with order'
+      end
+
+      context 'when order by column is provided', 'and column exists' do
+        let(:order_by) { 'name ASC'  }
+        let(:expected_order) { [second_candidate, third_candidate, first_candidate] }
+
+        it_behaves_like 'a paginated search runs request with order'
+      end
+
+      context 'when order by column is provided', 'and column does not exist' do
+        let(:order_by) { 'something DESC' }
+        let(:expected_order) { default_order }
+
+        it_behaves_like 'a paginated search runs request with order'
+      end
+
+      context 'when order by metric is provided', 'and metric exists' do
+        let(:order_by) { 'metrics.metric1' }
+        let(:expected_order) { [third_candidate, first_candidate, second_candidate] }
+
+        it_behaves_like 'a paginated search runs request with order'
+      end
+
+      context 'when order by metric is provided', 'and metric does not exist' do
+        let(:order_by) { 'metrics.something' }
+
+        it 'returns no results' do
+          expect(json_response['runs']).to be_empty
+        end
+      end
+
+      context 'when order by params is provided' do
+        let(:order_by) { 'params.something'  }
+        let(:expected_order) { default_order }
+
+        it_behaves_like 'a paginated search runs request with order'
+      end
+    end
+
+    describe 'Error States' do
+      context 'when experiment_ids is not passed' do
+        let(:default_params) { {} }
+
+        it_behaves_like 'MLflow|Bad Request'
+      end
+
+      context 'when experiment_ids is empty' do
+        let(:default_params) { { 'experiment_ids' => [] } }
+
+        it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+      end
+
+      context 'when experiment_ids is invalid' do
+        let(:default_params) { { 'experiment_ids' => [non_existing_record_id] } }
+
+        it_behaves_like 'MLflow|Not Found - Resource Does Not Exist'
+      end
+
+      it_behaves_like 'MLflow|shared error cases'
+      it_behaves_like 'MLflow|Requires read_api scope'
+    end
+  end
+
   describe 'POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/update' do
     let(:default_params) { { run_id: candidate.eid.to_s, status: 'FAILED', end_time: Time.now.to_i } }
     let(:request) { post api(route), params: params, headers: headers }
@@ -220,7 +346,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|run_id param error cases'
     end
   end
@@ -238,7 +364,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
 
     describe 'Error Cases' do
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|run_id param error cases'
       it_behaves_like 'MLflow|Bad Request on missing required', [:key, :value, :timestamp]
     end
@@ -263,7 +389,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|run_id param error cases'
       it_behaves_like 'MLflow|Bad Request on missing required', [:key, :value]
     end
@@ -288,7 +414,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|run_id param error cases'
       it_behaves_like 'MLflow|Bad Request on missing required', [:key, :value]
     end
@@ -358,7 +484,7 @@ RSpec.describe API::Ml::Mlflow::Runs, feature_category: :mlops do
       end
 
       it_behaves_like 'MLflow|shared error cases'
-      it_behaves_like 'MLflow|Requires api scope'
+      it_behaves_like 'MLflow|Requires api scope and write permission'
       it_behaves_like 'MLflow|run_id param error cases'
     end
   end

@@ -16,6 +16,12 @@ module Users
       greater_than_or_equal_to: 0, less_than_or_equal_to: 9999
     }
 
+    validates :last_digits_hash, length: { maximum: 44 }
+    validates :holder_name_hash, length: { maximum: 44 }
+    validates :expiration_date_hash, length: { maximum: 44 }
+    validates :network_hash, length: { maximum: 44 }
+
+    scope :find_or_initialize_by_user, ->(user_id) { where(user_id: user_id).first_or_initialize }
     scope :by_banned_user, -> { joins(:banned_user) }
     scope :similar_by_holder_name, ->(holder_name) do
       if holder_name.present?
@@ -32,6 +38,11 @@ module Users
       )
     end
 
+    before_save :set_last_digits_hash, if: -> { last_digits.present? }
+    before_save :set_holder_name_hash, if: -> { holder_name.present? }
+    before_save :set_network_hash, if: -> { network.present? }
+    before_save :set_expiration_date_hash, if: -> { expiration_date.present? }
+
     def similar_records
       self.class.similar_to(self).order(credit_card_validated_at: :desc).includes(:user)
     end
@@ -42,6 +53,22 @@ module Users
 
     def used_by_banned_user?
       self.class.by_banned_user.similar_to(self).similar_by_holder_name(holder_name).exists?
+    end
+
+    def set_last_digits_hash
+      self.last_digits_hash = Gitlab::CryptoHelper.sha256(last_digits)
+    end
+
+    def set_holder_name_hash
+      self.holder_name_hash = Gitlab::CryptoHelper.sha256(holder_name.downcase)
+    end
+
+    def set_network_hash
+      self.network_hash = Gitlab::CryptoHelper.sha256(network.downcase)
+    end
+
+    def set_expiration_date_hash
+      self.expiration_date_hash = Gitlab::CryptoHelper.sha256(expiration_date.to_s)
     end
   end
 end

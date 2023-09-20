@@ -17,7 +17,9 @@ module Ci
         virtualbox: 8,
         docker_machine: 9,
         docker_ssh_machine: 10,
-        kubernetes: 11
+        kubernetes: 11,
+        docker_autoscaler: 12,
+        instance: 13
       }, _suffix: true
     end
   end

@@ -51,7 +51,7 @@ module Gitlab
           entry :parallel, Entry::Product::Parallel,
             description: 'Parallel configuration for this job.',
             inherit: false,
-            metadata: { allowed_strategies: %i(matrix) }
+            metadata: { allowed_strategies: %i[matrix] }
 
           attributes :when, :allow_failure, :parallel
 

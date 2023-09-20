@@ -4,7 +4,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import Translate from '~/vue_shared/translate';
 import RegistryBreadcrumb from '~/packages_and_registries/harbor_registry/components/harbor_registry_breadcrumb.vue';
-import { renderBreadcrumb } from '~/packages_and_registries/shared/utils';
+import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import createRouter from './router';
 import HarborRegistryExplorer from './pages/index.vue';
 
@@ -79,7 +79,7 @@ export default (id) => {
   };
 
   return {
-    attachBreadcrumb: renderBreadcrumb(router, null, RegistryBreadcrumb),
+    attachBreadcrumb: () => injectVueAppBreadcrumbs(router, RegistryBreadcrumb),
     attachMainComponent,
   };
 };

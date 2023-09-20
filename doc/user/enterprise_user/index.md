@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
@@ -79,7 +79,7 @@ For more information on group-level domain verification, see [epic 5299](https:/
 
 The custom domain must match the email domain exactly. For example, if your email is `username@example.com`, verify the `example.com` domain.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your top-level group.
 1. Select **Settings > Domain Verification**.
 1. In the upper-right corner, select **Add Domain**.
 1. In **Domain**, enter the domain name.
@@ -105,7 +105,7 @@ and paste them in your domain's control panel as a `TXT` record.
 
 After you have added all the DNS records:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Domain Verification**.
 1. On the domain table row, Select **Retry verification** (**{retry}**).
 
@@ -125,7 +125,7 @@ For GitLab instances with domain verification enabled, if the domain cannot be v
 
 To view all configured domains in your group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your top-level group.
 1. Select **Settings > Domain Verification**.
 
 You then see:
@@ -138,7 +138,7 @@ You then see:
 
 To edit or remove a domain:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your top-level group.
+1. On the left sidebar, select **Search or go to** and find your top-level group.
 1. Select **Settings > Domain Verification**.
 1. When viewing **Domain Verification**, select the project listed next to the relevant domain.
 1. Edit or remove a domain following the relevant [GitLab Pages custom domains](../project/pages/custom_domains_ssl_tls_certification/index.md) instructions.
@@ -159,7 +159,7 @@ Top-level group Owners can disable two-factor authentication (2FA) for enterpris
 
 To disable 2FA:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** (**{ellipsis_v}**) and select **Disable two-factor authentication**.

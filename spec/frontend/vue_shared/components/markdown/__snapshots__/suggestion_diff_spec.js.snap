@@ -13,9 +13,8 @@ exports[`Suggestion Diff component matches snapshot 1`] = `
     isbatched="true"
     suggestionscount="0"
   />
-   
   <table
-    class="mb-3 md-suggestion-diff js-syntax-highlight code"
+    class="code js-syntax-highlight mb-3 md-suggestion-diff"
   >
     <tbody>
       <suggestion-diff-row-stub

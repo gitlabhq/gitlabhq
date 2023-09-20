@@ -97,7 +97,6 @@ RSpec.describe Gitlab::ImportExport::AttributesPermitter, feature_category: :imp
       :user                        | true
       :author                      | false
       :ci_cd_settings              | true
-      :metrics_setting             | true
       :project_badges              | true
       :pipeline_schedules          | true
       :error_tracking_setting      | true

@@ -139,7 +139,7 @@ You'll see that GitLab has run your `test` and `pages` jobs.
 
 To view your site, on the left-hand navigation, select **Settings > Pages**
 
-The `pages` job in your pipeline has deployed the contents of your `public` directory to GitLab Pages. Under **Access pages**, you should see the link in the format: `https://<your-namespace>.gitlab.io/<project-name>`.
+The `pages` job in your pipeline has deployed the contents of your `public` directory to GitLab Pages. Under **Access pages**, you should see the link in the format: `https://<your-namespace>.gitlab.io/<project-path>`.
 
 You won't see this link if you haven't yet run your pipeline.
 

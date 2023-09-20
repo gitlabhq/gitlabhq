@@ -10,6 +10,7 @@
       %th{ class: 'gl-border-t-0!' }= s_('Identity|Provider ID')
       %th{ class: 'gl-border-t-0!' }= _('Group')
       %th{ class: 'gl-border-t-0!' }= _('Identifier')
+      %th{ class: 'gl-border-t-0!' }= s_('Identity|Active')
       %th{ class: 'gl-border-t-0!' }= _('Actions')
   - if identity_cells_to_render?(@identities, @user)
     = render_if_exists partial: 'admin/identities/scim_identity', collection: scim_identities_collection(@user)
@@ -17,6 +18,6 @@
   - else
     %tbody
       %tr
-        %td{ colspan: '5' }
+        %td{ colspan: '6' }
           .text-center.my-2
             = _('This user has no identities')

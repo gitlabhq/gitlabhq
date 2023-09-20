@@ -39,7 +39,7 @@ For a list of planned additions, view the
 
 To enable or turn off the Dependency Proxy for a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Packages and registries**.
 1. Expand the **Dependency Proxy** section.
 1. To enable the proxy, turn on **Enable Proxy**. To turn it off, turn the toggle off.
@@ -52,7 +52,7 @@ for the entire GitLab instance.
 
 To view the Dependency Proxy:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Operate > Dependency Proxy**.
 
 The Dependency Proxy is not available for projects.
@@ -179,7 +179,7 @@ You can also use [custom CI/CD variables](../../../ci/variables/index.md#for-a-p
 
 To store a Docker image in Dependency Proxy storage:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Operate > Dependency Proxy**.
 1. Copy the **Dependency Proxy image prefix**.
 1. Use one of these commands. In these examples, the image is `alpine:latest`.
@@ -367,7 +367,12 @@ see [issue 354826](https://gitlab.com/gitlab-org/gitlab/-/issues/354826).
 
 ### `exec format error` when running images from the dependency proxy
 
-This error occurs if you try to use the dependency proxy on an ARM-based Docker install.
+NOTE:
+This issue was [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/325669) in GitLab 16.3.
+For self managed instances that are 16.2 or earlier, you can update your instance to 16.3
+or use the workaround documented below.
+
+This error occurs if you try to use the dependency proxy on an ARM-based Docker install in GitLab 16.2 or earlier.
 The dependency proxy only supports the x86_64 architecture when pulling an image with a specific tag.
 
 As a workaround, you can specify the SHA256 of the image to force the dependency proxy
@@ -378,5 +383,3 @@ docker pull ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/library/docker:20.10.3@sha
 ```
 
 In this example, `bc9dcf5c8e5908845acc6d34ab8824bca496d6d47d1b08af3baf4b3adb1bd8fe` is the SHA256 of the ARM based image.
-
-For more information about the work to add support for other architectures, see [issue 325669](https://gitlab.com/gitlab-org/gitlab/-/issues/325669).

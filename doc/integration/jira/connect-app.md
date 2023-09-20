@@ -100,7 +100,7 @@ You must enable OAuth authentication to:
 
 To create an OAuth application:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Applications**.
 1. Select **New application**.
@@ -139,10 +139,11 @@ To create branches from Jira Cloud, [install the app manually](#install-the-gitl
 - The instance must be on GitLab version 15.7 or later.
 - You must set up [OAuth authentication](#set-up-oauth-authentication-for-self-managed-instances).
 - Your network must allow inbound and outbound connections between GitLab and Jira. For self-managed instances that are behind a
-  firewall and cannot be directly accessed from the internet, you can:
+  firewall and cannot be directly accessed from the internet:
   - Open your firewall and only allow inbound traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections).
   - Set up an internet-facing reverse proxy in front of your self-managed instance. To secure this proxy further, only allow inbound
     traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections).
+  - Add [GitLab IP addresses](../../user/gitlab_com/index.md#ip-range) to the allowlist of your firewall.
 
 ### Set up your instance
 
@@ -150,7 +151,7 @@ To create branches from Jira Cloud, [install the app manually](#install-the-gitl
 
 To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **GitLab for Jira App**.
@@ -245,7 +246,7 @@ You might want to use a proxy if you're managing multiple GitLab instances but o
 
 To configure your GitLab instance to serve as a proxy:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **GitLab for Jira App**.
@@ -315,7 +316,7 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 
 - In GitLab 15.8 and later:
 
-  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. On the left sidebar, select **Search or go to**.
   1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **GitLab for Jira App**.

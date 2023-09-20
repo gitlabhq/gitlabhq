@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { FREQUENT_ITEMS, FIFTEEN_MINUTES_IN_MS } from '~/frequent_items/constants';
-import { truncateNamespace } from '~/lib/utils/text_utility';
+import axios from '~/lib/utils/axios_utils';
 
 /**
  * This takes an array of project or groups that were stored in the local storage, to be shown in
@@ -18,7 +18,8 @@ const sortItemsByFrequencyAndLastAccess = (items) =>
     // and then by lastAccessedOn with recent most first
     if (itemA.frequency !== itemB.frequency) {
       return itemB.frequency - itemA.frequency;
-    } else if (itemA.lastAccessedOn !== itemB.lastAccessedOn) {
+    }
+    if (itemA.lastAccessedOn !== itemB.lastAccessedOn) {
       return itemB.lastAccessedOn - itemA.lastAccessedOn;
     }
 
@@ -36,10 +37,42 @@ export const getTopFrequentItems = (items, maxCount) => {
   return frequentItems.slice(0, maxCount);
 };
 
-const updateItemAccess = (contextItem, { lastAccessedOn, frequency = 0 } = {}) => {
+/**
+ * This tracks projects' and groups' visits in order to suggest a list of frequently visited
+ * entities to the user. Currently, this track visits in two ways:
+ * - The legacy approach uses a simple counting algorithm and stores the data in the local storage.
+ * - The above approach is being migrated to a backend-based one, where visits will be stored in the
+ *   DB, and suggestions will be made through a smarter algorithm. When we are ready to transition
+ *   to the newer approach, the legacy one will be cleaned up.
+ * @param {object} item The project/group item being tracked.
+ * @param {string} namespace A string indicating whether the tracked entity is a project or a group.
+ * @param {string} trackVisitsPath The API endpoint to track visits server-side.
+ * @returns {void}
+ */
+const updateItemAccess = (
+  contextItem,
+  { lastAccessedOn, frequency = 0 } = {},
+  namespace,
+  trackVisitsPath,
+) => {
   const now = Date.now();
   const neverAccessed = !lastAccessedOn;
   const shouldUpdate = neverAccessed || Math.abs(now - lastAccessedOn) / FIFTEEN_MINUTES_IN_MS > 1;
+
+  if (shouldUpdate && gon.features?.serverSideFrecentNamespaces) {
+    try {
+      axios({
+        url: trackVisitsPath,
+        method: 'POST',
+        data: {
+          type: namespace,
+          id: contextItem.id,
+        },
+      });
+    } catch (e) {
+      Sentry.captureException(e);
+    }
+  }
 
   return {
     ...contextItem,
@@ -48,7 +81,7 @@ const updateItemAccess = (contextItem, { lastAccessedOn, frequency = 0 } = {}) =
   };
 };
 
-export const trackContextAccess = (username, context) => {
+export const trackContextAccess = (username, context, trackVisitsPath) => {
   if (!AccessorUtilities.canUseLocalStorage()) {
     return false;
   }
@@ -61,9 +94,19 @@ export const trackContextAccess = (username, context) => {
   );
 
   if (existingItemIndex > -1) {
-    storedItems[existingItemIndex] = updateItemAccess(context.item, storedItems[existingItemIndex]);
+    storedItems[existingItemIndex] = updateItemAccess(
+      context.item,
+      storedItems[existingItemIndex],
+      context.namespace,
+      trackVisitsPath,
+    );
   } else {
-    const newItem = updateItemAccess(context.item);
+    const newItem = updateItemAccess(
+      context.item,
+      storedItems[existingItemIndex],
+      context.namespace,
+      trackVisitsPath,
+    );
     if (storedItems.length === FREQUENT_ITEMS.MAX_COUNT) {
       sortItemsByFrequencyAndLastAccess(storedItems);
       storedItems.pop();
@@ -73,15 +116,6 @@ export const trackContextAccess = (username, context) => {
 
   return localStorage.setItem(storageKey, JSON.stringify(storedItems));
 };
-
-export const formatContextSwitcherItems = (items) =>
-  items.map(({ id, name: title, namespace, avatarUrl: avatar, webUrl: link }) => ({
-    id,
-    title,
-    subtitle: truncateNamespace(namespace),
-    avatar,
-    link,
-  }));
 
 export const getItemsFromLocalStorage = ({ storageKey, maxItems }) => {
   if (!AccessorUtilities.canUseLocalStorage()) {

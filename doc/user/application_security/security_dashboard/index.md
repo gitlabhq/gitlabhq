@@ -66,7 +66,7 @@ Project Security Dashboards show statistics for all vulnerabilities with a curre
 
 To view total number of vulnerabilities over time:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
@@ -79,7 +79,7 @@ To view total number of vulnerabilities over time:
 
 To download an SVG image of the vulnerabilities chart:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security dashboard**.
 1. Select **Save chart as an image** (**{download}**).
 
@@ -90,7 +90,7 @@ branches of projects in a group and its subgroups.
 
 To view vulnerabilities over time for a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Security > Security dashboard**.
 1. Hover over the chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
@@ -104,7 +104,7 @@ Use the group Security Dashboard to view the security status of projects.
 
 To view project security status for a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Security dashboard**.
 
 Each project is assigned a letter [grade](#project-vulnerability-grades) according to the highest-severity open vulnerability.
@@ -142,7 +142,7 @@ The Security Center includes:
 
 To view the Security Center:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Security > Security dashboard**.
 
@@ -150,7 +150,7 @@ To view the Security Center:
 
 To add projects to the Security Center:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
 1. Expand **Security**.
 1. Select **Settings**.

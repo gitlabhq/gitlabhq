@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
-# This class is used as a proxy for all outbounding http connection
-# coming from callbacks, services and hooks. The direct use of the HTTParty
-# is discouraged because it can lead to several security problems, like SSRF
-# calling internal IP or services.
+#
+# IMPORTANT: With the new development of the 'gitlab-http' gem (https://gitlab.com/gitlab-org/gitlab/-/issues/415686),
+# no additional change should be implemented in this class. This class will be removed after migrating all
+# the usages to the new gem.
+#
+
+require_relative 'http_connection_adapter'
+
 module Gitlab
   class HTTP
     BlockedUrlError = Class.new(StandardError)
@@ -42,7 +46,7 @@ module Gitlab
       alias_method :httparty_perform_request, :perform_request
     end
 
-    connection_adapter HTTPConnectionAdapter
+    connection_adapter ::Gitlab::HTTPConnectionAdapter
 
     def self.perform_request(http_method, path, options, &block)
       raise_if_blocked_by_silent_mode(http_method)

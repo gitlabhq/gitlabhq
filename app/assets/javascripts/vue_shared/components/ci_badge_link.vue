@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import CiIcon from './ci_icon.vue';
+
 /**
  * Renders CI Badge link with CI icon and status text based on
  * API response shared between all places where it is used.
@@ -48,7 +49,7 @@ export default {
       required: false,
       default: true,
     },
-    badgeSize: {
+    size: {
       type: String,
       required: false,
       default: badgeSizeOptions.md,
@@ -59,7 +60,7 @@ export default {
   },
   computed: {
     isSmallBadgeSize() {
-      return this.badgeSize === badgeSizeOptions.sm;
+      return this.size === badgeSizeOptions.sm;
     },
     title() {
       return !this.showText ? this.status?.text : '';
@@ -120,13 +121,12 @@ export default {
 <template>
   <gl-badge
     v-gl-tooltip
-    :class="{ 'gl-pl-0!': isSmallBadgeSize }"
+    :class="{ 'gl-pl-2': isSmallBadgeSize }"
     :title="title"
     :href="detailsPath"
-    :size="badgeSize"
+    :size="size"
     :variant="badgeStyles.variant"
-    :data-testid="`ci-badge-${status.text}`"
-    data-qa-selector="status_badge_link"
+    data-testid="ci-badge-link"
     @click="$emit('ciStatusBadgeClick')"
   >
     <ci-icon :status="status" />

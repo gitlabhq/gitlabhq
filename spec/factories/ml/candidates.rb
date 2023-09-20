@@ -7,16 +7,12 @@ FactoryBot.define do
     experiment { association :ml_experiments, project_id: project.id }
 
     trait :with_metrics_and_params do
-      after(:create) do |candidate|
-        candidate.metrics = FactoryBot.create_list(:ml_candidate_metrics, 2, candidate: candidate )
-        candidate.params = FactoryBot.create_list(:ml_candidate_params, 2, candidate: candidate )
-      end
+      metrics { Array.new(2) { association(:ml_candidate_metrics, candidate: instance) } }
+      params { Array.new(2) { association(:ml_candidate_params, candidate: instance) } }
     end
 
     trait :with_metadata do
-      after(:create) do |candidate|
-        candidate.metadata = FactoryBot.create_list(:ml_candidate_metadata, 2, candidate: candidate )
-      end
+      metadata { Array.new(2) { association(:ml_candidate_metadata, candidate: instance) } }
     end
 
     trait :with_artifact do

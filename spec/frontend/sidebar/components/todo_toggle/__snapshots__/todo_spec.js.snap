@@ -3,7 +3,7 @@
 exports[`SidebarTodo template renders component container element with proper data attributes 1`] = `
 <button
   aria-label="Mark as done"
-  class="gl-button btn btn-default btn-todo issuable-header-btn float-right"
+  class="btn btn-default btn-todo float-right gl-button issuable-header-btn"
   data-issuable-id="1"
   data-issuable-type="epic"
   type="button"
@@ -14,13 +14,11 @@ exports[`SidebarTodo template renders component container element with proper da
     size="16"
     style="display: none;"
   />
-   
   <span
     class="issuable-todo-inner"
   >
     Mark as done
   </span>
-   
   <gl-loading-icon-stub
     color="dark"
     inline="true"

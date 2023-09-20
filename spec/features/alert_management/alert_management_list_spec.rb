@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Alert Management index', :js, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
-  let_it_be(:developer) { create(:user) }
+  let_it_be(:developer) { create(:user, :no_super_sidebar) }
 
   before_all do
     project.add_developer(developer)

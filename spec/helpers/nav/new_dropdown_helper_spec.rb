@@ -38,7 +38,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
               partial: partial,
               component: 'invite_members',
               data: {
-                trigger_source: 'top-nav',
+                trigger_source: 'top_nav',
                 trigger_element: 'text-emoji'
               }
             )

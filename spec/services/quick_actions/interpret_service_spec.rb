@@ -29,9 +29,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   end
 
   before do
-    stub_licensed_features(multiple_issue_assignees: false,
-                           multiple_merge_request_reviewers: false,
-                           multiple_merge_request_assignees: false)
+    stub_licensed_features(
+      multiple_issue_assignees: false,
+      multiple_merge_request_reviewers: false,
+      multiple_merge_request_assignees: false
+    )
   end
 
   describe '#execute' do
@@ -1394,6 +1396,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:issuable) { merge_request }
     end
 
+    it_behaves_like 'subscribe command' do
+      let(:content) { '/subscribe' }
+      let(:issuable) { work_item }
+    end
+
     it_behaves_like 'unsubscribe command' do
       let(:content) { '/unsubscribe' }
       let(:issuable) { issue }
@@ -1402,6 +1409,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     it_behaves_like 'unsubscribe command' do
       let(:content) { '/unsubscribe' }
       let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'unsubscribe command' do
+      let(:content) { '/unsubscribe' }
+      let(:issuable) { work_item }
     end
 
     it_behaves_like 'failed command', 'Could not apply due command.' do
@@ -1860,10 +1872,20 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         let(:issuable) { merge_request }
       end
 
+      it_behaves_like 'award command' do
+        let(:content) { '/award :100:' }
+        let(:issuable) { work_item }
+      end
+
       context 'ignores command with no argument' do
         it_behaves_like 'failed command' do
           let(:content) { '/award' }
           let(:issuable) { issue }
+        end
+
+        it_behaves_like 'failed command' do
+          let(:content) { '/award' }
+          let(:issuable) { work_item }
         end
       end
 
@@ -1876,6 +1898,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         it_behaves_like 'failed command' do
           let(:content) { '/award :lorem_ipsum:' }
           let(:issuable) { issue }
+        end
+
+        it_behaves_like 'failed command' do
+          let(:content) { '/award :lorem_ipsum:' }
+          let(:issuable) { work_item }
         end
       end
 

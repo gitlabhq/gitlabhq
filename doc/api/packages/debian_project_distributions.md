@@ -82,7 +82,7 @@ GET /projects/:id/debian_distributions/:codename
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `codename` | integer        | yes      | The `codename` of a distribution. |
+| `codename` | string         | yes      | The `codename` of a distribution. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable"
@@ -121,7 +121,7 @@ GET /projects/:id/debian_distributions/:codename/key.asc
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `codename` | integer        | yes      | The `codename` of a distribution. |
+| `codename` | string         | yes      | The `codename` of a distribution. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable/key.asc"
@@ -165,8 +165,8 @@ POST /projects/:id/debian_distributions
 | `version`                     | string         | no       | The new Debian distribution's version. |
 | `description`                 | string         | no       | The new Debian distribution's description. |
 | `valid_time_duration_seconds` | integer        | no       | The new Debian distribution's valid time duration (in seconds). |
-| `components`                  | architectures  | no       | The new Debian distribution's list of components. |
-| `architectures`               | architectures  | no       | The new Debian distribution's list of architectures. |
+| `components`                  | string array   | no       | The new Debian distribution's list of components. |
+| `architectures`               | string array   | no       | The new Debian distribution's list of architectures. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions?codename=sid"
@@ -212,8 +212,8 @@ PUT /projects/:id/debian_distributions/:codename
 | `version`                     | string         | no       | The Debian distribution's new version. |
 | `description`                 | string         | no       | The Debian distribution's new description. |
 | `valid_time_duration_seconds` | integer        | no       | The Debian distribution's new valid time duration (in seconds). |
-| `components`                  | architectures  | no       | The Debian distribution's new list of components. |
-| `architectures`               | architectures  | no       | The Debian distribution's new list of architectures. |
+| `components`                  | string array   | no       | The Debian distribution's new list of components. |
+| `architectures`               | string array   | no       | The Debian distribution's new list of architectures. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable?suite=new-suite&valid_time_duration_seconds=604800"
@@ -252,7 +252,7 @@ DELETE /projects/:id/debian_distributions/:codename
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](../rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `codename` | integer        | yes      | The Debian distribution's codename. |
+| `codename` | string         | yes      | The Debian distribution's codename. |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable"

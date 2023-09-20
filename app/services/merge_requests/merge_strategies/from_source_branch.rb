@@ -28,7 +28,7 @@ module MergeRequests
             check_mergeability_retry_lease: @options[:check_mergeability_retry_lease]
           )
             'Merge request is not mergeable'
-          elsif !merge_request.squash && project.squash_always?
+          elsif merge_request.missing_required_squash?
             'This project requires squashing commits when merge requests are accepted.'
           end
 
@@ -110,3 +110,5 @@ module MergeRequests
     end
   end
 end
+
+::MergeRequests::MergeStrategies::FromSourceBranch.prepend_mod

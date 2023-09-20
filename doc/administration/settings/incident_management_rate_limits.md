@@ -30,7 +30,7 @@ Requests that exceed the limit are logged into `auth.log`.
 
 To set inbound incident management alert limits:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **Incident Management Limits**.

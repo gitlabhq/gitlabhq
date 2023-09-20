@@ -244,7 +244,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             subject
 
             send_data_type, send_data = workhorse_send_data
-            header, url = send_data.values_at('Header', 'Url')
+            header, url = send_data.values_at('Headers', 'Url')
 
             expect(send_data_type).to eq('send-dependency')
             expect(header).to eq(
@@ -312,7 +312,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             subject
 
             send_data_type, send_data = workhorse_send_data
-            header, url = send_data.values_at('Header', 'Url')
+            header, url = send_data.values_at('Headers', 'Url')
 
             expect(send_data_type).to eq('send-dependency')
             expect(header).to eq("Authorization" => ["Bearer abcd1234"])

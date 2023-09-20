@@ -17,7 +17,7 @@ module Gitlab
 
         def scoped_variables(job, environment:, dependencies:)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
-            variables.concat(predefined_variables(job))
+            variables.concat(predefined_variables(job, environment))
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
             variables.concat(job.runner.predefined_variables) if job.runnable? && job.runner
@@ -126,7 +126,7 @@ module Gitlab
 
         delegate :project, to: :pipeline
 
-        def predefined_variables(job)
+        def predefined_variables(job, environment)
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.append(key: 'CI_JOB_NAME', value: job.name)
             variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job))
@@ -137,8 +137,12 @@ module Gitlab
             variables.append(key: 'CI_NODE_INDEX', value: job.options[:instance].to_s) if job.options&.include?(:instance)
             variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job).to_s)
 
-            # Set environment name here so we can access it when evaluating the job's rules
-            variables.append(key: 'CI_ENVIRONMENT_NAME', value: job.environment) if job.environment
+            if environment.present?
+              variables.append(key: 'CI_ENVIRONMENT_NAME', value: environment)
+              variables.append(key: 'CI_ENVIRONMENT_ACTION', value: job.environment_action)
+              variables.append(key: 'CI_ENVIRONMENT_TIER', value: job.environment_tier)
+              variables.append(key: 'CI_ENVIRONMENT_URL', value: job.environment_url) if job.environment_url
+            end
           end
         end
 

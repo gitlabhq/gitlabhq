@@ -1,30 +1,30 @@
-= gitlab_ui_form_for [@project.namespace, @project, @deploy_keys.new_key], url: namespace_project_deploy_keys_path, html: { class: "js-requires-input container" } do |f|
+= gitlab_ui_form_for [@project.namespace, @project, @deploy_keys.new_key], url: namespace_project_deploy_keys_path, html: { class: "js-requires-input" } do |f|
   = form_errors(@deploy_keys.new_key)
 
-  .form-group.row
+  .form-group
     %h4.gl-my-0= s_('DeployKeys|Add new deploy key')
 
-  .form-group.row
+  .form-group
     = f.label :title, class: "label-bold"
-    = f.text_field :title, class: 'form-control gl-form-input', required: true, data: { testid: 'deploy-key-title-field' }
-  .form-group.row
+    = f.text_field :title, class: 'form-control gl-form-input gl-form-input-xl', required: true, data: { testid: 'deploy-key-title-field' }
+  .form-group
     = f.label :key, class: "label-bold"
-    = f.text_area :key, class: 'form-control gl-form-input', rows: 5, required: true, data: { testid: 'deploy-key-field' }
-  .form-group.row
-    %p.light.gl-mb-0
+    = f.text_area :key, class: 'form-control gl-form-input gl-form-input-xl gl-h-auto!', rows: 5, required: true, data: { testid: 'deploy-key-field' }
+    .form-text.text-muted
       = _('Paste a public key here.')
       = link_to _('How do I generate it?'), help_page_path("user/ssh")
 
   = f.fields_for :deploy_keys_projects do |deploy_keys_project_form|
-    .form-group.row
+    .form-group
       = deploy_keys_project_form.gitlab_ui_checkbox_component :can_push, _('Grant write permissions to this key'),
         help_text: _('Allow this key to push to this repository')
-  .form-group.row
+  .form-group
     = f.label :expires_at, _('Expiration date (optional)'), class: 'label-bold'
-    = f.gitlab_ui_datepicker :expires_at, data: { testid: 'deploy-key-expires-at-field' }, value: f.object.expires_at
-    %p.form-text.text-muted= ssh_key_expires_field_description
+    .gl-form-input-xl
+      = f.gitlab_ui_datepicker :expires_at, data: { testid: 'deploy-key-expires-at-field' }, value: f.object.expires_at
+      .form-text.text-muted= ssh_key_expires_field_description
 
-  .form-group.row.gl-mb-0
+  .form-group.gl-mb-0
     = f.submit _("Add key"), data: { testid: "add-deploy-key-button"}, pajamas_button: true
     = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'gl-ml-3 js-toggle-button' }) do
       = _('Cancel')

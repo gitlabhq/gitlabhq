@@ -7,7 +7,7 @@ RSpec.describe 'Dashboard Merge Requests', feature_category: :code_review_workfl
   include FilteredSearchHelpers
   include ProjectForksHelper
 
-  let(:current_user) { create :user }
+  let(:current_user) { create(:user, :no_super_sidebar) }
   let(:user) { current_user }
   let(:project) { create(:project) }
 

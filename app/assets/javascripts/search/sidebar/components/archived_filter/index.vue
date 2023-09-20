@@ -14,7 +14,7 @@ export default {
     GlFormCheckbox,
   },
   computed: {
-    ...mapState(['urlQuery']),
+    ...mapState(['urlQuery', 'useSidebarNavigation']),
     selectedFilter: {
       get() {
         return [parseBoolean(this.urlQuery?.include_archived)];
@@ -41,7 +41,9 @@ export default {
 
 <template>
   <gl-form-checkbox-group v-model="selectedFilter">
-    <h5>{{ $options.archivedFilterData.headerLabel }}</h5>
+    <h5 class="gl-mt-0 gl-mb-5" :class="{ 'gl-font-sm': useSidebarNavigation }">
+      {{ $options.archivedFilterData.headerLabel }}
+    </h5>
     <gl-form-checkbox
       class="gl-flex-grow-1 gl-display-inline-flex gl-justify-content-space-between gl-w-full"
       :class="$options.LABEL_DEFAULT_CLASSES"

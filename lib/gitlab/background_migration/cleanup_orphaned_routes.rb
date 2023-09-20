@@ -40,7 +40,7 @@ module Gitlab
           non_orphaned_namespace_routes.each_batch(column: batch_column, of: sub_batch_size) do |sub_batch|
             batch_metrics.time_operation(:fix_missing_namespace_id) do
               ApplicationRecord.connection.execute <<~SQL
-                WITH route_and_ns(route_id, namespace_id) AS #{::Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
+                WITH route_and_ns(route_id, namespace_id) AS MATERIALIZED (
                   #{sub_batch.to_sql}
                 )
                 UPDATE routes

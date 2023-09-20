@@ -36,9 +36,9 @@ Supported libraries include:
 
 <!-- vale gitlab.Spelling = NO -->
 
-- [Bytefield](https://bytefield-svg.deepsymmetry.org/)
+- [Bytefield](https://bytefield-svg.deepsymmetry.org/bytefield-svg/intro.html)
 - [D2](https://d2lang.com/tour/intro/)
-- [DBML](https://www.dbml.org/home/)
+- [DBML](https://dbml.dbdiagram.io/home/)
 - [Ditaa](https://ditaa.sourceforge.net)
 - [Erd](https://github.com/BurntSushi/erd)
 - [GraphViz](https://www.graphviz.org/)
@@ -61,7 +61,7 @@ read the [Kroki installation](https://docs.kroki.io/kroki/setup/install/#_images
 You need to enable Kroki integration from Settings under Admin Area.
 To do that, sign in with an administrator account and follow these steps:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Go to **Settings > General**.
 1. Expand the **Kroki** section.

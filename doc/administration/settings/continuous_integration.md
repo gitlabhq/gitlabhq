@@ -15,7 +15,7 @@ job artifacts.
 To enable (or disable) [Auto DevOps](../../topics/autodevops/index.md)
 for all projects:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Check (or uncheck to disable) the box that says **Default to Auto DevOps pipeline for all projects**.
@@ -33,7 +33,7 @@ If you want to disable it for a specific project, you can do so in
 
 You can set all new projects to have the instance's shared runners available by default.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
@@ -53,7 +53,7 @@ you can assign that runner to other projects.
 
 To enable a project runner for more than one project:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. From the left sidebar, select **CI/CD > Runners**.
 1. Select the runner you want to edit.
@@ -67,7 +67,7 @@ To enable a project runner for more than one project:
 To display details about the instance's shared runners in all projects'
 runner settings:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
@@ -77,7 +77,7 @@ runner settings:
 
 To view the rendered details:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 
@@ -85,19 +85,19 @@ To view the rendered details:
 
 ## Maximum artifacts size
 
-The maximum size of the [job artifacts](../../administration/job_artifacts.md)
-can be set at:
+An administrator can set the maximum size of the
+[job artifacts](../../administration/job_artifacts.md) at:
 
-- The instance level.
-- [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/issues/21688), the project and group level.
+- The instance level
+- The project and group level
 
 For the setting on GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/index.md#gitlab-cicd).
 
-The value is in MB and the default is 100 MB per job. To change it at the:
+The value is in MB, and the default is 100 MB per job. An administrator can change the default value at the:
 
 - Instance level:
 
-  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. On the left sidebar, select **Search or go to**.
   1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > CI/CD > Continuous Integration and Deployment**.
   1. Change the value of **Maximum artifacts size (MB)**.
@@ -115,9 +115,6 @@ The value is in MB and the default is 100 MB per job. To change it at the:
   1. Change the value of **maximum artifacts size** (in MB).
   1. Select **Save changes** for the changes to take effect.
 
-NOTE:
-The setting at all levels is only available to GitLab administrators.
-
 ## Default artifacts expiration
 
 The default expiration time of the [job artifacts](../../administration/job_artifacts.md)
@@ -125,7 +122,7 @@ can be set in the Admin Area of your GitLab instance. The syntax of duration is
 described in [`artifacts:expire_in`](../../ci/yaml/index.md#artifactsexpire_in)
 and the default value is `30 days`.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Change the value of default expiration time.
@@ -157,7 +154,7 @@ If disabled at the instance level, you cannot enable this per-project.
 
 To disable the setting:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
@@ -181,7 +178,7 @@ blueprint for more details.
 
 To set the duration for which the jobs are considered as old and expired:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
@@ -199,7 +196,7 @@ For the value set for GitLab.com, see [Scheduled job archiving](../../user/gitla
 To set all new [CI/CD variables](../../ci/variables/index.md) as
 [protected](../../ci/variables/index.md#protect-a-cicd-variable) by default:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Select **Protect CI/CD variables by default**.
@@ -211,7 +208,7 @@ To set all new [CI/CD variables](../../ci/variables/index.md) as
 The maximum number of [includes](../../ci/yaml/includes.md) per pipeline can be set at the instance level.
 The default is `150`.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Change the value of **Maximum includes**.
@@ -224,7 +221,7 @@ The default is `150`.
 The default CI/CD configuration file and path for new projects can be set in the Admin Area
 of your GitLab instance (`.gitlab-ci.yml` if not set):
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Input the new file and path in the **Default CI/CD configuration file** field.
@@ -239,7 +236,7 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 You can configure some [CI/CD limits](../../administration/instance_limits.md#cicd-limits)
 from the Admin Area:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
@@ -263,7 +260,7 @@ walkthrough on how to add one.
 
 To enable or disable the banner:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Select or clear the **Enable pipeline suggestion banner** checkbox.
@@ -300,7 +297,7 @@ in the pipeline editor.
 
 To select a CI/CD template for the required pipeline configuration:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand the **Required pipeline configuration** section.
@@ -315,7 +312,7 @@ GitLab administrators can disable the forwarding of Maven requests to [Maven Cen
 
 To disable forwarding Maven requests:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
@@ -328,7 +325,7 @@ GitLab administrators can disable the forwarding of npm requests to [npmjs.com](
 
 To disable it:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
@@ -341,7 +338,7 @@ GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](
 
 To disable it:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
@@ -354,7 +351,7 @@ GitLab administrators can adjust the maximum allowed file size for each package 
 
 To set the maximum file size:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand the **Package Registry** section.
@@ -375,7 +372,7 @@ By default, all members of a project and group are able to register runners.
 
 To restrict all users in an instance from registering runners:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
@@ -398,7 +395,7 @@ GitLab administrators can adjust group permissions to restrict runner registrati
 
 To restrict runner registration by members in a specific group:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Overview > Groups** and find your group.
 1. Select **Edit**.
@@ -413,7 +410,7 @@ By default, GitLab instances periodically fetch official runner version data fro
 
 To disable your instance fetching this data:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.

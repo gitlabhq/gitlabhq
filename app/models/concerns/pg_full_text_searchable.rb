@@ -21,11 +21,11 @@
 module PgFullTextSearchable
   extend ActiveSupport::Concern
 
-  LONG_WORDS_REGEX = %r([A-Za-z0-9+/@]{50,}).freeze
+  LONG_WORDS_REGEX = %r([A-Za-z0-9+/@]{50,})
   TSVECTOR_MAX_LENGTH = 1.megabyte.freeze
   TEXT_SEARCH_DICTIONARY = 'english'
-  URL_SCHEME_REGEX = %r{(?<=\A|\W)\w+://(?=\w+)}.freeze
-  TSQUERY_DISALLOWED_CHARACTERS_REGEX = %r{[^a-zA-Z0-9 .@/\-_"]}.freeze
+  URL_SCHEME_REGEX = %r{(?<=\A|\W)\w+://(?=\w+)}
+  TSQUERY_DISALLOWED_CHARACTERS_REGEX = %r{[^a-zA-Z0-9 .@/\-_"]}
 
   def update_search_data!
     tsvector_sql_nodes = self.class.pg_full_text_searchable_columns.map do |column, weight|

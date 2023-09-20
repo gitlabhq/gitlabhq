@@ -46,11 +46,6 @@ RSpec.describe Resolvers::WorkItemsResolver do
         expect(resolve_items).to contain_exactly(item1, item2)
       end
 
-      it 'filters by state' do
-        expect(resolve_items(state: 'opened')).to contain_exactly(item1)
-        expect(resolve_items(state: 'closed')).to contain_exactly(item2)
-      end
-
       context 'when searching items' do
         it_behaves_like 'graphql query for searching issuables' do
           let_it_be(:parent) { project }

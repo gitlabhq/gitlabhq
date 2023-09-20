@@ -10,7 +10,7 @@ RSpec.describe 'getting job information', feature_category: :continuous_integrat
       :jobs, {}, %(
       count
       nodes {
-        #{all_graphql_fields_for(::Types::Ci::JobType, max_depth: 1, excluded: %w[aiFailureAnalysis])}
+        #{all_graphql_fields_for(::Types::Ci::JobType, max_depth: 1)}
       })
     )
   end

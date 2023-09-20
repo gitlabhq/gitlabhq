@@ -3,6 +3,7 @@ import { GlAlert, GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { updateRepositorySize } from '~/api/projects_api';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
+import SectionedPercentageBar from '~/usage_quotas/components/sectioned_percentage_bar.vue';
 import {
   ERROR_MESSAGE,
   LEARN_MORE_LABEL,
@@ -19,7 +20,6 @@ import {
 } from '../constants';
 import getProjectStorageStatistics from '../queries/project_storage.query.graphql';
 import { getStorageTypesFromProjectStatistics, descendingStorageUsageSort } from '../utils';
-import UsageGraph from './usage_graph.vue';
 import ProjectStorageDetail from './project_storage_detail.vue';
 
 export default {
@@ -29,8 +29,8 @@ export default {
     GlButton,
     GlLink,
     GlLoadingIcon,
-    UsageGraph,
     ProjectStorageDetail,
+    SectionedPercentageBar,
   },
   inject: ['projectPath'],
   apollo: {
@@ -88,6 +88,67 @@ export default {
         storageTypeHelpPaths,
       );
     },
+
+    sections() {
+      if (!this.project?.statistics) {
+        return null;
+      }
+
+      const {
+        buildArtifactsSize,
+        lfsObjectsSize,
+        packagesSize,
+        repositorySize,
+        storageSize,
+        wikiSize,
+        snippetsSize,
+      } = this.project.statistics;
+
+      if (storageSize === 0) {
+        return null;
+      }
+
+      return [
+        {
+          id: 'repository',
+          value: repositorySize,
+        },
+        {
+          id: 'lfsObjects',
+          value: lfsObjectsSize,
+        },
+        {
+          id: 'packages',
+          value: packagesSize,
+        },
+        {
+          id: 'buildArtifacts',
+          value: buildArtifactsSize,
+        },
+        {
+          id: 'wiki',
+          value: wikiSize,
+        },
+        {
+          id: 'snippets',
+          value: snippetsSize,
+        },
+      ]
+        .filter((data) => data.value !== 0)
+        .sort(descendingStorageUsageSort('value'))
+        .map((storageType) => {
+          const storageTypeExtraData = PROJECT_STORAGE_TYPES.find(
+            (type) => storageType.id === type.id,
+          );
+          const label = storageTypeExtraData?.name;
+
+          return {
+            label,
+            formattedValue: numberToHumanSize(storageType.value),
+            ...storageType,
+          };
+        });
+    },
   },
   methods: {
     clearError() {
@@ -123,11 +184,11 @@ export default {
     {{ error }}
   </gl-alert>
   <div v-else>
-    <div class="gl-pt-5 gl-px-3">
-      <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
+    <div class="gl-pt-5">
+      <div class="gl-display-flex gl-justify-content-space-between">
         <div>
-          <h2 class="gl-m-0 gl-font-lg gl-font-weight-bold">{{ $options.TOTAL_USAGE_TITLE }}</h2>
-          <p class="gl-m-0 gl-text-gray-400">
+          <h4 class="gl-font-lg gl-mb-3 gl-mt-0">{{ $options.TOTAL_USAGE_TITLE }}</h4>
+          <p>
             {{ $options.TOTAL_USAGE_SUBTITLE }}
             <gl-link
               :href="$options.usageQuotasHelpPaths.usageQuotas"
@@ -137,13 +198,16 @@ export default {
             >
           </p>
         </div>
-        <p class="gl-m-0 gl-font-size-h-display gl-font-weight-bold" data-testid="total-usage">
+        <p
+          class="gl-m-0 gl-font-size-h-display gl-font-weight-bold gl-white-space-nowrap"
+          data-testid="total-usage"
+        >
           {{ totalUsage }}
         </p>
       </div>
     </div>
     <div v-if="!isStatisticsEmpty" class="gl-w-full">
-      <usage-graph :root-storage-statistics="project.statistics" :limit="0" />
+      <sectioned-percentage-bar class="gl-mt-5" :sections="sections" />
     </div>
     <div class="gl-w-full gl-my-5">
       <gl-button

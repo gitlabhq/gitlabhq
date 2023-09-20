@@ -24,7 +24,6 @@ RSpec.describe ClickHouse::Client::Database do
   describe '#headers' do
     it 'returns the correct headers' do
       expect(database.headers).to eq({
-        "Content-Encoding" => "gzip",
         "X-ClickHouse-Format" => "JSON",
         'X-ClickHouse-User' => 'user',
         'X-ClickHouse-Key' => 'pass'

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User RSS', feature_category: :user_profile do
-  let(:user) { create(:user) }
-  let(:path) { user_path(create(:user)) }
+  let(:user) { create(:user, :no_super_sidebar) }
+  let(:path) { user_path(create(:user, :no_super_sidebar)) }
 
   describe 'with "user_profile_overflow_menu_vue" feature flag off' do
     before do
@@ -22,6 +22,7 @@ RSpec.describe 'User RSS', feature_category: :user_profile do
 
     context 'when signed out' do
       before do
+        stub_feature_flags(super_sidebar_logged_out: false)
         visit path
       end
 
@@ -45,6 +46,7 @@ RSpec.describe 'User RSS', feature_category: :user_profile do
 
     context 'when signed out' do
       before do
+        stub_feature_flags(super_sidebar_logged_out: false)
         visit path
       end
 

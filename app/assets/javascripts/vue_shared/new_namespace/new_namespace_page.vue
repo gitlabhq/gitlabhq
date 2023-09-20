@@ -88,6 +88,10 @@ export default {
     showSuperSidebarToggle() {
       return gon.use_new_navigation && sidebarState.isCollapsed;
     },
+
+    topBarClasses() {
+      return gon.use_new_navigation ? 'top-bar-fixed container-fluid' : '';
+    },
   },
 
   created() {
@@ -120,15 +124,17 @@ export default {
 
 <template>
   <div>
-    <div
-      class="top-bar-container gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
-    >
-      <super-sidebar-toggle
-        v-if="showSuperSidebarToggle"
-        class="gl-mr-2"
-        :class="$options.JS_TOGGLE_EXPAND_CLASS"
-      />
-      <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" />
+    <div :class="topBarClasses" data-testid="top-bar">
+      <div
+        class="top-bar-container gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
+      >
+        <super-sidebar-toggle
+          v-if="showSuperSidebarToggle"
+          class="gl-mr-2"
+          :class="$options.JS_TOGGLE_EXPAND_CLASS"
+        />
+        <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" />
+      </div>
     </div>
 
     <template v-if="activePanel">

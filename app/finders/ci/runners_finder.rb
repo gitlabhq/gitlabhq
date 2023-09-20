@@ -24,9 +24,6 @@ module Ci
       request_tag_list!
 
       @runners
-
-    rescue Gitlab::Access::AccessDeniedError
-      Ci::Runner.none
     end
 
     def sort_key

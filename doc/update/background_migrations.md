@@ -30,7 +30,7 @@ are created by GitLab developers and run automatically on upgrade. However, such
 limited in scope to help with migrating some `integer` database columns to `bigint`. This is needed to
 prevent integer overflow for some tables.
 
-Some installations [may need to run GitLab 14.0 for at least a day](index.md#1400)
+Some installations [may need to run GitLab 14.0 for at least a day](versions/gitlab_14_changes.md#1400)
 to complete the database changes introduced by that upgrade.
 
 Batched background migrations are handled by Sidekiq and
@@ -67,7 +67,7 @@ Prerequisites:
 
 To check the status of batched background migrations:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Monitoring > Background Migrations**.
 1. Select **Queued** or **Finalizing** to see incomplete migrations,
@@ -190,26 +190,34 @@ the number of batched background migrations executed in parallel:
 ApplicationSetting.update_all(database_max_running_batched_background_migrations: 4)
 ```
 
-### Fix and retry failed batched background migrations
+### Resolve failed batched background migrations
+
+If a batched background migration fails, [fix and retry](#fix-and-retry-the-migration) it.
+If the migration continues to fail with an error, either:
+
+- [Finish the failed migration manually](#finish-a-failed-migration-manually)
+- [Mark the failed migration finished](#mark-a-failed-migration-finished)
+
+#### Fix and retry the migration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67504) in GitLab 14.3.
 
-If you [check the status](#check-the-status-of-batched-background-migrations) of batched background migrations,
-some migrations might display in the **Failed** tab with a **failed** status:
+All failed batched background migrations must be resolved to upgrade to a newer
+version of GitLab. If you [check the status](#check-the-status-of-batched-background-migrations)
+of batched background migrations, some migrations might display in the **Failed** tab
+with a **failed** status:
 
 ![failed batched background migrations table](img/batched_background_migrations_failed_v14_3.png)
 
-You must resolve all failed batched background migrations to upgrade to a newer
-version of GitLab.
-
 To determine why the batched background migration failed,
-[view the failure error logs](../development/database/batched_background_migrations.md#viewing-failure-error-logs) or:
+[view the failure error logs](../development/database/batched_background_migrations.md#viewing-failure-error-logs)
+or view error information in the UI.
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Monitoring > Background Migrations**.
 1. Select the **Failed** tab. This displays a list of failed batched background migrations.
@@ -219,13 +227,13 @@ Prerequisites:
 If you are a GitLab customer, consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new)
 to debug why the batched background migrations failed.
 
-To correct the problem, you can retry the failed batched background migrations:
+To correct the problem, you can retry the failed migration.
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Monitoring > Background Migrations**.
 1. Select the **Failed** tab. This displays a list of failed batched background migrations.
@@ -234,6 +242,111 @@ Prerequisites:
 To monitor the retried batched background migrations, you can
 [check the status of batched background migrations](#check-the-status-of-batched-background-migrations)
 on a regular interval.
+
+#### Finish a failed migration manually
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62634) in GitLab 14.1.
+
+To manually finish a batched background migration that failed with an error,
+use the information in the failure error logs or the database:
+
+::Tabs
+
+:::TabTitle From the failure error logs
+
+1. [View the failure error logs](../development/database/batched_background_migrations.md#viewing-failure-error-logs)
+   and look for an `An error has occurred, all later migrations canceled` error message, like this:
+
+   ```plaintext
+   StandardError: An error has occurred, all later migrations canceled:
+
+   Expected batched background migration for the given configuration to be marked as
+   'finished', but it is 'active':
+     {:job_class_name=>"CopyColumnUsingBackgroundMigrationJob",
+      :table_name=>"push_event_payloads",
+      :column_name=>"event_id",
+      :job_arguments=>[["event_id"],
+      ["event_id_convert_to_bigint"]]
+     }
+   ```
+
+1. Run the following command, replacing the values in angle brackets with the correct arguments:
+
+   ```shell
+   sudo gitlab-rake gitlab:background_migrations:finalize[<job_class_name>,<table_name>,<column_name>,'<job_arguments>']
+   ```
+
+   When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
+   comma between each argument with a backslash <code>&#92;</code> to prevent an invalid character error.
+   For example, to finish the migration from the previous step:
+
+   ```shell
+   sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,push_event_payloads,event_id,'[["event_id"]\, ["event_id_convert_to_bigint"]]']
+   ```
+
+:::TabTitle From the database
+
+  1. [Check the status](#check-the-status-of-batched-background-migrations) of the
+     migration in the database.
+  1. Use the query results to construct a migration command, replacing the values
+     in angle brackets with the correct arguments:
+
+     ```shell
+     sudo gitlab-rake gitlab:background_migrations:finalize[<job_class_name>,<table_name>,<column_name>,'<job_arguments>']
+     ```
+
+     For example, if the query returns this data:
+
+     - `job_class_name`: `CopyColumnUsingBackgroundMigrationJob`
+     - `table_name`: `events`
+     - `column_name`: `id`
+     - `job_arguments`: `[["id"], ["id_convert_to_bigint"]]`
+
+   When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
+   comma between each argument with a backslash <code>&#92;</code> to prevent an invalid character error.
+   The command should be:
+
+   ```shell
+   sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[["id"]\, ["id_convert_to_bigint"]]']
+   ```
+
+::EndTabs
+
+#### Mark a failed migration finished
+
+WARNING:
+[Contact GitLab Support](https://about.gitlab.com/support/#contact-support) before using
+these instructions. This action can cause data loss, and make your instance fail
+in ways that are difficult to recover from.
+
+There can be cases where the background migration fails: when jumping too many version upgrades,
+or backward-incompatible database schema changes. (For an example, see [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216)).
+Failed background migrations prevent further application upgrades.
+
+When the background migration is determined to be "safe" to skip, the migration can be manually marked finished:
+
+WARNING:
+Make sure you create a backup before proceeding.
+
+```ruby
+# Start the rails console
+
+connection = ApplicationRecord.connection # or Ci::ApplicationRecord.connection, depending on which DB was the migration scheduled
+
+Gitlab::Database::SharedModel.using_connection(connection) do
+  migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
+    Gitlab::Database.gitlab_schemas_for_connection(connection),
+    'BackfillUserDetailsFields',
+    :users,
+    :id,
+    []
+  )
+
+  # mark all jobs completed
+  migration.batched_jobs.update_all(status: Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states['succeeded'].value)
+  migration.update_attribute(:status, Gitlab::Database::BackgroundMigration::BatchedMigration.state_machine.states[:finished].value)
+end
+```
 
 ## Background migrations
 
@@ -303,6 +416,8 @@ sudo -u git -H bundle exec rails runner -e production 'puts Gitlab::Database::Ba
 
 ## Troubleshooting
 
+<!-- Linked from lib/gitlab/database/migrations/batched_background_migration_helpers.rb -->
+
 ### Database migrations failing because of batched background migration not finished
 
 When updating to GitLab version 14.2 or later, database migrations might fail with a message like:
@@ -319,8 +434,8 @@ Expected batched background migration for the given configuration to be marked a
   }
 ```
 
-First, check if you have followed the [version-specific upgrade instructions for 14.2](../update/index.md#1420).
-If you have, you can [manually finish the batched background migration](#manually-finishing-a-batched-background-migration).
+First, check if you have followed the [version-specific upgrade instructions for 14.2](../update/versions/gitlab_14_changes.md#1420).
+If you have, you can [manually finish the batched background migration](#finish-a-failed-migration-manually)).
 If you haven't, choose one of the following methods:
 
 1. [Rollback and upgrade](#roll-back-and-follow-the-required-upgrade-path) through one of the required
@@ -334,7 +449,7 @@ version and manually ensuring that the batched migrations complete successfully.
 1. Update to either 14.0.5 or 14.1 **before** updating to 14.2+
 1. [Check the status](#check-the-status-of-batched-background-migrations) of the batched background migrations and
 make sure they are all marked as finished before attempting to upgrade again. If any remain marked as active,
-you can [manually finish them](#manually-finishing-a-batched-background-migration).
+you can [manually finish them](#finish-a-failed-migration-manually).
 
 #### Roll forward and finish the migrations on the upgraded version
 
@@ -344,7 +459,7 @@ To run all the batched background migrations, it can take a significant amount o
 depending on the size of your GitLab installation.
 
 1. [Check the status](#check-the-status-of-batched-background-migrations) of the batched background migrations in the
-database, and [manually run them](#manually-finishing-a-batched-background-migration) with the appropriate
+database, and [manually run them](#finish-a-failed-migration-manually) with the appropriate
 arguments until the status query returns no rows.
 1. When the status of all of all them is marked as complete, re-run migrations for your installation.
 1. [Complete the database migrations](../administration/raketasks/maintenance.md#run-incomplete-database-migrations) from your GitLab upgrade:
@@ -368,88 +483,8 @@ version and wait for the batched background migrations to finish.
 
 1. [Check the status](#check-the-status-of-batched-background-migrations) of the batched background migration from
 the error message, and make sure it is listed as finished. If it is still active, either wait until it is done,
-or [manually finish it](#manually-finishing-a-batched-background-migration).
+or [manually finish it](#finish-a-failed-migration-manually).
 1. Re-run migrations for your installation, so the remaining post-deployment migrations finish.
-
-### Manually finishing a batched background migration
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62634) in GitLab 14.1
-
-If you need to manually finish a batched background migration due to an
-error, you can run:
-
-```shell
-sudo gitlab-rake gitlab:background_migrations:finalize[<job_class_name>,<table_name>,<column_name>,'<job_arguments>']
-```
-
-Replace the values in angle brackets with the correct
-arguments. For example, if you receive an error similar to this:
-
-```plaintext
-StandardError: An error has occurred, all later migrations canceled:
-
-Expected batched background migration for the given configuration to be marked as
-'finished', but it is 'active':
-  {:job_class_name=>"CopyColumnUsingBackgroundMigrationJob",
-   :table_name=>"push_event_payloads",
-   :column_name=>"event_id",
-   :job_arguments=>[["event_id"],
-   ["event_id_convert_to_bigint"]]
-  }
-```
-
-Plug the arguments from the error message into the command:
-
-```shell
-sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,push_event_payloads,event_id,'[["event_id"]\, ["event_id_convert_to_bigint"]]']
-```
-
-If you need to manually run a batched background migration to continue an upgrade, you can
-[check the status](#check-the-status-of-batched-background-migrations) in the database and get the
-arguments from the query results. For example, if the query returns this:
-
-```plaintext
-            job_class_name             | table_name | column_name |           job_arguments
----------------------------------------+------------+-------------+------------------------------------
- CopyColumnUsingBackgroundMigrationJob | events     | id          | [["id"], ["id_convert_to_bigint"]]
- ```
-
-The results from the query can be plugged into the command:
-
-```shell
-sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[["id"]\, ["id_convert_to_bigint"]]']
-```
-
-#### Mark a batched migration finished
-
-There can be cases where the background migration fails: when jumping too many version upgrades,
-or backward-incompatible database schema changes. (For an example, see [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216)).
-Failed background migrations prevent further application upgrades.
-
-When the background migration is determined to be "safe" to skip, the migration can be manually marked finished:
-
-WARNING:
-Make sure you create a backup before proceeding.
-
-```ruby
-# Start the rails console
-
-connection = ApplicationRecord.connection # or Ci::ApplicationRecord.connection, depending on which DB was the migration scheduled
-
-Gitlab::Database::SharedModel.using_connection(connection) do
-  migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
-    Gitlab::Database.gitlab_schemas_for_connection(connection),
-    'BackfillUserDetailsFields',
-    :users,
-    :id,
-    []
-  )
-
-  # mark all jobs completed
-  migration.batched_jobs.update_all(status: Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states['succeeded'].value)
-  migration.update_attribute(:status, Gitlab::Database::BackgroundMigration::BatchedMigration.state_machine.states[:finished].value)
-end
-```
 
 ### The `BackfillNamespaceIdForNamespaceRoute` batched migration job fails
 
@@ -516,26 +551,26 @@ of Sidekiq jobs that perform various database or file updates.
   `BackfillDraftStatusOnMergeRequests` can be permanently stuck in a
   **pending** state across upgrades when the instance lacks records that match
   the migration's target. To clean up this stuck migration, see the
-  [14.2.0 version-specific instructions](index.md#1420).
+  [14.2.0 version-specific instructions](versions/gitlab_14_changes.md#1420).
 - GitLab 14.4 introduced an issue where a background migration named
   `PopulateTopicsTotalProjectsCountCache` can be permanently stuck in a
   **pending** state across upgrades when the instance lacks records that match
   the migration's target. To clean up this stuck migration, see the
-  [14.4.0 version-specific instructions](index.md#1440).
+  [14.4.0 version-specific instructions](versions/gitlab_14_changes.md#1440).
 - GitLab 14.5 introduced an issue where a background migration named
   `UpdateVulnerabilityOccurrencesLocation` can be permanently stuck in a
   **pending** state across upgrades when the instance lacks records that match
   the migration's target. To clean up this stuck migration, see the
-  [14.5.0 version-specific instructions](index.md#1450).
+  [14.5.0 version-specific instructions](versions/gitlab_14_changes.md#1450).
 - GitLab 14.8 introduced an issue where a background migration named
   `PopulateTopicsNonPrivateProjectsCount` can be permanently stuck in a
   **pending** state across upgrades. To clean up this stuck migration, see the
-  [14.8.0 version-specific instructions](index.md#1480).
+  [14.8.0 version-specific instructions](versions/gitlab_14_changes.md#1480).
 - GitLab 14.9 introduced an issue where a background migration named
   `ResetDuplicateCiRunnersTokenValuesOnProjects` can be permanently stuck in a
   **pending** state across upgrades when the instance lacks records that match
   the migration's target. To clean up this stuck migration, see the
-  [14.9.0 version-specific instructions](index.md#1490).
+  [14.9.0 version-specific instructions](versions/gitlab_14_changes.md#1490).
 
 For other background migrations stuck in pending, run the following check. If
 it returns non-zero and the count does not decrease over time, follow the rest

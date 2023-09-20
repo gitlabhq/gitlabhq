@@ -14,7 +14,7 @@ module SystemNotes
     def create_new_alert(monitoring_tool)
       body = "logged an alert from **#{monitoring_tool}**"
 
-      create_note(NoteSummary.new(noteable, project, User.alert_bot, body, action: 'new_alert_added'))
+      create_note(NoteSummary.new(noteable, project, Users::Internal.alert_bot, body, action: 'new_alert_added'))
     end
 
     # Called when the status of an AlertManagement::Alert has changed
@@ -61,7 +61,7 @@ module SystemNotes
     def log_resolving_alert(monitoring_tool)
       body = "logged a recovery alert from **#{monitoring_tool}**"
 
-      create_note(NoteSummary.new(noteable, project, User.alert_bot, body, action: 'new_alert_added'))
+      create_note(NoteSummary.new(noteable, project, Users::Internal.alert_bot, body, action: 'new_alert_added'))
     end
   end
 end

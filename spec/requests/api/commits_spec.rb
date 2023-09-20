@@ -589,7 +589,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
             let(:namespace) { project.namespace.reload }
             let(:label) { 'counts.web_ide_commits' }
             let(:context) do
-              [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: 'counts.web_ide_commits').to_context.to_json]
+              [Gitlab::Usage::MetricDefinition.context_for('counts.web_ide_commits').to_context.to_json]
             end
           end
         end

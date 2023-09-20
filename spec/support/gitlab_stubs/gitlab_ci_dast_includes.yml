@@ -1,3 +1,6 @@
+stages:
+  - dast
+
 dast:
   stage: dast
   image:
@@ -8,3 +11,5 @@ dast:
   dast_configuration:
     site_profile: "site_profile_name_included"
     scanner_profile: "scanner_profile_name_included"
+  script:
+    - echo "Runs DAST!"

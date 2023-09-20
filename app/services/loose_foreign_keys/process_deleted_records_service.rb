@@ -4,13 +4,13 @@ module LooseForeignKeys
   class ProcessDeletedRecordsService
     BATCH_SIZE = 1000
 
-    def initialize(connection:)
+    def initialize(connection:, modification_tracker: LooseForeignKeys::ModificationTracker.new)
       @connection = connection
+      @modification_tracker = modification_tracker
     end
 
     def execute
       raised_error = false
-      modification_tracker = ModificationTracker.new
       tracked_tables.cycle do |table|
         records = load_batch_for_table(table)
 
@@ -54,7 +54,7 @@ module LooseForeignKeys
 
     private
 
-    attr_reader :connection
+    attr_reader :connection, :modification_tracker
 
     def db_config_name
       ::Gitlab::Database.db_config_name(connection)

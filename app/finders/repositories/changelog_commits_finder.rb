@@ -21,7 +21,7 @@ module Repositories
     COMMITS_PER_PAGE = 1024
 
     # The regex to use for extracting the SHA of a reverted commit.
-    REVERT_REGEX = /^This reverts commit (?<sha>[0-9a-f]{40})/i.freeze
+    REVERT_REGEX = /^This reverts commit (?<sha>[0-9a-f]{40})/i
 
     # The `project` argument specifies the project for which to obtain the
     # commits.

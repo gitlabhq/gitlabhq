@@ -249,7 +249,12 @@ export default {
       :description="$options.translations.addTokenNameDescription"
       label-for="deploy_token_name"
     >
-      <gl-form-input id="deploy_token_name" v-model="name" name="deploy_token_name" />
+      <gl-form-input
+        id="deploy_token_name"
+        v-model="name"
+        class="gl-form-input-xl"
+        name="deploy_token_name"
+      />
     </gl-form-group>
     <gl-form-group
       :label="$options.translations.addTokenExpiryLabel"
@@ -258,6 +263,7 @@ export default {
     >
       <gl-form-input
         id="deploy_token_expires_at"
+        class="gl-form-input-xl"
         name="deploy_token_expires_at"
         :value="formattedExpiryDate"
         data-qa-selector="deploy_token_expires_at_field"
@@ -277,7 +283,7 @@ export default {
           </template>
         </gl-sprintf>
       </template>
-      <gl-form-input id="deploy_token_username" v-model="username" />
+      <gl-form-input id="deploy_token_username" v-model="username" class="gl-form-input-xl" />
     </gl-form-group>
     <gl-form-group
       :label="$options.translations.addTokenScopesLabel"

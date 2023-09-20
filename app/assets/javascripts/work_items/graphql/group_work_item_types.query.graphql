@@ -1,0 +1,11 @@
+query groupWorkItemTypes($fullPath: ID!) {
+  workspace: group(fullPath: $fullPath) {
+    id
+    workItemTypes {
+      nodes {
+        id
+        name
+      }
+    }
+  }
+}

@@ -15,15 +15,16 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
     subject(:entity_hash) { entity.as_json }
 
     it 'exposes correct attributes' do
-      expect(entity_hash.keys).to include(
+      expect(entity_hash.keys).to match_array([
         :category,
         :created_at,
         :updated_at,
         :count,
+        :labels,
         :reported_user,
         :reporter,
         :report_path
-      )
+      ])
     end
 
     it 'correctly exposes `reported user`' do
@@ -36,6 +37,16 @@ RSpec.describe Admin::AbuseReportEntity, feature_category: :insider_threat do
 
     it 'correctly exposes :report_path' do
       expect(entity_hash[:report_path]).to eq admin_abuse_report_path(abuse_report)
+    end
+
+    context 'when abuse_report_labels feature flag is disabled' do
+      before do
+        stub_feature_flags(abuse_report_labels: false)
+      end
+
+      it 'does not expose labels' do
+        expect(entity_hash.keys).not_to include(:labels)
+      end
     end
   end
 end

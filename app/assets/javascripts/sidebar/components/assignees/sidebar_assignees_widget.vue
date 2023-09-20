@@ -6,7 +6,7 @@ import { TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { assigneesQueries } from '../../constants';
+import { assigneesQueries } from '../../queries/constants';
 import SidebarEditableItem from '../sidebar_editable_item.vue';
 import SidebarAssigneesRealtime from './assignees_realtime.vue';
 import IssuableAssignees from './issuable_assignees.vue';

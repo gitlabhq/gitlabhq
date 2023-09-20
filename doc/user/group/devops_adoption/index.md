@@ -36,7 +36,7 @@ Prerequisite:
 
 To view DevOps Adoption:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > DevOps adoption**
 
 ## DevOps Adoption categories
@@ -80,7 +80,7 @@ twelve months. The chart only shows data from when you enabled DevOps Adoption f
 
 To view feature adoption over time:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > DevOps adoption**.
 1. Select the **Overview** tab.
 

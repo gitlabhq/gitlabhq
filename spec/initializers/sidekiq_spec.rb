@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'sidekiq' do
+RSpec.describe 'sidekiq', feature_category: :build do
   describe 'enable_reliable_fetch?' do
     subject { enable_reliable_fetch? }
 

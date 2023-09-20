@@ -134,7 +134,9 @@ class Milestone < ApplicationRecord
   end
 
   def participants
-    User.joins(assigned_issues: :milestone).where(milestones: { id: id }).distinct
+    User.joins(assigned_issues: :milestone)
+      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422155')
+      .where(milestones: { id: id }).distinct
   end
 
   def self.sort_by_attribute(method)

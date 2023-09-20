@@ -203,7 +203,7 @@ RSpec.describe Gitlab::ImportExport::CommandLineUtil, feature_category: :importe
 
       it 'throws a blocked url error' do
         Tempfile.create('test') do |file|
-          expect { subject.download(url, file.path) }.to raise_error((Gitlab::HTTP::BlockedUrlError))
+          expect { subject.download(url, file.path) }.to raise_error(Gitlab::HTTP::BlockedUrlError)
         end
       end
 

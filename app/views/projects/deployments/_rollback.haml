@@ -1,4 +1,0 @@
-- if deployment.deployable && can?(current_user, :play_job, deployment.deployable)
-  - tooltip = deployment.last? ? s_('Environments|Re-deploy to environment') : s_('Environments|Rollback environment')
-  - icon = deployment.last? ? 'repeat' : 'redo'
-  = render Pajamas::ButtonComponent.new(icon: icon, button_options: { title: tooltip, class: 'js-confirm-rollback-modal-button has-tooltip', data: { environment_name: @environment.name, commit_short_sha: deployment.short_sha, commit_url: project_commit_path(@project, deployment.sha), is_last_deployment: deployment.last?.to_s, retry_path: retry_project_job_path(@environment.project, deployment.deployable) } })

@@ -1,6 +1,6 @@
 ---
-stage: Manage
-group: AI assisted
+stage: Create
+group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -19,7 +19,7 @@ POST /code_suggestions/tokens
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/code_suggestions/tokens"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/code_suggestions/tokens"
 ```
 
 Example response:
@@ -32,7 +32,7 @@ Example response:
 }
 ```
 
-## Generate code completions (Experiment)
+## Generate code completions **(EXPERIMENT)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415581) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `code_suggestions_completion_api`. Disabled by default. This feature is an Experiment.
 > - Requirement to generate a JWT before calling this endpoint was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863) in GitLab 16.3.
@@ -51,7 +51,7 @@ POST /code_suggestions/completions
 Requests to this endpoint are proxied directly to the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#completions). The documentation for the endpoint is currently the SSoT for named parameters.
 
 ```shell
-curl --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" --data "<JSON_BODY>" https://gitlab.example.com/api/v4/code_suggestions/completions
+curl --request POST --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" --data "<JSON_BODY>" https://gitlab.example.com/api/v4/code_suggestions/completions
 ```
 
 Example body:

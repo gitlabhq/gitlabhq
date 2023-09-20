@@ -204,9 +204,9 @@ Example:
 
 ```javascript
 // Bad. Not necessary in Frontend environment.
-expect(findText()).toBe(__('Lorem ipsum dolar sit'));
+expect(findText()).toBe(__('Lorem ipsum dolor sit'));
 // Good.
-expect(findText()).toBe('Lorem ipsum dolar sit');
+expect(findText()).toBe('Lorem ipsum dolor sit');
 ```
 
 #### Recommendations

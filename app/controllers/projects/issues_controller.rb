@@ -62,7 +62,6 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action only: [:index, :service_desk] do
     push_frontend_feature_flag(:or_issuable_queries, project)
     push_frontend_feature_flag(:frontend_caching, project&.group)
-    push_frontend_feature_flag(:new_graphql_users_autocomplete, project)
   end
 
   before_action only: :show do
@@ -73,7 +72,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:move_close_into_dropdown, project)
-    push_frontend_feature_flag(:action_cable_notes, project)
+    push_force_frontend_feature_flag(:linked_work_items, project.linked_work_items_feature_flag_enabled?)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]
@@ -114,12 +113,6 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.atom { render layout: 'xml' }
-      format.json do
-        render json: {
-          html: view_to_html_string("projects/issues/_issues"),
-          labels: @labels.as_json(methods: :text_color)
-        }
-      end
     end
   end
 
@@ -282,7 +275,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def service_desk
     @issues = @issuables
-    @users.push(User.support_bot)
   end
 
   protected
@@ -433,7 +425,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if service_desk?
       options.reject! { |key| key == 'author_username' || key == 'author_id' }
-      options[:author_id] = User.support_bot
+      options[:author_id] = Users::Internal.support_bot
     end
 
     options

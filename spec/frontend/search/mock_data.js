@@ -194,7 +194,7 @@ export const MOCK_DATA_FOR_NAVIGATION_ACTION_MUTATION = {
     label: 'Projects',
     scope: 'projects',
     link: '/search?scope=projects&search=et',
-    count_link: '/search/count?scope=projects&search=et',
+    count_link: null,
   },
 };
 

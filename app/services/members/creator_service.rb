@@ -39,31 +39,34 @@ module Members
 
         sources = Array.wrap(sources) if sources.is_a?(ApplicationRecord) # For single source
 
-        Member.transaction do
-          sources.flat_map do |source|
-            # If this user is attempting to manage Owner members and doesn't have permission, do not allow
-            if managing_owners?(args[:current_user], access_level) && cannot_manage_owners?(source, args[:current_user])
-              next []
+        Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+          %w[users user_preferences user_details emails identities], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424276'
+        ) do
+          Member.transaction do
+            sources.flat_map do |source|
+              # If this user is attempting to manage Owner members and doesn't have permission, do not allow
+              current_user = args[:current_user]
+              next [] if managing_owners?(current_user, access_level) && cannot_manage_owners?(source, current_user)
+
+              emails, users, existing_members = parse_users_list(source, invitees)
+
+              common_arguments = {
+                source: source,
+                access_level: access_level,
+                existing_members: existing_members,
+                tasks_to_be_done: args[:tasks_to_be_done] || []
+              }.merge(parsed_args(args))
+
+              members = emails.map do |email|
+                new(invitee: email, builder: InviteMemberBuilder, **common_arguments).execute
+              end
+
+              members += users.map do |user|
+                new(invitee: user, **common_arguments).execute
+              end
+
+              members
             end
-
-            emails, users, existing_members = parse_users_list(source, invitees)
-
-            common_arguments = {
-              source: source,
-              access_level: access_level,
-              existing_members: existing_members,
-              tasks_to_be_done: args[:tasks_to_be_done] || []
-            }.merge(parsed_args(args))
-
-            members = emails.map do |email|
-              new(invitee: email, builder: InviteMemberBuilder, **common_arguments).execute
-            end
-
-            members += users.map do |user|
-              new(invitee: user, **common_arguments).execute
-            end
-
-            members
           end
         end
       end

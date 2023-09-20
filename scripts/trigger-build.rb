@@ -307,6 +307,8 @@ module Trigger
         'omnibus'
       when 'gitlab-org/charts/gitlab'
         'charts'
+      when 'gitlab-org/cloud-native/gitlab-operator'
+        'operator'
       end
     end
 

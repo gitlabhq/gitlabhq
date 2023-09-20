@@ -36,7 +36,7 @@ see [epic 3869](https://gitlab.com/groups/gitlab-org/-/epics/3869).
 
 By default, merge requests in projects can be merged even if external status checks fail. To block the merging of merge requests when external checks fail:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. Select the **Status checks must succeed** checkbox.
 1. Select **Save changes**.

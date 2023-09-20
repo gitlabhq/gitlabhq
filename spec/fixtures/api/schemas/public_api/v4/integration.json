@@ -65,6 +65,9 @@
     },
     "comment_on_event_enabled": {
       "type": "boolean"
+    },
+    "vulnerability_events": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

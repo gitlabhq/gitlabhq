@@ -2,23 +2,20 @@
 
 exports[`Chunk component rendering isHighlighted is true renders line numbers 1`] = `
 <div
-  class="gl-p-0! gl-z-index-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
+  class="diff-line-num gl-border-r gl-display-flex gl-p-0! gl-z-index-3 line-links line-numbers"
   data-testid="line-numbers"
 >
   <a
-    class="gl-user-select-none gl-shadow-none! file-line-blame"
+    class="file-line-blame gl-shadow-none! gl-user-select-none"
     href="some/blame/path.js#L71"
   />
-   
   <a
-    class="gl-user-select-none gl-shadow-none! file-line-num"
+    class="file-line-num gl-shadow-none! gl-user-select-none"
     data-line-number="71"
     href="#L71"
-    id="L71"
+    id="reference-0"
   >
-    
-          71
-        
+    71
   </a>
 </div>
 `;

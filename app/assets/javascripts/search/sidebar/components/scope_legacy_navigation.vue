@@ -57,7 +57,7 @@ export default {
 </script>
 
 <template>
-  <nav data-testid="search-filter">
+  <nav data-testid="search-filter" class="gl-border-none">
     <gl-nav vertical pills>
       <gl-nav-item
         v-for="(item, scope) in navigation"
@@ -81,6 +81,5 @@ export default {
         </span>
       </gl-nav-item>
     </gl-nav>
-    <hr class="gl-mt-5 gl-mx-5 gl-mb-0 gl-border-gray-100 gl-md-display-none" />
   </nav>
 </template>

@@ -8,7 +8,7 @@ module Banzai
     class AsciiDocSanitizationFilter < Banzai::Filter::BaseSanitizationFilter
       # Anchor link prefixed by "user-content-" pattern
       PREFIXED_ID_PATTERN = /\A#{Gitlab::Asciidoc::DEFAULT_ADOC_ATTRS['idprefix']}(:?[[:alnum:]]|-|_)+\z/.freeze
-      SECTION_HEADINGS = %w(h2 h3 h4 h5 h6).freeze
+      SECTION_HEADINGS = %w[h2 h3 h4 h5 h6].freeze
 
       # Footnote link patterns
       FOOTNOTE_LINK_ID_PATTERNS = {
@@ -17,18 +17,18 @@ module Banzai
       }.freeze
 
       # Classes used by Asciidoctor to style components
-      ADMONITION_CLASSES = %w(fa icon-note icon-tip icon-warning icon-caution icon-important).freeze
-      ALIGNMENT_BUILTINS_CLASSES = %w(text-center text-left text-right text-justify).freeze
+      ADMONITION_CLASSES = %w[fa icon-note icon-tip icon-warning icon-caution icon-important].freeze
+      ALIGNMENT_BUILTINS_CLASSES = %w[text-center text-left text-right text-justify].freeze
       CALLOUT_CLASSES = ['conum'].freeze
-      CHECKLIST_CLASSES = %w(fa fa-check-square-o fa-square-o).freeze
-      LIST_CLASSES = %w(checklist none no-bullet unnumbered unstyled).freeze
+      CHECKLIST_CLASSES = %w[fa fa-check-square-o fa-square-o].freeze
+      LIST_CLASSES = %w[checklist none no-bullet unnumbered unstyled].freeze
 
-      TABLE_FRAME_CLASSES = %w(frame-all frame-topbot frame-sides frame-ends frame-none).freeze
-      TABLE_GRID_CLASSES = %w(grid-all grid-rows grid-cols grid-none).freeze
-      TABLE_STRIPES_CLASSES = %w(stripes-all stripes-odd stripes-even stripes-hover stripes-none).freeze
+      TABLE_FRAME_CLASSES = %w[frame-all frame-topbot frame-sides frame-ends frame-none].freeze
+      TABLE_GRID_CLASSES = %w[grid-all grid-rows grid-cols grid-none].freeze
+      TABLE_STRIPES_CLASSES = %w[stripes-all stripes-odd stripes-even stripes-hover stripes-none].freeze
 
       ELEMENT_CLASSES_ALLOWLIST = {
-        span: %w(big small underline overline line-through).freeze,
+        span: %w[big small underline overline line-through].freeze,
         div: ALIGNMENT_BUILTINS_CLASSES + ['admonitionblock'].freeze,
         td: ['icon'].freeze,
         i: ADMONITION_CLASSES + CALLOUT_CLASSES + CHECKLIST_CLASSES,
@@ -44,14 +44,14 @@ module Banzai
 
         # Allow any classes in `span`, `i`, `div`, `td`, `ul`, `ol` and `a` elements
         # but then remove any unknown classes
-        allowlist[:attributes]['span'] = %w(class)
+        allowlist[:attributes]['span'] = %w[class]
         allowlist[:attributes]['div'].push('class')
-        allowlist[:attributes]['td'] = %w(class)
-        allowlist[:attributes]['i'] = %w(class)
-        allowlist[:attributes]['ul'] = %w(class)
-        allowlist[:attributes]['ol'] = %w(class)
+        allowlist[:attributes]['td'] = %w[class]
+        allowlist[:attributes]['i'] = %w[class]
+        allowlist[:attributes]['ul'] = %w[class]
+        allowlist[:attributes]['ol'] = %w[class]
         allowlist[:attributes]['a'].push('class')
-        allowlist[:attributes]['table'] = %w(class)
+        allowlist[:attributes]['table'] = %w[class]
         allowlist[:transformers].push(self.class.remove_element_classes)
 
         # Allow `id` in anchor and footnote elements
@@ -60,7 +60,7 @@ module Banzai
 
         # Allow `id` in heading elements for section anchors
         SECTION_HEADINGS.each do |header|
-          allowlist[:attributes][header] = %w(id)
+          allowlist[:attributes][header] = %w[id]
         end
 
         # Remove ids that are not explicitly allowed

@@ -156,7 +156,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
         project = create_project(bot_user, opts)
 
         expect(project.errors.errors.length).to eq 1
-        expect(project.errors.messages[:namespace].first).to eq(("is not valid"))
+        expect(project.errors.messages[:namespace].first).to eq("is not valid")
       end
     end
   end
@@ -638,6 +638,17 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
       expect(project.owner).to eq(user)
       expect(project.namespace).to eq(user.namespace)
       expect(project.project_namespace).to be_in_sync_with_project(project)
+    end
+
+    it 'raises when repository fails to create' do
+      expect_next_instance_of(Project) do |instance|
+        expect(instance).to receive(:create_repository).and_return(false)
+      end
+
+      project = create_project(user, opts)
+      expect(project).not_to be_persisted
+      expect(project.errors.messages).to have_key(:base)
+      expect(project.errors.messages[:base].first).to match('Failed to create repository')
     end
 
     context 'when another repository already exists on disk' do
@@ -1157,5 +1168,18 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
       expect_not_disabled_features(project, exclude: [:repository, :builds, :merge_requests])
     end
+  end
+
+  it 'adds pages unique domain', feature_category: :pages do
+    stub_pages_setting(enabled: true)
+
+    expect(Gitlab::Pages)
+    .to receive(:add_unique_domain_to)
+    .and_call_original
+
+    project = create_project(user, opts)
+
+    expect(project.project_setting.pages_unique_domain_enabled).to eq(true)
+    expect(project.project_setting.pages_unique_domain).to be_present
   end
 end

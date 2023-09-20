@@ -14,14 +14,17 @@ RSpec.describe 'cross-database foreign keys' do
       'gitlab_subscriptions.hosted_plan_id',      # https://gitlab.com/gitlab-org/gitlab/-/issues/422012
       'group_import_states.user_id',              # https://gitlab.com/gitlab-org/gitlab/-/issues/421210
       'identities.saml_provider_id',              # https://gitlab.com/gitlab-org/gitlab/-/issues/422010
-      'project_authorizations.user_id',           # https://gitlab.com/gitlab-org/gitlab/-/issues/422044
+      'issues.author_id',                         # https://gitlab.com/gitlab-org/gitlab/-/issues/422154
+      'issues.closed_by_id',                      # https://gitlab.com/gitlab-org/gitlab/-/issues/422154
+      'issues.updated_by_id',                     # https://gitlab.com/gitlab-org/gitlab/-/issues/422154
+      'issue_assignees.user_id',                  # https://gitlab.com/gitlab-org/gitlab/-/issues/422154
       'merge_requests.assignee_id',               # https://gitlab.com/gitlab-org/gitlab/-/issues/422080
       'merge_requests.updated_by_id',             # https://gitlab.com/gitlab-org/gitlab/-/issues/422080
       'merge_requests.merge_user_id',             # https://gitlab.com/gitlab-org/gitlab/-/issues/422080
       'merge_requests.author_id',                 # https://gitlab.com/gitlab-org/gitlab/-/issues/422080
+      'project_authorizations.user_id',           # https://gitlab.com/gitlab-org/gitlab/-/issues/422044
       'projects.creator_id',                      # https://gitlab.com/gitlab-org/gitlab/-/issues/421844
       'projects.marked_for_deletion_by_user_id',  # https://gitlab.com/gitlab-org/gitlab/-/issues/421844
-      'routes.namespace_id',                      # https://gitlab.com/gitlab-org/gitlab/-/issues/420869
       'user_group_callouts.user_id'               # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
     ]
   end

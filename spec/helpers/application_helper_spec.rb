@@ -679,15 +679,75 @@ RSpec.describe ApplicationHelper do
   end
 
   describe '#page_class' do
+    let_it_be(:user) { build(:user) }
+
     subject(:page_class) do
       helper.page_class.flatten
     end
 
-    before do
-      allow(helper).to receive(:current_user).and_return(nil)
+    describe 'with-header' do
+      using RSpec::Parameterized::TableSyntax
+
+      before do
+        allow(helper).to receive(:show_super_sidebar?).and_return(show_super_sidebar)
+        allow(helper).to receive(:current_user).and_return(current_user)
+      end
+
+      where(:show_super_sidebar, :current_user) do
+        true  | nil
+        false | ref(:user)
+        false | nil
+      end
+
+      with_them do
+        it { is_expected.to include('with-header') }
+      end
+
+      context 'when with-header should not be shown' do
+        let(:show_super_sidebar) { true }
+        let(:current_user) { user }
+
+        it { is_expected.not_to include('with-header') }
+      end
     end
 
-    it { is_expected.not_to include('logged-out-marketing-header') }
+    describe 'with-top-bar' do
+      context 'when show_super_sidebar? is true' do
+        context 'when @hide_top_bar_padding is false' do
+          before do
+            allow(helper).to receive(:show_super_sidebar?).and_return(true)
+            helper.instance_variable_set(:@hide_top_bar_padding, false)
+          end
+
+          it { is_expected.to include('with-top-bar') }
+        end
+
+        context 'when @hide_top_bar_padding is true' do
+          before do
+            allow(helper).to receive(:show_super_sidebar?).and_return(true)
+            helper.instance_variable_set(:@hide_top_bar_padding, true)
+          end
+
+          it { is_expected.not_to include('with-top-bar') }
+        end
+      end
+
+      context 'when show_super_sidebar? is false' do
+        before do
+          allow(helper).to receive(:show_super_sidebar?).and_return(false)
+        end
+
+        it { is_expected.not_to include('with-top-bar') }
+      end
+    end
+
+    describe 'logged-out-marketing-header' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it { is_expected.not_to include('logged-out-marketing-header') }
+    end
   end
 
   describe '#dispensable_render' do
@@ -888,6 +948,40 @@ RSpec.describe ApplicationHelper do
         expect(helper).to receive(:sprite_icon).with('spam', css_class: 'gl-vertical-align-text-bottom extra-class').and_return(mock_svg)
 
         helper.hidden_resource_icon(resource, css_class: 'extra-class')
+      end
+    end
+  end
+
+  describe '#controller_full_path' do
+    let(:path) { 'some_path' }
+    let(:action) { 'show' }
+
+    before do
+      allow(helper.controller).to receive(:controller_path).and_return(path)
+      allow(helper.controller).to receive(:action_name).and_return(action)
+    end
+
+    context 'when is create action' do
+      let(:action) { 'create' }
+
+      it 'transforms to "new" path' do
+        expect(helper.controller_full_path).to eq("#{path}/new")
+      end
+    end
+
+    context 'when is update action' do
+      let(:action) { 'update' }
+
+      it 'transforms to "edit" path' do
+        expect(helper.controller_full_path).to eq("#{path}/edit")
+      end
+    end
+
+    context 'when is show action' do
+      let(:action) { 'show' }
+
+      it 'passes through' do
+        expect(helper.controller_full_path).to eq("#{path}/#{action}")
       end
     end
   end

@@ -1,6 +1,6 @@
 ---
 description:
-category: Groups::EmailCampaignsController
+category: Projects::Pipelines::EmailCampaignsController
 action: click
 label_description:
 property_description:
@@ -13,12 +13,12 @@ identifiers:
 product_section:
 product_stage:
 product_group:
-milestone: "13.11"
+milestone: '13.11'
 introduced_by_url:
 distributions:
-- ce
-- ee
+  - ce
+  - ee
 tiers:
-- free
-- premium
-- ultimate
+  - free
+  - premium
+  - ultimate

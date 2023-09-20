@@ -35,6 +35,7 @@ describe('Chunk component', () => {
       await nextTick();
 
       expect(findContent().exists()).toBe(true);
+      expect(wrapper.emitted('appear')).toHaveLength(1);
     });
   });
 

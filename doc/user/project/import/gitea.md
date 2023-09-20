@@ -32,7 +32,7 @@ on the issue about the original Gitea author.
 > Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 - Gitea version 1.0.0 or later.
-- [Gitea import source](../../../administration/settings/visibility_and_access_controls.md#configure-allowed-import-sources)
+- [Gitea import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The Gitea import source is enabled
   by default on GitLab.com.
 - At least the Maintainer role on the destination group to import to.

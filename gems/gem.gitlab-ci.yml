@@ -55,7 +55,7 @@ rubocop:
 rspec:
   extends: .ruby_matrix
   script:
-    - bundle exec rspec
+    - RAILS_ENV=test bundle exec rspec
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     expire_in: 31d

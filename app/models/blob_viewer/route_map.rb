@@ -7,7 +7,7 @@ module BlobViewer
 
     self.partial_name = 'route_map'
     self.loading_partial_name = 'route_map_loading'
-    self.file_types = %i(route_map)
+    self.file_types = %i[route_map]
     self.binary = false
 
     def validation_message

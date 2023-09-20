@@ -30,8 +30,19 @@ async function createJsConfig() {
   // eslint-disable-next-line global-require
   const webpackConfig = require('../../config/webpack.config');
 
-  const paths = {}; // aliases
-  const WEBPACK_ALIAS_EXCEPTIONS = ['jquery$', '@gitlab/svgs/dist/icons.svg'];
+  // Aliases
+  const paths = {
+    // NOTE: Sentry is exposed via a wrapper, which has a limited API.
+    '@sentry/browser': [
+      path.relative(PATH_PROJECT_ROOT, 'app/assets/javascripts/sentry/sentry_browser_wrapper.js'),
+    ],
+  };
+  const WEBPACK_ALIAS_EXCEPTIONS = [
+    'jquery$',
+    '@gitlab/svgs/dist/icons.svg',
+    '@apollo/client$',
+    '@sentry/browser$',
+  ];
   Object.entries(webpackConfig.resolve.alias)
     .filter(([key]) => !WEBPACK_ALIAS_EXCEPTIONS.includes(key))
     .forEach(([key, value]) => {
@@ -40,6 +51,7 @@ async function createJsConfig() {
       paths[alias] = target;
     });
 
+  // JS/TS config. See more: https://www.typescriptlang.org/tsconfig
   const jsConfig = {
     // As we're introducing jsconfig to the project, as a precaution we add both:
     // 'include' and 'exclude' options. This might be simplified in the future.
@@ -52,13 +64,22 @@ async function createJsConfig() {
       'ee/app/assets/javascripts',
       'spec/frontend',
       'ee/spec/frontend',
-      'tmp/tests/frontend/fixtures/',
-      'tmp/tests/frontend/fixtures-ee/',
+      'tmp/tests/frontend/fixtures',
+      'tmp/tests/frontend/fixtures-ee',
     ],
+
+    // Explicitly enable automatic type acquisition
+    // See more: https://www.typescriptlang.org/tsconfig#type-acquisition
+    typeAcquisition: {
+      enable: true,
+    },
+
     compilerOptions: {
       baseUrl: '.', // Define the project root
       checkJs: false, // Disable type checking on JavaScript files
       disableSizeLimit: true, // Disable memory size limit for the language server
+      skipLibCheck: true, // Skip type checking all .d.ts files
+      resolveJsonModule: true, // Enable importing .json files
       paths, // Aliases
     },
   };

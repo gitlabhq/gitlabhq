@@ -22,7 +22,7 @@ module QA
           user
           Flow::Login.sign_in_as_admin
           project.visit!
-          Page::Project::Menu.perform(&:click_members)
+          Page::Project::Menu.perform(&:go_to_members)
           Page::Project::Members.perform do |members|
             members.add_member(user.username)
           end
@@ -36,9 +36,7 @@ module QA
             issue.project = project
           end.visit!
         else
-          Resource::Issue.fabricate_via_api! do |issue|
-            issue.project = project
-          end.visit!
+          create(:issue, project: project).visit!
         end
       end
 

@@ -27,7 +27,9 @@ module QA
         Flow::Login.sign_in_unless_signed_in(user: fork.user)
         Page::Project::Show.perform(&:new_merge_request)
         Page::MergeRequest::New.perform(&:create_merge_request)
-        Support::WaitForRequests.wait_for_requests
+        Support::Waiter.wait_until(message: 'Waiting for fork icon to appear') do
+          Page::MergeRequest::Show.perform(&:has_fork_icon?)
+        end
         mr_url = current_url
 
         # Sign back in as original user

@@ -131,20 +131,20 @@ To create an Insights report, in the `My website` project:
 
    ```yaml
    bugsCharts:
-   title: "Charts for bugs"
-   charts:
-      - title: "Monthly bugs created"
-         description: "Open bugs created per month"
-         type: bar
-         query:
-         data_source: issuables
-         params:
-            issuable_type: issue
-            issuable_state: opened
-            filter_labels:
-               - bug
-            group_by: month
-            period_limit: 12
+      title: "Charts for bugs"
+      charts:
+         - title: "Monthly bugs created"
+            description: "Open bugs created per month"
+            type: bar
+            query:
+            data_source: issuables
+            params:
+               issuable_type: issue
+               issuable_state: opened
+               filter_labels:
+                  - bug
+               group_by: month
+               period_limit: 12
    ```
 
 1. Select **Commit changes**.

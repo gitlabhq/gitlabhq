@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe ApplicationSettings::UpdateService do
+RSpec.describe ApplicationSettings::UpdateService, feature_category: :shared do
   include ExternalAuthorizationServiceHelpers
 
-  let(:application_settings) { create(:application_setting) }
+  let(:application_settings) { ::Gitlab::CurrentSettings.current_application_settings }
   let(:admin) { create(:user, :admin) }
   let(:params) { {} }
 
@@ -331,7 +331,8 @@ RSpec.describe ApplicationSettings::UpdateService do
         throttle_protected_paths_enabled: 1,
         throttle_protected_paths_period_in_seconds: 600,
         throttle_protected_paths_requests_per_period: 100,
-        protected_paths_raw: "/users/password\r\n/users/sign_in\r\n"
+        protected_paths_raw: "/users/password\r\n/users/sign_in\r\n",
+        protected_paths_for_get_request_raw: "/users/password\r\n/users/sign_up\r\n"
       }
     end
 
@@ -344,6 +345,7 @@ RSpec.describe ApplicationSettings::UpdateService do
       expect(application_settings.throttle_protected_paths_period_in_seconds).to eq(600)
       expect(application_settings.throttle_protected_paths_requests_per_period).to eq(100)
       expect(application_settings.protected_paths).to eq(['/users/password', '/users/sign_in'])
+      expect(application_settings.protected_paths_for_get_request).to match_array(['/users/password', '/users/sign_up'])
     end
   end
 

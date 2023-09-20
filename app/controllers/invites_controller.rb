@@ -83,8 +83,6 @@ class InvitesController < ApplicationController
   def authenticate_user!
     return if current_user
 
-    store_location_for(:user, invite_details[:path]) if member
-
     if user_sign_up?
       set_session_invite_params
 

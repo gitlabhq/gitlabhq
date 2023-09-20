@@ -166,4 +166,66 @@ RSpec.describe LooseForeignKeys::CleanupWorker, feature_category: :cell do
       end
     end
   end
+
+  describe 'turbo mode' do
+    context 'when turbo mode is off' do
+      where(:database_name, :feature_flag) do
+        :main | :loose_foreign_keys_turbo_mode_main
+        :ci   | :loose_foreign_keys_turbo_mode_ci
+      end
+
+      with_them do
+        before do
+          skip unless Gitlab::Database.has_config?(database_name)
+          stub_feature_flags(feature_flag => false)
+        end
+
+        it 'does not use TurboModificationTracker' do
+          allow_next_instance_of(LooseForeignKeys::TurboModificationTracker) do |instance|
+            expect(instance).not_to receive(:over_limit?)
+          end
+
+          perform_for(db: database_name)
+        end
+
+        it 'logs not using turbo mode' do
+          expect_next_instance_of(LooseForeignKeys::CleanupWorker) do |instance|
+            expect(instance).to receive(:log_extra_metadata_on_done).with(:stats, a_hash_including(turbo_mode: false))
+          end
+
+          perform_for(db: database_name)
+        end
+      end
+    end
+
+    context 'when turbo mode is on' do
+      where(:database_name, :feature_flag) do
+        :main | :loose_foreign_keys_turbo_mode_main
+        :ci   | :loose_foreign_keys_turbo_mode_ci
+      end
+
+      with_them do
+        before do
+          skip unless Gitlab::Database.has_config?(database_name)
+          stub_feature_flags(feature_flag => true)
+        end
+
+        it 'does not use TurboModificationTracker' do
+          expect_next_instance_of(LooseForeignKeys::TurboModificationTracker) do |instance|
+            expect(instance).to receive(:over_limit?).at_least(:once)
+          end
+
+          perform_for(db: database_name)
+        end
+
+        it 'logs using turbo mode' do
+          expect_next_instance_of(LooseForeignKeys::CleanupWorker) do |instance|
+            expect(instance).to receive(:log_extra_metadata_on_done).with(:stats, a_hash_including(turbo_mode: true))
+          end
+
+          perform_for(db: database_name)
+        end
+      end
+    end
+  end
 end

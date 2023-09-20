@@ -29,9 +29,21 @@ module PersonalAccessTokens
 
           # rubocop: enable CodeReuse/ActiveRecord
 
-          notification_service.access_token_about_to_expire(user, token_names)
+          message = if user.project_bot?
+                      notification_service.resource_access_tokens_about_to_expire(user, token_names)
 
-          Gitlab::AppLogger.info "#{self.class}: Notifying User #{user.id} about expiring tokens"
+                      "Notifying Bot User resource owners about expiring tokens"
+                    else
+                      notification_service.access_token_about_to_expire(user, token_names)
+
+                      "Notifying User about expiring tokens"
+                    end
+
+          Gitlab::AppLogger.info(
+            message: message,
+            class: self.class,
+            user_id: user.id
+          )
 
           expiring_user_tokens.each_batch do |expiring_tokens|
             expiring_tokens.update_all(expire_notification_delivered: true)

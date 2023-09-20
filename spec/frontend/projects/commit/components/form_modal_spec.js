@@ -72,11 +72,11 @@ describe('CommitFormModal', () => {
 
     it('Shows modal', () => {
       createComponent();
-      const rootEmit = jest.spyOn(wrapper.vm.$root, '$emit');
+      const rootWrapper = createWrapper(wrapper.vm.$root);
 
-      wrapper.vm.show();
+      eventHub.$emit(mockData.modalPropsData.openModal);
 
-      expect(rootEmit).toHaveBeenCalledWith(BV_SHOW_MODAL, mockData.modalPropsData.modalId);
+      expect(rootWrapper.emitted(BV_SHOW_MODAL)[0]).toContain(mockData.modalPropsData.modalId);
     });
 
     it('Clears the modal state once modal is hidden', () => {
@@ -150,8 +150,9 @@ describe('CommitFormModal', () => {
 
     it('Action primary button dispatches submit action', () => {
       getByText(mockData.modalPropsData.i18n.actionPrimaryText).trigger('click');
+      const formSubmitSpy = jest.spyOn(findForm().element, 'submit');
 
-      expect(wrapper.vm.$refs.form.$el.submit).toHaveBeenCalled();
+      expect(formSubmitSpy).toHaveBeenCalled();
     });
 
     it('Changes the start_branch input value', async () => {

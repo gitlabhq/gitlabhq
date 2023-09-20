@@ -1,6 +1,6 @@
 ---
 type: concepts, howto
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -104,7 +104,8 @@ To view the last time a token was used:
 
 ## Personal access token scopes
 
-> Personal access tokens no longer being able to access container or package registries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387721) in GitLab 16.0.
+> - Personal access tokens no longer being able to access container or package registries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387721) in GitLab 16.0.
+> - `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
 
 A personal access token can perform actions based on the assigned scopes.
 
@@ -120,13 +121,15 @@ A personal access token can perform actions based on the assigned scopes.
 | `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator. |
 | `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.) |
 | `create_runner`    | Grants permission to create runners. |
+| `ai_features`      | Grants permission to perform API actions for GitLab Duo. |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes.                                                                                   |
 
 WARNING:
 If you enabled [external authorization](../admin_area/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
 
 ## When personal access tokens expire
 
-Personal access tokens expire on the date you define, at midnight UTC.
+Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC.
 
 - GitLab runs a check at 01:00 AM UTC every day to identify personal access tokens that expire in the next seven days. The owners of these tokens are notified by email.
 - GitLab runs a check at 02:00 AM UTC every day to identify personal access tokens that expire on the current date. The owners of these tokens are notified by email.

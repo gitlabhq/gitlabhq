@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 You can use [Redmine](https://www.redmine.org/) as an external issue tracker.
 To enable the Redmine integration in a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Redmine**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -38,7 +38,7 @@ For example, this is a configuration for a project named `gitlab-ci`:
 
 You can also disable [GitLab internal issue tracking](../issues/index.md) in this project.
 For more information about the steps and consequences of disabling GitLab issues, see
-[Configure project visibility, features, and permissions](../settings/index.md#configure-project-visibility-features-and-permissions).
+Configure project [visibility](../../../user/public_access.md#change-project-visibility), [features, and permissions](../settings/index.md#configure-project-features-and-permissions).
 
 ## Reference Redmine issues in GitLab
 

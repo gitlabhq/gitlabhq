@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This is a collection of Rake tasks to help you list and migrate
 existing projects and their attachments to the new
-[hashed storage](../repository_storage_types.md) that GitLab
+[hashed storage](../repository_storage_paths.md) that GitLab
 uses to organize the Git data.
 
 ## List projects and attachments
@@ -75,7 +75,7 @@ To have a summary and then a list of projects and their attachments using hashed
 ## Migrate to hashed storage
 
 WARNING:
-In GitLab 13.0, [hashed storage](../repository_storage_types.md#hashed-storage)
+In GitLab 13.0, [hashed storage](../repository_storage_paths.md#hashed-storage)
 is enabled by default and the legacy storage is deprecated.
 GitLab 14.0 eliminates support for legacy storage. If you're on GitLab
 13.0 and later, switching new projects to legacy storage is not possible.
@@ -109,7 +109,7 @@ sudo gitlab-rake gitlab:storage:migrate_to_hashed ID_FROM=50 ID_TO=100
 
 To monitor the progress in GitLab:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Monitoring > Background Jobs**.
 1. Watch how long the `hashed_storage:hashed_storage_project_migrate` queue
@@ -129,7 +129,7 @@ You only need the `gitlab:storage:migrate_to_hashed` Rake task to migrate your r
 ## Rollback from hashed storage to legacy storage
 
 WARNING:
-In GitLab 13.0, [hashed storage](../repository_storage_types.md#hashed-storage)
+In GitLab 13.0, [hashed storage](../repository_storage_paths.md#hashed-storage)
 is enabled by default and the legacy storage is deprecated.
 GitLab 14.0 eliminates support for legacy storage. If you're on GitLab
 13.0 and later, switching new projects to legacy storage is not possible.

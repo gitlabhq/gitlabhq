@@ -7,7 +7,7 @@ module Gitlab
       include Gitlab::Metrics::Methods
 
       # labels that potentially contain sensitive information and will be filtered
-      FILTERED_LABEL_KEYS = %i(branch path).freeze
+      FILTERED_LABEL_KEYS = %i[branch path].freeze
 
       # The series to store events (e.g. Git pushes) in.
       EVENT_SERIES = 'events'

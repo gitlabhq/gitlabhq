@@ -4,7 +4,7 @@ module BlobViewer
   class ComposerJson < DependencyManager
     include ServerSide
 
-    self.file_types = %i(composer_json)
+    self.file_types = %i[composer_json]
 
     def manager_name
       'Composer'

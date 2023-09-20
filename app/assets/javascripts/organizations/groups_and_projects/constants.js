@@ -3,8 +3,6 @@ import { __ } from '~/locale';
 export const DISPLAY_QUERY_GROUPS = 'groups';
 export const DISPLAY_QUERY_PROJECTS = 'projects';
 
-export const ORGANIZATION_ROOT_ROUTE_NAME = 'root';
-
 export const FILTERED_SEARCH_TERM_KEY = 'search';
 
 export const DISPLAY_LISTBOX_ITEMS = [

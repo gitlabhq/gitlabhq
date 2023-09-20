@@ -6,6 +6,7 @@ query getEnvironment($projectFullPath: ID!, $environmentName: String) {
       name
       externalUrl
       kubernetesNamespace
+      fluxResourcePath
       clusterAgent {
         id
         name

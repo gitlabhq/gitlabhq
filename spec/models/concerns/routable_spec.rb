@@ -3,24 +3,20 @@
 require 'spec_helper'
 
 RSpec.shared_examples 'routable resource' do
-  describe '.find_by_full_path', :aggregate_failures do
+  shared_examples_for '.find_by_full_path' do
     it 'finds records by their full path' do
       expect(described_class.find_by_full_path(record.full_path)).to eq(record)
       expect(described_class.find_by_full_path(record.full_path.upcase)).to eq(record)
     end
 
-    it 'returns nil for unknown paths' do
-      expect(described_class.find_by_full_path('unknown')).to be_nil
+    it 'checks if `optimize_routable` is enabled only once' do
+      expect(Routable).to receive(:optimize_routable_enabled?).once
+
+      described_class.find_by_full_path(record.full_path)
     end
 
-    it 'includes route information when loading a record' do
-      control_count = ActiveRecord::QueryRecorder.new do
-        described_class.find_by_full_path(record.full_path)
-      end.count
-
-      expect do
-        described_class.find_by_full_path(record.full_path).route
-      end.not_to exceed_all_query_limit(control_count)
+    it 'returns nil for unknown paths' do
+      expect(described_class.find_by_full_path('unknown')).to be_nil
     end
 
     context 'when path is a negative number' do
@@ -54,6 +50,26 @@ RSpec.shared_examples 'routable resource' do
           expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to be_nil
         end
       end
+    end
+  end
+
+  it_behaves_like '.find_by_full_path', :aggregate_failures
+
+  context 'when the `optimize_routable` feature flag is turned OFF' do
+    before do
+      stub_feature_flags(optimize_routable: false)
+    end
+
+    it_behaves_like '.find_by_full_path', :aggregate_failures
+
+    it 'includes route information when loading a record' do
+      control_count = ActiveRecord::QueryRecorder.new do
+        described_class.find_by_full_path(record.full_path)
+      end.count
+
+      expect do
+        described_class.find_by_full_path(record.full_path).route
+      end.not_to exceed_all_query_limit(control_count)
     end
   end
 end
@@ -93,7 +109,7 @@ RSpec.shared_examples 'routable resource with parent' do
   end
 end
 
-RSpec.describe Group, 'Routable', :with_clean_rails_cache do
+RSpec.describe Group, 'Routable', :with_clean_rails_cache, feature_category: :groups_and_projects do
   let_it_be_with_reload(:group) { create(:group, name: 'foo') }
   let_it_be(:nested_group) { create(:group, parent: group) }
 
@@ -223,7 +239,7 @@ RSpec.describe Group, 'Routable', :with_clean_rails_cache do
   end
 end
 
-RSpec.describe Project, 'Routable', :with_clean_rails_cache do
+RSpec.describe Project, 'Routable', :with_clean_rails_cache, feature_category: :groups_and_projects do
   let_it_be(:namespace) { create(:namespace) }
   let_it_be(:project) { create(:project, namespace: namespace) }
 
@@ -235,15 +251,42 @@ RSpec.describe Project, 'Routable', :with_clean_rails_cache do
     expect(project.route).not_to be_nil
     expect(project.route.namespace).to eq(project.project_namespace)
   end
+
+  describe '.find_by_full_path' do
+    it 'does not return a record if the sources are different, but the IDs match' do
+      group = create(:group, id: 1992)
+      project = create(:project, id: 1992)
+
+      record = described_class.where(id: project.id).find_by_full_path(group.full_path)
+
+      expect(record).to be_nil
+    end
+  end
 end
 
-RSpec.describe Namespaces::ProjectNamespace, 'Routable', :with_clean_rails_cache do
+RSpec.describe Namespaces::ProjectNamespace, 'Routable', :with_clean_rails_cache, feature_category: :groups_and_projects do
   let_it_be(:group) { create(:group) }
 
   it 'skips route creation for the resource' do
     expect do
       described_class.create!(project: nil, parent: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, path: 'foo', name: 'foo')
     end.not_to change { Route.count }
+  end
+end
+
+RSpec.describe Routable, feature_category: :groups_and_projects do
+  describe '.optimize_routable_enabled?' do
+    subject { described_class.optimize_routable_enabled? }
+
+    it { is_expected.to eq(true) }
+
+    context 'when the `optimize_routable` feature flag is turned OFF' do
+      before do
+        stub_feature_flags(optimize_routable: false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
   end
 end
 

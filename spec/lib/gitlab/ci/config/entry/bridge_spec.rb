@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
     # as they do not have sense in context of Bridge
     let(:ignored_inheritable_columns) do
       %i[before_script after_script hooks image services cache interruptible timeout
-         retry tags artifacts]
+         retry tags artifacts id_tokens]
     end
   end
 

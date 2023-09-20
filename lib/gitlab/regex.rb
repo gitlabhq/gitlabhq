@@ -3,7 +3,6 @@
 module Gitlab
   module Regex
     extend self
-    extend BulkImports
     extend MergeRequests
     extend Packages
 
@@ -13,7 +12,7 @@ module Gitlab
       # contains only alphanumeric characters, periods, and underscores,
       # does not end with a period or forward slash, and has no leading or trailing forward slashes
       # eg 'destination-path' or 'destination_pth' not 'example/com/destination/full/path'
-      @group_path_regex ||= %r/\A[.]?[^\W]([.]?[0-9a-z][-_]*)+\z/i
+      @group_path_regex ||= %r{\A[.]?[^\W]([.]?[0-9a-z][-_]*)+\z}i
     end
 
     def group_path_regex_message
@@ -107,7 +106,7 @@ module Gitlab
     end
 
     def cluster_agent_name_regex_message
-      %q{can contain only lowercase letters, digits, and '-', but cannot start or end with '-'}
+      %q(can contain only lowercase letters, digits, and '-', but cannot start or end with '-')
     end
 
     def kubernetes_namespace_regex
@@ -314,7 +313,7 @@ module Gitlab
 
     # One or more `part`s, separated by separator
     def sep_by_1(separator, part)
-      %r(#{part} (#{separator} #{part})*)x
+      %r{#{part} (#{separator} #{part})*}x
     end
 
     def x509_subject_key_identifier_regex

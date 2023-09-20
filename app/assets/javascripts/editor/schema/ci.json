@@ -845,6 +845,9 @@
               "if": {
                 "$ref": "#/definitions/if"
               },
+              "changes": {
+                "$ref": "#/definitions/changes"
+              },
               "exists": {
                 "$ref": "#/definitions/exists"
               },
@@ -2083,6 +2086,10 @@
         },
         "publish": {
           "description": "A path to a directory that contains the files to be published with Pages",
+          "type": "string"
+        },
+        "pages_path_prefix": {
+          "description": "The path prefix identifier for this version of pages. Allows creation of multiple versions of the same site with different path prefixes",
           "type": "string"
         }
       },

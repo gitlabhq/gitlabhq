@@ -54,6 +54,14 @@ RSpec.shared_examples 'an email with X-GitLab headers containing IDs' do
       expect(subject.header["X-GitLab-#{model.class.name}-IID"]).to eq nil
     end
   end
+
+  it 'has X-GitLab-*-State header if model has state defined' do
+    if model.respond_to?(:state)
+      is_expected.to have_header "X-GitLab-#{model.class.name}-State", model.state.to_s
+    else
+      expect(subject.header["X-GitLab-#{model.class.name}-State"]).to eq nil
+    end
+  end
 end
 
 RSpec.shared_examples 'an email with X-GitLab headers containing project details' do

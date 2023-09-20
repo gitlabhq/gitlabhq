@@ -238,6 +238,20 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
   end
 
+  describe '#keyboard_shortcuts_enabled' do
+    it 'is set to true by default' do
+      pref = described_class.new
+
+      expect(pref.keyboard_shortcuts_enabled).to eq(true)
+    end
+
+    it 'returns assigned value' do
+      pref = described_class.new(keyboard_shortcuts_enabled: false)
+
+      expect(pref.keyboard_shortcuts_enabled).to eq(false)
+    end
+  end
+
   describe '#render_whitespace_in_code' do
     it 'is set to false by default' do
       pref = described_class.new

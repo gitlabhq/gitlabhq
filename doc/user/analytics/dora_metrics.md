@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # DevOps Research and Assessment (DORA) metrics **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.7.
-> - [Added support](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) for lead time for changes in GitLab 13.10.
+> - Lead time for changes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) in GitLab 13.10.
 
 The [DevOps Research and Assessment (DORA)](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance)
 team has identified four metrics that measure DevOps performance.
@@ -33,7 +33,7 @@ This enables teams and managers to understand all aspects of productivity, quali
 
 ## Deployment frequency
 
-> [Fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) the frequency calculation formula for the `all` and `monthly` intervals in GitLab 16.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) fix for the frequency calculation formula for `all` and `monthly` intervals in GitLab 16.0.
 
 Deployment frequency is the frequency of successful deployments to production over the given date range (hourly, daily, weekly, monthly, or yearly).
 
@@ -143,6 +143,24 @@ The table below provides an overview of the DORA metrics' data aggregation in di
 | Lead time for changes | Number of seconds to successfully deliver a commit into production | daily median per month | median time |  `day` (default) or `month` |
 | Time to restore service | Number of seconds an incident was open for           | daily median per month | daily median | `day` (default) or `month` |
 | Change failure rate | percentage of deployments that cause an incident in production | daily median per month | percentage of failed deployments | `day` (default) or `month` |
+
+## Configure DORA metrics calculation **(ULTIMATE ALL BETA)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is in [Beta](../../policy/experiment-beta-support.md).
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `dora_configuration`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+You can configure the behavior of DORA metrics calculations.
+To do this, in the Rails console run the following command:
+
+```ruby
+Dora::Configuration.create!(project: my_project, ltfc_target_branches: \['master', 'main'\])
+```
+
+This feature is in [Beta](../../policy/experiment-beta-support.md).
 
 ## Retrieve DORA metrics data
 

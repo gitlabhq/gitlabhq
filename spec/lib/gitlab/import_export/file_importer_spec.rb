@@ -198,8 +198,7 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
     context 'when validate_import_decompressed_archive_size feature flag is enabled' do
       before do
         stub_feature_flags(validate_import_decompressed_archive_size: true)
-
-        allow(Gitlab::ImportExport::DecompressedArchiveSizeValidator).to receive(:max_bytes).and_return(1)
+        stub_application_setting(max_decompressed_archive_size: 0.000001)
       end
 
       it 'returns false and sets an error on shared' do

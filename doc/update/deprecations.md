@@ -46,6 +46,108 @@ For deprecation reviewers (Technical Writers only):
 {::options parse_block_html="true" /}
 
 <div class="js-deprecation-filters"></div>
+<div class="milestone-wrapper" data-milestone="18.0">
+
+## GitLab 18.0
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### GitLab Runner registration token in Runner Operator
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382077).
+</div>
+
+The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operator.html#install-the-kubernetes-operator) parameter that uses the OpenShift and Kubernetes Vanilla Operator to install a runner on Kubernetes is deprecated. Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
+will be removed in GitLab 18.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
+The configuration arguments disabled for authentication tokens are:
+
+- `--locked`
+- `--access-level`
+- `--run-untagged`
+- `--tag-list`
+
+This change is a breaking change. You should use an [authentication token](../ci/runners/register_runner.md) in the `gitlab-runner register` command instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Registration tokens and server-side runner arguments in `gitlab-runner register` command
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/380872).
+</div>
+
+Registration tokens and certain configuration arguments in the command `gitlab-runner register` that [registers](https://docs.gitlab.com/runner/register/) a runner, are deprecated.
+Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
+will be removed in GitLab 18.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
+The configuration arguments disabled for authentication tokens are:
+
+- `--locked`
+- `--access-level`
+- `--run-untagged`
+- `--maximum-timeout`
+- `--paused`
+- `--tag-list`
+- `--maintenance-note`
+
+This change is a breaking change. You should [create a runner in the UI](../ci/runners/register_runner.md) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### Support for REST API endpoints that reset runner registration tokens
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.7</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383341).
+</div>
+
+The support for runner registration tokens is deprecated. As a consequence, the REST API endpoints to reset a registration token are also deprecated and will
+return the HTTP `410 Gone` status code in GitLab 18.0.
+The deprecated endpoints are:
+
+- `POST /runners/reset_registration_token`
+- `POST /projects/:id/runners/reset_registration_token`
+- `POST /groups/:id/runners/reset_registration_token`
+
+We plan to implement a new method to bind runners to a GitLab instance
+as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
+The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
+This new architecture introduces a new method for registering runners and will eliminate the legacy
+[runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+From GitLab 18.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.6</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381111).
+</div>
+
+The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html#required-configuration) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
+
+We plan to implement a new method to bind runners to a GitLab instance leveraging `runnerToken`
+as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html).
+The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
+
+From GitLab 18.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="17.0">
 
 ## GitLab 17.0
@@ -131,6 +233,30 @@ These three variables will be removed in GitLab 17.0.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Default CI/CD job token (`CI_JOB_TOKEN`) scope changed
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383084).
+</div>
+
+In GitLab 14.4 we introduced the ability to [limit your project's CI/CD job token](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#limit-your-projects-job-token-access) (`CI_JOB_TOKEN`) access to make it more secure. You can prevent job tokens **from your project's** pipelines from being used to **access other projects**. When enabled with no other configuration, your pipelines cannot access other projects. To use the job token to access other projects from your pipeline, you must list those projects explicitly in the **Limit CI_JOB_TOKEN access** setting's allowlist, and you must be a maintainer in all the projects.
+
+The job token functionality was updated in 15.9 with a better security setting to [allow access to your project with a job token](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#allow-access-to-your-project-with-a-job-token). When enabled with no other configuration, job tokens **from other projects** cannot **access your project**. Similar to the older setting, you can optionally allow other projects to access your project with a job token if you list those projects explicitly in the **Allow access to this project with a CI_JOB_TOKEN** setting's allowlist. With this new setting, you must be a maintainer in your own project, but only need to have the Guest role in the other projects.
+
+The **Limit** setting was deprecated in 16.0 in preference of the better **Allow access** setting and **Limit** setting was disabled by default for all new projects. From this point forward, if the **Limit** setting is disabled in any project, it will not be possible to re-enable this setting in 16.0 or later.
+
+In 17.0, we will remove the **Limit** setting completely, and set the **Allow access** setting to enabled for all projects. This change ensures a higher level of security between projects. If you currently use the **Limit** setting, you should update your projects to use the **Allow access** setting instead. If other projects access your project with a job token, you must add them to the **Allow access** allowlist.
+
+To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or later can enable the **Allow access** setting now and add the other projects. It will not be possible to disable the setting in 17.0 or later.
+
+In 16.3, the names of these settings were changed to clarify their meanings: the deprecated **Limit CI_JOB_TOKEN access** setting is now called **Limit access _from_ this project**, and the newer **Allow access to this project with a CI_JOB_TOKEN** setting is now called **Limit access _to_ this project**.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Deprecate Windows CMD in GitLab Runner
 
 <div class="deprecation-notes">
@@ -184,6 +310,20 @@ The message field was removed from security reports schema in GitLab 16.0 and is
 </div>
 
 The GitLab Runner Kubernetes executor setting, `terminationGracePeriodSeconds`, is deprecated and will be removed in GitLab 17.0. To manage the cleanup and termination of GitLab Runner worker pods on Kubernetes, customers should instead configure `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds`. For information about how to use the `cleanupGracePeriodSeconds` and `podTerminationGracePeriodSeconds, see the [GitLab Runner Executor documentation](https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Deprecate change vulnerability status from the Developer role
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424133).
+</div>
+
+The ability for Developers to change the status of vulnerabilities is now deprecated.  We plan to make a breaking change in the upcoming GitLab 17.0 release to remove this ability from the Developer role.  Users who wish to continue to grant this permission to developers can [create a custom role](https://docs.gitlab.com/ee/user/permissions.html#custom-roles) for their developers and add in the `admin_vulnerability` permission to give them this access.
 
 </div>
 
@@ -273,6 +413,25 @@ To avoid any disruptions, you should replace `filepath` with `direct_asset_path`
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Geo: Legacy replication details routes for designs and projects deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424002).
+</div>
+
+As part of the migration of legacy data types to the [Geo self-service framework](https://docs.gitlab.com/ee/development/geo/framework.html), the following replication details routes are deprecated:
+
+- Designs `/admin/geo/replication/designs` replaced by `/admin/geo/sites/<Geo Node/Site ID>/replication/design_management_repositories`
+- Projects `/admin/geo/replication/projects` replaced by `/admin/geo/sites/<Geo Node/Site ID>/replication/projects`
+
+From GitLab 16.4 to 17.0, lookups for the legacy routes will automatically be redirected to the new routes. We will remove the redirections in 17.0. Please update any bookmarks or scripts that may use the legacy routes.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### GitLab Helm chart values `gitlab.kas.privateApi.*` are deprecated
 
 <div class="deprecation-notes">
@@ -305,29 +464,6 @@ Because the new values provide a streamlined, comprehensive method to enable TLS
 The `runnerPlatforms` and `runnerSetup` queries to get GitLab Runner platforms and installation instructions
 are deprecated and will be removed from the GraphQL API. For installation instructions, you should use the
 [GitLab Runner documentation](https://docs.gitlab.com/runner/)
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### GitLab Runner registration token in Runner Operator
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.6</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382077).
-</div>
-
-The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operator.html#install-the-kubernetes-operator) parameter that uses the OpenShift and Kubernetes Vanilla Operator to install a runner on Kubernetes is deprecated. Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-will be removed in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
-The configuration arguments disabled for authentication tokens are:
-
-- `--locked`
-- `--access-level`
-- `--run-untagged`
-- `--tag-list`
-
-This change is a breaking change. You should use an [authentication token](../ci/runners/register_runner.md) in the `gitlab-runner register` command instead.
 
 </div>
 
@@ -381,6 +517,20 @@ Use `totalIssueWeight` instead, introduced in GitLab 16.2.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### GraphQL networkPolicies resource deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">14.8</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/421440).
+</div>
+
+The `networkPolicies` [GraphQL resource](https://docs.gitlab.com/ee/api/graphql/reference/#projectnetworkpolicies) has been deprecated and will be removed in GitLab 17.0. Since GitLab 15.0 this field has returned no data.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### GraphQL type, `RunnerMembershipFilter` renamed to `CiRunnerMembershipFilter`
 
 <div class="deprecation-notes">
@@ -410,6 +560,61 @@ In GitLab 17.0, the `DISABLED_WITH_OVERRIDE` value of the `SharedRunnersSetting`
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### HashiCorp Vault integration will no longer use CI_JOB_JWT by default
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366798).
+</div>
+
+As part of our effort to improve the security of your CI workflows using JWT and OIDC, the native HashiCorp integration is also being updated in GitLab 16.0. Any projects that use the [`secrets:vault`](https://docs.gitlab.com/ee/ci/yaml/#secretsvault) keyword to retrieve secrets from Vault will need to be [configured to use the ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication). ID tokens were introduced in 15.7.
+
+To prepare for this change, use the new [`id_tokens`](https://docs.gitlab.com/ee/ci/yaml/#id_tokens)
+keyword and configure the `aud` claim. Ensure the bound audience is prefixed with `https://`.
+
+In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
+setting, which prevents the old tokens from being exposed to any jobs and enables
+[ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
+
+In GitLab 16.0 and later:
+
+- This setting will be removed.
+- CI/CD jobs that use the `id_tokens` keyword can use ID tokens with `secrets:vault`,
+  and will not have any `CI_JOB_JWT*` tokens available.
+- Jobs that do not use the `id_tokens` keyword will continue to have the `CI_JOB_JWT*`
+  tokens available until GitLab 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Internal Container Registry API tag deletion endpoint
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/container-registry/-/issues/1094).
+</div>
+
+The [Docker Registry HTTP API V2 Spec](https://docs.docker.com/registry/spec/api/), later replaced by the [OCI Distribution Spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md) did not include a tag delete operation, and an unsafe and slow workaround (involving deleting manifests, not tags) had to be used to achieve the same end.
+
+Tag deletion is an important function, so we added a tag deletion operation to the GitLab Container Registry, extending the V2 API beyond the scope of the Docker and OCI distribution spec.
+
+Since then, the OCI Distribution Spec has had some updates and it now has a tag delete operation, using the [`DELETE /v2/<name>/manifests/<tag>` endpoint](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#deleting-tags).
+
+This leaves the container registry with two endpoints that provide the exact same functionality. `DELETE /v2/<name>/tags/reference/<tag>` is the custom GitLab tag delete endpoint and `DELETE /v2/<name>/manifests/<tag>`, the OCI compliant tag delete endpoint introduced in GitLab 16.4.
+
+Support for the custom GitLab tag delete endpoint is deprecated in GitLab 16.4, and it will be removed in GitLab 17.0.
+
+This endpoint is used by the **internal** Container Registry application API, not the public [GitLab Container Registry API](https://docs.gitlab.com/ee/api/container_registry.html). No action should be required by the majority of container registry users. All the GitLab UI and API functionality related to tag deletions will remain intact as we transition to the new OCI-compliant endpoint.
+
+If you do access the internal container registry API and use the original tag deletion endpoint, you must update to the new endpoint.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Maintainer role providing the ability to change Package settings using GraphQL API
 
 <div class="deprecation-notes">
@@ -427,6 +632,48 @@ the GraphQL API is deprecated in GitLab 15.8 and will be removed in GitLab 17.0.
 
 In GitLab 17.0 and later, you must have the Owner role for a group to change the **Packages and registries**
 settings for the group using either the GitLab UI or GraphQL API.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Old versions of JSON web tokens are deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366798).
+</div>
+
+[ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html) with OIDC support
+were introduced in GitLab 15.7. These tokens are more configurable than the old JSON web tokens (JWTs), are OIDC compliant,
+and only available in CI/CD jobs that explictly have ID tokens configured.
+ID tokens are more secure than the old `CI_JOB_JWT*` JSON web tokens which are exposed in every job,
+and as a result these old JSON web tokens are deprecated:
+
+- `CI_JOB_JWT`
+- `CI_JOB_JWT_V1`
+- `CI_JOB_JWT_V2`
+
+To prepare for this change, configure your pipelines to use [ID tokens](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens)
+instead of the deprecated tokens. For OIDC compliance, the `iss` claim now uses
+the fully qualified domain name, for example `https://example.com`, previously
+introduced with the `CI_JOB_JWT_V2` token.
+
+In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
+setting, which prevents the old tokens from being exposed to any jobs and enables
+[ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
+
+In GitLab 16.0 and later:
+
+- This setting will be removed.
+- CI/CD jobs that use the `id_tokens` keyword can use ID tokens with `secrets:vault`,
+  and will not have any `CI_JOB_JWT*` tokens available.
+- Jobs that do not use the `id_tokens` keyword will continue to have the `CI_JOB_JWT*`
+  tokens available until GitLab 17.0.
+
+In GitLab 17.0, the deprecated tokens will be completely removed and will no longer
+be available in CI/CD jobs.
 
 </div>
 
@@ -528,33 +775,6 @@ This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a
 with a GitLab instance at the instance, group, or project level through the API. Registration tokens, and support for certain configuration arguments,
 will start returning the HTTP `410 Gone` status code in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
 
-The configuration arguments disabled for authentication tokens are:
-
-- `--locked`
-- `--access-level`
-- `--run-untagged`
-- `--maximum-timeout`
-- `--paused`
-- `--tag-list`
-- `--maintenance-note`
-
-This change is a breaking change. You should [create a runner in the UI](../ci/runners/register_runner.md) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Registration tokens and server-side runner arguments in `gitlab-runner register` command
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.6</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/380872).
-</div>
-
-Registration tokens and certain configuration arguments in the command `gitlab-runner register` that [registers](https://docs.gitlab.com/runner/register/) a runner, are deprecated.
-Authentication tokens will be used to register runners instead. Registration tokens, and support for certain configuration arguments,
-will be removed in GitLab 17.0. For more information, see [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
 The configuration arguments disabled for authentication tokens are:
 
 - `--locked`
@@ -678,33 +898,6 @@ we'll be introducing support in [this epic](https://gitlab.com/groups/gitlab-org
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Support for REST API endpoints that reset runner registration tokens
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.7</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383341).
-</div>
-
-The support for runner registration tokens is deprecated. As a consequence, the REST API endpoints to reset a registration token are also deprecated and will
-return the HTTP `410 Gone` status code in GitLab 17.0.
-The deprecated endpoints are:
-
-- `POST /runners/reset_registration_token`
-- `POST /projects/:id/runners/reset_registration_token`
-- `POST /groups/:id/runners/reset_registration_token`
-
-We plan to implement a new method to bind runners to a GitLab instance
-as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
-The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
-This new architecture introduces a new method for registering runners and will eliminate the legacy
-[runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
-From GitLab 17.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### The GitLab legacy requirement IID is deprecated in favor of work item IID
 
 <div class="deprecation-notes">
@@ -728,6 +921,20 @@ We will be transitioning to a new IID as a result of moving requirements to a [w
 </div>
 
 Due to limited customer usage and capabilities, the Visual Reviews feature for Review Apps is deprecated and will be removed. There is no planned replacement and users should stop using Visual Reviews before GitLab 17.0.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### The `ci_job_token_scope_enabled` projects API attribute is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.4</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423091).
+</div>
+
+GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.com/gitlab-org/gitlab/-/issues/351740). In the [projects API](https://docs.gitlab.com/ee/api/projects.html), the `ci_job_token_scope_enabled` attribute is deprecated, and will be removed in 17.0. You should use the [job token scope APIs](https://docs.gitlab.com/ee/api/project_job_token_scopes.html) instead.
 
 </div>
 
@@ -830,26 +1037,6 @@ removed in 17.0.
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.6</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/381111).
-</div>
-
-The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernetes.html#required-configuration) parameter to use the GitLab Helm Chart to install a runner on Kubernetes is deprecated.
-
-We plan to implement a new method to bind runners to a GitLab instance leveraging `runnerToken`
-as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
-The work is planned in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7633).
-
-From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### `sidekiq` delivery method for `incoming_email` and `service_desk_email` is deprecated
 
 <div class="deprecation-notes">
@@ -909,6 +1096,27 @@ Previous work helped [align the vulnerabilities calls for pipeline security tabs
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="16.6">
+
+## GitLab 16.6
+
+<div class="deprecation breaking-change" data-milestone="16.6">
+
+### Job token allowlist covers public and internal projects
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- Removal in GitLab <span class="milestone">16.6</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420678).
+</div>
+
+Starting in 16.6, projects that are **public** or **internal** will no longer authorize job token requests from projects that are **not** on the project's allowlist when [**Limit access to this project**](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#allow-access-to-your-project-with-a-job-token) is enabled.
+
+If you have [public or internal](https://docs.gitlab.com/ee/user/public_access.html#change-project-visibility) projects with the **Limit access to this project** setting enabled, you must add any projects which make job token requests to your project's allowlist for continued authorization.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="16.5">
 
 ## GitLab 16.5
@@ -924,77 +1132,6 @@ Previous work helped [align the vulnerabilities calls for pipeline security tabs
 </div>
 
 Enabling the `ldap_settings_unlock_groups_by_owners` feature flag allowed non-LDAP synced users to be added to a locked LDAP group. This [feature](https://gitlab.com/gitlab-org/gitlab/-/issues/1793) has always been disabled by default and behind a feature flag. We are removing this feature to keep continuity with our SAML integration, and because allowing non-synced group members defeats the "single source of truth" principle of using a directory service. Once this feature is removed, any LDAP group members that are not synced with LDAP will lose access to that group.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.5">
-
-### HashiCorp Vault integration will no longer use CI_JOB_JWT by default
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">16.5</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366798).
-</div>
-
-As part of our effort to improve the security of your CI workflows using JWT and OIDC, the native HashiCorp integration is also being updated in GitLab 16.0. Any projects that use the [`secrets:vault`](https://docs.gitlab.com/ee/ci/yaml/#secretsvault) keyword to retrieve secrets from Vault will need to be [configured to use the ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication). ID tokens were introduced in 15.7.
-
-To prepare for this change, use the new [`id_tokens`](https://docs.gitlab.com/ee/ci/yaml/#id_tokens)
-keyword and configure the `aud` claim. Ensure the bound audience is prefixed with `https://`.
-
-In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
-setting, which prevents the old tokens from being exposed to any jobs and enables
-[ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
-
-In GitLab 16.0 and later:
-
-- This setting will be removed.
-- CI/CD jobs that use the `id_tokens` keyword can use ID tokens with `secrets:vault`,
-  and will not have any `CI_JOB_JWT*` tokens available.
-- Jobs that do not use the `id_tokens` keyword will continue to have the `CI_JOB_JWT*`
-  tokens available until GitLab 16.5.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.5">
-
-### Old versions of JSON web tokens are deprecated
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">16.5</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366798).
-</div>
-
-[ID tokens](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html) with OIDC support
-were introduced in GitLab 15.7. These tokens are more configurable than the old JSON web tokens (JWTs), are OIDC compliant,
-and only available in CI/CD jobs that explictly have ID tokens configured.
-ID tokens are more secure than the old `CI_JOB_JWT*` JSON web tokens which are exposed in every job,
-and as a result these old JSON web tokens are deprecated:
-
-- `CI_JOB_JWT`
-- `CI_JOB_JWT_V1`
-- `CI_JOB_JWT_V2`
-
-To prepare for this change, configure your pipelines to use [ID tokens](https://docs.gitlab.com/ee/ci/yaml/index.html#id_tokens)
-instead of the deprecated tokens. For OIDC compliance, the `iss` claim now uses
-the fully qualified domain name, for example `https://example.com`, previously
-introduced with the `CI_JOB_JWT_V2` token.
-
-In GitLab 15.9 to 15.11, you can [enable the **Limit JSON Web Token (JWT) access**](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#enable-automatic-id-token-authentication)
-setting, which prevents the old tokens from being exposed to any jobs and enables
-[ID token authentication for the `secrets:vault` keyword](https://docs.gitlab.com/ee/ci/secrets/id_token_authentication.html#configure-automatic-id-token-authentication).
-
-In GitLab 16.0 and later:
-
-- This setting will be removed.
-- CI/CD jobs that use the `id_tokens` keyword can use ID tokens with `secrets:vault`,
-  and will not have any `CI_JOB_JWT*` tokens available.
-- Jobs that do not use the `id_tokens` keyword will continue to have the `CI_JOB_JWT*`
-  tokens available until GitLab 16.5.
-
-In GitLab 16.5, the deprecated tokens will be completely removed and will no longer
-be available in CI/CD jobs.
 
 </div>
 </div>
@@ -1038,15 +1175,41 @@ However, enabling the bundled Grafana will no longer work from GitLab 16.3.
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387561).
 </div>
 
-**Update:** We previously announced we would remove the existing License Compliance CI template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/) we will do this change in 16.3 instead.
+**Update:** We previously announced we would remove the existing License Compliance CI template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/) we will do this in 16.3 instead.
 
-The GitLab [License Compliance](https://docs.gitlab.com/ee/user/compliance/license_compliance/) CI template is now deprecated and is scheduled for removal in the GitLab 16.1 release. Users who wish to continue using GitLab for License Compliance should remove the License Compliance template from their CI pipeline and add the [Dependency Scanning template](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#configuration). The Dependency Scanning template is now capable of gathering the required license information so it is no longer necessary to run a separate License Compliance job. The License Compliance CI template should not be removed prior to verifying that the `license_scanning_sbom_scanner` and `package_metadata_synchronization` flags are enabled for the instance and that the instance has been upgraded to a version that supports [the new method of license scanning](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/).
+The GitLab [**License Compliance**](https://docs.gitlab.com/ee/user/compliance/license_compliance/) CI/CD template is now deprecated and is scheduled for removal in the GitLab 16.3 release.
+
+To continue using GitLab for license compliance, remove the **License Compliance** template from your CI/CD pipeline and add the **Dependency Scanning** template. The **Dependency Scanning** template is now capable of gathering the required license information, so it is no longer necessary to run a separate license compliance job.
+
+Before you remove the **License Compliance** CI/CD template, verify that the instance has been upgraded to a version that supports the new method of license scanning.
+
+To begin using the Dependency Scanner quickly at scale, you may set up a scan execution policy at the group level to enforce the SBOM-based license scan for all projects in the group. Then, you may remove the inclusion of the `Jobs/License-Scanning.gitlab-ci.yml` template from your CI/CD configuration.
+
+If you wish to continue using the legacy license compliance feature, you can do so by setting the `LICENSE_MANAGEMENT_VERSION CI` variable to `4`. This variable can be set at the project, group, or instance level. This configuration change will allow you to continue using an existing version of license compliance without having to adopt the new approach.
+
+Bugs and vulnerabilities in this legacy analyzer will no longer be fixed.
 
 | CI Pipeline Includes | GitLab <= 15.8 | 15.9 <= GitLab < 16.3 | GitLab >= 16.3 |
 | ------------- | ------------- | ------------- | ------------- |
 | Both DS and LS templates | License data from LS job is used | License data from LS job is used | License data from DS job is used |
 | DS template is included but LS template is not | No license data | License data from DS job is used | License data from DS job is used |
 | LS template is included but DS template is not | License data from LS job is used | License data from LS job is used | No license data |
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="16.3">
+
+### RSA key size limits
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.3</span>
+- Removal in GitLab <span class="milestone">16.3</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/11186).
+</div>
+
+Go versions 1.20.7 and later add a `maxRSAKeySize` constant that limits RSA keys to a maximum of 8192 bits. As a result, RSA keys larger than 8192 bits will no longer work with GitLab. Any RSA keys larger than 8192 bits must be regenerated at a smaller size.
+
+You might notice this issue because your logs include an error like `tls: server sent certificate containing RSA key larger than 8192 bits`. To test the length of your key, use this command: `openssl rsa -in <your-key-file> -text -noout | grep "Key:"`.
 
 </div>
 
@@ -3376,7 +3539,7 @@ By default, all new applications expire access tokens after 2 hours. In GitLab 1
 had no expiration. In GitLab 15.0, an expiry will be automatically generated for any existing token that does not
 already have one.
 
-You should [opt in](https://docs.gitlab.com/ee/integration/oauth_provider.html#expiring-access-tokens) to expiring
+You should [opt in](https://docs.gitlab.com/ee/integration/oauth_provider.html#access-token-expiration) to expiring
 tokens before GitLab 15.0 is released:
 
 1. Edit the application.

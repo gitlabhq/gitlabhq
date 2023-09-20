@@ -217,15 +217,15 @@ always fails because it uses `pool.ntp.org`. This error can be ignored but you c
 
 ## Enabling the Package Metadata Database
 
-Enabling the Package Metadata Database is required to enable [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files).
+Enabling the Package Metadata Database is required to enable
+[Continuous Vulnerability Scanning](../../user/application_security/continuous_vulnerability_scanning/index.md)
+and [license scanning of CycloneDX files](../../user/compliance/license_scanning_of_cyclonedx_files/index.md).
 This process requires the use of License and/or Advisory Data under what is collectively called the Package Metadata Database, which is licensed under the [EE License](https://storage.googleapis.com/prod-export-license-bucket-1a6c642fc4de57d4/LICENSE).
 Note the following in relation to use of the Package Metadata Database:
 
 - We may change or discontinue all or any part of the Package Metadata Database, at any time and without notice, at our sole discretion.
 - The Package Metadata Database may contain links to third-party websites or resources. We provide these links only as a convenience and are not responsible for any third-party data, content, products, or services from those websites or resources or links displayed on such websites.
 - The Package Metadata Database is based in part on information made available by third parties, and GitLab is not responsible for the accuracy or completeness of content made available.
-
-Enabling the Package Metadata Database is also required to enable Continuous Vulnerability Scans for Dependency Scanning (see [epic 9534](https://gitlab.com/groups/gitlab-org/-/epics/9534) tracking this work for more info).
 
 Package metadata is stored in the following Google Cloud Provider (GCP) buckets:
 
@@ -351,3 +351,29 @@ The directory for package metadata changed with the release of 16.2 from `vendor
     ```shell
     sed -i '.bckup' -e 's#vendor/package_metadata_db#vendor/package_metadata/licenses#g' [FILE ...]
     ```
+
+### Troubleshooting
+
+#### Missing database data
+
+If license or advisory data is missing from the dependency list or MR pages, one possible cause of this is that the database has not been synchronized with the export data.
+
+`package_metadata` synchronization is triggered by using cron jobs ([advisory sync](https://gitlab.com/gitlab-org/gitlab/-/blob/16-3-stable-ee/config/initializers/1_settings.rb#L864-866) and [license sync](https://gitlab.com/gitlab-org/gitlab/-/blob/16-3-stable-ee/config/initializers/1_settings.rb#L855-857)) and imports only the package registry types enabled in [admin settings](../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync).
+
+The file structure in `vendor/package_metadata` must coincide with the package registry type enabled above. For example, to sync `maven` license or advisory data, the package metadata directory under the Rails directory must have the following structure:
+
+- For licenses:`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/licenses/v2/maven/**/*.ndjson`.
+- For advisories:`$GITLAB_RAILS_ROOT_DIR/vendor/package_metadata/advisories/v2/maven/**/*.ndjson`.
+
+After a successful run, data under the `pm_` tables in the database should be populated (check using [Rails console](../../administration/operations/rails_console.md)):
+
+- For licenses: `sudo gitlab-rails runner "puts \"Package model has #{PackageMetadata::Package.where(purl_type: 'maven').size} packages\""`
+- For advisories: `sudo gitlab-rails runner "puts \"Advisory model has #{PackageMetadata::AffectedPackage.where(purl_type: 'maven').size} packages\""`
+
+Additionally, checkpoint data should exist for the particular package registry being synchronized. For Maven, for example, there should be a checkpoint created after a successful sync run:
+
+- For licenses: `sudo gitlab-rails runner "puts \"maven data has been synced up to #{PackageMetadata::Checkpoint.where(data_type: 'licenses', purl_type: 'maven')}\""`
+- For advisories: `sudo gitlab-rails runner "puts \"maven data has been synced up to #{PackageMetadata::Checkpoint.where(data_type: 'advisories', purl_type: 'maven')}\""`
+
+Finally, you can check the [`application_json.log`](../../administration/logs/index.md#application_jsonlog) logs to verify that the
+sync job has run and is without error by searching for `DEBUG` messages where the class is `PackageMetadata::SyncService`. Example: `{"severity":"DEBUG","time":"2023-06-22T16:41:00.825Z","correlation_id":"a6e80150836b4bb317313a3fe6d0bbd6","class":"PackageMetadata::SyncService","message":"Evaluating data for licenses:gcp/prod-export-license-bucket-1a6c642fc4de57d4/v2/pypi/1694703741/0.ndjson"}`.

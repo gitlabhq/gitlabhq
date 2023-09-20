@@ -145,7 +145,7 @@ describe('CI Badge Link Component', () => {
   });
 
   it('should render dynamic badge size', () => {
-    createComponent({ status: statuses.success, badgeSize: 'lg' });
+    createComponent({ status: statuses.success, size: 'lg' });
 
     expect(findBadge().props('size')).toBe('lg');
   });

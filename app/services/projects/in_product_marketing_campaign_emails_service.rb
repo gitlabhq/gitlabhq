@@ -26,13 +26,9 @@ module Projects
       sent_email_records.save!
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def project_users
-      @project_users ||= project.users
-        .where(email_opted_in: true)
-        .merge(Users::InProductMarketingEmail.without_campaign(campaign))
+      @project_users ||= project.users.merge(Users::InProductMarketingEmail.without_campaign(campaign))
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def project_users_max_access_levels
       ids = project_users.map(&:id)

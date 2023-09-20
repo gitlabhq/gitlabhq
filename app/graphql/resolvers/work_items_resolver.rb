@@ -21,12 +21,17 @@ module Resolvers
     def resolve_with_lookahead(**args)
       return WorkItem.none if resource_parent.nil?
 
-      finder = ::WorkItems::WorkItemsFinder.new(current_user, prepare_finder_params(args))
-
-      Gitlab::Graphql::Loaders::IssuableLoader.new(resource_parent, finder).batching_find_all { |q| apply_lookahead(q) }
+      Gitlab::Graphql::Loaders::IssuableLoader.new(
+        resource_parent,
+        finder(prepare_finder_params(args))
+      ).batching_find_all { |q| apply_lookahead(q) }
     end
 
     private
+
+    def finder(args)
+      ::WorkItems::WorkItemsFinder.new(current_user, args)
+    end
 
     def prepare_finder_params(args)
       params = super(args)

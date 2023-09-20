@@ -100,7 +100,11 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
 
         context "when the awardable already has an award emoji of the same name assigned to the ghost user" do
           let(:awardable) { create(:issue) }
-          let!(:existing_award_emoji) { create(:award_emoji, user: User.ghost, name: "thumbsup", awardable: awardable) }
+
+          let!(:existing_award_emoji) do
+            create(:award_emoji, user: Users::Internal.ghost, name: "thumbsup", awardable: awardable)
+          end
+
           let!(:award_emoji) { create(:award_emoji, user: user, name: "thumbsup", awardable: awardable) }
 
           it "migrates the award emoji regardless" do
@@ -108,7 +112,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
 
             migrated_record = AwardEmoji.find_by_id(award_emoji.id)
 
-            expect(migrated_record.user).to eq(User.ghost)
+            expect(migrated_record.user).to eq(Users::Internal.ghost)
           end
 
           it "does not leave the migrated award emoji in an invalid state" do
@@ -322,7 +326,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         service.execute
 
         expect(gitlab_shell.repository_exists?(repo.shard_name, "#{repo.disk_path}.git")).to be(true)
-        expect(User.ghost.snippets).to include(repo.snippet)
+        expect(Users::Internal.ghost.snippets).to include(repo.snippet)
       end
 
       context 'when an error is raised deleting snippets' do

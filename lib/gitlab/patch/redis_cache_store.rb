@@ -3,8 +3,6 @@
 module Gitlab
   module Patch
     module RedisCacheStore
-      PIPELINE_BATCH_SIZE = 100
-
       # We will try keep patched code explicit and matching the original signature in
       # https://github.com/rails/rails/blob/v6.1.7.2/activesupport/lib/active_support/cache/redis_cache_store.rb#L361
       def read_multi_mget(*names) # rubocop:disable Style/ArgumentsForwarding
@@ -21,7 +19,7 @@ module Gitlab
 
         delete_count = 0
         redis.with do |conn|
-          entries.each_slice(PIPELINE_BATCH_SIZE) do |subset|
+          entries.each_slice(pipeline_batch_size) do |subset|
             delete_count += Gitlab::Redis::CrossSlot::Pipeline.new(conn).pipelined do |pipeline|
               subset.each { |entry| pipeline.del(entry) }
             end.sum
@@ -59,7 +57,7 @@ module Gitlab
       end
 
       def pipeline_mget(conn, keys)
-        keys.each_slice(PIPELINE_BATCH_SIZE).flat_map do |subset|
+        keys.each_slice(pipeline_batch_size).flat_map do |subset|
           Gitlab::Redis::CrossSlot::Pipeline.new(conn).pipelined do |p|
             subset.each { |key| p.get(key) }
           end
@@ -67,6 +65,10 @@ module Gitlab
       end
 
       private
+
+      def pipeline_batch_size
+        @pipeline_batch_size ||= [ENV['GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT'].to_i, 1000].max
+      end
 
       def enable_rails_cache_pipeline_patch?
         redis.with { |c| ::Gitlab::Redis::ClusterUtil.cluster?(c) }

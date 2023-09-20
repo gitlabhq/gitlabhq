@@ -1,6 +1,3 @@
-- form = local_assigns.fetch(:form)
 .js-notification-email-listbox-input.gl-mb-3{ data: { label: _('Global notification email'), name: 'user[notification_email]', emails: @user.public_verified_emails.to_json, empty_value_text: _('Use primary email (%{email})') % { email: @user.email }, value: @user.notification_email, disabled: local_assigns.fetch(:email_change_disabled, nil) } }
 .help-block
   = local_assigns.fetch(:help_text, nil)
-.form-group
-  = form.gitlab_ui_checkbox_component :email_opted_in, _('Receive product marketing emails')

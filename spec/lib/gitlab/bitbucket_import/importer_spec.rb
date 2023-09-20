@@ -92,6 +92,7 @@ RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, fea
 
   describe '#import_pull_requests' do
     let(:source_branch_sha) { sample.commits.last }
+    let(:merge_commit_sha) { sample.commits.second }
     let(:target_branch_sha) { sample.commits.first }
     let(:pull_request) do
       instance_double(
@@ -101,6 +102,7 @@ RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, fea
         source_branch_name: Gitlab::Git::BRANCH_REF_PREFIX + sample.source_branch,
         target_branch_sha: target_branch_sha,
         target_branch_name: Gitlab::Git::BRANCH_REF_PREFIX + sample.target_branch,
+        merge_commit_sha: merge_commit_sha,
         title: 'This is a title',
         description: 'This is a test pull request',
         state: 'merged',
@@ -217,16 +219,28 @@ RSpec.describe Gitlab::BitbucketImport::Importer, :clean_gitlab_redis_cache, fea
       end
     end
 
-    context "when branches' sha is not found in the repository" do
+    context 'when source SHA is not found in the repository' do
       let(:source_branch_sha) { 'a' * Commit::MIN_SHA_LENGTH }
-      let(:target_branch_sha) { 'b' * Commit::MIN_SHA_LENGTH }
+      let(:target_branch_sha) { 'c' * Commit::MIN_SHA_LENGTH }
 
-      it 'uses the pull request sha references' do
+      it 'uses merge commit SHA for source' do
         expect { subject.execute }.to change { MergeRequest.count }.by(1)
 
         merge_request_diff = MergeRequest.first.merge_request_diff
-        expect(merge_request_diff.head_commit_sha).to eq source_branch_sha
+        expect(merge_request_diff.head_commit_sha).to eq merge_commit_sha
         expect(merge_request_diff.start_commit_sha).to eq target_branch_sha
+      end
+
+      context 'when the merge commit SHA is also not found' do
+        let(:merge_commit_sha) { 'b' * Commit::MIN_SHA_LENGTH }
+
+        it 'uses the pull request sha references' do
+          expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+          merge_request_diff = MergeRequest.first.merge_request_diff
+          expect(merge_request_diff.head_commit_sha).to eq source_branch_sha
+          expect(merge_request_diff.start_commit_sha).to eq target_branch_sha
+        end
       end
     end
 

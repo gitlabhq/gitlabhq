@@ -373,14 +373,6 @@ RSpec.shared_examples 'process nuget download content request' do |user_type, st
       end
 
       it_behaves_like 'bumping the package last downloaded at field'
-
-      context 'when nuget_normalized_version feature flag is disabled' do
-        before do
-          stub_feature_flags(nuget_normalized_version: false)
-        end
-
-        it_behaves_like 'returning response status', :not_found
-      end
     end
   end
 end
@@ -709,5 +701,39 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
     end
 
     it_behaves_like 'returning response status', :forbidden
+  end
+
+  context 'when package duplicates are not allowed' do
+    let(:headers) { basic_auth_header(deploy_token.username, deploy_token.token).merge(workhorse_headers) }
+    let_it_be(:existing_package) { create(:nuget_package, project: project) }
+    let_it_be(:metadata) { { package_name: existing_package.name, package_version: existing_package.version } }
+    let_it_be(:package_settings) do
+      create(:namespace_package_setting, :group, namespace: project.namespace, nuget_duplicates_allowed: false)
+    end
+
+    before do
+      allow_next_instance_of(::Packages::Nuget::MetadataExtractionService) do |instance|
+        allow(instance).to receive(:execute).and_return(ServiceResponse.success(payload: metadata))
+      end
+    end
+
+    it_behaves_like 'returning response status', :conflict unless symbol_package
+    it_behaves_like 'returning response status', :created if symbol_package
+
+    context 'when exception_regex is set' do
+      before do
+        package_settings.update_column(:nuget_duplicate_exception_regex, ".*#{existing_package.name.last(3)}.*")
+      end
+
+      it_behaves_like 'returning response status', :created
+    end
+
+    context 'when nuget_duplicates_option feature flag is disabled' do
+      before do
+        stub_feature_flags(nuget_duplicates_option: false)
+      end
+
+      it_behaves_like 'returning response status', :created
+    end
   end
 end

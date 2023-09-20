@@ -2,12 +2,16 @@ import { groupsPath } from '~/vue_shared/components/entity_select/utils';
 
 describe('entity_select utils', () => {
   describe('groupsPath', () => {
+    beforeEach(() => {
+      window.gon = { api_version: 'v4' };
+    });
+
     it.each`
       groupsFilter           | parentGroupID | expectedPath
-      ${undefined}           | ${undefined}  | ${'/api/:version/groups.json'}
-      ${undefined}           | ${1}          | ${'/api/:version/groups.json'}
-      ${'descendant_groups'} | ${1}          | ${'/api/:version/groups/1/descendant_groups'}
-      ${'subgroups'}         | ${1}          | ${'/api/:version/groups/1/subgroups'}
+      ${undefined}           | ${undefined}  | ${'/api/v4/groups.json'}
+      ${undefined}           | ${1}          | ${'/api/v4/groups.json'}
+      ${'descendant_groups'} | ${1}          | ${'/api/v4/groups/1/descendant_groups'}
+      ${'subgroups'}         | ${1}          | ${'/api/v4/groups/1/subgroups'}
     `(
       'returns $expectedPath with groupsFilter = $groupsFilter and parentGroupID = $parentGroupID',
       ({ groupsFilter, parentGroupID, expectedPath }) => {

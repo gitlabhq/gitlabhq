@@ -49,6 +49,18 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
     end
   end
 
+  describe '#purl_type' do
+    subject { component.purl_type }
+
+    it { is_expected.to eq(purl_type) }
+  end
+
+  describe '#type' do
+    subject { component.type }
+
+    it { is_expected.to eq(component_type) }
+  end
+
   describe '#<=>' do
     where do
       {

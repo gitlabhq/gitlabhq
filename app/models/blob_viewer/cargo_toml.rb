@@ -4,7 +4,7 @@ module BlobViewer
   class CargoToml < DependencyManager
     include Static
 
-    self.file_types = %i(cargo_toml)
+    self.file_types = %i[cargo_toml]
 
     def manager_name
       'Cargo'

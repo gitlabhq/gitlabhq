@@ -32,15 +32,11 @@ export default {
       label: s__('CiVariables|Key'),
       tdClass: 'text-plain',
       sortable: true,
+      thClass: 'gl-w-40p',
     },
     {
       key: 'value',
       label: s__('CiVariables|Value'),
-    },
-    {
-      key: 'Attributes',
-      label: s__('CiVariables|Attributes'),
-      thClass: 'gl-w-40p',
     },
     {
       key: 'environmentScope',
@@ -49,7 +45,7 @@ export default {
     {
       key: 'actions',
       label: __('Actions'),
-      thClass: 'gl-text-right',
+      thClass: 'gl-text-right gl-w-15',
     },
   ],
   inheritedVarsFields: [
@@ -287,7 +283,7 @@ export default {
         </template>
         <template #cell(key)="{ item }">
           <div
-            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
+            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start gl-mr-n3"
           >
             <span
               :id="`ci-variable-key-${item.id}`"
@@ -298,16 +294,28 @@ export default {
               v-gl-tooltip
               category="tertiary"
               icon="copy-to-clipboard"
-              class="gl-my-n3 gl-ml-2"
+              class="gl-my-n2 gl-ml-2"
+              size="small"
               :title="__('Copy key')"
               :data-clipboard-text="item.key"
               :aria-label="__('Copy to clipboard')"
             />
           </div>
+          <div data-testid="ci-variable-table-row-attributes" class="gl-mt-2">
+            <gl-badge
+              v-for="attribute in item.attributes"
+              :key="`${item.key}-${attribute}`"
+              class="gl-mr-2"
+              variant="info"
+              size="sm"
+            >
+              {{ attribute }}
+            </gl-badge>
+          </div>
         </template>
         <template v-if="!isInheritedGroupVars" #cell(value)="{ item }">
           <div
-            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
+            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start gl-mr-n3"
           >
             <span v-if="areValuesHidden" data-testid="hiddenValue">*****</span>
             <span
@@ -321,29 +329,17 @@ export default {
               v-gl-tooltip
               category="tertiary"
               icon="copy-to-clipboard"
-              class="gl-my-n3 gl-ml-2"
+              class="gl-my-n2 gl-ml-2"
+              size="small"
               :title="__('Copy value')"
               :data-clipboard-text="item.value"
               :aria-label="__('Copy to clipboard')"
             />
           </div>
         </template>
-        <template #cell(attributes)="{ item }">
-          <span data-testid="ci-variable-table-row-attributes">
-            <gl-badge
-              v-for="attribute in item.attributes"
-              :key="`${item.key}-${attribute}`"
-              class="gl-mr-2"
-              variant="info"
-              size="sm"
-            >
-              {{ attribute }}
-            </gl-badge>
-          </span>
-        </template>
         <template #cell(environmentScope)="{ item }">
           <div
-            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
+            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start gl-mr-n3"
           >
             <span
               :id="`ci-variable-env-${item.id}`"
@@ -354,7 +350,8 @@ export default {
               v-gl-tooltip
               category="tertiary"
               icon="copy-to-clipboard"
-              class="gl-my-n3 gl-ml-2"
+              class="gl-my-n2 gl-ml-2"
+              size="small"
               :title="__('Copy environment')"
               :data-clipboard-text="convertEnvironmentScopeValue(item.environmentScope)"
               :aria-label="__('Copy to clipboard')"
@@ -363,7 +360,7 @@ export default {
         </template>
         <template v-if="isInheritedGroupVars" #cell(group)="{ item }">
           <div
-            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
+            class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-md-justify-content-start gl-mr-n3"
           >
             <gl-link
               :id="`ci-variable-group-${item.id}`"

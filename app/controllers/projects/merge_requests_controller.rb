@@ -45,12 +45,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:sast_reports_in_inline_diff, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:saved_replies, current_user)
-    push_frontend_feature_flag(:code_quality_inline_drawer, project)
     push_force_frontend_feature_flag(:summarize_my_code_review, summarize_my_code_review_enabled?)
     push_frontend_feature_flag(:mr_activity_filters, current_user)
-    push_frontend_feature_flag(:review_apps_redeploy_mr_widget, project)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
-    push_frontend_feature_flag(:action_cable_notes, project)
+    push_frontend_feature_flag(:mr_pipelines_graphql, project)
   end
 
   before_action only: [:edit] do
@@ -106,11 +104,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     respond_to do |format|
       format.html
       format.atom { render layout: 'xml' }
-      format.json do
-        render json: {
-          html: view_to_html_string("projects/merge_requests/_merge_requests")
-        }
-      end
     end
   end
 
@@ -389,19 +382,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   private
 
-  # NOTE: Remove this disable with add_prepared_state_to_mr FF removal
-  # rubocop: disable Metrics/AbcSize
   def show_merge_request
     close_merge_request_if_no_source_project
     @merge_request.check_mergeability(async: true)
-
-    # NOTE: Remove the created_at check when removing the FF check
-    if ::Feature.enabled?(:add_prepared_state_to_mr, @merge_request.project) &&
-        @merge_request.created_at < 5.minutes.ago &&
-        !@merge_request.prepared?
-
-      @merge_request.prepare
-    end
 
     respond_to do |format|
       format.html do
@@ -446,7 +429,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
     end
   end
-  # rubocop: enable Metrics/AbcSize
 
   def render_html_page
     preload_assignees_for_render(@merge_request)

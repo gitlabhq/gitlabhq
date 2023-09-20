@@ -44,7 +44,7 @@ export default {
           },
           actionPrimary: {
             text: I18N_USER_ACTIONS.approve,
-            attributes: { variant: 'confirm', 'data-qa-selector': 'approve_user_confirm_button' },
+            attributes: { variant: 'confirm', 'data-testid': 'approve-user-confirm-button' },
           },
           messageHtml,
         },
@@ -55,7 +55,7 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-item data-qa-selector="approve_user_button" @action="onClick">
+  <gl-disclosure-dropdown-item @action="onClick">
     <template #list-item>
       <slot></slot>
     </template>

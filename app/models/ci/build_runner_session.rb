@@ -20,7 +20,7 @@ module Ci
     partitionable scope: :build
 
     validates :build, presence: true
-    validates :url, public_url: { schemes: %w(https) }
+    validates :url, public_url: { schemes: %w[https] }
 
     def terminal_specification
       wss_url = Gitlab::UrlHelpers.as_wss(Addressable::URI.escape(url))

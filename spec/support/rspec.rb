@@ -20,9 +20,17 @@ RSpec.configure do |config|
   config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', './spec/examples.txt')
 
   # Makes diffs show entire non-truncated values.
-  config.before(:each, :unlimited_max_formatted_output_length) do
+  config.around(:each, :unlimited_max_formatted_output_length) do |example|
+    old_max_formatted_output_length = RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length
+
     config.expect_with :rspec do |c|
       c.max_formatted_output_length = nil
+    end
+
+    example.run
+
+    config.expect_with :rspec do |c|
+      c.max_formatted_output_length = old_max_formatted_output_length
     end
   end
 

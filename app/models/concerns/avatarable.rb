@@ -48,12 +48,6 @@ module Avatarable
     end
   end
 
-  class_methods do
-    def bot_avatar(image:)
-      Rails.root.join('lib', 'assets', 'images', 'bot_avatars', image).open
-    end
-  end
-
   def avatar_type
     unless self.avatar.image?
       errors.add :avatar, "file format is not supported. Please try one of the following supported formats: #{AvatarUploader::SAFE_IMAGE_EXT.join(', ')}"

@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 FactoryBot/CreateList:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/ee/search_controller_spec.rb'
     - 'ee/spec/controllers/projects/licenses_controller_spec.rb'

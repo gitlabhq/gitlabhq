@@ -553,7 +553,8 @@ module Gitlab
           message: encode_binary(message),
           start_branch_name: encode_binary(start_branch_name.to_s),
           start_repository: start_repository.gitaly_repository,
-          dry_run: dry_run
+          dry_run: dry_run,
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
         )
 
         gitaly_client_call(

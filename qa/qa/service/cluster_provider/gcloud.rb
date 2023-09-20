@@ -45,7 +45,7 @@ module QA
         end
 
         def install_kubernetes_agent(agent_token:, kas_address:, agent_name: "gitlab-agent")
-          shell <<~CMD.tr("\n", ' ')
+          cmd_str = <<~CMD.tr("\n", ' ')
             helm repo add gitlab https://charts.gitlab.io &&
             helm repo update &&
             helm upgrade --install gitlab-agent gitlab/gitlab-agent
@@ -56,6 +56,7 @@ module QA
               --set config.kasAddress=#{kas_address}
               --set config.kasHeaders="{Cookie: gitlab_canary=#{target_canary?}}"
           CMD
+          shell(cmd_str, mask_secrets: [agent_token])
         end
 
         def uninstall_kubernetes_agent(agent_name: "gitlab-agent")
@@ -78,7 +79,7 @@ module QA
         end
 
         def install_gitlab_workspaces_proxy
-          shell <<~CMD.tr("\n", ' ')
+          cmd_str = <<~CMD.tr("\n", ' ')
             helm repo add gitlab-workspaces-proxy \
               https://gitlab.com/api/v4/projects/gitlab-org%2fremote-development%2fgitlab-workspaces-proxy/packages/helm/devel &&
             helm repo update &&
@@ -94,12 +95,14 @@ module QA
               --set="auth.signing_key=#{Runtime::Env.workspaces_oauth_signing_key}" \
               --set="ingress.host.workspaceDomain=#{Runtime::Env.workspaces_proxy_domain}" \
               --set="ingress.host.wildcardDomain=*.#{Runtime::Env.workspaces_proxy_domain}" \
-              --set="ingress.tls.workspaceDomainCert=#{Runtime::Env.workspaces_domain_cert}" \
-              --set="ingress.tls.workspaceDomainKey=#{Runtime::Env.workspaces_domain_key}" \
-              --set="ingress.tls.wildcardDomainCert=#{Runtime::Env.workspaces_wildcard_cert}" \
-              --set="ingress.tls.wildcardDomainKey=#{Runtime::Env.workspaces_wildcard_key}" \
+              --set="ingress.tls.workspaceDomainCert=$(cat #{Runtime::Env.workspaces_domain_cert})" \
+              --set="ingress.tls.workspaceDomainKey=$(cat #{Runtime::Env.workspaces_domain_key})" \
+              --set="ingress.tls.wildcardDomainCert=$(cat #{Runtime::Env.workspaces_wildcard_cert})" \
+              --set="ingress.tls.wildcardDomainKey=$(cat #{Runtime::Env.workspaces_wildcard_key})" \
               --set="ingress.className=nginx"
           CMD
+
+          shell(cmd_str, mask_secrets: [Runtime::Env.workspaces_oauth_app_secret, Runtime::Env.workspaces_oauth_signing_key])
         end
 
         def update_dns(load_balancer_ip)

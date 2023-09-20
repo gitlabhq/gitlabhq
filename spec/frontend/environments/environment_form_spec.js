@@ -53,11 +53,7 @@ describe('~/environments/components/form.vue', () => {
       },
     });
 
-  const createWrapperWithApollo = ({
-    propsData = {},
-    fluxResourceForEnvironment = false,
-    queryResult = null,
-  } = {}) => {
+  const createWrapperWithApollo = ({ propsData = {}, queryResult = null } = {}) => {
     Vue.use(VueApollo);
 
     const requestHandlers = [
@@ -83,9 +79,6 @@ describe('~/environments/components/form.vue', () => {
     return mountExtended(EnvironmentForm, {
       provide: {
         ...PROVIDE,
-        glFeatures: {
-          fluxResourceForEnvironment,
-        },
       },
       propsData: {
         ...DEFAULT_PROPS,
@@ -422,39 +415,30 @@ describe('~/environments/components/form.vue', () => {
   });
 
   describe('flux resource selector', () => {
-    it("doesn't render if `fluxResourceForEnvironment` feature flag is disabled", () => {
+    beforeEach(() => {
       wrapper = createWrapperWithApollo();
+    });
+
+    it("doesn't render flux resource selector by default", () => {
       expect(findFluxResourceSelector().exists()).toBe(false);
     });
 
-    describe('when `fluxResourceForEnvironment` feature flag is enabled', () => {
-      beforeEach(() => {
-        wrapper = createWrapperWithApollo({
-          fluxResourceForEnvironment: true,
-        });
+    describe('when the agent was selected', () => {
+      beforeEach(async () => {
+        await selectAgent();
       });
 
-      it("doesn't render flux resource selector by default", () => {
+      it("doesn't render flux resource selector", () => {
         expect(findFluxResourceSelector().exists()).toBe(false);
       });
 
-      describe('when the agent was selected', () => {
-        beforeEach(async () => {
-          await selectAgent();
-        });
+      it('renders the flux resource selector when the namespace is selected', async () => {
+        await findNamespaceSelector().vm.$emit('select', 'agent');
 
-        it("doesn't render flux resource selector", () => {
-          expect(findFluxResourceSelector().exists()).toBe(false);
-        });
-
-        it('renders the flux resource selector when the namespace is selected', async () => {
-          await findNamespaceSelector().vm.$emit('select', 'agent');
-
-          expect(findFluxResourceSelector().props()).toEqual({
-            namespace: 'agent',
-            fluxResourcePath: '',
-            configuration,
-          });
+        expect(findFluxResourceSelector().props()).toEqual({
+          namespace: 'agent',
+          fluxResourcePath: '',
+          configuration,
         });
       });
     });
@@ -522,7 +506,6 @@ describe('~/environments/components/form.vue', () => {
     beforeEach(() => {
       wrapper = createWrapperWithApollo({
         propsData: { environment: environmentWithAgentAndNamespace },
-        fluxResourceForEnvironment: true,
       });
     });
 

@@ -120,11 +120,11 @@ describe('Issuable Time Tracker', () => {
 
       describe('Remaining meter', () => {
         it('should display the remaining meter with the correct width', () => {
-          expect(findTimeRemainingProgress().attributes('value')).toBe('5');
+          expect(findTimeRemainingProgress().vm.$attrs.value).toBe(5);
         });
 
         it('should display the remaining meter with the correct background color when within estimate', () => {
-          expect(findTimeRemainingProgress().attributes('variant')).toBe('primary');
+          expect(findTimeRemainingProgress().vm.$attrs.variant).toBe('primary');
         });
 
         it('should display the remaining meter with the correct background color when over estimate', () => {
@@ -138,7 +138,7 @@ describe('Issuable Time Tracker', () => {
             },
           });
 
-          expect(findTimeRemainingProgress().attributes('variant')).toBe('danger');
+          expect(findTimeRemainingProgress().vm.$attrs.variant).toBe('danger');
         });
       });
     });

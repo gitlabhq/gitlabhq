@@ -26,7 +26,7 @@ you begin. The best way to back up a repository is to
 
 The size of a repository is determined by computing the accumulated size of all files in the repository.
 It is similar to executing `du --summarize --bytes` on your repository's
-[hashed storage path](../../../administration/repository_storage_types.md).
+[hashed storage path](../../../administration/repository_storage_paths.md).
 
 ## Purge files from repository history
 
@@ -53,7 +53,7 @@ visible even after they have been removed from the repository.
 
 To purge files from a GitLab repository:
 
-1. Install either [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md) or
+1. Install [`git filter-repo`](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md) and optionally
    [`git-sizer`](https://github.com/github/git-sizer#getting-started)
    using a supported package manager or from source.
 

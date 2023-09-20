@@ -11,13 +11,9 @@ The settings for package metadata synchronization are located in the [Admin Area
 
 ## Choose package registry metadata to sync
 
-WARNING:
-The full package metadata sync can add up to 30 GB to the PostgreSQL database. Ensure you have provisioned enough disk space for the database before enabling this feature.
-We are actively working on reducing this data size in [epic 10415](https://gitlab.com/groups/gitlab-org/-/epics/10415).
+To choose the packages you want to synchronize with the GitLab Package Metadata Database for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/index.md) and [Continuous Vulnerability Scanning](../../user/application_security/continuous_vulnerability_scanning/index.md):
 
-To choose the packages you want to synchronize with the GitLab License Database for [License Compliance](../../user/compliance/license_scanning_of_cyclonedx_files/index.md):
-
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Security and Compliance**.
 1. Expand **License Compliance**.

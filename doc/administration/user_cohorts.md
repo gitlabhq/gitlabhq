@@ -34,7 +34,7 @@ How do we measure the activity of users? GitLab considers a user active if:
 
 To view user cohorts:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Overview > Users**.
 1. Select the **Cohorts** tab.

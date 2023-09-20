@@ -24,6 +24,7 @@ CrystalballEnv.start!
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 ENV["RSPEC_ALLOW_INVALID_URLS"] = 'true'
+ENV['USE_CI_BUILDS_ROUTING_TABLE'] = 'true'
 
 require_relative '../config/environment'
 
@@ -178,10 +179,12 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :feature
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include LoginHelpers, type: :feature
+  config.include SignUpHelpers, type: :feature
   config.include SearchHelpers, type: :feature
   config.include WaitHelpers, type: :feature
   config.include WaitForRequests, type: :feature
   config.include Features::DomHelpers, type: :feature
+  config.include Features::HighlightContentHelper, type: :feature
   config.include EmailHelpers, :mailer, type: :mailer
   config.include Warden::Test::Helpers, type: :request
   config.include Gitlab::Routing, type: :routing
@@ -210,6 +213,7 @@ RSpec.configure do |config|
   config.include RequestUrgencyMatcher, type: :request
   config.include Capybara::RSpecMatchers, type: :request
   config.include PendingDirectUploadHelpers, :direct_uploads
+  config.include LabelsHelper, type: :feature
 
   config.include_context 'when rendered has no HTML escapes', type: :view
 
@@ -294,16 +298,6 @@ RSpec.configure do |config|
       stub_feature_flags(ci_queueing_disaster_recovery_disable_fair_scheduling: false)
       stub_feature_flags(ci_queueing_disaster_recovery_disable_quota: false)
 
-      # Only a few percent of users will be "enrolled" into the new nav with this flag.
-      # Having it enabled globally would make it impossible to test the current nav.
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/420121
-      stub_feature_flags(super_sidebar_nav_enrolled: false)
-
-      # The anonymous super-sidebar is under heavy development and enabling the flag
-      # globally leads to a lot of errors. This issue is for fixing all test to work with the
-      # new nav: https://gitlab.com/gitlab-org/gitlab/-/issues/420119
-      stub_feature_flags(super_sidebar_logged_out: false)
-
       # It's disabled in specs because we don't support certain features which
       # cause spec failures.
       stub_feature_flags(gitlab_error_tracking: false)
@@ -348,6 +342,8 @@ RSpec.configure do |config|
 
       # Postgres is the primary data source, and ClickHouse only when enabled in certain cases.
       stub_feature_flags(clickhouse_data_collection: false)
+
+      stub_feature_flags(vite: false)
 
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else
@@ -398,8 +394,8 @@ RSpec.configure do |config|
   end
 
   config.around(:example, :quarantine) do |example|
-    # Skip tests in quarantine unless we explicitly focus on them.
-    example.run if config.inclusion_filter[:quarantine]
+    # Skip tests in quarantine unless we explicitly focus on them or not in CI
+    example.run if config.inclusion_filter[:quarantine] || !ENV['CI']
   end
 
   config.around(:example, :request_store) do |example|
@@ -490,6 +486,34 @@ RSpec.configure do |config|
   # Ensures that any Javascript script that tries to make the external VersionCheck API call skips it and returns a response
   config.before(:each, :js) do
     allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
+  end
+
+  [:migration, :delete].each do |spec_type|
+    message = <<~STRING
+      We detected an open transaction before running the example. This is not allowed with specs that rely on a table
+      deletion strategy like those marked as `:#{spec_type}`.
+
+      A common scenario for this is using `test-prof` methods in your specs. `let_it_be` and `before_all` methods open
+      a transaction before all the specs in a context are run, and this is not compatible with these type of specs.
+      Consider replacing these methods with `let!` and `before(:all)`.
+
+      For more information see
+      https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#testprof-in-migration-specs
+    STRING
+
+    config.around(:each, spec_type) do |example|
+      self.class.use_transactional_tests = false
+
+      if DbCleaner.all_connection_classes.any? { |klass| klass.connection.transaction_open? }
+        raise message
+      end
+
+      example.run
+
+      delete_from_all_tables!(except: deletion_except_tables)
+
+      self.class.use_transactional_tests = true
+    end
   end
 end
 

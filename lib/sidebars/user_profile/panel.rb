@@ -20,24 +20,10 @@ module Sidebars
 
       override :super_sidebar_context_header
       def super_sidebar_context_header
-        @super_sidebar_context_header ||= {
-          title: user_name,
-          avatar: context.container.avatar_url,
-          avatar_shape: 'circle'
-        }
+        _('Profile')
       end
 
       private
-
-      def user
-        context.container
-      end
-
-      def user_name
-        return user_display_name(user) if user.blocked? || !user.confirmed?
-
-        user.name
-      end
 
       def add_menus
         add_menu(Sidebars::UserProfile::Menus::OverviewMenu.new(context))

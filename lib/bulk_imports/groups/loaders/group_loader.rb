@@ -4,6 +4,8 @@ module BulkImports
   module Groups
     module Loaders
       class GroupLoader
+        TWO_FACTOR_KEY = 'require_two_factor_authentication'
+
         GroupCreationError = Class.new(StandardError)
 
         def load(context, data)
@@ -15,6 +17,10 @@ module BulkImports
           raise(GroupCreationError, 'Destination is not a group') if user_namespace_destination?(destination_namespace)
           raise(GroupCreationError, 'User not allowed to create group') unless user_can_create_group?(current_user, data)
           raise(GroupCreationError, 'Group exists') if group_exists?(destination_namespace, path)
+
+          unless two_factor_requirements_met?(current_user, data)
+            raise(GroupCreationError, 'User requires Two-Factor Authentication')
+          end
 
           group = ::Groups::CreateService.new(current_user, data).execute
 
@@ -35,6 +41,12 @@ module BulkImports
           else
             Ability.allowed?(current_user, :create_group)
           end
+        end
+
+        def two_factor_requirements_met?(current_user, data)
+          return true unless data.has_key?(TWO_FACTOR_KEY) && data[TWO_FACTOR_KEY]
+
+          current_user.two_factor_enabled?
         end
 
         def group_exists?(destination_namespace, path)

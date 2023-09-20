@@ -4,32 +4,26 @@ import {
   GlPopover,
   GlSprintf,
   GlLink,
-  GlDropdown,
-  GlDropdownItem,
+  GlDisclosureDropdown,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { sprintf, __ } from '~/locale';
 
 export default {
+  name: 'ActionButtons',
   components: {
     GlButton,
     GlPopover,
     GlSprintf,
     GlLink,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    widget: {
-      type: String,
-      required: false,
-      default: '',
-    },
     tertiaryButtons: {
       type: Array,
+      // fix `spec/frontend/vue_merge_request_widget/mr_widget_options_spec.js` before making this required
       required: false,
       default: () => [],
     },
@@ -41,16 +35,25 @@ export default {
     };
   },
   computed: {
-    dropdownLabel() {
-      if (!this.widget) return undefined;
-
-      return sprintf(__('%{widget} options'), { widget: this.widget });
-    },
     hasOneOption() {
       return this.tertiaryButtons.length === 1;
     },
     hasMultipleOptions() {
       return this.tertiaryButtons.length > 1;
+    },
+    dropdownItems() {
+      return this.tertiaryButtons.map((item) => {
+        return {
+          ...item,
+          text: item.text,
+          href: item.href,
+          extraAttrs: {
+            dataClipboardText: item.dataClipboardText,
+            dataMethod: item.dataMethod,
+            target: item.target,
+          },
+        };
+      });
     },
   },
   methods: {
@@ -135,32 +138,18 @@ export default {
       </span>
     </template>
     <template v-if="hasMultipleOptions">
-      <gl-dropdown
+      <gl-disclosure-dropdown
         v-gl-tooltip
+        :items="dropdownItems"
         :title="__('Options')"
-        :text="dropdownLabel"
         icon="ellipsis_v"
         no-caret
         category="tertiary"
-        right
-        lazy
         text-sr-only
         size="small"
-        toggle-class="gl-p-2!"
         class="gl-display-block gl-md-display-none!"
-      >
-        <gl-dropdown-item
-          v-for="(btn, index) in tertiaryButtons"
-          :key="index"
-          :href="btn.href"
-          :target="btn.target"
-          :data-clipboard-text="btn.dataClipboardText"
-          :data-method="btn.dataMethod"
-          @click="onClickAction(btn)"
-        >
-          {{ btn.text }}
-        </gl-dropdown-item>
-      </gl-dropdown>
+        @action="onClickAction"
+      />
       <span v-for="(btn, index) in tertiaryButtons" :key="index">
         <gl-button
           :id="btn.id"

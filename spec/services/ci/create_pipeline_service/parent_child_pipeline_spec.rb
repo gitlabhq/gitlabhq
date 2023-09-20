@@ -20,7 +20,29 @@ RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_fl
 
   before do
     project.add_developer(user)
-    stub_ci_pipeline_yaml_file(config)
+  end
+
+  it_behaves_like 'creating a pipeline with environment keyword' do
+    let!(:project) { create(:project, :repository) }
+    let(:execute_service) { service.execute(:push) }
+    let(:expected_deployable_class) { Ci::Bridge }
+    let(:expected_deployment_status) { 'running' }
+    let(:expected_job_status) { 'running' }
+    let(:child_config) { YAML.dump({ deploy: { script: 'deploy' } }) }
+    let(:base_config) do
+      {
+        trigger: {
+          include: [{ local: '.child.yml' }],
+          strategy: 'depend'
+        }
+      }
+    end
+
+    before do
+      project.add_developer(user)
+      project.repository.create_file(user, '.gitlab-ci.yml', config, branch_name: 'master', message: 'ok')
+      project.repository.create_file(user, '.child.yml', child_config, branch_name: 'master', message: 'ok')
+    end
   end
 
   shared_examples 'successful creation' do
@@ -65,6 +87,10 @@ RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_fl
           include:
             - local: path/to/child.yml
       YAML
+    end
+
+    before do
+      stub_ci_pipeline_yaml_file(config)
     end
 
     it_behaves_like 'successful creation' do
@@ -158,6 +184,10 @@ RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_fl
   end
 
   describe 'child pipeline triggers' do
+    before do
+      stub_ci_pipeline_yaml_file(config)
+    end
+
     context 'when YAML is valid' do
       let(:config) do
         <<~YAML

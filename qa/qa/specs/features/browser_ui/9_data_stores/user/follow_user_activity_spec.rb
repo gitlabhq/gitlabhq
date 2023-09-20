@@ -7,18 +7,10 @@ module QA
 
       let(:followed_user_api_client) { Runtime::API::Client.new(:gitlab, user: followed_user) }
 
-      let(:followed_user) do
-        Resource::User.fabricate_via_api! do |user|
-          user.name = "followed_user_#{SecureRandom.hex(8)}"
-          user.api_client = admin_api_client
-        end
-      end
+      let(:followed_user) { create(:user, name: "followed_user_#{SecureRandom.hex(8)}", api_client: admin_api_client) }
 
       let(:following_user) do
-        Resource::User.fabricate_via_api! do |user|
-          user.name = "following_user_#{SecureRandom.hex(8)}"
-          user.api_client = admin_api_client
-        end
+        create(:user, name: "following_user_#{SecureRandom.hex(8)}", api_client: admin_api_client)
       end
 
       let(:group) do
@@ -30,12 +22,7 @@ module QA
       end
 
       let(:project) do
-        Resource::Project.fabricate_via_api! do |project|
-          project.name = 'project-for-tags'
-          project.initialize_with_readme = true
-          project.api_client = followed_user_api_client
-          project.group = group
-        end
+        create(:project, :with_readme, name: 'project-for-tags', api_client: followed_user_api_client, group: group)
       end
 
       let(:merge_request) do
@@ -45,12 +32,7 @@ module QA
         end
       end
 
-      let(:issue) do
-        Resource::Issue.fabricate_via_api! do |issue|
-          issue.project = project
-          issue.api_client = followed_user_api_client
-        end
-      end
+      let(:issue) { create(:issue, project: project, api_client: followed_user_api_client) }
 
       let(:comment) do
         Resource::ProjectIssueNote.fabricate_via_api! do |project_issue_note|

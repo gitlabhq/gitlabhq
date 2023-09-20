@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WorkItemRelationshipList renders linked item list 1`] = `
+<div>
+  <h4
+    class="gl-font-sm gl-font-weight-semibold gl-mb-2 gl-mt-3 gl-mx-2 gl-text-gray-700"
+    data-testid="work-items-list-heading"
+  >
+    Blocking
+  </h4>
+  <div
+    class="work-items-list-body"
+  >
+    <ul
+      class="content-list work-items-list"
+    >
+      <li
+        class="gl-border-b-0! gl-pb-0! gl-pt-0!"
+      >
+        <work-item-link-child-contents-stub
+          canupdate="true"
+          childitem="[object Object]"
+          childpath="/test-project-path/-/work_items/83"
+        />
+      </li>
+    </ul>
+  </div>
+</div>
+`;

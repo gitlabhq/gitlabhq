@@ -65,6 +65,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:project_shortcut_buttons).to(:user_preference) }
     it { is_expected.to delegate_method(:project_shortcut_buttons=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:keyboard_shortcuts_enabled).to(:user_preference) }
+    it { is_expected.to delegate_method(:keyboard_shortcuts_enabled=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:render_whitespace_in_code).to(:user_preference) }
     it { is_expected.to delegate_method(:render_whitespace_in_code=).to(:user_preference).with_arguments(:args) }
 
@@ -168,7 +171,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:abuse_events).class_name('Abuse::Event').inverse_of(:user) }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
     it { is_expected.to have_many(:releases).dependent(:nullify) }
-    it { is_expected.to have_many(:metrics_users_starred_dashboards).inverse_of(:user) }
     it { is_expected.to have_many(:reviews).inverse_of(:author) }
     it { is_expected.to have_many(:merge_request_assignees).inverse_of(:assignee) }
     it { is_expected.to have_many(:merge_request_reviewers).inverse_of(:reviewer) }
@@ -2093,6 +2095,7 @@ RSpec.describe User, feature_category: :user_profile do
     it 'uses SecureRandom to generate the incoming email token' do
       allow_next_instance_of(User) do |user|
         allow(user).to receive(:update_highest_role)
+        allow(user).to receive(:associate_with_enterprise_group)
       end
 
       allow_next_instance_of(Namespaces::UserNamespace) do |namespace|
@@ -2906,7 +2909,7 @@ RSpec.describe User, feature_category: :user_profile do
       it 'applies defaults to user' do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
-        expect(user.theme_id).to eq(1)
+        expect(user.theme_id).to eq(3)
       end
 
       it 'does not undo projects_limit setting if it matches old DB default of 10' do
@@ -5343,56 +5346,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '.ghost' do
-    it "creates a ghost user if one isn't already present" do
-      ghost = described_class.ghost
-
-      expect(ghost).to be_ghost
-      expect(ghost).to be_persisted
-      expect(ghost.namespace).not_to be_nil
-      expect(ghost.namespace).to be_persisted
-      expect(ghost.user_type).to eq 'ghost'
-    end
-
-    it 'does not create a second ghost user if one is already present' do
-      expect do
-        described_class.ghost
-        described_class.ghost
-      end.to change { described_class.count }.by(1)
-      expect(described_class.ghost).to eq(described_class.ghost)
-    end
-
-    context "when a regular user exists with the username 'ghost'" do
-      it 'creates a ghost user with a non-conflicting username' do
-        create(:user, username: 'ghost')
-        ghost = described_class.ghost
-
-        expect(ghost).to be_persisted
-        expect(ghost.username).to eq('ghost1')
-      end
-    end
-
-    context "when a regular user exists with the email 'ghost@example.com'" do
-      it 'creates a ghost user with a non-conflicting email' do
-        create(:user, email: 'ghost@example.com')
-        ghost = described_class.ghost
-
-        expect(ghost).to be_persisted
-        expect(ghost.email).to eq('ghost1@example.com')
-      end
-    end
-
-    context 'when a domain allowlist is in place' do
-      before do
-        stub_application_setting(domain_allowlist: ['gitlab.com'])
-      end
-
-      it 'creates a ghost user' do
-        expect(described_class.ghost).to be_persisted
-      end
-    end
-  end
-
   describe '#update_two_factor_requirement' do
     let(:user) { create :user }
 
@@ -6088,7 +6041,7 @@ RSpec.describe User, feature_category: :user_profile do
           it 'creates an abuse report with the correct data' do
             expect { subject }.to change { AbuseReport.count }.from(0).to(1)
             expect(AbuseReport.last.attributes).to include({
-              reporter_id: described_class.security_bot.id,
+              reporter_id: Users::Internal.security_bot.id,
               user_id: user.id,
               category: "spam",
               message: 'Potential spammer account deletion'
@@ -6109,7 +6062,9 @@ RSpec.describe User, feature_category: :user_profile do
           end
 
           context 'when there is an existing abuse report' do
-            let!(:abuse_report) { create(:abuse_report, user: user, reporter: described_class.security_bot, message: 'Existing') }
+            let!(:abuse_report) do
+              create(:abuse_report, user: user, reporter: Users::Internal.security_bot, message: 'Existing')
+            end
 
             it 'updates the abuse report' do
               subject
@@ -7535,66 +7490,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  context 'bot users' do
-    shared_examples 'bot users' do |bot_type|
-      it 'creates the user if it does not exist' do
-        expect do
-          described_class.public_send(bot_type)
-        end.to change { User.where(user_type: bot_type).count }.by(1)
-      end
-
-      it 'creates a route for the namespace of the created user' do
-        bot_user = described_class.public_send(bot_type)
-
-        expect(bot_user.namespace.route).to be_present
-      end
-
-      it 'does not create a new user if it already exists' do
-        described_class.public_send(bot_type)
-
-        expect do
-          described_class.public_send(bot_type)
-        end.not_to change { User.count }
-      end
-    end
-
-    shared_examples 'bot user avatars' do |bot_type, avatar_filename|
-      it 'sets the custom avatar for the created bot' do
-        bot_user = described_class.public_send(bot_type)
-
-        expect(bot_user.avatar.url).to be_present
-        expect(bot_user.avatar.filename).to eq(avatar_filename)
-      end
-    end
-
-    it_behaves_like 'bot users', :alert_bot
-    it_behaves_like 'bot users', :support_bot
-    it_behaves_like 'bot users', :migration_bot
-    it_behaves_like 'bot users', :security_bot
-    it_behaves_like 'bot users', :ghost
-    it_behaves_like 'bot users', :automation_bot
-    it_behaves_like 'bot users', :admin_bot
-
-    it_behaves_like 'bot user avatars', :alert_bot, 'alert-bot.png'
-    it_behaves_like 'bot user avatars', :support_bot, 'support-bot.png'
-    it_behaves_like 'bot user avatars', :security_bot, 'security-bot.png'
-    it_behaves_like 'bot user avatars', :automation_bot, 'support-bot.png'
-    it_behaves_like 'bot user avatars', :admin_bot, 'admin-bot.png'
-
-    context 'when bot is the support_bot' do
-      subject { described_class.support_bot }
-
-      it { is_expected.to be_confirmed }
-    end
-
-    context 'when bot is the admin bot' do
-      subject { described_class.admin_bot }
-
-      it { is_expected.to be_admin }
-      it { is_expected.to be_confirmed }
-    end
-  end
-
   describe '#confirmation_required_on_sign_in?' do
     subject { user.confirmation_required_on_sign_in? }
 
@@ -7868,7 +7763,7 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be(:external_user) { create(:user, :external) }
     let_it_be(:unconfirmed_user) { create(:user, confirmed_at: nil) }
     let_it_be(:omniauth_user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
-    let_it_be(:internal_user) { User.alert_bot.tap { |u| u.confirm } }
+    let_it_be(:internal_user) { Users::Internal.alert_bot.tap { |u| u.confirm } }
 
     it 'does not return blocked or banned users' do
       expect(described_class.without_forbidden_states).to match_array(

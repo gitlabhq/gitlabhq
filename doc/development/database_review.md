@@ -173,10 +173,11 @@ Include in the MR description:
 ##### Query Plans
 
 - The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
-- Provide a link to the plan generated using the `explain` command in the [postgres.ai](database/database_lab.md) chatbot.
-  - If it's not possible to get an accurate picture in Database Lab, you may need to seed a development environment, and instead provide links
-    from [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com). Be sure to paste both the plan
-    and the query used in the form.
+- Provide a link to the plan generated using the `explain` command in the [postgres.ai](database/database_lab.md) chatbot. The `explain` command runs
+    `EXPLAIN ANALYZE`.
+  - If it's not possible to get an accurate picture in Database Lab, you may need to
+    seed a development environment, and instead provide output
+    from `EXPLAIN ANALYZE`. Create links to the plan using [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com). Be sure to paste both the plan and the query used in the form.
 - When providing query plans, make sure it hits enough data:
   - To produce a query plan with enough data, you can use the IDs of:
     - The `gitlab-org` namespace (`namespace_id = 9970`), for queries involving a group.
@@ -192,6 +193,13 @@ Include in the MR description:
   plan _before_ and _after_ the change. This helps spot differences quickly.
 - Include data that shows the performance improvement, preferably in
   the form of a benchmark.
+- When evaluating a query plan, we need the final query to be
+  executed against the database. We don't need to analyze the intermediate
+  queries returned as `ActiveRecord::Relation` from finders and scopes.
+  PostgreSQL query plans are dependent on all the final parameters,
+  including limits and other things that may be added before final execution.
+  One way to be sure of the actual query executed is to check
+  `log/development.log`.
 
 #### Preparation when adding foreign keys to existing tables
 

@@ -31,33 +31,40 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest do
       expect(matcher.match?).to be false
     end
 
-    context 'with load balancing enabled' do
+    context 'with load balancing enabled', :redis do
       let(:session) { ::Gitlab::Database::LoadBalancing::Session.current }
-      let(:all_caught_up) { true }
 
       before do
+        # Need to mock as though we actually have replicas
+        allow(::ApplicationRecord.load_balancer)
+          .to receive(:primary_only?)
+          .and_return(false)
+
+        # Put some sticking position for the primary in Redis
+        ::ApplicationRecord.sticking.stick(:project, project.id)
+
         Gitlab::Database::LoadBalancing::Session.clear_session
 
-        allow(::ApplicationRecord.sticking)
-          .to receive(:all_caught_up?)
-          .and_return(all_caught_up)
+        # Mock the load balancer result since we don't actually have real replicas to match against
+        expect(::ApplicationRecord.load_balancer)
+          .to receive(:select_up_to_date_host)
+          .and_return(load_balancer_result)
 
+        # Expect sticking called with correct arguments but don't mock it so that we can also test the internal
+        # behaviour of updating the Session.use_primary?
         expect(::ApplicationRecord.sticking)
-          .to receive(:select_valid_host)
-          .with(:project, project.id)
+          .to receive(:find_caught_up_replica)
+          .with(:project, project.id, use_primary_on_empty_location: true)
           .and_call_original
-
-        allow(::ApplicationRecord.sticking)
-          .to receive(:select_caught_up_replicas)
-          .with(:project, project.id)
-          .and_return(all_caught_up)
       end
 
       after do
         Gitlab::Database::LoadBalancing::Session.clear_session
       end
 
-      shared_examples 'secondary that has caught up to a primary' do
+      context 'when any secondary is caught up' do
+        let(:load_balancer_result) { ::Gitlab::Database::LoadBalancing::LoadBalancer::ANY_CAUGHT_UP }
+
         it 'continues to use the secondary' do
           expect(session.use_primary?).to be false
           expect(subject.match?).to be true
@@ -70,7 +77,9 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest do
         end
       end
 
-      shared_examples 'secondary that is lagging primary' do
+      context 'when all secondaries are lagging behind' do
+        let(:load_balancer_result) { ::Gitlab::Database::LoadBalancing::LoadBalancer::NONE_CAUGHT_UP }
+
         it 'sticks to the primary' do
           expect(subject.match?).to be true
           expect(session.use_primary?).to be true
@@ -81,14 +90,6 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest do
             .to change { total_counter.get }.by(1)
             .and change { stale_counter.get }.by(1)
         end
-      end
-
-      it_behaves_like 'secondary that has caught up to a primary'
-
-      context 'on secondary behind primary' do
-        let(:all_caught_up) { false }
-
-        it_behaves_like 'secondary that is lagging primary'
       end
     end
   end

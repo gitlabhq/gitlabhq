@@ -50,11 +50,13 @@ The following is the recommended minimum Memory hardware guidance for a handful 
 - 8 GB RAM supports up to 1000 users
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
-In addition to the above, we generally recommend having at least 2 GB of swap on your server,
-even if you currently have enough available RAM. Having swap helps to reduce the chance of errors occurring
-if your available memory changes. We also recommend configuring the kernel's swappiness setting
-to a low value like `10` to make the most of your RAM while still having the swap
-available when needed.
+For smaller installations, you should:
+
+- Have at least 2 GB of swap on your server, even if you have enough available RAM. Having swap helps to reduce the chance of
+  errors occurring if your available memory changes.
+- Configure the kernel's swappiness setting to a low value like `10` to make the most of your RAM while still having the swap available when needed.
+
+For larger installations that follow our reference architectures, you [shouldn't configure swap](../administration/reference_architectures/index.md#no-swap).
 
 NOTE:
 Although excessive swapping is undesired and degrades performance, it is an
@@ -98,7 +100,7 @@ The following managed PostgreSQL services are known to be incompatible and shoul
 
 | GitLab version | Managed service                                       |
 |----------------|-------------------------------------------------------|
-| 14.4+          | Amazon Aurora (see [14.4.0](../update/index.md#1440)) |
+| 14.4+          | Amazon Aurora (see [14.4.0](../update/versions/gitlab_14_changes.md#1440)) |
 
 NOTE:
 Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.gitlab.com/releases/2020/05/22/gitlab-13-0-released/#postgresql-11-is-now-the-minimum-required-version-to-install-gitlab) so that GitLab can benefit from PostgreSQL 11 improvements, such as partitioning.

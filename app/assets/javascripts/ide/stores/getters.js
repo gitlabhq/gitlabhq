@@ -30,7 +30,8 @@ const getCannotPushCodeViewModel = (state) => {
         text: MSG_GO_TO_FORK,
       },
     };
-  } else if (forkPath) {
+  }
+  if (forkPath) {
     return {
       message: MSG_CANNOT_PUSH_CODE_SHOULD_FORK,
       action: {

@@ -2,36 +2,30 @@
 
 exports[`New ready to merge state component renders permission text if canMerge (false) is false 1`] = `
 <div
-  class="mr-widget-body media"
+  class="media mr-widget-body"
 >
   <status-icon-stub
     status="success"
   />
-   
   <p
-    class="media-body gl-m-0! gl-font-weight-bold gl-text-gray-900!"
+    class="gl-font-weight-bold gl-m-0! gl-text-gray-900! media-body"
   >
-    
-      Ready to merge by members who can write to the target branch.
-    
+    Ready to merge by members who can write to the target branch.
   </p>
 </div>
 `;
 
 exports[`New ready to merge state component renders permission text if canMerge (true) is false 1`] = `
 <div
-  class="mr-widget-body media"
+  class="media mr-widget-body"
 >
   <status-icon-stub
     status="success"
   />
-   
   <p
-    class="media-body gl-m-0! gl-font-weight-bold gl-text-gray-900!"
+    class="gl-font-weight-bold gl-m-0! gl-text-gray-900! media-body"
   >
-    
-      Ready to merge!
-    
+    Ready to merge!
   </p>
 </div>
 `;

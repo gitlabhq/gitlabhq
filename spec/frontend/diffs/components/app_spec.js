@@ -11,7 +11,7 @@ import CommitWidget from '~/diffs/components/commit_widget.vue';
 import CompareVersions from '~/diffs/components/compare_versions.vue';
 import DiffFile from '~/diffs/components/diff_file.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
-import findingsDrawer from '~/diffs/components/shared/findings_drawer.vue';
+import FindingsDrawer from '~/diffs/components/shared/findings_drawer.vue';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
@@ -250,6 +250,11 @@ describe('diffs/components/app', () => {
       // Component uses $nextTick so we wait until that has finished
       await nextTick();
       expect(store.state.diffs.currentDiffFileId).toBe('ABC');
+    });
+
+    it('renders findings-drawer', () => {
+      createComponent();
+      expect(wrapper.findComponent(FindingsDrawer).exists()).toBe(true);
     });
   });
 
@@ -753,22 +758,6 @@ describe('diffs/components/app', () => {
           expect(wrapper.vm.navigateToDiffFileIndex).toHaveBeenCalledWith(targetFile - 1);
         },
       );
-    });
-  });
-
-  describe('findings-drawer', () => {
-    it('does not render findings-drawer when codeQualityInlineDrawer flag is off', () => {
-      createComponent();
-      expect(wrapper.findComponent(findingsDrawer).exists()).toBe(false);
-    });
-
-    it('does render findings-drawer when codeQualityInlineDrawer flag is on', () => {
-      createComponent({}, () => {}, {
-        glFeatures: {
-          codeQualityInlineDrawer: true,
-        },
-      });
-      expect(wrapper.findComponent(findingsDrawer).exists()).toBe(true);
     });
   });
 });

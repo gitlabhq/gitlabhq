@@ -84,13 +84,13 @@ export default {
     <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
     <confidentiality-badge
       v-if="isWorkItemConfidential"
-      class="gl-vertical-align-middle gl-display-inline-flex!"
-      data-testid="confidential"
-      :workspace-type="$options.WORKSPACE_PROJECT"
+      class="gl-vertical-align-middle gl-display-inline-flex! gl-mr-2"
       :issuable-type="workItemType"
+      :workspace-type="$options.WORKSPACE_PROJECT"
+      hide-text-in-small-screens
     />
     <work-item-type-icon
-      class="gl-vertical-align-middle gl-mr-0!"
+      class="gl-vertical-align-middle"
       :work-item-icon-name="workItemIconName"
       :work-item-type="workItemType"
       show-text

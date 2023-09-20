@@ -68,7 +68,7 @@ module Gitlab
 
       GEO_NODES_LOAD = 'SELECT 1 AS one FROM "geo_nodes" LIMIT 1'
       LICENSES_LOAD = 'SELECT "licenses".* FROM "licenses" ORDER BY "licenses"."id"'
-      SCHEMA_INTROSPECTION = %r/SELECT.*(FROM|JOIN) (pg_attribute|pg_class)/m.freeze
+      SCHEMA_INTROSPECTION = %r{SELECT.*(FROM|JOIN) (pg_attribute|pg_class)}m.freeze
 
       # queries can be safely ignored if they are amoritized in regular usage
       # (i.e. only requested occasionally and otherwise cached).

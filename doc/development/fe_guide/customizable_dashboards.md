@@ -1,5 +1,5 @@
 ---
-stage: Analytics
+stage: Analyze
 group: Product Analytics
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -74,15 +74,15 @@ export const pageViewsOverTime = {
       dimensions: [],
       filters: [
         {
-          member: 'SnowplowTrackedEvents.event',
+          member: 'TrackedEvents.event',
           operator: 'equals',
           values: ['page_view']
         }
       ],
-      measures: ['SnowplowTrackedEvents.pageViewsCount'],
+      measures: ['TrackedEvents.pageViewsCount'],
       timeDimensions: [
         {
-          dimension: 'SnowplowTrackedEvents.derivedTstamp',
+          dimension: 'TrackedEvents.derivedTstamp',
           granularity: 'day',
         },
       ],
@@ -123,6 +123,7 @@ import { pageViewsOverTime } from './visualizations';
 export const dashboard = {
   slug: 'my_dashboard', // Used to set the URL path for the dashboard.
   title: 'My dashboard title', // The title to display.
+  description: 'This is a description of the dashboard', // A description of the dashboard
   // Each dashboard consists of an array of panels to display.
   panels: [
     {
@@ -143,7 +144,7 @@ export const dashboard = {
       // Here we override the Cube.js query to get page views per week instead of days.
       queryOverrides: {
         timeDimensions: {
-          dimension: 'SnowplowTrackedEvents.derivedTstamp',
+          dimension: 'TrackedEvents.derivedTstamp',
           granularity: 'week',
         },
       },

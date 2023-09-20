@@ -115,13 +115,13 @@ module Gitlab
 
           labels = []
           [bug['sCategory'], bug['sPriority']].each do |label|
-            unless label.blank?
-              labels << label
+            next if label.blank?
 
-              unless @known_labels.include?(label)
-                create_label(label)
-                @known_labels << label
-              end
+            labels << label
+
+            unless @known_labels.include?(label)
+              create_label(label)
+              @known_labels << label
             end
           end
 

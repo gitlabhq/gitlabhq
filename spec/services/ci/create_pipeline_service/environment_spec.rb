@@ -14,6 +14,26 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
     project.add_developer(developer)
   end
 
+  it_behaves_like 'creating a pipeline with environment keyword' do
+    let!(:project) { create(:project, :repository) }
+    let(:execute_service) { service.execute(:push) }
+    let(:expected_deployable_class) { Ci::Build }
+    let(:expected_deployment_status) { 'created' }
+    let(:expected_job_status) { 'pending' }
+    let(:expected_tag_names) { %w[hello] }
+    let(:base_config) do
+      {
+        script: 'deploy',
+        tags: ['hello']
+      }
+    end
+
+    before do
+      project.add_developer(developer) # rubocop:disable RSpec/BeforeAllRoleAssignment
+      project.repository.create_file(developer, '.gitlab-ci.yml', config, branch_name: 'master', message: 'test')
+    end
+  end
+
   describe '#execute' do
     subject { service.execute(:push).payload }
 
@@ -104,6 +124,8 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         expect(pipeline).to be_created_successfully
         expect(Environment.find_by_name('test/deploy/2')).to be_persisted
         expect(pipeline.builds.size).to eq(1)
+        # Clearing cache of BatchLoader in `build.persisted_environment` for fetching fresh data.
+        BatchLoader::Executor.clear_current
         expect(build.persisted_environment.name).to eq('test/deploy/2')
         expect(build.name).to eq('deploy-review-app-2')
         expect(build.environment).to eq('test/$CI_JOB_STAGE/2')

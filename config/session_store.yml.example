@@ -1,0 +1,3 @@
+development:
+  unique_cookie_key_postfix: true
+  cookie_key: _gitlab_session

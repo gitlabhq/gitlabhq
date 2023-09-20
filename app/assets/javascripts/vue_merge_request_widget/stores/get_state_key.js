@@ -4,31 +4,44 @@ import { stateKey } from './state_maps';
 export default function deviseState() {
   if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.PREPARING) {
     return stateKey.preparing;
-  } else if (!this.commitsCount) {
+  }
+  if (!this.commitsCount) {
     return stateKey.nothingToMerge;
-  } else if (this.projectArchived) {
+  }
+  if (this.projectArchived) {
     return stateKey.archived;
-  } else if (this.branchMissing) {
+  }
+  if (this.branchMissing) {
     return stateKey.missingBranch;
-  } else if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.CHECKING) {
+  }
+  if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.CHECKING) {
     return stateKey.checking;
-  } else if (this.hasConflicts) {
+  }
+  if (this.hasConflicts) {
     return stateKey.conflicts;
-  } else if (this.shouldBeRebased) {
+  }
+  if (this.shouldBeRebased) {
     return stateKey.rebase;
-  } else if (this.hasMergeChecksFailed && !this.autoMergeEnabled) {
+  }
+  if (this.hasMergeChecksFailed && !this.autoMergeEnabled) {
     return stateKey.mergeChecksFailed;
-  } else if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.CI_MUST_PASS) {
+  }
+  if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.CI_MUST_PASS) {
     return stateKey.pipelineFailed;
-  } else if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.DRAFT_STATUS) {
+  }
+  if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.DRAFT_STATUS) {
     return stateKey.draft;
-  } else if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.DISCUSSIONS_NOT_RESOLVED) {
+  }
+  if (this.detailedMergeStatus === DETAILED_MERGE_STATUS.DISCUSSIONS_NOT_RESOLVED) {
     return stateKey.unresolvedDiscussions;
-  } else if (this.canMerge && this.isSHAMismatch) {
+  }
+  if (this.canMerge && this.isSHAMismatch) {
     return stateKey.shaMismatch;
-  } else if (this.autoMergeEnabled && !this.mergeError) {
+  }
+  if (this.autoMergeEnabled && !this.mergeError) {
     return stateKey.autoMergeEnabled;
-  } else if (
+  }
+  if (
     this.detailedMergeStatus === DETAILED_MERGE_STATUS.MERGEABLE ||
     this.detailedMergeStatus === DETAILED_MERGE_STATUS.CI_STILL_RUNNING
   ) {

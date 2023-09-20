@@ -14,8 +14,7 @@ class Projects::NotesController < Projects::ApplicationController
 
   feature_category :team_planning, [:index, :create, :update, :destroy, :delete_attachment, :toggle_award_emoji]
   feature_category :code_review_workflow, [:resolve, :unresolve, :outdated_line_change]
-  urgency :medium, [:index]
-  urgency :low, [:create, :update, :destroy, :resolve, :unresolve, :toggle_award_emoji, :outdated_line_change]
+  urgency :low
 
   override :feature_category
   def feature_category

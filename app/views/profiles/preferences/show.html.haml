@@ -67,6 +67,13 @@
         = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer'
     .form-group
       = f.label :layout, class: 'label-bold' do
+        = s_('Preferences|Keyboard shortcuts')
+      - shortcuts_help_link = link_to('', help_page_path('user/shortcuts'), target: '_blank', rel: 'noopener noreferrer')
+      = f.gitlab_ui_checkbox_component :keyboard_shortcuts_enabled,
+        s_('Preferences|Enable keyboard shortcuts'),
+        help_text: safe_format(s_('Preferences|%{link_start}List of keyboard shortcuts%{link_end}'), tag_pair(shortcuts_help_link, :link_start, :link_end))
+    .form-group
+      = f.label :layout, class: 'label-bold' do
         = s_('Preferences|Layout width')
       = f.gitlab_ui_radio_component :layout, layout_choices[0][1], layout_choices[0][0], help_text: fixed_help_text
       = f.gitlab_ui_radio_component :layout, layout_choices[1][1], layout_choices[1][0], help_text: fluid_help_text
@@ -140,7 +147,7 @@
     %p.gl-text-secondary
       = s_('Preferences|Configure how dates and times display for you.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'time-preferences'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'show-exact-times-instead-of-relative-times'), target: '_blank', rel: 'noopener noreferrer'
     .form-group
       = f.gitlab_ui_checkbox_component :time_display_relative,
         s_('Preferences|Use relative times'),

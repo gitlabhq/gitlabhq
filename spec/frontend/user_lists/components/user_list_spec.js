@@ -169,7 +169,7 @@ describe('User List', () => {
 
     it('displays the alert message', () => {
       const alert = findAlert();
-      expect(alert.text()).toBe('Something went wrong on our end. Please try again!');
+      expect(alert.text()).toBe('Unable to load user list. Reload the page and try again.');
     });
 
     it('can dismiss the alert', async () => {

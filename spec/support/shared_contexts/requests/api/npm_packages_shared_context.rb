@@ -5,7 +5,7 @@ RSpec.shared_context 'npm api setup' do
   include HttpBasicAuthHelpers
 
   let_it_be(:user, reload: true) { create(:user) }
-  let_it_be(:group) { create(:group, name: 'test-group') }
+  let_it_be(:group, reload: true) { create(:group, name: 'test-group') }
   let_it_be(:namespace) { group }
   let_it_be(:project, reload: true) { create(:project, :public, namespace: namespace) }
   let_it_be(:package, reload: true) { create(:npm_package, project: project, name: "@#{group.path}/scoped_package", version: '1.2.3') }

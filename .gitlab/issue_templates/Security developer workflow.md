@@ -41,6 +41,7 @@ After your merge request has been approved according to our [approval guidelines
 
 ## Documentation and final details
 
+- [ ] When you believe this issue is ready for release (Backports are approved and ready to be merged), apply the ~"security-target" label (This label does not have an effect yet, but will in upcoming releases. See <https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/19611#computer-developer-process> for more information).
 - [ ] To avoid release delays, please nominate a developer in a different timezone who will be able to respond to any pipeline or merge failures in your absence `@gitlab-username`
 - [ ] Ensure `~severity::x` label is on this issue, all associated issues, and merge requests
 - [ ] Ensure the [Links section](#links) is completed.

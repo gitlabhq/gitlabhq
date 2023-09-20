@@ -2,28 +2,23 @@ import { find } from 'lodash';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import AccessDropdown from '~/projects/settings/access_dropdown';
 import { initToggle } from '~/toggles';
+import { initAccessDropdown } from '~/projects/settings/init_access_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 
 export default class ProtectedBranchEdit {
   constructor(options) {
     this.hasLicense = options.hasLicense;
 
-    this.$wraps = {};
     this.hasChanges = false;
     this.$wrap = options.$wrap;
-    this.$allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
-    this.$allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
 
-    this.$wraps[ACCESS_LEVELS.MERGE] = this.$allowedToMergeDropdown.closest(
-      `.${ACCESS_LEVELS.MERGE}-container`,
-    );
-    this.$wraps[ACCESS_LEVELS.PUSH] = this.$allowedToPushDropdown.closest(
-      `.${ACCESS_LEVELS.PUSH}-container`,
-    );
+    this.selectedItems = {
+      [ACCESS_LEVELS.PUSH]: [],
+      [ACCESS_LEVELS.MERGE]: [],
+    };
+    this.initDropdowns();
 
-    this.buildDropdowns();
     this.initToggles();
   }
 
@@ -67,6 +62,66 @@ export default class ProtectedBranchEdit {
     }
   }
 
+  initDropdowns() {
+    // Allowed to Merge dropdown
+    this[`${ACCESS_LEVELS.MERGE}_dropdown`] = this.buildDropdown(
+      'js-allowed-to-merge',
+      ACCESS_LEVELS.MERGE,
+      gon.merge_access_levels,
+      'protected-branch-allowed-to-merge',
+    );
+
+    // Allowed to Push dropdown
+    this[`${ACCESS_LEVELS.PUSH}_dropdown`] = this.buildDropdown(
+      'js-allowed-to-push',
+      ACCESS_LEVELS.PUSH,
+      gon.push_access_levels,
+      'protected-branch-allowed-to-push',
+    );
+  }
+
+  buildDropdown(selector, accessLevel, accessLevelsData, testId) {
+    const [el] = this.$wrap.find(`.${selector}`);
+    if (!el) return undefined;
+
+    const projectId = gon.current_project_id;
+    const dropdown = initAccessDropdown(el, {
+      toggleClass: selector,
+      hasLicense: this.hasLicense,
+      searchEnabled: el.dataset.filter !== undefined,
+      showUsers: projectId !== undefined,
+      block: true,
+      accessLevel,
+      accessLevelsData,
+      testId,
+    });
+
+    dropdown.$on('select', (selected) => this.onSelectItems(accessLevel, selected));
+    dropdown.$on('hidden', () => this.onDropdownHide());
+
+    this.initSelectedItems(dropdown, accessLevel);
+    return dropdown;
+  }
+
+  initSelectedItems(dropdown, accessLevel) {
+    this.selectedItems[accessLevel] = dropdown.preselected.map((item) => {
+      if (item.type === LEVEL_TYPES.USER) return { id: item.id, user_id: item.user_id };
+      if (item.type === LEVEL_TYPES.ROLE) return { id: item.id, access_level: item.access_level };
+      if (item.type === LEVEL_TYPES.GROUP) return { id: item.id, group_id: item.group_id };
+      return { id: item.id, deploy_key_id: item.deploy_key_id };
+    });
+  }
+
+  onSelectItems(accessLevel, selected) {
+    this.selectedItems[accessLevel] = selected;
+    this.hasChanges = true;
+  }
+
+  onDropdownHide() {
+    if (!this.hasChanges) return;
+    this.updatePermissions();
+  }
+
   updateProtectedBranch(formData, callback) {
     axios
       .patch(this.$wrap.data('url'), {
@@ -78,79 +133,25 @@ export default class ProtectedBranchEdit {
       });
   }
 
-  buildDropdowns() {
-    // Allowed to merge dropdown
-    this[`${ACCESS_LEVELS.MERGE}_dropdown`] = new AccessDropdown({
-      accessLevel: ACCESS_LEVELS.MERGE,
-      accessLevelsData: gon.merge_access_levels,
-      $dropdown: this.$allowedToMergeDropdown,
-      onSelect: this.onSelectOption.bind(this),
-      onHide: this.onDropdownHide.bind(this),
-      hasLicense: this.hasLicense,
-    });
-
-    // Allowed to push dropdown
-    this[`${ACCESS_LEVELS.PUSH}_dropdown`] = new AccessDropdown({
-      accessLevel: ACCESS_LEVELS.PUSH,
-      accessLevelsData: gon.push_access_levels,
-      $dropdown: this.$allowedToPushDropdown,
-      onSelect: this.onSelectOption.bind(this),
-      onHide: this.onDropdownHide.bind(this),
-      hasLicense: this.hasLicense,
-    });
-  }
-
-  onSelectOption() {
-    this.hasChanges = true;
-  }
-
-  onDropdownHide() {
-    if (!this.hasChanges) {
-      return;
-    }
-
-    this.hasChanges = true;
-    this.updatePermissions();
-  }
-
   updatePermissions() {
-    const formData = Object.keys(ACCESS_LEVELS).reduce((acc, level) => {
-      const accessLevelName = ACCESS_LEVELS[level];
-      const inputData = this[`${accessLevelName}_dropdown`].getInputData(accessLevelName);
-      acc[`${accessLevelName}_attributes`] = inputData;
-
+    const formData = Object.values(ACCESS_LEVELS).reduce((acc, level) => {
+      acc[`${level}_attributes`] = this.selectedItems[level];
       return acc;
     }, {});
-
-    axios
-      .patch(this.$wrap.data('url'), {
-        protected_branch: formData,
-      })
-      .then(({ data }) => {
-        this.hasChanges = false;
-
-        Object.keys(ACCESS_LEVELS).forEach((level) => {
-          const accessLevelName = ACCESS_LEVELS[level];
-
-          // The data coming from server will be the new persisted *state* for each dropdown
-          this.setSelectedItemsToDropdown(data[accessLevelName], `${accessLevelName}_dropdown`);
-        });
-        this.$allowedToMergeDropdown.enable();
-        this.$allowedToPushDropdown.enable();
-      })
-      .catch(() => {
-        this.$allowedToMergeDropdown.enable();
-        this.$allowedToPushDropdown.enable();
-        createAlert({ message: __('Failed to update branch!') });
+    this.updateProtectedBranch(formData, ({ data }) => {
+      this.hasChanges = false;
+      Object.values(ACCESS_LEVELS).forEach((level) => {
+        this.setSelectedItemsToDropdown(data[level], level);
       });
+    });
   }
 
-  setSelectedItemsToDropdown(items = [], dropdownName) {
+  setSelectedItemsToDropdown(items = [], accessLevel) {
     const itemsToAdd = items.map((currentItem) => {
       if (currentItem.user_id) {
         // Do this only for users for now
         // get the current data for selected items
-        const selectedItems = this[dropdownName].getSelectedItems();
+        const selectedItems = this.selectedItems[accessLevel];
         const currentSelectedItem = find(selectedItems, {
           user_id: currentItem.user_id,
         });
@@ -164,7 +165,8 @@ export default class ProtectedBranchEdit {
           username: currentSelectedItem.username,
           avatar_url: currentSelectedItem.avatar_url,
         };
-      } else if (currentItem.group_id) {
+      }
+      if (currentItem.group_id) {
         return {
           id: currentItem.id,
           group_id: currentItem.group_id,
@@ -181,6 +183,7 @@ export default class ProtectedBranchEdit {
       };
     });
 
-    this[dropdownName].setSelectedItems(itemsToAdd);
+    this.selectedItems[accessLevel] = itemsToAdd;
+    this[`${accessLevel}_dropdown`]?.setPreselectedItems(itemsToAdd);
   }
 }

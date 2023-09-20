@@ -2,8 +2,6 @@
 
 module Integrations
   class WebexTeams < BaseChatNotification
-    undef :notify_only_broken_pipelines
-
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://api.ciscospark.com/v1/webhooks/incoming/...',
@@ -29,10 +27,6 @@ module Integrations
 
     def self.to_param
       'webex_teams'
-    end
-
-    def fields
-      self.class.fields + build_event_channels
     end
 
     def help

@@ -6,7 +6,7 @@ module Integrations
     include ReactivelyCached
     prepend EnableSslVerification
 
-    TEAMCITY_SAAS_HOSTNAME = /\A[^\.]+\.teamcity\.com\z/i.freeze
+    TEAMCITY_SAAS_HOSTNAME = /\A[^\.]+\.teamcity\.com\z/i
 
     field :teamcity_url,
       title: -> { s_('ProjectService|TeamCity server URL') },
@@ -43,7 +43,7 @@ module Integrations
       end
 
       def supported_events
-        %w(push merge_request)
+        %w[push merge_request]
       end
     end
 

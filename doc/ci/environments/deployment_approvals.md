@@ -8,32 +8,24 @@ description: Require approvals prior to deploying to a Protected Environment
 # Deployment approvals **(PREMIUM ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8. Feature flag `deployment_approvals` removed.
 
-It may be useful to require additional approvals before deploying to certain protected environments (for example, production). This pre-deployment approval requirement is useful to accommodate testing, security, or compliance processes that must happen before each deployment.
+You can require additional approvals for deployments to protected
+environments. Deployments are blocked until all required approvals are
+given.
 
-When a protected environment requires one or more approvals, all deployments to that environment become blocked and wait for the required approvals from the `Allowed to Deploy` list before running.
+Use deployment approvals to accommodate testing,
+security, or compliance processes. For example, you might want to
+require approvals for deployments to production environments.
 
-NOTE:
-See the [epic](https://gitlab.com/groups/gitlab-org/-/epics/6832) for planned features.
+## Configure deployment approvals
 
-## Prerequisites
-
-- Basic knowledge of [GitLab Environments and Deployments](index.md).
-- Basic knowledge of [Protected Environments](protected_environments.md).
-
-## Configure deployment approvals for a project
+You can require approvals for deployments to protected environments in
+a project.
 
 To configure deployment approvals for a project:
 
-1. [Create a deployment job](#create-a-deployment-job).
-1. [Require approvals for a protected environment](#require-approvals-for-a-protected-environment).
-
-### Create a deployment job
-
-Create a deployment job in the `.gitlab-ci.yml` file of the desired project. The job does **not** need to be manual (`when: manual`).
-
-Example:
+1. Create a deployment job in the `.gitlab-ci.yml` file of your project:
 
    ```yaml
    stages:
@@ -47,22 +39,15 @@ Example:
        name: ${CI_JOB_NAME}
    ```
 
-### Require approvals for a protected environment
+   The job does not need to be manual (`when: manual`).
 
-There are two ways to configure the approval requirements:
+1. Add the required [approval rules](#multiple-approval-rules).
 
-- [Unified approval setting](#unified-approval-setting-deprecated) ... You can define who can execute **and** approve deployments.
-  This is useful when there is no separation of duties between executors and approvers in your organization.
-- [Multiple approval rules](#multiple-approval-rules) ... You can define who can execute **or** approve deployments.
-  This is useful when there is a separation of duties between executors and approvers in your organization.
-
-NOTE:
-Multiple approval rules is a more flexible option than the unified approval setting, thus both configurations shouldn't
-co-exist and multiple approval rules takes the precedence over the unified approval setting if it happens.
+The environments in your project require approval before deployment.
 
 <!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
 
-#### Unified approval setting (deprecated)
+### Unified approval setting (deprecated)
 
 > - UI configuration [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/378447) in GitLab
 >   15.11.
@@ -94,7 +79,7 @@ Maintainer role.
 
 <!--- end_remove -->
 
-#### Multiple approval rules
+### Multiple approval rules
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 14.10 with a flag named `deployment_approval_rules`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) in GitLab 15.0. [Feature flag `deployment_approval_rules`](https://gitlab.com/gitlab-org/gitlab/-/issues/345678) removed.
@@ -107,7 +92,7 @@ Maintainer role.
   - **Allowed to deploy** sets which entities can execute the deployment job.
   - **Approvers** sets which entities can approve the deployment job.
 
-After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy.
+After this is configured, all jobs deploying to this environment automatically go into a blocked state and wait for approvals before running. Ensure that the number of required approvals is less than the number of users allowed to deploy. Once a deployment job is approved, it must be [run manually](../jobs/job_control.md#run-a-manual-job).
 
 A configuration that uses the REST API might look like:
 
@@ -128,7 +113,7 @@ NOTE:
 To protect, update, or unprotect an environment, you must have at least the
 Maintainer role.
 
-#### Migrate to multiple approval rules
+### Migrate to multiple approval rules
 
 You can migrate a protected environment from unified approval rules to multiple
 approval rules. Unified approval rules allow all entities that can deploy to an
@@ -137,7 +122,7 @@ create a new approval rule for each entity allowed to deploy to the environment.
 
 To migrate with the UI:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Environment** list, select your environment.
@@ -171,7 +156,7 @@ require `Administrator` to approve every deployment job in `Production`.
 By default, the user who triggers a deployment pipeline can't also approve the deployment job.
 To allow self-approval of a deployment job:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Approval options**, select the **Allow pipeline triggerer to approve deployment** checkbox.
@@ -196,7 +181,7 @@ Prerequisites:
 
 To approve or reject a deployment to a protected environment using the UI:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment's name.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
@@ -233,7 +218,7 @@ granted.
 
 To view the approval details of a deployment:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment's name.
 1. In the deployment's row, select **Approval options** (**{thumb-up}**).
@@ -249,7 +234,7 @@ The approval status details are shown:
 
 ### Using the UI
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment being deployed to.
 1. Look for the `blocked` label.
@@ -265,9 +250,9 @@ Use the [Deployments API](../../api/deployments.md#get-a-specific-deployment) to
 - When the [multiple approval rules](#multiple-approval-rules) is configured:
   - The `approval_summary` field contains the current approval status per rule.
 
-## Related features
+## Related topics
 
-For details about other GitLab features aimed at protecting deployments, see [safe deployments](deployment_safety.md).
+- [Deployment approvals feature epic](https://gitlab.com/groups/gitlab-org/-/epics/6832)
 
 <!-- ## Troubleshooting
 

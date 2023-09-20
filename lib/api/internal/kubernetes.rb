@@ -4,81 +4,12 @@ module API
   # Kubernetes Internal API
   module Internal
     class Kubernetes < ::API::Base
-      include Gitlab::Utils::StrongMemoize
-
       before do
         check_feature_enabled
         authenticate_gitlab_kas_request!
       end
 
-      helpers do
-        def authenticate_gitlab_kas_request!
-          render_api_error!('KAS JWT authentication invalid', 401) unless Gitlab::Kas.verify_api_request(headers)
-        end
-
-        def agent_token
-          @agent_token ||= cluster_agent_token_from_authorization_token
-        end
-
-        def agent
-          @agent ||= agent_token.agent
-        end
-
-        def repo_type
-          Gitlab::GlRepository::PROJECT
-        end
-
-        def gitaly_info(project)
-          gitaly_features = Feature::Gitaly.server_feature_flags
-
-          Gitlab::GitalyClient.connection_data(project.repository_storage).merge(features: gitaly_features)
-        end
-
-        def gitaly_repository(project)
-          project.repository.gitaly_repository.to_h
-        end
-
-        def check_feature_enabled
-          not_found!('Internal API not found') unless Feature.enabled?(:kubernetes_agent_internal_api, type: :ops)
-        end
-
-        def check_agent_token
-          unauthorized! unless agent_token
-
-          ::Clusters::AgentTokens::TrackUsageService.new(agent_token).execute
-        end
-
-        def agent_has_access_to_project?(project)
-          Guest.can?(:download_code, project) || agent.has_access_to?(project)
-        end
-
-        def increment_unique_events
-          events = params[:unique_counters]&.slice(
-            :agent_users_using_ci_tunnel,
-            :k8s_api_proxy_requests_unique_users_via_ci_access, :k8s_api_proxy_requests_unique_agents_via_ci_access,
-            :k8s_api_proxy_requests_unique_users_via_user_access, :k8s_api_proxy_requests_unique_agents_via_user_access,
-            :flux_git_push_notified_unique_projects
-          )
-
-          events&.each do |event, entity_ids|
-            increment_unique_values(event, entity_ids)
-          end
-        end
-
-        def increment_count_events
-          events = params[:counters]&.slice(
-            :gitops_sync, :k8s_api_proxy_request, :flux_git_push_notifications_total,
-            :k8s_api_proxy_requests_via_ci_access, :k8s_api_proxy_requests_via_user_access
-          )
-
-          Gitlab::UsageDataCounters::KubernetesAgentCounter.increment_event_counts(events)
-        end
-
-        def update_configuration(agent:, config:)
-          ::Clusters::Agents::Authorizations::CiAccess::RefreshService.new(agent, config: config).execute
-          ::Clusters::Agents::Authorizations::UserAccess::RefreshService.new(agent, config: config).execute
-        end
-      end
+      helpers ::API::Helpers::Kubernetes::AgentHelpers
 
       namespace 'internal' do
         namespace 'kubernetes' do
@@ -155,33 +86,23 @@ module API
           desc 'Authorize a proxy user request'
           params do
             requires :agent_id, type: Integer, desc: 'ID of the agent accessed'
-            requires :access_type, type: String, values: ['session_cookie'], desc: 'The type of the access key being verified.'
+            requires :access_type, type: String, values: %w[session_cookie personal_access_token], desc: 'The type of access key being verified.'
             requires :access_key, type: String, desc: 'The authentication secret for the given access type.'
             given access_type: ->(val) { val == 'session_cookie' } do
               requires :csrf_token, type: String, allow_blank: false, desc: 'CSRF token that must be checked when access_type is "session_cookie", to ensure the request originates from a GitLab browsing session.'
             end
           end
           post '/', feature_category: :deployment_management do
-            # Load session
-            public_session_id_string =
-              begin
-                Gitlab::Kas::UserAccess.decrypt_public_session_id(params[:access_key])
-              rescue StandardError
-                bad_request!('Invalid access_key')
-              end
-
-            session_id = Rack::Session::SessionId.new(public_session_id_string)
-            session = ActiveSession.sessions_from_ids([session_id.private_id]).first
-            unauthorized!('Invalid session') unless session
-
-            # CSRF check
-            unless ::Gitlab::Kas::UserAccess.valid_authenticity_token?(session.symbolize_keys, params[:csrf_token])
-              unauthorized!('CSRF token does not match')
-            end
-
             # Load user
-            user = Warden::SessionSerializer.new('rack.session' => session).fetch(:user)
-            unauthorized!('Invalid user in session') unless user
+            user = if params[:access_type] == 'session_cookie'
+                     retrieve_user_from_session_cookie
+                   elsif params[:access_type] == 'personal_access_token'
+                     u = retrieve_user_from_personal_access_token
+                     bad_request!('PAT authentication is not enabled') unless Feature.enabled?(:k8s_proxy_pat, u)
+                     u
+                   end
+
+            bad_request!('Unable to get user from request data') if user.nil?
 
             # Load agent
             agent = ::Clusters::Agent.find(params[:agent_id])
@@ -205,6 +126,7 @@ module API
               optional :flux_git_push_notifications_total, type: Integer, desc: 'The count to increment the flux_git_push_notifications_total metrics by'
               optional :k8s_api_proxy_requests_via_ci_access, type: Integer, desc: 'The count to increment the k8s_api_proxy_requests_via_ci_access metric by'
               optional :k8s_api_proxy_requests_via_user_access, type: Integer, desc: 'The count to increment the k8s_api_proxy_requests_via_user_access metric by'
+              optional :k8s_api_proxy_requests_via_pat_access, type: Integer, desc: 'The count to increment the k8s_api_proxy_requests_via_pat_access metric by'
             end
 
             optional :unique_counters, type: Hash do
@@ -213,6 +135,8 @@ module API
               optional :k8s_api_proxy_requests_unique_agents_via_ci_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via `ci_access`'
               optional :k8s_api_proxy_requests_unique_users_via_user_access, type: Array[Integer], desc: 'An array of users that have interacted with the CI tunnel via `user_access`'
               optional :k8s_api_proxy_requests_unique_agents_via_user_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via `user_access`'
+              optional :k8s_api_proxy_requests_unique_users_via_pat_access, type: Array[Integer], desc: 'An array of users that have interacted with the CI tunnel via Personal Access Token'
+              optional :k8s_api_proxy_requests_unique_agents_via_pat_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via Personal Access Token'
               optional :flux_git_push_notified_unique_projects, type: Array[Integer], desc: 'An array of projects that have been notified to reconcile their Flux workloads'
             end
           end

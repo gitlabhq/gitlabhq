@@ -35,7 +35,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream"
 )
 
-const scratchDir = "testdata/scratch"
 const testRepoRoot = "testdata/repo"
 const testDocumentRoot = "testdata/public"
 const testAltDocumentRoot = "testdata/alt-public"
@@ -44,9 +43,6 @@ var absDocumentRoot string
 
 const testRepo = "group/test.git"
 const testProject = "group/test"
-
-var checkoutDir = path.Join(scratchDir, "test")
-var cacheDir = path.Join(scratchDir, "cache")
 
 func TestMain(m *testing.M) {
 	if _, err := os.Stat(path.Join(testRepoRoot, testRepo)); os.IsNotExist(err) {
@@ -64,9 +60,6 @@ func TestMain(m *testing.M) {
 }
 
 func TestDeniedClone(t *testing.T) {
-	// Prepare clone directory
-	require.NoError(t, os.RemoveAll(scratchDir))
-
 	// Prepare test server and backend
 	ts := testAuthServer(t, nil, nil, 403, "Access denied")
 	defer ts.Close()
@@ -74,7 +67,7 @@ func TestDeniedClone(t *testing.T) {
 	defer ws.Close()
 
 	// Do the git clone
-	cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), checkoutDir)
+	cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), t.TempDir())
 	out, err := cloneCmd.CombinedOutput()
 	t.Log(string(out))
 	require.Error(t, err, "git clone should have failed")
@@ -89,7 +82,7 @@ func TestDeniedPush(t *testing.T) {
 
 	// Perform the git push
 	pushCmd := exec.Command("git", "push", "-v", fmt.Sprintf("%s/%s", ws.URL, testRepo), fmt.Sprintf("master:%s", newBranch()))
-	pushCmd.Dir = checkoutDir
+	pushCmd.Dir = t.TempDir()
 	out, err := pushCmd.CombinedOutput()
 	t.Log(string(out))
 	require.Error(t, err, "git push should have failed")
@@ -125,14 +118,12 @@ func TestRegularProjectsAPI(t *testing.T) {
 
 func TestAllowedXSendfileDownload(t *testing.T) {
 	contentFilename := "my-content"
-	prepareDownloadDir(t)
 
 	allowedXSendfileDownload(t, contentFilename, "foo/uploads/bar")
 }
 
 func TestDeniedXSendfileDownload(t *testing.T) {
 	contentFilename := "my-content"
-	prepareDownloadDir(t)
 
 	deniedXSendfileDownload(t, contentFilename, "foo/uploads/bar")
 }
@@ -721,11 +712,6 @@ func setupAltStaticFile(t *testing.T, fpath, content string) {
 	absDocumentRoot = testhelper.SetupStaticFileHelper(t, fpath, content, testAltDocumentRoot)
 }
 
-func prepareDownloadDir(t *testing.T) {
-	require.NoError(t, os.RemoveAll(scratchDir))
-	require.NoError(t, os.MkdirAll(scratchDir, 0755))
-}
-
 func newBranch() string {
 	return fmt.Sprintf("branch-%d", time.Now().UnixNano())
 }
@@ -962,7 +948,7 @@ func TestDependencyProxyInjector(t *testing.T) {
 					w.Header().Set("Gitlab-Workhorse-Send-Data", `send-dependency:`+base64.URLEncoding.EncodeToString([]byte(params)))
 				case "/base/upload/authorize":
 					w.Header().Set("Content-Type", api.ResponseContentType)
-					_, err := fmt.Fprintf(w, `{"TempPath":"%s"}`, scratchDir)
+					_, err := fmt.Fprintf(w, `{"TempPath":"%s"}`, t.TempDir())
 					require.NoError(t, err)
 				case "/base/upload":
 					w.WriteHeader(tc.finalizeStatus)

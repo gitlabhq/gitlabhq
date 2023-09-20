@@ -12,9 +12,9 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
 
   describe 'modules' do
     it { expect(described_class).to include_module(ApplicationWorker) }
-    it { expect(described_class).to include_module(Gitlab::NotifyUponDeath) }
     it { expect(described_class).to include_module(Gitlab::JiraImport::QueueOptions) }
     it { expect(described_class).to include_module(Gitlab::Import::DatabaseHelpers) }
+    it { expect(described_class).to include_module(Gitlab::Import::NotifyUponDeath) }
   end
 
   subject { described_class.new }

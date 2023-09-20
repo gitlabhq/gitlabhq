@@ -313,7 +313,7 @@ export default {
       <template #table>
         <gl-table
           class="alert-management-table"
-          data-qa-selector="alert_table_container"
+          data-testid="alert-table-container"
           :items="
             alerts
               ? alerts.list

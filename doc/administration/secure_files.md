@@ -120,7 +120,7 @@ See [the available connection settings for different providers](object_storage.m
 
    ```ruby
    gitlab_rails['ci_secure_files_object_store_enabled'] = true
-   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "terraform"
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "ci_secure_files"
    gitlab_rails['ci_secure_files_object_store_connection'] = {
      'provider' => 'AWS',
      'region' => 'eu-central-1',

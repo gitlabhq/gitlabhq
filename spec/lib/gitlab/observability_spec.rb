@@ -40,16 +40,10 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
     it { is_expected.to eq("#{described_class.observability_url}/v1/auth/start") }
   end
 
-  describe '.tracing_url' do
-    subject { described_class.tracing_url(project) }
-
-    it { is_expected.to eq("#{described_class.observability_url}/query/#{group.id}/#{project.id}/v1/traces") }
-  end
-
   describe '.provisioning_url' do
     subject { described_class.provisioning_url(project) }
 
-    it { is_expected.to eq(described_class.observability_url.to_s) }
+    it { is_expected.to eq("#{described_class.observability_url}/v3/tenant/#{project.id}") }
   end
 
   describe '.build_full_url' do
@@ -166,27 +160,6 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
 
         expect(described_class.embeddable_url(test_url)).to be_nil
       end
-    end
-  end
-
-  describe '.tracing_enabled?' do
-    let_it_be(:project) { create(:project, :repository) }
-
-    it 'returns true if feature is enabled globally' do
-      expect(described_class.tracing_enabled?(project)).to eq(true)
-    end
-
-    it 'returns true if feature is enabled for the project' do
-      stub_feature_flags(observability_tracing: false)
-      stub_feature_flags(observability_tracing: project)
-
-      expect(described_class.tracing_enabled?(project)).to eq(true)
-    end
-
-    it 'returns false if feature is disabled globally' do
-      stub_feature_flags(observability_tracing: false)
-
-      expect(described_class.tracing_enabled?(project)).to eq(false)
     end
   end
 

@@ -495,7 +495,6 @@ export default {
     :issuables-loading="isLoading"
     namespace="dashboard"
     recent-searches-storage-key="issues"
-    :search-input-placeholder="$options.i18n.searchPlaceholder"
     :search-tokens="searchTokens"
     :show-pagination-controls="showPaginationControls"
     show-work-item-type-icon

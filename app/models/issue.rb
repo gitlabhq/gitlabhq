@@ -14,7 +14,6 @@ class Issue < ApplicationRecord
   include TimeTrackable
   include ThrottledTouch
   include LabelEventable
-  include IgnorableColumns
   include MilestoneEventable
   include WhereComposite
   include StateEventable
@@ -48,15 +47,13 @@ class Issue < ApplicationRecord
   #
   # This should be kept consistent with the enums used for the GraphQL issue list query in
   # https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/assets/javascripts/issues/list/constants.js#L154-158
-  TYPES_FOR_LIST = %w(issue incident test_case task objective key_result).freeze
+  TYPES_FOR_LIST = %w[issue incident test_case task objective key_result].freeze
 
   # Types of issues that should be displayed on issue board lists
-  TYPES_FOR_BOARD_LIST = %w(issue incident).freeze
+  TYPES_FOR_BOARD_LIST = %w[issue incident].freeze
 
   # This default came from the enum `issue_type` column. Defined as default in the DB
   DEFAULT_ISSUE_TYPE = :issue
-
-  ignore_column :issue_type, remove_with: '16.4', remove_after: '2023-08-22'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
@@ -112,7 +109,6 @@ class Issue < ApplicationRecord
   has_one :sentry_issue
   has_one :alert_management_alert, class_name: 'AlertManagement::Alert'
   has_one :incident_management_issuable_escalation_status, class_name: 'IncidentManagement::IssuableEscalationStatus'
-  has_and_belongs_to_many :self_managed_prometheus_alert_events, join_table: :issues_self_managed_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :issue, validate: false
   has_many :prometheus_alerts, through: :prometheus_alert_events
@@ -190,7 +186,6 @@ class Issue < ApplicationRecord
   scope :preload_awardable, -> { preload(:award_emoji) }
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_prometheus_alert_events, -> { joins(:issues_prometheus_alert_events) }
-  scope :with_self_managed_prometheus_alert_events, -> { joins(:issues_self_managed_prometheus_alert_events) }
   scope :with_api_entity_associations, -> {
     preload(:work_item_type, :timelogs, :closed_by, :assignees, :author, :labels, :issuable_severity,
       namespace: [{ parent: :route }, :route], milestone: { project: [:route, { namespace: :route }] },
@@ -223,8 +218,11 @@ class Issue < ApplicationRecord
 
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
-  scope :service_desk, -> { where(author: ::User.support_bot) }
-  scope :inc_relations_for_view, -> { includes(author: :status, assignees: :status) }
+  scope :service_desk, -> { where(author: ::Users::Internal.support_bot) }
+  scope :inc_relations_for_view, -> do
+    includes(author: :status, assignees: :status)
+    .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422155')
+  end
 
   # An issue can be uniquely identified by project_id and iid
   # Takes one or more sets of composite IDs, expressed as hash-like records of
@@ -546,18 +544,14 @@ class Issue < ApplicationRecord
   end
 
   def related_issues(current_user, preload: nil)
-    related_issues = self.class
-                         .select(['issues.*', 'issue_links.id AS issue_link_id',
-                                  'issue_links.link_type as issue_link_type_value',
-                                  'issue_links.target_id as issue_link_source_id',
-                                  'issue_links.created_at as issue_link_created_at',
-                                  'issue_links.updated_at as issue_link_updated_at'])
-                         .joins("INNER JOIN issue_links ON
-                                 (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
-                                 OR
-                                 (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
-                         .preload(preload)
-                         .reorder('issue_link_id')
+    related_issues =
+      linked_issues_select
+        .joins("INNER JOIN issue_links ON
+           (issue_links.source_id = issues.id AND issue_links.target_id = #{id})
+           OR
+           (issue_links.target_id = issues.id AND issue_links.source_id = #{id})")
+        .preload(preload)
+        .reorder('issue_link_id')
 
     related_issues = yield related_issues if block_given?
 
@@ -607,7 +601,7 @@ class Issue < ApplicationRecord
     end
   end
 
-  def etag_caching_enabled?
+  def real_time_notes_enabled?
     true
   end
 
@@ -642,7 +636,7 @@ class Issue < ApplicationRecord
   end
 
   def from_service_desk?
-    author.id == User.support_bot.id
+    author.id == Users::Internal.support_bot.id
   end
 
   def issue_link_type
@@ -716,8 +710,8 @@ class Issue < ApplicationRecord
   end
 
   def expire_etag_cache
-    # TODO: Fix this for the case when issues is created at group level
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/395814
+    # We don't expire the cache for issues that don't have a project, since they are created at the group level
+    # and they are only displayed in the new work item view that uses GraphQL subscriptions for real-time updates
     return unless project
 
     key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
@@ -789,7 +783,7 @@ class Issue < ApplicationRecord
     # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/393126
     return unless project
 
-    Issues::SearchData.upsert({ namespace_id: namespace_id, project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i(project_id issue_id))
+    Issues::SearchData.upsert({ namespace_id: namespace_id, project_id: project_id, issue_id: id, search_vector: search_vector }, unique_by: %i[project_id issue_id])
   end
 
   def ensure_metrics!
@@ -832,6 +826,14 @@ class Issue < ApplicationRecord
     return if disallowed_types.empty?
 
     errors.add(:work_item_type_id, format(_('can not be changed to %{new_type}'), new_type: work_item_type&.name))
+  end
+
+  def linked_issues_select
+    self.class.select(['issues.*', 'issue_links.id AS issue_link_id',
+                       'issue_links.link_type as issue_link_type_value',
+                       'issue_links.target_id as issue_link_source_id',
+                       'issue_links.created_at as issue_link_created_at',
+                       'issue_links.updated_at as issue_link_updated_at'])
   end
 end
 

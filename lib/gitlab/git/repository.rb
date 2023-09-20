@@ -763,6 +763,20 @@ module Gitlab
         BatchedGitRefUpdates::Deletion.bulk_insert!(records)
       end
 
+      # Update a list of references from X -> Y
+      #
+      # Ref list is expected to be an array of hashes in the form:
+      # old_sha:
+      # new_sha
+      # reference:
+      #
+      # When new_sha is Gitlab::Git::BLANK_SHA, then this will be deleted
+      def update_refs(ref_list)
+        wrapped_gitaly_errors do
+          gitaly_ref_client.update_refs(ref_list: ref_list) if ref_list.any?
+        end
+      end
+
       def delete_refs(...)
         wrapped_gitaly_errors do
           gitaly_delete_refs(...)
@@ -957,10 +971,6 @@ module Gitlab
         ::Gitlab::Git::BundleFile.check!(bundle_path)
 
         gitaly_repository_client.create_from_bundle(bundle_path)
-      end
-
-      def create_from_snapshot(url, auth)
-        gitaly_repository_client.create_from_snapshot(url, auth)
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:, push_options: [], &block)

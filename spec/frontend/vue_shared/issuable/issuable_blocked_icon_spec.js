@@ -237,10 +237,6 @@ describe('IssuableBlockedIcon', () => {
         await mouseenter();
       });
 
-      it('matches the snapshot', () => {
-        expect(wrapper.html()).toMatchSnapshot();
-      });
-
       it('should render popover title with correct blocking issuable count', () => {
         expect(findPopoverTitle().text()).toBe('Blocked by 4 issues');
       });

@@ -6,7 +6,6 @@ exports[`ConanInstallation renders all the messages 1`] = `
     options="[object Object]"
     packagetype="conan"
   />
-   
   <code-instruction-stub
     copytext="Copy Conan Command"
     instruction="conan install @gitlab-org/package-15 --remote=gitlab"
@@ -14,13 +13,11 @@ exports[`ConanInstallation renders all the messages 1`] = `
     trackingaction="copy_conan_command"
     trackinglabel="code_instruction"
   />
-   
   <h3
     class="gl-font-lg"
   >
     Registry setup
   </h3>
-   
   <code-instruction-stub
     copytext="Copy Conan Setup Command"
     instruction="conan remote add gitlab http://gdk.test:3000/api/v4/projects/1/packages/conan"
@@ -28,7 +25,7 @@ exports[`ConanInstallation renders all the messages 1`] = `
     trackingaction="copy_conan_setup_command"
     trackinglabel="code_instruction"
   />
-   For more information on the Conan registry, 
+  For more information on the Conan registry,
   <gl-link-stub
     href="/help/user/packages/conan_repository/index"
     target="_blank"

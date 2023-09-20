@@ -1,0 +1,74 @@
+- name: New velocity metrics in the Value Streams Dashboard
+  description: |  # Do not modify this line, instead modify the lines below.
+    The [Value Streams Dashboard](https://about.gitlab.com/blog/2023/06/12/getting-started-with-value-streams-dashboard/) has been enhanced with new metrics: **Merge request (MR) throughput** and **Total closed issues** (Velocity). In GitLab, **MR throughput** is a count of the number of merge requests merged per month, and **Total closed issues** is the number of flow items closed at a point in time.
+
+    With these metrics, you can identify low or high productivity months and the efficiency of [merge request and code review processes](https://docs.gitlab.com/ee/user/analytics/merge_request_analytics.html). You can then gauge whether the [Value Stream delivery](https://docs.gitlab.com/ee/user/group/value_stream_analytics/) is accelerating or not.
+
+    Over time, the metrics accumulate historical data from MRs and issues. Teams can use the data to determine if delivery rates are accelerating or need improvement, and provide more accurate estimates or forecasts for how much work they can deliver.
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html
+  image_url: https://about.gitlab.com/images/16_3/16.3_vsd.mr_iss.png
+  published_at: 2023-08-22
+  release: 16.3
+
+- name: More powerful GitLab SaaS runners on Linux
+  description: |  # Do not modify this line, instead modify the lines below.
+    Having recently upgraded all of our Linux SaaS runners, we are now introducing `xlarge` and `2xlarge` [SaaS runners on Linux](https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html). Equipped with 16 and 32 vCPUs respectively and fully integrated with GitLab CI/CD, these runners will allow you to build and test your application faster than ever before.
+
+    We are determined to provide the industry's fastest CI/CD build speed and look forward to seeing teams achieve even shorter feedback cycles and ultimately deliver software faster.
+  stage: Verify
+  self-managed: false
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/runners/saas/linux_saas_runner.html
+  image_url: https://about.gitlab.com/images/16_3/larger-runners.png
+  published_at: 2023-08-22
+  release: 16.3
+
+- name: Additional filtering for scan result policies
+  description: |  # Do not modify this line, instead modify the lines below.
+    Determining which results from a security or compliance scan are actionable is a significant challenge for security and compliance teams. Granular filters for scan result policies will help you cut through the noise to identify which vulnerabilities or violations require your attention the most. These new filters and filter updates will streamline your workflows:
+
+    - Status: Status rule changes introduce more intuitive enforcement of "new" versus "previously existing" vulnerabilities. A new status field `new_needs_triage` allows you to filter only new vulnerabilities that need to be triaged.
+    - Age: Create policies to enforce approvals when a vulnerability is outside of SLA (days, months, or years) based on the detected date.
+    - Fix Available: Narrow the focus of your policy to address dependencies that have a fix available.
+    - False Positive: Filter out false positives that have been detected by our Vulnerability Extraction Tool, for SAST results, and via Rezilion for our Container Scanning and Dependency Scanning results.
+  stage: Govern
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/policies/scan-result-policies.html
+  image_url: https://about.gitlab.com/images/16_3/security-policy-filters-compressed.png
+  published_at: 2023-08-22
+  release: 16.3
+
+- name: Connect to a workspace with SSH
+  description: |  # Do not modify this line, instead modify the lines below.
+    With workspaces, you can create reproducible, ephemeral, cloud-based runtime environments. Since the feature was introduced in GitLab 16.0, the only way to use a workspace was through the browser-based Web IDE running directly in the environment. The Web IDE, however, might not always be the right tool for you.
+
+    With GitLab 16.3, you can now securely connect to a workspace from your desktop with SSH and use your local tools and extensions. The first iteration supports SSH connections directly in VS Code or from the command line with editors like Vim or Emacs. Support for other editors such as JetBrains IDEs and JupyterLab is proposed in future iterations.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/workspace/configuration.html#connect-to-a-workspace-with-ssh
+  image_url: https://about.gitlab.com/images/16_3/create-workspace-ssh.png
+  published_at: 2023-08-22
+  release: 16.3
+
+- name: Flux sync status visualization
+  description: |  # Do not modify this line, instead modify the lines below.
+    In previous releases, you probably used `kubectl` or another third-party tool to check the status of your Flux deployments. From GitLab 16.3, you can check your deployments with the environments UI.
+
+    Deployments rely on Flux `Kustomization` and `HelmRelease` resources to gather the status of a given environment, which requires a namespace to be configured for the environment. By default, GitLab searches the `Kustomization` and `HelmRelease` resources for the name of the project slug. You can customize the name GitLab looks for in the environment settings.
+  stage: Deploy
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/environments/kubernetes_dashboard.html#flux-sync-status
+  image_url: https://about.gitlab.com/images/16_3/flux-badges.png
+  published_at: 2023-08-22
+  release: 16.3

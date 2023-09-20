@@ -85,6 +85,7 @@ events:
 notes:
 - award_emoji
 - project
+- namespace
 - noteable
 - author
 - updated_by
@@ -103,6 +104,7 @@ note_metadata:
   - note
   - email_participant
 commit_notes:
+- namespace
 - award_emoji
 - noteable
 - author
@@ -621,6 +623,7 @@ project:
 - project_members
 - project_repository
 - users
+- maintainers
 - requesters
 - namespace_members
 - namespace_requesters
@@ -690,7 +693,6 @@ project:
 - pool_repository
 - kubernetes_namespaces
 - error_tracking_setting
-- metrics_setting
 - gitlab_slack_application_integration
 - github_integration
 - protected_environments
@@ -738,6 +740,7 @@ project:
 - project_registry
 - packages
 - package_files
+- package_protection_rules
 - rpm_repository_files
 - npm_metadata_caches
 - packages_cleanup_policy
@@ -823,6 +826,7 @@ project:
 - project_state
 - security_policy_bots
 - target_branch_rules
+- organization
 award_emoji:
 - awardable
 - user
@@ -872,8 +876,6 @@ suggestions:
 - note
 diff_note_positions:
 - note
-metrics_setting:
-- project
 protected_environments:
 - project
 - group

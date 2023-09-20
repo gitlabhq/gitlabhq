@@ -175,7 +175,7 @@ describe('markdownSerializer', () => {
           inlineDiff({ type: 'deletion' }, '-10 lines'),
         ),
       ),
-    ).toBe('{+\\+30 lines+}{-\\-10 lines-}');
+    ).toBe('{++30 lines+}{--10 lines-}');
   });
 
   it('correctly serializes highlight', () => {

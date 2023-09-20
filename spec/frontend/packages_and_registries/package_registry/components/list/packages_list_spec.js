@@ -37,7 +37,6 @@ describe('packages_list', () => {
   const defaultProps = {
     list: [firstPackage, secondPackage],
     isLoading: false,
-    pageInfo: {},
     groupSettings: defaultPackageGroupSettings,
   };
 
@@ -113,7 +112,6 @@ describe('packages_list', () => {
       expect(findRegistryList().props()).toMatchObject({
         title: '2 packages',
         items: defaultProps.list,
-        pagination: defaultProps.pageInfo,
         hiddenDelete: false,
         isLoading: false,
       });
@@ -312,24 +310,6 @@ describe('packages_list', () => {
     it('show the empty slot', () => {
       const emptySlot = findEmptySlot();
       expect(emptySlot.exists()).toBe(true);
-    });
-  });
-
-  describe('pagination', () => {
-    beforeEach(() => {
-      mountComponent({ props: { pageInfo: { hasPreviousPage: true } } });
-    });
-
-    it('emits prev-page events when the prev event is fired', () => {
-      findRegistryList().vm.$emit('prev-page');
-
-      expect(wrapper.emitted('prev-page')).toHaveLength(1);
-    });
-
-    it('emits next-page events when the next event is fired', () => {
-      findRegistryList().vm.$emit('next-page');
-
-      expect(wrapper.emitted('next-page')).toHaveLength(1);
     });
   });
 });

@@ -4,7 +4,7 @@ module ResolvableNote
   extend ActiveSupport::Concern
 
   # Names of all subclasses of `Note` that can be resolvable.
-  RESOLVABLE_TYPES = %w(DiffNote DiscussionNote).freeze
+  RESOLVABLE_TYPES = %w[DiffNote DiscussionNote].freeze
 
   included do
     belongs_to :resolved_by, class_name: "User"

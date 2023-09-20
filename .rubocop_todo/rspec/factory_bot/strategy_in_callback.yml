@@ -7,7 +7,6 @@ RSpec/FactoryBot/StrategyInCallback:
     - 'ee/spec/factories/description_version.rb'
     - 'ee/spec/factories/elastic/reindexing_tasks.rb'
     - 'ee/spec/factories/epic_issues.rb'
-    - 'ee/spec/factories/geo/design_registry.rb'
     - 'ee/spec/factories/geo_nodes.rb'
     - 'ee/spec/factories/groups.rb'
     - 'ee/spec/factories/merge_requests.rb'

@@ -120,11 +120,11 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
         allow(Kaminari.config).to receive(:default_per_page).and_return(1)
       end
 
-      it 'redirects to last page when out of bounds on non-html requests' do
+      it 'does not redirect when out of bounds on non-html requests' do
         get :index, params: params.merge(page: last_page + 1), format: 'atom'
 
-        expect(response).to have_gitlab_http_status(:redirect)
-        expect(response).to redirect_to(action: 'index', format: 'atom', page: last_page, state: 'opened')
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:issues).size).to eq(0)
       end
     end
 
@@ -1725,7 +1725,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
   describe 'GET service_desk' do
     let_it_be(:project) { create(:project_empty_repo, :public) }
-    let_it_be(:support_bot) { User.support_bot }
+    let_it_be(:support_bot) { Users::Internal.support_bot }
     let_it_be(:other_user) { create(:user) }
     let_it_be(:service_desk_issue_1) { create(:issue, project: project, author: support_bot) }
     let_it_be(:service_desk_issue_2) { create(:issue, project: project, author: support_bot, assignees: [other_user]) }
@@ -1756,7 +1756,7 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
     it 'allows an assignee to be specified by id' do
       get_service_desk(assignee_id: other_user.id)
 
-      expect(assigns(:users)).to contain_exactly(other_user, support_bot)
+      expect(assigns(:issues)).to contain_exactly(service_desk_issue_2)
     end
   end
 

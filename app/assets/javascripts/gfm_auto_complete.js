@@ -393,13 +393,16 @@ class GfmAutoComplete {
           if (command === MEMBER_COMMAND.ASSIGN) {
             // Only include members which are not assigned to Issuable currently
             return data.filter((member) => !assignees.includes(member.search));
-          } else if (command === MEMBER_COMMAND.UNASSIGN) {
+          }
+          if (command === MEMBER_COMMAND.UNASSIGN) {
             // Only include members which are assigned to Issuable currently
             return data.filter((member) => assignees.includes(member.search));
-          } else if (command === MEMBER_COMMAND.ASSIGN_REVIEWER) {
+          }
+          if (command === MEMBER_COMMAND.ASSIGN_REVIEWER) {
             // Only include members which are not assigned as a reviewer to Issuable currently
             return data.filter((member) => !reviewers.includes(member.search));
-          } else if (command === MEMBER_COMMAND.UNASSIGN_REVIEWER) {
+          }
+          if (command === MEMBER_COMMAND.UNASSIGN_REVIEWER) {
             // Only include members which are not assigned as a reviewer to Issuable currently
             return data.filter((member) => reviewers.includes(member.search));
           }
@@ -617,11 +620,6 @@ class GfmAutoComplete {
             if (labels.find((label) => label.title.startsWith(lastCandidate))) {
               return lastCandidate;
             }
-          } else {
-            // Load all labels into the autocompleter.
-            // This needs to happen if e.g. editing a label in an existing comment, because normally
-            // label data would only be loaded only once you type `~`.
-            fetchData(this.$inputor, this.at);
           }
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
@@ -642,7 +640,8 @@ class GfmAutoComplete {
           if (command === LABEL_COMMAND.LABEL || command === LABEL_COMMAND.LABELS) {
             // Return labels with set: undefined.
             return data.filter((label) => !label.set);
-          } else if (command === LABEL_COMMAND.UNLABEL) {
+          }
+          if (command === LABEL_COMMAND.UNLABEL) {
             // Return labels with set: true.
             return data.filter((label) => label.set);
           }
@@ -751,7 +750,8 @@ class GfmAutoComplete {
           if (command === CONTACTS_ADD_COMMAND) {
             // Return contacts that are active and not already on the issue
             return data.filter((contact) => contact.state === CONTACT_STATE_ACTIVE && !contact.set);
-          } else if (command === CONTACTS_REMOVE_COMMAND) {
+          }
+          if (command === CONTACTS_REMOVE_COMMAND) {
             // Return contacts already on the issue
             return data.filter((contact) => contact.set);
           }
@@ -779,10 +779,8 @@ class GfmAutoComplete {
         if (GfmAutoComplete.isLoading(data)) {
           self.fetchData(this.$inputor, this.at);
           return data;
-        } else if (
-          GfmAutoComplete.isTypeWithBackendFiltering(this.at) &&
-          self.previousQuery !== query
-        ) {
+        }
+        if (GfmAutoComplete.isTypeWithBackendFiltering(this.at) && self.previousQuery !== query) {
           self.fetchData(this.$inputor, this.at, query);
           self.previousQuery = query;
           return data;

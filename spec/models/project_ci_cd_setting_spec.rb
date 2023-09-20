@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProjectCiCdSetting do
+RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
 
   describe 'validations' do

@@ -2,18 +2,22 @@
 
 class ServiceResponse
   def self.success(message: nil, payload: {}, http_status: :ok)
-    new(status: :success,
-        message: message,
-        payload: payload,
-        http_status: http_status)
+    new(
+      status: :success,
+      message: message,
+      payload: payload,
+      http_status: http_status
+    )
   end
 
   def self.error(message:, payload: {}, http_status: nil, reason: nil)
-    new(status: :error,
-        message: message,
-        payload: payload,
-        http_status: http_status,
-        reason: reason)
+    new(
+      status: :error,
+      message: message,
+      payload: payload,
+      http_status: http_status,
+      reason: reason
+    )
   end
 
   attr_reader :status, :message, :http_status, :payload, :reason

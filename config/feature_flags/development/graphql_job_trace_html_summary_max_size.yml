@@ -1,0 +1,7 @@
+name: graphql_job_trace_html_summary_max_size
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130984
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425196
+milestone: '16.5'
+group: group::pipeline execution
+type: development
+default_enabled: false

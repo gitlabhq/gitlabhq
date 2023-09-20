@@ -187,12 +187,12 @@ module Notes
         namespace: project&.namespace,
         user: user,
         label: metric_key_path,
-        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: metric_key_path).to_context]
+        context: [Gitlab::Usage::MetricDefinition.context_for(metric_key_path).to_context]
       )
     end
 
     def tracking_data_for(note)
-      label = Gitlab.ee? && note.author == User.visual_review_bot ? 'anonymous_visual_review_note' : 'note'
+      label = Gitlab.ee? && note.author == Users::Internal.visual_review_bot ? 'anonymous_visual_review_note' : 'note'
 
       {
         label: label,

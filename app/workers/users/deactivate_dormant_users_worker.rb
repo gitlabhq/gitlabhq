@@ -15,7 +15,7 @@ module Users
 
       return unless ::Gitlab::CurrentSettings.current_application_settings.deactivate_dormant_users
 
-      admin_bot = User.admin_bot
+      admin_bot = Users::Internal.admin_bot
       return unless admin_bot
 
       deactivate_users(User.dormant, admin_bot)

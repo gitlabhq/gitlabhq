@@ -1,8 +1,7 @@
 <script>
 import {
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownForm,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
   GlDropdownDivider,
   GlModal,
   GlModalDirective,
@@ -53,9 +52,8 @@ export default {
     emailAddressCopied: __('Email address copied'),
   },
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownForm,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     GlDropdownDivider,
     GlModal,
     GlToggle,
@@ -180,13 +178,16 @@ export default {
         navigator.clipboard.writeText(text);
       }
       toast(message);
+      this.closeDropdown();
     },
     handleToggleWorkItemConfidentiality() {
       this.track('click_toggle_work_item_confidentiality');
       this.$emit('toggleWorkItemConfidentiality', !this.isConfidential);
+      this.closeDropdown();
     },
     handleDelete() {
       this.$refs.modal.show();
+      this.closeDropdown();
     },
     handleDeleteWorkItem() {
       this.track('click_delete_work_item');
@@ -275,6 +276,9 @@ export default {
     throwConvertError() {
       this.$emit('error', this.i18n.convertError);
     },
+    closeDropdown() {
+      this.$refs.workItemsMoreActions.close();
+    },
     async promoteToObjective() {
       try {
         const {
@@ -300,6 +304,8 @@ export default {
       } catch (error) {
         this.throwConvertError();
         Sentry.captureException(error);
+      } finally {
+        this.closeDropdown();
       }
     },
   },
@@ -308,77 +314,87 @@ export default {
 
 <template>
   <div>
-    <gl-dropdown
+    <gl-disclosure-dropdown
+      ref="workItemsMoreActions"
       icon="ellipsis_v"
       data-testid="work-item-actions-dropdown"
       text-sr-only
       :text="__('More actions')"
       category="tertiary"
+      :auto-close="false"
       no-caret
       right
     >
       <template v-if="$options.isLoggedIn">
-        <gl-dropdown-form
-          class="work-item-notifications-form"
+        <gl-disclosure-dropdown-item
+          class="gl-display-flex gl-justify-content-end gl-w-full"
           :data-testid="$options.notificationsToggleFormTestId"
         >
-          <div class="gl-px-5 gl-pb-2 gl-pt-1">
+          <template #list-item>
             <gl-toggle
               :value="subscribedToNotifications"
               :label="$options.i18n.notifications"
               :data-testid="$options.notificationsToggleTestId"
+              class="work-item-notification-toggle"
               label-position="left"
               label-id="notifications-toggle"
               @change="toggleNotifications($event)"
             />
-          </div>
-        </gl-dropdown-form>
+          </template>
+        </gl-disclosure-dropdown-item>
         <gl-dropdown-divider />
       </template>
-      <gl-dropdown-item
+
+      <gl-disclosure-dropdown-item
         v-if="canPromoteToObjective"
         :data-testid="$options.promoteActionTestId"
-        @click="promoteToObjective"
+        @action="promoteToObjective"
       >
-        {{ __('Promote to objective') }}
-      </gl-dropdown-item>
+        <template #list-item>{{ __('Promote to objective') }}</template>
+      </gl-disclosure-dropdown-item>
       <template v-if="canUpdate && !isParentConfidential">
-        <gl-dropdown-item
+        <gl-disclosure-dropdown-item
           :data-testid="$options.confidentialityTestId"
-          @click="handleToggleWorkItemConfidentiality"
-          >{{
+          @action="handleToggleWorkItemConfidentiality"
+          ><template #list-item>{{
             isConfidential
               ? $options.i18n.disableTaskConfidentiality
               : $options.i18n.enableTaskConfidentiality
-          }}</gl-dropdown-item
+          }}</template></gl-disclosure-dropdown-item
         >
       </template>
-      <gl-dropdown-item
+      <gl-disclosure-dropdown-item
         ref="workItemReference"
         :data-testid="$options.copyReferenceTestId"
         :data-clipboard-text="workItemReference"
-        @click="copyToClipboard(workItemReference, $options.i18n.referenceCopied)"
-        >{{ $options.i18n.copyReference }}</gl-dropdown-item
+        @action="copyToClipboard(workItemReference, $options.i18n.referenceCopied)"
+        ><template #list-item>{{
+          $options.i18n.copyReference
+        }}</template></gl-disclosure-dropdown-item
       >
       <template v-if="$options.isLoggedIn && workItemCreateNoteEmail">
-        <gl-dropdown-item
+        <gl-disclosure-dropdown-item
           ref="workItemCreateNoteEmail"
           :data-testid="$options.copyCreateNoteEmailTestId"
           :data-clipboard-text="workItemCreateNoteEmail"
-          @click="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
-          >{{ i18n.copyCreateNoteEmail }}</gl-dropdown-item
+          @action="copyToClipboard(workItemCreateNoteEmail, $options.i18n.emailAddressCopied)"
+          ><template #list-item>{{
+            i18n.copyCreateNoteEmail
+          }}</template></gl-disclosure-dropdown-item
         >
-        <gl-dropdown-divider v-if="canDelete" />
       </template>
-      <gl-dropdown-item
+      <gl-dropdown-divider v-if="canDelete" />
+      <gl-disclosure-dropdown-item
         v-if="canDelete"
         :data-testid="$options.deleteActionTestId"
         variant="danger"
-        @click="handleDelete"
+        @action="handleDelete"
       >
-        {{ i18n.deleteWorkItem }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+        <template #list-item
+          ><span class="text-danger">{{ i18n.deleteWorkItem }}</span></template
+        >
+      </gl-disclosure-dropdown-item>
+    </gl-disclosure-dropdown>
     <gl-modal
       ref="modal"
       modal-id="work-item-confirm-delete"

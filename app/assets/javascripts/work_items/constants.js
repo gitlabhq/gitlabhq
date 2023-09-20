@@ -26,6 +26,7 @@ export const WIDGET_TYPE_MILESTONE = 'MILESTONE';
 export const WIDGET_TYPE_ITERATION = 'ITERATION';
 export const WIDGET_TYPE_NOTES = 'NOTES';
 export const WIDGET_TYPE_HEALTH_STATUS = 'HEALTH_STATUS';
+export const WIDGET_TYPE_LINKED_ITEMS = 'LINKED_ITEMS';
 
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
@@ -35,6 +36,7 @@ export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
 export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
 export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
 
+export const WORK_ITEM_TYPE_VALUE_EPIC = 'Epic';
 export const WORK_ITEM_TYPE_VALUE_INCIDENT = 'Incident';
 export const WORK_ITEM_TYPE_VALUE_ISSUE = 'Issue';
 export const WORK_ITEM_TYPE_VALUE_TASK = 'Task';
@@ -56,6 +58,9 @@ export const i18n = {
 
 export const I18N_WORK_ITEM_ERROR_FETCHING_LABELS = s__(
   'WorkItem|Something went wrong when fetching labels. Please try again.',
+);
+export const I18N_WORK_ITEM_ERROR_FETCHING_TYPES = s__(
+  'WorkItem|Something went wrong when fetching work item types. Please try again',
 );
 export const I18N_WORK_ITEM_ERROR_CREATING = s__(
   'WorkItem|Something went wrong when creating %{workItemType}. Please try again.',
@@ -208,24 +213,22 @@ export const WORK_ITEM_NOTES_FILTER_KEY = 'filter_key_work_item';
 
 export const WORK_ITEM_ACTIVITY_FILTER_OPTIONS = [
   {
-    key: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+    value: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
     text: s__('WorkItem|All activity'),
   },
   {
-    key: WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
+    value: WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
     text: s__('WorkItem|Comments only'),
-    testid: 'comments-activity',
   },
   {
-    key: WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
+    value: WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
     text: s__('WorkItem|History only'),
-    testid: 'history-activity',
   },
 ];
 
 export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
-  { key: DESC, text: __('Newest first'), testid: 'newest-first' },
-  { key: ASC, text: __('Oldest first') },
+  { value: DESC, text: __('Newest first') },
+  { value: ASC, text: __('Oldest first') },
 ];
 
 export const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-action';
@@ -241,10 +244,6 @@ export const TODO_DONE_ICON = 'todo-done';
 export const TODO_DONE_STATE = 'done';
 export const TODO_PENDING_STATE = 'pending';
 
-export const CURRENT_USER_TODOS_TYPENAME = 'WorkItemWidgetCurrentUserTodos';
-
-export const EMOJI_ACTION_ADD = 'ADD';
-export const EMOJI_ACTION_REMOVE = 'REMOVE';
 export const EMOJI_THUMBSUP = 'thumbsup';
 export const EMOJI_THUMBSDOWN = 'thumbsdown';
 
@@ -256,4 +255,10 @@ export const WORK_ITEM_TO_ISSUE_MAP = {
   [WIDGET_TYPE_START_AND_DUE_DATE]: 'dueDate',
   [WIDGET_TYPE_HEALTH_STATUS]: 'healthStatus',
   [WIDGET_TYPE_AWARD_EMOJI]: 'awardEmoji',
+};
+
+export const LINKED_CATEGORIES_MAP = {
+  RELATES_TO: 'relates_to',
+  IS_BLOCKED_BY: 'is_blocked_by',
+  BLOCKS: 'blocks',
 };

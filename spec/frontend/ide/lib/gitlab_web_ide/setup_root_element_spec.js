@@ -24,8 +24,8 @@ describe('~/ide/lib/gitlab_web_ide/setup_root_element', () => {
     expect(result).toBe(findIDERoot());
     expect(result).toMatchInlineSnapshot(`
       <div
-        class="gl--flex-center gl-relative gl-h-full"
-        id="ide-test-root"
+        class="gl--flex-center gl-h-full gl-relative"
+        id="reference-0"
       />
     `);
   });

@@ -243,11 +243,13 @@ To avoid mismatching users, the search by GitHub user ID is not done when import
 Enterprise.
 
 Because this process is quite expensive we cache the result of these lookups in
-Redis. For every user looked up we store three keys:
+Redis. For every user looked up we store five keys:
 
 - A Redis key mapping GitHub usernames to their Email addresses.
 - A Redis key mapping a GitHub Email addresses to a GitLab user ID.
 - A Redis key mapping a GitHub user ID to GitLab user ID.
+- A Redis key mapping a GitHub username to an ETAG header.
+- A Redis key indicating whether an email lookup has been done for a project.
 
 We cache two types of lookups:
 
@@ -260,9 +262,12 @@ The expiration time of these keys is 24 hours. When retrieving the cache of a
 positive lookup, we refresh the TTL automatically. The TTL of false lookups is
 never refreshed.
 
+If a lookup for email returns an empty or negative lookup, a [Conditional Request](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#conditional-requests) is made with a cached ETAG in the header once for every project.
+Conditional Requests do not count towards the GitHub API rate limit.
+
 Because of this caching layer, it's possible newly registered GitLab accounts
 aren't linked to their corresponding GitHub accounts. This, however, is resolved
-after the cached keys expire.
+after the cached keys expire or if a new project is imported.
 
 The user cache lookup is shared across projects. This means that the greater the number of
 projects that are imported, fewer GitHub API calls are needed.
@@ -287,7 +292,7 @@ The code for this resides in:
 
 - `lib/gitlab/github_import/label_finder.rb`
 - `lib/gitlab/github_import/milestone_finder.rb`
-- `lib/gitlab/github_import/caching.rb`
+- `lib/gitlab/cache/import/caching.rb`
 
 ## Logs
 

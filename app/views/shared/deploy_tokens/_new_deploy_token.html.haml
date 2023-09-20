@@ -7,7 +7,7 @@
       .input-group
         = text_field_tag 'deploy-token-user', deploy_token.username, readonly: true, class: 'deploy-token-field form-control js-select-on-focus', data: { qa_selector: 'deploy_token_user_field' }
         .input-group-append
-          = clipboard_button(text: deploy_token.username, title: s_('DeployTokens|Copy username'), placement: 'left')
+          = deprecated_clipboard_button(text: deploy_token.username, title: s_('DeployTokens|Copy username'), placement: 'left')
       %span.deploy-token-help-block.gl-mt-2.text-success
         - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/project/deploy_tokens/index.md') }
         - link_end = "</a>".html_safe
@@ -17,7 +17,7 @@
       .input-group
         = text_field_tag 'deploy-token', deploy_token.token, readonly: true, class: 'deploy-token-field form-control js-select-on-focus', data: { qa_selector: 'deploy_token_field' }
         .input-group-append
-          = clipboard_button(text: deploy_token.token, title: s_('DeployTokens|Copy deploy token'), placement: 'left')
+          = deprecated_clipboard_button(text: deploy_token.token, title: s_('DeployTokens|Copy deploy token'), placement: 'left')
       %span.deploy-token-help-block.gl-mt-2.text-danger
         - i_start = "<i>".html_safe
         - i_end = "</i>".html_safe

@@ -86,7 +86,6 @@ export const handleLocationHash = () => {
   const performanceBar = document.querySelector('#js-peek');
   const topPadding = 8;
   const diffFileHeader = document.querySelector('.js-file-title');
-  const versionMenusContainer = document.querySelector('.mr-version-menus-container');
   const fixedIssuableTitle = document.querySelector('.issue-sticky-header');
 
   let adjustment = 0;
@@ -97,7 +96,6 @@ export const handleLocationHash = () => {
   adjustment -= getElementOffsetHeight(fixedTopBar);
   adjustment -= getElementOffsetHeight(performanceBar);
   adjustment -= getElementOffsetHeight(diffFileHeader);
-  adjustment -= getElementOffsetHeight(versionMenusContainer);
 
   if (isInIssuePage()) {
     adjustment -= getElementOffsetHeight(fixedIssuableTitle);
@@ -730,4 +728,12 @@ export const isCurrentUser = (userId) => {
   }
 
   return Number(userId) === currentUserId;
+};
+
+/**
+ * Clones an object via JSON stringifying and re-parsing.
+ * This ensures object references are not persisted (e.g. unlike lodash cloneDeep)
+ */
+export const cloneWithoutReferences = (obj) => {
+  return JSON.parse(JSON.stringify(obj));
 };

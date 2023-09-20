@@ -35,11 +35,12 @@ class Group < Namespace
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
 
-  has_many :users, through: :group_members
-  has_many :owners,
-    -> { where(members: { access_level: Gitlab::Access::OWNER }) },
-    through: :all_group_members,
-    source: :user
+  has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405") },
+    through: :group_members
+  has_many :owners, -> {
+    where(members: { access_level: Gitlab::Access::OWNER })
+    .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
+  }, through: :all_group_members, source: :user
 
   has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :namespace_requesters, -> { where.not(requested_at: nil).unscope(where: %i[source_id source_type]) },
@@ -785,8 +786,6 @@ class Group < Namespace
   end
 
   def execute_integrations(data, hooks_scope)
-    return unless Feature.enabled?(:group_mentions, self)
-
     integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
       integration.async_execute(data)
     end
@@ -800,7 +799,9 @@ class Group < Namespace
   end
 
   def first_owner
-    owners.first || parent&.first_owner || owner
+    first_owner_member = all_group_members.all_owners.order(:user_id).first
+
+    first_owner_member&.user || parent&.first_owner || owner
   end
 
   def default_branch_name
@@ -898,6 +899,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:linked_work_items)
   end
 
+  def supports_lock_on_merge?
+    feature_flag_enabled_for_self_or_ancestor?(:enforce_locked_labels_on_merge, type: :ops)
+  end
+
   def usage_quotas_enabled?
     ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
   end
@@ -939,12 +944,12 @@ class Group < Namespace
 
   private
 
-  def feature_flag_enabled_for_self_or_ancestor?(feature_flag)
+  def feature_flag_enabled_for_self_or_ancestor?(feature_flag, type: :development)
     actors = [root_ancestor]
     actors << self if root_ancestor != self
 
     actors.any? do |actor|
-      ::Feature.enabled?(feature_flag, actor)
+      ::Feature.enabled?(feature_flag, actor, type: type)
     end
   end
 

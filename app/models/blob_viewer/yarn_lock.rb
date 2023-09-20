@@ -4,7 +4,7 @@ module BlobViewer
   class YarnLock < DependencyManager
     include Static
 
-    self.file_types = %i(yarn_lock)
+    self.file_types = %i[yarn_lock]
 
     def manager_name
       'Yarn'

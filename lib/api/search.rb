@@ -7,7 +7,8 @@ module API
     before do
       authenticate!
 
-      check_rate_limit!(:search_rate_limit, scope: [current_user])
+      check_rate_limit!(:search_rate_limit, scope: [current_user],
+        users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist)
     end
 
     feature_category :global_search
@@ -102,7 +103,7 @@ module API
       end
 
       def snippets?
-        %w(snippet_titles).include?(params[:scope]).to_s
+        %w[snippet_titles].include?(params[:scope]).to_s
       end
 
       def entity

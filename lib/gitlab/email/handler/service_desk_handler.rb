@@ -117,7 +117,7 @@ module Gitlab
         def create_issue!
           result = ::Issues::CreateService.new(
             container: project,
-            current_user: User.support_bot,
+            current_user: Users::Internal.support_bot,
             params: {
               title: mail.subject,
               description: message_including_template,
@@ -199,7 +199,7 @@ module Gitlab
         def create_note(note)
           ::Notes::CreateService.new(
             project,
-            User.support_bot,
+            Users::Internal.support_bot,
             noteable: @issue,
             note: note
           ).execute
@@ -214,7 +214,7 @@ module Gitlab
         end
 
         def author
-          User.support_bot
+          Users::Internal.support_bot
         end
 
         def add_email_participant

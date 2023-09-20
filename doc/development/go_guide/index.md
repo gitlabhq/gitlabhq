@@ -9,8 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This document describes various guidelines and best practices for GitLab
 projects using the [Go language](https://go.dev/).
 
-## Overview
-
 GitLab is built on top of [Ruby on Rails](https://rubyonrails.org/), but we're
 also using Go for projects where it makes sense. Go is a very powerful
 language, with many advantages, and is best suited for projects with a lot of
@@ -73,7 +71,7 @@ of possible security breaches in our code:
 
 Remember to run
 [SAST](../../user/application_security/sast/index.md) and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
-**(ULTIMATE)** on your project (or at least the
+**(ULTIMATE ALL)** on your project (or at least the
 [`gosec` analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
 and to follow our [Security requirements](../code_review.md#security).
 
@@ -141,6 +139,12 @@ become available, you can share job templates like this
 [analyzer](https://gitlab.com/gitlab-org/security-products/ci-templates/raw/master/includes-dev/analyzer.yml).
 
 Go GitLab linter plugins are maintained in the [`gitlab-org/language-tools/go/linters`](https://gitlab.com/gitlab-org/language-tools/go/linters/) namespace.
+
+### Help text style guide
+
+If your Go project produces help text for users, consider following the advice given in the
+[Help text style guide](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/help_text_style_guide.md) in the
+`gitaly` project.
 
 ## Dependencies
 
@@ -340,21 +344,34 @@ which documents and centralizes at the same time all the possible command line
 interactions with the program. Don't use `os.GetEnv`, it hides variables deep
 in the code.
 
-## Daemons
+## Libraries
 
-### Logging
+### LabKit
 
-The usage of a logging library is strongly recommended for daemons. Even
-though there is a `log` package in the standard library, we generally use
-[Logrus](https://github.com/sirupsen/logrus). Its plugin ("hooks") system
-makes it a powerful logging library, with the ability to add notifiers and
-formatters at the logger level directly.
+[LabKit](https://gitlab.com/gitlab-org/labkit) is a place to keep common
+libraries for Go services. For examples using of using LabKit, see [`workhorse`](https://gitlab.com/gitlab-org/gitlab/tree/master/workhorse)
+and [`gitaly`](https://gitlab.com/gitlab-org/gitaly). LabKit exports three related pieces of functionality:
+
+- [`gitlab.com/gitlab-org/labkit/correlation`](https://gitlab.com/gitlab-org/labkit/tree/master/correlation):
+  for propagating and extracting correlation ids between services.
+- [`gitlab.com/gitlab-org/labkit/tracing`](https://gitlab.com/gitlab-org/labkit/tree/master/tracing):
+  for instrumenting Go libraries for distributed tracing.  
+- [`gitlab.com/gitlab-org/labkit/log`](https://gitlab.com/gitlab-org/labkit/tree/master/log):
+  for structured logging using Logrus.
+
+This gives us a thin abstraction over underlying implementations that is
+consistent across Workhorse, Gitaly, and possibly other Go servers. For
+example, in the case of `gitlab.com/gitlab-org/labkit/tracing` we can switch
+from using `Opentracing` directly to using `Zipkin` or the Go kit's own tracing wrapper
+without changes to the application code, while still keeping the same
+consistent configuration mechanism (that is, the `GITLAB_TRACING` environment
+variable).
 
 #### Structured (JSON) logging
 
 Every binary ideally must have structured (JSON) logging in place as it helps
-with searching and filtering the logs. At GitLab we use structured logging in
-JSON format, as all our infrastructure assumes that. When using
+with searching and filtering the logs. LabKit provides an abstraction over [Logrus](https://github.com/sirupsen/logrus).
+We use structured logging in JSON format, because all our infrastructure assumes that. When using
 [Logrus](https://github.com/sirupsen/logrus) you can turn on structured
 logging by using the build in [JSON formatter](https://github.com/sirupsen/logrus#formatters). This follows the
 same logging type we use in our [Ruby applications](../logging.md#use-structured-json-logging).
@@ -374,26 +391,6 @@ There are a few guidelines one should follow when using the
   example, `logrus.WithField("file", "/app/go").Info("Opening dir")`. If you
   have to log multiple keys, always use `WithFields` instead of calling
   `WithField` more than once.
-
-### Tracing and Correlation
-
-[LabKit](https://gitlab.com/gitlab-org/labkit) is a place to keep common
-libraries for Go services. Currently it's vendored into two projects:
-Workhorse and Gitaly, and it exports two main (but related) pieces of
-functionality:
-
-- [`gitlab.com/gitlab-org/labkit/correlation`](https://gitlab.com/gitlab-org/labkit/tree/master/correlation):
-  for propagating and extracting correlation ids between services.
-- [`gitlab.com/gitlab-org/labkit/tracing`](https://gitlab.com/gitlab-org/labkit/tree/master/tracing):
-  for instrumenting Go libraries for distributed tracing.
-
-This gives us a thin abstraction over underlying implementations that is
-consistent across Workhorse, Gitaly, and, in future, other Go servers. For
-example, in the case of `gitlab.com/gitlab-org/labkit/tracing` we can switch
-from using `Opentracing` directly to using `Zipkin` or the Go kit's own tracing wrapper
-without changes to the application code, while still keeping the same
-consistent configuration mechanism (that is, the `GITLAB_TRACING` environment
-variable).
 
 ### Context
 

@@ -1,23 +1,17 @@
-FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify:main@sha256:14fa752a80df21f840fc48f4be8561bee21b78886ac718652582fdd788d34c32
+FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify:main@sha256:66bf41314b7f3bb65ec671f3b2f8d59e1d6de9d2dc0b2daf72aa03a950c75549 as base
 
 ENV GITLAB_LICENSE_MODE=test \
     GDK_KILL_CONFIRM=true
 
-# Allow passwordless /etc/hosts update by gdk user
-USER root
-RUN echo "gdk ALL=(ALL) NOPASSWD: /usr/bin/tee -a /etc/hosts" >> /etc/sudoers
-
-USER gdk
-
 # Clone GDK at specific sha and bootstrap packages
 #
-ARG GDK_SHA=747ab64be815f5c239d5d63209527a42bd838e83
-ARG GEM_CACHE=/home/gdk/.asdf/installs/ruby/3.1.4/lib/ruby/gems/3.1.0/cache
-RUN --mount=type=cache,target=${GEM_CACHE},uid=1000,gid=1000 \
-    set -eux; \
+ARG GDK_SHA=9756ad259ec0ed356f49ed22678e2f13252b3f4f
+RUN set -eux; \
     git clone --depth 1 https://gitlab.com/gitlab-org/gitlab-development-kit.git && cd gitlab-development-kit; \
     git fetch --depth 1 origin ${GDK_SHA} && git -c advice.detachedHead=false checkout ${GDK_SHA}; \
-    mkdir gitlab && make bootstrap
+    mkdir gitlab \
+    && make bootstrap \
+    && sudo apt-get autoclean
 
 WORKDIR /home/gdk/gitlab-development-kit
 
@@ -25,59 +19,85 @@ COPY --chown=gdk:gdk qa/gdk/gdk.yml ./
 
 # Build gitlab-shell
 #
+FROM base as gitlab-shell
+
 COPY --chown=gdk:gdk GITLAB_SHELL_VERSION ./gitlab/
-RUN --mount=type=cache,target=${GEM_CACHE},uid=1000,gid=1000 \
-    set -eux; \
-    make gitlab-shell-setup \
-    && cd gitlab-shell && go clean -cache -modcache -r
+RUN make gitlab-shell-setup \
+    && cd gitlab-shell \
+    && go clean -cache -modcache -r \
+    && rm -rf /home/gdk/.asdf/installs/ruby/*/lib/ruby/gems/*/cache
 
 # Build gitlab-workhorse
 #
+FROM base as workhorse
+
 COPY --chown=gdk:gdk VERSION GITLAB_WORKHORSE_VERSION ./gitlab/
 COPY --chown=gdk:gdk workhorse ./gitlab/workhorse
-RUN --mount=type=cache,target=${GEM_CACHE},uid=1000,gid=1000 \
-    set -eux; \
-    make gitlab-workhorse-setup && mv gitlab/workhorse ./ \
-    && cd workhorse && go clean -cache -modcache -r
+RUN make gitlab-workhorse-setup \
+    && cd gitlab/workhorse \
+    && go clean -cache -modcache -r
 
 # Build gitaly
 #
+FROM base as gitaly
 COPY --chown=gdk:gdk GITALY_SERVER_VERSION ./gitlab/
-RUN --mount=type=cache,target=${GEM_CACHE},uid=1000,gid=1000 \
-    set -eux; \
+RUN set -eux; \
     make gitaly-setup; \
     cd gitaly \
     && go clean -cache -modcache -r \
     && rm -rf _build/cache \
-              _build/deps/git/source \
-              _build/deps/libgit2/source \
               _build/deps \
               _build/intermediate
 
 # Install gitlab gem dependencies
 #
+FROM base as gitlab-gems
+
 COPY --chown=gdk:gdk Gemfile Gemfile.lock ./gitlab/
 COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
 COPY --chown=gdk:gdk gems/ ./gitlab/gems/
-RUN --mount=type=cache,target=${GEM_CACHE},uid=1000,gid=1000 \
-    make .gitlab-bundle
+RUN make .gitlab-bundle \
+    && cd gitlab \
+    && rm -rf /home/gdk/.asdf/installs/ruby/*/lib/ruby/gems/*/cache
 
 # Install gitlab npm dependencies
 #
+FROM base as gitlab-node-modules
+
 COPY --chown=gdk:gdk package.json yarn.lock ./gitlab/
 COPY --chown=gdk:gdk scripts/frontend/postinstall.js ./gitlab/scripts/frontend/postinstall.js
+COPY --chown=gdk:gdk scripts/frontend/preinstall.mjs ./gitlab/scripts/frontend/preinstall.mjs
 RUN make .gitlab-yarn && yarn cache clean
+
+# Build final image
+#
+FROM base as gdk
+
+# Set global defaults so we can initialize empty git repo
+RUN git config --global init.defaultBranch master \
+    && git config --global user.email "gdk@example.com" \
+    && git config --global user.name "gdk"
+
+# Copy all components from separate docker stages
+COPY --from=gitlab-shell --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitlab-shell ./gitlab-shell/
+COPY --from=gitaly --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitaly ./gitaly/
+COPY --from=workhorse --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitlab/workhorse ./gitlab/workhorse/
+COPY --from=gitlab-gems --chown=gdk:gdk /home/gdk/.asdf/installs/ruby /home/gdk/.asdf/installs/ruby/
+COPY --from=gitlab-node-modules --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitlab/node_modules ./gitlab/node_modules/
 
 # Copy code
 COPY --chown=gdk:gdk ./ ./gitlab/
 COPY --chown=gdk:gdk qa/gdk/entrypoint ../
 
-# Create missing pids folder and sync compiled workhorse
-RUN mkdir -p gitlab/tmp/pids \
-    && rsync -a --remove-source-files workhorse/ gitlab/workhorse/
-
 # Set up GDK
-RUN SKIP_WORKHORSE_SETUP=true SKIP_GITLAB_SHELL_SETUP=true SKIP_GITALY_SETUP=true \
+RUN set -eux; \
+    # We need to init git repository within docker build because external .git folder
+    # will always invalidate cache on 'COPY --chown=gdk:gdk ./ ./gitlab/' step and some gdk setup steps require gitlab
+    # to be an actual git repository
+    (cd gitlab && git init . && git add --all && git commit --quiet -m "Init repository") &> /dev/null; \
+    gdk config set gitaly.skip_setup true \
+    && gdk config set workhorse.skip_setup true \
+    && gdk config set gitlab_shell.skip_setup true; \
     make redis/redis.conf all \
     && gdk kill
 

@@ -37,32 +37,32 @@ func NewKeyWatcher() *KeyWatcher {
 }
 
 var (
-	keyWatchers = promauto.NewGauge(
+	KeyWatchers = promauto.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_keywatcher_keywatchers",
 			Help: "The number of keys that is being watched by gitlab-workhorse",
 		},
 	)
-	redisSubscriptions = promauto.NewGauge(
+	RedisSubscriptions = promauto.NewGauge(
 		prometheus.GaugeOpts{
 			Name: "gitlab_workhorse_keywatcher_redis_subscriptions",
 			Help: "Current number of keywatcher Redis pubsub subscriptions",
 		},
 	)
-	totalMessages = promauto.NewCounter(
+	TotalMessages = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_keywatcher_total_messages",
 			Help: "How many messages gitlab-workhorse has received in total on pubsub.",
 		},
 	)
-	totalActions = promauto.NewCounterVec(
+	TotalActions = promauto.NewCounterVec(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_keywatcher_actions_total",
 			Help: "Counts of various keywatcher actions",
 		},
 		[]string{"action"},
 	)
-	receivedBytes = promauto.NewCounter(
+	ReceivedBytes = promauto.NewCounter(
 		prometheus.CounterOpts{
 			Name: "gitlab_workhorse_keywatcher_received_bytes_total",
 			Help: "How many bytes of messages gitlab-workhorse has received in total on pubsub.",
@@ -72,7 +72,7 @@ var (
 
 const channelPrefix = "workhorse:notifications:"
 
-func countAction(action string) { totalActions.WithLabelValues(action).Add(1) }
+func countAction(action string) { TotalActions.WithLabelValues(action).Add(1) }
 
 func (kw *KeyWatcher) receivePubSubStream(conn redis.Conn) error {
 	kw.mu.Lock()
@@ -93,7 +93,7 @@ func (kw *KeyWatcher) receivePubSubStream(conn redis.Conn) error {
 		for _, chans := range kw.subscribers {
 			for _, ch := range chans {
 				close(ch)
-				keyWatchers.Dec()
+				KeyWatchers.Dec()
 			}
 		}
 		kw.subscribers = nil
@@ -102,13 +102,13 @@ func (kw *KeyWatcher) receivePubSubStream(conn redis.Conn) error {
 	for {
 		switch v := kw.conn.Receive().(type) {
 		case redis.Message:
-			totalMessages.Inc()
-			receivedBytes.Add(float64(len(v.Data)))
+			TotalMessages.Inc()
+			ReceivedBytes.Add(float64(len(v.Data)))
 			if strings.HasPrefix(v.Channel, channelPrefix) {
 				kw.notifySubscribers(v.Channel[len(channelPrefix):], string(v.Data))
 			}
 		case redis.Subscription:
-			redisSubscriptions.Set(float64(v.Count))
+			RedisSubscriptions.Set(float64(v.Count))
 		case error:
 			log.WithError(fmt.Errorf("keywatcher: pubsub receive: %v", v)).Error()
 			// Intermittent error, return nil so that it doesn't wait before reconnect
@@ -205,7 +205,7 @@ func (kw *KeyWatcher) addSubscription(key string, notify chan string) error {
 		kw.subscribers = make(map[string][]chan string)
 	}
 	kw.subscribers[key] = append(kw.subscribers[key], notify)
-	keyWatchers.Inc()
+	KeyWatchers.Inc()
 
 	return nil
 }
@@ -224,7 +224,7 @@ func (kw *KeyWatcher) delSubscription(key string, notify chan string) {
 	for i, c := range chans {
 		if notify == c {
 			kw.subscribers[key] = append(chans[:i], chans[i+1:]...)
-			keyWatchers.Dec()
+			KeyWatchers.Dec()
 			break
 		}
 	}

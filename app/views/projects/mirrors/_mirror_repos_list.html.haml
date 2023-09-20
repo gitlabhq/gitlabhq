@@ -34,7 +34,7 @@
               - if mirror_settings_enabled
                 .btn-group.mirror-actions-group{ role: 'group' }
                   - if mirror.ssh_key_auth?
-                    = clipboard_button(text: mirror.ssh_public_key, class: 'gl-button btn btn-default btn-icon', title: _('Copy SSH public key'), qa_selector: 'copy_public_key_button')
+                    = clipboard_button(text: mirror.ssh_public_key, variant: :default, category: :primary, size: :medium, title: _('Copy SSH public key'), testid: 'copy_public_key_button')
                   = render 'shared/remote_mirror_update_button', remote_mirror: mirror
                   = render Pajamas::ButtonComponent.new(variant: :danger,
                     icon: 'remove',

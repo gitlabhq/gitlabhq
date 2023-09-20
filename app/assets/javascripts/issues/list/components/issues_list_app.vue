@@ -99,8 +99,6 @@ import {
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
-import searchMilestonesQuery from '../queries/search_milestones.query.graphql';
-import searchUsersQuery from '../queries/search_users.query.graphql';
 import setSortPreferenceMutation from '../queries/set_sort_preference.mutation.graphql';
 import {
   convertToApiParams,
@@ -203,11 +201,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-    eeIsOkrsEnabled: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {
@@ -411,9 +404,10 @@ export default {
           title: TOKEN_TITLE_MILESTONE,
           icon: 'clock',
           token: MilestoneToken,
-          fetchMilestones: this.fetchMilestones,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-milestone`,
           shouldSkipSort: true,
+          fullPath: this.fullPath,
+          isProject: this.isProject,
         },
         {
           type: TOKEN_TYPE_LABEL,
@@ -640,32 +634,13 @@ export default {
     fetchLatestLabels(search) {
       return this.fetchLabelsWithFetchPolicy(search, fetchPolicies.NETWORK_ONLY);
     },
-    fetchMilestones(search) {
-      return this.$apollo
-        .query({
-          query: searchMilestonesQuery,
-          variables: { fullPath: this.fullPath, search, isProject: this.isProject },
-        })
-        .then(({ data }) => data[this.namespace]?.milestones.nodes);
-    },
     fetchUsers(search) {
-      if (gon.features?.newGraphqlUsersAutocomplete) {
-        return this.$apollo
-          .query({
-            query: usersAutocompleteQuery,
-            variables: { fullPath: this.fullPath, search, isProject: this.isProject },
-          })
-          .then(({ data }) => data[this.namespace]?.autocompleteUsers);
-      }
-
       return this.$apollo
         .query({
-          query: searchUsersQuery,
+          query: usersAutocompleteQuery,
           variables: { fullPath: this.fullPath, search, isProject: this.isProject },
         })
-        .then(({ data }) =>
-          data[this.namespace]?.[`${this.namespace}Members`].nodes.map((member) => member.user),
-        );
+        .then(({ data }) => data[this.namespace]?.autocompleteUsers);
     },
     getExportCsvPathWithQuery() {
       return `${this.exportCsvPath}${window.location.search}`;
@@ -966,7 +941,6 @@ export default {
       v-if="hasAnyIssues"
       :namespace="fullPath"
       recent-searches-storage-key="issues"
-      :search-input-placeholder="$options.i18n.searchPlaceholder"
       :search-tokens="searchTokens"
       :has-scoped-labels-feature="hasScopedLabelsFeature"
       :initial-filter-value="filterTokens"
@@ -1037,14 +1011,11 @@ export default {
         >
           {{ $options.i18n.editIssues }}
         </gl-button>
-        <gl-button
-          v-if="showNewIssueLink && !eeIsOkrsEnabled"
-          :href="newIssuePath"
-          variant="confirm"
-        >
-          {{ $options.i18n.newIssueLabel }}
-        </gl-button>
-        <slot name="new-objective-button"></slot>
+        <slot name="new-issuable-button">
+          <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
+            {{ $options.i18n.newIssueLabel }}
+          </gl-button>
+        </slot>
         <new-resource-dropdown
           v-if="showNewIssueDropdown"
           :query="$options.searchProjectsQuery"
@@ -1059,7 +1030,7 @@ export default {
           no-caret
           :toggle-text="$options.i18n.actionsLabel"
           text-sr-only
-          data-qa-selector="issues_list_more_actions_dropdown"
+          data-testid="issues-list-more-actions-dropdown"
         >
           <csv-import-export-buttons
             v-if="showCsvButtons"

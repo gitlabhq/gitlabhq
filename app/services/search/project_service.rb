@@ -5,7 +5,7 @@ module Search
     include Search::Filter
     include Gitlab::Utils::StrongMemoize
 
-    ALLOWED_SCOPES = %w(blobs issues merge_requests wiki_blobs commits notes milestones users).freeze
+    ALLOWED_SCOPES = %w[blobs issues merge_requests wiki_blobs commits notes milestones users].freeze
 
     attr_accessor :project, :current_user, :params
 

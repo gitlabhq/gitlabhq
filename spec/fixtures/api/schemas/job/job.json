@@ -5,7 +5,6 @@
     "id",
     "name",
     "started",
-    "build_path",
     "playable",
     "created_at",
     "updated_at",

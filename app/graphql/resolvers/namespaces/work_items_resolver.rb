@@ -2,33 +2,31 @@
 
 module Resolvers
   module Namespaces
-    class WorkItemsResolver < BaseResolver
-      prepend ::WorkItems::LookAheadPreloads
+    # rubocop:disable Graphql/ResolverType (inherited from Resolvers::WorkItemsResolver)
+    class WorkItemsResolver < ::Resolvers::WorkItemsResolver
+      def ready?(**args)
+        return false if Feature.disabled?(:namespace_level_work_items, resource_parent)
 
-      type Types::WorkItemType.connection_type, null: true
+        super
+      end
 
-      def resolve_with_lookahead(**args)
-        return unless Feature.enabled?(:namespace_level_work_items, resource_parent)
-        return WorkItem.none if resource_parent.nil?
-
-        finder = ::WorkItems::NamespaceWorkItemsFinder.new(current_user, args.merge(
-          namespace_id: resource_parent
-        ))
-
-        Gitlab::Graphql::Loaders::IssuableLoader.new(resource_parent, finder).batching_find_all do |q|
-          apply_lookahead(q)
-        end
+      override :resolve_with_lookahead
+      def resolve_with_lookahead(...)
+        super
+      rescue ::WorkItems::NamespaceWorkItemsFinder::FilterNotAvailableError => e
+        raise Gitlab::Graphql::Errors::ArgumentError, e.message
       end
 
       private
 
-      def resource_parent
-        # The project could have been loaded in batch by `BatchLoader`.
-        # At this point we need the `id` of the project to query for work items, so
-        # make sure it's loaded and not `nil` before continuing.
-        object.respond_to?(:sync) ? object.sync : object
+      override :finder
+      def finder(args)
+        ::WorkItems::NamespaceWorkItemsFinder.new(
+          current_user,
+          args.merge(namespace_id: resource_parent)
+        )
       end
-      strong_memoize_attr :resource_parent
     end
+    # rubocop:enable Graphql/ResolverType
   end
 end

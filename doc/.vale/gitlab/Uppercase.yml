@@ -16,6 +16,7 @@ second: '(?:\b[A-Z][a-z]+ )+\(([A-Z]{3,5})\)'
 exceptions:
   - ACL
   - AJAX
+  - ALL
   - AMI
   - ANSI
   - APAC
@@ -27,6 +28,7 @@ exceptions:
   - ASG
   - AST
   - AWS
+  - BETA
   - BMP
   - BSD
   - CAS

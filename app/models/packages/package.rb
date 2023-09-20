@@ -7,6 +7,7 @@ class Packages::Package < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Packages::Installable
   include Packages::Downloadable
+  include EnumInheritance
 
   DISPLAYABLE_STATUSES = [:default, :error].freeze
   INSTALLABLE_STATUSES = [:default, :hidden].freeze
@@ -48,6 +49,7 @@ class Packages::Package < ApplicationRecord
   has_one :pypi_metadatum, inverse_of: :package, class_name: 'Packages::Pypi::Metadatum'
   has_one :maven_metadatum, inverse_of: :package, class_name: 'Packages::Maven::Metadatum'
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
+  has_many :nuget_symbols, inverse_of: :package, class_name: 'Packages::Nuget::Symbol'
   has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
   has_one :rubygems_metadatum, inverse_of: :package, class_name: 'Packages::Rubygems::Metadatum'
   has_one :rpm_metadatum, inverse_of: :package, class_name: 'Packages::Rpm::Metadatum'
@@ -179,11 +181,7 @@ class Packages::Package < ApplicationRecord
   scope :preload_conan_metadatum, -> { preload(:conan_metadatum) }
 
   scope :with_npm_scope, ->(scope) do
-    if Feature.enabled?(:npm_package_registry_fix_group_path_validation)
-      npm.where("position('/' in packages_packages.name) > 0 AND split_part(packages_packages.name, '/', 1) = :package_scope", package_scope: "@#{sanitize_sql_like(scope)}")
-    else
-      npm.where("name ILIKE :package_name", package_name: "@#{sanitize_sql_like(scope)}/%")
-    end
+    npm.where("position('/' in packages_packages.name) > 0 AND split_part(packages_packages.name, '/', 1) = :package_scope", package_scope: "@#{sanitize_sql_like(scope)}")
   end
 
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
@@ -219,6 +217,12 @@ class Packages::Package < ApplicationRecord
 
     joins(:project).reorder(keyset_order)
   end
+
+  def self.inheritance_column = 'package_type'
+
+  def self.inheritance_column_to_class_map = {
+    ml_model: 'Packages::MlModel::Package'
+  }.freeze
 
   def self.only_maven_packages_with_path(path, use_cte: false)
     if use_cte

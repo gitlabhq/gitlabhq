@@ -25,6 +25,7 @@ module ServiceDesk
         # we don't use its response here.
         create_verification
 
+        log_info
         ServiceResponse.success
       end
 

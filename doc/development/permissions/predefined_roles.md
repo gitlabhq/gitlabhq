@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -95,6 +95,20 @@ is stored in the `project_authorizations` table.
 NOTE:
 In [GitLab 14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/351211) and later, projects in personal namespaces have a maximum role of Owner.
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8 and earlier, projects in personal namespaces have a maximum role of Maintainer.
+
+#### Guest role
+
+A user with the Guest role in GitLab can view project plans, blockers and other
+progress indicators. While unable to modify data they have not created, Guests
+can contribute to a project by creating and linking project work items. Guests
+can also view high-level project information such as:
+
+- Analytics.
+- Incident information.
+- Issues and epics.
+- Licenses.
+
+For more information, see [project member permissions](../../user/permissions.md#project-members-permissions).
 
 ### Confidential issues
 

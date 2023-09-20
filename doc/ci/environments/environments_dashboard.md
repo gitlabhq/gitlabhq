@@ -20,7 +20,7 @@ see which pipelines are green and which are red allowing you to
 diagnose if there is a block at a particular point, or if there's
 a more systemic problem you need to investigate.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Environments**.
 

@@ -52,7 +52,7 @@ module Integrations
     end
 
     def self.supported_events
-      %w(push tag_push)
+      %w[push tag_push]
     end
 
     def initialize_properties

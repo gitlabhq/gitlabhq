@@ -4,11 +4,9 @@ exports[`Design management large image component renders SVG with proper height 
 <div
   class="gl-mx-auto gl-my-auto js-design-image"
 >
-  <!---->
-   
   <img
     alt="test"
-    class="mh-100 img-fluid"
+    class="img-fluid mh-100"
     src="mockImage.svg"
   />
 </div>
@@ -18,11 +16,9 @@ exports[`Design management large image component renders image 1`] = `
 <div
   class="gl-mx-auto gl-my-auto js-design-image"
 >
-  <!---->
-   
   <img
     alt="test"
-    class="mh-100 img-fluid"
+    class="img-fluid mh-100"
     src="test.jpg"
   />
 </div>
@@ -33,12 +29,10 @@ exports[`Design management large image component renders loading state 1`] = `
   class="gl-mx-auto gl-my-auto js-design-image"
   isloading="true"
 >
-  <!---->
-   
   <img
     alt=""
-    class="mh-100 img-fluid"
-    src=""
+    class="img-fluid mh-100"
+    src="null"
   />
 </div>
 `;
@@ -55,8 +49,6 @@ exports[`Design management large image component sets correct classes and styles
 <div
   class="gl-mx-auto gl-my-auto js-design-image"
 >
-  <!---->
-   
   <img
     alt="test"
     class="mh-100"
@@ -70,8 +62,6 @@ exports[`Design management large image component zoom sets image style when zoom
 <div
   class="gl-mx-auto gl-my-auto js-design-image"
 >
-  <!---->
-   
   <img
     alt="test"
     class="mh-100"

@@ -13,7 +13,6 @@ import {
   INSTANCE_TYPE,
   I18N_INSTANCE_TYPE,
   PROJECT_TYPE,
-  I18N_NO_DESCRIPTION,
   I18N_CREATED_AT_LABEL,
   I18N_CREATED_AT_BY_LABEL,
 } from '~/ci/runner/constants';
@@ -102,15 +101,6 @@ describe('RunnerTypeCell', () => {
 
   it('Displays the runner description', () => {
     expect(wrapper.text()).toContain(mockRunner.description);
-    expect(wrapper.findByText(I18N_NO_DESCRIPTION).exists()).toBe(false);
-  });
-
-  it('Displays "No description" for missing runner description', () => {
-    createComponent({
-      runner: { description: null },
-    });
-
-    expect(wrapper.findByText(I18N_NO_DESCRIPTION).classes()).toContain('gl-text-secondary');
   });
 
   it('Displays last contact', () => {

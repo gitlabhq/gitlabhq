@@ -32,7 +32,7 @@ project to a web server or to any S3-compatible platform. For exports, GitLab:
   time and is available throughout the export process.
 - Administrators can modify the maximum export file size. By default, the maximum is unlimited (`0`). To change this,
   edit `max_export_size` using either:
-  - [GitLab UI](../administration/settings/account_and_limit_settings.md).
+  - [GitLab UI](../administration/settings/import_and_export_settings.md).
   - [Application settings API](settings.md#change-application-settings)
 - Has a fixed limit for the maximum import file size on GitLab.com. For more information, see
   [Account and limit settings](../user/gitlab_com/index.md#account-and-limit-settings).
@@ -205,7 +205,7 @@ NOTE:
 The maximum import file size can be set by the Administrator. It defaults to `0` (unlimited).
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin Area](../administration/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8.
 
-## Import a file from a remote object storage (Beta)
+## Import a file from a remote object storage **(BETA)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/experiment-beta-support.md#beta) [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file`. Enabled by default.
 

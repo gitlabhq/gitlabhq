@@ -59,7 +59,7 @@ a random buffer as a parameter.
 
 To create the two fuzz target files:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `fuzz-testing-demo` project.
+1. On the left sidebar, select **Search or go to** and find the `fuzz-testing-demo` project.
 1. Create a file in the root directory of the project.
 1. Name the file `fuzz-sayhello.js` and add the following code:
 

@@ -20,13 +20,13 @@ import {
   defaultEpicSort,
   dropdowni18nText,
   epicIidPattern,
-  issuableAttributesQueries,
   IssuableAttributeState,
   IssuableAttributeType,
   IssuableAttributeTypeKeyMap,
   LocalizedIssuableAttributeType,
   noAttributeId,
 } from 'ee_else_ce/sidebar/constants';
+import { issuableAttributesQueries } from 'ee_else_ce/sidebar/queries/constants';
 import { createAlert } from '~/alert';
 import { PathIdSeparator } from '~/related_issues/constants';
 

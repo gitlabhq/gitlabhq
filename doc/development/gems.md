@@ -238,11 +238,10 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
    the gem name with `gitlab-`. For example, `gitlab-sidekiq-fetcher`.
 1. Locally create the gem or fork as necessary.
 1. [Publish an empty `0.0.1` version of the gem to rubygems.org](https://guides.rubygems.org/publishing/#publishing-to-rubygemsorg) to ensure the gem name is reserved.
-1. Add the [`gitlab_rubygems`](https://rubygems.org/profiles/gitlab_rubygems) and [`gitlab-qa`](https://rubygems.org/profiles/gitlab-qa) users as owners of the new gem by running:
+1. Add the [`gitlab_rubygems`](https://rubygems.org/profiles/gitlab_rubygems) user as owner of the new gem by running:
 
    ```shell
    gem owner <gem-name> --add gitlab_rubygems
-   gem owner <gem-name> --add gitlab-qa
    ```
 
 1. Optional. Add some or all of the following users as co-owners:
@@ -251,8 +250,8 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
    - [Stan Hu](https://rubygems.org/profiles/stanhu)
 1. Optional. Add any other relevant developers as co-owners.
 1. Visit `https://rubygems.org/gems/<gem-name>` and verify that the gem was published
-   successfully and `gitlab_rubygems` & `gitlab-qa` are also owners.
-1. Create a project in the [`gitlab-org/ruby/gems` group](https://gitlab.com/gitlab-org/ruby/gems/). To create this project:
+   successfully and `gitlab_rubygems` is also an owner.
+1. Create a project in the [`gitlab-org/ruby/gems` group](https://gitlab.com/gitlab-org/ruby/gems/) (or in a subgroup of it):
     1. Follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#creating-a-new-project).
     1. Follow the instructions for setting up a [CI/CD configuration](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration).
     1. Use the [shared CI/CD config](https://gitlab.com/gitlab-org/quality/pipeline-common/-/blob/master/ci/gem-release.yml)
@@ -264,7 +263,7 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
            file: '/ci/gem-release.yml'
        ```
 
-       This job will handle building and publishing the gem (it uses a `gilab-qa` Rubygems.org
+       This job will handle building and publishing the gem (it uses a `gitlab_rubygems` Rubygems.org
        API token inherited from the `gitlab-org/ruby/gems` group, in order to publish the gem
        package), as well as creating the tag, release and populating its release notes by
        using the

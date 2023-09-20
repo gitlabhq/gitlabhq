@@ -12,17 +12,8 @@ RSpec.describe Registrations::WelcomeController, feature_category: :system_acces
       it { is_expected.to redirect_to new_user_registration_path }
     end
 
-    context 'when role or setup_for_company is not set' do
+    context 'when setup_for_company is not set' do
       before do
-        sign_in(user)
-      end
-
-      it { is_expected.to render_template(:show) }
-    end
-
-    context 'when role is required and setup_for_company is not set' do
-      before do
-        user.set_role_required!
         sign_in(user)
       end
 
@@ -37,22 +28,13 @@ RSpec.describe Registrations::WelcomeController, feature_category: :system_acces
       end
     end
 
-    context 'when role and setup_for_company is set' do
+    context 'when setup_for_company is set' do
       before do
         user.update!(setup_for_company: false)
         sign_in(user)
       end
 
       it { is_expected.to redirect_to(dashboard_projects_path) }
-    end
-
-    context 'when role is set and setup_for_company is not set' do
-      before do
-        user.update!(role: :software_developer)
-        sign_in(user)
-      end
-
-      it { is_expected.to render_template(:show) }
     end
 
     context 'when 2FA is required from group' do
@@ -130,12 +112,6 @@ RSpec.describe Registrations::WelcomeController, feature_category: :system_acces
 
             expect(subject).to redirect_to(dashboard_projects_path)
           end
-        end
-
-        context 'when tasks to be done are assigned' do
-          let!(:member1) { create(:group_member, user: user, tasks_to_be_done: %w[ci code]) }
-
-          it { is_expected.to redirect_to(issues_dashboard_path(assignee_username: user.username)) }
         end
       end
     end

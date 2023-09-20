@@ -1,29 +1,28 @@
 <script>
-import { GlIcon, GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 
 export default {
   components: {
-    GlDropdownItem,
-    GlDropdown,
-    GlIcon,
+    GlDisclosureDropdownItem,
+    GlDisclosureDropdown,
   },
 };
 </script>
 
 <template>
   <div class="gl-ml-5">
-    <gl-dropdown
+    <gl-disclosure-dropdown
       category="tertiary"
       toggle-class="btn-icon btn-sm"
-      :right="true"
+      icon="ellipsis_v"
       data-testid="work_items_links_menu"
+      :aria-label="__(`More actions`)"
+      text-sr-only
+      no-caret
     >
-      <template #button-content>
-        <gl-icon name="ellipsis_v" :size="14" />
-      </template>
-      <gl-dropdown-item @click="$emit('removeChild')">
-        {{ s__('WorkItem|Remove') }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      <gl-disclosure-dropdown-item @action="$emit('removeChild')">
+        <template #list-item>{{ s__('WorkItem|Remove') }}</template>
+      </gl-disclosure-dropdown-item>
+    </gl-disclosure-dropdown>
   </div>
 </template>

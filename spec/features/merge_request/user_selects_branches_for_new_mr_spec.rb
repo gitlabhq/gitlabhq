@@ -6,8 +6,8 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
   include ListboxHelpers
   include CookieHelper
 
-  let(:project) { create(:project, :public, :repository) }
-  let(:user) { project.creator }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:project) { create(:project, :public, :repository, namespace: user.namespace) }
 
   def select_source_branch(branch_name)
     find('.js-source-branch', match: :first).click
@@ -16,7 +16,6 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
   end
 
   before do
-    project.add_maintainer(user)
     sign_in(user)
     set_cookie('new-actions-popover-viewed', 'true')
   end

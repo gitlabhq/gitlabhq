@@ -16,7 +16,7 @@ You might want to use these templates:
 
 - For different stages of your workflow, for example, feature proposal, feature improvement, or a bug report.
 - For every issue or merge request for a specific project, so the layout is consistent.
-- For a [Service Desk email template](service_desk/index.md#use-a-custom-template-for-service-desk-tickets).
+- For a [Service Desk email template](service_desk/configure.md#use-a-custom-template-for-service-desk-tickets).
 
 For description templates to work, they must be:
 
@@ -32,7 +32,7 @@ directory in your repository.
 
 To create an issue description template:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Repository**.
 1. Next to the default branch, select **{plus}**.
 1. Select **New file**.
@@ -52,7 +52,7 @@ that depend on the contents of commit messages and branch names.
 
 To create a merge request description template for a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Repository**.
 1. Next to the default branch, select **{plus}**.
 1. Select **New file**.
@@ -110,7 +110,7 @@ You can set a description template at the **instance level** for issues
 and merge requests by using an [instance template repository](../admin_area/settings/instance_template_repository.md).
 You can also use the instance template repository for file templates.
 
-You might also be interested [project templates](../admin_area/custom_project_templates.md)
+You might also be interested in [project templates](../admin_area/custom_project_templates.md)
 that you can use when creating a new project in the instance.
 
 ### Set group-level description templates **(PREMIUM ALL)**
@@ -118,13 +118,18 @@ that you can use when creating a new project in the instance.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.
 
-With **group-level** description templates, you can select a repository within the group to store
-your templates. Then, you can access these templates from other projects in the group.
+With **group-level** description templates, you can select a project within the group to store
+your templates. Then, you can access these templates in other projects in the group.
 As a result, you can use the same templates in issues and merge requests in all the group's projects.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+- The project must be a direct child of the group.
 
 To re-use templates [you've created](../project/description_templates.md#create-an-issue-template):
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Templates**.
 1. From the dropdown list, select your template project as the template repository at group level.
@@ -155,7 +160,7 @@ To set a default description template for merge requests, either:
   This [doesn't overwrite](#priority-of-default-description-templates) the default template if one has been set in the project settings.
 - Users on GitLab Premium and Ultimate: set the default template in project settings:
 
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Settings > Merge requests**.
   1. In the **Default description template for merge requests** section, fill in the text area.
   1. Select **Save changes**.
@@ -167,7 +172,7 @@ To set a default description template for issues, either:
   This [doesn't overwrite](#priority-of-default-description-templates) the default template if one has been set in the project settings.
 - Users on GitLab Premium and Ultimate: set the default template in project settings:
 
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+  1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Settings > General**.
   1. Expand **Default description template for issues**.
   1. Fill in the text area.

@@ -18,14 +18,12 @@ import { sprintf } from '~/locale';
 import { ARROW_DOWN_KEY, ARROW_UP_KEY, END_KEY, HOME_KEY, ESC_KEY } from '~/lib/utils/keys';
 import {
   MIN_SEARCH_TERM,
-  SEARCH_GITLAB,
   SEARCH_DESCRIBED_BY_WITH_RESULTS,
   SEARCH_DESCRIBED_BY_DEFAULT,
   SEARCH_DESCRIBED_BY_UPDATED,
   SEARCH_RESULTS_LOADING,
   SEARCH_RESULTS_SCOPE,
 } from '~/vue_shared/global_search/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import {
   SEARCH_INPUT_DESCRIPTION,
@@ -52,10 +50,10 @@ export default {
   name: 'GlobalSearchModal',
   SEARCH_MODAL_ID,
   i18n: {
-    SEARCH_GITLAB,
     SEARCH_DESCRIBED_BY_WITH_RESULTS,
     SEARCH_DESCRIBED_BY_DEFAULT,
     SEARCH_DESCRIBED_BY_UPDATED,
+    SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
     SEARCH_RESULTS_LOADING,
     SEARCH_RESULTS_SCOPE,
     MIN_SEARCH_TERM,
@@ -72,7 +70,6 @@ export default {
     CommandPaletteItems,
     FakeSearchInput,
   },
-  mixins: [glFeatureFlagMixin()],
   data() {
     return {
       nextFocusedItemIndex: null,
@@ -88,9 +85,6 @@ export default {
       set(value) {
         this.setSearch(value);
       },
-    },
-    searchPlaceholder() {
-      return this.glFeatures?.commandPalette ? SEARCH_OR_COMMAND_MODE_PLACEHOLDER : SEARCH_GITLAB;
     },
     showDefaultItems() {
       return !this.searchText;
@@ -146,9 +140,8 @@ export default {
     },
     isCommandMode() {
       return (
-        this.glFeatures?.commandPalette &&
-        (COMMON_HANDLES.includes(this.searchTextFirstChar) ||
-          (this.searchContext.project && this.searchTextFirstChar === PATH_HANDLE))
+        COMMON_HANDLES.includes(this.searchTextFirstChar) ||
+        (this.searchContext?.project && this.searchTextFirstChar === PATH_HANDLE)
       );
     },
     commandPaletteQuery() {
@@ -294,7 +287,7 @@ export default {
   >
     <form
       role="search"
-      :aria-label="searchPlaceholder"
+      :aria-label="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
       class="gl-relative gl-rounded-base gl-w-full gl-pb-0"
     >
       <div class="gl-relative gl-bg-white gl-border-b gl-mb-n1 gl-p-3">
@@ -305,7 +298,7 @@ export default {
           role="searchbox"
           data-testid="global-search-input"
           autocomplete="off"
-          :placeholder="searchPlaceholder"
+          :placeholder="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
           :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
           borderless
           @input="getAutocompleteOptions"

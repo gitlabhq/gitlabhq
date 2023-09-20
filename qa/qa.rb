@@ -59,6 +59,7 @@ module QA
     "ssh_keys" => "SSHKeys",
     "ecdsa" => "ECDSA",
     "ed25519" => "ED25519",
+    "graphql" => "GraphQL",
     "rsa" => "RSA",
     "ldap" => "LDAP",
     "ldap_tls" => "LDAPTLS",

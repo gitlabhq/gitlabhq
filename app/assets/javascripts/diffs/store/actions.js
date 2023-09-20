@@ -910,7 +910,8 @@ export const setSuggestPopoverDismissed = ({ commit, state }) =>
 export function changeCurrentCommit({ dispatch, commit, state }, { commitId }) {
   if (!commitId) {
     return Promise.reject(new Error('`commitId` is a required argument'));
-  } else if (!state.commit) {
+  }
+  if (!state.commit) {
     return Promise.reject(new Error('`state` must already contain a valid `commit`')); // eslint-disable-line @gitlab/require-i18n-strings
   }
 

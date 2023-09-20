@@ -3,8 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'Snippet', :js, feature_category: :source_code_management do
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
   let_it_be(:snippet) { create(:personal_snippet, :public, :repository, author: user) }
+
+  before do
+    stub_feature_flags(super_sidebar_logged_out: false)
+  end
 
   it_behaves_like 'show and render proper snippet blob' do
     let(:anchor) { nil }
@@ -36,7 +40,7 @@ RSpec.describe 'Snippet', :js, feature_category: :source_code_management do
   end
 
   context 'when authenticated as a different user' do
-    let_it_be(:different_user) { create(:user) }
+    let_it_be(:different_user) { create(:user, :no_super_sidebar) }
 
     before do
       sign_in(different_user)

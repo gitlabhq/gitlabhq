@@ -159,7 +159,8 @@ export default {
     slotName() {
       if (this.isSuccess) {
         return SLOT_SUCCESS;
-      } else if (this.isLoading) {
+      }
+      if (this.isLoading) {
         return SLOT_LOADING;
       }
 

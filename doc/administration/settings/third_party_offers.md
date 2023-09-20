@@ -18,7 +18,7 @@ questions when creating a group.
 
 To toggle the display of customer experience improvement content and third-party offers:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Customer experience improvement and third-party offers**.

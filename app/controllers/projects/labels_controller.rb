@@ -155,7 +155,10 @@ class Projects::LabelsController < Projects::ApplicationController
   protected
 
   def label_params
-    params.require(:label).permit(:title, :description, :color)
+    allowed = [:title, :description, :color]
+    allowed << :lock_on_merge if @project.supports_lock_on_merge?
+
+    params.require(:label).permit(allowed)
   end
 
   def label

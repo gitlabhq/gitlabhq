@@ -7,7 +7,7 @@ RSpec.describe AlertManagement::HttpIntegration, feature_category: :incident_man
 
   let_it_be(:project) { create(:project) }
 
-  subject(:integration) { build(:alert_management_http_integration) }
+  subject(:integration) { build(:alert_management_http_integration, project: project) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }

@@ -7,8 +7,7 @@ module Gitlab
         class IssuesCreatedFromAlertsMetric < NumbersMetric
           ISSUES_FROM_ALERTS_METRICS = [
             IssuesWithAlertManagementAlertsMetric,
-            IssuesWithPrometheusAlertEvents,
-            IssuesWithSelfManagedPrometheusAlertEvents
+            IssuesWithPrometheusAlertEvents
           ].freeze
 
           operation :add

@@ -21,6 +21,11 @@ module Integrations
       placeholder: '@channelusername',
       required: true
 
+    field :notify_only_broken_pipelines,
+      type: :checkbox,
+      section: SECTION_TYPE_CONFIGURATION,
+      help: 'If selected, successful pipelines do not trigger a notification event.'
+
     with_options if: :activated? do
       validates :token, :room, presence: true
     end
@@ -51,32 +56,8 @@ module Integrations
       )
     end
 
-    def fields
-      self.class.fields + build_event_channels
-    end
-
     def self.supported_events
       super - ['deployment']
-    end
-
-    def sections
-      [
-        {
-          type: SECTION_TYPE_CONNECTION,
-          title: s_('Integrations|Connection details'),
-          description: help
-        },
-        {
-          type: SECTION_TYPE_TRIGGER,
-          title: s_('Integrations|Trigger'),
-          description: s_('Integrations|An event will be triggered when one of the following items happen.')
-        },
-        {
-          type: SECTION_TYPE_CONFIGURATION,
-          title: s_('Integrations|Notification settings'),
-          description: s_('Integrations|Configure the scope of notifications.')
-        }
-      ]
     end
 
     private

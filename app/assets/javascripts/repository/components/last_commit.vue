@@ -4,7 +4,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { sprintf, s__ } from '~/locale';
-import CiIcon from '~/vue_shared/components/ci_icon.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -20,13 +20,13 @@ export default {
     UserAvatarLink,
     TimeagoTooltip,
     ClipboardButton,
-    CiIcon,
     GlButton,
     GlButtonGroup,
     GlLink,
     GlLoadingIcon,
     UserAvatarImage,
     SignatureBadge,
+    CiBadgeLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -191,18 +191,14 @@ export default {
         >
           <signature-badge v-if="commit.signature" :signature="commit.signature" />
           <div v-if="commit.pipeline" class="ci-status-link">
-            <gl-link
-              v-gl-tooltip.left
-              :href="commit.pipeline.detailedStatus.detailsPath"
-              :title="statusTitle"
+            <ci-badge-link
+              :status="commit.pipeline.detailedStatus"
+              :details-path="commit.pipeline.detailedStatus.detailsPath"
+              :aria-label="statusTitle"
+              size="lg"
+              :show-text="false"
               class="js-commit-pipeline"
-            >
-              <ci-icon
-                :status="commit.pipeline.detailedStatus"
-                :size="24"
-                :aria-label="statusTitle"
-              />
-            </gl-link>
+            />
           </div>
           <gl-button-group class="gl-ml-4 js-commit-sha-group">
             <gl-button label class="gl-font-monospace" data-testid="last-commit-id-label">{{

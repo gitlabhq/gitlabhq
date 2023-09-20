@@ -53,13 +53,7 @@ module Projects
     def add_pages_unique_domain
       return unless params.dig(:project_setting_attributes, :pages_unique_domain_enabled)
 
-      # If the project used a unique domain once, it'll always use the same
-      return if project.project_setting.pages_unique_domain_in_database.present?
-
-      params[:project_setting_attributes][:pages_unique_domain] = Gitlab::Pages::RandomDomain.generate(
-        project_path: project.path,
-        namespace_path: project.parent.full_path
-      )
+      Gitlab::Pages.add_unique_domain_to(project)
     end
 
     def validate!
@@ -112,6 +106,7 @@ module Projects
       # overridden by EE module
     end
 
+    # overridden by EE module
     def remove_unallowed_params
       params.delete(:emails_enabled) unless can?(current_user, :set_emails_disabled, project)
 
@@ -119,11 +114,11 @@ module Projects
     end
 
     def after_update
-      todos_features_changes = %w(
+      todos_features_changes = %w[
         issues_access_level
         merge_requests_access_level
         repository_access_level
-      )
+      ]
       project_changed_feature_keys = project.project_feature.previous_changes.keys
 
       if project.visibility_level_previous_changes && project.private?

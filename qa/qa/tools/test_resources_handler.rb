@@ -36,7 +36,7 @@ module QA
         QA::EE::Resource::GroupIteration
         QA::EE::Resource::Settings::Elasticsearch
         QA::EE::Resource::VulnerabilityItem
-        QA::EE::Resource::ScanResultPolicyProject
+        QA::EE::Resource::SecurityScanPolicyProject
         QA::EE::Resource::ScanResultPolicyCommit
         QA::EE::Resource::InstanceAuditEventExternalDestination
       ].freeze

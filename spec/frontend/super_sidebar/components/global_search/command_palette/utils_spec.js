@@ -26,6 +26,10 @@ describe('fileMapper', () => {
       icon: 'doc-code',
       text: file,
       href: `${projectBlobPath}/${file}`,
+      extraAttrs: {
+        'data-track-action': 'click_command_palette_item',
+        'data-track-label': 'file',
+      },
     });
   });
 });

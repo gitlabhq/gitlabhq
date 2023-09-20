@@ -167,8 +167,6 @@ def generate_migration(definition)
       FOREIGN_KEY_NAME = "#{definition.name}"
 
       def up
-        return unless foreign_key_exists?(:#{definition.from_table}, :#{definition.to_table}, name: FOREIGN_KEY_NAME)
-
         with_lock_retries do
           remove_foreign_key_if_exists(:#{definition.from_table}, :#{definition.to_table},
             name: FOREIGN_KEY_NAME, reverse_lock_order: true)

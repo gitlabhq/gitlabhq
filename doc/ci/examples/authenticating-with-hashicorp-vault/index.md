@@ -9,7 +9,7 @@ type: tutorial
 
 WARNING:
 Authenticating with `CI_JOB_JWT` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and the token is scheduled to be removed in GitLab 16.5. Use
+and the token is scheduled to be removed in GitLab 17.0. Use
 [ID tokens to authenticate with HashiCorp Vault](../../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
 instead, as demonstrated on this page.
 

@@ -19,7 +19,7 @@ module ErrorTracking
           (?<project>[^/]+)/*
         )?
       \z
-    }x.freeze
+    }x
 
     self.reactive_cache_key = ->(setting) { [setting.class.model_name.singular, setting.project_id] }
     self.reactive_cache_work_type = :external_dependency

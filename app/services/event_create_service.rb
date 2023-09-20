@@ -190,10 +190,14 @@ class EventCreateService
   private
 
   def create_record_event(record, current_user, status, fingerprint = nil)
-    create_event(record.resource_parent, current_user, status,
-                 fingerprint: fingerprint,
-                 target_id: record.id,
-                 target_type: record.class.name)
+    create_event(
+      record.resource_parent,
+      current_user,
+      status,
+      fingerprint: fingerprint,
+      target_id: record.id,
+      target_type: record.class.name
+    )
   end
 
   # If creating several events, this method will insert them all in a single

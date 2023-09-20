@@ -8,7 +8,7 @@ module Gitlab
   # @example usage
   #    validates :url, 'gitlab/zoom_url': true
   class ZoomUrlValidator < ActiveModel::EachValidator
-    ALLOWED_SCHEMES = %w(https).freeze
+    ALLOWED_SCHEMES = %w[https].freeze
 
     def validate_each(record, attribute, value)
       links_count = Gitlab::ZoomLinkExtractor.new(value).links.size

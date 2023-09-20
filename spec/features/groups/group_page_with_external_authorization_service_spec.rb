@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'The group page', feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
   let(:group) { create(:group) }
 
   before do

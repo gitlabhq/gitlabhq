@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import SecurityReportDownloadDropdown from '~/vue_shared/security_reports/components/security_report_download_dropdown.vue';
 
@@ -12,8 +12,7 @@ describe('SecurityReportDownloadDropdown component', () => {
     });
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 
   describe('given report artifacts', () => {
     beforeEach(() => {
@@ -28,21 +27,36 @@ describe('SecurityReportDownloadDropdown component', () => {
         },
       ];
 
-      createComponent({ artifacts });
+      createComponent({ artifacts, text: 'test' });
     });
 
     it('renders a dropdown', () => {
       expect(findDropdown().props('loading')).toBe(false);
+      expect(findDropdown().props('toggleText')).toBe('test');
+      expect(findDropdown().attributes()).toMatchObject({
+        placement: 'right',
+        size: 'small',
+        icon: 'download',
+      });
     });
 
-    it('renders a dropdown item for each artifact', () => {
-      artifacts.forEach((artifact, i) => {
-        const item = findDropdownItems().at(i);
-        expect(item.text()).toContain(artifact.name);
-
-        expect(item.element.getAttribute('href')).toBe(artifact.path);
-        expect(item.element.getAttribute('download')).toBeDefined();
-      });
+    it('passes artifacts as items', () => {
+      expect(findDropdown().props('items')).toMatchObject([
+        {
+          text: 'Download foo',
+          href: '/foo.json',
+          extraAttrs: {
+            download: '',
+          },
+        },
+        {
+          text: 'Download bar',
+          href: '/bar.json',
+          extraAttrs: {
+            download: '',
+          },
+        },
+      ]);
     });
   });
 
@@ -56,31 +70,13 @@ describe('SecurityReportDownloadDropdown component', () => {
     });
   });
 
-  describe('given title props', () => {
+  describe('given it is not loading and no artifacts', () => {
     beforeEach(() => {
-      createComponent({ artifacts: [], loading: true, title: 'test title' });
+      createComponent({ artifacts: [], loading: false });
     });
 
-    it('should render title', () => {
-      expect(findDropdown().attributes('title')).toBe('test title');
-    });
-
-    it('should not render text', () => {
-      expect(findDropdown().text().trim()).toBe('');
-    });
-  });
-
-  describe('given text props', () => {
-    beforeEach(() => {
-      createComponent({ artifacts: [], loading: true, text: 'test text' });
-    });
-
-    it('should not render title', () => {
-      expect(findDropdown().props().title).not.toBeDefined();
-    });
-
-    it('should render text', () => {
-      expect(findDropdown().props().text).toContain('test text');
+    it('does not render dropdown', () => {
+      expect(findDropdown().exists()).toBe(false);
     });
   });
 });

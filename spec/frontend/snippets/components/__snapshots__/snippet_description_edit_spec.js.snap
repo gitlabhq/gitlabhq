@@ -5,16 +5,15 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
   class="form-group js-description-input"
 >
   <label
-    for="snippet-description"
+    for="reference-0"
   >
     Description (optional)
   </label>
-   
   <div
     class="js-collapsible-input"
   >
     <div
-      class="js-collapsed d-none"
+      class="d-none js-collapsed"
     >
       <gl-form-input-stub
         class="form-control"
@@ -22,9 +21,8 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
         placeholder="Describe what your snippet does or how to use it…"
       />
     </div>
-     
     <div
-      class="js-vue-markdown-field md-area position-relative gfm-form gl-overflow-hidden js-expanded"
+      class="gfm-form gl-overflow-hidden js-expanded js-vue-markdown-field md-area position-relative"
       data-uploads-path=""
     >
       <markdown-header-stub
@@ -36,23 +34,22 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
         suggestionstartindex="0"
         uploadspath=""
       />
-       
       <div
         class="md-write-holder"
       >
         <div
-          class="zen-backdrop div-dropzone-wrapper"
+          class="div-dropzone-wrapper zen-backdrop"
         >
           <div
             class="div-dropzone js-invalid-dropzone"
           >
             <textarea
               aria-label="Description"
-              class="note-textarea js-gfm-input js-autosize markdown-area js-gfm-input-initialized"
+              class="js-autosize js-gfm-input js-gfm-input-initialized markdown-area note-textarea"
               data-qa-selector="snippet_description_field"
               data-supports-quick-actions="false"
               dir="auto"
-              id="snippet-description"
+              id="reference-0"
               placeholder="Write a comment or drag your files here…"
               style="overflow-x: hidden; word-wrap: break-word; overflow-y: hidden;"
             />
@@ -68,10 +65,9 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
               </svg>
             </div>
           </div>
-           
           <a
             aria-label="Leave zen mode"
-            class="zen-control zen-control-leave js-zen-leave gl-text-gray-500"
+            class="gl-text-gray-500 js-zen-leave zen-control zen-control-leave"
             href="#"
           >
             <gl-icon-stub
@@ -79,7 +75,6 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
               size="16"
             />
           </a>
-           
           <markdown-toolbar-stub
             canattachfile="true"
             markdowndocspath="help/"
@@ -87,19 +82,14 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
           />
         </div>
       </div>
-       
       <div
-        class="js-vue-md-preview md-preview-holder gl-px-5"
+        class="gl-px-5 js-vue-md-preview md-preview-holder"
         style="display: none;"
       >
         <div
           class="md"
         />
       </div>
-       
-      <!---->
-       
-      <!---->
     </div>
   </div>
 </div>

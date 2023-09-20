@@ -1,6 +1,7 @@
 ---
 table_name: packages_packages
 classes:
+- Packages::MlModel::Package
 - Packages::Package
 feature_categories:
 - package_registry

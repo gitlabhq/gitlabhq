@@ -372,7 +372,6 @@ $tabs-holder-z-index: 250;
     white-space: nowrap;
   }
 
-  /* stylelint-disable scss/at-rule-no-unknown */
   @container mr-widget-extension (max-width: 600px) {
     flex-direction: column;
     align-items: flex-start;
@@ -417,7 +416,7 @@ $tabs-holder-z-index: 250;
 
   .media-body {
     min-width: 0;
-    font-size: 12px;
+    font-size: $gl-font-size-sm;
     margin-left: 32px;
   }
 
@@ -548,6 +547,7 @@ $tabs-holder-z-index: 250;
   }
 
   .mr-widget-section:not(:first-child) > div,
+  .mr-widget-section:not(:first-child) > section,
   .mr-widget-section .mr-widget-section > div {
     border-top: solid 1px var(--border-color, $border-color);
   }
@@ -649,7 +649,6 @@ $tabs-holder-z-index: 250;
 
   .label-branch {
     @include gl-font-monospace;
-    font-size: 95%;
     overflow: hidden;
     word-break: break-all;
   }
@@ -663,7 +662,7 @@ $tabs-holder-z-index: 250;
       > span {
         display: inline-block;
         max-width: 12.5em;
-        margin-bottom: -5px;
+        margin-bottom: px-to-rem(-5px);
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -984,6 +983,14 @@ $tabs-holder-z-index: 250;
       @include gl-mx-auto;
       max-width: $fixed-layout-width - ($gl-padding * 2);
     }
+  }
+}
+
+.container-fluid.diffs-container-limited {
+  .flash-container {
+    @include gl-mx-auto;
+    @include gl-max-w-container-xl;
+    @include gl-px-5;
   }
 }
 

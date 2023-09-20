@@ -68,7 +68,7 @@ module Gitlab
     def limited_notes_count
       return @limited_notes_count if defined?(@limited_notes_count)
 
-      types = %w(issue merge_request commit snippet)
+      types = %w[issue merge_request commit snippet]
       @limited_notes_count = 0
 
       types.each do |type|

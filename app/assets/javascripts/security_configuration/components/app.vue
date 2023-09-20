@@ -1,13 +1,18 @@
 <script>
 import { GlTab, GlTabs, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
+import Api from '~/api';
 import { __, s__ } from '~/locale';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import SectionLayout from '~/vue_shared/security_configuration/components/section_layout.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
-import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from './constants';
+import {
+  AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
+  TAB_VULNERABILITY_MANAGEMENT_INDEX,
+} from './constants';
 import FeatureCard from './feature_card.vue';
 import TrainingProviderList from './training_provider_list.vue';
 
@@ -123,6 +128,11 @@ export default {
     dismissAlert() {
       this.errorMessage = '';
     },
+    tabChange(value) {
+      if (value === TAB_VULNERABILITY_MANAGEMENT_INDEX) {
+        Api.trackRedisHllUserEvent(SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT);
+      }
+    },
   },
   autoDevopsEnabledAlertStorageKey: AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
 };
@@ -167,6 +177,7 @@ export default {
       data-testid="security-configuration-container"
       sync-active-tab-with-query-params
       lazy
+      @input="tabChange"
     >
       <gl-tab
         data-testid="security-testing-tab"

@@ -31,18 +31,64 @@ of requests dropped due to request limiting. The `reason` label indicates why a 
 
 ## Monitor Gitaly concurrency limiting
 
-You can observe specific behavior of [concurrency-queued requests](configure_gitaly.md#limit-rpc-concurrency) using
-the Gitaly logs and Prometheus:
+You can observe specific behavior of [concurrency-queued requests](configure_gitaly.md#limit-rpc-concurrency) using Gitaly logs and Prometheus.
 
-- In the [Gitaly logs](../logs/index.md#gitaly-logs), look for the string (or structured log field)
-  `acquire_ms`. Messages that have this field are reporting about the concurrency limiter.
-- In Prometheus, look for the following metrics:
-  - `gitaly_concurrency_limiting_in_progress` indicates how many concurrent requests are
-    being processed.
-  - `gitaly_concurrency_limiting_queued` indicates how many requests for an RPC for a given
-    repository are waiting due to the concurrency limit being reached.
-  - `gitaly_concurrency_limiting_acquiring_seconds` indicates how long a request has to
-    wait due to concurrency limits before being processed.
+In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the pack-objects concurrency limiting with entries such as:
+
+| Log Field | Description |
+| --- | --- |
+| `limit.concurrency_queue_length` | Indicates the current length of the queue specific to the RPC type of the ongoing call. It provides insight into the number of requests waiting to be processed due to concurrency limits.                                       |
+| `limit.concurrency_queue_ms`     | Represents the duration, in milliseconds, that a request has spent waiting in the queue due to the limit on concurrent RPCs. This field helps understand the impact of concurrency limits on request processing times.           |
+| `limit.concurrency_dropped`      | If the request is dropped due to limits being reached, this field specifies the reason: either `max_time` (request waited in the queue longer than the maximum allowed time) or `max_size` (the queue reached its maximum size). |
+| `limit.limiting_key`             | Identifies the key used for limiting.  |
+| `limit.limiting_type`            | Specifies the type of process being limited. In this context, it's `per-rpc`, indicating that the concurrency limiting is applied on a per-RPC basis.                                                                            |
+
+For example:
+
+```json
+{
+  "limit .concurrency_queue_length": 1,
+  "limit .concurrency_queue_ms": 0,
+  "limit.limiting_key": "@hashed/79/02/7902699be42c8a8e46fbbb450172651786b22c56a189f7625a6da49081b2451.git",
+  "limit.limiting_type": "per-rpc"
+}
+```
+
+In Prometheus, look for the following metrics:
+
+- `gitaly_concurrency_limiting_in_progress` indicates how many concurrent requests are being processed.
+- `gitaly_concurrency_limiting_queued` indicates how many requests for an RPC for a given repository are waiting due to the concurrency limit being reached.
+- `gitaly_concurrency_limiting_acquiring_seconds` indicates how long a request has to wait due to concurrency limits before being processed.
+
+## Monitor Gitaly pack-objects concurrency limiting
+
+You can observe specific behavior of [pack-objects limiting](configure_gitaly.md#limit-pack-objects-concurrency) using Gitaly logs and Prometheus.
+
+In the [Gitaly logs](../logs/index.md#gitaly-logs), you can identify logs related to the pack-objects concurrency limiting with entries such as:
+
+| Log Field | Description |
+|:---|:---|
+| `limit.concurrency_queue_length` | Current length of the queue for the pack-objects processes. Indicates the number of requests that are waiting to be processed because the limit on concurrent processes has been reached. |
+| `limit.concurrency_queue_ms` | Time a request has spent waiting in the queue, in milliseconds. Indicates how long a request has had to wait because of the limits on concurrency. |
+| `limit.limiting_key` | Remote IP of the sender. |
+| `limit.limiting_type` | Type of process being limited. In this case, `pack-objects`. |
+
+Example configuration:
+
+```json
+{
+  "limit .concurrency_queue_length": 1,
+  "limit .concurrency_queue_ms": 0,
+  "limit.limiting_key": "1.2.3.4",
+  "limit.limiting_type": "pack-objects"
+}
+```
+
+In Prometheus, look for the following metrics:
+
+- `gitaly_pack_objects_in_progress` indicates how many pack-objects processes are being processed concurrently.
+- `gitaly_pack_objects_queued` indicates how many requests for pack-objects processes are waiting due to the concurrency limit being reached.
+- `gitaly_pack_objects_acquiring_seconds` indicates how long a request for a pack-object process has to wait due to concurrency limits before being processed.
 
 ## Monitor Gitaly cgroups
 

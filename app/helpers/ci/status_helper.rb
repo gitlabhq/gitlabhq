@@ -9,55 +9,6 @@
 #
 module Ci
   module StatusHelper
-    def ci_label_for_status(status)
-      if detailed_status?(status)
-        return status.label
-      end
-
-      label = case status
-              when 'success'
-                'passed'
-              when 'success-with-warnings'
-                'passed with warnings'
-              when 'manual'
-                'waiting for manual action'
-              when 'scheduled'
-                'waiting for delayed job'
-              else
-                status
-              end
-      translation = "CiStatusLabel|#{label}"
-      s_(translation)
-    end
-
-    def ci_text_for_status(status)
-      if detailed_status?(status)
-        return status.text
-      end
-
-      case status
-      when 'success'
-        s_('CiStatusText|passed')
-      when 'success-with-warnings'
-        s_('CiStatusText|passed')
-      when 'manual'
-        s_('CiStatusText|blocked')
-      when 'scheduled'
-        s_('CiStatusText|delayed')
-      else
-        # All states are already being translated inside the detailed statuses:
-        # :running => Gitlab::Ci::Status::Running
-        # :skipped => Gitlab::Ci::Status::Skipped
-        # :failed => Gitlab::Ci::Status::Failed
-        # :success => Gitlab::Ci::Status::Success
-        # :canceled => Gitlab::Ci::Status::Canceled
-        # The following states are customized above:
-        # :manual => Gitlab::Ci::Status::Manual
-        status_translation = "CiStatusText|#{status}"
-        s_(status_translation)
-      end
-    end
-
     def ci_status_for_statuseable(subject)
       status = subject.try(:status) || 'not found'
       status.humanize
@@ -138,11 +89,34 @@ module Ci
       end
     end
 
+    private
+
     def detailed_status?(status)
       status.respond_to?(:text) &&
         status.respond_to?(:group) &&
         status.respond_to?(:label) &&
         status.respond_to?(:icon)
+    end
+
+    def ci_label_for_status(status)
+      if detailed_status?(status)
+        return status.label
+      end
+
+      label = case status
+              when 'success'
+                'passed'
+              when 'success-with-warnings'
+                'passed with warnings'
+              when 'manual'
+                'waiting for manual action'
+              when 'scheduled'
+                'waiting for delayed job'
+              else
+                status
+              end
+      translation = "CiStatusLabel|#{label}"
+      s_(translation)
     end
   end
 end

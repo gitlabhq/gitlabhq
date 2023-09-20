@@ -22,11 +22,6 @@
     %p
       - if member.created_by
         = html_escape(s_("InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders.merge({ inviter: (link_to inviter_name, user_url(member.created_by)).html_safe })
-        - if member.tasks_to_be_done.present?
-          = s_("InviteEmail|and has assigned you the following tasks:")
-          %ul.list-style-position-inside
-            - member.tasks_to_be_done.each do |task|
-              %li= localized_tasks_to_be_done_choices[task]
       - else
         = html_escape(s_("InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders
     %p.invite-actions

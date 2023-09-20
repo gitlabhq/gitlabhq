@@ -90,6 +90,8 @@ module ProjectAuthorizations
       log_details(entire_size: attributes.size, batch_size: BATCH_SIZE) if add_delay
 
       attributes.each_slice(BATCH_SIZE) do |attributes_batch|
+        attributes_batch.each { |attrs| attrs[:is_unique] = true }
+
         ProjectAuthorization.insert_all(attributes_batch)
         perform_delay if add_delay
       end

@@ -30,9 +30,11 @@ export default {
     title() {
       if (this.status === STATUS_TYPES.SUCCESS) {
         return s__('VersionCheck|Up to date');
-      } else if (this.status === STATUS_TYPES.WARNING) {
+      }
+      if (this.status === STATUS_TYPES.WARNING) {
         return s__('VersionCheck|Update available');
-      } else if (this.status === STATUS_TYPES.DANGER) {
+      }
+      if (this.status === STATUS_TYPES.DANGER) {
         return s__('VersionCheck|Update ASAP');
       }
 

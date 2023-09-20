@@ -34,7 +34,7 @@ unless Gitlab::Utils.to_boolean(ENV['SIDEKIQ_ENQUEUE_NON_NAMESPACED'])
   queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
 end
 
-enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
+enable_json_logs = Gitlab.config.sidekiq.log_format != 'text'
 
 Sidekiq.configure_server do |config|
   config[:strict] = false
@@ -89,7 +89,7 @@ Sidekiq.configure_server do |config|
   end
 
   if enable_reliable_fetch?
-    if Gitlab::Utils.to_boolean(ENV['SIDEKIQ_POLL_NON_NAMESPACED'])
+    if Gitlab::Utils.to_boolean(ENV['SIDEKIQ_ENABLE_DUAL_NAMESPACE_POLLING'], default: true)
       # set non-namespaced store for fetcher to poll both namespaced and non-namespaced queues
       config[:alternative_store] = ::Gitlab::Redis::Queues
       config[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
@@ -123,6 +123,7 @@ Sidekiq.configure_client do |config|
   config.client_middleware(&Gitlab::SidekiqMiddleware.client_configurator)
 end
 
+Sidekiq::Scheduled::Enq.prepend Gitlab::Patch::SidekiqScheduledEnq
 Sidekiq::Scheduled::Poller.prepend Gitlab::Patch::SidekiqPoller
 Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqPoller
 Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqCronPoller

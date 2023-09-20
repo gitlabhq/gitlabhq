@@ -4,7 +4,6 @@ module Gitlab
   module Usage
     class MetricDefinition
       METRIC_SCHEMA_PATH = Rails.root.join('config', 'metrics', 'schema.json')
-      SKIP_VALIDATION_STATUS = 'removed'
       AVAILABLE_STATUSES = %w[active broken].to_set.freeze
       VALID_SERVICE_PING_STATUSES = %w[active broken].to_set.freeze
 
@@ -24,6 +23,18 @@ module Gitlab
 
       def events
         events_from_new_structure || events_from_old_structure || {}
+      end
+
+      def to_context
+        return unless %w[redis redis_hll].include?(data_source)
+
+        event_name = if data_source == 'redis_hll'
+                       options[:events].first
+                     elsif data_source == 'redis'
+                       Gitlab::Usage::Metrics::Instrumentations::RedisMetric.new(attributes).redis_key
+                     end
+
+        Gitlab::Tracking::ServicePingContext.new(data_source: data_source, event: event_name)
       end
 
       def to_h
@@ -98,6 +109,10 @@ module Gitlab
           all.select { |definition| definition.attributes[:instrumentation_class].present? && definition.available? }
         end
 
+        def context_for(key_path)
+          definitions[key_path].to_context
+        end
+
         def schemer
           @schemer ||= ::JSONSchemer.schema(Pathname.new(METRIC_SCHEMA_PATH))
         end
@@ -161,7 +176,7 @@ module Gitlab
       end
 
       def skip_validation?
-        !!attributes[:skip_validation] || @skip_validation || attributes[:status] == SKIP_VALIDATION_STATUS
+        !!attributes[:skip_validation] || @skip_validation
       end
 
       def events_from_new_structure

@@ -1,15 +1,26 @@
 import Api from '~/api';
 
+/**
+ * @param {'descendant_groups'|'subgroups'|null} [groupsFilter] - type of group filtering
+ * @param {string|null} [parentGroupID] - parent group is needed for 'descendant_groups' and 'subgroups' filtering.
+ */
 export const groupsPath = (groupsFilter, parentGroupID) => {
-  if (groupsFilter !== undefined && parentGroupID === undefined) {
+  if (groupsFilter && !parentGroupID) {
     throw new Error('Cannot use groupsFilter without a parentGroupID');
   }
+
+  let url = '';
   switch (groupsFilter) {
     case 'descendant_groups':
-      return Api.descendantGroupsPath.replace(':id', parentGroupID);
+      url = Api.descendantGroupsPath.replace(':id', parentGroupID);
+      break;
     case 'subgroups':
-      return Api.subgroupsPath.replace(':id', parentGroupID);
+      url = Api.subgroupsPath.replace(':id', parentGroupID);
+      break;
     default:
-      return Api.groupsPath;
+      url = Api.groupsPath;
+      break;
   }
+
+  return Api.buildUrl(url);
 };

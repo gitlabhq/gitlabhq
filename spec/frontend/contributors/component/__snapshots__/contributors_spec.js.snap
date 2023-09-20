@@ -3,7 +3,7 @@
 exports[`Contributors charts should render charts and a RefSelector when loading completed and there is chart data 1`] = `
 <div>
   <div
-    class="gl-border-b gl-border-gray-100 gl-mb-6 gl-bg-gray-10 gl-p-5"
+    class="gl-bg-gray-10 gl-border-b gl-border-gray-100 gl-mb-6 gl-p-5"
   >
     <div
       class="gl-display-flex"
@@ -20,26 +20,19 @@ exports[`Contributors charts should render charts and a RefSelector when loading
           value="main"
         />
       </div>
-       
       <a
         class="btn btn-default btn-md gl-button"
         data-testid="history-button"
         href="some/path"
       >
-        <!---->
-         
-        <!---->
-          
         <span
           class="gl-button-text"
         >
           History
-        
         </span>
       </a>
     </div>
   </div>
-   
   <div
     data-testid="contributors-charts"
   >
@@ -48,11 +41,9 @@ exports[`Contributors charts should render charts and a RefSelector when loading
     >
       Commits to main
     </h4>
-     
     <span>
       Excluding merge commits. Limited to 6,000 commits.
     </span>
-     
     <glareachart-stub
       annotations=""
       class="gl-mb-5"
@@ -70,27 +61,22 @@ exports[`Contributors charts should render charts and a RefSelector when loading
       thresholds=""
       width="auto"
     />
-     
     <div
       class="row"
     >
       <div
-        class="col-lg-6 col-12 gl-my-5"
+        class="col-12 col-lg-6 gl-my-5"
       >
         <h4
           class="gl-mb-2 gl-mt-0"
         >
           John
         </h4>
-         
         <p
           class="gl-mb-3"
         >
-          
-            2 commits (jawnnypoo@gmail.com)
-          
+          2 commits (jawnnypoo@gmail.com)
         </p>
-         
         <glareachart-stub
           annotations=""
           data="[object Object]"

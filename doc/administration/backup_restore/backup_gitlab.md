@@ -160,9 +160,9 @@ GitLab uses Redis both as a cache store and to hold persistent data for our back
 Elasticsearch is an optional database for advanced search. It can improve search
 in both source-code level, and user generated content in issues, merge requests, and discussions. The [backup command](#backup-command) does _not_ back up Elasticsearch data. Elasticsearch data can be regenerated from PostgreSQL data after a restore. It is possible to [manually back up Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html).
 
-## Command line interface
+## Command-line interface
 
-GitLab provides a command line interface to back up your entire instance,
+GitLab provides a command-line interface to back up your entire instance,
 including:
 
 - Database
@@ -301,7 +301,7 @@ the timestamp is `1493107454_2018_04_25_10.6.4-ce`.
 
 ### Backup options
 
-The command line tool GitLab provides to back up your instance can accept more
+The command-line tool GitLab provides to back up your instance can accept more
 options.
 
 #### Backup strategy option
@@ -431,6 +431,34 @@ sudo gitlab-backup create SKIP=tar
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=production
+```
+
+::EndTabs
+
+#### Create server-side repository backups
+
+> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4941) in GitLab 16.3.
+
+Instead of storing large repository backups in the backup archive, repository
+backups can be configured so that the Gitaly node that hosts each repository is
+responsible for creating the backup and streaming it to object storage. This
+helps reduce the network resources required to create and restore a backup.
+
+1. [Configure a server-side backup destination in Gitaly](../gitaly/configure_gitaly.md#configure-server-side-backups).
+1. Create a back up using the `REPOSITORIES_SERVER_SIDE` variable. See the following examples.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+```shell
+sudo gitlab-backup create REPOSITORIES_SERVER_SIDE=true
+```
+
+:::TabTitle Self-compiled
+
+```shell
+sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_SERVER_SIDE=true
 ```
 
 ::EndTabs

@@ -242,7 +242,7 @@ module SearchHelper
     elsif current_controller?(:commits)
       'commits'
     elsif current_controller?(:groups)
-      if %w(issues merge_requests).include?(controller.action_name)
+      if %w[issues merge_requests].include?(controller.action_name)
         controller.action_name
       end
     end
@@ -479,7 +479,7 @@ module SearchHelper
     end.to_json
   end
 
-  def search_filter_input_options(type, placeholder = _('Search or filter results...'))
+  def search_filter_input_options(type, placeholder = _('Search or filter results…'))
     opts =
       {
         id: "filtered-search-#{type}",
@@ -537,14 +537,14 @@ module SearchHelper
       source,
       count_tags: false,
       count_tail: false,
-      filtered_tags: %w(img),
+      filtered_tags: %w[img],
       max_length: 200
     )
   end
 
   def search_sanitize(html)
     # Truncato's filtered_tags and filtered_attributes are not quite the same
-    sanitize(html, tags: %w(a p ol ul li pre code))
+    sanitize(html, tags: %w[a p ol ul li pre code])
   end
 
   # _search_highlight is used in EE override

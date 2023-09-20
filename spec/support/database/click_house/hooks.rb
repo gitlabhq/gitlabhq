@@ -4,7 +4,13 @@
 class ClickHouseTestRunner
   def truncate_tables
     ClickHouse::Client.configuration.databases.each_key do |db|
-      tables_for(db).each do |table|
+      # Select tables with at least one row
+      query = tables_for(db).map do |table|
+        "(SELECT '#{table}' AS table FROM #{table} LIMIT 1)"
+      end.join(' UNION ALL ')
+
+      tables_with_data = ClickHouse::Client.select(query, db).pluck('table')
+      tables_with_data.each do |table|
         ClickHouse::Client.execute("TRUNCATE TABLE #{table}", db)
       end
     end

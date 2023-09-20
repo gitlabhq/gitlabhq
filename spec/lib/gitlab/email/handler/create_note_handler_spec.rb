@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
     end
 
     context 'when the issue is a Service Desk issue' do
-      let(:original_recipient) { User.support_bot }
+      let(:original_recipient) { Users::Internal.support_bot }
 
       it 'does not raise a UserNotFoundError' do
         expect { receiver.execute }.not_to raise_error
@@ -209,7 +209,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
 
   context 'when note is authored from external author for service desk' do
     before do
-      SentNotification.find_by(reply_key: mail_key).update!(recipient: User.support_bot)
+      SentNotification.find_by(reply_key: mail_key).update!(recipient: Users::Internal.support_bot)
     end
 
     context 'when email contains text, quoted text and quick commands' do

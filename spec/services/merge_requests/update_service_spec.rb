@@ -1301,41 +1301,39 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
     end
 
     context 'updating labels' do
-      let(:label_a) { label }
-      let(:label_b) { create(:label, title: 'b', project: project) }
-      let(:label_c) { create(:label, title: 'c', project: project) }
-      let(:label_locked) { create(:label, title: 'locked', project: project, lock_on_merge: true) }
-      let(:issuable) { merge_request }
+      context 'when merge request is not merged' do
+        let(:label_a) { label }
+        let(:label_b) { create(:label, title: 'b', project: project) }
+        let(:label_c) { create(:label, title: 'c', project: project) }
+        let(:label_locked) { create(:label, title: 'locked', project: project, lock_on_merge: true) }
+        let(:issuable) { merge_request }
 
-      it_behaves_like 'updating issuable labels'
-      it_behaves_like 'keeps issuable labels sorted after update'
-      it_behaves_like 'broadcasting issuable labels updates'
+        it_behaves_like 'updating issuable labels'
+        it_behaves_like 'keeps issuable labels sorted after update'
+        it_behaves_like 'broadcasting issuable labels updates'
+      end
 
       context 'when merge request has been merged' do
-        context 'when remove_label_ids contains a locked label' do
-          let(:params) { { remove_label_ids: [label_locked.id] } }
+        let(:label_a) { create(:label, title: 'a', project: project, lock_on_merge: true) }
+        let(:label_b) { create(:label, title: 'b', project: project, lock_on_merge: true) }
+        let(:label_c) { create(:label, title: 'c', project: project, lock_on_merge: true) }
+        let(:label_unlocked) { create(:label, title: 'unlocked', project: project) }
+        let(:issuable) { merge_request }
 
-          context 'when feature flag is disabled' do
-            before do
-              stub_feature_flags(enforce_locked_labels_on_merge: false)
-            end
+        before do
+          merge_request.update!(state: 'merged')
+        end
 
-            it 'removes locked labels' do
-              merge_request.update!(state: 'merged', labels: [label_a, label_locked])
-              update_issuable(params)
+        it_behaves_like 'updating merged MR with locked labels'
 
-              expect(merge_request.label_ids).to contain_exactly(label_a.id)
-            end
+        context 'when feature flag is disabled' do
+          let(:label_locked) { create(:label, title: 'locked', project: project, lock_on_merge: true) }
+
+          before do
+            stub_feature_flags(enforce_locked_labels_on_merge: false)
           end
 
-          context 'when feature flag is enabled' do
-            it 'does not remove locked labels' do
-              merge_request.update!(state: 'merged', labels: [label_a, label_locked])
-              update_issuable(params)
-
-              expect(merge_request.label_ids).to contain_exactly(label_a.id, label_locked.id)
-            end
-          end
+          it_behaves_like 'updating issuable labels'
         end
       end
 

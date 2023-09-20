@@ -11,9 +11,9 @@ module BlobViewer
       (?<name>.*?) (?# module name)
       \s*(?://.*)? (?# comment)
       (?:\n|\z) (?# newline or end of file)
-    }x.freeze
+    }x
 
-    self.file_types = %i(go_mod go_sum)
+    self.file_types = %i[go_mod go_sum]
 
     def manager_name
       'Go Modules'

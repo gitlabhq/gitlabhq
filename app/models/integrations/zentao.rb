@@ -34,6 +34,10 @@ module Integrations
     validates :api_token, presence: true, if: :activated?
     validates :zentao_product_xid, presence: true, if: :activated?
 
+    def avatar_url
+      ActionController::Base.helpers.image_path('logos/zentao.svg')
+    end
+
     def self.issues_license_available?(project)
       project&.licensed_feature_available?(:zentao_issues_integration)
     end
@@ -82,7 +86,7 @@ module Integrations
     end
 
     def self.supported_events
-      %w()
+      %w[]
     end
 
     private

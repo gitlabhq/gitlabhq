@@ -164,7 +164,7 @@ class PostReceive
       user: user,
       property: 'source_code_pushes',
       label: metric_path,
-      context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: metric_path).to_context]
+      context: [Gitlab::Usage::MetricDefinition.context_for(metric_path).to_context]
     )
   end
 end

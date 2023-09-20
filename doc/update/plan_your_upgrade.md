@@ -103,11 +103,7 @@ For the upgrade plan, start by creating an outline of a plan that best applies
 to your instance and then upgrade it for any relevant features you're using.
 
 - Generate an upgrade plan by reading and understanding the relevant documentation:
-  - upgrade based on the installation method:
-    - [Linux package (Omnibus)](index.md#linux-packages-omnibus)
-    - [Self-compiled](index.md#self-compiled-installation)
-    - [Docker](index.md#installation-using-docker)
-    - [Helm Charts](index.md#installation-using-helm)
+  - Upgrade based on the [installation method](index.md#upgrade-based-on-installation-method).
   - [Zero-downtime upgrades](zero_downtime.md) (if possible and desired)
   - [Convert from GitLab Community Edition to Enterprise Edition](package/convert_to_ee.md)
 - What version should you upgrade to:
@@ -122,7 +118,7 @@ to your instance and then upgrade it for any relevant features you're using.
   [turning on maintenance mode](../administration/maintenance_mode/index.md) during the
   upgrade.
 - About PostgreSQL:
-  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. On the left sidebar, select **Search or go to**.
   1. Select **Admin Area**.
   1. Look for the version of PostgreSQL you are using.
     If [a PostgreSQL upgrade is needed](../administration/package_information/postgresql_versions.md),

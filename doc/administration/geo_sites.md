@@ -11,7 +11,7 @@ You can configure various settings for GitLab Geo sites. For more information, s
 
 On either the primary or secondary site:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Geo > Sites**.
 
@@ -72,7 +72,7 @@ the primary uses the secondary's internal URL to contact it directly.
 
 The internal URL defaults to external URL. To change it:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Geo > Sites**.
 1. Select **Edit** on the site you want to customize.

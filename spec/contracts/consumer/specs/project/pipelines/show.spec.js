@@ -27,7 +27,7 @@ pactWith(
     describe(GET_PIPELINE_HEADER_DATA_PROVIDER_NAME, () => {
       beforeEach(async () => {
         const query = await extractGraphQLQuery(
-          'app/assets/javascripts/pipelines/graphql/queries/get_pipeline_header_data.query.graphql',
+          'app/assets/javascripts/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql',
         );
         const graphqlQuery = new GraphQLInteraction()
           .given(PipelineHeaderData.scenario.state)
@@ -64,7 +64,7 @@ pactWith(
     describe(DELETE_PIPELINE_PROVIDER_NAME, () => {
       beforeEach(async () => {
         const query = await extractGraphQLQuery(
-          'app/assets/javascripts/pipelines/graphql/mutations/delete_pipeline.mutation.graphql',
+          'app/assets/javascripts/ci/pipeline_details/graphql/mutations/delete_pipeline.mutation.graphql',
         );
         const graphqlQuery = new GraphQLInteraction()
           .given(DeletePipeline.scenario.state)

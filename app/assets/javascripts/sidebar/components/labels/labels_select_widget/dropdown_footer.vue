@@ -13,7 +13,13 @@ export default {
     },
     footerManageLabelTitle: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    showManageLabelsItem() {
+      return this.footerManageLabelTitle && this.labelsManagePath;
     },
   },
 };
@@ -28,7 +34,12 @@ export default {
     >
       {{ footerCreateLabelTitle }}
     </gl-dropdown-item>
-    <gl-dropdown-item :href="labelsManagePath" @click.capture.native.stop>
+    <gl-dropdown-item
+      v-if="showManageLabelsItem"
+      data-testid="manage-labels-button"
+      :href="labelsManagePath"
+      @click.capture.native.stop
+    >
       {{ footerManageLabelTitle }}
     </gl-dropdown-item>
   </div>

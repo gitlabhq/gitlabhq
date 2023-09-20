@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -22,7 +22,7 @@ SSH uses two keys, a public key and a private key.
 
 It is not possible to reveal confidential data by uploading your public key. When you need to copy or upload your SSH public key, make sure you do not accidentally copy or upload your private key instead.
 
-You can use your private key to [sign commits](project/repository/ssh_signed_commits/index.md),
+You can use your private key to [sign commits](project/repository/signed_commits/ssh.md),
 which makes your use of GitLab and your data even more secure.
 This signature then can be verified by anyone using your public key.
 
@@ -74,11 +74,16 @@ must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later 
 
 ### RSA SSH keys
 
+> Maximum RSA key length [changed](https://gitlab.com/groups/gitlab-org/-/epics/11186) in GitLab 16.3.
+
 Available documentation suggests ED25519 is more secure than RSA.
 
 If you use an RSA key, the US National Institute of Standards and Technology in
 [Publication 800-57 Part 3 (PDF)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57Pt3r1.pdf)
-recommends a key size of at least 2048 bits. The default key size depends on your version of `ssh-keygen`.
+recommends a key size of at least 2048 bits. Due to limitations in Go,
+RSA keys [cannot exceed 8192 bits](#tls-server-sent-certificate-containing-rsa-key-larger-than-8192-bits).
+
+The default key size depends on your version of `ssh-keygen`.
 Review the `man` page for your installed `ssh-keygen` command for details.
 
 ## See if you have an existing SSH key pair
@@ -522,6 +527,17 @@ Remove the custom configuration as soon as you can. These customizations
 are **explicitly not supported** and may stop working at any time.
 
 ## Troubleshooting
+
+### TLS: server sent certificate containing RSA key larger than 8192 bits
+
+In GitLab 16.3 and later, Go limits RSA keys to a maximum of 8192 bits.
+To check the length of a key:
+
+```shell
+openssl rsa -in <your-key-file> -text -noout | grep "Key:"
+```
+
+Replace any key longer than 8192 bits with a shorter key.
 
 ### Password prompt with `git clone`
 

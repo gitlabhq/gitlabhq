@@ -4,7 +4,7 @@ module FeatureFlags
   class BaseService < ::BaseService
     include Gitlab::Utils::StrongMemoize
 
-    AUDITABLE_ATTRIBUTES = %w(name description active).freeze
+    AUDITABLE_ATTRIBUTES = %w[name description active].freeze
 
     def success(**args)
       sync_to_jira(args[:feature_flag])

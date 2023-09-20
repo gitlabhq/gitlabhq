@@ -56,15 +56,21 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
         expect { post_graphql(query, current_user: current_user) }.not_to exceed_query_limit(baseline)
       end
 
-      context 'when other project member is not authorized to see the full token' do
+      context 'when another project member or owner who is not also the token owner' do
         before do
-          project.add_maintainer(other_user)
+          project.add_owner(other_user)
           post_graphql(query, current_user: other_user)
         end
 
-        it 'shows truncated token' do
-          expect(graphql_data_at(:project, :pipeline_triggers,
-            :nodes).first['token']).to eql pipeline_trigger.token[0, 4]
+        it 'is not authorized and shows truncated token' do
+          expect(graphql_data_at(:project, :pipeline_triggers, :nodes).first).to match({
+            'id' => pipeline_trigger.to_global_id.to_s,
+            'canAccessProject' => true,
+            'description' => pipeline_trigger.description,
+            'hasTokenExposed' => false,
+            'lastUsed' => nil,
+            'token' => pipeline_trigger.token[0, 4]
+          })
         end
       end
 
@@ -199,7 +205,7 @@ RSpec.describe 'getting project information', feature_category: :groups_and_proj
 
     context 'when the project is a catalog resource' do
       before do
-        create(:catalog_resource, project: project)
+        create(:ci_catalog_resource, project: project)
       end
 
       it 'is true' do

@@ -67,10 +67,26 @@ describe('GlobalSearchDefaultPlaces', () => {
         {
           text: 'Explore',
           href: '/explore',
+          extraAttrs: {
+            'data-track-action': 'click_command_palette_item',
+            'data-track-extra': '{"title":"Explore"}',
+            'data-track-label': 'item_without_id',
+            'data-track-property': 'nav_panel_unknown',
+            'data-testid': 'places-item-link',
+            'data-qa-places-item': 'Explore',
+          },
         },
         {
           text: 'Admin area',
           href: '/admin',
+          extraAttrs: {
+            'data-track-action': 'click_command_palette_item',
+            'data-track-extra': '{"title":"Admin area"}',
+            'data-track-label': 'item_without_id',
+            'data-track-property': 'nav_panel_unknown',
+            'data-testid': 'places-item-link',
+            'data-qa-places-item': 'Admin area',
+          },
         },
       ]);
     });

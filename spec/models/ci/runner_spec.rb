@@ -1216,13 +1216,12 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
       before do
         runner.tick_runner_queue
-        runner.destroy!
       end
 
       it 'cleans up the queue' do
-        Gitlab::Redis::Cache.with do |redis|
-          expect(redis.get(queue_key)).to be_nil
-        end
+        expect(Gitlab::Workhorse).to receive(:cleanup_key).with(queue_key)
+
+        runner.destroy!
       end
     end
   end

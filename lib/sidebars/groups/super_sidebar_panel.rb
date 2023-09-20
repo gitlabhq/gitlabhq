@@ -35,11 +35,7 @@ module Sidebars
 
       override :super_sidebar_context_header
       def super_sidebar_context_header
-        {
-          title: context.group.name,
-          avatar: context.group.avatar_url,
-          id: context.group.id
-        }
+        _('Group')
       end
     end
   end

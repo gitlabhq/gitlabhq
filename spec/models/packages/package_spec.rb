@@ -25,6 +25,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_one(:rubygems_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:rpm_metadatum).inverse_of(:package) }
+    it { is_expected.to have_many(:nuget_symbols).inverse_of(:package) }
   end
 
   describe '.with_debian_codename' do
@@ -875,14 +876,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     subject { described_class.with_npm_scope('test') }
 
     it { is_expected.to contain_exactly(package1) }
-
-    context 'when npm_package_registry_fix_group_path_validation is disabled' do
-      before do
-        stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
-      end
-
-      it { is_expected.to contain_exactly(package1) }
-    end
   end
 
   describe '.without_nuget_temporary_name' do
@@ -1502,6 +1495,40 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
       it 'does not create event' do
         expect { subject }.not_to publish_event(::Packages::PackageCreatedEvent)
+      end
+    end
+  end
+
+  describe 'inheritance' do
+    let_it_be(:project) { create(:project) }
+
+    let(:format) { "" }
+    let(:package) { create("#{format}_package", project: project) }
+    let(:package_id) { package.id }
+
+    subject { described_class.find_by(id: package_id).class }
+
+    described_class
+      .package_types
+      .keys
+      .map(&:to_sym)
+      .each do |package_format|
+      if described_class.inheritance_column_to_class_map[package_format].nil?
+        context "for package format #{package_format}" do
+          let(:format) { package_format }
+
+          it 'maps to Packages::Package' do
+            is_expected.to eq(described_class)
+          end
+        end
+      else
+        context "for package format #{package_format}" do
+          let(:format) { package_format }
+
+          it 'maps to the correct class' do
+            is_expected.to eq(described_class.inheritance_column_to_class_map[package_format].constantize)
+          end
+        end
       end
     end
   end

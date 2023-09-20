@@ -179,6 +179,45 @@ RSpec.shared_examples 'work items assignees' do
 
     expect(work_item.reload.assignees).to include(user)
   end
+
+  it 'successfully assigns the current user by clicking `Assign myself` button' do
+    find('[data-testid="work-item-assignees-input"]').hover
+    find('[data-testid="assign-self"]').click
+    wait_for_requests
+
+    expect(work_item.reload.assignees).to include(user)
+  end
+
+  it 'successfully removes all users on clear all button click' do
+    find('[data-testid="work-item-assignees-input"]').hover
+    find('[data-testid="assign-self"]').click
+    wait_for_requests
+
+    expect(work_item.reload.assignees).to include(user)
+
+    find('[data-testid="work-item-assignees-input"]').click
+    find('[data-testid="clear-all-button"]').click
+    find("body").click
+    wait_for_requests
+
+    expect(work_item.reload.assignees).not_to include(user)
+  end
+
+  it 'successfully removes user on clicking badge cross button' do
+    find('[data-testid="work-item-assignees-input"]').hover
+    find('[data-testid="assign-self"]').click
+    wait_for_requests
+
+    expect(work_item.reload.assignees).to include(user)
+
+    within('[data-testid="work-item-assignees-input"]') do
+      find('[data-testid="close-icon"]').click
+    end
+    find("body").click
+    wait_for_requests
+
+    expect(work_item.reload.assignees).not_to include(user)
+  end
 end
 
 RSpec.shared_examples 'work items labels' do

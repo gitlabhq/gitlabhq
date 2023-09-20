@@ -1,3 +1,3 @@
-import initJobDetails from '~/jobs';
+import initJobDetails from '~/ci/job_details';
 
 initJobDetails();

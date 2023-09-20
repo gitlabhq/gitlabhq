@@ -42,7 +42,7 @@ export default class FilteredSearchManager {
     useDefaultState = false,
     filteredSearchTokenKeys = IssuableFilteredSearchTokenKeys,
     stateFiltersSelector = '.issues-state-filters',
-    placeholder = __('Search or filter results...'),
+    placeholder = __('Search or filter results…'),
     anchor = null,
   }) {
     this.isGroup = isGroup;

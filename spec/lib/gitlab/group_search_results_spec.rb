@@ -51,6 +51,17 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     include_examples 'search results filtered by archived', 'search_merge_requests_hide_archived_projects'
   end
 
+  describe 'milestones search' do
+    let!(:unarchived_project) { create(:project, :public, group: group) }
+    let!(:archived_project) { create(:project, :public, :archived, group: group) }
+    let!(:unarchived_result) { create(:milestone, project: unarchived_project, title: 'foo') }
+    let!(:archived_result) { create(:milestone, project: archived_project, title: 'foo') }
+    let(:query) { 'foo' }
+    let(:scope) { 'milestones' }
+
+    include_examples 'search results filtered by archived', 'search_milestones_hide_archived_projects'
+  end
+
   describe '#projects' do
     let(:scope) { 'projects' }
     let(:query) { 'Test' }
@@ -60,7 +71,7 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
       let_it_be(:unarchived_result) { create(:project, :public, group: group, name: 'Test1') }
       let_it_be(:archived_result) { create(:project, :archived, :public, group: group, name: 'Test2') }
 
-      it_behaves_like 'search results filtered by archived', 'search_projects_hide_archived'
+      it_behaves_like 'search results filtered by archived'
     end
   end
 

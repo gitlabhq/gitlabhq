@@ -15,8 +15,7 @@ RSpec.describe Gitlab::SQL::CTE do
 
       expected = [
         "#{name} AS ",
-        Gitlab::Database::AsWithMaterialized.materialized_if_supported,
-        (' ' unless Gitlab::Database::AsWithMaterialized.materialized_if_supported.blank?),
+        'MATERIALIZED ',
         "(#{sql1})"
       ].join
 

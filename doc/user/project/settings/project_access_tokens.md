@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 type: reference, howto
@@ -55,7 +55,7 @@ all projects that have visibility level set to [Internal](../../public_access.md
 
 To create a project access token:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Access Tokens**.
 1. Enter a name. The token name is visible to any user with permissions to view the project.
 1. Enter an expiry date for the token.
@@ -73,11 +73,13 @@ A project access token is displayed. Save the project access token somewhere saf
 
 To revoke a project access token:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Access Tokens**.
 1. Next to the project access token to revoke, select **Revoke**.
 
 ## Scopes for a project access token
+
+> `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
 
 The scope determines the actions you can perform when you authenticate with a project access token.
 
@@ -93,6 +95,8 @@ See the warning in [create a project access token](#create-a-project-access-toke
 | `read_repository`  | Grants read access (pull) to the repository.                                                                                                                    |
 | `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                                 |
 | `create_runner`    | Grants permission to create runners in the project.                                                                                                             |
+| `ai_features`      | Grants permission to perform API actions for GitLab Duo.                                                                                                        |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project.                                                                                     |
 
 ## Enable or disable project access token creation
 
@@ -100,7 +104,7 @@ See the warning in [create a project access token](#create-a-project-access-toke
 
 To enable or disable project access token creation for all projects in a top-level group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
 1. Under **Permissions**, turn on or off **Allow project and group access token creation**.

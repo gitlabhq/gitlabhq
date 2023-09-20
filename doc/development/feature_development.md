@@ -95,7 +95,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [Value Stream Analytics development guide](value_stream_analytics.md)
 - [Application limits](application_limits.md)
-- [AI features](ai_features.md)
+- [AI features](ai_features/index.md)
 
 ### Import and Export
 
@@ -163,8 +163,8 @@ The following integration guides are internal. Some integrations require access 
 ## Analytics Instrumentation guides
 
 - [Analytics Instrumentation guide](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/)
-- [Service Ping guide](service_ping/index.md)
-- [Snowplow guide](snowplow/index.md)
+- [Service Ping guide](internal_analytics/service_ping/index.md)
+- [Snowplow guide](internal_analytics/snowplow/index.md)
 
 ## Experiment guide
 

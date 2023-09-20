@@ -82,7 +82,7 @@ authentication token or use a private runner.
 
 To create an authentication token for your project or group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. On the left sidebar, select **Settings > Repository > Deploy Tokens**.
 1. Create a deployment token with `read_package_registry` and `write_package_registry` scopes and copy the generated token.
 1. On the left sidebar, select **Settings > CI/CD > Variables**.
@@ -301,7 +301,7 @@ Then you can use `yarn add` to install your packages.
 ## Related topics
 
 - [npm documentation](../npm_registry/index.md#helpful-hints)
-- [Yarn Migration Guide](https://yarnpkg.com/getting-started/migration)
+- [Yarn Migration Guide](https://yarnpkg.com/migration/guide/)
 
 ## Troubleshooting
 

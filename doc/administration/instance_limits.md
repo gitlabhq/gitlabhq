@@ -11,6 +11,31 @@ GitLab, like most large applications, enforces limits in certain features to mai
 minimum quality of performance. Allowing some features to be limitless could affect security,
 performance, data, or could even exhaust the allocated resources for the application.
 
+## Instance configuration
+
+In the instance configuration page, you can find information about some of the
+settings that are used in your current GitLab instance.
+
+Depending on which limits you have configured, you can see:
+
+- SSH host keys information
+- CI/CD limits
+- GitLab Pages limits
+- Package Registry limits
+- Rate limits
+- Size limits
+
+Because this page is visible to everybody, unauthenticated users only see the
+the information that is relevant to them.
+
+To visit the instance configuration page:
+
+1. On the left sidebar, select **Help** (**{question-o}**) > **Help**.
+1. On the Help page, select **Check the current instance configuration**.
+
+The direct URL is `<gitlab_url>/help/instance_configuration`. For GitLab.com,
+you can visit <https://gitlab.com/help/instance_configuration>.
+
 ## Rate limits
 
 Rate limits can be used to improve the security and durability of GitLab.
@@ -600,6 +625,8 @@ Plan.default.actual_limits.update!(project_ci_variables: 10000)
 
 ### Maximum file size per type of artifact
 
+> `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
@@ -615,6 +642,7 @@ setting is used:
 | Artifact limit name                         | Default value |
 |---------------------------------------------|---------------|
 | `ci_max_artifact_size_accessibility`        | 0             |
+| `ci_max_artifact_size_annotations`          | 0             |
 | `ci_max_artifact_size_api_fuzzing`          | 0             |
 | `ci_max_artifact_size_archive`              | 0             |
 | `ci_max_artifact_size_browser_performance`  | 0             |
@@ -812,6 +840,37 @@ To set this limit to 5 KB on a self-managed installation, run the following in t
 
 ```ruby
 Plan.default.actual_limits.update!(dotenv_size: 5.kilobytes)
+```
+
+### Limit CI/CD job annotations
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
+You can set a limit on the maximum number of [annotations](../ci/yaml/artifacts_reports.md#artifactsreportsannotations)
+per CI/CD job.
+
+Set the limit to `0` to disable it. Defaults to `20` on self-managed instances.
+
+To set this limit to `100` on a self-managed instance, run the following command in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(ci_job_annotations_num: 100)
+```
+
+### Limit CI/CD job annotations file size
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+
+You can set a limit on the maximum size of a CI/CD job [annotation](../ci/yaml/artifacts_reports.md#artifactsreportsannotations).
+
+Set the limit to `0` to disable it. Defaults to 80 KB.
+
+To set this limit to 100 KB on a self-managed installation, run the following in the
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+
+```ruby
+Plan.default.actual_limits.update!(ci_job_annotations_size: 100.kilobytes)
 ```
 
 ## Instance monitoring and metrics
@@ -1045,7 +1104,7 @@ Issues and merge requests enforce these maximums:
 
 ## CDN-based limits on GitLab.com
 
-In addition to application-based limits, GitLab.com is configured to use Cloudflare's standard DDoS protection and Spectrum to protect Git over SSH. Cloudflare terminates client TLS connections but is not application aware and cannot be used for limits tied to users or groups. Cloudflare page rules and rate limits are configured with Terraform. These configurations are [not public](https://about.gitlab.com/handbook/communication/#not-public) because they include security and abuse implementations that detect malicious activities and making them public would undermine those operations.
+In addition to application-based limits, GitLab.com is configured to use Cloudflare's standard DDoS protection and Spectrum to protect Git over SSH. Cloudflare terminates client TLS connections but is not application aware and cannot be used for limits tied to users or groups. Cloudflare page rules and rate limits are configured with Terraform. These configurations are [not public](https://handbook.gitlab.com/handbook/communication/confidentiality-levels/#not-public) because they include security and abuse implementations that detect malicious activities and making them public would undermine those operations.
 
 ## Container Repository tag deletion limit
 
@@ -1073,6 +1132,20 @@ The [changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-fil
 
 - Each namespace (such as a group or a project) can have a maximum of 50 value streams.
 - Each value stream can have a maximum of 15 stages.
+
+## Audit events streaming destination limits
+
+### Custom HTTP Endpoint
+
+- Each top-level group can have a maximum of 5 custom HTTP streaming destinations.
+
+### Google Cloud Logging
+
+- Each top-level group can have a maximum of 5 Google Cloud Logging streaming destinations.
+
+### Amazon S3
+
+- Each top-level group can have a maximum of 5 Amazon S3 streaming destinations.
 
 ## List all instance limits
 
@@ -1168,7 +1241,8 @@ web_hook_calls: 0,
 project_access_token_limit: 0,
 google_cloud_logging_configurations: 5,
 ml_model_max_file_size: 10737418240,
-limits_history: {}
+limits_history: {},
+audit_events_amazon_s3_configurations: 5
 ```
 
 Some limit values display as `[FILTERED]` in the list due to

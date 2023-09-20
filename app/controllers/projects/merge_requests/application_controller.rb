@@ -14,6 +14,18 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
   private
 
+  # Normally the methods with `check_(\w+)_available!` pattern are
+  # handled by the `method_missing` defined in `ProjectsController::ApplicationController`
+  # but that logic does not take the member roles into account, therefore, we handle this
+  # case here manually.
+  def check_merge_requests_available!
+    render_404 if project_policy.merge_requests_disabled?
+  end
+
+  def project_policy
+    ProjectPolicy.new(current_user, project)
+  end
+
   def merge_request
     @issuable =
       @merge_request ||=

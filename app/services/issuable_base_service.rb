@@ -169,7 +169,7 @@ class IssuableBaseService < ::BaseContainerService
     params[:incident_management_issuable_escalation_status_attributes] = result[:escalation_status]
   end
 
-  def process_label_ids(attributes, existing_label_ids: nil, extra_label_ids: [])
+  def process_label_ids(attributes, issuable:, existing_label_ids: nil, extra_label_ids: []) # rubocop:disable Lint/UnusedMethodArgument
     label_ids = attributes.delete(:label_ids)
     add_label_ids = attributes.delete(:add_label_ids)
     remove_label_ids = attributes.delete(:remove_label_ids)
@@ -180,15 +180,29 @@ class IssuableBaseService < ::BaseContainerService
     new_label_ids |= add_label_ids if add_label_ids
     new_label_ids -= remove_label_ids if remove_label_ids
 
-    new_label_ids.uniq
+    filter_locked_labels(issuable, new_label_ids.uniq, existing_label_ids)
+  end
+
+  # Filter out any locked labels that are attempting to be removed
+  def filter_locked_labels(issuable, ids, existing_label_ids)
+    return ids unless issuable.supports_lock_on_merge?
+    return ids unless existing_label_ids.present?
+
+    removed_label_ids = existing_label_ids - ids
+    removed_locked_label_ids = labels_service.filter_locked_label_ids(removed_label_ids)
+
+    ids + removed_locked_label_ids
   end
 
   def process_assignee_ids(attributes, existing_assignee_ids: nil, extra_assignee_ids: [])
-    process = Issuable::ProcessAssignees.new(assignee_ids: attributes.delete(:assignee_ids),
-                                             add_assignee_ids: attributes.delete(:add_assignee_ids),
-                                             remove_assignee_ids: attributes.delete(:remove_assignee_ids),
-                                             existing_assignee_ids: existing_assignee_ids,
-                                             extra_assignee_ids: extra_assignee_ids)
+    process = Issuable::ProcessAssignees.new(
+      assignee_ids: attributes.delete(:assignee_ids),
+      add_assignee_ids: attributes.delete(:add_assignee_ids),
+      remove_assignee_ids: attributes.delete(:remove_assignee_ids),
+      existing_assignee_ids: existing_assignee_ids,
+      extra_assignee_ids: extra_assignee_ids
+    )
+
     process.execute
   end
 
@@ -221,7 +235,7 @@ class IssuableBaseService < ::BaseContainerService
 
     params.delete(:state_event)
     params[:author] ||= current_user
-    params[:label_ids] = process_label_ids(params, extra_label_ids: issuable.label_ids.to_a)
+    params[:label_ids] = process_label_ids(params, issuable: issuable, extra_label_ids: issuable.label_ids.to_a)
 
     if issuable.respond_to?(:assignee_ids)
       params[:assignee_ids] = process_assignee_ids(params, extra_assignee_ids: issuable.assignee_ids.to_a)
@@ -373,9 +387,11 @@ class IssuableBaseService < ::BaseContainerService
     filter_params(issuable)
 
     if issuable.changed? || params.present?
-      issuable.assign_attributes(params.merge(updated_by: current_user,
-                                              last_edited_at: Time.current,
-                                              last_edited_by: current_user))
+      issuable.assign_attributes(params.merge(
+        updated_by: current_user,
+        last_edited_at: Time.current,
+        last_edited_by: current_user
+      ))
 
       before_update(issuable, skip_spam_check: true)
 
@@ -404,10 +420,13 @@ class IssuableBaseService < ::BaseContainerService
     update_task_params = params.delete(:update_task)
     return unless update_task_params
 
-    tasklist_toggler = TaskListToggleService.new(issuable.description, issuable.description_html,
-                                                 line_source: update_task_params[:line_source],
-                                                 line_number: update_task_params[:line_number].to_i,
-                                                 toggle_as_checked: update_task_params[:checked])
+    tasklist_toggler = TaskListToggleService.new(
+      issuable.description,
+      issuable.description_html,
+      line_source: update_task_params[:line_source],
+      line_number: update_task_params[:line_number].to_i,
+      toggle_as_checked: update_task_params[:checked]
+    )
 
     unless tasklist_toggler.execute
       # if we make it here, the data is much newer than we thought it was - fail fast
@@ -469,7 +488,7 @@ class IssuableBaseService < ::BaseContainerService
   # rubocop: enable CodeReuse/ActiveRecord
 
   def assign_requested_labels(issuable)
-    label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
+    label_ids = process_label_ids(params, issuable: issuable, existing_label_ids: issuable.label_ids)
     return unless ids_changing?(issuable.label_ids, label_ids)
 
     params[:label_ids] = label_ids

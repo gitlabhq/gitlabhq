@@ -15,7 +15,7 @@ module Mutations
       argument :parent_id, ::Types::GlobalIDType[::IssueParent],
         required: true,
         description: 'Global ID of the parent to which the bulk update will be scoped. ' \
-                     'The parent can be a project **(FREE)** or a group **(PREMIUM)**. ' \
+                     'The parent can be a project **(FREE ALL)** or a group **(PREMIUM ALL)**. ' \
                      'Example `IssueParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`.'
 
       argument :ids, [::Types::GlobalIDType[::Issue]],

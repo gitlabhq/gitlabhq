@@ -7,6 +7,8 @@ type: howto
 
 # Geo with Object storage **(PREMIUM SELF)**
 
+> Verification of files stored in object storage was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8056) in GitLab 16.4 [with a flag](../../feature_flags.md) named `geo_object_storage_verification`. Enabled by default.
+
 Geo can be used in combination with Object Storage (AWS S3, or other compatible object storage).
 
 **Secondary** sites can use one of the following:
@@ -41,7 +43,7 @@ whether they are stored on the local file system or in object storage.
 
 To enable GitLab replication:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Geo > Nodes**.
 1. Select **Edit** on the **secondary** site.
@@ -86,7 +88,3 @@ For manual synchronization, or scheduled by `cron`, see:
 
 - [`s3cmd sync`](https://s3tools.org/s3cmd-sync)
 - [`gsutil rsync`](https://cloud.google.com/storage/docs/gsutil/commands/rsync)
-
-## Verification of files in object storage
-
-[Files stored in object storage are not verified.](https://gitlab.com/groups/gitlab-org/-/epics/8056)

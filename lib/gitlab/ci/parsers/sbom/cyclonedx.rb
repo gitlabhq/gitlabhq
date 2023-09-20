@@ -58,6 +58,15 @@ module Gitlab
             properties = data.dig('metadata', 'properties')
             source = CyclonedxProperties.parse_source(properties)
             report.set_source(source) if source
+
+            tools = data.dig('metadata', 'tools')
+            authors = data.dig('metadata', 'authors')
+
+            report.metadata = ::Gitlab::Ci::Reports::Sbom::Metadata.new.tap do |metadata|
+              metadata.tools = tools if tools
+              metadata.authors = authors if authors
+              metadata.properties = properties if properties
+            end
           end
 
           def parse_components

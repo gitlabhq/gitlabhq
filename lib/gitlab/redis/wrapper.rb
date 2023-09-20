@@ -16,6 +16,8 @@ require 'redis/store/factory'
 module Gitlab
   module Redis
     class Wrapper
+      InvalidPathError = Class.new(StandardError)
+
       class << self
         delegate :params, :url, :store, to: :new
 
@@ -122,12 +124,14 @@ module Gitlab
         config = raw_config_hash
         config[:instrumentation_class] ||= self.class.instrumentation_class
 
-        if config[:cluster].present?
-          config[:db] = 0 # Redis Cluster only supports db 0
-          config
-        else
-          parse_redis_url(config)
-        end
+        result = if config[:cluster].present?
+                   config[:db] = 0 # Redis Cluster only supports db 0
+                   config
+                 else
+                   parse_redis_url(config)
+                 end
+
+        parse_client_tls_options(result)
       end
 
       def parse_redis_url(config)
@@ -151,6 +155,33 @@ module Gitlab
           # {url: ..., port: ..., sentinels: [...]}
           redis_hash.merge(config)
         end
+      end
+
+      def parse_client_tls_options(config)
+        return config unless config&.key?(:ssl_params)
+
+        # Only cert_file and key_file are handled in this method. ca_file and
+        # ca_path are Strings, so they can be passed as-is. cert_store is not
+        # currently supported.
+
+        cert_file = config[:ssl_params].delete(:cert_file)
+        key_file = config[:ssl_params].delete(:key_file)
+
+        unless ::File.exist?(cert_file)
+          raise InvalidPathError,
+            "Certificate file #{cert_file} specified in in `resque.yml` does not exist."
+        end
+
+        config[:ssl_params][:cert] = OpenSSL::X509::Certificate.new(File.read(cert_file))
+
+        unless ::File.exist?(key_file)
+          raise InvalidPathError,
+            "Key file #{key_file} specified in in `resque.yml` does not exist."
+        end
+
+        config[:ssl_params][:key] = OpenSSL::PKey.read(File.read(key_file))
+
+        config
       end
 
       def raw_config_hash

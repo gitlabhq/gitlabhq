@@ -38,8 +38,8 @@ module Gitlab
       Timing information for debugging purposes:
     MESSAGE
 
-    DOWNLOAD_COMMANDS = %w{git-upload-pack git-upload-archive}.freeze
-    PUSH_COMMANDS = %w{git-receive-pack}.freeze
+    DOWNLOAD_COMMANDS = %w[git-upload-pack git-upload-archive].freeze
+    PUSH_COMMANDS = %w[git-receive-pack].freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
     attr_reader :actor, :protocol, :authentication_abilities,

@@ -38,7 +38,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     %w[db repositories]
   end
 
-  before(:all) do # rubocop:disable RSpec/BeforeAll
+  before(:all) do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/gitlab/backup'
     Rake.application.rake_require 'tasks/gitlab/shell'
@@ -222,7 +222,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         # We only need a backup of the repositories for this test
         stub_env('SKIP', 'db,uploads,builds,artifacts,lfs,terraform_state,registry')
 
-        create(:project, :repository)
+        create(:project_with_design, :repository)
       end
 
       it 'removes stale data' do
@@ -241,7 +241,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     end
 
     context 'when the backup is restored' do
-      let!(:included_project) { create(:project, :repository) }
+      let!(:included_project) { create(:project_with_design, :repository) }
       let!(:original_checksum) { included_project.repository.checksum }
 
       before do
@@ -286,7 +286,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       allow(Ci::ApplicationRecord.connection).to receive(:reconnect!)
     end
 
-    let!(:project) { create(:project, :repository) }
+    let!(:project) { create(:project_with_design, :repository) }
 
     context 'with specific backup tasks' do
       before do
@@ -463,9 +463,9 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
 
       shared_examples 'includes repositories in all repository storages' do
         specify :aggregate_failures do
-          project_a = create(:project, :repository)
+          project_a = create(:project_with_design, :repository)
           project_snippet_a = create(:project_snippet, :repository, project: project_a, author: project_a.first_owner)
-          project_b = create(:project, :repository, repository_storage: second_storage_name)
+          project_b = create(:project_with_design, :repository, repository_storage: second_storage_name)
           project_snippet_b = create(
             :project_snippet,
             :repository,
@@ -474,7 +474,6 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
             repository_storage: second_storage_name
           )
           create(:wiki_page, container: project_a)
-          create(:design, :with_file, issue: create(:issue, project: project_a))
 
           expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
@@ -517,9 +516,9 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         end
 
         it 'includes repositories in default repository storage', :aggregate_failures do
-          project_a = create(:project, :repository)
+          project_a = create(:project_with_design, :repository)
           project_snippet_a = create(:project_snippet, :repository, project: project_a, author: project_a.first_owner)
-          project_b = create(:project, :repository, repository_storage: second_storage_name)
+          project_b = create(:project_with_design, :repository, repository_storage: second_storage_name)
           project_snippet_b = create(
             :project_snippet,
             :repository,
@@ -528,7 +527,6 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
             repository_storage: second_storage_name
           )
           create(:wiki_page, container: project_a)
-          create(:design, :with_file, issue: create(:issue, project: project_a))
 
           expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
@@ -564,7 +562,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         # We only need a backup of the repositories for this test
         stub_env('SKIP', 'db,uploads,builds,artifacts,lfs,terraform_state,registry')
 
-        create(:project, :repository)
+        create(:project_with_design, :repository)
       end
 
       it 'passes through concurrency environment variables' do
@@ -602,7 +600,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     before do
       stub_env('SKIP', 'an-unknown-type,repositories,uploads,anotherunknowntype')
 
-      create(:project, :repository)
+      create(:project_with_design, :repository)
     end
 
     it "does not contain repositories and uploads" do
@@ -660,7 +658,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     before do
       stub_env('SKIP', 'tar')
 
-      create(:project, :repository)
+      create(:project_with_design, :repository)
     end
 
     it 'created files with backup content and no tar archive' do

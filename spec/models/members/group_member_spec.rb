@@ -69,7 +69,7 @@ RSpec.describe GroupMember, feature_category: :cell do
 
   describe '#update_two_factor_requirement' do
     it 'is called after creation and deletion' do
-      user = build :user
+      user = create :user
       group = create :group
       group_member = build :group_member, user: user, group: group
 
@@ -286,6 +286,20 @@ RSpec.describe GroupMember, feature_category: :cell do
       end
 
       it_behaves_like 'calls AuthorizedProjectsWorker inline to recalculate authorizations'
+    end
+  end
+
+  context 'group member welcome email', :sidekiq_inline, :saas do
+    let_it_be(:group) { create(:group) }
+
+    let(:user) { create(:user) }
+
+    it 'schedules plain welcome to the group email' do
+      expect_next_instance_of(NotificationService) do |notification|
+        expect(notification).to receive(:new_group_member)
+      end
+
+      group.add_developer(user)
     end
   end
 end

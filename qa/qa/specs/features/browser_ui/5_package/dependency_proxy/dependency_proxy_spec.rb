@@ -142,7 +142,7 @@ module QA
 
           project.group.visit!
 
-          Page::Group::Menu.perform(&:go_to_group_dependency_proxy)
+          Page::Group::Menu.perform(&:go_to_dependency_proxy)
 
           Page::Group::DependencyProxy.perform do |index|
             expect(index).to have_blob_count("Contains 1 blobs of images")

@@ -17,8 +17,6 @@ module Storage
                      Namespace.find(parent_id_before_last_save) # raise NotFound early if needed
                    end
 
-      move_repositories
-
       if saved_change_to_parent?
         former_parent_full_path = parent_was&.full_path
         parent_full_path = parent&.full_path

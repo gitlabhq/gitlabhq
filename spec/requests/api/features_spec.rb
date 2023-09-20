@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Features, stub_feature_flags: false, feature_category: :feature_flags do
+RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_flags: false, feature_category: :feature_flags do
   let_it_be(:user) { create(:user) }
   let_it_be(:opted_out) { create(:user) }
   let_it_be(:admin) { create(:admin) }

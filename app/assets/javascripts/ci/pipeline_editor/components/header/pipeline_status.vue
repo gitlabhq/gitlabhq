@@ -5,13 +5,10 @@ import { truncateSha } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import getPipelineQuery from '~/ci/pipeline_editor/graphql/queries/pipeline.query.graphql';
 import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
-import {
-  getQueryHeaders,
-  toggleQueryPollingByVisibility,
-} from '~/pipelines/components/graph/utils';
+import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
-import PipelineMiniGraph from '~/pipelines/components/pipeline_mini_graph/pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import PipelineEditorMiniGraph from './pipeline_editor_mini_graph.vue';
 
 const POLL_INTERVAL = 10000;
@@ -141,7 +138,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-flex-wrap">
+  <div
+    class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-flex-wrap gl-w-full"
+  >
     <template v-if="showLoadingState">
       <div>
         <gl-loading-icon class="gl-mr-auto gl-display-inline-block" size="sm" />
@@ -149,20 +148,20 @@ export default {
       </div>
     </template>
     <template v-else-if="hasError">
-      <gl-icon class="gl-mr-auto" name="warning-solid" />
-      <span data-testid="pipeline-error-msg">{{ $options.i18n.fetchError }}</span>
+      <div>
+        <gl-icon class="gl-mr-auto" name="warning-solid" />
+        <span data-testid="pipeline-error-msg">{{ $options.i18n.fetchError }}</span>
+      </div>
     </template>
     <template v-else>
       <div class="gl-text-truncate gl-md-max-w-50p gl-mr-1">
         <a :href="status.detailsPath" class="gl-mr-auto">
-          <ci-icon :status="status" :size="16" data-testid="pipeline-status-icon" />
+          <ci-icon :status="status" :size="16" data-testid="pipeline-status-icon" class="gl-mr-2" />
         </a>
         <span class="gl-font-weight-bold">
           <gl-sprintf :message="$options.i18n.pipelineInfo">
             <template #id="{ content }">
-              <span data-testid="pipeline-id" data-qa-selector="pipeline_id_content">
-                {{ content }}{{ pipelineId }}
-              </span>
+              <span data-testid="pipeline-id"> {{ content }}{{ pipelineId }} </span>
             </template>
             <template #status>{{ status.text }}</template>
             <template #commit>
@@ -187,9 +186,8 @@ export default {
         />
         <pipeline-editor-mini-graph v-else :pipeline="pipeline" v-on="$listeners" />
         <gl-button
-          class="gl-ml-3"
-          category="secondary"
-          variant="confirm"
+          class="gl-ml-3 gl-align-self-center"
+          size="small"
           :href="status.detailsPath"
           data-testid="pipeline-view-btn"
         >

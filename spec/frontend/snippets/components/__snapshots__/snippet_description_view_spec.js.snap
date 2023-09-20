@@ -6,7 +6,7 @@ exports[`Snippet Description component matches the snapshot 1`] = `
   data-qa-selector="snippet_description_content"
 >
   <div
-    class="md js-snippet-description"
+    class="js-snippet-description md"
   >
     <h2>
       The property of Thor

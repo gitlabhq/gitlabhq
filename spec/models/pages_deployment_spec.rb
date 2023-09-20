@@ -81,6 +81,57 @@ RSpec.describe PagesDeployment, feature_category: :pages do
     end
   end
 
+  describe '.deactivate_deployments_older_than', :freeze_time do
+    let!(:other_project_deployment) do
+      create(:pages_deployment)
+    end
+
+    let!(:other_path_prefix_deployment) do
+      create(:pages_deployment, project: project, path_prefix: 'other')
+    end
+
+    let!(:deactivated_deployment) do
+      create(:pages_deployment, project: project, deleted_at: 5.minutes.ago)
+    end
+
+    it 'updates only older deployments for the same project and path prefix' do
+      deployment1 = create(:pages_deployment, project: project, updated_at: 5.minutes.ago)
+      deployment2 = create(:pages_deployment, project: project, updated_at: 5.minutes.ago)
+      deployment3 = create(:pages_deployment, project: project, updated_at: 5.minutes.ago)
+
+      expect { described_class.deactivate_deployments_older_than(deployment2) }
+        .to change { deployment1.reload.deleted_at }
+        .from(nil).to(Time.zone.now)
+        .and change { deployment1.reload.updated_at }
+        .to(Time.zone.now)
+
+      expect(deployment2.reload.deleted_at).to be_nil
+      expect(deployment3.reload.deleted_at).to be_nil
+      expect(other_project_deployment.deleted_at).to be_nil
+      expect(other_path_prefix_deployment.reload.deleted_at).to be_nil
+      expect(deactivated_deployment.reload.deleted_at).to eq(5.minutes.ago)
+    end
+
+    it 'updates only older deployments for the same project with the given time' do
+      deployment1 = create(:pages_deployment, project: project, updated_at: 5.minutes.ago)
+      deployment2 = create(:pages_deployment, project: project, updated_at: 5.minutes.ago)
+      deployment3 = create(:pages_deployment, project: project, updated_at: 5.minutes.ago)
+      time = 30.minutes.from_now
+
+      expect { described_class.deactivate_deployments_older_than(deployment2, time: time) }
+        .to change { deployment1.reload.deleted_at }
+        .from(nil).to(time)
+        .and change { deployment1.reload.updated_at }
+        .to(Time.zone.now)
+
+      expect(deployment2.reload.deleted_at).to be_nil
+      expect(deployment3.reload.deleted_at).to be_nil
+      expect(other_project_deployment.deleted_at).to be_nil
+      expect(other_path_prefix_deployment.reload.deleted_at).to be_nil
+      expect(deactivated_deployment.reload.deleted_at).to eq(5.minutes.ago)
+    end
+  end
+
   describe '#migrated?' do
     it 'returns false for normal deployment' do
       deployment = create(:pages_deployment)

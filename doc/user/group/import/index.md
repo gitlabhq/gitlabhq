@@ -30,7 +30,7 @@ If you migrate from GitLab.com to self-managed GitLab, an administrator can crea
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
 
 On self-managed GitLab, by default [migrating group items](#migrated-group-items) is not available. To show the
-feature, an administrator can [enable it in application settings](../../../administration/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer).
+feature, an administrator can [enable it in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer).
 
 Migrating groups by direct transfer copies the groups from one place to another. You can:
 
@@ -47,7 +47,7 @@ Migrating groups by direct transfer copies the groups from one place to another.
 Not all group and project resources are copied. See list of copied resources below:
 
 - [Migrated group items](#migrated-group-items).
-- [Migrated project items](#migrated-project-items-beta).
+- [Migrated project items](#migrated-project-items).
 
 WARNING:
 Importing groups with projects is in [Beta](../../../policy/experiment-beta-support.md#beta). This feature is not
@@ -157,16 +157,20 @@ To migrate groups by direct transfer:
 - The network connection between instances or GitLab.com must support HTTPS.
 - Any firewalls must not block the connection between the source and destination GitLab instances.
 - Both GitLab instances must have group migration by direct transfer
-  [enabled in application settings](../../../administration/settings/visibility_and_access_controls.md#enable-migration-of-groups-and-projects-by-direct-transfer)
+  [enabled in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
 - The source GitLab instance must be running GitLab 14.0 or later.
-- You must have a [personal access token](../../../user/profile/personal_access_tokens.md) for the source GitLab
-  instance:
-  - For GitLab 15.1 and later source instances, the personal access token must have the `api` scope.
-  - For GitLab 15.0 and earlier source instances, the personal access token must have both the `api` and
-    `read_repository` scopes.
+- You must have a
+  [personal access token](../../../user/profile/personal_access_tokens.md) for
+  the source GitLab instance:
+  - For GitLab 15.1 and later source instances, the personal access token must
+    have the `api` scope.
+  - For GitLab 15.0 and earlier source instances, the personal access token must
+    have both the `api` and `read_repository` scopes.
 - You must have the Owner role on the source group to migrate from.
-- You must have at least the Maintainer role on the destination group to migrate to.
+- Your must have a role on the destination namespace the enables you to
+  [create a subgroup](../../group/subgroups/index.md#create-a-subgroup) in that
+  namespace.
 
 ### Prepare user accounts
 
@@ -287,7 +291,7 @@ Some group items are excluded from migration because they either:
 - May contain sensitive information: CI/CD variables, webhooks, and deploy tokens.
 - Are not supported: push rules.
 
-### Migrated project items (Beta)
+### Migrated project items **(BETA)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
@@ -460,7 +464,7 @@ To solve this, you must change the source group path to include a non-numerical 
 
 - The GitLab UI:
 
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+  1. On the left sidebar, select **Search or go to** and find your group.
   1. Select **Settings > General**.
   1. Expand **Advanced**.
   1. Under **Change group URL**, change the group URL to include non-numeric characters.
@@ -593,7 +597,7 @@ Prerequisite:
 
 To enable import and export for a group:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Visibility and access controls**.
@@ -607,7 +611,7 @@ Prerequisites:
 
 To export the contents of a group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. In the **Advanced** section, select **Export group**.
 1. After the export is generated, you should receive an email with a link to the [exported contents](#exported-contents)

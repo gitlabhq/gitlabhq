@@ -181,6 +181,7 @@ module Types
     mount_mutation Mutations::WorkItems::Export, alpha: { milestone: '15.10' }
     mount_mutation Mutations::WorkItems::Convert, alpha: { milestone: '15.11' }
     mount_mutation Mutations::WorkItems::LinkedItems::Add, alpha: { milestone: '16.3' }
+    mount_mutation Mutations::WorkItems::LinkedItems::Remove, alpha: { milestone: '16.3' }
     mount_mutation Mutations::SavedReplies::Create
     mount_mutation Mutations::SavedReplies::Update
     mount_mutation Mutations::Pages::MarkOnboardingComplete
@@ -188,6 +189,7 @@ module Types
     mount_mutation Mutations::Uploads::Delete
     mount_mutation Mutations::Users::SetNamespaceCommitEmail
     mount_mutation Mutations::WorkItems::Subscribe, alpha: { milestone: '16.3' }
+    mount_mutation Mutations::Admin::AbuseReportLabels::Create, alpha: { milestone: '16.4' }
   end
 end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Usage::MetricDefinition do
+RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping do
   let(:attributes) do
     {
       description: 'GitLab instance unique identifier',
@@ -109,6 +109,42 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
     end
   end
 
+  describe '#to_context' do
+    subject { definition.to_context }
+
+    context 'with data_source redis_hll metric' do
+      before do
+        attributes[:data_source] = 'redis_hll'
+        attributes[:options] = { events: %w[some_event_1 some_event_2] }
+      end
+
+      it 'returns a ServicePingContext with first event as event_name' do
+        expect(subject.to_h[:data][:event_name]).to eq('some_event_1')
+      end
+    end
+
+    context 'with data_source redis metric' do
+      before do
+        attributes[:data_source] = 'redis'
+        attributes[:options] = { prefix: 'web_ide', event: 'views_count', include_usage_prefix: false }
+      end
+
+      it 'returns a ServicePingContext with redis key as event_name' do
+        expect(subject.to_h[:data][:event_name]).to eq('WEB_IDE_VIEWS_COUNT')
+      end
+    end
+
+    context 'with data_source database metric' do
+      before do
+        attributes[:data_source] = 'database'
+      end
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe '#validate' do
     using RSpec::Parameterized::TableSyntax
 
@@ -117,7 +153,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       :value_type         | nil
       :value_type         | 'test'
       :status             | nil
-      :milestone          | nil
+      :milestone          | 10.0
       :data_category      | nil
       :key_path           | nil
       :product_group      | nil
@@ -229,26 +265,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
         attributes[:status] = 'removed'
 
         expect(described_class.new(path, attributes).valid_service_ping_status?).to be_falsey
-      end
-    end
-  end
-
-  describe 'statuses' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:status, :skip_validation?) do
-      'active'         | false
-      'broken'         | false
-      'removed'        | true
-    end
-
-    with_them do
-      subject(:validation) do
-        described_class.new(path, attributes.merge( { status: status } )).send(:skip_validation?)
-      end
-
-      it 'returns true/false for skip_validation' do
-        expect(validation).to eq(skip_validation?)
       end
     end
   end

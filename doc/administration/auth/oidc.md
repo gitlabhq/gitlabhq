@@ -1,6 +1,6 @@
 ---
 type: reference
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -554,7 +554,7 @@ For your app, complete the following steps on Casdoor:
    ensure the Casdoor app has the following
    `Redirect URI`: `https://gitlab.example.com/users/auth/openid_connect/callback`.
 
-See the [Casdoor documentation](https://casdoor.org/docs/integration/ruby/gitlab) for more details.
+See the [Casdoor documentation](https://casdoor.org/docs/integration/ruby/gitlab/) for more details.
 
 Example configuration for Linux package installations (file path: `/etc/gitlab/gitlab.rb`):
 

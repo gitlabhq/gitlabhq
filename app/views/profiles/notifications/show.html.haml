@@ -19,8 +19,8 @@
     = _('You can specify notification level per group or per project.')
 
   .gl-mt-0
-    = gitlab_ui_form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications gl-mt-3' } do |f|
-      = render_if_exists 'profiles/notifications/email_settings', form: f
+    = gitlab_ui_form_for @user, url: profile_notifications_path, method: :put, html: { class: 'update-notifications gl-mt-3 gl-mb-6' } do |f|
+      = render_if_exists 'profiles/notifications/email_settings'
 
     = label_tag :global_notification_level, _('Global notification level'), class: "label-bold gl-mb-0"
     .gl-text-secondary.gl-mb-3

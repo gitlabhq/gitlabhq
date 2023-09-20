@@ -531,10 +531,43 @@ We aim to have full coverage for all the views.
 One of the advantages of testing in feature tests is that we can check different states, not only
 single components in isolation.
 
-Make sure to add assertions, when the view you are working on:
+You can find some examples on how to approach accessibility checks below.
 
-- Has an empty state,
-- Has significant changes in page structure, for example an alert is shown, or a new section is rendered.
+#### Empty state
+
+Some views have an empty state that result in a page structure that's different from the default view.
+They may also offer some actions, for example to create a first issue or to enable a feature.
+In this case, add assertions for both an empty state and a default view.
+
+#### Ensure compliance before user interactions
+
+Often we test against a number of steps we expect our users to perform.
+In this case, make sure to include the check early on, before any of them has been simulated.
+This way we ensure there are no barriers to what we expect of users.
+
+#### Ensure compliance after changed page structure
+
+User interactions may result in significant changes in page structure. For example, a modal is shown, or a new section is rendered.
+In that case, add an assertion after any such change.
+We want to make sure that users are able to interact with all available components.
+
+#### Separate file for extensive test suites
+
+For some views, feature tests span multiple files.
+Take a look at our [feature tests for a merge request](https://gitlab.com/gitlab-org/gitlab/-/tree/master/spec/features/merge_request).
+The number of user interactions that needs to be covered is too big to fit into one test file.
+As a result, multiple feature tests cover one view, with different user privileges, or data sets.
+If we were to include accessibility checks in all of them, there is a chance we would cover the same states of a view multiple times and significantly increase the run time.
+It would also make it harder to determine the coverage for accessibility, if assertions would be scattered across many files.
+
+In that case, consider creating one test file dedicated to accessibility.
+Place it in the same directory and name it `accessibility_spec.rb`, for example `spec/features/merge_request/accessibility_spec.rb`.
+
+#### Shared examples
+
+Often feature tests include shared examples for a number of scenarios.
+If they differ only by provided data, but are based on the same user interaction, you can check for accessibility compliance outside the shared examples.
+This way we only run the check once and save resources.
 
 ### How to add accessibility tests
 

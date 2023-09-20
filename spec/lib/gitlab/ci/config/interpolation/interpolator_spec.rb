@@ -57,7 +57,8 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
       expect(subject).not_to be_valid
       expect(subject.error_message).to eq subject.errors.first
-      expect(subject.errors).to include('unknown input arguments')
+      expect(subject.errors).to include('Given inputs not defined in the `spec` section of the included ' \
+                                        'configuration file')
     end
   end
 

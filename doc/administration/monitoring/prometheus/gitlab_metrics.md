@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 To enable the GitLab Prometheus metrics:
 
 1. Log in to GitLab as a user with administrator access.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Metrics and profiling**.
 1. Find the **Metrics - Prometheus** section, and select **Enable GitLab Prometheus metrics endpoint**.
@@ -107,8 +107,8 @@ The following metrics are available:
 | `gitlab_transaction_db_<role>_cached_count_total`                | Counter     | 13.1    | Counter for total number of cached SQL calls, grouped by database roles (primary/replica)                             | `controller`, `action`                                    |
 | `gitlab_transaction_db_<role>_wal_count_total`                   | Counter     | 14.0    | Counter for total number of WAL (write ahead log location) queries, grouped by database roles (primary/replica)       | `controller`, `action`                                    |
 | `gitlab_transaction_db_<role>_wal_cached_count_total`            | Counter     | 14.1    | Counter for total number of cached WAL (write ahead log location) queries, grouped by database roles (primary/replica)| `controller`, `action`                                    |
-| `http_elasticsearch_requests_duration_seconds` **(PREMIUM)**     | Histogram   | 13.1    | Elasticsearch requests duration during web transactions                                                               | `controller`, `action`                                    |
-| `http_elasticsearch_requests_total` **(PREMIUM)**                | Counter     | 13.1    | Elasticsearch requests count during web transactions                                                                  | `controller`, `action`                                    |
+| `http_elasticsearch_requests_duration_seconds` **(PREMIUM ALL)**     | Histogram   | 13.1    | Elasticsearch requests duration during web transactions                                                               | `controller`, `action`                                    |
+| `http_elasticsearch_requests_total` **(PREMIUM ALL)**                | Counter     | 13.1    | Elasticsearch requests count during web transactions                                                                  | `controller`, `action`                                    |
 | `pipelines_created_total`                                        | Counter     | 9.4     | Counter of pipelines created                                                                                          |                                                           |
 | `rack_uncaught_errors_total`                                     | Counter     | 9.4     | Rack connections handling uncaught errors count                                                                       |                                                           |
 | `user_session_logins_total`                                      | Counter     | 9.4     | Counter of how many users have logged in since GitLab was started or restarted                                        |                                                           |
@@ -250,18 +250,12 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_job_artifacts_synced_missing_on_primary`  | Gauge   | 10.7  | Number of job artifacts marked as synced due to the file missing on the primary | `url` |
 | `geo_repositories_checksummed`                 | Gauge   | 10.7  | Number of repositories checksummed on primary | `url` |
 | `geo_repositories_checksum_failed`             | Gauge   | 10.7  | Number of repositories failed to calculate the checksum on primary | `url` |
-| `geo_wikis_checksummed`                        | Gauge   | 10.7  | Number of wikis checksummed on primary | `url` |
-| `geo_wikis_checksum_failed`                    | Gauge   | 10.7  | Number of wikis failed to calculate the checksum on primary | `url` |
 | `geo_repositories_verified`                    | Gauge   | 10.7  | Number of repositories successfully verified on secondary | `url` |
 | `geo_repositories_verification_failed`         | Gauge   | 10.7  | Number of repositories that failed verification on secondary | `url` |
 | `geo_repositories_checksum_mismatch`           | Gauge   | 10.7  | Number of repositories that checksum mismatch on secondary | `url` |
-| `geo_wikis_verified`                           | Gauge   | 10.7  | Number of wikis successfully verified on secondary | `url` |
-| `geo_wikis_verification_failed`                | Gauge   | 10.7  | Number of wikis that failed verification on secondary | `url` |
-| `geo_wikis_checksum_mismatch`                  | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | `url` |
 | `geo_repositories_checked`                     | Gauge   | 11.1  | Number of repositories that have been checked via `git fsck` | `url` |
 | `geo_repositories_checked_failed`              | Gauge   | 11.1  | Number of repositories that have a failure from `git fsck` | `url` |
 | `geo_repositories_retrying_verification`       | Gauge   | 11.2  | Number of repositories verification failures that Geo is actively trying to correct on secondary  | `url` |
-| `geo_wikis_retrying_verification`              | Gauge   | 11.2  | Number of wikis verification failures that Geo is actively trying to correct on secondary | `url` |
 | `geo_package_files`                            | Gauge   | 13.0  | Number of package files on primary | `url` |
 | `geo_package_files_checksummed`                | Gauge   | 13.0  | Number of package files checksummed on primary | `url` |
 | `geo_package_files_checksum_failed`            | Gauge   | 13.0  | Number of package files failed to calculate the checksum on primary | `url` |
@@ -507,6 +501,7 @@ instance. For example, `cache` or `shared_state`.
 | `gitlab_redis_client_requests_total`                    | Counter   | 13.2  | Number of Redis client requests |
 | `gitlab_redis_client_requests_duration_seconds`                    | Histogram   | 13.2  | Redis request latency, excluding blocking commands |
 | `gitlab_redis_client_redirections_total` | Counter | 15.10 | Number of Redis Cluster MOVED/ASK redirections, broken down by redirection type |
+| `gitlab_redis_client_requests_pipelined_commands` | Histogram | 16.4 | Number of commands per pipeline sent to a single Redis server |
 
 ## Metrics shared directory
 

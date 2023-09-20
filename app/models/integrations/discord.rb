@@ -4,9 +4,7 @@ require "discordrb/webhooks"
 
 module Integrations
   class Discord < BaseChatNotification
-    ATTACHMENT_REGEX = /: (?<entry>.*?)\n - (?<name>.*)\n*/.freeze
-
-    undef :notify_only_broken_pipelines
+    ATTACHMENT_REGEX = /: (?<entry>.*?)\n - (?<name>.*)\n*/
 
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
@@ -35,10 +33,6 @@ module Integrations
       "discord"
     end
 
-    def fields
-      self.class.fields + build_event_channels
-    end
-
     def help
       docs_link = ActionController::Base.helpers.link_to _('How do I set up this service?'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/discord_notifications'), target: '_blank', rel: 'noopener noreferrer'
       s_('Send notifications about project events to a Discord channel. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
@@ -50,26 +44,6 @@ module Integrations
 
     def self.supported_events
       %w[push issue confidential_issue merge_request note confidential_note tag_push pipeline wiki_page]
-    end
-
-    def sections
-      [
-        {
-          type: SECTION_TYPE_CONNECTION,
-          title: s_('Integrations|Connection details'),
-          description: help
-        },
-        {
-          type: SECTION_TYPE_TRIGGER,
-          title: s_('Integrations|Trigger'),
-          description: s_('Integrations|An event will be triggered when one of the following items happen.')
-        },
-        {
-          type: SECTION_TYPE_CONFIGURATION,
-          title: s_('Integrations|Notification settings'),
-          description: s_('Integrations|Configure the scope of notifications.')
-        }
-      ]
     end
 
     def configurable_channels?

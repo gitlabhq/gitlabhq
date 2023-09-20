@@ -501,6 +501,44 @@ In this example, GitLab checks for the existence of `test-file.yml` in `my-group
 not the current project. Follow [issue 386040](https://gitlab.com/gitlab-org/gitlab/-/issues/386040)
 for information about work to improve this behavior.
 
+### `include` with `rules:changes`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342209) in GitLab 16.4.
+
+Use [`rules:changes`](index.md#ruleschanges) to conditionally include other configuration files
+based on changed files. For example:
+
+```yaml
+include:
+  - local: builds1.yml
+    rules:
+      - changes:
+        - Dockerfile
+  - local: builds2.yml
+    rules:
+      - changes:
+          paths:
+            - Dockerfile
+          compare_to: 'refs/heads/branch1'
+        when: always
+  - local: builds3.yml
+    rules:
+      - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+        changes:
+          paths:
+            - Dockerfile
+
+test:
+  stage: test
+  script: exit 0
+```
+
+In this example:
+
+- `builds1.yml` is included when `Dockerfile` has changed.
+- `builds2.yml` is included when `Dockerfile` has changed relative to `refs/heads/branch1`.
+- `builds3.yml` is included when `Dockerfile` has changed and the pipeline source is a merge request event.
+
 ## Use `include:local` with wildcard file paths
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25921) in GitLab 13.11.
@@ -527,144 +565,6 @@ When the pipeline runs, GitLab:
   # This matches all `.yml` files only in subfolders of `configs`.
   include: 'configs/**/*.yml'
   ```
-
-## Define inputs for configuration added with `include` (Beta)
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
-
-FLAG:
-`spec` and `with` are experimental [Open Beta features](../../policy/experiment-beta-support.md#beta)
-and subject to change without notice.
-
-### Define input parameters with `spec:inputs`
-
-Use `spec:inputs` to define input parameters for CI/CD configuration intended to be added
-to a pipeline with `include`. Use [`include:inputs`](#set-input-parameter-values-with-includeinputs)
-to define the values to use when the pipeline runs.
-
-The specs must be declared at the top of the configuration file, in a header section.
-Separate the header from the rest of the configuration with `---`.
-
-Use the interpolation format `$[[ input.input-id ]]` to reference the values outside of the header section.
-The inputs are evaluated and interpolated once, when the configuration is fetched
-during pipeline creation, but before the configuration is merged with the contents of the `.gitlab-ci.yml`.
-
-```yaml
-spec:
-  inputs:
-    environment:
-    job-stage:
----
-
-scan-website:
-  stage: $[[ inputs.job-stage ]]
-  script: ./scan-website $[[ inputs.environment ]]
-```
-
-When using `spec:inputs`:
-
-- Defined inputs are mandatory by default.
-- Inputs can be made optional by specifying a `default`. Use `default: null` to have no default value.
-- A string containing an interpolation block must not exceed 1 MB.
-- The string inside an interpolation block must not exceed 1 KB.
-
-For example, a `custom_configuration.yml`:
-
-```yaml
-spec:
-  inputs:
-    website:
-    user:
-      default: 'test-user'
-    flags:
-      default: null
----
-
-# The pipeline configuration would follow...
-```
-
-In this example:
-
-- `website` is mandatory and must be defined.
-- `user` is optional. If not defined, the value is `test-user`.
-- `flags` is optional. If not defined, it has no value.
-
-### Specify functions to manipulate input values
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
-
-You can specify predefined functions in the interpolation block to manipulate the input value.
-The format supported is the following:
-
-```yaml
-$[[ input.input-id | <function1> | <function2> | ... <functionN> ]]
-```
-
-Details:
-
-- Only [predefined interpolation functions](#predefined-interpolation-functions) are permitted.
-- A maximum of 3 functions may be specified in a single interpolation block.
-- The functions are executed in the sequence they are specified.
-
-```yaml
-spec:
-  inputs:
-    test:
-      default: '0123456789'
----
-
-test-job:
-  script: echo $[[ inputs.test | truncate(1,3) ]]
-```
-
-In this example:
-
-- The function [`truncate`](#truncate) applies to the value of `inputs.test`.
-- Assuming the value of `inputs.test` is `0123456789`, then the output of `script` would be `echo 123`.
-
-### Predefined interpolation functions
-
-#### Truncate
-
-Use `truncate` to shorten the interpolated value. For example:
-
-- `truncate(<offset>,<length>)`
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| `offset` | Integer | Number of characters to offset by. |
-| `length` | Integer | Number of characters to return after the offset. |
-
-Example:
-
-```yaml
-$[[ inputs.test | truncate(3,5) ]]
-```
-
-Assuming the value of `inputs.test` is `0123456789`, then the output would be `34567`.
-
-### Set input parameter values with `include:inputs`
-
-> `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
-
-Use `include:inputs` to set the values for the parameters when the included configuration
-is added to the pipeline.
-
-For example, to include a `custom_configuration.yml` that has the same specs
-as the [example above](#define-input-parameters-with-specinputs):
-
-```yaml
-include:
-  - local: 'custom_configuration.yml'
-    inputs:
-      website: "My website"
-```
-
-In this example:
-
-- `website` has a value of `My website` for the included configuration.
-- `user` has a value of `test-user`, because that is the default when not specified.
-- `flags` has no value, because it is optional and has no default when not specified.
 
 ## Troubleshooting
 

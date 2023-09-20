@@ -104,18 +104,15 @@ RSpec.describe "Add linked items to a work item", feature_category: :portfolio_m
 
       context 'when there are more than the max allowed items to link' do
         let(:max_work_items) { Mutations::WorkItems::LinkedItems::Base::MAX_WORK_ITEMS }
-        let(:error_msg) { "No more than #{max_work_items} work items can be linked at the same time." }
-
-        before do
-          max_work_items.times { |i| ids_to_link.push("gid://gitlab/WorkItem/#{i}") }
-        end
+        let(:ids_to_link) { (0..max_work_items).map { |i| "gid://gitlab/WorkItem/#{i}" } }
+        let(:error_msg) { "No more than #{max_work_items} work items can be modified at the same time." }
 
         it 'returns an error message' do
           expect do
             post_graphql_mutation(mutation, current_user: current_user)
           end.not_to change { WorkItems::RelatedWorkItemLink.count }
 
-          expect_graphql_errors_to_include("No more than #{max_work_items} work items can be linked at the same time.")
+          expect_graphql_errors_to_include(error_msg)
         end
       end
     end

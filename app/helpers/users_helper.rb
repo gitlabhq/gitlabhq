@@ -164,7 +164,7 @@ module UsersHelper
       messageHtml: message,
       actionPrimary: {
         text: s_('AdminUsers|Confirm user'),
-        attributes: [{ variant: 'confirm', 'data-qa-selector': 'confirm_user_confirm_button' }]
+        attributes: [{ variant: 'confirm', 'data-testid': 'confirm-user-confirm-button' }]
       },
       actionSecondary: {
         text: _('Cancel'),
@@ -176,7 +176,7 @@ module UsersHelper
       path: confirm_admin_user_path(user),
       method: 'put',
       modal_attributes: modal_attributes,
-      qa_selector: 'confirm_user_button'
+      testid: 'confirm-user-button'
     }
   end
 

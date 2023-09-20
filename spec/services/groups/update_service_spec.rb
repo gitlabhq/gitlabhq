@@ -264,18 +264,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it_behaves_like 'not allowing a path update'
         it_behaves_like 'allowing an update', on: :name
-
-        context 'when npm_package_registry_fix_group_path_validation is disabled' do
-          before do
-            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
-            expect_next_instance_of(::Groups::UpdateService) do |service|
-              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
-            end
-          end
-
-          it_behaves_like 'not allowing a path update'
-          it_behaves_like 'allowing an update', on: :name
-        end
       end
 
       context 'updating the subgroup' do
@@ -283,18 +271,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it_behaves_like 'allowing an update', on: :path
         it_behaves_like 'allowing an update', on: :name
-
-        context 'when npm_package_registry_fix_group_path_validation is disabled' do
-          before do
-            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
-            expect_next_instance_of(::Groups::UpdateService) do |service|
-              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
-            end
-          end
-
-          it_behaves_like 'not allowing a path update'
-          it_behaves_like 'allowing an update', on: :name
-        end
       end
     end
 
@@ -306,18 +282,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it_behaves_like 'allowing an update', on: :path
         it_behaves_like 'allowing an update', on: :name
-
-        context 'when npm_package_registry_fix_group_path_validation is disabled' do
-          before do
-            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
-            expect_next_instance_of(::Groups::UpdateService) do |service|
-              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
-            end
-          end
-
-          it_behaves_like 'not allowing a path update'
-          it_behaves_like 'allowing an update', on: :name
-        end
       end
 
       context 'updating the subgroup' do
@@ -325,18 +289,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it_behaves_like 'allowing an update', on: :path
         it_behaves_like 'allowing an update', on: :name
-
-        context 'when npm_package_registry_fix_group_path_validation is disabled' do
-          before do
-            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
-            expect_next_instance_of(::Groups::UpdateService) do |service|
-              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
-            end
-          end
-
-          it_behaves_like 'not allowing a path update'
-          it_behaves_like 'allowing an update', on: :name
-        end
       end
     end
 
@@ -348,18 +300,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it_behaves_like 'allowing an update', on: :path
         it_behaves_like 'allowing an update', on: :name
-
-        context 'when npm_package_registry_fix_group_path_validation is disabled' do
-          before do
-            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
-            expect_next_instance_of(::Groups::UpdateService) do |service|
-              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
-            end
-          end
-
-          it_behaves_like 'not allowing a path update'
-          it_behaves_like 'allowing an update', on: :name
-        end
       end
 
       context 'updating the subgroup' do
@@ -367,18 +307,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it_behaves_like 'allowing an update', on: :path
         it_behaves_like 'allowing an update', on: :name
-
-        context 'when npm_package_registry_fix_group_path_validation is disabled' do
-          before do
-            stub_feature_flags(npm_package_registry_fix_group_path_validation: false)
-            expect_next_instance_of(::Groups::UpdateService) do |service|
-              expect(service).to receive(:valid_path_change_with_npm_packages?).and_call_original
-            end
-          end
-
-          it_behaves_like 'not allowing a path update'
-          it_behaves_like 'allowing an update', on: :name
-        end
       end
     end
   end

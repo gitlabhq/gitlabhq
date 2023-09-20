@@ -30,7 +30,15 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
     end
 
     it 'returns true when url has .net' do
+      allow(GitlabEdition).to receive(:jh?).and_return(false)
       QA::Runtime::Scenario.define(:gitlab_address, "https://release.gitlab.net")
+
+      expect(described_class.context_matches?).to be_truthy
+    end
+
+    it 'returns true when url has .cn on jh side' do
+      allow(GitlabEdition).to receive(:jh?).and_return(true)
+      QA::Runtime::Scenario.define(:gitlab_address, "https://release.gitlab.cn")
 
       expect(described_class.context_matches?).to be_truthy
     end
@@ -82,6 +90,9 @@ RSpec.describe QA::Specs::Helpers::ContextSelector do
         expect(described_class.context_matches?(:production)).to be_truthy
 
         QA::Runtime::Scenario.define(:gitlab_address, "https://gitlab.hk/")
+        expect(described_class.context_matches?(:production)).to be_truthy
+
+        QA::Runtime::Scenario.define(:gitlab_address, "https://gitlab.cn/")
         expect(described_class.context_matches?(:production)).to be_truthy
       end
 

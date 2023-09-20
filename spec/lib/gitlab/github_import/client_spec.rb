@@ -20,11 +20,29 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
   end
 
   describe '#user' do
-    it 'returns the details for the given username' do
-      expect(client.octokit).to receive(:user).with('foo')
-      expect(client).to receive(:with_rate_limit).and_yield
+    let(:status_code) { 200 }
+    let(:body) { { id: 1 } }
+    let(:headers) { { 'Content-Type' => 'application/json' } }
 
-      client.user('foo')
+    before do
+      stub_request(:get, 'https://api.github.com/users/foo')
+        .to_return(status: status_code, body: body.to_json, headers: headers)
+    end
+
+    subject(:user) { client.user('foo') }
+
+    it 'returns the details for the given username' do
+      expect(client).to receive(:with_rate_limit).and_yield
+      expect(user).to eq({ id: 1 })
+    end
+
+    context 'when a not modified response is returned' do
+      let(:status_code) { 304 }
+
+      it 'returns nil' do
+        expect(client).to receive(:with_rate_limit).and_yield
+        expect(user).to eq(nil)
+      end
     end
   end
 

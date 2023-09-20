@@ -553,6 +553,12 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
 
           let(:per_page) { 2 }
 
+          it_behaves_like 'an endpoint with keyset pagination' do
+            let(:first_record) { pipeline3 }
+            let(:second_record) { pipeline2 }
+            let(:api_call) { api(package_pipelines_url, user) }
+          end
+
           context 'with no cursor supplied' do
             subject { get api(package_pipelines_url, user), params: { per_page: per_page } }
 

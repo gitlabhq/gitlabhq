@@ -95,29 +95,19 @@ By default tests on CI use `info` log level. `debug` level is still available in
 
 First, follow the instructions to [install GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/index.md) as your local GitLab development environment.
 
-Then, navigate to the QA folder and run the following commands:
+Then, navigate to the QA folder, install the gems, and run the tests via RSpec:
 
 ```bash
 cd gitlab-development-kit/gitlab/qa
 bundle install
-export WEBDRIVER_HEADLESS=false
-export GITLAB_INITIAL_ROOT_PASSWORD={your current root user's password}
-```
-
-Finally, most tests that do not require special setup (or have the `:orchestrated` tag) can be run with the following command:
-
-```bash
 bundle exec rspec <path/to/spec.rb>
 ```
 
-However, tests that are tagged with the `:orchestrated` tag require special setup. To run these tests, first [re-configure the IP address in GDK](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/run_qa_against_gdk.md#run-qa-tests-against-your-gdk-setup), and then run the following command:
-
-```bash
-bundle exec bin/qa Test::Instance::All {GDK IP ADDRESS}
-```
-
-- Note: If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
-- Note: If this is your first time running GDK, you can use the password pre-set for `root`. [See supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables). If you have changed your `root` password, use that when exporting `GITLAB_INITIAL_ROOT_PASSWORD`.
+Note:
+- If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
+- If this is your first time running GDK, you can use the password pre-set for `root`. [See supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables). If you have changed your `root` password, export the password as `GITLAB_INITIAL_ROOT_PASSWORD`.
+- By default the tests will run in a headless browser. If you'd like to watch the test exectution, you can export `WEBDRIVER_HEADLESS=false`.
+- Tests that are tagged `:orchestrated` require special setup (e.g., custom GitLab configuration, or additional services such as LDAP). All [orchestrated tests can be run via `gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md). There are also [setup instructions](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/running_tests_that_require_special_setup.html) for running some of those tests against GDK or another local GitLab instance.
 
 #### Generic command for a typical GDK installation
 
@@ -145,7 +135,7 @@ See the section above for situations that might require adjustment to the comman
 1.  Use the following command to start an instance that you can visit at `http://127.0.0.1`:
 
    ```bash
-   docker run \    
+   docker run \
     --hostname 127.0.0.1 \
     --publish 80:80 --publish 22:22 \
     --name gitlab \

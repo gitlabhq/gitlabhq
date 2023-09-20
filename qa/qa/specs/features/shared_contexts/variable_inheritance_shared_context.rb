@@ -8,27 +8,24 @@ module QA
     let(:group) { create(:group, path: "group-for-variable-inheritance-#{random_string}") }
 
     let(:upstream_project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.group = group
-        project.name = 'upstream-variable-inheritance'
-        project.description = 'Project for pipeline with variable defined via UI - Upstream'
-      end
+      create(:project,
+        name: 'upstream-variable-inheritance',
+        description: 'Project for pipeline with variable defined via UI - Upstream',
+        group: group)
     end
 
     let(:downstream1_project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.group = group
-        project.name = 'downstream1-variable-inheritance'
-        project.description = 'Project for pipeline with variable defined via UI - Downstream'
-      end
+      create(:project,
+        name: 'downstream1-variable-inheritance',
+        description: 'Project for pipeline with variable defined via UI - Downstream',
+        group: group)
     end
 
     let(:downstream2_project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.group = group
-        project.name = 'downstream2-variable-inheritance'
-        project.description = 'Project for pipeline with variable defined via UI - Downstream'
-      end
+      create(:project,
+        name: 'downstream2-variable-inheritance',
+        description: 'Project for pipeline with variable defined via UI - Downstream',
+        group: group)
     end
 
     let!(:runner) do
@@ -94,17 +91,11 @@ module QA
     end
 
     def upstream_pipeline
-      Resource::Pipeline.fabricate_via_api! do |pipeline|
-        pipeline.project = upstream_project
-        pipeline.id = upstream_project.pipelines.first[:id]
-      end
+      create(:pipeline, project: upstream_project, id: upstream_project.pipelines.first[:id])
     end
 
     def downstream_pipeline(project, bridge_name)
-      Resource::Pipeline.fabricate_via_api! do |pipeline|
-        pipeline.project = project
-        pipeline.id = upstream_pipeline.downstream_pipeline_id(bridge_name: bridge_name)
-      end
+      create(:pipeline, project: project, id: upstream_pipeline.downstream_pipeline_id(bridge_name: bridge_name))
     end
 
     def upstream_child1_ci_file

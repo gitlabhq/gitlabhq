@@ -31,12 +31,6 @@ module Onboarding
       last_invited_member&.source
     end
 
-    def invite_with_tasks_to_be_done?
-      return false if members.empty?
-
-      MemberTask.for_members(members).exists?
-    end
-
     private
 
     attr_reader :user

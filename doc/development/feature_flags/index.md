@@ -420,9 +420,18 @@ The actor is a second parameter of the `Feature.enabled?` call. The
 same actor type must be used consistently for all invocations of `Feature.enabled?`.
 
 ```ruby
+# Bad
 Feature.enabled?(:feature_flag, project)
 Feature.enabled?(:feature_flag, group)
 Feature.enabled?(:feature_flag, user)
+
+# Good
+Feature.enabled?(:feature_flag, group_a)
+Feature.enabled?(:feature_flag, group_b)
+
+# Also good - using separate flags for each actor type
+Feature.enabled?(:feature_flag_group, group)
+Feature.enabled?(:feature_flag_user, user)
 ```
 
 See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps

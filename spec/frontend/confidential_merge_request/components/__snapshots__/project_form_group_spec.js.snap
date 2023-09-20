@@ -7,17 +7,13 @@ exports[`Confidential merge request project form group component renders empty s
   <label>
     Project
   </label>
-   
   <div>
-    <!---->
-     
     <p
-      class="gl-text-gray-600 gl-mt-1 gl-mb-0"
+      class="gl-mb-0 gl-mt-1 gl-text-gray-600"
     >
-      
-        No forks are available to you.
+      No forks are available to you.
       <br />
-       To protect this issue's confidentiality, 
+      To protect this issue's confidentiality,
       <a
         class="help-link"
         href="https://test.com"
@@ -25,9 +21,9 @@ exports[`Confidential merge request project form group component renders empty s
       >
         fork this project
       </a>
-       and set the fork's visibility to private. 
+      and set the fork's visibility to private.
       <gl-link-stub
-        class="gl-w-auto gl-p-0 gl-display-inline-block gl-bg-transparent"
+        class="gl-bg-transparent gl-display-inline-block gl-p-0 gl-w-auto"
         href="/help"
         target="_blank"
       >
@@ -36,7 +32,6 @@ exports[`Confidential merge request project form group component renders empty s
         >
           Read more
         </span>
-         
         <gl-icon-stub
           name="question-o"
           size="16"
@@ -54,21 +49,17 @@ exports[`Confidential merge request project form group component renders fork dr
   <label>
     Project
   </label>
-   
   <div>
     <dropdown-stub
       projects="[object Object],[object Object]"
       selectedproject="[object Object]"
     />
-     
     <p
-      class="gl-text-gray-600 gl-mt-1 gl-mb-0"
+      class="gl-mb-0 gl-mt-1 gl-text-gray-600"
     >
-      
-        To protect this issue's confidentiality, a private fork of this project was selected.
-       
+      To protect this issue's confidentiality, a private fork of this project was selected.
       <gl-link-stub
-        class="gl-w-auto gl-p-0 gl-display-inline-block gl-bg-transparent"
+        class="gl-bg-transparent gl-display-inline-block gl-p-0 gl-w-auto"
         href="/help"
         target="_blank"
       >
@@ -77,7 +68,6 @@ exports[`Confidential merge request project form group component renders fork dr
         >
           Read more
         </span>
-         
         <gl-icon-stub
           name="question-o"
           size="16"

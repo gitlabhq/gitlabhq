@@ -8,10 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 This tutorial walks you through configuring a progressively more complex CI/CD pipeline
 through small, iterative steps. The pipeline is always fully functional,
-but it gains more functionality with each step.
+but it gains more functionality with each step. The goal is to build, test, and deploy
+a documentation site.
 
-When you finish this tutorial, you will have a new project on GitLab.com and a working documentation site on
-[Docusaurus](https://docusaurus.io/).
+When you finish this tutorial, you will have a new project on GitLab.com and a working documentation site
+using [Docusaurus](https://docusaurus.io/).
 
 To complete this tutorial, you will:
 
@@ -36,8 +37,8 @@ Before adding the pipeline configuration, you must first set up a Docusaurus pro
 on GitLab.com:
 
 1. Create a new project under your username (not a group):
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-   1. Select **View all your projects**.
+   1. On the left sidebar, select **Search or go to**.
+   1. Select **View all my projects**.
    1. On the right of the page, select **New project**.
    1. Select **Create blank project**.
    1. Enter the project details:

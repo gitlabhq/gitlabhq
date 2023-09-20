@@ -16,7 +16,7 @@ You can configure the rate limit per IP address for unauthenticated requests to 
 
 To change the rate limit:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **Projects API rate limit**.

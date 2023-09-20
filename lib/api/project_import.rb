@@ -10,7 +10,7 @@ module API
     feature_category :importers
     urgency :low
 
-    before { authenticate! unless route.settings[:skip_authentication] }
+    before { authenticate! }
 
     helpers do
       def import_params
@@ -132,7 +132,6 @@ module API
         ]
         tags ['project_import']
       end
-      route_setting :skip_authentication, true
       get ':id/import' do
         present user_project, with: Entities::ProjectImportStatus, current_user: current_user
       end

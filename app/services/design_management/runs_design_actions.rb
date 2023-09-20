@@ -15,10 +15,12 @@ module DesignManagement
     def run_actions(actions, skip_system_notes: false)
       raise NoActions if actions.empty?
 
-      sha = repository.commit_files(current_user,
-                                    branch_name: target_branch,
-                                    message: commit_message,
-                                    actions: actions.map(&:gitaly_action))
+      sha = repository.commit_files(
+        current_user,
+        branch_name: target_branch,
+        message: commit_message,
+        actions: actions.map(&:gitaly_action)
+      )
 
       ::DesignManagement::Version
         .create_for_designs(actions, sha, current_user)

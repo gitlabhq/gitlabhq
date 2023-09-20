@@ -10,7 +10,12 @@ import {
 import DeploymentComponent from '~/vue_merge_request_widget/components/deployment/deployment.vue';
 import DeploymentInfo from '~/vue_merge_request_widget/components/deployment/deployment_info.vue';
 import DeploymentViewButton from '~/vue_merge_request_widget/components/deployment/deployment_view_button.vue';
-import { deploymentMockData, playDetails, retryDetails } from './deployment_mock_data';
+import {
+  deploymentMockData,
+  playDetails,
+  retryDetails,
+  mockRedeployProps,
+} from './deployment_mock_data';
 
 describe('Deployment component', () => {
   let wrapper;
@@ -46,7 +51,6 @@ describe('Deployment component', () => {
     };
     const defaultGroup = ['.js-deploy-url', '.js-stop-env'];
     const manualDeployGroup = ['.js-manual-deploy-action', ...defaultGroup];
-    const manualRedeployGroup = ['.js-manual-redeploy-action', ...defaultGroup];
 
     describe.each`
       status      | previous | deploymentDetails | text                             | actionButtons
@@ -62,7 +66,7 @@ describe('Deployment component', () => {
       ${SUCCESS}  | ${true}  | ${noDetails}      | ${'Deployed to'}                 | ${defaultGroup}
       ${SUCCESS}  | ${false} | ${deployDetail}   | ${'Deployed to'}                 | ${defaultGroup}
       ${SUCCESS}  | ${false} | ${noDetails}      | ${'Deployed to'}                 | ${defaultGroup}
-      ${FAILED}   | ${true}  | ${retryDetail}    | ${'Failed to deploy to'}         | ${manualRedeployGroup}
+      ${FAILED}   | ${true}  | ${retryDetail}    | ${'Failed to deploy to'}         | ${defaultGroup}
       ${FAILED}   | ${true}  | ${noDetails}      | ${'Failed to deploy to'}         | ${defaultGroup}
       ${FAILED}   | ${false} | ${retryDetail}    | ${'Failed to deploy to'}         | ${noActions}
       ${FAILED}   | ${false} | ${noDetails}      | ${'Failed to deploy to'}         | ${noActions}
@@ -139,6 +143,27 @@ describe('Deployment component', () => {
         }
       },
     );
+
+    describe('redeploy action', () => {
+      beforeEach(() => {
+        factory({
+          propsData: {
+            showMetrics: false,
+            deployment: {
+              ...deploymentMockData,
+              ...mockRedeployProps,
+            },
+          },
+        });
+      });
+
+      it('shows only the redeploy button', () => {
+        expect(wrapper.find('.js-redeploy-action').exists()).toBe(true);
+        expect(wrapper.find('.js-deploy-url').exists()).toBe(false);
+        expect(wrapper.find('.js-stop-env').exists()).toBe(false);
+        expect(wrapper.find('.js-manual-deploy-action').exists()).toBe(false);
+      });
+    });
   });
 
   describe('hasExternalUrls', () => {

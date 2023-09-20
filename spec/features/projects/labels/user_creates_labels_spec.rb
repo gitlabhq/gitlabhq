@@ -63,6 +63,8 @@ RSpec.describe "User creates labels", feature_category: :team_planning do
         end
       end
     end
+
+    it_behaves_like "lock_on_merge when creating labels"
   end
 
   context "in another project" do

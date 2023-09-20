@@ -212,6 +212,27 @@ export default {
 
 <template>
   <div>
+    <header class="gl-my-5 gl-display-flex gl-justify-content-space-between">
+      <h2 class="gl-my-0 header-title">
+        {{ s__('Runners|Runners') }}
+      </h2>
+      <div class="gl-display-flex gl-gap-3">
+        <gl-button
+          v-if="newRunnerPath"
+          :href="newRunnerPath"
+          variant="confirm"
+          data-testid="new-group-runner-button"
+        >
+          {{ s__('Runners|New group runner') }}
+        </gl-button>
+        <registration-dropdown
+          v-if="registrationToken"
+          :registration-token="registrationToken"
+          :type="$options.GROUP_TYPE"
+          placement="right"
+        />
+      </div>
+    </header>
     <div
       class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
     >
@@ -225,19 +246,6 @@ export default {
         content-class="gl-display-none"
         nav-class="gl-border-none!"
       />
-
-      <div class="gl-w-full gl-md-w-auto gl-display-flex">
-        <gl-button v-if="newRunnerPath" :href="newRunnerPath" variant="confirm">
-          {{ s__('Runners|New group runner') }}
-        </gl-button>
-        <registration-dropdown
-          v-if="registrationToken"
-          class="gl-ml-3"
-          :registration-token="registrationToken"
-          :type="$options.GROUP_TYPE"
-          placement="right"
-        />
-      </div>
     </div>
     <div
       class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-gap-3"

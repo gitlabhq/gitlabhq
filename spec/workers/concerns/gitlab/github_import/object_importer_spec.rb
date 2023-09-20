@@ -273,7 +273,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
         .to receive(:notify)
         .with(
           job['args'].last,
-          job['jid']
+          job['jid'],
+          ttl: Gitlab::Import::JOB_WAITER_TTL
         )
 
         sidekiq_retries_exhausted

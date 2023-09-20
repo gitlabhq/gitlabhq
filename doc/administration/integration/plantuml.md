@@ -73,8 +73,6 @@ Inside the block you can add any of the diagrams PlantUML supports, such as:
 
 You can add parameters to block definitions:
 
-- `format`: Can be either `png` (default) or `svg`. Use `svg` with care, as it's
-  not supported by all browsers, and isn't supported by Markdown.
 - `id`: A CSS ID added to the diagram HTML tag.
 - `width`: Width attribute added to the image tag.
 - `height`: Height attribute added to the image tag.
@@ -319,7 +317,7 @@ stop;
 After configuring your local PlantUML server, you're ready to enable the PlantUML integration:
 
 1. Sign in to GitLab as an [Administrator](../../user/permissions.md) user.
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, go to **Settings > General** and expand the **PlantUML** section.
 1. Select the **Enable PlantUML** checkbox.

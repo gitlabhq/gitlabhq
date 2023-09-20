@@ -163,13 +163,8 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
 
         context 'when importer does not support refmap' do
           it 'succeeds if repository import is successful' do
-            expect(project.repository).to receive(:import_repository).and_return(true)
-            expect_next_instance_of(Gitlab::BitbucketImport::Importer) do |importer|
+            expect_next_instance_of(Gitlab::BitbucketImport::ParallelImporter) do |importer|
               expect(importer).to receive(:execute).and_return(true)
-            end
-
-            expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
-              expect(service).to receive(:execute).and_return(status: :success)
             end
 
             result = subject.execute
@@ -178,57 +173,90 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           end
 
           it 'fails if repository import fails' do
-            expect(project.repository)
-              .to receive(:import_repository)
-              .with('https://bitbucket.org/vim/vim.git', resolved_address: '')
-              .and_raise(Gitlab::Git::CommandError, 'Failed to import the repository /a/b/c')
+            expect_next_instance_of(Gitlab::BitbucketImport::ParallelImporter) do |importer|
+              expect(importer).to receive(:execute)
+                .and_raise(Gitlab::Git::CommandError, 'Failed to import the repository /a/b/c')
+            end
 
             result = subject.execute
 
             expect(result[:status]).to eq :error
             expect(result[:message]).to eq "Error importing repository #{project.safe_import_url} into #{project.full_path} - Failed to import the repository [FILTERED]"
           end
-        end
 
-        context 'when lfs import fails' do
-          it 'logs the error' do
-            error_message = 'error message'
-
-            expect(project.repository).to receive(:import_repository).and_return(true)
-
-            expect_next_instance_of(Gitlab::BitbucketImport::Importer) do |importer|
-              expect(importer).to receive(:execute).and_return(true)
+          context 'when bitbucket_parallel_importer feature flag is disabled' do
+            before do
+              stub_feature_flags(bitbucket_parallel_importer: false)
             end
 
-            expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
-              expect(service).to receive(:execute).and_return(status: :error, message: error_message)
+            it 'succeeds if repository import is successful' do
+              expect(project.repository).to receive(:import_repository).and_return(true)
+              expect_next_instance_of(Gitlab::BitbucketImport::Importer) do |importer|
+                expect(importer).to receive(:execute).and_return(true)
+              end
+
+              expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
+                expect(service).to receive(:execute).and_return(status: :success)
+              end
+
+              result = subject.execute
+
+              expect(result[:status]).to eq :success
             end
 
-            expect(Gitlab::AppLogger).to receive(:error).with("The Lfs import process failed. #{error_message}")
+            it 'fails if repository import fails' do
+              expect(project.repository)
+                .to receive(:import_repository)
+                .with('https://bitbucket.org/vim/vim.git', resolved_address: '')
+                .and_raise(Gitlab::Git::CommandError, 'Failed to import the repository /a/b/c')
 
-            subject.execute
-          end
-        end
+              result = subject.execute
 
-        context 'when repository import scheduled' do
-          before do
-            expect(project.repository).to receive(:import_repository).and_return(true)
-            allow(subject).to receive(:import_data)
-          end
+              expect(result[:status]).to eq :error
+              expect(result[:message]).to eq "Error importing repository #{project.safe_import_url} into #{project.full_path} - Failed to import the repository [FILTERED]"
+            end
 
-          it 'downloads lfs objects if lfs_enabled is enabled for project' do
-            allow(project).to receive(:lfs_enabled?).and_return(true)
+            context 'when lfs import fails' do
+              it 'logs the error' do
+                error_message = 'error message'
 
-            expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute)
+                expect(project.repository).to receive(:import_repository).and_return(true)
 
-            subject.execute
-          end
+                expect_next_instance_of(Gitlab::BitbucketImport::Importer) do |importer|
+                  expect(importer).to receive(:execute).and_return(true)
+                end
 
-          it 'does not download lfs objects if lfs_enabled is not enabled for project' do
-            allow(project).to receive(:lfs_enabled?).and_return(false)
-            expect_any_instance_of(Projects::LfsPointers::LfsImportService).not_to receive(:execute)
+                expect_next_instance_of(Projects::LfsPointers::LfsImportService) do |service|
+                  expect(service).to receive(:execute).and_return(status: :error, message: error_message)
+                end
 
-            subject.execute
+                expect(Gitlab::AppLogger).to receive(:error).with("The Lfs import process failed. #{error_message}")
+
+                subject.execute
+              end
+            end
+
+            context 'when repository import scheduled' do
+              before do
+                expect(project.repository).to receive(:import_repository).and_return(true)
+                allow(subject).to receive(:import_data)
+              end
+
+              it 'downloads lfs objects if lfs_enabled is enabled for project' do
+                allow(project).to receive(:lfs_enabled?).and_return(true)
+
+                expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute)
+
+                subject.execute
+              end
+
+              it 'does not download lfs objects if lfs_enabled is not enabled for project' do
+                allow(project).to receive(:lfs_enabled?).and_return(false)
+                expect_any_instance_of(Projects::LfsPointers::LfsImportService).not_to receive(:execute)
+
+                subject.execute
+              end
+            end
           end
         end
       end

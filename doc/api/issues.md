@@ -64,13 +64,13 @@ GET /issues?state=opened
 | `created_after`                 | datetime      | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`                | datetime      | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `due_date`                      | string        | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `any`, `today`, `tomorrow`, `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. |
-| `epic_id` **(PREMIUM)**         | integer       | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46887) in GitLab 13.6)_
-| `health_status` **(ULTIMATE)**  | string        | no         | Return issues with the specified `health_status`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370721) in GitLab 15.4)._ In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/370721), `None` returns issues with no health status assigned, and `Any` returns issues with a health status assigned.
+| `epic_id` **(PREMIUM ALL)**         | integer       | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46887) in GitLab 13.6)_
+| `health_status` **(ULTIMATE ALL)**  | string        | no         | Return issues with the specified `health_status`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370721) in GitLab 15.4)._ In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/370721), `None` returns issues with no health status assigned, and `Any` returns issues with a health status assigned.
 | `iids[]`                        | integer array | no         | Return only the issues having the given `iid`                                                                                                       |
 | `in`                            | string        | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`             |
 | `issue_type`                    | string        | no         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260375) in GitLab 13.12)_ |
-| `iteration_id` **(PREMIUM)**    | integer       | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
-| `iteration_title` **(PREMIUM)** | string        | no       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
+| `iteration_id` **(PREMIUM ALL)**    | integer       | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
+| `iteration_title` **(PREMIUM ALL)** | string        | no       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
 | `labels`                        | string        | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
 | `milestone`                     | string        | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone. Using `None` or `Any` will be [deprecated in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/336044). Please use `milestone_id` attribute instead. `milestone` and `milestone_id` are mutually exclusive. |
 | `milestone_id`                  | string        | no         | Returns issues assigned to milestones with a given timebox value (`None`, `Any`, `Upcoming`, and `Started`). `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone. `Upcoming` lists all issues assigned to milestones due in the future. `Started` lists all issues assigned to open, started milestones. `milestone` and `milestone_id` are mutually exclusive. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335939) in GitLab 14.3)_ |
@@ -84,7 +84,7 @@ GET /issues?state=opened
 | `state`                         | string        | no         | Return `all` issues or just those that are `opened` or `closed`                                                                                       |
 | `updated_after`                 | datetime      | no         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_before`                | datetime      | no         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `weight` **(PREMIUM)**          | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned.              |
+| `weight` **(PREMIUM ALL)**          | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned.              |
 | `with_labels_details`           | boolean       | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) in GitLab 12.7|
 
 ```shell
@@ -294,12 +294,12 @@ GET /groups/:id/issues?state=opened
 | `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `any`, `today`, `tomorrow`, `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. |
-| `epic_id` **(PREMIUM)** | integer      | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46887) in GitLab 13.6)_
+| `epic_id` **(PREMIUM ALL)** | integer      | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46887) in GitLab 13.6)_
 | `id`                | integer/string   | yes        | The global ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user                 |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                                 |
 | `issue_type`        | string           | no         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260375) in GitLab 13.12)_ |
-| `iteration_id` **(PREMIUM)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
-| `iteration_title` **(PREMIUM)** | string | no       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
+| `iteration_id` **(PREMIUM ALL)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
+| `iteration_title` **(PREMIUM ALL)** | string | no       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
@@ -312,7 +312,7 @@ GET /groups/:id/issues?state=opened
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `weight` **(PREMIUM)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
+| `weight` **(PREMIUM ALL)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
 | `with_labels_details` | boolean        | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. The `description_html` attribute was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) in GitLab 12.7 |
 
 ```shell
@@ -498,12 +498,12 @@ GET /projects/:id/issues?state=opened
 | `created_after`     | datetime         | no         | Return issues created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `due_date`          | string           | no         | Return issues that have no due date, are overdue, or whose due date is this week, this month, or between two weeks ago and next month. Accepts: `0` (no due date), `any`, `today`, `tomorrow`, `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`. |
-| `epic_id` **(PREMIUM)** | integer      | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46887) in GitLab 13.6)_
+| `epic_id` **(PREMIUM ALL)** | integer      | no         | Return issues associated with the given epic ID. `None` returns issues that are not associated with an epic. `Any` returns issues that are associated with an epic. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46887) in GitLab 13.6)_
 | `id`                | integer/string   | yes        | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user               |
 | `iids[]`            | integer array    | no         | Return only the issues having the given `iid`                                                                              |
 | `issue_type`        | string           | no         | Filter to a given type of issue. One of `issue`, `incident`, or `test_case`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/260375) in GitLab 13.12)_ |
-| `iteration_id` **(PREMIUM)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
-| `iteration_title` **(PREMIUM)** | string | no       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
+| `iteration_id` **(PREMIUM ALL)** | integer | no         | Return issues assigned to the given iteration ID. `None` returns issues that do not belong to an iteration. `Any` returns issues that belong to an iteration. Mutually exclusive with `iteration_title`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
+| `iteration_title` **(PREMIUM ALL)** | string | no       | Return issues assigned to the iteration with the given title. Similar to `iteration_id` and mutually exclusive with `iteration_id`. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118742) in GitLab 13.6)_ |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `None` lists all issues with no labels. `Any` lists all issues with at least one label. `No+Label` (Deprecated) lists all issues with no labels. Predefined names are case-insensitive. |
 | `milestone`         | string           | no         | The milestone title. `None` lists all issues with no milestone. `Any` lists all issues that have an assigned milestone.       |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
@@ -515,7 +515,7 @@ GET /projects/:id/issues?state=opened
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
-| `weight` **(PREMIUM)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
+| `weight` **(PREMIUM ALL)** | integer       | no         | Return issues with the specified `weight`. `None` returns issues with no weight assigned. `Any` returns issues with a weight assigned. |
 | `with_labels_details` | boolean        | no         | If `true`, the response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. `description_html` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21413) in GitLab 12.7 |
 
 ```shell
@@ -1004,14 +1004,14 @@ POST /projects/:id/issues
 | Attribute                                 | Type           | Required | Description  |
 |-------------------------------------------|----------------|----------|--------------|
 | `assignee_id`                             | integer        | no       | The ID of the user to assign the issue to. Only appears on GitLab Free. |
-| `assignee_ids` **(PREMIUM)**              | integer array  | no       | The IDs of the users to assign the issue to. |
+| `assignee_ids` **(PREMIUM ALL)**              | integer array  | no       | The IDs of the users to assign the issue to. |
 | `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
 | `created_at`                              | string         | no       | When the issue was created. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 | `description`                             | string         | no       | The description of an issue. Limited to 1,048,576 characters. |
 | `discussion_to_resolve`                   | string         | no       | The ID of a discussion to resolve. This fills out the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
 | `due_date`                                | string         | no       | The due date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11` |
-| `epic_id` **(PREMIUM)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
-| `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5) |
+| `epic_id` **(PREMIUM ALL)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
+| `epic_iid` **(PREMIUM ALL)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5) |
 | `id`                                      | integer/string | yes      | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires administrator or project owner rights) |
 | `issue_type`                              | string         | no       | The type of issue. One of `issue`, `incident`, or `test_case`. Default is `issue`. |
@@ -1019,7 +1019,7 @@ POST /projects/:id/issues
 | `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This fills out the issue with a default description and mark all discussions as resolved. When passing a description or title, these values take precedence over the default values.|
 | `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue. To find the `milestone_id` associated with a milestone, view an issue with the milestone assigned and [use the API](#single-project-issue) to retrieve the issue's details. |
 | `title`                                   | string         | yes      | The title of an issue |
-| `weight` **(PREMIUM)**                    | integer        | no       | The weight of the issue. Valid values are greater than or equal to 0. |
+| `weight` **(PREMIUM ALL)**                    | integer        | no       | The weight of the issue. Valid values are greater than or equal to 0. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug"
@@ -1178,8 +1178,8 @@ PUT /projects/:id/issues/:issue_iid
 | `description`  | string  | no       | The description of an issue. Limited to 1,048,576 characters.        |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
 | `due_date`     | string  | no       | The due date. Date time string in the format `YYYY-MM-DD`, for example `2016-03-11`                                           |
-| `epic_id` **(PREMIUM)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
-| `epic_iid` **(PREMIUM)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5) |
+| `epic_id` **(PREMIUM ALL)** | integer | no | ID of the epic to add the issue to. Valid values are greater than or equal to 0. |
+| `epic_iid` **(PREMIUM ALL)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. (deprecated, [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/35157) in API version 5) |
 | `id`           | integer/string | yes | The global ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid`    | integer | yes      | The internal ID of a project's issue                                                                       |
 | `issue_type`   | string  | no       | Updates the type of issue. One of `issue`, `incident`, or `test_case`. |
@@ -1189,7 +1189,7 @@ PUT /projects/:id/issues/:issue_iid
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
 | `title`        | string  | no       | The title of an issue                                                                                      |
 | `updated_at`   | string  | no       | When the issue was updated. Date time string, ISO 8601 formatted, for example `2016-03-11T03:45:40Z` (requires administrator or project owner rights). Empty string or null values are not accepted.|
-| `weight` **(PREMIUM)** | integer | no | The weight of the issue. Valid values are greater than or equal to 0. 0                                                                    |
+| `weight` **(PREMIUM ALL)** | integer | no | The weight of the issue. Valid values are greater than or equal to 0. 0                                                                    |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close"
@@ -1515,10 +1515,10 @@ POST /projects/:id/issues/:issue_iid/clone
 
 | Attribute       | Type           | Required               | Description                       |
 | --------------- | -------------- | ---------------------- | --------------------------------- |
-| `id`            | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `issue_iid`     | integer        | **{check-circle}** Yes | Internal ID of a project's issue. |
-| `to_project_id` | integer        | **{check-circle}** Yes | ID of the new project.            |
-| `with_notes`    | boolean        | **{dotted-circle}** No | Clone the issue with [notes](notes.md). Default is `false`. |
+| `id`            | integer/string | Yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `issue_iid`     | integer        | Yes | Internal ID of a project's issue. |
+| `to_project_id` | integer        | Yes | ID of the new project.            |
+| `with_notes`    | boolean        | No | Clone the issue with [notes](notes.md). Default is `false`. |
 
 ```shell
 curl --request POST \
@@ -2337,7 +2337,7 @@ Example response:
     "state": "opened",
     "created_at": "2017-04-06T18:33:34.168Z",
     "updated_at": "2017-04-09T20:10:24.983Z",
-    "target_branch": "master",
+    "target_branch": "main",
     "source_branch": "feature.custom-highlighting",
     "upvotes": 0,
     "downvotes": 0,

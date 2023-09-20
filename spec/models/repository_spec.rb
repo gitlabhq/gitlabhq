@@ -2113,6 +2113,17 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#update_refs' do
+    let(:expected_return) { 'updated' }
+    let(:params) { double }
+
+    it 'calls the update_refs method on the raw repo with the same params' do
+      expect(repository.raw_repository).to receive(:update_refs).with(params).and_return('updated')
+
+      expect(repository.update_refs(params)).to eq(expected_return)
+    end
+  end
+
   describe '#ff_merge' do
     let(:target_branch) { 'ff-target' }
     let(:merge_request) do
@@ -2424,7 +2435,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
           :has_visible_content?,
           :issue_template_names_hash,
           :merge_request_template_names_hash,
-          :user_defined_metrics_dashboard_paths,
           :xcode_project?,
           :has_ambiguous_refs?
         ]
@@ -3822,9 +3832,24 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
     end
 
+    context 'when one of the param is nonexistant' do
+      it 'returns nil' do
+        expect(repository.get_patch_id('HEAD', "f" * 40)).to be_nil
+      end
+    end
+
     context 'when two revisions are the same' do
-      it 'raises an Gitlab::Git::CommandError error' do
-        expect { repository.get_patch_id('HEAD', 'HEAD') }.to raise_error(Gitlab::Git::CommandError)
+      it 'returns nil' do
+        expect(repository.get_patch_id('HEAD', 'HEAD')).to be_nil
+      end
+    end
+
+    context 'when a Gitlab::Git::CommandError is raised' do
+      it 'returns nil' do
+        expect(repository.raw_repository)
+          .to receive(:get_patch_id).and_raise(Gitlab::Git::CommandError)
+
+        expect(repository.get_patch_id('HEAD', "f" * 40)).to be_nil
       end
     end
   end

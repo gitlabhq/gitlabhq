@@ -211,7 +211,7 @@ RSpec.describe ApplicationExperiment, :experiment, feature_category: :experiment
       application_experiment.variant(:variant1) {}
       application_experiment.variant(:variant2) {}
 
-      expect(application_experiment.assigned.name).to eq('variant2')
+      expect(application_experiment.assigned.name).to eq(:variant2)
     end
   end
 
@@ -248,7 +248,7 @@ RSpec.describe ApplicationExperiment, :experiment, feature_category: :experiment
     end
 
     it "caches the variant determined by the variant resolver" do
-      expect(application_experiment.assigned.name).to eq('candidate') # we should be in the experiment
+      expect(application_experiment.assigned.name).to eq(:candidate) # we should be in the experiment
 
       application_experiment.run
 
@@ -263,7 +263,7 @@ RSpec.describe ApplicationExperiment, :experiment, feature_category: :experiment
       # the control.
       stub_feature_flags(namespaced_stub: false) # simulate being not rolled out
 
-      expect(application_experiment.assigned.name).to eq('control') # if we ask, it should be control
+      expect(application_experiment.assigned.name).to eq(:control) # if we ask, it should be control
 
       application_experiment.run
 
@@ -297,31 +297,6 @@ RSpec.describe ApplicationExperiment, :experiment, feature_category: :experiment
         expect(application_experiment.cache.attr_inc(:foo)).to eq(1)
         expect(application_experiment.cache.attr_inc(:foo)).to eq(2)
       end
-    end
-  end
-
-  context "with deprecation warnings" do
-    before do
-      Gitlab::Experiment::Configuration.instance_variable_set(:@__dep_versions, nil) # clear the internal memoization
-
-      allow(ActiveSupport::Deprecation).to receive(:new).and_call_original
-    end
-
-    it "doesn't warn on non dev/test environments" do
-      allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
-
-      expect { experiment(:example) { |e| e.use {} } }.not_to raise_error
-      expect(ActiveSupport::Deprecation).not_to have_received(:new).with(anything, 'Gitlab::Experiment')
-    end
-
-    it "warns on dev and test environments" do
-      allow(Gitlab).to receive(:dev_or_test_env?).and_return(true)
-
-      # This will eventually raise an ActiveSupport::Deprecation exception,
-      # it's ok to change it when that happens.
-      expect { experiment(:example) { |e| e.use {} } }.not_to raise_error
-
-      expect(ActiveSupport::Deprecation).to have_received(:new).with(anything, 'Gitlab::Experiment')
     end
   end
 end

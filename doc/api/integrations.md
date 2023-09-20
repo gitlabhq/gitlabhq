@@ -17,9 +17,9 @@ This API requires an access token with the Maintainer or Owner role.
 
 ## List all active integrations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/21330) in GitLab 12.7.
+> `vulnerability_events` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131831) in GitLab 16.5.
 
-Get a list of all active project integrations.
+Get a list of all active project integrations. The `vulnerability_events` field is only available for GitLab Enterprise Edition.
 
 ```plaintext
 GET /projects/:id/integrations
@@ -49,7 +49,8 @@ Example response:
     "pipeline_events": true,
     "wiki_page_events": true,
     "job_events": true,
-    "comment_on_event_enabled": true
+    "comment_on_event_enabled": true,
+    "vulnerability_events": true
   },
   {
     "id": 76,
@@ -71,7 +72,8 @@ Example response:
     "pipeline_events": true,
     "wiki_page_events": true,
     "job_events": true,
-    "comment_on_event_enabled": true
+    "comment_on_event_enabled": true,
+    "vulnerability_events": true
   }
 ]
 ```
@@ -434,6 +436,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token`   | string | true | The Telegram bot token. For example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`. |
 | `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`) |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
 | `push_events` | boolean | true | Enable notifications for push events |
 | `issues_events` | boolean | true | Enable notifications for issue events |
 | `confidential_issues_events` | boolean | true | Enable notifications for confidential issue events |

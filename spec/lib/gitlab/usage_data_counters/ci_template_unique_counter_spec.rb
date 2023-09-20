@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter do
+RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter, feature_category: :pipeline_composition do
   describe '.track_unique_project_event' do
     using RSpec::Parameterized::TableSyntax
     include SnowplowHelpers

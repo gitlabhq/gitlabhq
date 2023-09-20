@@ -350,7 +350,8 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         let_it_be(:ghost_user) { create(:user, :ghost) }
 
         it 'does not render actions dropdown' do
-          expect(page).not_to have_css("[data-testid='user-actions-#{ghost_user.id}'] [data-testid='dropdown-toggle']")
+          expect(page).not_to have_css(
+            "[data-testid='user-actions-#{ghost_user.id}'] [data-testid='user-actions-dropdown-toggle']")
         end
       end
 
@@ -358,7 +359,8 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
         let_it_be(:bot_user) { create(:user, user_type: :alert_bot) }
 
         it 'does not render actions dropdown' do
-          expect(page).not_to have_css("[data-testid='user-actions-#{bot_user.id}'] [data-testid='dropdown-toggle']")
+          expect(page).not_to have_css(
+            "[data-testid='user-actions-#{bot_user.id}'] [data-testid='user-actions-dropdown-toggle']")
         end
       end
     end

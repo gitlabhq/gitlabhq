@@ -2,7 +2,7 @@
 
 module Snippets
   class UpdateService < Snippets::BaseService
-    COMMITTABLE_ATTRIBUTES = %w(file_name content).freeze
+    COMMITTABLE_ATTRIBUTES = %w[file_name content].freeze
 
     UpdateError = Class.new(StandardError)
 

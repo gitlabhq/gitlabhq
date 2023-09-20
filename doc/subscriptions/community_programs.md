@@ -22,7 +22,7 @@ To meet GitLab for Open Source Program requirements, first add an OSI-approved o
 
 To add a license to a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the overview page, select **Add LICENSE**. If the license you want is not available as a license template, manually copy the entire, unaltered [text of your chosen license](https://opensource.org/licenses/) into the `LICENSE` file. GitLab defaults to **All rights reserved** if users do not perform this action.
 
 ![Add license](img/add-license.png)
@@ -45,7 +45,7 @@ Benefits of the GitLab Open Source Program apply to all projects in a GitLab nam
 
 #### Screenshot 1: License overview
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select your project avatar. If you haven't specified an avatar for your project, the avatar displays as a single letter.
 1. Take a screenshot of the project overview that clearly displays the license you've chosen for your project.
 
@@ -53,7 +53,7 @@ Benefits of the GitLab Open Source Program apply to all projects in a GitLab nam
 
 #### Screenshot 2: License contents
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1.Select **Code > Repository** and locate the project's `LICENSE` file.
 1. Take a screenshot of the contents of the file. Make sure the screenshot includes the title of the license.
 
@@ -63,7 +63,7 @@ Benefits of the GitLab Open Source Program apply to all projects in a GitLab nam
 
 To be eligible for the GitLab Open Source Program, projects must be publicly visible. To check your project's public visibility settings:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
 1. From the **Project visibility** dropdown list, select **Public**.

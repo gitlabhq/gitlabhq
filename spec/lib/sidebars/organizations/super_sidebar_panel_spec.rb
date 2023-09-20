@@ -15,11 +15,7 @@ RSpec.describe Sidebars::Organizations::SuperSidebarPanel, feature_category: :na
   subject { described_class.new(context) }
 
   it 'implements #super_sidebar_context_header' do
-    expect(subject.super_sidebar_context_header).to eq(
-      {
-        title: organization.name,
-        id: organization.id
-      })
+    expect(subject.super_sidebar_context_header).to eq(s_('Organization|Organization'))
   end
 
   describe '#renderable_menus' do
@@ -36,4 +32,5 @@ RSpec.describe Sidebars::Organizations::SuperSidebarPanel, feature_category: :na
   end
 
   it_behaves_like 'a panel with uniquely identifiable menu items'
+  it_behaves_like 'a panel instantiable by the anonymous user'
 end

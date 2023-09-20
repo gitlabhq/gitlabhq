@@ -38,7 +38,7 @@ RSpec.describe Members::InvitationReminderEmailService, feature_category: :group
     with_them do
       # Create an invitation today with an expiration date from 0 to 10 days in the future or without an expiration date
       # We chose 10 days here, because we fetch invitations that were created at most 10 days ago.
-      (0..10).each do |day|
+      11.times do |day|
         it 'sends an invitation reminder only on the expected days' do
           next if day > (expires_at_days || 10) # We don't need to test after the invitation has already expired
 

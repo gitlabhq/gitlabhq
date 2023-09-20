@@ -30,6 +30,7 @@ options:
   - p_ci_templates_rust
   - p_ci_templates_elixir
   - p_ci_templates_clojure
+  - p_ci_templates_cosign
   - p_ci_templates_crystal
   - p_ci_templates_getting_started
   - p_ci_templates_code_quality
@@ -189,3 +190,4 @@ tier:
 - ultimate
 performance_indicator_type: []
 milestone: "<13.9"
+removed_by_url:

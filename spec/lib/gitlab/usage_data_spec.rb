@@ -397,7 +397,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         user = create(:user)
         project = create(:project, creator: user)
         issue = create(:issue, project: project, author: user)
-        create(:issue, project: project, author: User.support_bot)
+        create(:issue, project: project, author: Users::Internal.support_bot)
         create(:note, project: project, noteable: issue, author: user)
         create(:todo, project: project, target: issue, author: user)
         create(:jira_integration, :jira_cloud_service, active: true, project: create(:project, :jira_dvcs_cloud, creator: user))
@@ -431,7 +431,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
         user = create(:user)
         project = create(:project, creator: user)
         create(:issue, project: project, author: user)
-        create(:issue, project: project, author: User.support_bot)
+        create(:issue, project: project, author: Users::Internal.support_bot)
       end
 
       expect(described_class.usage_activity_by_stage_plan({})).to include(issues: 3)
@@ -556,7 +556,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
       expect(count_data[:issues_using_zoom_quick_actions]).to eq(3)
       expect(count_data[:issues_with_embedded_grafana_charts_approx]).to eq(2)
       expect(count_data[:incident_issues]).to eq(4)
-      expect(count_data[:issues_created_from_alerts]).to eq(3)
+      expect(count_data[:issues_created_from_alerts]).to eq(2)
       expect(count_data[:alert_bot_incident_issues]).to eq(4)
       expect(count_data[:clusters_enabled]).to eq(6)
       expect(count_data[:project_clusters_enabled]).to eq(4)
@@ -883,7 +883,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures, feature_category: :servic
     let(:project) { create(:project, :service_desk_enabled) }
 
     it 'gathers Service Desk data' do
-      create_list(:issue, 2, :confidential, author: User.support_bot, project: project)
+      create_list(:issue, 2, :confidential, author: Users::Internal.support_bot, project: project)
 
       expect(subject).to eq(service_desk_enabled_projects: 1,
                             service_desk_issues: 2)

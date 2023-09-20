@@ -13,7 +13,6 @@ import Deployment from '~/environments/components/deployment.vue';
 import DeployBoardWrapper from '~/environments/components/deploy_board_wrapper.vue';
 import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
 import getEnvironmentClusterAgent from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
-import getEnvironmentClusterAgentWithFluxResource from '~/environments/graphql/queries/environment_cluster_agent_with_flux_resource.query.graphql';
 import {
   resolvedEnvironment,
   rolloutStatus,
@@ -27,7 +26,6 @@ Vue.use(VueApollo);
 describe('~/environments/components/new_environment_item.vue', () => {
   let wrapper;
   let queryResponseHandler;
-  let queryWithFluxResourceResponseHandler;
 
   const projectPath = '/1';
 
@@ -39,27 +37,14 @@ describe('~/environments/components/new_environment_item.vue', () => {
           environment: {
             id: '1',
             kubernetesNamespace: 'default',
+            fluxResourcePath: fluxResourcePathMock,
             clusterAgent,
           },
         },
       },
     };
     queryResponseHandler = jest.fn().mockResolvedValue(response);
-    queryWithFluxResourceResponseHandler = jest.fn().mockResolvedValue({
-      data: {
-        project: {
-          id: response.data.project.id,
-          environment: {
-            ...response.data.project.environment,
-            fluxResourcePath: fluxResourcePathMock,
-          },
-        },
-      },
-    });
-    return createMockApollo([
-      [getEnvironmentClusterAgent, queryResponseHandler],
-      [getEnvironmentClusterAgentWithFluxResource, queryWithFluxResourceResponseHandler],
-    ]);
+    return createMockApollo([[getEnvironmentClusterAgent, queryResponseHandler]]);
   };
 
   const createWrapper = ({ propsData = {}, provideData = {}, apolloProvider } = {}) =>
@@ -554,25 +539,6 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
     });
 
-    it('should request agent data with Flux resource when `fluxResourceForEnvironment` feature flag is enabled', async () => {
-      wrapper = createWrapper({
-        propsData: { environment: resolvedEnvironment },
-        provideData: {
-          glFeatures: {
-            fluxResourceForEnvironment: true,
-          },
-        },
-        apolloProvider: createApolloProvider(agent),
-      });
-
-      await expandCollapsedSection();
-
-      expect(queryWithFluxResourceResponseHandler).toHaveBeenCalledWith({
-        environmentName: resolvedEnvironment.name,
-        projectFullPath: projectPath,
-      });
-    });
-
     it('should render if the environment has an agent associated', async () => {
       wrapper = createWrapper({
         propsData: { environment: resolvedEnvironment },
@@ -588,14 +554,9 @@ describe('~/environments/components/new_environment_item.vue', () => {
       });
     });
 
-    it('should render with the namespace if `fluxResourceForEnvironment` feature flag is enabled and the environment has an agent associated', async () => {
+    it('should render with the namespace if the environment has an agent associated', async () => {
       wrapper = createWrapper({
         propsData: { environment: resolvedEnvironment },
-        provideData: {
-          glFeatures: {
-            fluxResourceForEnvironment: true,
-          },
-        },
         apolloProvider: createApolloProvider(agent),
       });
 

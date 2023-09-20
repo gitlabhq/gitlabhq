@@ -77,6 +77,8 @@ en:
       email: Allows read-only access to the user's primary email address using OpenID Connect
       admin_mode: Admin Mode is a functionality designed to limit the access level of administrator's personal access tokens.
       create_runner: Grants create access to the runners
+      k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+      ai_features: Access to API endpoints needed for GitLab Duo features
     scope_desc:
       api:
         Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry.
@@ -96,6 +98,8 @@ en:
         Grants read-only access to GitLab Observability.
       write_observability:
         Grants write access to GitLab Observability.
+      ai_features:
+        Grants access to GitLab Duo related API endpoints.
       openid:
         Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
       sudo:
@@ -108,6 +112,8 @@ en:
         Grants permission to perform API actions as an administrator, when Admin Mode is enabled.
       create_runner:
         Grants create access to the runners.
+      k8s_proxy:
+        Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
     project_access_token_scope_desc:
       api:
         Grants complete read and write access to the scoped project API, including the Package Registry.
@@ -123,6 +129,8 @@ en:
         Grants write access (push) to the Container Registry.
       create_runner:
         Grants create access to the runners.
+      k8s_proxy:
+        Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
     flash:
       applications:
         create:

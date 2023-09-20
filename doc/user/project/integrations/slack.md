@@ -32,7 +32,7 @@ to control GitLab from Slack. Slash commands are configured separately.
 
 > [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106760) in GitLab 15.9 to limit Slack channels to 10 per event.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Slack notifications**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -79,9 +79,18 @@ The following triggers are available for Slack notifications:
 | **Wiki page**                                                            | A wiki page is created or updated.                   |
 | **Deployment**                                                           | A deployment starts or finishes.                     |
 | **Alert**                                                                | A new, unique alert is recorded.                     |
-| **Group mention in public**                                              | A group is mentioned in a public context.            |
-| **Group mention in private**                                             | A group is mentioned in a confidential context.      |
+| **[Group mention](#trigger-notifications-for-group-mentions) in public**                                              | A group is mentioned in a public context.            |
+| **[Group mention](#trigger-notifications-for-group-mentions) in private**                                             | A group is mentioned in a confidential context.      |
 | [**Vulnerability**](../../application_security/vulnerabilities/index.md) | A new, unique vulnerability is recorded.             |
+
+## Trigger notifications for group mentions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417751) in GitLab 16.4.
+
+To trigger a [notification event](#triggers-for-slack-notifications) for a group mention, use `@<group_name>` in:
+
+- Issue and merge request descriptions
+- Comments on issues, merge requests, and commits
 
 ## Troubleshooting
 
@@ -147,7 +156,7 @@ Commands that change data can cause damage if not run correctly or under the rig
 
 ```ruby
 # Grab all projects that have the Slack notifications enabled
-p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN integrations s ON p.id = s.project_id WHERE s.type_new = 'Slack' AND s.active = true")
+p = Project.find_by_sql("SELECT p.id FROM projects p LEFT JOIN integrations s ON p.id = s.project_id WHERE s.type_new = 'Integrations::Slack' AND s.active = true")
 
 # Disable the integration on each of the projects that were found.
 p.each do |project|

@@ -2666,14 +2666,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     let(:group) { build(:group) }
 
     context 'the group has owners' do
-      before do
-        group.add_owner(create(:user))
-        group.add_owner(create(:user))
-      end
-
       it 'is the first owner' do
+        user_1 = create(:user)
+        user_2 = create(:user)
+        group.add_owner(user_2)
+        group.add_owner(user_1)
+
+        # The senior-most user (not member) who is an OWNER in the group
+        # is always treated as the first owner
         expect(group.first_owner)
-          .to eq(group.owners.first)
+          .to eq(user_1)
           .and be_a(User)
       end
     end
@@ -3304,6 +3306,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :work_items_mvc_2 }
       let(:feature_flag_method) { :work_items_mvc_2_feature_flag_enabled? }
+    end
+  end
+
+  describe '#supports_lock_on_merge?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :enforce_locked_labels_on_merge }
+      let(:feature_flag_method) { :supports_lock_on_merge? }
     end
   end
 

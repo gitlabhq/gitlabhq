@@ -178,6 +178,22 @@ export default {
 </script>
 <template>
   <div>
+    <header class="gl-my-5 gl-display-flex gl-justify-content-space-between">
+      <h2 class="gl-my-0 header-title">
+        {{ s__('Runners|Runners') }}
+      </h2>
+      <div class="gl-display-flex gl-gap-3">
+        <runner-dashboard-link />
+        <gl-button :href="newRunnerPath" variant="confirm">
+          {{ s__('Runners|New instance runner') }}
+        </gl-button>
+        <registration-dropdown
+          :registration-token="registrationToken"
+          :type="$options.INSTANCE_TYPE"
+          placement="right"
+        />
+      </div>
+    </header>
     <div
       class="gl-display-flex gl-align-items-center gl-flex-direction-column-reverse gl-md-flex-direction-row gl-mt-3 gl-md-mt-0"
     >
@@ -189,18 +205,6 @@ export default {
         content-class="gl-display-none"
         nav-class="gl-border-none!"
       />
-
-      <div class="gl-w-full gl-md-w-auto gl-display-flex gl-gap-3">
-        <runner-dashboard-link />
-        <gl-button :href="newRunnerPath" variant="confirm">
-          {{ s__('Runners|New instance runner') }}
-        </gl-button>
-        <registration-dropdown
-          :registration-token="registrationToken"
-          :type="$options.INSTANCE_TYPE"
-          placement="right"
-        />
-      </div>
     </div>
 
     <runner-filtered-search-bar

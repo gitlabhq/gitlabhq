@@ -169,18 +169,14 @@ Page::Main::Menu.perform do |menu|
 end
 
 #=> Good
-issue = Resource::Issue.fabricate_via_api! do |issue|
-  issue.name = 'issue-name'
-end
+issue = create(:issue, name: 'issue-name')
 
 Project::Issues::Index.perform do |index|
   expect(index).to have_issue(issue)
 end
 
 #=> Bad
-issue = Resource::Issue.fabricate_via_api! do |issue|
-  issue.name = 'issue-name'
-end
+issue = create(:issue, name: 'issue-name')
 
 Project::Issues::Index.perform do |index|
   expect(index).to have_issue(issue)
@@ -371,7 +367,7 @@ If the _only_ action in the test that requires administrator access is to toggle
 
 In line with [using the API](#prefer-api-over-ui), use a `Commit` resource whenever possible.
 
-`ProjectPush` uses raw shell commands via the Git Command Line Interface (CLI) whereas the `Commit` resource makes an HTTP request.
+`ProjectPush` uses raw shell commands from the Git command-line interface (CLI), and the `Commit` resource makes an HTTP request.
 
 ```ruby
 # Using a commit resource

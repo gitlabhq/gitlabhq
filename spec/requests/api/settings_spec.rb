@@ -27,6 +27,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['secret_detection_token_revocation_url']).to be_nil
       expect(json_response['secret_detection_revocation_token_types_url']).to be_nil
       expect(json_response['sourcegraph_public_only']).to be_truthy
+      expect(json_response['decompress_archive_file_timeout']).to eq(210)
       expect(json_response['default_preferred_language']).to be_a String
       expect(json_response['default_project_visibility']).to be_a String
       expect(json_response['default_snippet_visibility']).to be_a String
@@ -153,6 +154,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             enforce_terms: true,
             terms: 'Hello world!',
             performance_bar_allowed_group_path: group.full_path,
+            decompress_archive_file_timeout: 60,
             diff_max_patch_bytes: 300_000,
             diff_max_files: 2000,
             diff_max_lines: 50000,
@@ -234,6 +236,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['enforce_terms']).to be(true)
         expect(json_response['terms']).to eq('Hello world!')
         expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
+        expect(json_response['decompress_archive_file_timeout']).to eq(60)
         expect(json_response['diff_max_patch_bytes']).to eq(300_000)
         expect(json_response['diff_max_files']).to eq(2000)
         expect(json_response['diff_max_lines']).to eq(50000)
@@ -851,7 +854,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
           sentry_enabled: true,
           sentry_dsn: 'http://sentry.example.com',
           sentry_clientside_dsn: 'http://sentry.example.com',
-          sentry_environment: 'production'
+          sentry_environment: 'production',
+          sentry_clientside_traces_sample_rate: 0.25
         }
       end
 

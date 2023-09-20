@@ -13,7 +13,7 @@ module Gitlab
           cache_start_and_finish_as :issue
 
           relation do
-            Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot)
+            Issue.with_alert_management_alerts.not_authored_by(::Users::Internal.alert_bot)
           end
 
           def value

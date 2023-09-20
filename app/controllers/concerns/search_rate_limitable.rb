@@ -11,7 +11,8 @@ module SearchRateLimitable
       # scopes to get counts, we apply rate limits on the search scope if it is present.
       #
       # If abusive search is detected, we have stricter limits and ignore the search scope.
-      check_rate_limit!(:search_rate_limit, scope: [current_user, safe_search_scope].compact)
+      check_rate_limit!(:search_rate_limit, scope: [current_user, safe_search_scope].compact,
+        users_allowlist: Gitlab::CurrentSettings.current_application_settings.search_rate_limit_allowlist)
     else
       check_rate_limit!(:search_rate_limit_unauthenticated, scope: [request.ip])
     end

@@ -47,7 +47,7 @@ module Gitlab
   APP_DIRS_PATTERN = %r{^/?(app|config|ee|lib|spec|\(\w*\))}.freeze
   VERSION = File.read(root.join("VERSION")).strip.freeze
   INSTALLATION_TYPE = File.read(root.join("INSTALLATION_TYPE")).strip.freeze
-  HTTP_PROXY_ENV_VARS = %w(http_proxy https_proxy HTTP_PROXY HTTPS_PROXY).freeze
+  HTTP_PROXY_ENV_VARS = %w[http_proxy https_proxy HTTP_PROXY HTTPS_PROXY].freeze
 
   def self.simulate_com?
     return false unless Rails.env.development?

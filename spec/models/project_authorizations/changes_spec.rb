@@ -85,7 +85,7 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
           apply_project_authorization_changes
 
           expect(user.project_authorizations.pluck(:user_id, :project_id,
-            :access_level)).to match_array(authorizations_to_add.map(&:values))
+            :access_level, :is_unique)).to match_array(authorizations_to_add.map(&:values))
         end
       end
 
@@ -101,7 +101,13 @@ RSpec.describe ProjectAuthorizations::Changes, feature_category: :groups_and_pro
           apply_project_authorization_changes
 
           expect(user.project_authorizations.pluck(:user_id, :project_id,
-            :access_level)).to match_array(authorizations_to_add.map(&:values))
+            :access_level, :is_unique)).to match_array(authorizations_to_add.map(&:values))
+        end
+
+        it 'writes is_unique' do
+          apply_project_authorization_changes
+
+          expect(user.project_authorizations.pluck(:is_unique)).to all(be(true))
         end
 
         it_behaves_like 'logs the detail', batch_size: 2

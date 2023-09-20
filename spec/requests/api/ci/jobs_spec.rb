@@ -463,6 +463,14 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
         it { expect(response).to have_gitlab_http_status(:bad_request) }
       end
+
+      it_behaves_like 'an endpoint with keyset pagination' do
+        let_it_be(:another_build) { create(:ci_build, :success, :tags, project: project, pipeline: pipeline) }
+
+        let(:first_record) { project.builds.last }
+        let(:second_record) { project.builds.first }
+        let(:api_call) { api("/projects/#{project.id}/jobs", user) }
+      end
     end
 
     context 'unauthorized user' do

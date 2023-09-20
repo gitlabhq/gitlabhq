@@ -64,6 +64,11 @@ export default {
       required: false,
       default: undefined,
     },
+    noOptionsText: {
+      type: String,
+      required: false,
+      default: __('No options found'),
+    },
   },
   computed: {
     isSearchEmpty() {
@@ -71,6 +76,9 @@ export default {
     },
     noOptionsFound() {
       return !this.isSearchEmpty && this.options.length === 0;
+    },
+    noOptions() {
+      return this.isSearchEmpty && this.options.length === 0;
     },
   },
   methods: {
@@ -176,6 +184,9 @@ export default {
           <slot v-bind="{ isSelected }" name="grouped-options"></slot>
           <gl-dropdown-item v-if="noOptionsFound" class="gl-pl-6!">
             {{ $options.i18n.noMatchingResults }}
+          </gl-dropdown-item>
+          <gl-dropdown-item v-if="noOptions">
+            {{ noOptionsText }}
           </gl-dropdown-item>
         </template>
       </gl-dropdown-form>

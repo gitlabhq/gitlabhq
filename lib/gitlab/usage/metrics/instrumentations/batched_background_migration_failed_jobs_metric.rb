@@ -27,6 +27,10 @@ module Gitlab
               }
             end
           end
+
+          def to_sql
+            relation.unscope(:order).to_sql
+          end
         end
       end
     end

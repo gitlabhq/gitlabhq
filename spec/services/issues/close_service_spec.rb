@@ -321,7 +321,7 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
             alert = create(:alert_management_alert, issue: issue, project: project)
 
             expect(SystemNoteService).to receive(:change_alert_status)
-              .with(alert, User.alert_bot, " because #{user.to_reference} closed incident #{issue.to_reference(project)}")
+              .with(alert, Users::Internal.alert_bot, " because #{user.to_reference} closed incident #{issue.to_reference(project)}")
 
             close_issue
 
@@ -356,7 +356,7 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
 
             alerts.each do |alert|
               expect(SystemNoteService).to receive(:change_alert_status)
-                .with(alert, User.alert_bot, " because #{user.to_reference} closed incident #{issue.to_reference(project)}")
+                .with(alert, Users::Internal.alert_bot, " because #{user.to_reference} closed incident #{issue.to_reference(project)}")
             end
 
             close_issue

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Group', feature_category: :groups_and_projects do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
 
   before do
     sign_in(user)

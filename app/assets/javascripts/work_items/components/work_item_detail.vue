@@ -31,6 +31,7 @@ import {
   WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WIDGET_TYPE_NOTES,
+  WIDGET_TYPE_LINKED_ITEMS,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -50,6 +51,7 @@ import WorkItemNotes from './work_item_notes.vue';
 import WorkItemDetailModal from './work_item_detail_modal.vue';
 import WorkItemAwardEmoji from './work_item_award_emoji.vue';
 import WorkItemStateToggleButton from './work_item_state_toggle_button.vue';
+import WorkItemRelationships from './work_item_relationships/work_item_relationships.vue';
 
 export default {
   i18n,
@@ -79,6 +81,7 @@ export default {
     AbuseCategorySelector,
     GlIntersectionObserver,
     ConfidentialityBadge,
+    WorkItemRelationships,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'reportAbusePath'],
@@ -258,6 +261,15 @@ export default {
     },
     showIntersectionObserver() {
       return !this.isModal && this.workItemsMvc2Enabled;
+    },
+    hasLinkedWorkItems() {
+      return this.glFeatures.linkedWorkItems;
+    },
+    workItemLinkedItems() {
+      return this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS);
+    },
+    showWorkItemLinkedItems() {
+      return this.hasLinkedWorkItems && this.workItemLinkedItems;
     },
   },
   mounted() {
@@ -515,9 +527,9 @@ export default {
                 <gl-loading-icon v-if="updateInProgress" class="gl-mr-3" />
                 <confidentiality-badge
                   v-if="workItem.confidential"
-                  data-testid="confidential"
-                  :workspace-type="$options.WORKSPACE_PROJECT"
+                  class="gl-mr-3"
                   :issuable-type="workItemType"
+                  :workspace-type="$options.WORKSPACE_PROJECT"
                 />
                 <work-item-todos
                   v-if="showWorkItemCurrentUserTodos"
@@ -591,6 +603,12 @@ export default {
               @show-modal="openInModal"
               @addChild="$emit('addChild')"
             />
+            <work-item-relationships
+              v-if="showWorkItemLinkedItems"
+              :work-item-iid="workItemIid"
+              :work-item-full-path="workItem.project.fullPath"
+              @showModal="openInModal"
+            />
             <work-item-notes
               v-if="workItemNotes"
               :work-item-id="workItem.id"
@@ -600,6 +618,7 @@ export default {
               :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
               :can-set-work-item-metadata="canAssignUnassignUser"
               :report-abuse-path="reportAbusePath"
+              :is-work-item-confidential="workItem.confidential"
               class="gl-pt-5"
               @error="updateError = $event"
               @has-notes="updateHasNotes"

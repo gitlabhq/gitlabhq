@@ -20,9 +20,9 @@ Parameters:
 
 | Attribute    | Type           | Required               | Description                                                               |
 | :----------- | :------------- | :--------------------- | :------------------------------------------------------------------------ |
-| `group_path` | integer/string | **{check-circle}** Yes | ID or [URL-encoded path of the top-level group](../rest/index.md#namespaced-path-encoding) |
-| `name`       | string         | **{check-circle}** Yes | Name of the custom emoji.                                                 |
-| `file`       | string         | **{check-circle}** Yes | URL of the custom emoji image.                                            |
+| `group_path` | integer/string | Yes | ID or [URL-encoded path of the top-level group](../rest/index.md#namespaced-path-encoding) |
+| `name`       | string         | Yes | Name of the custom emoji.                                                 |
+| `file`       | string         | Yes | URL of the custom emoji image.                                            |
 
 ## Create a custom emoji
 

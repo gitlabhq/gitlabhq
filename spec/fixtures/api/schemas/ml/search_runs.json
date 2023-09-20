@@ -1,0 +1,82 @@
+{
+  "type": "object",
+  "required": [
+    "runs",
+    "next_page_token"
+  ],
+  "properties": {
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "info",
+          "data"
+        ],
+        "properties": {
+          "info": {
+            "type": "object",
+            "required": [
+              "run_id",
+              "run_uuid",
+              "user_id",
+              "experiment_id",
+              "status",
+              "start_time",
+              "artifact_uri",
+              "lifecycle_stage"
+            ],
+            "optional": [
+              "end_time"
+            ],
+            "properties": {
+              "run_id": {
+                "type": "string"
+              },
+              "run_uuid": {
+                "type": "string"
+              },
+              "experiment_id": {
+                "type": "string"
+              },
+              "artifact_uri": {
+                "type": "string"
+              },
+              "start_time": {
+                "type": "integer"
+              },
+              "end_time": {
+                "type": "integer"
+              },
+              "user_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "RUNNING",
+                  "SCHEDULED",
+                  "FINISHED",
+                  "FAILED",
+                  "KILLED"
+                ]
+              },
+              "lifecycle_stage": {
+                "type": "string",
+                "enum": [
+                  "active"
+                ]
+              }
+            }
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "next_page_token": {
+      "type": "string"
+    }
+  }
+}

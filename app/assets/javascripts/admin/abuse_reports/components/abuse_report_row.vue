@@ -1,7 +1,7 @@
 <script>
-import { GlLink } from '@gitlab/ui';
+import { GlLabel, GlLink } from '@gitlab/ui';
 import { getTimeago } from '~/lib/utils/datetime_utility';
-import { queryToObject } from '~/lib/utils/url_utility';
+import { mergeUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { s__, __, sprintf } from '~/locale';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { SORT_UPDATED_AT } from '../constants';
@@ -10,6 +10,7 @@ import AbuseCategory from './abuse_category.vue';
 export default {
   name: 'AbuseReportRow',
   components: {
+    GlLabel,
     GlLink,
     ListItem,
     AbuseCategory,
@@ -53,6 +54,11 @@ export default {
       });
     },
   },
+  methods: {
+    labelTarget(labelName) {
+      return mergeUrlParams({ 'label_name[]': labelName }, window.location.href);
+    },
+  },
 };
 </script>
 
@@ -68,7 +74,16 @@ export default {
       </gl-link>
     </template>
     <template #left-secondary>
-      <abuse-category :category="report.category" class="gl-mt-2 gl-mb-3" />
+      <abuse-category :category="report.category" class="gl-mr-2" />
+      <gl-label
+        v-for="label in report.labels"
+        :key="label.id"
+        class="gl-mr-2"
+        size="sm"
+        :background-color="label.color"
+        :title="label.title"
+        :target="labelTarget(label.title)"
+      />
     </template>
 
     <template #right-secondary>

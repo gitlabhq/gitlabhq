@@ -57,6 +57,16 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
     it { is_expected.to be_nil }
   end
 
+  describe '#on_demand_available?' do
+    subject { scan.on_demand_available? }
+
+    let(:configured) { true }
+    let(:available) { true }
+    let(:type) { :sast }
+
+    it { is_expected.to be_falsey }
+  end
+
   describe '#can_enable_by_merge_request?' do
     subject { scan.can_enable_by_merge_request? }
 

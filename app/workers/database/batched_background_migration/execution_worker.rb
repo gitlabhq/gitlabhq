@@ -64,6 +64,8 @@ module Database
       attr_accessor :database_name, :migration
 
       def enabled?
+        return false if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
+
         Feature.enabled?(:execute_batched_migrations_on_schedule, type: :ops)
       end
 

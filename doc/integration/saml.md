@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
@@ -116,7 +116,7 @@ For more information on:
        omniauth:
          enabled: true
          allowSingleSignOn: ['saml']
-         blockAutoCreatedUsers: true
+         blockAutoCreatedUsers: false
    ```
 
 1. Optional. You can automatically link SAML users with existing GitLab users if their

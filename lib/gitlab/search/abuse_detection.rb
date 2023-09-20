@@ -7,9 +7,9 @@ module Gitlab
       include AbuseValidators
 
       ABUSIVE_TERM_SIZE = 100
-      ALLOWED_CHARS_REGEX = %r{\A[[:alnum:]_\-\/\.!]+\z}.freeze
+      ALLOWED_CHARS_REGEX = %r{\A[[:alnum:]_\-\/\.!]+\z}
 
-      ALLOWED_SCOPES = %w(
+      ALLOWED_SCOPES = %w[
         blobs
         code
         commits
@@ -22,20 +22,20 @@ module Gitlab
         snippet_titles
         users
         wiki_blobs
-      ).freeze
+      ].freeze
 
-      READABLE_PARAMS = %i(
+      READABLE_PARAMS = %i[
         group_id
         project_id
         project_ref
         query_string
         repository_ref
         scope
-      ).freeze
+      ].freeze
 
-      STOP_WORDS = %w(
+      STOP_WORDS = %w[
         a an and are as at be but by for if in into is it no not of on or such that the their then there these they this to was will with
-      ).freeze
+      ].freeze
 
       validates :project_id, :group_id,
         numericality: { only_integer: true, message: "abusive ID detected" }, allow_blank: true

@@ -20,7 +20,7 @@ committed to a repository. GitLab administrators can:
 
 To check a project's repository using GitLab UI:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Projects**.
 1. Select the project to check.
@@ -33,7 +33,7 @@ project page in the Admin Area. If the checks fail, see [what to do](#what-to-do
 
 Instead of checking repositories manually, GitLab can be configured to run the checks periodically:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Repository** (`/admin/application_settings/repository`).
 1. Expand the **Repository maintenance** section.
@@ -65,7 +65,7 @@ You can run [`git fsck`](https://git-scm.com/docs/git-fsck) using the command li
      by default.
    - For GitLab Helm chart installations, repositories are stored in the `/home/git/repositories` directory inside the
      Gitaly pod by default.
-1. [Identify the subdirectory that contains the repository](repository_storage_types.md#from-project-name-to-hashed-path)
+1. [Identify the subdirectory that contains the repository](repository_storage_paths.md#from-project-name-to-hashed-path)
    that you need to check.
 1. Run the check. For example:
 
@@ -87,7 +87,7 @@ If a repository check fails, locate the error in the [`repocheck.log` file](logs
 
 If periodic repository checks cause false alarms, you can clear all repository check states:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Repository** (`/admin/application_settings/repository`).
 1. Expand the **Repository maintenance** section.

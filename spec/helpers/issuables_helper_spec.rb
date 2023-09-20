@@ -134,109 +134,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#issuable_meta', time_travel_to: '2022-08-05 00:00:00 +0000' do
-    let(:user) { create(:user) }
-
-    let_it_be(:project) { create(:project) }
-
-    describe 'Issuable created status text' do
-      subject { helper.issuable_meta(issuable, project) }
-
-      context 'when issuable is a work item and flag is off' do
-        using RSpec::Parameterized::TableSyntax
-
-        before do
-          stub_feature_flags(work_items: false)
-        end
-
-        where(:issuable_type, :text) do
-          :issue            | 'Issue created Aug 05, 2022 by'
-          :incident         | 'Incident created Aug 05, 2022 by'
-        end
-
-        let(:issuable) { build_stubbed(:work_item, issuable_type, created_at: Date.current) }
-
-        with_them do
-          it { is_expected.to have_content(text) }
-        end
-      end
-
-      context 'when issuable is a work item and flag is on' do
-        using RSpec::Parameterized::TableSyntax
-
-        where(:issuable_type, :text) do
-          :issue            | 'Issue created Aug 05, 2022 by'
-          :incident         | 'Incident created Aug 05, 2022 by'
-        end
-
-        let(:issuable) { build_stubbed(:work_item, issuable_type, created_at: Date.current) }
-
-        with_them do
-          it { is_expected.to have_content(text) }
-        end
-      end
-
-      context 'when issuable is not a work item' do
-        let(:issuable) { build_stubbed(:merge_request, created_at: Date.current) }
-
-        it { is_expected.to have_content('Created Aug 05, 2022') }
-      end
-    end
-
-    describe 'author status' do
-      let(:issuable) { build(:merge_request, source_project: project, author: user, created_at: '2020-01-30') }
-
-      it 'displays an emoji if the user status is set' do
-        user.status = UserStatus.new(message: 'lol')
-        content = helper.issuable_meta(issuable, project)
-        expect(content).to match('<span class="user-status-emoji has-tooltip" title="lol" data-html="true" data-placement="top">')
-        expect(content).to match('<gl-emoji title="speech balloon" data-name="speech_balloon" data-unicode-version="6.0">')
-      end
-
-      it 'does not displays an emoji if the user status is not set' do
-        user.status = UserStatus.new
-        content = helper.issuable_meta(issuable, project)
-        expect(content).not_to match('class="user-status-emoji has-tooltip"')
-        expect(content).not_to match('gl-emoji')
-      end
-    end
-
-    describe 'service desk reply to email address' do
-      let(:email) { 'user@example.com' }
-      let(:obfuscated_email) { 'us*****@e*****.c**' }
-      let(:service_desk_issue) { build_stubbed(:issue, project: project, author: User.support_bot, service_desk_reply_to: email) }
-
-      subject { helper.issuable_meta(service_desk_issue, project) }
-
-      context 'with anonymous user' do
-        before do
-          allow(helper).to receive(:current_user).and_return(nil)
-        end
-
-        it { is_expected.to have_content(obfuscated_email) }
-      end
-
-      context 'with signed in user' do
-        context 'when user has no role in project' do
-          before do
-            allow(helper).to receive(:current_user).and_return(user)
-          end
-
-          it { is_expected.to have_content(obfuscated_email) }
-        end
-
-        context 'when user has reporter role in project' do
-          before do
-            project.add_reporter(user)
-            allow(helper).to receive(:current_user).and_return(user)
-          end
-
-          it { is_expected.to have_content(email) }
-        end
-      end
-    end
-  end
-
   describe '#issuables_state_counter_text' do
     let_it_be(:user) { create(:user) }
 
@@ -348,44 +245,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#updated_at_by' do
-    let(:user) { create(:user) }
-    let(:unedited_issuable) { create(:issue) }
-    let(:edited_issuable) { create(:issue, last_edited_by: user, created_at: 3.days.ago, updated_at: 1.day.ago, last_edited_at: 2.days.ago) }
-    let(:edited_updated_at_by) do
-      {
-        updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
-        updatedBy: {
-          name: user.name,
-          path: user_path(user)
-        }
-      }
-    end
-
-    it { expect(helper.updated_at_by(unedited_issuable)).to eq({}) }
-    it { expect(helper.updated_at_by(edited_issuable)).to eq(edited_updated_at_by) }
-
-    context 'when updated by a deleted user' do
-      let(:edited_updated_at_by) do
-        {
-          updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
-          updatedBy: {
-            name: User.ghost.name,
-            path: user_path(User.ghost)
-          }
-        }
-      end
-
-      before do
-        user.destroy!
-      end
-
-      it 'returns "Ghost user" as edited_by' do
-        expect(helper.updated_at_by(edited_issuable.reload)).to eq(edited_updated_at_by)
-      end
-    end
-  end
-
   describe '#issuable_initial_data' do
     let(:user) { create(:user) }
 
@@ -395,33 +254,65 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
       stub_commonmark_sourcepos_disabled
     end
 
-    it 'returns the correct data for an issue' do
-      issue = create(:issue, author: user, description: 'issue text')
-      @project = issue.project
+    context 'when issue' do
+      it 'returns the correct data for an issue' do
+        issue = create(:issue, author: user, description: 'issue text')
+        @project = issue.project
 
-      expected_data = {
-        endpoint: "/#{@project.full_path}/-/issues/#{issue.iid}",
-        updateEndpoint: "/#{@project.full_path}/-/issues/#{issue.iid}.json",
-        canUpdate: true,
-        canDestroy: true,
-        issuableRef: "##{issue.iid}",
-        markdownPreviewPath: "/#{@project.full_path}/preview_markdown?target_id=#{issue.iid}&target_type=Issue",
-        markdownDocsPath: '/help/user/markdown',
-        lockVersion: issue.lock_version,
-        projectPath: @project.path,
-        projectId: @project.id,
-        projectNamespace: @project.namespace.path,
-        state: issue.state,
-        initialTitleHtml: issue.title,
-        initialTitleText: issue.title,
-        initialDescriptionHtml: '<p dir="auto">issue text</p>',
-        initialDescriptionText: 'issue text',
-        initialTaskCompletionStatus: { completed_count: 0, count: 0 },
-        issueType: 'issue',
-        iid: issue.iid.to_s,
-        isHidden: false
-      }
-      expect(helper.issuable_initial_data(issue)).to match(hash_including(expected_data))
+        base_data = {
+          endpoint: "/#{@project.full_path}/-/issues/#{issue.iid}",
+          updateEndpoint: "/#{@project.full_path}/-/issues/#{issue.iid}.json",
+          canUpdate: true,
+          canDestroy: true,
+          issuableRef: "##{issue.iid}",
+          markdownPreviewPath: "/#{@project.full_path}/preview_markdown?target_id=#{issue.iid}&target_type=Issue",
+          markdownDocsPath: '/help/user/markdown',
+          lockVersion: issue.lock_version,
+          state: issue.state,
+          issuableTemplateNamesPath: template_names_path(@project, issue),
+          initialTitleHtml: issue.title,
+          initialTitleText: issue.title,
+          initialDescriptionHtml: '<p dir="auto">issue text</p>',
+          initialDescriptionText: 'issue text',
+          initialTaskCompletionStatus: { completed_count: 0, count: 0 }
+        }
+
+        issue_only_data = {
+          canCreateIncident: true,
+          fullPath: issue.project.full_path,
+          iid: issue.iid,
+          issuableId: issue.id,
+          issueType: 'issue',
+          isHidden: false,
+          sentryIssueIdentifier: nil,
+          zoomMeetingUrl: nil
+        }
+
+        issue_header_data = {
+          authorId: issue.author.id,
+          authorName: issue.author.name,
+          authorUsername: issue.author.username,
+          authorWebUrl: url_for(user_path(issue.author)),
+          createdAt: issue.created_at.to_time.iso8601,
+          isFirstContribution: issue.first_contribution?,
+          serviceDeskReplyTo: nil
+        }
+
+        work_items_data = {
+          registerPath: '/users/sign_up?redirect_to_referer=yes',
+          signInPath: '/users/sign_in?redirect_to_referer=yes'
+        }
+
+        path_data = {
+          projectPath: @project.path,
+          projectId: @project.id,
+          projectNamespace: @project.namespace.path
+        }
+
+        expected = base_data.merge(issue_only_data, issue_header_data, work_items_data, path_data)
+
+        expect(helper.issuable_initial_data(issue)).to include(expected)
+      end
     end
 
     context 'for incident tab' do
@@ -450,6 +341,46 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
         }
 
         expect(helper.issuable_initial_data(incident)).to match(hash_including(expected_data))
+      end
+    end
+
+    context 'when edited' do
+      it 'contains edited metadata' do
+        edited_issuable = create(:issue, author: user, description: 'issue text', last_edited_by: user, created_at: 3.days.ago, updated_at: 1.day.ago, last_edited_at: 2.days.ago)
+        @project = edited_issuable.project
+
+        expected = {
+          updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
+          updatedBy: {
+            name: user.name,
+            path: user_path(user)
+          }
+        }
+
+        expect(helper.issuable_initial_data(edited_issuable)).to include(expected)
+      end
+
+      context 'when updated by a deleted user' do
+        let(:destroyed_user) { create(:user) }
+
+        before do
+          destroyed_user.destroy!
+        end
+
+        it 'returns "Ghost user" for updated by data' do
+          edited_issuable = create(:issue, author: user, description: 'issue text', last_edited_by: destroyed_user, created_at: 3.days.ago, updated_at: 1.day.ago, last_edited_at: 2.days.ago)
+          @project = edited_issuable.project
+
+          expected = {
+            updatedAt: edited_issuable.last_edited_at.to_time.iso8601,
+            updatedBy: {
+              name: Users::Internal.ghost.name,
+              path: user_path(Users::Internal.ghost)
+            }
+          }
+
+          expect(helper.issuable_initial_data(edited_issuable.reload)).to include(expected)
+        end
       end
     end
 
@@ -613,38 +544,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#reviewer_sidebar_data' do
-    let(:user) { create(:user) }
-
-    subject { helper.reviewer_sidebar_data(user, merge_request: merge_request) }
-
-    context 'without merge_request' do
-      let(:merge_request) { nil }
-
-      it 'returns hash of reviewer data' do
-        is_expected.to eql({
-          avatar_url: user.avatar_url,
-          name: user.name,
-          username: user.username
-        })
-      end
-    end
-
-    context 'with merge_request' do
-      let(:merge_request) { build(:merge_request) }
-
-      where(can_merge: [true, false])
-
-      with_them do
-        before do
-          allow(merge_request).to receive(:can_be_merged_by?).and_return(can_merge)
-        end
-
-        it { is_expected.to include({ can_merge: can_merge }) }
-      end
-    end
-  end
-
   describe '#issuable_squash_option?' do
     using RSpec::Parameterized::TableSyntax
 
@@ -701,34 +600,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
       it 'returns the correct state name and icon when merge request is closed' do
         expect(helper.state_name_with_icon(merge_request_closed)).to match_array([_('Closed'), 'merge-request-close'])
       end
-    end
-  end
-
-  describe '#issuable_display_type' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:issuable_type, :issuable_display_type) do
-      :issue         | 'issue'
-      :incident      | 'incident'
-      :merge_request | 'merge request'
-    end
-
-    with_them do
-      let(:issuable) { build_stubbed(issuable_type) }
-
-      subject { helper.issuable_display_type(issuable) }
-
-      it { is_expected.to eq(issuable_display_type) }
-    end
-  end
-
-  describe '#sidebar_milestone_tooltip_label' do
-    it 'escapes HTML in the milestone title' do
-      milestone = build(:milestone, title: '&lt;img onerror=alert(1)&gt;', due_date: Date.new(2022, 6, 26))
-
-      expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq(
-        '&lt;img onerror=alert(1)&gt;<br/>Jun 26, 2022 (<strong>Past due</strong>)'
-      )
     end
   end
 

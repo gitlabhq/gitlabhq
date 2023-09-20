@@ -48,7 +48,6 @@ import JobCheckbox from './job_checkbox.vue';
 import ArtifactsBulkDelete from './artifacts_bulk_delete.vue';
 import BulkDeleteModal from './bulk_delete_modal.vue';
 import ArtifactsTableRowDetails from './artifacts_table_row_details.vue';
-import FeedbackBanner from './feedback_banner.vue';
 
 const INITIAL_PAGINATION_STATE = {
   currentPage: INITIAL_CURRENT_PAGE,
@@ -76,7 +75,6 @@ export default {
     ArtifactsBulkDelete,
     BulkDeleteModal,
     ArtifactsTableRowDetails,
-    FeedbackBanner,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -374,7 +372,6 @@ export default {
 </script>
 <template>
   <div>
-    <feedback-banner />
     <artifacts-bulk-delete
       v-if="canBulkDestroyArtifacts"
       :selected-artifacts="selectedArtifacts"

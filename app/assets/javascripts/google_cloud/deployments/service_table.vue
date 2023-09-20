@@ -34,7 +34,7 @@ export default {
   methods: {
     actionUrl(key) {
       if (key === cloudRun) return this.cloudRunUrl;
-      else if (key === cloudStorage) return this.cloudStorageUrl;
+      if (key === cloudStorage) return this.cloudStorageUrl;
       return '#';
     },
   },

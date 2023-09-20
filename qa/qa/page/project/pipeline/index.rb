@@ -5,23 +5,23 @@ module QA
     module Project
       module Pipeline
         class Index < QA::Page::Base
-          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipeline_url.vue' do
+          view 'app/assets/javascripts/ci/pipelines_page/components/pipeline_url.vue' do
             element :pipeline_url_link
           end
 
-          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipelines_status_badge.vue' do
+          view 'app/assets/javascripts/ci/pipelines_page/components/pipelines_status_badge.vue' do
             element :pipeline_commit_status
           end
 
-          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipeline_operations.vue' do
+          view 'app/assets/javascripts/ci/pipelines_page/components/pipeline_operations.vue' do
             element :pipeline_retry_button
           end
 
-          view 'app/assets/javascripts/pipelines/components/pipelines_list/nav_controls.vue' do
+          view 'app/assets/javascripts/ci/pipelines_page/components/nav_controls.vue' do
             element :run_pipeline_button
           end
 
-          view 'app/assets/javascripts/pipelines/components/pipelines_list/pipelines_table.vue' do
+          view 'app/assets/javascripts/ci/common/pipelines_table.vue' do
             element :pipeline_row_container
           end
 
@@ -38,14 +38,16 @@ module QA
             wait ||= Support::Repeater::DEFAULT_MAX_WAIT_TIME
             finished_status = %w[passed failed canceled skipped manual]
 
-            wait_until(max_duration: wait, reload: reload, sleep_interval: 1) do
+            wait_until(max_duration: wait, reload: reload, sleep_interval: 1, message: "Wait for latest pipeline") do
               status ? latest_pipeline_status == status : finished_status.include?(latest_pipeline_status)
             end
           end
 
           def has_any_pipeline?(wait: nil)
             wait ||= Support::Repeater::DEFAULT_MAX_WAIT_TIME
-            wait_until(max_duration: wait) { has_element?(:pipeline_row_container) }
+            wait_until(max_duration: wait, message: "Wait for any pipeline") do
+              has_element?(:pipeline_row_container)
+            end
           end
 
           def has_no_pipeline?

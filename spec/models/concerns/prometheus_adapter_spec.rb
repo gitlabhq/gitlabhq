@@ -100,28 +100,6 @@ RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
         end
       end
     end
-
-    describe 'additional_metrics' do
-      let(:additional_metrics_environment_query) { Gitlab::Prometheus::Queries::AdditionalMetricsEnvironmentQuery }
-      let(:environment) { build_stubbed(:environment, slug: 'env-slug') }
-      let(:time_window) { [1552642245.067, 1552642095.831] }
-
-      around do |example|
-        freeze_time { example.run }
-      end
-
-      context 'with valid data' do
-        subject { integration.query(:additional_metrics_environment, environment, *time_window) }
-
-        before do
-          stub_reactive_cache(integration, prometheus_data, additional_metrics_environment_query, environment.id, *time_window)
-        end
-
-        it 'returns reactive data' do
-          expect(subject).to eq(prometheus_data)
-        end
-      end
-    end
   end
 
   describe '#calculate_reactive_cache' do

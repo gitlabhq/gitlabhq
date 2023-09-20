@@ -6,8 +6,8 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
   include Features::AdminUsersHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let_it_be(:user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
-  let_it_be(:current_user) { create(:admin) }
+  let_it_be(:user) { create(:omniauth_user, :no_super_sidebar, provider: 'twitter', extern_uid: '123456') }
+  let_it_be(:current_user) { create(:admin, :no_super_sidebar) }
 
   before do
     sign_in(current_user)
@@ -145,7 +145,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
     end
 
     describe 'Impersonation' do
-      let_it_be(:another_user) { create(:user) }
+      let_it_be(:another_user) { create(:user, :no_super_sidebar) }
 
       context 'before impersonating' do
         subject { visit admin_user_path(user_to_visit) }
@@ -156,7 +156,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
           it 'disables impersonate button' do
             subject
 
-            impersonate_btn = find('[data-testid="impersonate_user_link"]')
+            impersonate_btn = find('[data-testid="impersonate-user-link"]')
 
             expect(impersonate_btn).not_to be_nil
             expect(impersonate_btn['disabled']).not_to be_nil
@@ -174,7 +174,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management do
             subject
 
             expect(page).to have_content('Impersonate')
-            impersonate_btn = find('[data-testid="impersonate_user_link"]')
+            impersonate_btn = find('[data-testid="impersonate-user-link"]')
             expect(impersonate_btn['disabled']).to be_nil
           end
         end

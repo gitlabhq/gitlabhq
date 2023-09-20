@@ -75,7 +75,6 @@ module QA
 
         def created_access_token
           within_element(:access_token_section) do
-            click_element(:toggle_visibility_button, wait: 30)
             find_element(:created_access_token_field).value
           end
         end

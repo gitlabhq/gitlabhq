@@ -20,7 +20,7 @@
     = f.label :description, _("Description")
     .js-markdown-editor{ data: { render_markdown_path: preview_markdown_admin_topics_path,
                                  markdown_docs_path: help_page_path('user/markdown'),
-                                 qa_selector: 'topic_form_description',
+                                 testid: 'topic-form-description',
                                  form_field_placeholder: _('Write a description…'),
                                  supports_quick_actions: 'false',
                                  enable_autocomplete: 'false',

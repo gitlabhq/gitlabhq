@@ -38,6 +38,10 @@ RSpec.describe 'Import/Export - project export integration test', :js, feature_c
   context 'admin user' do
     before do
       sign_in(user)
+
+      # Now that we export project in batches we produce more queries than before
+      # needing to increase the default threshold
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(200)
     end
 
     it 'exports a project successfully', :sidekiq_inline do

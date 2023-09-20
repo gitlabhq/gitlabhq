@@ -4,7 +4,7 @@ module BlobViewer
   class PackageJson < DependencyManager
     include ServerSide
 
-    self.file_types = %i(package_json)
+    self.file_types = %i[package_json]
 
     def manager_name
       yarn? ? 'yarn' : 'npm'

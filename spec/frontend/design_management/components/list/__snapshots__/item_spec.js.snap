@@ -9,36 +9,27 @@ exports[`Design management list item component when item appears in view after i
 `;
 
 exports[`Design management list item component with notes renders item with multiple comments 1`] = `
-<router-link-stub
-  ariacurrentvalue="page"
-  class="card gl-cursor-pointer text-plain js-design-list-item design-list-item gl-mb-0"
-  event="click"
-  tag="a"
-  to="[object Object]"
+<a
+  class="card design-list-item gl-cursor-pointer gl-mb-0 js-design-list-item text-plain"
 >
   <div
-    class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative gl-rounded-top-base"
+    class="card-body gl-align-items-center gl-display-flex gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
   >
-    <!---->
-     
     <gl-intersection-observer-stub
       class="gl-flex-grow-1"
     >
-      <!---->
-       
       <img
         alt="test"
-        class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full gl-w-auto design-img"
+        class="design-img gl-display-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
         data-qa-filename="test"
         data-qa-selector="design_image"
         data-testid="design-img-1"
-        src=""
+        src="null"
       />
     </gl-intersection-observer-stub>
   </div>
-   
   <div
-    class="card-footer gl-display-flex gl-w-full gl-bg-white gl-py-3 gl-px-4"
+    class="card-footer gl-bg-white gl-display-flex gl-px-4 gl-py-3 gl-w-full"
   >
     <div
       class="gl-display-flex gl-flex-direction-column str-truncated-100"
@@ -51,12 +42,10 @@ exports[`Design management list item component with notes renders item with mult
       >
         test
       </span>
-       
       <span
         class="str-truncated-100"
       >
-        
-        Updated 
+        Updated
         <timeago-stub
           cssclass=""
           datetimeformat="DATE_WITH_TIME_FORMAT"
@@ -65,60 +54,47 @@ exports[`Design management list item component with notes renders item with mult
         />
       </span>
     </div>
-     
     <div
-      class="gl-ml-auto gl-display-flex gl-align-items-center gl-text-gray-500"
+      class="gl-align-items-center gl-display-flex gl-ml-auto gl-text-gray-500"
     >
       <gl-icon-stub
         class="gl-ml-2"
         name="comments"
         size="16"
       />
-       
       <span
         aria-label="2 comments"
         class="gl-ml-2"
       >
-        
         2
-      
       </span>
     </div>
   </div>
-</router-link-stub>
+</a>
 `;
 
 exports[`Design management list item component with notes renders item with single comment 1`] = `
-<router-link-stub
-  ariacurrentvalue="page"
-  class="card gl-cursor-pointer text-plain js-design-list-item design-list-item gl-mb-0"
-  event="click"
-  tag="a"
-  to="[object Object]"
+<a
+  class="card design-list-item gl-cursor-pointer gl-mb-0 js-design-list-item text-plain"
 >
   <div
-    class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative gl-rounded-top-base"
+    class="card-body gl-align-items-center gl-display-flex gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
   >
-    <!---->
-     
     <gl-intersection-observer-stub
       class="gl-flex-grow-1"
     >
-      <!---->
-       
       <img
         alt="test"
-        class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full gl-w-auto design-img"
+        class="design-img gl-display-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
         data-qa-filename="test"
         data-qa-selector="design_image"
         data-testid="design-img-1"
-        src=""
+        src="null"
       />
     </gl-intersection-observer-stub>
   </div>
-   
   <div
-    class="card-footer gl-display-flex gl-w-full gl-bg-white gl-py-3 gl-px-4"
+    class="card-footer gl-bg-white gl-display-flex gl-px-4 gl-py-3 gl-w-full"
   >
     <div
       class="gl-display-flex gl-flex-direction-column str-truncated-100"
@@ -131,12 +107,10 @@ exports[`Design management list item component with notes renders item with sing
       >
         test
       </span>
-       
       <span
         class="str-truncated-100"
       >
-        
-        Updated 
+        Updated
         <timeago-stub
           cssclass=""
           datetimeformat="DATE_WITH_TIME_FORMAT"
@@ -145,25 +119,21 @@ exports[`Design management list item component with notes renders item with sing
         />
       </span>
     </div>
-     
     <div
-      class="gl-ml-auto gl-display-flex gl-align-items-center gl-text-gray-500"
+      class="gl-align-items-center gl-display-flex gl-ml-auto gl-text-gray-500"
     >
       <gl-icon-stub
         class="gl-ml-2"
         name="comments"
         size="16"
       />
-       
       <span
         aria-label="1 comment"
         class="gl-ml-2"
       >
-        
         1
-      
       </span>
     </div>
   </div>
-</router-link-stub>
+</a>
 `;

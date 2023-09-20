@@ -34,7 +34,7 @@ See also:
 Throttling of protected paths is enabled by default and can be disabled or
 customized.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Network**.
 1. Expand **Protected paths**.

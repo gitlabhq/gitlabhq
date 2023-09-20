@@ -5,4 +5,5 @@
 
 = form_tag path do
   %input{ :name => "_method", :type => "hidden", :value => "delete" }/
-  = submit_tag _('Revoke'), class: 'gl-button btn btn-danger btn-sm', aria: { label: s_('AuthorizedApplication|Revoke application') }, data: { confirm: s_('AuthorizedApplication|Are you sure you want to revoke this application?'), confirm_btn_variant: 'danger' }
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :danger, size: :small, button_options: { aria: { label: s_('AuthorizedApplication|Revoke application') }, data: { confirm: s_('AuthorizedApplication|Are you sure you want to revoke this application?'), confirm_btn_variant: 'danger' } }) do
+    = _('Revoke')

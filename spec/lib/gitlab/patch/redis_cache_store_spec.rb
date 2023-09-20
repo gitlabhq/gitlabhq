@@ -34,36 +34,58 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
       end
 
       context 'when reading large amount of keys' do
-        it 'batches get into pipelines of 100' do
-          cache.redis.with do |redis|
-            normal_cluster = !redis.is_a?(Gitlab::Redis::MultiStore) && Gitlab::Redis::ClusterUtil.cluster?(redis)
-            multistore_cluster = redis.is_a?(Gitlab::Redis::MultiStore) &&
-              ::Gitlab::Redis::ClusterUtil.cluster?(redis.default_store)
+        let(:input_size) { 2000 }
+        let(:chunk_size) { 1000 }
 
-            if normal_cluster || multistore_cluster
-              expect(redis).to receive(:pipelined).at_least(2).and_call_original
-            else
-              expect(redis).to receive(:mget).and_call_original
+        shared_examples 'read large amount of keys' do
+          it 'breaks the input into 2 chunks for redis cluster' do
+            cache.redis.with do |redis|
+              normal_cluster = !redis.is_a?(Gitlab::Redis::MultiStore) && Gitlab::Redis::ClusterUtil.cluster?(redis)
+              multistore_cluster = redis.is_a?(Gitlab::Redis::MultiStore) &&
+                ::Gitlab::Redis::ClusterUtil.cluster?(redis.default_store)
+
+              if normal_cluster || multistore_cluster
+                expect_next_instances_of(Gitlab::Redis::CrossSlot::Pipeline, 2) do |pipeline|
+                  obj = instance_double(::Redis)
+                  expect(pipeline).to receive(:pipelined).and_yield(obj)
+                  expect(obj).to receive(:get).exactly(chunk_size).times
+                end
+              else
+                expect(redis).to receive(:mget).and_call_original
+              end
+            end
+
+            Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+              cache.read_multi(*Array.new(input_size) { |i| i })
             end
           end
-
-          Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-            cache.read_multi(*Array.new(101) { |i| i })
-          end
         end
+
+        context 'when GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT is smaller than the default' do
+          before do
+            stub_env('GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT', 10)
+          end
+
+          it_behaves_like 'read large amount of keys'
+        end
+
+        context 'when GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT is larger than the default' do
+          let(:input_size) { 4000 }
+          let(:chunk_size) { 2000 }
+
+          before do
+            stub_env('GITLAB_REDIS_CLUSTER_PIPELINE_BATCH_LIMIT', chunk_size)
+          end
+
+          it_behaves_like 'read large amount of keys'
+        end
+
+        it_behaves_like 'read large amount of keys'
       end
     end
 
     context 'when cache is Rails.cache' do
       let(:cache) { Rails.cache }
-
-      context 'when reading using secondary store as default' do
-        before do
-          stub_feature_flags(use_primary_store_as_default_for_cache: false)
-        end
-
-        it_behaves_like 'reading using cache stores'
-      end
 
       it_behaves_like 'reading using cache stores'
     end
@@ -97,7 +119,7 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
 
       context 'when deleting large amount of keys' do
         before do
-          200.times { |i| cache.write(i, i) }
+          2000.times { |i| cache.write(i, i) }
         end
 
         it 'calls pipeline multiple times' do
@@ -113,9 +135,9 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
 
           expect(
             Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              cache.delete_multi(Array(0..199))
+              cache.delete_multi(Array(0..1999))
             end
-          ).to eq(200)
+          ).to eq(2000)
         end
       end
     end

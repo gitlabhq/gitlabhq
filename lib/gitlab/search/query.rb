@@ -5,8 +5,8 @@ module Gitlab
     class Query < SimpleDelegator
       include EncodingHelper
 
-      QUOTES_REGEXP = %r{\A"|"\Z}.freeze
-      TOKEN_WITH_QUOTES_REGEXP = %r{\s(?=(?:[^"]|"[^"]*")*$)}.freeze
+      QUOTES_REGEXP = %r{\A"|"\Z}
+      TOKEN_WITH_QUOTES_REGEXP = %r{\s(?=(?:[^"]|"[^"]*")*$)}
 
       def initialize(query, filter_opts = {}, &block)
         @raw_query = query.dup

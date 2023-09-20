@@ -71,7 +71,7 @@ export default {
             v-if="user.status.customized"
             ref="statusTooltipTarget"
             data-testid="user-menu-status"
-            class="gl-display-flex gl-align-items-center gl-mt-2 gl-font-sm"
+            class="gl-display-flex gl-align-items-baseline gl-mt-2 gl-font-sm"
           >
             <gl-emoji :data-name="user.status.emoji" class="gl-mr-1" />
             <span v-safe-html="user.status.message_html" class="gl-text-truncate"></span>

@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -66,10 +66,10 @@ The following table lists project permissions available for each role:
 | [Analytics](analytics/index.md):<br>View [repository analytics](analytics/repository_analytics.md)                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>View licenses in [dependency list](application_security/dependency_list/index.md)                                          |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Create and run [on-demand DAST scans](application_security/dast/proxy-based.md#on-demand-scans)                                  |          |          | ✓         | ✓          | ✓        |
-| [Application security](application_security/index.md):<br>Manage [security policy](application_security/policies/index.md)                                                           |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>View [dependency list](application_security/dependency_list/index.md)                                                      |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md)                                                          |          |          |           | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Create or assign [security policy project](application_security/policies/index.md)                                         |          |          |           |            | ✓        |
+| [Application security](application_security/index.md):<br>Create, edit, delete [individual security policies](application_security/policies/index.md)                                                           |          |          | ✓         | ✓          | ✓        |
 | [GitLab Agent for Kubernetes](clusters/agent/index.md):<br>View agents                                                                                                               |          |          | ✓         | ✓          | ✓        |
 | [GitLab Agent for Kubernetes](clusters/agent/index.md):<br>Manage agents                                                                                                             |          |          |           | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete [cleanup policies](packages/container_registry/delete_container_registry_images.md#use-a-cleanup-policy) |          |          |          | ✓          | ✓        |
@@ -132,9 +132,6 @@ The following table lists project permissions available for each role:
 | [Merge requests](project/merge_requests/index.md):<br>[Resolve a thread](project/merge_requests/index.md#resolve-a-thread)                                                                      |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Manage [merge approval rules](project/merge_requests/approvals/settings.md) (project settings)                                 |          |          |           | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Delete                                                                                                                         |          |          |           |            | ✓        |
-| [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>Manage user-starred metrics dashboards (6)                                                                     | ✓        | ✓        | ✓         | ✓          | ✓        |
-| [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>View metrics dashboard annotations                                                                               |          | ✓        | ✓         | ✓          | ✓        |
-| [Metrics dashboards](../operations/metrics/dashboards/index.md):<br>Create/edit/delete metrics dashboard annotations                                                                 |          |          | ✓         | ✓          | ✓        |
 | [Package registry](packages/index.md):<br>Pull a package                                                                                                                             | ✓ (1)  | ✓        | ✓         | ✓          | ✓        |
 | [Package registry](packages/index.md):<br>Publish a package                                                                                                                          |          |          | ✓         | ✓          | ✓        |
 | [Package registry](packages/index.md):<br>Delete a package                                                                                                                           |          |          |           | ✓          | ✓        |
@@ -173,7 +170,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Rename project                                                                                                                                      |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Share (invite) projects with groups                                                                                                                 |          |          |           | ✓ (7)    | ✓ (7)  |
 | [Projects](project/index.md):<br>View 2FA status of members                                                                                                                          |          |          |           | ✓          | ✓        |
-| [Projects](project/index.md):<br>Assign project to a [compliance framework](project/settings/index.md#add-a-compliance-framework-to-a-project)                                       |          |          |           |            | ✓        |
+| [Projects](project/index.md):<br>Assign project to a [compliance framework](project/working_with_projects.md#add-a-compliance-framework-to-a-project)                                       |          |          |           |            | ✓        |
 | [Projects](project/index.md):<br>Archive project                                                                                                                                     |          |          |           |            | ✓        |
 | [Projects](project/index.md):<br>Change project visibility level                                                                                                                     |          |          |           |            | ✓        |
 | [Projects](project/index.md):<br>Delete project                                                                                                                                      |          |          |           |            | ✓        |
@@ -384,7 +381,7 @@ The following table lists group permissions available for each role:
 | Delete [group wiki](project/wiki/group.md) pages                                        |       |          | ✓         | ✓          | ✓     |
 | Edit [epic](group/epics/index.md) comments (posted by any user)                         |       |          |           | ✓          | ✓     |
 | List group deploy tokens                                                                |       |          |           | ✓          | ✓     |
-| Manage [group push rules](group/access_and_permissions.md#group-push-rules)                              |       |          |           | ✓          | ✓     |
+| Manage [group push rules](group/access_and_permissions.md#group-push-rules)             |       |          |           | ✓          | ✓     |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |
 | Create and manage compliance frameworks                                                 |       |          |           |            | ✓     |
 | Create/Delete group deploy tokens                                                       |       |          |           |            | ✓     |
@@ -401,6 +398,7 @@ The following table lists group permissions available for each role:
 | View 2FA status of members                                                              |       |          |           |            | ✓     |
 | View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓ (3) |
 | View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓ (3) |
+| View group runners                                                                      |       |          |           | ✓          | ✓     |
 | Manage group runners                                                                    |       |          |           |            | ✓     |
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |
 | Manage [subscriptions, and purchase storage and compute minutes](../subscriptions/gitlab_com/index.md) |    |    |    |            | ✓     |
@@ -473,10 +471,10 @@ To work around the issue, give these users the Guest role or higher to any proje
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `customizable_roles`.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
-> - The ability for a custom role to view a vulnerability report [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10160) in GitLab 16.1.
-
-FLAG:
-On self-managed GitLab, by default the ability for a custom role to view a vulnerability report is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `elevated_guests`. On GitLab.com, this feature is available.
+> - The ability for a custom role to view a vulnerability report [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10160) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `custom_roles_vulnerability`.
+> - Ability to view a vulnerability report [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123835) in GitLab 16.1.
+> - [Feature flag `custom_roles_vulnerability` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124049) in GitLab 16.2.
+> - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
 
 Custom roles allow group members who are assigned the Owner role to create roles
 specific to the needs of their organization.
@@ -488,24 +486,65 @@ The following custom roles are available:
 
 - The Guest+1 role, which allows users with the Guest role to view code.
 - In GitLab 16.1 and later, you can create a custom role that can view vulnerability reports and change the status of the vulnerabilities.
+- In GitLab 16.3 and later, you can create a custom role that can view the dependency list.
+- In GitLab 16.4 and later, you can create a custom role that can approve merge requests.
 
 You can discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 
-When you enable the view vulnerability custom role for a user with the Guest role, that user has access to elevated permissions, and therefore:
+When you enable a custom role for a user with the Guest role, that user has
+access to elevated permissions, and therefore:
 
 - Is considered a [billable user](../subscriptions/self_managed/index.md#billable-users) on self-managed GitLab.
 - [Uses a seat](../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined) on GitLab.com.
 
-This does not apply to the Guest+1 custom role because the `view_code` ability is excluded from this behavior.
+This does not apply to Guest+1, a Guest custom role that only enables the `read_code`
+permission. Users with that specific custom role are not considered billable users
+and do not use a seat.
 
 ### Create a custom role
 
-To enable custom roles for your group, a group member with the Owner role:
+Prerequisites:
 
-1. Makes sure that there is at least one private project in this group or one of
-   its subgroups, so that you can see the effect of giving a Guest a custom role.
-1. Creates a personal access token with the API scope.
-1. Uses [the API](../api/member_roles.md#add-a-member-role-to-a-group) to create a custom role for the root group.
+- You must be an administrator for the self-managed instance, or have the Owner
+  role in the group you are creating the custom role in.
+- The group must be in the Ultimate tier.
+- You must have:
+  - At least one private project so that you can see the effect of giving a
+    user with the Guest role a custom role. The project can be in the group itself
+    or one of that group's subgroups.
+  - A [personal access token with the API scope](profile/personal_access_tokens.md#create-a-personal-access-token).
+
+#### GitLab SaaS
+
+Prerequisite:
+
+- You must have the Owner role in the group you are creating the custom role in.
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Roles and Permissions**.
+1. Select **Add new role**.
+1. In **Base role to use as template**, select **Guest**.
+1. In **Role name**, enter the custom role's title.
+1. Select the **Permissions** for the new custom role.
+1. Select **Create new role**.
+
+#### Self Managed GitLab Instances
+
+Prerequisite:
+
+- You must be an administrator for the self-managed instance you are creating the custom role in.
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Settings > Roles and Permissions**.
+1. From the top dropdown list, select the group you want to create a custom role in.
+1. Select **Add new role**.
+1. In **Base role to use as template**, select **Guest**.
+1. In **Role name**, enter the custom role's title.
+1. Select the **Permissions** for the new custom role.
+1. Select **Create new role**.
+
+To create a custom role, you can also [use the API](../api/member_roles.md#add-a-member-role-to-a-group).
 
 #### Custom role requirements
 
@@ -518,7 +557,9 @@ You can see the required minimal access levels and abilities requirements in the
 | Ability | Minimal access level | Required ability |
 | -- | -- | -- |
 | `read_code` | Guest    | - |
+| `read_dependency` | Guest    | - |
 | `read_vulnerability` | Guest | - |
+| `admin_merge_request` | Guest | - |
 | `admin_vulnerability` | Guest | `read_vulnerability` |
 
 ### Associate a custom role with an existing group member
@@ -529,53 +570,77 @@ the Owner role:
 1. Invites a user as a direct member to the root group or any subgroup or project in the root
    group's hierarchy as a Guest. At this point, this Guest user cannot see any
    code on the projects in the group or subgroup.
-1. Optional. If the Owner does not know the `ID` of the Guest user receiving a custom
-   role, finds that `ID` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
+1. Optional. If the Owner does not know the `id` of the Guest user receiving a custom
+   role, finds that `id` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
 
 1. Associates the member with the Guest+1 role using the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
 
    ```shell
    # to update a project membership
-   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id": '$MEMBER_ROLE_ID', "access_level": 10}' "https://example.gitlab.com/api/v4/projects/$ID/members/$GUEST_USER_ID"
+   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": '<member_role_id>', "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
 
    # to update a group membership
-   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id": '$MEMBER_ROLE_ID', "access_level": 10}' "https://example.gitlab.com/api/v4/groups/$ID/members/$GUEST_USER_ID"
+   curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": '<member_role_id>', "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
    ```
 
    Where:
 
-   - `$ID`: The `ID` or [URL-encoded path of the project or group](../api/rest/index.md#namespaced-path-encoding) associated with the membership receiving the custom role.
-   - `$MEMBER_ROLE_ID`: The `ID` of the member role created in the previous section.
-   - `$GUEST_USER_ID`: The `ID` of the Guest user receiving a custom role.
+   - `<project_id` and `<group_id>`: The `id` or [URL-encoded path of the project or group](../api/rest/index.md#namespaced-path-encoding) associated with the membership receiving the custom role.
+   - `<member_role_id>`: The `id` of the member role created in the previous section.
+   - `<user_id>`: The `id` of the user receiving a custom role.
 
    Now the Guest+1 user can view code on all projects associated with this membership.
 
-### Remove a custom role from a group member
+### Remove a custom role
+
+Prerequisite:
+
+- You must be an administrator or have the Owner role in the group you are removing the custom role from.
+
+You can remove a custom role from a group only if no group members have that role.
+
+To do this, you can either remove the custom role from all group members with that custom role, or remove those members from the group.
+
+#### Remove a custom role from a group member
 
 To remove a custom role from a group member, use the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project)
 and pass an empty `member_role_id` value.
 
 ```shell
-curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer $YOUR_ACCESS_TOKEN" --data '{"member_role_id": "", "access_level": 10}' "https://example.gitlab.com/api/v4/groups/$GROUP_PATH/members/$GUEST_USER_ID"
+# to update a project membership
+curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": "", "access_level": 10}' "https://gitlab.example.com/api/v4/projects/<project_id>/members/<user_id>"
+
+# to update a group membership
+curl --request PUT --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"member_role_id": "", "access_level": 10}' "https://gitlab.example.com/api/v4/groups/<group_id>/members/<user_id>"
 ```
 
-Now the user is a regular Guest.
+#### Remove a group member with a custom role from the group
 
-### Remove a custom role
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Manage > Members**.
+1. On the member row you want to remove, select the vertical ellipsis
+   (**{ellipsis_v}**) and select **Remove member**.
+1. In the **Remove member** confirmation dialog, do not select any checkboxes.
+1. Select **Remove member**.
 
-Removing a custom role also removes all members with that custom role from
-the group. If you decide to delete a custom role, you must re-add any users with that custom
-role to the group.
+#### Delete the custom role
 
-To remove a custom role from a group, a group member with
-the Owner role:
+After you have made sure no group members have that custom role, delete the
+custom role.
 
-1. Optional. If the Owner does not know the `ID` of a custom
-   role, finds that `ID` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
-1. Uses [the API](../api/member_roles.md#remove-member-role-of-a-group) to delete the custom role.
+1. On the left sidebar, select **Search or go to**.
+1. GitLab.com only. Select **Admin Area**.
+1. Select **Settings > Roles and Permissions**.
+1. Select **Custom Roles**.
+1. In the **Actions** column, select **Delete role** (**{remove}**) and confirm.
+
+To delete a custom role, you can also [use the API](../api/member_roles.md#remove-member-role-of-a-group).
+To use the API, you must know the `id` of the custom role. If you do not know this
+`id`, find it by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
 
 ### Known issues
 
-- Additional permissions can only be applied to users with the Guest role.
-- If a user with a custom role is shared with a group or project, their custom role is not transferred over with them. The user has the regular Guest role in the new group or project.
+- If a user with a custom role is shared with a group or project, their custom
+  role is not transferred over with them. The user has the regular Guest role in
+  the new group or project.
 - You cannot use an [Auditor user](../administration/auditor_users.md) as a template for a custom role.

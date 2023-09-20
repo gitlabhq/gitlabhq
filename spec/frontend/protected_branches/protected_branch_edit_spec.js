@@ -20,7 +20,7 @@ describe('ProtectedBranchEdit', () => {
   let mock;
 
   beforeEach(() => {
-    jest.spyOn(ProtectedBranchEdit.prototype, 'buildDropdowns').mockImplementation();
+    jest.spyOn(ProtectedBranchEdit.prototype, 'initDropdowns').mockImplementation();
 
     mock = new MockAdapter(axios);
   });

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 Several options are available for customizing the appearance of a self-managed instance
 of GitLab. To access these settings:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Appearance**.
 
@@ -29,7 +29,7 @@ supported by many email clients.
 
 ## Favicon
 
-By default, the favicon (used by the browser as the tab icon, as well as the CI status icon)
+By default, the favicon (used by the browser as the tab icon and the CI status icon)
 uses the GitLab logo. This can be customized with any icon desired. It must be a
 32x32 `.png` or `.ico` image.
 
@@ -42,7 +42,7 @@ of the page to activate it in the GitLab instance.
 
 You can add a small header message, a small footer message, or both, to the interface
 of your GitLab instance. These messages appear on all projects and pages of the
-instance, including the sign in / sign up page. The default color is white text on
+instance, including the sign-in/sign-up page. The default color is white text on
 an orange background, but this can be customized by selecting **Customize colors**.
 
 Limited [Markdown](../user/markdown.md) is supported, such as bold, italics, and links, for
@@ -55,9 +55,9 @@ the header and footer added to all emails sent by the GitLab instance.
 After you add a message, select **Update appearance settings** at the bottom of the page
 to activate it in the GitLab instance.
 
-## Sign in / Sign up pages
+## Sign-in / Sign-up pages
 
-You can replace the default message on the sign in / sign up page with your own message
+You can replace the default message on the sign-in/sign-up page with your own message
 and logo. You can make full use of [Markdown](../user/markdown.md) in the description.
 
 The optimal size for the logo is 128 x 128 pixels, but any image can be used (below 1 MB)
@@ -69,7 +69,7 @@ to activate it in the GitLab instance. You can also select **Sign-in page**,
 to review the saved appearance settings:
 
 NOTE:
-You can add also add a [customized hcelp message](settings/help_page.md) below the sign in message or add [a Sign in text message](settings/sign_in_restrictions.md#sign-in-information).
+You can add also add a [customized help message](settings/help_page.md) below the sign-in message or add [a Sign-in text message](settings/sign_in_restrictions.md#sign-in-information).
 
 ## Progressive Web App
 
@@ -83,7 +83,7 @@ description, and icon.
 
 To configure the PWA settings:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Appearance**.
 1. Scroll to the **Progressive Web App (PWA)** section.

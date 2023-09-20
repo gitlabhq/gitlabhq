@@ -121,7 +121,7 @@ Prerequisite:
 
 To disable the job token scope allowlist:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
 1. Toggle **Limit access _to_ this project** to disabled.
@@ -144,7 +144,7 @@ Prerequisite:
 
 To add a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
 1. Verify **Limit access _to_ this project** is enabled.
@@ -188,7 +188,7 @@ Prerequisite:
 
 To configure the job token scope:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
 1. Toggle **Limit access _from_ this project** to enabled.
@@ -255,7 +255,7 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
 - A [GraphQL example mutation](../../api/graphql/getting_started.md#update-project-settings)
   is available to toggle the scope settings per project.
 - [This comment](https://gitlab.com/gitlab-org/gitlab/-/issues/351740#note_1335673157)
-  demonstrates how to use graphQL with Bash and cURL to:
+  demonstrates how to use GraphQL with Bash and cURL to:
   - Enable the inbound token access scope.
   - Give access to project B from project A, or add B to A's allowlist.
   - To remove project access.

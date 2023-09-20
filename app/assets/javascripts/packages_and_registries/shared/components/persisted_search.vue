@@ -87,6 +87,7 @@ export default {
         sort: this.parsedSorting,
         filters: this.filters,
         pageInfo: this.pageInfo,
+        sorting: this.sorting,
       });
     },
   },

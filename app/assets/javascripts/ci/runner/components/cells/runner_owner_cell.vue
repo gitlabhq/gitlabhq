@@ -50,12 +50,7 @@ export default {
 
 <template>
   <div>
-    <gl-link
-      v-if="cell.href"
-      v-gl-tooltip="cell.tooltip"
-      :href="cell.href"
-      class="gl-text-body gl-text-decoration-underline"
-    >
+    <gl-link v-if="cell.href" v-gl-tooltip="cell.tooltip" :href="cell.href" class="gl-text-body">
       {{ cell.text }}
     </gl-link>
     <span v-else>{{ cell.text }}</span>

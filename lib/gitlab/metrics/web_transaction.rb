@@ -9,7 +9,7 @@ module Gitlab
     # etc.
     class WebTransaction < Transaction
       THREAD_KEY = :_gitlab_metrics_transaction
-      BASE_LABEL_KEYS = %i(controller action feature_category).freeze
+      BASE_LABEL_KEYS = %i[controller action feature_category].freeze
 
       CONTROLLER_KEY = 'action_controller.instance'
       ENDPOINT_KEY = 'api.endpoint'

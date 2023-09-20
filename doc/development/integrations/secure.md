@@ -181,7 +181,7 @@ See also [Docker Tagging: Best practices for tagging and versioning Docker image
 
 ## Command line
 
-A scanner is a command line tool that takes environment variables as inputs,
+A scanner is a command-line tool that takes environment variables as inputs,
 and generates a file that is uploaded as a report (based on the job definition).
 It also generates text output on the standard output and standard error streams, and exits with a status code.
 

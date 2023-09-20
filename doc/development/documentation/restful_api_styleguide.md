@@ -146,7 +146,7 @@ Sort the table by required attributes first, then alphabetically.
 | Attribute                    | Type          | Required | Description                                         |
 |------------------------------|---------------|----------|-----------------------------------------------------|
 | `title`                      | string        | Yes      | Title of the issue.                                 |
-| `assignee_ids` **(PREMIUM)** | integer array | No       | IDs of the users to assign the issue to.            |
+| `assignee_ids` **(PREMIUM ALL)** | integer array | No       | IDs of the users to assign the issue to.            |
 | `confidential`               | boolean       | No       | Sets the issue to confidential. Default is `false`. |
 ```
 
@@ -155,7 +155,7 @@ Rendered example:
 | Attribute                    | Type          | Required | Description                                         |
 |------------------------------|---------------|----------|-----------------------------------------------------|
 | `title`                      | string        | Yes      | Title of the issue.                                 |
-| `assignee_ids` **(PREMIUM)** | integer array | No       | IDs of the users to assign the issue to.            |
+| `assignee_ids` **(PREMIUM ALL)** | integer array | No       | IDs of the users to assign the issue to.            |
 | `confidential`               | boolean       | No       | Sets the issue to confidential. Default is `false`. |
 
 For information about writing attribute descriptions, see the [GraphQL API description style guide](../api_graphql_styleguide.md#description-style-guide).
@@ -181,7 +181,7 @@ Sort the table alphabetically.
 ```markdown
 | Attribute                    | Type          | Description                               |
 |------------------------------|---------------|-------------------------------------------|
-| `assignee_ids` **(PREMIUM)** | integer array | IDs of the users to assign the issue to.  |
+| `assignee_ids` **(PREMIUM ALL)** | integer array | IDs of the users to assign the issue to.  |
 | `confidential`               | boolean       | Whether the issue is confidential or not. |
 | `title`                      | string        | Title of the issue.                       |
 ```
@@ -190,7 +190,7 @@ Rendered example:
 
 | Attribute                    | Type          | Description                               |
 |------------------------------|---------------|-------------------------------------------|
-| `assignee_ids` **(PREMIUM)** | integer array | IDs of the users to assign the issue to.  |
+| `assignee_ids` **(PREMIUM ALL)** | integer array | IDs of the users to assign the issue to.  |
 | `confidential`               | boolean       | Whether the issue is confidential or not. |
 | `title`                      | string        | Title of the issue.                       |
 

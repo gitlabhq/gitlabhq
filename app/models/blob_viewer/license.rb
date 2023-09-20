@@ -6,7 +6,7 @@ module BlobViewer
     include Static
 
     self.partial_name = 'license'
-    self.file_types = %i(license)
+    self.file_types = %i[license]
     self.binary = false
 
     def license

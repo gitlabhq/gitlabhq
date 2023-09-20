@@ -14,21 +14,17 @@ module QA
     describe 'Pages', product_group: :knowledge do
       let!(:project) { create(:project, name: 'gitlab-pages-projects', template_name: :plainhtml) }
       let(:pipeline) do
-        Resource::Pipeline.fabricate_via_api! do |pipeline|
-          pipeline.project = project
-          pipeline.variables = [
+        create(:pipeline,
+          project: project,
+          variables: [
             { key: :CI_PAGES_DOMAIN, value: 'nip.io', variable_type: :env_var },
             { key: :CI_PAGES_URL, value: 'http://127.0.0.1.nip.io', variable_type: :env_var }
-          ]
-        end
+          ])
       end
 
       before do
         Flow::Login.sign_in
-        Resource::ProjectRunner.fabricate_via_api! do |runner|
-          runner.project = project
-          runner.executor = :docker
-        end
+        create(:project_runner, project: project, executor: :docker)
         pipeline.visit!
       end
 

@@ -1,8 +1,0 @@
----
-# Cop supports --autocorrect.
-Layout/ExtraSpacing:
-  Details: grace period
-  Exclude:
-    - 'ee/spec/requests/api/debian_project_packages_spec.rb'
-    - 'spec/serializers/admin/abuse_report_details_entity_spec.rb'
-    - 'spec/services/bulk_imports/create_service_spec.rb'

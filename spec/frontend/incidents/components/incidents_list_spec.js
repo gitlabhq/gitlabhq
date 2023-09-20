@@ -46,7 +46,7 @@ describe('Incidents List', () => {
   const findLoader = () => wrapper.findComponent(GlLoadingIcon);
   const findTimeAgo = () => wrapper.findAllComponents(TimeAgoTooltip);
   const findAssignees = () => wrapper.findAll('[data-testid="incident-assignees"]');
-  const findCreateIncidentBtn = () => wrapper.find('[data-testid="createIncidentBtn"]');
+  const findCreateIncidentBtn = () => wrapper.find('[data-testid="create-incident-button"]');
   const findClosedIcon = () => wrapper.findAll("[data-testid='incident-closed']");
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findSeverity = () => wrapper.findAllComponents(SeverityToken);

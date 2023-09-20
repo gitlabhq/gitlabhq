@@ -5,6 +5,10 @@
 # Required environment variables: GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
 # Optional environment variable: TOP_LEVEL_GROUP_NAME (defaults to 'gitlab-qa-sandbox-group-<current weekday #>')
 
+# Optional environment variable: CLEANUP_ALL_QA_SANDBOX_GROUPS (defaults to false)
+# Set CLEANUP_ALL_QA_SANDBOX_GROUPS to true if you would like to delete all subgroups under all
+# 'gitlab-qa-sandbox-group-*' groups. Otherwise, this will fall back to TOP_LEVEL_GROUP_NAME.
+
 # Optional environment variable: PERMANENTLY_DELETE (defaults to false)
 # Set PERMANENTLY_DELETE to true if you would like to permanently delete subgroups on an environment with
 # deletion protection enabled. Otherwise, subgroups will remain available during the retention period specified
@@ -17,6 +21,7 @@ module QA
     class DeleteSubgroups
       include Support::API
       include Ci::Helpers
+      include Lib::Group
 
       def initialize
         raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']
@@ -27,7 +32,21 @@ module QA
       end
 
       def run
-        group_id = fetch_group_id
+        if ENV['CLEANUP_ALL_QA_SANDBOX_GROUPS']
+          (1..7).each do |group_number|
+            group_id = fetch_group_id(@api_client, group_number)
+            delete_subgroups(group_id)
+          end
+
+        else
+          group_id = fetch_group_id(@api_client)
+          delete_subgroups(group_id)
+        end
+      end
+
+      private
+
+      def delete_subgroups(group_id)
         return logger.info('Top level group not found') if group_id.nil?
 
         subgroups = fetch_subgroups(group_id)
@@ -44,16 +63,6 @@ module QA
         logger.info('Done')
       end
 
-      private
-
-      def fetch_group_id
-        logger.info("Fetching top level group id...\n")
-
-        group_name = ENV['TOP_LEVEL_GROUP_NAME'] || "gitlab-qa-sandbox-group-#{Time.now.wday + 1}"
-        group_search_response = get Runtime::API::Request.new(@api_client, "/groups/#{group_name}" ).url
-        JSON.parse(group_search_response.body)['id']
-      end
-
       def fetch_subgroups(group_id)
         logger.info("Fetching subgroups...")
 
@@ -63,7 +72,8 @@ module QA
 
         while page_no.present?
           subgroups_response = get Runtime::API::Request.new(@api_client, api_path, page: page_no, per_page: '100').url
-          subgroups.concat(JSON.parse(subgroups_response.body))
+          # Do not delete subgroups that are less than 4 days old (for debugging purposes)
+          subgroups.concat(JSON.parse(subgroups_response.body).select { |subgroup| Date.parse(subgroup["created_at"]) < Date.today - 3 })
 
           page_no = subgroups_response.headers[:x_next_page].to_s
         end

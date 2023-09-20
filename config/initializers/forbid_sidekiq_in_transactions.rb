@@ -36,7 +36,7 @@ module Sidekiq
 
     module ClassMethods
       module NoEnqueueingFromTransactions
-        %i(perform_async perform_at perform_in).each do |name|
+        %i[perform_async perform_at perform_in].each do |name|
           define_method(name) do |*args|
             if Sidekiq::Worker.raise_exception_for_being_inside_a_transaction?
               begin
@@ -65,7 +65,7 @@ end
 module ActiveJob
   module QueueAdapters
     module NoEnqueueingFromTransactions
-      %i(enqueue enqueue_at).each do |name|
+      %i[enqueue enqueue_at].each do |name|
         define_method(name) do |*args|
           if Sidekiq::Worker.raise_exception_for_being_inside_a_transaction?
             begin

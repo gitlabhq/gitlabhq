@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create', :reliable do
     describe 'File management', product_group: :source_code do
-      let(:file) { Resource::File.fabricate_via_api! }
+      let(:file) { create(:file) }
 
       updated_file_content = 'QA Test - Updated file content'
       commit_message_for_update = 'QA Test - Update file'

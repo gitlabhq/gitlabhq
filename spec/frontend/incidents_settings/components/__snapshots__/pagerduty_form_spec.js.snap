@@ -2,14 +2,11 @@
 
 exports[`Alert integration settings form should match the default snapshot 1`] = `
 <div>
-  <!---->
-   
   <p>
     <gl-sprintf-stub
       message="Create a GitLab incident for each PagerDuty incident by %{linkStart}configuring a webhook in PagerDuty%{linkEnd}"
     />
   </p>
-   
   <form>
     <gl-form-group-stub
       class="col-8 col-md-9 gl-p-0"
@@ -17,13 +14,12 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       optionaltext="(optional)"
     >
       <gl-toggle-stub
-        id="active"
+        id="reference-0"
         label="Active"
         labelposition="top"
         value="true"
       />
     </gl-form-group-stub>
-     
     <gl-form-group-stub
       class="col-8 col-md-9 gl-p-0"
       label="Webhook URL"
@@ -33,7 +29,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
     >
       <gl-form-input-group-stub
         data-testid="webhook-url"
-        id="url"
+        id="reference-1"
         inputclass=""
         predefinedoptions="[object Object]"
         readonly=""
@@ -48,7 +44,6 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
           variant="default"
         />
       </gl-form-input-group-stub>
-       
       <gl-button-stub
         buttontextclasses=""
         category="primary"
@@ -60,11 +55,8 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
         tabindex="0"
         variant="default"
       >
-        
         Reset webhook URL
-      
       </gl-button-stub>
-       
       <gl-modal-stub
         actioncancel="[object Object]"
         actionprimary="[object Object]"
@@ -76,9 +68,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
         title="Reset webhook URL"
         titletag="h4"
       >
-        
         Resetting the webhook URL for this project will require updating this integration's settings in PagerDuty.
-      
       </gl-modal-stub>
     </gl-form-group-stub>
   </form>

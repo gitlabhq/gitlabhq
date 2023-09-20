@@ -8,15 +8,13 @@ RSpec.describe 'Project navbar', :with_license, feature_category: :groups_and_pr
 
   include_context 'project navbar structure'
 
-  let_it_be(:project) { create(:project, :repository) }
-
-  let(:user) { project.first_owner }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
+  let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
     sign_in(user)
 
     stub_config(registry: { enabled: false })
-    stub_feature_flags(harbor_registry_integration: false)
     stub_feature_flags(ml_experiment_tracking: false)
     insert_package_nav(_('Deployments'))
     insert_infrastructure_registry_nav
@@ -88,8 +86,6 @@ RSpec.describe 'Project navbar', :with_license, feature_category: :groups_and_pr
     let_it_be(:harbor_integration) { create(:harbor_integration, project: project) }
 
     before do
-      stub_feature_flags(harbor_registry_integration: true)
-
       insert_harbor_registry_nav(_('Terraform modules'))
 
       visit project_path(project)

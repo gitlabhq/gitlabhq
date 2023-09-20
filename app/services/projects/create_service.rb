@@ -144,6 +144,8 @@ module Projects
     end
 
     def create_project_settings
+      Gitlab::Pages.add_unique_domain_to(project)
+
       @project.project_setting.save if @project.project_setting.changed?
     end
 
@@ -223,22 +225,26 @@ module Projects
     end
 
     def save_project_and_import_data
-      ApplicationRecord.transaction do
-        @project.create_or_update_import_data(data: @import_data[:data], credentials: @import_data[:credentials]) if @import_data
+      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+        %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424281'
+      ) do
+        ApplicationRecord.transaction do
+          @project.create_or_update_import_data(data: @import_data[:data], credentials: @import_data[:credentials]) if @import_data
 
-        # Avoid project callbacks being triggered multiple times by saving the parent first.
-        # See https://github.com/rails/rails/issues/41701.
-        Namespaces::ProjectNamespace.create_from_project!(@project) if @project.valid?
+          # Avoid project callbacks being triggered multiple times by saving the parent first.
+          # See https://github.com/rails/rails/issues/41701.
+          Namespaces::ProjectNamespace.create_from_project!(@project) if @project.valid?
 
-        if @project.saved?
-          Integration.create_from_active_default_integrations(@project, :project_id)
+          if @project.saved?
+            Integration.create_from_active_default_integrations(@project, :project_id)
 
-          @project.create_labels unless @project.gitlab_project_import?
+            @project.create_labels unless @project.gitlab_project_import?
 
-          next if @project.import?
+            next if @project.import?
 
-          unless @project.create_repository(default_branch: default_branch)
-            raise 'Failed to create repository'
+            unless @project.create_repository(default_branch: default_branch)
+              raise 'Failed to create repository'
+            end
           end
         end
       end

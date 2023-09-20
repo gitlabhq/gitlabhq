@@ -15,7 +15,7 @@ module QA
 
         view 'app/views/shared/members/_access_request_links.html.haml' do
           element :leave_group_link
-          element :request_access_link
+          element 'request-access-link'
         end
 
         def click_subgroup(name)
@@ -49,7 +49,7 @@ module QA
         end
 
         def click_request_access
-          click_element :request_access_link
+          click_element 'request-access-link'
         end
       end
     end

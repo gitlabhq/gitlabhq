@@ -2,6 +2,7 @@
 :root {
   --performance-bar-height: 0px;
   --system-header-height: 0px;
+  --header-height: 0px;
   --top-bar-height: 0px;
   --system-footer-height: 0px;
   --mr-review-bar-height: 0px;
@@ -20,6 +21,10 @@
 
 .with-system-header {
   --system-header-height: #{$system-header-height};
+}
+
+.with-header {
+  --header-height: #{$header-height};
 }
 
 .with-top-bar {

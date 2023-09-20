@@ -54,6 +54,7 @@ RSpec.describe Profiles::PreferencesController do
           preferred_language: 'jp',
           tab_width: '5',
           project_shortcut_buttons: 'true',
+          keyboard_shortcuts_enabled: 'true',
           render_whitespace_in_code: 'true'
         }.with_indifferent_access
 

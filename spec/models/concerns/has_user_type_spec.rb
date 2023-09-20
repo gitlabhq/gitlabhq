@@ -3,6 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe User, feature_category: :system_access do
+  User::USER_TYPES.keys.each do |type| # rubocop:disable RSpec/UselessDynamicDefinition
+    let_it_be(type) { create(:user, username: type, user_type: type) }
+  end
+  let(:bots) { User::BOT_USER_TYPES.map { |type| public_send(type) } }
+  let(:non_internal) { User::NON_INTERNAL_USER_TYPES.map { |type| public_send(type) } }
+  let(:everyone) { User::USER_TYPES.keys.map { |type| public_send(type) } }
+
   specify 'types consistency checks', :aggregate_failures do
     expect(described_class::USER_TYPES.keys)
       .to match_array(%w[human ghost alert_bot project_bot support_bot service_user security_bot
@@ -20,13 +27,6 @@ RSpec.describe User, feature_category: :system_access do
   end
 
   describe 'scopes & predicates' do
-    User::USER_TYPES.keys.each do |type| # rubocop:disable RSpec/UselessDynamicDefinition
-      let_it_be(type) { create(:user, username: type, user_type: type) }
-    end
-    let(:bots) { User::BOT_USER_TYPES.map { |type| public_send(type) } }
-    let(:non_internal) { User::NON_INTERNAL_USER_TYPES.map { |type| public_send(type) } }
-    let(:everyone) { User::USER_TYPES.keys.map { |type| public_send(type) } }
-
     describe '.bots' do
       it 'includes all bots' do
         expect(described_class.bots).to match_array(bots)
@@ -115,6 +115,72 @@ RSpec.describe User, feature_category: :system_access do
 
         context 'when requester does not have permissions to read project_bot name' do
           it { is_expected.to eq('****') }
+        end
+      end
+    end
+
+    describe '#resource_bot_resource' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group2) { create(:group) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:project2) { create(:project) }
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:bot_user, :member_of, :owning_resource) do
+        ref(:human)       | [ref(:group)]                | nil
+        ref(:project_bot) | []                           | nil # orphaned project bot
+        ref(:project_bot) | [ref(:group)]                | ref(:group)
+        ref(:project_bot) | [ref(:project)]              | ref(:project)
+
+        # Project bot can only be added to one group or project.
+        # That first group or project becomes the owning resource.
+        ref(:project_bot) | [ref(:group), ref(:project)]    | ref(:group)
+        ref(:project_bot) | [ref(:group), ref(:group2)]     | ref(:group)
+        ref(:project_bot) | [ref(:project), ref(:group)]    | ref(:project)
+        ref(:project_bot) | [ref(:project), ref(:project2)] | ref(:project)
+      end
+
+      with_them do
+        before do
+          member_of.each { |resource| resource.add_developer(bot_user) }
+        end
+
+        it 'returns the owning resource' do
+          expect(bot_user.resource_bot_resource).to eq(owning_resource)
+        end
+      end
+    end
+
+    describe 'resource_bot_owners' do
+      it 'returns nil when user is not a project bot' do
+        expect(human.resource_bot_resource).to be_nil
+      end
+
+      context 'when the user is a project bot' do
+        let(:user1) { create(:user) }
+        let(:user2) { create(:user) }
+
+        subject(:owners) { project_bot.resource_bot_owners }
+
+        it 'returns an empty array when there is no owning resource' do
+          expect(owners).to match_array([])
+        end
+
+        it 'returns group owners when owned by a group' do
+          group = create(:group)
+          group.add_developer(project_bot)
+          group.add_owner(user1)
+
+          expect(owners).to match_array([user1])
+        end
+
+        it 'returns project maintainers when owned by a project' do
+          project = create(:project)
+          project.add_developer(project_bot)
+          project.add_maintainer(user2)
+
+          expect(owners).to match_array([user2])
         end
       end
     end

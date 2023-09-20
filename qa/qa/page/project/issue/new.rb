@@ -6,11 +6,11 @@ module QA
       module Issue
         class New < Page::Issuable::New
           view 'app/views/shared/issuable/_form.html.haml' do
-            element :issuable_create_button
+            element 'issuable-create-button'
           end
 
           def create_new_issue
-            click_element :issuable_create_button, Page::Project::Issue::Show
+            click_element('issuable-create-button', Page::Project::Issue::Show)
           end
         end
       end

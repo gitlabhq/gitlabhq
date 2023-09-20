@@ -11,6 +11,10 @@ module API
       def endpoint_scope
         :group
       end
+
+      def group_or_namespace
+        group
+      end
     end
 
     params do

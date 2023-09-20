@@ -59,9 +59,6 @@ module Users
         Groups::DestroyService.new(group, current_user).execute
       end
 
-      namespace = user.namespace
-      namespace.prepare_for_destroy
-
       user.personal_projects.each do |project|
         success = ::Projects::DestroyService.new(project, current_user).execute
         raise DestroyError, "Project #{project.id} can't be deleted" unless success
@@ -70,9 +67,11 @@ module Users
       yield(user) if block_given?
 
       hard_delete = options.fetch(:hard_delete, false)
-      Users::GhostUserMigration.create!(user: user,
-                                        initiator_user: current_user,
-                                        hard_delete: hard_delete)
+      Users::GhostUserMigration.create!(
+        user: user,
+        initiator_user: current_user,
+        hard_delete: hard_delete
+      )
 
       update_metrics
     end

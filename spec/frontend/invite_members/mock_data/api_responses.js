@@ -47,6 +47,11 @@ const EMAIL_TAKEN = {
   status: 'error',
 };
 
+const INVITE_LIMIT = {
+  message: 'Invite limit of 5 per day exceeded.',
+  status: 'error',
+};
+
 export const GROUPS_INVITATIONS_PATH = '/api/v4/groups/1/invitations';
 
 export const invitationsApiResponse = {
@@ -56,6 +61,7 @@ export const invitationsApiResponse = {
   MULTIPLE_RESTRICTED,
   EMAIL_TAKEN,
   EXPANDED_RESTRICTED,
+  INVITE_LIMIT,
 };
 
 export const IMPORT_PROJECT_MEMBERS_PATH = '/api/v4/projects/1/import_project_members/2';

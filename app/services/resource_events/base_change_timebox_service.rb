@@ -14,7 +14,7 @@ module ResourceEvents
 
       track_event
 
-      resource.expire_note_etag_cache
+      resource.broadcast_notes_changed
     end
 
     private

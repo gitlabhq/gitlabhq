@@ -10,6 +10,7 @@ module Organizations
 
     has_many :namespaces
     has_many :groups
+    has_many :projects
 
     has_one :settings, class_name: "OrganizationSetting"
 
@@ -38,7 +39,7 @@ module Organizations
     end
 
     def user?(user)
-      users.exists?(user.id)
+      organization_users.exists?(user: user)
     end
 
     private

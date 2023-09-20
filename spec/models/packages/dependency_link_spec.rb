@@ -1,7 +1,28 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::DependencyLink, type: :model do
+RSpec.describe Packages::DependencyLink, type: :model, feature_category: :package_registry do
+  let_it_be(:package1) { create(:package) }
+  let_it_be(:package2) { create(:package) }
+  let_it_be(:dependency1) { create(:packages_dependency) }
+  let_it_be(:dependency2) { create(:packages_dependency) }
+
+  let_it_be(:dependency_link1) do
+    create(:packages_dependency_link, :dev_dependencies, package: package1, dependency: dependency1)
+  end
+
+  let_it_be(:dependency_link2) do
+    create(:packages_dependency_link, :dependencies, package: package1, dependency: dependency2)
+  end
+
+  let_it_be(:dependency_link3) do
+    create(:packages_dependency_link, :dependencies, package: package2, dependency: dependency1)
+  end
+
+  let_it_be(:dependency_link4) do
+    create(:packages_dependency_link, :dependencies, package: package2, dependency: dependency2)
+  end
+
   describe 'relationships' do
     it { is_expected.to belong_to(:package).inverse_of(:dependency_links) }
     it { is_expected.to belong_to(:dependency).inverse_of(:dependency_links) }
@@ -51,6 +72,51 @@ RSpec.describe Packages::DependencyLink, type: :model do
       it 'returns the link for the given package' do
         expect(subject.for_package(link1.package)).to eq([link1])
       end
+    end
+  end
+
+  describe '.dependency_ids_grouped_by_type' do
+    let(:packages) { Packages::Package.where(id: [package1.id, package2.id]) }
+
+    subject { described_class.dependency_ids_grouped_by_type(packages) }
+
+    it 'aggregates dependencies by type', :aggregate_failures do
+      result = Gitlab::Json.parse(subject.to_json)
+
+      expect(result.count).to eq(2)
+      expect(result).to include(
+        hash_including(
+          'package_id' => package1.id,
+          'dependency_ids_by_type' => {
+            '1' => [dependency2.id],
+            '2' => [dependency1.id]
+          }
+        ),
+        hash_including(
+          'package_id' => package2.id,
+          'dependency_ids_by_type' => {
+            '1' => [dependency1.id, dependency2.id]
+          }
+        )
+      )
+    end
+  end
+
+  describe '.for_packages' do
+    let(:packages) { Packages::Package.where(id: package1.id) }
+
+    subject { described_class.for_packages(packages) }
+
+    it 'returns dependency links for selected packages' do
+      expect(subject).to contain_exactly(dependency_link1, dependency_link2)
+    end
+  end
+
+  describe '.select_dependency_id' do
+    subject { described_class.select_dependency_id }
+
+    it 'returns only dependency_id' do
+      expect(subject[0].attributes).to eq('dependency_id' => dependency1.id, 'id' => nil)
     end
   end
 end

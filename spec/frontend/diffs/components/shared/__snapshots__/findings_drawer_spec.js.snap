@@ -9,15 +9,13 @@ exports[`FindingsDrawer matches the snapshot 1`] = `
   zindex="252"
 >
   <h2
-    class="gl-font-size-h2 gl-mt-0 gl-mb-0"
+    class="gl-font-size-h2 gl-mb-0 gl-mt-0"
     data-testid="findings-drawer-heading"
   >
-    
-      Unused method argument - \`c\`. If it's necessary, use \`_\` or \`_c\` as an argument name to indicate that it won't be used.
-    
+    Unused method argument - \`c\`. If it's necessary, use \`_\` or \`_c\` as an argument name to indicate that it won't be used.
   </h2>
   <ul
-    class="gl-list-style-none gl-border-b-initial gl-mb-0 gl-pb-0!"
+    class="gl-border-b-initial gl-list-style-none gl-mb-0 gl-pb-0!"
   >
     <li
       class="gl-mb-4"
@@ -28,19 +26,14 @@ exports[`FindingsDrawer matches the snapshot 1`] = `
       >
         Severity:
       </span>
-       
       <gl-icon-stub
-        class="inline-findings-severity-icon gl-text-orange-300"
+        class="gl-text-orange-300 inline-findings-severity-icon"
         data-testid="findings-drawer-severity-icon"
         name="severity-low"
         size="12"
       />
-      
-
-        minor
-      
+      minor
     </li>
-     
     <li
       class="gl-mb-4"
       data-testid="findings-drawer-engine"
@@ -50,11 +43,8 @@ exports[`FindingsDrawer matches the snapshot 1`] = `
       >
         Engine:
       </span>
-      
-        testengine name
-      
+      testengine name
     </li>
-     
     <li
       class="gl-mb-4"
       data-testid="findings-drawer-category"
@@ -64,21 +54,17 @@ exports[`FindingsDrawer matches the snapshot 1`] = `
       >
         Category:
       </span>
-      
-        testcategory 1
-      
+      testcategory 1
     </li>
-     
     <li
       class="gl-mb-4"
       data-testid="findings-drawer-other-locations"
     >
       <span
-        class="gl-font-weight-bold gl-mb-3 gl-display-block"
+        class="gl-display-block gl-font-weight-bold gl-mb-3"
       >
         Other locations:
       </span>
-       
       <ul
         class="gl-pl-6"
       >
@@ -115,7 +101,6 @@ exports[`FindingsDrawer matches the snapshot 1`] = `
       </ul>
     </li>
   </ul>
-   
   <span
     class="drawer-body gl-display-block gl-px-3 gl-py-0!"
     data-testid="findings-drawer-body"

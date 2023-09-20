@@ -51,7 +51,7 @@ module Gitlab
 
         # Legacy code path. Will be removed when all distributions provide a sane default here
         uri = URI.join(external_url, K8S_PROXY_PATH)
-        uri.scheme = uri.scheme.in?(%w(grpcs wss)) ? 'https' : 'http'
+        uri.scheme = uri.scheme.in?(%w[grpcs wss]) ? 'https' : 'http'
         uri.to_s
       end
 

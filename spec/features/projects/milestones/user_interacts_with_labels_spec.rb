@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'User interacts with labels', feature_category: :team_planning do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :no_super_sidebar) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:milestone) { create(:milestone, project: project, title: 'v2.2', description: '# Description header') }
   let(:issue1) { create(:issue, project: project, title: 'Bugfix1', milestone: milestone) }

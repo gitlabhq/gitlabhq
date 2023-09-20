@@ -11,4 +11,10 @@ module WorkItemsHelper
       report_abuse_path: add_category_abuse_reports_path
     }
   end
+
+  def work_items_list_data(group)
+    {
+      full_path: group.full_path
+    }
+  end
 end

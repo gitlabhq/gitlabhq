@@ -25,12 +25,22 @@ Use [Packwerk](https://github.com/Shopify/packwerk) to enforce privacy and depen
 
 ## Details
 
+```mermaid
+flowchart TD
+  u([User]) -- interacts directly with --> AA[Application Adapter: WebUI, REST, GraphQL, git, ...]
+  AA --uses abstractions from--> D[Application Domain]
+  AA -- depends on --> Platform
+  D -- depends on --> Platform[Platform: gems, configs, framework, ...]
+```
+
 ### Application domain
 
-The application core (functional domains) is divided into separate top-level bounded contexts called after the
-[feature category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) they represent.
+The application core (functional domains) is composed of all the code that describes the business logic, policies and data
+that is unique to GitLab product.
+It is divided into separate top-level [bounded contexts](../bounded_contexts.md).
 A bounded-context is represented in the form of a Ruby module.
-This follows the existing [guideline on naming namespaces](../../../../development/software_design.md#use-namespaces-to-define-bounded-contexts) but puts more structure to it.
+This follows the existing [guideline on naming namespaces](../../../../development/software_design.md#use-namespaces-to-define-bounded-contexts)
+but puts more structure to it.
 
 Modules should:
 
@@ -52,6 +62,12 @@ If a feature category is only relevant in the context of a parent feature catego
 parent's bounded context. For example: Build artifacts existing in the context of Continuous Integration feature category
 and they may be merged under a single bounded context.
 
+The application domain has no knowledge of outer layers like the application adapters and only depends on the
+platform code. This makes the domain code to be the SSoT of the business logic, be reusable and testable regardless
+whether the request came from the WebUI or REST API.
+
+If a dependency between an outer layer and an inner layer is required (domain code depending on the interface of an adapter), this can be solved using inversion of control techniques, especially dependency injection.
+
 ### Application adapters
 
 >>>
@@ -67,9 +83,14 @@ Application adapters would be:
 - Web UI (Rails controllers, view, JS and Vue client)
 - REST API endpoints
 - GraphQL Endpoints
-- Action Cable
 
-TODO: continue describing how adapters are organized and why they are separate from the domain code.
+They are responsible for the interaction with the user. Each adapter should interpret the request, parse parameters
+and invoke the right abstraction from the application domain, then present the result back to the user.
+
+Presentation logic, and possibly authentication, would be specific to the adapters layer.
+
+The application adapters layer depends on the platform code to run: the Rails framework, the gems that power the adapter,
+the configurations and utilities.
 
 ### Platform code
 
@@ -95,19 +116,76 @@ This means that aside from the Rails framework code, the rest of the platform co
 Eventually all code inside `gems/` could potentially be extracted in a separate repository or open sourced.
 Placing platform code inside `gems/` makes it clear that its purpose is to serve the application code.
 
-### Why Packwerk?
+### Enforcing boundaries
 
-TODO:
+Ruby does not have the concept of privacy of constants in a given module. Unlike other programming languages, even extracting
+well documented gems doesn't prevent other developers from coupling code to implementation details because all constants
+are public in Ruby.
 
-- boundaries not enforced at runtime. Ruby code will still work as being all loaded in the same memory space.
-- can be introduced incrementally. Not everything requires to be moved to packs for the Rails autoloader to work.
+We can have a codebase perfectly organized in an hexagonal architecture but still having the application domain, the biggest
+part of the codebase, being a non modularized [big ball of mud](https://en.wikipedia.org/wiki/Big_ball_of_mud).
+
+Enforcing boundaries is also vital to maintaining the structure long term. We don't want that after a big modularization
+effort we slowly fall back into a big ball of mud gain by violating the boundaries.
+
+We explored the idea of [using Packwerk in a proof of concept](../proof_of_concepts.md#use-packwerk-to-enforce-module-boundaries)
+to enforce module boundaries.
+
+[Packwerk](https://github.com/Shopify/packwerk) is a static analyzer that allows to gradually introduce packages in the
+codebase and enforce privacy and explicit dependencies. Packwerk can detect if some Ruby code is using private implementation
+details of another package or if it's using a package that wasn't declared explicitly as a dependency.
+
+Being a static analyzer it does not affect code execution, meaning that introducing Packwerk is safe and can be done
+gradually.
 
 Companies like Gusto have been developing and maintaining a list of [development and engineering tools](https://github.com/rubyatscale)
 for organizations that want to move to using a Rails modular monolith around Packwerk.
 
 ### EE and JH extensions
 
-TODO:
+One of the unique challenges of modularizing the GitLab codebase is the presence of EE extensions (managed by GitLab)
+and JH extensions (managed by JiHu).
+
+By moving related domain code (e.g. `Ci::`) under the same bounded context and Packwerk package, we would also need to
+move `ee/` extensions in it.
+
+To have top-level bounded contexts to also match Packwerk packages it means that all code related to a specific domain
+needs to be placed under the same package directory, including EE extensions, for example.
+
+The following is just an example of a possible directory structure:
+
+```shell
+domains
+├── ci
+│   ├── package.yml       # package definition.
+│   ├── packwerk.yml      # tool configurations for this package.
+│   ├── package_todo.yml  # existing violations.
+│   ├── core              # Core features available in Community Edition and always autoloaded.
+│   │   ├── app
+│   │   │   ├── models/...
+│   │   │   ├── services/...
+│   │   │   └── lib/...   # domain-specific `lib` moved inside `app` together with other classes.
+│   │   └── spec
+│   │       └── models/...
+│   ├── ee                # EE extensions specific to the bounded context, conditionally autoloaded.
+│   │   ├── models/...
+│   │   └── spec
+│   │       └── models/...
+│   └── public            # Public constants are placed here so they can be referenced by other packages.
+│       ├── core
+│       │   ├── app
+│       │   │   └── models/...
+│       │   └── spec
+│       │       └── models/...
+│       └── ee
+│           ├── app
+│           │   └── models/...
+│           └── spec
+│               └── models/...
+├── merge_requests/
+├── repositories/
+└── ...
+```
 
 ## Challenges
 

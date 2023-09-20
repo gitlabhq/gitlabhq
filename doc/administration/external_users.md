@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -30,7 +30,7 @@ For example, if an external user is added as Guest, and your project is internal
 private, they do not have access to the code; you need to grant the external
 user access at the Reporter level or above if you want them to have access to the code. You should
 always take into account the
-[project's visibility and permissions settings](../user/project/settings/index.md#configure-project-visibility-features-and-permissions)
+[project's visibility](../user/public_access.md#change-project-visibility) and [permissions settings](../user/project/settings/index.md#configure-project-features-and-permissions)
 as well as the permission level of the user.
 
 NOTE:
@@ -40,7 +40,7 @@ An administrator can flag a user as external by either of the following methods:
 
 - [Through the API](../api/users.md#user-modification).
 - Using the GitLab UI:
-  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. On the left sidebar, select **Search or go to**.
   1. Select **Admin Area**.
   1. On the left sidebar, select **Overview > Users** to create a new user or edit an existing one.
      There, you can find the option to flag the user as external.
@@ -56,7 +56,7 @@ Additionally, users can be set as external users using:
 By default, new users are not set as external users. This behavior can be changed
 by an administrator:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand the **Account and limit** section.

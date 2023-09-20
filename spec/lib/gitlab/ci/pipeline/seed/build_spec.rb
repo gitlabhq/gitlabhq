@@ -1081,6 +1081,126 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         end
       end
 
+      context 'with a rule using CI_ENVIRONMENT_ACTION variable' do
+        let(:rule_set) do
+          [{ if: '$CI_ENVIRONMENT_ACTION == "start"' }]
+        end
+
+        context 'when environment:action satisfies the rule' do
+          let(:attributes) do
+            { name: 'rspec', rules: rule_set, environment: 'test', when: 'on_success',
+              options: { environment: { action: 'start' } } }
+          end
+
+          it { is_expected.to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'on_success')
+          end
+        end
+
+        context 'when environment:action does not satisfy rule' do
+          let(:attributes) do
+            { name: 'rspec', rules: rule_set, environment: 'test', when: 'on_success',
+              options: { environment: { action: 'stop' } } }
+          end
+
+          it { is_expected.not_to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'never')
+          end
+        end
+
+        context 'when environment:action is not set' do
+          it { is_expected.not_to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'never')
+          end
+        end
+      end
+
+      context 'with a rule using CI_ENVIRONMENT_TIER variable' do
+        let(:rule_set) do
+          [{ if: '$CI_ENVIRONMENT_TIER == "production"' }]
+        end
+
+        context 'when environment:deployment_tier satisfies the rule' do
+          let(:attributes) do
+            { name: 'rspec', rules: rule_set, environment: 'test', when: 'on_success',
+              options: { environment: { deployment_tier: 'production' } } }
+          end
+
+          it { is_expected.to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'on_success')
+          end
+        end
+
+        context 'when environment:deployment_tier does not satisfy rule' do
+          let(:attributes) do
+            { name: 'rspec', rules: rule_set, environment: 'test', when: 'on_success',
+              options: { environment: { deployment_tier: 'development' } } }
+          end
+
+          it { is_expected.not_to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'never')
+          end
+        end
+
+        context 'when environment:action is not set' do
+          it { is_expected.not_to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'never')
+          end
+        end
+      end
+
+      context 'with a rule using CI_ENVIRONMENT_URL variable' do
+        let(:rule_set) do
+          [{ if: '$CI_ENVIRONMENT_URL == "http://gitlab.com"' }]
+        end
+
+        context 'when environment:url satisfies the rule' do
+          let(:attributes) do
+            { name: 'rspec', rules: rule_set, environment: 'test', when: 'on_success',
+              options: { environment: { url: 'http://gitlab.com' } } }
+          end
+
+          it { is_expected.to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'on_success')
+          end
+        end
+
+        context 'when environment:url does not satisfy rule' do
+          let(:attributes) do
+            { name: 'rspec', rules: rule_set, environment: 'test', when: 'on_success',
+              options: { environment: { url: 'http://staging.gitlab.com' } } }
+          end
+
+          it { is_expected.not_to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'never')
+          end
+        end
+
+        context 'when environment:action is not set' do
+          it { is_expected.not_to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'never')
+          end
+        end
+      end
+
       context 'with no rules' do
         let(:rule_set) { [] }
 

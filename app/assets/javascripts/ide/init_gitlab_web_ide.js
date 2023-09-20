@@ -62,9 +62,8 @@ export const initGitlabWebIDE = async (el) => {
     filePath,
     mrId,
     mrTargetProject: getMRTargetProject(),
-    // note: At the time of writing this, forkInfo isn't expected by `@gitlab/web-ide`,
-    //       but it will be soon.
     forkInfo,
+    username: gon.current_username,
     links: {
       feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
       userPreferences: el.dataset.userPreferencesPath,

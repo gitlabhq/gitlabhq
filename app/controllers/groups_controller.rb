@@ -37,7 +37,6 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:frontend_caching, group)
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_grid_view)
-    push_frontend_feature_flag(:new_graphql_users_autocomplete, group)
   end
 
   before_action only: :merge_requests do

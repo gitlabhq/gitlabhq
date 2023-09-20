@@ -60,7 +60,7 @@ Prerequisites:
 
 To create an objective:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Plan > Issues**.
 1. In the upper-right corner, next to **New issue**, select the down arrow **{chevron-lg-down}** and then select **New objective**.
 1. Select **New objective** again.
@@ -77,7 +77,7 @@ Prerequisites:
 
 To view an objective:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Plan > Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
 for `Type = objective`.
@@ -91,7 +91,7 @@ Prerequisites:
 
 To view a key result:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Plan > Issues**.
 1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
 for `Type = key_result`.
@@ -246,7 +246,7 @@ To refer to an objective or key result elsewhere in GitLab, you can use its full
 
 To copy the objective or key result reference to your clipboard:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your objective or key result to view it.
 1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy Reference**.
 
@@ -266,7 +266,7 @@ For more information about creating comments by sending an email and the necessa
 
 To copy the objective's or key result's email address:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, then select your issue to view it.
 1. In the top right corner, select the vertical ellipsis (**{ellipsis_v}**), then select **Copy objective email address** or **Copy key result email address**.
 

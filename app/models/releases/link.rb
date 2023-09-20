@@ -8,10 +8,10 @@ module Releases
 
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/218753
     # Regex modified to prevent catastrophic backtracking
-    FILEPATH_REGEX = %r{\A\/[^\/](?!.*\/\/.*)[\-\.\w\/]+[\da-zA-Z]+\z}.freeze
+    FILEPATH_REGEX = %r{\A\/[^\/](?!.*\/\/.*)[\-\.\w\/]+[\da-zA-Z]+\z}
     FILEPATH_MAX_LENGTH = 128
 
-    validates :url, presence: true, addressable_url: { schemes: %w(http https ftp) }, uniqueness: { scope: :release }
+    validates :url, presence: true, addressable_url: { schemes: %w[http https ftp] }, uniqueness: { scope: :release }
     validates :name, presence: true, uniqueness: { scope: :release }
     validates :filepath, uniqueness: { scope: :release }, allow_blank: true
     validate :filepath_format_valid?

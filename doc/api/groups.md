@@ -38,7 +38,7 @@ Parameters:
 | `owned`                               | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`                    | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
 | `top_level_only`                      | boolean           | no       | Limit to top level groups, excluding all subgroups |
-| `repository_storage` **(PREMIUM)**    | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3 |
+| `repository_storage` **(PREMIUM ALL)**    | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3 |
 
 ```plaintext
 GET /groups
@@ -314,7 +314,7 @@ Parameters:
 | `include_subgroups`                    | boolean        | no       | Include projects in subgroups of this group. Default is `false`   |
 | `min_access_level`                     | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](members.md#roles) |
 | `with_custom_attributes`               | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
-| `with_security_reports` **(ULTIMATE)** | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
+| `with_security_reports` **(ULTIMATE ALL)** | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
 
 1. Order by similarity: Orders the results by a similarity score calculated from the provided `search`
 URL parameter. When using `order_by=similarity`, the `sort` parameter is ignored. When the `search`
@@ -327,7 +327,7 @@ Example response:
   {
     "id": 9,
     "description": "foo",
-    "default_branch": "master",
+    "default_branch": "main",
     "tag_list": [], //deprecated, use `topics` instead
     "topics": [],
     "archived": false,
@@ -407,13 +407,13 @@ Example response:
       "path":"html5-boilerplate",
       "path_with_namespace":"h5bp/html5-boilerplate",
       "created_at":"2020-04-27T06:13:22.642Z",
-      "default_branch":"master",
+      "default_branch":"main",
       "tag_list":[], //deprecated, use `topics` instead
       "topics":[],
       "ssh_url_to_repo":"ssh://git@gitlab.com/h5bp/html5-boilerplate.git",
       "http_url_to_repo":"https://gitlab.com/h5bp/html5-boilerplate.git",
       "web_url":"https://gitlab.com/h5bp/html5-boilerplate",
-      "readme_url":"https://gitlab.com/h5bp/html5-boilerplate/-/blob/master/README.md",
+      "readme_url":"https://gitlab.com/h5bp/html5-boilerplate/-/blob/main/README.md",
       "avatar_url":null,
       "star_count":0,
       "forks_count":4,
@@ -573,7 +573,7 @@ Example response:
     {
       "id": 7,
       "description": "Voluptas veniam qui et beatae voluptas doloremque explicabo facilis.",
-      "default_branch": "master",
+      "default_branch": "main",
       "tag_list": [], //deprecated, use `topics` instead
       "topics": [],
       "archived": false,
@@ -612,7 +612,7 @@ Example response:
     {
       "id": 6,
       "description": "Aspernatur omnis repudiandae qui voluptatibus eaque.",
-      "default_branch": "master",
+      "default_branch": "main",
       "tag_list": [], //deprecated, use `topics` instead
       "topics": [],
       "archived": false,
@@ -653,7 +653,7 @@ Example response:
     {
       "id": 8,
       "description": "Velit eveniet provident fugiat saepe eligendi autem.",
-      "default_branch": "master",
+      "default_branch": "main",
       "tag_list": [], //deprecated, use `topics` instead
       "topics": [],
       "archived": false,
@@ -829,10 +829,10 @@ Parameters:
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
-| `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
+| `membership_lock` **(PREMIUM ALL)**                         | boolean | no       | Users cannot be added to projects in this group. |
 | `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional compute minutes for this group. |
 | `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
-| `wiki_access_level` **(PREMIUM)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
+| `wiki_access_level` **(PREMIUM ALL)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
 
 ### Options for `default_branch_protection`
 
@@ -893,8 +893,8 @@ GET /groups/:id/transfer_locations
 
 | Attribute   | Type           | Required               | Description |
 |-------------|----------------|------------------------|-------------|
-| `id`        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the group to be transferred](rest/index.md#namespaced-path-encoding). |
-| `search` | string | **{dotted-circle}** No  | The group names to search for. |
+| `id`        | integer or string | Yes | The ID or [URL-encoded path of the group to be transferred](rest/index.md#namespaced-path-encoding). |
+| `search` | string | No  | The group names to search for. |
 
 Example request:
 
@@ -988,17 +988,17 @@ PUT /groups/:id
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
 | `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional compute minutes for this group. |
-| `file_template_project_id` **(PREMIUM)**                | integer | no       | The ID of a project to load custom file templates from. |
-| `membership_lock` **(PREMIUM)**                         | boolean | no       | Users cannot be added to projects in this group. |
-| `prevent_forking_outside_group` **(PREMIUM)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. |
+| `file_template_project_id` **(PREMIUM ALL)**                | integer | no       | The ID of a project to load custom file templates from. |
+| `membership_lock` **(PREMIUM ALL)**                         | boolean | no       | Users cannot be added to projects in this group. |
+| `prevent_forking_outside_group` **(PREMIUM ALL)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. |
 | `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
-| `unique_project_download_limit` **(ULTIMATE)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
-| `unique_project_download_limit_interval_in_seconds` **(ULTIMATE)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
-| `unique_project_download_limit_allowlist` **(ULTIMATE)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |
-| `unique_project_download_limit_alertlist` **(ULTIMATE)** | array of integers | no | List of user IDs that are emailed when the unique project download limit is exceeded. Available only on top-level groups. Default: `[]`, Maximum: 100 user IDs. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110201) in GitLab 15.9. |
-| `auto_ban_user_on_excessive_projects_download` **(ULTIMATE)** | boolean | no | When enabled, users are automatically banned from the group when they download more than the maximum number of unique projects specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94159) in GitLab 15.4. |
-| `ip_restriction_ranges` **(PREMIUM)**                   | string  | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351493) in GitLab 15.4. |
-| `wiki_access_level` **(PREMIUM)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
+| `unique_project_download_limit` **(ULTIMATE ALL)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
+| `unique_project_download_limit_interval_in_seconds` **(ULTIMATE ALL)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
+| `unique_project_download_limit_allowlist` **(ULTIMATE ALL)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |
+| `unique_project_download_limit_alertlist` **(ULTIMATE ALL)** | array of integers | no | List of user IDs that are emailed when the unique project download limit is exceeded. Available only on top-level groups. Default: `[]`, Maximum: 100 user IDs. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110201) in GitLab 15.9. |
+| `auto_ban_user_on_excessive_projects_download` **(ULTIMATE ALL)** | boolean | no | When enabled, users are automatically banned from the group when they download more than the maximum number of unique projects specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94159) in GitLab 15.4. |
+| `ip_restriction_ranges` **(PREMIUM ALL)**                   | string  | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351493) in GitLab 15.4. |
+| `wiki_access_level` **(PREMIUM ALL)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -1039,7 +1039,7 @@ Example response:
     {
       "id": 9,
       "description": "foo",
-      "default_branch": "master",
+      "default_branch": "main",
       "tag_list": [], //deprecated, use `topics` instead
       "topics": [],
       "public": false,
@@ -1161,8 +1161,8 @@ Parameters:
 | Attribute            | Type             | Required | Description                                                                                                                                                 |
 |----------------------|------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)                                                                                |
-| `permanently_remove` **(PREMIUM)** | boolean/string   | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4 |
-| `full_path` **(PREMIUM)**          | string           | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#details-of-a-group) |
+| `permanently_remove` **(PREMIUM ALL)** | boolean/string   | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4 |
+| `full_path` **(PREMIUM ALL)**          | string           | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#details-of-a-group) |
 
 The response is `202 Accepted` if the user has authorization.
 

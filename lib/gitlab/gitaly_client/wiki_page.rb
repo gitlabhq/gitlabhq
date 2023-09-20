@@ -3,7 +3,7 @@
 module Gitlab
   module GitalyClient
     class WikiPage
-      ATTRS = %i(title format url_path path name historical raw_data).freeze
+      ATTRS = %i[title format url_path path name historical raw_data].freeze
 
       include AttributesBag
       include Gitlab::EncodingHelper

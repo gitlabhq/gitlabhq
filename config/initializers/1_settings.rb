@@ -121,7 +121,7 @@ Gitlab.ee do
     Settings.omniauth.providers.delete_if { |p| p.name == 'kerberos' }
     kerberos_spnego['name'] = 'kerberos'
 
-    omniauth_keys = %w(allow_single_sign_on auto_link_user external_providers sync_profile_from_provider allow_bypass_two_factor)
+    omniauth_keys = %w[allow_single_sign_on auto_link_user external_providers sync_profile_from_provider allow_bypass_two_factor]
     omniauth_keys.each do |key|
       next unless Settings.omniauth[key].is_a?(Array)
 
@@ -159,6 +159,10 @@ if github_settings
       }
     end
 end
+
+# Fill out default Settings for omniauth-saml
+
+OmniAuth::Strategies::SAML.default_options['message_max_bytesize'] = Settings.omniauth['saml_message_max_byte_size']
 
 # SAML should be enabled for the tests automatically, but only for EE.
 saml_provider_enabled = Settings.omniauth.providers.any? do |provider|
@@ -465,7 +469,7 @@ if Gitlab.ee? && Settings['ee_cron_jobs']
   Settings.cron_jobs.merge!(Settings.ee_cron_jobs)
 end
 
-Settings.cron_jobs['poll_interval'] ||= nil
+Settings.cron_jobs['poll_interval'] ||= ENV["GITLAB_CRON_JOBS_POLL_INTERVAL"] ? ENV["GITLAB_CRON_JOBS_POLL_INTERVAL"].to_i : nil
 Settings.cron_jobs['stuck_ci_jobs_worker'] ||= {}
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'
@@ -634,9 +638,6 @@ Settings.cron_jobs['user_status_cleanup_batch_worker']['job_class'] = 'UserStatu
 Settings.cron_jobs['ssh_keys_expired_notification_worker'] ||= {}
 Settings.cron_jobs['ssh_keys_expired_notification_worker']['cron'] ||= '0 2,14 * * *'
 Settings.cron_jobs['ssh_keys_expired_notification_worker']['job_class'] = 'SshKeys::ExpiredNotificationWorker'
-Settings.cron_jobs['namespaces_in_product_marketing_emails_worker'] ||= {}
-Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['cron'] ||= '0 16 * * *'
-Settings.cron_jobs['namespaces_in_product_marketing_emails_worker']['job_class'] = 'Namespaces::InProductMarketingEmailsWorker'
 Settings.cron_jobs['ssh_keys_expiring_soon_notification_worker'] ||= {}
 Settings.cron_jobs['ssh_keys_expiring_soon_notification_worker']['cron'] ||= '0 1 * * *'
 Settings.cron_jobs['ssh_keys_expiring_soon_notification_worker']['job_class'] = 'SshKeys::ExpiringSoonNotificationWorker'
@@ -682,15 +683,15 @@ Settings.cron_jobs['packages_cleanup_delete_orphaned_dependencies_worker']['job_
 Settings.cron_jobs['cleanup_dangling_debian_package_files_worker'] ||= {}
 Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['cron'] ||= '20 21 * * *'
 Settings.cron_jobs['cleanup_dangling_debian_package_files_worker']['job_class'] = 'Packages::Debian::CleanupDanglingPackageFilesWorker'
-Settings.cron_jobs['global_metrics_update_worker'] ||= {}
-Settings.cron_jobs['global_metrics_update_worker']['cron'] ||= '*/1 * * * *'
-Settings.cron_jobs['global_metrics_update_worker']['job_class'] ||= 'Metrics::GlobalMetricsUpdateWorker'
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker'] ||= {}
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['cron'] ||= '*/6 * * * *'
 Settings.cron_jobs['object_storage_delete_stale_direct_uploads_worker']['job_class'] = 'ObjectStorage::DeleteStaleDirectUploadsWorker'
 Settings.cron_jobs['service_desk_custom_email_verification_cleanup'] ||= {}
 Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['service_desk_custom_email_verification_cleanup']['job_class'] = 'ServiceDesk::CustomEmailVerificationCleanupWorker'
+Settings.cron_jobs['ensure_merge_requests_prepared_worker'] ||= {}
+Settings.cron_jobs['ensure_merge_requests_prepared_worker']['cron'] ||= '*/30 * * * *'
+Settings.cron_jobs['ensure_merge_requests_prepared_worker']['job_class'] ||= 'MergeRequests::EnsurePreparedWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -705,6 +706,9 @@ Gitlab.ee do
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker'] ||= {}
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['cron'] ||= '44 * * * *'
   Settings.cron_jobs['analytics_cycle_analytics_reaggregation_worker']['job_class'] = 'Analytics::CycleAnalytics::ReaggregationWorker'
+  Settings.cron_jobs['analytics_value_stream_dashboard_count_worker'] ||= {}
+  Settings.cron_jobs['analytics_value_stream_dashboard_count_worker']['cron'] ||= '*/7 * * * *'
+  Settings.cron_jobs['analytics_value_stream_dashboard_count_worker']['job_class'] = 'Analytics::ValueStreamDashboard::CountWorker'
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= {}
   Settings.cron_jobs['active_user_count_threshold_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['active_user_count_threshold_worker']['job_class'] = 'ActiveUserCountThresholdWorker'
@@ -798,9 +802,15 @@ Gitlab.ee do
   Settings.cron_jobs['sync_seat_link_worker'] ||= {}
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker'] ||= {}
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_empty_embeddings_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CreateEmptyEmbeddingsRecordsWorker'
   Settings.cron_jobs['tanuki_bot_recreate_records_worker'] ||= {}
   Settings.cron_jobs['tanuki_bot_recreate_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
   Settings.cron_jobs['tanuki_bot_recreate_records_worker']['job_class'] ||= 'Llm::TanukiBot::RecreateRecordsWorker'
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker'] ||= {}
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker']['cron'] ||= '0 0 * * *'
+  Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CleanupPreviousVersionsRecordsWorker'
   Settings.cron_jobs['tanuki_bot_remove_previous_records_worker'] ||= {}
   Settings.cron_jobs['tanuki_bot_remove_previous_records_worker']['cron'] ||= '0 0 * * *'
   Settings.cron_jobs['tanuki_bot_remove_previous_records_worker']['job_class'] ||= 'Llm::TanukiBot::RemovePreviousRecordsWorker'
@@ -866,12 +876,6 @@ Gitlab.ee do
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['job_class'] = 'PackageMetadata::AdvisoriesSyncWorker'
 
   Gitlab.com do
-    Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker'] ||= {}
-    Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['cron'] ||= '*/5 * * * *'
-    Settings.cron_jobs['free_user_cap_backfill_notification_jobs_worker']['job_class'] = 'Namespaces::FreeUserCap::BackfillNotificationJobsWorker'
-    Settings.cron_jobs['free_user_cap_backfill_clear_notified_flag'] ||= {}
-    Settings.cron_jobs['free_user_cap_backfill_clear_notified_flag']['cron'] ||= '*/5 * * * *'
-    Settings.cron_jobs['free_user_cap_backfill_clear_notified_flag']['job_class'] ||= 'Namespaces::FreeUserCap::BackfillNotificationClearingJobsWorker'
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['cron'] ||= "30 5 * * 0"
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects']['job_class'] = 'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker'
@@ -1080,7 +1084,7 @@ Settings.extra['maximum_text_highlight_size_kilobytes'] = Settings.extra.fetch('
 Settings['rack_attack'] ||= {}
 Settings.rack_attack['git_basic_auth'] ||= {}
 Settings.rack_attack.git_basic_auth['enabled'] = false if Settings.rack_attack.git_basic_auth['enabled'].nil?
-Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w{127.0.0.1}
+Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w[127.0.0.1]
 Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
 Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
 Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour

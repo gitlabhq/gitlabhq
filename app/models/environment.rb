@@ -25,7 +25,6 @@ class Environment < ApplicationRecord
   has_many :successful_deployments, -> { success }, class_name: 'Deployment'
   has_many :active_deployments, -> { active }, class_name: 'Deployment'
   has_many :prometheus_alerts, inverse_of: :environment
-  has_many :self_managed_prometheus_alert_events, inverse_of: :environment
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   # NOTE: If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
@@ -108,11 +107,11 @@ class Environment < ApplicationRecord
 
   scope :deployed_and_updated_before, -> (project_id, before) do
     # this query joins deployments and filters out any environment that has recent deployments
-    joins = %{
+    joins = %(
     LEFT JOIN "deployments" on "deployments".environment_id = "environments".id
         AND "deployments".project_id = #{project_id}
         AND "deployments".updated_at >= #{connection.quote(before)}
-    }
+    )
     Environment.joins(joins)
                .where(project_id: project_id, updated_at: ...before)
                .group('id', 'deployments.id')
@@ -193,7 +192,7 @@ class Environment < ApplicationRecord
     end
 
     event :stop_complete do
-      transition %i(available stopping) => :stopped
+      transition %i[available stopping] => :stopped
     end
 
     state :available

@@ -40,7 +40,7 @@ Projects in nested subgroups are not included in the template list.
 ## Which projects are available as templates
 
 - Public and internal projects can be selected by any authenticated user as a template for a new project,
-  if all [project features](../project/settings/index.md#configure-project-visibility-features-and-permissions)
+  if all [project features](../project/settings/index.md#configure-project-features-and-permissions)
   except for **GitLab Pages** and **Security and Compliance** are set to **Everyone With Access**.
 - Private projects can be selected only by users who are members of the projects.
 
@@ -68,6 +68,35 @@ gitlab.com/myorganization/
         client-site-c
         ...
 ```
+
+## What is copied from the templates
+
+The entire custom instance-level project templates repository is copied, including:
+
+- Branches
+- Commits
+- Tags
+
+If the user:
+
+- Has the Owner role on the custom instance-level project templates project or is a GitLab administrator,
+  all project settings are copied over to the new project.
+- Doesn't have the Owner role or is not a GitLab administrator,
+  project deploy keys and project webhooks aren't copied over because they contain sensitive data.
+
+To learn more about what is migrated, see
+[Items that are exported](../project/settings/import_export.md#items-that-are-exported).
+
+## User assignments in templates
+
+When you use a template created by another user, any items that were assigned
+to a user in the template are reassigned to you. It's important to understand
+this reassignment when you configure security features like protected branches
+and tags. For example, if the template contains a protected branch:
+
+- In the template, the branch allows the _template owner_ to merge into the default branch. 
+- In the project created from the template, the branch allows _you_ to merge into
+  the default branch.
 
 <!-- ## Troubleshooting
 

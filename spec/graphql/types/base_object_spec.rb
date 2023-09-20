@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::BaseObject do
+RSpec.describe Types::BaseObject, feature_category: :api do
   include GraphqlHelpers
 
   describe 'scoping items' do

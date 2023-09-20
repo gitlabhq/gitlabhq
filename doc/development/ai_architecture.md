@@ -11,7 +11,7 @@ GitLab has created a common set of tools to support our product groups and their
 1. Increase the velocity of feature teams by providing a set of high quality, ready to use tools
 1. Ability to switch underlying technologies quickly and easily
 
-AI is moving very quickly, and we need to be able to keep pace with changes in the area. We have built an [abstraction layer](../../ee/development/ai_features.md) to do this, allowing us to take a more "pluggable" approach to the underlying models, data stores, and other technologies.
+AI is moving very quickly, and we need to be able to keep pace with changes in the area. We have built an [abstraction layer](../../ee/development/ai_features/index.md) to do this, allowing us to take a more "pluggable" approach to the underlying models, data stores, and other technologies.
 
 The following diagram from the [architecture blueprint](../architecture/blueprints/ai_gateway/index.md) shows a simplified view of how the different components in GitLab interact. The abstraction layer helps avoid code duplication within the REST APIs within the `AI API` block.
 
@@ -26,6 +26,25 @@ There are two primary reasons for this: the best AI models are cloud-based as th
 ## AI Gateway
 
 The AI Gateway (formerly the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)) is a standalone-service that will give access to AI features to all users of GitLab, no matter which instance they are using: self-managed, dedicated or GitLab.com. The SaaS-based AI abstraction layer will transition to connecting to this gateway, rather than accessing cloud-based providers directly.
+
+Calls to the AI-gateway from GitLab-rails can be made using the
+[Abstraction Layer](ai_features/index.md#abstraction-layer).
+By default, these actions are performed asynchronously via a Sidekiq
+job to prevent long-running requests in Puma. It should be used for
+non-latency sensitive actions due to the added latency by Sidekiq.
+
+At the time of writing, the Abstraction Layer still directly calls the AI providers. This will be
+changed [in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/424614).
+
+When a certain action is latency sensitive, we can decide to call the
+AI-gateway directly. This avoids the latency added by Sidekiq.
+[We already do this for `code_suggestions`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb)
+which get handled by API endpoints nested in
+`/api/v4/code_suggestions`. For any new endpoints added, we should
+nest them within the `/api/v4/ai_assisted` namespace. Doing this will
+automatically route the requests on GitLab.com to the `ai-assisted`
+fleet for GitLab.com, isolating the workload from the regular API and
+making it easier to scale if needed.
 
 ## Supported technologies
 
@@ -98,7 +117,7 @@ The following table documents functionality that Code Suggestions offers today, 
 
 #### Code Suggestions Latency
 
-Code Suggestions acceptance rates are _highly_ sensitive to latency. While writing code with an AI assistant, a user will pause only for a short duration before continuing on with manually typing out a block of code. As soon as the user has pressed a subsequent keypress, the existing suggestion will be invalidated and a new request will need to be issued to the code suggestions endpoint. In turn, this request will also be highly sensitive to latency.
+Code Suggestions acceptance rates are _highly_ sensitive to latency. While writing code with an AI assistant, a user will pause only for a short duration before continuing on with manually typing out a block of code. As soon as the user has pressed a subsequent keypress, the existing suggestion will be invalidated and a new request will need to be issued to the Code Suggestions endpoint. In turn, this request will also be highly sensitive to latency.
 
 In a worst case with sufficient latency, the IDE could be issuing a string of requests, each of which is then ignored as the user proceeds without waiting for the response. This adds no value for the user, while still putting load on our services.
 

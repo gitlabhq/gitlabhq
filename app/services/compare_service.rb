@@ -17,9 +17,6 @@ class CompareService
 
     return unless raw_compare && raw_compare.base && raw_compare.head
 
-    Compare.new(raw_compare,
-                start_project,
-                base_sha: base_sha,
-                straight: straight)
+    Compare.new(raw_compare, start_project, base_sha: base_sha, straight: straight)
   end
 end

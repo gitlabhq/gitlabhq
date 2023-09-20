@@ -61,6 +61,7 @@ describe('RunnerCreateForm', () => {
     createComponent();
 
     expect(findRunnerFormFields().props('value')).toEqual(defaultRunnerModel);
+    expect(findRunnerFormFields().props('runnerType')).toEqual(INSTANCE_TYPE);
   });
 
   it('shows a submit button', () => {

@@ -26,7 +26,7 @@ To create a GitLab for Slack app:
 
 - **In GitLab**:
 
-  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. On the left sidebar, select **Search or go to**.
   1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **GitLab for Slack app**.
@@ -46,7 +46,7 @@ You're then redirected to Slack for the next steps.
 
 After you've [created a GitLab for Slack app](#create-a-gitlab-for-slack-app), you can configure the settings in GitLab:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **GitLab for Slack app**.
@@ -80,7 +80,7 @@ To update your copy of the GitLab for Slack app:
 
 - **In GitLab**:
 
-  1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+  1. On the left sidebar, select **Search or go to**.
   1. Select **Admin Area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **GitLab for Slack app**.

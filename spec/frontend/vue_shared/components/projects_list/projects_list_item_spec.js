@@ -1,10 +1,10 @@
-import { GlAvatarLabeled, GlBadge, GlIcon, GlPopover, GlDisclosureDropdown } from '@gitlab/ui';
+import { GlAvatarLabeled, GlBadge, GlIcon, GlPopover } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 import projects from 'test_fixtures/api/users/projects/get.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { __ } from '~/locale';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/projects_list/constants';
+import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
+import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import {
@@ -43,6 +43,7 @@ describe('ProjectsListItem', () => {
   const findPopover = () => findProjectTopics().findComponent(GlPopover);
   const findProjectDescription = () => wrapper.findByTestId('project-description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
+  const findListActions = () => wrapper.findComponent(ListActions);
 
   beforeEach(() => {
     uniqueId.mockImplementation(jest.requireActual('lodash/uniqueId'));
@@ -327,7 +328,7 @@ describe('ProjectsListItem', () => {
         propsData: {
           project: {
             ...project,
-            actions: [ACTION_EDIT, ACTION_DELETE],
+            availableActions: [ACTION_EDIT, ACTION_DELETE],
             isForked: true,
             editPath,
           },
@@ -336,32 +337,22 @@ describe('ProjectsListItem', () => {
     });
 
     it('displays actions dropdown', () => {
-      expect(wrapper.findComponent(GlDisclosureDropdown).props()).toMatchObject({
-        items: [
-          {
-            id: ACTION_EDIT,
-            text: __('Edit'),
+      expect(findListActions().props()).toMatchObject({
+        actions: {
+          [ACTION_EDIT]: {
             href: editPath,
           },
-          {
-            id: ACTION_DELETE,
-            text: __('Delete'),
-            extraAttrs: {
-              class: 'gl-text-red-500!',
-            },
+          [ACTION_DELETE]: {
             action: expect.any(Function),
           },
-        ],
+        },
+        availableActions: [ACTION_EDIT, ACTION_DELETE],
       });
     });
 
     describe('when delete action is fired', () => {
       beforeEach(() => {
-        wrapper
-          .findComponent(GlDisclosureDropdown)
-          .props('items')
-          .find((item) => item.id === ACTION_DELETE)
-          .action();
+        findListActions().props('actions')[ACTION_DELETE].action();
       });
 
       it('displays confirmation modal with correct props', () => {

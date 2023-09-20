@@ -3,28 +3,25 @@
 class ProjectSetting < ApplicationRecord
   include ::Gitlab::Utils::StrongMemoize
   include EachBatch
+  include IgnorableColumns
 
-  ALLOWED_TARGET_PLATFORMS = %w(ios osx tvos watchos android).freeze
+  ALLOWED_TARGET_PLATFORMS = %w[ios osx tvos watchos android].freeze
 
   belongs_to :project, inverse_of: :project_setting
 
   scope :for_projects, ->(projects) { where(project_id: projects) }
 
+  ignore_columns %i[
+    encrypted_product_analytics_clickhouse_connection_string
+    encrypted_product_analytics_clickhouse_connection_string_iv
+    encrypted_jitsu_administrator_password
+    encrypted_jitsu_administrator_password_iv
+    jitsu_host
+    jitsu_project_xid
+    jitsu_administrator_email
+  ], remove_with: '16.5', remove_after: '2023-09-22'
+
   attr_encrypted :cube_api_key,
-    mode: :per_attribute_iv,
-    key: Settings.attr_encrypted_db_key_base_32,
-    algorithm: 'aes-256-gcm',
-    encode: false,
-    encode_iv: false
-
-  attr_encrypted :jitsu_administrator_password,
-    mode: :per_attribute_iv,
-    key: Settings.attr_encrypted_db_key_base_32,
-    algorithm: 'aes-256-gcm',
-    encode: false,
-    encode_iv: false
-
-  attr_encrypted :product_analytics_clickhouse_connection_string,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_32,
     algorithm: 'aes-256-gcm',

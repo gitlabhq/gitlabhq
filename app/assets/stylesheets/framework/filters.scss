@@ -369,22 +369,6 @@
     .board-labels-toggle-wrapper {
       margin-bottom: $gl-input-padding;
     }
-
-    .board-swimlanes-toggle-wrapper {
-      @include gl-h-auto;
-      margin-bottom: $gl-input-padding;
-
-      > span,
-      > .dropdown,
-      .gl-dropdown-toggle {
-        @include gl-w-full;
-        @include gl-m-0;
-      }
-
-      > .dropdown {
-        @include gl-mt-2;
-      }
-    }
   }
 }
 

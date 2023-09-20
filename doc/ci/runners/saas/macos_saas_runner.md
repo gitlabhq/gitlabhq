@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SaaS runners on macOS (Beta) **(PREMIUM SAAS)**
+# SaaS runners on macOS **(PREMIUM SAAS BETA)**
 
 SaaS runners on macOS are in [Beta](../../../policy/experiment-beta-support.md#beta) for open source programs and customers in Premium and Ultimate plans.
 
@@ -38,28 +38,30 @@ in your `.gitlab-ci.yml` file.
 
 Each image runs a specific version of macOS and Xcode.
 
-| VM image                  | Status        |
-|---------------------------|---------------|
-| `macos-12-xcode-13`       | `maintenance` |
-| `macos-12-xcode-14`       | `maintenance` |
-| (none, awaiting macOS 13) | `beta`        |
+| VM image                   | Status |
+|----------------------------|--------|
+| `macos-12-xcode-13`        | `GA`   |
+| `macos-12-xcode-14`        | `GA`   |
+| `macos-13-xcode-14`        | `Beta` |
 
-NOTE:
-If your job requires tooling or dependencies not available in our available images, those can only be installed in the job execution.
+## Image update policy for macOS
 
-## Image update policy
+macOS and Xcode follow a yearly release cadence, during which GitLab increments its versions synchronously. GitLab typically supports multiple versions of preinstalled tools. For more information, see
+a [full list of preinstalled software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/tree/main/toolchain).
 
-GitLab expects to release new images based on this cadence:
+GitLab provides `stable` and `latest` macOS images that follow different update patterns:
 
-macOS updates:
+- **Stable image:** The `stable` images and installed components are updated every release. Images without the `:latest` prefix are considered stable images.
+- **Latest image:** The `latest` images are typically updated on a weekly cadence and use a `:latest` prefix in the image name. Using the `latest` image results in more regularly updated components and shorter update times for Homebrew or asdf. The `latest` images are used to test software components before releasing the components to the `stable` images.
+By definition, the `latest` images are always Beta.
+A `latest` image is not available.
 
-- **For new OS versions:** When Apple releases a new macOS version to developers (like macOS `12`), GitLab will plan to release an image based on the OS within the next 30 business days. The image is considered `beta` and the contents of the image (including tool versions) are subject to change until the first patch release (`12.1`). The long-term name will not include `beta` (for example, `macos-12-xcode-13`), so customers are moved automatically out of beta over time. GitLab will try to minimize breaking changes between the first two minor versions but makes no guarantees. Tooling often gets critical bug fixes after the first public release of an OS version.
+### Image release process
 
-- **After the first patch release (`12.1`):**
-  - The image moves to `maintenance` mode. The tools GitLab builds into the image with Homebrew and asdf are frozen. GitLab continues making Xcode updates, security updates, and any non-breaking changes deemed necessary.
-  - The image for the previous OS version (`11`) moves to `frozen` mode. GitLab then does only unavoidable changes: security updates, runner version upgrades, and setting the production password.
+When Apple releases a new macOS version, GitLab releases both `stable` and `latest` images based on the OS in the next release. Both images are Beta.
 
-Both macOS and Xcode follow a yearly release cadence. As time goes on, GitLab increments their versions synchronously (meaning we build macOS 11 with Xcode 12, macOS 12 with Xcode 13, and so on).
+With the release of the first patch to macOS, the `stable` image becomes Generally Available (GA).
+As only two GA images are supported at a time, the prior OS version becomes deprecated and is deleted after three months in accordance with the [supported image lifecycle](../index.md#supported-image-lifecycle).
 
 ## Example `.gitlab-ci.yml` file
 

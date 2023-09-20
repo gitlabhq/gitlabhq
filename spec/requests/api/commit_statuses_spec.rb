@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
+RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:commit) { project.repository.commit }
   let_it_be(:guest) { create_user(:guest) }
@@ -120,6 +120,7 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
 
       it "does not return project commits" do
         expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden')
       end
     end
 
@@ -139,7 +140,8 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
 
     context 'developer user' do
       context 'uses only required parameters' do
-        %w[pending running success failed canceled].each do |status|
+        valid_statues = %w[pending running success failed canceled]
+        valid_statues.each do |status|
           context "for #{status}" do
             context 'when pipeline for sha does not exists' do
               it 'creates commit status and sets pipeline iid' do
@@ -248,12 +250,13 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
         end
       end
 
-      context 'transitions status from pending' do
+      context 'when status transitions from pending' do
         before do
           post api(post_url, developer), params: { state: 'pending' }
         end
 
-        %w[running success failed canceled].each do |status|
+        valid_statues = %w[running success failed canceled]
+        valid_statues.each do |status|
           it "to #{status}" do
             expect { post api(post_url, developer), params: { state: status } }.not_to change { CommitStatus.count }
 
@@ -366,6 +369,7 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
               send_request
 
               expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['message']).to eq("Cannot transition status via :run from :running (Reason(s): Status cannot transition via \"run\")")
 
               commit_status = project.commit_statuses.find_by!(name: 'coverage')
 
@@ -440,6 +444,7 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
 
         it 'does not create commit status' do
           expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq(nil)
         end
       end
 
@@ -450,6 +455,7 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
 
         it 'does not create commit status' do
           expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq(nil)
         end
       end
 
@@ -464,6 +470,7 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
 
           it 'does not create commit status' do
             expect(response).to have_gitlab_http_status(:forbidden)
+            expect(json_response['message']).to eq('403 Forbidden')
           end
         end
 
@@ -485,15 +492,16 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
 
         it 'returns not found error' do
           expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to eq('404 Commit Not Found')
         end
       end
 
       context 'when target URL is an invalid address' do
         before do
           post api(post_url, developer), params: {
-                                           state: 'pending',
-                                           target_url: 'invalid url'
-                                         }
+                                          state: 'pending',
+                                          target_url: 'invalid url'
+                                        }
         end
 
         it 'responds with bad request status and validation errors' do
@@ -506,9 +514,9 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
       context 'when target URL is an unsupported scheme' do
         before do
           post api(post_url, developer), params: {
-                                           state: 'pending',
-                                           target_url: 'git://example.com'
-                                         }
+                                          state: 'pending',
+                                          target_url: 'git://example.com'
+                                        }
         end
 
         it 'responds with bad request status and validation errors' do
@@ -562,6 +570,7 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
 
       it 'does not create commit status' do
         expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden')
       end
     end
 
@@ -572,6 +581,7 @@ RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
 
       it 'does not create commit status' do
         expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden')
       end
     end
 

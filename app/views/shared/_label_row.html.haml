@@ -15,6 +15,9 @@
         .gl-my-1
           = markdown_field(label, :description)
     %ul.label-links.gl-m-0.gl-p-0.gl-white-space-nowrap
+      - if label.lock_on_merge
+        %li.inline.gl-mr-3.gl-mt-1
+          .label-badge.gl-bg-orange-50= _('Lock on merge')
       - if force_priority
         %li.js-priority-badge.inline.gl-mr-3.gl-mt-1
           .label-badge.gl-bg-blue-50= _('Prioritized')

@@ -47,14 +47,14 @@ To create redirects, create a configuration file named `_redirects` in the
   configured at the instance level. Only the first matching rules within the configured maximum are processed.
   The default file size limit is 64 KB, and the default maximum number of rules is 1,000.
 - If your GitLab Pages site uses the default domain name (such as
-  `namespace.gitlab.io/projectname`) you must prefix every rule with the project name:
+  `namespace.gitlab.io/project-slug`) you must prefix every rule with the path:
 
   ```plaintext
-  /projectname/wardrobe.html /projectname/narnia.html 302
+  /project-slug/wardrobe.html /project-slug/narnia.html 302
   ```
 
 - If your GitLab Pages site uses [custom domains](custom_domains_ssl_tls_certification/index.md),
-  no project name prefix is needed. For example, if your custom domain is `example.com`,
+  no project path prefix is needed. For example, if your custom domain is `example.com`,
   your `_redirects` file would look like:
 
   ```plaintext
@@ -69,7 +69,7 @@ the file instead of your redirect. For example, if the files `hello.html` and
 is ignored because `hello.html` exists:
 
 ```plaintext
-/projectname/hello.html /projectname/world.html 302
+/project-slug/hello.html /project-slug/world.html 302
 ```
 
 GitLab does not support Netlify
@@ -210,8 +210,7 @@ would **not** match a request URL like `/old/file`:
 ## Debug redirect rules
 
 If a redirect isn't working as expected, or you want to check your redirect syntax, visit
-`https://[namespace.gitlab.io]/projectname/_redirects`, replacing `[namespace.gitlab.io]` with
-your domain name. The `_redirects` file isn't served directly, but your browser
+`[your pages url]/_redirects`. The `_redirects` file isn't served directly, but your browser
 displays a numbered list of your redirect rules, and whether the rule is valid or invalid:
 
 ```plaintext

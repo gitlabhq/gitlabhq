@@ -6,7 +6,7 @@ module SystemCheck
       set_name 'All migrations up?'
 
       def check?
-        migration_status, _ = Gitlab::Popen.popen(%w(bundle exec rake db:migrate:status))
+        migration_status, _ = Gitlab::Popen.popen(%w[bundle exec rake db:migrate:status])
 
         migration_status !~ /down\s+\d{14}/
       end

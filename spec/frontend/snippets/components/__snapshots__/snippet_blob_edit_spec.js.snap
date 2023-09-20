@@ -8,11 +8,10 @@ exports[`Snippet Blob Edit component with loaded blob matches snapshot 1`] = `
   <blob-header-edit-stub
     candelete="true"
     data-qa-selector="file_name_field"
-    id="blob_local_7_file_path"
+    id="reference-0"
     showdelete="true"
     value="foo/bar/test.md"
   />
-   
   <source-editor-stub
     debouncevalue="250"
     editoroptions="[object Object]"

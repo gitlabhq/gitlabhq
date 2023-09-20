@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::X509::Certificate do
+RSpec.describe Gitlab::X509::Certificate, feature_category: :source_code_management do
   include SmimeHelper
 
   let(:sample_ca_certs_path) { Rails.root.join('spec/fixtures/clusters').to_s }

@@ -1,0 +1,11 @@
+query abuseReportLabelsQuery($searchTerm: String) {
+  labels: abuseReportLabels(searchTerm: $searchTerm) {
+    nodes {
+      id
+      title
+      description
+      color
+      textColor
+    }
+  }
+}

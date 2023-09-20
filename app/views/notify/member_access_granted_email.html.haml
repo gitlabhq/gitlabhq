@@ -8,11 +8,6 @@
   %td.text-content
     %p
       = _('You have been granted %{access_level} access to the %{source_link} %{source_type}.').html_safe % { access_level: access_level, source_link: source_link, source_type: source_type }
-      - if member.tasks_to_be_done.present?
-        = s_("InviteEmail|You were assigned the following tasks:")
-        %ul.list-style-position-inside
-          - member.tasks_to_be_done.each do |task|
-            %li= localized_tasks_to_be_done_choices[task]
     %p
       - leave_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: leave_link }
       = _('If this was a mistake you can %{leave_link_start}leave the %{source_type}%{link_end}.').html_safe % { source_type: source_type, leave_link_start: leave_link_start, link_end: link_end }

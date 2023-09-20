@@ -67,7 +67,6 @@ InitializerConnections.raise_if_new_database_connection do
       Gitlab.ee do
         resource :company, only: [:new, :create], controller: 'company'
         resources :groups, only: [:new, :create]
-        draw :verification
       end
     end
 
@@ -117,6 +116,12 @@ InitializerConnections.raise_if_new_database_connection do
 
       get 'offline' => "pwa#offline"
       get 'manifest' => "pwa#manifest", constraints: lambda { |req| req.format == :json }
+
+      scope module: 'clusters' do
+        scope module: 'agents' do
+          get '/kubernetes/:agent_id', to: 'dashboard#show', as: 'kubernetes_dashboard'
+        end
+      end
 
       # '/-/health' implemented by BasicHealthCheck middleware
       get 'liveness' => 'health#liveness'
@@ -223,6 +228,8 @@ InitializerConnections.raise_if_new_database_connection do
       post '/members/mailgun/permanent_failures' => 'mailgun/webhooks#process_webhook'
 
       get '/timelogs' => 'time_tracking/timelogs#index'
+
+      post '/track_namespace_visits' => 'users/namespace_visits#create'
     end
     # End of the /-/ scope.
 
@@ -265,6 +272,7 @@ InitializerConnections.raise_if_new_database_connection do
 
     draw :git_http
     draw :api
+    draw :activity_pub
     draw :customers_dot
     draw :sidekiq
     draw :help

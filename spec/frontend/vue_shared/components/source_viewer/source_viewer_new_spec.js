@@ -58,7 +58,8 @@ describe('Source Viewer component', () => {
 
   describe('hash highlighting', () => {
     it('calls highlightHash with expected parameter', () => {
-      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
+      const scrollEnabled = false;
+      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash, scrollEnabled);
     });
   });
 });

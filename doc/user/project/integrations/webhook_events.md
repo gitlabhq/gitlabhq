@@ -988,7 +988,7 @@ Payload example:
     "draft": {
       "previous": true,
       "current": false
-    }
+    },
     "updated_at": {
       "previous": "2017-09-15 16:50:55 UTC",
       "current":"2017-09-15 16:52:00 UTC"
@@ -1026,7 +1026,7 @@ Payload example:
     "last_edited_by_id": {
       "previous": null,
       "current": 3278533
-    },
+    }
   },
   "assignees": [
     {
@@ -1521,7 +1521,8 @@ Deployment events are triggered when a deployment:
 - Fails
 - Is cancelled
 
-The `deployable_id` in the payload is the ID of the CI/CD job.
+The `deployable_id` and `deployable_url` in the payload represent a CI/CD job that executed the deployment.
+When the deployment event occurs by [API](../../../ci/environments/external_deployment_tools.md) or [`trigger` jobs](../../../ci/pipelines/downstream_pipelines.md), `deployable_url` is `null`.
 
 Request header:
 
@@ -1879,12 +1880,13 @@ Payload example:
 
 ## Emoji events
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123952) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `emoji_webhooks`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123952) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `emoji_webhooks`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/417288) in GitLab 16.3.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/417288) in GitLab 16.4.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `emoji_webhooks`.
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
+[disable the feature flag](../../../administration/feature_flags.md) named `emoji_webhooks`. On GitLab.com, this feature is available.
 
 NOTE:
 To have the `emoji_webhooks` flag enabled on GitLab.com, see [issue 417288](https://gitlab.com/gitlab-org/gitlab/-/issues/417288).

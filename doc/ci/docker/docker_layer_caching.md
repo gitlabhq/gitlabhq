@@ -29,9 +29,9 @@ This example `.gitlab-ci.yml` file shows how to use Docker caching:
 
 ```yaml
 default:
-  image: docker:20.10.16
+  image: docker:24.0.5
   services:
-    - docker:20.10.16-dind
+    - docker:24.0.5-dind
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 

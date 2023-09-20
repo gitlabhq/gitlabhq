@@ -1041,9 +1041,9 @@ RSpec.describe Integration, feature_category: :integrations do
     it 'returns all fields with type `password`' do
       allow(subject).to receive(:fields).and_return(
         [
-          { name: 'password', type: :password },
-          { name: 'secret', type: :password },
-          { name: 'public', type: :text }
+          Integrations::Field.new(name: 'password', integration_class: subject.class, type: :password),
+          Integrations::Field.new(name: 'secret', integration_class: subject.class, type: :password),
+          Integrations::Field.new(name: 'public', integration_class: subject.class, type: :text)
         ])
 
       expect(subject.secret_fields).to match_array(%w[password secret])

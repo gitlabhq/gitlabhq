@@ -371,6 +371,39 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable, feature_category: :pipeli
       end
     end
 
+    context 'with environment' do
+      context 'when environment name is specified' do
+        let(:config) { { script: 'ls', environment: 'prod' }.compact }
+
+        it 'sets environment name and action to the entry value' do
+          entry.compose!(deps)
+
+          expect(entry.value[:environment]).to eq({ action: 'start', name: 'prod' })
+          expect(entry.value[:environment_name]).to eq('prod')
+        end
+      end
+
+      context 'when environment name, url and action are specified' do
+        let(:config) do
+          {
+            script: 'ls',
+            environment: {
+              name: 'staging',
+              url: 'https://gitlab.com',
+              action: 'prepare'
+            }
+          }.compact
+        end
+
+        it 'sets environment name, action and url to the entry value' do
+          entry.compose!(deps)
+
+          expect(entry.value[:environment]).to eq({ action: 'prepare', name: 'staging', url: 'https://gitlab.com' })
+          expect(entry.value[:environment_name]).to eq('staging')
+        end
+      end
+    end
+
     context 'with inheritance' do
       context 'of default:tags' do
         using RSpec::Parameterized::TableSyntax

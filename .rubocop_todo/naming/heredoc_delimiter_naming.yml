@@ -30,7 +30,6 @@ Naming/HeredocDelimiterNaming:
     - 'lib/feature/shared.rb'
     - 'lib/gitlab/cache/import/caching.rb'
     - 'lib/gitlab/conflict/file_collection.rb'
-    - 'lib/gitlab/database.rb'
     - 'lib/gitlab/database/migration_helpers.rb'
     - 'lib/gitlab/database/migration_helpers/v2.rb'
     - 'lib/gitlab/exclusive_lease.rb'

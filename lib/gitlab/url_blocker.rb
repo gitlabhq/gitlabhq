@@ -260,7 +260,7 @@ module Gitlab
 
         return true if /\n|\r/.match?(url)
         # Google Cloud Storage uses a multi-line, encoded Signature query string
-        return false if %w(http https).include?(parsed_url.scheme&.downcase)
+        return false if %w[http https].include?(parsed_url.scheme&.downcase)
 
         CGI.unescape(url) =~ /\n|\r/
       end

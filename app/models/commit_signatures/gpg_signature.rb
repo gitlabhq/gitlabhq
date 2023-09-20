@@ -3,6 +3,7 @@ module CommitSignatures
   class GpgSignature < ApplicationRecord
     include CommitSignature
     include SignatureType
+    include EachBatch
 
     sha_attribute :gpg_key_primary_keyid
 

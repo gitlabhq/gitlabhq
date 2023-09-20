@@ -8,12 +8,12 @@ module Types
       value 'IDLE',
             description: "Runner is idle.",
             value: :idle,
-            deprecated: { milestone: '15.7', reason: :alpha }
+            alpha: { milestone: '15.7' }
 
       value 'RUNNING',
             description: 'Runner is executing jobs.',
             value: :running,
-            deprecated: { milestone: '15.7', reason: :alpha }
+            alpha: { milestone: '15.7' }
     end
   end
 end

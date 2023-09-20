@@ -37,7 +37,7 @@ In Pivotal Tracker, [create an API token](https://www.pivotaltracker.com/help/ar
 
 Complete these steps in GitLab:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Pivotal Tracker**.
 1. Ensure that the **Active** toggle is enabled.

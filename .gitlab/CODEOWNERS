@@ -48,9 +48,29 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /spec/frontend_integration/
 /ee/spec/frontend_integration/
 
+[Clickhouse] @gitlab-org/maintainers/clickhouse
+/db/click_house/
+/ee/db/click_house/
+/**/click(_|-)?house/
+
+## We list db/ subfolders explicitly as we don't want to match Clickhouse files
 [Database] @gitlab-org/maintainers/database
-/db/
-/ee/db/
+/db/database_connections/
+/ee/db/database_connections/
+/db/docs/
+/ee/db/docs/
+/ee/db/embedding/
+/ee/db/geo/
+/ee/db/seeds/
+/db/gitlab_schemas/
+/ee/db/gitlab_schemas/
+/db/*migrate/
+/ee/db/*migrate/
+/db/schema_migrations/
+/ee/db/schema_migrations/
+# The following two lines only match db/ root files
+/db/*
+/ee/db/*
 /lib/gitlab/background_migration/
 /ee/lib/ee/gitlab/background_migration/
 /lib/gitlab/database/
@@ -79,7 +99,7 @@ Dangerfile
 /tooling/danger/
 /scripts/
 /scripts/**/*.rb @gl-quality/eng-prod @gitlab-org/maintainers/rails-backend
-/scripts/**/glfm/**/* @gl-quality/eng-prod @gitlab-org/maintainers/rails-backend
+/scripts/**/glfm/**/* @gl-quality/eng-prod @gitlab-org/plan-stage/backend-engineers
 /scripts/**/*.js @gl-quality/eng-prod @gitlab-org/maintainers/frontend
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
 /scripts/remote_development/ @gitlab-org/maintainers/remote-development/backend
@@ -96,12 +116,13 @@ Dangerfile
 /lefthook.yml
 /tests.yml
 
-^[Backend Static Code Analysis] @gl-quality/eng-prod @dstull @splattael
+^[Backend Static Code Analysis] @gl-quality/eng-prod @dstull
 .rubocop*.yml
 .rubocop_todo/
 /gems/config/rubocop.yml
 /rubocop/
 /spec/rubocop/
+/spec/rubocop*
 
 ^[End-to-end] @gl-quality
 /qa/
@@ -120,6 +141,7 @@ Dangerfile
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
 ^[Threat Insights backend] @gitlab-org/govern/threat-insights-backend-team
+/development/sec/cyclonedx_property_taxonomy.md
 /app/finders/security/
 /app/models/vulnerability.rb
 /app/presenters/projects/security/
@@ -731,14 +753,13 @@ lib/gitlab/checks/**
 /doc/ci/examples/deployment/ @phillipwells
 /doc/ci/examples/semantic-release.md @phillipwells
 /doc/ci/interactive_web_terminal/ @fneill
-/doc/ci/large_repositories/ @fneill
 /doc/ci/resource_groups/ @phillipwells
 /doc/ci/runners/ @fneill
 /doc/ci/services/ @fneill
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/ci/testing/code_quality.md @rdickenson
 /doc/development/advanced_search.md @ashrafkhamis
-/doc/development/ai_features.md @sselhorn
+/doc/development/ai_features/ @sselhorn
 /doc/development/application_limits.md @axil
 /doc/development/audit_event_guide/ @eread
 /doc/development/auto_devops.md @phillipwells
@@ -935,6 +956,7 @@ lib/gitlab/checks/**
 /doc/user/profile/index.md @jglassman1
 /doc/user/profile/notifications.md @msedlakjakubowski
 /doc/user/profile/personal_access_tokens.md @jglassman1
+/doc/user/profile/service_accounts.md @jglassman1
 /doc/user/profile/user_passwords.md @jglassman1
 /doc/user/project/autocomplete_characters.md @aqualls
 /doc/user/project/badges.md @lciutacu
@@ -973,9 +995,9 @@ lib/gitlab/checks/**
 /doc/user/project/releases/release_evidence.md @eread
 /doc/user/project/remote_development/ @ashrafkhamis
 /doc/user/project/repository/ @aqualls
-/doc/user/project/repository/code_suggestions.md @sselhorn
+/doc/user/project/repository/code_suggestions/ @sselhorn
 /doc/user/project/repository/file_finder.md @ashrafkhamis
-/doc/user/project/repository/managing_large_repositories.md @axil
+/doc/user/project/repository/managing_large_repositories.md @eread
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski
@@ -1170,6 +1192,7 @@ lib/gitlab/checks/**
 /ee/app/models/ee/personal_access_token.rb
 /ee/app/models/ee/project_authorization.rb
 /ee/app/models/scim_oauth_access_token.rb
+/ee/app/models/members/member_role.rb
 /ee/app/serializers/scim_oauth_access_token_entity.rb
 /ee/app/services/arkose/token_verification_service.rb
 /ee/app/services/ee/auth/
@@ -1202,6 +1225,7 @@ lib/gitlab/checks/**
 /ee/lib/gitlab/geo/oauth/
 /ee/lib/gitlab/kerberos/
 /ee/lib/omni_auth/
+/ee/spec/requests/custom_roles/
 /ee/lib/system_check/geo/authorized_keys_check.rb
 /ee/lib/system_check/geo/authorized_keys_flag_check.rb
 /lib/api/entities/impersonation_token.rb
@@ -1328,8 +1352,6 @@ lib/gitlab/checks/**
 
 # Verify frontend
 /**/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/pipelines/ @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/jobs/ @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/token_access/ @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/admin/application_settings/runner_token_expiration/ @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @sheldonled @aalakkad @kpalchyk
@@ -1381,8 +1403,7 @@ lib/gitlab/checks/**
 /lib/tasks/gitlab/seed/runner_fleet.rake @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 # CI/CD templates require approval from specific owners.
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
-/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
-/lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @sethgitlab @thiagocsf
+/lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @amarpatel
 /lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
 /lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
 /lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
@@ -1493,7 +1514,6 @@ ee/lib/ee/api/entities/project.rb
 /ee/app/controllers/remote_development/
 /ee/app/services/remote_development/
 /ee/lib/remote_development/
-/ee/spec/frontend/remote_development/
 /ee/spec/features/remote_development/
 /ee/spec/models/remote_development/
 /ee/spec/policies/remote_development/
@@ -1511,8 +1531,10 @@ ee/lib/ee/api/entities/project.rb
 /qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/remote-development/backend @gl-quality/qe-maintainers
 
 [Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/remote-development/frontend
+/ee/app/assets/remote_development/
 /ee/app/assets/**/remote_development/
 /ee/app/views/remote_development/
+/ee/spec/frontend/remote_development/
 /ee/spec/frontend/**/remote_development/
 
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528

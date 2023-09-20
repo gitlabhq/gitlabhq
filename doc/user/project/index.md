@@ -134,7 +134,7 @@ Prerequisites:
   [added to your GitLab account](../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 - You must have permission to add new projects to a namespace. To check if you have permission:
 
-  1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+  1. On the left sidebar, select **Search or go to** and find your group.
   1. In the upper-right corner, confirm that **New project** is visible.
      Contact your GitLab administrator if you require permission.
 

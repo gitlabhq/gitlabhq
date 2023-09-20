@@ -39,7 +39,7 @@ Prerequisite:
 
 To create global push rules:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Push Rules**.
 1. Expand **Push rules**.
@@ -52,7 +52,7 @@ The push rule of an individual project overrides the global push rule.
 To override global push rules for a specific project, or to update the rules
 for an existing project to match new global push rules:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Push rules**.
 1. Set the rule you want.
@@ -126,7 +126,7 @@ Some validation examples:
 
 Use these rules to prevent unintended consequences.
 
-- **Reject unsigned commits**: Commit must be signed through [GPG](gpg_signed_commits/index.md). This rule
+- **Reject unsigned commits**: Commit must be signed through [GPG](signed_commits/gpg.md). This rule
   can block some legitimate commits [created in the Web IDE](#reject-unsigned-commits-push-rule-disables-web-ide),
   and allow [unsigned commits created in the GitLab UI](#unsigned-commits-created-in-the-gitlab-ui).
 - **Do not allow users to remove Git tags with `git push`**: Users cannot use `git push` to remove Git tags.
@@ -274,7 +274,7 @@ to use them as standard characters in a match condition.
 ## Related topics
 
 - [Git server hooks](../../../administration/server_hooks.md) (previously called server hooks), to create complex custom push rules
-- [Signing commits with GPG](gpg_signed_commits/index.md)
+- [Signing commits with GPG](signed_commits/gpg.md)
 - [Protected branches](../protected_branches.md)
 
 ## Troubleshooting

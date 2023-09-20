@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { InternalEvents } from '~/tracking';
 import { __ } from './locale';
 
 /**
@@ -47,6 +48,15 @@ export function toggleSection($section) {
   }
 }
 
+export function initTrackProductAnalyticsExpanded() {
+  const $analyticsSection = $('#js-product-analytics-settings');
+  $analyticsSection.on('click.toggleSection', '.js-settings-toggle', () => {
+    if (isExpanded($analyticsSection)) {
+      InternalEvents.track_event('user_viewed_cluster_configuration');
+    }
+  });
+}
+
 export default function initSettingsPanels() {
   $('.settings').each((i, elm) => {
     const $section = $(elm);
@@ -64,4 +74,6 @@ export default function initSettingsPanels() {
       }
     }
   });
+
+  initTrackProductAnalyticsExpanded();
 }

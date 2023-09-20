@@ -1,11 +1,12 @@
 <script>
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { STATE_OPEN } from '../constants';
 
 export default {
   components: {
     GlBadge,
+    GlIcon,
   },
   props: {
     workItemState: {
@@ -31,11 +32,8 @@ export default {
 </script>
 
 <template>
-  <gl-badge
-    :icon="workItemStateIcon"
-    :variant="workItemStateVariant"
-    class="gl-mr-2 gl-vertical-align-middle"
-  >
-    {{ stateText }}
+  <gl-badge :variant="workItemStateVariant" class="gl-mr-2 gl-vertical-align-middle">
+    <gl-icon :name="workItemStateIcon" :size="16" />
+    <span class="gl-display-none gl-sm-display-block gl-ml-2">{{ stateText }}</span>
   </gl-badge>
 </template>

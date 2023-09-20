@@ -11,9 +11,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
   let(:project) { issue.project }
   let(:user) { developer }
   let(:files) { [rails_sample] }
-  let(:design_repository) do
-    ::Gitlab::GlRepository::DESIGN.repository_resolver.call(project)
-  end
+  let(:design_repository) { project.find_or_create_design_management_repository.repository }
 
   let(:rails_sample_name) { 'rails_sample.jpg' }
   let(:rails_sample) { sample_image(rails_sample_name) }
@@ -43,9 +41,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
     design_files = files_to_upload || files
     design_files.each(&:rewind)
 
-    service = described_class.new(project, user,
-                                  issue: issue,
-                                  files: design_files)
+    service = described_class.new(project, user, issue: issue, files: design_files)
     service.execute
   end
 
@@ -123,8 +119,9 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
         )
       end
 
-      it_behaves_like 'issue_edit snowplow tracking' do
-        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_ADDED }
+      it_behaves_like 'internal event tracking' do
+        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_ADDED }
+        let(:namespace) { project.namespace }
         subject(:service_action) { run_service }
       end
 
@@ -221,8 +218,9 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
           run_service
         end
 
-        it_behaves_like 'issue_edit snowplow tracking' do
-          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_MODIFIED }
+        it_behaves_like 'internal event tracking' do
+          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_DESIGNS_MODIFIED }
+          let(:namespace) { project.namespace }
           subject(:service_action) { run_service }
         end
 
@@ -390,9 +388,12 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
         before do
           path = File.join(build(:design, issue: issue, filename: filename).full_path)
           design_repository.create_if_not_exists
-          design_repository.create_file(user, path, 'something fake',
-                                        branch_name: project.default_branch_or_main,
-                                        message: 'Somehow created without being tracked in db')
+          design_repository.create_file(
+            user,
+            path, 'something fake',
+            branch_name: project.default_branch_or_main,
+            message: 'Somehow created without being tracked in db'
+          )
         end
 
         it 'creates the design and a new version for it' do

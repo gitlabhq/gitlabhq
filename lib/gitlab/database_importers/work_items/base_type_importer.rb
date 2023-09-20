@@ -20,7 +20,7 @@ module Gitlab
           requirement_legacy: 'Requirement legacy',
           test_reports: 'Test reports',
           notifications: 'Notifications',
-          current_user_todos: "Current user todos",
+          current_user_todos: 'Current user todos',
           award_emoji: 'Award emoji',
           linked_items: 'Linked items'
         }.freeze
@@ -124,6 +124,7 @@ module Gitlab
             :health_status,
             :status,
             :notifications,
+            :current_user_todos,
             :award_emoji,
             :linked_items
           ],
@@ -140,7 +141,8 @@ module Gitlab
             :health_status,
             :notifications,
             :current_user_todos,
-            :award_emoji
+            :award_emoji,
+            :linked_items
           ]
         }.freeze
 

@@ -39,7 +39,7 @@ module Gitlab
       end
 
       def notify_waiter(key = nil)
-        JobWaiter.notify(key, jid) if key
+        JobWaiter.notify(key, jid, ttl: Gitlab::Import::JOB_WAITER_TTL) if key
       end
 
       def reschedule_job(project, client, hash, notify_key)

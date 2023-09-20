@@ -83,7 +83,7 @@ class GenerateMessageToRunE2ePipeline
 
       Once done, apply the ✅ emoji on this comment.
 
-      For any questions or help, reach out on the internal #quality Slack channel.
+      **Team members only:** for any questions or help, reach out on the internal `#quality` Slack channel.
       <!-- Run e2e warning end -->
     MARKDOWN
   end

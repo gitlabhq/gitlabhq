@@ -5,7 +5,7 @@ module Banzai
     class CustomEmojiFilter < HTML::Pipeline::Filter
       include Gitlab::Utils::StrongMemoize
 
-      IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
+      IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
 
       def call
         return doc unless resource_parent

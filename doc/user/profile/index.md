@@ -1,6 +1,6 @@
 ---
 type: index, howto
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -353,7 +353,7 @@ A list of **Most Recent Activity** contributions is displayed.
 
 To view your activity:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Activity**.
 1. Optional. To filter your activity by contribution type, in the **Your Activity** tab, select a tab:
@@ -397,15 +397,15 @@ When you sign in, three cookies are set:
 
 - A session cookie called `_gitlab_session`.
   This cookie has no set expiration date. However, it expires based on its `session_expire_delay`.
-- A session cookie called `about_gitlab_active_user`.
-  This cookie is used by the [marketing site](https://about.gitlab.com/) to determine if a user has an active GitLab session. No user information is passed to the cookie and it expires with the session.
+- A session cookie called `gitlab_user`.
+  This cookie is used by the [marketing site](https://about.gitlab.com/) to determine if a user has an active GitLab session. No user information is passed to the cookie and it expires two weeks from login.
 - A persistent cookie called `remember_user_token`, which is set only if you selected **Remember me** on the sign-in page.
 
-When you close your browser, the `_gitlab_session` and `about_gitlab_active_user` cookies are usually cleared client-side.
+When you close your browser, the `_gitlab_session` and `gitlab_user` cookies are usually cleared client-side.
 When it expires or isn't available, GitLab:
 
 - Uses the `remember_user_token`cookie to get you a new `_gitlab_session` cookie and keep you signed in, even if you close your browser.
-- Sets the `about_gitlab_active_user` to `true`.
+- Sets the `gitlab_user` to `true`.
 
 When both the `remember_user_token` and `_gitlab_session` cookies are gone or expired, you must sign in again.
 

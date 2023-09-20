@@ -6,14 +6,6 @@ export const propsData = {
   accessLevels: { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 },
   defaultAccessLevel: 30,
   helpLink: 'https://example.com',
-  tasksToBeDoneOptions: [
-    { text: 'First task', value: 'first' },
-    { text: 'Second task', value: 'second' },
-  ],
-  projects: [
-    { text: 'First project', value: '1' },
-    { text: 'Second project', value: '2' },
-  ],
 };
 
 export const inviteSource = 'unknown';
@@ -51,8 +43,6 @@ export const postData = {
   expires_at: undefined,
   invite_source: inviteSource,
   format: 'json',
-  tasks_to_be_done: [],
-  tasks_project_id: '',
 };
 
 export const emailPostData = {
@@ -60,8 +50,6 @@ export const emailPostData = {
   expires_at: undefined,
   email: `${user3.name}`,
   invite_source: inviteSource,
-  tasks_to_be_done: [],
-  tasks_project_id: '',
   format: 'json',
 };
 
@@ -71,8 +59,6 @@ export const singleUserPostData = {
   user_id: `${user1.id}`,
   email: `${user3.name}`,
   invite_source: inviteSource,
-  tasks_to_be_done: [],
-  tasks_project_id: '',
   format: 'json',
 };
 

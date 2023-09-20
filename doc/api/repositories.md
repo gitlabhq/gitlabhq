@@ -189,7 +189,7 @@ Supported attributes:
 | `straight`        | boolean        | no       | Comparison method: `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)'. Default is `false`. |
 
 ```plaintext
-GET /projects/:id/repository/compare?from=master&to=feature
+GET /projects/:id/repository/compare?from=main&to=feature
 ```
 
 Example response:
@@ -217,7 +217,7 @@ Example response:
     "new_path": "files/js/application.js",
     "a_mode": null,
     "b_mode": "100644",
-    "diff": "--- a/files/js/application.js\n+++ b/files/js/application.js\n@@ -24,8 +24,10 @@\n //= require g.raphael-min\n //= require g.bar-min\n //= require branch-graph\n-//= require highlightjs.min\n-//= require ace/ace\n //= require_tree .\n //= require d3\n //= require underscore\n+\n+function fix() { \n+  alert(\"Fixed\")\n+}",
+    "diff": "@@ -24,8 +24,10 @@\n //= require g.raphael-min\n //= require g.bar-min\n //= require branch-graph\n-//= require highlightjs.min\n-//= require ace/ace\n //= require_tree .\n //= require d3\n //= require underscore\n+\n+function fix() { \n+  alert(\"Fixed\")\n+}",
     "new_file": false,
     "renamed_file": false,
     "deleted_file": false

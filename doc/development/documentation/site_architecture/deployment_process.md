@@ -66,12 +66,12 @@ graph TD
   C["14.2 MR merged"]
   D["13.12 MR merged"]
   E["12.10 MR merged"]
-  F{{"Container registry on `gitlab-docs` project"}}
-  A--"`image:docs-single`<br>job runs and pushes<br>`gitlab-docs:14.4` image"-->F
-  B--"`image:docs-single`<br>job runs and pushes<br>`gitlab-docs:14.3` image"-->F
-  C--"`image:docs-single`<br>job runs and pushes<br>`gitlab-docs:14.2` image"-->F
-  D--"`image:docs-single`<br>job runs and pushes<br>`gitlab-docs:13.12` image"-->F
-  E--"`image:docs-single`<br>job runs and pushes<br>`gitlab-docs:12.10` image"-->F
+  F{{"Container registry on gitlab-docs project"}}
+  A--"image:docs-single<br>job runs and pushes<br>gitlab-docs:14.4 image"-->F
+  B--"image:docs-single<br>job runs and pushes<br>gitlab-docs:14.3 image"-->F
+  C--"image:docs-single<br>job runs and pushes<br>gitlab-docs:14.2 image"-->F
+  D--"image:docs-single<br>job runs and pushes<br>gitlab-docs:13.12 image"-->F
+  E--"image:docs-single<br>job runs and pushes<br>gitlab-docs:12.10 image"-->F
 ```
 
 ### Rebuild stable documentation images
@@ -104,23 +104,23 @@ For example, [a pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/
 
 ```mermaid
 graph TD
-  A["Latest `gitlab`, `gitlab-runner`<br>`omnibus-gitlab`, and `charts`"]
-  subgraph "Container registry on `gitlab-docs` project"
-    B["14.4 versioned docs<br>`gitlab-docs:14.4`"]
-    C["14.3 versioned docs<br>`gitlab-docs:14.3`"]
-    D["14.2 versioned docs<br>`gitlab-docs:14.2`"]
-    E["13.12 versioned docs<br>`gitlab-docs:13.12`"]
-    F["12.10 versioned docs<br>`gitlab-docs:12.10`"]
+  A["Latest gitlab, gitlab-runner<br>omnibus-gitlab, and charts"]
+  subgraph "Container registry on gitlab-docs project"
+    B["14.4 versioned docs<br>gitlab-docs:14.4"]
+    C["14.3 versioned docs<br>gitlab-docs:14.3"]
+    D["14.2 versioned docs<br>gitlab-docs:14.2"]
+    E["13.12 versioned docs<br>gitlab-docs:13.12"]
+    F["12.10 versioned docs<br>gitlab-docs:12.10"]
   end
-  G[["Scheduled pipeline<br>`image:docs-latest` job<br>combines all these"]]
+  G[["Scheduled pipeline<br>image:docs-latest job<br>combines all these"]]
   A--"Default branches<br>pulled down"-->G
-  B--"`gitlab-docs:14.4` image<br>pulled down"-->G
-  C--"`gitlab-docs:14.3` image<br>pulled down"-->G
-  D--"`gitlab-docs:14.2` image<br>pulled down"-->G
-  E--"`gitlab-docs:13.12` image<br>pulled down"-->G
-  F--"`gitlab-docs:12.10` image<br>pulled down"-->G
+  B--"gitlab-docs:14.4 image<br>pulled down"-->G
+  C--"gitlab-docs:14.3 image<br>pulled down"-->G
+  D--"gitlab-docs:14.2 image<br>pulled down"-->G
+  E--"gitlab-docs:13.12 image<br>pulled down"-->G
+  F--"gitlab-docs:12.10 image<br>pulled down"-->G
   H{{"Container registry on gitlab-docs project"}}
-  G--"Latest `gitlab-docs:latest` image<br>pushed up"-->H
+  G--"Latest gitlab-docs:latest image<br>pushed up"-->H
 ```
 
 ## Pages deploy job
@@ -144,7 +144,7 @@ graph LR
   A{{"Container registry on gitlab-docs project"}}
   B[["Scheduled pipeline<br>`pages` and<br>`pages:deploy` job"]]
   C([docs.gitlab.com])
-  A--"`gitlab-docs:latest`<br>pulled"-->B
+  A--"gitlab-docs:latest<br>pulled"-->B
   B--"Unpacked documentation uploaded"-->C
 ```
 

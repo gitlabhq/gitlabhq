@@ -10,9 +10,6 @@ module Mutations
 
         argument :id, ::Types::GlobalIDType[::WorkItem],
           required: true, description: 'Global ID of the work item.'
-        argument :work_items_ids, [::Types::GlobalIDType[::WorkItem]],
-          required: true,
-          description: "Global IDs of the items to link. Maximum number of IDs you can provide: #{MAX_WORK_ITEMS}."
 
         field :work_item, Types::WorkItemType,
           null: true, description: 'Updated work item.'
@@ -26,7 +23,7 @@ module Mutations
           if args[:work_items_ids].size > MAX_WORK_ITEMS
             raise Gitlab::Graphql::Errors::ArgumentError,
               format(
-                _('No more than %{max_work_items} work items can be linked at the same time.'),
+                _('No more than %{max_work_items} work items can be modified at the same time.'),
                 max_work_items: MAX_WORK_ITEMS
               )
           end
@@ -50,7 +47,7 @@ module Mutations
         private
 
         def update_links(work_item, params)
-          raise NotImplementedError
+          raise NotImplementedError, "#{self.class} does not implement #{__method__}"
         end
       end
     end

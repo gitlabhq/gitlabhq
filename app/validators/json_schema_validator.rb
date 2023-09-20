@@ -10,9 +10,9 @@
 #   end
 #
 class JsonSchemaValidator < ActiveModel::EachValidator
-  FILENAME_ALLOWED = /\A[a-z0-9_-]*\Z/.freeze
+  FILENAME_ALLOWED = /\A[a-z0-9_-]*\Z/
   FilenameError = Class.new(StandardError)
-  BASE_DIRECTORY = %w(app validators json_schemas).freeze
+  BASE_DIRECTORY = %w[app validators json_schemas].freeze
 
   def initialize(options)
     raise ArgumentError, "Expected 'filename' as an argument" unless options[:filename]

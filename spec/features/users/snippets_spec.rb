@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'Snippets tab on a user profile', :js, feature_category: :source_code_management do
   context 'when the user has snippets' do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :no_super_sidebar) }
 
     before do
-      stub_feature_flags(profile_tabs_vue: false)
+      stub_feature_flags(profile_tabs_vue: false, super_sidebar_logged_out: false)
     end
 
     context 'pagination' do
@@ -30,7 +30,7 @@ RSpec.describe 'Snippets tab on a user profile', :js, feature_category: :source_
       let!(:other_snippet) { create(:snippet, :public) }
 
       it 'contains only internal and public snippets of a user when a user is logged in' do
-        sign_in(create(:user))
+        sign_in(create(:user, :no_super_sidebar))
         visit user_path(user)
         page.within('.user-profile-nav') { click_link 'Snippets' }
         wait_for_requests

@@ -119,37 +119,6 @@ RSpec.describe 'Merge request > User sees deployment widget', :js, feature_categ
       end
 
       before do
-        stub_feature_flags(review_apps_redeploy_mr_widget: false)
-        build.success!
-        deployment.update!(on_stop: manual.name)
-        visit project_merge_request_path(project, merge_request)
-        wait_for_requests
-      end
-
-      it 'does start build when stop button clicked' do
-        accept_gl_confirm(button_text: 'Stop environment') do
-          find('.js-stop-env').click
-        end
-
-        expect(page).to have_content('close_app')
-      end
-
-      context 'for reporter' do
-        let(:role) { :reporter }
-
-        it 'does not show stop button' do
-          expect(page).not_to have_selector('.js-stop-env')
-        end
-      end
-    end
-
-    context 'with stop action with the review_apps_redeploy_mr_widget feature flag turned on' do
-      let(:manual) do
-        create(:ci_build, :manual, pipeline: pipeline, name: 'close_app', environment: environment.name)
-      end
-
-      before do
-        stub_feature_flags(review_apps_redeploy_mr_widget: true)
         build.success!
         deployment.update!(on_stop: manual.name)
         visit project_merge_request_path(project, merge_request)
@@ -173,9 +142,8 @@ RSpec.describe 'Merge request > User sees deployment widget', :js, feature_categ
       end
     end
 
-    context 'with redeploy action and with the review_apps_redeploy_mr_widget feature flag turned on' do
+    context 'with redeploy action' do
       before do
-        stub_feature_flags(review_apps_redeploy_mr_widget: true)
         build.success!
         environment.update!(state: 'stopped')
         visit project_merge_request_path(project, merge_request)

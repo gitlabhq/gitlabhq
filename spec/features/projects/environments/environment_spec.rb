@@ -10,23 +10,18 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
   before do
     sign_in(user)
     project.add_role(user, role)
-    stub_feature_flags(environment_details_vue: false)
   end
 
   def auto_stop_button_selector
     %q{button[title="Prevent environment from auto-stopping"]}
   end
 
-  describe 'environment details page vue' do
+  describe 'environment details page', :js do
     let_it_be(:environment) { create(:environment, project: project) }
     let!(:permissions) {}
     let!(:deployment) {}
     let!(:action) {}
     let!(:cluster) {}
-
-    before do
-      stub_feature_flags(environment_details_vue: true)
-    end
 
     context 'with auto-stop' do
       let_it_be(:environment) { create(:environment, :will_auto_stop, name: 'staging', project: project) }
@@ -35,122 +30,16 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
         visit_environment(environment)
       end
 
-      it 'shows auto stop info', :js do
+      it 'shows auto stop info' do
         expect(page).to have_content('Auto stops')
       end
 
-      it 'shows auto stop button', :js do
+      it 'shows auto stop button' do
         expect(page).to have_selector(auto_stop_button_selector)
         expect(page.find(auto_stop_button_selector).find(:xpath, '..')['action']).to have_content(cancel_auto_stop_project_environment_path(environment.project, environment))
       end
 
-      it 'allows user to cancel auto stop', :js do
-        page.find(auto_stop_button_selector).click
-        wait_for_all_requests
-        expect(page).to have_content('Auto stop successfully canceled.')
-        expect(page).not_to have_selector(auto_stop_button_selector)
-      end
-    end
-
-    context 'without deployments' do
-      before do
-        visit_environment(environment)
-      end
-
-      it 'does not show deployments', :js do
-        expect(page).to have_content('You don\'t have any deployments right now.')
-      end
-    end
-
-    context 'with deployments' do
-      before do
-        visit_environment(environment)
-      end
-
-      context 'when there is a successful deployment' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-        let(:build) { create(:ci_build, :success, pipeline: pipeline) }
-
-        let(:deployment) do
-          create(:deployment, :success, environment: environment, deployable: build)
-        end
-
-        it 'does show deployments', :js do
-          wait_for_requests
-          expect(page).to have_link("#{build.name} (##{build.id})")
-        end
-      end
-
-      context 'when there is a failed deployment' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-        let(:build) { create(:ci_build, pipeline: pipeline) }
-
-        let(:deployment) do
-          create(:deployment, :failed, environment: environment, deployable: build)
-        end
-
-        it 'does show deployments', :js do
-          wait_for_requests
-          expect(page).to have_link("#{build.name} (##{build.id})")
-        end
-      end
-
-      context 'with related deployable present' do
-        let_it_be(:previous_pipeline) { create(:ci_pipeline, project: project) }
-
-        let_it_be(:previous_build) do
-          create(:ci_build, :success, pipeline: previous_pipeline, environment: environment.name)
-        end
-
-        let_it_be(:previous_deployment) do
-          create(:deployment, :success, environment: environment, deployable: previous_build)
-        end
-
-        let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-        let_it_be(:build) { create(:ci_build, pipeline: pipeline, environment: environment.name) }
-
-        let_it_be(:deployment) do
-          create(:deployment, :success, environment: environment, deployable: build)
-        end
-
-        before do
-          visit_environment(environment)
-        end
-
-        it 'shows deployment information and buttons', :js do
-          wait_for_requests
-          expect(page).to have_button('Re-deploy to environment')
-          expect(page).to have_button('Rollback environment')
-          expect(page).to have_link("#{build.name} (##{build.id})")
-        end
-      end
-    end
-  end
-
-  describe 'environment details page' do
-    let_it_be(:environment) { create(:environment, project: project) }
-    let!(:permissions) {}
-    let!(:deployment) {}
-    let!(:action) {}
-    let!(:cluster) {}
-
-    context 'with auto-stop' do
-      let!(:environment) { create(:environment, :will_auto_stop, name: 'staging', project: project) }
-
-      before do
-        visit_environment(environment)
-      end
-
-      it 'shows auto stop info', :js do
-        expect(page).to have_content('Auto stops')
-      end
-
-      it 'shows auto stop button', :js do
-        expect(page).to have_selector(auto_stop_button_selector)
-        expect(page.find(auto_stop_button_selector).find(:xpath, '..')['action']).to have_content(cancel_auto_stop_project_environment_path(environment.project, environment))
-      end
-
-      it 'allows user to cancel auto stop', :js do
+      it 'allows user to cancel auto stop' do
         page.find(auto_stop_button_selector).click
         wait_for_all_requests
         expect(page).to have_content('Auto stop successfully canceled.')
@@ -208,10 +97,6 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
         it 'does show deployments' do
           expect(page).to have_link("#{build.name} (##{build.id})")
         end
-
-        it 'shows a tooltip on the job name' do
-          expect(page).to have_css("[title=\"#{build.name} (##{build.id})\"].has-tooltip")
-        end
       end
 
       context 'when there is a failed deployment' do
@@ -224,26 +109,6 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
 
         it 'does show deployments' do
           expect(page).to have_link("#{build.name} (##{build.id})")
-        end
-      end
-
-      context 'with many deployments' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-        let(:build) { create(:ci_build, pipeline: pipeline) }
-
-        let!(:second) { create(:deployment, environment: environment, deployable: build, status: :success, finished_at: Time.current) }
-        let!(:first) { create(:deployment, environment: environment, deployable: build, status: :running) }
-        let!(:last) { create(:deployment, environment: environment, deployable: build, status: :success, finished_at: 2.days.ago) }
-        let!(:third) { create(:deployment, environment: environment, deployable: build, status: :canceled, finished_at: 1.day.ago) }
-
-        before do
-          visit_environment(environment)
-        end
-
-        it 'shows all of them in ordered way' do
-          ids = find_all('[data-testid="deployment-id"]').map { |e| e.text }
-          expected_ordered_ids = [first, second, third, last].map { |d| "##{d.iid}" }
-          expect(ids).to eq(expected_ordered_ids)
         end
       end
 
@@ -265,7 +130,7 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/350618 for more information.
         it 'shows upcoming deployments in unordered way' do
           displayed_ids = find_all('[data-testid="deployment-id"]').map { |e| e.text }
-          internal_ids = [runnind_deployment_1, runnind_deployment_2, success_without_finished_at].map { |d| "##{d.iid}" }
+          internal_ids = [runnind_deployment_1, runnind_deployment_2, success_without_finished_at].map { |d| d.iid.to_s }
           expect(displayed_ids).to match_array(internal_ids)
         end
       end
@@ -309,20 +174,19 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
             end
 
             it 'does show a play button' do
-              expect(page).to have_link(action.name)
+              expect(page).to have_button(action.name, visible: :all)
             end
 
-            it 'does allow to play manual action', :js do
+            it 'does allow to play manual action' do
               expect(action).to be_manual
 
-              find('button.dropdown').click
+              click_button('Deploy to...')
 
-              expect { click_link(action.name) }
+              expect { click_button(action.name) }
                 .not_to change { Ci::Pipeline.count }
 
               wait_for_all_requests
 
-              expect(page).to have_content(action.name)
               expect(action.reload).to be_pending
             end
           end
@@ -344,38 +208,6 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
 
             it 'does show an external link button', :js do
               expect(page).to have_link(nil, href: environment.external_url)
-            end
-          end
-
-          context 'with terminal' do
-            context 'when user configured kubernetes from CI/CD > Clusters' do
-              let!(:cluster) do
-                create(:cluster, :project, :provided_by_gcp, projects: [project])
-              end
-
-              context 'for project maintainer' do
-                let(:role) { :maintainer }
-
-                context 'web terminal', :js do
-                  before do
-                    # Stub #terminals as it causes js-enabled feature specs to
-                    # render the page incorrectly
-                    #
-                    # In EE we have to stub EE::Environment since it overwrites
-                    # the "terminals" method.
-                    allow_next_instance_of(Gitlab.ee? ? EE::Environment : Environment) do |instance|
-                      allow(instance).to receive(:terminals) { nil }
-                    end
-
-                    visit terminal_project_environment_path(project, environment)
-                  end
-
-                  it 'displays a web terminal' do
-                    expect(page).to have_selector('#terminal')
-                    expect(page).to have_link(nil, href: environment.external_url)
-                  end
-                end
-              end
             end
           end
 
@@ -445,6 +277,8 @@ RSpec.describe 'Environment', feature_category: :groups_and_projects do
         reqs = inspect_requests do
           visit folder_project_environments_path(project, id: 'staging-1.0')
         end
+
+        wait_for_requests
 
         expect(reqs.first.status_code).to eq(200)
         expect(page).to have_content('Environments / staging-1.0')

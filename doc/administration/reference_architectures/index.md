@@ -107,9 +107,19 @@ This is an alternative and more **advanced** setup compared to a standard Refere
 
 ### GitLab Geo (Cross Regional Distribution / Disaster Recovery)
 
-With [GitLab Geo](../geo/index.md) you can have both distributed environments in different regions and a full Disaster Recovery (DR) setup in place. With this setup you would have 2 or more separate environments, with one being a primary that gets replicated to the others. In the rare event the primary site went down completely you could fail over to one of the other environments.
+With [GitLab Geo](../geo/index.md), you can achieve distributed environments in
+different regions with a full Disaster Recovery (DR) setup in place. GitLab Geo
+requires at least two separate environments:
 
-This is an **advanced and complex** setup and should only be undertaken if you have DR as a key requirement. Decisions then on how each environment are configured would also need to be taken, such as if each environment itself would be the full size and / or have HA.
+- One primary site.
+- One or more secondary sites that serve as replicas.
+
+If the primary site becomes unavailable, you can fail over to one of the secondary sites.
+
+This **advanced and complex** setup should only be undertaken if DR is
+a key requirement for your environment. You must also make additional decisions
+on how each site is configured, such as if each secondary site would be the
+same architecture as the primary, or if each site is configured for HA.
 
 ### Cloud provider services
 
@@ -194,7 +204,7 @@ However, additional workloads can multiply the impact of operations by triggerin
 You may need to adjust the suggested specifications to compensate if you use, for example:
 
 - Security software on the nodes.
-- Hundreds of concurrent CI jobs for [large repositories](../../ci/large_repositories/index.md).
+- Hundreds of concurrent CI jobs for [large repositories](../../user/project/repository/managing_large_repositories.md).
 - Custom scripts that [run at high frequency](../logs/log_parsing.md#print-top-api-user-agents).
 - [Integrations](../../integration/index.md) in many large projects.
 - [Server hooks](../server_hooks.md).
@@ -334,7 +344,7 @@ If you choose to use a third party external service:
 
 Several database cloud provider services are known not to support the above or have been found to have other issues and aren't recommended:
 
-- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible and not supported. See [14.4.0](../../update/index.md#1440) for more details.
+- [Amazon Aurora](https://aws.amazon.com/rds/aurora/) is incompatible and not supported. See [14.4.0](../../update/versions/gitlab_14_changes.md#1440) for more details.
 - [Azure Database for PostgreSQL Single Server](https://azure.microsoft.com/en-gb/products/postgresql/#overview) is not supported for use due to notable performance / stability issues or missing functionality. See [Recommendation Notes for Azure](#recommendation-notes-for-azure) for more details.
 - [Google AlloyDB](https://cloud.google.com/alloydb) and [Amazon RDS Multi-AZ DB cluster](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html) have not been tested and are not recommended. Both solutions are specifically not expected to work with GitLab Geo.
   - [Amazon RDS Multi-AZ DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZSingleStandby.html) is a separate product and is supported.
@@ -413,7 +423,7 @@ For more information, see our [handbook page](https://about.gitlab.com/handbook/
 
 Testing occurs against all reference architectures and cloud providers in an automated and ad-hoc fashion. This is done by two tools:
 
-- The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) for building the environments.
+- The [GitLab Environment Toolkit](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) Terraform and Ansible scripts for building the environments.
 - The [GitLab Performance Tool](https://gitlab.com/gitlab-org/quality/performance) for performance testing.
 
 Network latency on the test environments between components on all Cloud Providers were measured at <5 ms. This is shared as an observation and not as an implicit recommendation.

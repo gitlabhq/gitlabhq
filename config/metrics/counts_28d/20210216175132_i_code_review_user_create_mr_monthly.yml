@@ -13,6 +13,9 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
   - i_code_review_user_create_mr
+events:
+  - name: i_code_review_user_create_mr
+    unique: user.id
 distribution:
 - ce
 - ee

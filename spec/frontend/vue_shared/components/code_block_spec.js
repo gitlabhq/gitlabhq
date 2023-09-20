@@ -17,12 +17,12 @@ describe('Code Block', () => {
     createComponent({}, { default: 'DEFAULT SLOT' });
 
     expect(wrapper.element).toMatchInlineSnapshot(`
-        <pre
-          class="code-block rounded code"
-        >
-          DEFAULT SLOT
-        </pre>
-      `);
+      <pre
+        class="code code-block rounded"
+      >
+        DEFAULT SLOT
+      </pre>
+    `);
   });
 
   it('renders with empty code prop', () => {
@@ -30,13 +30,11 @@ describe('Code Block', () => {
 
     expect(wrapper.element).toMatchInlineSnapshot(`
       <pre
-        class="code-block rounded code"
+        class="code code-block rounded"
       >
         <code
           class="d-block"
-        >
-          
-        </code>
+        />
       </pre>
     `);
   });
@@ -45,32 +43,32 @@ describe('Code Block', () => {
     createComponent({ code });
 
     expect(wrapper.element).toMatchInlineSnapshot(`
-        <pre
-          class="code-block rounded code"
+      <pre
+        class="code code-block rounded"
+      >
+        <code
+          class="d-block"
         >
-          <code
-            class="d-block"
-          >
-            test-code
-          </code>
-        </pre>
-      `);
+          test-code
+        </code>
+      </pre>
+    `);
   });
 
   it('sets maxHeight properly when provided', () => {
     createComponent({ code, maxHeight: '200px' });
 
     expect(wrapper.element).toMatchInlineSnapshot(`
-        <pre
-          class="code-block rounded code"
-          style="max-height: 200px; overflow-y: auto;"
+      <pre
+        class="code code-block rounded"
+        style="max-height: 200px; overflow-y: auto;"
+      >
+        <code
+          class="d-block"
         >
-          <code
-            class="d-block"
-          >
-            test-code
-          </code>
-        </pre>
-      `);
+          test-code
+        </code>
+      </pre>
+    `);
   });
 });

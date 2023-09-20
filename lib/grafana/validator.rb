@@ -9,13 +9,13 @@ module Grafana
 
     attr_reader :grafana_dashboard, :datasource, :panel, :query_params
 
-    UNSUPPORTED_GRAFANA_GLOBAL_VARS = %w(
+    UNSUPPORTED_GRAFANA_GLOBAL_VARS = %w[
       $__interval_ms
       $__timeFilter
       $__name
       $timeFilter
       $interval
-    ).freeze
+    ].freeze
 
     def initialize(grafana_dashboard, datasource, panel, query_params)
       @grafana_dashboard = grafana_dashboard

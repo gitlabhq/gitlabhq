@@ -13,7 +13,8 @@ export default {
     formattedStageCount() {
       if (!this.stageCount) {
         return '-';
-      } else if (this.stageCount > 1000) {
+      }
+      if (this.stageCount > 1000) {
         return sprintf(s__('ValueStreamAnalytics|%{stageCount}+ items'), {
           stageCount: formatNumber(1000),
         });

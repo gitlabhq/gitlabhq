@@ -33,6 +33,13 @@ module Database
         handle_lock_writes_result(tables_lock_info_per_db, result)
       end
 
+      tables_lock_info_per_db.each do |database_name, database_results|
+        next if database_results[:tables_need_lock].empty?
+        break if Feature.disabled?(:lock_tables_in_monitoring, type: :ops)
+
+        LockTablesWorker.perform_async(database_name, database_results[:tables_need_lock])
+      end
+
       log_extra_metadata_on_done(:results, tables_lock_info_per_db)
     end
 

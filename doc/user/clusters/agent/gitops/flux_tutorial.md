@@ -83,7 +83,7 @@ You must register `agentk` before you install it in your cluster.
 
 To register `agentk`:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
    If you have an [agent configuration file](../install/index.md#create-an-agent-configuration-file),
    it must be in this project. Your cluster manifest files should also be in this project.
 1. Select **Operate > Kubernetes clusters**.
@@ -123,9 +123,7 @@ To install `agentk`:
      name: gitlab-agent-token
    type: Opaque
    stringData:
-     values.yaml: |-
-       config:
-         token: "<your-token-here>"
+      token: "<your-token-here>"
    ```
 
 1. Apply `secret.yaml` to your cluster:
@@ -173,11 +171,10 @@ To install `agentk`:
      values:
        config:
          kasAddress: "wss://kas.gitlab.com"  
-     valuesFrom:
-       - kind: Secret
-         name: gitlab-agent-token
-         valuesKey: values.yaml
+         secretName: gitlab-agent-token
    ```
+
+   The Helm release uses the secret from the previous step.
 
 1. To verify that `agentk` is installed and running in the cluster, run the following command:
 

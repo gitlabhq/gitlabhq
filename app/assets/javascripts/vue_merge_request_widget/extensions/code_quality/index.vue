@@ -36,9 +36,11 @@ export default {
 
       if (!this.pollingFinished) {
         return { title: i18n.loading };
-      } else if (this.hasError) {
+      }
+      if (this.hasError) {
         return { title: i18n.error };
-      } else if (
+      }
+      if (
         this.collapsedData?.new_errors?.length >= 1 &&
         this.collapsedData?.resolved_errors?.length >= 1
       ) {
@@ -48,11 +50,13 @@ export default {
             i18n.findings(new_errors, codeQualityPrefixes.new),
           ),
         };
-      } else if (this.collapsedData?.resolved_errors?.length >= 1) {
+      }
+      if (this.collapsedData?.resolved_errors?.length >= 1) {
         return {
           title: i18n.singularCopy(i18n.findings(resolved_errors, codeQualityPrefixes.fixed)),
         };
-      } else if (this.collapsedData?.new_errors?.length >= 1) {
+      }
+      if (this.collapsedData?.new_errors?.length >= 1) {
         return { title: i18n.singularCopy(i18n.findings(new_errors, codeQualityPrefixes.new)) };
       }
       return { title: i18n.noChanges };
@@ -95,7 +99,8 @@ export default {
     statusIcon() {
       if (this.collapsedData?.new_errors?.length >= 1) {
         return EXTENSION_ICONS.warning;
-      } else if (this.collapsedData?.resolved_errors?.length >= 1) {
+      }
+      if (this.collapsedData?.resolved_errors?.length >= 1) {
         return EXTENSION_ICONS.success;
       }
       return EXTENSION_ICONS.neutral;

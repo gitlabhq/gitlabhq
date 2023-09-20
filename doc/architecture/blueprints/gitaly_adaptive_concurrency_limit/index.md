@@ -96,8 +96,10 @@ to function flawlessly. The suggested approach considers Gitaly's specific
 constraints and distinguishing features, including cgroup utilization and
 upload-pack RPC, among others.
 
-The proposed solution does not aim to replace the existing [Gitaly concurrency
-limit][Gitlay-backpressure], but automatically tweak its parameters. This means
+The proposed solution does not aim to replace the existing limits in Gitaly
+for [RPC concurrency](../../../administration/gitaly/configure_gitaly.md#limit-rpc-concurrency)
+and [pack object concurrency](../../../administration/gitaly/configure_gitaly.md#limit-pack-objects-concurrency),
+but automatically tweak the parameters. This means
 that other aspects, such as queuing, in-queue timeout, queue length,
 partitioning, and scoping, will remain unchanged. The proposed solution only
 focuses on modifying the current **value** of the concurrency limit.

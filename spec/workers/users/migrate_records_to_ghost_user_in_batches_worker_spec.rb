@@ -34,8 +34,8 @@ RSpec.describe Users::MigrateRecordsToGhostUserInBatchesWorker, feature_category
     it 'migrates issue to ghost user' do
       subject
 
-      expect(issue.reload.author).to eq(User.ghost)
-      expect(issue.last_edited_by).to eq(User.ghost)
+      expect(issue.reload.author).to eq(Users::Internal.ghost)
+      expect(issue.last_edited_by).to eq(Users::Internal.ghost)
     end
   end
 end

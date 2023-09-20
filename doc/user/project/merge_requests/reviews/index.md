@@ -10,7 +10,7 @@ type: index, reference
 [Merge requests](../index.md) are the primary method of making changes to files in a
 GitLab project. [Create and submit a merge request](../creating_merge_requests.md)
 to propose changes. Your team leaves [comments](../../../discussions/index.md) on
-your merge request, and makes [code suggestions](suggestions.md) you can accept
+your merge request, and makes [Code Suggestions](suggestions.md) you can accept
 from the user interface. When your work is reviewed, your team members can choose
 to accept or reject it.
 
@@ -21,17 +21,24 @@ review merge requests in Visual Studio Code.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 
-## Suggested reviewers **(ULTIMATE SAAS)**
+## GitLab Duo Suggested Reviewers **(ULTIMATE SAAS)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [Beta](../../../../policy/experiment-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/368356) in GitLab 15.6.
 > - Beta designation [removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113058) in GitLab 15.10.
 
-GitLab can suggest reviewers. Using the changes in a merge request and a project's contribution graph, machine learning suggestions appear in the reviewer section of the right sidebar.
+GitLab uses machine learning to suggest reviewers for your merge request.
 
-![Suggested Reviewers](img/suggested_reviewers_v15_9.png)
+To suggest reviewers, GitLab uses:
 
-For more information, see [Data usage in Suggested Reviewers](data_usage.md).
+- The changes in the merge request
+- The project's contribution graph
+
+GitLab Duo Suggested Reviewers also integrates with Code Owners, profile status, and merge request rules, helping you make a more informed decision when choosing reviewers that can meet your review criteria.
+
+![GitLab Duo Suggested Reviewers](img/suggested_reviewers_v16_3.png)
+
+For more information, see [Data usage in GitLab Duo Suggested Reviewers](data_usage.md).
 
 ### Enable suggested reviewers
 
@@ -73,11 +80,40 @@ If you [approve a merge request](../approvals/index.md#approve-a-merge-request) 
 are shown in the reviewer list, a green check mark **{check-circle-filled}**
 displays next to your name.
 
+### Request a review
+
+To assign a reviewer to a merge request, in a text area in
+the merge request, use the `/assign_reviewer @user`
+[quick action](../../quick_actions.md#issues-merge-requests-and-epics). Alternatively:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. On the right sidebar, in the **Reviewers** section, select **Edit**.
+1. Search for the user you want to assign, and select the user.
+
+The merge request is added to the user's review requests.
+
+#### From multiple users **(PREMIUM ALL)**
+
+> Moved to GitLab Premium in 13.9.
+
+To assign multiple reviewers to a merge request, in a text area in
+the merge request, use the `/assign_reviewer @user`
+[quick action](../../quick_actions.md#issues-merge-requests-and-epics). Alternatively:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. On the right sidebar, in the **Reviewers** section, select **Edit**.
+1. From the dropdown list, select all the users you want
+   to assign to the merge request.
+
+To remove a reviewer, clear the user from the same dropdown list.
+
 ### Download merge request changes as a diff
 
 To download the changes included in a merge request as a diff:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
 1. Select your merge request.
 1. In the upper-right corner, select **Code > Plain diff**.
@@ -100,7 +136,7 @@ curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff" | git a
 
 To download the changes included in a merge request as a patch file:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
 1. Select your merge request.
 1. In the upper-right corner, select **Code > Patches**.

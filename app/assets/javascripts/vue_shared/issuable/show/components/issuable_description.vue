@@ -34,7 +34,7 @@ export default {
   <div
     class="description"
     :class="{ 'js-task-list-container': canEdit && enableTaskList }"
-    data-qa-selector="description_content"
+    data-testid="description-content"
   >
     <div ref="gfmContainer" v-safe-html="issuable.descriptionHtml" class="md"></div>
     <textarea

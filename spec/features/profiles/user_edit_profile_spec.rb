@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'User edit profile', feature_category: :user_profile do
   include Features::NotesHelpers
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   before do
     stub_feature_flags(edit_user_profile_vue: false)
@@ -478,7 +478,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
       end
 
       context 'Remove status button' do
-        let(:user) { create(:user) }
+        let(:user) { create(:user, :no_super_sidebar) }
 
         before do
           user.status = UserStatus.new(message: 'Eating bread', emoji: 'stuffed_flatbread')

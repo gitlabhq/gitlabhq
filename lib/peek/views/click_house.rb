@@ -39,7 +39,7 @@ module Peek
         {
           start: start,
           duration: finish - start,
-          sql: data[:query].strip,
+          sql: data[:query].to_sql.strip,
           backtrace: Gitlab::BacktraceCleaner.clean_backtrace(caller),
           database: "database: #{data[:database]}",
           statistics: "query stats: #{data[:statistics]}"

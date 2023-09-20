@@ -1,0 +1,17 @@
+#
+# REQUIRED FIELDS
+#
+- title: "Geo: Legacy replication details routes for designs and projects deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
+  announcement_milestone: "16.4"  # (required) The milestone when this feature was first announced as deprecated.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: sranasinghe  # (required) GitLab username of the person reporting the change
+  stage: enablement  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/424002  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    As part of the migration of legacy data types to the [Geo self-service framework](https://docs.gitlab.com/ee/development/geo/framework.html), the following replication details routes are deprecated:
+
+    - Designs `/admin/geo/replication/designs` replaced by `/admin/geo/sites/<Geo Node/Site ID>/replication/design_management_repositories`
+    - Projects `/admin/geo/replication/projects` replaced by `/admin/geo/sites/<Geo Node/Site ID>/replication/projects`
+
+    From GitLab 16.4 to 17.0, lookups for the legacy routes will automatically be redirected to the new routes. We will remove the redirections in 17.0. Please update any bookmarks or scripts that may use the legacy routes.

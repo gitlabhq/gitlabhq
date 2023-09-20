@@ -39,8 +39,12 @@ module API
           notification_setting.transaction do
             new_notification_email = params.delete(:notification_email)
 
-            if new_notification_email
-              ::Users::UpdateService.new(current_user, user: current_user, notification_email: new_notification_email).execute
+            Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+              %w[users user_details], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424289'
+            ) do
+              if new_notification_email
+                ::Users::UpdateService.new(current_user, user: current_user, notification_email: new_notification_email).execute
+              end
             end
 
             notification_setting.update(declared_params(include_missing: false))

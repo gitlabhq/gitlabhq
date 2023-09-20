@@ -1,3 +1,5 @@
+import { mockLabel1, mockLabel2 } from '../abuse_report/mock_data';
+
 export const mockAbuseReports = [
   {
     category: 'spam',
@@ -7,6 +9,7 @@ export const mockAbuseReports = [
     reportedUser: { name: 'Mr. Abuser' },
     reportPath: '/admin/abuse_reports/1',
     count: 1,
+    labels: [mockLabel1, mockLabel2],
   },
   {
     category: 'phishing',

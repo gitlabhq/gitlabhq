@@ -86,6 +86,40 @@ module Gitlab
           # This is a stub, used for indexing. The method is dynamically generated.
         end
 
+        # @note Defined as +text_field :quantity+
+        # @return [String] The text content or value of +quantity+
+        def quantity
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # Set the value of quantity
+        # @example
+        #   Gitlab::Page::Subscriptions::New.perform do |new|
+        #     new.quantity = 'value'
+        #   end
+        # @param value [String] The value to set.
+        def quantity=(value)
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Subscriptions::New.perform do |new|
+        #     expect(new.quantity_element).to exist
+        #   end
+        # @return [Watir::TextField] The raw +TextField+ element
+        def quantity_element
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Subscriptions::New.perform do |new|
+        #     expect(new).to be_quantity
+        #   end
+        # @return [Boolean] true if the +quantity+ element is present on the page
+        def quantity?
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
         # @note Defined as +button :continue_to_billing+
         # Clicks +continue_to_billing+
         def continue_to_billing
@@ -537,6 +571,54 @@ module Gitlab
         #   end
         # @return [Boolean] true if the +confirm_purchase+ element is present on the page
         def confirm_purchase?
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @note Defined as +div :selected_plan+
+        # @return [String] The text content or value of +selected_plan+
+        def selected_plan
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Subscriptions::New.perform do |new|
+        #     expect(new.selected_plan_element).to exist
+        #   end
+        # @return [Watir::Div] The raw +Div+ element
+        def selected_plan_element
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Subscriptions::New.perform do |new|
+        #     expect(new).to be_selected_plan
+        #   end
+        # @return [Boolean] true if the +selected_plan+ element is present on the page
+        def selected_plan?
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @note Defined as +div :total_amount+
+        # @return [String] The text content or value of +total_amount+
+        def total_amount
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Subscriptions::New.perform do |new|
+        #     expect(new.total_amount_element).to exist
+        #   end
+        # @return [Watir::Div] The raw +Div+ element
+        def total_amount_element
+          # This is a stub, used for indexing. The method is dynamically generated.
+        end
+
+        # @example
+        #   Gitlab::Page::Subscriptions::New.perform do |new|
+        #     expect(new).to be_total_amount
+        #   end
+        # @return [Boolean] true if the +total_amount+ element is present on the page
+        def total_amount?
           # This is a stub, used for indexing. The method is dynamically generated.
         end
       end

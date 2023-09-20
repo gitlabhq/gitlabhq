@@ -65,7 +65,15 @@ class Projects::PagesController < Projects::ApplicationController
   end
 
   def project_params_attributes
-    [:pages_https_only, { project_setting_attributes: [:pages_unique_domain_enabled] }]
+    [
+      :pages_https_only,
+      { project_setting_attributes: project_setting_attributes }
+    ]
+  end
+
+  # overridden in EE
+  def project_setting_attributes
+    [:pages_unique_domain_enabled]
   end
 end
 

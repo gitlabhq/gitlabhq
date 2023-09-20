@@ -87,7 +87,7 @@ export default {
 </script>
 <template>
   <gl-disclosure-dropdown
-    :text="title"
+    :toggle-text="title"
     :title="title"
     :loading="isLoading"
     :aria-label="title"

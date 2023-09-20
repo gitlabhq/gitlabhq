@@ -12,7 +12,8 @@ import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__, __ } from '~/locale';
 
-import { HOW_TO_TRACK_TIME, timeTrackingQueries } from '../../constants';
+import { HOW_TO_TRACK_TIME } from '../../constants';
+import { timeTrackingQueries } from '../../queries/constants';
 import eventHub from '../../event_hub';
 import TimeTrackingCollapsedState from './collapsed_state.vue';
 import TimeTrackingComparisonPane from './comparison_pane.vue';
@@ -122,9 +123,11 @@ export default {
         // 3. issuableIid and fullPath are not provided
         if (!this.issuableType || !timeTrackingQueries[this.issuableType]) {
           return true;
-        } else if (this.initialTimeTracking) {
+        }
+        if (this.initialTimeTracking) {
           return true;
-        } else if (!this.issuableIid || !this.fullPath) {
+        }
+        if (!this.issuableIid || !this.fullPath) {
           return true;
         }
         return false;

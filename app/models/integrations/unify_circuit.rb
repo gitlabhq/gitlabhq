@@ -2,8 +2,6 @@
 
 module Integrations
   class UnifyCircuit < BaseChatNotification
-    undef :notify_only_broken_pipelines
-
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://yourcircuit.com/rest/v2/webhooks/incoming/…',
@@ -29,10 +27,6 @@ module Integrations
 
     def self.to_param
       'unify_circuit'
-    end
-
-    def fields
-      self.class.fields + build_event_channels
     end
 
     def help

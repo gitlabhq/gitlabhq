@@ -31,9 +31,6 @@ import (
 )
 
 func TestFailedCloneNoGitaly(t *testing.T) {
-	// Prepare clone directory
-	require.NoError(t, os.RemoveAll(scratchDir))
-
 	authBody := &api.Response{
 		GL_ID:       "user-123",
 		GL_USERNAME: "username",
@@ -48,7 +45,7 @@ func TestFailedCloneNoGitaly(t *testing.T) {
 	defer ws.Close()
 
 	// Do the git clone
-	cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), checkoutDir)
+	cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), t.TempDir())
 	out, err := cloneCmd.CombinedOutput()
 	t.Log(string(out))
 	require.Error(t, err, "git clone should have failed")
@@ -632,7 +629,7 @@ func TestGetArchiveProxiedToGitalySuccessfully(t *testing.T) {
 		archivePath   string
 		cacheDisabled bool
 	}{
-		{archivePath: path.Join(scratchDir, "my/path"), cacheDisabled: false},
+		{archivePath: path.Join(t.TempDir(), "my/path"), cacheDisabled: false},
 		{archivePath: "/var/empty/my/path", cacheDisabled: true},
 	}
 
@@ -668,7 +665,7 @@ func TestGetArchiveProxiedToGitalyInterruptedStream(t *testing.T) {
 	archivePath := "my/path"
 	archivePrefix := "repo-1"
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"GitalyRepository":{"storage_name":"%s","relative_path":"%s"},"ArchivePath":"%s","ArchivePrefix":"%s","CommitId":"%s"}`,
-		gitalyAddress, repoStorage, repoRelativePath, path.Join(scratchDir, archivePath), archivePrefix, oid)
+		gitalyAddress, repoStorage, repoRelativePath, path.Join(t.TempDir(), archivePath), archivePrefix, oid)
 
 	resp, _, err := doSendDataRequest("/archive.tar.gz", "git-archive", jsonParams)
 	require.NoError(t, err)
@@ -850,7 +847,13 @@ type combinedServer struct {
 }
 
 func startGitalyServer(t *testing.T, finalMessageCode codes.Code) (*combinedServer, string) {
-	socketPath := path.Join(scratchDir, fmt.Sprintf("gitaly-%d.sock", rand.Int()))
+	tmpFolder, err := os.MkdirTemp("", "gitaly")
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		os.RemoveAll(tmpFolder)
+	})
+
+	socketPath := path.Join(tmpFolder, fmt.Sprintf("gitaly-%d.sock", rand.Int()))
 	if err := os.Remove(socketPath); err != nil && !os.IsNotExist(err) {
 		t.Fatal(err)
 	}

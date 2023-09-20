@@ -1,13 +1,12 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     LocalStorageSync,
   },
   mixins: [Tracking.mixin()],
@@ -25,7 +24,7 @@ export default {
       type: String,
       required: true,
     },
-    filterOptions: {
+    items: {
       type: Array,
       required: true,
     },
@@ -63,8 +62,7 @@ export default {
     },
     selectedSortOption() {
       return (
-        this.filterOptions.find(({ key }) => this.sortFilterProp === key) ||
-        this.defaultSortFilterProp
+        this.items.find(({ key }) => this.sortFilterProp === key) || this.defaultSortFilterProp
       );
     },
   },
@@ -94,23 +92,14 @@ export default {
       as-string
       @input="setDiscussionFilterOption"
     />
-    <gl-dropdown
-      class="gl-xs-w-full"
-      size="small"
-      :text="getDropdownSelectedText"
+    <gl-collapsible-listbox
+      :toggle-text="getDropdownSelectedText"
       :disabled="loading"
-      right
-    >
-      <gl-dropdown-item
-        v-for="{ text, key, testid } in filterOptions"
-        :key="text"
-        :data-testid="testid"
-        is-check-item
-        :is-checked="isSortDropdownItemActive(key)"
-        @click="fetchFilteredDiscussions(key)"
-      >
-        {{ text }}
-      </gl-dropdown-item>
-    </gl-dropdown>
+      :items="items"
+      :selected="sortFilterProp"
+      placement="right"
+      size="small"
+      @select="fetchFilteredDiscussions"
+    />
   </div>
 </template>

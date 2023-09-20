@@ -93,10 +93,12 @@ export const humanizeTimeInterval = (intervalInSeconds) => {
   if (intervalInSeconds < 60 /* = 1 minute */) {
     const seconds = Math.round(intervalInSeconds * 10) / 10;
     return n__('%d second', '%d seconds', seconds);
-  } else if (intervalInSeconds < 3600 /* = 1 hour */) {
+  }
+  if (intervalInSeconds < 3600 /* = 1 hour */) {
     const minutes = Math.round(intervalInSeconds / 6) / 10;
     return n__('%d minute', '%d minutes', minutes);
-  } else if (intervalInSeconds < 86400 /* = 1 day */) {
+  }
+  if (intervalInSeconds < 86400 /* = 1 day */) {
     const hours = Math.round(intervalInSeconds / 360) / 10;
     return n__('%d hour', '%d hours', hours);
   }
@@ -378,19 +380,24 @@ export const formatTimeAsSummary = ({ seconds, hours, days, minutes, weeks, mont
     return sprintf(s__('ValueStreamAnalytics|%{value}M'), {
       value: roundToNearestHalf(months),
     });
-  } else if (weeks) {
+  }
+  if (weeks) {
     return sprintf(s__('ValueStreamAnalytics|%{value}w'), {
       value: roundToNearestHalf(weeks),
     });
-  } else if (days) {
+  }
+  if (days) {
     return sprintf(s__('ValueStreamAnalytics|%{value}d'), {
       value: roundToNearestHalf(days),
     });
-  } else if (hours) {
+  }
+  if (hours) {
     return sprintf(s__('ValueStreamAnalytics|%{value}h'), { value: hours });
-  } else if (minutes) {
+  }
+  if (minutes) {
     return sprintf(s__('ValueStreamAnalytics|%{value}m'), { value: minutes });
-  } else if (seconds) {
+  }
+  if (seconds) {
     return unescape(sanitize(s__('ValueStreamAnalytics|&lt;1m'), { ALLOWED_TAGS: [] }));
   }
   return '-';
@@ -441,11 +448,13 @@ export const humanTimeframe = (startDate, dueDate) => {
       startDate: startDateInWords,
       dueDate: dueDateInWords,
     });
-  } else if (startDate && !dueDate) {
+  }
+  if (startDate && !dueDate) {
     return sprintf(__('%{startDate} – No due date'), {
       startDate: dateInWords(start, true, false),
     });
-  } else if (!startDate && dueDate) {
+  }
+  if (!startDate && dueDate) {
     return sprintf(__('No start date – %{dueDate}'), {
       dueDate: dateInWords(due, true, false),
     });

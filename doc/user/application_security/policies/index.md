@@ -58,7 +58,7 @@ to select, edit, and unlink a security policy project.
 As a project owner, take the following steps to create or edit an association between your current
 project and a project that you would like to designate as the security policy project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
 1. Select **Edit Policy Project**, and search for and select the
    project you would like to link from the dropdown list.
@@ -82,7 +82,7 @@ policies for all available environments. You can check a
 policy's information (for example, description or enforcement
 status), and create and edit deployed policies:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
 
 ![Policies List Page](img/policies_list_v15_1.png)
@@ -93,7 +93,7 @@ status), and create and edit deployed policies:
 
 You can use the policy editor to create, edit, and delete policies:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
    - To create a new policy, select **New policy** which is located in the **Policies** page's header.
      You can then select which type of policy to create.
@@ -142,12 +142,13 @@ The workaround is to amend your group or instance push rules to allow branches f
 ### Troubleshooting common issues configuring security policies
 
 - Confirm that scanners are properly configured and producing results for the latest branch. Security Policies are designed to require approval when there are no results (no security report), as this ensures that no vulnerabilities are introduced. We cannot know if there are any vulnerabilities unless the scans enforced by the policy complete successfully and are evaluated.
+- For scan result policies, we require artifacts for each scanner defined in the policy for both the source and target branch. To ensure scan result policies capture the necessary results, confirm your scan execution is properly implemented and enforced. If using scan execution policies, enforcing on `all branches` often address this need.
 - When running scan execution policies based on a SAST action, ensure target repositories contain proper code files. SAST runs different analyzers [based on the types of files in the repo](../sast/index.md#supported-languages-and-frameworks), and if no supported files are found it will not run any jobs. See the [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) for more details.
-- Check for any branch configuration conflicts. If your policy is configured to enforce rules on `main` but some projects within the scope are using `master` as their default branch, the policy is not applied for the latter. Support for specifying the `default` branch in your policies is proposed in [epic 9468](https://gitlab.com/groups/gitlab-org/-/epics/9468).
+- Check for any branch configuration conflicts. If your policy is configured to enforce rules on `main` but some projects within the scope are using `master` as their default branch, the policy is not applied for the latter. You can define policies to enforce rules generically on `default` branches regardless of the name used in the project or on `all protected branches` to address this issue.
 - Scan result policies created at the group or sub-group level can take some time to apply to all the merge requests in the group.
 - Scheduled scan execution policies run with a minimum 15 minute cadence. Learn more [about the schedule rule type](../policies/scan-execution-policies.md#schedule-rule-type).
 - When scheduling pipelines, keep in mind that CRON scheduling is based on UTC on GitLab SaaS and is based on your server time for self managed instances. When testing new policies, it may appear pipelines are not running properly when in fact they are scheduled in your server's timezone.
-- When enforcing scan execution policies, security policies creates a bot in the target project that will trigger scheduled pipelines to ensure enforcement. If the bot is
+- When enforcing scan execution policies, security policies creates a bot in the target project that will trigger scheduled pipelines to ensure enforcement. If the bot is 
 deleted or missing, the target project's pipeline will not be executed. To recreate a security policy bot user unlink and link the security policy project again.
 - You should not link a security policy project to a development project and to the group or sub-group the development project belongs to at the same time. Linking this way will result in approval rules from the Scan Result Policy not being applied to merge requests in the development project.
 - When creating a Scan Result Policy, neither the array `severity_levels` nor the array `vulnerability_states` in the [scan_finding rule](../policies/scan-result-policies.md#scan_finding-rule-type) can be left empty; for a working rule, at least one entry must exist.

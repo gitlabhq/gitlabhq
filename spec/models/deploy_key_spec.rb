@@ -67,7 +67,7 @@ RSpec.describe DeployKey, :mailer do
 
     context 'when user is not set' do
       it 'returns the ghost user' do
-        expect(deploy_key.user).to eq(User.ghost)
+        expect(deploy_key.user).to eq(Users::Internal.ghost)
       end
     end
   end

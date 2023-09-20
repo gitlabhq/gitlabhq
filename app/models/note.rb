@@ -28,7 +28,7 @@ class Note < ApplicationRecord
 
   ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
 
-  ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/.freeze
+  ISSUE_TASK_SYSTEM_NOTE_PATTERN = /\A.*marked\sthe\stask.+as\s(completed|incomplete).*\z/
 
   cache_markdown_field :note, pipeline: :note, issuable_reference_expansion_enabled: true
 
@@ -74,6 +74,7 @@ class Note < ApplicationRecord
   attr_mentionable :note, pipeline: :note
   participant :author
 
+  belongs_to :namespace
   belongs_to :project
   belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :author, class_name: "User"
@@ -104,6 +105,7 @@ class Note < ApplicationRecord
   validates :note, presence: true
   validates :note, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }
   validates :project, presence: true, if: :for_project_noteable?
+  validates :namespace, presence: true
 
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -169,7 +171,7 @@ class Note < ApplicationRecord
     end
   end
 
-  scope :diff_notes, -> { where(type: %w(LegacyDiffNote DiffNote)) }
+  scope :diff_notes, -> { where(type: %w[LegacyDiffNote DiffNote]) }
   scope :new_diff_notes, -> { where(type: 'DiffNote') }
   scope :non_diff_notes, -> { where(type: NON_DIFF_NOTE_TYPES) }
 
@@ -193,7 +195,7 @@ class Note < ApplicationRecord
   scope :for_note_or_capitalized_note, ->(text) { where(note: [text, text.capitalize]) }
   scope :like_note_or_capitalized_note, ->(text) { where('(note LIKE ? OR note LIKE ?)', text, text.capitalize) }
 
-  before_validation :nullify_blank_type, :nullify_blank_line_code
+  before_validation :ensure_namespace_id, :nullify_blank_type, :nullify_blank_line_code
   # Syncs `confidential` with `internal` as we rename the column.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/367923
   before_create :set_internal_flag
@@ -205,7 +207,7 @@ class Note < ApplicationRecord
   after_commit :trigger_note_subscription_create, on: :create
   after_commit :trigger_note_subscription_update, on: :update
   after_commit :trigger_note_subscription_destroy, on: :destroy
-  after_commit :expire_etag_cache, unless: :importing?
+  after_commit :broadcast_noteable_notes_changed, unless: :importing?
 
   def trigger_note_subscription_create
     return unless trigger_note_subscription?
@@ -589,8 +591,8 @@ class Note < ApplicationRecord
     update_columns(attributes_to_update)
   end
 
-  def expire_etag_cache
-    noteable&.expire_note_etag_cache
+  def broadcast_noteable_notes_changed
+    noteable&.broadcast_notes_changed
   end
 
   def touch(*args, **kwargs)
@@ -823,6 +825,16 @@ class Note < ApplicationRecord
 
   def keep_around_commit
     project.repository.keep_around(self.commit_id)
+  end
+
+  def ensure_namespace_id
+    return if namespace_id.present? && !noteable_changed? && !project_changed?
+
+    self.namespace_id = if for_project_noteable?
+                          project&.project_namespace_id
+                        elsif for_personal_snippet?
+                          noteable&.author&.namespace&.id
+                        end
   end
 
   def nullify_blank_type

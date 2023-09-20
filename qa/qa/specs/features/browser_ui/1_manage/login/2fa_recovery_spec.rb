@@ -3,17 +3,9 @@
 module QA
   RSpec.describe 'Manage', :requires_admin, :skip_live_env, :reliable do
     describe '2FA', product_group: :authentication_and_authorization do
-      let(:owner_user) do
-        Resource::User.fabricate_via_api! do |usr|
-          usr.api_client = admin_api_client
-        end
-      end
+      let(:owner_user) { create(:user, api_client: admin_api_client) }
 
-      let(:developer_user) do
-        Resource::User.fabricate_via_api! do |resource|
-          resource.api_client = admin_api_client
-        end
-      end
+      let(:developer_user) { create(:user, api_client: admin_api_client) }
 
       let(:sandbox_group) do
         Resource::Sandbox.fabricate! do |sandbox_group|

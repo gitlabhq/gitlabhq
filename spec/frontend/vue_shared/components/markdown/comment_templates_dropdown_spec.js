@@ -12,6 +12,7 @@ import savedRepliesQuery from '~/vue_shared/components/markdown/saved_replies.qu
 import {
   TRACKING_SAVED_REPLIES_USE,
   TRACKING_SAVED_REPLIES_USE_IN_MR,
+  TRACKING_SAVED_REPLIES_USE_IN_OTHER,
 } from '~/vue_shared/components/markdown/constants';
 
 let wrapper;
@@ -87,6 +88,12 @@ describe('Comment templates dropdown', () => {
     });
 
     describe('tracking', () => {
+      it('always sends two tracking events', async () => {
+        await selectSavedReply();
+
+        expect(trackingSpy).toHaveBeenCalledTimes(2);
+      });
+
       it('tracks overall usage', async () => {
         await selectSavedReply();
 
@@ -108,7 +115,6 @@ describe('Comment templates dropdown', () => {
             TRACKING_SAVED_REPLIES_USE_IN_MR,
             expect.any(Object),
           );
-          expect(trackingSpy).toHaveBeenCalledTimes(2);
         });
 
         it('is not sent when not in an MR', async () => {
@@ -121,7 +127,32 @@ describe('Comment templates dropdown', () => {
             TRACKING_SAVED_REPLIES_USE_IN_MR,
             expect.any(Object),
           );
-          expect(trackingSpy).toHaveBeenCalledTimes(1);
+        });
+      });
+
+      describe('non-MR usage event', () => {
+        it('is sent when not in an MR', async () => {
+          window.location.toString.mockReturnValue('this/looks/like/a/-/issues/1');
+
+          await selectSavedReply();
+
+          expect(trackingSpy).toHaveBeenCalledWith(
+            expect.any(String),
+            TRACKING_SAVED_REPLIES_USE_IN_OTHER,
+            expect.any(Object),
+          );
+        });
+
+        it('is not sent when in an MR', async () => {
+          window.location.toString.mockReturnValue('this/looks/like/a/-/merge_requests/1');
+
+          await selectSavedReply();
+
+          expect(trackingSpy).not.toHaveBeenCalledWith(
+            expect.any(String),
+            TRACKING_SAVED_REPLIES_USE_IN_OTHER,
+            expect.any(Object),
+          );
         });
       });
     });

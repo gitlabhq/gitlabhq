@@ -5,7 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ProjectStorageApp from '~/usage_quotas/storage/components/project_storage_app.vue';
-import UsageGraph from '~/usage_quotas/storage/components/usage_graph.vue';
+import SectionedPercentageBar from '~/usage_quotas/components/sectioned_percentage_bar.vue';
 import {
   descendingStorageUsageSort,
   getStorageTypesFromProjectStatistics,
@@ -56,7 +56,7 @@ describe('ProjectStorageApp', () => {
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findUsagePercentage = () => wrapper.findByTestId('total-usage');
-  const findUsageGraph = () => wrapper.findComponent(UsageGraph);
+  const findSectionedPercentageBar = () => wrapper.findComponent(SectionedPercentageBar);
   const findProjectDetailsTable = () => wrapper.findByTestId('usage-quotas-project-usage-details');
   const findNamespaceDetailsTable = () =>
     wrapper.findByTestId('usage-quotas-namespace-usage-details');
@@ -157,7 +157,7 @@ describe('ProjectStorageApp', () => {
     });
   });
 
-  describe('rendering <usage-graph />', () => {
+  describe('rendering <sectioned-percentage-bar />', () => {
     let mockApollo;
 
     beforeEach(async () => {
@@ -168,16 +168,23 @@ describe('ProjectStorageApp', () => {
       await waitForPromises();
     });
 
-    it('renders usage-graph component if project.statistics exists', () => {
-      expect(findUsageGraph().exists()).toBe(true);
+    it('renders sectioned-percentage-bar component if project.statistics exists', () => {
+      expect(findSectionedPercentageBar().exists()).toBe(true);
     });
 
-    it('passes project.statistics to usage-graph component', () => {
-      const {
-        __typename,
-        ...statistics
-      } = mockGetProjectStorageStatisticsGraphQLResponse.data.project.statistics;
-      expect(findUsageGraph().props('rootStorageStatistics')).toMatchObject(statistics);
+    it('passes processed project statistics to sectioned-percentage-bar component', () => {
+      expect(findSectionedPercentageBar().props('sections')).toMatchObject([
+        { formattedValue: '4.58 MiB', id: 'lfsObjects', label: 'LFS', value: 4800000 },
+        { formattedValue: '3.72 MiB', id: 'repository', label: 'Repository', value: 3900000 },
+        { formattedValue: '3.62 MiB', id: 'packages', label: 'Packages', value: 3800000 },
+        {
+          formattedValue: '390.63 KiB',
+          id: 'buildArtifacts',
+          label: 'Job artifacts',
+          value: 400000,
+        },
+        { formattedValue: '292.97 KiB', id: 'wiki', label: 'Wiki', value: 300000 },
+      ]);
     });
   });
 });

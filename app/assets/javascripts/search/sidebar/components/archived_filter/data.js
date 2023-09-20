@@ -7,6 +7,11 @@ export const TRACKING_LABEL_CHECKBOX = 'checkbox';
 
 const scopes = {
   PROJECTS: 'projects',
+  ISSUES: 'issues',
+  MERGE_REQUESTS: 'merge_requests',
+  NOTES: 'notes',
+  BLOBS: 'blobs',
+  COMMITS: 'commits',
 };
 
 const filterParam = 'include_archived';

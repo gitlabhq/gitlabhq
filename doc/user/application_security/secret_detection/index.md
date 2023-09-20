@@ -27,7 +27,7 @@ You can run scans and view [Secret Detection JSON report artifacts](../../../ci/
 
 With GitLab Ultimate, Secret Detection results are also processed so you can:
 
-- See them in the [merge request widget](../index.md#view-security-scan-information-in-merge-requests), [pipeline security report](../vulnerability_report/pipeline.md), and [Vulnerability Report](../vulnerability_report/index.md).
+- See them in the [merge request widget](../index.md#merge-request), [pipeline security report](../vulnerability_report/pipeline.md), and [vulnerability report](../vulnerability_report/index.md) UIs.
 - Use them in approval workflows.
 - Review them in the security dashboard.
 - [Automatically respond](automatic_response.md) to leaks in public repositories.
@@ -155,7 +155,7 @@ To enable Secret Detection, either:
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
 1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
 
@@ -188,7 +188,7 @@ error may occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manu
 
 To enable Secret Detection:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Secret Detection** row, select **Configure with a merge request**.
 1. Optional. Complete the fields.
@@ -338,12 +338,14 @@ To enable full history Secret Detection, set the variable `SECRET_DETECTION_HIST
 ## Custom rulesets **(ULTIMATE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for passthrough chains.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for passthrough chains.
 >   Expanded to include additional passthrough types of `file`, `git`, and `url` in GitLab 14.6.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in
 >   GitLab 14.8.
 
-You can customize the default Secret Detection rules provided with GitLab.
+You can customize which [secrets are reported in the GitLab UI](#secret-detection).
+However, the `secret_detection` job logs always include the number
+of secrets detected by the default Secret Detection rules.
 
 The following customization options can be used separately, or in combination:
 
@@ -510,7 +512,7 @@ optional authentication, and optional Git SHA. The variable uses the following f
 ```
 
 NOTE:
-Loading local project configuration takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE` values.
+A local `.gitlab/secret-detection-ruleset.toml` file in the project takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE`.
 
 The following example includes the Secret Detection template in a project to be scanned and specifies
 the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable for referencing a separate project configuration.

@@ -64,7 +64,8 @@ module SidebarsHelper
       gitlab_version: Gitlab.version_info,
       gitlab_version_check: gitlab_version_check,
       search: search_data,
-      panel_type: panel_type
+      panel_type: panel_type,
+      shortcut_links: shortcut_links
     }
   end
 
@@ -106,7 +107,8 @@ module SidebarsHelper
       update_pins_url: pins_path,
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
-      shortcut_links: shortcut_links(user, project: project)
+      shortcut_links: shortcut_links(user: user, project: project),
+      track_visits_path: track_namespace_visits_path
     })
   end
 
@@ -114,32 +116,43 @@ module SidebarsHelper
     nav: nil, project: nil, user: nil, group: nil, current_ref: nil, ref_type: nil,
     viewed_user: nil, organization: nil)
     context_adds = { route_is_active: method(:active_nav_link?), is_super_sidebar: true }
-    case nav
-    when 'project'
-      context = project_sidebar_context(project, user, current_ref, ref_type: ref_type, **context_adds)
-      Sidebars::Projects::SuperSidebarPanel.new(context)
-    when 'group'
-      context = group_sidebar_context(group, user, **context_adds)
-      Sidebars::Groups::SuperSidebarPanel.new(context)
-    when 'profile'
-      context = Sidebars::Context.new(current_user: user, container: user, **context_adds)
-      Sidebars::UserSettings::Panel.new(context)
-    when 'user_profile'
-      context = Sidebars::Context.new(current_user: user, container: viewed_user, **context_adds)
-      Sidebars::UserProfile::Panel.new(context)
-    when 'explore'
-      Sidebars::Explore::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
-    when 'search'
-      context = Sidebars::Context.new(current_user: user, container: nil, **context_adds)
-      Sidebars::Search::Panel.new(context)
-    when 'admin'
-      Sidebars::Admin::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
-    when 'organization'
-      context = organization_sidebar_context(organization, user, **context_adds)
-      Sidebars::Organizations::SuperSidebarPanel.new(context)
-    else
+    panel = case nav
+            when 'project'
+              context = project_sidebar_context(project, user, current_ref, ref_type: ref_type, **context_adds)
+              Sidebars::Projects::SuperSidebarPanel.new(context)
+            when 'group'
+              context = group_sidebar_context(group, user, **context_adds)
+              Sidebars::Groups::SuperSidebarPanel.new(context)
+            when 'profile'
+              context = Sidebars::Context.new(current_user: user, container: user, **context_adds)
+              Sidebars::UserSettings::Panel.new(context)
+            when 'user_profile'
+              context = Sidebars::Context.new(current_user: user, container: viewed_user, **context_adds)
+              Sidebars::UserProfile::Panel.new(context)
+            when 'explore'
+              Sidebars::Explore::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+            when 'search'
+              context = Sidebars::Context.new(current_user: user, container: nil, **context_adds)
+              Sidebars::Search::Panel.new(context)
+            when 'admin'
+              Sidebars::Admin::Panel.new(Sidebars::Context.new(current_user: user, container: nil, **context_adds))
+            when 'organization'
+              context = organization_sidebar_context(organization, user, **context_adds)
+              Sidebars::Organizations::SuperSidebarPanel.new(context)
+            when 'your_work'
+              context = your_work_sidebar_context(user, **context_adds)
+              Sidebars::YourWork::Panel.new(context)
+            end
+
+    # We only return the panel if any menu item is rendered, otherwise fallback
+    return panel if panel&.render?
+
+    # Fallback menu "Your work" for logged-in users, "Explore" for logged-out
+    if user
       context = your_work_sidebar_context(user, **context_adds)
       Sidebars::YourWork::Panel.new(context)
+    else
+      Sidebars::Explore::Panel.new(Sidebars::Context.new(current_user: nil, container: nil, **context_adds))
     end
   end
 
@@ -387,7 +400,29 @@ module SidebarsHelper
     !!session[:impersonator_id]
   end
 
-  def shortcut_links(user, project: nil)
+  def shortcut_links_anonymous
+    [
+      {
+        title: _('Snippets'),
+        href: explore_snippets_path,
+        css_class: 'dashboard-shortcuts-snippets'
+      },
+      {
+        title: _('Groups'),
+        href: explore_groups_path,
+        css_class: 'dashboard-shortcuts-groups'
+      },
+      {
+        title: _('Projects'),
+        href: explore_projects_path,
+        css_class: 'dashboard-shortcuts-projects'
+      }
+    ]
+  end
+
+  def shortcut_links(user: nil, project: nil)
+    return shortcut_links_anonymous unless user
+
     shortcut_links = [
       {
         title: _('Milestones'),
@@ -403,6 +438,16 @@ module SidebarsHelper
         title: _('Activity'),
         href: activity_dashboard_path,
         css_class: 'dashboard-shortcuts-activity'
+      },
+      {
+        title: _('Groups'),
+        href: dashboard_groups_path,
+        css_class: 'dashboard-shortcuts-groups'
+      },
+      {
+        title: _('Projects'),
+        href: dashboard_projects_path,
+        css_class: 'dashboard-shortcuts-projects'
       }
     ]
 

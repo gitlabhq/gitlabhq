@@ -1,7 +1,8 @@
 function hasHiddenStyle(node) {
   if (!node.style) {
     return false;
-  } else if (node.style.display === 'none' || node.style.visibility === 'hidden') {
+  }
+  if (node.style.display === 'none' || node.style.visibility === 'hidden') {
     return true;
   }
 

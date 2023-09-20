@@ -27,7 +27,8 @@ module API
 
           authenticate!
 
-          not_found! unless can?(current_user, :read_model_experiments, user_project)
+          check_api_read!
+          check_api_write! unless request.get? || request.head?
         end
 
         rescue_from ActiveRecord::ActiveRecordError do |e|

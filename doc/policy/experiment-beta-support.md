@@ -13,6 +13,9 @@ All other features are considered to be Generally Available (GA).
 ## Experiment
 
 Support is not provided for features listed as "Experimental" or "Alpha" or any similar designation. Issues regarding such features should be opened in the GitLab issue tracker. Teams should release features as GA from the start unless there are strong reasons to release them as Experiment or Beta versions first.
+All Experimental features must [initiate Production Readiness Review](https://about.gitlab.com/handbook/engineering/infrastructure/production/readiness/#process) and complete the [experiment section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#experiment).
+
+Experimental features are:
 
 - Not ready for production use.
 - No support available.
@@ -20,7 +23,7 @@ Support is not provided for features listed as "Experimental" or "Alpha" or any 
 - Can be removed at any time.
 - Data loss may occur.
 - Documentation may not exist or just be in a blog format.
-- Offer an easy way to choose to opt-in to experimental features with minimal friction. For example, needing to flip a feature flag is too much friction, but a group or project-level setting that is in the UI is not.
+- Offer a way to opt-in with minimal friction. For example, needing to flip a feature flag is too much friction, but a group or project-level setting in the UI is not.
 - Link out to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/) in the opt-in.
 - Documentation reflects that the feature is subject to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
 - [UI reflects experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
@@ -33,6 +36,9 @@ Support is not provided for features listed as "Experimental" or "Alpha" or any 
 ## Beta
 
 Commercially-reasonable efforts are made to provide limited support for features designated as "Beta," with the expectation that issues require extra time and assistance from development to troubleshoot.
+All Beta features must complete all sections up to and including the [beta section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#beta) by following the [Production Readiness Review process](https://about.gitlab.com/handbook/engineering/infrastructure/production/readiness/#process).
+
+Beta features are:
 
 - May not be ready for production use.
 - Support on a commercially-reasonable effort basis.
@@ -50,7 +56,9 @@ Commercially-reasonable efforts are made to provide limited support for features
 
 ## Generally Available (GA)
 
-Generally Available features means that they passed the [Production Readiness Review](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md) for GitLab.com, and are:
+Generally Available features must complete the [Production Readiness Review](https://about.gitlab.com/handbook/engineering/infrastructure/production/readiness) and complete all sections up to and including the [GA section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#general-availability).
+
+GA features are:
 
 - Ready for production use at any scale.
 - Fully documented and supported.

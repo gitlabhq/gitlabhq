@@ -1,9 +1,9 @@
 @import 'page_bundles/mixins_and_variables_and_functions';
 
 .application-theme {
-  $ui-gray-bg: #303030;
-  $ui-light-gray-bg: #f0f0f0;
-  $ui-dark-mode-bg: #1f1f1f;
+  $ui-gray-bg: $gray-900;
+  $ui-light-gray-bg: $gray-50;
+  $ui-dark-mode-bg: $gray-950;
 
   .preview {
     font-size: 0;
@@ -33,7 +33,7 @@
     }
 
     &.ui-light-green {
-      background-color: $theme-light-green-700;
+      background-color: $theme-green-700;
     }
 
     &.ui-red {

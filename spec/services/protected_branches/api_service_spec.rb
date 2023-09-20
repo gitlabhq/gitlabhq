@@ -6,10 +6,12 @@ RSpec.describe ProtectedBranches::ApiService, feature_category: :compliance_mana
   shared_examples 'execute with entity' do
     it 'creates a protected branch with prefilled defaults' do
       expect(::ProtectedBranches::CreateService).to receive(:new).with(
-        entity, user, hash_including(
-                        push_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
-                        merge_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }]
-                      )
+        entity,
+        user,
+        hash_including(
+          push_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
+          merge_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }]
+        )
       ).and_call_original
 
       expect(described_class.new(entity, user, { name: 'new name' }).create).to be_valid
@@ -17,10 +19,12 @@ RSpec.describe ProtectedBranches::ApiService, feature_category: :compliance_mana
 
     it 'updates a protected branch without prefilled defaults' do
       expect(::ProtectedBranches::UpdateService).to receive(:new).with(
-        entity, user, hash_including(
-                        push_access_levels_attributes: [],
-                        merge_access_levels_attributes: []
-                      )
+        entity,
+        user,
+        hash_including(
+          push_access_levels_attributes: [],
+          merge_access_levels_attributes: []
+        )
       ).and_call_original
 
       expect do

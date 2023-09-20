@@ -15,7 +15,15 @@ module Gitlab
       # next_stage - The name of the next stage to start when all jobs have been
       #              completed.
       def perform(project_id, waiters, next_stage)
-        return unless import_state = find_import_state(project_id)
+        import_state = find_import_state(project_id)
+
+        # If the import state is nil the project may have been deleted or the import
+        # may have failed or been canceled. In this case we tidy up the cache data and no
+        # longer attempt to advance to the next stage.
+        if import_state.nil?
+          clear_waiter_caches(waiters)
+          return
+        end
 
         new_waiters = wait_for_jobs(waiters)
 
@@ -55,6 +63,12 @@ module Gitlab
 
       def next_stage_worker(next_stage)
         raise NotImplementedError
+      end
+
+      def clear_waiter_caches(waiters)
+        waiters.each_key do |key|
+          JobWaiter.delete_key(key)
+        end
       end
     end
   end

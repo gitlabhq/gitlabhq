@@ -3,6 +3,7 @@
 module Integrations
   class Slack < BaseSlackNotification
     include SlackMattermostNotifier
+    include SlackMattermostFields
 
     def title
       'Slack notifications'
@@ -16,8 +17,7 @@ module Integrations
       'slack'
     end
 
-    override :webhook_help
-    def webhook_help
+    def self.webhook_help
       'https://hooks.slack.com/services/…'
     end
 

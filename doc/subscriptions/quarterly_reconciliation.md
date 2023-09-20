@@ -79,6 +79,15 @@ seats, and an invoice is generated for a prorated amount. If a credit card
 is on file, a payment is automatically applied. Otherwise, an invoice is
 sent and subject to your payment terms.
 
+### Troubleshooting failed payment
+
+If your credit card is declined during the reconciliation process, an email will be sent with the subject `Your GitLab subscription failed to reconcile`. Please follow these instructions to update your payment information, and the reconciliation will be automatically retried:
+
+1. Log in to your account at `https://customers.gitlab.com`.
+1. Go to **Payment Methods**.
+1. Select **Add New Payment Method**.
+1. Make sure that the payment method is set as **Default**.
+
 ## Quarterly reconciliation eligibility
 
 ### You are automatically enrolled in quarterly reconciliation if

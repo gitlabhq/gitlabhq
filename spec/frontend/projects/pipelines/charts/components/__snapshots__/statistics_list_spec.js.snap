@@ -6,7 +6,6 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
     <span>
       Total:
     </span>
-     
     <strong>
       4 pipelines
     </strong>
@@ -15,7 +14,6 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
     <span>
       Successful:
     </span>
-     
     <strong>
       2 pipelines
     </strong>
@@ -24,20 +22,16 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
     <span>
       Failed:
     </span>
-     
     <gl-link-stub
       href="/flightjs/Flight/-/pipelines?page=1&scope=all&status=failed"
     >
-      
-        2 pipelines
-      
+      2 pipelines
     </gl-link-stub>
   </li>
   <li>
     <span>
       Success ratio:
     </span>
-     
     <strong>
       50.00%
     </strong>

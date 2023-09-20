@@ -4,7 +4,7 @@
 module Banzai
   module Filter
     class InlineDiffFilter < HTML::Pipeline::Filter
-      IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
+      IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
 
       INLINE_DIFF_DELETION_UNTRUSTED = '(?:\[\-(.*?)\-\]|\{\-(.*?)\-\})'
       INLINE_DIFF_DELETION_UNTRUSTED_REGEX =

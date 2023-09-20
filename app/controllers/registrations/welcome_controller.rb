@@ -8,7 +8,9 @@ module Registrations
     include ::Gitlab::Utils::StrongMemoize
 
     layout 'minimal'
-    skip_before_action :required_signup_info, :check_two_factor_requirement
+    # TODO: Once this is an ee + SaaS only feature, we can remove this.
+    # To be completed in https://gitlab.com/gitlab-org/gitlab/-/issues/411858
+    skip_before_action :check_two_factor_requirement
 
     helper_method :welcome_update_params
     helper_method :onboarding_status
@@ -43,7 +45,7 @@ module Registrations
     end
 
     def completed_welcome_step?
-      current_user.role.present? && !current_user.setup_for_company.nil?
+      !current_user.setup_for_company.nil?
     end
 
     def update_params
@@ -61,9 +63,7 @@ module Registrations
     end
 
     def update_success_path
-      if onboarding_status.invite_with_tasks_to_be_done?
-        issues_dashboard_path(assignee_username: current_user.username)
-      elsif onboarding_status.continue_full_onboarding? # trials/regular registration on .com
+      if onboarding_status.continue_full_onboarding? # trials/regular registration on .com
         signup_onboarding_path
       elsif onboarding_status.single_invite? # invites w/o tasks due to order
         flash[:notice] = helpers.invite_accepted_notice(onboarding_status.last_invited_member)

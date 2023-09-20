@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Dashboard Issues', feature_category: :team_planning do
   include FilteredSearchHelpers
 
-  let_it_be(:current_user) { create :user }
+  let_it_be(:current_user) { create(:user, :no_super_sidebar) }
   let_it_be(:user) { current_user } # Shared examples depend on this being available
   let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:project) { create(:project) }

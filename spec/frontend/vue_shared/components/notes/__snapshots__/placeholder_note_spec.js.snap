@@ -2,10 +2,10 @@
 
 exports[`Issue placeholder note component matches snapshot 1`] = `
 <timeline-entry-item-stub
-  class="note note-wrapper note-comment being-posted fade-in-half"
+  class="being-posted fade-in-half note note-comment note-wrapper"
 >
   <div
-    class="timeline-avatar gl-float-left"
+    class="gl-float-left timeline-avatar"
   >
     <gl-avatar-link-stub
       href="/root"
@@ -20,9 +20,8 @@ exports[`Issue placeholder note component matches snapshot 1`] = `
       />
     </gl-avatar-link-stub>
   </div>
-   
   <div
-    class="timeline-content discussion"
+    class="discussion timeline-content"
   >
     <div
       class="note-header"
@@ -34,11 +33,10 @@ exports[`Issue placeholder note component matches snapshot 1`] = `
           href="/root"
         >
           <span
-            class="d-none d-sm-inline-block bold"
+            class="bold d-none d-sm-inline-block"
           >
             Root
           </span>
-           
           <span
             class="note-headline-light"
           >
@@ -47,7 +45,6 @@ exports[`Issue placeholder note component matches snapshot 1`] = `
         </a>
       </div>
     </div>
-     
     <div
       class="timeline-discussion-body"
     >
@@ -55,15 +52,13 @@ exports[`Issue placeholder note component matches snapshot 1`] = `
         class="note-body"
       >
         <div
-          class="note-text md"
+          class="md note-text"
         >
           <p
             dir="auto"
           >
             Foo
           </p>
-          
-
         </div>
       </div>
     </div>

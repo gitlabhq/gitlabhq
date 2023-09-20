@@ -10,7 +10,8 @@ module Resolvers
       type Types::Ci::PipelineTriggerType.connection_type, null: false
 
       def resolve_with_lookahead
-        apply_lookahead(object.triggers)
+        triggers = ::Ci::TriggersFinder.new(current_user, object).execute
+        apply_lookahead(triggers)
       end
 
       private

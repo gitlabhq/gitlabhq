@@ -25,6 +25,7 @@ Gitaly implements a client-server architecture:
   - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell)
   - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse)
   - [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer)
+  - [GitLab Zoekt Indexer](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer)
 
 Gitaly manages only Git repository access for GitLab. Other types of GitLab data aren't accessed
 using Gitaly.
@@ -57,7 +58,7 @@ If you have not yet migrated to Gitaly Cluster, you have two options:
 - A sharded Gitaly instance.
 - Gitaly Cluster.
 
-Contact your [Customer Success Manager](https://about.gitlab.com/job-families/sales/customer-success-management/) or customer support if you have any questions.
+Contact your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or customer support if you have any questions.
 
 ### Known issues
 
@@ -326,7 +327,7 @@ conflicts that could occur due to partially applied operations.
 
 Repositories are stored in the storages at the relative path determined by the [Gitaly client](#gitaly-architecture). These paths can be
 identified by them not beginning with the `@cluster` prefix. The relative paths
-follow the [hashed storage](../repository_storage_types.md#hashed-storage) schema.
+follow the [hashed storage](../repository_storage_paths.md#hashed-storage) schema.
 
 #### Praefect-generated replica paths (GitLab 15.0 and later)
 
@@ -377,7 +378,7 @@ Use the [`praefect metadata`](troubleshooting.md#view-repository-metadata) subco
 
 The repository on disk also contains the project path in the Git configuration file. The configuration
 file can be used to determine the project path even if the repository's metadata has been deleted.
-Follow the [instructions in hashed storage's documentation](../repository_storage_types.md#from-hashed-path-to-project-name).
+Follow the [instructions in hashed storage's documentation](../repository_storage_paths.md#from-hashed-path-to-project-name).
 
 #### Atomicity of operations
 

@@ -1,5 +1,5 @@
 ---
-stage: Anti-Abuse
+stage: Govern
 group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -19,7 +19,7 @@ unique IP addresses. Therefore, the IP addresses per user limit should take into
 
 ## Configure IP address restrictions
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Reporting**.
 1. Expand **Spam and Anti-bot Protection**.

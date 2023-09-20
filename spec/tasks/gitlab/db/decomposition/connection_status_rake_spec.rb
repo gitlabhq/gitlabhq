@@ -8,7 +8,7 @@ RSpec.describe 'gitlab:db:decomposition:connection_status', feature_category: :c
 
   subject { run_rake_task('gitlab:db:decomposition:connection_status') }
 
-  before_all do
+  before(:all) do
     Rake.application.rake_require 'tasks/gitlab/db/decomposition/connection_status'
   end
 

@@ -12,17 +12,17 @@ module Noteable
   class_methods do
     # `Noteable` class names that support replying to individual notes.
     def replyable_types
-      %w(Issue MergeRequest)
+      %w[Issue MergeRequest]
     end
 
     # `Noteable` class names that support resolvable notes.
     def resolvable_types
-      %w(Issue MergeRequest DesignManagement::Design)
+      %w[Issue MergeRequest DesignManagement::Design]
     end
 
     # `Noteable` class names that support creating/forwarding individual notes.
     def email_creatable_types
-      %w(Issue)
+      %w[Issue]
     end
   end
 
@@ -164,28 +164,15 @@ module Noteable
     [MergeRequest, Issue].include?(self.class)
   end
 
-  def etag_caching_enabled?
+  def real_time_notes_enabled?
     false
   end
 
-  def expire_note_etag_cache
+  def broadcast_notes_changed
     return unless discussions_rendered_on_frontend?
-    return unless etag_caching_enabled?
+    return unless real_time_notes_enabled?
 
-    # TODO: We need to figure out a way to make ETag caching work for group-level work items
-    Gitlab::EtagCaching::Store.new.touch(note_etag_key) unless is_a?(Issue) && project.nil?
-
-    Noteable::NotesChannel.broadcast_to(self, event: 'updated') if Feature.enabled?(:action_cable_notes, project || try(:group))
-  end
-
-  def note_etag_key
-    return Gitlab::Routing.url_helpers.designs_project_issue_path(project, issue, { vueroute: filename }) if self.is_a?(DesignManagement::Design)
-
-    Gitlab::Routing.url_helpers.project_noteable_notes_path(
-      project,
-      target_type: noteable_target_type_name,
-      target_id: id
-    )
+    Noteable::NotesChannel.broadcast_to(self, event: 'updated')
   end
 
   def after_note_created(_note)

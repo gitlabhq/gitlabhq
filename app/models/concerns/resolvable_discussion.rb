@@ -116,7 +116,7 @@ module ResolvableDiscussion
     # Set the notes array to the updated notes
     @notes = notes_relation.fresh.to_a # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-    noteable.expire_note_etag_cache
+    noteable.broadcast_notes_changed
 
     clear_memoized_values
   end

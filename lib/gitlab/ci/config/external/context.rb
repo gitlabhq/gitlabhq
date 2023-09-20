@@ -9,22 +9,21 @@ module Gitlab
 
           TimeoutError = Class.new(StandardError)
 
-          TEMP_MAX_INCLUDES = 100 # For logging; to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/396776
-
           include ::Gitlab::Utils::StrongMemoize
 
           attr_reader :project, :sha, :user, :parent_pipeline, :variables, :pipeline_config
-          attr_reader :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes
+          attr_reader :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes
 
           attr_accessor :total_file_size_in_bytes
 
           delegate :instrument, to: :logger
 
           def initialize(
-            project: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil,
+            project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil,
             pipeline_config: nil, logger: nil
           )
             @project = project
+            @pipeline = pipeline
             @sha = sha
             @user = user
             @parent_pipeline = parent_pipeline
@@ -60,6 +59,7 @@ module Gitlab
 
           def mutate(attrs = {})
             self.class.new(**attrs) do |ctx|
+              ctx.pipeline = pipeline
               ctx.expandset = expandset
               ctx.execution_deadline = execution_deadline
               ctx.logger = logger
@@ -106,7 +106,7 @@ module Gitlab
 
           protected
 
-          attr_writer :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes
+          attr_writer :pipeline, :expandset, :execution_deadline, :logger, :max_includes, :max_total_yaml_size_bytes
 
           private
 

@@ -20,7 +20,7 @@ Repository analytics is part of [GitLab Community Edition](https://gitlab.com/gi
 Repository analytics requires:
 
 - An initialized Git repository.
-- At least one commit in the default branch (`master` by default).
+- At least one commit in the default branch (`main` by default).
 
 NOTE:
 Without a Git commit in the default branch, the menu item isn't visible.
@@ -30,7 +30,7 @@ Commits in a project's [wiki](../project/wiki/index.md#track-wiki-events) are no
 
 To review repository analytics for a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > Repository analytics**.
 
 ## How repository analytics chart data is updated

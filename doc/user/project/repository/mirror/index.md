@@ -40,7 +40,7 @@ Prerequisites:
 - If your mirror connects with `ssh://`, the host key must be detectable on the server,
   or you must have a local copy of the key.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Select **Add new**.
@@ -111,7 +111,7 @@ Prerequisite:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories** and identify the mirror to update.
@@ -124,9 +124,8 @@ When you create a mirror, you must configure the authentication method for it.
 GitLab supports these authentication methods:
 
 - [SSH authentication](#ssh-authentication).
-- Password.
+- Username and password.
 
-When using password authentication, ensure you specify the username.
 For a [project access token](../../settings/project_access_tokens.md) or
 [group access token](../../../group/settings/group_access_tokens.md),
 use the username (not token name) and the token as the password.
@@ -154,7 +153,7 @@ When you mirror a repository and select the **SSH public key** as your
 authentication method, GitLab generates a public key for you. The non-GitLab server
 needs this key to establish trust with your GitLab repository. To copy your SSH public key:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Scroll to **Mirrored repositories**.

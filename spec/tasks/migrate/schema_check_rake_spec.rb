@@ -7,7 +7,7 @@ RSpec.describe 'schema_version_check rake task', :silence_stdout do
   include StubENV
   let(:valid_schema_version) { 20211004170422 }
 
-  before_all do
+  before(:all) do
     Rake.application.rake_require 'active_record/railties/databases'
     Rake.application.rake_require 'tasks/migrate/schema_check'
 

@@ -72,8 +72,6 @@ The steps required are:
      Depending on the size of the table, a background migration for cleanup could be required in the next release.
      See the [`NOT NULL` constraints on large tables](not_null_constraints.md#not-null-constraints-on-large-tables) section for more information.
 
-   - Create an issue for the next milestone to validate the `NOT NULL` constraint.
-
 1. Release `N.M+1` (next release)
 
    1. Make sure all existing records on GitLab.com have attribute set. If not, go back to step 1 from Release `N.M`.

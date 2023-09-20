@@ -12,7 +12,7 @@ from planning to monitoring.
 
 To see DevOps Reports:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Analytics > DevOps Reports**.
 

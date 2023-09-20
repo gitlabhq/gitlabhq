@@ -174,20 +174,9 @@ module IssuableActions
       if Gitlab::Database.read_only? || params[:persist_filter] == 'false'
         notes_filter_param || current_user&.notes_filter_for(issuable)
       else
-        notes_filter = current_user&.set_notes_filter(notes_filter_param, issuable) || notes_filter_param
-
-        # We need to invalidate the cache for polling notes otherwise it will
-        # ignore the filter.
-        # The ideal would be to invalidate the cache for each user.
-        issuable.expire_note_etag_cache if notes_filter_updated?
-
-        notes_filter
+        current_user&.set_notes_filter(notes_filter_param, issuable) || notes_filter_param
       end
     end
-  end
-
-  def notes_filter_updated?
-    current_user&.user_preference&.previous_changes&.any?
   end
 
   def discussion_cache_context

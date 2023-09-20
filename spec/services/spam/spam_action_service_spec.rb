@@ -222,6 +222,9 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
         end
 
         context 'spam verdict service advises to block the user' do
+          # create a fresh user to ensure it is in the unbanned state
+          let(:user) { create(:user) }
+
           before do
             allow(fake_verdict_service).to receive(:execute).and_return(BLOCK_USER)
           end
@@ -233,6 +236,14 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
 
             expect(response.message).to match(expected_service_check_response_message)
             expect(target).to be_spam
+          end
+
+          it 'bans the user' do
+            subject
+
+            custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_SPAM_LOG_ID).first
+            expect(custom_attribute.value).to eq(target.spam_log.id.to_s)
+            expect(user).to be_banned
           end
         end
 

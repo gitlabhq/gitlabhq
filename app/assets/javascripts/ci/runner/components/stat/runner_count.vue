@@ -55,7 +55,8 @@ export default {
       query() {
         if (this.scope === INSTANCE_TYPE) {
           return allRunnersCountQuery;
-        } else if (this.scope === GROUP_TYPE) {
+        }
+        if (this.scope === GROUP_TYPE) {
           return groupRunnersCountQuery;
         }
         return null;
@@ -74,7 +75,8 @@ export default {
       update(data) {
         if (this.scope === INSTANCE_TYPE) {
           return data?.runners?.count;
-        } else if (this.scope === GROUP_TYPE) {
+        }
+        if (this.scope === GROUP_TYPE) {
           return data?.group?.runners?.count;
         }
         return null;

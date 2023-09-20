@@ -53,9 +53,7 @@ module QA
       it 'sends an issues and note event',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/349723' do
         Resource::ProjectWebHook.setup(session: session, issues: true, note: true) do |webhook, smocker|
-          issue = Resource::Issue.fabricate_via_api! do |issue_init|
-            issue_init.project = webhook.project
-          end
+          issue = create(:issue, project: webhook.project)
 
           Resource::ProjectIssueNote.fabricate_via_api! do |note|
             note.project = issue.project
@@ -118,9 +116,7 @@ module QA
           } do
           Resource::ProjectWebHook.setup(fail_mock, session: session, issues: true) do |webhook, smocker|
             hook_trigger_times.times do
-              Resource::Issue.fabricate_via_api! do |issue_init|
-                issue_init.project = webhook.project
-              end
+              create(:issue, project: webhook.project)
 
               # using sleep to give rate limiter a chance to activate.
               sleep 0.5

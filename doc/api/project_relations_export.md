@@ -63,10 +63,6 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
 
 The status can be one of the following:
 
-- `0`: `started`
-- `1`: `finished`
-- `-1`: `failed`
-
 - `0` - `started`
 - `1` - `finished`
 - `-1` - `failed`

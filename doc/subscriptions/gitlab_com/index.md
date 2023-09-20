@@ -48,7 +48,7 @@ Prerequisite:
 
 To see the status of your GitLab SaaS subscription:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
 
 The following information is displayed:
@@ -80,10 +80,13 @@ Every user is included in seat usage, with the following exceptions:
 
 - Users who are pending approval.
 - Members with the [Guest role on an Ultimate subscription](#free-guest-users).
+- Members with the [minimal access role](../../user/permissions.md#users-with-minimal-access).
+- [Banned members](../../user/group/moderate_users.md#ban-a-user).
+- [Blocked users](../../administration/moderate_users.md#block-a-user).
 - GitLab-created service accounts:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
   - Bots such as:
-    - [Support Bot](../../user/project/service_desk/index.md#support-bot-user).
+    - [Support Bot](../../user/project/service_desk/configure.md#support-bot-user).
     - [Bot users for projects](../../user/project/settings/project_access_tokens.md#bot-users-for-projects).
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
 
@@ -99,7 +102,7 @@ In this case, they would see only the features available to that subscription.
 
 To view a list of seats being used:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
 1. On the **Seats** tab, view usage information.
 
@@ -113,7 +116,7 @@ The counts for **Max seats used** and **Seats owed** are updated once per day.
 
 To view your subscription information and a summary of seat counts:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
 
 The usage statistics are updated once per day, which may cause
@@ -141,7 +144,7 @@ For example:
 
 To export seat usage data as a CSV file:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
 1. Under **Seats currently in use**, select **See usage**.
 1. Select **Export list**.
@@ -185,13 +188,13 @@ GitLab [bills you for the overage](../quarterly_reconciliation.md).
 To add seats to a subscription:
 
 1. Log in to the [Customers Portal](https://customers.gitlab.com/).
-1. Navigate to the **Manage Purchases** page.
+1. Go to the **Manage Purchases** page.
 1. Select **Add more seats** on the relevant subscription card.
 1. Enter the number of additional users.
-1. Select **Proceed to checkout**.
-1. Review the **Subscription Upgrade Detail**. The system lists the total price for all users on the
+1. Review the **Purchase summary** section. The system lists the total price for all users on the
    system and a credit for what you've already paid. You are only be charged for the net change.
-1. Select **Confirm Upgrade**.
+1. Enter your payment information.
+1. Select **Purchase seats**.
 
 The following is emailed to you:
 
@@ -202,7 +205,7 @@ The following is emailed to you:
 
 To remove a billable user from your subscription:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
 1. In the **Seats currently in use** section, select **See usage**.
 1. In the row for the user you want to remove, on the right side, select the ellipsis and **Remove user**.
@@ -241,10 +244,11 @@ amounts at which the alert displays.
 
 To change the namespace linked to a subscription:
 
-1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
    [linked](../customers_portal.md#link-a-gitlabcom-account) GitLab.com account.
-1. Go to the **Manage Purchases** page.
-1. Select **Change linked namespace**.
+1. Do one of the following:
+   - If the subscription is not linked to a namespace, select **Link subscription to a group**.
+   - If the subscription is already linked to a namespace, select **Subscription actions** (**{ellipsis_v}**) > **Change linked group**.
 1. Select the desired group from the **New Namespace** dropdown list. For a group to appear here, you must have the Owner role for that group.
 1. If the [total number of users](#view-seat-usage) in your group exceeds the number of seats in your subscription,
    you are prompted to pay for the additional users. Subscription charges are calculated based on
@@ -258,18 +262,17 @@ To change the namespace linked to a subscription:
 
 1. Select **Confirm changes**.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/qAq8pyFP-a0).
-
 Only one namespace can be linked to a subscription.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/8iOsN8ajBUw).
 
 ## Upgrade your GitLab SaaS subscription tier
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
-1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select **Upgrade** on the relevant subscription card on the
-   [Manage purchases](https://customers.gitlab.com/subscriptions) page.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **Upgrade** on the relevant subscription card.
 1. Select the desired upgrade.
 1. Confirm the active form of payment, or add a new form of payment.
 1. Check the **I accept the Privacy Policy and Terms of Service** checkbox.
@@ -305,12 +308,12 @@ Before you renew your subscription:
 
 Starting 30 days before a subscription expires, GitLab notifies group owners
 of the date of expiry with a banner in the GitLab user interface.
-
+You can only renew your subscription 15 days before it is due to expire.
 To renew your subscription:
 
-1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and beneath your existing subscription, select **Renew**.
-The **Renew** button remains disabled (grayed-out) until 15 days before a subscription expires.
-You can hover your mouse on the **Renew** button to see the date when it becomes active.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) and beneath your existing subscription, select **Renew**.
+The **Renew** button displays only 15 days before a subscription expires. If there are more than 15 days before
+the subscription expires, select **Subscription actions** (**{ellipsis_v}**), then select **Renew subscription** to view the date when you can renew.
 1. Review your renewal details and complete the payment process.
 1. Select **Confirm purchase**.
 
@@ -340,10 +343,8 @@ expiration date without a gap in available service. Subscriptions purchased thro
 To view or change automatic subscription renewal (at the same tier as the
 previous period), sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in), and:
 
-- If a **Turn on auto-renew** button is displayed, your subscription was canceled
-  previously. Select it to resume automatic renewal.
-- If a **Cancel subscription** button is displayed, your subscription is set to automatically
-  renew at the end of the subscription period. Select it to cancel automatic renewal.
+- If the subscription card displays `Expires on DATE`, your subscription is not set to automatically renew. To enable automatic renewal, in **Subscription actions** (**{ellipsis_v}**), select **Turn on auto-renew**.
+- If the subscription card displays `Autorenews on DATE`, your subscription is set to automatically renew at the end of the subscription period. To cancel automatic renewal, in **Subscription actions** (**{ellipsis_v}**), select **Cancel subscription**.
 
 If you have difficulty during the renewal process, contact the
 [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
@@ -430,7 +431,7 @@ main quota. You can find pricing for additional storage on the
 
 To purchase additional storage for your group on GitLab SaaS:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
 1. Select **Storage** tab.
 1. Select **Purchase more storage**.

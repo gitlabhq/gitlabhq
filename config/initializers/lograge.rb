@@ -23,7 +23,7 @@ unless Gitlab::Runtime.sidekiq?
         # Remove empty hashes to prevent type mismatches
         # These are set to empty hashes in Lograge's ActionCable subscriber
         # https://github.com/roidrage/lograge/blob/v0.11.2/lib/lograge/log_subscribers/action_cable.rb#L14-L16
-        %i(method path format).each do |key|
+        %i[method path format].each do |key|
           data[key] = nil if data[key] == {}
         end
 

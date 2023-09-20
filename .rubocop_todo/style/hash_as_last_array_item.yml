@@ -39,7 +39,6 @@ Style/HashAsLastArrayItem:
     - 'ee/app/serializers/dashboard_environments_serializer.rb'
     - 'ee/spec/finders/projects/integrations/jira/by_ids_finder_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/config/entry/needs_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/log_cursor/events/design_repository_updated_event_spec.rb'
     - 'ee/spec/models/ee/ci/job_artifact_spec.rb'
     - 'lib/api/entities/project.rb'
     - 'lib/gitlab/analytics/cycle_analytics/request_params.rb'

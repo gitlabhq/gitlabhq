@@ -136,7 +136,7 @@ Prerequisite:
 
 To configure secret variables:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Create a CI/CD variable with the prefix `K8S_SECRET_`. For example, you

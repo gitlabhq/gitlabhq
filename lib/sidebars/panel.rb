@@ -52,7 +52,7 @@ module Sidebars
       raise NotImplementedError
     end
 
-    def has_renderable_menus?
+    def render?
       renderable_menus.any?
     end
 

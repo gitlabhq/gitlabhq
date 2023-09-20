@@ -4,7 +4,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { mergeUrlParams, queryToObject, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
 import { __, s__ } from '~/locale';
 
-import { unwrapStagesWithNeeds } from '~/pipelines/components/unwrapping_utils';
+import { unwrapStagesWithNeeds } from '~/ci/pipeline_details/utils/unwrapping_utils';
 
 import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes_dialog.vue';
 import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_state.vue';
@@ -394,7 +394,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-4 gl-relative" data-qa-selector="pipeline_editor_app">
+  <div class="gl-mt-4 gl-relative">
     <gl-loading-icon v-if="isBlobContentLoading" size="lg" class="gl-m-3" />
     <pipeline-editor-empty-state
       v-else-if="showStartScreen || usesExternalConfig"

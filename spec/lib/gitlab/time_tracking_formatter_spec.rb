@@ -28,6 +28,14 @@ RSpec.describe Gitlab::TimeTrackingFormatter, feature_category: :team_planning d
       end
     end
 
+    context 'when the duration is nil' do
+      let(:duration_string) { nil }
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+
     context 'when the duration is zero' do
       let(:duration_string) { '0h' }
 

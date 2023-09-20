@@ -22,7 +22,9 @@ For guidance not on this page, we defer to these style guides:
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
 
 <!-- vale off -->
-<!-- markdownlint-disable -->
+
+<!-- Disable trailing punctuation in heading rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md026---trailing-punctuation-in-heading -->
+<!-- markdownlint-disable MD026 -->
 
 ## `&`
 
@@ -85,7 +87,7 @@ is passive. `Zombies select the button` is active.
 
 ## Admin Area
 
-Use title case for **Admin Area** to refer to the area of the UI that you access when you select **Main menu > Admin**.
+Use title case for **Admin Area**.
 This area of the UI says **Admin Area** at the top of the page and on the menu.
 
 ## administrator
@@ -233,7 +235,6 @@ Use **text box** to refer to the UI field. Do not use **field** or **box**. For 
 
 - In the **Variable name** text box, enter a value.
 
-
 ## bullet
 
 Don't refer to individual items in an ordered or unordered list as **bullets**. Use **list item** instead. If you need to be less ambiguous, you can use:
@@ -262,6 +263,9 @@ See also [contractions](index.md#contractions).
 ## Chat, GitLab Duo Chat
 
 Use **Chat** with a capital `c` for **Chat** or **GitLab Duo Chat**.
+
+On first use on a page, use **GitLab Duo Chat**.
+Thereafter, use **Chat** by itself.
 
 ## checkbox
 
@@ -306,9 +310,30 @@ This version is different than the larger, more monolithic **Linux package** tha
 
 You can also use **cloud-native GitLab** for short. It should be hyphenated and lowercase.
 
+## Code explanation
+
+Use sentence case for **Code explanation**.
+
+On first mention on a page, use **GitLab Duo Code explanation**.
+Thereafter, use **Code explanation** by itself.
+
+## Code review summary
+
+Use sentence case for **Code review summary**.
+
+On first mention on a page, use **GitLab Duo Code review summary**.
+Thereafter, use **Code review summary** by itself.
+
 ## Code Suggestions
 
-Use title case for **Code Suggestions**.
+Use title case for **Code Suggestions**. On first mention on a page, use **GitLab Duo Code Suggestions**.
+
+**Code Suggestions** should always be plural, and is capitalized even if it's generic.
+
+Examples:
+
+- Use Code Suggestions to display suggestions as you type. (This phrase describes the feature.)
+- As you type, Code Suggestions are displayed. (This phrase is generic but still uses capital letters.)
 
 ## collapse
 
@@ -437,6 +462,13 @@ Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`Inclusi
 ## disallow
 
 Use **prevent** instead of **disallow**. ([Vale](../testing.md#vale) rule: [`Substitutions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Substitutions.yml))
+
+## Discussion summary
+
+Use sentence case for **Discussion summary**.
+
+On first mention on a page, use **GitLab Duo Discussion summary**.
+Thereafter, use **Discussion summary** by itself.
 
 ## Docker-in-Docker, `dind`
 
@@ -580,7 +612,7 @@ Instead of:
 However, you can make an exception when you are writing a task and you need to refer to all
 of the fields at once. For example:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
@@ -621,6 +653,13 @@ For **GB** and **MB**, follow the [Microsoft guidance](https://learn.microsoft.c
 
 Use title case for **Geo**.
 
+## Git suggestions
+
+Use sentence case for **Git suggestions**.
+
+On first mention on a page, use **GitLab Duo Git suggestions**.
+Thereafter, use **Git suggestions** by itself.
+
 ## GitLab
 
 Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
@@ -632,6 +671,24 @@ Do not use **Dedicated** by itself. Always use **GitLab Dedicated**.
 ## GitLab Duo
 
 Do not use **Duo** by itself. Always use **GitLab Duo**.
+
+On first use on a page, use **GitLab Duo `<featurename>`**. For example:
+
+- GitLab Duo Chat
+- GitLab Duo Code Suggestions
+- GitLab Duo Suggested Reviewers
+- GitLab Duo Value stream forecasting
+- GitLab Duo Discussion summary
+- GitLab Duo Merge request summary
+- GitLab Duo Code review summary
+- GitLab Duo Code explanation
+- GitLab Duo Vulnerability summary
+- GitLab Duo Test generation
+- GitLab Duo Git suggestions
+- GitLab Duo Root cause analysis
+- GitLab Duo Issue description generation
+
+After the first use, use the feature name without **GitLab Duo**.
 
 ## GitLab Flavored Markdown
 
@@ -757,7 +814,7 @@ Do not use **in order to**. Use **to** instead. ([Vale](../testing.md#vale) rule
 
 For the plural of **index**, use **indexes**.
 
-However, for ElasticSearch, use [**indices**](https://www.elastic.co/blog/what-is-an-elasticsearch-index).
+However, for Elasticsearch, use [**indices**](https://www.elastic.co/blog/what-is-an-elasticsearch-index).
 
 ## Installation from source
 
@@ -791,6 +848,13 @@ Use lowercase for **issue**.
 ## issue board
 
 Use lowercase for **issue board**.
+
+## Issue description generation
+
+Use sentence case for **Issue description generation**.
+
+On first mention on a page, use **GitLab Duo Issue description generation**.
+Thereafter, use **Issue description generation** by itself.
 
 ## issue weights
 
@@ -860,13 +924,13 @@ When writing about licenses:
 
 Use:
 
-  - Add a license to your instance.
-  - Purchase a subscription.
+- Add a license to your instance.
+- Purchase a subscription.
 
 Instead of:
 
-  - Buy a license.
-  - Purchase a license.
+- Buy a license.
+- Purchase a license.
 
 ## limitations
 
@@ -955,6 +1019,13 @@ the user account becomes a **member**.
 ## merge requests
 
 Use lowercase for **merge requests**. If you use **MR** as the acronym, spell it out on first use.
+
+## Merge request summary
+
+Use sentence case for **Merge request summary**.
+
+On first mention on a page, use **GitLab Duo Merge request summary**.
+Thereafter, use **Merge request summary** by itself.
 
 ## milestones
 
@@ -1277,6 +1348,13 @@ Do not use **roles** and [**permissions**](#permissions) interchangeably. Each u
 
 Roles are not the same as [**access levels**](#access-level).
 
+## Root cause analysis
+
+Use sentence case for **Root cause analysis**.
+
+On first mention on a page, use **GitLab Duo Root cause analysis**.
+Thereafter, use **Root cause analysis** by itself.
+
 ## roll back
 
 Use **roll back** for changing a GitLab version to an earlier one.
@@ -1454,6 +1532,17 @@ To describe tiers:
 | In the Premium tier or higher   | In the Premium and Ultimate tier       |
 | In the Premium tier or lower    | In the Free and Premium tier           |
 
+## Suggested Reviewers
+
+Use title case for **Suggested Reviewers**. On first mention on a page, use **GitLab Duo Suggested Reviewers**.
+
+**Suggested Reviewers** should always be plural, and is capitalized even if it's generic.
+
+Examples:
+
+- Suggested Reviewers can recommend a person to review your merge request. (This phrase describes the feature.)
+- As you type, Suggested Reviewers are displayed. (This phrase is generic but still uses capital letters.)
+
 ## that
 
 Do not use **that** when describing a noun. For example:
@@ -1481,6 +1570,13 @@ Use title case for the GitLab Terraform Module Registry, but use lowercase `m` w
 talking about non-specific modules. For example:
 
 - You can publish a Terraform module to your project's Terraform Module Registry.
+
+## Test generation
+
+Use sentence case for **Test generation**.
+
+On first mention on a page, use **GitLab Duo Test generation**.
+Thereafter, use **Test generation** by itself.
 
 ## text box
 
@@ -1620,9 +1716,22 @@ When you add a **user account** to a group or project, the user account becomes 
 Do not use **utilize**. Use **use** instead. It's more succinct and easier for non-native English speakers to understand.
 ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
+## Value stream forecasting
+
+Use sentence case for **Value stream forecasting**. On first mention on a page, use **GitLab Duo Value stream forecasting**.
+
+Thereafter, use **Value stream forecasting** by itself.
+
 ## via
 
 Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing.md#vale) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/LatinTerms.yml))
+
+## Vulnerability summary
+
+Use sentence case for **Vulnerability summary**.
+
+On first mention on a page, use **GitLab Duo Vulnerability summary**.
+Thereafter, use **Vulnerability summary** by itself.
 
 ## we
 

@@ -118,7 +118,7 @@ module Gitlab
         # The return value is the amount of time (in seconds) to wait before
         # checking the DNS record for any changes.
         def refresh_if_necessary
-          interval, from_dns = addresses_from_dns
+          wait_time, from_dns = addresses_from_dns
 
           current = addresses_from_load_balancer
 
@@ -132,7 +132,7 @@ module Gitlab
             replace_hosts(from_dns)
           end
 
-          interval
+          wait_time
         end
 
         # Replaces all the hosts in the load balancer with the new ones,
@@ -151,8 +151,12 @@ module Gitlab
           # started just before we added the new hosts it will use an old
           # host/connection. While this connection will be checked in and out,
           # it won't be explicitly disconnected.
-          old_hosts.each do |host|
-            host.disconnect!(timeout: disconnect_timeout)
+          if Gitlab::Utils.to_boolean(ENV['LOAD_BALANCER_PARALLEL_DISCONNECT'], default: false)
+            disconnect_old_hosts(old_hosts)
+          else
+            old_hosts.each do |host|
+              host.disconnect!(timeout: disconnect_timeout)
+            end
           end
         end
 
@@ -249,6 +253,41 @@ module Gitlab
         def sampler
           @sampler ||= ::Gitlab::Database::LoadBalancing::ServiceDiscovery::Sampler
             .new(max_replica_pools: @max_replica_pools)
+        end
+
+        def disconnect_old_hosts(hosts)
+          return unless hosts.present?
+
+          gentle_disconnect_start = ::Gitlab::Metrics::System.monotonic_time
+          gentle_disconnect_deadline = gentle_disconnect_start + disconnect_timeout
+
+          hosts_to_disconnect = hosts
+
+          gentle_disconnect_duration = Benchmark.realtime do
+            while ::Gitlab::Metrics::System.monotonic_time < gentle_disconnect_deadline
+              hosts_to_disconnect = hosts_to_disconnect.reject(&:try_disconnect)
+
+              break if hosts_to_disconnect.empty?
+
+              sleep(2)
+            end
+          end
+
+          force_disconnect_duration = Benchmark.realtime do
+            # This may wait up to 2 * pool.checkout_timeout per host (default 10 seconds per host)
+            hosts_to_disconnect.each(&:force_disconnect!)
+          end
+
+          formatted_hosts = hosts_to_disconnect.map { |h| "#{h.host}:#{h.port}" }
+          total_disconnect_duration = gentle_disconnect_duration + force_disconnect_duration
+
+          ::Gitlab::Database::LoadBalancing::Logger.info(
+            event: :host_list_disconnection,
+            message: "Disconnected #{formatted_hosts} old load balancing hosts after #{total_disconnect_duration}s",
+            gentle_disconnect_duration_s: gentle_disconnect_duration,
+            force_disconnect_duration_s: force_disconnect_duration,
+            total_disconnect_duration_s: total_disconnect_duration
+          )
         end
       end
     end

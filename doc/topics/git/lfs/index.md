@@ -32,7 +32,7 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Turn on the **Git Large File Storage (LFS)** toggle.
@@ -299,3 +299,23 @@ You might choose to do this if you are using an appliance like a Nexus Repositor
 GitLab can't verify LFS objects. Pushes then fail if you have GitLab LFS support enabled.
 
 To stop push failure, LFS support can be disabled in the [Project settings](../../../user/project/settings/index.md), which also disables GitLab LFS value-adds (Verifying LFS objects, UI integration for LFS).
+
+### I/O timeout when pushing LFS objects
+
+You might get an error that states:
+
+```shell
+LFS: Put "http://your-instance.com/root/project.git/gitlab-lfs/objects/cc29e205d04a4062d0fb131700e8bfc8e54c44d0176a8dca22f40b24ef26d325/15": read tcp your-instance-ip:54544->your-instance-ip:443: i/o timeout
+error: failed to push some refs to 'ssh://your-instance.com:2222/root/project.git'
+```
+
+When network conditions are unstable, the Git LFS client might time out when trying to upload files
+if network conditions are unstable.
+
+The workaround is to set the client activity timeout a higher value.
+
+For example, to set the timeout to 60 seconds:
+
+```shell
+git config lfs.activitytimeout 60
+```

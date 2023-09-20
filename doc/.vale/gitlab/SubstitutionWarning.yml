@@ -59,6 +59,6 @@ swap:
   sub-group: "subgroup"
   sub-groups: "subgroups"
   timezone: "time zone"
-  utilize: "use"
+  utiliz(?:es?|ing): "use"
   we recommend: "you should"
   within: "in"

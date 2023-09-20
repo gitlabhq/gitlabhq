@@ -118,10 +118,7 @@ module API
       def track_snowplow_event(action_name, category, args)
         event_name = "i_package_#{action_name}"
         key_path = "counts.package_events_i_package_#{action_name}"
-        service_ping_context = Gitlab::Tracking::ServicePingContext.new(
-          data_source: :redis,
-          key_path: key_path
-        ).to_context
+        service_ping_context = Gitlab::Usage::MetricDefinition.context_for(key_path).to_context
 
         Gitlab::Tracking.event(
           category,

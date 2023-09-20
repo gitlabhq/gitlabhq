@@ -42,7 +42,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     aws_roles: %w[role_external_id],
     boards: %w[milestone_id iteration_id],
     broadcast_messages: %w[namespace_id],
-    chat_names: %w[chat_id team_id user_id integration_id],
+    chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
     ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],
@@ -187,6 +187,44 @@ RSpec.describe 'Database schema', feature_category: :database do
               expect(ignored_columns).to match_array(ignored_columns - foreign_keys)
             end
           end
+
+          context 'btree indexes' do
+            it 'only has existing indexes in the ignored duplicate indexes duplicate_indexes.yml' do
+              table_ignored_indexes = (ignored_indexes[table] || {}).to_a.flatten.uniq
+              indexes_by_name = indexes.map(&:name)
+              expect(indexes_by_name).to include(*table_ignored_indexes)
+            end
+
+            it 'does not have any duplicated indexes' do
+              duplicate_indexes = Database::DuplicateIndexes.new(table, indexes).duplicate_indexes
+              expect(duplicate_indexes).to be_an_instance_of Hash
+
+              table_ignored_indexes = ignored_indexes[table] || {}
+
+              # We ignore all the indexes that are explicitly ignored in duplicate_indexes.yml
+              duplicate_indexes.each do |index, matching_indexes|
+                duplicate_indexes[index] = matching_indexes.reject do |matching_index|
+                  table_ignored_indexes.fetch(index.name, []).include?(matching_index.name) ||
+                    table_ignored_indexes.fetch(matching_index.name, []).include?(index.name)
+                end
+
+                duplicate_indexes.delete(index) if duplicate_indexes[index].empty?
+              end
+
+              if duplicate_indexes.present?
+                btree_index = duplicate_indexes.each_key.first
+                matching_indexes = duplicate_indexes[btree_index]
+
+                error_message = <<~ERROR
+                    Duplicate index: #{btree_index.name} with #{matching_indexes.map(&:name)}
+                    #{btree_index.name} : #{btree_index.columns.inspect}
+                    #{matching_indexes.first.name} : #{matching_indexes.first.columns.inspect}.
+                    Consider dropping the indexes #{matching_indexes.map(&:name).join(', ')}
+                ERROR
+                raise error_message
+              end
+            end
+          end
         end
       end
     end
@@ -196,23 +234,18 @@ RSpec.describe 'Database schema', feature_category: :database do
   IGNORED_LIMIT_ENUMS = {
     'Analytics::CycleAnalytics::Stage' => %w[start_event_identifier end_event_identifier],
     'Ci::Bridge' => %w[failure_reason],
-    'Ci::Bridge::Partitioned' => %w[failure_reason],
     'Ci::Build' => %w[failure_reason],
-    'Ci::Build::Partitioned' => %w[failure_reason],
     'Ci::BuildMetadata' => %w[timeout_source],
     'Ci::BuildTraceChunk' => %w[data_store],
     'Ci::DailyReportResult' => %w[param_type],
     'Ci::JobArtifact' => %w[file_type],
     'Ci::Pipeline' => %w[source config_source failure_reason],
     'Ci::Processable' => %w[failure_reason],
-    'Ci::Processable::Partitioned' => %w[failure_reason],
     'Ci::Runner' => %w[access_level],
     'Ci::Stage' => %w[status],
     'Clusters::Cluster' => %w[platform_type provider_type],
     'CommitStatus' => %w[failure_reason],
-    'CommitStatus::Partitioned' => %w[failure_reason],
     'GenericCommitStatus' => %w[failure_reason],
-    'GenericCommitStatus::Partitioned' => %w[failure_reason],
     'InternalId' => %w[usage],
     'List' => %w[list_type],
     'NotificationSetting' => %w[level],
@@ -244,7 +277,6 @@ RSpec.describe 'Database schema', feature_category: :database do
     "ApplicationSetting" => %w[repository_storages_weighted],
     "AlertManagement::Alert" => %w[payload],
     "Ci::BuildMetadata" => %w[config_options config_variables],
-    "Ci::BuildMetadata::Partitioned" => %w[config_options config_variables id_tokens runtime_runner_features secrets],
     "ExperimentSubject" => %w[context],
     "ExperimentUser" => %w[context],
     "Geo::Event" => %w[payload],
@@ -408,5 +440,10 @@ RSpec.describe 'Database schema', feature_category: :database do
 
   def ignored_jsonb_columns(model)
     IGNORED_JSONB_COLUMNS.fetch(model, [])
+  end
+
+  def ignored_indexes
+    duplicate_indexes_file_path = "spec/support/helpers/database/duplicate_indexes.yml"
+    @ignored_indexes ||= YAML.load_file(Rails.root.join(duplicate_indexes_file_path)) || {}
   end
 end

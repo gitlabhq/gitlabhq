@@ -22,7 +22,7 @@ you do not expect public users to sign up for an account.
 
 To disable sign ups:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
@@ -40,7 +40,7 @@ enabled by default for new GitLab instances. It is only applicable if sign ups a
 
 To require administrator approval for new sign ups:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
@@ -66,7 +66,7 @@ their email address before they are allowed to sign in.
 
 To enforce confirmation of the email address used for new sign ups:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
@@ -107,7 +107,7 @@ Prerequisite:
 
 To set a user cap:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
@@ -127,7 +127,7 @@ Prerequisite:
 
 To remove the user cap:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
@@ -153,7 +153,7 @@ You can add additional complexity requirements. Changes to password complexity r
 
 Existing passwords are unaffected. To change password complexity requirements:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
@@ -183,7 +183,7 @@ reduce the risk of malicious users creating spam accounts with disposable email 
 
 To create an email domain allowlist or denylist:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.

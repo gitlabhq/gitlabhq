@@ -1,0 +1,8 @@
+---
+name: admin_jobs_filter_runner_type
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123131
+rollout_issue_url: # No rollout: This is an ops-flag
+milestone: '16.4'
+type: ops
+group: group::runner
+default_enabled: false

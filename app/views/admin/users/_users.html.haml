@@ -35,7 +35,7 @@
       = gl_tab_link_to admin_users_path(filter: "banned"), { item_active: active_when(params[:filter] == 'banned'), class: 'gl-border-0!' } do
         = s_('AdminUsers|Banned')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.banned))
-      = gl_tab_link_to admin_users_path(filter: "blocked_pending_approval"), { item_active: active_when(params[:filter] == 'blocked_pending_approval'), class: 'filter-blocked-pending-approval gl-border-0!', data: { qa_selector: 'pending_approval_tab' } } do
+      = gl_tab_link_to admin_users_path(filter: "blocked_pending_approval"), { item_active: active_when(params[:filter] == 'blocked_pending_approval'), class: 'filter-blocked-pending-approval gl-border-0!', data: { testid: 'pending-approval-tab' } } do
         = s_('AdminUsers|Pending approval')
         = gl_tab_counter_badge(limited_counter_with_delimiter(User.blocked_pending_approval))
       = gl_tab_link_to admin_users_path(filter: "deactivated"), { item_active: active_when(params[:filter] == 'deactivated'), class: 'gl-border-0!' } do
@@ -56,7 +56,7 @@
       = hidden_field_tag "filter", h(params[:filter])
     .search-holder
       .search-field-holder.gl-mb-4
-        = search_field_tag :search_query, params[:search_query], placeholder: s_('AdminUsers|Search by name, email, or username'), class: 'form-control search-text-input js-search-input', spellcheck: false, data: { qa_selector: 'user_search_field' }
+        = search_field_tag :search_query, params[:search_query], placeholder: s_('AdminUsers|Search by name, email, or username'), class: 'form-control search-text-input js-search-input', spellcheck: false, data: { testid: 'user-search-field' }
         - if @sort.present?
           = hidden_field_tag :sort, @sort
         = sprite_icon('search', css_class: 'search-icon')

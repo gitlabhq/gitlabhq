@@ -26,6 +26,16 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     issue.issue_email_participants.create!(email: email)
   end
 
+  before do
+    # Because we use global project and custom email instances, make sure
+    # custom email is disabled in all regular cases to avoid flakiness.
+    unless service_desk_setting.custom_email_verification.started?
+      service_desk_setting.custom_email_verification.mark_as_started!(user)
+    end
+
+    service_desk_setting.update!(custom_email_enabled: false) unless service_desk_setting.custom_email_enabled?
+  end
+
   shared_examples 'a service desk notification email' do |attachments_count|
     it 'builds the email correctly' do
       aggregate_failures do
@@ -41,6 +51,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
         expect(subject.parts[1].body.to_s).to include(expected_html)
         expect(subject.parts[1].content_type).to include('text/html')
       end
+    end
+
+    it 'uses system noreply address as Reply-To address' do
+      expect(subject.reply_to.first).to eq(Gitlab.config.gitlab.email_reply_to)
     end
   end
 
@@ -145,6 +159,45 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
   end
 
+  shared_examples 'a service desk notification email that uses custom email' do
+    before do
+      # Access via service_desk_setting to avoid flakiness
+      unless service_desk_setting.custom_email_verification.finished?
+        service_desk_setting.custom_email_verification.error = nil
+        service_desk_setting.custom_email_verification.mark_as_finished!
+      end
+
+      # Reset because we access changed records through these objects
+      service_desk_setting.reset
+      project.reset
+
+      service_desk_setting.update!(custom_email_enabled: true) unless service_desk_setting.custom_email_enabled?
+
+      allow(Gitlab::AppLogger).to receive(:info)
+    end
+
+    it 'uses SMTP delivery method and custom email settings' do
+      expect_service_desk_custom_email_delivery_options(service_desk_setting)
+
+      expect(Gitlab::AppLogger).to have_received(:info).with({ category: 'custom_email' })
+    end
+
+    it 'generates Reply-To address from custom email' do
+      reply_address = subject.reply_to.first
+      expected_reply_address = service_desk_setting.custom_email.sub('@', "+#{SentNotification.last.reply_key}@")
+
+      expect(reply_address).to eq(expected_reply_address)
+    end
+
+    context 'when feature flag service_desk_custom_email_reply is disabled' do
+      before do
+        stub_feature_flags(service_desk_custom_email_reply: false)
+      end
+
+      it { is_expected.to have_header 'Reply-To', /<reply+(.*)@#{Gitlab.config.gitlab.host}>\Z/ }
+    end
+  end
+
   describe '.service_desk_thank_you_email' do
     let_it_be(:reply_in_subject) { true }
     let_it_be(:expected_text) do
@@ -234,6 +287,12 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
         end
       end
     end
+
+    context 'when custom email is enabled' do
+      subject { Notify.service_desk_thank_you_email(issue.id) }
+
+      it_behaves_like 'a service desk notification email that uses custom email'
+    end
   end
 
   describe '.service_desk_new_note_email' do
@@ -295,7 +354,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       end
 
       context 'with all-user reference in a an external author comment' do
-        let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: User.support_bot) }
+        let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "Hey @all, just a ping", author: Users::Internal.support_bot) }
 
         let(:template_content) { 'some text %{ NOTE_TEXT  }' }
 
@@ -435,19 +494,44 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
         it_behaves_like 'a service desk notification email with template content', 'new_note'
       end
     end
+
+    context 'when custom email is enabled' do
+      subject { Notify.service_desk_new_note_email(issue.id, note.id, email) }
+
+      it_behaves_like 'a service desk notification email that uses custom email'
+    end
   end
 
   describe '.service_desk_custom_email_verification_email' do
+    # Use strict definition here because Mail::SMTP.new({}).settings
+    # might have been changed before.
+    let(:expected_delivery_method_defaults) do
+      {
+        address: 'localhost',
+        domain: 'localhost.localdomain',
+        port: 25,
+        password: nil,
+        user_name: nil
+      }
+    end
+
     subject { Notify.service_desk_custom_email_verification_email(service_desk_setting) }
 
     it_behaves_like 'a custom email verification process email'
 
     it 'uses service bot name and custom email as sender' do
-      expect_sender(User.support_bot, sender_email: service_desk_setting.custom_email)
+      expect_sender(Users::Internal.support_bot, sender_email: service_desk_setting.custom_email)
     end
 
     it 'forcibly uses SMTP delivery method and has correct settings' do
       expect_service_desk_custom_email_delivery_options(service_desk_setting)
+
+      # defaults are unchanged after email overrode settings
+      expect(Mail::SMTP.new({}).settings).to include(expected_delivery_method_defaults)
+
+      # other mailers are unchanged after email overrode settings
+      other_mail = Notify.test_email(email, 'Test subject', 'Test body')
+      expect(other_mail.delivery_method).to be_a(Mail::TestMailer)
     end
 
     it 'uses verification email address as recipient' do
@@ -455,7 +539,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
 
     it 'contains verification token' do
-      is_expected.to have_body_text("Verification token: #{verification.token}")
+      is_expected.to have_body_text("Verification token: #{service_desk_setting.custom_email_verification.token}")
     end
   end
 

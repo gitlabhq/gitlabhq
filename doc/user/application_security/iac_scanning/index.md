@@ -121,7 +121,7 @@ The **Configure with a merge request** button been temporarily disabled due to a
 
 To enable IaC Scanning in a project, you can create a merge request:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
 1. In the **Infrastructure as Code (IaC) Scanning** row, select **Configure with a merge request**.
 1. Review and merge the merge request to enable IaC Scanning.
@@ -130,7 +130,7 @@ Pipelines now include an IaC Scanning job.
 
 ## Customize rulesets **(ULTIMATE ALL)**
 
-> [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
+> Support for overriding rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) in GitLab 14.8.
 
 You can customize the default IaC Scanning rules provided with GitLab.
 

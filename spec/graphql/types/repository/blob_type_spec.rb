@@ -30,6 +30,7 @@ RSpec.describe Types::Repository::BlobType, feature_category: :source_code_manag
       :gitpod_blob_url,
       :find_file_path,
       :blame_path,
+      :blame,
       :history_path,
       :permalink_path,
       :environment_formatted_external_url,

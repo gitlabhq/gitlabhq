@@ -30,6 +30,7 @@ export const issuableStatusText = {
 
 export const IssuableTypeText = {
   [TYPE_ISSUE]: __('issue'),
+  [TYPE_EPIC]: __('epic'),
   [TYPE_MERGE_REQUEST]: __('merge request'),
   [TYPE_ALERT]: __('alert'),
   [TYPE_INCIDENT]: __('incident'),

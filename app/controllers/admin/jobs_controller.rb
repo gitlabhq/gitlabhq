@@ -7,18 +7,10 @@ class Admin::JobsController < Admin::ApplicationController
   urgency :low
 
   before_action do
-    push_frontend_feature_flag(:admin_jobs_vue)
+    push_frontend_feature_flag(:admin_jobs_filter_runner_type, type: :ops)
   end
 
-  def index
-    # We need all builds for tabs counters
-    @all_builds = Ci::JobsFinder.new(current_user: current_user).execute
-
-    @scope = params[:scope]
-    @builds = Ci::JobsFinder.new(current_user: current_user, params: params).execute
-    @builds = @builds.eager_load_everything
-    @builds = @builds.page(params[:page]).per(BUILDS_PER_PAGE).without_count
-  end
+  def index; end
 
   def cancel_all
     Ci::Build.running_or_pending.each(&:cancel)

@@ -22,7 +22,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
   end
 
   describe '#dump' do
-    let_it_be(:projects) { create_list(:project, 5, :repository) }
+    let_it_be(:projects) { create_list(:project_with_design, 5, :repository) }
 
     RSpec.shared_examples 'creates repository bundles' do
       it 'calls enqueue for each repository type', :aggregate_failures do
@@ -34,7 +34,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
         expect(strategy).to have_received(:start).with(:create, destination, backup_id: backup_id)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+        expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
         expect(strategy).to have_received(:enqueue).with(project_snippet, Gitlab::GlRepository::SNIPPET)
         expect(strategy).to have_received(:enqueue).with(personal_snippet, Gitlab::GlRepository::SNIPPET)
         expect(strategy).to have_received(:finish!)
@@ -42,13 +42,13 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
     end
 
     context 'hashed storage' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project_with_design, :repository) }
 
       it_behaves_like 'creates repository bundles'
     end
 
     context 'legacy storage' do
-      let_it_be(:project) { create(:project, :repository, :legacy_storage) }
+      let_it_be(:project) { create(:project_with_design, :repository, :legacy_storage) }
 
       it_behaves_like 'creates repository bundles'
     end
@@ -75,15 +75,19 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
       create_list(:project, 2, :repository)
       create_list(:snippet, 2, :repository)
 
+      # Number of expected queries are 2 more than control_count
+      # to account for the queries for project.design_management_repository
+      # for each project.
+      # We are using 2 projects here.
       expect do
         subject.dump(destination, backup_id)
-      end.not_to exceed_query_limit(control_count)
+      end.not_to exceed_query_limit(control_count + 2)
     end
 
     describe 'storages' do
       let(:storages) { %w{default} }
 
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project_with_design, :repository) }
 
       before do
         stub_storage_settings('test_second_storage' => {
@@ -93,7 +97,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
       end
 
       it 'calls enqueue for all repositories on the specified storage', :aggregate_failures do
-        excluded_project = create(:project, :repository, repository_storage: 'test_second_storage')
+        excluded_project = create(:project_with_design, :repository, repository_storage: 'test_second_storage')
         excluded_project_snippet = create(:project_snippet, :repository, project: excluded_project)
         excluded_project_snippet.track_snippet_repository('test_second_storage')
         excluded_personal_snippet = create(:personal_snippet, :repository, author: excluded_project.first_owner)
@@ -107,13 +111,13 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
         expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+        expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
         expect(strategy).to have_received(:finish!)
       end
     end
 
     describe 'paths' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project_with_design, :repository) }
 
       context 'project path' do
         let(:paths) { [project.full_path] }
@@ -131,7 +135,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
           expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
         end
       end
@@ -152,14 +156,14 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
           expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
         end
       end
     end
 
     describe 'skip_paths' do
-      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project_with_design, :repository) }
       let_it_be(:excluded_project) { create(:project, :repository) }
 
       context 'project path' do
@@ -177,7 +181,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
           expect(strategy).to have_received(:enqueue).with(included_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
         end
       end
@@ -197,7 +201,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
           expect(strategy).to have_received(:enqueue).with(included_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
         end
       end
@@ -205,7 +209,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
   end
 
   describe '#restore' do
-    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project_with_design, :repository) }
 
     let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: project.first_owner) }
     let_it_be(:project_snippet) { create(:project_snippet, :repository, project: project, author: project.first_owner) }
@@ -216,7 +220,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
       expect(strategy).to have_received(:start).with(:restore, destination, remove_all_repositories: %w[default])
       expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
       expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-      expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+      expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
       expect(strategy).to have_received(:enqueue).with(project_snippet, Gitlab::GlRepository::SNIPPET)
       expect(strategy).to have_received(:enqueue).with(personal_snippet, Gitlab::GlRepository::SNIPPET)
       expect(strategy).to have_received(:finish!)
@@ -300,7 +304,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
         expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
         expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-        expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+        expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
         expect(strategy).to have_received(:finish!)
       end
     end
@@ -322,7 +326,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
           expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
         end
       end
@@ -343,7 +347,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
           expect(strategy).not_to have_received(:enqueue).with(excluded_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
         end
       end
@@ -367,7 +371,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
           expect(strategy).to have_received(:enqueue).with(included_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
         end
       end
@@ -387,7 +391,7 @@ RSpec.describe Backup::Repositories, feature_category: :backup_restore do
           expect(strategy).to have_received(:enqueue).with(included_personal_snippet, Gitlab::GlRepository::SNIPPET)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::PROJECT)
           expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::WIKI)
-          expect(strategy).to have_received(:enqueue).with(project, Gitlab::GlRepository::DESIGN)
+          expect(strategy).to have_received(:enqueue).with(project.design_management_repository, Gitlab::GlRepository::DESIGN)
           expect(strategy).to have_received(:finish!)
         end
       end

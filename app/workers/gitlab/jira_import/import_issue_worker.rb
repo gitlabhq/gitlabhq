@@ -8,9 +8,9 @@ module Gitlab
       data_consistency :always
 
       sidekiq_options retry: 3
-      include NotifyUponDeath
       include Gitlab::JiraImport::QueueOptions
       include Gitlab::Import::DatabaseHelpers
+      include Gitlab::Import::NotifyUponDeath
 
       loggable_arguments 3
 
@@ -27,7 +27,7 @@ module Gitlab
         JiraImport.increment_issue_failures(project_id)
       ensure
         # ensure we notify job waiter that the job has finished
-        JobWaiter.notify(waiter_key, jid) if waiter_key
+        JobWaiter.notify(waiter_key, jid, ttl: Gitlab::Import::JOB_WAITER_TTL) if waiter_key
       end
 
       private

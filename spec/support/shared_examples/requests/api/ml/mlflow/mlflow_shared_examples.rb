@@ -8,11 +8,24 @@ RSpec.shared_examples 'MLflow|Not Found - Resource Does Not Exist' do
   end
 end
 
-RSpec.shared_examples 'MLflow|Requires api scope' do
+RSpec.shared_examples 'MLflow|Requires api scope and write permission' do
   context 'when user has access but token has wrong scope' do
     let(:access_token) { tokens[:read] }
 
     it { is_expected.to have_gitlab_http_status(:forbidden) }
+  end
+
+  context 'when user has access but is not allowed to write' do
+    before do
+      allow(Ability).to receive(:allowed?).and_call_original
+      allow(Ability).to receive(:allowed?)
+                          .with(current_user, :write_model_experiments, project)
+                          .and_return(false)
+    end
+
+    it "is Unauthorized" do
+      is_expected.to have_gitlab_http_status(:unauthorized)
+    end
   end
 end
 

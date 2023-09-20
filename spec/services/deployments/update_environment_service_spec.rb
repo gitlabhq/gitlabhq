@@ -79,6 +79,27 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
       expect(subject.execute).to eq(deployment)
     end
 
+    context 'when deployable is bridge job' do
+      let(:job) do
+        create(:ci_bridge,
+          :with_deployment,
+          pipeline: pipeline,
+          ref: 'master',
+          tag: false,
+          environment: environment_name,
+          options: { environment: options },
+          project: project)
+      end
+
+      it 'creates ref' do
+        expect_any_instance_of(Repository)
+          .to receive(:create_ref)
+          .with(deployment.sha, "refs/environments/production/deployments/#{deployment.iid}")
+
+        service.execute
+      end
+    end
+
     context 'when start action is defined' do
       let(:options) { { name: 'production', action: 'start' } }
 

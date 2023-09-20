@@ -468,27 +468,6 @@ describe('UserMenu component', () => {
     });
   });
 
-  describe('Feedback item', () => {
-    let item;
-
-    beforeEach(() => {
-      createWrapper();
-      item = wrapper.findByTestId('feedback-item');
-    });
-
-    it('should render feedback item with a link to a new GitLab issue', () => {
-      expect(item.find('a').attributes('href')).toBe(UserMenu.feedbackUrl);
-    });
-
-    it('has Snowplow tracking attributes', () => {
-      expect(item.find('a').attributes()).toMatchObject({
-        'data-track-property': 'nav_user_menu',
-        'data-track-action': 'click_link',
-        'data-track-label': 'provide_nav_feedback',
-      });
-    });
-  });
-
   describe('Sign out group', () => {
     const findSignOutGroup = () => wrapper.findByTestId('sign-out-group');
 

@@ -62,20 +62,45 @@ the documentation helps others efficiently accomplish tasks and solve problems.
 
 ## Writing for localization
 
-The GitLab documentation is not localized, but we follow guidelines that
-help benefit translation. For example, we:
+The GitLab documentation is not localized, but we follow guidelines that help us write for a global audience.
 
-- Write in [active voice](word_list.md#active-voice).
-- Write in [present tense](word_list.md#future-tense).
-- Avoid words that can be translated incorrectly, like:
-  - [since and because](word_list.md#since)
-  - [once and after](word_list.md#once)
-  - [it](word_list.md#it)
-- Avoid [-ing](word_list.md#-ing-words) words.
+[The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly with translation in mind.
+Our style guide, [word list](word_list.md), and [Vale rules](../testing.md) ensure consistency in the documentation.
 
-[The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly,
-and with translation in mind. [The word list](word_list.md) and our Vale rules
-also aid in consistency, which is important for localization.
+When documentation is translated into other languages, the meaning of each word must be clear.
+The increasing use of machine translation, GitLab Duo Chat, and other AI tools
+means that consistency is even more important.
+
+The following rules can help documentation be translated more efficiently.
+
+Avoid:
+
+- Phrases that hide the subject like [**there is** and **there are**](word_list.md#there-is-there-are).
+- Ambiguous pronouns like [**it**](word_list.md#it).
+- Words that end in [**-ing**](word_list.md#-ing-words).
+- Words that can be confused with one another like [**since**](word_list.md#since) and **because**.
+- Latin abbreviations like [**e.g.**](word_list.md#eg) and [**i.e.**](word_list.md#ie).
+- Culture-specific references like **kill two birds with one stone**.
+
+Use:
+
+- Standard [text for links](#text-for-links).
+- [Lists](#lists) and [tables](#tables) instead of complex sentences and paragraphs.
+- Common abbreviations like [**AI**](word_list.md#ai-artificial-intelligence) and
+  [**CI/CD**](word_list.md#cicd) and abbreviations you've previously spelled out.
+
+Also, keep the following guidance in mind:
+
+- Be consistent with [feature names](#feature-names) and how to interact with them.
+- Break up noun strings. For example, instead of **project integration custom settings**,
+  use **custom settings for project integrations**.
+- Format [dates and times](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/date-time-terms)
+  consistently and for an international audience.
+- Use [images](#images), including screenshots, sparingly.
+- For [UI text](#ui-text), allow for up to 30% expansion and contraction in translation.
+  To see how much a string expands or contracts in another language, paste the string
+  into [Google Translate](https://translate.google.com/) and review the results.
+  You can ask a colleague who speaks the language to verify if the translation is clear.
 
 ## Markdown
 
@@ -240,12 +265,13 @@ create an issue or an MR to propose a change to the user interface text.
 
 #### Feature names
 
-- Feature names are typically lowercase.
-- Some features require title case, typically nouns that name GitLab-specific capabilities or tools. Features requiring
-  title case should be:
-  - Added as a proper name to markdownlint [configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.yml),
-    so that it can be consistently applied across all documentation.
-  - Added to the [word list](word_list.md).
+Feature names should be lowercase.
+
+However, in a few rare cases, features can be title case. These exceptions are:
+
+- Added as a proper name to [markdownlint](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.yml),
+  so they can be consistently applied across all documentation.
+- Added to the [word list](word_list.md).
 
 If the term is not in the word list, ask a GitLab Technical Writer for advice.
 
@@ -449,7 +475,7 @@ For example:
 cp <your_source_directory> <your_destination_directory>
 ```
 
-If the placeholder is not in a code block, use [`<` and `>`] and wrap the placeholder
+If the placeholder is not in a code block, use `<` and `>` and wrap the placeholder
 in a single backtick. For example:
 
 ```plaintext
@@ -738,7 +764,7 @@ For example:
 
 ```html
 <html>
-<small>Footnotes
+<small>Footnotes:
   <ol>
     <li>This is the footnote.</li>
     <li>This is the other footnote.</li>
@@ -755,7 +781,7 @@ This text renders as this output:
 | App B    | Description text. <sup>2</sup> |
 
 <html>
-<small>Footnotes
+<small>Footnotes:
   <ol>
     <li>This is the footnote.</li>
     <li>This is the other footnote.</li>
@@ -984,7 +1010,7 @@ To be consistent, use these templates when you write navigation steps in a task 
 To open project settings:
 
 ```markdown
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -992,7 +1018,7 @@ To open project settings:
 To open group settings:
 
 ```markdown
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1000,7 +1026,7 @@ To open group settings:
 To open either project or group settings:
 
 ```markdown
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 ```
@@ -1020,14 +1046,14 @@ To create a group:
 To open the Admin Area:
 
 ```markdown
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 ```
 
 To open the **Your work** menu item:
 
 ```markdown
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
 ```
 
@@ -1049,15 +1075,15 @@ To save the selection in some dropdown lists:
 To view all your projects:
 
 ```markdown
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my projects**.
 ```
 
 To view all your groups:
 
 ```markdown
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your groups**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my groups**.
 ```
 
 ### Optional steps
@@ -1089,7 +1115,7 @@ Use the phrase **Complete the fields**.
 
 For example:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.
@@ -1641,7 +1667,7 @@ The H1 tier badge should be the badge that applies to the lowest tier for the fe
 
 #### Available product tier badges
 
-Tier badges must include two components, in this order: a subscription tier and an offering.
+Tier badges should include two components, in this order: a subscription tier and an offering.
 These components are surrounded by bold and parentheses, for example `**(ULTIMATE SAAS)**`.
 
 Subscription tiers:
@@ -1661,10 +1687,14 @@ You can also add a third component for the feature's status:
 - `EXPERIMENT`
 - `BETA`
 
+For example, `**(FREE ALL EXPERIMENT)**`.
+
+A tier or status can stand alone. An offering should always have a tier.
+
 #### Add a tier badge
 
 To add a tier badge to a topic title, add the two relevant components
-after the title text. You must include the subscription tier first, and then the offering.
+after the title text. You should include the subscription tier first, and then the offering.
 For example:
 
 ```markdown
@@ -1675,6 +1705,12 @@ Optionally, you can add the feature status as the last part of the badge:
 
 ```markdown
 # Topic title **(FREE ALL EXPERIMENT)**
+```
+
+Or add the status by itself:
+
+```markdown
+# Topic title **(EXPERIMENT)**
 ```
 
 ##### Inline tier badges

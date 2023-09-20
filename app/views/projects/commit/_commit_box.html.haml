@@ -45,11 +45,12 @@
       = gl_loading_icon(inline: true, css_class: 'gl-vertical-align-middle')
 
   - if can?(current_user, :read_pipeline, @last_pipeline)
+    - status = @last_pipeline.detailed_status(current_user)
     .well-segment.pipeline-info
       .js-commit-pipeline-status{ data: { full_path: @project.full_path, iid: @last_pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@last_pipeline) } }
       #{ _('Pipeline') }
       = link_to "##{@last_pipeline.id}", project_pipeline_path(@project, @last_pipeline.id)
-      = ci_label_for_status(@last_pipeline.status)
+      = status&.label
       - if @last_pipeline.stages_count.nonzero?
         #{ n_(s_('Pipeline|with stage'), s_('Pipeline|with stages'), @last_pipeline.stages_count) }
         .js-commit-pipeline-mini-graph{ data: { stages: @last_pipeline_stages.to_json.html_safe, full_path: @project.full_path, iid: @last_pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@last_pipeline) } }

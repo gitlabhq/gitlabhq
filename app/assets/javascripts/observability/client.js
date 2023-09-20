@@ -1,57 +1,62 @@
+import * as Sentry from '@sentry/browser';
 import axios from '~/lib/utils/axios_utils';
-// import mockData from './mock_traces.json';
 
-function enableTraces() {
-  // TODO remove mocks https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2271
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 1000);
-  });
+function reportErrorAndThrow(e) {
+  Sentry.captureException(e);
+  throw e;
+}
+// Provisioning API spec: https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/provisioning-api/pkg/provisioningapi/routes.go#L59
+async function enableTraces(provisioningUrl) {
+  try {
+    // Note: axios.put(url, undefined, {withCredentials: true}) does not send cookies properly, so need to use the API below for the correct behaviour
+    return await axios(provisioningUrl, {
+      method: 'put',
+      withCredentials: true,
+    });
+  } catch (e) {
+    return reportErrorAndThrow(e);
+  }
 }
 
-function isTracingEnabled() {
-  // TODO remove mocks https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2271
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Currently relying on manual provisioning, hence assuming tracing is enabled
-      resolve(true);
-    }, 1000);
-  });
-}
-
-function traceWithDuration(trace) {
-  // aggregating duration on the client for now, but expecting to be coming from the backend
-  // https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2274
-  const duration = trace.spans[0].duration_nano;
-  return {
-    ...trace,
-    duration: duration / 1000,
-  };
+// Provisioning API spec: https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/provisioning-api/pkg/provisioningapi/routes.go#L37
+async function isTracingEnabled(provisioningUrl) {
+  try {
+    const { data } = await axios.get(provisioningUrl, { withCredentials: true });
+    if (data && data.status) {
+      // we currently ignore the 'status' payload and just check if the request was successful
+      // We might improve this as part of https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2315
+      return true;
+    }
+  } catch (e) {
+    if (e.response.status === 404) {
+      return false;
+    }
+    return reportErrorAndThrow(e);
+  }
+  return reportErrorAndThrow(new Error('Failed to check provisioning')); // eslint-disable-line @gitlab/require-i18n-strings
 }
 
 async function fetchTrace(tracingUrl, traceId) {
-  if (!traceId) {
-    throw new Error('traceId is required.');
+  try {
+    if (!traceId) {
+      throw new Error('traceId is required.');
+    }
+
+    const { data } = await axios.get(tracingUrl, {
+      withCredentials: true,
+      params: {
+        trace_id: traceId,
+      },
+    });
+
+    if (!Array.isArray(data.traces) || data.traces.length === 0) {
+      throw new Error('traces are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
+    }
+
+    return data.traces[0];
+  } catch (e) {
+    return reportErrorAndThrow(e);
   }
-
-  const { data } = await axios.get(tracingUrl, {
-    withCredentials: true,
-    params: {
-      trace_id: traceId,
-    },
-  });
-
-  // TODO: Improve local GDK dev experience with tracing https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2308
-  // const data = mockData;
-  // const trace = data.traces.find((t) => t.trace_id === traceId);
-
-  if (!Array.isArray(data.traces) || data.traces.length === 0) {
-    throw new Error('traces are missing/invalid in the response.'); // eslint-disable-line @gitlab/require-i18n-strings
-  }
-
-  const trace = data.traces[0];
-  return traceWithDuration(trace);
 }
 
 /**
@@ -164,18 +169,18 @@ function filterObjToQueryParams(filterObj) {
 async function fetchTraces(tracingUrl, filters = {}) {
   const filterParams = filterObjToQueryParams(filters);
 
-  const { data } = await axios.get(tracingUrl, {
-    withCredentials: true,
-    params: filterParams,
-  });
-  // TODO: Improve local GDK dev experience with tracing https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2308
-  // Uncomment the line below to test this locally
-  // const data = mockData;
-
-  if (!Array.isArray(data.traces)) {
-    throw new Error('traces are missing/invalid in the response.'); // eslint-disable-line @gitlab/require-i18n-strings
+  try {
+    const { data } = await axios.get(tracingUrl, {
+      withCredentials: true,
+      params: filterParams,
+    });
+    if (!Array.isArray(data.traces)) {
+      throw new Error('traces are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
+    }
+    return data.traces;
+  } catch (e) {
+    return reportErrorAndThrow(e);
   }
-  return data.traces.map(traceWithDuration);
 }
 
 export function buildClient({ provisioningUrl, tracingUrl }) {

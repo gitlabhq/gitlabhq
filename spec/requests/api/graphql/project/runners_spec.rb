@@ -28,6 +28,8 @@ RSpec.describe 'Project.runners', feature_category: :runner do
     )
   end
 
+  subject(:request) { post_graphql(query, current_user: user) }
+
   context 'when the user is a project admin' do
     before do
       project.add_maintainer(user)
@@ -36,7 +38,7 @@ RSpec.describe 'Project.runners', feature_category: :runner do
     let(:expected_ids) { [project_runner, group_runner, instance_runner].map { |g| g.to_global_id.to_s } }
 
     it 'returns all runners available to project' do
-      post_graphql(query, current_user: user)
+      request
 
       expect(graphql_data_at(:project, :runners, :nodes).pluck('id')).to match_array(expected_ids)
     end
@@ -47,10 +49,14 @@ RSpec.describe 'Project.runners', feature_category: :runner do
       project.add_developer(user)
     end
 
-    it 'returns no runners' do
-      post_graphql(query, current_user: user)
+    it 'returns nil runners and an error' do
+      request
 
-      expect(graphql_data_at(:project, :runners, :nodes)).to be_empty
+      expect(graphql_data_at(:project, :runners)).to be_nil
+      expect(graphql_errors).to contain_exactly(a_hash_including(
+        'message' => a_string_including("you don't have permission to perform this action"),
+        'path' => %w[project runners]
+      ))
     end
   end
 end

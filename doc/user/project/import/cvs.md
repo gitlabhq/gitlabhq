@@ -39,10 +39,10 @@ The following list illustrates the main differences between CVS and Git:
   your state in version control, then you merge the other developer's changes.
   You can also ask the other developer to do the merge and resolve any conflicts
   themselves.
-- **Signed commits.** Git supports signing your commits with GPG for additional
+- **Signed commits.** Git supports
+  [signing your commits](../repository/signed_commits/index.md) for additional
   security and verification that the commit indeed came from its original author.
-  GitLab can [integrate with GPG](../repository/gpg_signed_commits/index.md)
-  and show whether a signed commit is correctly verified.
+  GitLab shows whether a signed commit is correctly verified.
 
 _Some of the items above were taken from this great
 [Stack Overflow post](https://stackoverflow.com/a/824241/974710). For a more

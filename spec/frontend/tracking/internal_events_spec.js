@@ -6,9 +6,11 @@ import {
   GITLAB_INTERNAL_EVENT_CATEGORY,
   SERVICE_PING_SCHEMA,
   LOAD_INTERNAL_EVENTS_SELECTOR,
+  USER_CONTEXT_SCHEMA,
 } from '~/tracking/constants';
 import * as utils from '~/tracking/utils';
 import { Tracker } from '~/tracking/tracker';
+import { extraContext } from './mock_data';
 
 jest.mock('~/api', () => ({
   trackInternalEvent: jest.fn(),
@@ -21,11 +23,11 @@ jest.mock('~/tracking/utils', () => ({
 
 Tracker.enabled = jest.fn();
 
+const event = 'TestEvent';
+
 describe('InternalEvents', () => {
   describe('track_event', () => {
     it('track_event calls API.trackInternalEvent with correct arguments', () => {
-      const event = 'TestEvent';
-
       InternalEvents.track_event(event);
 
       expect(API.trackInternalEvent).toHaveBeenCalledTimes(1);
@@ -35,42 +37,65 @@ describe('InternalEvents', () => {
     it('track_event calls tracking.event functions with correct arguments', () => {
       const trackingSpy = mockTracking(GITLAB_INTERNAL_EVENT_CATEGORY, undefined, jest.spyOn);
 
-      const event = 'TestEvent';
-
-      InternalEvents.track_event(event);
+      InternalEvents.track_event(event, { context: extraContext });
 
       expect(trackingSpy).toHaveBeenCalledTimes(1);
       expect(trackingSpy).toHaveBeenCalledWith(GITLAB_INTERNAL_EVENT_CATEGORY, event, {
-        context: {
-          schema: SERVICE_PING_SCHEMA,
-          data: {
-            event_name: event,
-            data_source: 'redis_hll',
+        context: [
+          {
+            schema: SERVICE_PING_SCHEMA,
+            data: {
+              event_name: event,
+              data_source: 'redis_hll',
+            },
           },
-        },
+          extraContext,
+        ],
       });
     });
   });
 
   describe('mixin', () => {
     let wrapper;
+    const Component = {
+      template: `
+    <div>
+      <button data-testid="button1" @click="handleButton1Click">Button 1</button>
+      <button data-testid="button2" @click="handleButton2Click">Button 2</button>
+    </div>
+  `,
+      methods: {
+        handleButton1Click() {
+          this.track_event(event);
+        },
+        handleButton2Click() {
+          this.track_event(event, extraContext);
+        },
+      },
+      mixins: [InternalEvents.mixin()],
+    };
 
     beforeEach(() => {
-      const Component = {
-        render() {},
-        mixins: [InternalEvents.mixin()],
-      };
       wrapper = shallowMountExtended(Component);
     });
 
-    it('this.track_event function calls InternalEvent`s track function with an event', () => {
-      const event = 'TestEvent';
+    it('this.track_event function calls InternalEvent`s track function with an event', async () => {
       const trackEventSpy = jest.spyOn(InternalEvents, 'track_event');
 
-      wrapper.vm.track_event(event);
+      await wrapper.findByTestId('button1').trigger('click');
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy).toHaveBeenCalledWith(event);
+      expect(trackEventSpy).toHaveBeenCalledWith(event, {});
+    });
+
+    it("this.track_event function calls InternalEvent's track function with an event and data", async () => {
+      const data = extraContext;
+      const trackEventSpy = jest.spyOn(InternalEvents, 'track_event');
+
+      await wrapper.findByTestId('button2').trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledTimes(1);
+      expect(trackEventSpy).toHaveBeenCalledWith(event, data);
     });
   });
 
@@ -142,6 +167,90 @@ describe('InternalEvents', () => {
 
         InternalEvents.trackInternalLoadEvents();
         expect(trackEventSpy).toHaveBeenCalledTimes(0);
+      });
+    });
+  });
+
+  describe('initBrowserSDK', () => {
+    beforeEach(() => {
+      window.glClient = {
+        setDocumentTitle: jest.fn(),
+        page: jest.fn(),
+      };
+      window.gl = {
+        environment: 'testing',
+        key: 'value',
+      };
+      window.gl.snowplowStandardContext = {
+        schema: 'iglu:com.gitlab/gitlab_standard',
+        data: {
+          environment: 'testing',
+          key: 'value',
+          google_analytics_id: '',
+          source: 'gitlab-javascript',
+          extra: {},
+        },
+      };
+    });
+
+    it('should not call setDocumentTitle or page methods when window.glClient is undefined', () => {
+      window.glClient = undefined;
+
+      InternalEvents.initBrowserSDK();
+
+      expect(window.glClient?.setDocumentTitle).toBeUndefined();
+      expect(window.glClient?.page).toBeUndefined();
+    });
+
+    it('should call setDocumentTitle and page methods on window.glClient when it is defined', () => {
+      const mockStandardContext = window.gl.snowplowStandardContext;
+      const userContext = {
+        schema: USER_CONTEXT_SCHEMA,
+        data: mockStandardContext?.data,
+      };
+
+      InternalEvents.initBrowserSDK();
+
+      expect(window.glClient.setDocumentTitle).toHaveBeenCalledWith('GitLab');
+      expect(window.glClient.page).toHaveBeenCalledWith({
+        title: 'GitLab',
+        context: [userContext],
+      });
+    });
+
+    it('should call page method with combined standard and experiment contexts', () => {
+      const mockStandardContext = window.gl.snowplowStandardContext;
+      const userContext = {
+        schema: USER_CONTEXT_SCHEMA,
+        data: mockStandardContext?.data,
+      };
+
+      InternalEvents.initBrowserSDK();
+
+      expect(window.glClient.page).toHaveBeenCalledWith({
+        title: 'GitLab',
+        context: [userContext],
+      });
+    });
+
+    it('should call setDocumentTitle and page methods with default data when window.gl is undefined', () => {
+      window.gl = undefined;
+
+      InternalEvents.initBrowserSDK();
+
+      expect(window.glClient.setDocumentTitle).toHaveBeenCalledWith('GitLab');
+      expect(window.glClient.page).toHaveBeenCalledWith({
+        title: 'GitLab',
+        context: [
+          {
+            schema: USER_CONTEXT_SCHEMA,
+            data: {
+              google_analytics_id: '',
+              source: 'gitlab-javascript',
+              extra: {},
+            },
+          },
+        ],
       });
     });
   });

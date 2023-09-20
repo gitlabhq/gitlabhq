@@ -141,7 +141,6 @@ export default {
         ref="textOutput"
         class="file-row-name"
         :title="file.name"
-        data-qa-selector="file_name_content"
         :data-qa-file-name="file.name"
         data-testid="file-row-name-container"
         :class="[fileClasses, { 'str-truncated': !truncateMiddle, 'gl-min-w-0': truncateMiddle }]"

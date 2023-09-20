@@ -20,7 +20,7 @@ while the project remains secure.
 
 To select a project to serve as the custom template repository:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Templates**.
 1. Expand **Templates**
@@ -31,6 +31,9 @@ To select a project to serve as the custom template repository:
 After you add templates, you can use them for the entire instance.
 They are available in the [Web Editor](../../user/project/repository/web_editor.md)
 and through the [API settings](../../api/settings.md).
+
+These templates cannot be used as a value of the
+[`include:template`](../../ci/yaml/index.md#includetemplate) key in `.gitlab-ci.yml`.
 
 ## Supported file types and locations
 

@@ -15,9 +15,12 @@
   = render 'shared/integrations/slack_notifications_deprecation_alert'
 
 %h2.gl-mb-0.gl-display-flex.gl-align-items-center.gl-gap-3
+  = render Pajamas::AvatarComponent.new(integration, size: 64, alt: '')
   = integration.title
   - if integration.operating?
-    = render Pajamas::BadgeComponent.new(s_('FeatureFlags|Active'), variant: 'success')
+    = render Pajamas::BadgeComponent.new(_('Active'), variant: 'success', icon: 'status-success')
+  - elsif integration.persisted?
+    = render Pajamas::BadgeComponent.new(_('Inactive'), variant: 'neutral', icon: 'status-paused')
 
 = render 'shared/integration_settings', integration: integration
 - if lookup_context.template_exists?('show', "shared/integrations/#{integration.to_param}", true)

@@ -23,11 +23,7 @@ module QA
         end
       end
 
-      let!(:project_access_token) do
-        QA::Resource::ProjectAccessToken.fabricate_via_api! do |pat|
-          pat.project = project
-        end
-      end
+      let!(:project_access_token) { create(:project_access_token, project: project) }
 
       let(:masked_token) do
         use_ci_variable(name: 'PAT', value: project_access_token.token, project: project)
@@ -57,11 +53,9 @@ module QA
             - docker build -t $IMAGE_TAG .
             - docker push $IMAGE_TAG
             - docker pull $IMAGE_TAG
-          tags:
-            - "runner-for-#{project.name}"
 
         test:
-          image: dwdraju/alpine-curl-jq:latest
+          image: registry.gitlab.com/gitlab-ci-utils/curl-jq:latest
           stage: test
           script:
             - 'id=$(curl --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories" | jq ".[0].id")'
@@ -72,8 +66,6 @@ module QA
             - if [ $status_code -ne 200 ]; then exit 1; fi;
             - 'status_code=$(curl --head --output /dev/null --write-out "%{http_code}\n" --header "PRIVATE-TOKEN: #{masked_token}" "https://${CI_SERVER_HOST}/api/v4/projects/#{project.id}/registry/repositories/$id/tags/master")'
             - if [ $status_code -ne 404 ]; then exit 1; fi;
-          tags:
-            - "runner-for-#{project.name}"
         YAML
       end
 
@@ -96,7 +88,7 @@ module QA
         end
 
         Support::Retrier.retry_until(
-          max_duration: 10,
+          max_duration: 30,
           sleep_interval: 1,
           message: "Waiting for pipeline to start"
         ) do

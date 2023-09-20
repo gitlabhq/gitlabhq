@@ -49,8 +49,8 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
     it 'adds the abuse report ID to user custom attributes' do
       subject
 
-      custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
-      expect(custom_attribute.value).to eq(abuse_report.id.to_s)
+      custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID)
+      expect(custom_attribute.map(&:value)).to match([abuse_report.id.to_s])
     end
 
     context 'when abuse report is nil' do
@@ -60,6 +60,31 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
         subject
 
         custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_ABUSE_REPORT_ID).first
+        expect(custom_attribute).to be_nil
+      end
+    end
+  end
+
+  describe '.set_banned_by_spam_log' do
+    let_it_be(:user) { create(:user) }
+    let(:spam_log) { create(:spam_log, user: user) }
+
+    subject { described_class.set_banned_by_spam_log(spam_log) }
+
+    it 'adds the spam log ID to user custom attributes' do
+      subject
+
+      custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_SPAM_LOG_ID)
+      expect(custom_attribute.map(&:value)).to match([spam_log.id.to_s])
+    end
+
+    context 'when the spam log is nil' do
+      let(:spam_log) { nil }
+
+      it 'does not update custom attributes' do
+        subject
+
+        custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_SPAM_LOG_ID).first
         expect(custom_attribute).to be_nil
       end
     end

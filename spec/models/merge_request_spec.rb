@@ -135,10 +135,22 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let_it_be(:user1) { create(:user) }
     let_it_be(:user2) { create(:user) }
 
-    let_it_be(:merge_request1) { create(:merge_request, :unique_branches, reviewers: [user1]) }
-    let_it_be(:merge_request2) { create(:merge_request, :unique_branches, reviewers: [user2]) }
-    let_it_be(:merge_request3) { create(:merge_request, :unique_branches, reviewers: []) }
-    let_it_be(:merge_request4) { create(:merge_request, :draft_merge_request) }
+    let_it_be(:merge_request1) do
+      create(:merge_request, :prepared, :unique_branches, reviewers: [user1], created_at:
+             2.days.ago)
+    end
+
+    let_it_be(:merge_request2) do
+      create(:merge_request, :unprepared, :unique_branches, reviewers: [user2], created_at:
+             3.hours.ago)
+    end
+
+    let_it_be(:merge_request3) do
+      create(:merge_request, :unprepared, :unique_branches, reviewers: [], created_at:
+                                        Time.current)
+    end
+
+    let_it_be(:merge_request4) { create(:merge_request, :prepared, :draft_merge_request) }
 
     describe '.preload_target_project_with_namespace' do
       subject(:mr) { described_class.preload_target_project_with_namespace.first }
@@ -177,6 +189,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     describe '.drafts' do
       it 'returns MRs where draft == true' do
         expect(described_class.drafts).to eq([merge_request4])
+      end
+    end
+
+    describe '.recently_unprepared' do
+      it 'only returns the recently unprepared mrs' do
+        merge_request5 = create(:merge_request, :unprepared, :unique_branches, created_at: merge_request3.created_at)
+
+        expect(described_class.recently_unprepared).to eq([merge_request3, merge_request5])
       end
     end
 
@@ -340,6 +360,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe "#validate_reviewer_size_length" do
+      let(:merge_request) { build(:merge_request, transitioning: transitioning) }
+
+      where(:transitioning, :to_or_not_to) do
+        false  | :to
+        true   | :not_to
+      end
+
+      with_them do
+        it do
+          expect(merge_request).send(to_or_not_to, receive(:validate_reviewer_size_length))
+
+          merge_request.valid?
+        end
+      end
+    end
+
     describe '#validate_target_project' do
       let(:merge_request) do
         build(:merge_request, source_project: project, target_project: project, importing: importing)
@@ -364,6 +401,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           let(:importing) { true }
 
           it { expect(merge_request.valid?(false)).to eq true }
+        end
+      end
+
+      context "with the skip_validations_during_transition_feature_flag" do
+        let(:merge_request) { build(:merge_request, transitioning: transitioning) }
+
+        where(:transitioning, :to_or_not_to) do
+          false | :to
+          true  | :not_to
+        end
+
+        with_them do
+          it do
+            expect(merge_request).send(to_or_not_to, receive(:validate_target_project))
+
+            merge_request.valid?
+          end
         end
       end
     end
@@ -2099,6 +2153,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         subject.mark_as_merged!
       end
 
+      context 'and merged_commit_sha is present' do
+        before do
+          subject.update_attribute(:merged_commit_sha, pipeline.sha)
+        end
+
+        it 'returns the pipeline associated with that merge request' do
+          expect(subject.merge_pipeline).to eq(pipeline)
+        end
+      end
+
       context 'and there is a merge commit' do
         before do
           subject.update_attribute(:merge_commit_sha, pipeline.sha)
@@ -2850,6 +2914,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         subject.mark_as_merged!
       end
 
+      it 'returns merged_commit_sha when there is a merged_commit_sha' do
+        subject.update_attribute(:merged_commit_sha, sha)
+
+        expect(subject.merged_commit_sha).to eq(sha)
+      end
+
       it 'returns merge_commit_sha when there is a merge_commit_sha' do
         subject.update_attribute(:merge_commit_sha, sha)
 
@@ -3273,6 +3343,31 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(subject).to receive(:check_mergeability).with(sync_retry_lease: true)
 
         subject.mergeable?(check_mergeability_retry_lease: true)
+      end
+    end
+
+    context 'with skip_rebase_check option' do
+      before do
+        allow(subject).to receive_messages(
+          mergeable_state?: true,
+          check_mergeability: nil,
+          can_be_merged?: true
+        )
+      end
+
+      where(:should_be_rebased, :skip_rebase_check, :expected_mergeable) do
+        false | false | true
+        false | true  | true
+        true  | false | false
+        true  | true  | true
+      end
+
+      with_them do
+        it 'overrides should_be_rebased?' do
+          allow(subject).to receive(:should_be_rebased?) { should_be_rebased }
+
+          expect(subject.mergeable?(skip_rebase_check: skip_rebase_check)).to eq(expected_mergeable)
+        end
       end
     end
   end
@@ -4442,6 +4537,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     shared_examples 'for an invalid state transition' do
       specify 'is not a valid state transition' do
         expect { transition! }.to raise_error(StateMachines::InvalidTransition)
+        expect(subject.transitioning?).to be_falsey
       end
     end
 
@@ -4451,6 +4547,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .to change { subject.merge_status }
           .from(merge_status.to_s)
           .to(expected_merge_status)
+        expect(subject.transitioning?).to be_falsey
       end
     end
 
@@ -5493,7 +5590,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:ref) { subject.target_project.repository.commit.id }
 
     before do
-      expect(subject.target_project).to receive(:mark_primary_write_location)
+      expect(subject.target_project.sticking).to receive(:stick)
+        .with(:project, subject.target_project.id)
     end
 
     it 'updates commit ID' do
@@ -5804,6 +5902,58 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#supports_lock_on_merge?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject { merge_request.supports_lock_on_merge? }
+
+    context 'when MR is open' do
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when MR is merged' do
+      before do
+        merge_request.state = :merged
+      end
+
+      it { is_expected.to eq(true) }
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(enforce_locked_labels_on_merge: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
+  describe '#missing_required_squash?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:squash, :project_requires_squash, :expected) do
+      false | true  | true
+      false | false | false
+      true  | true  | false
+      true  | false | false
+    end
+
+    with_them do
+      let(:merge_request) { build_stubbed(:merge_request, squash: squash) }
+
+      subject { merge_request.missing_required_squash? }
+
+      before do
+        allow(merge_request.target_project).to(
+          receive(:squash_always?)
+            .and_return(project_requires_squash)
+        )
+      end
+
+      it { is_expected.to eq(expected) }
     end
   end
 end

@@ -46,9 +46,15 @@ module Resolvers
           ::Ci::RunnersFinder
             .new(current_user: current_user, params: runners_finder_params(args))
             .execute)
+      rescue Gitlab::Access::AccessDeniedError
+        handle_access_denied_error!
       end
 
       protected
+
+      def handle_access_denied_error!
+        raise_resource_not_available_error!
+      end
 
       def runners_finder_params(params)
         # Give preference to paused argument over the deprecated 'active' argument
@@ -84,24 +90,6 @@ module Resolvers
           created_by: [:creator],
           tag_list: [:tags]
         })
-      end
-
-      def nested_preloads
-        {
-          created_by: {
-            creator: {
-              full_path: [:route],
-              web_path: [:route],
-              web_url: [:route]
-            }
-          },
-          owner_project: {
-            owner_project: {
-              full_path: [:route, { namespace: [:route] }],
-              web_url: [:route, { namespace: [:route] }]
-            }
-          }
-        }
       end
     end
   end

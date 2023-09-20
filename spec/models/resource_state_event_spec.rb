@@ -58,11 +58,13 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
           close_issue
         end
 
-        it_behaves_like 'issue_edit snowplow tracking' do
-          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLOSED }
-          let(:project) { issue.project }
-          let(:user) { issue.author }
+        it_behaves_like 'internal event tracking' do
           subject(:service_action) { close_issue }
+
+          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLOSED }
+          let(:project) { issue.project }
+          let(:namespace) { issue.project.namespace }
+          let(:user) { issue.author }
         end
       end
 
@@ -81,11 +83,13 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
           reopen_issue
         end
 
-        it_behaves_like 'issue_edit snowplow tracking' do
-          let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_REOPENED }
+        it_behaves_like 'internal event tracking' do
+          subject(:service_action) { reopen_issue }
+
+          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_REOPENED }
           let(:project) { issue.project }
           let(:user) { issue.author }
-          subject(:service_action) { reopen_issue }
+          let(:namespace) { issue.project.namespace }
         end
       end
 

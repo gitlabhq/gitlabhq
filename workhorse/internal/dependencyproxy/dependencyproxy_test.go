@@ -2,6 +2,7 @@ package dependencyproxy
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -147,6 +148,158 @@ func TestSuccessfullRequest(t *testing.T) {
 	require.Equal(t, string(content), response.Body.String())
 	require.Equal(t, contentLength, response.Header().Get("Content-Length"))
 	require.Equal(t, dockerContentDigest, response.Header().Get("Docker-Content-Digest"))
+}
+
+func TestValidUploadConfiguration(t *testing.T) {
+	content := []byte("content")
+	contentLength := strconv.Itoa(len(content))
+	contentType := "text/plain"
+	testHeader := "test-received-url"
+	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set(testHeader, r.URL.Path)
+		w.Header().Set("Content-Length", contentLength)
+		w.Header().Set("Content-Type", contentType)
+		w.Write(content)
+	}))
+
+	testCases := []struct {
+		desc           string
+		uploadConfig   *uploadConfig
+		expectedConfig uploadConfig
+	}{
+		{
+			desc: "with the default values",
+			expectedConfig: uploadConfig{
+				Method: http.MethodPost,
+				Url:    "/target/upload",
+			},
+		}, {
+			desc: "with overriden method",
+			uploadConfig: &uploadConfig{
+				Method: http.MethodPut,
+			},
+			expectedConfig: uploadConfig{
+				Method: http.MethodPut,
+				Url:    "/target/upload",
+			},
+		}, {
+			desc: "with overriden url",
+			uploadConfig: &uploadConfig{
+				Url: "http://test.org/overriden/upload",
+			},
+			expectedConfig: uploadConfig{
+				Method: http.MethodPost,
+				Url:    "http://test.org/overriden/upload",
+			},
+		}, {
+			desc: "with overriden headers",
+			uploadConfig: &uploadConfig{
+				Headers: map[string][]string{"Private-Token": {"123456789"}},
+			},
+			expectedConfig: uploadConfig{
+				Headers: map[string][]string{"Private-Token": {"123456789"}},
+				Method:  http.MethodPost,
+				Url:     "/target/upload",
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			uploadHandler := &fakeUploadHandler{
+				handler: func(w http.ResponseWriter, r *http.Request) {
+					require.Equal(t, tc.expectedConfig.Url, r.URL.String())
+					require.Equal(t, tc.expectedConfig.Method, r.Method)
+
+					if tc.expectedConfig.Headers != nil {
+						for k, v := range tc.expectedConfig.Headers {
+							require.Equal(t, v, r.Header[k])
+						}
+					}
+
+					w.WriteHeader(200)
+				},
+			}
+
+			injector := NewInjector()
+			injector.SetUploadHandler(uploadHandler)
+
+			sendData := map[string]interface{}{
+				"Token": "token",
+				"Url":   originResourceServer.URL + `/remote/file`,
+			}
+
+			if tc.uploadConfig != nil {
+				sendData["UploadConfig"] = tc.uploadConfig
+			}
+
+			sendDataJsonString, err := json.Marshal(sendData)
+			require.NoError(t, err)
+
+			response := makeRequest(injector, string(sendDataJsonString))
+
+			//checking the response
+			require.Equal(t, 200, response.Code)
+			require.Equal(t, string(content), response.Body.String())
+			// checking remote file request
+			require.Equal(t, "/remote/file", response.Header().Get(testHeader))
+		})
+	}
+}
+
+func TestInvalidUploadConfiguration(t *testing.T) {
+	baseSendData := map[string]interface{}{
+		"Token": "token",
+		"Url":   "http://remote.dev/remote/file",
+	}
+	testCases := []struct {
+		desc     string
+		sendData map[string]interface{}
+	}{
+		{
+			desc: "with an invalid overriden method",
+			sendData: mergeMap(baseSendData, map[string]interface{}{
+				"UploadConfig": map[string]string{
+					"Method": "TEAPOT",
+				},
+			}),
+		}, {
+			desc: "with an invalid url",
+			sendData: mergeMap(baseSendData, map[string]interface{}{
+				"UploadConfig": map[string]string{
+					"Url": "invalid_url",
+				},
+			}),
+		}, {
+			desc: "with an invalid headers",
+			sendData: mergeMap(baseSendData, map[string]interface{}{
+				"UploadConfig": map[string]interface{}{
+					"Headers": map[string]string{
+						"Private-Token": "not_an_array",
+					},
+				},
+			}),
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.desc, func(t *testing.T) {
+			sendDataJsonString, err := json.Marshal(tc.sendData)
+			require.NoError(t, err)
+
+			response := makeRequest(NewInjector(), string(sendDataJsonString))
+
+			require.Equal(t, 500, response.Code)
+			require.Equal(t, "Internal Server Error\n", response.Body.String())
+		})
+	}
+}
+
+func mergeMap(from map[string]interface{}, into map[string]interface{}) map[string]interface{} {
+	for k, v := range from {
+		into[k] = v
+	}
+	return into
 }
 
 func TestIncorrectSendData(t *testing.T) {

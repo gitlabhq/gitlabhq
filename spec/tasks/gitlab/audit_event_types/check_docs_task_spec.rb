@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'rake_helper'
 require_relative '../../../../lib/tasks/gitlab/audit_event_types/check_docs_task'
 require_relative '../../../../lib/tasks/gitlab/audit_event_types/compile_docs_task'
 
 RSpec.describe Tasks::Gitlab::AuditEventTypes::CheckDocsTask, feature_category: :audit_events do
-  let_it_be(:docs_dir) { Rails.root.join("tmp/tests/doc/administration/audit_event_streaming") }
-  let_it_be(:docs_path) { Rails.root.join(docs_dir, 'audit_event_types.md') }
-  let_it_be(:template_erb_path) { Rails.root.join("tooling/audit_events/docs/templates/audit_event_types.md.erb") }
+  let(:docs_dir) { Rails.root.join("tmp/tests/doc/administration/audit_event_streaming") }
+  let(:docs_path) { Rails.root.join(docs_dir, 'audit_event_types.md') }
+  let(:template_erb_path) { Rails.root.join("tooling/audit_events/docs/templates/audit_event_types.md.erb") }
 
   subject(:check_docs_task) { described_class.new(docs_dir, docs_path, template_erb_path) }
 
@@ -37,7 +37,7 @@ RSpec.describe Tasks::Gitlab::AuditEventTypes::CheckDocsTask, feature_category: 
     end
 
     context 'when an existing audit event type is removed' do
-      let_it_be(:updated_definition) { Gitlab::Audit::Type::Definition.definitions.except(:feature_flag_created) }
+      let(:updated_definition) { Gitlab::Audit::Type::Definition.definitions.except(:feature_flag_created) }
 
       it 'raises an error' do
         expect(Gitlab::Audit::Type::Definition).to receive(:definitions).and_return(updated_definition)
@@ -50,7 +50,7 @@ RSpec.describe Tasks::Gitlab::AuditEventTypes::CheckDocsTask, feature_category: 
     end
 
     context 'when an existing audit event type is updated' do
-      let_it_be(:updated_definition) { Gitlab::Audit::Type::Definition.definitions }
+      let(:updated_definition) { Gitlab::Audit::Type::Definition.definitions }
 
       it 'raises an error' do
         updated_definition[:feature_flag_created].attributes[:streamed] = false

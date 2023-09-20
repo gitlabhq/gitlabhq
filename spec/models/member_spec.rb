@@ -1177,4 +1177,11 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       expect(described_class.sort_by_attribute('oldest_last_activity')).to eq([member3, member2, member1])
     end
   end
+
+  context 'with loose foreign key on members.user_id' do
+    it_behaves_like 'cleanup by a loose foreign key' do
+      let!(:parent) { create(:user) }
+      let!(:model) { create(:group_member, user: parent) }
+    end
+  end
 end

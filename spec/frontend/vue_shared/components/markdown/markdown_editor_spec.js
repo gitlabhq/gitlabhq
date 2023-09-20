@@ -489,6 +489,11 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       expect(localStorage.getItem('autosave/issue/1234')).toBe(newValue);
     });
 
+    it('does not autofocus the content editor', () => {
+      buildWrapper({ propsData: { autosaveKey: 'issue/1234' } });
+      expect(findContentEditor().props().autofocus).toBe(false);
+    });
+
     it('bubbles up keydown event', () => {
       const event = new Event('keydown');
 

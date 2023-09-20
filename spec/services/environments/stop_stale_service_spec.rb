@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Environments::StopStaleService,
-               :clean_gitlab_redis_shared_state,
-               :sidekiq_inline,
-               feature_category: :continuous_delivery do
+  :clean_gitlab_redis_shared_state,
+  :sidekiq_inline,
+  feature_category: :continuous_delivery do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 

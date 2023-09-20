@@ -28,7 +28,7 @@ The easiest indicators to check for inefficient pipelines are the runtimes of th
 stages, and the total runtime of the pipeline itself. The total pipeline duration is
 heavily influenced by the:
 
-- [Size of the repository](../large_repositories/index.md)
+- [Size of the repository](../../user/project/repository/managing_large_repositories.md)
 - Total number of stages and jobs.
 - Dependencies between jobs.
 - The ["critical path"](#directed-acyclic-graphs-dag-visualization), which represents
@@ -227,7 +227,7 @@ Methods to reduce Docker image size:
 - Use a small base image, for example `debian-slim`.
 - Do not install convenience tools such as vim or curl if they aren't strictly needed.
 - Create a dedicated development image.
-- Disable man pages and docs installed by packages to save space.
+- Disable man pages and documentation installed by packages to save space.
 - Reduce the `RUN` layers and combine software installation steps.
 - Use [multi-stage builds](https://blog.alexellis.io/mutli-stage-docker-builds/)
   to merge multiple Dockerfiles that use the builder pattern into one Dockerfile, which can reduce image size.

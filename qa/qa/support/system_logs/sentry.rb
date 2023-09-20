@@ -5,10 +5,10 @@ module QA
     module SystemLogs
       class Sentry
         BASE_URLS = {
-          staging: 'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg',
-          staging_ref: 'https://sentry.gitlab.net/gitlab/staging-ref/?environment=all',
-          pre: 'https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=all',
-          production: 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd'
+          staging: 'https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=gstg&project=3',
+          staging_ref: 'https://new-sentry.gitlab.net/organizations/gitlab/projects/staging-ref/?project=18',
+          pre: 'https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=pre&project=3',
+          production: 'https://new-sentry.gitlab.net/organizations/gitlab/issues/?environment=gprd&project=3'
         }.freeze
 
         def initialize(env, correlation_id)

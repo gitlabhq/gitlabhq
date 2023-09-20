@@ -37,3 +37,5 @@ class ProjectMemberPolicy < BasePolicy
     enable :withdraw_member_access_request
   end
 end
+
+ProjectMemberPolicy.prepend_mod_with('ProjectMemberPolicy')

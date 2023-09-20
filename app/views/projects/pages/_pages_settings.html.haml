@@ -1,11 +1,7 @@
-- can_edit_max_page_size = can?(current_user, :update_max_pages_size)
-- can_enforce_https_only = Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
-
 = gitlab_ui_form_for @project, url: project_pages_path(@project), html: { class: 'inline', title: pages_https_only_title } do |f|
-  - if can_edit_max_page_size
-    = render_if_exists 'shared/pages/max_pages_size_input', form: f
+  = render_if_exists 'shared/pages/max_pages_size_input', form: f
 
-  - if can_enforce_https_only
+  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
     .form-group
       = f.gitlab_ui_checkbox_component :pages_https_only,
         s_('GitLabPages|Force HTTPS (requires valid certificates)'),
@@ -23,6 +19,15 @@
         label_options: { class: 'label-bold' }
       %p.gl-pl-6
         = s_("GitLabPages|When enabled, a unique domain is generated to access pages.").html_safe
+
+  - if can?(current_user, :pages_multiple_versions, @project)
+    .form-group
+      = f.fields_for :project_setting do |settings|
+        = settings.gitlab_ui_checkbox_component :pages_multiple_versions_enabled,
+          s_('GitLabPages|Use multiple versions'),
+          label_options: { class: 'label-bold' }
+        %p.gl-pl-6
+          = s_("GitLabPages|When enabled, you can create multiple versions of your pages site.").html_safe
 
   .gl-mt-3
     = f.submit s_('GitLabPages|Save changes'), pajamas_button: true

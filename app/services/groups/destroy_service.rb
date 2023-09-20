@@ -14,8 +14,6 @@ module Groups
       # TODO - add a policy check here https://gitlab.com/gitlab-org/gitlab/-/issues/353082
       raise DestroyError, "You can't delete this group because you're blocked." if current_user.blocked?
 
-      group.prepare_for_destroy
-
       group.projects.includes(:project_feature).each do |project|
         # Execute the destruction of the models immediately to ensure atomic cleanup.
         success = ::Projects::DestroyService.new(project, current_user).execute
@@ -83,7 +81,10 @@ module Groups
 
     # rubocop:disable CodeReuse/ActiveRecord
     def destroy_group_bots
-      bot_ids = group.members_and_requesters.joins(:user).merge(User.project_bot).pluck(:user_id)
+      bot_ids = group.members_and_requesters.joins(:user)
+        .merge(User.project_bot)
+        .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422405')
+        .pluck(:user_id)
       current_user_id = current_user.id
 
       group.run_after_commit do

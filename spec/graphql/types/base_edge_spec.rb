@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::BaseEdge do
+RSpec.describe Types::BaseEdge, feature_category: :api do
   include GraphqlHelpers
 
   let_it_be(:test_schema) do

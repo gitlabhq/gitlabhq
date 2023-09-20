@@ -7,7 +7,7 @@ module BlobViewer
 
     self.partial_name = 'gitlab_ci_yml'
     self.loading_partial_name = 'gitlab_ci_yml_loading'
-    self.file_types = %i(gitlab_ci)
+    self.file_types = %i[gitlab_ci]
     self.binary = false
 
     def validation_message(opts)

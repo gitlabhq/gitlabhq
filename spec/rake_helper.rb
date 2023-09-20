@@ -6,7 +6,7 @@ require 'rake'
 RSpec.configure do |config|
   config.include RakeHelpers
 
-  config.before(:all) do
+  config.before(:all, type: :task) do
     Rake.application.rake_require 'tasks/gitlab/helpers'
     Rake::Task.define_task :environment
   end

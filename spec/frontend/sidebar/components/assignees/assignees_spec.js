@@ -145,7 +145,7 @@ describe('Assignee component', () => {
       });
 
       expect(findAllAvatarLinks()).toHaveLength(users.length);
-      expect(wrapper.find('.user-list-more').exists()).toBe(false);
+      expect(wrapper.find('[data-testid="user-list-more"]').exists()).toBe(false);
     });
 
     it('shows sorted assignee where "can merge" users are sorted first', () => {

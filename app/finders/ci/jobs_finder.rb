@@ -5,8 +5,8 @@ module Ci
     include Gitlab::Allowable
 
     def initialize(current_user:, pipeline: nil, project: nil, runner: nil, params: {}, type: ::Ci::Build)
-      @pipeline = pipeline
       @current_user = current_user
+      @pipeline = pipeline
       @project = project
       @runner = runner
       @params = params
@@ -16,8 +16,7 @@ module Ci
 
     def execute
       builds = init_collection.order_id_desc
-      builds = filter_by_with_artifacts(builds)
-      filter_by_scope(builds)
+      filter_builds(builds)
     rescue Gitlab::Access::AccessDeniedError
       type.none
     end
@@ -58,6 +57,13 @@ module Ci
       params[:include_retried] ? jobs_scope : jobs_scope.latest
     end
 
+    # Overriden in EE
+    def filter_builds(builds)
+      builds = filter_by_with_artifacts(builds)
+      builds = filter_by_runner_types(builds)
+      filter_by_scope(builds)
+    end
+
     def filter_by_scope(builds)
       return filter_by_statuses!(builds) if params[:scope].is_a?(Array)
 
@@ -73,12 +79,21 @@ module Ci
       end
     end
 
+    def filter_by_runner_types(builds)
+      return builds unless use_runner_type_filter?
+
+      builds.with_runner_type(params[:runner_type])
+    end
+
+    # Overriden in EE
+    def use_runner_type_filter?
+      params[:runner_type].present? && Feature.enabled?(:admin_jobs_filter_runner_type, project, type: :ops)
+    end
+
     def filter_by_with_artifacts(builds)
-      if params[:with_artifacts]
-        builds.with_any_artifacts
-      else
-        builds
-      end
+      return builds.with_any_artifacts if params[:with_artifacts]
+
+      builds
     end
 
     def filter_by_statuses!(builds)
@@ -100,3 +115,5 @@ module Ci
     end
   end
 end
+
+Ci::JobsFinder.prepend_mod

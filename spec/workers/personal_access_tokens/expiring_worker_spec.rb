@@ -58,5 +58,32 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         expect { worker.perform }.not_to change { pat.reload.expire_notification_delivered }
       end
     end
+
+    context 'when a token is owned by a project bot' do
+      let_it_be(:maintainer1) { create(:user) }
+      let_it_be(:maintainer2) { create(:user) }
+      let_it_be(:project_bot) { create(:user, :project_bot) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+
+      before_all do
+        project.add_developer(project_bot)
+        project.add_maintainer(maintainer1)
+        project.add_maintainer(maintainer2)
+      end
+
+      it 'uses notification service to send the email' do
+        expect_next_instance_of(NotificationService) do |notification_service|
+          expect(notification_service).to receive(:resource_access_tokens_about_to_expire)
+                                            .with(project_bot, match_array([expiring_token.name]))
+        end
+
+        worker.perform
+      end
+
+      it 'marks the notification as delivered' do
+        expect { worker.perform }.to change { expiring_token.reload.expire_notification_delivered }.from(false).to(true)
+      end
+    end
   end
 end

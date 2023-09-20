@@ -102,7 +102,7 @@ module API
       def finder_params_by_noteable_type_and_id(type, id)
         target_type = type.name.underscore
         { target_type: target_type }.tap do |h|
-          if %w(issue merge_request).include?(target_type)
+          if %w[issue merge_request].include?(target_type)
             h[:target_iid] = id
           else
             h[:target_id] = id

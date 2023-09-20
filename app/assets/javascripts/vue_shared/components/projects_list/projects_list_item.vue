@@ -7,7 +7,6 @@ import {
   GlTooltipDirective,
   GlPopover,
   GlSprintf,
-  GlDisclosureDropdown,
 } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
@@ -20,8 +19,9 @@ import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { truncate } from '~/lib/utils/text_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
+import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
-import { ACTION_EDIT, ACTION_DELETE } from './constants';
 
 const MAX_TOPICS_TO_SHOW = 3;
 const MAX_TOPIC_TITLE_LENGTH = 15;
@@ -51,8 +51,8 @@ export default {
     GlPopover,
     GlSprintf,
     TimeAgoTooltip,
-    GlDisclosureDropdown,
     DeleteModal,
+    ListActions,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -163,30 +163,21 @@ export default {
 
       return numberToMetricPrefix(this.project.openIssuesCount);
     },
-    actionsDropdownItems() {
-      return [
-        {
-          id: ACTION_EDIT,
-          text: __('Edit'),
+    actions() {
+      return {
+        [ACTION_EDIT]: {
           href: this.project.editPath,
         },
-        {
-          id: ACTION_DELETE,
-          text: __('Delete'),
-          extraAttrs: {
-            class: 'gl-text-red-500!',
-          },
-          action: () => {
-            this.isDeleteModalVisible = true;
-          },
+        [ACTION_DELETE]: {
+          action: this.onActionDelete,
         },
-      ].filter(({ id }) => this.project.actions?.includes(id));
+      };
     },
     hasActions() {
-      return this.actionsDropdownItems.length;
+      return this.project.availableActions?.length;
     },
-    hasDeleteAction() {
-      return this.actionsDropdownItems.find((action) => action.id === ACTION_DELETE);
+    hasActionDelete() {
+      return this.project.availableActions?.includes(ACTION_DELETE);
     },
   },
   methods: {
@@ -203,6 +194,9 @@ export default {
       }
 
       return null;
+    },
+    onActionDelete() {
+      this.isDeleteModalVisible = true;
     },
   },
 };
@@ -336,20 +330,15 @@ export default {
         </div>
       </div>
     </div>
-    <gl-disclosure-dropdown
+    <list-actions
       v-if="hasActions"
       class="gl-ml-3 gl-md-align-self-center"
-      :items="actionsDropdownItems"
-      icon="ellipsis_v"
-      no-caret
-      :toggle-text="$options.i18n.actions"
-      text-sr-only
-      placement="right"
-      category="tertiary"
+      :actions="actions"
+      :available-actions="project.availableActions"
     />
 
     <delete-modal
-      v-if="hasDeleteAction"
+      v-if="hasActionDelete"
       v-model="isDeleteModalVisible"
       :confirm-phrase="project.name"
       :is-fork="project.isForked"

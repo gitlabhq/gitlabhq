@@ -2,7 +2,7 @@
 # (AllCops/Exclude: 'gems/**/*') if RuboCop cop is run within `gems/...`.
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/417281
 <%
-  relative_path = ENV['PWD'].delete_prefix(File.expand_path('../..')) 
+  relative_path = ENV['PWD'].delete_prefix(File.expand_path('../..'))
   RuboCop::ConfigLoader.ignore_parent_exclusion = relative_path.start_with?('/gems/')
 %>
 ---
@@ -59,6 +59,9 @@ Gitlab/RSpec/AvoidSetup:
 
 # This cop doesn't make sense in the context of gems
 Graphql/AuthorizeTypes:
+  Enabled: false
+
+Gitlab/Json:
   Enabled: false
 
 # This cop doesn't make sense in the context of gems

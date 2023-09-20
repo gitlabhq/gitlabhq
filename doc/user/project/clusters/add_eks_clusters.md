@@ -56,7 +56,7 @@ cluster certificates:
 1. Go to your:
    - Project's **Operate > Kubernetes clusters** page, for a project-level cluster.
    - Group's **Kubernetes** page, for a group-level cluster.
-   - **Main menu > Admin > Kubernetes**, for an instance-level cluster.
+   - The Admin Area's **Kubernetes** page, for an instance-level cluster.
 1. Select **Integrate with a cluster certificate**.
 1. Under the **Create new cluster** tab, select **Amazon EKS** to display an
    `Account ID` and `External ID` needed for later steps.
@@ -248,7 +248,7 @@ For example, the following policy document allows assuming a role whose name sta
 To configure Amazon authentication in GitLab, generate an access key for the
 IAM user in the Amazon AWS console, and follow these steps:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > General**.
 1. Expand **Amazon EKS**.

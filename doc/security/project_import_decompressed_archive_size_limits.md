@@ -1,9 +1,9 @@
 ---
-redirect_to: '../administration/settings/account_and_limit_settings.md#maximum-decompressed-file-size-for-imported-archives'
+redirect_to: '../administration/settings/import_and_export_settings.md#maximum-decompressed-file-size-for-imported-archives'
 remove_date: '2023-11-02'
 ---
 
-This document was moved to [another location](../administration/settings/account_and_limit_settings.md#maximum-decompressed-file-size-for-imported-archives).
+This document was moved to [another location](../administration/settings/import_and_export_settings.md#maximum-decompressed-file-size-for-imported-archives).
 
 <!-- This redirect file can be deleted after <2023-11-02>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

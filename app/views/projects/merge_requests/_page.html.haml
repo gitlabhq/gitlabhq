@@ -28,12 +28,12 @@
     .merge-request-tabs-holder{ class: "#{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'} #{'gl-static' if moved_mr_sidebar_enabled?}" }
       .merge-request-tabs-container.gl-display-flex.gl-justify-content-space-between{ class: "#{'is-merge-request' if Feature.enabled?(:moved_mr_sidebar, @project) && !fluid_layout}" }
         %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0{ class: "#{'gl-w-full gl-lg-w-auto!' if Feature.enabled?(:moved_mr_sidebar, @project)}" }
-          = render "projects/merge_requests/tabs/tab", class: "notes-tab", qa_selector: "notes_tab" do
+          = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Overview")
               = gl_badge_tag @merge_request.related_notes.user.count, { size: :sm }, { class: 'js-discussions-count' }
           - if @merge_request.source_project
-            = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", qa_selector: "commits_tab" do
+            = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", testid: "commits-tab" do
               = tab_link_for @merge_request, :commits do
                 = _("Commits")
                 = gl_badge_tag tab_count_display(@merge_request, @commits_count), { size: :sm }, { class: 'js-commits-count' }
@@ -42,7 +42,7 @@
               = tab_link_for @merge_request, :pipelines do
                 = _("Pipelines")
                 = gl_badge_tag @number_of_pipelines, { size: :sm }, { class: 'js-pipelines-mr-count' }
-          = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", qa_selector: "diffs_tab" do
+          = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", testid: "diffs-tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { size: :sm }
@@ -61,6 +61,7 @@
       = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
         %div{ class: "#{'merge-request-overview' if moved_mr_sidebar_enabled?}" }
           %section
+            = render_if_exists "projects/merge_requests/diff_summary"
             .issuable-discussion.js-vue-notes-event
               - if @merge_request.description.present?
                 .detail-page-description.gl-pb-0

@@ -108,7 +108,6 @@ export default {
             </gl-badge>
           </div>
           <actions
-            :widget="widgetLabel"
             :tertiary-buttons="data.actions"
             class="gl-ml-auto gl-pl-3"
             @clickedAction="onClickedAction"
@@ -128,7 +127,6 @@ export default {
             :modal-id="modalId"
             :level="3"
             data-testid="child-content"
-            data-qa-selector="child_content"
             @clickedAction="onClickedAction"
           />
         </li>

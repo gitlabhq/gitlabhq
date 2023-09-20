@@ -244,6 +244,7 @@ Organizations will have an Owner role. Compared to Users, they can perform the f
 | View Groups overview | ✓ | ✓ (1) |
 | View Projects overview | ✓ | ✓ (1) |
 | View Users overview | ✓ | ✓ (2) |
+| View Organization activity page | ✓ | ✓ (1) |
 | Transfer top-level Group into Organization if Owner of both | ✓ |  |
 
 (1) Users can only see what they have access to.
@@ -251,19 +252,53 @@ Organizations will have an Owner role. Compared to Users, they can perform the f
 
 [Roles](../../../user/permissions.md) at the Group and Project level remain as they currently are.
 
+#### Relationship between Organization Owner and Instance Admin
+
+Users with the (Instance) Admin role can currently [administer a self-managed GitLab instance](../../../administration/index.md).
+As functionality is moved to the Organization level, Organization Owners will be able to access more features that are currently only accessible to Admins.
+On our SaaS platform, this helps us in empowering enterprises to manage their own Organization more efficiently without depending on the Instance Admin, which is currently a GitLab team member.
+On SaaS, we expect the Instance Admin and the Organization Owner to be different users.
+Self-managed instances are generally scoped to a single organization, so in this case it is possible that both roles are fulfilled by the same person.
+There are situations that might require intervention by an Instance Admin, for instance when Users are abusing the system.
+When that is the case, actions taken by the Instance Admin overrule actions of the Organization Owner.
+For instance, the Instance Admin can ban or delete a User on behalf of the Organization Owner.
+
 ### Routing
 
-Today only Users, Projects, Namespaces and container images are considered routable entities which require global uniqueness on `https://gitlab.com/<path>/-/`. Initially, Organization routes will be [unscoped](../../../development/routing.md). Organizations will follow the path `https://gitlab.com/-/organizations/org-name/` as one of the design goals is that the addition of Organizations should not change existing Group and Project paths.
+Today only Users, Projects, Namespaces and container images are considered routable entities which require global uniqueness on `https://gitlab.com/<path>/-/`.
+Initially, Organization routes will be [unscoped](../../../development/routing.md).
+Organizations will follow the path `https://gitlab.com/-/organizations/org-name/` as one of the design goals is that the addition of Organizations should not change existing Group and Project paths.
 
-### Impact of the Organization on Other Features
+## Impact of the Organization on Other Domains
 
-We want a minimal amount of infrequently written tables in the shared database. If we have high write volume or large amounts of data in the shared database then this can become a single bottleneck for scaling and we lose the horizontal scalability objective of Cells. With isolation being one of the main requirements to make Cells work, this means that existing features will mostly be scoped to an Organization rather than work across Organizations. One exception to this are Users, which are stored in the cluster-wide shared database. For a deeper exploration of the impact on select features, see the [list of features impacted by Cells](../cells/index.md#impacted-features).
+We want a minimal amount of infrequently written tables in the shared database.
+If we have high write volume or large amounts of data in the shared database then this can become a single bottleneck for scaling and we lose the horizontal scalability objective of Cells.
+With isolation being one of the main requirements to make Cells work, this means that existing features will mostly be scoped to an Organization rather than work across Organizations.
+One exception to this are Users, which are stored in the cluster-wide shared database.
+For a deeper exploration of the impact on select features, see the [list of features impacted by Cells](../cells/index.md#impacted-features).
+
+### Alignment between Organization and Fulfillment
+
+Fulfillment is supportive of an entity above top-level groups. Their perspective is outlined in issue [#1138](https://gitlab.com/gitlab-org/fulfillment-meta/-/issues/1138).
+
+#### Goals of Fulfillment
+
+- Fulfillment has a longstanding plan to move billing from the top-level Group to a level above. This would mean that a license applies to an Organization and all its top-level Groups.
+- Fulfillment uses Zuora for billing and would like to have a 1-to-1 relationship between an Organization and their Zuora entity called BillingAccount. They want to move away from tying a license to a single top-level Group.
+- If a customer needs multiple Organizations, they will need to have a separate BillingAccount per each.
+- Ideally, a self-managed instance has a single Organization by default, which should be enough for most customers.
+- Fulfillment prefers only one additional entity.
+
+### Open-source Contributions in Organizations
+
+Several aspects of the current open-source workflow will be impacted by the introduction of Organizations.
+We are conducting deeper research around this specific problem in [issue 420804](https://gitlab.com/gitlab-org/gitlab/-/issues/420804).
 
 ## Iteration Plan
 
 The following iteration plan outlines how we intend to arrive at the Organization MVC. We are following the guidelines for [Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
 
-### Iteration 1: Organization Prototype (FY24Q3)
+### Iteration 1: Organization Prototype (FY24Q4)
 
 In iteration 1, we introduce the concept of an Organization as a way to group top-level Groups together. Support for Organizations does not require any [Cells](../cells/index.md) work, but having them will make all subsequent iterations of Cells simpler. The goal of iteration 1 will be to generate a prototype that can be used by GitLab teams to test basic functionality within an Organization. The prototype contains the following functionality:
 
@@ -278,15 +313,16 @@ In iteration 1, we introduce the concept of an Organization as a way to group to
 - Users can navigate between the different Organizations they are part of.
 - Any User within or outside of an Organization can be invited to Groups and Projects contained by the Organization.
 
-### Iteration 2: Organization MVC Experiment (FY24Q4)
+### Iteration 2: Organization MVC Experiment (FY25Q1)
 
 In iteration 2, an Organization MVC Experiment will be released. We will test the functionality with a select set of customers and improve the MVC based on these learnings. The MVC Experiment contains the following functionality:
 
 - Users are listed in the User overview. Every Organization User can access the User overview and see Users that are part of the Groups and Projects they have access to.
 - Organizations can be deleted.
+- Organization Owners can access the Activity page for the Organization.
 - Forking across Organizations will be defined.
 
-### Iteration 3: Organization MVC Beta (FY24Q4)
+### Iteration 3: Organization MVC Beta (FY25Q1)
 
 In iteration 3, the Organization MVC Beta will be released. Users will be able to transfer existing top-level Groups into an Organization.
 
@@ -297,7 +333,7 @@ In iteration 3, the Organization MVC Beta will be released. Users will be able t
 - Top-level Groups can be transferred into an Organization.
 - The Organization URL path can be changed.
 
-### Iteration 4: Organization MVC GA (FY25Q1)
+### Iteration 4: Organization MVC GA (FY25Q2)
 
 In iteration 4, the Organization MVC will be rolled out.
 
@@ -342,6 +378,10 @@ A force-option will only be considered if the we do not achieve the load distrib
 ## Alternative Solutions
 
 An alternative approach to building Organizations is to convert top-level Groups into Organizations. The main advantage of this approach is that features could be built on top of the Namespace framework and therewith leverage functionality that is already available at the Group level. We would avoid building the same feature multiple times. However, Organizations have been identified as a critical driver of Cells. Due to the urgency of delivering Cells, we decided to opt for the quickest and most straightforward solution to deliver an Organization, which is the lightweight design described above. More details on comparing the two Organization proposals can be found [here](https://gitlab.com/gitlab-org/tenant-scale-group/group-tasks/-/issues/56).
+
+## Frequently Asked Questions
+
+See [Organization: Frequently Asked Questions](organization-faq.md).
 
 ## Decision Log
 

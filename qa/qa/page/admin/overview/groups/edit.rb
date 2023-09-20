@@ -7,11 +7,11 @@ module QA
         module Groups
           class Edit < QA::Page::Base
             view 'app/views/admin/groups/_form.html.haml' do
-              element :save_changes_button, required: true
+              element 'save-changes-button', required: true
             end
 
             def click_save_changes_button
-              click_element :save_changes_button, Groups::Show
+              click_element 'save-changes-button', Groups::Show
             end
           end
         end

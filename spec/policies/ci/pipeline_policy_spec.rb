@@ -142,5 +142,30 @@ RSpec.describe Ci::PipelinePolicy, :models do
         end
       end
     end
+
+    describe 'read_dependency' do
+      let(:project) { create(:project, :repository) }
+
+      before do
+        project.add_developer(user)
+        allow(policy).to receive(:can?).with(:read_dependency, project).and_return(can_read_project_dependencies)
+      end
+
+      context 'when user is allowed to read project dependencies' do
+        let(:can_read_project_dependencies) { true }
+
+        it 'is enabled' do
+          expect(policy).to be_allowed :read_dependency
+        end
+      end
+
+      context 'when user is not allowed to read project dependencies' do
+        let(:can_read_project_dependencies) { false }
+
+        it 'is disabled' do
+          expect(policy).not_to be_allowed :read_dependency
+        end
+      end
+    end
   end
 end

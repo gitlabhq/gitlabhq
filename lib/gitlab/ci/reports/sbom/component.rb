@@ -7,7 +7,7 @@ module Gitlab
         class Component
           include Gitlab::Utils::StrongMemoize
 
-          attr_reader :component_type, :version
+          attr_reader :component_type, :version, :path
 
           def initialize(type:, name:, purl:, version:)
             @component_type = type
@@ -31,10 +31,22 @@ module Gitlab
           end
           strong_memoize_attr :purl
 
+          def purl_type
+            purl.type
+          end
+
+          def type
+            component_type
+          end
+
           def name
             return @name unless purl
 
             [purl.namespace, purl.name].compact.join('/')
+          end
+
+          def key
+            [name, version, purl&.type]
           end
 
           private

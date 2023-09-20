@@ -20,29 +20,6 @@ RSpec.describe Ci::StatusHelper do
     end
   end
 
-  describe '#ci_text_for_status' do
-    context 'when status is manual' do
-      it 'changes the status to blocked' do
-        expect(helper.ci_text_for_status('manual'))
-          .to eq 'blocked'
-      end
-    end
-
-    context 'when status is success' do
-      it 'changes the status to passed' do
-        expect(helper.ci_text_for_status('success'))
-          .to eq 'passed'
-      end
-    end
-
-    context 'when status is something else' do
-      it 'returns status unchanged' do
-        expect(helper.ci_text_for_status('some-status'))
-          .to eq 'some-status'
-      end
-    end
-  end
-
   describe "#pipeline_status_cache_key" do
     it "builds a cache key for pipeline status" do
       pipeline_status = Gitlab::Cache::Ci::ProjectPipelineStatus.new(

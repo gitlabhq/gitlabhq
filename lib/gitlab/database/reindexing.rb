@@ -6,7 +6,7 @@ module Gitlab
       # Number of indexes to reindex per invocation
       DEFAULT_INDEXES_PER_INVOCATION = 2
 
-      SUPPORTED_TYPES = %w(btree gist).freeze
+      SUPPORTED_TYPES = %w[btree gist].freeze
 
       # When dropping an index, we acquire a SHARE UPDATE EXCLUSIVE lock,
       # which only conflicts with DDL and vacuum. We therefore execute this with a rather
@@ -16,6 +16,8 @@ module Gitlab
       REMOVE_INDEX_RETRY_CONFIG = [[1.minute, 9.minutes]] * 30
 
       def self.enabled?
+        return false if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
+
         Feature.enabled?(:database_reindexing, type: :ops)
       end
 
@@ -26,9 +28,15 @@ module Gitlab
           Gitlab::Database::SharedModel.logger = Logger.new($stdout) if Gitlab::Utils.to_boolean(ENV['LOG_QUERIES_TO_CONSOLE'], default: false)
 
           # Hack: Before we do actual reindexing work, create async indexes
-          Gitlab::Database::AsyncIndexes.create_pending_indexes! if Feature.enabled?(:database_async_index_creation, type: :ops)
+          if Feature.disabled?(:disallow_database_ddl_feature_flags, type: :ops) && Feature.enabled?(:database_async_index_creation, type: :ops)
+            Gitlab::Database::AsyncIndexes.create_pending_indexes!
+          end
+
           Gitlab::Database::AsyncIndexes.drop_pending_indexes!
-          Gitlab::Database::AsyncConstraints.validate_pending_entries! if Feature.enabled?(:database_async_foreign_key_validation, type: :ops)
+
+          if Feature.disabled?(:disallow_database_ddl_feature_flags, type: :ops) && Feature.enabled?(:database_async_foreign_key_validation, type: :ops)
+            Gitlab::Database::AsyncConstraints.validate_pending_entries!
+          end
 
           automatic_reindexing
         end

@@ -12,7 +12,7 @@ which are part of our [main Rails project](https://gitlab.com/gitlab-org/gitlab)
 
 Also see our [direction page](https://about.gitlab.com/direction/manage/import_and_integrate/integrations/) for an overview of our strategy around integrations.
 
-This guide is a work in progress. You're welcome to ping `@gitlab-org/manage/integrations`
+This guide is a work in progress. You're welcome to ping `@gitlab-org/manage/import-and-integrate`
 if you need clarification or spot any outdated information.
 
 ## Add a new integration
@@ -39,9 +39,9 @@ if you need clarification or spot any outdated information.
    has_one :foo_bar_integration, class_name: 'Integrations::FooBar'
    ```
 
-### Define properties
+### Define fields
 
-Integrations can define arbitrary properties to store their configuration with the class method `Integration.prop_accessor`.
+Integrations can define arbitrary fields to store their configuration with the class method `Integration.field`.
 The values are stored as an encrypted JSON hash in the `integrations.encrypted_properties` column.
 
 For example:
@@ -49,25 +49,26 @@ For example:
 ```ruby
 module Integrations
   class FooBar < Integration
-    prop_accessor :url
-    prop_accessor :tags
+    field :url
+    field :tags
   end
 end
 ```
 
-`Integration.prop_accessor` installs accessor methods on the class. Here we would have `#url`, `#url=` and `#url_changed?`, to manage the `url` field. Fields stored in `Integration#properties` should be accessed by these accessors directly on the model, just like other ActiveRecord attributes.
+`Integration.field` installs accessor methods on the class.
+Here we would have `#url`, `#url=`, and `#url_changed?` to manage the `url` field.
+These accessors should access the fields stored in `Integration#properties` directly on the model, just like other `ActiveRecord` attributes.
 
-You should always access the properties through their `getters`, and not interact with the `properties` hash directly.
+You should always access the fields through their `getters` and not interact with the `properties` hash directly.
 You **must not** write to the `properties` hash, you **must** use the generated setter method instead. Direct writes to this
 hash are not persisted.
 
 You should also define validations for all your properties.
+To see how these fields are exposed in the frontend form for the integration,
+see [Customize the frontend form](#customize-the-frontend-form).
 
-Also refer to the section [Customize the frontend form](#customize-the-frontend-form) below to see how these properties
-are exposed in the frontend form for the integration.
-
-There is an alternative approach using `Integration.data_field`, which you may see in other integrations.
-With data fields the values are stored in a separate table per integration. At the moment we don't recommend using this for new integrations.
+Other approaches include using `Integration.prop_accessor` or `Integration.data_field`, which you might see in earlier versions of integrations.
+You should not use these approaches for new integrations.
 
 ### Define trigger events
 
@@ -94,7 +95,7 @@ The following events are supported for integrations:
 | [Pipeline event](../../user/project/integrations/webhook_events.md#pipeline-events)            |         | `pipeline`           | A pipeline status changes.
 | [Push event](../../user/project/integrations/webhook_events.md#push-events)                    | ✓       | `push`               | A push is made to the repository.
 | [Tag push event](../../user/project/integrations/webhook_events.md#tag-events)                 | ✓       | `tag_push`           | New tags are pushed to the repository.
-| Vulnerability event **(ULTIMATE)**                                                             |         | `vulnerability`      | A new, unique vulnerability is recorded.
+| Vulnerability event **(ULTIMATE ALL)**                                                             |         | `vulnerability`      | A new, unique vulnerability is recorded.
 | [Wiki page event](../../user/project/integrations/webhook_events.md#wiki-page-events)          | ✓       | `wiki_page`          | A wiki page is created or updated.
 
 #### Event examples
@@ -191,8 +192,8 @@ This method should return an array of hashes for each field, where the keys can 
 
 | Key            | Type    | Required | Default                      | Description
 |:---------------|:--------|:---------|:-----------------------------|:--
-| `type:`        | string  | true     |                              | The type of the form field. Can be `text`, `textarea`, `password`, `checkbox`, or `select`.
-| `name:`        | string  | true     |                              | The property name for the form field. This must match a `prop_accessor` [defined on the class](#define-properties).
+| `type:`        | symbol  | true     | `:text`                      | The type of the form field. Can be `:text`, `:textarea`, `:password`, `:checkbox`, or `:select`.
+| `name:`        | string  | true     |                              | The property name for the form field.
 | `required:`    | boolean | false    | `false`                      | Specify if the form field is required or optional.
 | `title:`       | string  | false    | Capitalized value of `name:` | The label for the form field.
 | `placeholder:` | string  | false    |                              | A placeholder for the form field.
@@ -200,19 +201,19 @@ This method should return an array of hashes for each field, where the keys can 
 | `api_only:`    | boolean | false    | `false`                      | Specify if the field should only be available through the API, and excluded from the frontend form.
 | `if:`          | boolean or lambda | false | `true`                | Specify if the field should be available. The value can be a boolean or a lambda.
 
-### Additional keys for `type: 'checkbox'`
+### Additional keys for `type: :checkbox`
 
 | Key               | Type   | Required | Default           | Description
 |:------------------|:-------|:---------|:------------------|:--
 | `checkbox_label:` | string | false    | Value of `title:` | A custom label that displays next to the checkbox.
 
-### Additional keys for `type: 'select'`
+### Additional keys for `type: :select`
 
 | Key        | Type  | Required | Default | Description
 |:-----------|:------|:---------|:--------|:--
 | `choices:` | array | true     |         | A nested array of `[label, value]` tuples.
 
-### Additional keys for `type: 'password'`
+### Additional keys for `type: :password`
 
 | Key                         | Type   | Required | Default           | Description
 |:----------------------------|:-------|:---------|:------------------|:--
@@ -226,30 +227,20 @@ This example defines a required `url` field, and optional `username` and `passwo
 ```ruby
 module Integrations
   class FooBar < Integration
-    prop_accessor :url, :username, :password
+    field :url,
+      type: :text,
+      title: s_('FooBarIntegration|Server URL'),
+      placeholder: 'https://example.com/',
+      required: true
 
-    def fields
-      [
-        {
-          type: 'text',
-          name: 'url',
-          title: s_('FooBarIntegration|Server URL'),
-          placeholder: 'https://example.com/',
-          required: true
-        },
-        {
-          type: 'text',
-          name: 'username',
-          title: s_('FooBarIntegration|Username'),
-        },
-        {
-          type: 'password',
-          name: 'password',
-          title: s_('FoobarIntegration|Password'
-          non_empty_password_title: s_('FooBarIntegration|Enter new password')
-        }
-      ]
-    end
+    field :username,
+      type: :text,
+      title: s_('FooBarIntegration|Username')
+
+    field :password,
+      type: 'password',
+      title: s_('FoobarIntegration|Password'
+      non_empty_password_title: s_('FooBarIntegration|Enter new password')
   end
 end
 ```

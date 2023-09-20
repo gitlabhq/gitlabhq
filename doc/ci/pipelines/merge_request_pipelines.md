@@ -169,8 +169,13 @@ To use the UI to run a pipeline in the parent project for a merge request from a
 1. Select **Run pipeline**. You must read and accept the warning, or the pipeline does not run.
 
 You can disable this feature by using [the projects API](../../api/projects.md#edit-project)
-to disable the `ci_allow_fork_pipelines_to_run_in_parent_project` setting.
-The setting is `enabled` by default.
+to disable the `ci_allow_fork_pipelines_to_run_in_parent_project` setting (enabled by default).
+When you disable this setting, new pipelines from forks in the parent project are prevented.
+
+WARNING:
+Older pipelines created before the setting was disabled are not affected and continue to run.
+If you rerun a job in an older pipeline, the job uses the same context as when the
+pipeline was originally created.
 
 ## Available predefined variables
 

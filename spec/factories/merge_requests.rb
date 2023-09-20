@@ -56,6 +56,14 @@ FactoryBot.define do
       state_id { MergeRequest.available_states[:merged] }
     end
 
+    trait :unprepared do
+      prepared_at { nil }
+    end
+
+    trait :prepared do
+      prepared_at { Time.now }
+    end
+
     trait :with_merged_metrics do
       merged
 

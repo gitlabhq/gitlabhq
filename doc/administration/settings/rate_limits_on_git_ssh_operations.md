@@ -24,6 +24,8 @@ Users on self-managed GitLab can disable this rate limit.
 
 ## Configure GitLab Shell operation limit
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123761) in GitLab 16.2.
+
 `Git operations using SSH` is enabled by default. Defaults to 600 per user per minute.
 
 1. On the left sidebar, select **Your work > Admin Area**.

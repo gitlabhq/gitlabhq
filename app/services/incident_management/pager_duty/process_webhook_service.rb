@@ -10,7 +10,7 @@ module IncidentManagement
       PAGER_DUTY_PAYLOAD_SIZE_LIMIT = 55.kilobytes
 
       # https://developer.pagerduty.com/docs/db0fa8c8984fc-overview#event-types
-      PAGER_DUTY_PROCESSABLE_EVENT_TYPES = %w(incident.triggered).freeze
+      PAGER_DUTY_PROCESSABLE_EVENT_TYPES = %w[incident.triggered].freeze
 
       def initialize(project, payload)
         super(project: project)

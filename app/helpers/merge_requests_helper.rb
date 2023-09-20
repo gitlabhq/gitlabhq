@@ -226,6 +226,13 @@ module MergeRequestsHelper
     }
   end
 
+  def mr_compare_form_data(_, merge_request)
+    {
+      source_branch_url: project_new_merge_request_branch_from_path(merge_request.source_project),
+      target_branch_url: project_new_merge_request_branch_to_path(merge_request.source_project)
+    }
+  end
+
   private
 
   def review_requested_merge_requests_count
@@ -269,7 +276,7 @@ module MergeRequestsHelper
 
   def merge_request_header(project, merge_request)
     link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-weight-bold gl-mr-2', avatar: false)
-    copy_button = clipboard_button(text: merge_request.source_branch, title: _('Copy branch name'), class: 'btn btn-default btn-sm gl-button btn-default-tertiary btn-icon gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
+    copy_button = clipboard_button(text: merge_request.source_branch, title: _('Copy branch name'), class: 'gl-display-none! gl-md-display-inline-block! js-source-branch-copy')
 
     target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'gl-text-blue-500! gl-font-monospace gl-bg-blue-50 gl-rounded-base gl-font-sm gl-px-2 gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
 

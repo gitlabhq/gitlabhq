@@ -6,10 +6,12 @@ module Issues
     def execute(issue, commit: nil, notifications: true, system_note: true, skip_authorization: false)
       return issue unless can_close?(issue, skip_authorization: skip_authorization)
 
-      close_issue(issue,
-                  closed_via: commit,
-                  notifications: notifications,
-                  system_note: system_note)
+      close_issue(
+        issue,
+        closed_via: commit,
+        notifications: notifications,
+        system_note: system_note
+      )
     end
 
     # Closes the supplied issue without checking if the user is authorized to
@@ -86,7 +88,7 @@ module Issues
       issue = alert.issue
 
       if alert.resolve
-        SystemNoteService.change_alert_status(alert, User.alert_bot, " because #{current_user.to_reference} closed incident #{issue.to_reference(project)}")
+        SystemNoteService.change_alert_status(alert, Users::Internal.alert_bot, " because #{current_user.to_reference} closed incident #{issue.to_reference(project)}")
       else
         Gitlab::AppLogger.warn(
           message: 'Cannot resolve an associated Alert Management alert',

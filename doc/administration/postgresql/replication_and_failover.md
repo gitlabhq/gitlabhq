@@ -1086,7 +1086,7 @@ Reverting the PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the sam
 `gitlab-ctl pg-upgrade`. You should follow the same procedure by first stopping the replicas,
 then reverting the leader, and finally reverting the replicas.
 
-### Near zero downtime upgrade of PostgreSQL in a Patroni cluster (Experimental)
+### Near zero downtime upgrade of PostgreSQL in a Patroni cluster **(EXPERIMENT)**
 
 Patroni enables you to run a major PostgreSQL upgrade without shutting down the cluster. However, this
 requires additional resources to host the new Patroni nodes with the upgraded PostgreSQL. In practice, with this

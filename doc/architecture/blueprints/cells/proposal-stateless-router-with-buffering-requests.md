@@ -27,10 +27,10 @@ monolith. This architecture also supports regions by allowing for low traffic
 databases to be replicated across regions.
 
 Users are not directly exposed to the concept of Cells but instead they see
-different data dependent on their chosen "organization".
-[Organizations](glossary.md#organizations) will be a new model introduced to enforce isolation in the
-application and allow us to decide which request route to which cell, since an
-organization can only be on a single cell.
+different data dependent on their chosen Organization.
+[Organizations](goals.md#organizations) will be a new entity introduced to enforce isolation in the
+application and allow us to decide which request routes to which Cell, since an
+Organization can only be on a single Cell.
 
 ## Differences
 

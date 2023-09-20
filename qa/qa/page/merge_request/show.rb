@@ -36,10 +36,13 @@ module QA
         end
 
         view 'app/assets/javascripts/diffs/components/diff_file_header.vue' do
-          element :file_name_content
           element :file_title_container
           element :dropdown_button
           element :edit_in_ide_button
+        end
+
+        view 'app/assets/javascripts/vue_shared/components/file_row.vue' do
+          element 'file-row-name-container'
         end
 
         view 'app/assets/javascripts/diffs/components/diff_row.vue' do
@@ -53,10 +56,10 @@ module QA
         end
 
         view 'app/views/projects/merge_requests/_code_dropdown.html.haml' do
-          element :mr_code_dropdown
-          element :download_email_patches_menu_item
-          element :download_plain_diff_menu_item
-          element :open_in_web_ide_button
+          element 'mr-code-dropdown'
+          element 'download-email-patches-menu-item'
+          element 'download-plain-diff-menu-item'
+          element 'open-in-web-ide-button'
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_pipeline.vue' do
@@ -124,9 +127,9 @@ module QA
         end
 
         view 'app/views/projects/merge_requests/_page.html.haml' do
-          element :notes_tab, required: true
-          element :commits_tab, required: true
-          element :diffs_tab, required: true
+          element 'notes-tab', required: true
+          element 'commits-tab', required: true
+          element 'diffs-tab', required: true
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue' do
@@ -136,6 +139,10 @@ module QA
         view 'app/views/shared/_broadcast_message.html.haml' do
           element :broadcast_notification_container
           element :close_button
+        end
+
+        view 'app/assets/javascripts/ci/jobs_page/components/job_cells/job_cell.vue' do
+          element 'fork-icon'
         end
 
         def start_review
@@ -190,18 +197,18 @@ module QA
         end
 
         def click_discussions_tab
-          click_element(:notes_tab)
+          click_element('notes-tab')
 
           wait_for_requests
         end
 
         def click_commits_tab
-          click_element(:commits_tab)
+          click_element('commits-tab')
         end
 
         def click_diffs_tab
           # Do not wait for spinner due to https://gitlab.com/gitlab-org/gitlab/-/issues/398584
-          click_element(:diffs_tab, skip_finished_loading_check: true)
+          click_element('diffs-tab', skip_finished_loading_check: true)
         end
 
         def click_pipeline_link
@@ -222,17 +229,17 @@ module QA
         def has_file?(file_name)
           open_file_tree
 
-          return true if has_element?(:file_name_content, file_name: file_name)
+          return true if has_element?('file-row-name-container', file_name: file_name)
 
           # Since the file tree uses virtual scrolling, search for file in case it is outside of viewport
           search_file_tree(file_name)
-          has_element?(:file_name_content, file_name: file_name)
+          has_element?('file-row-name-container', file_name: file_name)
         end
 
         def has_no_file?(file_name)
           # Since the file tree uses virtual scrolling, search for file to ensure non-existence
           search_file_tree(file_name)
-          has_no_element?(:file_name_content, file_name: file_name)
+          has_no_element?('file-row-name-container', file_name: file_name)
         end
 
         def search_file_tree(file_name)
@@ -277,6 +284,11 @@ module QA
         end
 
         def mark_to_squash
+          # Refresh page if commit arrived after loading the MR page
+          wait_until(reload: true, message: 'Wait for MR to be unblocked') do
+            has_no_element?(:head_mismatch_content, wait: 1)
+          end
+
           # The squash checkbox is enabled via JS
           wait_until(reload: false) do
             !find_element(:squash_checkbox, visible: false).disabled?
@@ -395,16 +407,16 @@ module QA
           # Click by JS is needed to bypass the Moved MR actions popover
           # Change back to regular click_element when moved_mr_sidebar FF is removed
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element(:mr_code_dropdown))
-          visit_link_in_element(:download_email_patches_menu_item)
+          click_by_javascript(find_element('mr-code-dropdown'))
+          visit_link_in_element('download-email-patches-menu-item')
         end
 
         def view_plain_diff
           # Click by JS is needed to bypass the Moved MR actions popover
           # Change back to regular click_element when moved_mr_sidebar FF is removed
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element(:mr_code_dropdown))
-          visit_link_in_element(:download_plain_diff_menu_item)
+          click_by_javascript(find_element('mr-code-dropdown'))
+          visit_link_in_element('download-plain-diff-menu-item')
         end
 
         def wait_for_merge_request_error_message
@@ -417,8 +429,8 @@ module QA
           # Click by JS is needed to bypass the Moved MR actions popover
           # Change back to regular click_element when moved_mr_sidebar FF is removed
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
-          click_by_javascript(find_element(:mr_code_dropdown))
-          click_element(:open_in_web_ide_button)
+          click_by_javascript(find_element('mr-code-dropdown'))
+          click_element('open-in-web-ide-button')
           page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
           wait_for_requests
         end
@@ -475,6 +487,10 @@ module QA
 
         def mr_widget_text
           find_element(:mr_widget_content).text
+        end
+
+        def has_fork_icon?
+          has_element?('fork-icon', skip_finished_loading_check: true)
         end
       end
     end

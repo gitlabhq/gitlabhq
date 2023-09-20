@@ -21,9 +21,9 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService, feature_category:
       project.mark_pages_as_deployed
       expect(project.pages_metadatum.reload.deployed).to eq(true)
 
-      expect(service.execute).to(
-        eq(status: :success,
-           message: "Archive not created. Missing public directory in #{project.pages_path}? Marked project as not deployed")
+      expect(service.execute).to eq(
+        status: :success,
+        message: "Archive not created. Missing public directory in #{project.pages_path}? Marked project as not deployed"
       )
 
       expect(project.pages_metadatum.reload.deployed).to eq(false)
@@ -35,9 +35,9 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService, feature_category:
       project.mark_pages_as_deployed
       expect(project.pages_metadatum.reload.deployed).to eq(true)
 
-      expect(service.execute).to(
-        eq(status: :success,
-           message: "Archive not created. Missing public directory in #{project.pages_path}? Marked project as not deployed")
+      expect(service.execute).to eq(
+        status: :success,
+        message: "Archive not created. Missing public directory in #{project.pages_path}? Marked project as not deployed"
       )
 
       expect(project.pages_metadatum.reload.deployed).to eq(true)
@@ -49,9 +49,9 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService, feature_category:
 
     expect(project.pages_metadatum.reload.deployed).to eq(true)
 
-    expect(service.execute).to(
-      eq(status: :error,
-         message: "Archive not created. Missing public directory in #{project.pages_path}")
+    expect(service.execute).to eq(
+      status: :error,
+      message: "Archive not created. Missing public directory in #{project.pages_path}"
     )
 
     expect(project.pages_metadatum.reload.deployed).to eq(true)
@@ -60,9 +60,9 @@ RSpec.describe Pages::MigrateLegacyStorageToDeploymentService, feature_category:
   it 'removes pages archive when can not save deployment' do
     archive = fixture_file_upload("spec/fixtures/pages.zip")
     expect_next_instance_of(::Pages::ZipDirectoryService) do |zip_service|
-      expect(zip_service).to receive(:execute).and_return(status: :success,
-                                                          archive_path: archive.path,
-                                                          entries_count: 3)
+      expect(zip_service).to receive(:execute).and_return(
+        status: :success, archive_path: archive.path, entries_count: 3
+      )
     end
 
     expect_next_instance_of(PagesDeployment) do |deployment|

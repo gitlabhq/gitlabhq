@@ -182,7 +182,7 @@ module API
         merge_requests = find_merge_requests(group_id: user_group.id, include_subgroups: true)
         options = serializer_options_for(merge_requests).merge(group: user_group)
 
-        if !options[:skip_merge_status_recheck] && ::Feature.enabled?(:batched_api_mergeability_checks, user_group)
+        unless options[:skip_merge_status_recheck]
           batch_process_mergeability_checks(merge_requests)
 
           # NOTE: skipping individual mergeability checks in the presenter

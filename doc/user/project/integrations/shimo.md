@@ -23,7 +23,7 @@ This change is a breaking change.
 
 To enable the Shimo integration for your project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Shimo**.
 1. Under **Enable integration**, ensure the **Active** checkbox is selected.
@@ -36,7 +36,7 @@ On the left sidebar, **Shimo** now appears instead of **Wiki**.
 
 To view the Shimo Workspace from your group or project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Shimo**.
 1. On the **Shimo Workspace** page, select **Go to Shimo Workspace**.
 

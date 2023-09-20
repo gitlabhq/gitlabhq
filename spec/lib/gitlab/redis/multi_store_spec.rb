@@ -1130,4 +1130,104 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
       end
     end
   end
+
+  # NOTE: for pub/sub, unit tests are favoured over integration tests to avoid long polling
+  # with threads which could lead to flaky specs. The multiplexing behaviour are verified in
+  # 'with WRITE redis commands' and 'with READ redis commands' contexts.
+  context 'with pub/sub commands' do
+    let(:channel_name) { 'chanA' }
+    let(:message) { "msg" }
+
+    shared_examples 'publishes to stores' do
+      it 'publishes to one or more stores' do
+        expect(stores).to all(receive(:publish))
+
+        multi_store.publish(channel_name, message)
+      end
+    end
+
+    shared_examples 'subscribes and unsubscribes' do
+      it 'subscribes to the default store' do
+        expect(default_store).to receive(:subscribe)
+        expect(non_default_store).not_to receive(:subscribe)
+
+        multi_store.subscribe(channel_name)
+      end
+
+      it 'unsubscribes to the default store' do
+        expect(default_store).to receive(:unsubscribe)
+        expect(non_default_store).not_to receive(:unsubscribe)
+
+        multi_store.unsubscribe
+      end
+    end
+
+    context 'when using both stores' do
+      before do
+        stub_feature_flags(use_primary_and_secondary_stores_for_test_store: true)
+      end
+
+      it_behaves_like 'publishes to stores' do
+        let(:stores) { [primary_store, secondary_store] }
+      end
+
+      context 'with primary store set as default' do
+        before do
+          stub_feature_flags(use_primary_store_as_default_for_test_store: true)
+        end
+
+        it_behaves_like 'subscribes and unsubscribes' do
+          let(:default_store) { primary_store }
+          let(:non_default_store) { secondary_store }
+        end
+      end
+
+      context 'with secondary store set as default' do
+        before do
+          stub_feature_flags(use_primary_store_as_default_for_test_store: false)
+        end
+
+        it_behaves_like 'subscribes and unsubscribes' do
+          let(:default_store) { secondary_store }
+          let(:non_default_store) { primary_store }
+        end
+      end
+    end
+
+    context 'when only using the primary store' do
+      before do
+        stub_feature_flags(
+          use_primary_and_secondary_stores_for_test_store: false,
+          use_primary_store_as_default_for_test_store: true
+        )
+      end
+
+      it_behaves_like 'subscribes and unsubscribes' do
+        let(:default_store) { primary_store }
+        let(:non_default_store) { secondary_store }
+      end
+
+      it_behaves_like 'publishes to stores' do
+        let(:stores) { [primary_store] }
+      end
+    end
+
+    context 'when only using the secondary store' do
+      before do
+        stub_feature_flags(
+          use_primary_and_secondary_stores_for_test_store: false,
+          use_primary_store_as_default_for_test_store: false
+        )
+      end
+
+      it_behaves_like 'subscribes and unsubscribes' do
+        let(:default_store) { secondary_store }
+        let(:non_default_store) { primary_store }
+      end
+
+      it_behaves_like 'publishes to stores' do
+        let(:stores) { [secondary_store] }
+      end
+    end
+  end
 end

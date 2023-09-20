@@ -4,14 +4,15 @@ module Gitlab
   module GithubImport
     module Importer
       class NoteAttachmentsImporter
-        attr_reader :note_text, :project
+        attr_reader :note_text, :project, :client
 
         # note_text - An instance of `Gitlab::GithubImport::Representation::NoteText`.
         # project - An instance of `Project`.
         # client - An instance of `Gitlab::GithubImport::Client`.
-        def initialize(note_text, project, _client = nil)
+        def initialize(note_text, project, client)
           @note_text = note_text
           @project = project
+          @client = client
         end
 
         def execute
@@ -33,7 +34,7 @@ module Gitlab
 
           if attachment.part_of_project_blob?(project_import_source)
             convert_project_content_link(attachment.url, project_import_source)
-          elsif attachment.media? || attachment.doc_belongs_to_project?(project_import_source)
+          elsif attachment.media?(project_import_source) || attachment.doc_belongs_to_project?(project_import_source)
             download_attachment(attachment)
           else # url to other GitHub project
             attachment.url
@@ -53,12 +54,22 @@ module Gitlab
         # in: an instance of Gitlab::GithubImport::Markdown::Attachment
         # out: gitlab attachment markdown url
         def download_attachment(attachment)
-          downloader = ::Gitlab::GithubImport::AttachmentsDownloader.new(attachment.url)
+          downloader = ::Gitlab::GithubImport::AttachmentsDownloader.new(attachment.url, options: options)
           file = downloader.perform
           uploader = UploadService.new(project, file, FileUploader).execute
           uploader.to_h[:url]
+        rescue ::Gitlab::GithubImport::AttachmentsDownloader::UnsupportedAttachmentError
+          attachment.url
         ensure
           downloader&.delete
+        end
+
+        def options
+          {
+            headers: {
+              'Authorization' => "Bearer #{client.octokit.access_token}"
+            }
+          }
         end
 
         def update_note_record(text)

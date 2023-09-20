@@ -20,15 +20,14 @@ module Sidebars
 
       override :super_sidebar_context_header
       def super_sidebar_context_header
-        @super_sidebar_context_header ||= {
-          title: aria_label,
-          avatar: context.current_user.avatar_url
-        }
+        aria_label
       end
 
       private
 
       def add_menus
+        return unless context.current_user
+
         add_menu(Sidebars::UserSettings::Menus::ProfileMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::AccountMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::ApplicationsMenu.new(context))

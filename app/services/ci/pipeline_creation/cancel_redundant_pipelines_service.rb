@@ -105,11 +105,7 @@ module Ci
       end
 
       def pipelines_created_after
-        if Feature.enabled?(:lower_interval_for_canceling_redundant_pipelines, project)
-          3.days.ago
-        else
-          1.week.ago
-        end
+        3.days.ago
       end
 
       # Finding the pipelines to cancel is an expensive task that is not well

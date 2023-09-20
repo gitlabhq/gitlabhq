@@ -65,11 +65,8 @@ const createText = (text) => {
 export const generateText = (text) => {
   if (typeof text === 'string') {
     return createText(escapeText(text));
-  } else if (
-    typeof text === 'object' &&
-    typeof text.text === 'string' &&
-    typeof text.href === 'string'
-  ) {
+  }
+  if (typeof text === 'object' && typeof text.text === 'string' && typeof text.href === 'string') {
     return createText(
       `${
         text.prependText ? `${escapeText(text.prependText)} ` : ''

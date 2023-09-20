@@ -510,7 +510,7 @@ production: &base
 
   ## Sidekiq
   sidekiq:
-    log_format: json # (default is the original format)
+    log_format: json # (text is the original format)
     # An array of tuples indicating the rules for re-routing a worker to a
     # desirable queue before scheduling. For example:
     # routing_rules:

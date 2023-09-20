@@ -8,6 +8,7 @@ module API
     include Helpers::PaginationStrategies
     include Gitlab::Ci::Artifacts::Logger
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::RackLoadBalancingHelpers
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
@@ -91,9 +92,7 @@ module API
       save_current_token_in_env
 
       if @current_user
-        ::ApplicationRecord
-          .sticking
-          .stick_or_unstick_request(env, :user, @current_user.id)
+        load_balancer_stick_request(::ApplicationRecord, :user, @current_user.id)
       end
 
       @current_user
@@ -182,6 +181,30 @@ module API
 
       ::Feature.enabled?(:ci_job_token_scope, project) &&
         current_authenticated_job.project == project
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def find_pipeline(id)
+      return unless id
+
+      if id.to_s =~ INTEGER_ID_REGEX
+        ::Ci::Pipeline.find_by(id: id)
+      end
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    def find_pipeline!(id)
+      pipeline = find_pipeline(id)
+      check_pipeline_access(pipeline)
+    end
+
+    def check_pipeline_access(pipeline)
+      return forbidden! unless authorized_project_scope?(pipeline&.project)
+
+      return pipeline if can?(current_user, :read_pipeline, pipeline)
+      return unauthorized! if authenticate_non_public?
+
+      not_found!('Pipeline')
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -686,8 +709,8 @@ module API
         namespace_id: namespace_id,
         project_id: project_id
       )
-    rescue StandardError => error
-      Gitlab::AppLogger.warn("Internal Event tracking event failed for event: #{event_name}, message: #{error.message}")
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, event_name: event_name)
     end
 
     def order_by_similarity?(allow_unauthorized: true)

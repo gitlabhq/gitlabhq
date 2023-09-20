@@ -2,8 +2,47 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::OtherMarkup do
+RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
   let(:context) { {} }
+
+  context 'when restructured text' do
+    it 'renders' do
+      input = <<~RST
+        Header
+        ======
+
+        *emphasis*; **strong emphasis**; `interpreted text`
+      RST
+
+      output = <<~HTML
+        <h1>Header</h1>
+        <p><em>emphasis</em>; <strong>strong emphasis</strong>; <cite>interpreted text</cite></p>
+      HTML
+
+      expect(render('unimportant_name.rst', input, context)).to include(output.strip)
+    end
+
+    context 'when PlantUML is enabled' do
+      it 'generates the diagram' do
+        Gitlab::CurrentSettings.current_application_settings.update!(plantuml_enabled: true, plantuml_url: 'https://plantuml.com/plantuml')
+
+        input = <<~RST
+          .. plantuml::
+                 :caption: Caption with **bold** and *italic*
+
+                 Bob -> Alice: hello
+                 Alice -> Bob: hi
+        RST
+
+        output = <<~HTML
+          <img class="plantuml" src="https://plantuml.com/plantuml/png/U9npoazIqBLJSCp9J4wrKiX8pSd9vm9pGA9E-Kb0iKm0o4SAt000" data-diagram="plantuml" data-diagram-src="data:text/plain;base64,Qm9iIC0+IEFsaWNlOiBoZWxsbwpBbGljZSAtPiBCb2I6IGhp">
+          <p>Caption with <strong>bold</strong> and <em>italic</em></p>
+        HTML
+
+        expect(render('unimportant_name.rst', input, context)).to include(output.strip)
+      end
+    end
+  end
 
   context 'XSS Checks' do
     links = {

@@ -11,6 +11,9 @@ To allow GitLab to scale further we
 The two databases are `main` and `ci`. GitLab supports being run with either one database or two databases.
 On GitLab.com we are using two separate databases.
 
+For the purpose of building the [Cells](../../architecture/blueprints/cells/index.md) architecture, we are decomposing
+the databases further, to introduce another database `gitlab_main_clusterwide`.
+
 ## GitLab Schema
 
 For properly discovering allowed patterns between different databases
@@ -23,17 +26,22 @@ that we cannot use PostgreSQL schema due to complex migration procedures. Instea
 the concept of application-level classification.
 Each table of GitLab needs to have a `gitlab_schema` assigned:
 
-- `gitlab_main`: describes all tables that are being stored in the `main:` database (for example, like `projects`, `users`).
-- `gitlab_ci`: describes all CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`).
-- `gitlab_geo`: describes all Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`).
-- `gitlab_shared`: describes all application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`.
-- `gitlab_internal`: describes all internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`).
-- `gitlab_pm`: describes all tables that store `package_metadata` (it is an alias for `gitlab_main`).
-- `...`: more schemas to be introduced with additional decomposed databases
+| Database | Description | Notes |
+| -------- | ----------- | ------- |
+| `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](../../architecture/blueprints/cells/index.md) architecture. `gitlab_main_cell` schema describes all tables that are local to a cell in a GitLab installation. For example, `projects` and `groups` |
+| `gitlab_main_clusterwide` | All tables that are being stored cluster-wide in a GitLab installation, in the [Cells](../../architecture/blueprints/cells/index.md) architecture. For example, `users` and `application_settings` | |
+| `gitlab_ci` | All CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`) | |
+| `gitlab_geo` | All Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`) | |
+| `gitlab_shared` | All application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`. | |
+| `gitlab_internal` | All internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`) | |
+| `gitlab_pm` | All tables that store `package_metadata`| It is an alias for `gitlab_main`|
+
+More schemas to be introduced with additional decomposed databases
 
 The usage of schema enforces the base class to be used:
 
-- `ApplicationRecord` for `gitlab_main`
+- `ApplicationRecord` for `gitlab_main`/`gitlab_main_cell.`
+- `MainClusterwide::ApplicationRecord` for `gitlab_main_clusterwide`.
 - `Ci::ApplicationRecord` for `gitlab_ci`
 - `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
@@ -465,6 +473,20 @@ You can see a real example of using this method for fixing a cross-join in
 
 #### Allowlist for existing cross-joins
 
+The easiest way of identifying a cross-join is via failing pipelines.
+
+As an example, in [!130038](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130038/diffs) we moved the `notification_settings` table to the `gitlab_main_cell` schema, by marking it as such in the `db/docs/notification_settings.yml` file.
+
+The pipeline failed with the following [error](https://gitlab.com/gitlab-org/gitlab/-/jobs/4929130983):
+
+```ruby
+Database::PreventCrossJoins::CrossJoinAcrossUnsupportedTablesError:
+
+Unsupported cross-join across 'users, notification_settings' querying 'gitlab_main_clusterwide, gitlab_main_cell' discovered when executing query 'SELECT "users".* FROM "users" WHERE "users"."id" IN (SELECT "notification_settings"."user_id" FROM ((SELECT "notification_settings"."user_id" FROM "notification_settings" WHERE "notification_settings"."source_id" = 119 AND "notification_settings"."source_type" = 'Project' AND (("notification_settings"."level" = 3 AND EXISTS (SELECT true FROM "notification_settings" "notification_settings_2" WHERE "notification_settings_2"."user_id" = "notification_settings"."user_id" AND "notification_settings_2"."source_id" IS NULL AND "notification_settings_2"."source_type" IS NULL AND "notification_settings_2"."level" = 2)) OR "notification_settings"."level" = 2))) notification_settings)'
+```
+
+To make the pipeline green, this cross-join query must be allow-listed.
+
 A cross-join across databases can be explicitly allowed by wrapping the code in the
 `::Gitlab::Database.allow_cross_joins_across_databases` helper method. Alternative
 way is to mark a given relation as `relation.allow_cross_joins_across_databases`.
@@ -491,6 +513,30 @@ def find_actual_head_pipeline
     .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/336891')
     .for_sha_or_source_sha(diff_head_sha)
     .first
+end
+```
+
+In model associations or scopes, this can be used as in the following example:
+
+```ruby
+class Group < Namespace
+ has_many :users, -> {
+    allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
+  }, through: :group_members
+end
+```
+
+WARNING:
+Overriding an association can have unintended consequences and may even lead to data loss, as we noticed in [issue 424307](https://gitlab.com/gitlab-org/gitlab/-/issues/424307). Do not override existing ActiveRecord associations to mark a cross-join as allowed, as in the example below.
+
+```ruby
+class Group < Namespace
+  has_many :users, through: :group_members
+
+  # DO NOT override an association like this.
+  def users
+    super.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
+  end
 end
 ```
 
@@ -530,7 +576,42 @@ more information, look at the
 [transaction guidelines](transaction_guidelines.md#dangerous-example-third-party-api-calls)
 page.
 
-#### Fixing cross-database errors
+#### Fixing cross-database transactions
+
+A transaction across databases can be explicitly allowed by wrapping the code in the
+`Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction` helper method.
+
+For cross-database transactions in Rails callbacks, the `cross_database_ignore_tables` method can be used.
+
+These methods should only be used for existing code.
+
+The `temporary_ignore_tables_in_transaction` helper method can be used as follows:
+
+```ruby
+class GroupMember < Member
+   def update_two_factor_requirement
+     return unless user
+
+     # To mark and ignore cross-database transactions involving members and users/user_details/user_preferences
+     Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+       %w[users user_details user_preferences], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424288'
+     ) do
+       user.update_two_factor_requirement
+     end
+   end
+end
+```
+
+The `cross_database_ignore_tables` method can be used as follows:
+
+```ruby
+class Namespace < ApplicationRecord
+  include CrossDatabaseIgnoredTables
+
+  # To mark and ignore cross-database transactions involving namespaces and routes/redirect_routes happening within Rails callbacks.
+  cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
+end
+```
 
 ##### Removing the transaction block
 
@@ -615,6 +696,23 @@ way to replace cascading deletes so we don't end up with orphaned data
 or records that point to nowhere, which might lead to bugs. As such we created
 ["loose foreign keys"](loose_foreign_keys.md) which is an asynchronous
 process of cleaning up orphaned records.
+
+### Allowlist for existing cross-database foreign keys
+
+The easiest way of identifying a cross-database foreign key is via failing pipelines.
+
+As an example, in [!130038](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130038/diffs) we moved the `notification_settings` table to the `gitlab_main_cell` schema, by marking it in the `db/docs/notification_settings.yml` file.
+
+`notification_settings.user_id` is a column that points to `users`, but the `users` table belongs to a different database, thus this is now treated as a cross-database foreign key.
+
+We have a spec to capture such cases of cross-database foreign keys in [`no_cross_db_foreign_keys_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/01d3a1e41513200368a22bbab5d4312174762ee0/spec/lib/gitlab/database/no_cross_db_foreign_keys_spec.rb), which would fail if such a cross-database foreign key is encountered.
+
+To make the pipeline green, this cross-database foreign key must be allow-listed.
+
+To do this, explicitly allow the existing cross-database foreign key to exist by adding it as an exception in the same spec (as in [this example](https://gitlab.com/gitlab-org/gitlab/-/blob/7d99387f399c548af24d93d564b35f2f9510662d/spec/lib/gitlab/database/no_cross_db_foreign_keys_spec.rb#L26)).
+This way, the spec will not fail.
+
+Later, this foreign key can be converted to a loose foreign key, like we did in [!130080](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130080/diffs).
 
 ## Testing for multiple databases
 

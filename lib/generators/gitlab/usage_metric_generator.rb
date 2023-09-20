@@ -16,8 +16,8 @@ module Gitlab
       numbers: 'Numbers'
     }.freeze
 
-    ALLOWED_DATABASE_OPERATIONS = %w(count distinct_count estimate_batch_distinct_count sum average).freeze
-    ALLOWED_NUMBERS_OPERATIONS = %w(add).freeze
+    ALLOWED_DATABASE_OPERATIONS = %w[count distinct_count estimate_batch_distinct_count sum average].freeze
+    ALLOWED_NUMBERS_OPERATIONS = %w[add].freeze
     ALLOWED_OPERATIONS = ALLOWED_DATABASE_OPERATIONS | ALLOWED_NUMBERS_OPERATIONS
 
     source_root File.expand_path('usage_metric/templates', __dir__)

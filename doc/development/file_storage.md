@@ -56,7 +56,7 @@ they are still not 100% standardized. You can see them below:
 CI Artifacts and LFS Objects behave differently in CE and EE. In CE they inherit the `GitlabUploader`
 while in EE they inherit the `ObjectStorage` and store files in and S3 API compatible object store.
 
-In the case of Issues/MR/Notes Markdown attachments, there is a different approach using the [Hashed Storage](../administration/repository_storage_types.md) layout,
+In the case of Issues/MR/Notes Markdown attachments, there is a different approach using the [Hashed Storage](../administration/repository_storage_paths.md) layout,
 instead of basing the path into a mutable variable `:project_path_with_namespace`, it's possible to use the
 hash of the project ID instead, if project migrates to the new approach (introduced in 10.2).
 

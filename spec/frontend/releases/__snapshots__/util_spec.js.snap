@@ -54,7 +54,19 @@ Object {
       },
       "commitPath": "http://localhost/releases-namespace/releases-project/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0",
       "createdAt": 2019-01-03T00:00:00.000Z,
-      "descriptionHtml": "<p data-sourcepos=\\"1:1-1:23\\" dir=\\"auto\\">An okay release <gl-emoji title=\\"shrug\\" data-name=\\"shrug\\" data-unicode-version=\\"9.0\\">🤷</gl-emoji></p>",
+      "descriptionHtml": <p
+        data-sourcepos="1:1-1:23"
+        dir="auto"
+      >
+        An okay release
+        <gl-emoji
+          data-name="shrug"
+          data-unicode-version="9.0"
+          title="shrug"
+        >
+          🤷
+        </gl-emoji>
+      </p>,
       "evidences": Array [],
       "historicalRelease": false,
       "milestones": Array [],
@@ -148,7 +160,22 @@ Object {
       },
       "commitPath": "http://localhost/releases-namespace/releases-project/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0",
       "createdAt": 2018-12-03T00:00:00.000Z,
-      "descriptionHtml": "<p data-sourcepos=\\"1:1-1:33\\" dir=\\"auto\\">Best. Release. <strong>Ever.</strong> <gl-emoji title=\\"rocket\\" data-name=\\"rocket\\" data-unicode-version=\\"6.0\\">🚀</gl-emoji></p>",
+      "descriptionHtml": <p
+        data-sourcepos="1:1-1:33"
+        dir="auto"
+      >
+        Best. Release.
+        <strong>
+          Ever.
+        </strong>
+        <gl-emoji
+          data-name="rocket"
+          data-unicode-version="6.0"
+          title="rocket"
+        >
+          🚀
+        </gl-emoji>
+      </p>,
       "evidences": Array [
         Object {
           "__typename": "ReleaseEvidence",
@@ -368,7 +395,22 @@ Object {
     },
     "commitPath": "http://localhost/releases-namespace/releases-project/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0",
     "createdAt": 2018-12-03T00:00:00.000Z,
-    "descriptionHtml": "<p data-sourcepos=\\"1:1-1:33\\" dir=\\"auto\\">Best. Release. <strong>Ever.</strong> <gl-emoji title=\\"rocket\\" data-name=\\"rocket\\" data-unicode-version=\\"6.0\\">🚀</gl-emoji></p>",
+    "descriptionHtml": <p
+      data-sourcepos="1:1-1:33"
+      dir="auto"
+    >
+      Best. Release.
+      <strong>
+        Ever.
+      </strong>
+      <gl-emoji
+        data-name="rocket"
+        data-unicode-version="6.0"
+        title="rocket"
+      >
+        🚀
+      </gl-emoji>
+    </p>,
     "evidences": Array [
       Object {
         "__typename": "ReleaseEvidence",

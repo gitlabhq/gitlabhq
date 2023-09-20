@@ -51,7 +51,7 @@ RSpec.describe WorkItems::Widgets::Description do
           work_item.update!(last_edited_by: nil)
         end
 
-        it { is_expected.to eq(User.ghost) }
+        it { is_expected.to eq(Users::Internal.ghost) }
       end
     end
 

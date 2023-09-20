@@ -477,6 +477,18 @@ RSpec.describe Trigger, feature_category: :tooling do
         end
       end
 
+      describe "BRANCH_OPERATOR" do
+        before do
+          stub_env('CI_PROJECT_PATH', 'gitlab-org/cloud-native/gitlab-operator')
+        end
+
+        context 'when CI_PROJECT_PATH is gitlab-org/cloud-native/gitlab-operator' do
+          it 'sets BRANCH_OPERATOR to CI_COMMIT_REF_NAME' do
+            expect(subject.variables['BRANCH_OPERATOR']).to eq(env['CI_COMMIT_REF_NAME'])
+          end
+        end
+      end
+
       describe "REVIEW_SLUG" do
         before do
           stub_env('CI_PROJECT_PATH', 'gitlab-org/gitlab-foss')

@@ -173,6 +173,10 @@ class ProjectFeature < ApplicationRecord
     package_registry_access_level == PUBLIC || project.public?
   end
 
+  def private?(feature)
+    access_level(feature) == PRIVATE
+  end
+
   private
 
   def set_pages_access_level
@@ -201,11 +205,11 @@ class ProjectFeature < ApplicationRecord
       self.errors.add(field, "cannot have higher visibility level than repository access level") if not_allowed
     end
 
-    %i(merge_requests_access_level builds_access_level).each(&validator)
+    %i[merge_requests_access_level builds_access_level].each(&validator)
   end
 
   def feature_validation_exclusion
-    %i(pages package_registry)
+    %i[pages package_registry]
   end
 
   override :resource_member?

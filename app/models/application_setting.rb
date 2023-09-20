@@ -14,37 +14,29 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_column :send_user_confirmation_email, remove_with: '15.8', remove_after: '2022-12-18'
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
-  ignore_columns %i[
-    encrypted_tofa_access_token_expires_in
-    encrypted_tofa_access_token_expires_in_iv
-    encrypted_tofa_client_library_args
-    encrypted_tofa_client_library_args_iv
-    encrypted_tofa_client_library_class
-    encrypted_tofa_client_library_class_iv
-    encrypted_tofa_client_library_create_credentials_method
-    encrypted_tofa_client_library_create_credentials_method_iv
-    encrypted_tofa_client_library_fetch_access_token_method
-    encrypted_tofa_client_library_fetch_access_token_method_iv
-    encrypted_tofa_credentials
-    encrypted_tofa_credentials_iv
-    encrypted_tofa_host
-    encrypted_tofa_host_iv
-    encrypted_tofa_request_json_keys
-    encrypted_tofa_request_json_keys_iv
-    encrypted_tofa_request_payload
-    encrypted_tofa_request_payload_iv
-    encrypted_tofa_response_json_keys
-    encrypted_tofa_response_json_keys_iv
-    encrypted_tofa_url
-    encrypted_tofa_url_iv
-    vertex_project
-  ], remove_with: '16.3', remove_after: '2023-07-22'
   ignore_column :database_apdex_settings, remove_with: '16.4', remove_after: '2023-08-22'
+
   ignore_columns %i[
     dashboard_notification_limit
     dashboard_enforcement_limit
     dashboard_limit_new_namespace_creation_enforcement_date
   ], remove_with: '16.5', remove_after: '2023-08-22'
+
+  ignore_column %i[
+    relay_state_domain_allowlist
+    in_product_marketing_emails_enabled
+  ], remove_with: '16.6', remove_after: '2023-10-22'
+
+  ignore_columns %i[
+    encrypted_product_analytics_clickhouse_connection_string
+    encrypted_product_analytics_clickhouse_connection_string_iv
+    encrypted_jitsu_administrator_password
+    encrypted_jitsu_administrator_password_iv
+    jitsu_host
+    jitsu_project_xid
+    jitsu_administrator_email
+  ], remove_with: '16.5', remove_after: '2023-09-22'
+  ignore_columns %i[ai_access_token ai_access_token_iv], remove_with: '16.6', remove_after: '2023-10-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -244,6 +236,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     hostname: true,
     if: :snowplow_enabled
 
+  validates :snowplow_database_collector_hostname,
+    allow_blank: true,
+    hostname: true,
+    length: { maximum: 255 }
+
   validates :max_attachment_size,
     presence: true,
     numericality: { only_integer: true, greater_than: 0 }
@@ -300,6 +297,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     presence: true,
     numericality: { only_integer: true, greater_than: 0 }
 
+  validates :decompress_archive_file_timeout,
+    presence: true,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :repository_storages, presence: true
   validate :check_repository_storages
   validate :check_repository_storages_weighted
@@ -310,7 +311,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     if: :auto_devops_enabled?
 
   validates :enabled_git_access_protocol,
-    inclusion: { in: %w(ssh http), allow_blank: true }
+    inclusion: { in: %w[ssh http], allow_blank: true }
 
   validates :domain_denylist,
     presence: { message: 'Domain denylist cannot be empty if denylist is enabled.' },
@@ -551,7 +552,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     if: :external_authorization_service_enabled
 
   validates :spam_check_endpoint_url,
-    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ schemes: %w(tls grpc) }), allow_blank: true
+    addressable_url: ADDRESSABLE_URL_VALIDATION_OPTIONS.merge({ schemes: %w[tls grpc] }), allow_blank: true
 
   validates :spam_check_endpoint_url,
     presence: true,
@@ -665,6 +666,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     validates :projects_api_rate_limit_unauthenticated
     validates :gitlab_shell_operation_limit
   end
+
+  validates :search_rate_limit_allowlist,
+    length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
+    allow_nil: false
 
   validates :notes_create_limit_allowlist,
     length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
@@ -794,18 +799,20 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :arkose_labs_public_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :arkose_labs_private_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :cube_api_key, encryption_options_base_32_aes_256_gcm
-  attr_encrypted :jitsu_administrator_password, encryption_options_base_32_aes_256_gcm
   attr_encrypted :telesign_customer_xid, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :telesign_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :product_analytics_clickhouse_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :product_analytics_configurator_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
+  # Restricting the validation to `on: :update` only to avoid cyclical dependencies with
+  # License <--> ApplicationSetting. This method calls a license check when we create
+  # ApplicationSetting from defaults which in turn depends on ApplicationSetting record.
+  # The currect default is defined in the `defaults` method so we don't need to validate
+  # it here.
   validates :disable_feed_token,
-    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }, on: :update
 
   validates :disable_admin_oauth_scopes,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
@@ -962,7 +969,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 
   def parsed_kroki_url
-    @parsed_kroki_url ||= Gitlab::UrlBlocker.validate!(kroki_url, schemes: %w(http https), enforce_sanitization: true)[0]
+    @parsed_kroki_url ||= Gitlab::UrlBlocker.validate!(kroki_url, schemes: %w[http https], enforce_sanitization: true)[0]
   rescue Gitlab::UrlBlocker::BlockedUrlError => e
     self.errors.add(
       :kroki_url,

@@ -36,7 +36,7 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
     end
 
     it 'returns the ID of the ghost user', :clean_gitlab_redis_cache do
-      expect(described_class.ghost_user_id).to eq(User.ghost.id)
+      expect(described_class.ghost_user_id).to eq(Users::Internal.ghost.id)
     end
 
     it 'caches the ghost user ID', :clean_gitlab_redis_cache do
@@ -97,7 +97,7 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
     end
 
     it 'returns the ID of the ghost user', :clean_gitlab_redis_cache do
-      expect(described_class.ghost_user_id).to eq(User.ghost.id)
+      expect(described_class.ghost_user_id).to eq(Users::Internal.ghost.id)
     end
 
     it 'caches the ghost user ID', :clean_gitlab_redis_cache do

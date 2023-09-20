@@ -90,6 +90,7 @@ export default {
         :scope="scope"
         v-bind="stat.props"
         class="gl-px-5"
+        :data-testid="`runner-stats-${stat.key.toLowerCase()}`"
       />
 
       <runner-upgrade-status-stats

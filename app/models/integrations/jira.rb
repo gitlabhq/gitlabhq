@@ -126,7 +126,7 @@ module Integrations
     # When these are false GitLab does not create cross reference
     # comments on Jira except when an issue gets transitioned.
     def self.supported_events
-      %w(commit merge_request)
+      %w[commit merge_request]
     end
 
     # {PROJECT-KEY}-{NUMBER} Examples: JIRA-1, PROJECT-1

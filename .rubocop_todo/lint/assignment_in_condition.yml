@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Lint/AssignmentInCondition:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/uploads_actions.rb'
     - 'app/controllers/concerns/verifies_with_email.rb'
@@ -88,7 +87,6 @@ Lint/AssignmentInCondition:
     - 'app/workers/concerns/gitlab/bitbucket_server_import/stage_methods.rb'
     - 'app/workers/concerns/gitlab/github_import/object_importer.rb'
     - 'app/workers/concerns/gitlab/github_import/stage_methods.rb'
-    - 'app/workers/concerns/gitlab/notify_upon_death.rb'
     - 'app/workers/deployments/hooks_worker.rb'
     - 'app/workers/deployments/link_merge_request_worker.rb'
     - 'app/workers/gitlab/github_gists_import/import_gist_worker.rb'
@@ -138,7 +136,7 @@ Lint/AssignmentInCondition:
     - 'ee/lib/ee/gitlab/repo_path.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/indexing/instance_methods.rb'
     - 'ee/lib/gitlab/group_plans_preloader.rb'
-    - 'ee/lib/gitlab/llm/content_parser.rb'
+    - 'ee/lib/gitlab/llm/embeddings/utils/base_content_parser.rb'
     - 'ee/lib/gitlab/path_locks_finder.rb'
     - 'ee/lib/gitlab/subscription_portal/clients/graphql.rb'
     - 'ee/lib/system_check/geo/authorized_keys_check.rb'

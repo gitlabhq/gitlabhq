@@ -60,13 +60,17 @@ module Groups
       old_root_ancestor_id = @group.root_ancestor.id
       was_root_group = @group.root?
 
-      Group.transaction do
-        update_group_attributes
-        ensure_ownership
-        update_integrations
-        remove_issue_contacts(old_root_ancestor_id, was_root_group)
-        update_crm_objects(was_root_group)
-        remove_namespace_commit_emails(was_root_group)
+      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+        %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424280'
+      ) do
+        Group.transaction do
+          update_group_attributes
+          ensure_ownership
+          update_integrations
+          remove_issue_contacts(old_root_ancestor_id, was_root_group)
+          update_crm_objects(was_root_group)
+          remove_namespace_commit_emails(was_root_group)
+        end
       end
 
       post_update_hooks(@updated_project_ids, old_root_ancestor_id)

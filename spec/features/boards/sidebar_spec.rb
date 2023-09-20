@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project issue boards sidebar', :js, feature_category: :team_planning, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/416414' do
+RSpec.describe 'Project issue boards sidebar', :js, feature_category: :team_planning do
   include BoardHelpers
 
   let_it_be(:user)    { create(:user) }

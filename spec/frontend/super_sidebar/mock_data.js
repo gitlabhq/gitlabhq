@@ -79,10 +79,8 @@ export const contextSwitcherLinks = [
 export const sidebarData = {
   is_logged_in: true,
   current_menu_items: [],
-  current_context_header: {
-    title: 'Your Work',
-    icon: 'work',
-  },
+  current_context: {},
+  current_context_header: 'Your work',
   name: 'Administrator',
   username: 'root',
   avatar_url: 'path/to/img_administrator',
@@ -124,15 +122,14 @@ export const sidebarData = {
       css_class: 'shortcut-link-class',
     },
   ],
+  track_visits_path: '/-/track_visits',
 };
 
 export const loggedOutSidebarData = {
   is_logged_in: false,
   current_menu_items: [],
-  current_context_header: {
-    title: 'Your Work',
-    icon: 'work',
-  },
+  current_context: {},
+  current_context_header: 'Your work',
   support_path: '/support',
   display_whats_new: true,
   whats_new_most_recent_release_items_count: 5,
@@ -285,36 +282,3 @@ export const cachedFrequentGroups = JSON.stringify([
     frequency: 3,
   },
 ]);
-
-export const searchUserProjectsAndGroupsResponseMock = {
-  data: {
-    projects: {
-      nodes: [
-        {
-          id: 'gid://gitlab/Project/2',
-          name: 'Gitlab Shell',
-          namespace: 'Gitlab Org / Gitlab Shell',
-          webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-shell',
-          avatarUrl: null,
-          __typename: 'Project',
-        },
-      ],
-    },
-
-    user: {
-      id: 'gid://gitlab/User/1',
-      groups: {
-        nodes: [
-          {
-            id: 'gid://gitlab/Group/60',
-            name: 'GitLab Instance',
-            namespace: 'gitlab-instance-2e4abb29',
-            webUrl: 'http://gdk.test:3000/groups/gitlab-instance-2e4abb29',
-            avatarUrl: null,
-            __typename: 'Group',
-          },
-        ],
-      },
-    },
-  },
-};

@@ -2,6 +2,8 @@
 import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
+import searchMilestonesQuery from '~/issues/list/queries/search_milestones.query.graphql';
 import { sortMilestonesByDueDate } from '~/milestones/utils';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 import { stripQuotes } from '~/lib/utils/text_utility';
@@ -36,6 +38,14 @@ export default {
     defaultMilestones() {
       return this.config.defaultMilestones || DEFAULT_MILESTONES;
     },
+    namespace() {
+      return this.config.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;
+    },
+    fetchMilestonesQuery() {
+      return this.config.fetchMilestones
+        ? this.config.fetchMilestones
+        : this.fetchMilestonesBySearchTerm;
+    },
   },
   methods: {
     getActiveMilestone(milestones, data) {
@@ -51,10 +61,17 @@ export default {
         ) || this.defaultMilestones.find(({ value }) => value === data)
       );
     },
+    fetchMilestonesBySearchTerm(search) {
+      return this.$apollo
+        .query({
+          query: searchMilestonesQuery,
+          variables: { fullPath: this.config.fullPath, search, isProject: this.config.isProject },
+        })
+        .then(({ data }) => data[this.namespace]?.milestones.nodes);
+    },
     fetchMilestones(searchTerm) {
       this.loading = true;
-      this.config
-        .fetchMilestones(searchTerm)
+      this.fetchMilestonesQuery(searchTerm)
         .then((response) => {
           const data = Array.isArray(response) ? response : response.data;
 

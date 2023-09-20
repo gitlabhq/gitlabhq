@@ -70,6 +70,17 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
 
           it { expect(subject.dig(package2.version, dependency_type)).to be nil }
         end
+
+        context 'when generate dependencies' do
+          let(:packages) { ::Packages::Package.where(id: package1.id) }
+
+          it 'loads grouped dependency links', :aggregate_failures do
+            expect(::Packages::DependencyLink).to receive(:dependency_ids_grouped_by_type).and_call_original
+            expect(::Packages::Package).not_to receive(:including_dependency_links)
+
+            subject
+          end
+        end
       end
 
       context 'for metadatum' do

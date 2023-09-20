@@ -38,7 +38,7 @@ export default {
     },
     modifyLinkMessage() {
       if (this.isFastForwardEnabled) return __('Modify commit message');
-      else if (this.isSquashEnabled) return __('Modify commit messages');
+      if (this.isSquashEnabled) return __('Modify commit messages');
       return __('Modify merge commit');
     },
     ariaLabel() {

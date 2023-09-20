@@ -9,6 +9,7 @@ RSpec.describe GitlabSchema.types['Label'] do
       :description_html,
       :title,
       :color,
+      :lock_on_merge,
       :text_color,
       :created_at,
       :updated_at

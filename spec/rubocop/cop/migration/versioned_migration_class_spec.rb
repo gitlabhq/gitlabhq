@@ -82,6 +82,15 @@ RSpec.describe RuboCop::Cop::Migration::VersionedMigrationClass, feature_categor
           end
         RUBY
       end
+
+      it 'excludes parentless classes defined inside the migration' do
+        expect_no_offenses(<<~RUBY)
+          class TestMigration < Gitlab::Database::Migration[2.1]
+            class TestClass
+            end
+          end
+        RUBY
+      end
     end
   end
 end

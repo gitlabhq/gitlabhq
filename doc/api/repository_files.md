@@ -35,7 +35,7 @@ GET /projects/:id/repository/files/:file_path
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
 ```
 
 | Attribute   | Type           | Required | Description |
@@ -54,7 +54,7 @@ Example response:
   "encoding": "base64",
   "content": "IyA9PSBTY2hlbWEgSW5mb3...",
   "content_sha256": "4c294617b60715c1d218e61164a3abd4808a4284cbc30e6728a01ad9aada4481",
-  "ref": "master",
+  "ref": "main",
   "blob_id": "79f7bbd25901e8334750839545a9bd021f0e4c83",
   "commit_id": "d5a3ff139356ce33e37e73add446f16869741b50",
   "last_commit_id": "570e7b2abdd848b95f2f578043fc23bd6f6fd24d",
@@ -73,7 +73,7 @@ HEAD /projects/:id/repository/files/:file_path
 ```
 
 ```shell
-curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master"
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
 ```
 
 Example response:
@@ -88,7 +88,7 @@ X-Gitlab-Encoding: base64
 X-Gitlab-File-Name: key.rb
 X-Gitlab-File-Path: app/models/key.rb
 X-Gitlab-Last-Commit-Id: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
-X-Gitlab-Ref: master
+X-Gitlab-Ref: main
 X-Gitlab-Size: 1476
 X-Gitlab-Execute-Filemode: false
 ...
@@ -112,7 +112,7 @@ GET /projects/:id/repository/files/:file_path/blame
 | `range`         | hash              | no    | Blame range. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=master"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
 ```
 
 Example response:
@@ -147,7 +147,7 @@ NOTE:
 `HEAD` method returns just file metadata, as in [Get file from repository](repository_files.md#get-file-from-repository).
 
 ```shell
-curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=master"
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
 ```
 
 Example response:
@@ -162,7 +162,7 @@ X-Gitlab-Encoding: base64
 X-Gitlab-File-Name: file.rb
 X-Gitlab-File-Path: path/to/file.rb
 X-Gitlab-Last-Commit-Id: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
-X-Gitlab-Ref: master
+X-Gitlab-Ref: main
 X-Gitlab-Size: 1476
 X-Gitlab-Execute-Filemode: false
 ...
@@ -174,7 +174,7 @@ To request a blame range, specify `range[start]` and `range[end]` parameters wit
 the starting and ending line numbers of the file.
 
 ```shell
-curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=master&range[start]=1&range[end]=2"
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main&range[start]=1&range[end]=2"
 ```
 
 Example response:
@@ -218,7 +218,7 @@ GET /projects/:id/repository/files/:file_path/raw
 | `lfs`       | boolean        | no       | Determines if the response should be Git LFS file contents, rather than the pointer. If the file is not tracked by Git LFS, ignored. Defaults to `false`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=master"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=main"
 ```
 
 NOTE:
@@ -251,7 +251,7 @@ POST /projects/:id/repository/files/:file_path
 ```shell
 curl --request POST --header 'PRIVATE-TOKEN: <your_access_token>' \
      --header "Content-Type: application/json" \
-     --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname",
+     --data '{"branch": "main", "author_email": "author@example.com", "author_name": "Firstname Lastname",
                "content": "some content", "commit_message": "create a new file"}' \
      "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```
@@ -261,7 +261,7 @@ Example response:
 ```json
 {
   "file_path": "app/project.rb",
-  "branch": "master"
+  "branch": "main"
 }
 ```
 
@@ -293,7 +293,7 @@ PUT /projects/:id/repository/files/:file_path
 ```shell
 curl --request PUT --header 'PRIVATE-TOKEN: <your_access_token>' \
      --header "Content-Type: application/json" \
-     --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname",
+     --data '{"branch": "main", "author_email": "author@example.com", "author_name": "Firstname Lastname",
        "content": "some content", "commit_message": "update file"}' \
      "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```
@@ -303,7 +303,7 @@ Example response:
 ```json
 {
   "file_path": "app/project.rb",
-  "branch": "master"
+  "branch": "main"
 }
 ```
 
@@ -339,7 +339,7 @@ DELETE /projects/:id/repository/files/:file_path
 ```shell
 curl --request DELETE --header 'PRIVATE-TOKEN: <your_access_token>' \
      --header "Content-Type: application/json" \
-     --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname",
+     --data '{"branch": "main", "author_email": "author@example.com", "author_name": "Firstname Lastname",
        "commit_message": "delete file"}' \
      "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```

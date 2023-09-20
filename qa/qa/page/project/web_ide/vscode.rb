@@ -13,6 +13,7 @@ module QA
 
           def has_file_explorer?
             page.has_css?('.explorer-folders-view', visible: true)
+            page.has_css?('[aria-label="Files Explorer"]', visible: true)
           end
 
           def right_click_file_explorer
@@ -33,11 +34,11 @@ module QA
           end
 
           def has_upload_menu_item?
-            page.has_css?('[aria-label="Upload..."]', visible: true)
+            page.has_css?('.menu-item-check', visible: true)
           end
 
           def click_upload_menu_item
-            page.find('[aria-label="Upload..."]').click
+            page.find('[aria-label="Upload..."]', visible: true).click
           end
 
           def enter_file_input(file)
@@ -170,11 +171,10 @@ module QA
               # We need to execute a script on the iframe to stub out the iframes body.removeChild to add it back in.
               page.execute_script("document.body.removeChild = function(){};")
 
-              right_click_file_explorer
-              has_upload_menu_item?
-
               # Use for stability, WebIDE inside an iframe is finnicky, webdriver sometimes moves too fast
               Support::Waiter.wait_until(max_duration: 20, retry_on_exception: true) do
+                right_click_file_explorer
+                has_upload_menu_item?
                 click_upload_menu_item
                 enter_file_input(file_path)
               end

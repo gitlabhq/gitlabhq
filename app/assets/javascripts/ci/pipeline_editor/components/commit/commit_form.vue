@@ -108,7 +108,6 @@ export default {
       <gl-form-group
         id="commit-group"
         :label="$options.i18n.commitMessage"
-        label-cols-sm="2"
         label-for="commit-message"
       >
         <gl-form-textarea
@@ -122,7 +121,6 @@ export default {
       <gl-form-group
         id="source-branch-group"
         :label="$options.i18n.sourceBranch"
-        label-cols-sm="2"
         label-for="source-branch-field"
       >
         <gl-form-input
@@ -130,13 +128,12 @@ export default {
           v-model="sourceBranch"
           class="gl-font-monospace!"
           required
-          data-qa-selector="source_branch_field"
+          data-testid="source-branch-field"
         />
         <gl-form-checkbox
           v-if="!isCurrentBranchSourceBranch"
           v-model="openMergeRequest"
           data-testid="new-mr-checkbox"
-          data-qa-selector="new_mr_checkbox"
           class="gl-mt-3"
         >
           <gl-sprintf :message="$options.i18n.startMergeRequest">
@@ -152,7 +149,7 @@ export default {
           class="js-no-auto-disable gl-mr-3"
           category="primary"
           variant="confirm"
-          data-qa-selector="commit_changes_button"
+          data-testid="commit-changes-button"
           :disabled="isSubmitDisabled"
           :loading="isSaving"
         >

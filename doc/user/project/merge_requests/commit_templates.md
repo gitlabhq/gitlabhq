@@ -8,7 +8,7 @@ type: reference, howto
 # Commit message templates **(FREE ALL)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) squash commit templates in GitLab 14.6.
+> - Squash commit templates [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) in GitLab 14.6.
 
 GitLab uses commit templates to create default messages for specific types of
 commits. These templates encourage commit messages to follow a particular format,
@@ -29,7 +29,7 @@ Prerequisite:
 
 To do this:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. Depending on the type of template you want to create, scroll to either
    [**Merge commit message template**](#default-template-for-merge-commits) or
@@ -66,13 +66,13 @@ GitLab creates a squash commit message with this template:
 ## Supported variables in commit templates
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20263) in GitLab 14.5.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/346805) `first_commit` and `first_multiline_commit` variables in GitLab 14.6.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75639) `url`, `approved_by`, and `merged_by` variables in GitLab 14.7.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/20421) `co_authored_by` variable in GitLab 14.7.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/26303) `all_commits` variable in GitLab 14.9.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/378352) `reviewed_by` variable in GitLab 15.7.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/199823) `local_reference` variable in GitLab 16.1.
-> - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128553) `source_project_id` variables in GitLab 16.3.
+> - `first_commit` and `first_multiline_commit` variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346805) in GitLab 14.6.
+> - `url`, `approved_by`, and `merged_by` variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75639) in GitLab 14.7.
+> - `co_authored_by` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20421) in GitLab 14.7.
+> - `all_commits` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26303) in GitLab 14.9.
+> - `reviewed_by` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378352) in GitLab 15.7.
+> - `local_reference` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199823) in GitLab 16.1.
+> - `source_project_id` variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128553) in GitLab 16.3.
 
 Commit message templates support these variables:
 

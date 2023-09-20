@@ -2,21 +2,46 @@
 
 require 'mail/smtp_pool'
 
+# Based on https://github.com/mikel/mail/blob/2.8.1/spec/spec_helper.rb#L73-L155
+class Net::SMTP
+  class << self
+    alias unstubbed_new new
+  end
+
+  def self.new(*args)
+    MockSMTP.new
+  end
+end
+
 # Original mockup from ActionMailer
-# Based on https://github.com/mikel/mail/blob/22a7afc23f253319965bf9228a0a430eec94e06d/spec/spec_helper.rb#L74-L138
 class MockSMTP
+  attr_accessor :open_timeout, :read_timeout
+
+  def self.reset
+    test = Net::SMTP.unstubbed_new('example.com')
+    @@tls = test.tls?
+    @@starttls = test.starttls?
+
+    @@deliveries = []
+    @started = false
+  end
+
+  reset
+
   def self.deliveries
     @@deliveries
   end
 
-  def self.security
-    @@security
+  def self.tls
+    @@tls
+  end
+
+  def self.starttls
+    @@starttls
   end
 
   def initialize
-    @@deliveries = []
-    @@security = nil
-    @started = false
+    self.class.reset
   end
 
   def sendmail(mail, from, to)
@@ -50,35 +75,29 @@ class MockSMTP
     return true
   end
 
-  def self.clear_deliveries
-    @@deliveries = []
-  end
-
-  def self.clear_security
-    @@security = nil
-  end
-
   def enable_tls(context)
-    raise ArgumentError, "SMTPS and STARTTLS is exclusive" if @@security && @@security != :enable_tls
-    @@security = :enable_tls
+    raise ArgumentError, "SMTPS and STARTTLS is exclusive" if @@starttls == :always
+    @@tls = true
     context
   end
 
+  def disable_tls
+    @@tls = false
+  end
+
   def enable_starttls(context = nil)
-    raise ArgumentError, "SMTPS and STARTTLS is exclusive" if @@security == :enable_tls
-    @@security = :enable_starttls
+    raise ArgumentError, "SMTPS and STARTTLS is exclusive" if @@tls
+    @@starttls = :always
     context
   end
 
   def enable_starttls_auto(context)
-    raise ArgumentError, "SMTPS and STARTTLS is exclusive" if @@security == :enable_tls
-    @@security = :enable_starttls_auto
+    raise ArgumentError, "SMTPS and STARTTLS is exclusive" if @@tls
+    @@starttls = :auto
     context
   end
-end
 
-class Net::SMTP
-  def self.new(*args)
-    MockSMTP.new
+  def disable_starttls
+    @@starttls = false
   end
 end

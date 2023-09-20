@@ -68,92 +68,92 @@ RSpec.describe UnnestedInFilters::Rewriter do
   describe '#rewrite' do
     let(:recorded_queries) { ActiveRecord::QueryRecorder.new { rewriter.rewrite.load } }
     let(:relation) { User.where(state: :active, user_type: %i(support_bot alert_bot)).limit(2) }
+    let(:users_select) { 'SELECT "users".*' }
+    let(:users_select_with_ignored_columns) { 'SELECT ("users"."\w+", )+("users"."\w+")' }
 
-    let(:expected_query) do
-      <<~SQL
-        SELECT
-          "users".*
-        FROM
-          unnest('{1,2}'::smallint[]) AS "user_types"("user_type"),
-          LATERAL (
-            SELECT
-              "users".*
-            FROM
-              "users"
-            WHERE
-              "users"."state" = 'active' AND
-              (users."user_type" = "user_types"."user_type")
-            LIMIT 2
-          ) AS users
-        LIMIT 2
-      SQL
+    let(:users_unnest) do
+      'FROM unnest\(\'{1\,2}\'::smallint\[\]\) AS "user_types"\("user_type"\)\, LATERAL \('
+    end
+
+    let(:users_where) do
+      'FROM
+        "users"
+      WHERE
+        "users"."state" = \'active\' AND
+        \(users."user_type" = "user_types"."user_type"\)
+      LIMIT 2\)
+        AS users
+      LIMIT 2'
+    end
+
+    let(:expected_query_regexp) do
+      Regexp.new(
+        "(#{users_select}|#{users_select_with_ignored_columns})
+        #{users_unnest}(#{users_select}|#{users_select_with_ignored_columns})
+        #{users_where}".squish
+      )
     end
 
     subject(:issued_query) { recorded_queries.occurrences.each_key.first }
 
     it 'changes the query' do
-      expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+      expect(issued_query).to match(expected_query_regexp)
     end
 
     context 'when the relation has a subquery' do
       let(:relation) { User.where(state: User.select(:state), user_type: %i(support_bot alert_bot)).limit(1) }
 
-      let(:expected_query) do
-        <<~SQL
-          SELECT
-            "users".*
-          FROM
-            unnest(ARRAY(SELECT "users"."state" FROM "users")::character varying[]) AS "states"("state"),
-            unnest('{1,2}'::smallint[]) AS "user_types"("user_type"),
-            LATERAL (
-              SELECT
-                "users".*
-              FROM
-                "users"
-              WHERE
-                (users."state" = "states"."state") AND
-                (users."user_type" = "user_types"."user_type")
-              LIMIT 1
-            ) AS users
-          LIMIT 1
-        SQL
+      let(:users_unnest) do
+        'FROM
+          unnest\(ARRAY\(SELECT "users"."state" FROM "users"\)::character varying\[\]\) AS "states"\("state"\)\,
+          unnest\(\'{1\,2}\'::smallint\[\]\) AS "user_types"\("user_type"\)\,
+          LATERAL \('
+      end
+
+      let(:users_where) do
+        'FROM
+          "users"
+        WHERE
+          \(users."state" = "states"."state"\) AND
+          \(users."user_type" = "user_types"."user_type"\)
+        LIMIT 1\)
+          AS users
+        LIMIT 1'
       end
 
       it 'changes the query' do
-        expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+        expect(issued_query).to match(expected_query_regexp)
       end
     end
 
     context 'when there is an order' do
       let(:relation) { User.where(state: %w(active blocked banned)).order(order).limit(2) }
-      let(:expected_query) do
-        <<~SQL
-          SELECT
-            "users".*
-          FROM
-            unnest('{active,blocked,banned}'::charactervarying[]) AS "states"("state"),
-            LATERAL (
-              SELECT
-                "users".*
-              FROM
-                "users"
-              WHERE
-                (users."state" = "states"."state")
-              ORDER BY
-                "users"."user_type" DESC
-              LIMIT 2
-            ) AS users
-          ORDER BY
-            "users"."user_type" DESC
-          LIMIT 2
-        SQL
+
+      let(:users_unnest) do
+        'FROM
+          unnest\(\'{active\,blocked\,banned}\'::character varying\[\]\) AS "states"\("state"\)\,
+          LATERAL \('
+      end
+
+      let(:users_where) do
+        'FROM
+          "users"
+        WHERE
+          \(users."state" = "states"."state"\)
+        ORDER BY
+          "users"."user_type" DESC
+        LIMIT 2\)
+          AS users
+        ORDER BY
+          "users"."user_type" DESC
+        LIMIT 2'
       end
 
       context 'when the order is an Arel node' do
         let(:order) { { user_type: :desc } }
 
         it 'changes the query' do
-          expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+          expect(issued_query).to match(expected_query_regexp)
         end
       end
 
@@ -171,7 +171,7 @@ RSpec.describe UnnestedInFilters::Rewriter do
         end
 
         it 'changes the query' do
-          expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+          expect(issued_query).to match(expected_query_regexp)
         end
       end
     end
@@ -179,85 +179,82 @@ RSpec.describe UnnestedInFilters::Rewriter do
     context 'when the combined attributes include the primary key' do
       let(:relation) { User.where(user_type: %i(support_bot alert_bot)).order(id: :desc).limit(2) }
 
-      let(:expected_query) do
-        <<~SQL
-          SELECT
-              "users".*
-          FROM
-              "users"
-          WHERE
-              "users"."id" IN (
-                  SELECT
-                      "users"."id"
-                  FROM
-                      unnest('{1,2}' :: smallint []) AS "user_types"("user_type"),
-                      LATERAL (
-                          SELECT
-                              "users"."user_type",
-                              "users"."id"
-                          FROM
-                              "users"
-                          WHERE
-                              (users."user_type" = "user_types"."user_type")
-                          ORDER BY
-                              "users"."id" DESC
-                          LIMIT
-                              2
-                      ) AS users
-                  ORDER BY
-                      "users"."id" DESC
-                  LIMIT
-                      2
-              )
-          ORDER BY
+      let(:users_where) do
+        'FROM
+          "users"
+        WHERE
+          "users"."id" IN
+            \(SELECT
+              "users"."id"
+            FROM
+              unnest\(\'{1\,2}\'::smallint\[\]\) AS "user_types"\("user_type"\)\,
+              LATERAL
+                \(SELECT
+                  "users"."user_type"\,
+                  "users"."id"
+                FROM
+                  "users"
+                WHERE
+                  \(users."user_type" = "user_types"."user_type"\)
+                ORDER BY
+                  "users"."id" DESC
+                LIMIT 2\)
+              AS users
+            ORDER BY
               "users"."id" DESC
-          LIMIT
-              2
-        SQL
+            LIMIT 2\)
+        ORDER BY
+          "users"."id" DESC
+        LIMIT 2'
+      end
+
+      let(:expected_query_regexp) do
+        Regexp.new("(#{users_select}|#{users_select_with_ignored_columns}) #{users_where}".squish)
       end
 
       it 'changes the query' do
-        expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+        expect(issued_query).to match(expected_query_regexp)
       end
     end
 
     context 'when a join table is receiving an IN list query' do
       let(:relation) { User.joins(:status).where(status: { message: %w[foo bar] }).order(id: :desc).limit(2) }
 
-      let(:expected_query) do
-        <<~SQL
-          SELECT
-              "users".*
-          FROM
-              "users"
-          WHERE
-              "users"."id" IN (
-                  SELECT
-                      "users"."id"
-                  FROM
-                      LATERAL (
-                          SELECT
-                              message,
-                              "users"."id"
-                          FROM
-                              "users"
-                              INNER JOIN "user_statuses" "status" ON "status"."user_id" = "users"."id"
-                          WHERE
-                              "status"."message" IN ('foo', 'bar')
-                          ORDER BY
-                              "users"."id" DESC
-                          LIMIT 2) AS users
-                  ORDER BY
-                      "users"."id" DESC
-                  LIMIT 2)
-          ORDER BY
+      let(:users_where) do
+        'FROM
+          "users"
+        WHERE
+          "users"."id" IN
+            \(SELECT
+              "users"."id"
+            FROM
+              LATERAL
+                \(SELECT
+                  message,
+                  "users"."id"
+                FROM
+                  "users"
+                  INNER JOIN "user_statuses" "status" ON "status"."user_id" = "users"."id"
+                WHERE
+                  "status"."message" IN \(\'foo\'\, \'bar\'\)
+                ORDER BY
+                  "users"."id" DESC
+                LIMIT 2\)
+              AS users
+            ORDER BY
               "users"."id" DESC
-          LIMIT 2
-        SQL
+            LIMIT 2\)
+        ORDER BY
+          "users"."id" DESC
+        LIMIT 2'
+      end
+
+      let(:expected_query_regexp) do
+        Regexp.new("(#{users_select}|#{users_select_with_ignored_columns}) #{users_where}".squish)
       end
 
       it 'does not rewrite the in statement for the joined table' do
-        expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+        expect(issued_query).to match(expected_query_regexp)
       end
     end
 

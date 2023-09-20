@@ -439,6 +439,7 @@ upstream pipeline:
 Use [`needs:project`](../yaml/index.md#needsproject) to fetch artifacts from an
 upstream pipeline:
 
+1. In GitLab 15.9 and later, [add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-project-to-the-job-token-scope-allowlist) of the upstream project.
 1. In the upstream pipeline, save the artifacts in a job with the [`artifacts`](../yaml/index.md#artifacts)
    keyword, then trigger the downstream pipeline with a trigger job:
 
@@ -491,6 +492,7 @@ because the downstream pipeline attempts to fetch artifacts from the latest bran
 To fetch the artifacts from the upstream `merge request` pipeline instead of the `branch` pipeline,
 pass `CI_MERGE_REQUEST_REF_PATH` to the downstream pipeline using [variable inheritance](#pass-yaml-defined-cicd-variables):
 
+1. In GitLab 15.9 and later, [add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-project-to-the-job-token-scope-allowlist) of the upstream project.
 1. In a job in the upstream pipeline, save the artifacts using the [`artifacts`](../yaml/index.md#artifacts) keyword.
 1. In the job that triggers the downstream pipeline, pass the `$CI_MERGE_REQUEST_REF_PATH` variable:
 
@@ -718,6 +720,80 @@ Use the [`trigger:forward` keyword](../yaml/index.md#triggerforward) to specify
 what type of variables to forward to the downstream pipeline. Forwarded variables
 are considered trigger variables, which have the [highest precedence](../variables/index.md#cicd-variable-precedence).
 
+## Downstream pipelines for deployments
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369061) in GitLab 16.4.
+
+You can use the [`environment`](../yaml/index.md#environment) keyword with [`trigger`](../yaml/index.md#trigger).
+You might want to use `environment` from a trigger job if your deployment and application projects are separately managed.
+
+```yaml
+deploy:
+  trigger:
+    project: project-group/my-downstream-project
+  environment: production
+```
+
+A downstream pipeline can provision infrastructure, deploy to a designated environment, and return the deployment status
+to the upstream project.
+
+You can [view the environment and deployment](../environments/index.md#view-environments-and-deployments)
+from the upstream project.
+
+### Advanced example
+
+This example configuration has the following behaviors:
+
+- The upstream project dynamically composes an environment name based on a branch name.
+- The upstream project passes the context of the deployment to the downstream project with `UPSTREAM_*` variables.
+
+The `.gitlab-ci.yml` in an upstream project:
+
+```yaml
+stages:
+  - deploy
+  - cleanup
+
+.downstream-deployment-pipeline:
+  variables:
+    UPSTREAM_PROJECT_ID: $CI_PROJECT_ID
+    UPSTREAM_ENVIRONMENT_NAME: $CI_ENVIRONMENT_NAME
+    UPSTREAM_ENVIRONMENT_ACTION: $CI_ENVIRONMENT_ACTION
+  trigger:
+    project: project-group/deployment-project
+    branch: main
+    strategy: depend
+
+deploy-review:
+  stage: deploy
+  extends: .downstream-deployment-pipeline
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    on_stop: stop-review
+
+stop-review:
+  stage: cleanup
+  extends: .downstream-deployment-pipeline
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    action: stop
+  when: manual
+```
+
+The `.gitlab-ci.yml` in a downstream project:
+
+```yaml
+deploy:
+  script: echo "Deploy to ${UPSTREAM_ENVIRONMENT_NAME} for ${UPSTREAM_PROJECT_ID}"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "pipeline" && $UPSTREAM_ENVIRONMENT_ACTION == "start"
+
+stop:
+  script: echo "Stop ${UPSTREAM_ENVIRONMENT_NAME} for ${UPSTREAM_PROJECT_ID}"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "pipeline" && $UPSTREAM_ENVIRONMENT_ACTION == "stop"
+```
+
 ## Troubleshooting
 
 ### Trigger job fails and does not create multi-project pipeline
@@ -747,3 +823,9 @@ You cannot trigger a multi-project pipeline with a tag when a branch exists with
 name. The downstream pipeline fails to create with the error: `downstream pipeline can not be created, Ref is ambiguous`.
 
 Only trigger multi-project pipelines with tag names that do not match branch names.
+
+### `403 Forbidden` error when downloading a job artifact from an upstream pipeline
+
+In GitLab 15.9 and later, CI/CD job tokens are scoped to the project that the pipeline executes under. Therefore, the job token in a downstream pipeline cannot be used to access an upstream project by default.
+
+To resolve this, [add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-project-to-the-job-token-scope-allowlist).

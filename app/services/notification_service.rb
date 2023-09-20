@@ -75,6 +75,19 @@ class NotificationService
     end
   end
 
+  def resource_access_tokens_about_to_expire(bot_user, token_names)
+    recipients = bot_user.resource_bot_owners.select { |owner| owner.can?(:receive_notifications) }
+    resource = bot_user.resource_bot_resource
+
+    recipients.each do |recipient|
+      mailer.resource_access_tokens_about_to_expire_email(
+        recipient,
+        resource,
+        token_names
+      ).deliver_later
+    end
+  end
+
   # Notify the owner of the account when a new personal access token is created
   def access_token_created(user, token_name)
     return unless user.can?(:receive_notifications)
@@ -430,13 +443,14 @@ class NotificationService
   def send_service_desk_notification(note)
     return unless note.noteable_type == 'Issue'
     return if note.confidential
+    return unless note.project.service_desk_enabled?
 
     issue = note.noteable
     recipients = issue.email_participants_emails
 
     return unless recipients.any?
 
-    support_bot = User.support_bot
+    support_bot = Users::Internal.support_bot
     recipients.delete(issue.external_author) if note.author == support_bot
 
     recipients.each do |recipient|
@@ -753,10 +767,6 @@ class NotificationService
     recipients.each do |recipient|
       mailer.merge_when_pipeline_succeeds_email(recipient.user.id, merge_request.id, current_user.id).deliver_later
     end
-  end
-
-  def in_product_marketing(user_id, group_id, track, series)
-    mailer.in_product_marketing_email(user_id, group_id, track, series).deliver_later
   end
 
   def approve_mr(merge_request, current_user)

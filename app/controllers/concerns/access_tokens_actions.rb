@@ -69,6 +69,7 @@ module AccessTokensActions
     resource.members.load
 
     @scopes = Gitlab::Auth.available_scopes_for(resource)
+    @scopes.delete(Gitlab::Auth::K8S_PROXY_SCOPE) unless Feature.enabled?(:k8s_proxy_pat, current_user)
     @active_access_tokens = active_access_tokens
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables

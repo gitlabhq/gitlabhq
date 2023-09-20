@@ -809,22 +809,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#metrics_external_dashboard_url' do
-    context 'metrics_setting exists' do
-      it 'returns external_dashboard_url' do
-        metrics_setting = create(:project_metrics_setting, project: project)
-
-        expect(helper.metrics_external_dashboard_url).to eq(metrics_setting.external_dashboard_url)
-      end
-    end
-
-    context 'metrics_setting does not exist' do
-      it 'returns nil' do
-        expect(helper.metrics_external_dashboard_url).to eq(nil)
-      end
-    end
-  end
-
   describe '#grafana_integration_url' do
     subject { helper.grafana_integration_url }
 

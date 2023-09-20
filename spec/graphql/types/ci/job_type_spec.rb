@@ -32,6 +32,7 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
       needs
       pipeline
       playable
+      previousStageJobs
       previousStageJobsOrNeeds
       project
       queued_at

@@ -121,7 +121,7 @@ users as long as a large file exists.
 
 To disable writes to the `authorized_keys` file:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Network**.
 1. Expand **Performance optimization**.
@@ -141,7 +141,7 @@ This overview is brief. Refer to the above instructions for more context.
 
 1. [Rebuild the `authorized_keys` file](../raketasks/maintenance.md#rebuild-authorized_keys-file).
 1. Enable writes to the `authorized_keys` file.
-   1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+   1. On the left sidebar, select **Search or go to**.
    1. Select **Admin Area**.
    1. On the left sidebar, select **Settings > Network**.
    1. Expand **Performance optimization**.
@@ -164,6 +164,8 @@ Additional technical documentation for `gitlab-sshd` may be found in the
 [GitLab Shell documentation](../../development/gitlab_shell/index.md).
 
 ## Troubleshooting
+
+### SSH traffic slow or high CPU load
 
 If your SSH traffic is [slow](https://github.com/linux-pam/linux-pam/issues/270)
 or causing high CPU load, be sure to check the size of `/var/log/btmp`, and ensure it is rotated on a regular basis or after reaching a certain size.

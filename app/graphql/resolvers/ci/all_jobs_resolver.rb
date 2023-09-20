@@ -11,13 +11,23 @@ module Resolvers
               required: false,
               description: 'Filter jobs by status.'
 
-      def resolve_with_lookahead(statuses: nil)
-        jobs = ::Ci::JobsFinder.new(current_user: current_user, params: { scope: statuses }).execute
+      argument :runner_types, [::Types::Ci::RunnerTypeEnum],
+              required: false,
+              alpha: { milestone: '16.4' },
+              description: 'Filter jobs by runner type if ' \
+                           'feature flag `:admin_jobs_filter_runner_type` is enabled.'
+
+      def resolve_with_lookahead(**args)
+        jobs = ::Ci::JobsFinder.new(current_user: current_user, params: params_data(args)).execute
 
         apply_lookahead(jobs)
       end
 
       private
+
+      def params_data(args)
+        { scope: args[:statuses], runner_type: args[:runner_types] }
+      end
 
       def preloads
         {
@@ -32,9 +42,21 @@ module Resolvers
           browse_artifacts_path: [{ project: { namespace: [:route] } }],
           play_path: [{ project: { namespace: [:route] } }],
           web_path: [{ project: { namespace: [:route] } }],
-          tags: [:tags]
+          tags: [:tags],
+          ai_failure_analysis: [{ project: [:project_feature, :namespace] }],
+          trace: [{ project: [:namespace] }, :job_artifacts_trace]
         }
+      end
+
+      def nested_preloads
+        super.merge({
+          trace: {
+            html_summary: [:trace_chunks]
+          }
+        })
       end
     end
   end
 end
+
+Resolvers::Ci::AllJobsResolver.prepend_mod

@@ -97,7 +97,7 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
         end
 
         expect(execute).to be_error
-        expect(runner.reload.projects).to eq(original_projects)
+        expect(runner.reload.projects.order(:id)).to eq(original_projects)
       end
     end
 
@@ -117,7 +117,7 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
           it 'returns error response and rolls back transaction' do
             expect(execute).to be_error
             expect(execute.errors).to contain_exactly('user is not authorized to add runners to project')
-            expect(runner.reload.projects).to eq(original_projects)
+            expect(runner.reload.projects.order(:id)).to eq(original_projects)
           end
         end
       end

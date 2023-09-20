@@ -31,4 +31,18 @@ describe('GroupsList', () => {
       })),
     );
   });
+
+  describe('when `GroupsListItem` emits `delete` event', () => {
+    const [firstGroup] = defaultPropsData.groups;
+
+    beforeEach(() => {
+      createComponent();
+
+      wrapper.findComponent(GroupsListItem).vm.$emit('delete', firstGroup);
+    });
+
+    it('emits `delete` event', () => {
+      expect(wrapper.emitted('delete')).toEqual([[firstGroup]]);
+    });
+  });
 });

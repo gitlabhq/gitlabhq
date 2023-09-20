@@ -35,20 +35,6 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
         expect(build_statuses(pipeline)).to contain_exactly('pending')
         expect(build_statuses(old_pipeline)).to contain_exactly('pending')
       end
-
-      context 'with lower_interval_for_canceling_redundant_pipelines disabled' do
-        before do
-          stub_feature_flags(lower_interval_for_canceling_redundant_pipelines: false)
-        end
-
-        it 'cancels pipelines created more than 3 days ago' do
-          execute
-
-          expect(build_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'canceled')
-          expect(build_statuses(pipeline)).to contain_exactly('pending')
-          expect(build_statuses(old_pipeline)).to contain_exactly('canceled')
-        end
-      end
     end
   end
 

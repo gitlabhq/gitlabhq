@@ -1,5 +1,5 @@
 ---
-stage: Manage
+stage: Govern
 group: Authentication and Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: howto
@@ -25,7 +25,7 @@ If 2FA is enabled, users are locked after five failed sign-in attempts within 10
 
 ## Unlock a user from the Admin Area
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Overview > Users**.
 1. Use the search bar to find the locked user.
@@ -46,13 +46,13 @@ To unlock a locked user:
    sudo -u git -H bundle exec rails console -e production
    ```
 
-1. Find the user to unlock. You can search by email or ID.
+1. Find the user to unlock. You can search by email:
 
    ```ruby
    user = User.find_by(email: 'admin@local.host')
    ```
 
-   or
+   Or you can search by ID:
 
    ```ruby
    user = User.where(id: 1).first
@@ -64,7 +64,7 @@ To unlock a locked user:
    user.unlock_access!
    ```
 
-1. Exit the console with <kbd>Control</kbd>+<kbd>d</kbd>
+1. Exit the console with <kbd>Control</kbd>+<kbd>d</kbd>.
 
 The user should now be able to sign in.
 

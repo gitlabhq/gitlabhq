@@ -40,7 +40,7 @@ including:
 ## Group webhooks **(PREMIUM ALL)**
 
 You can configure a group webhook, which is triggered by events
-that occur across all projects in the group. If you configure identical webhooks
+that occur across all projects in the group and its subgroups. If you configure identical webhooks
 in a group and a project, they are both triggered by an event in the
 project.
 

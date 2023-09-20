@@ -9,4 +9,5 @@ fragment CiRunnerManagerShared on CiRunnerManager {
   platformName
   ipAddress
   contactedAt
+  jobExecutionStatus
 }

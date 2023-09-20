@@ -37,6 +37,9 @@ default:
   CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
   CREATE_RAILS_SLOW_TEST_ISSUES: "true"
 
+.default-merge-request-slow-tests-variables: &default-merge-request-slow-tests-variables
+  ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST: "true"
+
 .if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync
   if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
 
@@ -81,13 +84,13 @@ workflow:
     - if: '$CI_MERGE_REQUEST_IID'
       variables:
         <<: *default-ruby-variables
+        <<: *default-merge-request-slow-tests-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
         NO_SOURCEMAPS: 'true'
     # For the scheduled pipelines, we set specific variables.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
-        <<: *default-ruby-variables
-        <<: *default-branch-pipeline-failure-variables
+        <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         CRYSTALBALL: "true"
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
     # Run pipelines for ruby3_1 branch
@@ -99,15 +102,13 @@ workflow:
     # when pipeline is triggered by a project access token.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
       variables:
-        <<: *default-ruby-variables
-        <<: *default-branch-pipeline-failure-variables
+        <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline (triggered by a project token)'
     # For `$CI_DEFAULT_BRANCH` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       variables:
-        <<: *default-ruby-variables
-        <<: *default-branch-pipeline-failure-variables
+        <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch pipeline'
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
@@ -152,7 +153,7 @@ variables:
   DEBIAN_VERSION: "bullseye"
   UBI_VERSION: "8.6"
   CHROME_VERSION: "113"
-  DOCKER_VERSION: "23.0.1"
+  DOCKER_VERSION: "24.0.5"
   RUBYGEMS_VERSION: "3.4"
   GO_VERSION: "1.20"
   RUST_VERSION: "1.65"
@@ -198,6 +199,7 @@ variables:
   REVIEW_APPS_GCP_REGION: "us-central1"
 
   CACHE_ASSETS_AS_PACKAGE: "true"
+  REUSE_FRONTEND_FIXTURES_ENABLED: "true"
   BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
   SIMPLECOV: "true"
 

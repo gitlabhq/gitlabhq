@@ -264,7 +264,14 @@ sudo -u git sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
   git@newserver:/mnt/gitlab/repositories'
 ```
 
+<!--- start_remove The following content will be removed on remove_date: '2024-05-16' -->
+
 ### Thousands of Git repositories: use one `rsync` per repository
+
+WARNING:
+The Rake task `gitlab:list_repos` was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/384361) in GitLab 16.4 and is planned for
+removal in 17.0. Use [backup and restore](#recommended-approach-in-all-cases) instead.
 
 WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
@@ -290,6 +297,11 @@ This process:
 - Only works for Gitaly targets. Use [recommended approach](#recommended-approach-in-all-cases) for Gitaly Cluster targets.
 
 #### Parallel `rsync` for all repositories known to GitLab
+
+WARNING:
+The Rake task `gitlab:list_repos` was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/384361) in GitLab 16.4 and is planned for
+removal in 17.0. Use [backup and restore](#recommended-approach-in-all-cases) instead.
 
 WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
@@ -353,6 +365,11 @@ cat /home/git/transfer-logs/* | sort | uniq -u |\
 #### Parallel `rsync` only for repositories with recent activity
 
 WARNING:
+The Rake task `gitlab:list_repos` was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/384361) in GitLab 16.4 and is planned for
+removal in 17.0. Use [backup and restore](#recommended-approach-in-all-cases) instead.
+
+WARNING:
 Using `rsync` to migrate Git data can cause data loss and repository corruption.
 [These instructions are being reviewed](https://gitlab.com/gitlab-org/gitlab/-/issues/270422).
 
@@ -381,3 +398,5 @@ sudo -u git -H bundle exec rake gitlab:list_repos SINCE='2015-10-1 12:00 UTC' |\
     /home/git/repositories \
     /mnt/gitlab/repositories
 ```
+
+<!--- end_remove -->

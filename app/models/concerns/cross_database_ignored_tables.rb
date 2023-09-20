@@ -4,6 +4,12 @@ module CrossDatabaseIgnoredTables
   extend ActiveSupport::Concern
 
   class_methods do
+    def temporary_ignore_cross_database_tables(tables, url:, &blk)
+      Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
+        tables, url: url, &blk
+      )
+    end
+
     def cross_database_ignore_tables(tables, options = {})
       raise "missing issue url" if options[:url].blank?
 
@@ -40,8 +46,7 @@ module CrossDatabaseIgnoredTables
     return yield unless options[:if].nil? || instance_eval(&options[:if])
 
     url = options[:url]
-    Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification.temporary_ignore_tables_in_transaction(
-      tables, url: url, &blk
-    )
+
+    self.class.temporary_ignore_cross_database_tables(tables, url: url, &blk)
   end
 end

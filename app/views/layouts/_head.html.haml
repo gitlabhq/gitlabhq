@@ -4,7 +4,7 @@
 %head{ omit_og ? { } : { prefix: "og: http://ogp.me/ns#" } }
   %meta{ charset: "utf-8" }
   %meta{ 'http-equiv' => 'X-UA-Compatible', content: 'IE=edge' }
-  %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1' }
+  %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1' }
   %title= page_title(site_name)
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
   = yield :project_javascripts
@@ -47,6 +47,16 @@
   - elsif Gitlab.config.sentry.enabled
     = webpack_bundle_tag 'legacy_sentry'
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
+
+  - if vite_enabled
+    %meta{ name: 'controller-path', content: controller_full_path }
+    - if Rails.env.development?
+      = vite_client_tag
+    = vite_javascript_tag "main"
+    - if Gitlab.ee?
+      = vite_javascript_tag "main_ee"
+    - if Gitlab.jh?
+      = vite_javascript_tag "main_jh"
 
   = yield :page_specific_javascripts
 

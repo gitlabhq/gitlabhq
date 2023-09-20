@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
-  let_it_be(:abusive_user) { create(:user) }
+  let_it_be(:abusive_user) { create(:user, :no_super_sidebar) }
 
-  let_it_be(:reporter1) { create(:user) }
+  let_it_be(:reporter1) { create(:user, :no_super_sidebar) }
 
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:issue) { create(:issue, project: project, author: abusive_user) }
@@ -57,7 +57,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
     describe 'when user_profile_overflow_menu FF turned on' do
       context 'when reporting a user profile for abuse' do
-        let_it_be(:reporter2) { create(:user) }
+        let_it_be(:reporter2) { create(:user, :no_super_sidebar) }
 
         before do
           visit user_path(abusive_user)
@@ -108,7 +108,7 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
     describe 'when user_profile_overflow_menu FF turned off' do
       context 'when reporting a user profile for abuse' do
-        let_it_be(:reporter2) { create(:user) }
+        let_it_be(:reporter2) { create(:user, :no_super_sidebar) }
 
         before do
           stub_feature_flags(user_profile_overflow_menu_vue: false)

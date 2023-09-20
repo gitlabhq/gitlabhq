@@ -85,14 +85,15 @@ RSpec.describe BulkImports::Common::Transformers::MemberAttributesTransformer, f
         end
       end
 
-      describe 'source user id caching' do
+      describe 'source user id and username caching' do
         context 'when user gid is present' do
-          it 'caches source user id' do
+          it 'caches source user id and username' do
             gid = 'gid://gitlab/User/7'
             data = member_data(email: user.email, gid: gid)
 
             expect_next_instance_of(BulkImports::UsersMapper) do |mapper|
               expect(mapper).to receive(:cache_source_user_id).with('7', user.id)
+              expect(mapper).to receive(:cache_source_username).with('source_username', user.username)
             end
 
             subject.transform(context, data)
@@ -104,6 +105,35 @@ RSpec.describe BulkImports::Common::Transformers::MemberAttributesTransformer, f
             data = member_data(email: user.email)
 
             expect(BulkImports::UsersMapper).not_to receive(:new)
+
+            subject.transform(context, data)
+          end
+        end
+
+        context 'when username is nil' do
+          it 'caches source user id only' do
+            gid = 'gid://gitlab/User/7'
+            data = nil_username_member_data(email: user.email, gid: gid)
+
+            expect_next_instance_of(BulkImports::UsersMapper) do |mapper|
+              expect(mapper).to receive(:cache_source_user_id).with('7', user.id)
+              expect(mapper).not_to receive(:cache_source_username)
+            end
+
+            subject.transform(context, data)
+          end
+        end
+
+        context 'when source username matches destination username' do
+          it 'caches source user id only' do
+            gid = 'gid://gitlab/User/7'
+            data = member_data(email: user.email, gid: gid)
+            data["user"]["username"] = user.username
+
+            expect_next_instance_of(BulkImports::UsersMapper) do |mapper|
+              expect(mapper).to receive(:cache_source_user_id).with('7', user.id)
+              expect(mapper).not_to receive(:cache_source_username)
+            end
 
             subject.transform(context, data)
           end
@@ -136,7 +166,24 @@ RSpec.describe BulkImports::Common::Transformers::MemberAttributesTransformer, f
       },
       'user' => {
         'user_gid' => gid,
-        'public_email' => email
+        'public_email' => email,
+        'username' => 'source_username'
+      }
+    }
+  end
+
+  def nil_username_member_data(email: '', gid: nil, access_level: 30)
+    {
+      'created_at' => '2020-01-01T00:00:00Z',
+      'updated_at' => '2020-01-01T00:00:00Z',
+      'expires_at' => nil,
+      'access_level' => {
+        'integer_value' => access_level
+      },
+      'user' => {
+        'user_gid' => gid,
+        'public_email' => email,
+        'username' => nil
       }
     }
   end

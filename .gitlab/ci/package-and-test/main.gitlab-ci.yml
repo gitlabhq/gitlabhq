@@ -104,6 +104,7 @@ instance:
   variables:
     QA_SCENARIO: Test::Instance::Image
   rules:
+    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - !reference [.rules:test:feature-flags-set, rules]  # always run instance to validate ff change
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -140,6 +141,7 @@ praefect:
     QA_CAN_TEST_PRAEFECT: "true"
     KNAPSACK_TEST_FILE_PATTERN: "qa/specs/features/**/3_create/**/*_spec.rb"
   rules:
+    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
@@ -177,6 +179,7 @@ decomposition-single-db:
     QA_SCENARIO: Test::Instance::Image
     GITLAB_QA_OPTS: --omnibus-config decomposition_single_db $EXTRA_GITLAB_QA_OPTS
   rules:
+    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 
@@ -213,6 +216,7 @@ decomposition-multiple-db:
     GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
     GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db $EXTRA_GITLAB_QA_OPTS
   rules:
+    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
 

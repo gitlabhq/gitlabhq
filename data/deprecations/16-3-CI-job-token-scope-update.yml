@@ -1,0 +1,28 @@
+#
+# REQUIRED FIELDS
+#
+- title: "Job token allowlist covers public and internal projects"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  removal_milestone: "16.6"  # (required) The milestone when this feature is planned to be removed
+  announcement_milestone: "16.3"  # (required) The milestone when this feature was first announced as deprecated.
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: jocelynjane  # (required) GitLab username of the person reporting the change
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/420678  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Starting in 16.6, projects that are **public** or **internal** will no longer authorize job token requests from projects that are **not** on the project's allowlist when [**Limit access to this project**](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#allow-access-to-your-project-with-a-job-token) is enabled.
+
+    If you have [public or internal](https://docs.gitlab.com/ee/user/public_access.html#change-project-visibility) projects with the **Limit access to this project** setting enabled, you must add any projects which make job token requests to your project's allowlist for continued authorization.
+#
+# OPTIONAL END OF SUPPORT FIELDS
+#
+# If an End of Support period applies, the announcement should be shared with GitLab Support
+# in the `#spt_managers` channel in Slack, and mention `@gitlab-com/support` in this MR.
+#
+  end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.
+  #
+  # OTHER OPTIONAL FIELDS
+  #
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

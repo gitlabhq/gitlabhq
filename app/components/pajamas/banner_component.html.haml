@@ -19,5 +19,4 @@
     - actions.each do |action|
       = action
 
-  %button.gl-button.gl-banner-close.btn-sm.btn-icon.js-close{ @close_options, class: close_class, type: 'button' }
-    = sprite_icon('close', size: 16, css_class: 'dismiss-icon')
+  = render Pajamas::ButtonComponent.new(category: :tertiary, variant: close_button_variant, size: :small, icon: 'close', button_options: @close_options)

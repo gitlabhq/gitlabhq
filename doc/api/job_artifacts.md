@@ -12,6 +12,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Get the job's artifacts zipped archive of a project.
 
+If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
+as the request might redirect through a CND.
+
 ```plaintext
 GET /projects/:id/jobs/:job_id/artifacts
 ```
@@ -20,16 +23,16 @@ GET /projects/:id/jobs/:job_id/artifacts
 |---------------------------|----------------|----------|-------------|
 | `id`                      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `job_id`                  | integer        | Yes      | ID of a job. |
-| `job_token` **(PREMIUM)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
 
 Example request using the `PRIVATE-TOKEN` header:
 
 ```shell
-curl --location --output artifacts.zip --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
+curl --location --output artifacts.zip --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/42/artifacts"
 ```
 
 To use this in a [`script` definition](../ci/yaml/index.md#script) inside
-`.gitlab-ci.yml` **(PREMIUM)**, you can use either:
+`.gitlab-ci.yml` **(PREMIUM ALL)**, you can use either:
 
 - The `JOB-TOKEN` header with the GitLab-provided `CI_JOB_TOKEN` variable.
   For example, the following job downloads the artifacts of the job with ID
@@ -69,6 +72,9 @@ the given reference name and job, provided the job finished successfully. This
 is the same as [getting the job's artifacts](#get-job-artifacts), but by
 defining the job's name instead of its ID.
 
+If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
+as the request might redirect through a CND.
+
 NOTE:
 If a pipeline is [parent of other child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines), artifacts
 are searched in hierarchical order from parent to child. For example, if both parent and
@@ -85,7 +91,7 @@ Parameters
 | `id`                      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `ref_name`                | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. |
 | `job`                     | string         | Yes      | The name of the job. |
-| `job_token` **(PREMIUM)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
 
 Example request using the `PRIVATE-TOKEN` header:
 
@@ -94,7 +100,7 @@ curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.ex
 ```
 
 To use this in a [`script` definition](../ci/yaml/index.md#script) inside
-`.gitlab-ci.yml` **(PREMIUM)**, you can use either:
+`.gitlab-ci.yml` **(PREMIUM ALL)**, you can use either:
 
 - The `JOB-TOKEN` header with the GitLab-provided `CI_JOB_TOKEN` variable.
   For example, the following job downloads the artifacts of the `test` job
@@ -132,6 +138,9 @@ Download a single artifact file from a job with a specified ID from inside
 the job's artifacts zipped archive. The file is extracted from the archive and
 streamed to the client.
 
+If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
+as the request might redirect through a CND.
+
 ```plaintext
 GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
 ```
@@ -143,7 +152,7 @@ Parameters
 | `id`                      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `job_id`                  | integer        | Yes      | The unique job identifier. |
 | `artifact_path`           | string         | Yes      | Path to a file inside the artifacts archive. |
-| `job_token` **(PREMIUM)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
 
 Example request:
 
@@ -172,6 +181,9 @@ Artifacts for [parent and child pipelines](../ci/pipelines/downstream_pipelines.
 are searched in hierarchical order from parent to child. For example, if both parent and child pipelines
 have a job with the same name, the artifact from the parent pipeline is returned.
 
+If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
+as the request might redirect through a CND.
+
 ```plaintext
 GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
 ```
@@ -184,7 +196,7 @@ Parameters:
 | `ref_name`                | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. |
 | `artifact_path`           | string         | Yes      | Path to a file inside the artifacts archive. |
 | `job`                     | string         | Yes      | The name of the job. |
-| `job_token` **(PREMIUM)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
 
 Example request:
 

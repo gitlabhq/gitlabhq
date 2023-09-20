@@ -59,8 +59,8 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 
 To update your fork from the GitLab UI:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
-1. Select **View all your projects**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my projects**.
 1. Select the fork you want to update.
 1. Below the dropdown list for branch name, find the **Forked from** (**{fork}**)
    information box to determine if your fork is ahead, behind, or both. In this example,
@@ -181,13 +181,13 @@ To restore the fork relationship, [use the API](../../../api/projects.md#create-
 
 To remove a fork relationship:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.
 1. To confirm, enter the project path and select **Confirm**.
 
-When you unlink a fork that uses a [hashed storage pool](../../../administration/repository_storage_types.md#hashed-object-pools)
+When you unlink a fork that uses a [hashed storage pool](../../../administration/repository_storage_paths.md#hashed-object-pools)
 to share objects with another repository:
 
 - All objects are copied from the pool into your fork.

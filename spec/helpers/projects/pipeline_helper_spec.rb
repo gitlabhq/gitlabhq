@@ -32,7 +32,7 @@ RSpec.describe Projects::PipelineHelper do
         blob_path: project_blob_path(project, pipeline.sha),
         has_test_report: pipeline.complete_and_has_reports?(Ci::JobArtifact.of_report_type(:test)),
         empty_dag_svg_path: match_asset_path('illustrations/empty-state/empty-dag-md.svg'),
-        empty_state_image_path: match_asset_path('illustrations/empty-state/empty-test-cases-lg.svg'),
+        empty_state_image_path: match_asset_path('illustrations/empty-todos-md.svg'),
         artifacts_expired_image_path: match_asset_path('illustrations/pipeline.svg'),
         tests_count: pipeline.test_report_summary.total[:count]
       })

@@ -40,8 +40,8 @@ module Webauthn
     # (which is done in #verify_webauthn_credential)
     def validate_webauthn_credential(webauthn_credential)
       webauthn_credential.type == WebAuthn::TYPE_PUBLIC_KEY &&
-          webauthn_credential.raw_id && webauthn_credential.id &&
-          webauthn_credential.raw_id == WebAuthn.standard_encoder.decode(webauthn_credential.id)
+        webauthn_credential.raw_id && webauthn_credential.id &&
+        webauthn_credential.raw_id == WebAuthn.standard_encoder.decode(webauthn_credential.id)
     end
 
     ##
@@ -53,9 +53,10 @@ module Webauthn
       rp_id = webauthn_credential.client_extension_outputs['appid'] ? WebAuthn.configuration.origin : URI(WebAuthn.configuration.origin).host
       webauthn_credential.response.verify(
         encoder.decode(challenge),
-          public_key: encoder.decode(stored_credential.public_key),
-          sign_count: stored_credential.counter,
-          rp_id: rp_id)
+        public_key: encoder.decode(stored_credential.public_key),
+        sign_count: stored_credential.counter,
+        rp_id: rp_id
+      )
     end
   end
 end

@@ -20,7 +20,7 @@ module Bitbucket
     private
 
     def parse_attrs(raw)
-      raw.slice(*%w(size page pagelen next previous)).symbolize_keys
+      raw.slice(*%w[size page pagelen next previous]).symbolize_keys
     end
 
     def parse_values(raw, bitbucket_rep_class)

@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Manage' do
     describe 'Group access token', product_group: :authentication_and_authorization do
-      let(:group_access_token) { QA::Resource::GroupAccessToken.fabricate_via_api! }
+      let(:group_access_token) { create(:group_access_token) }
       let(:api_client) { Runtime::API::Client.new(:gitlab, personal_access_token: group_access_token.token) }
       let(:project) do
         Resource::Project.fabricate! do |project|
@@ -18,14 +18,10 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367064'
       ) do
         expect do
-          Resource::File.fabricate_via_api! do |file|
-            file.api_client = api_client
-            file.project = project
-            file.branch = "new_branch_#{SecureRandom.hex(8)}"
-            file.commit_message = 'Add new file'
-            file.name = "text-#{SecureRandom.hex(8)}.txt"
-            file.content = 'New file'
-          end
+          create(:file,
+            api_client: api_client,
+            project: project,
+            branch: "new_branch_#{SecureRandom.hex(8)}")
         rescue StandardError => e
           QA::Runtime::Logger.error("Full failure message: #{e.message}")
           raise
@@ -34,7 +30,11 @@ module QA
 
       it(
         'can be used to commit via the API',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367067'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367067',
+        quarantine: {
+          type: :flaky,
+          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/396615"
+        }
       ) do
         expect do
           Resource::Repository::Commit.fabricate_via_api! do |commit|

@@ -6,7 +6,6 @@ exports[`NpmInstallation renders all the messages 1`] = `
     options="[object Object],[object Object]"
     packagetype="npm"
   />
-   
   <code-instruction-stub
     copytext="Copy npm command"
     instruction="npm i @gitlab-org/package-15"
@@ -14,13 +13,11 @@ exports[`NpmInstallation renders all the messages 1`] = `
     trackingaction="copy_npm_install_command"
     trackinglabel="code_instruction"
   />
-   
   <h3
     class="gl-font-lg"
   >
     Registry setup
   </h3>
-   
   <gl-form-radio-group-stub
     checked="instance"
     disabledfield="disabled"
@@ -29,7 +26,6 @@ exports[`NpmInstallation renders all the messages 1`] = `
     textfield="text"
     valuefield="value"
   />
-   
   <code-instruction-stub
     copytext="Copy npm setup command"
     instruction="echo @gitlab-org:registry=npmInstanceUrl/ >> .npmrc"
@@ -37,13 +33,13 @@ exports[`NpmInstallation renders all the messages 1`] = `
     trackingaction="copy_npm_setup_command"
     trackinglabel="code_instruction"
   />
-   You may also need to setup authentication using an auth token. 
+  You may also need to setup authentication using an auth token.
   <gl-link-stub
     href="/help/user/packages/npm_registry/index"
     target="_blank"
   >
     See the documentation
   </gl-link-stub>
-   to find out more.
+  to find out more.
 </div>
 `;

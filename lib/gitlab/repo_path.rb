@@ -54,6 +54,10 @@ module Gitlab
         wiki = find_wiki(full_path)
 
         [wiki, wiki.try(:project)]
+      elsif type.design?
+        design_management_repository = find_design_management_repository(full_path)
+
+        [design_management_repository, design_management_repository.project]
       else
         project = find_project(full_path)
 
@@ -93,6 +97,10 @@ module Gitlab
 
       # In CE, Group#wiki is not available so this will return nil for a group path.
       container&.try(:wiki)
+    end
+
+    def self.find_design_management_repository(full_path)
+      find_project(full_path)&.design_management_repository
     end
 
     def self.extract_snippet_info(snippet_path)

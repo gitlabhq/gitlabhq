@@ -5,8 +5,8 @@ require_dependency 'gitlab/utils'
 module Gitlab
   module Utils
     module SanitizeNodeLink
-      UNSAFE_PROTOCOLS  = %w(data javascript vbscript).freeze
-      ATTRS_TO_SANITIZE = %w(href src data-src data-canonical-src).freeze
+      UNSAFE_PROTOCOLS  = %w[data javascript vbscript].freeze
+      ATTRS_TO_SANITIZE = %w[href src data-src data-canonical-src].freeze
 
       # sanitize 6.0 requires only a context argument. Do not add any default
       # arguments to this method.

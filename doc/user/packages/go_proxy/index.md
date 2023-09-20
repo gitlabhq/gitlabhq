@@ -4,7 +4,7 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Go proxy for GitLab **(FREE ALL)**
+# Go proxy for GitLab **(FREE ALL EXPERIMENT)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27376) in GitLab 13.1.
 > - It's deployed behind a feature flag, disabled by default.

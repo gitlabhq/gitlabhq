@@ -162,7 +162,7 @@ module Ci
 
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
-    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
+    validates :source, exclusion: { in: %w[unknown], unless: :importing? }, on: :create
 
     after_create :keep_around_commits, unless: :importing?
     after_find :observe_age_in_minutes, unless: :importing?

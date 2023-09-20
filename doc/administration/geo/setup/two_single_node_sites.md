@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Set up Geo for two single-node sites **(PREMIUM SELF)**
 
-The following guide provides concise instructions on how to deploy GitLab Geo for a two single-node site installation using two Linux package instances.
+The following guide provides concise instructions on how to deploy GitLab Geo for a two single-node site installation using two Linux package instances with no external services set up.
 
 Prerequisites:
 
@@ -552,8 +552,9 @@ You must manually replicate the secret file across all of your secondary sites, 
    ```
 
 1. Navigate to the primary node GitLab instance:
-   1. On the top bar, select **Main menu > Admin**.
-   1. On the left sidebar, select **Geo > Sites**.
+   1. On the left sidebar, select **Search or go to**.
+   1. Select **Admin Area**.
+   1. Select **Geo > Sites**.
    1. Select **Add site**.
 
       ![Add secondary site](../replication/img/adding_a_secondary_v15_8.png)
@@ -607,8 +608,9 @@ If you convert an existing site to Geo, you should check that the clone method i
 
 On the primary site:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. If you use Git over SSH:
    1. Ensure **Enabled Git access protocols** is set to **Both SSH and HTTP(S)**.
@@ -622,8 +624,9 @@ the primary site.
 
 After you sign in:
 
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Geo > Sites**.
+1. On the left sidebar, select **Search or go to**.
+1. Select **Admin Area**.
+1. Select **Geo > Sites**.
 1. Verify that the site is correctly identified as a secondary Geo site, and that
    Geo is enabled.
 

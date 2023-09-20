@@ -288,7 +288,8 @@ RSpec.describe ClickHouse::QueryBuilder, feature_category: :database do
 
   describe '#to_redacted_sql' do
     it 'calls ::ClickHouse::Redactor correctly' do
-      expect(::ClickHouse::Redactor).to receive(:redact).with(builder)
+      expect(::ClickHouse::Redactor).to receive(:redact).with(builder,
+        an_instance_of(ClickHouse::Client::BindIndexManager))
 
       builder.to_redacted_sql
     end
@@ -329,6 +330,29 @@ RSpec.describe ClickHouse::QueryBuilder, feature_category: :database do
               .to_sql
 
       expect(sql).to eq(expected_sql)
+    end
+  end
+
+  context 'when combining with a raw query' do
+    it 'correctly generates the SQL query' do
+      raw_query = 'SELECT * FROM isues WHERE title = {title:String} AND id IN ({query:Subquery})'
+      placeholders = {
+        title: "'test'",
+        query: builder.select(:id).where(column1: 'value1', column2: 'value2')
+      }
+
+      query = ClickHouse::Client::Query.new(raw_query: raw_query, placeholders: placeholders)
+      expected_sql = "SELECT * FROM isues WHERE title = {title:String} AND id IN (SELECT \"test_table\".\"id\" " \
+                     "FROM \"test_table\" WHERE \"test_table\".\"column1\" = 'value1' AND " \
+                     "\"test_table\".\"column2\" = 'value2')"
+
+      expect(query.to_sql).to eq(expected_sql)
+
+      expected_redacted_sql = "SELECT * FROM isues WHERE title = $1 AND id IN (SELECT \"test_table\".\"id\" " \
+                              "FROM \"test_table\" WHERE \"test_table\".\"column1\" = $2 AND " \
+                              "\"test_table\".\"column2\" = $3)"
+
+      expect(query.to_redacted_sql).to eq(expected_redacted_sql)
     end
   end
 end

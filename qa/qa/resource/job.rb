@@ -5,7 +5,7 @@ module QA
     class Job < Base
       attr_accessor :id, :name, :project
 
-      attributes :id, :project
+      attributes :id, :project, :status
 
       def fabricate_via_api!
         resource_web_url(api_get)

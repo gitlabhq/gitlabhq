@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::BaseEnum do
+RSpec.describe Types::BaseEnum, feature_category: :api do
   describe '.from_rails_enum' do
     let(:enum_type) { Class.new(described_class) }
     let(:template) { "The name is '%{name}', James %{name}." }

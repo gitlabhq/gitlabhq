@@ -173,7 +173,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
     end
   end
 
-  it_behaves_like 'inviting members', 'project-members-page' do
+  it_behaves_like 'inviting members', 'project_members_page' do
     let_it_be(:entity) { project }
     let_it_be(:members_page_path) { project_project_members_path(entity) }
     let_it_be(:subentity) { project }

@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe 'User explores projects', feature_category: :user_profile do
+  before do
+    stub_feature_flags(super_sidebar_logged_out: false)
+  end
+
   describe '"All" tab' do
     it_behaves_like 'an "Explore" page with sidebar and breadcrumbs', :explore_projects_path, :projects
   end

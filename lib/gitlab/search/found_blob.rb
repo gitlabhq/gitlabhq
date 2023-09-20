@@ -11,8 +11,8 @@ module Gitlab
 
       attr_reader :project, :content_match, :blob_path, :highlight_line, :matched_lines_count, :group_level_blob, :group
 
-      PATH_REGEXP = /\A(?<ref>[^:]*):(?<path>[^\x00]*)\x00/.freeze
-      CONTENT_REGEXP = /^(?<ref>[^:]*):(?<path>[^\x00]*)\x00(?<startline>\d+)\x00/.freeze
+      PATH_REGEXP = /\A(?<ref>[^:]*):(?<path>[^\x00]*)\x00/
+      CONTENT_REGEXP = /^(?<ref>[^:]*):(?<path>[^\x00]*)\x00(?<startline>\d+)\x00/
 
       def self.preload_blobs(blobs)
         to_fetch = blobs.select { |blob| blob.is_a?(self) && blob.blob_path }

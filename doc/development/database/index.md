@@ -109,6 +109,7 @@ including the major methods:
 ## ClickHouse
 
 - [Introduction](clickhouse/index.md)
+- [ClickHouse within GitLab](clickhouse/clickhouse_within_gitlab.md)
 - [Optimizing query execution](clickhouse/optimization.md)
 - [Rebuild GitLab features using ClickHouse 1: Activity data](clickhouse/gitlab_activity_data.md)
 - [Rebuild GitLab features using ClickHouse 2: Merge Request analytics](clickhouse/merge_request_analytics.md)
@@ -118,3 +119,4 @@ including the major methods:
 
 - [Maintenance operations](maintenance_operations.md)
 - [Update multiple database objects](setting_multiple_values.md)
+- [Batch iteration in a tree hierarchy proof of concept](poc_tree_iterator.md)

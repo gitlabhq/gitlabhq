@@ -97,7 +97,12 @@ the following sections and tables provide an alternative.
 ## `pipeline` rule type
 
 > - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
-> - The `branch_type` field was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/413062) in GitLab 16.2.
+> - Generally available in GitLab 16.2. Feature flag `security_policies_branch_type` removed.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
+On GitLab.com, this feature is available.
 
 This rule enforces the defined actions whenever the pipeline runs for a selected branch.
 
@@ -106,33 +111,35 @@ This rule enforces the defined actions whenever the pipeline runs for a selected
 | `type` | `string` | true | `pipeline` | The rule's type. |
 | `branches` <sup>1</sup> | `array` of `string` | true if `branch_type` field does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `branch_type` <sup>1</sup> | `string` | true if `branches` field does not exist |  `default`, `protected` or `all` | The types of branches the given policy applies to. |
+| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 
 1. You must specify only one of `branches` or `branch_type`.
 
 ## `schedule` rule type
 
 > - The `branch_type` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404774) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_type`. Disabled by default.
-> - The `branch_type` field was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/413062) in GitLab 16.2.
-> - The security policy bot users were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394958) in GitLab 16.3 [with flags](../../../administration/feature_flags.md) named `scan_execution_group_bot_users` and `scan_execution_bot_users`. Enabled by default.
+> - Generally available in GitLab 16.2. Feature flag `security_policies_branch_type` removed.
+> - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default.
 
 FLAG:
-On self-managed GitLab, security policy bot users are available. To hide the feature, an administrator can [disable the feature flags](../../../administration/feature_flags.md) named `scan_execution_group_bot_users` and `scan_execution_bot_users`.
+On self-managed GitLab, by default the `branch_exceptions` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`.
 On GitLab.com, this feature is available.
 
-This rule enforces the defined actions and schedules a scan on the provided date/time.
+This rule schedules a scan pipeline, enforcing the defined actions on the schedule defined in the `cadence` field. A scheduled pipeline does not run other jobs defined in the project's `.gitlab-ci.yml` file. When a project is linked to a security policy project, a security policy bot is created in the project and will become the author of any scheduled pipelines.
 
 | Field      | Type | Required | Possible values | Description |
 |------------|------|----------|-----------------|-------------|
 | `type`     | `string` | true | `schedule` | The rule's type. |
 | `branches` <sup>1</sup> | `array` of `string` | true if either `branch_type` or `agents` fields does not exist | `*` or the branch's name | The branch the given policy applies to (supports wildcard). |
 | `branch_type` <sup>1</sup> | `string` | true if either `branches` or `agents` fields does not exist | `default`, `protected` or `all` | The types of branches the given policy applies to. |
+| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
 | `cadence`  | `string` | true | CRON expression (for example, `0 0 * * *`) | A whitespace-separated string containing five fields that represents the scheduled time. Minimum of 15 minute intervals when used together with the `branches` field. |
 | `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
 | `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
 1. You must specify only one of `branches`, `branch_type`, or `agents`.
 
-Scheduled scan pipelines are triggered by a security policy bot user that is a guest member of the project. Security policy bot users are automatically created when the security policy project is linked, and removed when the security policy project is unlinked.
+Scheduled scan pipelines are triggered by a security policy bot user that is a guest member of the project with elevated permissions for users of type `security_policy_bot` so it may carry out this task. Security policy bot users are automatically created when the security policy project is linked, and removed when the security policy project is unlinked.
 
 If the project does not have a security policy bot user, the scheduled scan pipeline will not be triggered. To recreate a security policy bot user unlink and link the security policy project again.
 
@@ -214,11 +221,12 @@ Note the following:
   is not scheduled successfully.
 - For a secret detection scan, only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/index.md#custom-rulesets)
   are not supported.
-- A secret detection scan runs in `normal` mode when executed as part of a pipeline, and in
+- A secret detection scan runs in `default` mode when executed as part of a pipeline, and in
   [`historic`](../secret_detection/index.md#full-history-secret-detection)
   mode when executed as part of a scheduled scan.
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
+- Variables defined in a Scan Execution Policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
 
 ## Example security policies project
 

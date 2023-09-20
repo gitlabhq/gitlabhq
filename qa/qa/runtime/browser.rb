@@ -151,6 +151,7 @@ module QA
               driver: 'ALL',
               server: 'ALL'
             }
+
           when :safari
             if QA::Runtime::Env.remote_mobile_device_name
               webdriver_options.platform_name = 'iOS'
@@ -159,9 +160,11 @@ module QA
               webdriver_options.add_option('appium:platformVersion', 'latest')
             end
           when :firefox
-            webdriver_options.add_option('acceptInsecureCerts', true) if QA::Runtime::Env.accept_insecure_certs?
+            webdriver_options.accept_insecure_certs = true if QA::Runtime::Env.accept_insecure_certs?
+            webdriver_options.args << "--headless" if QA::Runtime::Env.webdriver_headless?
           when :edge
             webdriver_options.args << "--window-size=#{DEFAULT_WINDOW_SIZE}"
+            webdriver_options.args << "headless" if QA::Runtime::Env.webdriver_headless?
           end
 
           selenium_options = {

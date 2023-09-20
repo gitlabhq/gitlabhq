@@ -41,7 +41,7 @@ module Gitlab
             .where('issue_metrics.first_mentioned_in_commit_at > first_authored_date.authored_date')
 
           TmpIssueMetrics.connection.execute <<~UPDATE_METRICS
-            WITH cte AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
+            WITH cte AS MATERIALIZED (
               #{inner_query.to_sql}
             )
             UPDATE issue_metrics

@@ -8,6 +8,10 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
   let(:main_connection) { ApplicationRecord.connection }
 
+  before do
+    stub_feature_flags(disallow_database_ddl_feature_flags: false)
+  end
+
   around do |example|
     previously_registered_models = described_class.registered_models.dup
     described_class.instance_variable_set(:@registered_models, Set.new)
@@ -32,7 +36,7 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
   describe '.sync_partitions_ignore_db_error' do
     it 'calls sync_partitions' do
-      expect(described_class).to receive(:sync_partitions)
+      expect(described_class).to receive(:sync_partitions).with(analyze: false)
 
       described_class.sync_partitions_ignore_db_error
     end
@@ -100,6 +104,55 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
         .and change { find_partitions(table_names.last).size }.from(0)
     end
 
+    context 'for analyze' do
+      let(:analyze_regex) { /ANALYZE VERBOSE / }
+      let(:analyze) { true }
+
+      shared_examples_for 'not running analyze' do
+        specify do
+          control = ActiveRecord::QueryRecorder.new { described_class.sync_partitions(analyze: analyze) }
+          expect(control.occurrences).not_to include(analyze_regex)
+        end
+      end
+
+      context 'when analyze_interval is not set' do
+        it_behaves_like 'not running analyze'
+
+        context 'when analyze is set to false' do
+          it_behaves_like 'not running analyze'
+        end
+      end
+
+      context 'when analyze_interval is set' do
+        let(:models) do
+          [
+            Class.new(ApplicationRecord) do
+              include PartitionedTable
+
+              self.table_name = :_test_partitioning_test1
+              partitioned_by :created_at, strategy: :monthly, analyze_interval: 1.week
+            end,
+            Class.new(Gitlab::Database::Partitioning::TableWithoutModel).tap do |klass|
+              klass.table_name = :_test_partitioning_test2
+              klass.partitioned_by(:created_at, strategy: :monthly, analyze_interval: 1.week)
+              klass.limit_connection_names = %i[main]
+            end
+          ]
+        end
+
+        it 'runs analyze' do
+          control = ActiveRecord::QueryRecorder.new { described_class.sync_partitions(models, analyze: analyze) }
+          expect(control.occurrences).to include(analyze_regex)
+        end
+
+        context 'analyze is false' do
+          let(:analyze) { false }
+
+          it_behaves_like 'not running analyze'
+        end
+      end
+    end
+
     context 'with multiple databases' do
       it 'creates partitions in each database' do
         skip_if_shared_database(:ci)
@@ -165,11 +218,11 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
           execute_on_each_database("DROP TABLE IF EXISTS #{table_name}")
 
           execute_on_each_database(<<~SQL)
-          CREATE TABLE #{table_name} (
-            id serial not null,
-            created_at timestamptz not null,
-            PRIMARY KEY (id, created_at))
-          PARTITION BY RANGE (created_at);
+            CREATE TABLE #{table_name} (
+              id serial not null,
+              created_at timestamptz not null,
+              PRIMARY KEY (id, created_at))
+            PARTITION BY RANGE (created_at);
           SQL
         end
       end
@@ -200,6 +253,20 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
         expect(described_class::PartitionManager).not_to receive(:new)
         expect(described_class).to receive(:sync_partitions)
           .and_call_original
+
+        described_class.sync_partitions(models)
+      end
+    end
+
+    context 'when disallow_database_ddl_feature_flags feature flag is enabled' do
+      before do
+        described_class.register_models(models)
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
+      end
+
+      it 'skips sync_partitions' do
+        expect(described_class::PartitionManager).not_to receive(:new)
+        expect(described_class).to receive(:sync_partitions).and_call_original
 
         described_class.sync_partitions(models)
       end
@@ -268,6 +335,18 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
     context 'when the feature flag is disabled' do
       before do
         stub_feature_flags(partition_manager_sync_partitions: false)
+      end
+
+      it 'does not call the DetachedPartitionDropper' do
+        expect(Gitlab::Database::Partitioning::DetachedPartitionDropper).not_to receive(:new)
+
+        described_class.drop_detached_partitions
+      end
+    end
+
+    context 'when the feature disallow DDL feature flags is enabled' do
+      before do
+        stub_feature_flags(disallow_database_ddl_feature_flags: true)
       end
 
       it 'does not call the DetachedPartitionDropper' do

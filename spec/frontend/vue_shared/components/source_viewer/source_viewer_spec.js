@@ -1,10 +1,9 @@
 import hljs from 'highlight.js/lib/core';
-import Vue from 'vue';
-import VueRouter from 'vue-router';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SourceViewer from '~/vue_shared/components/source_viewer/source_viewer.vue';
+import CodeownersValidation from 'ee_component/blob/components/codeowners_validation.vue';
 import { registerPlugins } from '~/vue_shared/components/source_viewer/plugins/index';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
 import {
@@ -24,11 +23,10 @@ import LineHighlighter from '~/blob/line_highlighter';
 import eventHub from '~/notes/event_hub';
 import Tracking from '~/tracking';
 
-jest.mock('~/blob/line_highlighter');
+const lineHighlighter = new LineHighlighter();
+jest.mock('~/blob/line_highlighter', () => jest.fn().mockReturnValue({ highlightHash: jest.fn() }));
 jest.mock('highlight.js/lib/core');
 jest.mock('~/vue_shared/components/source_viewer/plugins/index');
-Vue.use(VueRouter);
-const router = new VueRouter();
 const mockAxios = new MockAdapter(axios);
 
 const generateContent = (content, totalLines = 1, delimiter = '\n') => {
@@ -44,6 +42,7 @@ const execImmediately = (callback) => callback();
 describe('Source Viewer component', () => {
   let wrapper;
   const language = 'docker';
+  const selectedRangeHash = '#L1-2';
   const mappedLanguage = ROUGE_TO_HLJS_LANGUAGE_MAP[language];
   const chunk1 = generateContent('// Some source code 1', 70);
   const chunk2 = generateContent('// Some source code 2', 70);
@@ -55,11 +54,13 @@ describe('Source Viewer component', () => {
   const fileType = 'javascript';
   const DEFAULT_BLOB_DATA = { language, rawTextBlob: content, path, blamePath, fileType };
   const highlightedContent = `<span data-testid='test-highlighted' id='LC1'>${content}</span><span id='LC2'></span>`;
+  const currentRef = 'main';
+  const projectPath = 'test/project';
 
   const createComponent = async (blob = {}) => {
     wrapper = shallowMountExtended(SourceViewer, {
-      router,
-      propsData: { blob: { ...DEFAULT_BLOB_DATA, ...blob } },
+      propsData: { blob: { ...DEFAULT_BLOB_DATA, ...blob }, currentRef, projectPath },
+      mocks: { $route: { hash: selectedRangeHash } },
     });
     await waitForPromises();
   };
@@ -267,6 +268,26 @@ describe('Source Viewer component', () => {
   describe('LineHighlighter', () => {
     it('instantiates the lineHighlighter class', () => {
       expect(LineHighlighter).toHaveBeenCalledWith({ scrollBehavior: 'auto' });
+    });
+
+    it('highlights the range when chunk appears', () => {
+      findChunks().at(0).vm.$emit('appear');
+      const scrollEnabled = false;
+      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(selectedRangeHash, scrollEnabled);
+    });
+  });
+
+  describe('Codeowners validation', () => {
+    const findCodeownersValidation = () => wrapper.findComponent(CodeownersValidation);
+
+    it('does not render codeowners validation when file is not CODEOWNERS', async () => {
+      await createComponent();
+      expect(findCodeownersValidation().exists()).toBe(false);
+    });
+
+    it('renders codeowners validation when file is CODEOWNERS', async () => {
+      await createComponent({ name: CODEOWNERS_FILE_NAME });
+      expect(findCodeownersValidation().exists()).toBe(true);
     });
   });
 });

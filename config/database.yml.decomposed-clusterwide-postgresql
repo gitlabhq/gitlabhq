@@ -60,6 +60,7 @@ test:
     username: postgres
     password:
     prepared_statements: false
+    reaping_frequency: nil
     variables:
       statement_timeout: 15s
   ci:
@@ -68,19 +69,23 @@ test:
     username: postgres
     password:
     prepared_statements: false
+    reaping_frequency: nil
     variables:
       statement_timeout: 15s
   main_clusterwide:
     <<: *main
     database_tasks: false
+    reaping_frequency: nil
   geo:
     <<: *defaults
     database: gitlabhq_geo_test
     username: postgres
     password:
+    reaping_frequency: nil
   embedding:
     <<: *defaults
     database: gitlabhq_embedding_test
     username: postgres
     password:
+    reaping_frequency: nil
 

@@ -111,7 +111,7 @@ module Gitlab
         end
 
         def fields_with_markdown
-          %i(title pretext fields)
+          %i[title pretext fields]
         end
       end
     end

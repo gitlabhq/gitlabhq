@@ -38,7 +38,6 @@ class ApplicationController < ActionController::Base
   before_action :active_user_check, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
-  before_action :required_signup_info
 
   # Make sure the `auth_user` is memoized so it can be logged, we do this after
   # all other before filters that could have set the user.
@@ -115,6 +114,24 @@ class ApplicationController < ActionController::Base
 
   content_security_policy do |p|
     next if p.directives.blank?
+
+    if Rails.env.development? && Feature.enabled?(:vite)
+      vite_host = ViteRuby.instance.config.host
+      vite_port = ViteRuby.instance.config.port
+      vite_origin = "#{vite_host}:#{vite_port}"
+      http_origin = "http://#{vite_origin}"
+      ws_origin = "ws://#{vite_origin}"
+      wss_origin = "wss://#{vite_origin}"
+      gitlab_ws_origin = Gitlab::Utils.append_path(Gitlab.config.gitlab.url, 'vite-dev/')
+      http_path = Gitlab::Utils.append_path(http_origin, 'vite-dev/')
+
+      connect_sources = p.directives['connect-src']
+      p.connect_src(*(Array.wrap(connect_sources) | [ws_origin, wss_origin, http_path]))
+
+      worker_sources = p.directives['worker-src']
+      p.worker_src(*(Array.wrap(worker_sources) | [gitlab_ws_origin, http_path]))
+    end
+
     next unless Gitlab::CurrentSettings.snowplow_enabled? && !Gitlab::CurrentSettings.snowplow_collector_hostname.blank?
 
     default_connect_src = p.directives['connect-src'] || p.directives['default-src']
@@ -326,9 +343,12 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    return if session[:impersonator_id] || !current_user&.allow_password_authentication?
+    return if session[:impersonator_id]
+    return if current_user.nil?
 
-    redirect_to new_profile_password_path if current_user&.password_expired?
+    if current_user.password_expired? && current_user.allow_password_authentication?
+      redirect_to new_profile_password_path
+    end
   end
 
   def active_user_check
@@ -554,15 +574,6 @@ class ApplicationController < ActionController::Base
   # `auth_user` again would also trigger the Warden callbacks again
   def context_user
     auth_user if strong_memoized?(:auth_user)
-  end
-
-  def required_signup_info
-    return unless current_user
-    return unless current_user.role_required?
-
-    store_location_for :user, request.fullpath
-
-    redirect_to users_sign_up_welcome_path
   end
 end
 

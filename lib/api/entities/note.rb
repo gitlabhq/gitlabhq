@@ -4,7 +4,7 @@ module API
   module Entities
     class Note < Grape::Entity
       # Only Issue and MergeRequest have iid
-      NOTEABLE_TYPES_WITH_IID = %w(Issue MergeRequest).freeze
+      NOTEABLE_TYPES_WITH_IID = %w[Issue MergeRequest].freeze
 
       expose :id
       expose :type

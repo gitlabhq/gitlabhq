@@ -27,7 +27,8 @@ RSpec.describe 'ActionCableSubscriptionAdapterIdentifier override' do
 
         sub = ActionCable.server.pubsub.send(:redis_connection)
 
-        expect(sub.connection[:id]).to eq('unix:///home/localuser/redis/redis.socket/0')
+        expect(sub.is_a?(::Gitlab::Redis::MultiStore)).to eq(true)
+        expect(sub.secondary_store.connection[:id]).to eq('unix:///home/localuser/redis/redis.socket/0')
         expect(ActionCable.server.config.cable[:id]).to be_nil
       end
     end

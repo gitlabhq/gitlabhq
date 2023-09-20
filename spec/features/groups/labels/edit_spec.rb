@@ -12,6 +12,7 @@ RSpec.describe 'Edit group label', feature_category: :team_planning do
   before do
     group.add_owner(user)
     sign_in(user)
+
     visit edit_group_label_path(group, label)
   end
 
@@ -33,5 +34,18 @@ RSpec.describe 'Edit group label', feature_category: :team_planning do
     end
 
     expect(page).to have_content("#{label.title} was removed").and have_no_content("#{label.title}</span>")
+  end
+
+  describe 'lock_on_merge' do
+    let(:label_unlocked) { create(:group_label, group: group, lock_on_merge: false) }
+    let(:label_locked) { create(:group_label, group: group, lock_on_merge: true) }
+    let(:edit_label_path_unlocked) { edit_group_label_path(group, label_unlocked) }
+    let(:edit_label_path_locked) { edit_group_label_path(group, label_locked) }
+
+    before do
+      visit edit_label_path_unlocked
+    end
+
+    it_behaves_like 'lock_on_merge when editing labels'
   end
 end

@@ -646,7 +646,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'addTest'
+                click_button 'View details'
               end
             end
 
@@ -693,7 +693,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'Test#sum when a is 1 and b is 3 returns summary'
+                click_button 'View details'
               end
             end
 
@@ -741,7 +741,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'addTest'
+                click_button 'View details'
               end
             end
 
@@ -788,7 +788,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'addTest'
+                click_button 'View details'
               end
             end
 
@@ -834,7 +834,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'Test#sum when a is 4 and b is 4 returns summary'
+                click_button 'View details'
               end
             end
 
@@ -881,7 +881,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
               click_expand_button
 
               within('[data-testid="widget-extension-collapsed-section"]') do
-                click_link 'addTest'
+                click_button 'View details'
               end
             end
 
@@ -955,6 +955,23 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     it 'renders a CI pipeline loading state' do
       within '.ci-widget' do
         expect(page).to have_content('Checking pipeline status')
+      end
+    end
+  end
+
+  context 'views MR when pipeline has code coverage enabled' do
+    let!(:pipeline) { create(:ci_pipeline, status: 'success', project: project, ref: merge_request.source_branch) }
+    let!(:build) { create(:ci_build, :success, :coverage, pipeline: pipeline) }
+
+    before do
+      merge_request.update!(head_pipeline: pipeline)
+
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows the coverage' do
+      within '.ci-widget' do
+        expect(find_by_testid('pipeline-coverage')).to have_content('Test coverage 99.90% ')
       end
     end
   end

@@ -85,7 +85,7 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
 
       context 'when webhook is not required' do
         it 'returns true' do
-          allow(chat_integration).to receive(:requires_webhook?).and_return(false)
+          allow(chat_integration.class).to receive(:requires_webhook?).and_return(false)
 
           expect(chat_integration).to receive(:notify).and_return(true)
           expect(chat_integration.execute(data)).to be true
@@ -347,6 +347,12 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
     end
   end
 
+  describe '#help' do
+    it 'raises an error' do
+      expect { subject.help }.to raise_error(NotImplementedError)
+    end
+  end
+
   describe '#event_channel_name' do
     it 'returns the channel field name for the given event' do
       expect(subject.event_channel_name(:event)).to eq('event_channel')
@@ -362,6 +368,19 @@ RSpec.describe Integrations::BaseChatNotification, feature_category: :integratio
 
     it 'raises an error for unsupported events' do
       expect { subject.event_channel_value(:foo) }.to raise_error(NoMethodError)
+    end
+  end
+
+  describe '#api_field_names' do
+    context 'when channels are masked' do
+      let(:project) { build(:project) }
+      let(:integration) { build(:discord_integration, project: project, webhook: 'https://discord.com/api/') }
+
+      it 'does not include channel properties', :aggregate_failures do
+        integration.event_channel_names.each do |field|
+          expect(integration.api_field_names).not_to include(field)
+        end
+      end
     end
   end
 end

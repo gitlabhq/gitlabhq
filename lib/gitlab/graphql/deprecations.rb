@@ -27,7 +27,6 @@ module Gitlab
         end
 
         # GitLab allows items to be marked as "alpha", which leverages GraphQL deprecations.
-        # TODO remove
         deprecation_args = kwargs.extract!(:alpha, :deprecated)
 
         self.deprecation = Deprecation.parse(**deprecation_args)

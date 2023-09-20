@@ -5,6 +5,8 @@ class Plan < MainClusterwide::ApplicationRecord
 
   has_one :limits, class_name: 'PlanLimits'
 
+  scope :by_name, ->(name) { where(name: name) }
+
   ALL_PLANS = [DEFAULT].freeze
   DEFAULT_PLANS = [DEFAULT].freeze
   private_constant :ALL_PLANS, :DEFAULT_PLANS

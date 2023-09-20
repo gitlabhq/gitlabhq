@@ -17,9 +17,14 @@ Your jobs can run on:
 - [Windows runners](saas/windows_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 - [macOS runners](saas/macos_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta))
 
-Refer to the compute minutes [cost factor](../../ci/pipelines/cicd_minutes.md#cost-factor) for the cost factor applied to the machine type based on size.
-The number of minutes you can use on these runners depends on the [maximum number of compute minutes](../pipelines/cicd_minutes.md)
+For more information about the cost factor applied to the machine type based on size, see [cost factor](../../ci/pipelines/cicd_minutes.md#cost-factor).
+The number of minutes you can use on these runners depends on the [maximum number of units of compute](../pipelines/cicd_minutes.md)
 in your [subscription plan](https://about.gitlab.com/pricing/).
+
+[Untagged](../../ci/runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) jobs automatically run in containers
+on the `small` Linux runners.
+
+The objective is to make 90% of CI/CD jobs start executing in 120 seconds or less. The error rate should be less than 0.5%.
 
 ## How SaaS runners work
 
@@ -30,9 +35,6 @@ When you use SaaS runners:
 - The virtual machine where your job runs has `sudo` access with no password.
 - The storage is shared by the operating system, the image with pre-installed software, and a copy of your cloned repository.
 This means that the available free disk space for your jobs to use is reduced.
-- [Untagged](../../ci/runners/configure_runners.md#use-tags-to-control-which-jobs-a-runner-can-run) jobs automatically run in containers
-on the `small` Linux runners.
-- The objective is to make 90% of CI jobs start executing in 120 seconds or less. The error rate target will be less than 0.5%.
 
 NOTE:
 Jobs handled by SaaS runners on GitLab.com **time out after 3 hours**, regardless of the timeout configured in a project.
@@ -67,3 +69,65 @@ takes over the task of securely deleting the virtual machine and associated data
 - Inbound communication from the public internet to the temporary VM is not allowed.
 - Firewall rules do not permit communication between VMs.
 - The only internal communication allowed to the temporary VMs is from the runner manager.
+
+## Supported image lifecycle
+
+For runners on macOS and Windows, you can only run jobs on supported images. You cannot bring your own image. Supported images have the following lifecycle:
+
+- Beta
+- Generally Available
+- Deprecated
+
+### Beta
+
+To gather feedback on an image prior to making the image Generally Available (GA) and to address
+any issues, new images are released as Beta. Any jobs running on Beta images are not
+covered by the service-level agreement. If you use Beta images, you can provide feedback
+by creating an issue.
+
+### Generally Available
+
+A Generally Available (GA) image is released after the image completes a Beta phase
+and is considered suitable for general use. To become GA, the
+image must fulfill the following requirements:
+
+- Successful completion of a Beta phase by resolving all reported significant bugs
+- Compatibility of installed software with the underlying OS
+
+Jobs running on GA images are covered by the defined service-level agreement. Over time, these images are deprecated.
+
+### Deprecated
+
+A maximum of two Generally Available (GA) images are supported at a time. After a new GA image is released,
+the oldest GA image becomes deprecated. A deprecated image is no longer
+updated and is deleted after 3 months in accordance with the [deprecation guidelines](../../development/deprecation_guidelines/index.md).
+
+## Major version changes (breaking)
+
+As GitLab CI/CD and Runner have evolved, certain breaking changes have been necessary.
+
+For GitLab 15.0 and later, all breaking changes are documented on the following page:
+
+- [Deprecations and removals](../../update/deprecations.md)
+
+The breaking changes for GitLab Runner in earlier major version releases are:
+
+- 14.0: No breaking changes.
+- 13.0:
+  - [Remove Backported `os.Expand`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4915).
+  - [Remove Fedora 29 package support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/16158).
+  - [Remove macOS 32-bit support](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/25466).
+  - [Removed `debug/jobs/list?v=1` endpoint](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6361).
+  - [Remove support for array of strings when defining services for Docker executor](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4922).
+  - [Remove `--docker-services` flag on register command](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6404).
+  - [Remove legacy build directory caching](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4180).
+  - [Remove `FF_USE_LEGACY_VOLUMES_MOUNTING_ORDER` feature flag](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6581).
+  - [Remove support for Windows Server 1803](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/6553).
+- 12.0:
+  - [Use `refspec` to clone/fetch Git repository](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4069).
+  - [Old cache configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4070).
+  - [Old metrics server configuration](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4072).
+  - [Remove `FF_K8S_USE_ENTRYPOINT_OVER_COMMAND`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4073).
+  - [Remove Linux distributions that reach EOL](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1130).
+  - [Update command line API for helper images](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4013).
+  - [Remove old `git clean` flow](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4175).

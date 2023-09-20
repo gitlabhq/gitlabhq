@@ -80,7 +80,8 @@ For more information, see [security of the `docker` group](https://blog.zopyx.co
 
 "Docker-in-Docker" (`dind`) means:
 
-- Your registered runner uses the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html) or the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html).
+- Your registered runner uses the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html) or
+  the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html).
 - The executor uses a [container image of Docker](https://hub.docker.com/_/docker/), provided
   by Docker, to run your CI/CD jobs.
 
@@ -90,7 +91,7 @@ the job script in context of the image in privileged mode.
 You should use Docker-in-Docker with TLS enabled,
 which is supported by [GitLab.com shared runners](../runners/index.md).
 
-You should always pin a specific version of the image, like `docker:20.10.16`.
+You should always pin a specific version of the image, like `docker:24.0.5`.
 If you use a tag like `docker:latest`, you have no control over which version is used.
 This can cause incompatibility problems when new versions are released.
 
@@ -121,12 +122,12 @@ To use Docker-in-Docker with TLS enabled:
      --registration-token REGISTRATION_TOKEN \
      --executor docker \
      --description "My Docker Runner" \
-     --docker-image "docker:20.10.16" \
+     --docker-image "docker:24.0.5" \
      --docker-privileged \
      --docker-volumes "/certs/client"
    ```
 
-   - This command registers a new runner to use the `docker:20.10.16` image.
+   - This command registers a new runner to use the `docker:24.0.5` image (if none is specified at the job level).
      To start the build and service containers, it uses the `privileged` mode.
      If you want to use Docker-in-Docker,
      you must always use `privileged = true` in your Docker containers.
@@ -143,7 +144,7 @@ To use Docker-in-Docker with TLS enabled:
      executor = "docker"
      [runners.docker]
        tls_verify = false
-       image = "docker:20.10.16"
+       image = "docker:24.0.5"
        privileged = true
        disable_cache = false
        volumes = ["/certs/client", "/cache"]
@@ -153,13 +154,13 @@ To use Docker-in-Docker with TLS enabled:
    ```
 
 1. You can now use `docker` in the job script. You should include the
-   `docker:20.10.16-dind` service:
+   `docker:24.0.5-dind` service:
 
    ```yaml
    default:
-     image: docker:20.10.16
+     image: docker:24.0.5
      services:
-       - docker:20.10.16-dind
+       - docker:24.0.5-dind
      before_script:
        - docker info
 
@@ -202,7 +203,7 @@ Assuming that the runner's `config.toml` is similar to:
   executor = "docker"
   [runners.docker]
     tls_verify = false
-    image = "docker:20.10.16"
+    image = "docker:24.0.5"
     privileged = true
     disable_cache = false
     volumes = ["/cache"]
@@ -212,13 +213,13 @@ Assuming that the runner's `config.toml` is similar to:
 ```
 
 You can now use `docker` in the job script. You should include the
-`docker:20.10.16-dind` service:
+`docker:24.0.5-dind` service:
 
 ```yaml
 default:
-  image: docker:20.10.16
+  image: docker:24.0.5
   services:
-    - docker:20.10.16-dind
+    - docker:24.0.5-dind
   before_script:
     - docker info
 
@@ -276,13 +277,13 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
    ```
 
 1. You can now use `docker` in the job script. You should include the
-   `docker:20.10.16-dind` service:
+   `docker:24.0.5-dind` service:
 
    ```yaml
    default:
-     image: docker:20.10.16
+     image: docker:24.0.5
      services:
-       - docker:20.10.16-dind
+       - docker:24.0.5-dind
      before_script:
        - docker info
 
@@ -330,7 +331,7 @@ Docker-in-Docker is the recommended configuration, but you should be aware of th
 - **Storage drivers**: By default, earlier versions of Docker use the `vfs` storage driver,
   which copies the file system for each job. Docker 17.09 and later use `--storage-driver overlay2`, which is
   the recommended storage driver. See [Using the OverlayFS driver](#use-the-overlayfs-driver) for details.
-- **Root file system**: Because the `docker:20.10.16-dind` container and the runner container do not share their
+- **Root file system**: Because the `docker:24.0.5-dind` container and the runner container do not share their
   root file system, you can use the job's working directory as a mount point for
   child containers. For example, if you have files you want to share with a
   child container, you could create a subdirectory under `/builds/$CI_PROJECT_PATH`
@@ -352,7 +353,7 @@ container. Docker is then available in the context of the image.
 
 If you bind the Docker socket and you are
 [using GitLab Runner 11.11 or later](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/1261),
-you can no longer use `docker:20.10.16-dind` as a service. Volume bindings also affect services,
+you can no longer use `docker:24.0.5-dind` as a service. Volume bindings also affect services,
 making them incompatible.
 
 To make Docker available in the context of the image, you need to mount
@@ -369,7 +370,7 @@ Your configuration should look similar to this example:
   executor = "docker"
   [runners.docker]
     tls_verify = false
-    image = "docker:20.10.16"
+    image = "docker:24.0.5"
     privileged = false
     disable_cache = false
     volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
@@ -385,7 +386,7 @@ sudo gitlab-runner register -n \
   --registration-token REGISTRATION_TOKEN \
   --executor docker \
   --description "My Docker Runner" \
-  --docker-image "docker:20.10.16" \
+  --docker-image "docker:24.0.5" \
   --docker-volumes /var/run/docker.sock:/var/run/docker.sock
 ```
 
@@ -408,7 +409,7 @@ mirror:
 
 ```yaml
 services:
-  - name: docker:20.10.16-dind
+  - name: docker:24.0.5-dind
     command: ["--registry-mirror", "https://registry-mirror.example.com"]  # Specify the registry mirror to use
 ```
 
@@ -431,7 +432,7 @@ Docker:
     ...
     privileged = true
     [[runners.docker.services]]
-      name = "docker:20.10.16-dind"
+      name = "docker:24.0.5-dind"
       command = ["--registry-mirror", "https://registry-mirror.example.com"]
 ```
 
@@ -445,7 +446,7 @@ Kubernetes:
     ...
     privileged = true
     [[runners.kubernetes.services]]
-      name = "docker:20.10.16-dind"
+      name = "docker:24.0.5-dind"
       command = ["--registry-mirror", "https://registry-mirror.example.com"]
 ```
 
@@ -552,12 +553,12 @@ the implications of this method are:
    docker run --rm -t -i -v $(pwd)/src:/home/app/src test-image:latest run_app_tests
    ```
 
-You do not need to include the `docker:20.10.16-dind` service, like you do when
+You do not need to include the `docker:24.0.5-dind` service, like you do when
 you use the Docker-in-Docker executor:
 
 ```yaml
 default:
-  image: docker:20.10.16
+  image: docker:24.0.5
   before_script:
     - docker info
 
@@ -638,30 +639,43 @@ To build Docker images without enabling privileged mode on the runner, you can
 use one of these alternatives:
 
 - [`kaniko`](using_kaniko.md).
-- [`buildah`](https://github.com/containers/buildah). There is a [known issue](https://github.com/containers/buildah/issues/4049) with running as non-root, you might need this [workaround](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#configure-setfcap) if you are using OpenShift Runner.
+- [`buildah`](#buildah-example).
 
-For example, with `buildah`:
+### Buildah example
+
+To use Buildah with GitLab CI/CD, you need [a runner](https://docs.gitlab.com/runner/) with one
+of the following executors:
+
+- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html).
+- [Docker](https://docs.gitlab.com/runner/executors/docker.html).
+- [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
+
+In this example, you use Buildah to:
+
+1. Build a Docker image.
+1. Push it to [GitLab Container Registry](../../user/packages/container_registry/index.md).
+
+In the last step, Buildah uses the `Dockerfile` under the
+root directory of the project to build the Docker image. Finally, it pushes the image to the
+project's Container Registry:
 
 ```yaml
-# Some details from https://major.io/2019/05/24/build-containers-in-gitlab-ci-with-buildah/
-
 build:
   stage: build
   image: quay.io/buildah/stable
   variables:
-    # Use vfs with buildah. Docker offers overlayfs as a default, but buildah
+    # Use vfs with buildah. Docker offers overlayfs as a default, but Buildah
     # cannot stack overlayfs on top of another overlayfs filesystem.
     STORAGE_DRIVER: vfs
     # Write all image metadata in the docker format, not the standard OCI format.
     # Newer versions of docker can handle the OCI format, but older versions, like
     # the one shipped with Fedora 30, cannot handle the format.
     BUILDAH_FORMAT: docker
-    # You may need this workaround for some errors: https://stackoverflow.com/a/70438141/1233435
-    BUILDAH_ISOLATION: chroot
     FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE/test"
   before_script:
-    # Log in to the GitLab container registry
-    - export REGISTRY_AUTH_FILE=$HOME/auth.json
+    # GitLab Container Registry credentials taken from the
+    # [predefined CI/CD variables](../variables/index.md#predefined-cicd-variables)
+    # to authenticate to the registry.
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
     - buildah images
@@ -669,6 +683,9 @@ build:
     - buildah images
     - buildah push $FQ_IMAGE_NAME
 ```
+
+If you are using GitLab Runner Operator deployed to an OpenShift cluster, try the
+[tutorial for using Buildah to build images in rootless container](buildah_rootless_tutorial.md).
 
 ## Use the GitLab Container Registry
 
@@ -702,9 +719,9 @@ This issue can occur when the service's image name
 
 ```yaml
 default:
-  image: docker:20.10.16
+  image: docker:24.0.5
   services:
-    - registry.hub.docker.com/library/docker:20.10.16-dind
+    - registry.hub.docker.com/library/docker:24.0.5-dind
 ```
 
 A service's hostname is [derived from the full image name](../../ci/services/index.md#accessing-the-services).
@@ -713,11 +730,40 @@ To allow service resolution and access, add an explicit alias for the service na
 
 ```yaml
 default:
-  image: docker:20.10.16
+  image: docker:24.0.5
   services:
-    - name: registry.hub.docker.com/library/docker:20.10.16-dind
+    - name: registry.hub.docker.com/library/docker:24.0.5-dind
       alias: docker
 ```
+
+### `Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`
+
+You might get the following error when trying to run a `docker` command
+to access a `dind` service:
+
+```shell
+$ docker ps
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+```
+
+Make sure your job has defined these environment variables:
+
+- `DOCKER_HOST`
+- `DOCKER_TLS_CERTDIR` (optional)
+- `DOCKER_TLS_VERIFY` (optional)
+
+You may also want to update the image that provides the Docker
+client. For example, the [`docker/compose` images are obsolete](https://hub.docker.com/r/docker/compose) and should be
+replaced with [`docker`](https://hub.docker.com/_/docker).
+
+As described in [runner issue 30944](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/30944#note_1514250909),
+this error can happen if your job previously relied on environment variables derived from the deprecated
+[Docker `--link` parameter](https://docs.docker.com/network/links/#environment-variables),
+such as `DOCKER_PORT_2375_TCP`. Your job fails with this error if:
+
+- Your CI/CD image relies on a legacy variable, such as `DOCKER_PORT_2375_TCP`.
+- The [runner feature flag `FF_NETWORK_PER_BUILD`](https://docs.gitlab.com/runner/configuration/feature-flags.html) is set to `true`.
+- `DOCKER_HOST` is not explicitly set.
 
 ### Error: `Error response from daemon: Get "https://registry-1.docker.io/v2/": unauthorized: incorrect username or password`
 
@@ -725,3 +771,53 @@ This error appears when you use the deprecated variable, `CI_BUILD_TOKEN`. To pr
 
 - Use [CI_JOB_TOKEN](../jobs/ci_job_token.md) instead.
 - Change from `gitlab-ci-token/CI_BUILD_TOKEN` to `$CI_REGISTRY_USER/$CI_REGISTRY_PASSWORD`.
+
+### Error: `error during connect: Post "https://docker:2376/v1.24/auth": dial tcp: lookup docker on 127.0.0.11:53: no such host`
+
+This error appears when the `dind` service has failed to start. Check
+the job log to see if `mount: permission denied (are you root?)`
+appears. For example:
+
+```plaintext
+Service container logs:
+2023-08-01T16:04:09.541703572Z Certificate request self-signature ok
+2023-08-01T16:04:09.541770852Z subject=CN = docker:dind server
+2023-08-01T16:04:09.556183222Z /certs/server/cert.pem: OK
+2023-08-01T16:04:10.641128729Z Certificate request self-signature ok
+2023-08-01T16:04:10.641173149Z subject=CN = docker:dind client
+2023-08-01T16:04:10.656089908Z /certs/client/cert.pem: OK
+2023-08-01T16:04:10.659571093Z ip: can't find device 'ip_tables'
+2023-08-01T16:04:10.660872131Z modprobe: can't change directory to '/lib/modules': No such file or directory
+2023-08-01T16:04:10.664620455Z mount: permission denied (are you root?)
+2023-08-01T16:04:10.664692175Z Could not mount /sys/kernel/security.
+2023-08-01T16:04:10.664703615Z AppArmor detection and --privileged mode might break.
+2023-08-01T16:04:10.665952353Z mount: permission denied (are you root?)
+```
+
+This indicates the GitLab Runner does not have permission to start the
+`dind` service:
+
+1. Check that `privileged = true` is set in the `config.toml`.
+1. Make sure the CI job has the right Runner tags to use these
+privileged runners.
+
+### Error: `cgroups: cgroup mountpoint does not exist: unknown`
+
+There is a known incompatibility introduced by Docker Engine 20.10.
+
+When the host uses Docker Engine 20.10 or newer, then the `docker:dind` service in a version older than 20.10 does
+not work as expected.
+
+While the service itself will start without problems, trying to build the container image results in the error:
+
+```plaintext
+cgroups: cgroup mountpoint does not exist: unknown
+```
+
+To resolve this issue, update the `docker:dind` container to version at least 20.10.x,
+for example `docker:24.0.5-dind`.
+
+The opposite configuration (`docker:24.0.5-dind` service and Docker Engine on the host in version
+19.06.x or older) works without problems. For the best strategy, you should to frequently test and update
+job environment versions to the newest. This brings new features, improved security and - for this specific
+case - makes the upgrade on the underlying Docker Engine on the runner's host transparent for the job.

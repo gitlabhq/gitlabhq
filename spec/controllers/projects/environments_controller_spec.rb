@@ -398,7 +398,7 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to eq(
           { 'redirect_url' =>
-             project_pipeline_url(project, action.pipeline_id) })
+              project_job_url(project, action) })
       end
 
       it 'returns environment url for multiple stop actions' do

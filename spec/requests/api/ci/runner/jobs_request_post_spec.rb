@@ -260,7 +260,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(runner.reload.platform).to eq('darwin')
             expect(json_response['id']).to eq(job.id)
             expect(json_response['token']).to eq(job.token)
-            expect(json_response['job_info']).to eq(expected_job_info)
+            expect(json_response['job_info']).to include(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
             expect(json_response['image']).to eq(
               { 'name' => 'image:1.0', 'entrypoint' => '/bin/sh', 'ports' => [], 'pull_policy' => nil }
@@ -672,7 +672,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(runner.reload.platform).to eq('darwin')
               expect(json_response['id']).to eq(job.id)
               expect(json_response['token']).to eq(job.token)
-              expect(json_response['job_info']).to eq(expected_job_info)
+              expect(json_response['job_info']).to include(expected_job_info)
               expect(json_response['git_info']).to eq(expected_git_info)
               expect(json_response['artifacts']).to eq(expected_artifacts)
             end
@@ -781,6 +781,63 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
                   expect(response).to have_gitlab_http_status(:created)
                   expect(json_response['runner_info']).to include({ 'timeout' => 1234 })
+                end
+              end
+            end
+          end
+
+          describe 'time_in_queue_seconds support' do
+            let(:job) do
+              create(:ci_build, :pending, :queued, pipeline: pipeline,
+                     name: 'spinach', stage: 'test', stage_idx: 0,
+                     queued_at: 60.seconds.ago)
+            end
+
+            it 'presents the time_in_queue_seconds info in the payload' do
+              request_job
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response['job_info']['time_in_queue_seconds']).to be >= 60.seconds
+            end
+          end
+
+          describe 'project_jobs_running_on_instance_runners_count support' do
+            context 'when runner is not instance_type' do
+              it 'presents the project_jobs_running_on_instance_runners_count info in the payload as +Inf' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(json_response['job_info']['project_jobs_running_on_instance_runners_count']).to eq('+Inf')
+              end
+            end
+
+            context 'when runner is instance_type' do
+              let(:project) { create(:project, namespace: group, shared_runners_enabled: true) }
+              let(:runner) { create(:ci_runner, :instance) }
+
+              context 'when less than Project::INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET running jobs assigned to an instance runner are on the list' do
+                it 'presents the project_jobs_running_on_instance_runners_count info in the payload as a correct number in a string format' do
+                  request_job
+
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(json_response['job_info']['project_jobs_running_on_instance_runners_count']).to eq('0')
+                end
+              end
+
+              context 'when at least Project::INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET running jobs assigned to an instance runner are on the list' do
+                let(:other_runner) { create(:ci_runner, :instance) }
+
+                before do
+                  stub_const('Project::INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET', 1)
+
+                  create(:ci_running_build, runner: other_runner, runner_type: other_runner.runner_type, project: project)
+                end
+
+                it 'presents the project_jobs_running_on_instance_runners_count info in the payload as Project::INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET+' do
+                  request_job
+
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(json_response['job_info']['project_jobs_running_on_instance_runners_count']).to eq('1+')
                 end
               end
             end

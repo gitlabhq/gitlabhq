@@ -39,14 +39,14 @@ RSpec.describe 'New group page', :js, feature_category: :groups_and_projects do
       context 'for a new top-level group' do
         it 'shows the "Your work" navigation' do
           visit new_group_path
-          expect(page).to have_selector(".super-sidebar .context-switcher-toggle", text: "Your work")
+          expect(page).to have_selector(".super-sidebar", text: "Your work")
         end
       end
 
       context 'for a new subgroup' do
         it 'shows the group navigation of the parent group' do
           visit new_group_path(parent_id: parent_group.id, anchor: 'create-group-pane')
-          expect(page).to have_selector(".super-sidebar .context-switcher-toggle", text: parent_group.name)
+          expect(page).to have_selector(".super-sidebar", text: parent_group.name)
         end
       end
     end

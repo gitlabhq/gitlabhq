@@ -301,9 +301,9 @@ FactoryBot.define do
       end
     end
 
-    factory :ml_model_package do
+    factory :ml_model_package, class: 'Packages::MlModel::Package' do
       sequence(:name) { |n| "mlmodel-package-#{n}" }
-      sequence(:version) { |n| "v1.0.#{n}" }
+      sequence(:version) { |n| "1.0.#{n}" }
       package_type { :ml_model }
     end
   end

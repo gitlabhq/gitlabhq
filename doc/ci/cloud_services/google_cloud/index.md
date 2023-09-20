@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 WARNING:
 `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and is scheduled to be removed in GitLab 16.5. Use [ID tokens](../../yaml/index.md#id_tokens) instead.
+and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../yaml/index.md#id_tokens) instead.
 
 This tutorial demonstrates authenticating to Google Cloud from a GitLab CI/CD job
 using a JSON Web Token (JWT) token and Workload Identity Federation. This configuration

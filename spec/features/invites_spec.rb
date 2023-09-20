@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_category: :experimentation_expansion do
   let_it_be(:owner) { create(:user, name: 'John Doe') }
-  let_it_be(:group) { create(:group, name: 'Owned') }
+  # private will ensure we really have access to the group when we land on the activity page
+  let_it_be(:group) { create(:group, :private, name: 'Owned') }
   let_it_be(:project) { create(:project, :repository, namespace: group) }
 
   let(:group_invite) { group.group_members.invite.last }
@@ -20,18 +21,6 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
     new_user_token = User.find_by_email(new_user.email).confirmation_token
 
     visit user_confirmation_path(confirmation_token: new_user_token)
-  end
-
-  def fill_in_sign_up_form(new_user, submit_button_text = 'Register')
-    fill_in 'new_user_first_name', with: new_user.first_name
-    fill_in 'new_user_last_name', with: new_user.last_name
-    fill_in 'new_user_username', with: new_user.username
-    fill_in 'new_user_email', with: new_user.email
-    fill_in 'new_user_password', with: new_user.password
-
-    wait_for_all_requests
-
-    click_button submit_button_text
   end
 
   def fill_in_welcome_form
@@ -58,10 +47,10 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
           expect(page).to have_content('To accept this invitation, create an account or sign in')
         end
 
-        it 'pre-fills the "Username or email" field on the sign in box with the invite_email from the invite' do
+        it 'pre-fills the "Username or primary email" field on the sign in box with the invite_email from the invite' do
           click_link 'Sign in'
 
-          expect(find_field('Username or email').value).to eq(group_invite.invite_email)
+          expect(find_field('Username or primary email').value).to eq(group_invite.invite_email)
         end
 
         it 'pre-fills the Email field on the sign up box with the invite_email from the invite' do
@@ -70,11 +59,11 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
       end
 
       context 'when invite is sent before account is created;ldap or service sign in for manual acceptance edge case' do
-        let(:user) { create(:user, email: 'user@example.com') }
+        let(:user) { create(:user, :no_super_sidebar, email: 'user@example.com') }
 
         context 'when invite clicked and not signed in' do
           before do
-            visit invite_path(group_invite.raw_invite_token)
+            visit invite_path(group_invite.raw_invite_token, invite_type: Emails::Members::INITIAL_INVITE)
           end
 
           it 'sign in, grants access and redirects to group activity page' do
@@ -82,7 +71,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
             gitlab_sign_in(user, remember: true, visit: false)
 
-            expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+            expect_to_be_on_group_activity_page(group)
           end
         end
 
@@ -143,6 +132,10 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
             end
           end
         end
+
+        def expect_to_be_on_group_activity_page(group)
+          expect(page).to have_current_path(activity_group_path(group))
+        end
       end
     end
   end
@@ -195,12 +188,11 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         context 'when the user sign-up using a different email address' do
           let(:invite_email) { build_stubbed(:user).email }
 
-          it 'signs up and redirects to the activity page',
-            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/414971' do
+          it 'signs up and redirects to the projects dashboard' do
             fill_in_sign_up_form(new_user)
             fill_in_welcome_form
 
-            expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+            expect_to_be_on_projects_dashboard_with_zero_authorized_projects
           end
         end
       end
@@ -232,8 +224,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         end
 
         context 'when the user signs up for an account with the invitation email address' do
-          it 'redirects to the most recent membership activity page with all invitations automatically accepted',
-            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/417092' do
+          it 'redirects to the most recent membership activity page with all invitations automatically accepted' do
             fill_in_sign_up_form(new_user)
             fill_in_welcome_form
 
@@ -250,13 +241,13 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
               stub_feature_flags(identity_verification: false)
             end
 
-            it 'signs up and redirects to the group activity page' do
+            it 'signs up and redirects to the projects dashboard' do
               fill_in_sign_up_form(new_user)
               confirm_email(new_user)
               gitlab_sign_in(new_user, remember: true, visit: false)
               fill_in_welcome_form
 
-              expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+              expect_to_be_on_projects_dashboard_with_zero_authorized_projects
             end
           end
 
@@ -266,14 +257,21 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
               allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
             end
 
-            it 'signs up and redirects to the group activity page' do
+            it 'signs up and redirects to the projects dashboard' do
               fill_in_sign_up_form(new_user)
               fill_in_welcome_form
 
-              expect(page).to have_current_path(activity_group_path(group), ignore_query: true)
+              expect_to_be_on_projects_dashboard_with_zero_authorized_projects
             end
           end
         end
+      end
+
+      def expect_to_be_on_projects_dashboard_with_zero_authorized_projects
+        expect(page).to have_current_path(dashboard_projects_path)
+
+        expect(page).to have_content _('Welcome to GitLab')
+        expect(page).to have_content _('Faster releases. Better code. Less pain.')
       end
     end
 

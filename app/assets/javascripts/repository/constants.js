@@ -27,12 +27,6 @@ export const PDF_MAX_PAGE_LIMIT = 50;
 export const ROW_APPEAR_DELAY = 150;
 
 export const DEFAULT_BLOB_INFO = {
-  gitpodEnabled: false,
-  currentUser: {
-    gitpodEnabled: false,
-    preferencesGitpodPath: null,
-    profileEnableGitpodPath: null,
-  },
   userPermissions: {
     pushCode: false,
     downloadCode: false,
@@ -116,5 +110,3 @@ export const POLLING_INTERVAL_BACKOFF = 2;
 export const CONFLICTS_MODAL_ID = 'fork-sync-conflicts-modal';
 
 export const FORK_UPDATED_EVENT = 'fork:updated';
-
-export const CODEOWNERS_FILE_NAME = 'CODEOWNERS';

@@ -157,9 +157,9 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       href: '/-/profile/personal_access_tokens/1/revoke',
       'data-confirm': sprintf(
         __(
-          'Are you sure you want to revoke this %{accessTokenType}? This action cannot be undone.',
+          'Are you sure you want to revoke the %{accessTokenType} "%{tokenName}"? This action cannot be undone.',
         ),
-        { accessTokenType },
+        { accessTokenType, tokenName: 'a' },
       ),
     });
     expect(button.props('category')).toBe('tertiary');

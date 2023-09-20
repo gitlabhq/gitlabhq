@@ -49,7 +49,7 @@ describe('TargetLink', () => {
     });
   });
 
-  describe('when target is not defined', () => {
+  describe('when target type is not defined', () => {
     beforeEach(() => {
       createComponent({ propsData: { event: eventJoined() } });
     });

@@ -10,8 +10,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
 
-Get a list of repository tags from a project, sorted by update date and time in descending order. This endpoint can be accessed without authentication if the
-repository is publicly accessible.
+Get a list of repository tags from a project, sorted by update date and time in
+descending order.
+
+NOTE:
+If the repository is publicly accessible, authentication
+(`--header "PRIVATE-TOKEN: <your_access_token>"`) is not required.
 
 ```plaintext
 GET /projects/:id/repository/tags
@@ -19,12 +23,19 @@ GET /projects/:id/repository/tags
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer or string| yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `order_by` | string | no | Return tags ordered by `name`, `updated`, or `version`. Default is `updated`. |
-| `sort` | string | no | Return tags sorted in `asc` or `desc` order. Default is `desc`. |
-| `search` | string | no | Return list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term` respectively. No other regular expressions are supported. |
+| Attribute  | Type              | Required | Description |
+|------------|-------------------|----------|-------------|
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `order_by` | string            | no       | Return tags ordered by `name`, `updated`, or `version`. Default is `updated`. |
+| `sort`     | string            | no       | Return tags sorted in `asc` or `desc` order. Default is `desc`. |
+| `search`   | string            | no       | Return a list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term` respectively. No other regular expressions are supported. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/repository/tags"
+```
+
+Example Response:
 
 ```json
 [
@@ -68,13 +79,14 @@ GET /projects/:id/repository/tags/:tag_name
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `tag_name` | string | yes | The name of the tag |
+| Attribute  | Type              | Required | Description |
+|------------|-------------------|----------|-------------|
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `tag_name` | string            | yes      | The name of a tag. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/tags/v1.0.0"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/tags/v1.0.0"
 ```
 
 Example Response:
@@ -115,15 +127,17 @@ POST /projects/:id/repository/tags
 
 Parameters:
 
-| Attribute             | Type           | Required | Description                                                                                                     |
-| --------------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
-| `id`                  | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `tag_name`            | string         | yes      | The name of a tag                                                                                               |
-| `ref`                 | string         | yes      | Create tag using commit SHA, another tag name, or branch name                                                   |
-| `message`             | string         | no       | Creates annotated tag                                                                                           |
+| Attribute  | Type              | Required | Description |
+|------------|-------------------|----------|-------------|
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `tag_name` | string            | yes      | The name of a tag. |
+| `ref`      | string            | yes      | Create a tag from a commit SHA, another tag name, or branch name. |
+| `message`  | string            | no       | Create an annotated tag. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/tags?tag_name=test&ref=master"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/tags?tag_name=test&ref=main"
 ```
 
 Example response:
@@ -154,13 +168,12 @@ Example response:
 }
 ```
 
-The message is `null` when creating a lightweight tag. Otherwise, it contains the annotation.
+The type of tag created determines the contents of `target` and `message`:
 
-The target contains the tag objects ID when creating annotated tags,
-otherwise it contains the commit ID when creating lightweight tags.
+- For annotated tags, `message` contains the annotation, and `target` contains the tag object's ID.
+- For lightweight tags, `message` is null, and `target` contains the commit ID.
 
-In case of an error,
-status code `405` with an explaining error message is returned.
+Errors return status code `405` with an explanatory error message.
 
 ## Delete a tag
 
@@ -172,16 +185,16 @@ DELETE /projects/:id/repository/tags/:tag_name
 
 Parameters:
 
-| Attribute  | Type           | Required | Description                                                                                                     |
-| ---------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `tag_name` | string         | yes      | The name of a tag                                                                                               |
+| Attribute  | Type              | Required | Description |
+|------------|-------------------|----------|-------------|
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `tag_name` | string            | yes      | The name of a tag. |
 
 ## Get X.509 signature of a tag
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106578) in GitLab 15.7.
 
-Get the [X.509 signature from a tag](../user/project/repository/x509_signed_commits/index.md),
+Get the [X.509 signature from a tag](../user/project/repository/signed_commits/x509.md),
 if it is signed. Unsigned tags return a `404 Not Found` response.
 
 ```plaintext
@@ -190,13 +203,14 @@ GET /projects/:id/repository/tags/:tag_name/signature
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `tag_name` | string         | yes      | The name of a tag. |
+| Attribute  | Type              | Required | Description |
+|------------|-------------------|----------|-------------|
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `tag_name` | string            | yes      | The name of a tag. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository/tags/v1.1.1/signature"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/repository/tags/v1.1.1/signature"
 ```
 
 Example response if tag is X.509 signed:

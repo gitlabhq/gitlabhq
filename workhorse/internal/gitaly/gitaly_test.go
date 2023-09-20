@@ -46,15 +46,6 @@ func TestNewRepositoryClient(t *testing.T) {
 	testOutgoingMetadata(t, ctx)
 }
 
-func TestNewNamespaceClient(t *testing.T) {
-	ctx, _, err := NewNamespaceClient(
-		context.Background(),
-		serverFixture(),
-	)
-	require.NoError(t, err)
-	testOutgoingMetadata(t, ctx)
-}
-
 func TestNewDiffClient(t *testing.T) {
 	ctx, _, err := NewDiffClient(
 		context.Background(),

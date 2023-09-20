@@ -191,9 +191,11 @@ export default {
     getVersionPopoverTitle(agent) {
       if (this.isVersionMismatch(agent) && this.isVersionOutdated(agent)) {
         return this.$options.i18n.versionMismatchOutdatedTitle;
-      } else if (this.isVersionMismatch(agent)) {
+      }
+      if (this.isVersionMismatch(agent)) {
         return this.$options.i18n.versionMismatchTitle;
-      } else if (this.isVersionOutdated(agent)) {
+      }
+      if (this.isVersionOutdated(agent)) {
         return this.$options.i18n.versionOutdatedTitle;
       }
 

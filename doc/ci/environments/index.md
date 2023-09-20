@@ -51,7 +51,7 @@ Deployments show up in this list only after a deployment job has created them.
 
 To search environments by name:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. In the search bar, enter your search term.
    - The length of your **search term should be 3 or more characters**.
@@ -93,7 +93,7 @@ Prerequisites:
 
 To create a static environment in the UI:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select **Create an environment**.
 1. Complete the fields.
@@ -339,13 +339,19 @@ It points to the commit you're rolling back to.
 For the rollback to succeed, the deployment process must be defined in
 the job's `script`.
 
+Only the [deployment jobs](../jobs/index.md#deployment-jobs) are run.
+In cases where a previous job generates artifacts that must be regenerated
+on deploy, you must manually run the necessary jobs from the pipelines page.
+For example, if you use Terraform and your `plan` and `apply` commands are separated
+into multiple jobs, you must manually run the jobs to deploy or roll back.
+
 #### Retry or roll back a deployment
 
 If there is a problem with a deployment, you can retry it or roll it back.
 
 To retry or roll back a deployment:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the environment.
 1. To the right of the deployment name:
@@ -359,7 +365,7 @@ In this case, see [job retries for rollback deployments](deployment_safety.md#jo
 
 ### Environment URL
 
-> - [Fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `soft_validation_on_external_url`. Disabled by default.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `soft_validation_on_external_url`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) in GitLab 15.3. [Feature flag `soft_validation_on_external_url`](https://gitlab.com/gitlab-org/gitlab/-/issues/367206) removed.
 
 The [environment URL](../yaml/index.md#environmenturl) is displayed in a few
@@ -560,7 +566,7 @@ you can view its expiration date and time.
 
 To view an environment's expiration date and time:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the name of the environment.
 
@@ -573,7 +579,7 @@ you can override its expiration.
 
 To override an environment's expiration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the deployment name.
 1. in the upper-right corner, select the thumbtack (**{thumbtack}**).
@@ -600,7 +606,7 @@ Environments view, the stop and deploy jobs must be in the same
 
 To stop an environment in the GitLab UI:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Next to the environment you want to stop, select **Stop**.
 1. On the confirmation dialog, select **Stop environment**.
@@ -664,7 +670,7 @@ Prerequisites:
 
 To delete an environment:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
@@ -767,7 +773,7 @@ Limitations of GitLab Auto Rollback:
 
 GitLab Auto Rollback is turned off by default. To turn it on:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Automatic deployment rollbacks**.
 1. Select the checkbox for **Enable automatic rollbacks**.
@@ -910,6 +916,7 @@ the `review/feature-1` spec takes precedence over `review/*` and `*` specs.
 ## Related topics
 
 - [Dashboard for Kubernetes](kubernetes_dashboard.md)
+- [Downstream pipelines for deployments](../pipelines/downstream_pipelines.md#downstream-pipelines-for-deployments)
 - [Deploy to multiple environments with GitLab CI/CD (blog post)](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/)
 - [Review Apps](../review_apps/index.md)
 - [Protected environments](protected_environments.md)

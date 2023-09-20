@@ -4,6 +4,14 @@ module API
   module Ml
     module Mlflow
       module ApiHelpers
+        def check_api_read!
+          not_found! unless can?(current_user, :read_model_experiments, user_project)
+        end
+
+        def check_api_write!
+          unauthorized! unless can?(current_user, :write_model_experiments, user_project)
+        end
+
         def resource_not_found!
           render_structured_api_error!({ error_code: 'RESOURCE_DOES_NOT_EXIST' }, 404)
         end
@@ -30,6 +38,37 @@ module API
 
         def candidate
           @candidate ||= find_candidate!(params[:run_id])
+        end
+
+        def candidates_order_params(params)
+          find_params = {
+            order_by: nil,
+            order_by_type: nil,
+            sort: nil
+          }
+
+          return find_params if params[:order_by].blank?
+
+          order_by_split = params[:order_by].split(' ')
+          order_by_column_split = order_by_split[0].split('.')
+          if order_by_column_split.size == 1
+            order_by_column = order_by_column_split[0]
+            order_by_column_type = 'column'
+          elsif order_by_column_split[0] == 'metrics'
+            order_by_column = order_by_column_split[1]
+            order_by_column_type = 'metric'
+          else
+            order_by_column = nil
+            order_by_column_type = nil
+          end
+
+          order_by_sort = order_by_split[1]
+
+          {
+            order_by: order_by_column,
+            order_by_type: order_by_column_type,
+            sort: order_by_sort
+          }
         end
 
         def find_experiment!(iid, name)

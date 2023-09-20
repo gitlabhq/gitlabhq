@@ -18,6 +18,12 @@ import DeletePackages from '~/packages_and_registries/package_registry/component
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
 import PackageList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
+import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
+import {
+  getPageParams,
+  getNextPageParams,
+  getPreviousPageParams,
+} from '~/packages_and_registries/package_registry/utils';
 
 export default {
   components: {
@@ -28,6 +34,7 @@ export default {
     PackageList,
     PackageTitle,
     PackageSearch,
+    PersistedPagination,
     DeletePackages,
   },
   directives: {
@@ -39,7 +46,7 @@ export default {
       packagesResource: {},
       sort: '',
       filters: {},
-      mutationLoading: false,
+      isDeleteInProgress: false,
       pageParams: {},
     };
   },
@@ -100,7 +107,7 @@ export default {
         : this.$options.i18n.noResultsTitle;
     },
     isLoading() {
-      return this.$apollo.queries.packagesResource.loading || this.mutationLoading;
+      return this.$apollo.queries.packagesResource.loading || this.isDeleteInProgress;
     },
     refetchQueriesData() {
       return [
@@ -124,23 +131,16 @@ export default {
         historyReplaceState(cleanUrl);
       }
     },
-    handleSearchUpdate({ sort, filters }) {
-      this.pageParams = {};
+    handleSearchUpdate({ sort, filters, pageInfo }) {
+      this.pageParams = getPageParams(pageInfo);
       this.sort = sort;
       this.filters = { ...filters };
     },
     fetchNextPage() {
-      this.pageParams = {
-        first: GRAPHQL_PAGE_SIZE,
-        after: this.pageInfo?.endCursor,
-      };
+      this.pageParams = getNextPageParams(this.pageInfo.endCursor);
     },
     fetchPreviousPage() {
-      this.pageParams = {
-        first: null,
-        last: GRAPHQL_PAGE_SIZE,
-        before: this.pageInfo?.startCursor,
-      };
+      this.pageParams = getPreviousPageParams(this.pageInfo.startCursor);
     },
   },
   i18n: {
@@ -176,17 +176,14 @@ export default {
     <delete-packages
       :refetch-queries="refetchQueriesData"
       show-success-alert
-      @start="mutationLoading = true"
-      @end="mutationLoading = false"
+      @start="isDeleteInProgress = true"
+      @end="isDeleteInProgress = false"
     >
       <template #default="{ deletePackages }">
         <package-list
           :group-settings="groupSettings"
           :list="packages.nodes"
           :is-loading="isLoading"
-          :page-info="pageInfo"
-          @prev-page="fetchPreviousPage"
-          @next-page="fetchNextPage"
           @delete="deletePackages"
         >
           <template #empty-state>
@@ -210,5 +207,13 @@ export default {
         </package-list>
       </template>
     </delete-packages>
+    <div v-if="!isDeleteInProgress" class="gl-display-flex gl-justify-content-center">
+      <persisted-pagination
+        class="gl-mt-3"
+        :pagination="pageInfo"
+        @prev="fetchPreviousPage"
+        @next="fetchNextPage"
+      />
+    </div>
   </div>
 </template>

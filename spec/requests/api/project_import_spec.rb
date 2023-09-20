@@ -470,12 +470,14 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
   end
 
   describe 'GET /projects/:id/import' do
-    it 'public project accessible for an unauthenticated user' do
-      project = create(:project, :public)
+    context 'with an unauthenticated user' do
+      it 'returns unauthorized response for public project import status' do
+        project = create(:project, :public)
 
-      get api("/projects/#{project.id}/import", nil)
+        get api("/projects/#{project.id}/import", nil)
 
-      expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
     end
 
     it 'returns the import status' do

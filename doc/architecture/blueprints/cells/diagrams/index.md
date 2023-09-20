@@ -22,7 +22,7 @@ Load the `.drawio.png` or `.drawio.svg` file directly into **draw.io**, which yo
 To create a diagram from a file:
 
 1. Copy existing file and rename it. Ensure that the extension is `.drawio.png` or `.drawio.svg`.
-1. Edit the diagram. 
+1. Edit the diagram.
 1. Save the file.
 
 To create a diagram from scratch using [draw.io desktop](https://github.com/jgraph/drawio-desktop/releases):

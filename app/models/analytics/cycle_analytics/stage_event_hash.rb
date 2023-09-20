@@ -13,7 +13,7 @@ module Analytics
 
         # Atomic, safe insert without retrying
         query = <<~SQL
-        WITH insert_cte AS #{Gitlab::Database::AsWithMaterialized.materialized_if_supported} (
+        WITH insert_cte AS MATERIALIZED (
           INSERT INTO #{quoted_table_name} (hash_sha256) VALUES (#{casted_hash_code}) ON CONFLICT DO NOTHING RETURNING ID
         )
         SELECT ids.id FROM (

@@ -7,7 +7,7 @@
       = hidden_field_tag :sort, @sort
       .search-holder
         .search-field-holder
-          = search_field_tag :name, params[:name].presence, class: "form-control search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: 'Search by name', data: { qa_selector: 'group_search_field' }
+          = search_field_tag :name, params[:name].presence, class: "form-control search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: 'Search by name', data: { testid: 'group-search-field' }
           = sprite_icon('search', css_class: 'search-icon')
         = render "shared/groups/dropdown", options_hash: admin_groups_sort_options_hash
         = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_group_path) do

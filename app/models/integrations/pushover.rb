@@ -47,19 +47,19 @@ module Integrations
         [
           ['Device default sound', nil],
           ['Pushover (default)', 'pushover'],
-          %w(Bike bike),
-          %w(Bugle bugle),
+          %w[Bike bike],
+          %w[Bugle bugle],
           ['Cash Register', 'cashregister'],
-          %w(Classical classical),
-          %w(Cosmic cosmic),
-          %w(Falling falling),
-          %w(Gamelan gamelan),
-          %w(Incoming incoming),
-          %w(Intermission intermission),
-          %w(Magic magic),
-          %w(Mechanical mechanical),
+          %w[Classical classical],
+          %w[Cosmic cosmic],
+          %w[Falling falling],
+          %w[Gamelan gamelan],
+          %w[Incoming incoming],
+          %w[Intermission intermission],
+          %w[Magic magic],
+          %w[Mechanical mechanical],
           ['Piano Bar', 'pianobar'],
-          %w(Siren siren),
+          %w[Siren siren],
           ['Space Alarm', 'spacealarm'],
           ['Tug Boat', 'tugboat'],
           ['Alien Alarm (long)', 'alien'],
@@ -84,7 +84,7 @@ module Integrations
     end
 
     def self.supported_events
-      %w(push)
+      %w[push]
     end
 
     def execute(data)

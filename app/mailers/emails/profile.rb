@@ -2,6 +2,8 @@
 
 module Emails
   module Profile
+    include SafeFormatHelper
+
     def new_user_email(user_id, token = nil)
       @current_user = @user = User.find(user_id)
       @target_url = user_url(@user)
@@ -57,6 +59,28 @@ module Emails
       mail_with_locale(to: @user.notification_email_or_default, subject: subject("GPG key was added to your account"))
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def resource_access_tokens_about_to_expire_email(recipient, resource, token_names)
+      @user = recipient
+      @token_names = token_names
+      @days_to_expire = PersonalAccessToken::DAYS_TO_EXPIRE
+      @resource = resource
+      @target_url = if resource.is_a?(Group)
+                      group_settings_access_tokens_url(resource)
+                    else
+                      project_settings_access_tokens_url(resource)
+                    end
+
+      mail_with_locale(
+        to: recipient.notification_email_or_default,
+        subject: subject(
+          safe_format(
+            _("Your resource access tokens will expire in %{days_to_expire} or less"),
+            days_to_expire: pluralize(@days_to_expire, _('day'))
+          )
+        )
+      )
+    end
 
     def access_token_created_email(user, token_name)
       return unless user&.active?
@@ -155,7 +179,7 @@ module Emails
       @user = user
       @email = email
 
-      mail_with_locale(to: @user.notification_email_or_default, subject: subject(_("New email address added")))
+      email_with_layout(to: @user.notification_email_or_default, subject: subject(_("New email address added")))
     end
 
     def new_achievement_email(user, achievement)

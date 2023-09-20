@@ -201,6 +201,17 @@ RSpec.describe PagesDomain do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:verification_code) }
+
+    context 'when validating max certificate key length' do
+      it 'validates the certificate key length' do
+        valid_domain = build(:pages_domain, :key_length_8192)
+        expect(valid_domain).to be_valid
+
+        invalid_domain = build(:pages_domain, :extra_long_key)
+        expect(invalid_domain).to be_invalid
+        expect(invalid_domain.errors[:key]).to include('Certificate Key is too long. (Max 8192 bytes)')
+      end
+    end
   end
 
   describe 'default values' do

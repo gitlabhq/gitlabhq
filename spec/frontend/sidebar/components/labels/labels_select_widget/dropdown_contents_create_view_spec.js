@@ -5,10 +5,13 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import { workspaceLabelsQueries } from '~/sidebar/constants';
+import { workspaceLabelsQueries, workspaceCreateLabelMutation } from '~/sidebar/queries/constants';
 import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
-import createLabelMutation from '~/sidebar/components/labels/labels_select_widget/graphql/create_label.mutation.graphql';
 import { DEFAULT_LABEL_COLOR } from '~/sidebar/components/labels/labels_select_widget/constants';
+import {
+  mockCreateLabelResponse as createAbuseReportLabelSuccessfulResponse,
+  mockLabelsQueryResponse as abuseReportLabelsQueryResponse,
+} from '../../../../admin/abuse_report/mock_data';
 import {
   mockRegularLabel,
   mockSuggestedColors,
@@ -38,6 +41,9 @@ const titleTakenError = {
 };
 
 const createLabelSuccessHandler = jest.fn().mockResolvedValue(createLabelSuccessfulResponse);
+const createAbuseReportLabelSuccessHandler = jest
+  .fn()
+  .mockResolvedValue(createAbuseReportLabelSuccessfulResponse);
 const createLabelUserRecoverableErrorHandler = jest.fn().mockResolvedValue(userRecoverableError);
 const createLabelDuplicateErrorHandler = jest.fn().mockResolvedValue(titleTakenError);
 const createLabelErrorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
@@ -66,6 +72,7 @@ describe('DropdownContentsCreateView', () => {
     labelsResponse = workspaceLabelsQueryResponse,
     searchTerm = '',
   } = {}) => {
+    const createLabelMutation = workspaceCreateLabelMutation[workspaceType];
     const mockApollo = createMockApollo([[createLabelMutation, mutationHandler]]);
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: workspaceLabelsQueries[workspaceType].query,
@@ -199,6 +206,22 @@ describe('DropdownContentsCreateView', () => {
     expect(createLabelSuccessHandler).toHaveBeenCalledWith({
       color: '#009966',
       groupPath: '',
+      title: 'Test title',
+    });
+  });
+
+  it('calls the correct mutation when workspaceType is `abuseReport`', () => {
+    createComponent({
+      mutationHandler: createAbuseReportLabelSuccessHandler,
+      labelCreateType: '',
+      workspaceType: 'abuseReport',
+      labelsResponse: abuseReportLabelsQueryResponse,
+    });
+    fillLabelAttributes();
+    findCreateButton().vm.$emit('click');
+
+    expect(createAbuseReportLabelSuccessHandler).toHaveBeenCalledWith({
+      color: '#009966',
       title: 'Test title',
     });
   });

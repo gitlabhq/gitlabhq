@@ -44,8 +44,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
         destroy_group(group, user, async)
 
         expect(
-          Users::GhostUserMigration.where(user: bot,
-                                          initiator_user: user)
+          Users::GhostUserMigration.where(user: bot, initiator_user: user)
         ).to be_exists
       end
     end
@@ -70,10 +69,6 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
         end
 
         it 'verifies that paths have been deleted' do
-          Gitlab::GitalyClient::NamespaceService.allow do
-            expect(Gitlab::GitalyClient::NamespaceService.new(project.repository_storage)
-              .exists?(group.path)).to be_falsey
-          end
           expect(removed_repo).not_to exist
         end
       end
@@ -101,10 +96,6 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
       end
 
       it 'verifies original paths and projects still exist' do
-        Gitlab::GitalyClient::NamespaceService.allow do
-          expect(Gitlab::GitalyClient::NamespaceService.new(project.repository_storage)
-            .exists?(group.path)).to be_truthy
-        end
         expect(removed_repo).not_to exist
         expect(Project.unscoped.count).to eq(1)
         expect(Group.unscoped.count).to eq(2)

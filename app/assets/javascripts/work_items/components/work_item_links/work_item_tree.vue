@@ -64,6 +64,7 @@ export default {
       isShownAddForm: false,
       formType: null,
       childType: null,
+      widgetName: 'tasks',
     };
   },
   computed: {
@@ -101,6 +102,7 @@ export default {
 <template>
   <widget-wrapper
     ref="wrapper"
+    :widget-name="widgetName"
     :error="error"
     data-testid="work-item-tree"
     @dismissAlert="error = undefined"

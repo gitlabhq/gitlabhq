@@ -46,7 +46,7 @@ projects with the compliance framework applied.
 
 To create the compliance pipeline project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `Tutorial group` group.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group.
 1. Select **New project**.
 1. Select **Create blank project**.
 1. In the **Project name** field, enter `Tutorial compliance project`.
@@ -54,7 +54,7 @@ To create the compliance pipeline project:
 
 To add compliance pipeline configuration to `Tutorial compliance project`:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `Tutorial compliance project` project.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial compliance project` project.
 1. Select **Build > Pipeline editor**.
 1. Select **Configure pipeline**.
 1. In the pipeline editor, replace the default configuration with:
@@ -74,7 +74,7 @@ The compliance framework is configured in the [new group](#create-a-new-group).
 
 To configure the compliance framework:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `Tutorial group` group.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group.
 1. Select **Settings > General**.
 1. Expand **Compliance frameworks**.
 1. Select **Add framework**.
@@ -87,7 +87,7 @@ To configure the compliance framework:
 
 For convenience, make the new compliance framework the default for all new projects in the group:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `Tutorial group` group.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group.
 1. Select **Settings > General**.
 1. Expand **Compliance frameworks**.
 1. In the row for `Tutorial compliance framework`, select **Options** (**{ellipsis_v}**).
@@ -100,7 +100,7 @@ compliance pipeline configuration in their pipelines.
 
 To create a new project for running the compliance pipeline configuration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `Tutorial group` group.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial group` group.
 1. Select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Create blank project**.
 1. In the **Project name** field, enter `Tutorial project`.
@@ -114,7 +114,7 @@ pipeline configuration in `Tutorial compliance project`.
 
 To run the compliance pipeline configuration in `Tutorial project`:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `Tutorial project` project.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project.
 1. Select **Build > Pipelines**.
 1. Select **Run pipeline**.
 1. On the **Run pipeline** page, select **Run pipeline**.
@@ -132,7 +132,7 @@ compliance pipeline configuration to refer to it.
 
 To create the regular pipeline configuration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `Tutorial project` project.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project.
 1. Select **Build > Pipeline editor**.
 1. Select **Configure pipeline**.
 1. In the pipeline editor, replace the default configuration with:
@@ -148,7 +148,7 @@ To create the regular pipeline configuration:
 
 To combine the new project pipeline configuration with the compliance pipeline configuration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `Tutorial compliance project` project.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial compliance project` project.
 1. Select **Build > Pipeline editor**.
 1. In the existing configuration, add:
 
@@ -162,7 +162,7 @@ To combine the new project pipeline configuration with the compliance pipeline c
 
 To confirm the regular pipeline configuration is combined with the compliance pipeline configuration:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find the `Tutorial project` project.
+1. On the left sidebar, select **Search or go to** and find the `Tutorial project` project.
 1. Select **Build > Pipelines**.
 1. Select **Run pipeline**.
 1. On the **Run pipeline** page, select **Run pipeline**.

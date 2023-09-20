@@ -6,7 +6,7 @@ module BlobViewer
     include Static
 
     self.partial_name = 'readme'
-    self.file_types = %i(readme)
+    self.file_types = %i[readme]
     self.binary = false
 
     def visible_to?(current_user)

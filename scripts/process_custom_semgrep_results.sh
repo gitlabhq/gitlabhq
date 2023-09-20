@@ -22,7 +22,7 @@ jq -crM '.vulnerabilities |
 echo "Resulting file:"
 cat findings.txt
 
-EXISTING_COMMENT_ID=$(curl "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes" \
+EXISTING_COMMENT_ID=$(curl "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes?per_page=100" \
   --header "Private-Token: $CUSTOM_SAST_RULES_BOT_PAT" |
   jq -crM 'map( select( .author.id == (env.BOT_USER_ID | tonumber) ) | .id ) | first')
 

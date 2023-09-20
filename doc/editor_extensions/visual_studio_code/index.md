@@ -22,7 +22,8 @@ do more day-to-day tasks in Visual Studio Code, such as:
   and paste snippets to, and from, your editor.
 - [Browse repositories](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#browse-a-repository-without-cloning)
   without cloning them.
-- [Receive Code Suggestions](../../user/project/repository/code_suggestions.md).
+- [Receive Code Suggestions](../../user/project/repository/code_suggestions/index.md).
+- [View Security findings](https://marketplace.visualstudio.com/items?itemName=gitlab.gitlab-workflow#security-findings).
 
 ## Download the extension
 
@@ -35,7 +36,7 @@ you can [configure](https://marketplace.visualstudio.com/items?itemName=GitLab.g
 
 - [Features to display or hide](https://gitlab.com/gitlab-org/gitlab-vscode-extension#extension-settings).
 - [Self-signed certificate](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#self-signed-certificates) information.
-- [Code Suggestions](../../user/project/repository/code_suggestions.md).
+- [Code Suggestions](../../user/project/repository/code_suggestions/index.md).
 
 ## Report issues with the extension
 

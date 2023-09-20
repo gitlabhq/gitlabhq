@@ -76,7 +76,7 @@ frequently.
 
 You can change how often Gitaly is asked to optimize a repository.
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Repository maintenance**.
@@ -109,7 +109,7 @@ housekeeping tasks. The manual trigger can be useful when either:
 
 To trigger housekeeping tasks manually:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.
@@ -136,7 +136,7 @@ reduce the likelihood of such race conditions.
 
 To trigger a manual prune of unreachable objects:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.

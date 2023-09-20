@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_composition do
+  using RSpec::Parameterized::TableSyntax
+
   let(:entry) { described_class.new(config, name: :rspec) }
 
   it_behaves_like 'with inheritable CI config' do
@@ -29,7 +31,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       let(:result) do
         %i[before_script script after_script hooks stage cache
            image services only except rules needs variables artifacts
-           environment coverage retry interruptible timeout release tags
+           coverage retry interruptible timeout release tags
            inherit parallel]
       end
 
@@ -696,8 +698,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
     end
 
     context 'with workflow rules' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:name, :has_workflow_rules?, :only, :rules, :result) do
         "uses default only"    | false | nil          | nil    | { refs: %w[branches tags] }
         "uses user only"       | false | %w[branches] | nil    | { refs: %w[branches] }
@@ -736,6 +736,20 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
           expect(entry).not_to be_only_defined
         end
       end
+    end
+  end
+
+  describe '#pages_job?', :aggregate_failures, feature_category: :pages do
+    where(:name, :result) do
+      :pages | true
+      :'pages:staging' | false
+      :'something:pages:else' | false
+    end
+
+    with_them do
+      subject { described_class.new({}, name: name).pages_job? }
+
+      it { is_expected.to eq(result) }
     end
   end
 

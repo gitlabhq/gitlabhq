@@ -19,12 +19,23 @@ that will create:
   commit which triggered the pipeline).
 
 When you push a commit to either the GitLab CE or GitLab EE project, the
-pipeline for that commit will have a `build-package` manual action you can
-trigger.
+pipeline for that commit will have a `trigger-omnibus` job in the `qa` stage you
+can trigger manually (if it didn't trigger already).
 
-![Manual actions](img/build_package_v12_6.png)
+![Trigger omnibus QA job](img/trigger_omnibus_v16_3.png)
 
-![Build package manual action](img/trigger_build_package_v12_6.png)
+After the child pipeline started, you can select `trigger-omnibus` to go to
+the child pipeline named `TRIGGERED_EE_PIPELINE`.
+
+![Triggered child pipeline](img/triggered_ee_pipeline_v16_3.png)
+
+Next, select the `Trigger:package` job in the `trigger-package` stage.
+
+The `Trigger:package` job when finished will upload its artifacts to GitLab, and
+then you can `Browse` them and download the `.deb` file or you can use the
+GitLab API to download the file straight to your VM. Keep in mind the expiry of
+these artifacts is short, so they will be deleted automatically within a day or
+so.
 
 ## Specifying versions of components
 

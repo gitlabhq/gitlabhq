@@ -29,7 +29,7 @@ An Apple ID enrolled in the [Apple Developer Program](https://developer.apple.co
 GitLab supports enabling the Apple App Store integration at the project level. Complete these steps in GitLab:
 
 1. In the Apple App Store Connect portal, generate a new private key for your project by following [these instructions](https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api).
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
 1. Select **Apple App Store Connect**.
 1. Under **Enable integration**, select the **Active** checkbox.

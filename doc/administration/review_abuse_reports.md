@@ -1,5 +1,5 @@
 ---
-stage: Anti-Abuse
+stage: Govern
 group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference, howto
@@ -16,7 +16,7 @@ reports in the Admin Area.
 
 To receive notifications of new abuse reports by email:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Settings > Reporting**.
 1. Expand the **Abuse reports** section.
@@ -34,7 +34,7 @@ To find out more about reporting abuse, see
 
 To access abuse reports:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. Select **Abuse Reports**.
 

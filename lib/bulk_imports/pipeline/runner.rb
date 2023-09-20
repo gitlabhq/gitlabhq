@@ -58,11 +58,9 @@ module BulkImports
           importer: 'gitlab_migration'
         )
       rescue BulkImports::NetworkError => e
-        if e.retriable?(context.tracker)
-          raise BulkImports::RetryPipelineError.new(e.message, e.retry_delay)
-        else
-          log_and_fail(e, step)
-        end
+        raise BulkImports::RetryPipelineError.new(e.message, e.retry_delay) if e.retriable?(context.tracker)
+
+        log_and_fail(e, step)
       rescue BulkImports::RetryPipelineError
         raise
       rescue StandardError => e

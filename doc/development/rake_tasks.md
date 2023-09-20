@@ -30,7 +30,9 @@ See also [Mass inserting Rails models](mass_insert.md).
 
 **LARGE_PROJECTS**: Create large projects (through import) from a predefined set of URLs.
 
-### Seeding issues for all or a given project
+### Seeding Data
+
+#### Seeding issues for all projects or a single project
 
 You can seed issues for all or a given project with the `gitlab:seed:issues`
 task:
@@ -195,6 +197,14 @@ bundle exec rake "gitlab:seed:ci_variables_group[group_name, 25, unique, CI_VAR_
 
 bundle exec rake "gitlab:seed:ci_variables_instance"
 bundle exec rake "gitlab:seed:ci_variables_instance[25, CI_VAR_]"
+```
+
+#### Seed a project for merge train development
+
+Seeds a project with merge trains configured and 20 merge requests(each with 3 commits). The command:
+
+```shell
+rake gitlab:seed:merge_trains:project
 ```
 
 ### Automation
@@ -519,6 +529,11 @@ The following command combines the intent of [Update GraphQL documentation and s
 ```shell
 bundle exec rake gitlab:graphql:update_all
 ```
+
+## Update audit event types documentation
+
+For information on updating audit event types documentation, see
+[Generate documentation](audit_event_guide/index.md#generate-documentation).
 
 ## Update OpenAPI client for Error Tracking feature
 

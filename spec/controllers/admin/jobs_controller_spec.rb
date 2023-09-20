@@ -14,8 +14,6 @@ RSpec.describe Admin::JobsController do
         get :index
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(assigns(:builds)).to be_a(Kaminari::PaginatableWithoutCount)
-        expect(assigns(:builds).count).to be(1)
       end
     end
 

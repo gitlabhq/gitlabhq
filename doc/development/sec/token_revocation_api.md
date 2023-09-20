@@ -108,8 +108,8 @@ For example, to configure these values in the
 
 ```ruby
 ::Gitlab::CurrentSettings.update!(secret_detection_token_revocation_token: 'MYSECRETTOKEN')
-::Gitlab::CurrentSettings.update!(secret_detection_token_revocation_url: 'https://example.gitlab.com/revocation_service/v1/revoke_tokens')
-::Gitlab::CurrentSettings.update!(secret_detection_revocation_token_types_url: 'https://example.gitlab.com/revocation_service/v1/revocable_token_types')
+::Gitlab::CurrentSettings.update!(secret_detection_token_revocation_url: 'https://gitlab.example.com/revocation_service/v1/revoke_tokens')
+::Gitlab::CurrentSettings.update!(secret_detection_revocation_token_types_url: 'https://gitlab.example.com/revocation_service/v1/revocable_token_types')
 ::Gitlab::CurrentSettings.update!(secret_detection_token_revocation_enabled: true)
 ```
 

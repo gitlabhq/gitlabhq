@@ -24,7 +24,6 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
     <gl-tab-stub
       titlelinkclass=""
     >
-       
       <div
         class="gl-mt-3"
       >
@@ -38,7 +37,6 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
           searchtextoptionlabel="Search for this text"
           value=""
         />
-         
         <review-tab-container-stub
           commits=""
           emptylisttext="Your search didn't match any commits. Try a different query."
@@ -46,11 +44,9 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
         />
       </div>
     </gl-tab-stub>
-     
     <gl-tab-stub
       titlelinkclass=""
     >
-       
       <review-tab-container-stub
         commits=""
         emptylisttext="Commits you select appear here. Go to the first tab and select commits to add to this merge request."

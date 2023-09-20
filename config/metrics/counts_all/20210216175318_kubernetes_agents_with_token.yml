@@ -17,6 +17,5 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type:
-- smau
+performance_indicator_type: []
 milestone: "<13.9"

@@ -55,7 +55,7 @@ to a branch in the repository. When you use the command line, you can commit mul
   [Revert a commit](../merge_requests/revert_changes.md#revert-a-commit)
   from the UI to a selected branch.
 - **Sign a commit:**
-  Use GPG to [sign your commits](gpg_signed_commits/index.md).
+  Add extra security by [signing your commits](signed_commits/index.md).
 
 ## Clone a repository
 
@@ -73,7 +73,7 @@ into Xcode on macOS.
 1. Select **Xcode**.
 
 The project is cloned onto your computer and you are
-prompted to open XCode.
+prompted to open Xcode.
 
 ### Clone and open in Visual Studio Code
 
@@ -216,6 +216,11 @@ To render an OpenAPI file:
 1. Go to the OpenAPI file in your repository.
 1. Between the **Display source** and **Edit** buttons, select **Display OpenAPI**. When an OpenAPI file is found, it replaces the
    **Display rendered file** button.
+1. To display the `operationId` in the operations list, add `displayOperationId=true` to the query string.
+
+NOTE:
+When `displayOperationId` is present in the query string and has _any_ value, it
+evaluates to `true`. This behavior matches the default behavior of Swagger.
 
 ## Repository size
 

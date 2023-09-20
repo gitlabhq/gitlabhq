@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integrations do
   include ListboxHelpers
 
-  let_it_be(:alice) { create(:user, name: 'Alice') }
-  let_it_be(:bob) { create(:user, name: 'Bob') }
+  let_it_be(:alice) { create(:user, :no_super_sidebar, name: 'Alice') }
+  let_it_be(:bob) { create(:user, :no_super_sidebar, name: 'Bob') }
 
   let_it_be(:project1) { create(:project, :repository, namespace: alice.namespace, title: 'foo') }
   let_it_be(:project2) { create(:project, :repository, namespace: alice.namespace, title: 'bar') }

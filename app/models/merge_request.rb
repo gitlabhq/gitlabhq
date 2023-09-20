@@ -66,7 +66,7 @@ class MergeRequest < ApplicationRecord
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request
 
-  # method overriden in EE
+  # method overridden in EE
   def suggested_reviewer_users
     User.none
   end
@@ -162,7 +162,7 @@ class MergeRequest < ApplicationRecord
 
   # Keep states definition to be evaluated before the state_machine block to
   #   avoid spec failures. If this gets evaluated after, the `merged` and `locked`
-  #   states (which are overriden) can be nil.
+  #   states (which are overridden) can be nil.
   #
   def self.available_state_names
     super + [:merged, :locked]
@@ -279,6 +279,12 @@ class MergeRequest < ApplicationRecord
     def check_state?(merge_status)
       [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking].include?(merge_status.to_sym)
     end
+
+    # rubocop: disable Style/SymbolProc
+    before_transition { |merge_request| merge_request.enable_transitioning }
+
+    after_transition { |merge_request| merge_request.disable_transitioning }
+    # rubocop: enable Style/SymbolProc
   end
 
   # Returns current merge_status except it returns `cannot_be_merged_rechecking` as `checking`
@@ -292,10 +298,14 @@ class MergeRequest < ApplicationRecord
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :auto_merge_enabled?, unless: :importing?
-  validate :validate_branches, unless: [:allow_broken, :importing?, :closed_or_merged_without_fork?]
+  validate :validate_branches, unless: [
+    :allow_broken,
+    :importing_or_transitioning?,
+    :closed_or_merged_without_fork?
+  ]
   validate :validate_fork, unless: :closed_or_merged_without_fork?
-  validate :validate_target_project, on: :create, unless: :importing?
-  validate :validate_reviewer_size_length, unless: :importing?
+  validate :validate_target_project, on: :create, unless: :importing_or_transitioning?
+  validate :validate_reviewer_size_length, unless: :importing_or_transitioning?
 
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
@@ -371,6 +381,7 @@ class MergeRequest < ApplicationRecord
 
   scope :with_csv_entity_associations, -> { preload(:assignees, :approved_by_users, :author, :milestone, metrics: [:merged_by]) }
   scope :with_jira_integration_associations, -> { preload_routables.preload(:metrics, :assignees, :author) }
+  scope :recently_unprepared, -> { where(prepared_at: nil).where(created_at: 2.hours.ago..).order(:created_at, :id) } # id is the tie-breaker
 
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))
@@ -550,13 +561,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def merge_pipeline
-    return unless merged?
-
-    # When the merge_method is :merge there will be a merge_commit_sha, however
-    # when it is fast-forward there is no merge commit, so we must fall back to
-    # either the squash commit (if the MR was squashed) or the diff head commit.
-    sha = merge_commit_sha || squash_commit_sha || diff_head_sha
-    target_project.latest_pipeline(target_branch, sha)
+    if sha = merged_commit_sha
+      target_project.latest_pipeline(target_branch, sha)
+    end
   end
 
   def head_pipeline_active?
@@ -632,7 +639,7 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  DRAFT_REGEX = /\A*#{Gitlab::Regex.merge_request_draft}+\s*/i.freeze
+  DRAFT_REGEX = /\A*#{Gitlab::Regex.merge_request_draft}+\s*/i
 
   def self.draft?(title)
     !!(title =~ DRAFT_REGEX)
@@ -732,6 +739,12 @@ class MergeRequest < ApplicationRecord
 
   def supports_suggestion?
     true
+  end
+
+  def supports_lock_on_merge?
+    return false unless merged?
+
+    project.supports_lock_on_merge?
   end
 
   # Calls `MergeWorker` to proceed with the merge process and
@@ -1218,7 +1231,7 @@ class MergeRequest < ApplicationRecord
     }
   end
 
-  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false)
+  def mergeable?(skip_ci_check: false, skip_discussions_check: false, skip_approved_check: false, check_mergeability_retry_lease: false, skip_rebase_check: false)
     return false unless mergeable_state?(
       skip_ci_check: skip_ci_check,
       skip_discussions_check: skip_discussions_check,
@@ -1227,7 +1240,7 @@ class MergeRequest < ApplicationRecord
 
     check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
 
-    can_be_merged? && !should_be_rebased?
+    can_be_merged? && (!should_be_rebased? || skip_rebase_check)
   end
 
   def mergeability_checks
@@ -1593,7 +1606,7 @@ class MergeRequest < ApplicationRecord
     # Since another process checks for matching merge request, we need
     # to make it possible to detect whether the query should go to the
     # primary.
-    target_project.mark_primary_write_location
+    target_project.sticking.stick(:project, target_project.id)
   end
 
   def diverged_commits_count
@@ -1654,6 +1667,7 @@ class MergeRequest < ApplicationRecord
       variables.append(key: 'CI_MERGE_REQUEST_ASSIGNEES', value: assignee_username_list) if assignees.present?
       variables.append(key: 'CI_MERGE_REQUEST_MILESTONE', value: milestone.title) if milestone
       variables.append(key: 'CI_MERGE_REQUEST_LABELS', value: label_names.join(',')) if labels.present?
+      variables.append(key: 'CI_MERGE_REQUEST_SQUASH_ON_MERGE', value: squash_on_merge?.to_s)
       variables.concat(source_project_variables)
     end
   end
@@ -1831,7 +1845,7 @@ class MergeRequest < ApplicationRecord
   def merged_commit_sha
     return unless merged?
 
-    sha = merge_commit_sha || squash_commit_sha || diff_head_sha
+    sha = super || merge_commit_sha || squash_commit_sha || diff_head_sha
     sha.presence
   end
 
@@ -1996,7 +2010,7 @@ class MergeRequest < ApplicationRecord
     all_pipelines.for_sha_or_source_sha(diff_head_sha).first
   end
 
-  def etag_caching_enabled?
+  def real_time_notes_enabled?
     true
   end
 
@@ -2097,6 +2111,10 @@ class MergeRequest < ApplicationRecord
     spammable_attribute_changed? && project.public?
   end
 
+  def missing_required_squash?
+    !squash && target_project.squash_always?
+  end
+
   private
 
   attr_accessor :skip_fetch_ref
@@ -2141,6 +2159,7 @@ class MergeRequest < ApplicationRecord
       variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_PATH', value: source_project.full_path)
       variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_URL', value: source_project.web_url)
       variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME', value: source_branch.to_s)
+      variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_PROTECTED', value: ProtectedBranch.protected?(source_project, source_branch).to_s)
     end
   end
 

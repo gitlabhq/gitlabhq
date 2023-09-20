@@ -7,8 +7,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Geo with external PostgreSQL instances **(PREMIUM SELF)**
 
 This document is relevant if you are using a PostgreSQL instance that is not
-managed by the Linux package. This includes cloud-managed instances like Amazon RDS, or
-manually installed and configured PostgreSQL instances.
+managed by the Linux package. This includes
+[cloud-managed instances](../../reference_architectures/index.md#recommendation-notes-for-the-database-services),
+or manually installed and configured PostgreSQL instances.
 
 Ensure that you are using one of the PostgreSQL versions that
 the [Linux package ships with](../../package_information/postgresql_versions.md)

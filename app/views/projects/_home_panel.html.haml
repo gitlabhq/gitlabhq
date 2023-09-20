@@ -18,7 +18,7 @@
           - if can?(current_user, :read_project, @project)
             %span.gl-display-inline-block.gl-vertical-align-middle
               = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
-              = clipboard_button(title: s_('ProjectPage|Copy project ID'), text: @project.id)
+              = deprecated_clipboard_button(title: s_('ProjectPage|Copy project ID'), text: @project.id)
           - if current_user
             %span.gl-ml-3.gl-mb-3
               = render 'shared/members/access_request_links', source: @project

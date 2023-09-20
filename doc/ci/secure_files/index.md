@@ -29,7 +29,7 @@ tool.
 
 To add a secure file to a project:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand the **Secure Files** section.
 1. Select **Upload File**.

@@ -141,8 +141,10 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
             .to receive(:known_event?).with(event).and_return(true)
         end
 
-        it 'raises error' do
-          expect { described_class.new([], options).invoke_all }.to raise_error(RuntimeError)
+        it 'does not create event definition' do
+          described_class.new([], options).invoke_all
+
+          expect(event_definition_path).to eq(nil)
         end
       end
 

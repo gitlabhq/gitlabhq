@@ -84,6 +84,8 @@ module API
           file_name: file_name(symbol_package)
         )
 
+        check_duplicate(file_params, symbol_package)
+
         package = ::Packages::CreateTemporaryPackageService.new(
           project, current_user, declared_params.merge(build: current_authenticated_job)
         ).execute(:nuget, name: temp_file_name(symbol_package))
@@ -96,6 +98,14 @@ module API
         ::Packages::Nuget::ExtractionWorker.perform_async(package_file.id) # rubocop:disable CodeReuse/Worker
 
         created!
+      end
+
+      def check_duplicate(file_params, symbol_package)
+        return if symbol_package || Feature.disabled?(:nuget_duplicates_option, project_or_group.namespace)
+
+        service_params = file_params.merge(remote_url: params['package.remote_url'])
+        response = ::Packages::Nuget::CheckDuplicatesService.new(project_or_group, current_user, service_params).execute
+        render_api_error!(response.message, response.reason) if response.error?
       end
 
       def publish_package(symbol_package: false)
@@ -119,8 +129,24 @@ module API
       end
 
       def format_filename(package)
-        return "#{params[:package_filename]}.#{params[:format]}" if Feature.disabled?(:nuget_normalized_version, project_or_group) || package.version == params[:package_version]
+        return "#{params[:package_filename]}.#{params[:format]}" if package.version == params[:package_version]
         return "#{params[:package_filename].sub(params[:package_version], package.version)}.#{params[:format]}" if package.normalized_nuget_version == params[:package_version]
+      end
+
+      def present_odata_entry
+        project = find_project(params[:project_id])
+
+        not_found! unless project
+
+        env['api.format'] = :binary
+        content_type 'application/xml; charset=utf-8'
+
+        odata_entry = ::Packages::Nuget::OdataPackageEntryService
+                        .new(project, declared_params)
+                        .execute
+                        .payload
+
+        present odata_entry
       end
     end
 
@@ -314,6 +340,75 @@ module API
               authorize_nuget_upload
             end
           end
+        end
+      end
+    end
+
+    params do
+      requires :project_id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
+               regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
+    end
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      namespace ':project_id/packages/nuget/v2' do
+        # https://joelverhagen.github.io/NuGetUndocs/?http#endpoint-find-packages-by-id
+        desc 'The NuGet V2 Feed Find Packages by ID endpoint' do
+          detail 'This feature was introduced in GitLab 16.4'
+          success code: 200
+          failure [
+            { code: 404, message: 'Not Found' },
+            { code: 400, message: 'Bad Request' }
+          ]
+          tags %w[nuget_packages]
+        end
+
+        params do
+          requires :id, as: :package_name, type: String, allow_blank: false, coerce_with: ->(val) { val.delete("'") },
+                   desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
+                   documentation: { example: 'mynugetpkg' }
+        end
+        get 'FindPackagesById\(\)', urgency: :low do
+          present_odata_entry
+        end
+
+        # https://joelverhagen.github.io/NuGetUndocs/?http#endpoint-enumerate-packages
+        desc 'The NuGet V2 Feed Enumerate Packages endpoint' do
+          detail 'This feature was introduced in GitLab 16.4'
+          success code: 200
+          failure [
+            { code: 404, message: 'Not Found' },
+            { code: 400, message: 'Bad Request' }
+          ]
+          tags %w[nuget_packages]
+        end
+
+        params do
+          requires :$filter, as: :package_name, type: String, allow_blank: false,
+                   coerce_with: ->(val) { val.match(/tolower\(Id\) eq '(.+?)'/)&.captures&.first },
+                   desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
+                   documentation: { example: 'mynugetpkg' }
+        end
+        get 'Packages\(\)', urgency: :low do
+          present_odata_entry
+        end
+
+        # https://joelverhagen.github.io/NuGetUndocs/?http#endpoint-get-a-single-package
+        desc 'The NuGet V2 Feed Single Package Metadata endpoint' do
+          detail 'This feature was introduced in GitLab 16.4'
+          success code: 200
+          failure [
+            { code: 404, message: 'Not Found' },
+            { code: 400, message: 'Bad Request' }
+          ]
+          tags %w[nuget_packages]
+        end
+        params do
+          requires :package_name, type: String, allow_blank: false, desc: 'The NuGet package name',
+                   regexp: Gitlab::Regex.nuget_package_name_regex, documentation: { example: 'mynugetpkg' }
+          requires :package_version, type: String, allow_blank: false, desc: 'The NuGet package version',
+                   regexp: Gitlab::Regex.nuget_version_regex, documentation: { example: '1.3.0.17' }
+        end
+        get 'Packages\(Id=\'*package_name\',Version=\'*package_version\'\)', urgency: :low do
+          present_odata_entry
         end
       end
     end

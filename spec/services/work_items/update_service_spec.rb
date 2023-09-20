@@ -76,9 +76,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         expect(update_work_item[:status]).to eq(:success)
       end
 
-      it_behaves_like 'issue_edit snowplow tracking' do
-        let(:property) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TITLE_CHANGED }
+      it_behaves_like 'internal event tracking' do
+        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TITLE_CHANGED }
         let(:user) { current_user }
+        let(:namespace) { project.namespace }
         subject(:service_action) { update_work_item[:status] }
       end
 

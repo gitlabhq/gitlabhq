@@ -30,16 +30,14 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
       expect(assigns(:abuse_reports).first.closed?).to eq true
     end
 
-    context 'when abuse_reports_list flag is disabled' do
-      before do
-        stub_feature_flags(abuse_reports_list: false)
-      end
+    it 'labels does not introduce N+1 queries' do
+      get admin_abuse_reports_path # warm up
 
-      it 'returns all reports by default' do
-        get admin_abuse_reports_path
+      control = ActiveRecord::QueryRecorder.new { get admin_abuse_reports_path }
 
-        expect(assigns(:abuse_reports).count).to eq 2
-      end
+      create_list(:abuse_report, 2)
+
+      expect { get admin_abuse_reports_path }.to issue_same_number_of_queries_as(control).ignoring_cached_queries
     end
   end
 
@@ -53,13 +51,62 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
     end
   end
 
-  shared_examples 'moderates user' do
+  describe 'PUT #update' do
+    let_it_be(:report) { create(:abuse_report) }
+    let_it_be(:label1) { create(:abuse_report_label, title: 'Uno') }
+
+    let(:params) { { label_ids: [Gitlab::GlobalId.build(label1, id: label1.id).to_s] } }
+    let(:expected_params) { ActionController::Parameters.new(params).permit! }
+
+    subject(:request) { put admin_abuse_report_path(report, params) }
+
+    it 'invokes the Admin::AbuseReports::UpdateService' do
+      expect_next_instance_of(Admin::AbuseReports::UpdateService, report, admin, expected_params) do |service|
+        expect(service).to receive(:execute).and_call_original
+      end
+
+      request
+    end
+
+    context 'when the service response is a success' do
+      before do
+        allow_next_instance_of(Admin::AbuseReports::UpdateService, report, admin, expected_params) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.success)
+        end
+
+        request
+      end
+
+      it 'returns with a success status' do
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when the service response is an error' do
+      let(:error_message) { 'Error updating abuse report' }
+
+      before do
+        allow_next_instance_of(Admin::AbuseReports::UpdateService, report, admin, expected_params) do |service|
+          allow(service).to receive(:execute).and_return(ServiceResponse.error(message: error_message))
+        end
+
+        request
+      end
+
+      it 'returns the service response message with a failed status' do
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq(error_message)
+      end
+    end
+  end
+
+  describe 'PUT #moderate_user' do
     let(:report) { create(:abuse_report) }
     let(:params) { { user_action: 'block_user', close: 'true', reason: 'spam', comment: 'obvious spam' } }
     let(:expected_params) { ActionController::Parameters.new(params).permit! }
     let(:message) { 'Service response' }
 
-    subject(:request) { put path }
+    subject(:request) { put moderate_user_admin_abuse_report_path(report, params) }
 
     it 'invokes the Admin::AbuseReports::ModerateUserService' do
       expect_next_instance_of(Admin::AbuseReports::ModerateUserService, report, admin, expected_params) do |service|
@@ -98,18 +145,6 @@ RSpec.describe Admin::AbuseReportsController, type: :request, feature_category: 
         expect(json_response['message']).to eq(message)
       end
     end
-  end
-
-  describe 'PUT #update' do
-    let(:path) { admin_abuse_report_path(report, params) }
-
-    it_behaves_like 'moderates user'
-  end
-
-  describe 'PUT #moderate_user' do
-    let(:path) { moderate_user_admin_abuse_report_path(report, params) }
-
-    it_behaves_like 'moderates user'
   end
 
   describe 'DELETE #destroy' do

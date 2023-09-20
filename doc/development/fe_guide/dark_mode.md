@@ -5,7 +5,7 @@ group: Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-This page is about developing dark mode for GitLab. For more information on how to enable dark mode, see [Change the syntax highlighting theme]](../../user/profile/preferences.md#change-the-syntax-highlighting-theme).
+This page is about developing dark mode for GitLab. For more information on how to enable dark mode, see [Change the syntax highlighting theme](../../user/profile/preferences.md#change-the-syntax-highlighting-theme).
 
 # How dark mode works
 

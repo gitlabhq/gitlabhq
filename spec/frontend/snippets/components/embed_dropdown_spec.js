@@ -1,6 +1,6 @@
 import { GlFormInputGroup } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import { escape as esc } from 'lodash';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import EmbedDropdown from '~/snippets/components/embed_dropdown.vue';
 
@@ -10,56 +10,24 @@ describe('snippets/components/embed_dropdown', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = mount(EmbedDropdown, {
+    wrapper = shallowMountExtended(EmbedDropdown, {
       propsData: {
         url: TEST_URL,
       },
     });
   };
 
-  const findSectionsData = () => {
-    const sections = [];
-    let current = {};
-
-    wrapper.findAll('[data-testid="header"],[data-testid="input"]').wrappers.forEach((x) => {
-      const type = x.attributes('data-testid');
-
-      if (type === 'header') {
-        current = {
-          header: x.text(),
-        };
-
-        sections.push(current);
-      } else {
-        const value = x.findComponent(GlFormInputGroup).props('value');
-        const copyValue = x.find('button[title="Copy"]').attributes('data-clipboard-text');
-
-        Object.assign(current, {
-          value,
-          copyValue,
-        });
-      }
-    });
-
-    return sections;
-  };
+  const findEmbedSection = () => wrapper.findByTestId('section-Embed');
+  const findShareSection = () => wrapper.findByTestId('section-Share');
 
   it('renders dropdown items', () => {
     createComponent();
 
     const embedValue = `<script src="${esc(TEST_URL)}.js"></script>`;
 
-    expect(findSectionsData()).toEqual([
-      {
-        header: 'Embed',
-        value: embedValue,
-        copyValue: embedValue,
-      },
-      {
-        header: 'Share',
-        value: TEST_URL,
-        copyValue: TEST_URL,
-      },
-    ]);
+    expect(findEmbedSection().text()).toBe('Embed');
+    expect(findShareSection().text()).toBe('Share');
+    expect(findEmbedSection().findComponent(GlFormInputGroup).attributes('value')).toBe(embedValue);
+    expect(findShareSection().findComponent(GlFormInputGroup).attributes('value')).toBe(TEST_URL);
   });
 });

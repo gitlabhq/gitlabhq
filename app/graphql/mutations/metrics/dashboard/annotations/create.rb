@@ -70,28 +70,8 @@ module Mutations
 
           private
 
-          def ready?(**args)
-            raise_resource_not_available_error! if Feature.enabled?(:remove_monitor_metrics)
-
-            # Raise error if both cluster_id and environment_id are present or neither is present
-            unless args[:cluster_id].present? ^ args[:environment_id].present?
-              raise Gitlab::Graphql::Errors::ArgumentError, ANNOTATION_SOURCE_ARGUMENT_ERROR
-            end
-
-            super(**args)
-          end
-
-          def annotation_create_params(args)
-            annotation_source = AnnotationSource.new(object: annotation_source(args))
-
-            args[annotation_source.type] = annotation_source.object
-
-            args
-          end
-
-          def annotation_source(args)
-            annotation_source_id = args[:cluster_id] || args[:environment_id]
-            authorized_find!(id: annotation_source_id)
+          def ready?(**_args)
+            raise_resource_not_available_error!
           end
         end
       end

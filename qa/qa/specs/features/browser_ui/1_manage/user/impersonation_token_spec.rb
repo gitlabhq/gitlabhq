@@ -5,12 +5,7 @@ module QA
     describe 'Impersonation tokens', :requires_admin, product_group: :authentication_and_authorization do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
-      let!(:user) do
-        Resource::User.fabricate_via_api! do |usr|
-          usr.api_client = admin_api_client
-          usr.hard_delete_on_api_removal = true
-        end
-      end
+      let!(:user) { create(:user, :hard_delete, api_client: admin_api_client) }
 
       it(
         'can be created and revoked via the UI',

@@ -9,7 +9,7 @@ module Gitlab
       NO_LIMIT = 0
       # SystemHooks (instance admin hooks) and ServiceHooks (integration hooks)
       # are not rate-limited.
-      EXCLUDED_HOOK_TYPES = %w(SystemHook ServiceHook).freeze
+      EXCLUDED_HOOK_TYPES = %w[SystemHook ServiceHook].freeze
 
       def initialize(hook)
         @hook = hook

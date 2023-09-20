@@ -23,6 +23,13 @@ module QA
           new.tap(&prepare_block)
         end
 
+        # All instances of the Resource
+        #
+        # @return [Array<QA::Resource>]
+        def all(api_client = nil, **kwargs)
+          instance(api_client).all(**kwargs)
+        end
+
         def fabricate_via_api_unless_fips!
           if Runtime::Env.personal_access_tokens_disabled?
             fabricate!
@@ -80,6 +87,10 @@ module QA
         end
 
         private
+
+        def instance(api_client)
+          init { |resource| resource.api_client = api_client || QA::Runtime::API::Client.as_admin }
+        end
 
         def do_fabricate!(resource:, prepare_block:)
           prepare_block.call(resource) if prepare_block
@@ -161,6 +172,14 @@ module QA
         def attributes(*names)
           names.each { |name| attribute(name) }
         end
+      end
+
+      # To be overridden by Resource classes to return a list of all instances of the resource
+      #
+      # @params [Hash] kwargs arguments to be used to query the API to search for resources with a specific criteria
+      # @return [Array]
+      def all(**kwargs)
+        raise NotImplementedError
       end
 
       # Override api reload! and update custom attributes from api_resource

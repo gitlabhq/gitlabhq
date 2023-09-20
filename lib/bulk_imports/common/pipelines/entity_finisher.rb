@@ -34,7 +34,7 @@ module BulkImports
             importer: 'gitlab_migration'
           )
 
-          context.portable.try(:after_import)
+          ::BulkImports::FinishProjectImportWorker.perform_async(entity.project_id) if entity.project?
         end
 
         private

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'User searches for comments', :js, :disable_rate_limiter, feature_category: :global_search do
   let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :no_super_sidebar) }
 
   before do
     project.add_reporter(user)

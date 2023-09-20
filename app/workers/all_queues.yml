@@ -570,6 +570,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:merge_requests_ensure_prepared
+  :worker_name: MergeRequests::EnsurePreparedWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
   :feature_category: :metrics
@@ -578,15 +587,6 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
-  :tags: []
-- :name: cronjob:namespaces_in_product_marketing_emails
-  :worker_name: Namespaces::InProductMarketingEmailsWorker
-  :feature_category: :experimentation_activation
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
   :tags: []
 - :name: cronjob:namespaces_prune_aggregation_schedules
   :worker_name: Namespaces::PruneAggregationSchedulesWorker
@@ -2343,6 +2343,51 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: bitbucket_import_advance_stage
+  :worker_name: Gitlab::BitbucketImport::AdvanceStageWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_import_pull_request
+  :worker_name: Gitlab::BitbucketImport::ImportPullRequestWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_stage_finish_import
+  :worker_name: Gitlab::BitbucketImport::Stage::FinishImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_stage_import_pull_requests
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportPullRequestsWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: bitbucket_import_stage_import_repository
+  :worker_name: Gitlab::BitbucketImport::Stage::ImportRepositoryWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: bitbucket_server_import_advance_stage
   :worker_name: Gitlab::BitbucketServerImport::AdvanceStageWorker
   :feature_category: :importers
@@ -2462,6 +2507,15 @@
   :tags: []
 - :name: bulk_imports_finish_batched_relation_export
   :worker_name: BulkImports::FinishBatchedRelationExportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: bulk_imports_finish_project_import
+  :worker_name: BulkImports::FinishProjectImportWorker
   :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low
@@ -2612,6 +2666,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: database_lock_tables
+  :worker_name: Database::LockTablesWorker
+  :feature_category: :cell
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: default
   :worker_name:
@@ -3306,15 +3369,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: pages_invalidate_domain_cache
-  :worker_name: Pages::InvalidateDomainCacheWorker
-  :feature_category: :pages
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
 - :name: post_receive
   :worker_name: PostReceive
   :feature_category: :source_code_management
@@ -3470,7 +3524,7 @@
   :tags: []
 - :name: projects_record_target_platforms
   :worker_name: Projects::RecordTargetPlatformsWorker
-  :feature_category: :groups_and_projects
+  :feature_category: :experimentation_activation
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3728,6 +3782,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: users_track_namespace_visits
+  :worker_name: Users::TrackNamespaceVisitsWorker
+  :feature_category: :navigation
+  :has_external_dependencies: false
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: web_hook
   :worker_name: WebHookWorker

@@ -18,6 +18,8 @@ module Gitlab
             def content
               return unless component_result.success?
 
+              ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event('cicd_component_usage', values: context.user.id)
+
               component_result.payload.fetch(:content)
             end
             strong_memoize_attr :content

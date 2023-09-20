@@ -2,7 +2,7 @@
 
 exports[`SearchItem should render the item 1`] = `
 <div
-  class="gl-display-flex gl-align-items-center"
+  class="gl-align-items-center gl-display-flex"
 >
   <gl-avatar-stub
     alt="avatar"
@@ -14,33 +14,25 @@ exports[`SearchItem should render the item 1`] = `
     size="16"
     src="https://www.gravatar.com/avatar/a9638f4ec70148d51e56bf05ad41e993?s=80&d=identicon"
   />
-   
-  <!---->
-   
   <span
     class="gl-display-flex gl-flex-direction-column"
   >
     <span
       class="gl-text-gray-900"
     />
-     
-    <!---->
   </span>
 </div>
 `;
 
 exports[`SearchItem should render the item 2`] = `
 <div
-  class="gl-display-flex gl-align-items-center"
+  class="gl-align-items-center gl-display-flex"
 >
-  <!---->
-   
   <gl-icon-stub
     class="gl-mr-3"
     name="users"
     size="16"
   />
-   
   <span
     class="gl-display-flex gl-flex-direction-column"
   >
@@ -49,15 +41,13 @@ exports[`SearchItem should render the item 2`] = `
     >
       Manage &gt; Activity
     </span>
-     
-    <!---->
   </span>
 </div>
 `;
 
 exports[`SearchItem should render the item 3`] = `
 <div
-  class="gl-display-flex gl-align-items-center"
+  class="gl-align-items-center gl-display-flex"
 >
   <gl-avatar-stub
     alt="avatar"
@@ -69,9 +59,6 @@ exports[`SearchItem should render the item 3`] = `
     size="32"
     src="/project/avatar/1/avatar.png"
   />
-   
-  <!---->
-   
   <span
     class="gl-display-flex gl-flex-direction-column"
   >
@@ -80,7 +67,6 @@ exports[`SearchItem should render the item 3`] = `
     >
       MockProject1
     </span>
-     
     <span
       class="gl-font-sm gl-text-gray-500"
     >
@@ -92,7 +78,7 @@ exports[`SearchItem should render the item 3`] = `
 
 exports[`SearchItem should render the item 4`] = `
 <div
-  class="gl-display-flex gl-align-items-center"
+  class="gl-align-items-center gl-display-flex"
 >
   <gl-avatar-stub
     alt="avatar"
@@ -104,9 +90,6 @@ exports[`SearchItem should render the item 4`] = `
     size="16"
     src=""
   />
-   
-  <!---->
-   
   <span
     class="gl-display-flex gl-flex-direction-column"
   >
@@ -115,8 +98,6 @@ exports[`SearchItem should render the item 4`] = `
     >
       Dismiss Cipher with no integrity
     </span>
-     
-    <!---->
   </span>
 </div>
 `;

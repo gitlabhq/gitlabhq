@@ -60,7 +60,7 @@ class ImportExportCleanUpService
   end
 
   def directories_cmd
-    %W(find #{path} -mindepth #{DIR_DEPTH} -maxdepth #{DIR_DEPTH} -type d -not -path #{path} -mmin +#{mmin})
+    %W[find #{path} -mindepth #{DIR_DEPTH} -maxdepth #{DIR_DEPTH} -type d -not -path #{path} -mmin +#{mmin}]
   end
 
   def logger

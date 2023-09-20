@@ -44,8 +44,11 @@ class Project < ApplicationRecord
   include IssueParent
   include UpdatedAtFilterable
   include IgnorableColumns
+  include CrossDatabaseIgnoredTables
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
+
+  cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -68,10 +71,10 @@ class Project < ApplicationRecord
   }.freeze
 
   VALID_IMPORT_PORTS = [80, 443].freeze
-  VALID_IMPORT_PROTOCOLS = %w(http https git).freeze
+  VALID_IMPORT_PROTOCOLS = %w[http https git].freeze
 
   VALID_MIRROR_PORTS = [22, 80, 443].freeze
-  VALID_MIRROR_PROTOCOLS = %w(http https ssh git).freeze
+  VALID_MIRROR_PROTOCOLS = %w[http https ssh git].freeze
 
   SORTING_PREFERENCE_FIELD = :projects_sort
   MAX_BUILD_TIMEOUT = 1.month
@@ -80,6 +83,8 @@ class Project < ApplicationRecord
 
   MAX_SUGGESTIONS_TEMPLATE_LENGTH = 255
   MAX_COMMIT_TEMPLATE_LENGTH = 500
+
+  INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET = 5
 
   DEFAULT_MERGE_COMMIT_TEMPLATE = <<~MSG.rstrip.freeze
     Merge branch '%{source_branch}' into '%{target_branch}'
@@ -163,6 +168,7 @@ class Project < ApplicationRecord
   # Relations
   belongs_to :pool_repository
   belongs_to :creator, class_name: 'User'
+  belongs_to :organization, class_name: 'Organizations::Organization'
   belongs_to :group, -> { where(type: Group.sti_name) }, foreign_key: 'namespace_id'
   belongs_to :namespace
   # Sync deletion via DB Trigger to ensure we do not have
@@ -265,6 +271,9 @@ class Project < ApplicationRecord
     dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :npm_metadata_caches, class_name: 'Packages::Npm::MetadataCache'
   has_one :packages_cleanup_policy, class_name: 'Packages::Cleanup::Policy', inverse_of: :project
+  has_many :package_protection_rules,
+    class_name: 'Packages::Protection::Rule',
+    inverse_of: :project
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -273,7 +282,6 @@ class Project < ApplicationRecord
   has_one :project_repository, inverse_of: :project
   has_one :incident_management_setting, inverse_of: :project, class_name: 'IncidentManagement::ProjectIncidentManagementSetting'
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
-  has_one :metrics_setting, inverse_of: :project, class_name: 'ProjectMetricsSetting'
   has_one :grafana_integration, inverse_of: :project
   has_one :project_setting, inverse_of: :project, autosave: true
   has_one :alerting_setting, inverse_of: :project, class_name: 'Alerting::ProjectAlertingSetting'
@@ -336,7 +344,15 @@ class Project < ApplicationRecord
     primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project,
     class_name: 'ProjectMember'
 
-  has_many :users, through: :project_members
+  has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405") },
+    through: :project_members
+  has_many :maintainers,
+    -> do
+      allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/422405")
+        .where(members: { access_level: Gitlab::Access::MAINTAINER })
+    end,
+    through: :project_members,
+    source: :user
 
   has_many :project_callouts, class_name: 'Users::ProjectCallout', foreign_key: :project_id
 
@@ -370,8 +386,6 @@ class Project < ApplicationRecord
   has_many :prometheus_metrics
   has_many :prometheus_alerts, inverse_of: :project
   has_many :prometheus_alert_events, inverse_of: :project
-  has_many :self_managed_prometheus_alert_events, inverse_of: :project
-  has_many :metrics_users_starred_dashboards, class_name: 'Metrics::UsersStarredDashboard', inverse_of: :project
 
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :project
   has_many :alert_management_http_integrations, class_name: 'AlertManagement::HttpIntegration', inverse_of: :project
@@ -476,7 +490,6 @@ class Project < ApplicationRecord
 
   accepts_nested_attributes_for :incident_management_setting, update_only: true
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
-  accepts_nested_attributes_for :metrics_setting, update_only: true, allow_destroy: true
   accepts_nested_attributes_for :grafana_integration, update_only: true, allow_destroy: true
   accepts_nested_attributes_for :prometheus_integration, update_only: true
   accepts_nested_attributes_for :alerting_setting, update_only: true
@@ -490,11 +503,6 @@ class Project < ApplicationRecord
     delegate :members, prefix: true
     delegate :add_member, :add_members, :member?
     delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role
-  end
-
-  with_options to: :metrics_setting, allow_nil: true, prefix: true do
-    delegate :external_dashboard_url
-    delegate :dashboard_timezone
   end
 
   with_options to: :namespace do
@@ -1282,7 +1290,7 @@ class Project < ApplicationRecord
 
   def design_repository
     strong_memoize(:design_repository) do
-      Gitlab::GlRepository::DESIGN.repository_for(self)
+      find_or_create_design_management_repository.repository
     end
   end
 
@@ -1665,7 +1673,7 @@ class Project < ApplicationRecord
     return unless Gitlab::Email::IncomingEmail.supports_issue_creation? && author
 
     # check since this can come from a request parameter
-    return unless %w(issue merge_request).include?(address_type)
+    return unless %w[issue merge_request].include?(address_type)
 
     author.ensure_incoming_email_token!
 
@@ -2757,10 +2765,6 @@ class Project < ApplicationRecord
     []
   end
 
-  def mark_primary_write_location
-    self.class.sticking.mark_primary_write_location(:project, self.id)
-  end
-
   def toggle_ci_cd_settings!(settings_attribute)
     ci_cd_settings.toggle!(settings_attribute)
   end
@@ -2842,7 +2846,7 @@ class Project < ApplicationRecord
     return if old_pool_repository.blank?
     return if pool_repository_shard_matches_repository?(old_pool_repository)
 
-    new_pool_repository = PoolRepository.by_source_project_and_shard_name(old_pool_repository.source_project, repository_storage).take!
+    new_pool_repository = PoolRepository.by_disk_path_and_shard_name(old_pool_repository.disk_path, repository_storage).take!
     update!(pool_repository: new_pool_repository)
 
     old_pool_repository.unlink_repository(repository, disconnect: !pending_delete?)
@@ -2869,10 +2873,6 @@ class Project < ApplicationRecord
     end
 
     recipients
-  end
-
-  def pages_lookup_path(trim_prefix: nil, domain: nil)
-    Pages::LookupPath.new(self, trim_prefix: trim_prefix, domain: domain)
   end
 
   def closest_setting(name)
@@ -2954,10 +2954,6 @@ class Project < ApplicationRecord
     jira_imports.last
   end
 
-  def metrics_setting
-    super || build_metrics_setting
-  end
-
   def service_desk_enabled
     Gitlab::ServiceDesk.enabled?(project: self)
   end
@@ -2965,7 +2961,11 @@ class Project < ApplicationRecord
   alias_method :service_desk_enabled?, :service_desk_enabled
 
   def service_desk_address
-    service_desk_custom_address || service_desk_incoming_address
+    service_desk_custom_address || service_desk_system_address
+  end
+
+  def service_desk_system_address
+    service_desk_alias_address || service_desk_incoming_address
   end
 
   def service_desk_incoming_address
@@ -2977,12 +2977,19 @@ class Project < ApplicationRecord
     config.address&.gsub(wildcard, "#{full_path_slug}-#{default_service_desk_suffix}")
   end
 
-  def service_desk_custom_address
+  def service_desk_alias_address
     return unless Gitlab::Email::ServiceDeskEmail.enabled?
 
     key = service_desk_setting&.project_key || default_service_desk_suffix
 
     Gitlab::Email::ServiceDeskEmail.address_for_key("#{full_path_slug}-#{key}")
+  end
+
+  def service_desk_custom_address
+    return unless Feature.enabled?(:service_desk_custom_email, self)
+    return unless service_desk_setting&.custom_email_enabled?
+
+    service_desk_setting.custom_email
   end
 
   def default_service_desk_suffix
@@ -3261,6 +3268,10 @@ class Project < ApplicationRecord
     group.crm_enabled?
   end
 
+  def supports_lock_on_merge?
+    group&.supports_lock_on_merge? || ::Feature.enabled?(:enforce_locked_labels_on_merge, self, type: :ops)
+  end
+
   def path_availability
     base, _, host = path.partition('.')
 
@@ -3269,6 +3280,13 @@ class Project < ApplicationRecord
 
     errors.add(:path, s_('Project|already in use'))
   end
+
+  def instance_runner_running_jobs_count
+    # excluding currently started job
+    ::Ci::RunningBuild.instance_type.where(project_id: self.id)
+                      .limit(INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET + 1).count - 1
+  end
+  strong_memoize_attr :instance_runner_running_jobs_count
 
   private
 
@@ -3483,11 +3501,11 @@ class Project < ApplicationRecord
   end
 
   def sync_project_namespace?
-    (changes.keys & %w(name path namespace_id namespace visibility_level shared_runners_enabled)).any? && project_namespace.present?
+    (changes.keys & %w[name path namespace_id namespace visibility_level shared_runners_enabled]).any? && project_namespace.present?
   end
 
   def reload_project_namespace_details
-    return unless (previous_changes.keys & %w(description description_html cached_markdown_version)).any? && project_namespace.namespace_details.present?
+    return unless (previous_changes.keys & %w[description description_html cached_markdown_version]).any? && project_namespace.namespace_details.present?
 
     project_namespace.namespace_details.reset
   end

@@ -9,39 +9,37 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3834) in GitLab 13.10, the GitLab agent server (KAS) became available on GitLab.com at `wss://kas.gitlab.com`.
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 
-The agent server is a component you install together with GitLab. It is required to
+The agent server is a component installed together with GitLab. It is required to
 manage the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
 
 The KAS acronym refers to the former name, `Kubernetes agent server`.
 
 The agent server for Kubernetes is installed and available on GitLab.com at `wss://kas.gitlab.com`.
-If you use self-managed GitLab, you must install an agent server or specify an external installation.
+If you use self-managed GitLab, by default the agent server is installed and available.
 
 ## Installation options
 
-As a GitLab administrator, you can install the agent server:
+As a GitLab administrator, you can control the agent server installation:
 
 - For [Linux package installations](#for-linux-package-installations).
 - For [GitLab Helm chart installations](#for-gitlab-helm-chart).
 
 ### For Linux package installations
 
-You can enable the agent server for Linux package installations on a single node, or on multiple nodes at once.
+The agent server for Linux package installations can be enabled on a single node, or on multiple nodes at once.
+By default, the agent server is enabled and available at `ws://gitlab.example.com/-/kubernetes-agent/`.
 
-#### Enable on a single node
+#### Disable on a single node
 
-To enable the agent server on a single node:
+To disable the agent server on a single node:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   gitlab_kas['enable'] = true
+   gitlab_kas['enable'] = false
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-
-For additional configuration options, see the **Enable GitLab KAS** section of the
-[`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/be52c36c243a3422ec38b7d45d459682a07e195f/files/gitlab-config-template/gitlab.rb.template#L1951).
 
 ##### Configure KAS to listen on a UNIX socket
 
@@ -70,6 +68,9 @@ To configure KAS to listen on a UNIX socket:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
+For additional configuration options, see the **GitLab Kubernetes Agent Server** section of the
+[`gitlab.rb.template`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template).
+
 #### Enable on multiple nodes
 
 To enable the agent server on multiple nodes:
@@ -79,7 +80,6 @@ To enable the agent server on multiple nodes:
    ```ruby
    gitlab_kas_external_url 'wss://kas.gitlab.example.com/'
 
-   gitlab_kas['enable'] = true
    gitlab_kas['api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
    gitlab_kas['private_api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
    gitlab_kas['private_api_listen_address'] = '0.0.0.0:8155'
@@ -88,7 +88,6 @@ To enable the agent server on multiple nodes:
      'OWN_PRIVATE_API_URL' => 'grpc://<ip_or_hostname_of_this_host>:8155'
    }
 
-   gitlab_rails['gitlab_kas_enabled'] = true
    gitlab_rails['gitlab_kas_external_url'] = 'wss://gitlab.example.com/-/kubernetes-agent/'
    gitlab_rails['gitlab_kas_internal_url'] = 'grpc://kas.internal.gitlab.example.com'
    gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://gitlab.example.com/-/kubernetes-agent/k8s-proxy/'
@@ -114,31 +113,7 @@ To enable the agent server on multiple nodes:
 
 ### For GitLab Helm Chart
 
-For GitLab [Helm Chart](https://docs.gitlab.com/charts/) installations:
-
-1. Set `global.kas.enabled` to `true`. For example, in a shell with `helm` and `kubectl`
-   installed, run:
-
-   ```shell
-   helm repo add gitlab https://charts.gitlab.io/
-   helm repo update
-   helm upgrade --install gitlab gitlab/gitlab \
-     --timeout 600s \
-     --set global.hosts.domain=<YOUR_DOMAIN> \
-     --set global.hosts.externalIP=<YOUR_IP> \
-     --set certmanager-issuer.email=<YOUR_EMAIL> \
-     --set global.kas.enabled=true # <-- without this setting, the agent server will not be installed
-   ```
-
-1. To configure the agent server, use a `gitlab.kas` sub-section in your `values.yaml` file:
-
-   ```yaml
-   gitlab:
-     kas:
-       # put your custom options here
-   ```
-
-For details, see [how to use the GitLab-KAS chart](https://docs.gitlab.com/charts/charts/gitlab/kas/).
+See [how to use the GitLab-KAS chart](https://docs.gitlab.com/charts/charts/gitlab/kas/).
 
 ## Kubernetes API proxy cookie
 

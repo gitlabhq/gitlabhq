@@ -467,16 +467,6 @@ RSpec.describe DesignManagement::Design, feature_category: :design_management do
     end
   end
 
-  describe '#note_etag_key' do
-    it 'returns a correct etag key' do
-      design = design1
-
-      expect(design.note_etag_key).to eq(
-        ::Gitlab::Routing.url_helpers.designs_project_issue_path(design.project, design.issue, { vueroute: design.filename })
-      )
-    end
-  end
-
   describe '#user_notes_count', :use_clean_rails_memory_store_caching do
     # Note: Cache invalidation tests are in `design_user_notes_count_service_spec.rb`
     it 'returns a count of user-generated notes' do

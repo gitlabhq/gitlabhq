@@ -15,11 +15,7 @@ module QA
       end
 
       it 'update without refresh', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347941' do
-        issue = Resource::Issue.fabricate_via_api! do |issue|
-          issue.project = project
-          issue.assignee_ids = [user1.id]
-        end
-
+        issue = create(:issue, project: project, assignee_ids: [user1.id])
         issue.visit!
 
         Page::Project::Issue::Show.perform do |show|

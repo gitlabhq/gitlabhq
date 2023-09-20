@@ -267,7 +267,8 @@ export default {
             });
           }
         });
-      } else if (this.uniqueCommits.length > 0) {
+      }
+      if (this.uniqueCommits.length > 0) {
         return this.createContextCommits({ commits: this.uniqueCommits, forceReload: true });
       }
 

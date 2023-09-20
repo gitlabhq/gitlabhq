@@ -1,0 +1,67 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "./issue.fragment.graphql"
+
+query getServiceDeskIssues(
+  $hideUsers: Boolean = false
+  $isSignedIn: Boolean = false
+  $fullPath: ID!
+  $iid: String
+  $search: String
+  $sort: IssueSort
+  $state: IssuableState
+  $in: [IssuableSearchableField!]
+  $assigneeId: String
+  $assigneeUsernames: [String!]
+  $authorUsername: String
+  $confidential: Boolean
+  $labelName: [String]
+  $milestoneTitle: [String]
+  $milestoneWildcardId: MilestoneWildcardId
+  $myReactionEmoji: String
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
+  $types: [IssueType!]
+  $not: NegatedIssueFilterInput
+  $or: UnionedIssueFilterInput
+  $beforeCursor: String
+  $afterCursor: String
+  $firstPageSize: Int
+  $lastPageSize: Int
+) {
+  project(fullPath: $fullPath) @persist {
+    id
+    issues(
+      iid: $iid
+      search: $search
+      sort: $sort
+      state: $state
+      in: $in
+      assigneeId: $assigneeId
+      assigneeUsernames: $assigneeUsernames
+      authorUsername: $authorUsername
+      confidential: $confidential
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      myReactionEmoji: $myReactionEmoji
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
+      types: $types
+      not: $not
+      or: $or
+      before: $beforeCursor
+      after: $afterCursor
+      first: $firstPageSize
+      last: $lastPageSize
+    ) {
+      __persist
+      pageInfo {
+        ...PageInfo
+      }
+      nodes {
+        __persist
+        ...IssueFragment
+      }
+    }
+  }
+}

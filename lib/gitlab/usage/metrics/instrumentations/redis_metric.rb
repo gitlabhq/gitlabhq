@@ -48,8 +48,6 @@ module Gitlab
             end
           end
 
-          private
-
           def redis_key
             key = metric_event.dup
             key.prepend("#{prefix}_") if prefix

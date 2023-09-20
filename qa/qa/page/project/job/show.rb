@@ -7,27 +7,28 @@ module QA
         class Show < QA::Page::Base
           include Component::CiBadgeLink
 
-          view 'app/assets/javascripts/jobs/components/log/log.vue' do
-            element :job_log_content
+          view 'app/assets/javascripts/ci/job_details/components/log/log.vue' do
+            element 'job-log-content'
           end
 
-          view 'app/assets/javascripts/jobs/components/job/sidebar/stages_dropdown.vue' do
-            element :pipeline_path, required: true
+          view 'app/assets/javascripts/ci/job_details/components/sidebar/stages_dropdown.vue' do
+            element 'pipeline-path', required: true
           end
 
-          view 'app/assets/javascripts/jobs/components/job/sidebar/sidebar_header.vue' do
-            element :retry_button
+          view 'app/assets/javascripts/ci/job_details/components/sidebar/sidebar_header.vue' do
+            element 'retry-button'
           end
 
-          view 'app/assets/javascripts/jobs/components/job/sidebar/artifacts_block.vue' do
-            element :browse_artifacts_button
+          view 'app/assets/javascripts/ci/job_details/components/sidebar/artifacts_block.vue' do
+            element 'browse-artifacts-button'
+            element 'artifacts-unlocked-message-content'
+            element 'artifacts-locked-message-content'
           end
 
           def successful?(timeout: 60)
             raise "Timed out waiting for the build trace to load" unless loaded?
             raise "Timed out waiting for the status to be a valid completed state" unless completed?(timeout: timeout)
 
-            job_log = find_element(:job_log_content).text
             QA::Runtime::Logger.debug(" \n\n ------- Job log: ------- \n\n #{job_log} \n -------")
 
             passed?
@@ -38,28 +39,27 @@ module QA
             result = ''
 
             wait_until(reload: false, max_duration: wait, sleep_interval: 1) do
-              result = find_element(:job_log_content).text
-
-              result.include?('Job')
+              result = job_log.include?('Job') ? job_log : ''
+              result.present?
             end
 
             result
           end
 
           def has_browse_button?
-            has_element? :browse_artifacts_button
+            has_element?('browse-artifacts-button')
           end
 
           def click_browse_button
-            click_element :browse_artifacts_button
+            click_element('browse-artifacts-button')
           end
 
           def retry!
-            click_element :retry_button
+            click_element 'retry-button'
           end
 
-          def has_job_log?
-            has_element? :job_log_content
+          def has_job_log?(wait: 1)
+            has_element?('job-log-content', wait: wait)
           end
 
           def has_status?(status, wait: 30)
@@ -69,19 +69,27 @@ module QA
           end
 
           def has_locked_artifact?
-            has_element? :artifacts_locked_message_content
+            has_element?('artifacts-locked-message-content')
           end
 
           def has_unlocked_artifact?
-            has_element? :artifacts_unlocked_message_content
+            has_element?('artifacts-unlocked-message-content')
+          end
+
+          def go_to_pipeline
+            click_element('pipeline-path')
           end
 
           private
 
           def loaded?(wait: 60)
             wait_until(reload: true, max_duration: wait, sleep_interval: 1) do
-              has_element?(:job_log_content, wait: 1)
+              has_job_log?
             end
+          end
+
+          def job_log
+            find_element('job-log-content').text
           end
         end
       end

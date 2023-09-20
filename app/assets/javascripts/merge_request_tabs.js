@@ -93,7 +93,11 @@ function mountPipelines() {
   const { mrWidgetData } = gl;
   const table = new Vue({
     components: {
-      CommitPipelinesTable: () => import('~/commit/pipelines/pipelines_table.vue'),
+      CommitPipelinesTable: () => {
+        return gon.features.mrPipelinesGraphql
+          ? import('~/ci/merge_requests/components/pipelines_table_wrapper.vue')
+          : import('~/commit/pipelines/legacy_pipelines_table_wrapper.vue');
+      },
     },
     apolloProvider,
     provide: {
@@ -103,6 +107,8 @@ function mountPipelines() {
       fullPath: pipelineTableViewEl.dataset.fullPath,
       graphqlPath: pipelineTableViewEl.dataset.graphqlPath,
       manualActionsLimit: 50,
+      mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
+      sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
       withFailedJobsDetails: true,
     },
     render(createElement) {
@@ -573,10 +579,12 @@ export default class MergeRequestTabs {
 
   expandViewContainer() {
     this.contentWrapper.classList.remove('container-limited');
+    this.contentWrapper.classList.add('diffs-container-limited');
   }
 
   resetViewContainer() {
     this.contentWrapper.classList.toggle('container-limited', this.isFixedLayoutPreferred);
+    this.contentWrapper.classList.remove('diffs-container-limited');
   }
 
   // Expand the issuable sidebar unless the user explicitly collapsed it

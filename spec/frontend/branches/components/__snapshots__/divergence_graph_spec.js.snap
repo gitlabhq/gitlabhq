@@ -2,7 +2,7 @@
 
 exports[`Branch divergence graph component renders ahead and behind count 1`] = `
 <div
-  class="divergence-graph px-2 d-none d-md-block"
+  class="d-md-block d-none divergence-graph px-2"
   title="10 commits behind main, 10 commits ahead"
 >
   <graph-bar-stub
@@ -10,11 +10,9 @@ exports[`Branch divergence graph component renders ahead and behind count 1`] = 
     maxcommits="100"
     position="left"
   />
-   
   <div
-    class="graph-separator float-left mt-1"
+    class="float-left graph-separator mt-1"
   />
-   
   <graph-bar-stub
     count="10"
     maxcommits="100"
@@ -25,7 +23,7 @@ exports[`Branch divergence graph component renders ahead and behind count 1`] = 
 
 exports[`Branch divergence graph component renders distance count 1`] = `
 <div
-  class="divergence-graph px-2 d-none d-md-block"
+  class="d-md-block d-none divergence-graph px-2"
   title="More than 900 commits different with main"
 >
   <graph-bar-stub

@@ -272,5 +272,5 @@ These experimental branches are not intended to be merged; they can be closed on
 and merged back independently.
 - **Give yourself enough time to fix problems ahead of a milestone release.** GitLab moves fast.
 As a Ruby upgrade requires many MRs to be sent and reviewed, make sure all changes are merged at least a week
-before the 22nd. This gives us extra time to act if something breaks. If in doubt, it is better to
+before release day. This gives us extra time to act if something breaks. If in doubt, it is better to
 postpone the upgrade to the following month, as we [prioritize availability over velocity](https://about.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).

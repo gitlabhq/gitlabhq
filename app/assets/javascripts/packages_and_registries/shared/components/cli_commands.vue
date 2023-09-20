@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown } from '@gitlab/ui';
 import Tracking from '~/tracking';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 import {
@@ -16,8 +16,8 @@ const trackingLabel = 'quickstart_dropdown';
 
 export default {
   components: {
-    GlDropdown,
     CodeInstruction,
+    GlDisclosureDropdown,
   },
   mixins: [Tracking.mixin({ label: trackingLabel })],
   props: {
@@ -47,14 +47,13 @@ export default {
 };
 </script>
 <template>
-  <gl-dropdown
-    :text="$options.i18n.QUICK_START"
+  <gl-disclosure-dropdown
+    :toggle-text="$options.i18n.QUICK_START"
     variant="confirm"
-    right
+    placement="right"
     @shown="track('click_dropdown')"
   >
-    <!-- This li is used as a container since gl-dropdown produces a root ul, this mimics the functionality exposed by b-dropdown-form -->
-    <li role="presentation" class="px-2 py-1">
+    <div class="gl-px-3 gl-py-2">
       <code-instruction
         :label="$options.i18n.LOGIN_COMMAND_LABEL"
         :instruction="dockerLoginCommand"
@@ -79,6 +78,6 @@ export default {
         tracking-action="click_copy_push"
         :tracking-label="$options.trackingLabel"
       />
-    </li>
-  </gl-dropdown>
+    </div>
+  </gl-disclosure-dropdown>
 </template>

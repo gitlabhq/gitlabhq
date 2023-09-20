@@ -263,7 +263,7 @@
 @mixin build-log-top-bar($height) {
   @include build-log-bar($height);
   position: sticky;
-  top: $calc-application-header-height;
+  top: calc(#{$calc-application-header-height} - 1px);
 }
 
 /*

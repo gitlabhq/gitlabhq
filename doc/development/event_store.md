@@ -300,6 +300,21 @@ executed synchronously every time the given event is published.
 For complex conditions it's best to subscribe to all the events and then handle the logic
 in the `handle_event` method of the subscriber worker.
 
+### Delayed dispatching of events
+
+A subscription can specify a delay when to receive an event:
+
+```ruby
+store.subscribe ::MergeRequests::UpdateHeadPipelineWorker,
+  to: ::Ci::PipelineCreatedEvent,
+  delay: 1.minute
+```
+
+The `delay` parameter switches the dispatching of the event to use `perform_in` method
+on the subscriber Sidekiq worker, instead of `perform_async`.
+
+This technique is useful when publishing many events and leverage the Sidekiq deduplication.
+
 ## Testing
 
 ### Testing the publisher

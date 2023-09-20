@@ -8,13 +8,7 @@ module QA
       let(:runner_name) { "qa-runner-#{SecureRandom.hex(4)}" }
       let(:repository_location) { project.repository_ssh_location }
       let(:project) { create(:project, name: 'deploy-key-clone-project') }
-      let!(:runner) do
-        Resource::ProjectRunner.fabricate_via_api! do |resource|
-          resource.project = project
-          resource.name = runner_name
-          resource.tags = [runner_name]
-        end
-      end
+      let!(:runner) { create(:project_runner, project: project, name: runner_name, tags: [runner_name]) }
 
       before do
         Flow::Login.sign_in

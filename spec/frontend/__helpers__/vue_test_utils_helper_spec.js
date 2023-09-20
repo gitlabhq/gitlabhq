@@ -374,34 +374,34 @@ describe('Vue test utils helpers', () => {
     });
   });
 
-  describe.each`
-    mountExtendedFunction   | expectedMountFunction
-    ${shallowMountExtended} | ${'shallowMount'}
-    ${mountExtended}        | ${'mount'}
-  `('$mountExtendedFunction', ({ mountExtendedFunction, expectedMountFunction }) => {
-    const FakeComponent = jest.fn();
-    const options = {
-      propsData: {
-        foo: 'bar',
+  describe('mount extended functions', () => {
+    // eslint-disable-next-line vue/one-component-per-file
+    const FakeChildComponent = Vue.component('FakeChildComponent', {
+      template: '<div>Bar <div data-testid="fake-id"/></div>',
+    });
+
+    // eslint-disable-next-line vue/one-component-per-file
+    const FakeComponent = Vue.component('FakeComponent', {
+      components: {
+        FakeChildComponent,
       },
-    };
-
-    beforeEach(() => {
-      const mockWrapper = { find: jest.fn() };
-      jest.spyOn(vtu, expectedMountFunction).mockImplementation(() => mockWrapper);
+      template: '<div>Foo <fake-child-component data-testid="fake-id" /></div>',
     });
 
-    it(`calls \`${expectedMountFunction}\` with passed arguments`, () => {
-      mountExtendedFunction(FakeComponent, options);
-
-      expect(vtu[expectedMountFunction]).toHaveBeenCalledWith(FakeComponent, options);
+    describe('mountExtended', () => {
+      it('mounts component and provides extended queries', () => {
+        const wrapper = mountExtended(FakeComponent);
+        expect(wrapper.text()).toBe('Foo Bar');
+        expect(wrapper.findAllByTestId('fake-id').length).toBe(2);
+      });
     });
 
-    it('returns extended wrapper', () => {
-      const result = mountExtendedFunction(FakeComponent, options);
-
-      expect(result).toHaveProperty('find');
-      expect(result).toHaveProperty('findByTestId');
+    describe('shallowMountExtended', () => {
+      it('shallow mounts component and provides extended queries', () => {
+        const wrapper = shallowMountExtended(FakeComponent);
+        expect(wrapper.text()).toBe('Foo');
+        expect(wrapper.findAllByTestId('fake-id').length).toBe(1);
+      });
     });
   });
 });

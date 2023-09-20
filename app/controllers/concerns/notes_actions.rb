@@ -33,9 +33,6 @@ module NotesActions
         notes.map { |note| note_json(note) }
       end
 
-    # Only present an ETag for the empty response
-    ::Gitlab::EtagCaching::Middleware.skip!(response) if notes.present?
-
     render json: meta.merge(notes: notes)
   end
 

@@ -131,7 +131,8 @@ export default {
           variant: 'confirm',
           action: () => this.approve(),
         };
-      } else if (this.showUnapprove) {
+      }
+      if (this.showUnapprove) {
         return {
           text: s__('mrWidget|Revoke approval'),
           variant: 'default',

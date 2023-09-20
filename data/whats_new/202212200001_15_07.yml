@@ -64,7 +64,7 @@
   release: 15.7
 - name: "Sign commits with your SSH key"
   description: |  # Do not modify this line, instead modify the lines below.
-    Signing commits just got a lot simpler. Use SSH keys [to sign commits](https://docs.gitlab.com/ee/user/project/repository/ssh_signed_commits/), and provide others with confidence that a **Verified** commit was authored by you.
+    Signing commits just got a lot simpler. Use SSH keys [to sign commits](https://docs.gitlab.com/ee/user/project/repository/signed_commits/ssh.html), and provide others with confidence that a **Verified** commit was authored by you.
 
     Previous methods for signing commits required a GPG key or an X.509 certificate, neither of which can be used to sign in to GitLab. Adding support for commit signing with SSH keys now makes it possible to reuse your authentication key pair to also sign your commits. If you already authenticate into GitLab with an SSH key, add three lines of code to your local Git configuration and all your future commits will be signed.
 
@@ -73,7 +73,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/repository/ssh_signed_commits/
+  documentation_link: https://docs.gitlab.com/ee/user/project/repository/signed_commits/ssh.html
   image_url: https://img.youtube.com/vi/IrK83nKi8HA/hqdefault.jpg
   published_at: 2022-12-22
   release: 15.7

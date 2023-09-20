@@ -4,6 +4,7 @@ module Emails
   module ServiceDesk
     extend ActiveSupport::Concern
     include MarkupHelper
+    include ::ServiceDesk::CustomEmails::Logger
 
     EMAIL_ATTACHMENTS_SIZE_LIMIT = 10.megabytes.freeze
 
@@ -61,9 +62,10 @@ module Emails
 
     def service_desk_custom_email_verification_email(service_desk_setting)
       @service_desk_setting = service_desk_setting
+      @project = @service_desk_setting.project
 
       email_sender = sender(
-        User.support_bot.id,
+        Users::Internal.support_bot.id,
         send_from_user_email: false,
         sender_name: @service_desk_setting.outgoing_name,
         sender_email: @service_desk_setting.custom_email
@@ -73,7 +75,7 @@ module Emails
 
       subject = format(s_("Notify|Verify custom email address %{email} for %{project_name}"),
         email: @service_desk_setting.custom_email,
-        project_name: @service_desk_setting.project.name
+        project_name: @project.name
       )
 
       options = {
@@ -119,7 +121,7 @@ module Emails
     def setup_service_desk_mail(issue_id)
       @issue = Issue.find(issue_id)
       @project = @issue.project
-      @support_bot = User.support_bot
+      @support_bot = Users::Internal.support_bot
 
       @service_desk_setting = @project.service_desk_setting
 
@@ -139,11 +141,25 @@ module Emails
       return mail if !service_desk_custom_email_enabled? && !force
       return mail unless @service_desk_setting.custom_email_credential.present?
 
+      # Only set custom email reply address if it's enabled, not when we force it.
+      inject_service_desk_custom_email_reply_address unless force
+
+      log_info(project: @project)
+
       mail.delivery_method(::Mail::SMTP, @service_desk_setting.custom_email_credential.delivery_options)
     end
 
     def service_desk_custom_email_enabled?
       Feature.enabled?(:service_desk_custom_email, @project) && @service_desk_setting&.custom_email_enabled?
+    end
+
+    def inject_service_desk_custom_email_reply_address
+      return unless Feature.enabled?(:service_desk_custom_email_reply, @project)
+
+      reply_address = Gitlab::Email::ServiceDesk::CustomEmail.reply_address(@issue, reply_key)
+      headers['Reply-To'] = Mail::Address.new(reply_address).tap do |address|
+        address.display_name = reply_display_name(@issue)
+      end
     end
 
     def service_desk_sender_email_address

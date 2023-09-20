@@ -2,13 +2,7 @@
 
 module QA
   RSpec.shared_context 'sends and resolves test alerts' do
-    let(:project) do
-      Resource::Project.fabricate_via_api! do |project|
-        project.name = 'project-for-alerts'
-        project.description = 'Project for alerts'
-      end
-    end
-
+    let(:project) { create(:project, name: 'project-for-alerts', description: 'Project for alerts') }
     let(:resolve_title) { Faker::Lorem.sentence }
     let(:unresolve_title) { Faker::Lorem.sentence }
     let(:http) { true }

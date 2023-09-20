@@ -2,7 +2,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import InlineFindings from '~/diffs/components/inline_findings.vue';
 import DiffInlineFindings from '~/diffs/components/diff_inline_findings.vue';
 import { NEW_CODE_QUALITY_FINDINGS } from '~/diffs/i18n';
-import { threeCodeQualityFindingsRaw } from '../mock_data/inline_findings';
+import { threeCodeQualityFindings } from '../mock_data/inline_findings';
 
 let wrapper;
 
@@ -12,7 +12,7 @@ describe('InlineFindings', () => {
   const createWrapper = () => {
     return mountExtended(InlineFindings, {
       propsData: {
-        codeQuality: threeCodeQualityFindingsRaw,
+        codeQuality: threeCodeQualityFindings,
       },
     });
   };
@@ -28,6 +28,6 @@ describe('InlineFindings', () => {
   it('renders diff inline findings component with correct props for codequality array', () => {
     wrapper = createWrapper();
     expect(diffInlineFindings().props('title')).toBe(NEW_CODE_QUALITY_FINDINGS);
-    expect(diffInlineFindings().props('findings')).toBe(threeCodeQualityFindingsRaw);
+    expect(diffInlineFindings().props('findings')).toBe(threeCodeQualityFindings);
   });
 });

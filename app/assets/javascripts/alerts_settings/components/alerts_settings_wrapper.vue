@@ -385,8 +385,7 @@ export default {
             <gl-button
               v-if="canAddIntegration && !formVisible"
               size="small"
-              data-testid="add-integration-btn"
-              data-qa-selector="add_integration_button"
+              data-testid="add-integration-button"
               @click="setFormVisibility(true)"
             >
               {{ $options.i18n.addNewIntegration }}

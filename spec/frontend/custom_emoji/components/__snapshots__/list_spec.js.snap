@@ -3,14 +3,11 @@
 exports[`Custom emoji settings list component renders table of custom emoji 1`] = `
 <div>
   <div
-    class="tabs gl-tabs"
+    class="gl-tabs tabs"
   >
-    <!---->
-    <div
-      class=""
-    >
+    <div>
       <ul
-        class="nav gl-tabs-nav"
+        class="gl-tabs-nav nav"
         role="tablist"
       >
         <div
@@ -23,22 +20,12 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
             href="/new"
             to="/new"
           >
-            <!---->
-             
-            <!---->
-              
             <span
               class="gl-button-text"
             >
-              
-        New custom emoji
-      
+              New custom emoji
             </span>
           </a>
-           
-          <!---->
-           
-          <!---->
         </div>
         <div
           class="gl-actions-tabs-end"
@@ -50,30 +37,19 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
             href="/new"
             to="/new"
           >
-            <!---->
-             
-            <!---->
-              
             <span
               class="gl-button-text"
             >
-              
-        New custom emoji
-      
+              New custom emoji
             </span>
           </a>
-           
-          <!---->
-           
-          <!---->
         </div>
       </ul>
     </div>
     <div
-      class="tab-content gl-pt-0 gl-tab-content"
+      class="gl-pt-0 gl-tab-content tab-content"
     >
       <transition-stub
-        css="true"
         enteractiveclass=""
         enterclass=""
         entertoclass="show"
@@ -89,14 +65,12 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
           role="tabpanel"
           style="display: none;"
         >
-           
           <table
             aria-busy=""
             aria-colcount="4"
-            class="table b-table gl-table gl-table-layout-fixed"
+            class="b-table gl-table gl-table-layout-fixed table"
             role="table"
           >
-            <!---->
             <colgroup>
               <col
                 style="width: 70px;"
@@ -110,12 +84,9 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
               />
             </colgroup>
             <thead
-              class=""
               role="rowgroup"
             >
-              <!---->
               <tr
-                class=""
                 role="row"
               >
                 <th
@@ -162,9 +133,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
             <tbody
               role="rowgroup"
             >
-              <!---->
               <tr
-                class=""
                 role="row"
               >
                 <td
@@ -180,7 +149,7 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
                 </td>
                 <td
                   aria-colindex="2"
-                  class="gl-vertical-align-middle! gl-font-monospace"
+                  class="gl-font-monospace gl-vertical-align-middle!"
                   role="cell"
                 >
                   <strong
@@ -194,26 +163,17 @@ exports[`Custom emoji settings list component renders table of custom emoji 1`] 
                   class="gl-vertical-align-middle!"
                   role="cell"
                 >
-                  
-            created-at
-          
+                  created-at
                 </td>
                 <td
                   aria-colindex="4"
-                  class=""
                   role="cell"
                 />
               </tr>
-              <!---->
-              <!---->
             </tbody>
-            <!---->
           </table>
-           
-          <!---->
         </div>
       </transition-stub>
-      <!---->
     </div>
   </div>
 </div>

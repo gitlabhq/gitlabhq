@@ -3,7 +3,7 @@
 - add_page_specific_style 'page_bundles/alert_management_settings'
 - add_page_specific_style 'page_bundles/incident_management_list'
 
-%section.settings.no-animate#js-alert-management-settings{ class: ('expanded' if expanded), data: { qa_selector: 'alerts_settings_content' } }
+%section.settings.no-animate#js-alert-management-settings{ class: ('expanded' if expanded), data: { testid: 'alerts-settings-content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
       = _('Alerts')

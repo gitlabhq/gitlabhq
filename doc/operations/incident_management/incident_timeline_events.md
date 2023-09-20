@@ -23,7 +23,7 @@ They are grouped with dates and are listed in ascending order of the time when t
 
 To view the event timeline of an incident:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Incidents**.
 1. Select an incident.
 1. Select the **Timeline** tab.
@@ -42,7 +42,7 @@ Prerequisites:
 
 To create a timeline event:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Incidents**.
 1. Select an incident.
 1. Select the **Timeline** tab.
@@ -66,7 +66,7 @@ Prerequisites:
 
 To create a timeline event from a comment on the incident:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Incidents**.
 1. Select an incident.
 1. Create a comment or choose an existing comment.
@@ -83,7 +83,7 @@ of an incident.
 
 ![Incident timeline event for severity change](img/timeline_event_for_severity_change_v15_6.png)
 
-### When labels change (Experiment)
+### When labels change **(EXPERIMENT)**
 
 > [Introduced]([issue-link](https://gitlab.com/gitlab-org/gitlab/-/issues/365489)) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`. Disabled by default.
 
@@ -106,7 +106,7 @@ Prerequisites:
 
 To delete a timeline event:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Incidents**.
 1. Select an incident.
 1. Select the **Timeline** tab.

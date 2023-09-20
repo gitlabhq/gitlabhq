@@ -8,12 +8,6 @@ RSpec.describe RedisCommands::Recorder, :use_clean_rails_redis_caching do
   let(:cache) { Rails.cache }
   let(:pattern) { nil }
 
-  before do
-    # do not need to test for positive case since this is testing
-    # a spec support class
-    stub_feature_flags(use_primary_and_secondary_stores_for_cache: false)
-  end
-
   describe '#initialize' do
     context 'with a block' do
       it 'records Redis commands' do

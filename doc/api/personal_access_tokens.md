@@ -45,14 +45,14 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description         |
 |---------------------|----------------|----------|---------------------|
-| `created_after`     | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs created after specified time. |
-| `created_before`    | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs created before specified time. |
-| `last_used_after`   | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs last used after specified time. |
-| `last_used_before`  | datetime (ISO 8601) | **{dotted-circle}** No | Limit results to PATs last used before specified time. |
-| `revoked`           | boolean             | **{dotted-circle}** No | Limit results to PATs with specified revoked state. Valid values are `true` and `false`. |
-| `search`            | string              | **{dotted-circle}** No | Limit results to PATs with name containing search string. |
-| `state`             | string              | **{dotted-circle}** No | Limit results to PATs with specified state. Valid values are `active` and `inactive`. |
-| `user_id`           | integer or string   | **{dotted-circle}** No | Limit results to PATs owned by specified user. |
+| `created_after`     | datetime (ISO 8601) | No | Limit results to PATs created after specified time. |
+| `created_before`    | datetime (ISO 8601) | No | Limit results to PATs created before specified time. |
+| `last_used_after`   | datetime (ISO 8601) | No | Limit results to PATs last used after specified time. |
+| `last_used_before`  | datetime (ISO 8601) | No | Limit results to PATs last used before specified time. |
+| `revoked`           | boolean             | No | Limit results to PATs with specified revoked state. Valid values are `true` and `false`. |
+| `search`            | string              | No | Limit results to PATs with name containing search string. |
+| `state`             | string              | No | Limit results to PATs with specified state. Valid values are `active` and `inactive`. |
+| `user_id`           | integer or string   | No | Limit results to PATs owned by specified user. |
 
 Example request:
 
@@ -226,6 +226,23 @@ Non-administrators can rotate their own tokens. Administrators can rotate tokens
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens/<personal_access_token_id>/rotate"
 ```
 
+Example response:
+
+```json
+{
+    "id": 42,
+    "name": "Rotated Token",
+    "revoked": false,
+    "created_at": "2023-08-01T15:00:00.000Z",
+    "scopes": ["api"],
+    "user_id": 1337,
+    "last_used_at": null,
+    "active": true,
+    "expires_at": "2023-08-15",
+    "token": "s3cr3t"
+}
+```
+
 ### Responses
 
 - `200: OK` if the existing token is successfully revoked and the new token successfully created.
@@ -243,12 +260,13 @@ For each rotated token, the previous and now revoked token is referenced. This
 chain of references defines a token family. In a token family, only the latest
 token is active, and all other tokens in that family are revoked.
 
-When a revoked token from a token family is used in an authentication attempt,
-that attempt fails and the active token from the token family gets revoked.
+When a revoked token from a token family is used in an authentication attempt
+for the token rotation endpoint, that attempt fails and the active token from
+the token family gets revoked.
 This mechanism helps to prevent compromise when a personal access token is
 leaked.
 
-Automatic reuse detection is enabled for API requests.
+Automatic reuse detection is enabled for token rotation API requests.
 
 ## Revoke a personal access token
 

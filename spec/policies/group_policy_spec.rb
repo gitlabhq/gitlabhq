@@ -162,19 +162,16 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         group.update!(subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
       end
 
-      it 'allows every maintainer permission plus creating subgroups' do
-        create_subgroup_permission = [:create_subgroup]
-        updated_maintainer_permissions =
-          maintainer_permissions + create_subgroup_permission
-        updated_owner_permissions =
-          owner_permissions - create_subgroup_permission
-
+      it 'allows permissions from lower roles' do
         expect_allowed(*public_permissions)
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_allowed(*updated_maintainer_permissions)
-        expect_disallowed(*updated_owner_permissions)
+      end
+
+      it 'allows every maintainer permission plus creating subgroups' do
+        expect_allowed(:create_subgroup, *maintainer_permissions)
+        expect_disallowed(*(owner_permissions - [:create_subgroup]))
       end
     end
 
@@ -245,7 +242,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   context 'migration bot' do
-    let_it_be(:migration_bot) { User.migration_bot }
+    let_it_be(:migration_bot) { Users::Internal.migration_bot }
     let_it_be(:current_user) { migration_bot }
 
     it :aggregate_failures do
@@ -354,6 +351,9 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
+      end
+
+      it 'allows every maintainer permission plus creating subgroups' do
         expect_allowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -1261,7 +1261,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'support bot' do
     let_it_be_with_refind(:group) { create(:group, :private, :crm_enabled) }
-    let_it_be(:current_user) { User.support_bot }
+    let_it_be(:current_user) { Users::Internal.support_bot }
 
     before do
       allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)

@@ -12,18 +12,23 @@ module LooseForeignKeys
     idempotent!
 
     def perform
+      connection_name, base_model = current_connection_name_and_base_model
+      modification_tracker, turbo_mode = initialize_modification_tracker_for(connection_name)
+
       # Add small buffer on MAX_RUNTIME to account for single long running
       # query or extra worker time after the cleanup.
-      lock_ttl = ModificationTracker::MAX_RUNTIME + 20.seconds
+      lock_ttl = modification_tracker.max_runtime + 10.seconds
 
       in_lock(self.class.name.underscore, ttl: lock_ttl, retries: 0) do
         stats = {}
 
-        connection_name, base_model = current_connection_name_and_base_model
-
         Gitlab::Database::SharedModel.using_connection(base_model.connection) do
-          stats = ProcessDeletedRecordsService.new(connection: base_model.connection).execute
+          stats = ProcessDeletedRecordsService.new(
+            connection: base_model.connection,
+            modification_tracker: modification_tracker
+          ).execute
           stats[:connection] = connection_name
+          stats[:turbo_mode] = turbo_mode
         end
 
         log_extra_metadata_on_done(:stats, stats)
@@ -40,6 +45,17 @@ module LooseForeignKeys
       minutes_since_epoch = Time.current.to_i / 60
       connections_with_name = Gitlab::Database.database_base_models_with_gitlab_shared.to_a # this will never be empty
       connections_with_name[minutes_since_epoch % connections_with_name.count]
+    end
+
+    def initialize_modification_tracker_for(connection_name)
+      turbo_mode = turbo_mode?(connection_name)
+      modification_tracker ||= turbo_mode ? TurboModificationTracker.new : ModificationTracker.new
+      [modification_tracker, turbo_mode]
+    end
+
+    def turbo_mode?(connection_name)
+      %w[main ci].include?(connection_name) &&
+        Feature.enabled?(:"loose_foreign_keys_turbo_mode_#{connection_name}", type: :ops)
     end
   end
 end

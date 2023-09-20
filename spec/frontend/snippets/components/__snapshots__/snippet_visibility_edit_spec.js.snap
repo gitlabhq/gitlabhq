@@ -5,9 +5,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
   class="form-group"
 >
   <label>
-    
     Visibility level
-    
     <gl-link-stub
       href="/foo/bar"
       target="_blank"
@@ -18,10 +16,9 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
       />
     </gl-link-stub>
   </label>
-   
   <gl-form-group-stub
     class="gl-mb-0"
-    id="visibility-level-setting"
+    id="reference-0"
     labeldescription=""
     optionaltext="(optional)"
   >
@@ -39,15 +36,14 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         value="private"
       >
         <div
-          class="d-flex align-items-center"
+          class="align-items-center d-flex"
         >
           <gl-icon-stub
             name="lock"
             size="16"
           />
-           
           <span
-            class="font-weight-bold ml-1 js-visibility-option"
+            class="font-weight-bold js-visibility-option ml-1"
             data-qa-selector="visibility_content"
             data-qa-visibility="Private"
           >
@@ -60,15 +56,14 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         value="internal"
       >
         <div
-          class="d-flex align-items-center"
+          class="align-items-center d-flex"
         >
           <gl-icon-stub
             name="shield"
             size="16"
           />
-           
           <span
-            class="font-weight-bold ml-1 js-visibility-option"
+            class="font-weight-bold js-visibility-option ml-1"
             data-qa-selector="visibility_content"
             data-qa-visibility="Internal"
           >
@@ -81,15 +76,14 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         value="public"
       >
         <div
-          class="d-flex align-items-center"
+          class="align-items-center d-flex"
         >
           <gl-icon-stub
             name="earth"
             size="16"
           />
-           
           <span
-            class="font-weight-bold ml-1 js-visibility-option"
+            class="font-weight-bold js-visibility-option ml-1"
             data-qa-selector="visibility_content"
             data-qa-visibility="Public"
           >
@@ -99,12 +93,9 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
       </gl-form-radio-stub>
     </gl-form-radio-group-stub>
   </gl-form-group-stub>
-   
   <div
     class="text-muted"
     data-testid="restricted-levels-info"
-  >
-    <!---->
-  </div>
+  />
 </div>
 `;

@@ -9,7 +9,7 @@ module Gitlab
       def build(deployment, status, status_changed_at)
         # Deployments will not have a deployable when created using the API.
         deployable_url =
-          if deployment.deployable
+          if deployment.deployable.instance_of?(::Ci::Build)
             Gitlab::UrlBuilder.build(deployment.deployable)
           end
 

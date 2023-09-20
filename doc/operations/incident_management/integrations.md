@@ -101,7 +101,7 @@ parameters. All fields are optional. If the incoming alert does not contain a va
 | `monitoring_tool`         | String          | The name of the associated monitoring tool. |
 | `hosts`                   | String or Array | One or more hosts, as to where this incident occurred. |
 | `severity`                | String          | The severity of the alert. Case-insensitive. Can be one of: `critical`, `high`, `medium`, `low`, `info`, `unknown`. Defaults to `critical` if missing or value is not in this list. |
-| `fingerprint`             | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. |
+| `fingerprint`             | String or Array | The unique identifier of the alert. This can be used to group occurrences of the same alert. When the `generic_alert_fingerprinting` feature is enabled, the fingerprint is generated automatically based on the payload (excluding the `start_time`, `end_time`, and `hosts` parameters). |
 | `gitlab_environment_name` | String          | The name of the associated GitLab [environment](../../ci/environments/index.md). Required to [display alerts on a dashboard](../../user/operations_dashboard/index.md#adding-a-project-to-the-dashboard). |
 
 You can also add custom fields to the alert's payload. The values of extra
@@ -144,7 +144,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Monitor**.
 1. Expand the **Alerts** section, and select **Add new integration**.
 1. From the **Select integration type** dropdown list, select **Prometheus**.
@@ -417,6 +417,11 @@ The alert in GitLab is automatically resolved when an HTTP Endpoint
 receives a payload with the end time of the alert set. For HTTP Endpoints
 without [custom mappings](#map-fields-in-custom-alerts), the expected
 field is `end_time`. With custom mappings, you can select the expected field.
+
+GitLab determines which alert to resolve based on the `fingerprint` value that can be provided as
+part of the payload.
+For more information on alert properties and mappings, see
+[Customize the alert payload outside of GitLab](#customize-the-alert-payload-outside-of-gitlab).
 
 You can also configure the associated [incident to be closed automatically](../incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
 

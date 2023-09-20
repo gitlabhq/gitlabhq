@@ -54,7 +54,7 @@ for Push and Tag events, but we never display commits.
 
 To create a system hook:
 
-1. On the left sidebar, expand the top-most chevron (**{chevron-down}**).
+1. On the left sidebar, select **Search or go to**.
 1. Select **Admin Area**.
 1. On the left sidebar, select **System Hooks**.
 1. Select **Add new webhook**.

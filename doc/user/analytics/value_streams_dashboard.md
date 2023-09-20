@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Released in GitLab 15.11 as an Open [Beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 
-You can leave feedback on dashboard bugs or functionality in [issue 419488](https://gitlab.com/gitlab-org/gitlab/-/issues/419488).
+To help us improve the Value Streams Dashboard, please share feedback about your experience in this [survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_50guMGNU2HhLeT4).
 For more information, see also the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
 
 The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
@@ -71,22 +71,46 @@ For example, if a project has a high score for Deployment Frequency (Velocity), 
 
 These scoring are based on Google's classifications in the [DORA 2022 Accelerate State of DevOps Report](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out).
 
+## Enable or disable overview background aggregation **(ULTIMATE SELF)**
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `modify_value_stream_dashboard_settings`. Disabled by default.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130704) in GitLab 16.4.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `modify_value_stream_dashboard_settings`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Prerequisite:
+
+- You must have administrator access to the instance.
+
+To enable or disable the overview count aggregation for the Value Streams Dashboard:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand **Analytics**.
+1. In **Value Streams Dashboard**, select or clear the **Enable overview background aggregation for Value Streams Dashboard** checkbox.
+
+To retrieve aggregated usage counts in the group, use the [GraphQL API](../../api/graphql/reference/index.md#groupvaluestreamdashboardusageoverview).
+
 ## View the value streams dashboard
 
 Prerequisite:
 
 - You must have at least the Reporter role for the group.
+- Overview background aggregation for Value Streams Dashboards must be enabled.
 
 To view the value streams dashboard:
 
 - From Analytics Dashboards:
 
-   1. On the group left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+   1. On the group left sidebar, select **Search or go to** and find your group.
    1. Select **Analyze > Analytics Dashboards**.
 
 - From Value Stream Analytics:
 
-   1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project or group.
+   1. On the left sidebar, select **Search or go to** and find your project or group.
    1. Select **Analyze > Value stream analytics**.
    1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
    1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
@@ -118,7 +142,7 @@ Prerequisite:
 
 - You must have at least the Maintainer role for the group.
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your group.
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Analytics**.
 1. Select the project where you would like to store your YAML configuration file.
@@ -126,7 +150,7 @@ Prerequisite:
 
 After you have set up the project, set up the configuration file:
 
-1. On the left sidebar, at the top, select **Search GitLab** (**{search}**) to find your project.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. In the default branch, create the configuration file: `.gitlab/analytics/dashboards/value_streams/value_streams.yaml`.
 1. In the `value_streams.yaml` configuration file, fill in the configuration options:
 

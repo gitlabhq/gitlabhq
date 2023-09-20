@@ -9,12 +9,12 @@ module ApplicationSettingImplementation
                             \s              # any whitespace character
                             |               # or
                             [\r\n]          # any number of newline characters
-                          }x.freeze
+                          }x
 
   # Setting a key restriction to `-1` means that all keys of this type are
   # forbidden.
   FORBIDDEN_KEY_VALUE = KeyRestrictionValidator::FORBIDDEN
-  VALID_RUNNER_REGISTRAR_TYPES = %w(project group).freeze
+  VALID_RUNNER_REGISTRAR_TYPES = %w[project group].freeze
 
   DEFAULT_PROTECTED_PATHS = [
     '/users/password',
@@ -37,7 +37,6 @@ module ApplicationSettingImplementation
       {
         admin_mode: false,
         after_sign_up_text: nil,
-        ai_access_token: nil,
         akismet_enabled: false,
         akismet_api_key: nil,
         allow_local_requests_from_system_hooks: true,
@@ -53,6 +52,7 @@ module ApplicationSettingImplementation
         container_registry_vendor: '',
         container_registry_version: '',
         custom_http_clone_url_root: nil,
+        decompress_archive_file_timeout: 210,
         default_artifacts_expire_in: '30 days',
         default_branch_name: nil,
         default_branch_protection: Settings.gitlab['default_branch_protection'],
@@ -171,6 +171,7 @@ module ApplicationSettingImplementation
         snowplow_app_id: nil,
         snowplow_collector_hostname: nil,
         snowplow_cookie_domain: nil,
+        snowplow_database_collector_hostname: nil,
         snowplow_enabled: false,
         sourcegraph_enabled: false,
         sourcegraph_public_only: true,
@@ -254,6 +255,7 @@ module ApplicationSettingImplementation
         user_deactivation_emails_enabled: true,
         search_rate_limit: 30,
         search_rate_limit_unauthenticated: 10,
+        search_rate_limit_allowlist: [],
         users_get_by_id_limit: 300,
         users_get_by_id_limit_allowlist: [],
         can_create_group: true,
@@ -380,6 +382,14 @@ module ApplicationSettingImplementation
     self.protected_paths = strings_to_array(values)
   end
 
+  def protected_paths_for_get_request_raw
+    array_to_string(protected_paths_for_get_request)
+  end
+
+  def protected_paths_for_get_request_raw=(values)
+    self.protected_paths_for_get_request = strings_to_array(values)
+  end
+
   def notes_create_limit_allowlist_raw
     array_to_string(notes_create_limit_allowlist)
   end
@@ -394,6 +404,14 @@ module ApplicationSettingImplementation
 
   def users_get_by_id_limit_allowlist_raw=(values)
     self.users_get_by_id_limit_allowlist = strings_to_array(values).map(&:downcase)
+  end
+
+  def search_rate_limit_allowlist_raw
+    array_to_string(search_rate_limit_allowlist)
+  end
+
+  def search_rate_limit_allowlist_raw=(values)
+    self.search_rate_limit_allowlist = strings_to_array(values).map(&:downcase)
   end
 
   def asset_proxy_whitelist=(values)

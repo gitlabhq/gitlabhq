@@ -138,13 +138,10 @@ export default {
         </a>
       </div>
     </div>
-    <div v-if="hasMoreParticipants" class="participants-more hide-collapsed">
-      <gl-button
-        variant="link"
-        button-text-classes="gl-text-secondary"
-        @click="toggleMoreParticipants"
-        >{{ toggleLabel }}</gl-button
-      >
+    <div v-if="hasMoreParticipants" class="hide-collapsed">
+      <gl-button category="tertiary" size="small" @click="toggleMoreParticipants">{{
+        toggleLabel
+      }}</gl-button>
     </div>
   </div>
 </template>

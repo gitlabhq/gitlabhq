@@ -1,0 +1,14 @@
+- form = local_assigns.fetch(:form)
+
+.form-group#project-merge-options{ data: { project_full_path: @project.full_path } }
+  %b= s_('ProjectSettings|Merge options')
+  %p.text-secondary= s_('ProjectSettings|Additional settings that influence how and when merges are done.')
+  = render_if_exists 'projects/settings/merge_requests/merge_pipelines_settings', form: form
+  = render_if_exists 'projects/settings/merge_requests/merge_trains_settings', form: form
+  = form.gitlab_ui_checkbox_component :resolve_outdated_diff_discussions,
+    s_('ProjectSettings|Automatically resolve merge request diff threads when they become outdated')
+  = form.gitlab_ui_checkbox_component :printing_merge_request_link_enabled,
+    s_('ProjectSettings|Show link to create or view a merge request when pushing from the command line')
+  = form.gitlab_ui_checkbox_component :remove_source_branch_after_merge,
+    s_('ProjectSettings|Enable "Delete source branch" option by default'),
+    help_text: s_('ProjectSettings|Existing merge requests and protected branches are not affected.')

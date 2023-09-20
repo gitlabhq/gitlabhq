@@ -164,6 +164,40 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline do
           expect(note.award_emoji.first.name).to eq('clapper')
         end
       end
+
+      context "when importing an issue with one award emoji and other relations with one item" do
+        let(:issue_attributes) do
+          {
+            "notes" => [
+              {
+                'note' => 'Description changed',
+                'author_id' => 22,
+                'author' => {
+                  'name' => 'User 22'
+                },
+                'updated_at' => '2016-06-14T15:02:47.770Z'
+              }
+            ],
+            'award_emoji' => [
+              {
+                'name' => 'thumbsup',
+                'user_id' => 22
+              }
+            ]
+          }
+        end
+
+        it 'saves properly' do
+          issue = project.issues.last
+          notes = issue.notes
+
+          aggregate_failures do
+            expect(notes.count).to eq 1
+            expect(notes[0].note).to include("Description changed")
+            expect(issue.award_emoji.first.name).to eq "thumbsup"
+          end
+        end
+      end
     end
   end
 end

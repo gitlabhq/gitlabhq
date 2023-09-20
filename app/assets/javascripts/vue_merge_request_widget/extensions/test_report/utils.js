@@ -62,7 +62,7 @@ export const reportSubTextBuilder = ({ suite_errors: suiteErrors, summary }) => 
     }
     return errors;
   }
-  return recentFailuresTextBuilder(summary);
+  return [recentFailuresTextBuilder(summary)];
 };
 
 export const countRecentlyFailedTests = (subject) => {

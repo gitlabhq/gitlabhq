@@ -101,6 +101,14 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
     end
 
     context 'when unexpected exception happen' do
+      let(:exception) { StandardError.new }
+
+      before do
+        allow_next_instance_of(::Users::CreditCardValidation) do |instance|
+          allow(instance).to receive(:save).and_raise(exception)
+        end
+      end
+
       it 'tracks the exception and returns an error' do
         logged_params = {
           credit_card_validated_at: credit_card_validated_time,
@@ -111,8 +119,7 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
           user_id: user_id
         }
 
-        expect(::Users::CreditCardValidation).to receive(:upsert).and_raise(e = StandardError.new('My exception!'))
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(e, class: described_class.to_s, params: logged_params)
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception, class: described_class.to_s, params: logged_params)
 
         result = service.execute
 

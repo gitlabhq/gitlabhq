@@ -8,6 +8,7 @@ module Types
       graphql_name 'CiJob'
 
       present_using ::Ci::BuildPresenter
+      field_class Types::Ci::JobBaseField
 
       connection_type_class Types::LimitedCountableConnectionType
 
@@ -87,10 +88,14 @@ module Types
                                                 description: 'Play path of the job.'
       field :playable, GraphQL::Types::Boolean, null: false, method: :playable?,
                                                 description: 'Indicates the job can be played.'
+      field :previous_stage_jobs, Types::Ci::JobType.connection_type,
+            null: true,
+            description: 'Jobs from the previous stage.'
       field :previous_stage_jobs_or_needs, Types::Ci::JobNeedUnion.connection_type,
             null: true,
             description: 'Jobs that must complete before the job runs. Returns `BuildNeed`, ' \
-                         'which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise.'
+                         'which is the needed jobs if the job uses the `needs` keyword, or the previous stage jobs otherwise.',
+            deprecated: { reason: 'Replaced by previousStageJobs and needs fields', milestone: '16.4' }
       field :ref_name, GraphQL::Types::String, null: true,
                                                description: 'Ref name of the job.'
       field :ref_path, GraphQL::Types::String, null: true,
@@ -104,7 +109,8 @@ module Types
       field :scheduling_type, GraphQL::Types::String, null: true,
                                                       description: 'Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise.'
       field :short_sha, type: GraphQL::Types::String, null: false,
-                        description: 'Short SHA1 ID of the commit.'
+                        description: 'Short SHA1 ID of the commit.',
+                        if_unauthorized: 'Unauthorized'
       field :stuck, GraphQL::Types::Boolean, null: false, method: :stuck?,
                                              description: 'Indicates the job is stuck.'
       field :trace, Types::Ci::JobTraceType, null: true,
@@ -174,17 +180,17 @@ module Types
       end
 
       def previous_stage_jobs
-        BatchLoader::GraphQL.for([object.pipeline, object.stage_idx - 1]).batch(default_value: []) do |tuples, loader|
-          tuples.group_by(&:first).each do |pipeline, keys|
-            positions = keys.map(&:second)
+        BatchLoader::GraphQL.for([object.pipeline_id, object.stage_idx - 1]).batch(default_value: []) do |tuples, loader|
+          pipeline_ids = tuples.map(&:first).uniq
+          stage_idxs = tuples.map(&:second).uniq
 
-            stages = pipeline.stages.by_position(positions)
+          # This query can fetch unneeded jobs when querying for more than one pipeline.
+          # It was decided that fetching and discarding the jobs is preferable to making a more complex query.
+          jobs = CommitStatus.in_pipelines(pipeline_ids).for_stage(stage_idxs).latest
+          grouped_jobs = jobs.group_by { |job| [job.pipeline_id, job.stage_idx] }
 
-            stages.each do |stage|
-              # Without `.to_a`, the memoization will only preserve the activerecord relation object. And when there is
-              # a call, the SQL query will be executed again.
-              loader.call([pipeline, stage.position], stage.latest_statuses.to_a)
-            end
+          tuples.each do |tuple|
+            loader.call(tuple, grouped_jobs.fetch(tuple, []))
           end
         end
       end
