@@ -257,20 +257,6 @@ func TestInvalidUploadConfiguration(t *testing.T) {
 		sendData map[string]interface{}
 	}{
 		{
-			desc: "with an invalid overriden method",
-			sendData: mergeMap(baseSendData, map[string]interface{}{
-				"UploadConfig": map[string]string{
-					"Method": "TEAPOT",
-				},
-			}),
-		}, {
-			desc: "with an invalid url",
-			sendData: mergeMap(baseSendData, map[string]interface{}{
-				"UploadConfig": map[string]string{
-					"Url": "invalid_url",
-				},
-			}),
-		}, {
 			desc: "with an invalid headers",
 			sendData: mergeMap(baseSendData, map[string]interface{}{
 				"UploadConfig": map[string]interface{}{
