@@ -1,6 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
+import { omit } from 'lodash';
 import { refreshCurrentPage, queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import BoardContent from '~/boards/components/board_content.vue';
@@ -115,9 +116,8 @@ export default {
       return this.activeListId ? this.boardListsApollo[this.activeListId] : undefined;
     },
     formattedFilterParams() {
-      if (this.filterParams.groupBy) delete this.filterParams.groupBy;
       return filterVariables({
-        filters: this.filterParams,
+        filters: omit(this.filterParams, 'groupBy'),
         issuableType: this.issuableType,
         filterInfo: FiltersInfo,
         filterFields: FilterFields,

@@ -40340,7 +40340,7 @@ msgstr ""
 msgid "Runners|Add notes such as the runner owner or what it should be used for."
 msgstr ""
 
-msgid "Runners|Add tags for the types of jobs the runner processes to ensure that the runner only runs jobs that you intend it to. %{helpLinkStart}Learn more.%{helpLinkEnd}"
+msgid "Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more.%{helpLinkEnd}"
 msgstr ""
 
 msgid "Runners|Add your feedback to this issue"
@@ -40522,7 +40522,7 @@ msgstr ""
 msgid "Runners|Enable stale runner cleanup?"
 msgstr ""
 
-msgid "Runners|Enter the number of seconds."
+msgid "Runners|Enter the job timeout in seconds. Must be a minimum of 600 seconds."
 msgstr ""
 
 msgid "Runners|Environment"
@@ -40637,9 +40637,6 @@ msgid "Runners|Minor version upgrades are available."
 msgstr ""
 
 msgid "Runners|Most recent failures"
-msgstr ""
-
-msgid "Runners|Multiple tags must be separated by a comma. For example, %{example}."
 msgstr ""
 
 msgid "Runners|Name"
@@ -40923,6 +40920,9 @@ msgid "Runners|Select projects to assign to this runner"
 msgstr ""
 
 msgid "Runners|Select your preferred runner, then choose the capacity for the runner in the AWS CloudFormation console."
+msgstr ""
+
+msgid "Runners|Separate multiple tags with a comma. For example, %{example}."
 msgstr ""
 
 msgid "Runners|Shared runners are disabled in the group settings."

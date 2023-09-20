@@ -17,7 +17,7 @@ module Tooling
       PERFORMANCE_INDICATOR_REGEX = %r{gmau|smau|paid_gmau|umau}
       METRIC_REMOVED = %r{\+status: removed}
       DATABASE_REGEX = %r{\Adb/structure\.sql}
-      STRUCTURE_SQL_FILE = %w(db/structure.sql).freeze
+      STRUCTURE_SQL_FILE = %w[db/structure.sql].freeze
 
       def build_message
         return unless impacted?

@@ -118,12 +118,17 @@ Hardcoded limits apply on migration by direct transfer.
 | Limit       | Description                                                                                                                                                                     |
 |:------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 6           | Maximum number of migrations permitted by a destination GitLab instance per minute per user. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386452) in GitLab 15.9. |
-| 5 GB        | Maximum relation size that can be downloaded from the source instance.                                                                                                          |
-| 10 GB       | Maximum size of a decompressed archive.                                                                                                                                         |
 | 210 seconds | Maximum number of seconds to wait for decompressing an archive file.                                                                                                            |
 | 50 MB       | Maximum length an NDJSON row can have.                                                                                                                                          |
 | 5 minutes   | Maximum number of seconds until an empty export status on source instance is raised.                                                                                            |
 | 8 hours     | Time until migration times out.                                                                                                                                                 |
+
+[Configurable limits](../../../administration/settings/account_and_limit_settings.md) are also available.
+
+In GitLab 16.3 and later, the following previously hard-coded settings are [configurable](https://gitlab.com/gitlab-org/gitlab/-/issues/384976):
+
+- Maximum relation size that can be downloaded from the source instance (set to 5 GiB).
+- Maximum size of a decompressed archive (set to 10 GiB).
 
 You can test the maximum relation size limit using these APIs:
 

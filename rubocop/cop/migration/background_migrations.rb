@@ -14,11 +14,11 @@ module RuboCop
         def on_send(node)
           name = node.children[1]
 
-          disabled_methods = %i(
+          disabled_methods = %i[
             queue_background_migration_jobs_by_range_at_intervals
             requeue_background_migration_jobs_by_range_at_intervals
             migrate_in
-          )
+          ]
 
           add_offense(node.loc.selector) if disabled_methods.include? name
         end

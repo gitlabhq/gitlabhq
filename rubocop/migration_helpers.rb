@@ -19,9 +19,9 @@ module RuboCop
 
     # List of helpers that add new columns, either directly (ADD_COLUMN_METHODS)
     # or through a create/alter table (TABLE_METHODS)
-    ADD_COLUMN_METHODS = %i(add_column change_column_type_concurrently).freeze
+    ADD_COLUMN_METHODS = %i[add_column change_column_type_concurrently].freeze
 
-    TABLE_METHODS = %i(create_table create_table_if_not_exists change_table).freeze
+    TABLE_METHODS = %i[create_table create_table_if_not_exists change_table].freeze
 
     def high_traffic_tables
       @high_traffic_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'HighTrafficTables')

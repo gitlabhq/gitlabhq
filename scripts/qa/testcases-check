@@ -9,9 +9,9 @@ testcases = []
 missing_testcases = []
 formatted_duplicates = []
 testcase_format_errors = []
-missing_message = %"\n*** The following tests are missing testcase links:\n\n%s\n"
-duplicate_message = %"\n*** The following tests have duplicate testcase links:\n\n%s"
-format_message = %"\n*** The following testcase links are incorrectly formatted:\n\n%s\n"
+missing_message = %(\n*** The following tests are missing testcase links:\n\n%s\n)
+duplicate_message = %(\n*** The following tests have duplicate testcase links:\n\n%s)
+format_message = %(\n*** The following testcase links are incorrectly formatted:\n\n%s\n)
 
 test_metadata_file = ARGV.shift
 

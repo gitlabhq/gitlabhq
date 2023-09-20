@@ -30,31 +30,31 @@ describe('Artifacts block', () => {
     'These artifacts are the latest. They will not be deleted (even if expired) until newer artifacts are available.';
 
   const expiredArtifact = {
-    expire_at: expireAt,
+    expireAt,
     expired: true,
     locked: false,
   };
 
   const nonExpiredArtifact = {
-    download_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/download',
-    browse_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/browse',
-    keep_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/keep',
-    expire_at: expireAt,
+    downloadPath: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/download',
+    browsePath: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/browse',
+    keepPath: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/keep',
+    expireAt,
     expired: false,
     locked: false,
   };
 
   const lockedExpiredArtifact = {
     ...expiredArtifact,
-    download_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/download',
-    browse_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/browse',
+    downloadPath: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/download',
+    browsePath: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/browse',
     expired: true,
     locked: true,
   };
 
   const lockedNonExpiredArtifact = {
     ...nonExpiredArtifact,
-    keep_path: undefined,
+    keepPath: undefined,
     locked: true,
   };
 

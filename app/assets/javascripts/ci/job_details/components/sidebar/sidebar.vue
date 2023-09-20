@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { forwardDeploymentFailureModalId } from '~/ci/constants';
 import { filterAnnotations } from '~/ci/job_details/utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ArtifactsBlock from './artifacts_block.vue';
 import CommitBlock from './commit_block.vue';
 import ExternalLinksBlock from './external_links_block.vue';
@@ -41,6 +42,9 @@ export default {
     hasArtifact() {
       // the artifact object will always have a locked property
       return Object.keys(this.job.artifact).length > 1;
+    },
+    artifact() {
+      return convertObjectPropsToCamelCase(this.job.artifact, { deep: true });
     },
     hasExternalLinks() {
       return this.externalLinks.length > 0;
@@ -92,7 +96,7 @@ export default {
         <artifacts-block
           v-if="hasArtifact"
           class="block gl-mb-2"
-          :artifact="job.artifact"
+          :artifact="artifact"
           :help-url="artifactHelpUrl"
         />
 

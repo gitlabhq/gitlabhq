@@ -18,29 +18,6 @@ RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
   let(:environment_query) { Gitlab::Prometheus::Queries::EnvironmentQuery }
 
   describe '#query' do
-    describe 'validate_query' do
-      let(:environment) { build_stubbed(:environment, slug: 'env-slug') }
-      let(:validation_query) { Gitlab::Prometheus::Queries::ValidateQuery.name }
-      let(:query) { 'avg(response)' }
-      let(:validation_respone) { { data: { valid: true } } }
-
-      around do |example|
-        freeze_time { example.run }
-      end
-
-      context 'with valid data' do
-        subject { integration.query(:validate, query) }
-
-        before do
-          stub_reactive_cache(integration, validation_respone, validation_query, query)
-        end
-
-        it 'returns query data' do
-          is_expected.to eq(query: { valid: true })
-        end
-      end
-    end
-
     describe 'environment' do
       let(:environment) { build_stubbed(:environment, slug: 'env-slug') }
 
@@ -57,25 +34,6 @@ RSpec.describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
 
         it 'returns reactive data' do
           is_expected.to eq(prometheus_metrics_data)
-        end
-      end
-    end
-
-    describe 'matched_metrics' do
-      let(:matched_metrics_query) { Gitlab::Prometheus::Queries::MatchedMetricQuery }
-      let(:prometheus_client) { double(:prometheus_client, label_values: nil) }
-
-      context 'with valid data' do
-        subject { integration.query(:matched_metrics) }
-
-        before do
-          allow(integration).to receive(:prometheus_client).and_return(prometheus_client)
-          synchronous_reactive_cache(integration)
-        end
-
-        it 'returns reactive data' do
-          expect(subject[:success]).to be_truthy
-          expect(subject[:data]).to eq([])
         end
       end
     end

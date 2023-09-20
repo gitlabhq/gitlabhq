@@ -21,7 +21,7 @@ import {
   registerExtension,
   registeredExtensions,
 } from '~/vue_merge_request_widget/components/extensions';
-import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
+import { STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
 import { STATE_QUERY_POLLING_INTERVAL_BACKOFF } from '~/vue_merge_request_widget/constants';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
@@ -30,6 +30,7 @@ import Approvals from '~/vue_merge_request_widget/components/approvals/approvals
 import ConflictsState from '~/vue_merge_request_widget/components/states/mr_widget_conflicts.vue';
 import Preparing from '~/vue_merge_request_widget/components/states/mr_widget_preparing.vue';
 import ShaMismatch from '~/vue_merge_request_widget/components/states/sha_mismatch.vue';
+import MergedState from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
 import WidgetSuggestPipeline from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
 import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
@@ -186,25 +187,13 @@ describe('MrWidgetOptions', () => {
   describe('default', () => {
     describe('computed', () => {
       describe('componentName', () => {
-        beforeEach(async () => {
-          await createComponent();
-        });
-
-        // quarantine: https://gitlab.com/gitlab-org/gitlab/-/issues/409365
-        // eslint-disable-next-line jest/no-disabled-tests
-        it.skip.each`
-          ${'merged'}      | ${'mr-widget-merged'}
-        `('should translate $state into $componentName', ({ state, componentName }) => {
-          wrapper.vm.mr.state = state;
-
-          expect(wrapper.vm.componentName).toEqual(componentName);
-        });
-
         it.each`
           state            | componentName       | component
+          ${STATUS_MERGED} | ${'MergedState'}    | ${MergedState}
           ${'conflicts'}   | ${'ConflictsState'} | ${ConflictsState}
           ${'shaMismatch'} | ${'ShaMismatch'}    | ${ShaMismatch}
         `('should translate $state into $componentName component', async ({ state, component }) => {
+          await createComponent();
           Vue.set(wrapper.vm.mr, 'state', state);
           await nextTick();
           expect(wrapper.findComponent(component).exists()).toBe(true);

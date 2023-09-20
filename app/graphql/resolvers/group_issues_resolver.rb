@@ -11,7 +11,11 @@ module Resolvers
 
     before_connection_authorization do |nodes, _|
       projects = nodes.map(&:project)
-      ActiveRecord::Associations::Preloader.new(records: projects, associations: :namespace).call
+      ActiveRecord::Associations::Preloader.new(records: projects, associations: project_associations).call
+    end
+
+    def self.project_associations
+      [:namespace]
     end
 
     def ready?(**args)
@@ -24,3 +28,5 @@ module Resolvers
   end
 end
 # rubocop:enable Graphql/ResolverType
+
+Resolvers::GroupIssuesResolver.prepend_mod

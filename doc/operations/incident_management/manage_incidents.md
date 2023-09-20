@@ -201,15 +201,6 @@ In GitLab 15.1 and earlier, the escalation policy for [incidents created from al
 reflects the alert's escalation policy and cannot be changed. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the incident escalation policy is independent and can be changed.
 
-<!--- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-## Embed metrics (removed)
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/346541) in GitLab 14.7
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/399231) in 16.0.
-
-<!--- end_remove -->
-
 ## Close an incident
 
 Prerequisites:

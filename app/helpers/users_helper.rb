@@ -67,6 +67,8 @@ module UsersHelper
     project_ids = projects.pluck(:id)
     # rubocop: enable CodeReuse/ActiveRecord
 
+    preload_project_associations(projects)
+
     Preloaders::UserMaxAccessLevelInProjectsPreloader
       .new(project_ids, current_user)
       .execute
@@ -370,6 +372,10 @@ module UsersHelper
 
   def saved_replies_enabled?
     Feature.enabled?(:saved_replies, current_user)
+  end
+
+  def preload_project_associations(_)
+    # Overridden in EE
   end
 end
 

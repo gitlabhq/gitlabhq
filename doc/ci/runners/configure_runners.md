@@ -57,6 +57,45 @@ How this feature works:
 1. You start a job
 1. The job, if running longer, times out after **30 minutes**
 
+## Set `script` and `after_script` timeouts
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4335) in GitLab Runner 16.4.
+
+To control the amount of time `script` and `after_script` runs before it terminates, you can set specify a timeout.
+
+For example, you can specify a timeout to terminate a long-running `script` early, so that artifacts and caches can still be uploaded
+before the [job timeout](#set-maximum-job-timeout-for-a-runner) is exceeded.
+
+- To set a timeout for `script`, use the job variable `RUNNER_SCRIPT_TIMEOUT`.
+- To set a timeout for `after_script`, and override the default of 5 minutes, use the job variable `RUNNER_AFTER_SCRIPT_TIMEOUT`.
+
+Both of these variables accept [Go's duration format](https://pkg.go.dev/time#ParseDuration) (for example, `40s`, `1h20m`, `2h` `4h30m30s`).
+
+For example:
+
+```yaml
+job-with-script-timeouts:
+  variables:
+    RUNNER_SCRIPT_TIMEOUT: 15m
+    RUNNER_AFTER_SCRIPT_TIMEOUT: 10m
+  script:
+    - "I am allowed to run for min(15m, remaining job timeout)."
+  after_script:
+    - "I am allowed to run for min(10m, remaining job timeout)."
+
+job-artifact-upload-on-timeout:
+  timeout: 1h                           # set job timeout to 1 hour
+  variables:
+     RUNNER_SCRIPT_TIMEOUT: 50m         # only allow script to run for 50 minutes
+  script:
+    - long-running-process > output.txt # will be terminated after 50m
+
+  artifacts: # artifacts will have roughly ~10m to upload
+    paths:
+      - output.txt
+    when: on_failure # on_failure because script termination after a timeout is treated as a failure
+```
+
 ## Protecting sensitive information
 
 To avoid exposing sensitive information, you can restrict the usage

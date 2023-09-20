@@ -23,10 +23,10 @@ module Gitlab
       THREAD_NAME = 'sidekiq-cluster'
 
       # The signals that should terminate both the master and workers.
-      TERMINATE_SIGNALS = %i(INT TERM).freeze
+      TERMINATE_SIGNALS = %i[INT TERM].freeze
 
       # The signals that should simply be forwarded to the workers.
-      FORWARD_SIGNALS = %i(TTIN USR1 USR2 HUP).freeze
+      FORWARD_SIGNALS = %i[TTIN USR1 USR2 HUP].freeze
 
       # The default queues that each Sidekiq process always listens to if routing rules are not customized:
       # - `default` queue comes from config initializer's Settings.build_sidekiq_routing_rules

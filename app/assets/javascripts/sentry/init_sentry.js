@@ -4,6 +4,7 @@ import {
   defaultStackParser,
   makeFetchTransport,
   defaultIntegrations,
+  BrowserTracing,
 
   // exports
   captureException,
@@ -37,7 +38,7 @@ const initSentry = () => {
     // https://github.com/getsentry/sentry-javascript/blob/7.66.0/MIGRATION.md#explicit-client-options
     transport: makeFetchTransport,
     stackParser: defaultStackParser,
-    integrations: defaultIntegrations,
+    integrations: [...defaultIntegrations, new BrowserTracing()],
   });
 
   hub.bindClient(client);

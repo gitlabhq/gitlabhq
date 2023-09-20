@@ -3,6 +3,7 @@ import {
   defaultStackParser,
   makeFetchTransport,
   defaultIntegrations,
+  BrowserTracing,
 
   // exports
   captureException,
@@ -96,7 +97,7 @@ describe('SentryConfig', () => {
 
             transport: makeFetchTransport,
             stackParser: defaultStackParser,
-            integrations: defaultIntegrations,
+            integrations: [...defaultIntegrations, expect.any(BrowserTracing)],
           }),
         );
       });
