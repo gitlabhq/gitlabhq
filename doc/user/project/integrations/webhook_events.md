@@ -24,7 +24,7 @@ Event type                                   | Trigger
 [Subgroup event](#subgroup-events)           | A subgroup is created or removed from a group.
 [Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
 [Release event](#release-events)             | A release is created or updated.
-[Emoji event](#emoji-events)                 | An emoji is awarded or revoked.
+[Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
 
 NOTE:
 If an author has no public email listed in their
@@ -1891,7 +1891,7 @@ On self-managed GitLab, by default this feature is available. To hide the featur
 NOTE:
 To have the `emoji_webhooks` flag enabled on GitLab.com, see [issue 417288](https://gitlab.com/gitlab-org/gitlab/-/issues/417288).
 
-An emoji event is triggered when an emoji is awarded or revoked on:
+An emoji event is triggered when an [emoji reaction](../../emoji_reactions.md) is added or removed on:
 
 - Issues
 - Merge requests
@@ -1904,8 +1904,8 @@ An emoji event is triggered when an emoji is awarded or revoked on:
 
 The available values for `object_attributes.action` in the payload are:
 
-- `award`
-- `revoke`
+- `award` to add a reaction
+- `revoke` to remove a reaction
 
 Request header:
 

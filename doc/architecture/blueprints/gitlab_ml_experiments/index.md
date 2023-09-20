@@ -69,7 +69,7 @@ Instead of embedding these applications directly into the Rails and/or Sidekiq c
 ![use services instead of fat containers](https://docs.google.com/drawings/d/e/2PACX-1vSRrPo0TNtXG8Yqj37TO2PaND9PojGZzNRs2rcTA37-vBZm5WZlfxLDCKVJD1vYHTbGy1KY1rDYHwlg/pub?w=1008&h=564)\
 [source](https://docs.google.com/drawings/d/1ZPprcSYH5Oqp8T46I0p1Hhr-GD55iREDvFWcpQq9dTQ/edit)
 
-The service-integration approach has already been used for the [Suggested Reviewers feature](https://gitlab.com/gitlab-com/gl-infra/readiness/-/merge_requests/114) that has been deployed to GitLab.com.
+The service-integration approach has already been used for the [GitLab Duo Suggested Reviewers feature](https://gitlab.com/gitlab-com/gl-infra/readiness/-/merge_requests/114) that has been deployed to GitLab.com.
 
 This approach would have many advantages:
 

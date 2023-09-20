@@ -1911,9 +1911,6 @@ msgstr ""
 msgid "AI|Apply AI-generated description"
 msgstr ""
 
-msgid "AI|Ask GitLab Duo"
-msgstr ""
-
 msgid "AI|Ask a question"
 msgstr ""
 
@@ -1954,6 +1951,9 @@ msgid "AI|Generate issue description"
 msgstr ""
 
 msgid "AI|GitLab Duo"
+msgstr ""
+
+msgid "AI|GitLab Duo Chat"
 msgstr ""
 
 msgid "AI|Give feedback on AI content"
@@ -4669,9 +4669,6 @@ msgid "Algorithm"
 msgstr ""
 
 msgid "All"
-msgstr ""
-
-msgid "All %{replicableType} are being scheduled for %{action}"
 msgstr ""
 
 msgid "All (default)"
@@ -20817,6 +20814,9 @@ msgid_plural "Geo|%d shards selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Geo|%{action} %{replicableType}"
+msgstr ""
+
 msgid "Geo|%{boldStart}Not applicable%{boldEnd}: Geo does not verify this component yet. See the %{linkStart}data types we plan to support%{linkEnd}."
 msgstr ""
 
@@ -20854,6 +20854,9 @@ msgid "Geo|Add site"
 msgstr ""
 
 msgid "Geo|All"
+msgstr ""
+
+msgid "Geo|All %{replicableType} are being scheduled for %{action}"
 msgstr ""
 
 msgid "Geo|All %{replicable_name}"
@@ -21159,9 +21162,6 @@ msgstr ""
 msgid "Geo|Resync all %{projects_count} projects"
 msgstr ""
 
-msgid "Geo|Resync all %{total}%{replicableType}"
-msgstr ""
-
 msgid "Geo|Resync project"
 msgstr ""
 
@@ -21279,13 +21279,16 @@ msgstr ""
 msgid "Geo|There was an error saving this Geo Site"
 msgstr ""
 
+msgid "Geo|There was an error scheduling action %{action} for %{replicableType}"
+msgstr ""
+
 msgid "Geo|There was an error updating the Geo Settings"
 msgstr ""
 
 msgid "Geo|This GitLab instance is subscribed to the %{insufficient_license} tier. Geo is only available for users who have at least a Premium subscription."
 msgstr ""
 
-msgid "Geo|This will resync all %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
+msgid "Geo|This will %{action} %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Geo|This will resync all projects. It may take some time to complete. Are you sure you want to continue?"
@@ -46643,9 +46646,6 @@ msgstr ""
 msgid "Take a look at the documentation to discover all of GitLab’s capabilities."
 msgstr ""
 
-msgid "TanukiBot|Ask GitLab Duo"
-msgstr ""
-
 msgid "TanukiBot|Ask a question about GitLab"
 msgstr ""
 
@@ -48010,9 +48010,6 @@ msgid "There was an error subscribing to this label."
 msgstr ""
 
 msgid "There was an error syncing project %{name}"
-msgstr ""
-
-msgid "There was an error syncing the %{replicableType}"
 msgstr ""
 
 msgid "There was an error trying to validate your query"

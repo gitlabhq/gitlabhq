@@ -73,7 +73,7 @@ then issues with a milestone without a due date.
 ## Sorting by popularity
 
 When you sort by **Popularity**, the issue order changes to sort descending by the
-number of upvotes ([emoji reactions](../../award_emojis.md) with the "thumbs up")
+number of upvotes ([emoji reactions](../../emoji_reactions.md) with the "thumbs up")
 on each issue. You can use this to identify issues that are in high demand.
 
 The total number of votes is not summed up. An issue with 18 upvotes and 5

@@ -265,12 +265,12 @@ One iteration describes one quarter's worth of work.
     - Data access layer: Initial Admin Area settings are shared across cluster.
     - Essential workflows: Allow to share cluster-wide data with database-level data access layer
 
-1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - Expected delivery: 16.2 FY24Q2 | Actual delivery: 16.4 FY24Q3 - In progress
+1. [Iteration 2](https://gitlab.com/groups/gitlab-org/-/epics/9813) - Expected delivery: 16.2 FY24Q2, Actual delivery: 16.4 FY24Q3 - Complete
 
     - Essential workflows: User accounts are shared across cluster.
     - Essential workflows: User can create Group.
 
-1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - Expected delivery: 16.7 FY24Q4 - Planned
+1. [Iteration 3](https://gitlab.com/groups/gitlab-org/-/epics/10997) - Expected delivery: 16.7 FY24Q4 - In Progress
 
     - Essential workflows: User can create Project.
     - Routing: Technology.

@@ -104,7 +104,7 @@ describe('HelpCenter component', () => {
         createWrapper({ ...sidebarData, show_tanuki_bot: true });
       });
 
-      it('shows Ask GitLab Duo with the help items', () => {
+      it('shows GitLab Duo Chat with the help items', () => {
         expect(findDropdownGroup(0).props('group').items).toEqual([
           expect.objectContaining({
             icon: 'tanuki-ai',
@@ -115,9 +115,9 @@ describe('HelpCenter component', () => {
         ]);
       });
 
-      describe('when Ask GitLab Duo button is clicked', () => {
+      describe('when GitLab Duo Chat button is clicked', () => {
         beforeEach(() => {
-          findButton('Ask GitLab Duo').click();
+          findButton('GitLab Duo Chat').click();
         });
 
         it('sets helpCenterState.showTanukiBotChatDrawer to true', () => {

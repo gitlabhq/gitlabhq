@@ -921,6 +921,147 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.sort_by_attribute' do
+    before do
+      group.destroy!
+    end
+
+    let!(:group_1) { create(:group, name: 'Y group') }
+    let!(:group_2) { create(:group, name: 'J group', created_at: 2.days.ago, updated_at: 1.day.ago) }
+    let!(:group_3) { create(:group, name: 'A group') }
+    let!(:group_4) { create(:group, name: 'F group', created_at: 1.day.ago, updated_at: 1.day.ago) }
+
+    subject { described_class.with_statistics.with_route.sort_by_attribute(sort) }
+
+    context 'when sort by is not provided (id desc by default)' do
+      let(:sort) { nil }
+
+      it { is_expected.to match_array([group_1, group_2, group_3, group_4]) }
+    end
+
+    context 'when sort by name_asc' do
+      let(:sort) { 'name_asc' }
+
+      it { is_expected.to match_array([group_3, group_4, group_2, group_1]) }
+    end
+
+    context 'when sort by name_desc' do
+      let(:sort) { 'name_desc' }
+
+      it { is_expected.to match_array([group_1, group_2, group_4, group_3]) }
+    end
+
+    context 'when sort by recently_created' do
+      let(:sort) { 'created_desc' }
+
+      it { is_expected.to match_array([group_3, group_1, group_4, group_2]) }
+    end
+
+    context 'when sort by oldest_created' do
+      let(:sort) { 'created_asc' }
+
+      it { is_expected.to match_array([group_2, group_4, group_1, group_3]) }
+    end
+
+    context 'when sort by latest_activity' do
+      let(:sort) { 'latest_activity_desc' }
+
+      # this should be expected if latest_activity is based on updated_at
+      # it { is_expected.to match_array([group_3, group_1, group_4, group_2]) }
+      it { is_expected.to match_array([group_1, group_2, group_3, group_4]) }
+    end
+
+    context 'when sort by oldest_activity' do
+      let(:sort) { 'latest_activity_asc' }
+
+      # this should be expected if latest_activity is based on updated_at
+      # it { is_expected.to match_array([group_2, group_4, group_1, group_3]) }
+      it { is_expected.to match_array([group_1, group_2, group_3, group_4]) }
+    end
+
+    context 'when sort by storage_size_desc' do
+      let!(:project_1) do
+        create(:project,
+          namespace: group_1,
+          statistics: build(
+            :project_statistics,
+            namespace: group_1,
+            repository_size: 2178370,
+            storage_size: 1278370,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      let!(:project_2) do
+        create(:project,
+          namespace: group_2,
+          statistics: build(
+            :project_statistics,
+            namespace: group_2,
+            repository_size: 3178370,
+            storage_size: 3178370,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      let!(:project_3) do
+        create(:project,
+          namespace: group_3,
+          statistics: build(
+            :project_statistics,
+            namespace: group_3,
+            repository_size: 1278370,
+            storage_size: 1178370,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      let!(:project_4) do
+        create(:project,
+          namespace: group_4,
+          statistics: build(
+            :project_statistics,
+            namespace: group_4,
+            repository_size: 2178370,
+            storage_size: 2278370,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      let(:sort) { 'storage_size_desc' }
+
+      it { is_expected.to match_array([group_2, group_4, group_1, group_3]) }
+    end
+  end
+
   describe 'scopes' do
     let_it_be(:private_group)  { create(:group, :private)  }
     let_it_be(:internal_group) { create(:group, :internal) }

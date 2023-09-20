@@ -40,12 +40,12 @@ GitLab Duo Suggested Reviewers also integrates with Code Owners, profile status,
 
 For more information, see [Data usage in GitLab Duo Suggested Reviewers](data_usage.md).
 
-### Enable suggested reviewers
+### Enable Suggested Reviewers
 
-Project Maintainers or Owners can enable suggested reviewers by visiting
+Project Maintainers or Owners can enable Suggested Reviewers by visiting
 the [project settings](../../settings/index.md).
 
-Enabling suggested reviewers triggers GitLab to create an ML model for your
+Enabling Suggested Reviewers triggers GitLab to create an ML model for your
 project that is used to generate reviewers. The larger your project, the longer
 this process can take. Usually, the model is ready to generate suggestions
 within a few hours.
@@ -199,7 +199,7 @@ If you have a review in progress, you can also add a comment from the **Overview
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
 displays the name of the matching [approval rule](../approvals/rules.md)
-below the name of each suggested reviewer. [Code Owners](../../codeowners/index.md) are displayed as `Codeowner` without group detail.
+below the name of each reviewer. [Code Owners](../../codeowners/index.md) are displayed as `Codeowner` without group detail.
 
 This example shows reviewers and approval rules when creating a new merge request:
 

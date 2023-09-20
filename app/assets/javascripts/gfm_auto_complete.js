@@ -129,7 +129,7 @@ class GfmAutoComplete {
     this.dataSources = dataSources;
     this.cachedData = {};
     this.isLoadingData = {};
-    this.previousQuery = '';
+    this.previousQuery = undefined;
   }
 
   setup(input, enableMap = defaultAutocompleteConfig) {
@@ -776,15 +776,19 @@ class GfmAutoComplete {
         return $.fn.atwho.default.callbacks.sorter(query, items, searchKey);
       },
       filter(query, data, searchKey) {
+        if (GfmAutoComplete.isTypeWithBackendFiltering(this.at)) {
+          if (GfmAutoComplete.isLoading(data) || self.previousQuery !== query) {
+            self.previousQuery = query;
+            self.fetchData(this.$inputor, this.at, query);
+            return data;
+          }
+        }
+
         if (GfmAutoComplete.isLoading(data)) {
           self.fetchData(this.$inputor, this.at);
           return data;
         }
-        if (GfmAutoComplete.isTypeWithBackendFiltering(this.at) && self.previousQuery !== query) {
-          self.fetchData(this.$inputor, this.at, query);
-          self.previousQuery = query;
-          return data;
-        }
+
         return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
       },
       beforeInsert(value) {
@@ -828,14 +832,18 @@ class GfmAutoComplete {
     const dataSource = this.dataSources[GfmAutoComplete.atTypeMap[at]];
 
     if (GfmAutoComplete.isTypeWithBackendFiltering(at)) {
-      axios
-        .get(dataSource, { params: { search } })
-        .then(({ data }) => {
-          this.loadData($input, at, data);
-        })
-        .catch(() => {
-          this.isLoadingData[at] = false;
-        });
+      if (this.cachedData[at]?.[search]) {
+        this.loadData($input, at, this.cachedData[at][search], { search });
+      } else {
+        axios
+          .get(dataSource, { params: { search } })
+          .then(({ data }) => {
+            this.loadData($input, at, data, { search });
+          })
+          .catch(() => {
+            this.isLoadingData[at] = false;
+          });
+      }
     } else if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
@@ -853,9 +861,19 @@ class GfmAutoComplete {
     }
   }
 
-  loadData($input, at, data) {
+  loadData($input, at, data, { search } = {}) {
     this.isLoadingData[at] = false;
-    this.cachedData[at] = data;
+
+    if (search !== undefined) {
+      if (this.cachedData[at] === undefined) {
+        this.cachedData[at] = {};
+      }
+
+      this.cachedData[at][search] = data;
+    } else {
+      this.cachedData[at] = data;
+    }
+
     $input.atwho('load', at, data);
     // This trigger at.js again
     // otherwise we would be stuck with loading until the user types

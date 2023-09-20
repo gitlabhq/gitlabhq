@@ -1551,7 +1551,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `resolve_outdated_diff_discussions`                         | boolean | No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `security_and_compliance_access_level`                      | string  | No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `shared_runners_enabled`                                    | boolean | No | Enable shared runners for this project. |
-| `show_default_award_emojis`                                 | boolean | No | Show default award emojis. |
+| `show_default_award_emojis`                                 | boolean | No | Show default emoji reactions. |
 | `snippets_access_level`                                     | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `squash_option`                                             | string  | No | One of `never`, `always`, `default_on`, or `default_off`. |
@@ -1639,7 +1639,7 @@ POST /projects/user/:user_id
 | `resolve_outdated_diff_discussions`                         | boolean | No | Automatically resolve merge request diffs discussions on lines changed with a push. |
 | `security_and_compliance_access_level`                      | string  | No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `shared_runners_enabled`                                    | boolean | No | Enable shared runners for this project. |
-| `show_default_award_emojis`                                 | boolean | No | Show default award emojis. |
+| `show_default_award_emojis`                                 | boolean | No | Show default emoji reactions. |
 | `snippets_access_level`                                     | string  | No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `issue_branch_template`                                     | string  | No | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
@@ -1755,7 +1755,7 @@ Supported attributes:
 | `security_and_compliance_access_level`                      | string         | No | (GitLab 14.9 and later) Security and compliance access level. One of `disabled`, `private`, or `enabled`. |
 | `service_desk_enabled`                                      | boolean        | No | Enable or disable Service Desk feature. |
 | `shared_runners_enabled`                                    | boolean        | No | Enable shared runners for this project. |
-| `show_default_award_emojis`                                 | boolean        | No | Show default award emojis. |
+| `show_default_award_emojis`                                 | boolean        | No | Show default emoji reactions. |
 | `snippets_access_level`                                     | string         | No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean        | No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `issue_branch_template`                                     | string         | No | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |

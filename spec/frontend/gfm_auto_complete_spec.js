@@ -55,14 +55,14 @@ describe('GfmAutoComplete', () => {
 
     describe('assets loading', () => {
       beforeEach(() => {
-        atwhoInstance = { setting: {}, $inputor: 'inputor', at: '[vulnerability:' };
+        atwhoInstance = { setting: {}, $inputor: 'inputor', at: '~' };
         items = ['loading'];
 
         filterValue = gfmAutoCompleteCallbacks.filter.call(atwhoInstance, '', items);
       });
 
       it('should call the fetchData function without query', () => {
-        expect(fetchDataMock.fetchData).toHaveBeenCalledWith('inputor', '[vulnerability:');
+        expect(fetchDataMock.fetchData).toHaveBeenCalledWith('inputor', '~');
       });
 
       it('should not call the default atwho filter', () => {
@@ -78,6 +78,29 @@ describe('GfmAutoComplete', () => {
       beforeEach(() => {
         atwhoInstance = { setting: {}, $inputor: 'inputor', at: '[vulnerability:' };
         items = [];
+      });
+
+      describe('when loading', () => {
+        beforeEach(() => {
+          items = ['loading'];
+          filterValue = gfmAutoCompleteCallbacks.filter.call(atwhoInstance, 'oldquery', items);
+        });
+
+        it('should call the fetchData function with query', () => {
+          expect(fetchDataMock.fetchData).toHaveBeenCalledWith(
+            'inputor',
+            '[vulnerability:',
+            'oldquery',
+          );
+        });
+
+        it('should not call the default atwho filter', () => {
+          expect($.fn.atwho.default.callbacks.filter).not.toHaveBeenCalled();
+        });
+
+        it('should return the passed unfiltered items', () => {
+          expect(filterValue).toEqual(items);
+        });
       });
 
       describe('when previous query is different from current one', () => {
@@ -173,7 +196,7 @@ describe('GfmAutoComplete', () => {
           context = {
             isLoadingData: { '[vulnerability:': false },
             dataSources: { vulnerabilities: 'vulnerabilities_autocomplete_url' },
-            cachedData: {},
+            cachedData: { '[vulnerability:': { other_query: [] } },
           };
         });
 
@@ -206,15 +229,14 @@ describe('GfmAutoComplete', () => {
           const context = {
             isLoadingData: { '[vulnerability:': false },
             dataSources: { vulnerabilities: 'vulnerabilities_autocomplete_url' },
-            cachedData: { '[vulnerability:': [{}] },
+            cachedData: { '[vulnerability:': { query: [] } },
+            loadData: () => {},
           };
           fetchData.call(context, {}, '[vulnerability:', 'query');
         });
 
-        it('should anyway call axios with query ignoring cache', () => {
-          expect(axios.get).toHaveBeenCalledWith('vulnerabilities_autocomplete_url', {
-            params: { search: 'query' },
-          });
+        it('should not call axios', () => {
+          expect(axios.get).not.toHaveBeenCalled();
         });
       });
     });
