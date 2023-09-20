@@ -105,3 +105,33 @@ curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/sam
 --header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
 --form "extern_uid=sydney_jones_new"
 ```
+
+## Delete a single SAML identity
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
+
+```plaintext
+DELETE /groups/:id/saml/:uid
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description               |
+| --------- | ------- | -------- | ------------------------- |
+| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `uid`     | string  | yes      | External UID of the user. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/33/saml/sydney_jones"
+
+```
+
+Example response:
+
+```json
+{
+    "message" : "204 No Content"
+}
+```

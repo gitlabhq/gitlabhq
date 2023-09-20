@@ -15,7 +15,6 @@ module WorkItems
     validates :work_item, presence: true, uniqueness: true
     validate :validate_hierarchy_restrictions
     validate :validate_cyclic_reference
-    validate :validate_same_project
     validate :validate_max_children
     validate :validate_confidentiality
     validate :check_existing_related_link
@@ -50,14 +49,6 @@ module WorkItems
 
     private
 
-    def validate_same_project
-      return if work_item.nil? || work_item_parent.nil?
-
-      if work_item.resource_parent != work_item_parent.resource_parent
-        errors.add :work_item_parent, _('parent must be in the same project as child.')
-      end
-    end
-
     def validate_max_children
       return unless work_item_parent
 
@@ -88,6 +79,14 @@ module WorkItems
       end
 
       validate_depth(restriction.maximum_depth)
+      validate_cross_hierarchy(restriction.cross_hierarchy_enabled)
+    end
+
+    def validate_cross_hierarchy(cross_hierarchy_enabled)
+      return if cross_hierarchy_enabled
+      return if work_item.resource_parent == work_item_parent.resource_parent
+
+      errors.add :work_item_parent, _('parent must be in the same project or group as child.')
     end
 
     def validate_depth(depth)

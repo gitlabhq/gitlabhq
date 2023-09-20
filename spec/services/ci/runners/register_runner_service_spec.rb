@@ -173,7 +173,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
           expect(runner).to be_an_instance_of(::Ci::Runner)
           expect(runner.persisted?).to be_falsey
           expect(runner.errors.messages).to eq(
-            runner_projects: ['Maximum number of ci registered project runners (1) exceeded']
+            'runner_projects.base': ['Maximum number of ci registered project runners (1) exceeded']
           )
           expect(project.runners.reload.size).to eq(1)
         end
@@ -252,7 +252,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
           expect(runner).to be_an_instance_of(::Ci::Runner)
           expect(runner.persisted?).to be_falsey
           expect(runner.errors.messages).to eq(
-            runner_namespaces: ['Maximum number of ci registered group runners (1) exceeded']
+            'runner_namespaces.base': ['Maximum number of ci registered group runners (1) exceeded']
           )
           expect(group.runners.reload.size).to eq(1)
         end

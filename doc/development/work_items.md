@@ -244,7 +244,8 @@ Keep the following in mind when you write your migration:
   - In one of the example MRs we also insert records in the `work_item_hierarchy_restrictions` table. This is only
     necessary if the new work item type is going to use the `Hierarchy` widget. In this table, you must add what
     work item type can have children and of what type. Also, you should specify the hierarchy depth for work items of the same
-    type.
+    type. By default a cross-hierarchy (cross group or project) relationship is disabled when creating new restrictions but
+    it can be enabled by specifying a value for `cross_hierarchy_enabled`.
 
 ##### Example of adding a ticket work item
 

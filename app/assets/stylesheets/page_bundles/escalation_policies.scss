@@ -42,3 +42,9 @@ $stroke-size: 1px;
     @include gl-w-full;
   }
 }
+
+.escalation-email-user-dropdown {
+  .show.dropdown .dropdown-menu {
+    max-height: 300px;
+  }
+}

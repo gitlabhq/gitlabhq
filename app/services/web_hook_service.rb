@@ -36,7 +36,9 @@ class WebHookService
   attr_accessor :hook, :data, :hook_name, :request_options
   attr_reader :uniqueness_token
 
-  def self.hook_to_event(hook_name)
+  def self.hook_to_event(hook_name, hook = nil)
+    return hook.class.name.titleize if hook.is_a?(SystemHook)
+
     hook_name.to_s.singularize.titleize
   end
 
@@ -194,7 +196,7 @@ class WebHookService
       headers = {
         'Content-Type' => 'application/json',
         'User-Agent' => "GitLab/#{Gitlab::VERSION}",
-        Gitlab::WebHooks::GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name),
+        Gitlab::WebHooks::GITLAB_EVENT_HEADER => self.class.hook_to_event(hook_name, hook),
         Gitlab::WebHooks::GITLAB_UUID_HEADER => SecureRandom.uuid,
         Gitlab::WebHooks::GITLAB_INSTANCE_HEADER => Gitlab.config.gitlab.base_url
       }

@@ -171,6 +171,23 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
       end
     end
 
+    context 'with SystemHook' do
+      let_it_be(:system_hook) { create(:system_hook) }
+      let(:service_instance) { described_class.new(system_hook, data, :push_hooks) }
+
+      before do
+        stub_full_request(system_hook.url, method: :post)
+      end
+
+      it 'POSTs to the webhook URL with correct headers' do
+        service_instance.execute
+
+        expect(WebMock).to have_requested(:post, stubbed_hostname(system_hook.url)).with(
+          headers: headers.merge({ 'X-Gitlab-Event' => 'System Hook' })
+        ).once
+      end
+    end
+
     it 'POSTs the data as JSON and returns expected headers' do
       stub_full_request(project_hook.url, method: :post)
 

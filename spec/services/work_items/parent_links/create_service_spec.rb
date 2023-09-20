@@ -200,7 +200,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
 
         it 'returns error status' do
           error = "#{issue.to_reference} cannot be added: is not allowed to add this type of parent. " \
-            "#{other_project_task.to_reference} cannot be added: parent must be in the same project as child."
+            "#{other_project_task.to_reference} cannot be added: parent must be in the same project or group as child."
 
           is_expected.to eq(service_error(error, http_status: 422))
         end

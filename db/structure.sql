@@ -25223,7 +25223,8 @@ CREATE TABLE work_item_hierarchy_restrictions (
     id bigint NOT NULL,
     parent_type_id bigint NOT NULL,
     child_type_id bigint NOT NULL,
-    maximum_depth smallint
+    maximum_depth smallint,
+    cross_hierarchy_enabled boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE work_item_hierarchy_restrictions_id_seq
