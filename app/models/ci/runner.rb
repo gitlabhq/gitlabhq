@@ -554,9 +554,7 @@ module Ci
     end
 
     def cleanup_runner_queue
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.del(runner_queue_key)
-      end
+      ::Gitlab::Workhorse.cleanup_key(runner_queue_key)
     end
 
     def runner_queue_key

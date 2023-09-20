@@ -61,7 +61,6 @@ RSpec/ContextWording:
     - 'ee/spec/controllers/security/dashboard_controller_spec.rb'
     - 'ee/spec/controllers/security/vulnerabilities_controller_spec.rb'
     - 'ee/spec/controllers/subscriptions_controller_spec.rb'
-    - 'ee/spec/controllers/trial_registrations_controller_spec.rb'
     - 'ee/spec/controllers/users_controller_spec.rb'
     - 'ee/spec/elastic/migrate/migration_shared_examples.rb'
     - 'ee/spec/elastic_integration/global_search_spec.rb'

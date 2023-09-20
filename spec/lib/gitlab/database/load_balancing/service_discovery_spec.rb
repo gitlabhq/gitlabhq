@@ -246,6 +246,18 @@ RSpec.describe Gitlab::Database::LoadBalancing::ServiceDiscovery, feature_catego
       service.replace_hosts([address_bar])
     end
 
+    context 'without old hosts' do
+      before do
+        allow(load_balancer.host_list).to receive(:hosts).and_return([])
+      end
+
+      it 'does not log any load balancing event' do
+        expect(::Gitlab::Database::LoadBalancing::Logger).not_to receive(:info)
+
+        service.replace_hosts([address_foo, address_bar])
+      end
+    end
+
     context 'when LOAD_BALANCER_PARALLEL_DISCONNECT is false' do
       before do
         stub_env('LOAD_BALANCER_PARALLEL_DISCONNECT', 'false')

@@ -257,7 +257,12 @@ module Gitlab
         end
 
         def with_redis(&block)
-          Gitlab::Redis::Queues.with(&block) # rubocop:disable Cop/RedisQueueUsage, CodeReuse/ActiveRecord
+          if Feature.enabled?(:use_primary_and_secondary_stores_for_queues_metadata) ||
+              Feature.enabled?(:use_primary_store_as_default_for_queues_metadata)
+            Gitlab::Redis::QueuesMetadata.with(&block) # rubocop:disable CodeReuse/ActiveRecord
+          else
+            Gitlab::Redis::Queues.with(&block) # rubocop:disable Cop/RedisQueueUsage, CodeReuse/ActiveRecord
+          end
         end
       end
     end

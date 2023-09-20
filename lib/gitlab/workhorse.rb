@@ -233,6 +233,10 @@ module Gitlab
         Gitlab.config.workhorse.secret_file
       end
 
+      def cleanup_key(key)
+        with_redis { |redis| redis.del(key) }
+      end
+
       def set_key_and_notify(key, value, expire: nil, overwrite: true)
         with_redis do |redis|
           result = redis.set(key, value, ex: expire, nx: !overwrite)

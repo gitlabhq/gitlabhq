@@ -17830,6 +17830,9 @@ msgstr ""
 msgid "Email the pipeline status to a list of recipients."
 msgstr ""
 
+msgid "Email updates (optional)"
+msgstr ""
+
 msgid "Email:"
 msgstr ""
 
@@ -23752,6 +23755,9 @@ msgid "I want to store my code"
 msgstr ""
 
 msgid "I want to use GitLab CI with my existing repository"
+msgstr ""
+
+msgid "I'd like to receive updates about GitLab via email"
 msgstr ""
 
 msgid "I'm signing up for GitLab because:"

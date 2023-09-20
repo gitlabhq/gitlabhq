@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues do
+RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues, :clean_gitlab_redis_queues_metadata do
   around do |example|
     Sidekiq::Queue.new('foobar').clear
     Sidekiq::Testing.disable!(&example)

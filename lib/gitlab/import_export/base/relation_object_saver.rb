@@ -15,7 +15,6 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         BATCH_SIZE = 100
-        MIN_RECORDS_SIZE = 1
 
         attr_reader :invalid_subrelations
 
@@ -82,7 +81,7 @@ module Gitlab
               subrelation = relation_object.public_send(definition)
               association = relation_object.class.reflect_on_association(definition)
 
-              next unless association&.collection? && subrelation.size > MIN_RECORDS_SIZE
+              next unless association&.collection?
 
               collection_subrelations[definition] = subrelation.records
 

@@ -365,6 +365,59 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
     end
   end
 
+  describe '.cleanup_key' do
+    let(:key) { 'test-key' }
+    let(:value) { 'test-value' }
+
+    subject(:cleanup_key) { described_class.cleanup_key(key) }
+
+    shared_examples 'cleans up key' do |redis = Gitlab::Redis::Workhorse|
+      before do
+        described_class.set_key_and_notify(key, value)
+      end
+
+      it 'deletes the key' do
+        expect { cleanup_key }
+          .to change { redis.with { |c| c.exists?(key) } }.from(true).to(false)
+      end
+    end
+
+    it_behaves_like 'cleans up key'
+
+    context 'when workhorse migration feature flags are disabled' do
+      before do
+        stub_feature_flags(
+          use_primary_and_secondary_stores_for_workhorse: false,
+          use_primary_store_as_default_for_workhorse: false
+        )
+      end
+
+      it_behaves_like 'cleans up key', Gitlab::Redis::SharedState
+    end
+
+    context 'when either workhorse migration feature flags are enabled' do
+      context 'when use_primary_and_secondary_stores_for_workhorse is enabled' do
+        before do
+          stub_feature_flags(
+            use_primary_store_as_default_for_workhorse: false
+          )
+        end
+
+        it_behaves_like 'cleans up key'
+      end
+
+      context 'when use_primary_store_as_default_for_workhorse is enabled' do
+        before do
+          stub_feature_flags(
+            use_primary_and_secondary_stores_for_workhorse: false
+          )
+        end
+
+        it_behaves_like 'cleans up key'
+      end
+    end
+  end
+
   describe '.set_key_and_notify' do
     let(:key) { 'test-key' }
     let(:value) { 'test-value' }

@@ -140,4 +140,6 @@ You must have at least the Developer role.
 
 ## Scanning private images
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415451) in GitLab 16.4.
+
 To scan private images, the scanner relies on the image pull secrets (direct references and from the service account) to pull the image.

@@ -3,6 +3,8 @@
 module ProtectedRef
   extend ActiveSupport::Concern
 
+  include Importable
+
   included do
     belongs_to :project, touch: true
 
@@ -32,12 +34,13 @@ module ProtectedRef
         # to fail.
         has_many :"#{type}_access_levels", inverse_of: self.model_name.singular
 
+        # Overridden in EE with `if: -> { false }` so this validation does not apply on an EE instance.
         validates :"#{type}_access_levels",
           length: {
             is: 1,
             message: "are restricted to a single instance per #{self.model_name.human}."
           },
-          unless: -> { allow_multiple?(type) }
+          unless: -> { allow_multiple?(type) || importing? }
 
         accepts_nested_attributes_for :"#{type}_access_levels", allow_destroy: true
       end
