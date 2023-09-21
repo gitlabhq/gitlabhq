@@ -214,7 +214,7 @@ upgrade stops allow required background migrations to finish.
 
 During GitLab 16.x, we are scheduling required upgrade stops beforehand so users can better plan out appropriate upgrade stops and downtime when necessary.
 
-The first scheduled required upgrade stop has been announced for 16.3. When planning upgrades, please take this into account.
+The first scheduled required upgrade stop has been announced for 16.3.x. When planning upgrades, please take this into account.
 
 ### Earlier GitLab versions
 

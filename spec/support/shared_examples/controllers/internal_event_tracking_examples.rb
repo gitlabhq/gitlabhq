@@ -2,7 +2,7 @@
 
 # Requires a context containing:
 # - subject
-# - action
+# - event
 # - user
 # Optionally, the context can contain:
 # - project
@@ -36,13 +36,13 @@ RSpec.shared_examples 'internal event tracking' do
 
     expect(Gitlab::Tracking::ServicePingContext)
       .to have_received(:new)
-        .with(data_source: :redis_hll, event: action)
+        .with(data_source: :redis_hll, event: event)
         .at_least(:once)
 
     expect(fake_tracker).to have_received(:event)
       .with(
         'InternalEventTracking',
-        action,
+        event,
         context: [
           an_instance_of(SnowplowTracker::SelfDescribingJson),
           an_instance_of(SnowplowTracker::SelfDescribingJson)

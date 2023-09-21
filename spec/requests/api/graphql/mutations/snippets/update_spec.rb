@@ -189,7 +189,7 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
         end
 
         it_behaves_like 'internal event tracking' do
-          let(:action) { ::Gitlab::UsageDataCounters::EditorUniqueCounter::EDIT_BY_SNIPPET_EDITOR }
+          let(:event) { ::Gitlab::UsageDataCounters::EditorUniqueCounter::EDIT_BY_SNIPPET_EDITOR }
           let(:user) { current_user }
           let(:namespace) { project.namespace }
         end

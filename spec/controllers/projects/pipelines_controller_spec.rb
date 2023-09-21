@@ -821,7 +821,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
         subject { get :charts, params: request_params, format: :html }
 
         let(:request_params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] } }
-        let(:action) { tab[:event] }
+        let(:event) { tab[:event] }
         let(:namespace) { project.namespace }
       end
     end

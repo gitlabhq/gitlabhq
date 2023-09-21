@@ -125,7 +125,7 @@ RSpec.describe ResourceEvents::ChangeLabelsService, feature_category: :team_plan
         end
 
         it_behaves_like 'internal event tracking' do
-          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_LABEL_CHANGED }
+          let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_LABEL_CHANGED }
           let(:user) { author }
           let(:namespace) { project.namespace }
 

@@ -12,8 +12,14 @@ module Tooling
       BEFORE_DEF_PERFORM_REGEX = /^[\s-]*def perform\b/
       AFTER_DEF_PERFORM_REGEX = /^[\s+]*def perform\b/
 
+      MR_WARNING_COMMENT = <<~WARNING_COMMENT
+        Please follow the [Sidekiq development guidelines](https://docs.gitlab.com/ee/development/sidekiq/compatibility_across_updates.html#changing-the-arguments-for-a-worker) when changing Sidekiq worker arguments.
+      WARNING_COMMENT
+
       SUGGEST_MR_COMMENT = <<~SUGGEST_COMMENT
-        Please follow the [sidekiq development guidelines](https://docs.gitlab.com/ee/development/sidekiq/compatibility_across_updates.html#changing-the-arguments-for-a-worker) when changing sidekiq worker arguments.
+        Please follow the [Sidekiq development guidelines](https://docs.gitlab.com/ee/development/sidekiq/compatibility_across_updates.html#changing-the-arguments-for-a-worker) when changing Sidekiq worker arguments.
+
+        In particular, check whether you are updating callers of this method in this MR, and ensure that your change will be backwards compatible across updates.
       SUGGEST_COMMENT
 
       def changed_worker_files(ee: :include)
@@ -53,6 +59,7 @@ module Tooling
 
         perform_method_line = file_lines.index { |line| line.include?(DEF_PERFORM) }
         markdown(format(SUGGEST_MR_COMMENT), file: filename, line: perform_method_line.succ)
+        warn(MR_WARNING_COMMENT)
       end
     end
   end

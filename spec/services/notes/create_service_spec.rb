@@ -181,7 +181,7 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
         end
 
         it_behaves_like 'internal event tracking' do
-          let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_ADDED }
+          let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_ADDED }
           let(:namespace) { project.namespace }
           subject(:service_action) { execute_create_service }
         end

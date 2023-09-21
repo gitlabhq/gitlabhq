@@ -68,7 +68,7 @@ export default class LabelManager {
     const $detachedLabel = $label.detach();
     this.toggleLabelPriorityBadge($detachedLabel, action);
 
-    const $labelEls = $target.find('li.label-list-item');
+    const $labelEls = $target.find('.js-label-list-item');
 
     /*
      * If there is a label element in the target, we'd want to

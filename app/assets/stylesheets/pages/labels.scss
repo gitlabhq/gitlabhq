@@ -109,10 +109,6 @@
   }
 }
 
-.label-list-item:not(:last-of-type) {
-  border-bottom: 1px solid $border-color;
-}
-
 .prioritized-labels .add-priority,
 .other-labels .remove-priority {
   display: none;

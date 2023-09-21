@@ -574,7 +574,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
 
         it_behaves_like 'internal event tracking' do
-          let(:action) { ::Gitlab::UsageDataCounters::EditorUniqueCounter::EDIT_BY_WEB_IDE }
+          let(:event) { ::Gitlab::UsageDataCounters::EditorUniqueCounter::EDIT_BY_WEB_IDE }
           let(:namespace) { project.namespace.reload }
         end
 

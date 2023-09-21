@@ -71,6 +71,13 @@ RSpec.describe Tooling::Danger::SidekiqArgs, feature_category: :tooling do
 
         specs.add_comment_for_matched_line(filename)
       end
+
+      it 'adds a top level warning' do
+        allow(specs).to receive(:markdown)
+        expect(specs).to receive(:warn).with(described_class::MR_WARNING_COMMENT)
+
+        specs.add_comment_for_matched_line(filename)
+      end
     end
 
     context 'when args are not changed' do
@@ -81,6 +88,12 @@ RSpec.describe Tooling::Danger::SidekiqArgs, feature_category: :tooling do
 
       it 'does not add suggestion' do
         expect(specs).not_to receive(:markdown)
+
+        specs.add_comment_for_matched_line(filename)
+      end
+
+      it 'does not add a top level warning' do
+        expect(specs).not_to receive(:warn)
 
         specs.add_comment_for_matched_line(filename)
       end

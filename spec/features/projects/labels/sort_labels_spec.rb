@@ -22,8 +22,8 @@ RSpec.describe 'Sort labels', :js, feature_category: :team_planning do
 
     # assert default sorting
     within '.other-labels' do
-      expect(page.all('.label-list-item').first.text).to include('Bar')
-      expect(page.all('.label-list-item').last.text).to include('Foo')
+      expect(page.all('.js-label-list-item').first.text).to include('Bar')
+      expect(page.all('.js-label-list-item').last.text).to include('Foo')
     end
   end
 
@@ -43,8 +43,8 @@ RSpec.describe 'Sort labels', :js, feature_category: :team_planning do
 
     # assert default sorting
     within '.other-labels' do
-      expect(page.all('.label-list-item').first.text).to include('Foo')
-      expect(page.all('.label-list-item').last.text).to include('Bar')
+      expect(page.all('.js-label-list-item').first.text).to include('Foo')
+      expect(page.all('.js-label-list-item').last.text).to include('Bar')
     end
   end
 end

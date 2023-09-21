@@ -302,7 +302,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         let(:issue) { create(:issue) }
         let(:project) { issue.project }
         let(:user) { issue.author }
-        let(:action) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
+        let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
         let(:namespace) { project.namespace }
 
         subject(:service_action) { issue }

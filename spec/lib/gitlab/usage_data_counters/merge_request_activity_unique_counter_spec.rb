@@ -64,7 +64,7 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
     end
 
     it_behaves_like 'internal event tracking' do
-      let(:action) { described_class::MR_USER_CREATE_ACTION }
+      let(:event) { described_class::MR_USER_CREATE_ACTION }
       let(:project) { target_project }
       let(:namespace) { project.namespace }
     end
