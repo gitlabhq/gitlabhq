@@ -46,6 +46,12 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
     it_behaves_like 'a valid input'
   end
 
+  context 'when has a description value' do
+    let(:input_hash) { { description: 'bar' } }
+
+    it_behaves_like 'a valid input'
+  end
+
   context 'when is a required input' do
     let(:input_hash) { nil }
 

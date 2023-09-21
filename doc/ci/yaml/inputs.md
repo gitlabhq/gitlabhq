@@ -14,6 +14,8 @@ and subject to change without notice.
 
 ## Define input parameters with `spec:inputs`
 
+> `description` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415637) in GitLab 16.5.
+
 Use `spec:inputs` to define input parameters for CI/CD configuration intended to be added
 to a pipeline with `include`. Use [`include:inputs`](#set-input-parameter-values-with-includeinputs)
 to define the values to use when the pipeline runs.
@@ -41,6 +43,7 @@ When using `spec:inputs`:
 
 - Defined inputs are mandatory by default.
 - Inputs can be made optional by specifying a `default`. Use `default: null` to have no default value.
+- You can optionally use `description` to give a description to a specific input.
 - A string containing an interpolation block must not exceed 1 MB.
 - The string inside an interpolation block must not exceed 1 KB.
 
@@ -54,6 +57,7 @@ spec:
       default: 'test-user'
     flags:
       default: null
+      description: 'Sample description of the `flags` input detail.'
 ---
 
 # The pipeline configuration would follow...
@@ -63,7 +67,7 @@ In this example:
 
 - `website` is mandatory and must be defined.
 - `user` is optional. If not defined, the value is `test-user`.
-- `flags` is optional. If not defined, it has no value.
+- `flags` is optional. If not defined, it has no value. The optional description should give details about the input.
 
 ## Set input parameter values with `include:inputs`
 
@@ -85,8 +89,6 @@ include:
 In this example:
 
 - `website` has a value of `My website` for the included configuration.
-- `user` has a value of `test-user`, because that is the default when not specified.
-- `flags` has no value, because it is optional and has no default when not specified.
 
 ### Use `include:inputs` with multiple files
 

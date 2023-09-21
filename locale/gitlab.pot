@@ -2004,6 +2004,11 @@ msgstr ""
 msgid "AI|Something went wrong. Please try again later"
 msgstr ""
 
+msgid "AI|Source"
+msgid_plural "AI|Sources"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "AI|Thank you for your feedback."
 msgstr ""
 

@@ -23,7 +23,8 @@ that were able to quickly complete this migration.
 
 Before doing any migration work, you should [start with a migration plan](plan_a_migration.md).
 
-Engineers that need to migrate projects to GitLab CI/CD should:
+Engineers that need to migrate projects to GitLab CI/CD should first review general
+information about GitLab CI/CD:
 
 - Read about some [key GitLab CI/CD features](#key-gitlab-cicd-features).
 - Follow tutorials to create:
@@ -31,6 +32,9 @@ Engineers that need to migrate projects to GitLab CI/CD should:
   - [A more complex pipeline](../quick_start/tutorial.md) that builds, tests,
     and deploys a static site.
 - Review the [`.gitlab-ci.yml` keyword reference](../yaml/index.md).
+
+Then you can begin the process of migrating to GitLab CI/CD:
+
 - Ensure [runners](../runners/index.md) are available, either by using shared GitLab.com runners
   or installing new runners.
 - Migrate build and CI jobs and configure them to show results directly in merge requests.

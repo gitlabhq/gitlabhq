@@ -11,15 +11,15 @@ This page contains information about configuring project integrations on GitLab.
 
 You can integrate with external applications to add functionality to GitLab.
 
-You can view and manage integrations at the [instance level](../../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) or the
-[group level](#manage-group-level-default-settings-for-a-project-integration).
-For any project, you can:
+You can view and manage integrations at the:
 
-- Inherit the instance-level or group-level settings.
-- Use custom settings.
+- [Instance level](../../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) (self-managed GitLab)
+- [Group level](#manage-group-level-default-settings-for-a-project-integration)
 
-Integration management at the instance and group level replaces service templates, which
-were [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/268032) in GitLab 14.0.
+You can use:
+
+- [Instance-level or group-level default settings for a project integration](#use-instance-level-or-group-level-default-settings-for-a-project-integration)
+- [Custom settings for a project or group integration](#use-custom-settings-for-a-project-or-group-integration)
 
 ## Manage group-level default settings for a project integration
 
@@ -109,18 +109,7 @@ To use custom settings for a project or group integration:
 1. Complete the fields.
 1. Select **Save changes**.
 
-## Manage SSL verification
-
-By default, the SSL certificate for outgoing HTTP requests is verified based on
-an internal list of Certificate Authorities. This means the certificate cannot
-be self-signed.
-
-You can turn off SSL verification in the configuration settings for [webhooks](webhooks.md#configure-a-webhook-in-gitlab)
-and some integrations.
-
 ## Available integrations
-
-You can configure the following integrations.
 
 | Integration                                                                 | Description                                                           | Integration hooks      |
 |-----------------------------------------------------------------------------|-----------------------------------------------------------------------|------------------------|
@@ -180,6 +169,15 @@ supported by `push_hooks` and `tag_push_hooks` events are not executed.
 
 To change the number of supported branches or tags, configure the
 [`push_event_hooks_limit` setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+
+## SSL verification
+
+By default, the SSL certificate for outgoing HTTP requests is verified based on
+an internal list of certificate authorities. The SSL certificate cannot
+be self-signed.
+
+You can disable SSL verification when you configure
+[webhooks](webhooks.md#configure-a-webhook-in-gitlab) and some integrations.
 
 ## Related topics
 

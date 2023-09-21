@@ -1953,6 +1953,32 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             expect(pipeline.statuses.count).to eq 2
             expect(pipeline.statuses.map(&:name)).to match_array %w[test-1 test-my-job]
           end
+
+          context 'when inputs have a description' do
+            let(:template) do
+              <<~YAML
+                spec:
+                  inputs:
+                    stage:
+                    suffix:
+                      default: my-job
+                      description: description
+                ---
+                test-$[[ inputs.suffix ]]:
+                  stage: $[[ inputs.stage ]]
+                  script: run tests
+              YAML
+            end
+
+            it 'creates a pipeline' do
+              response = execute_service(save_on_errors: true)
+
+              pipeline = response.payload
+
+              expect(pipeline).to be_persisted
+              expect(pipeline.yaml_errors).to be_blank
+            end
+          end
         end
 
         context 'when interpolation is invalid' do

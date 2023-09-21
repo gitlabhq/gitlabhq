@@ -164,7 +164,7 @@ Remove some of the existing configuration and add new configuration as shown.
 
 ::EndTabs
 
-For more information on other customizations, see [`gitlab_username_claim`](index.md#authentication-sources).
+For more information on other customizations, see [`gitlab_username_claim`](omniauth.md#per-provider-configuration).
 
 ## Register an Azure application
 

@@ -197,10 +197,8 @@ To configure the job token scope:
 
 ## Download an artifact from a different pipeline **(PREMIUM ALL)**
 
-> `CI_JOB_TOKEN` for artifacts download with the API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in GitLab 9.5.
-
-You can use the `CI_JOB_TOKEN` to access artifacts from a job created by a previous
-pipeline. You must specify which job you want to retrieve the artifacts from:
+You can use the CI/CD job token to authenticate with the [jobs artifacts API endpoint](../../api/job_artifacts.md)
+and fetch artifacts from a different pipeline. You must specify which job to retrieve artifacts from:
 
 ```yaml
 build_submodule:
@@ -210,8 +208,6 @@ build_submodule:
     - curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN"
     - unzip artifacts.zip
 ```
-
-Read more about the [jobs artifacts API](../../api/job_artifacts.md#download-the-artifacts-archive).
 
 ## Troubleshooting
 

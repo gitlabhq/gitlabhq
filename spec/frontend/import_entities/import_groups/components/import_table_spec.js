@@ -345,6 +345,28 @@ describe('import table', () => {
       );
     });
 
+    it('resets page to 1 when page size is changed', async () => {
+      wrapper.findComponent(PaginationBar).vm.$emit('set-page', 2);
+      await waitForPromises();
+
+      expect(bulkImportSourceGroupsQueryMock).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ page: 2, perPage: 50 }),
+        expect.anything(),
+        expect.anything(),
+      );
+
+      wrapper.findComponent(PaginationBar).vm.$emit('set-page-size', 200);
+      await waitForPromises();
+
+      expect(bulkImportSourceGroupsQueryMock).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ page: 1, perPage: 200 }),
+        expect.anything(),
+        expect.anything(),
+      );
+    });
+
     it('updates status text when page is changed', async () => {
       const REQUESTED_PAGE = 2;
       bulkImportSourceGroupsQueryMock.mockResolvedValue({

@@ -187,6 +187,11 @@ export default {
           return '';
       }
     },
+
+    setPageSize(size) {
+      this.paginationConfig.perPage = size;
+      this.paginationConfig.page = 1;
+    },
   },
 
   gitlabLogo: window.gon.gitlab_logo,
@@ -253,7 +258,7 @@ export default {
         :page-info="pageInfo"
         class="gl-m-0 gl-mt-3"
         @set-page="paginationConfig.page = $event"
-        @set-page-size="paginationConfig.perPage = $event"
+        @set-page-size="setPageSize"
       />
     </template>
     <local-storage-sync

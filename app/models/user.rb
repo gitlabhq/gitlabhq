@@ -306,6 +306,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :awarded_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'awarded_by_user_id', inverse_of: :awarded_by_user
   has_many :revoked_user_achievements, class_name: 'Achievements::UserAchievement', foreign_key: 'revoked_by_user_id', inverse_of: :revoked_by_user
   has_many :achievements, through: :user_achievements, class_name: 'Achievements::Achievement', inverse_of: :users
+  has_many :vscode_settings, class_name: 'VsCode::VsCodeSetting', inverse_of: :user
 
   #
   # Validations

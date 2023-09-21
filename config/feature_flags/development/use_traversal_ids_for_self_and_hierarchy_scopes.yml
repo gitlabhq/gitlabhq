@@ -1,8 +1,0 @@
----
-name: use_traversal_ids_for_self_and_hierarchy_scopes
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80045
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352120
-milestone: '14.8'
-type: development
-group: group::tenant scale
-default_enabled: true

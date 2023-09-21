@@ -1,9 +1,9 @@
 ---
-redirect_to: '../index.md#security-partners'
+redirect_to: '../index.md#security-improvements'
 remove_date: '2023-10-05'
 ---
 
-This document was moved to [another location](../index.md#security-partners).
+This document was moved to [another location](../index.md#security-improvements).
 
 <!-- This redirect file can be deleted after <2023-10-05>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

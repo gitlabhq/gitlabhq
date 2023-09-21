@@ -141,6 +141,25 @@ describe('BulkImportsHistoryApp', () => {
     );
   });
 
+  it('resets page to 1 when page size is changed', async () => {
+    const NEW_PAGE_SIZE = 4;
+
+    mock.onGet(API_URL).reply(200, DUMMY_RESPONSE, DEFAULT_HEADERS);
+    createComponent();
+    await axios.waitForAll();
+    wrapper.findComponent(PaginationBar).vm.$emit('set-page', 2);
+    await axios.waitForAll();
+    mock.resetHistory();
+
+    wrapper.findComponent(PaginationBar).vm.$emit('set-page-size', NEW_PAGE_SIZE);
+    await axios.waitForAll();
+
+    expect(mock.history.get.length).toBe(1);
+    expect(mock.history.get[0].params).toStrictEqual(
+      expect.objectContaining({ per_page: NEW_PAGE_SIZE, page: 1 }),
+    );
+  });
+
   it('sets up the local storage sync correctly', async () => {
     const NEW_PAGE_SIZE = 4;
 

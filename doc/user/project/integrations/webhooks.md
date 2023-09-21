@@ -60,7 +60,7 @@ To configure a webhook for a project or group:
    The URL must be percent-encoded if it contains one or more special characters.
 1. In **Secret token**, enter the [secret token](#validate-payloads-by-using-a-secret-token) to validate payloads.
 1. In the **Trigger** section, select the [events](webhook_events.md) to trigger the webhook.
-1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](index.md#manage-ssl-verification).
+1. Optional. Clear the **Enable SSL verification** checkbox to disable [SSL verification](index.md#ssl-verification).
 1. Select **Add webhook**.
 
 ## Mask sensitive portions of webhook URLs

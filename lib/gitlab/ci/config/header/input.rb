@@ -11,13 +11,14 @@ module Gitlab
           include ::Gitlab::Config::Entry::Validatable
           include ::Gitlab::Config::Entry::Attributable
 
-          attributes :default, :type, prefix: :input
+          attributes :default, :description, :type, prefix: :input
 
           validations do
-            validates :config, type: Hash, allowed_keys: [:default, :type]
+            validates :config, type: Hash, allowed_keys: [:default, :type, :description]
             validates :key, alphanumeric: true
             validates :input_default, alphanumeric: true, allow_nil: true
             validates :input_type, allow_nil: true, allowed_values: Interpolation::Inputs.input_types
+            validates :input_description, alphanumeric: true, allow_nil: true
           end
         end
       end

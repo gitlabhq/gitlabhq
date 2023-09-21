@@ -12032,11 +12032,11 @@ CREATE TABLE application_settings (
     elasticsearch_requeue_workers boolean DEFAULT false NOT NULL,
     elasticsearch_worker_number_of_shards integer DEFAULT 2 NOT NULL,
     relay_state_domain_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
+    protected_paths_for_get_request text[] DEFAULT '{}'::text[] NOT NULL,
     namespace_storage_forks_cost_factor double precision DEFAULT 1.0 NOT NULL,
     package_registry_allow_anyone_to_pull_option boolean DEFAULT true NOT NULL,
     bulk_import_max_download_file_size bigint DEFAULT 5120 NOT NULL,
     max_import_remote_file_size bigint DEFAULT 10240 NOT NULL,
-    protected_paths_for_get_request text[] DEFAULT '{}'::text[] NOT NULL,
     max_decompressed_archive_size integer DEFAULT 25600 NOT NULL,
     sentry_clientside_traces_sample_rate double precision DEFAULT 0.0 NOT NULL,
     prometheus_alert_db_indicators_settings jsonb,
@@ -16583,7 +16583,9 @@ CREATE TABLE geo_node_statuses (
     lfs_objects_count integer,
     lfs_objects_synced_count integer,
     lfs_objects_failed_count integer,
+    last_event_id bigint,
     last_event_date timestamp without time zone,
+    cursor_last_event_id bigint,
     cursor_last_event_date timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -16623,9 +16625,7 @@ CREATE TABLE geo_node_statuses (
     design_repositories_synced_count integer,
     design_repositories_failed_count integer,
     design_repositories_registry_count integer,
-    status jsonb DEFAULT '{}'::jsonb NOT NULL,
-    last_event_id bigint,
-    cursor_last_event_id bigint
+    status jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE geo_node_statuses_id_seq
@@ -24641,6 +24641,26 @@ CREATE SEQUENCE value_stream_dashboard_counts_id_seq
 
 ALTER SEQUENCE value_stream_dashboard_counts_id_seq OWNED BY value_stream_dashboard_counts.id;
 
+CREATE TABLE vs_code_settings (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    setting_type text NOT NULL,
+    content text NOT NULL,
+    CONSTRAINT check_5da3b2910b CHECK ((char_length(content) <= 524288)),
+    CONSTRAINT check_994c503fc4 CHECK ((char_length(setting_type) <= 256))
+);
+
+CREATE SEQUENCE vs_code_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vs_code_settings_id_seq OWNED BY vs_code_settings.id;
+
 CREATE TABLE vulnerabilities (
     id bigint NOT NULL,
     milestone_id bigint,
@@ -26665,6 +26685,8 @@ ALTER TABLE ONLY users_star_projects ALTER COLUMN id SET DEFAULT nextval('users_
 ALTER TABLE ONLY users_statistics ALTER COLUMN id SET DEFAULT nextval('users_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY value_stream_dashboard_counts ALTER COLUMN id SET DEFAULT nextval('value_stream_dashboard_counts_id_seq'::regclass);
+
+ALTER TABLE ONLY vs_code_settings ALTER COLUMN id SET DEFAULT nextval('vs_code_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerabilities ALTER COLUMN id SET DEFAULT nextval('vulnerabilities_id_seq'::regclass);
 
@@ -29267,6 +29289,9 @@ ALTER TABLE ONLY value_stream_dashboard_counts
 
 ALTER TABLE ONLY verification_codes
     ADD CONSTRAINT verification_codes_pkey PRIMARY KEY (created_at, visitor_id_code, code, phone);
+
+ALTER TABLE ONLY vs_code_settings
+    ADD CONSTRAINT vs_code_settings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT vulnerabilities_pkey PRIMARY KEY (id);
@@ -34210,6 +34235,8 @@ CREATE UNIQUE INDEX index_verification_codes_on_phone_and_visitor_id_code ON ONL
 
 COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-specific index';
 
+CREATE INDEX index_vs_code_settings_on_user_id ON vs_code_settings USING btree (user_id);
+
 CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id ON vulnerability_occurrences USING btree (uuid) INCLUDE (vulnerability_id);
 
 CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id_1 ON vulnerability_occurrences USING btree (uuid_convert_string_to_uuid) INCLUDE (vulnerability_id);
@@ -39025,6 +39052,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_group_stages
 
 ALTER TABLE ONLY bulk_import_export_uploads
     ADD CONSTRAINT fk_rails_dfbfb45eca FOREIGN KEY (export_id) REFERENCES bulk_import_exports(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vs_code_settings
+    ADD CONSTRAINT fk_rails_e02b1ed535 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY label_priorities
     ADD CONSTRAINT fk_rails_e161058b0f FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE CASCADE;

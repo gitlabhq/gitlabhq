@@ -427,6 +427,7 @@ export default {
     },
 
     setPageSize(size) {
+      this.page = 1;
       this.perPage = size;
     },
 

@@ -1,6 +1,8 @@
+import { omit } from 'lodash';
 import { getTag } from '~/rest_api';
 import { createAlert } from '~/alert';
 import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import AccessorUtilities from '~/lib/utils/accessor';
 import { s__ } from '~/locale';
 import createReleaseMutation from '~/releases/graphql/mutations/create_release.mutation.graphql';
 import deleteReleaseMutation from '~/releases/graphql/mutations/delete_release.mutation.graphql';
@@ -15,16 +17,26 @@ import * as types from './mutation_types';
 
 class GraphQLError extends Error {}
 
-export const initializeRelease = ({ commit, dispatch, state }) => {
+const updateDraft = (action) => (store, ...args) => {
+  action(store, ...args);
+
+  if (!store.state.isExistingRelease) {
+    store.dispatch('saveDraftRelease');
+    store.dispatch('saveDraftCreateFrom');
+  }
+};
+
+export const initializeRelease = ({ dispatch, state }) => {
   if (state.isExistingRelease) {
     // When editing an existing release,
     // fetch the release object from the API
     return dispatch('fetchRelease');
   }
 
-  // When creating a new release, initialize the
-  // store with an empty release object
-  commit(types.INITIALIZE_EMPTY_RELEASE);
+  // When creating a new release, try to load the
+  // store with a draft release object, otherwise
+  // initialize an empty one
+  dispatch('loadDraftRelease');
   return Promise.resolve();
 };
 
@@ -51,50 +63,58 @@ export const fetchRelease = async ({ commit, state }) => {
   }
 };
 
-export const updateReleaseTagName = ({ commit }, tagName) =>
-  commit(types.UPDATE_RELEASE_TAG_NAME, tagName);
+export const updateReleaseTagName = updateDraft(({ commit }, tagName) =>
+  commit(types.UPDATE_RELEASE_TAG_NAME, tagName),
+);
 
-export const updateReleaseTagMessage = ({ commit }, tagMessage) =>
-  commit(types.UPDATE_RELEASE_TAG_MESSAGE, tagMessage);
+export const updateReleaseTagMessage = updateDraft(({ commit }, tagMessage) =>
+  commit(types.UPDATE_RELEASE_TAG_MESSAGE, tagMessage),
+);
 
-export const updateCreateFrom = ({ commit }, createFrom) =>
-  commit(types.UPDATE_CREATE_FROM, createFrom);
+export const updateCreateFrom = updateDraft(({ commit }, createFrom) =>
+  commit(types.UPDATE_CREATE_FROM, createFrom),
+);
 
 export const updateShowCreateFrom = ({ commit }, showCreateFrom) =>
   commit(types.UPDATE_SHOW_CREATE_FROM, showCreateFrom);
 
-export const updateReleaseTitle = ({ commit }, title) => commit(types.UPDATE_RELEASE_TITLE, title);
+export const updateReleaseTitle = updateDraft(({ commit }, title) =>
+  commit(types.UPDATE_RELEASE_TITLE, title),
+);
 
-export const updateReleaseNotes = ({ commit }, notes) => commit(types.UPDATE_RELEASE_NOTES, notes);
+export const updateReleaseNotes = updateDraft(({ commit }, notes) =>
+  commit(types.UPDATE_RELEASE_NOTES, notes),
+);
 
-export const updateReleaseMilestones = ({ commit }, milestones) =>
-  commit(types.UPDATE_RELEASE_MILESTONES, milestones);
+export const updateReleaseMilestones = updateDraft(({ commit }, milestones) =>
+  commit(types.UPDATE_RELEASE_MILESTONES, milestones),
+);
 
-export const updateReleaseGroupMilestones = ({ commit }, groupMilestones) =>
-  commit(types.UPDATE_RELEASE_GROUP_MILESTONES, groupMilestones);
+export const updateReleaseGroupMilestones = updateDraft(({ commit }, groupMilestones) =>
+  commit(types.UPDATE_RELEASE_GROUP_MILESTONES, groupMilestones),
+);
 
-export const addEmptyAssetLink = ({ commit }) => {
-  commit(types.ADD_EMPTY_ASSET_LINK);
-};
+export const addEmptyAssetLink = updateDraft(({ commit }) => commit(types.ADD_EMPTY_ASSET_LINK));
 
-export const updateAssetLinkUrl = ({ commit }, { linkIdToUpdate, newUrl }) => {
-  commit(types.UPDATE_ASSET_LINK_URL, { linkIdToUpdate, newUrl });
-};
+export const updateAssetLinkUrl = updateDraft(({ commit }, { linkIdToUpdate, newUrl }) =>
+  commit(types.UPDATE_ASSET_LINK_URL, { linkIdToUpdate, newUrl }),
+);
 
-export const updateAssetLinkName = ({ commit }, { linkIdToUpdate, newName }) => {
-  commit(types.UPDATE_ASSET_LINK_NAME, { linkIdToUpdate, newName });
-};
+export const updateAssetLinkName = updateDraft(({ commit }, { linkIdToUpdate, newName }) =>
+  commit(types.UPDATE_ASSET_LINK_NAME, { linkIdToUpdate, newName }),
+);
 
-export const updateAssetLinkType = ({ commit }, { linkIdToUpdate, newType }) => {
-  commit(types.UPDATE_ASSET_LINK_TYPE, { linkIdToUpdate, newType });
-};
+export const updateAssetLinkType = updateDraft(({ commit }, { linkIdToUpdate, newType }) =>
+  commit(types.UPDATE_ASSET_LINK_TYPE, { linkIdToUpdate, newType }),
+);
 
-export const removeAssetLink = ({ commit }, linkIdToRemove) => {
-  commit(types.REMOVE_ASSET_LINK, linkIdToRemove);
-};
+export const removeAssetLink = updateDraft(({ commit }, linkIdToRemove) =>
+  commit(types.REMOVE_ASSET_LINK, linkIdToRemove),
+);
 
-export const receiveSaveReleaseSuccess = ({ commit }, urlToRedirectTo) => {
+export const receiveSaveReleaseSuccess = ({ commit, dispatch }, urlToRedirectTo) => {
   commit(types.RECEIVE_SAVE_RELEASE_SUCCESS);
+  dispatch('clearDraftRelease');
   redirectTo(urlToRedirectTo); // eslint-disable-line import/no-deprecated
 };
 
@@ -245,9 +265,9 @@ export const updateIncludeTagNotes = ({ commit }, includeTagNotes) => {
   commit(types.UPDATE_INCLUDE_TAG_NOTES, includeTagNotes);
 };
 
-export const updateReleasedAt = ({ commit }, releasedAt) => {
-  commit(types.UPDATE_RELEASED_AT, releasedAt);
-};
+export const updateReleasedAt = updateDraft(({ commit }, releasedAt) =>
+  commit(types.UPDATE_RELEASED_AT, releasedAt),
+);
 
 export const deleteRelease = ({ commit, getters, dispatch, state }) => {
   commit(types.REQUEST_SAVE_RELEASE);
@@ -274,3 +294,56 @@ export const setCreating = ({ commit }) => commit(types.SET_CREATING);
 
 export const setExistingTag = ({ commit }) => commit(types.SET_EXISTING_TAG);
 export const setNewTag = ({ commit }) => commit(types.SET_NEW_TAG);
+
+export const saveDraftRelease = ({ getters, state }) => {
+  try {
+    window.localStorage.setItem(
+      getters.localStorageKey,
+      JSON.stringify(getters.releasedAtChanged ? state.release : omit(state.release, 'releasedAt')),
+    );
+  } catch {
+    return Promise.resolve();
+  }
+  return Promise.resolve();
+};
+
+export const saveDraftCreateFrom = ({ getters, state }) => {
+  try {
+    window.localStorage.setItem(
+      getters.localStorageCreateFromKey,
+      JSON.stringify(state.createFrom),
+    );
+  } catch {
+    return Promise.resolve();
+  }
+  return Promise.resolve();
+};
+
+export const clearDraftRelease = ({ getters }) => {
+  if (AccessorUtilities.canUseLocalStorage()) {
+    window.localStorage.removeItem(getters.localStorageKey);
+    window.localStorage.removeItem(getters.localStorageCreateFromKey);
+  }
+};
+
+export const loadDraftRelease = ({ commit, getters, state }) => {
+  try {
+    const release = window.localStorage.getItem(getters.localStorageKey);
+    const createFrom = window.localStorage.getItem(getters.localStorageCreateFromKey);
+
+    if (release) {
+      const parsedRelease = JSON.parse(release);
+      commit(types.INITIALIZE_RELEASE, {
+        ...parsedRelease,
+        releasedAt: parsedRelease.releasedAt
+          ? new Date(parsedRelease.releasedAt)
+          : state.originalReleasedAt,
+      });
+      commit(types.UPDATE_CREATE_FROM, JSON.parse(createFrom));
+    } else {
+      commit(types.INITIALIZE_EMPTY_RELEASE);
+    }
+  } catch {
+    commit(types.INITIALIZE_EMPTY_RELEASE);
+  }
+};

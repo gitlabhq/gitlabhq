@@ -4856,6 +4856,27 @@ Input type: `MarkAsSpamSnippetInput`
 | <a id="mutationmarkasspamsnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmarkasspamsnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
+### `Mutation.memberRoleUpdate`
+
+Input type: `MemberRoleUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberroleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberroleupdatedescription"></a>`description` | [`String`](#string) | Description of the member role. |
+| <a id="mutationmemberroleupdateid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role to mutate. |
+| <a id="mutationmemberroleupdatename"></a>`name` | [`String`](#string) | Name of the member role. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmemberroleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmemberroleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmemberroleupdatememberrole"></a>`memberRole` | [`MemberRole`](#memberrole) | Updated member role. |
+
 ### `Mutation.mergeRequestAccept`
 
 Accepts a merge request.
@@ -19369,6 +19390,18 @@ Maven metadata.
 | <a id="mavenmetadatapath"></a>`path` | [`String!`](#string) | Path of the Maven package. |
 | <a id="mavenmetadataupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 
+### `MemberRole`
+
+Represents a member role.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="memberroledescription"></a>`description` | [`String`](#string) | Description of the member role. |
+| <a id="memberroleid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role. |
+| <a id="memberrolename"></a>`name` | [`String!`](#string) | Name of the member role. |
+
 ### `MergeAccessLevel`
 
 Defines which user roles, users, or groups can merge into a protected branch.
@@ -29797,6 +29830,12 @@ An example `LabelID` is: `"gid://gitlab/Label/1"`.
 A `ListID` is a global ID. It is encoded as a string.
 
 An example `ListID` is: `"gid://gitlab/List/1"`.
+
+### `MemberRoleID`
+
+A `MemberRoleID` is a global ID. It is encoded as a string.
+
+An example `MemberRoleID` is: `"gid://gitlab/MemberRole/1"`.
 
 ### `MergeRequestID`
 

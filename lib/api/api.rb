@@ -375,6 +375,7 @@ module API
       mount ::API::Todos
       mount ::API::UsageData
       mount ::API::UsageDataNonSqlMetrics
+      mount ::API::VsCodeSettingsSync
       mount ::API::Ml::Mlflow::Entrypoint
     end
 

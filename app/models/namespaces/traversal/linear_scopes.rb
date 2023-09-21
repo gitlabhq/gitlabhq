@@ -49,7 +49,7 @@ module Namespaces
         end
 
         def self_and_hierarchy
-          return super unless use_traversal_ids_for_self_and_hierarchy_scopes?
+          return super unless use_traversal_ids?
 
           unscoped.from_union([all.self_and_ancestors, all.self_and_descendants(include_self: false)])
         end
@@ -76,11 +76,6 @@ module Namespaces
 
         def use_traversal_ids?
           Feature.enabled?(:use_traversal_ids)
-        end
-
-        def use_traversal_ids_for_self_and_hierarchy_scopes?
-          Feature.enabled?(:use_traversal_ids_for_self_and_hierarchy_scopes) &&
-            use_traversal_ids?
         end
 
         def self_and_ancestors_from_inner_join(include_self: true, upto: nil, hierarchy_order: nil)
