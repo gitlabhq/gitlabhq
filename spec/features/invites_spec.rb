@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_category: :experimentation_expansion do
+RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_category: :acquisition do
   let_it_be(:owner) { create(:user, name: 'John Doe') }
   # private will ensure we really have access to the group when we land on the activity page
   let_it_be(:group) { create(:group, :private, name: 'Owned') }

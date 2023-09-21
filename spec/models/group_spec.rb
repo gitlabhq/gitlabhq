@@ -936,47 +936,43 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     context 'when sort by is not provided (id desc by default)' do
       let(:sort) { nil }
 
-      it { is_expected.to match_array([group_1, group_2, group_3, group_4]) }
+      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
     end
 
     context 'when sort by name_asc' do
       let(:sort) { 'name_asc' }
 
-      it { is_expected.to match_array([group_3, group_4, group_2, group_1]) }
+      it { is_expected.to eq([group_3, group_4, group_2, group_1]) }
     end
 
     context 'when sort by name_desc' do
       let(:sort) { 'name_desc' }
 
-      it { is_expected.to match_array([group_1, group_2, group_4, group_3]) }
+      it { is_expected.to eq([group_1, group_2, group_4, group_3]) }
     end
 
     context 'when sort by recently_created' do
       let(:sort) { 'created_desc' }
 
-      it { is_expected.to match_array([group_3, group_1, group_4, group_2]) }
+      it { is_expected.to eq([group_3, group_1, group_4, group_2]) }
     end
 
     context 'when sort by oldest_created' do
       let(:sort) { 'created_asc' }
 
-      it { is_expected.to match_array([group_2, group_4, group_1, group_3]) }
+      it { is_expected.to eq([group_2, group_4, group_1, group_3]) }
     end
 
     context 'when sort by latest_activity' do
       let(:sort) { 'latest_activity_desc' }
 
-      # this should be expected if latest_activity is based on updated_at
-      # it { is_expected.to match_array([group_3, group_1, group_4, group_2]) }
-      it { is_expected.to match_array([group_1, group_2, group_3, group_4]) }
+      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
     end
 
     context 'when sort by oldest_activity' do
       let(:sort) { 'latest_activity_asc' }
 
-      # this should be expected if latest_activity is based on updated_at
-      # it { is_expected.to match_array([group_2, group_4, group_1, group_3]) }
-      it { is_expected.to match_array([group_1, group_2, group_3, group_4]) }
+      it { is_expected.to eq([group_1, group_2, group_3, group_4]) }
     end
 
     context 'when sort by storage_size_desc' do
@@ -1058,7 +1054,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       let(:sort) { 'storage_size_desc' }
 
-      it { is_expected.to match_array([group_2, group_4, group_1, group_3]) }
+      it { is_expected.to eq([group_2, group_4, group_1, group_3]) }
     end
   end
 

@@ -22,7 +22,7 @@ RSpec.describe Admin::GroupsController do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
-      expect(assigns(:groups)).to match_array([group, group_2, group_3])
+      expect(assigns(:groups)).to eq([group, group_2, group_3])
     end
 
     it 'renders a correct list of sort by options' do
@@ -60,7 +60,7 @@ RSpec.describe Admin::GroupsController do
       it 'returns a sorted by name_asc result' do
         get :index, params: { sort: 'name_asc' }
 
-        expect(assigns(:groups)).to match_array([group, group_3, group_2])
+        expect(assigns(:groups)).to eq([group, group_3, group_2])
       end
     end
 
@@ -68,7 +68,7 @@ RSpec.describe Admin::GroupsController do
       it 'returns a search by name result' do
         get :index, params: { name: 'Ygr' }
 
-        expect(assigns(:groups)).to match_array([group_2])
+        expect(assigns(:groups)).to eq([group_2])
       end
 
       it 'returns an empty list if no match' do

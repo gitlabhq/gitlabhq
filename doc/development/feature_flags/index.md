@@ -410,11 +410,12 @@ Actors also provide an easy way to do a percentage rollout of a feature in a sti
 If a 1% rollout enabled a feature for a specific actor, that actor will continue to have the feature enabled at
 10%, 50%, and 100%.
 
-GitLab currently supports the following models as feature flag actors:
+GitLab currently supports the following feature flag actors:
 
-- `User`
-- `Project`
-- `Group`
+- `User` model
+- `Project` model
+- `Group` model
+- Current request
 
 The actor is a second parameter of the `Feature.enabled?` call. The
 same actor type must be used consistently for all invocations of `Feature.enabled?`.
@@ -436,6 +437,40 @@ Feature.enabled?(:feature_flag_user, user)
 
 See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps
 to selectively enable or disable feature flags in GitLab-provided environments, like staging and production.
+
+#### Current request actor
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132078) in GitLab 16.5
+
+It is not recommended to use percentage of time rollout, as each call may return
+inconsistent results.
+
+Rather it is advised to use the current request as an actor.
+
+```ruby
+# Bad
+Feature.enable_percentage_of_time(:feature_flag, 40)
+Feature.enabled?(:feature_flag)
+
+# Good
+Feature.enable_percentage_of_actors(:feature_flag, 40)
+Feature.enabled?(:feature_flag, Feature.current_request)
+```
+
+When using the current request as the actor, the feature flag should return the
+same value within the context of a request.
+As the current request actor is implemented using [`SafeRequestStore`](../caching.md#low-level), we should
+have consistent feature flag values within:
+
+- a Rack request
+- a Sidekiq worker execution
+- an ActionCable worker execution
+
+To migrate an existing feature from percentage of time to the current request
+actor, it is recommended that you create a new feature flag.
+This is because it is difficult to control the timing between existing
+`percentage_of_time` values, the deployment of the code change, and switching to
+use `percentage_of_actors`.
 
 #### Use actors for verifying in production
 

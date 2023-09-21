@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ReleaseHighlights::Validator, feature_category: :experimentation_adoption do
+RSpec.describe ReleaseHighlights::Validator, feature_category: :activation do
   let(:validator) { described_class.new(file: yaml_path) }
   let(:yaml_path) { 'spec/fixtures/whats_new/valid.yml' }
   let(:invalid_yaml_path) { 'spec/fixtures/whats_new/invalid.yml' }

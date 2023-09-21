@@ -277,6 +277,12 @@ class Projects::IssuesController < Projects::ApplicationController
     @issues = @issuables
   end
 
+  def discussions
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/425834')
+
+    super
+  end
+
   protected
 
   def index_html_request?

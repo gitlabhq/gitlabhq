@@ -2,4 +2,4 @@
 # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/292977
 
 include:
-  template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml

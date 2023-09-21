@@ -9,7 +9,7 @@ module Gitlab
     # etc.
     class WebTransaction < Transaction
       THREAD_KEY = :_gitlab_metrics_transaction
-      BASE_LABEL_KEYS = %i[controller action feature_category endpoint_id].freeze
+      BASE_LABEL_KEYS = %i[controller action feature_category].freeze
 
       CONTROLLER_KEY = 'action_controller.instance'
       ENDPOINT_KEY = 'api.endpoint'
@@ -95,12 +95,7 @@ module Gitlab
           action = "#{action}.#{suffix}"
         end
 
-        {
-          controller: controller.class.name,
-          action: action,
-          feature_category: feature_category,
-          endpoint_id: controller.class.endpoint_id_for_action(action)
-        }
+        { controller: controller.class.name, action: action, feature_category: feature_category }
       end
 
       def labels_from_endpoint
@@ -117,12 +112,7 @@ module Gitlab
         if route
           path = endpoint_paths_cache[route.request_method][route.path]
 
-          {
-            controller: 'Grape',
-            action: "#{route.request_method} #{path}",
-            feature_category: feature_category,
-            endpoint_id: API::Base.endpoint_id_for_route(route)
-          }
+          { controller: 'Grape', action: "#{route.request_method} #{path}", feature_category: feature_category }
         end
       end
 

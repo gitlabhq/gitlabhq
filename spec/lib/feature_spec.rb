@@ -11,6 +11,38 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
     skip_feature_flags_yaml_validation
   end
 
+  describe '.current_request' do
+    it 'returns a FlipperRequest with a flipper_id' do
+      flipper_request = described_class.current_request
+
+      expect(flipper_request.flipper_id).to include("FlipperRequest:")
+    end
+
+    context 'when request store is inactive' do
+      it 'does not cache flipper_id' do
+        previous_id = described_class.current_request.flipper_id
+
+        expect(described_class.current_request.flipper_id).not_to eq(previous_id)
+      end
+    end
+
+    context 'when request store is active', :request_store do
+      it 'caches flipper_id when request store is active' do
+        previous_id = described_class.current_request.flipper_id
+
+        expect(described_class.current_request.flipper_id).to eq(previous_id)
+      end
+
+      it 'returns a new flipper_id when request ends' do
+        previous_id = described_class.current_request.flipper_id
+
+        RequestStore.end!
+
+        expect(described_class.current_request.flipper_id).not_to eq(previous_id)
+      end
+    end
+  end
+
   describe '.get' do
     let(:feature) { double(:feature) }
     let(:key) { 'my_feature' }
@@ -295,6 +327,36 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
             expect(described_class.send(:l2_cache_backend)).to receive(:fetch).once.and_call_original
             expect(described_class.enabled?(:disabled_feature_flag)).to be_truthy
           end.not_to exceed_query_limit(1)
+        end
+      end
+    end
+
+    context 'with current_request actor' do
+      context 'when request store is inactive' do
+        it 'returns the approximate percentage set' do
+          number_of_times = 1_000
+          percentage = 50
+          described_class.enable_percentage_of_actors(:enabled_feature_flag, percentage)
+
+          gate_values = Array.new(number_of_times) do
+            described_class.enabled?(:enabled_feature_flag, described_class.current_request)
+          end
+
+          margin_of_error = 0.05 * number_of_times
+          expected_size = number_of_times * percentage / 100
+          expect(gate_values.count { |v| v }).to be_within(margin_of_error).of(expected_size)
+        end
+      end
+
+      context 'when request store is active', :request_store do
+        it 'always returns the same gate value' do
+          described_class.enable_percentage_of_actors(:enabled_feature_flag, 50)
+
+          previous_gate_value = described_class.enabled?(:enabled_feature_flag, described_class.current_request)
+
+          1_000.times do
+            expect(described_class.enabled?(:enabled_feature_flag, described_class.current_request)).to eq(previous_gate_value)
+          end
         end
       end
     end

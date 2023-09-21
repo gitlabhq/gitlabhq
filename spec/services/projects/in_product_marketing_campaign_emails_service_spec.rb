@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::InProductMarketingCampaignEmailsService, feature_category: :experimentation_adoption do
+RSpec.describe Projects::InProductMarketingCampaignEmailsService, feature_category: :activation do
   describe '#execute' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }

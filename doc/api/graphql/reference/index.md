@@ -1782,7 +1782,7 @@ Input type: `CiAiGenerateConfigInput`
 | ---- | ---- | ----------- |
 | <a id="mutationciaigenerateconfigclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationciaigenerateconfigerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationciaigenerateconfigusermessage"></a>`userMessage` | [`AiMessage`](#aimessage) | User chat message. |
+| <a id="mutationciaigenerateconfigusermessage"></a>`userMessage` | [`DeprecatedAiMessage`](#deprecatedaimessage) | User chat message. |
 
 ### `Mutation.ciJobTokenScopeAddProject`
 
@@ -7930,29 +7930,6 @@ The edge type for [`AiChatMessage`](#aichatmessage).
 | <a id="aichatmessageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aichatmessageedgenode"></a>`node` | [`AiChatMessage`](#aichatmessage) | The item at the end of the edge. |
 
-#### `AiMessageConnection`
-
-The connection type for [`AiMessage`](#aimessage).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aimessageconnectionedges"></a>`edges` | [`[AiMessageEdge]`](#aimessageedge) | A list of edges. |
-| <a id="aimessageconnectionnodes"></a>`nodes` | [`[AiMessage]`](#aimessage) | A list of nodes. |
-| <a id="aimessageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `AiMessageEdge`
-
-The edge type for [`AiMessage`](#aimessage).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aimessageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="aimessageedgenode"></a>`node` | [`AiMessage`](#aimessage) | The item at the end of the edge. |
-
 #### `AlertManagementAlertConnection`
 
 The connection type for [`AlertManagementAlert`](#alertmanagementalert).
@@ -9522,6 +9499,29 @@ The edge type for [`Deployment`](#deployment).
 | ---- | ---- | ----------- |
 | <a id="deploymentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="deploymentedgenode"></a>`node` | [`Deployment`](#deployment) | The item at the end of the edge. |
+
+#### `DeprecatedAiMessageConnection`
+
+The connection type for [`DeprecatedAiMessage`](#deprecatedaimessage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deprecatedaimessageconnectionedges"></a>`edges` | [`[DeprecatedAiMessageEdge]`](#deprecatedaimessageedge) | A list of edges. |
+| <a id="deprecatedaimessageconnectionnodes"></a>`nodes` | [`[DeprecatedAiMessage]`](#deprecatedaimessage) | A list of nodes. |
+| <a id="deprecatedaimessageconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DeprecatedAiMessageEdge`
+
+The edge type for [`DeprecatedAiMessage`](#deprecatedaimessage).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deprecatedaimessageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="deprecatedaimessageedgenode"></a>`node` | [`DeprecatedAiMessage`](#deprecatedaimessage) | The item at the end of the edge. |
 
 #### `DesignAtVersionConnection`
 
@@ -13095,18 +13095,6 @@ GitLab Duo Chat message.
 | <a id="aichatmessagerole"></a>`role` | [`AiChatMessageRole!`](#aichatmessagerole) | Message role. |
 | <a id="aichatmessagetimestamp"></a>`timestamp` | [`Time!`](#time) | Message timestamp. |
 
-### `AiMessage`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aimessagecontent"></a>`content` | [`String`](#string) | Content of the message or null if loading. |
-| <a id="aimessageerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI(assistant) response. |
-| <a id="aimessageid"></a>`id` | [`ID`](#id) | Global ID of the message. |
-| <a id="aimessageisfetching"></a>`isFetching` | [`Boolean`](#boolean) | Whether the content is still being fetched, for a message with the assistant role. |
-| <a id="aimessagerole"></a>`role` | [`String!`](#string) | Role of the message (system, user, assistant). |
-
 ### `AiMessageExtras`
 
 Extra metadata for AI message.
@@ -15770,6 +15758,18 @@ Tags for a given deployment.
 | ---- | ---- | ----------- |
 | <a id="deploymenttagname"></a>`name` | [`String`](#string) | Name of this git tag. |
 | <a id="deploymenttagpath"></a>`path` | [`String`](#string) | Path for this tag. |
+
+### `DeprecatedAiMessage`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deprecatedaimessagecontent"></a>`content` | [`String`](#string) | Content of the message or null if loading. |
+| <a id="deprecatedaimessageerrors"></a>`errors` | [`[String!]!`](#string) | Errors that occurred while asynchronously fetching an AI(assistant) response. |
+| <a id="deprecatedaimessageid"></a>`id` | [`ID`](#id) | Global ID of the message. |
+| <a id="deprecatedaimessageisfetching"></a>`isFetching` | [`Boolean`](#boolean) | Whether the content is still being fetched, for a message with the assistant role. |
+| <a id="deprecatedaimessagerole"></a>`role` | [`String!`](#string) | Role of the message (system, user, assistant). |
 
 ### `DescriptionVersion`
 
@@ -23367,7 +23367,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectconversationsciconfigmessages"></a>`ciConfigMessages` **{warning-solid}** | [`AiMessageConnection`](#aimessageconnection) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Messages generated by open ai and the user. |
+| <a id="projectconversationsciconfigmessages"></a>`ciConfigMessages` **{warning-solid}** | [`DeprecatedAiMessageConnection`](#deprecatedaimessageconnection) | **Introduced** in 16.0. This feature is an Experiment. It can be changed or removed at any time. Messages generated by open ai and the user. |
 
 ### `ProjectDataTransfer`
 

@@ -30,6 +30,20 @@ module Feature
     superclass.table_name = 'feature_gates'
   end
 
+  # Generates the same flipper_id when in a request
+  # If not in a request, it generates a unique flipper_id every time
+  class FlipperRequest
+    def id
+      Gitlab::SafeRequestStore.fetch("flipper_request_id") do
+        SecureRandom.uuid
+      end
+    end
+
+    def flipper_id
+      "FlipperRequest:#{id}"
+    end
+  end
+
   # To enable EE overrides
   class ActiveSupportCacheStoreAdapter < Flipper::Adapters::ActiveSupportCacheStore
   end
@@ -189,7 +203,7 @@ module Feature
       @flipper = nil
     end
 
-    # This method is called from config/initializers/flipper.rb and can be used
+    # This method is called from config/initializers/0_inject_feature_flags.rb and can be used
     # to register Flipper groups.
     # See https://docs.gitlab.com/ee/development/feature_flags/index.html
     #
@@ -204,6 +218,14 @@ module Feature
       return unless check_feature_flags_definition?
 
       Feature::Definition.register_hot_reloader!
+    end
+
+    def current_request
+      if Gitlab::SafeRequestStore.active?
+        Gitlab::SafeRequestStore[:flipper_request] ||= FlipperRequest.new
+      else
+        @flipper_request ||= FlipperRequest.new
+      end
     end
 
     def logger

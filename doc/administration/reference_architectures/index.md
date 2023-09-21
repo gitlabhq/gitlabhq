@@ -101,7 +101,8 @@ In most cases the downtime required for doing an upgrade shouldn't be substantia
 
 ### Cloud Native Hybrid (Kubernetes HA)
 
-As an additional layer of HA resilience you can deploy select components in Kubernetes, known as a Cloud Native Hybrid Reference Architecture.
+As an additional layer of HA resilience you can deploy select components in Kubernetes, known as a Cloud Native Hybrid Reference Architecture. For stability
+reasons, stateful components such as Gitaly [cannot be deployed in Kubernetes](#stateful-components-in-kubernetes).
 
 This is an alternative and more **advanced** setup compared to a standard Reference Architecture. Running services in Kubernetes is well known to be complex. **This setup is only recommended** if you have strong working knowledge and experience in Kubernetes.
 
@@ -384,8 +385,9 @@ While we endeavour to try and have a good range of support for GitLab environmen
 
 [Running stateful components in Kubernetes, such as Gitaly Cluster, is not supported](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data).
 
-Gitaly Cluster is only supported to be run on VMs as Git itself doesn't match well with the Kubernetes design and attempting to run it can lead to significant and complex issues.
-[Refer to epic 6127 for more information](https://gitlab.com/groups/gitlab-org/-/epics/6127).
+Gitaly Cluster is only supported on conventional virtual machines. Kubernetes enforces strict memory restrictions but Git memory usage is unpredictable, which
+can cause sporadic OOM termination of Gitaly pods, leading to significant disruptions and potential data loss. For this reason and others, Gitaly is not tested
+or supported in Kubernetes. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
 
 This also applies to other third-party stateful components such as Postgres and Redis, but you can explore other third-party solutions for those components if desired such as supported Cloud Provider services unless called out specifically as unsupported.
 
