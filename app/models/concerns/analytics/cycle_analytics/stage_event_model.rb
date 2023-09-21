@@ -57,45 +57,19 @@ module Analytics
 
       class_methods do
         def upsert_data(data)
-          upsert_values = data.map do |row|
-            row.values_at(
-              :stage_event_hash_id,
-              :issuable_id,
-              :group_id,
-              :project_id,
-              :milestone_id,
-              :author_id,
-              :state_id,
-              :start_event_timestamp,
-              :end_event_timestamp
-            )
-          end
+          upsert_values = data.map { |row| row.values_at(*column_list) }
 
           value_list = Arel::Nodes::ValuesList.new(upsert_values).to_sql
 
           query = <<~SQL
           INSERT INTO #{quoted_table_name}
           (
-            stage_event_hash_id,
-            #{connection.quote_column_name(issuable_id_column)},
-            group_id,
-            project_id,
-            milestone_id,
-            author_id,
-            state_id,
-            start_event_timestamp,
-            end_event_timestamp
+            #{insert_column_list.join(",\n")}
           )
           #{value_list}
           ON CONFLICT(stage_event_hash_id, #{issuable_id_column})
           DO UPDATE SET
-            group_id = excluded.group_id,
-            project_id = excluded.project_id,
-            milestone_id = excluded.milestone_id,
-            author_id = excluded.author_id,
-            state_id = excluded.state_id,
-            start_event_timestamp = excluded.start_event_timestamp,
-            end_event_timestamp = excluded.end_event_timestamp
+            #{column_updates.join(",\n")}
           SQL
 
           result = connection.execute(query)
@@ -112,6 +86,51 @@ module Analytics
 
         def arel_order(arel_node, direction)
           direction.to_sym == :desc ? arel_node.desc : arel_node.asc
+        end
+
+        def select_columns
+          [
+            issuable_model.arel_table[:id],
+            issuable_model.arel_table[project_column].as('project_id'),
+            issuable_model.arel_table[:milestone_id],
+            issuable_model.arel_table[:author_id],
+            issuable_model.arel_table[:state_id],
+            Project.arel_table[:parent_id].as('group_id')
+          ]
+        end
+
+        def column_list
+          [
+            :stage_event_hash_id,
+            :issuable_id,
+            :group_id,
+            :project_id,
+            :milestone_id,
+            :author_id,
+            :state_id,
+            :start_event_timestamp,
+            :end_event_timestamp
+          ]
+        end
+
+        def insert_column_list
+          [
+            :stage_event_hash_id,
+            connection.quote_column_name(issuable_id_column),
+            :group_id,
+            :project_id,
+            :milestone_id,
+            :author_id,
+            :state_id,
+            :start_event_timestamp,
+            :end_event_timestamp
+          ]
+        end
+
+        def column_updates
+          insert_column_list.map do |column|
+            "#{column} = excluded.#{column}"
+          end
         end
       end
     end

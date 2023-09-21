@@ -3375,6 +3375,15 @@ msgstr ""
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
+msgid "AdminSettings|%{setting_name} value used by both Rails and Browser JavaScript SDKs."
+msgstr ""
+
+msgid "AdminSettings|%{setting_name} value used by the Browser JavaScript SDK."
+msgstr ""
+
+msgid "AdminSettings|%{setting_name} value used by the Rails SDK."
+msgstr ""
+
 msgid "AdminSettings|%{strongStart}WARNING:%{strongEnd} Environment variable %{environment_variable} does not exist or is not pointing to a valid directory. %{icon_link}"
 msgstr ""
 
@@ -3450,6 +3459,9 @@ msgstr ""
 msgid "AdminSettings|Enable Registration Features"
 msgstr ""
 
+msgid "AdminSettings|Enable Sentry for Rails and Browser JavaScript"
+msgstr ""
+
 msgid "AdminSettings|Enable Service Ping"
 msgstr ""
 
@@ -3490,6 +3502,9 @@ msgid "AdminSettings|For a list of included Registration Features, see %{link_st
 msgstr ""
 
 msgid "AdminSettings|Git abuse rate limit"
+msgstr ""
+
+msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, restart GitLab."
 msgstr ""
 
 msgid "AdminSettings|Group runners expiration"
@@ -9608,12 +9623,6 @@ msgid "Changes to the title have not been saved"
 msgstr ""
 
 msgid "Changes:"
-msgstr ""
-
-msgid "Changing any setting bellow doesn't require an application restart"
-msgstr ""
-
-msgid "Changing any setting here requires an application restart"
 msgstr ""
 
 msgid "Characters left"
@@ -17957,9 +17966,6 @@ msgid "Enable PlantUML"
 msgstr ""
 
 msgid "Enable SSL verification"
-msgstr ""
-
-msgid "Enable Sentry error tracking"
 msgstr ""
 
 msgid "Enable Snowplow tracking"
@@ -34963,7 +34969,7 @@ msgstr ""
 msgid "Pipeline|We are currently unable to fetch pipeline data"
 msgstr ""
 
-msgid "Pipeline|You’re about to stop pipeline #%{pipelineId}."
+msgid "Pipeline|You're about to stop pipeline #%{pipelineId}."
 msgstr ""
 
 msgid "Pipeline|for"

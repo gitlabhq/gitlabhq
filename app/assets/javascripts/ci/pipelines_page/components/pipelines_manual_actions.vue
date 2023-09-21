@@ -6,7 +6,6 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
-import eventHub from '../../event_hub';
 import { TRACKING_CATEGORIES } from '../../constants';
 import getPipelineActionsQuery from '../graphql/queries/get_pipeline_actions.query.graphql';
 
@@ -94,7 +93,7 @@ export default {
         .post(`${action.playPath}.json`)
         .then(() => {
           this.isLoading = false;
-          eventHub.$emit('updateTable');
+          this.$emit('refresh-pipeline-table');
         })
         .catch(() => {
           this.isLoading = false;

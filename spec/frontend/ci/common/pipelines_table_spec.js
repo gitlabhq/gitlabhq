@@ -1,9 +1,7 @@
-import '~/commons';
 import { GlTableLite } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineOperations from '~/ci/pipelines_page/components/pipeline_operations.vue';
@@ -20,14 +18,12 @@ import {
 
 import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 
-jest.mock('~/ci/event_hub');
-
 describe('Pipelines Table', () => {
-  let pipeline;
   let wrapper;
   let trackingSpy;
 
   const defaultProvide = {
+    fullPath: '/my-project/',
     glFeatures: {},
     withFailedJobsDetails: false,
   };
@@ -39,32 +35,31 @@ describe('Pipelines Table', () => {
     withFailedJobsDetails: true,
   };
 
+  const { pipelines } = fixture;
+
   const defaultProps = {
-    pipelines: [],
+    pipelines,
     viewType: 'root',
     pipelineKeyOption: PipelineKeyOptions[0],
   };
 
-  const createMockPipeline = () => {
-    // Clone fixture as it could be modified by tests
-    const { pipelines } = JSON.parse(JSON.stringify(fixture));
-    return pipelines.find((p) => p.user !== null && p.commit !== null);
-  };
+  const [firstPipeline] = pipelines;
 
-  const createComponent = (props = {}, provide = {}) => {
-    wrapper = extendedWrapper(
-      mount(PipelinesTable, {
-        propsData: {
-          ...defaultProps,
-          ...props,
-        },
-        provide: {
-          ...defaultProvide,
-          ...provide,
-        },
-        stubs: ['PipelineFailedJobsWidget'],
-      }),
-    );
+  const createComponent = ({ props = {}, provide = {}, stubs = {} } = {}) => {
+    wrapper = mountExtended(PipelinesTable, {
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
+      provide: {
+        ...defaultProvide,
+        ...provide,
+      },
+      stubs: {
+        PipelineOperations: true,
+        ...stubs,
+      },
+    });
   };
 
   const findGlTableLite = () => wrapper.findComponent(GlTableLite);
@@ -84,13 +79,9 @@ describe('Pipelines Table', () => {
   const findRetryBtn = () => wrapper.findByTestId('pipelines-retry-button');
   const findCancelBtn = () => wrapper.findByTestId('pipelines-cancel-button');
 
-  beforeEach(() => {
-    pipeline = createMockPipeline();
-  });
-
   describe('Pipelines Table', () => {
     beforeEach(() => {
-      createComponent({ pipelines: [pipeline], viewType: 'root' });
+      createComponent({ props: { viewType: 'root' } });
     });
 
     it('displays table', () => {
@@ -105,7 +96,7 @@ describe('Pipelines Table', () => {
     });
 
     it('should display a table row', () => {
-      expect(findTableRows()).toHaveLength(1);
+      expect(findTableRows()).toHaveLength(pipelines.length);
     });
 
     describe('status cell', () => {
@@ -120,7 +111,7 @@ describe('Pipelines Table', () => {
       });
 
       it('should display the pipeline id', () => {
-        expect(findPipelineInfo().text()).toContain(`#${pipeline.id}`);
+        expect(findPipelineInfo().text()).toContain(`#${firstPipeline.id}`);
       });
     });
 
@@ -130,24 +121,33 @@ describe('Pipelines Table', () => {
       });
 
       it('should render the right number of stages', () => {
-        const stagesLength = pipeline.details.stages.length;
-        expect(findLegacyPipelineMiniGraph().props('stages').length).toBe(stagesLength);
+        const stagesLength = firstPipeline.details.stages.length;
+        expect(findLegacyPipelineMiniGraph().props('stages')).toHaveLength(stagesLength);
       });
 
       it('should render the latest downstream pipelines only', () => {
         // component receives two downstream pipelines. one of them is already outdated
         // because we retried the trigger job, so the mini pipeline graph will only
         // render the newly created downstream pipeline instead
-        expect(pipeline.triggered).toHaveLength(2);
+        expect(firstPipeline.triggered).toHaveLength(2);
         expect(findLegacyPipelineMiniGraph().props('downstreamPipelines')).toHaveLength(1);
       });
 
       describe('when pipeline does not have stages', () => {
         beforeEach(() => {
-          pipeline = createMockPipeline();
-          pipeline.details.stages = [];
-
-          createComponent({ pipelines: [pipeline] });
+          createComponent({
+            props: {
+              pipelines: [
+                {
+                  ...firstPipeline,
+                  details: {
+                    ...firstPipeline.details,
+                    stages: [],
+                  },
+                },
+              ],
+            },
+          });
         });
 
         it('stages are not rendered', () => {
@@ -163,6 +163,10 @@ describe('Pipelines Table', () => {
     });
 
     describe('operations cell', () => {
+      beforeEach(() => {
+        createComponent({ stubs: { PipelineOperations } });
+      });
+
       it('should render pipeline operations', () => {
         expect(findActions().exists()).toBe(true);
       });
@@ -186,11 +190,11 @@ describe('Pipelines Table', () => {
       describe('row', () => {
         describe('when the FF is disabled', () => {
           beforeEach(() => {
-            createComponent({ pipelines: [pipeline] });
+            createComponent();
           });
 
           it('does not render', () => {
-            expect(findTableRows()).toHaveLength(1);
+            expect(findTableRows()).toHaveLength(pipelines.length);
             expect(findPipelineFailureWidget().exists()).toBe(false);
           });
         });
@@ -198,20 +202,21 @@ describe('Pipelines Table', () => {
         describe('when the FF is enabled', () => {
           describe('and `withFailedJobsDetails` value is provided', () => {
             beforeEach(() => {
-              createComponent({ pipelines: [pipeline] }, provideWithDetails);
+              createComponent({ provide: provideWithDetails });
             });
 
             it('renders', () => {
-              expect(findTableRows()).toHaveLength(2);
+              // We have 2 rows per pipeline with the widget
+              expect(findTableRows()).toHaveLength(pipelines.length * 2);
               expect(findPipelineFailureWidget().exists()).toBe(true);
             });
 
             it('passes the expected props', () => {
               expect(findPipelineFailureWidget().props()).toStrictEqual({
-                failedJobsCount: pipeline.failed_builds.length,
-                isPipelineActive: pipeline.active,
-                pipelineIid: pipeline.iid,
-                pipelinePath: pipeline.path,
+                failedJobsCount: firstPipeline.failed_builds.length,
+                isPipelineActive: firstPipeline.active,
+                pipelineIid: firstPipeline.iid,
+                pipelinePath: firstPipeline.path,
                 // Make sure the forward slash was removed
                 projectPath: 'frontend-fixtures/pipelines-project',
               });
@@ -220,17 +225,52 @@ describe('Pipelines Table', () => {
 
           describe('and `withFailedJobsDetails` value is not provided', () => {
             beforeEach(() => {
-              createComponent(
-                { pipelines: [pipeline] },
-                { glFeatures: { ciJobFailuresInMr: true } },
-              );
+              createComponent({
+                provide: { glFeatures: { ciJobFailuresInMr: true } },
+              });
             });
 
             it('does not render', () => {
-              expect(findTableRows()).toHaveLength(1);
+              expect(findTableRows()).toHaveLength(pipelines.length);
               expect(findPipelineFailureWidget().exists()).toBe(false);
             });
           });
+        });
+      });
+    });
+
+    describe('events', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      describe('when confirming to cancel a pipeline', () => {
+        beforeEach(async () => {
+          await findActions().vm.$emit('cancel-pipeline', firstPipeline);
+        });
+
+        it('emits the `cancel-pipeline` event', () => {
+          expect(wrapper.emitted('cancel-pipeline')).toEqual([[firstPipeline]]);
+        });
+      });
+
+      describe('when retrying a pipeline', () => {
+        beforeEach(() => {
+          findActions().vm.$emit('retry-pipeline', firstPipeline);
+        });
+
+        it('emits the `retry-pipeline` event', () => {
+          expect(wrapper.emitted('retry-pipeline')).toEqual([[firstPipeline]]);
+        });
+      });
+
+      describe('when refreshing pipelines', () => {
+        beforeEach(() => {
+          findActions().vm.$emit('refresh-pipelines-table');
+        });
+
+        it('emits the `refresh-pipelines-table` event', () => {
+          expect(wrapper.emitted('refresh-pipelines-table')).toEqual([[]]);
         });
       });
     });
@@ -248,22 +288,6 @@ describe('Pipelines Table', () => {
         findCiBadgeLink().vm.$emit('ciStatusBadgeClick');
 
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_ci_status_badge', {
-          label: TRACKING_CATEGORIES.table,
-        });
-      });
-
-      it('tracks retry pipeline button click', () => {
-        findRetryBtn().vm.$emit('click');
-
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_retry_button', {
-          label: TRACKING_CATEGORIES.table,
-        });
-      });
-
-      it('tracks cancel pipeline button click', () => {
-        findCancelBtn().vm.$emit('click');
-
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_cancel_button', {
           label: TRACKING_CATEGORIES.table,
         });
       });

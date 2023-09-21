@@ -78,10 +78,6 @@ module MergeRequestsHelper
       .execute(include_routes: true)
   end
 
-  def merge_request_button_visibility(merge_request, closed)
-    return 'hidden' if merge_request_button_hidden?(merge_request, closed)
-  end
-
   def merge_request_button_hidden?(merge_request, closed)
     merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_or_merged_without_fork?
   end

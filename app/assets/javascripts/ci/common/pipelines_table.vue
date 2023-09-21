@@ -8,9 +8,7 @@ import { TRACKING_CATEGORIES } from '~/ci/constants';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
-import eventHub from '~/ci/event_hub';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
-import PipelineStopModal from '../pipelines_page/components/pipeline_stop_modal.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
 import PipelinesStatusBadge from '../pipelines_page/components/pipelines_status_badge.vue';
@@ -19,6 +17,23 @@ const HIDE_TD_ON_MOBILE = 'gl-display-none! gl-lg-display-table-cell!';
 const DEFAULT_TH_CLASSES =
   'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-100! gl-p-5! gl-border-b-1!';
 
+/**
+ * Pipelines Table
+ *
+ * Presentational component of a table of pipelines. This component does not
+ * fetch the list of pipelines and instead expects it as a prop.
+ * GraphQL actions for pipelines, such as retrying, canceling, etc.
+ * are handled within this component.
+ *
+ * Use this `legacy_pipelines_table_wrapper` if you need a fully functional REST component.
+ *
+ * IMPORTANT: When using this component, make sure to handle the following events:
+ * 1- @refresh-pipeline-table
+ * 2- @cancel-pipeline
+ * 3- @retry-pipeline
+ *
+ */
+
 export default {
   components: {
     GlTableLite,
@@ -26,7 +41,6 @@ export default {
     PipelineFailedJobsWidget,
     PipelineOperations,
     PipelinesStatusBadge,
-    PipelineStopModal,
     PipelineTriggerer,
     PipelineUrl,
   },
@@ -62,14 +76,6 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  data() {
-    return {
-      pipelineId: 0,
-      pipeline: {},
-      endpoint: '',
-      cancelingPipeline: null,
-    };
   },
   computed: {
     showFailedJobsWidget() {
@@ -131,17 +137,6 @@ export default {
       return this.pipelines;
     },
   },
-  watch: {
-    pipelines() {
-      this.cancelingPipeline = null;
-    },
-  },
-  created() {
-    eventHub.$on('openConfirmationModal', this.setModalData);
-  },
-  beforeDestroy() {
-    eventHub.$off('openConfirmationModal', this.setModalData);
-  },
   methods: {
     getDownstreamPipelines(pipeline) {
       const downstream = pipeline.triggered;
@@ -153,14 +148,16 @@ export default {
     failedJobsCount(pipeline) {
       return pipeline?.failed_builds?.length || 0;
     },
-    setModalData(data) {
-      this.pipelineId = data.pipeline.id;
-      this.pipeline = data.pipeline;
-      this.endpoint = data.endpoint;
+    onRefreshPipelinesTable() {
+      this.$emit('refresh-pipelines-table');
     },
-    onSubmit() {
-      eventHub.$emit('postAction', this.endpoint);
-      this.cancelingPipeline = this.pipelineId;
+    onRetryPipeline(pipeline) {
+      // This emit is only used by the `legacy_pipelines_table_wrapper`.
+      this.$emit('retry-pipeline', pipeline);
+    },
+    onCancelPipeline(pipeline) {
+      // This emit is only used by the `legacy_pipelines_table_wrapper`.
+      this.$emit('cancel-pipeline', pipeline);
     },
     trackPipelineMiniGraph() {
       this.track('click_minigraph', { label: TRACKING_CATEGORIES.table });
@@ -219,7 +216,12 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <pipeline-operations :pipeline="item" :canceling-pipeline="cancelingPipeline" />
+        <pipeline-operations
+          :pipeline="item"
+          @cancel-pipeline="onCancelPipeline"
+          @refresh-pipelines-table="onRefreshPipelinesTable"
+          @retry-pipeline="onRetryPipeline"
+        />
       </template>
 
       <template #row-details="{ item }">
@@ -234,7 +236,5 @@ export default {
         />
       </template>
     </gl-table-lite>
-
-    <pipeline-stop-modal :pipeline="pipeline" @submit="onSubmit" />
   </div>
 </template>

@@ -11,7 +11,7 @@ const apolloProvider = new VueApollo({
 
 /**
  * Used in:
- *  - Project Pipelines List (projects:pipelines:index)
+ *  - Project Pipelines List (projects:pipelines)
  *  - Commit details View > Pipelines Tab > Pipelines Table (projects:commit:pipelines)
  *  - Merge request details View > Pipelines Tab > Pipelines Table (projects:merge_requests:show)
  *  - New merge request View > Pipelines Tab > Pipelines Table (projects:merge_requests:creations:new)

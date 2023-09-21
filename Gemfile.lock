@@ -1296,7 +1296,7 @@ GEM
     rbtree (0.4.6)
     rchardet (1.8.0)
     rdoc (6.3.2)
-    re2 (2.0.0)
+    re2 (2.1.2)
       mini_portile2 (~> 2.8.4)
     recaptcha (5.12.3)
       json
@@ -1963,7 +1963,7 @@ DEPENDENCIES
   rainbow (~> 3.0)
   rbtrace (~> 0.4)
   rdoc (~> 6.3.2)
-  re2 (= 2.0.0)
+  re2 (= 2.1.2)
   recaptcha (~> 5.12)
   redis (~> 4.8.0)
   redis-actionpack (~> 5.3.0)

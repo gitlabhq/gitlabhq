@@ -17,12 +17,42 @@ module Analytics
         where(condition.arel.exists)
       end
 
-      def self.issuable_id_column
-        :issue_id
-      end
+      class << self
+        def project_column
+          :project_id
+        end
 
-      def self.issuable_model
-        ::Issue
+        def issuable_id_column
+          :issue_id
+        end
+
+        def issuable_model
+          ::Issue
+        end
+
+        def select_columns
+          [
+            *super,
+            issuable_model.arel_table[:weight],
+            issuable_model.arel_table[:sprint_id]
+          ]
+        end
+
+        def column_list
+          [
+            *super,
+            :weight,
+            :sprint_id
+          ]
+        end
+
+        def insert_column_list
+          [
+            *super,
+            :weight,
+            :sprint_id
+          ]
+        end
       end
     end
   end

@@ -13,7 +13,7 @@ import {
   RAW_TEXT_WARNING,
   TRACKING_CATEGORIES,
 } from '~/ci/constants';
-import PipelinesTableComponent from '~/ci/common/pipelines_table.vue';
+import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import PipelinesMixin from '~/ci/pipeline_details/mixins/pipelines_mixin';
 import { validateParams } from '~/ci/pipeline_details/utils';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
@@ -37,7 +37,7 @@ export default {
     NavigationTabs,
     NavigationControls,
     PipelinesFilteredSearch,
-    PipelinesTableComponent,
+    PipelinesTable,
     TablePagination,
   },
   mixins: [PipelinesMixin, Tracking.mixin()],
@@ -431,12 +431,15 @@ export default {
       />
 
       <div v-else-if="stateToRender === $options.stateMap.tableList">
-        <pipelines-table-component
+        <pipelines-table
           :pipelines="state.pipelines"
           :pipeline-schedule-url="pipelineScheduleUrl"
           :update-graph-dropdown="updateGraphDropdown"
           :view-type="viewType"
           :pipeline-key-option="selectedPipelineKeyOption"
+          @cancel-pipeline="onCancelPipeline"
+          @refresh-pipelines-table="onRefreshPipelinesTable"
+          @retry-pipeline="onRetryPipeline"
         />
       </div>
 
