@@ -16,8 +16,7 @@ RSpec.describe PlanningHierarchy, type: :request, feature_category: :groups_and_
     it 'renders planning hierarchy' do
       get project_planning_hierarchy_path(project)
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response.body).to match(/id="js-work-items-hierarchy"/)
+      expect(response).to have_gitlab_http_status(:not_found)
     end
   end
 end

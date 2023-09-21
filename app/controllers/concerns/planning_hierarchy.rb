@@ -7,7 +7,7 @@ module PlanningHierarchy
   def planning_hierarchy
     return access_denied! unless can?(current_user, :read_planning_hierarchy, @project)
 
-    render 'shared/planning_hierarchy'
+    route_not_found
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

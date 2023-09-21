@@ -562,6 +562,20 @@ It would also make it harder to determine the coverage for accessibility, if ass
 
 In that case, consider creating one test file dedicated to accessibility.
 Place it in the same directory and name it `accessibility_spec.rb`, for example `spec/features/merge_request/accessibility_spec.rb`.
+Make it explicit that a feature test has accessibility coverage in a separate file, and
+doesn't need additional assertions. Include this comment below the opening of the
+top-level block:
+
+```ruby
+# spec/features/merge_request/user_approves_spec.rb
+
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe 'Merge request > User approves', :js, feature_category: :code_review_workflow do
+# covered by ./accessibility_spec.rb
+```
 
 #### Shared examples
 
@@ -580,11 +594,9 @@ it 'passes axe automated accessibility testing', :js do
 
   wait_for_requests # ensures page is fully loaded
 
-  expect(page).to be_axe_clean.according_to :wcag21aa
+  expect(page).to be_axe_clean.according_to
 end
 ```
-
-Make sure to specify the accessibility standard as `:wcag21aa`.
 
 If needed, you can scope testing to a specific area of the page by using `within`.
 
@@ -594,7 +606,7 @@ for example:
 ```ruby
 expect(page).to be_axe_clean.within '[data-testid="element"]'
 
-# run only WCAG 2.0 Level AA rules
+# run only WCAG 2.1 Level AA rules
 expect(page).to be_axe_clean.according_to :wcag21aa
 
 # specifies which rule to skip
@@ -610,6 +622,11 @@ hidden regions for accessibility, write tests that activate or render the region
 and run the matcher again.
 
 You can run accessibility tests locally in the same way as you [run any feature tests](../testing_guide/frontend_testing.md#how-to-run-a-feature-test).
+
+After adding accessibility tests, make sure to fix all possible errors.
+For help on how to do it, refer to [this guide](#quick-checklist).
+You can also check accessibility sections in [Pajamas components' documentation](https://design.gitlab.com/components/overview).
+If any of the errors require global changes, create a follow-up issue and assign these labels: `accessability`, `WG::product accessibility`.
 
 ### Known accessibility violations
 

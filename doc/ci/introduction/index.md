@@ -1,5 +1,5 @@
 ---
-redirect_to: 'index.md'
+redirect_to: '../index.md'
 remove_date: '2023-11-24'
 ---
 
