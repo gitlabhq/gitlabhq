@@ -16643,6 +16643,7 @@ Relationship between an epic and an issue.
 | <a id="epicissueescalationstatus"></a>`escalationStatus` | [`IssueEscalationStatus`](#issueescalationstatus) | Escalation status of the issue. |
 | <a id="epicissueexternalauthor"></a>`externalAuthor` | [`String`](#string) | Email address of non-GitLab user reporting the issue. For guests, the email address is obfuscated. |
 | <a id="epicissuehasepic"></a>`hasEpic` | [`Boolean!`](#boolean) | Indicates if the issue belongs to an epic. Can return true and not show an associated epic when the user has no access to the epic. |
+| <a id="epicissuehasparent"></a>`hasParent` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Indicates if the issue has a parent work item. |
 | <a id="epicissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Current health status. |
 | <a id="epicissuehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates the issue is hidden because the author has been banned. |
 | <a id="epicissuehumantimeestimate"></a>`humanTimeEstimate` | [`String`](#string) | Human-readable time estimate of the issue. |
@@ -18904,6 +18905,7 @@ Describes an issuable resource link for incident issues.
 | <a id="issueescalationstatus"></a>`escalationStatus` | [`IssueEscalationStatus`](#issueescalationstatus) | Escalation status of the issue. |
 | <a id="issueexternalauthor"></a>`externalAuthor` | [`String`](#string) | Email address of non-GitLab user reporting the issue. For guests, the email address is obfuscated. |
 | <a id="issuehasepic"></a>`hasEpic` | [`Boolean!`](#boolean) | Indicates if the issue belongs to an epic. Can return true and not show an associated epic when the user has no access to the epic. |
+| <a id="issuehasparent"></a>`hasParent` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.5. This feature is an Experiment. It can be changed or removed at any time. Indicates if the issue has a parent work item. |
 | <a id="issuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Current health status. |
 | <a id="issuehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates the issue is hidden because the author has been banned. |
 | <a id="issuehumantimeestimate"></a>`humanTimeEstimate` | [`String`](#string) | Human-readable time estimate of the issue. |

@@ -6,7 +6,11 @@ require "etc"
 
 # rubocop:disable Rails/Pluck
 module QA
-  RSpec.describe 'Manage', :github, requires_admin: 'creates users', only: { job: 'large-github-import' } do
+  RSpec.describe 'Manage', :github, requires_admin: 'creates users',
+    only: { condition: -> { ENV["CI_PROJECT_NAME"] == "import-metrics" } },
+    custom_test_metrics: {
+      tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "rspec/rspec-core" }
+    } do
     describe 'Project import', product_group: :import_and_integrate do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let(:github_repo) { ENV['QA_LARGE_IMPORT_REPO'] || 'rspec/rspec-core' }
       let(:import_max_duration) { ENV['QA_LARGE_IMPORT_DURATION']&.to_i || 7200 }
@@ -224,6 +228,7 @@ module QA
         save_json(
           "data",
           {
+            status: example.exception ? "failed" : "passed",
             importer: :github,
             import_time: @import_time,
             errors: imported_project.project_import_status[:failed_relations],

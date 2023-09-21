@@ -4,7 +4,11 @@
 
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
-  RSpec.describe "Manage", :skip_live_env, only: { job: "large-gitlab-import" } do
+  RSpec.describe "Manage", :skip_live_env,
+    only: { condition: -> { ENV["CI_PROJECT_NAME"] == "import-metrics" } },
+    custom_test_metrics: {
+      tags: { import_type: ENV["QA_IMPORT_TYPE"], import_repo: ENV["QA_LARGE_IMPORT_REPO"] || "migration-test-project" }
+    } do
     describe "Gitlab migration", orchestrated: false, product_group: :import_and_integrate do
       include_context "with gitlab group migration"
 
@@ -79,6 +83,7 @@ module QA
         save_json(
           "data",
           {
+            status: example.exception ? "failed" : "passed",
             importer: :gitlab,
             import_time: @import_time,
             errors: import_failures,

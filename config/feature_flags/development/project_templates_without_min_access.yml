@@ -1,0 +1,8 @@
+---
+name: project_templates_without_min_access
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132025
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425452
+milestone: '16.5'
+type: development
+group: group::source code
+default_enabled: false

@@ -89,7 +89,9 @@ module QA
         # @param [RSpec::Core::Example] example
         # @return [Hash]
         def test_stats(example)
-          file_path = example.metadata[:file_path].gsub('./qa/specs/features', '')
+          # use rerun_file_path so shared_examples have the correct file path
+          file_path = example.metadata[:rerun_file_path].gsub('./qa/specs/features', '')
+
           api_fabrication = ((example.metadata[:api_fabrication] || 0) * 1000).round
           ui_fabrication = ((example.metadata[:browser_ui_fabrication] || 0) * 1000).round
 

@@ -2,11 +2,11 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Tree do
+RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
-  let(:project) { create(:project, :repository) }
-  let(:repository) { project.repository.raw }
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:repository) { project.repository.raw }
 
   shared_examples 'repo' do
     subject(:tree) { Gitlab::Git::Tree.where(repository, sha, path, recursive, skip_flat_paths, rescue_not_found, pagination_params) }
@@ -95,6 +95,8 @@ RSpec.describe Gitlab::Git::Tree do
       end
 
       context :flat_path do
+        let(:project) { create(:project, :repository) }
+        let(:repository) { project.repository.raw }
         let(:filename) { 'files/flat/path/correct/content.txt' }
         let(:path) { 'files/flat' }
         # rubocop: disable Rails/FindBy
