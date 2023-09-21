@@ -82,12 +82,7 @@ module QA
       private
 
       def add_ci_variable
-        Resource::CiVariable.fabricate_via_api! do |ci_variable|
-          ci_variable.project = project
-          ci_variable.key = 'PROTECTED_VARIABLE'
-          ci_variable.value = protected_value
-          ci_variable.protected = true
-        end
+        create(:ci_variable, :protected, project: project, key: 'PROTECTED_VARIABLE', value: protected_value)
       end
 
       def create_protected_branch

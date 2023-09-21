@@ -25,7 +25,7 @@ module Gitlab
       # The character range \p{Alnum} overlaps with \u{00A9}-\u{1f9ff}
       # hence the Ruby warning.
       # https://gitlab.com/gitlab-org/gitlab/merge_requests/23165#not-easy-fixable
-      @project_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{002B}\u{00A9}-\u{1f9ff}_\. ]*\z/.freeze
+      @project_name_regex ||= /\A[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{002B}\u{00A9}-\u{1f9ff}_\. ]*\z/
     end
 
     def project_name_regex_message
@@ -35,7 +35,7 @@ module Gitlab
 
     # Project path must conform to this regex. See https://gitlab.com/gitlab-org/gitlab/-/issues/27483
     def oci_repository_path_regex
-      @oci_repository_path_regex ||= %r{\A[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*\z}.freeze
+      @oci_repository_path_regex ||= %r{\A[a-zA-Z0-9]+([._-][a-zA-Z0-9]+)*\z}
     end
 
     def oci_repository_path_regex_message
@@ -43,11 +43,11 @@ module Gitlab
     end
 
     def group_name_regex
-      @group_name_regex ||= /\A#{group_name_regex_chars}\z/.freeze
+      @group_name_regex ||= /\A#{group_name_regex_chars}\z/
     end
 
     def group_name_regex_chars
-      @group_name_regex_chars ||= /[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9ff}_()\. ]*/.freeze
+      @group_name_regex_chars ||= /[\p{Alnum}\u{00A9}-\u{1f9ff}_][\p{Alnum}\p{Pd}\u{00A9}-\u{1f9ff}_()\. ]*/
     end
 
     def group_name_regex_message
@@ -81,7 +81,7 @@ module Gitlab
     end
 
     def environment_name_regex
-      @environment_name_regex ||= /\A[#{environment_name_regex_chars_without_slash}]([#{environment_name_regex_chars}]*[#{environment_name_regex_chars_without_slash}])?\z/.freeze
+      @environment_name_regex ||= /\A[#{environment_name_regex_chars_without_slash}]([#{environment_name_regex_chars}]*[#{environment_name_regex_chars_without_slash}])?\z/
     end
 
     def environment_name_regex_message
@@ -93,7 +93,7 @@ module Gitlab
     end
 
     def environment_scope_regex
-      @environment_scope_regex ||= /\A[#{environment_scope_regex_chars}]+\z/.freeze
+      @environment_scope_regex ||= /\A[#{environment_scope_regex_chars}]+\z/
     end
 
     def environment_scope_regex_message
@@ -125,7 +125,7 @@ module Gitlab
     end
 
     def environment_slug_regex
-      @environment_slug_regex ||= /\A[a-z]([a-z0-9-]*[a-z0-9])?\z/.freeze
+      @environment_slug_regex ||= /\A[a-z]([a-z0-9-]*[a-z0-9])?\z/
     end
 
     def environment_slug_regex_message
@@ -153,7 +153,7 @@ module Gitlab
         #{logs_section_prefix_regex}
         #{logs_section_options_regex}
         #{logs_section_suffix_regex}
-      }x.freeze
+      }x
     end
 
     MARKDOWN_CODE_BLOCK_REGEX = %r{
@@ -167,7 +167,7 @@ module Gitlab
         .+?
         \n```\ *$
       )
-    }mx.freeze
+    }mx
 
     # Code blocks:
     # ```
@@ -178,7 +178,7 @@ module Gitlab
         '^```.*?\n' \
         '(?:\n|.)*?' \
         '\n```\ *$' \
-      ')'.freeze
+      ')'
 
     MARKDOWN_HTML_BLOCK_REGEX = %r{
       (?<html>
@@ -191,7 +191,7 @@ module Gitlab
         .+?
         \n<\/[^>]+?>\ *$
       )
-    }mx.freeze
+    }mx
 
     # HTML block:
     # <tag>
@@ -202,28 +202,28 @@ module Gitlab
         '^<[^>]+?>\ *\n' \
         '(?:\n|.)*?' \
         '\n<\/[^>]+?>\ *$' \
-      ')'.freeze
+      ')'
 
     # HTML comment line:
     # <!-- some commented text -->
     MARKDOWN_HTML_COMMENT_LINE_REGEX_UNTRUSTED =
       '(?P<html_comment_line>' \
         '^<!--\ .*?\ -->\ *$' \
-      ')'.freeze
+      ')'
 
     MARKDOWN_HTML_COMMENT_BLOCK_REGEX_UNTRUSTED =
       '(?P<html_comment_block>' \
         '^<!--.*?\n' \
         '(?:\n|.)*?' \
         '\n.*?-->\ *$' \
-      ')'.freeze
+      ')'
 
     def markdown_code_or_html_blocks
       @markdown_code_or_html_blocks ||= %r{
           #{MARKDOWN_CODE_BLOCK_REGEX}
         |
           #{MARKDOWN_HTML_BLOCK_REGEX}
-      }mx.freeze
+      }mx
     end
 
     def markdown_code_or_html_blocks_untrusted
@@ -292,7 +292,7 @@ module Gitlab
     end
 
     def utc_date_regex
-      @utc_date_regex ||= /\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/.freeze
+      @utc_date_regex ||= /\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/
     end
 
     def issue
@@ -304,7 +304,7 @@ module Gitlab
     end
 
     def base64_regex
-      @base64_regex ||= %r{(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?}.freeze
+      @base64_regex ||= %r{(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?}
     end
 
     def feature_flag_regex
@@ -317,7 +317,7 @@ module Gitlab
     end
 
     def x509_subject_key_identifier_regex
-      @x509_subject_key_identifier_regex ||= /\A(?:\h{2}:)*\h{2}\z/.freeze
+      @x509_subject_key_identifier_regex ||= /\A(?:\h{2}:)*\h{2}\z/
     end
 
     def ml_model_name_regex

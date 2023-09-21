@@ -33,7 +33,7 @@ module Gitlab
 
       SERIALIZE_KEYS = %i[diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large].freeze
 
-      BINARY_NOTICE_PATTERN = %r{Binary files a\/(.*) and b\/(.*) differ}.freeze
+      BINARY_NOTICE_PATTERN = %r{Binary files a\/(.*) and b\/(.*) differ}
 
       class << self
         def between(repo, head, base, options = {}, *paths)

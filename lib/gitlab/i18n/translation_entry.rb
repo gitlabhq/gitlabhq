@@ -3,8 +3,8 @@
 module Gitlab
   module I18n
     class TranslationEntry
-      PERCENT_REGEX = /(?:^|[^%])%(?!{\w*}|[a-z%])/.freeze
-      ANGLE_BRACKET_REGEX = /[<>]/.freeze
+      PERCENT_REGEX = /(?:^|[^%])%(?!{\w*}|[a-z%])/
+      ANGLE_BRACKET_REGEX = /[<>]/
 
       attr_reader :nplurals, :entry_data
 

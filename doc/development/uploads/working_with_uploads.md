@@ -307,7 +307,6 @@ The Scalability::Frameworks team is making object storage and uploads more easy 
 | Autoscale runner caching                 | Not applicable      | `gitlab-runner`         | `/gitlab-com-[platform-]runners-cache/???`                                                                |
 | Backups                                  | Not applicable      | `s3cmd`, `awscli`, or `gcs` | `/gitlab-backups/???`                                                                                     |
 | Git LFS                                  | `direct upload`     | `workhorse`             | `/lfs-objects/<lfs_obj_oid[0:2]>/<lfs_obj_oid[2:2]>`                                                      |
-| Design management files                  | `disk buffering`    | `rails controller`      | `/lsf-objects/<lfs_obj_oid[0:2]>/<lfs_obj_oid[2:2]>`                                                      |
 | Design management thumbnails             | `carrierwave`       | `sidekiq`               | `/uploads/design_management/action/image_v432x230/<model_id>/<original_lfs_obj_oid[2:2]`                                             |
 | Generic file uploads                     | `direct upload`     | `workhorse`             | `/uploads/@hashed/[0:2]/[2:4]/<hash1>/<hash2>/file`                                                       |
 | Generic file uploads - personal snippets | `direct upload`     | `workhorse`             | `/uploads/personal_snippet/<snippet_id>/<filename>`                                                       |

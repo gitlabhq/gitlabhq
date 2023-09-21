@@ -281,3 +281,24 @@ If you don't want to display achievements on your profile, you can opt out. To d
 1. Select **Edit profile**.
 1. In the **Main settings** section, clear the **Display achievements on your profile** checkbox.
 1. Select **Update profile settings**.
+
+## Reorder achievements
+
+By default, achievements on your profile are displayed in ascending order by awarded date.
+
+To change the order of your achievements, call the [`userAchievementPrioritiesUpdate` GraphQL mutation](../../api/graphql/reference/index.md#mutationuserachievementprioritiesupdate)
+with an ordered list of all prioritized achievements.
+
+```graphql
+mutation {
+  userAchievementPrioritiesUpdate(input: {
+    userAchievementIds: ["gid://gitlab/Achievements::UserAchievement/<first user achievement id>", "gid://gitlab/Achievements::UserAchievement/<second user achievement id>"],
+    }) {
+    userAchievements {
+      id
+      priority
+    }
+    errors
+  }
+}
+```

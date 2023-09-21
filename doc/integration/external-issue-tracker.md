@@ -44,4 +44,3 @@ You can configure any of the following external issue trackers:
 - [Jira](../integration/jira/index.md)
 - [Redmine](../user/project/integrations/redmine.md)
 - [YouTrack](../user/project/integrations/youtrack.md)
-- [ZenTao](../user/project/integrations/zentao.md)

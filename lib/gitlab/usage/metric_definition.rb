@@ -183,7 +183,7 @@ module Gitlab
         events = attributes[:events]
         return unless events
 
-        events.to_h { |event| [event[:name], event[:unique].to_sym] }
+        events.to_h { |event| [event[:name], event[:unique]&.to_sym] }
       end
 
       def events_from_old_structure

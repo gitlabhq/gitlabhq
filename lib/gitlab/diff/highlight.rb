@@ -3,7 +3,7 @@
 module Gitlab
   module Diff
     class Highlight
-      PREFIX_REGEXP = /\A(.)/.freeze
+      PREFIX_REGEXP = /\A(.)/
 
       attr_reader :diff_file, :diff_lines, :repository, :project
 

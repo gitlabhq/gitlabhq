@@ -5,7 +5,7 @@ module Gitlab
     class PodspecLinker < MethodLinker
       include Cocoapods
 
-      STRING_REGEX = /['"](?<name>[^'"]+)['"]/.freeze
+      STRING_REGEX = /['"](?<name>[^'"]+)['"]/
 
       self.file_type = :podspec
 

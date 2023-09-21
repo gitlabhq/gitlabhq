@@ -14,7 +14,7 @@ module Gitlab
         'GL-HOOK-ERR:' # Messages marked as safe by user
       ].freeze
 
-      SAFE_MESSAGE_REGEX = /^(#{SAFE_MESSAGE_PREFIXES.join('|')})\s*(?<safe_message>.+)/.freeze
+      SAFE_MESSAGE_REGEX = /^(#{SAFE_MESSAGE_PREFIXES.join('|')})\s*(?<safe_message>.+)/
 
       attr_reader :raw_message
 

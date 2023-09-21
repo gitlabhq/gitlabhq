@@ -59,6 +59,33 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
     }
   end
 
+  let(:key_path_all) { "count_total_#{event}" }
+  let(:metric_definition_path_all) { Dir.glob(File.join(temp_dir, "metrics/counts_all/#{key_path_all}.yml")).first }
+  let(:metric_definition_all) do
+    {
+      "key_path" => key_path_all,
+      "description" => description,
+      "product_section" => section,
+      "product_stage" => stage,
+      "product_group" => group,
+      "performance_indicator_type" => [],
+      "value_type" => "number",
+      "status" => "active",
+      "milestone" => "13.9",
+      "introduced_by_url" => mr,
+      "time_frame" => "all",
+      "data_source" => "internal_events",
+      "data_category" => "optional",
+      "instrumentation_class" => "TotalCountMetric",
+      "distribution" => %w[ce ee],
+      "tier" => %w[free premium ultimate],
+      "options" => {
+        "events" => [event]
+      },
+      "events" => [{ "name" => event }]
+    }
+  end
+
   before do
     stub_const("#{described_class}::TOP_LEVEL_DIR_EE", ee_temp_dir)
     stub_const("#{described_class}::TOP_LEVEL_DIR", temp_dir)
@@ -165,10 +192,19 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
     context 'for single time frame' do
       let(:time_frames) { %w[7d] }
 
-      it 'creates a metric definition file using the template' do
+      it 'creates a metric definition file' do
         described_class.new([], options).invoke_all
 
         expect(YAML.safe_load(File.read(metric_definition_path_7d))).to eq(metric_definition_7d)
+      end
+
+      context 'with time frame "all"' do
+        let(:time_frames) { %w[all] }
+
+        it 'creates a total count metric definition file' do
+          described_class.new([], options).invoke_all
+          expect(YAML.safe_load(File.read(metric_definition_path_all))).to eq(metric_definition_all)
+        end
       end
 
       context 'for ultimate only feature' do
@@ -176,7 +212,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
           Dir.glob(File.join(ee_temp_dir, temp_dir, "metrics/counts_7d/#{key_path_7d}.yml")).first
         end
 
-        it 'creates a metric definition file using the template' do
+        it 'creates a metric definition file' do
           described_class.new([], options.merge(tiers: %w[ultimate])).invoke_all
 
           expect(YAML.safe_load(File.read(metric_definition_path_7d)))
@@ -197,14 +233,6 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
 
         it 'raises error' do
           expect { described_class.new([], options).invoke_all }.to raise_error(RuntimeError)
-        end
-      end
-
-      context 'with unique value passed with a dot' do
-        it 'creates a metric definition file using the template' do
-          described_class.new([], options.merge(unique: 'user.id')).invoke_all
-
-          expect(YAML.safe_load(File.read(metric_definition_path_7d))).to eq(metric_definition_7d)
         end
       end
 
@@ -253,7 +281,7 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
     end
 
     context 'for multiple time frames' do
-      let(:time_frames) { %w[7d 28d] }
+      let(:time_frames) { %w[7d 28d all] }
       let(:key_path_28d) { "#{key_path_without_time_frame}_28d" }
       let(:metric_definition_path_28d) { Dir.glob(File.join(temp_dir, "metrics/counts_28d/#{key_path_28d}.yml")).first }
       let(:metric_definition_28d) do
@@ -263,11 +291,12 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
         )
       end
 
-      it 'creates a metric definition file using the template' do
+      it 'creates metric definition files' do
         described_class.new([], options).invoke_all
 
         expect(YAML.safe_load(File.read(metric_definition_path_7d))).to eq(metric_definition_7d)
         expect(YAML.safe_load(File.read(metric_definition_path_28d))).to eq(metric_definition_28d)
+        expect(YAML.safe_load(File.read(metric_definition_path_all))).to eq(metric_definition_all)
       end
     end
 
@@ -282,11 +311,12 @@ RSpec.describe Gitlab::Analytics::InternalEventsGenerator, :silence_stdout, feat
         )
       end
 
-      it 'creates a metric definition file using the template' do
+      it 'creates metric definition files' do
         described_class.new([], options.without('time_frames')).invoke_all
 
         expect(YAML.safe_load(File.read(metric_definition_path_7d))).to eq(metric_definition_7d)
         expect(YAML.safe_load(File.read(metric_definition_path_28d))).to eq(metric_definition_28d)
+        expect(YAML.safe_load(File.read(metric_definition_path_all))).to eq(metric_definition_all)
       end
     end
   end

@@ -20,7 +20,7 @@ module Gitlab
 
         # Runs end at the end of the string (the last line) or before a space (for an unchanged line)
         (?=\s|\z)
-      }x.freeze
+      }x
       # rubocop: enable Lint/MixedRegexpCaptureTypes
 
       def initialize(lines)

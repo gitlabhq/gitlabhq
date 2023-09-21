@@ -6,7 +6,7 @@ module Gitlab
       class BaseHandler
         attr_reader :mail, :mail_key
 
-        HANDLER_ACTION_BASE_REGEX ||= /(?<project_slug>.+)-(?<project_id>\d+)/.freeze
+        HANDLER_ACTION_BASE_REGEX ||= /(?<project_slug>.+)-(?<project_id>\d+)/
 
         def initialize(mail, mail_key)
           @mail = mail

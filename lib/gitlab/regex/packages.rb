@@ -9,34 +9,34 @@ module Gitlab
       PYPI_NORMALIZED_NAME_REGEX_STRING = '[-_.]+'
 
       # see https://github.com/apache/maven/blob/c1dfb947b509e195c75d4275a113598cf3063c3e/maven-artifact/src/main/java/org/apache/maven/artifact/Artifact.java#L46
-      MAVEN_SNAPSHOT_DYNAMIC_PARTS = /\A.{0,1000}(-\d{8}\.\d{6}-\d+).{0,1000}\z/.freeze
+      MAVEN_SNAPSHOT_DYNAMIC_PARTS = /\A.{0,1000}(-\d{8}\.\d{6}-\d+).{0,1000}\z/
 
-      API_PATH_REGEX = %r{^/api/v\d+/(projects/[^/]+/|groups?/[^/]+/-/)?packages/[A-Za-z]+}.freeze
+      API_PATH_REGEX = %r{^/api/v\d+/(projects/[^/]+/|groups?/[^/]+/-/)?packages/[A-Za-z]+}
 
       def conan_package_reference_regex
-        @conan_package_reference_regex ||= %r{\A[A-Za-z0-9]+\z}.freeze
+        @conan_package_reference_regex ||= %r{\A[A-Za-z0-9]+\z}
       end
 
       def conan_revision_regex
-        @conan_revision_regex ||= %r{\A0\z}.freeze
+        @conan_revision_regex ||= %r{\A0\z}
       end
 
       def conan_recipe_user_channel_regex
-        %r{\A(_|#{conan_name_regex})\z}.freeze
+        %r{\A(_|#{conan_name_regex})\z}
       end
 
       def conan_recipe_component_regex
         # https://docs.conan.io/en/latest/reference/conanfile/attributes.html#name
-        @conan_recipe_component_regex ||= %r{\A#{conan_name_regex}\z}.freeze
+        @conan_recipe_component_regex ||= %r{\A#{conan_name_regex}\z}
       end
 
       def composer_package_version_regex
         # see https://github.com/composer/semver/blob/31f3ea725711245195f62e54ffa402d8ef2fdba9/src/VersionParser.php#L215
-        @composer_package_version_regex ||= %r{\Av?((\d++)(\.(?:\d++|[xX*]))?(\.(?:\d++|[xX*]))?(\.(?:\d++|[xX*]))?)?\z}.freeze
+        @composer_package_version_regex ||= %r{\Av?((\d++)(\.(?:\d++|[xX*]))?(\.(?:\d++|[xX*]))?(\.(?:\d++|[xX*]))?)?\z}
       end
 
       def composer_dev_version_regex
-        @composer_dev_version_regex ||= %r{(^dev-)|(-dev$)}.freeze
+        @composer_dev_version_regex ||= %r{(^dev-)|(-dev$)}
       end
 
       def package_name_regex
@@ -51,23 +51,23 @@ module Gitlab
                 (([\w\-\.\+]*)\/)*([\w\-\.]*)
               )
               \z
-            }x.freeze
+            }x
       end
 
       def maven_file_name_regex
-        @maven_file_name_regex ||= %r{\A[A-Za-z0-9\.\_\-\+]+\z}.freeze
+        @maven_file_name_regex ||= %r{\A[A-Za-z0-9\.\_\-\+]+\z}
       end
 
       def maven_path_regex
-        @maven_path_regex ||= %r{\A\@?(([\w\-\.]*)/)*([\w\-\.\+]*)\z}.freeze
+        @maven_path_regex ||= %r{\A\@?(([\w\-\.]*)/)*([\w\-\.\+]*)\z}
       end
 
       def maven_app_name_regex
-        @maven_app_name_regex ||= /\A[\w\-\.]+\z/.freeze
+        @maven_app_name_regex ||= /\A[\w\-\.]+\z/
       end
 
       def maven_version_regex
-        @maven_version_regex ||= /\A(?!.*\.\.)[\w+.-]+\z/.freeze
+        @maven_version_regex ||= /\A(?!.*\.\.)[\w+.-]+\z/
       end
 
       def maven_app_group_regex
@@ -83,7 +83,7 @@ module Gitlab
       end
 
       def nuget_package_name_regex
-        @nuget_package_name_regex ||= %r{\A[-+\.\_a-zA-Z0-9]+\z}.freeze
+        @nuget_package_name_regex ||= %r{\A[-+\.\_a-zA-Z0-9]+\z}
       end
 
       def nuget_version_regex
@@ -93,11 +93,11 @@ module Gitlab
           (\.#{_semver_patch_regex})?
           (\.\d*)?
           #{_semver_prerelease_build_regex}\z
-        /x.freeze
+        /x
       end
 
       def terraform_module_package_name_regex
-        @terraform_module_package_name_regex ||= %r{\A[-a-z0-9]+\/[-a-z0-9]+\z}.freeze
+        @terraform_module_package_name_regex ||= %r{\A[-a-z0-9]+\/[-a-z0-9]+\z}
       end
 
       def pypi_version_regex
@@ -112,7 +112,7 @@ module Gitlab
             ((?:-([0-9]+))|(?:[-_\.]?(post|rev|r)[-_\.]?([0-9]+)?))?       (?# post release)
             ([-_\.]?(dev)[-_\.]?([0-9]+)?)?                                (?# dev release)
             (?:\+([a-z0-9]+(?:[-_\.][a-z0-9]+)*))?                         (?# local version)
-            )\z}xi.freeze
+            )\z}xi
       end
 
       def debian_package_name_regex
@@ -121,7 +121,7 @@ module Gitlab
         # @debian_package_name_regex ||= %r{\A[a-z0-9][-+\._a-z0-9]*\z}i.freeze
         # But we prefer a more strict version from Lintian
         # https://salsa.debian.org/lintian/lintian/-/blob/5080c0068ffc4a9ddee92022a91d0c2ff53e56d1/lib/Lintian/Util.pm#L116
-        @debian_package_name_regex ||= %r{\A[a-z0-9][-+\.a-z0-9]+\z}.freeze
+        @debian_package_name_regex ||= %r{\A[a-z0-9][-+\.a-z0-9]+\z}
       end
 
       def debian_version_regex
@@ -132,33 +132,33 @@ module Gitlab
             ([0-9][0-9a-z\.+~]*)          (?# version)
             (-[0-9a-z\.+~]+){0,14}        (?# -revision)
             (?<!-)
-            )\z}xi.freeze
+            )\z}xi
       end
 
       def debian_architecture_regex
         # See official parser: https://git.dpkg.org/cgit/dpkg/dpkg.git/tree/lib/dpkg/arch.c?id=9e0c88ec09475f4d1addde9cdba1ad7849720356#n43
         # But we limit to lower case
-        @debian_architecture_regex ||= %r{\A#{::Packages::Debian::ARCHITECTURE_REGEX}\z}o.freeze
+        @debian_architecture_regex ||= %r{\A#{::Packages::Debian::ARCHITECTURE_REGEX}\z}o
       end
 
       def debian_distribution_regex
-        @debian_distribution_regex ||= %r{\A#{::Packages::Debian::DISTRIBUTION_REGEX}\z}io.freeze
+        @debian_distribution_regex ||= %r{\A#{::Packages::Debian::DISTRIBUTION_REGEX}\z}io
       end
 
       def debian_component_regex
-        @debian_component_regex ||= %r{\A#{::Packages::Debian::COMPONENT_REGEX}\z}o.freeze
+        @debian_component_regex ||= %r{\A#{::Packages::Debian::COMPONENT_REGEX}\z}o
       end
 
       def debian_direct_upload_filename_regex
-        @debian_direct_upload_filename_regex ||= %r{\A.*\.(deb|udeb|ddeb)\z}o.freeze
+        @debian_direct_upload_filename_regex ||= %r{\A.*\.(deb|udeb|ddeb)\z}o
       end
 
       def helm_channel_regex
-        @helm_channel_regex ||= %r{\A([a-zA-Z0-9](\.|-|_)?){1,255}(?<!\.|-|_)\z}.freeze
+        @helm_channel_regex ||= %r{\A([a-zA-Z0-9](\.|-|_)?){1,255}(?<!\.|-|_)\z}
       end
 
       def helm_package_regex
-        @helm_package_regex ||= %r{#{helm_channel_regex}}.freeze
+        @helm_package_regex ||= %r{#{helm_channel_regex}}
       end
 
       def helm_version_regex
@@ -174,7 +174,7 @@ module Gitlab
         # only partially match "v0.0.0-20201230123456-abcdefabcdef".
         @unbounded_semver_regex ||= /
           #{_semver_major_minor_patch_regex}#{_semver_prerelease_build_regex}
-        /x.freeze
+        /x
       end
 
       def semver_regex
@@ -190,32 +190,32 @@ module Gitlab
       def _semver_major_minor_patch_regex
         @_semver_major_minor_patch_regex ||= /
           #{_semver_major_regex}\.#{_semver_minor_regex}\.#{_semver_patch_regex}
-        /x.freeze
+        /x
       end
 
       def _semver_major_regex
         @_semver_major_regex ||= /
           (?<major>0|[1-9]\d*)
-        /x.freeze
+        /x
       end
 
       def _semver_minor_regex
         @_semver_minor_regex ||= /
           (?<minor>0|[1-9]\d*)
-        /x.freeze
+        /x
       end
 
       def _semver_patch_regex
         @_semver_patch_regex ||= /
           (?<patch>0|[1-9]\d*)
-        /x.freeze
+        /x
       end
 
       def _semver_prerelease_build_regex
         @_semver_prerelease_build_regex ||= /
           (?:-(?<prerelease>(?:\d*[a-zA-Z-][0-9a-zA-Z-]*|[1-9]\d*|0)(?:\.(?:\d*[a-zA-Z-][0-9a-zA-Z-]*|[1-9]\d*|0))*))?
           (?:\+(?<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?
-        /x.freeze
+        /x
       end
 
       def prefixed_semver_regex
@@ -240,7 +240,7 @@ module Gitlab
             | %[0-9a-f]{2})* (?# URL encoded character)
           )? (?# path)
           \b (?# word boundary)
-        }ix.freeze
+        }ix
       end
 
       def generic_package_version_regex
@@ -256,17 +256,17 @@ module Gitlab
       end
 
       def sha256_regex
-        @sha256_regex ||= /\A[0-9a-f]{64}\z/i.freeze
+        @sha256_regex ||= /\A[0-9a-f]{64}\z/i
       end
 
       def slack_link_regex
-        @slack_link_regex ||= /<(.*[|].*)>/i.freeze
+        @slack_link_regex ||= /<(.*[|].*)>/i
       end
 
       private
 
       def conan_name_regex
-        @conan_name_regex ||= %r{[a-zA-Z0-9_][a-zA-Z0-9_\+\.-]{1,49}}.freeze
+        @conan_name_regex ||= %r{[a-zA-Z0-9_][a-zA-Z0-9_\+\.-]{1,49}}
       end
     end
   end

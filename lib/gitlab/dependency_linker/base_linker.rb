@@ -3,9 +3,9 @@
 module Gitlab
   module DependencyLinker
     class BaseLinker
-      URL_REGEX = %r{https?://[^'" ]+}.freeze
-      GIT_INVALID_URL_REGEX = /^git\+#{URL_REGEX}/.freeze
-      REPO_REGEX = %r{[^/'" ]+/[^/'" ]+}.freeze
+      URL_REGEX = %r{https?://[^'" ]+}
+      GIT_INVALID_URL_REGEX = /^git\+#{URL_REGEX}/
+      REPO_REGEX = %r{[^/'" ]+/[^/'" ]+}
 
       class_attribute :file_type
 

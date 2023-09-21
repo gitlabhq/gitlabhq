@@ -1,6 +1,5 @@
 import { GlLink, GlLabel, GlIcon, GlFormCheckbox, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import { escape } from 'lodash';
 import { useFakeDate } from 'helpers/fake_date';
 import { shallowMountExtended as shallowMount } from 'helpers/vue_test_utils_helper';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
@@ -288,22 +287,9 @@ describe('IssuableItem', () => {
         expect(titleEl.exists()).toBe(true);
         expect(titleEl.findComponent(GlLink).attributes('href')).toBe(expectedHref);
         expect(titleEl.findComponent(GlLink).attributes('target')).toBe(expectedTarget);
-        expect(titleEl.findComponent(GlLink).html()).toContain(mockIssuable.titleHtml);
+        expect(titleEl.findComponent(GlLink).text()).toBe(mockIssuable.title);
       },
     );
-
-    it('renders issuable title with escaped markup when issue tracker is external', () => {
-      const mockTitle = '<script>foobar</script>';
-      wrapper = createComponent({
-        issuable: {
-          ...mockIssuable,
-          title: mockTitle,
-          externalTracker: 'jira',
-        },
-      });
-
-      expect(wrapper.findByTestId('issuable-title').html()).toContain(escape(mockTitle));
-    });
 
     it('renders checkbox when `showCheckbox` prop is true', async () => {
       wrapper = createComponent({

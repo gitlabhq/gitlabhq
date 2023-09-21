@@ -4,7 +4,7 @@ module Gitlab
   module Diff
     class SuggestionsParser
       # Matches for instance "-1", "+1" or "-1+2".
-      SUGGESTION_CONTEXT = /^(\-(?<above>\d+))?(\+(?<below>\d+))?$/.freeze
+      SUGGESTION_CONTEXT = /^(\-(?<above>\d+))?(\+(?<below>\d+))?$/
 
       CSS   = 'pre.language-suggestion'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze

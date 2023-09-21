@@ -5,8 +5,8 @@ module Gitlab
     module Request
       include ::Gitlab::Utils::StrongMemoize
 
-      FILES_PATH_REGEX = %r{^/api/v\d+/projects/[^/]+/repository/files/.+}.freeze
-      GROUP_PATH_REGEX = %r{^/api/v\d+/groups/[^/]+/?$}.freeze
+      FILES_PATH_REGEX = %r{^/api/v\d+/projects/[^/]+/repository/files/.+}
+      GROUP_PATH_REGEX = %r{^/api/v\d+/groups/[^/]+/?$}
 
       def unauthenticated?
         !(authenticated_identifier([:api, :rss, :ics]) || authenticated_runner_id)

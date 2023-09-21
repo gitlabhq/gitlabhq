@@ -69,3 +69,8 @@ the migration:
 - Are there other projects that you need to access from your pipeline?
 - Are there credentials in Jenkins to access outside services? For example Ansible Tower,
   Artifactory, or other Cloud Providers or deployment targets?
+
+## Related topics
+
+- How to migrate Atlassian Bamboo Server's CI/CD infrastructure to GitLab CI/CD, [part one](https://about.gitlab.com/blog/2022/07/06/migration-from-atlassian-bamboo-server-to-gitlab-ci/)
+  and [part two](https://about.gitlab.com/blog/2022/07/11/how-to-migrate-atlassians-bamboo-servers-ci-cd-infrastructure-to-gitlab-ci-part-two/)

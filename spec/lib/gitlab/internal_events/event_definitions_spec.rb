@@ -58,9 +58,8 @@ RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :prod
       end
 
       context 'when event does not have unique property' do
-        it 'unique fails' do
-          expect { described_class.unique_property('event1') }
-            .to raise_error(described_class::InvalidMetricConfiguration, /Unique property not defined for/)
+        it 'returns nil' do
+          expect(described_class.unique_property('event1')).to be_nil
         end
       end
     end

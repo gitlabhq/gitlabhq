@@ -3,7 +3,7 @@
 module Gitlab
   module Middleware
     class Static < ActionDispatch::Static
-      UPLOADS_REGEX = %r{\A/uploads(/|\z)}.freeze
+      UPLOADS_REGEX = %r{\A/uploads(/|\z)}
 
       def call(env)
         return @app.call(env) if UPLOADS_REGEX.match?(env['PATH_INFO'])

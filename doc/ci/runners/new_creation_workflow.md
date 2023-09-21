@@ -118,7 +118,7 @@ gitlab-runner register \
 
 In GitLab 15.10 and later, you create the runner and some of the attributes in the UI, like the
 tag list, locked status, and access level.
-In GitLab 15.11 and later, these attributes are no longer accepted as arguments to `register`.
+In GitLab 15.11 and later, these attributes are no longer accepted as arguments to `register` when a runner authentication token with the `glrt-` prefix is specified.
 
 The following example shows the new command:
 

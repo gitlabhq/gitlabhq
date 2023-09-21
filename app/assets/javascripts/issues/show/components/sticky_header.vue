@@ -6,7 +6,6 @@ import {
   TYPE_EPIC,
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 
 export default {
@@ -19,7 +18,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml,
   },
   props: {
     isConfidential: {
@@ -51,10 +49,6 @@ export default {
       default: false,
     },
     title: {
-      type: String,
-      required: true,
-    },
-    titleHtml: {
       type: String,
       required: true,
     },
@@ -118,10 +112,11 @@ export default {
             <gl-icon name="spam" />
           </span>
           <a
-            v-safe-html="titleHtml || title"
             href="#top"
             class="gl-font-weight-bold gl-overflow-hidden gl-white-space-nowrap gl-text-overflow-ellipsis gl-my-0 gl-text-black-normal"
+            :title="title"
           >
+            {{ title }}
           </a>
         </div>
       </div>

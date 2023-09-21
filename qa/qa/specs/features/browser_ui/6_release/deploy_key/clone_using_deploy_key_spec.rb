@@ -87,12 +87,7 @@ module QA
         private
 
         def make_ci_variable(key_name, key)
-          Resource::CiVariable.fabricate_via_api! do |resource|
-            resource.project = project
-            resource.key = key_name
-            resource.value = key.private_key
-            resource.masked = false
-          end
+          create(:ci_variable, project: project, key: key_name, value: key.private_key)
         end
       end
     end

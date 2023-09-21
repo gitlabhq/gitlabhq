@@ -746,7 +746,7 @@ differ for other installation types:
 
 :::TabTitle Self-compiled (source)
 
-- Use `sudo -u git -H bundle exec rake` instead of `sudo gitlab-rake`
+- Use `sudo -u git -H bundle exec rake RAILS_ENV=production` instead of `sudo gitlab-rake`
 - Run the SQL on [your PostgreSQL database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
 
 :::TabTitle Helm chart (Kubernetes)

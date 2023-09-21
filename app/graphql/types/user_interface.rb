@@ -160,7 +160,7 @@ module Types
           description: "Achievements for the user. " \
                        "Only returns for namespaces where the `achievements` feature flag is enabled.",
           extras: [:lookahead],
-          resolver: ::Resolvers::Achievements::UserAchievementsResolver
+          resolver: ::Resolvers::Achievements::UserAchievementsForUserResolver
 
     field :bio,
           type: ::GraphQL::Types::String,

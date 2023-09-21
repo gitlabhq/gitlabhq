@@ -3,7 +3,7 @@
 module Gitlab
   module DependencyLinker
     class GodepsJsonLinker < JsonLinker
-      NESTED_REPO_REGEX = %r{([^/]+/)+[^/]+?}.freeze
+      NESTED_REPO_REGEX = %r{([^/]+/)+[^/]+?}
 
       self.file_type = :godeps_json
 

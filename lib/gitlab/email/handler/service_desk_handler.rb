@@ -10,9 +10,9 @@ module Gitlab
         include ReplyProcessing
         include Gitlab::Utils::StrongMemoize
 
-        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-issue-\z/.freeze
-        HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\z/.freeze
-        PROJECT_KEY_PATTERN  = /\A(?<slug>.+)-(?<key>[a-z0-9_]+)\z/.freeze
+        HANDLER_REGEX        = /\A#{HANDLER_ACTION_BASE_REGEX}-issue-\z/
+        HANDLER_REGEX_LEGACY = /\A(?<project_path>[^\+]*)\z/
+        PROJECT_KEY_PATTERN  = /\A(?<slug>.+)-(?<key>[a-z0-9_]+)\z/
 
         def initialize(mail, mail_key, service_desk_key: nil)
           if service_desk_key

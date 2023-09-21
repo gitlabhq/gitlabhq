@@ -134,10 +134,10 @@ module Gitlab
     PATH_REGEX_STR = PATH_START_CHAR + '[a-zA-Z0-9_\-\.]' + "{0,#{Namespace::URL_MAX_LENGTH - 1}}"
     NAMESPACE_FORMAT_REGEX_JS = PATH_REGEX_STR + '[a-zA-Z0-9_\-]|[a-zA-Z0-9_]'
 
-    NO_SUFFIX_REGEX = /(?<!\.git|\.atom)/.freeze
-    NAMESPACE_FORMAT_REGEX = /(?:#{NAMESPACE_FORMAT_REGEX_JS})#{NO_SUFFIX_REGEX}/.freeze
-    PROJECT_PATH_FORMAT_REGEX = /(?:#{PATH_REGEX_STR})#{NO_SUFFIX_REGEX}/.freeze
-    FULL_NAMESPACE_FORMAT_REGEX = %r{(#{NAMESPACE_FORMAT_REGEX}/){,#{Namespace::NUMBER_OF_ANCESTORS_ALLOWED}}#{NAMESPACE_FORMAT_REGEX}}.freeze
+    NO_SUFFIX_REGEX = /(?<!\.git|\.atom)/
+    NAMESPACE_FORMAT_REGEX = /(?:#{NAMESPACE_FORMAT_REGEX_JS})#{NO_SUFFIX_REGEX}/
+    PROJECT_PATH_FORMAT_REGEX = /(?:#{PATH_REGEX_STR})#{NO_SUFFIX_REGEX}/
+    FULL_NAMESPACE_FORMAT_REGEX = %r{(#{NAMESPACE_FORMAT_REGEX}/){,#{Namespace::NUMBER_OF_ANCESTORS_ALLOWED}}#{NAMESPACE_FORMAT_REGEX}}
 
     def organization_route_regex
       @organization_route_regex ||= begin
@@ -188,19 +188,19 @@ module Gitlab
     end
 
     def repository_route_regex
-      @repository_route_regex ||= /(#{full_namespace_route_regex}|#{personal_snippet_repository_path_regex})\.*/.freeze
+      @repository_route_regex ||= /(#{full_namespace_route_regex}|#{personal_snippet_repository_path_regex})\.*/
     end
 
     def repository_git_route_regex
-      @repository_git_route_regex ||= /#{repository_route_regex}\.git/.freeze
+      @repository_git_route_regex ||= /#{repository_route_regex}\.git/
     end
 
     def repository_git_lfs_route_regex
-      @repository_git_lfs_route_regex ||= %r{#{repository_git_route_regex}\/(info\/lfs|gitlab-lfs)\/}.freeze
+      @repository_git_lfs_route_regex ||= %r{#{repository_git_route_regex}\/(info\/lfs|gitlab-lfs)\/}
     end
 
     def repository_wiki_git_route_regex
-      @repository_wiki_git_route_regex ||= /#{full_namespace_route_regex}\.*\.wiki\.git/.freeze
+      @repository_wiki_git_route_regex ||= /#{full_namespace_route_regex}\.*\.wiki\.git/
     end
 
     def full_namespace_path_regex
@@ -220,7 +220,7 @@ module Gitlab
     end
 
     def namespace_format_regex
-      @namespace_format_regex ||= /\A#{NAMESPACE_FORMAT_REGEX}\z/o.freeze
+      @namespace_format_regex ||= /\A#{NAMESPACE_FORMAT_REGEX}\z/o
     end
 
     def namespace_format_message
@@ -229,7 +229,7 @@ module Gitlab
     end
 
     def project_path_format_regex
-      @project_path_format_regex ||= /\A#{PROJECT_PATH_FORMAT_REGEX}\z/o.freeze
+      @project_path_format_regex ||= /\A#{PROJECT_PATH_FORMAT_REGEX}\z/o
     end
 
     def project_path_format_message
@@ -239,7 +239,7 @@ module Gitlab
 
     def archive_formats_regex
       #                           |zip|tar|    tar.gz    |         tar.bz2         |
-      @archive_formats_regex ||= /(zip|tar|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/.freeze
+      @archive_formats_regex ||= /(zip|tar|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/
     end
 
     def git_reference_regex
@@ -270,11 +270,11 @@ module Gitlab
     end
 
     def container_image_regex
-      @container_image_regex ||= %r{([\w\.-]+\/){0,4}[\w\.-]+}.freeze
+      @container_image_regex ||= %r{([\w\.-]+\/){0,4}[\w\.-]+}
     end
 
     def container_image_blob_sha_regex
-      @container_image_blob_sha_regex ||= %r{[\w+.-]+:?\w+}.freeze
+      @container_image_blob_sha_regex ||= %r{[\w+.-]+:?\w+}
     end
 
     def dependency_proxy_route_regex

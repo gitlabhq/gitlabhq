@@ -3,7 +3,7 @@
 module Gitlab
   module Middleware
     class ReadOnly
-      API_VERSIONS = (3..4).freeze
+      API_VERSIONS = (3..4)
 
       def self.internal_routes
         @internal_routes ||=

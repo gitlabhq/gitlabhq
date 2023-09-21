@@ -117,3 +117,14 @@ You can see this error when the authentication details in the Jira integration s
 
 To attempt to resolve this error, try [configuring the integration](configure.md#configure-the-integration) again. Verify that the
 authentication details are correct, re-enter your API token or password, and save your changes.
+
+## GitLab cannot link to a Jira issue
+
+When you mention a Jira issue ID in GitLab, the issue link might be missing.
+[`sidekiq.log`](../../administration/logs/index.md#sidekiq-logs) might contain the following exception:
+
+```plaintext
+No Link Issue Permission for issue 'JIRA-1234'
+```
+
+To resolve this issue, ensure the Jira user you created for the [Jira issue integration](configure.md) has permission to link issues.

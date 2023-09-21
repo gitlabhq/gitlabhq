@@ -7127,6 +7127,29 @@ Input type: `UploadDeleteInput`
 | <a id="mutationuploaddeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationuploaddeleteupload"></a>`upload` | [`FileUpload`](#fileupload) | Deleted upload. |
 
+### `Mutation.userAchievementPrioritiesUpdate`
+
+WARNING:
+**Introduced** in 16.5.
+This feature is an Experiment. It can be changed or removed at any time.
+
+Input type: `UserAchievementPrioritiesUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuserachievementprioritiesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuserachievementprioritiesupdateuserachievementids"></a>`userAchievementIds` | [`[AchievementsUserAchievementID!]!`](#achievementsuserachievementid) | Global IDs of the user achievements being prioritized, ordered from highest to lowest priority. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationuserachievementprioritiesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationuserachievementprioritiesupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationuserachievementprioritiesupdateuserachievements"></a>`userAchievements` | [`[UserAchievement!]!`](#userachievement) | Updated user achievements. |
+
 ### `Mutation.userAchievementsDelete`
 
 WARNING:
@@ -17404,7 +17427,6 @@ GPG signature for a signed commit.
 | <a id="groupdescription"></a>`description` | [`String`](#string) | Description of the namespace. |
 | <a id="groupdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="groupdora"></a>`dora` | [`Dora`](#dora) | Group's DORA metrics. |
-| <a id="groupdoraperformancescorecounts"></a>`doraPerformanceScoreCounts` | [`DoraPerformanceScoreCountConnection`](#doraperformancescorecountconnection) | Group's DORA scores for all projects by DORA key metric for the last complete month. (see [Connections](#connections)) |
 | <a id="groupemailsdisabled"></a>`emailsDisabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications disabled. |
 | <a id="groupenforcefreeusercap"></a>`enforceFreeUserCap` | [`Boolean`](#boolean) | Indicates whether the group has limited users for a free plan. |
 | <a id="groupepicboards"></a>`epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. (see [Connections](#connections)) |
@@ -17731,6 +17753,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="groupdescendantgroupsincludeparentdescendants"></a>`includeParentDescendants` | [`Boolean`](#boolean) | List of descendant groups of the parent group. |
 | <a id="groupdescendantgroupsowned"></a>`owned` | [`Boolean`](#boolean) | Limit result to groups owned by authenticated user. |
 | <a id="groupdescendantgroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
+
+##### `Group.doraPerformanceScoreCounts`
+
+Group's DORA scores for all projects by DORA key metric for the last complete month.
+
+Returns [`DoraPerformanceScoreCountConnection`](#doraperformancescorecountconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupdoraperformancescorecountsprojectfilters"></a>`projectFilters` | [`DoraProjectFilterInput`](#doraprojectfilterinput) | Filter DORA metric results by project attributes. |
 
 ##### `Group.environmentScopes`
 
@@ -25186,6 +25224,7 @@ Represents a recorded measurement (object count) for the Admins.
 | <a id="userachievementawardedbyuser"></a>`awardedByUser` | [`UserCore!`](#usercore) | Awarded by. |
 | <a id="userachievementcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp the achievement was created. |
 | <a id="userachievementid"></a>`id` | [`AchievementsUserAchievementID!`](#achievementsuserachievementid) | ID of the user achievement. |
+| <a id="userachievementpriority"></a>`priority` | [`Int`](#int) | Priority of the user achievement. |
 | <a id="userachievementrevokedat"></a>`revokedAt` | [`Time`](#time) | Timestamp the achievement was revoked. |
 | <a id="userachievementrevokedbyuser"></a>`revokedByUser` | [`UserCore`](#usercore) | Revoked by. |
 | <a id="userachievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
@@ -31122,6 +31161,16 @@ Values for ordering deployments by a specific field.
 | <a id="diffpositioninputoldline"></a>`oldLine` | [`Int`](#int) | Line on start SHA that was changed. Please see the [REST API Documentation](https://docs.gitlab.com/ee/api/discussions.html#create-a-new-thread-in-the-merge-request-diff) for more information on how to use this field. |
 | <a id="diffpositioninputpaths"></a>`paths` | [`DiffPathsInput!`](#diffpathsinput) | The paths of the file that was changed. Both of the properties of this input are optional, but at least one of them is required. |
 | <a id="diffpositioninputstartsha"></a>`startSha` | [`String!`](#string) | SHA of the branch being compared against. |
+
+### `DoraProjectFilterInput`
+
+Filter parameters for projects to be aggregated for DORA metrics.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="doraprojectfilterinputtopic"></a>`topic` | [`[String!]`](#string) | Filter projects by topic. |
 
 ### `EpicFilters`
 

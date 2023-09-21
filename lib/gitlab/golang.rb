@@ -32,7 +32,7 @@ module Gitlab
       #   vX.Y.(Z+1)-0.yyyymmddhhmmss-sha1337beef0, when most recent prior tag is vX.Y.Z
 
       if version.minor != 0 || version.patch != 0
-        m = /\A(.*\.)?0\./.freeze.match pre
+        m = /\A(.*\.)?0\./.match pre
         return false unless m
 
         pre = pre[m[0].length..]
@@ -40,7 +40,7 @@ module Gitlab
 
       # This pattern is intentionally more forgiving than the patterns
       # above. Correctness is verified by #validate_pseudo_version.
-      /\A\d{14}-\h+\z/.freeze.match? pre
+      /\A\d{14}-\h+\z/.match? pre
     end
 
     def parse_pseudo_version(semver)

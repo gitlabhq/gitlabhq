@@ -7,7 +7,7 @@ module Gitlab
         include ToHash
         include ExposeAttribute
 
-        NOTEABLE_ID_REGEX = %r{/pull/(?<iid>\d+)}i.freeze
+        NOTEABLE_ID_REGEX = %r{/pull/(?<iid>\d+)}i
 
         expose_attribute :noteable_id, :commit_id, :file_path,
           :diff_hunk, :author, :created_at, :updated_at,

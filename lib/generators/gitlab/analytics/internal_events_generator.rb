@@ -6,6 +6,7 @@ module Gitlab
   module Analytics
     class InternalEventsGenerator < Rails::Generators::Base
       TIME_FRAME_DIRS = {
+        'all' => 'counts_all',
         '7d' => 'counts_7d',
         '28d' => 'counts_28d'
       }.freeze
@@ -81,7 +82,7 @@ module Gitlab
         desc: 'Name of the event that this metric counts'
       class_option :unique,
         type: :string,
-        optional: false,
+        optional: true,
         desc: 'Name of the event property that this metric counts'
 
       def create_metric_file
@@ -140,6 +141,12 @@ module Gitlab
         options[:event]
       end
 
+      def unique(time_frame)
+        return if time_frame == 'all'
+
+        "\n    unique: #{options.fetch(:unique)}"
+      end
+
       def ask_description(entity, type, considerations)
         say("")
         desc = ask(format(DESCRIPTION_INQUIRY, entity: entity, entity_type: type, considerations: considerations))
@@ -171,12 +178,16 @@ module Gitlab
         Gitlab::VERSION.match('(\d+\.\d+)').captures.first
       end
 
-      def class_name
-        'RedisHLLMetric'
+      def class_name(time_frame)
+        time_frame == 'all' ? 'TotalCountMetric' : 'RedisHLLMetric'
       end
 
       def key_path(time_frame)
-        "count_distinct_#{options[:unique].sub('.', '_')}_from_#{event}_#{time_frame}"
+        if time_frame == 'all'
+          "count_total_#{event}"
+        else
+          "count_distinct_#{options[:unique].sub('.', '_')}_from_#{event}_#{time_frame}"
+        end
       end
 
       def metric_file_path(time_frame)
@@ -188,12 +199,15 @@ module Gitlab
       def validate!
         validate_tiers!
 
-        %i[unique event mr section stage group].each do |option|
+        %i[event mr section stage group].each do |option|
           raise "The option: --#{option} is  missing" unless options.key? option
         end
 
         time_frames.each do |time_frame|
           validate_time_frame!(time_frame)
+
+          raise "The option: --unique is  missing" if time_frame != 'all' && !options.key?('unique')
+
           validate_key_path!(time_frame)
         end
       end

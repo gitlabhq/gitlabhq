@@ -29715,9 +29715,6 @@ msgstr ""
 msgid "MetricChart|Please select a metric"
 msgstr ""
 
-msgid "MetricChart|Selected"
-msgstr ""
-
 msgid "MetricChart|There is no data available. Please change your selection."
 msgstr ""
 

@@ -16,13 +16,13 @@ module Gitlab
       PROC_FD_GLOB = '/proc/self/fd/*'
       PROC_MEM_INFO = '/proc/meminfo'
 
-      PRIVATE_PAGES_PATTERN = /^(Private_Clean|Private_Dirty|Private_Hugetlb):\s+(?<value>\d+)/.freeze
-      PSS_PATTERN = /^Pss:\s+(?<value>\d+)/.freeze
-      RSS_TOTAL_PATTERN = /^VmRSS:\s+(?<value>\d+)/.freeze
-      RSS_ANON_PATTERN = /^RssAnon:\s+(?<value>\d+)/.freeze
-      RSS_FILE_PATTERN = /^RssFile:\s+(?<value>\d+)/.freeze
-      MAX_OPEN_FILES_PATTERN = /Max open files\s*(?<value>\d+)/.freeze
-      MEM_TOTAL_PATTERN = /^MemTotal:\s+(?<value>\d+) (.+)/.freeze
+      PRIVATE_PAGES_PATTERN = /^(Private_Clean|Private_Dirty|Private_Hugetlb):\s+(?<value>\d+)/
+      PSS_PATTERN = /^Pss:\s+(?<value>\d+)/
+      RSS_TOTAL_PATTERN = /^VmRSS:\s+(?<value>\d+)/
+      RSS_ANON_PATTERN = /^RssAnon:\s+(?<value>\d+)/
+      RSS_FILE_PATTERN = /^RssFile:\s+(?<value>\d+)/
+      MAX_OPEN_FILES_PATTERN = /Max open files\s*(?<value>\d+)/
+      MEM_TOTAL_PATTERN = /^MemTotal:\s+(?<value>\d+) (.+)/
 
       def summary
         proportional_mem = memory_usage_uss_pss

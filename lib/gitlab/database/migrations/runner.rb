@@ -7,7 +7,7 @@ module Gitlab
         BASE_RESULT_DIR = Rails.root.join('tmp', 'migration-testing').freeze
         METADATA_FILENAME = 'metadata.json'
         SCHEMA_VERSION = 4 # Version of the output format produced by the runner
-        POST_MIGRATION_MATCHER = %r{db/post_migrate/}.freeze
+        POST_MIGRATION_MATCHER = %r{db/post_migrate/}
 
         class << self
           def up(database:, legacy_mode: false)

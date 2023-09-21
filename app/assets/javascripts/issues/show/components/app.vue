@@ -550,7 +550,6 @@ export default {
         :issuable-type="issuableType"
         :show="isStickyHeaderShowing"
         :title="state.titleText"
-        :title-html="state.titleHtml"
         @hide="hideStickyHeader"
         @show="showStickyHeader"
       />
