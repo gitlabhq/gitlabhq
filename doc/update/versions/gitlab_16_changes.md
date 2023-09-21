@@ -125,8 +125,10 @@ Specific information applies to installations using Geo:
 
 - Git pulls against a secondary Geo site are being proxied to the primary Geo site even when that secondary site is up to date. You are impacted if you are using Geo to accelerate remote users who make Git pull requests against a secondary Geo site.
 
-  - Impacted versions: 16.3.0 - 16.3.2
-  - Versions containing fix: 16.4.0
+  - Impacted versions:
+    - 16.3.0 to 16.3.3
+  - Versions containing fix:
+    - 16.3.4 and later
 
   For more information, see [issue 425224](https://gitlab.com/gitlab-org/gitlab/-/issues/425224).
 
